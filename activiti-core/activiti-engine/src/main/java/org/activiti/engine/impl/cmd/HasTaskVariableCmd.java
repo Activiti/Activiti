@@ -18,7 +18,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -27,42 +26,43 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
 
 /**
-
+ *
  */
 public class HasTaskVariableCmd implements Command<Boolean>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String taskId;
-  protected String variableName;
-  protected boolean isLocal;
+    private static final long serialVersionUID = 1L;
+    protected String taskId;
+    protected String variableName;
+    protected boolean isLocal;
 
-  public HasTaskVariableCmd(String taskId, String variableName, boolean isLocal) {
-    this.taskId = taskId;
-    this.variableName = variableName;
-    this.isLocal = isLocal;
-  }
-
-  public Boolean execute(CommandContext commandContext) {
-    if (taskId == null) {
-      throw new ActivitiIllegalArgumentException("taskId is null");
-    }
-    if (variableName == null) {
-      throw new ActivitiIllegalArgumentException("variableName is null");
+    public HasTaskVariableCmd(String taskId, String variableName, boolean isLocal) {
+        this.taskId = taskId;
+        this.variableName = variableName;
+        this.isLocal = isLocal;
     }
 
-    TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);
+    public Boolean execute(CommandContext commandContext) {
+        if (taskId == null) {
+            throw new ActivitiIllegalArgumentException("taskId is null");
+        }
+        if (variableName == null) {
+            throw new ActivitiIllegalArgumentException("variableName is null");
+        }
 
-    if (task == null) {
-      throw new ActivitiObjectNotFoundException("task " + taskId + " doesn't exist", Task.class);
+        TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);
+
+        if (task == null) {
+            throw new ActivitiObjectNotFoundException("task " + taskId + " doesn't exist",
+                Task.class);
+        }
+        boolean hasVariable = false;
+
+        if (isLocal) {
+            hasVariable = task.hasVariableLocal(variableName);
+        } else {
+            hasVariable = task.hasVariable(variableName);
+        }
+
+        return hasVariable;
     }
-    boolean hasVariable = false;
-
-    if (isLocal) {
-      hasVariable = task.hasVariableLocal(variableName);
-    } else {
-      hasVariable = task.hasVariable(variableName);
-    }
-
-    return hasVariable;
-  }
 }

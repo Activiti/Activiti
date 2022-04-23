@@ -20,13 +20,15 @@ import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
-
+ *
  */
-public class ExecutionsByRootProcessInstanceMatcher extends CachedEntityMatcherAdapter<ExecutionEntity> {
+public class ExecutionsByRootProcessInstanceMatcher extends
+    CachedEntityMatcherAdapter<ExecutionEntity> {
 
-  @Override
-  public boolean isRetained(ExecutionEntity entity, Object parameter) {
-    return entity.getRootProcessInstanceId() != null && entity.getRootProcessInstanceId().equals((String) parameter);
-  }
+    @Override
+    public boolean isRetained(ExecutionEntity entity, Object parameter) {
+        return entity.getRootProcessInstanceId() != null && entity.getRootProcessInstanceId()
+            .equals(parameter);
+    }
 
 }

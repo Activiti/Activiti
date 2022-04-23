@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="definitions"
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-  xmlns:activiti="http://activiti.org/bpmn"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   targetNamespace="Examples">
 
   <process id="inclusiveGateway">
 
-    <startEvent id="theStart" />
+    <startEvent id="theStart"/>
 
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="inclusiveGw" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="inclusiveGw"/>
 
-    <inclusiveGateway id="inclusiveGw" name="Inclusive Gateway" />
+    <inclusiveGateway id="inclusiveGw" name="Inclusive Gateway"/>
 
     <sequenceFlow id="flow2" sourceRef="inclusiveGw" targetRef="theTask1">
       <conditionExpression xsi:type="tFormalExpression">
@@ -31,19 +30,19 @@
       </conditionExpression>
     </sequenceFlow>
 
-    <userTask id="theTask1" name="Send e-mail for more information" />
+    <userTask id="theTask1" name="Send e-mail for more information"/>
 
-    <sequenceFlow id="flow5" sourceRef="theTask1" targetRef="theEnd" />
+    <sequenceFlow id="flow5" sourceRef="theTask1" targetRef="theEnd"/>
 
-    <userTask id="theTask2" name="Check account balance" />
+    <userTask id="theTask2" name="Check account balance"/>
 
-    <sequenceFlow id="flow6" sourceRef="theTask2" targetRef="theEnd" />
+    <sequenceFlow id="flow6" sourceRef="theTask2" targetRef="theEnd"/>
 
-    <userTask id="theTask3" name="Call customer" />
+    <userTask id="theTask3" name="Call customer"/>
 
-    <sequenceFlow id="flow7" sourceRef="theTask3" targetRef="theEnd" />
+    <sequenceFlow id="flow7" sourceRef="theTask3" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

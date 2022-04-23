@@ -18,26 +18,26 @@ package org.activiti.engine.event;
 import java.util.Date;
 
 /**
-
+ *
  */
 public interface EventLogEntry {
 
-  long getLogNumber();
+    long getLogNumber();
 
-  String getType();
+    String getType();
 
-  String getProcessDefinitionId();
+    String getProcessDefinitionId();
 
-  String getProcessInstanceId();
+    String getProcessInstanceId();
 
-  String getExecutionId();
+    String getExecutionId();
 
-  String getTaskId();
+    String getTaskId();
 
-  Date getTimeStamp();
+    Date getTimeStamp();
 
-  String getUserId();
+    String getUserId();
 
-  byte[] getData();
+    byte[] getData();
 
 }

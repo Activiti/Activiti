@@ -15,11 +15,11 @@
  */
 package org.activiti.engine.impl.event.logger;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
@@ -47,8 +47,6 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.runtime.Clock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class EventLogger implements ActivitiEventListener {
 
@@ -86,9 +84,12 @@ public class EventLogger implements ActivitiEventListener {
         addEventHandler(ActivitiEventType.ACTIVITY_COMPLETED, ActivityCompletedEventHandler.class);
         addEventHandler(ActivitiEventType.ACTIVITY_STARTED, ActivityStartedEventHandler.class);
         addEventHandler(ActivitiEventType.ACTIVITY_SIGNALED, ActivitySignaledEventHandler.class);
-        addEventHandler(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, ActivityMessageEventHandler.class);
-        addEventHandler(ActivitiEventType.ACTIVITY_COMPENSATE, ActivityCompensatedEventHandler.class);
-        addEventHandler(ActivitiEventType.ACTIVITY_ERROR_RECEIVED, ActivityErrorReceivedEventHandler.class);
+        addEventHandler(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
+            ActivityMessageEventHandler.class);
+        addEventHandler(ActivitiEventType.ACTIVITY_COMPENSATE,
+            ActivityCompensatedEventHandler.class);
+        addEventHandler(ActivitiEventType.ACTIVITY_ERROR_RECEIVED,
+            ActivityErrorReceivedEventHandler.class);
 
         addEventHandler(ActivitiEventType.VARIABLE_CREATED, VariableCreatedEventHandler.class);
         addEventHandler(ActivitiEventType.VARIABLE_DELETED, VariableDeletedEventHandler.class);
@@ -102,7 +103,8 @@ public class EventLogger implements ActivitiEventListener {
 
             // Events are flushed when command context is closed
             CommandContext currentCommandContext = Context.getCommandContext();
-            EventFlusher eventFlusher = (EventFlusher) currentCommandContext.getAttribute(EVENT_FLUSHER_KEY);
+            EventFlusher eventFlusher = (EventFlusher) currentCommandContext.getAttribute(
+                EVENT_FLUSHER_KEY);
 
             if (eventFlusher == null) {
 
@@ -177,15 +179,17 @@ public class EventLogger implements ActivitiEventListener {
     }
 
     protected EventLoggerEventHandler instantiateEventHandler(ActivitiEvent event,
-                                                              Class<? extends EventLoggerEventHandler> eventHandlerClass) {
+        Class<? extends EventLoggerEventHandler> eventHandlerClass) {
         try {
-            EventLoggerEventHandler eventHandler = eventHandlerClass.getDeclaredConstructor().newInstance();
+            EventLoggerEventHandler eventHandler = eventHandlerClass.getDeclaredConstructor()
+                .newInstance();
             eventHandler.setTimeStamp(clock.getCurrentTime());
             eventHandler.setEvent(event);
             eventHandler.setObjectMapper(objectMapper);
             return eventHandler;
         } catch (Exception e) {
-            logger.warn("Could not instantiate " + eventHandlerClass + ", this is most likely a programmatic error");
+            logger.warn("Could not instantiate " + eventHandlerClass
+                + ", this is most likely a programmatic error");
         }
         return null;
     }
@@ -195,7 +199,8 @@ public class EventLogger implements ActivitiEventListener {
         return false;
     }
 
-    public void addEventHandler(ActivitiEventType eventType, Class<? extends EventLoggerEventHandler> eventHandlerClass) {
+    public void addEventHandler(ActivitiEventType eventType,
+        Class<? extends EventLoggerEventHandler> eventHandlerClass) {
         eventHandlers.put(eventType, eventHandlerClass);
     }
 

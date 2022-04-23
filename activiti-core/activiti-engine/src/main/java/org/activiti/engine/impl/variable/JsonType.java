@@ -29,65 +29,67 @@ public class JsonType implements VariableType {
     public static final String JSON = "json";
 
     private final int maxLength;
-  private ObjectMapper objectMapper;
-  private boolean serializePOJOsInVariablesToJson;
-    private JsonTypeConverter jsonTypeConverter;
+    private final ObjectMapper objectMapper;
+    private final boolean serializePOJOsInVariablesToJson;
+    private final JsonTypeConverter jsonTypeConverter;
 
-  public JsonType(int maxLength, ObjectMapper objectMapper, boolean serializePOJOsInVariablesToJson,
-      JsonTypeConverter jsonTypeConverter) {
-    this.maxLength = maxLength;
-    this.objectMapper = objectMapper;
-    this.serializePOJOsInVariablesToJson = serializePOJOsInVariablesToJson;
-      this.jsonTypeConverter = jsonTypeConverter;
-  }
+    public JsonType(int maxLength, ObjectMapper objectMapper,
+        boolean serializePOJOsInVariablesToJson,
+        JsonTypeConverter jsonTypeConverter) {
+        this.maxLength = maxLength;
+        this.objectMapper = objectMapper;
+        this.serializePOJOsInVariablesToJson = serializePOJOsInVariablesToJson;
+        this.jsonTypeConverter = jsonTypeConverter;
+    }
 
-  public String getTypeName() {
-    return JSON;
-  }
+    public String getTypeName() {
+        return JSON;
+    }
 
-  public boolean isCachable() {
-    return true;
-  }
+    public boolean isCachable() {
+        return true;
+    }
 
-  public Object getValue(ValueFields valueFields) {
-    Object loadedValue = null;
-    if (valueFields.getTextValue() != null && valueFields.getTextValue().length() > 0) {
-        try {
-            loadedValue = jsonTypeConverter.convertToValue(
-                objectMapper.readTree(valueFields.getTextValue()), valueFields);
+    public Object getValue(ValueFields valueFields) {
+        Object loadedValue = null;
+        if (valueFields.getTextValue() != null && valueFields.getTextValue().length() > 0) {
+            try {
+                loadedValue = jsonTypeConverter.convertToValue(
+                    objectMapper.readTree(valueFields.getTextValue()), valueFields);
 
-        } catch (Exception e) {
-          logger.error("Error reading json variable " + valueFields.getName(), e);
+            } catch (Exception e) {
+                logger.error("Error reading json variable " + valueFields.getName(), e);
+            }
         }
-      }
-    return loadedValue;
-  }
-
-  public void setValue(Object value, ValueFields valueFields) {
-    try {
-      valueFields.setTextValue(objectMapper.writeValueAsString(value));
-      if (value != null) {
-          valueFields.setTextValue2(value.getClass().getName());
-      }
-    } catch (JsonProcessingException e) {
-    logger.error("Error writing json variable " + valueFields.getName(), e);
-    }
-  }
-
-  public boolean isAbleToStore(Object value) {
-    if (value == null) {
-      return true;
+        return loadedValue;
     }
 
-    if (JsonNode.class.isAssignableFrom(value.getClass()) || (objectMapper.canSerialize(value.getClass()) && serializePOJOsInVariablesToJson)) {
-      try {
-        return objectMapper.writeValueAsString(value).length() <= maxLength;
-      } catch (JsonProcessingException e) {
-        logger.error("Error writing json variable of type " + value.getClass(), e);
-      }
+    public void setValue(Object value, ValueFields valueFields) {
+        try {
+            valueFields.setTextValue(objectMapper.writeValueAsString(value));
+            if (value != null) {
+                valueFields.setTextValue2(value.getClass().getName());
+            }
+        } catch (JsonProcessingException e) {
+            logger.error("Error writing json variable " + valueFields.getName(), e);
+        }
     }
 
-    return false;
-  }
+    public boolean isAbleToStore(Object value) {
+        if (value == null) {
+            return true;
+        }
+
+        if (JsonNode.class.isAssignableFrom(value.getClass()) || (
+            objectMapper.canSerialize(value.getClass()) && serializePOJOsInVariablesToJson)) {
+            try {
+                return objectMapper.writeValueAsString(value).length() <= maxLength;
+            } catch (JsonProcessingException e) {
+                logger.error("Error writing json variable of type " + value.getClass(), e);
+            }
+        }
+
+        return false;
+    }
 
 }

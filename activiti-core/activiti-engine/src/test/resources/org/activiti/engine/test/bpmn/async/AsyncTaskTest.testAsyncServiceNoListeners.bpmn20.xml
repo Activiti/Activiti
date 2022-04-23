@@ -6,14 +6,15 @@
 
   <process id="asyncService">
 
-    <startEvent id="theStart" />
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="service" />
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="service"/>
 
-    <serviceTask id="service" activiti:class="org.activiti.engine.test.bpmn.async.AsyncService" activiti:async="true" />
+    <serviceTask id="service" activiti:class="org.activiti.engine.test.bpmn.async.AsyncService"
+      activiti:async="true"/>
 
-    <sequenceFlow id="flow2" sourceRef="service" targetRef="theEnd" />
+    <sequenceFlow id="flow2" sourceRef="service" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

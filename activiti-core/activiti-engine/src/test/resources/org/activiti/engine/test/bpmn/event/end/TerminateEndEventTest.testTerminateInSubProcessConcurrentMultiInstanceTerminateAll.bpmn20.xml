@@ -1,49 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://activiti.org/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="Definitions_1">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+  typeLanguage="http://www.w3.org/2001/XMLSchema"
+  expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://activiti.org/bpmn"
+  xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="Definitions_1">
   <process id="terminateEndEventExample" name="Default Process" isExecutable="true">
     <startEvent id="start"></startEvent>
     <parallelGateway id="ParallelGateway_1"></parallelGateway>
-    <sequenceFlow id="SequenceFlow_2" sourceRef="start" targetRef="ParallelGateway_1"></sequenceFlow>
+    <sequenceFlow id="SequenceFlow_2" sourceRef="start"
+      targetRef="ParallelGateway_1"></sequenceFlow>
     <userTask id="preNormalEnd" name="check before normal end"></userTask>
-    <sequenceFlow id="SequenceFlow_4" sourceRef="ParallelGateway_1" targetRef="preNormalEnd"></sequenceFlow>
+    <sequenceFlow id="SequenceFlow_4" sourceRef="ParallelGateway_1"
+      targetRef="preNormalEnd"></sequenceFlow>
     <subProcess id="SubProcess_1" name="SubProcess">
       <multiInstanceLoopCharacteristics isSequential="false">
         <loopCardinality>5</loopCardinality>
       </multiInstanceLoopCharacteristics>
-      <serviceTask id="checkTerminate" name="Service Task" activiti:class="org.activiti.engine.test.bpmn.event.end.TerminateEndEventTest$CountDelegate"></serviceTask>
-      <sequenceFlow id="SequenceFlow_5" sourceRef="checkTerminate" targetRef="ExclusiveGateway_1"></sequenceFlow>
+      <serviceTask id="checkTerminate" name="Service Task"
+        activiti:class="org.activiti.engine.test.bpmn.event.end.TerminateEndEventTest$CountDelegate"></serviceTask>
+      <sequenceFlow id="SequenceFlow_5" sourceRef="checkTerminate"
+        targetRef="ExclusiveGateway_1"></sequenceFlow>
       <endEvent id="EndEvent_5">
-        <terminateEventDefinition />
+        <terminateEventDefinition/>
       </endEvent>
       <startEvent id="StartEvent_1"></startEvent>
-      <sequenceFlow id="SequenceFlow_3" sourceRef="StartEvent_1" targetRef="checkTerminate"></sequenceFlow>
+      <sequenceFlow id="SequenceFlow_3" sourceRef="StartEvent_1"
+        targetRef="checkTerminate"></sequenceFlow>
       <userTask id="task" name="User Task"></userTask>
       <sequenceFlow id="SequenceFlow_12" sourceRef="task" targetRef="EndEvent_5"></sequenceFlow>
       <exclusiveGateway id="ExclusiveGateway_1"></exclusiveGateway>
       <sequenceFlow id="SequenceFlow_11" sourceRef="ExclusiveGateway_1" targetRef="task">
-        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!terminate}]]></conditionExpression>
+        <conditionExpression xsi:type="tFormalExpression">
+          <![CDATA[${!terminate}]]></conditionExpression>
       </sequenceFlow>
-      <sequenceFlow id="SequenceFlow_8" sourceRef="ExclusiveGateway_1" targetRef="ParallelGateway_2">
-        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${terminate}]]></conditionExpression>
+      <sequenceFlow id="SequenceFlow_8" sourceRef="ExclusiveGateway_1"
+        targetRef="ParallelGateway_2">
+        <conditionExpression xsi:type="tFormalExpression">
+          <![CDATA[${terminate}]]></conditionExpression>
       </sequenceFlow>
       <endEvent id="EndEvent_1">
         <terminateEventDefinition activiti:terminateAll="true"></terminateEventDefinition>
       </endEvent>
       <userTask id="UserTask_1" name="User Task"></userTask>
       <endEvent id="EndEvent_2"></endEvent>
-      <sequenceFlow id="SequenceFlow_14" sourceRef="UserTask_1" targetRef="EndEvent_2"></sequenceFlow>
+      <sequenceFlow id="SequenceFlow_14" sourceRef="UserTask_1"
+        targetRef="EndEvent_2"></sequenceFlow>
       <parallelGateway id="ParallelGateway_2"></parallelGateway>
-      <sequenceFlow id="SequenceFlow_10" sourceRef="ParallelGateway_2" targetRef="UserTask_1"></sequenceFlow>
-      <sequenceFlow id="SequenceFlow_15" sourceRef="ParallelGateway_2" targetRef="EndEvent_1"></sequenceFlow>
+      <sequenceFlow id="SequenceFlow_10" sourceRef="ParallelGateway_2"
+        targetRef="UserTask_1"></sequenceFlow>
+      <sequenceFlow id="SequenceFlow_15" sourceRef="ParallelGateway_2"
+        targetRef="EndEvent_1"></sequenceFlow>
     </subProcess>
-    <sequenceFlow id="SequenceFlow_6" sourceRef="ParallelGateway_1" targetRef="SubProcess_1"></sequenceFlow>
+    <sequenceFlow id="SequenceFlow_6" sourceRef="ParallelGateway_1"
+      targetRef="SubProcess_1"></sequenceFlow>
     <endEvent id="EndEvent_3"></endEvent>
-    <sequenceFlow id="SequenceFlow_7" sourceRef="SubProcess_1" targetRef="EndEvent_3"></sequenceFlow>
+    <sequenceFlow id="SequenceFlow_7" sourceRef="SubProcess_1"
+      targetRef="EndEvent_3"></sequenceFlow>
     <endEvent id="EndEvent_4"></endEvent>
-    <sequenceFlow id="SequenceFlow_1" sourceRef="preNormalEnd" targetRef="EndEvent_4"></sequenceFlow>
+    <sequenceFlow id="SequenceFlow_1" sourceRef="preNormalEnd"
+      targetRef="EndEvent_4"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_terminateEndEventExample">
-    <bpmndi:BPMNPlane bpmnElement="terminateEndEventExample" id="BPMNPlane_terminateEndEventExample">
+    <bpmndi:BPMNPlane bpmnElement="terminateEndEventExample"
+      id="BPMNPlane_terminateEndEventExample">
       <bpmndi:BPMNShape bpmnElement="start" id="BPMNShape_start">
         <omgdc:Bounds height="36.0" width="36.0" x="89.0" y="448.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>

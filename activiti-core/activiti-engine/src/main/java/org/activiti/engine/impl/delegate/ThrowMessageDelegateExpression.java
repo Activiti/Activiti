@@ -16,7 +16,6 @@
 package org.activiti.engine.impl.delegate;
 
 import java.util.List;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.helper.DelegateExpressionUtil;
@@ -28,7 +27,7 @@ public class ThrowMessageDelegateExpression implements ThrowMessageDelegate {
     private final List<FieldDeclaration> fieldDeclarations;
 
     public ThrowMessageDelegateExpression(Expression delegateExpression,
-                                          List<FieldDeclaration> fieldDeclarations) {
+        List<FieldDeclaration> fieldDeclarations) {
         this.delegateExpression = delegateExpression;
         this.fieldDeclarations = fieldDeclarations;
     }
@@ -37,11 +36,11 @@ public class ThrowMessageDelegateExpression implements ThrowMessageDelegate {
     public boolean send(DelegateExecution execution, ThrowMessage message) {
 
         Object delegate = DelegateExpressionUtil.resolveDelegateExpression(delegateExpression,
-                                                                           execution,
-                                                                           fieldDeclarations);
-        if(ThrowMessageDelegate.class.isInstance(delegate)) {
-            return ThrowMessageDelegate.class.cast(delegate)
-                                             .send(execution, message);
+            execution,
+            fieldDeclarations);
+        if (delegate instanceof ThrowMessageDelegate) {
+            return ((ThrowMessageDelegate) delegate)
+                .send(execution, message);
         }
 
         return false;

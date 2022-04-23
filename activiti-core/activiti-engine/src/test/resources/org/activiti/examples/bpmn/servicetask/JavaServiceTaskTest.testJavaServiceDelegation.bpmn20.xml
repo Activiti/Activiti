@@ -6,21 +6,21 @@
 
   <process id="javaServiceDelegation">
 
-    <startEvent id="theStart" />
+    <startEvent id="theStart"/>
 
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="javaService" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="javaService"/>
 
     <serviceTask id="javaService"
-                 name="Java service invocation"
-                 activiti:class="org.activiti.examples.bpmn.servicetask.ToUppercase" />
+      name="Java service invocation"
+      activiti:class="org.activiti.examples.bpmn.servicetask.ToUppercase"/>
 
-    <sequenceFlow id="flow2" sourceRef="javaService" targetRef="waitState" />
+    <sequenceFlow id="flow2" sourceRef="javaService" targetRef="waitState"/>
 
-    <receiveTask id="waitState" />
+    <receiveTask id="waitState"/>
 
-    <sequenceFlow id="flow3" sourceRef="waitState" targetRef="theEnd" />
+    <sequenceFlow id="flow3" sourceRef="waitState" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

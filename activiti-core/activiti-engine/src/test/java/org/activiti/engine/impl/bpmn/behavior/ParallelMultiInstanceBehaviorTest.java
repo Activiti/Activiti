@@ -30,7 +30,6 @@ import java.util.Collections;
 import java.util.Map;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.cmd.CompleteTaskCmd;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.junit.After;
 import org.junit.Before;
@@ -102,6 +101,7 @@ public class ParallelMultiInstanceBehaviorTest {
         //then
         assertThat(hasOutputDataItem).isFalse();
     }
+
     @Test
     public void hasLoopDataOutputRef_should_returnTrue_when_dataOutputRefIsSet() {
         //given
@@ -179,7 +179,7 @@ public class ParallelMultiInstanceBehaviorTest {
             MultiInstanceActivityBehavior.NUMBER_OF_ACTIVE_INSTANCES, 2,
             MultiInstanceActivityBehavior.NUMBER_OF_INSTANCES, 5,
             multiInstanceBehavior.getCollectionElementIndexVariable(), 1
-            );
+        );
 
         //when
         Object resultElementItem = multiInstanceBehavior.getResultElementItem(variables);
@@ -216,7 +216,8 @@ public class ParallelMultiInstanceBehaviorTest {
         multiInstanceBehavior.updateResultCollection(childExecution, miRootExecution);
 
         //then
-        verify(miRootExecution).setVariableLocal("miResult", Collections.singletonList("currentItem"));
+        verify(miRootExecution).setVariableLocal("miResult",
+            Collections.singletonList("currentItem"));
     }
 
     @Test
@@ -226,14 +227,16 @@ public class ParallelMultiInstanceBehaviorTest {
         multiInstanceBehavior.setLoopDataOutputRef(loopDataOutputRef);
         DelegateExecution childExecution = mock(DelegateExecution.class);
         DelegateExecution miRootExecution = mock(DelegateExecution.class);
-        given(miRootExecution.getVariableLocal(loopDataOutputRef)).willReturn(new ArrayList<>(Collections.singleton("previousItem")));
+        given(miRootExecution.getVariableLocal(loopDataOutputRef)).willReturn(
+            new ArrayList<>(Collections.singleton("previousItem")));
         doReturn("currentItem").when(multiInstanceBehavior).getResultElementItem(childExecution);
 
         //when
         multiInstanceBehavior.updateResultCollection(childExecution, miRootExecution);
 
         //then
-        verify(miRootExecution).setVariableLocal(loopDataOutputRef, Arrays.asList("previousItem", "currentItem"));
+        verify(miRootExecution).setVariableLocal(loopDataOutputRef,
+            Arrays.asList("previousItem", "currentItem"));
     }
 
 }

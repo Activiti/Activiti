@@ -28,12 +28,12 @@ public class DefaultMessageExecutionContextFactory implements MessageExecutionCo
 
     @Override
     public MessageExecutionContext create(MessageEventDefinition messageEventDefinition,
-                                          MessagePayloadMappingProvider messagePayloadMappingProvider,
-                                          ExpressionManager expressionManager) {
+        MessagePayloadMappingProvider messagePayloadMappingProvider,
+        ExpressionManager expressionManager) {
 
         return new DefaultMessageExecutionContext(messageEventDefinition,
-                                                  expressionManager,
-                                                  messagePayloadMappingProvider);
+            expressionManager,
+            messagePayloadMappingProvider);
     }
 
 }

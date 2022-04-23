@@ -6,17 +6,17 @@
 
   <process id="unexistingClassDelegation">
 
-    <startEvent id="theStart" />
+    <startEvent id="theStart"/>
 
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="javaService" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="javaService"/>
 
     <serviceTask id="javaService"
-                 name="Java service invocation"
-                 activiti:class="org.activiti.BogusClass" />
+      name="Java service invocation"
+      activiti:class="org.activiti.BogusClass"/>
 
-    <sequenceFlow id="flow2" sourceRef="javaService" targetRef="theEnd" />
+    <sequenceFlow id="flow2" sourceRef="javaService" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

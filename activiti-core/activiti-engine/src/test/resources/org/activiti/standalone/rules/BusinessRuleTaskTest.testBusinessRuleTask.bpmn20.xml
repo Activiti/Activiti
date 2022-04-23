@@ -8,13 +8,15 @@
   <process id="customRule">
 
     <startEvent id="start"/>
-    <sequenceFlow id="flow1" sourceRef="start" targetRef="ruleTask" />
-    <businessRuleTask id="ruleTask" activiti:class="org.activiti.standalone.rules.CustomBusinessRuleTask"
-      activiti:ruleVariablesInput="order" activiti:rules="rule1,rule2" activiti:resultVariable="rulesOutput" activiti:exclude="true"/>
-    <sequenceFlow id="flow2" sourceRef="ruleTask" targetRef="receiveTask" />
-    <receiveTask id="receiveTask" />
-    <sequenceFlow id="flow3" sourceRef="receiveTask" targetRef="end" />
-    <endEvent id="end" />
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="ruleTask"/>
+    <businessRuleTask id="ruleTask"
+      activiti:class="org.activiti.standalone.rules.CustomBusinessRuleTask"
+      activiti:ruleVariablesInput="order" activiti:rules="rule1,rule2"
+      activiti:resultVariable="rulesOutput" activiti:exclude="true"/>
+    <sequenceFlow id="flow2" sourceRef="ruleTask" targetRef="receiveTask"/>
+    <receiveTask id="receiveTask"/>
+    <sequenceFlow id="flow3" sourceRef="receiveTask" targetRef="end"/>
+    <endEvent id="end"/>
 
   </process>
 

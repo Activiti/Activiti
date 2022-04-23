@@ -21,16 +21,15 @@ import org.activiti.engine.api.internal.Internal;
 
 /**
  * Update of a process variable. This is only available if history level is configured to FULL.
- *
  */
 @Internal
 public interface HistoricVariableUpdate extends HistoricDetail {
 
-  String getVariableName();
+    String getVariableName();
 
-  String getVariableTypeName();
+    String getVariableTypeName();
 
-  Object getValue();
+    Object getValue();
 
-  int getRevision();
+    int getRevision();
 }

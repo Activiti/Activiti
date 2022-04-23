@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-  xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
 
   <process id="testJobEvents">
 
-    <startEvent id="theStart" />
+    <startEvent id="theStart"/>
 
-    <sequenceFlow sourceRef="theStart" targetRef="task" />
+    <sequenceFlow sourceRef="theStart" targetRef="task"/>
 
-    <userTask id="task" />
+    <userTask id="task"/>
 
     <boundaryEvent attachedToRef="task" id="timer">
-    	<timerEventDefinition>
-    		<timeDuration>PT1H</timeDuration>
-    	</timerEventDefinition>
+      <timerEventDefinition>
+        <timeDuration>PT1H</timeDuration>
+      </timerEventDefinition>
     </boundaryEvent>
 
-    <sequenceFlow sourceRef="task" targetRef="theEnd" />
+    <sequenceFlow sourceRef="task" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

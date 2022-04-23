@@ -17,46 +17,43 @@
 package org.activiti.engine.impl.bpmn.data;
 
 import java.io.Serializable;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 
 /**
  * A data association (Input or Output) between a source and a target
- *
-
  */
 public abstract class AbstractDataAssociation implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String source;
+    protected String source;
 
-  protected Expression sourceExpression;
+    protected Expression sourceExpression;
 
-  protected String target;
+    protected String target;
 
-  protected AbstractDataAssociation(String source, String target) {
-    this.source = source;
-    this.target = target;
-  }
+    protected AbstractDataAssociation(String source, String target) {
+        this.source = source;
+        this.target = target;
+    }
 
-  protected AbstractDataAssociation(Expression sourceExpression, String target) {
-    this.sourceExpression = sourceExpression;
-    this.target = target;
-  }
+    protected AbstractDataAssociation(Expression sourceExpression, String target) {
+        this.sourceExpression = sourceExpression;
+        this.target = target;
+    }
 
-  public abstract void evaluate(DelegateExecution execution);
+    public abstract void evaluate(DelegateExecution execution);
 
-  public String getSource() {
-    return source;
-  }
+    public String getSource() {
+        return source;
+    }
 
-  public String getTarget() {
-    return target;
-  }
+    public String getTarget() {
+        return target;
+    }
 
-  public Expression getSourceExpression() {
-    return sourceExpression;
-  }
+    public Expression getSourceExpression() {
+        return sourceExpression;
+    }
 }

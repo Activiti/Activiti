@@ -6,15 +6,15 @@
 
   <process id="exclusive">
 
-    <startEvent id="theStart" />
+    <startEvent id="theStart"/>
 
-    <sequenceFlow sourceRef="theStart" targetRef="service" />
+    <sequenceFlow sourceRef="theStart" targetRef="service"/>
 
-    <serviceTask id="service" activiti:expression="${true}" activiti:async="true" />
+    <serviceTask id="service" activiti:expression="${true}" activiti:async="true"/>
 
-    <sequenceFlow sourceRef="service" targetRef="theEnd" />
+    <sequenceFlow sourceRef="service" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

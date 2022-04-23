@@ -3,15 +3,16 @@
   xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
   <process id="variableProcess">
 
-    <startEvent id="theStart" />
-    <sequenceFlow sourceRef="theStart" targetRef="userTask" />
+    <startEvent id="theStart"/>
+    <sequenceFlow sourceRef="theStart" targetRef="userTask"/>
     <userTask id="userTask">
       <extensionElements>
-        <activiti:taskListener event="create" class="org.activiti.engine.test.api.event.VariableEventsTaskListener" />
+        <activiti:taskListener event="create"
+          class="org.activiti.engine.test.api.event.VariableEventsTaskListener"/>
       </extensionElements>
     </userTask>
-    <sequenceFlow sourceRef="userTask" targetRef="theEnd" />
-    <endEvent id="theEnd" />
+    <sequenceFlow sourceRef="userTask" targetRef="theEnd"/>
+    <endEvent id="theEnd"/>
 
   </process>
 

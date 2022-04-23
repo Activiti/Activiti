@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="taskAssigneeExample"
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-  xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
 
   <process id="oneTaskProcess">
 
     <startEvent id="start"/>
 
-    <sequenceFlow id="flow1" sourceRef="start" targetRef="task" />
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="task"/>
 
-    <userTask id="task" />
+    <userTask id="task"/>
 
-    <sequenceFlow id="flow2" sourceRef="task" targetRef="end" />
+    <sequenceFlow id="flow2" sourceRef="task" targetRef="end"/>
 
-    <endEvent id="end" />
+    <endEvent id="end"/>
 
   </process>
 

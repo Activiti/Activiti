@@ -18,30 +18,26 @@
 package org.activiti.standalone.jpa;
 
 import java.util.Calendar;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 /**
- *
  * WARNING: This class cannot be used in JPA-context, since it has an illegal type of ID.
- *
+ * <p>
  * For testing purposes only.
- *
-
  */
 @Entity
 public class IllegalIdClassJPAEntity {
 
-  @Id
-  private Calendar id;
+    @Id
+    private Calendar id;
 
-  public Calendar getId() {
-    return id;
-  }
+    public Calendar getId() {
+        return id;
+    }
 
-  public void setId(Calendar id) {
-    this.id = id;
-  }
+    public void setId(Calendar id) {
+        this.id = id;
+    }
 
 }

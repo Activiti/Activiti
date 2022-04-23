@@ -16,6 +16,7 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.Optional;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -26,8 +27,6 @@ import org.activiti.engine.impl.delegate.ThrowMessageDelegate;
 import org.activiti.engine.impl.delegate.invocation.DelegateInvocation;
 import org.activiti.engine.impl.delegate.invocation.ThrowMessageDelegateInvocation;
 
-import java.util.Optional;
-
 public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNodeActivityBehavior {
 
     private static final long serialVersionUID = 1L;
@@ -37,22 +36,23 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
     private final MessageExecutionContext messageExecutionContext;
 
     public AbstractThrowMessageEventActivityBehavior(MessageEventDefinition messageEventDefinition,
-                                                     ThrowMessageDelegate delegate,
-                                                     MessageExecutionContext messageExecutionContext) {
+        ThrowMessageDelegate delegate,
+        MessageExecutionContext messageExecutionContext) {
         this.messageEventDefinition = messageEventDefinition;
         this.delegate = delegate;
         this.messageExecutionContext = messageExecutionContext;
     }
 
     protected boolean send(DelegateExecution execution, ThrowMessage message) {
-        DelegateInvocation invocation = new ThrowMessageDelegateInvocation(delegate, execution, message);
+        DelegateInvocation invocation = new ThrowMessageDelegateInvocation(delegate, execution,
+            message);
 
         Context.getProcessEngineConfiguration()
-               .getDelegateInterceptor()
-               .handleInvocation(invocation);
+            .getDelegateInterceptor()
+            .handleInvocation(invocation);
 
         return (boolean) invocation.getInvocationResult();
-    };
+    }
 
     @Override
     public void execute(DelegateExecution execution) {
@@ -60,7 +60,7 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
 
         boolean isSent = send(execution, throwMessage);
 
-        if(isSent) {
+        if (isSent) {
             dispatchEvent(execution, throwMessage);
         }
 
@@ -77,23 +77,23 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
 
     protected void dispatchEvent(DelegateExecution execution, ThrowMessage throwMessage) {
         Optional.ofNullable(Context.getCommandContext())
-                .filter(commandContext -> commandContext.getProcessEngineConfiguration()
-                                                        .getEventDispatcher()
-                                                        .isEnabled())
-                .ifPresent(commandContext -> {
-                    String messageName = throwMessage.getName();
-                    String correlationKey = throwMessage.getCorrelationKey()
-                                                        .orElse(null);
-                    Object payload = throwMessage.getPayload()
-                                                 .orElse(null);
+            .filter(commandContext -> commandContext.getProcessEngineConfiguration()
+                .getEventDispatcher()
+                .isEnabled())
+            .ifPresent(commandContext -> {
+                String messageName = throwMessage.getName();
+                String correlationKey = throwMessage.getCorrelationKey()
+                    .orElse(null);
+                Object payload = throwMessage.getPayload()
+                    .orElse(null);
 
-                    commandContext.getProcessEngineConfiguration()
-                                  .getEventDispatcher()
-                                  .dispatchEvent(ActivitiEventBuilder.createMessageSentEvent(execution,
-                                                                                             messageName,
-                                                                                             correlationKey,
-                                                                                             payload));
-                });
+                commandContext.getProcessEngineConfiguration()
+                    .getEventDispatcher()
+                    .dispatchEvent(ActivitiEventBuilder.createMessageSentEvent(execution,
+                        messageName,
+                        correlationKey,
+                        payload));
+            });
     }
 
     public ThrowMessageDelegate getDelegate() {

@@ -3,16 +3,16 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
 
-  <process id="sendMailExample" >
+  <process id="sendMailExample">
 
-    <startEvent id="theStart" />
-    <sequenceFlow sourceRef="theStart" targetRef="sendMail" />
+    <startEvent id="theStart"/>
+    <sequenceFlow sourceRef="theStart" targetRef="sendMail"/>
 
     <serviceTask id="sendMail" activiti:type="mail">
       <extensionElements>
-        <activiti:field name="from" expression="${sender}" />
-        <activiti:field name="to" expression="${recipient}" />
-        <activiti:field name="subject" expression="Your order ${orderId} has been shipped" />
+        <activiti:field name="from" expression="${sender}"/>
+        <activiti:field name="to" expression="${recipient}"/>
+        <activiti:field name="subject" expression="Your order ${orderId} has been shipped"/>
         <activiti:field name="html">
           <activiti:expression>
             <![CDATA[
@@ -32,9 +32,9 @@
         </activiti:field>
       </extensionElements>
     </serviceTask>
-    <sequenceFlow sourceRef="sendMail" targetRef="theEnd" />
+    <sequenceFlow sourceRef="sendMail" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

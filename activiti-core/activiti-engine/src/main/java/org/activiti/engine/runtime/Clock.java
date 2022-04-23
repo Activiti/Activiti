@@ -25,10 +25,10 @@ import java.util.Date;
  */
 public interface Clock extends ClockReader {
 
-  void setCurrentTime(Date currentTime);
+    void setCurrentTime(Date currentTime);
 
-  void setCurrentCalendar(Calendar currentTime);
+    void setCurrentCalendar(Calendar currentTime);
 
-  void reset();
+    void reset();
 
 }

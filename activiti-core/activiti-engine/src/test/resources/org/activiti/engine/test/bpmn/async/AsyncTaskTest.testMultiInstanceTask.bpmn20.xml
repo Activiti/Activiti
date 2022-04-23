@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-  xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
 
   <process id="asyncTask">
 
-    <startEvent id="theStart" />
+    <startEvent id="theStart"/>
 
-    <sequenceFlow sourceRef="theStart" targetRef="task" />
+    <sequenceFlow sourceRef="theStart" targetRef="task"/>
 
     <manualTask id="task">
       <multiInstanceLoopCharacteristics isSequential="false">
@@ -16,9 +15,9 @@
       </multiInstanceLoopCharacteristics>
     </manualTask>
 
-    <sequenceFlow sourceRef="task" targetRef="theEnd" />
+    <sequenceFlow sourceRef="task" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

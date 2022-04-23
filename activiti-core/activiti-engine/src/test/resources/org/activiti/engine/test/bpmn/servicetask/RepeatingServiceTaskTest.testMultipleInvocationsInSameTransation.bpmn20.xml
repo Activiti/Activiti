@@ -6,21 +6,22 @@
 
   <process id="repeating">
 
-    <startEvent id="theStart" />
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="service" />
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="service"/>
 
-    <serviceTask id="service" activiti:class="org.activiti.engine.test.bpmn.servicetask.DummyServiceTask" />
-    <sequenceFlow id="flow2" sourceRef="service" targetRef="exclusive" />
+    <serviceTask id="service"
+      activiti:class="org.activiti.engine.test.bpmn.servicetask.DummyServiceTask"/>
+    <sequenceFlow id="flow2" sourceRef="service" targetRef="exclusive"/>
 
-    <exclusiveGateway id="exclusive" default="flow4" />
+    <exclusiveGateway id="exclusive" default="flow4"/>
     <sequenceFlow id="flow3" sourceRef="exclusive" targetRef="theEnd">
       <conditionExpression>
-         <![CDATA[${count > 1000}]]>
+        <![CDATA[${count > 1000}]]>
       </conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="flow4" sourceRef="exclusive" targetRef="service" />
+    <sequenceFlow id="flow4" sourceRef="exclusive" targetRef="service"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

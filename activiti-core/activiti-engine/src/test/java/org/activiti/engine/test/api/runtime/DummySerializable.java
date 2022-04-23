@@ -21,11 +21,9 @@ import java.io.Serializable;
 
 /**
  * Dummy class that implements {@link Serializable}.
- *
-
  */
 public class DummySerializable implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 }

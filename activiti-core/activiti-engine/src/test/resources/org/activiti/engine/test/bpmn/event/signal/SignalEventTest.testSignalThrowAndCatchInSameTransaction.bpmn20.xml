@@ -1,10 +1,19 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20151216134505649" modeler:modelId="969743" modeler:modelVersion="1" modeler:modelLastUpdated="1450273500878">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+  typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+  targetNamespace="http://www.activiti.org/test" xmlns:modeler="http://activiti.com/modeler"
+  modeler:version="1.0en" modeler:exportDateTime="20151216134505649" modeler:modelId="969743"
+  modeler:modelVersion="1" modeler:modelLastUpdated="1450273500878">
   <signal id="fileAddedSignal" name="fileAddedSignal" activiti:scope="global"/>
   <process id="signalBoundaryProcess" name="Signal Boundary Process" isExecutable="true">
     <startEvent id="startevent1" name="Start"/>
     <endEvent id="endevent1" name="End"/>
-    <serviceTask id="servicetask1" name="Check for File" activiti:class="org.activiti.engine.test.bpmn.event.signal.TestSignalService"/>
+    <serviceTask id="servicetask1" name="Check for File"
+      activiti:class="org.activiti.engine.test.bpmn.event.signal.TestSignalService"/>
     <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"/>
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="exclusivegateway1"/>
     <sequenceFlow id="flow2" sourceRef="exclusivegateway1" targetRef="servicetask1"/>
@@ -13,8 +22,10 @@
         <modeler:allow-send-email>true</modeler:allow-send-email>
       </extensionElements>
     </userTask>
-    <sequenceFlow id="flow3" name="File missing" sourceRef="exclusivegateway2" targetRef="addfiletask">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!fileexists}]]></conditionExpression>
+    <sequenceFlow id="flow3" name="File missing" sourceRef="exclusivegateway2"
+      targetRef="addfiletask">
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${!fileexists}]]></conditionExpression>
     </sequenceFlow>
     <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"/>
     <sequenceFlow id="flow4" sourceRef="servicetask1" targetRef="exclusivegateway2"/>
@@ -23,11 +34,14 @@
         <modeler:allow-send-email>true</modeler:allow-send-email>
       </extensionElements>
     </userTask>
-    <sequenceFlow id="flow5" name="file exists" sourceRef="exclusivegateway2" targetRef="usefiletask">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${fileexists}]]></conditionExpression>
+    <sequenceFlow id="flow5" name="file exists" sourceRef="exclusivegateway2"
+      targetRef="usefiletask">
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${fileexists}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow6" sourceRef="usefiletask" targetRef="endevent1"/>
-    <boundaryEvent id="boundarysignal1" name="Signal" attachedToRef="addfiletask" cancelActivity="true">
+    <boundaryEvent id="boundarysignal1" name="Signal" attachedToRef="addfiletask"
+      cancelActivity="true">
       <signalEventDefinition signalRef="fileAddedSignal"/>
     </boundaryEvent>
     <sequenceFlow id="flow9" sourceRef="boundarysignal1" targetRef="exclusivegateway1"/>
@@ -36,7 +50,9 @@
     </intermediateThrowEvent>
     <sequenceFlow id="flow11" sourceRef="addfiletask" targetRef="signalintermediatethrowevent1"/>
     <endEvent id="sid-7FF4EA1B-2310-4A22-BCAD-DCE38B82122A"/>
-    <sequenceFlow id="sid-2AA227CA-6BF8-4EEE-B47C-F86C46AFFB37" sourceRef="signalintermediatethrowevent1" targetRef="sid-7FF4EA1B-2310-4A22-BCAD-DCE38B82122A"/>
+    <sequenceFlow id="sid-2AA227CA-6BF8-4EEE-B47C-F86C46AFFB37"
+      sourceRef="signalintermediatethrowevent1"
+      targetRef="sid-7FF4EA1B-2310-4A22-BCAD-DCE38B82122A"/>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_signalBoundaryProcess">
     <bpmndi:BPMNPlane bpmnElement="signalBoundaryProcess" id="BPMNPlane_signalBoundaryProcess">
@@ -64,13 +80,16 @@
       <bpmndi:BPMNShape bpmnElement="boundarysignal1" id="BPMNShape_boundarysignal1">
         <omgdc:Bounds height="30.0" width="30.0" x="351.8090647428054" y="270.4153463559613"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="signalintermediatethrowevent1" id="BPMNShape_signalintermediatethrowevent1">
+      <bpmndi:BPMNShape bpmnElement="signalintermediatethrowevent1"
+        id="BPMNShape_signalintermediatethrowevent1">
         <omgdc:Bounds height="30.0" width="30.0" x="565.0" y="240.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="sid-7FF4EA1B-2310-4A22-BCAD-DCE38B82122A" id="BPMNShape_sid-7FF4EA1B-2310-4A22-BCAD-DCE38B82122A">
+      <bpmndi:BPMNShape bpmnElement="sid-7FF4EA1B-2310-4A22-BCAD-DCE38B82122A"
+        id="BPMNShape_sid-7FF4EA1B-2310-4A22-BCAD-DCE38B82122A">
         <omgdc:Bounds height="28.0" width="28.0" x="640.0" y="241.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge bpmnElement="sid-2AA227CA-6BF8-4EEE-B47C-F86C46AFFB37" id="BPMNEdge_sid-2AA227CA-6BF8-4EEE-B47C-F86C46AFFB37">
+      <bpmndi:BPMNEdge bpmnElement="sid-2AA227CA-6BF8-4EEE-B47C-F86C46AFFB37"
+        id="BPMNEdge_sid-2AA227CA-6BF8-4EEE-B47C-F86C46AFFB37">
         <omgdi:waypoint x="595.0" y="255.0"/>
         <omgdi:waypoint x="640.0" y="255.0"/>
       </bpmndi:BPMNEdge>

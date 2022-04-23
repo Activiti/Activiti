@@ -6,13 +6,13 @@
   <process id="noEndProcess" name="No End Process">
     <documentation>This is a process for testing purposes</documentation>
 
-    <startEvent id="theStart" />
+    <startEvent id="theStart"/>
 
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theGateway"/>
 
     <parallelGateway id="theGateway"/>
 
-    <sequenceFlow id="flow2" sourceRef="theGateway" targetRef="noneEvent1" />
+    <sequenceFlow id="flow2" sourceRef="theGateway" targetRef="noneEvent1"/>
 
     <intermediateThrowEvent id="noneEvent1"/>
 

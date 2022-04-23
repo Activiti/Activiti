@@ -28,5 +28,5 @@ public interface MessageExecutionContext {
     ThrowMessage createThrowMessage(DelegateExecution execution);
 
     MessageEventSubscriptionEntity createMessageEventSubscription(CommandContext commandContext,
-                                                                  DelegateExecution execution);
+        DelegateExecution execution);
 }

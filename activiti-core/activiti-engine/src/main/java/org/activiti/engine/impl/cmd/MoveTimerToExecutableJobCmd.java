@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -28,41 +27,41 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
-
+ *
  */
 public class MoveTimerToExecutableJobCmd implements Command<JobEntity>, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private static Logger log = LoggerFactory.getLogger(MoveTimerToExecutableJobCmd.class);
+    private static final Logger log = LoggerFactory.getLogger(MoveTimerToExecutableJobCmd.class);
 
-  protected String jobId;
+    protected String jobId;
 
-  public MoveTimerToExecutableJobCmd(String jobId) {
-    this.jobId = jobId;
-  }
-
-  public JobEntity execute(CommandContext commandContext) {
-
-    if (jobId == null) {
-      throw new ActivitiIllegalArgumentException("jobId and job is null");
+    public MoveTimerToExecutableJobCmd(String jobId) {
+        this.jobId = jobId;
     }
 
-    TimerJobEntity timerJob = commandContext.getTimerJobEntityManager().findById(jobId);
+    public JobEntity execute(CommandContext commandContext) {
 
-    if (timerJob == null) {
-      throw new JobNotFoundException(jobId);
+        if (jobId == null) {
+            throw new ActivitiIllegalArgumentException("jobId and job is null");
+        }
+
+        TimerJobEntity timerJob = commandContext.getTimerJobEntityManager().findById(jobId);
+
+        if (timerJob == null) {
+            throw new JobNotFoundException(jobId);
+        }
+
+        if (log.isDebugEnabled()) {
+            log.debug("Executing timer job {}", timerJob.getId());
+        }
+
+        return commandContext.getJobManager().moveTimerJobToExecutableJob(timerJob);
     }
 
-    if (log.isDebugEnabled()) {
-      log.debug("Executing timer job {}", timerJob.getId());
+    public String getJobId() {
+        return jobId;
     }
-
-    return commandContext.getJobManager().moveTimerJobToExecutableJob(timerJob);
-  }
-
-  public String getJobId() {
-    return jobId;
-  }
 
 }

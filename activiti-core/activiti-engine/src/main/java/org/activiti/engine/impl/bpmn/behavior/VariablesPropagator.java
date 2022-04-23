@@ -33,15 +33,17 @@ public class VariablesPropagator {
     }
 
     public void propagate(DelegateExecution execution, Map<String, Object> availableVariables) {
-        if ( availableVariables != null && !availableVariables.isEmpty()) {
+        if (availableVariables != null && !availableVariables.isEmpty()) {
             // in the case of a multi instance we need to set the available variables in the local execution scope so that
             // MultiInstanceBehaviour will manage to aggregate the results inside the result collection. Otherwise, the mapping logic is applied.
             if (execution.getParent().isMultiInstanceRoot()) {
                 execution.setVariablesLocal(availableVariables);
             } else if (execution.getProcessInstanceId() != null) {
-                final ExecutionEntity processInstanceEntity = getExecutionEntityManager().findById(execution.getProcessInstanceId());
+                final ExecutionEntity processInstanceEntity = getExecutionEntityManager().findById(
+                    execution.getProcessInstanceId());
                 processInstanceEntity.setVariables(variablesCalculator.calculateOutPutVariables(
-                    MappingExecutionContext.buildMappingExecutionContext(execution), availableVariables));
+                    MappingExecutionContext.buildMappingExecutionContext(execution),
+                    availableVariables));
             }
         }
     }

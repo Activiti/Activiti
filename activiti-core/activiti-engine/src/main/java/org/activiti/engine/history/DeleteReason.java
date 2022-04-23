@@ -19,21 +19,21 @@ package org.activiti.engine.history;
 import org.activiti.engine.api.internal.Internal;
 
 /**
-
+ *
  */
 @Internal
 public interface DeleteReason {
 
-  String PROCESS_INSTANCE_DELETED = "process instance deleted";
+    String PROCESS_INSTANCE_DELETED = "process instance deleted";
 
-  String TERMINATE_END_EVENT = "Terminated by end event";
+    String TERMINATE_END_EVENT = "Terminated by end event";
 
-  String BOUNDARY_EVENT_INTERRUPTING = "boundary event";
+    String BOUNDARY_EVENT_INTERRUPTING = "boundary event";
 
-  String EVENT_SUBPROCESS_INTERRUPTING = "event subprocess";
+    String EVENT_SUBPROCESS_INTERRUPTING = "event subprocess";
 
-  String EVENT_BASED_GATEWAY_CANCEL = "event based gateway cancel";
+    String EVENT_BASED_GATEWAY_CANCEL = "event based gateway cancel";
 
-  String TRANSACTION_CANCELED = "transaction canceled";
+    String TRANSACTION_CANCELED = "transaction canceled";
 
 }

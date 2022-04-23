@@ -20,6 +20,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 
 public interface ActivitiEngineAgendaFactory {
 
-  ActivitiEngineAgenda createAgenda(CommandContext commandContext);
+    ActivitiEngineAgenda createAgenda(CommandContext commandContext);
 
 }

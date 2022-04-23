@@ -21,11 +21,11 @@ import org.activiti.engine.delegate.TaskListener;
 
 public class AsyncTaskListener implements TaskListener {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  @Override
-  public void notify(DelegateTask delegateTask) {
-    delegateTask.setVariable("taskListener", "listener invoked");
-  }
+    @Override
+    public void notify(DelegateTask delegateTask) {
+        delegateTask.setVariable("taskListener", "listener invoked");
+    }
 
 }

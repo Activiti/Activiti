@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="definitions"
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-  xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
 
   <process id="callSimpleSubProcess">
 
-    <startEvent id="theStart" />
+    <startEvent id="theStart"/>
 
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="taskBeforeSubProcess" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="taskBeforeSubProcess"/>
 
     <scriptTask id="taskBeforeSubProcess" name="Execute script" scriptFormat="groovy">
       <script>
@@ -21,11 +20,11 @@
       </script>
     </scriptTask>
 
-    <sequenceFlow id="flow2" sourceRef="taskBeforeSubProcess" targetRef="callSubProcess" />
+    <sequenceFlow id="flow2" sourceRef="taskBeforeSubProcess" targetRef="callSubProcess"/>
 
-    <callActivity id="callSubProcess" calledElement="simpleSubProcess" />
+    <callActivity id="callSubProcess" calledElement="simpleSubProcess"/>
 
-    <sequenceFlow id="flow3" sourceRef="callSubProcess" targetRef="taskAfterSubProcess" />
+    <sequenceFlow id="flow3" sourceRef="callSubProcess" targetRef="taskAfterSubProcess"/>
 
     <scriptTask id="taskAfterSubProcess" name="Execute script" scriptFormat="groovy">
       <script>
@@ -36,9 +35,9 @@
       </script>
     </scriptTask>
 
-    <sequenceFlow id="flow4" sourceRef="taskAfterSubProcess" targetRef="theEnd" />
+    <sequenceFlow id="flow4" sourceRef="taskAfterSubProcess" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

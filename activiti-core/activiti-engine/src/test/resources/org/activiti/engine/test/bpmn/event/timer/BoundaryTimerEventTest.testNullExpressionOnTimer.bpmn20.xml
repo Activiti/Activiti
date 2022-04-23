@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="Examples" id="definitions">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+  typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+  targetNamespace="Examples" id="definitions">
   <process id="testNullExpressionOnTimer" isExecutable="true">
     <startEvent id="theStart"></startEvent>
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="task"></sequenceFlow>
@@ -7,8 +12,10 @@
     <sequenceFlow id="flow2" sourceRef="task" targetRef="theEnd"></sequenceFlow>
     <boundaryEvent id="boundaryTimer" attachedToRef="task" cancelActivity="true">
       <extensionElements>
-        <activiti:executionListener event="start" class="org.activiti.engine.test.bpmn.event.timer.BoundaryTimerEventTest$MyExecutionListener"></activiti:executionListener>
-        <activiti:executionListener event="end" class="org.activiti.engine.test.bpmn.event.timer.BoundaryTimerEventTest$MyExecutionListener"></activiti:executionListener>
+        <activiti:executionListener event="start"
+          class="org.activiti.engine.test.bpmn.event.timer.BoundaryTimerEventTest$MyExecutionListener"></activiti:executionListener>
+        <activiti:executionListener event="end"
+          class="org.activiti.engine.test.bpmn.event.timer.BoundaryTimerEventTest$MyExecutionListener"></activiti:executionListener>
       </extensionElements>
       <timerEventDefinition>
         <timeDuration>${duration}</timeDuration>
@@ -18,7 +25,8 @@
     <endEvent id="theEnd"></endEvent>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_testNullExpressionOnTimer">
-    <bpmndi:BPMNPlane bpmnElement="testNullExpressionOnTimer" id="BPMNPlane_testNullExpressionOnTimer">
+    <bpmndi:BPMNPlane bpmnElement="testNullExpressionOnTimer"
+      id="BPMNPlane_testNullExpressionOnTimer">
       <bpmndi:BPMNShape bpmnElement="theStart" id="BPMNShape_theStart">
         <omgdc:Bounds height="35.0" width="35.0" x="0.0" y="15.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>

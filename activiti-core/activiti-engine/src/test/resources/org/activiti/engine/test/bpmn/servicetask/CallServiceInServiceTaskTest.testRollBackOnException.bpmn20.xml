@@ -6,33 +6,36 @@
 
   <process id="startProcessFromDelegate" isExecutable="true">
 
-    <startEvent id="theStart" />
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="service" />
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="service"/>
 
-    <serviceTask id="service" activiti:class="org.activiti.engine.test.bpmn.servicetask.StartProcessInstanceTestDelegate" />
-    <sequenceFlow id="flow2" sourceRef="service" targetRef="failingScriptTask" />
+    <serviceTask id="service"
+      activiti:class="org.activiti.engine.test.bpmn.servicetask.StartProcessInstanceTestDelegate"/>
+    <sequenceFlow id="flow2" sourceRef="service" targetRef="failingScriptTask"/>
 
     <scriptTask id="failingScriptTask" name="Execute script" scriptFormat="groovy">
-        <script>
-            // Throw an exception in script task
-            throw new RuntimeException("This is an exception thrown from scriptTask")
-        </script>
+      <script>
+        // Throw an exception in script task
+        throw new RuntimeException("This is an exception thrown from scriptTask")
+      </script>
     </scriptTask>
-    <sequenceFlow id="flow3" sourceRef="failingScriptTask" targetRef="theEnd" />
+    <sequenceFlow id="flow3" sourceRef="failingScriptTask" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 
   <process id="oneTaskProcess" isExecutable="true">
 
-    <startEvent id="oneTaskProcessStart" />
-    <sequenceFlow id="oneTaskProcessFlow1" sourceRef="oneTaskProcessStart" targetRef="oneTaskProcessUserTask" />
+    <startEvent id="oneTaskProcessStart"/>
+    <sequenceFlow id="oneTaskProcessFlow1" sourceRef="oneTaskProcessStart"
+      targetRef="oneTaskProcessUserTask"/>
 
-    <userTask id="oneTaskProcessUserTask" />
-    <sequenceFlow id="oneTaskProcessFlow2" sourceRef="oneTaskProcessUserTask" targetRef="oneTaskProcessEnd" />
+    <userTask id="oneTaskProcessUserTask"/>
+    <sequenceFlow id="oneTaskProcessFlow2" sourceRef="oneTaskProcessUserTask"
+      targetRef="oneTaskProcessEnd"/>
 
-    <endEvent id="oneTaskProcessEnd" />
+    <endEvent id="oneTaskProcessEnd"/>
 
   </process>
 

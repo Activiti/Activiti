@@ -16,15 +16,14 @@
 
 package org.activiti.examples.runtime;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
+import java.io.File;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-
-import java.io.File;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  * This class shows an example of configurable agenda usage.
@@ -32,7 +31,8 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 public class WatchDogAgendaTest extends ResourceActivitiTestCase {
 
     public WatchDogAgendaTest() {
-        super(WatchDogAgendaTest.class.getName().replace(".", File.separator)+".activiti.cfg.xml");
+        super(
+            WatchDogAgendaTest.class.getName().replace(".", File.separator) + ".activiti.cfg.xml");
     }
 
     @Deployment(resources = "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml")
@@ -49,6 +49,6 @@ public class WatchDogAgendaTest extends ResourceActivitiTestCase {
             .as("ActivitiException with 'WatchDog limit exceeded.' message expected.")
             .isThrownBy(() -> this.runtimeService.startProcessInstanceByKey("endlessloop"))
             .withMessageContaining("WatchDog limit exceeded.");
-     }
+    }
 
 }

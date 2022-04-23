@@ -23,25 +23,26 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 /**
- * For each API call (and thus {@link Command}) being executed, a new agenda instance is created.
- * On this agenda, operations are put, which the {@link CommandExecutor} will keep executing until
- * all are executed.
- *
- * The agenda also gives easy access to methods to plan new operations when writing
- * {@link ActivityBehavior} implementations.
- *
- * During a {@link Command} execution, the agenda can always be fetched using {@link Context#getAgenda()}.
+ * For each API call (and thus {@link Command}) being executed, a new agenda instance is created. On
+ * this agenda, operations are put, which the {@link CommandExecutor} will keep executing until all
+ * are executed.
+ * <p>
+ * The agenda also gives easy access to methods to plan new operations when writing {@link
+ * ActivityBehavior} implementations.
+ * <p>
+ * During a {@link Command} execution, the agenda can always be fetched using {@link
+ * Context#getAgenda()}.
  */
 @Internal
 public interface Agenda {
 
-  boolean isEmpty();
+    boolean isEmpty();
 
-  Runnable getNextOperation();
+    Runnable getNextOperation();
 
-  /**
-   * Generic method to plan a {@link Runnable}.
-   */
-  void planOperation(Runnable operation);
+    /**
+     * Generic method to plan a {@link Runnable}.
+     */
+    void planOperation(Runnable operation);
 
 }

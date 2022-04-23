@@ -7,23 +7,29 @@
 
     <startEvent id="theStart" name="Start Event">
       <extensionElements>
-        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.CurrentActivityExecutionListener" event="end" />
+        <activiti:executionListener
+          class="org.activiti.examples.bpmn.executionlistener.CurrentActivityExecutionListener"
+          event="end"/>
       </extensionElements>
     </startEvent>
 
-    <sequenceFlow sourceRef="theStart" targetRef="noneEvent" />
+    <sequenceFlow sourceRef="theStart" targetRef="noneEvent"/>
 
     <intermediateThrowEvent id="noneEvent" name="None Event">
       <extensionElements>
-        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.CurrentActivityExecutionListener" event="start" />
+        <activiti:executionListener
+          class="org.activiti.examples.bpmn.executionlistener.CurrentActivityExecutionListener"
+          event="start"/>
       </extensionElements>
     </intermediateThrowEvent>
 
-    <sequenceFlow sourceRef="noneEvent" targetRef="theEnd" />
+    <sequenceFlow sourceRef="noneEvent" targetRef="theEnd"/>
 
     <endEvent id="theEnd" name="End Event">
       <extensionElements>
-        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.CurrentActivityExecutionListener" event="end" />
+        <activiti:executionListener
+          class="org.activiti.examples.bpmn.executionlistener.CurrentActivityExecutionListener"
+          event="end"/>
       </extensionElements>
     </endEvent>
 

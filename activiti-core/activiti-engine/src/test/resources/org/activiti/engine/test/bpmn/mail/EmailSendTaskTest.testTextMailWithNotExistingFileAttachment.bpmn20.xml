@@ -3,10 +3,10 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
 
-  <process id="textMailWithNotExistingFileAttachment" >
+  <process id="textMailWithNotExistingFileAttachment">
 
-    <startEvent id="theStart" />
-    <sequenceFlow sourceRef="theStart" targetRef="sendMail" />
+    <startEvent id="theStart"/>
+    <sequenceFlow sourceRef="theStart" targetRef="sendMail"/>
 
     <sendTask id="sendMail" activiti:type="mail">
       <extensionElements>
@@ -24,8 +24,8 @@
         </activiti:field>
       </extensionElements>
     </sendTask>
-    <sequenceFlow sourceRef="sendMail" targetRef="theEnd" />
+    <sequenceFlow sourceRef="sendMail" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
   </process>
 </definitions>

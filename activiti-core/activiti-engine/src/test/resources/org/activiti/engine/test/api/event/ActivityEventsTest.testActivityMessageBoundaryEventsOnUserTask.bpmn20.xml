@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="edoras vis" exporterVersion="DEVELOPER"
-             targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL"
-             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="edoras vis"
+  exporterVersion="DEVELOPER"
+  targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
   <message id="message1" name="message_1"/>
   <process id="messageOnUserTaskProcess" isExecutable="true" name="message boundary event">
     <startEvent id="cloudstartnoneevent1">
@@ -11,8 +12,9 @@
     </userTask>
     <endEvent id="cloudendnoneevent2">
     </endEvent>
-    <boundaryEvent attachedToRef="cloudformtask1" cancelActivity="true" id="boundaryMessageEventCatching"
-                   parallelMultiple="false">
+    <boundaryEvent attachedToRef="cloudformtask1" cancelActivity="true"
+      id="boundaryMessageEventCatching"
+      parallelMultiple="false">
       <messageEventDefinition id="messageEventDefinition1" messageRef="message1">
       </messageEventDefinition>
     </boundaryEvent>
@@ -21,14 +23,17 @@
     <endEvent id="cloudendnoneevent1">
     </endEvent>
     <sequenceFlow id="cloudsequenceflow1" isImmediate="false" sourceRef="cloudstartnoneevent1"
-                  targetRef="cloudformtask1">
+      targetRef="cloudformtask1">
     </sequenceFlow>
-    <sequenceFlow id="cloudsequenceflow2" isImmediate="false" sourceRef="boundaryMessageEventCatching"
-                  targetRef="cloudformtask2">
+    <sequenceFlow id="cloudsequenceflow2" isImmediate="false"
+      sourceRef="boundaryMessageEventCatching"
+      targetRef="cloudformtask2">
     </sequenceFlow>
-    <sequenceFlow id="cloudsequenceflow3" isImmediate="false" sourceRef="cloudformtask2" targetRef="cloudendnoneevent1">
+    <sequenceFlow id="cloudsequenceflow3" isImmediate="false" sourceRef="cloudformtask2"
+      targetRef="cloudendnoneevent1">
     </sequenceFlow>
-    <sequenceFlow id="cloudsequenceflow4" isImmediate="false" sourceRef="cloudformtask1" targetRef="cloudendnoneevent2">
+    <sequenceFlow id="cloudsequenceflow4" isImmediate="false" sourceRef="cloudformtask1"
+      targetRef="cloudendnoneevent2">
     </sequenceFlow>
   </process>
 </definitions>

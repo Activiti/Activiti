@@ -1,23 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="Examples">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+  typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+  targetNamespace="Examples">
   <process id="miNestedMultiInstanceTasks" isExecutable="true">
     <startEvent id="theStart"></startEvent>
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="subprocess1"></sequenceFlow>
     <sequenceFlow id="flow3" sourceRef="subprocess1" targetRef="theEnd"></sequenceFlow>
     <endEvent id="theEnd"></endEvent>
     <subProcess id="subprocess1" name="${subProcess}">
-      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="subProcesses" activiti:elementVariable="subProcess"></multiInstanceLoopCharacteristics>
+      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="subProcesses"
+        activiti:elementVariable="subProcess"></multiInstanceLoopCharacteristics>
       <startEvent id="startevent1" name="Start"></startEvent>
       <endEvent id="endevent1" name="End"></endEvent>
-      <userTask id="miTasks" name="My Task ${loopCounter}" activiti:assignee="kermit_${loopCounter}">
-        <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="assignees" activiti:elementVariable="assignee"></multiInstanceLoopCharacteristics>
+      <userTask id="miTasks" name="My Task ${loopCounter}"
+        activiti:assignee="kermit_${loopCounter}">
+        <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="assignees"
+          activiti:elementVariable="assignee"></multiInstanceLoopCharacteristics>
       </userTask>
       <sequenceFlow id="flow4" sourceRef="startevent1" targetRef="miTasks"></sequenceFlow>
       <sequenceFlow id="flow5" sourceRef="miTasks" targetRef="endevent1"></sequenceFlow>
     </subProcess>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_miNestedMultiInstanceTasks">
-    <bpmndi:BPMNPlane bpmnElement="miNestedMultiInstanceTasks" id="BPMNPlane_miNestedMultiInstanceTasks">
+    <bpmndi:BPMNPlane bpmnElement="miNestedMultiInstanceTasks"
+      id="BPMNPlane_miNestedMultiInstanceTasks">
       <bpmndi:BPMNShape bpmnElement="miTasks" id="BPMNShape_miTasks">
         <omgdc:Bounds height="60.0" width="100.0" x="180.0" y="82.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>

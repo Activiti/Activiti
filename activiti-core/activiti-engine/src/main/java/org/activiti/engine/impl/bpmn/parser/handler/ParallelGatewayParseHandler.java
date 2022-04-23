@@ -21,16 +21,17 @@ import org.activiti.bpmn.model.ParallelGateway;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
 /**
-
+ *
  */
 public class ParallelGatewayParseHandler extends AbstractActivityBpmnParseHandler<ParallelGateway> {
 
-  public Class<? extends BaseElement> getHandledType() {
-    return ParallelGateway.class;
-  }
+    public Class<? extends BaseElement> getHandledType() {
+        return ParallelGateway.class;
+    }
 
-  protected void executeParse(BpmnParse bpmnParse, ParallelGateway gateway) {
-    gateway.setBehavior(bpmnParse.getActivityBehaviorFactory().createParallelGatewayActivityBehavior(gateway));
-  }
+    protected void executeParse(BpmnParse bpmnParse, ParallelGateway gateway) {
+        gateway.setBehavior(
+            bpmnParse.getActivityBehaviorFactory().createParallelGatewayActivityBehavior(gateway));
+    }
 
 }

@@ -22,21 +22,21 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 /**
-
+ *
  */
 @Entity(name = "CHAR_ID_ENTITY")
 public class CharIdJPAEntity {
 
-  @Id
-  @Column(name = "ID_")
-  private char charId;
+    @Id
+    @Column(name = "ID_")
+    private char charId;
 
-  public char getCharId() {
-    return charId;
-  }
+    public char getCharId() {
+        return charId;
+    }
 
-  public void setCharId(char charId) {
-    this.charId = charId;
-  }
+    public void setCharId(char charId) {
+        this.charId = charId;
+    }
 
 }

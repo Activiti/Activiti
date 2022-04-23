@@ -7,22 +7,22 @@
 
   <process id="HistoricFormPropertiesProcess">
 
-    <startEvent id="start" />
+    <startEvent id="start"/>
 
-    <sequenceFlow id="flow1" sourceRef="start" targetRef="task1" />
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="task1"/>
 
     <userTask id="task1" name="Task 1">
-       <extensionElements>
-       <activiti:formProperty id="formProp1"
+      <extensionElements>
+        <activiti:formProperty id="formProp1"
           name="Property 1"
           variable="prop1"
-          type="string" />
-        </extensionElements>
+          type="string"/>
+      </extensionElements>
     </userTask>
 
-    <sequenceFlow id="flow2" sourceRef="task1" targetRef="exclusiveGw" />
+    <sequenceFlow id="flow2" sourceRef="task1" targetRef="exclusiveGw"/>
 
-    <exclusiveGateway id="exclusiveGw" name="Exclusive Gateway" />
+    <exclusiveGateway id="exclusiveGw" name="Exclusive Gateway"/>
 
     <sequenceFlow id="flow3" sourceRef="exclusiveGw" targetRef="task1">
       <conditionExpression xsi:type="tFormalExpression">${comeBack}</conditionExpression>
@@ -32,7 +32,7 @@
       <conditionExpression xsi:type="tFormalExpression">${!comeBack}</conditionExpression>
     </sequenceFlow>
 
-    <endEvent id="end" />
+    <endEvent id="end"/>
 
   </process>
 

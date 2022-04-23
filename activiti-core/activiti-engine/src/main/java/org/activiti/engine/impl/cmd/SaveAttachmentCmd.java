@@ -18,7 +18,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.Command;
@@ -28,39 +27,44 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.task.Attachment;
 
 /**
-
+ *
  */
 public class SaveAttachmentCmd implements Command<Object>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected Attachment attachment;
+    private static final long serialVersionUID = 1L;
+    protected Attachment attachment;
 
-  public SaveAttachmentCmd(Attachment attachment) {
-    this.attachment = attachment;
-  }
-
-  public Object execute(CommandContext commandContext) {
-    AttachmentEntity updateAttachment = commandContext.getAttachmentEntityManager().findById(attachment.getId());
-
-    String processInstanceId = updateAttachment.getProcessInstanceId();
-    String processDefinitionId = null;
-    if (updateAttachment.getProcessInstanceId() != null) {
-      ExecutionEntity process = commandContext.getExecutionEntityManager().findById(processInstanceId);
-      if (process != null) {
-        processDefinitionId = process.getProcessDefinitionId();
-      }
+    public SaveAttachmentCmd(Attachment attachment) {
+        this.attachment = attachment;
     }
-    executeInternal(commandContext,updateAttachment,processInstanceId,processDefinitionId);
-    return null;
-  }
 
-  protected void executeInternal(CommandContext commandContext, AttachmentEntity updateAttachment,String processInstanceId,String processDefinitionId){
-      updateAttachment.setName(attachment.getName());
-      updateAttachment.setDescription(attachment.getDescription());
+    public Object execute(CommandContext commandContext) {
+        AttachmentEntity updateAttachment = commandContext.getAttachmentEntityManager()
+            .findById(attachment.getId());
 
-      if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-          commandContext.getProcessEngineConfiguration().getEventDispatcher()
-              .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, attachment, processInstanceId, processInstanceId, processDefinitionId));
-      }
-  }
+        String processInstanceId = updateAttachment.getProcessInstanceId();
+        String processDefinitionId = null;
+        if (updateAttachment.getProcessInstanceId() != null) {
+            ExecutionEntity process = commandContext.getExecutionEntityManager()
+                .findById(processInstanceId);
+            if (process != null) {
+                processDefinitionId = process.getProcessDefinitionId();
+            }
+        }
+        executeInternal(commandContext, updateAttachment, processInstanceId, processDefinitionId);
+        return null;
+    }
+
+    protected void executeInternal(CommandContext commandContext, AttachmentEntity updateAttachment,
+        String processInstanceId, String processDefinitionId) {
+        updateAttachment.setName(attachment.getName());
+        updateAttachment.setDescription(attachment.getDescription());
+
+        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            commandContext.getProcessEngineConfiguration().getEventDispatcher()
+                .dispatchEvent(
+                    ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED,
+                        attachment, processInstanceId, processInstanceId, processDefinitionId));
+        }
+    }
 }

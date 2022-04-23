@@ -6,14 +6,15 @@
 
   <process id="catchErrorThrownByJavaDelegateOnCallActivity-child">
 
-    <startEvent id="theStart" />
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="serviceTask" />
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="serviceTask"/>
 
-    <serviceTask id="serviceTask" activiti:class="org.activiti.engine.test.bpmn.event.error.ThrowBpmnErrorDelegate" />
+    <serviceTask id="serviceTask"
+      activiti:class="org.activiti.engine.test.bpmn.event.error.ThrowBpmnErrorDelegate"/>
 
-    <sequenceFlow id="flow4" sourceRef="serviceTask" targetRef="theEnd" />
+    <sequenceFlow id="flow4" sourceRef="serviceTask" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

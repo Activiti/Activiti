@@ -22,29 +22,29 @@ import org.activiti.engine.delegate.DelegateHelper;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 
 /**
-
+ *
  */
 public class ThrowsExceptionBehavior implements ActivityBehavior {
 
-  public void execute(DelegateExecution execution) {
-    String var = (String) execution.getVariable("var");
+    public void execute(DelegateExecution execution) {
+        String var = (String) execution.getVariable("var");
 
-    String sequenceFlowToTake = null;
+        String sequenceFlowToTake = null;
 
-    try {
-      executeLogic(var);
-      sequenceFlowToTake = "no-exception";
-    } catch (Exception e) {
-      sequenceFlowToTake = "exception";
+        try {
+            executeLogic(var);
+            sequenceFlowToTake = "no-exception";
+        } catch (Exception e) {
+            sequenceFlowToTake = "exception";
+        }
+
+        DelegateHelper.leaveDelegate(execution, sequenceFlowToTake);
     }
 
-    DelegateHelper.leaveDelegate(execution, sequenceFlowToTake);
-  }
-
-  protected void executeLogic(String value) {
-    if (value.equals("throw-exception")) {
-      throw new RuntimeException();
+    protected void executeLogic(String value) {
+        if (value.equals("throw-exception")) {
+            throw new RuntimeException();
+        }
     }
-  }
 
 }

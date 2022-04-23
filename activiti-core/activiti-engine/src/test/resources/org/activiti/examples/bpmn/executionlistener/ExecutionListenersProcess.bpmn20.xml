@@ -6,34 +6,39 @@
   <process id="executionListenersProcess">
 
     <extensionElements>
-      <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.ExampleExecutionListenerOne" event="start" />
-      <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener" event="end">
-      	<activiti:field name="parameter" stringValue="End Process Listener" />
+      <activiti:executionListener
+        class="org.activiti.examples.bpmn.executionlistener.ExampleExecutionListenerOne"
+        event="start"/>
+      <activiti:executionListener
+        class="org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener" event="end">
+        <activiti:field name="parameter" stringValue="End Process Listener"/>
       </activiti:executionListener>
     </extensionElements>
 
-    <startEvent id="theStart" />
+    <startEvent id="theStart"/>
 
-    <sequenceFlow sourceRef="theStart" targetRef="firstTask" />
+    <sequenceFlow sourceRef="theStart" targetRef="firstTask"/>
 
-    <userTask id="firstTask" />
+    <userTask id="firstTask"/>
     <sequenceFlow sourceRef="firstTask" targetRef="secondTask">
-       <extensionElements>
-        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.ExampleExecutionListenerTwo" />
+      <extensionElements>
+        <activiti:executionListener
+          class="org.activiti.examples.bpmn.executionlistener.ExampleExecutionListenerTwo"/>
       </extensionElements>
     </sequenceFlow>
 
-    <userTask id="secondTask" >
+    <userTask id="secondTask">
       <extensionElements>
-        <activiti:executionListener expression="${myPojo.myMethod(execution.eventName)}" event="end" />
+        <activiti:executionListener expression="${myPojo.myMethod(execution.eventName)}"
+          event="end"/>
       </extensionElements>
     </userTask>
-    <sequenceFlow sourceRef="secondTask" targetRef="thirdTask" />
+    <sequenceFlow sourceRef="secondTask" targetRef="thirdTask"/>
 
-    <userTask id="thirdTask" />
-    <sequenceFlow sourceRef="thirdTask" targetRef="theEnd" />
+    <userTask id="thirdTask"/>
+    <sequenceFlow sourceRef="thirdTask" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 </definitions>

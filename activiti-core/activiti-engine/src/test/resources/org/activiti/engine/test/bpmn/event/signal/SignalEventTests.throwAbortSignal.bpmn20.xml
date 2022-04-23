@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="definitions"
-	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-	xmlns:activiti="http://activiti.org/bpmn"
-	targetNamespace="Examples">
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  targetNamespace="Examples">
 
-	<signal id="sigId" name="abort" />
+  <signal id="sigId" name="abort"/>
 
-	<process id="throwAbort">
+  <process id="throwAbort">
 
-		<startEvent id="start" />
+    <startEvent id="start"/>
 
-		<sequenceFlow sourceRef="start" targetRef="signalEvent" />
+    <sequenceFlow sourceRef="start" targetRef="signalEvent"/>
 
-		<intermediateThrowEvent id="signalEvent" name="Alert" >
-			<signalEventDefinition signalRef="sigId" />
-		</intermediateThrowEvent>
+    <intermediateThrowEvent id="signalEvent" name="Alert">
+      <signalEventDefinition signalRef="sigId"/>
+    </intermediateThrowEvent>
 
-		<sequenceFlow sourceRef="signalEvent" targetRef="end" />
+    <sequenceFlow sourceRef="signalEvent" targetRef="end"/>
 
-		<endEvent id="end" />
+    <endEvent id="end"/>
 
-	</process>
+  </process>
 
 </definitions>

@@ -20,7 +20,6 @@ package org.activiti.engine.impl;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -29,297 +28,299 @@ import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.SuspendedJobQuery;
 
 /**
-
-
+ *
  */
-public class SuspendedJobQueryImpl extends AbstractQuery<SuspendedJobQuery, Job> implements SuspendedJobQuery, Serializable {
+public class SuspendedJobQueryImpl extends AbstractQuery<SuspendedJobQuery, Job> implements
+    SuspendedJobQuery, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String id;
-  protected String processInstanceId;
-  protected String executionId;
-  protected String processDefinitionId;
-  protected boolean retriesLeft;
-  protected boolean executable;
-  protected boolean onlyTimers;
-  protected boolean onlyMessages;
-  protected Date duedateHigherThan;
-  protected Date duedateLowerThan;
-  protected Date duedateHigherThanOrEqual;
-  protected Date duedateLowerThanOrEqual;
-  protected boolean withException;
-  protected String exceptionMessage;
-  protected String tenantId;
-  protected String tenantIdLike;
-  protected boolean withoutTenantId;
-  protected boolean noRetriesLeft;
+    private static final long serialVersionUID = 1L;
+    protected String id;
+    protected String processInstanceId;
+    protected String executionId;
+    protected String processDefinitionId;
+    protected boolean retriesLeft;
+    protected boolean executable;
+    protected boolean onlyTimers;
+    protected boolean onlyMessages;
+    protected Date duedateHigherThan;
+    protected Date duedateLowerThan;
+    protected Date duedateHigherThanOrEqual;
+    protected Date duedateLowerThanOrEqual;
+    protected boolean withException;
+    protected String exceptionMessage;
+    protected String tenantId;
+    protected String tenantIdLike;
+    protected boolean withoutTenantId;
+    protected boolean noRetriesLeft;
 
-  public SuspendedJobQueryImpl() {
-  }
-
-  public SuspendedJobQueryImpl(CommandContext commandContext) {
-    super(commandContext);
-  }
-
-  public SuspendedJobQueryImpl(CommandExecutor commandExecutor) {
-    super(commandExecutor);
-  }
-
-  public SuspendedJobQueryImpl jobId(String jobId) {
-    if (jobId == null) {
-      throw new ActivitiIllegalArgumentException("Provided job id is null");
+    public SuspendedJobQueryImpl() {
     }
-    this.id = jobId;
-    return this;
-  }
 
-  public SuspendedJobQueryImpl processInstanceId(String processInstanceId) {
-    if (processInstanceId == null) {
-      throw new ActivitiIllegalArgumentException("Provided process instance id is null");
+    public SuspendedJobQueryImpl(CommandContext commandContext) {
+        super(commandContext);
     }
-    this.processInstanceId = processInstanceId;
-    return this;
-  }
 
-  public SuspendedJobQueryImpl processDefinitionId(String processDefinitionId) {
-    if (processDefinitionId == null) {
-      throw new ActivitiIllegalArgumentException("Provided process definition id is null");
+    public SuspendedJobQueryImpl(CommandExecutor commandExecutor) {
+        super(commandExecutor);
     }
-    this.processDefinitionId = processDefinitionId;
-    return this;
-  }
 
-  public SuspendedJobQueryImpl executionId(String executionId) {
-    if (executionId == null) {
-      throw new ActivitiIllegalArgumentException("Provided execution id is null");
+    public SuspendedJobQueryImpl jobId(String jobId) {
+        if (jobId == null) {
+            throw new ActivitiIllegalArgumentException("Provided job id is null");
+        }
+        this.id = jobId;
+        return this;
     }
-    this.executionId = executionId;
-    return this;
-  }
 
-  public SuspendedJobQueryImpl withRetriesLeft() {
-    retriesLeft = true;
-    return this;
-  }
-
-  public SuspendedJobQueryImpl executable() {
-    executable = true;
-    return this;
-  }
-
-  public SuspendedJobQueryImpl timers() {
-    if (onlyMessages) {
-      throw new ActivitiIllegalArgumentException("Cannot combine onlyTimers() with onlyMessages() in the same query");
+    public SuspendedJobQueryImpl processInstanceId(String processInstanceId) {
+        if (processInstanceId == null) {
+            throw new ActivitiIllegalArgumentException("Provided process instance id is null");
+        }
+        this.processInstanceId = processInstanceId;
+        return this;
     }
-    this.onlyTimers = true;
-    return this;
-  }
 
-  public SuspendedJobQueryImpl messages() {
-    if (onlyTimers) {
-      throw new ActivitiIllegalArgumentException("Cannot combine onlyTimers() with onlyMessages() in the same query");
+    public SuspendedJobQueryImpl processDefinitionId(String processDefinitionId) {
+        if (processDefinitionId == null) {
+            throw new ActivitiIllegalArgumentException("Provided process definition id is null");
+        }
+        this.processDefinitionId = processDefinitionId;
+        return this;
     }
-    this.onlyMessages = true;
-    return this;
-  }
 
-  public SuspendedJobQueryImpl duedateHigherThan(Date date) {
-    if (date == null) {
-      throw new ActivitiIllegalArgumentException("Provided date is null");
+    public SuspendedJobQueryImpl executionId(String executionId) {
+        if (executionId == null) {
+            throw new ActivitiIllegalArgumentException("Provided execution id is null");
+        }
+        this.executionId = executionId;
+        return this;
     }
-    this.duedateHigherThan = date;
-    return this;
-  }
 
-  public SuspendedJobQueryImpl duedateLowerThan(Date date) {
-    if (date == null) {
-      throw new ActivitiIllegalArgumentException("Provided date is null");
+    public SuspendedJobQueryImpl withRetriesLeft() {
+        retriesLeft = true;
+        return this;
     }
-    this.duedateLowerThan = date;
-    return this;
-  }
 
-  public SuspendedJobQueryImpl duedateHigherThen(Date date) {
-    return duedateHigherThan(date);
-  }
-
-  public SuspendedJobQueryImpl duedateHigherThenOrEquals(Date date) {
-    if (date == null) {
-      throw new ActivitiIllegalArgumentException("Provided date is null");
+    public SuspendedJobQueryImpl executable() {
+        executable = true;
+        return this;
     }
-    this.duedateHigherThanOrEqual = date;
-    return this;
-  }
 
-  public SuspendedJobQueryImpl duedateLowerThen(Date date) {
-    return duedateLowerThan(date);
-  }
-
-  public SuspendedJobQueryImpl duedateLowerThenOrEquals(Date date) {
-    if (date == null) {
-      throw new ActivitiIllegalArgumentException("Provided date is null");
+    public SuspendedJobQueryImpl timers() {
+        if (onlyMessages) {
+            throw new ActivitiIllegalArgumentException(
+                "Cannot combine onlyTimers() with onlyMessages() in the same query");
+        }
+        this.onlyTimers = true;
+        return this;
     }
-    this.duedateLowerThanOrEqual = date;
-    return this;
-  }
 
-  public SuspendedJobQueryImpl noRetriesLeft() {
-    noRetriesLeft = true;
-    return this;
-  }
-
-  public SuspendedJobQueryImpl withException() {
-    this.withException = true;
-    return this;
-  }
-
-  public SuspendedJobQueryImpl exceptionMessage(String exceptionMessage) {
-    if (exceptionMessage == null) {
-      throw new ActivitiIllegalArgumentException("Provided exception message is null");
+    public SuspendedJobQueryImpl messages() {
+        if (onlyTimers) {
+            throw new ActivitiIllegalArgumentException(
+                "Cannot combine onlyTimers() with onlyMessages() in the same query");
+        }
+        this.onlyMessages = true;
+        return this;
     }
-    this.exceptionMessage = exceptionMessage;
-    return this;
-  }
 
-  public SuspendedJobQueryImpl jobTenantId(String tenantId) {
-    if (tenantId == null) {
-      throw new ActivitiIllegalArgumentException("job is null");
+    public SuspendedJobQueryImpl duedateHigherThan(Date date) {
+        if (date == null) {
+            throw new ActivitiIllegalArgumentException("Provided date is null");
+        }
+        this.duedateHigherThan = date;
+        return this;
     }
-    this.tenantId = tenantId;
-    return this;
-  }
 
-  public SuspendedJobQueryImpl jobTenantIdLike(String tenantIdLike) {
-    if (tenantIdLike == null) {
-      throw new ActivitiIllegalArgumentException("job is null");
+    public SuspendedJobQueryImpl duedateLowerThan(Date date) {
+        if (date == null) {
+            throw new ActivitiIllegalArgumentException("Provided date is null");
+        }
+        this.duedateLowerThan = date;
+        return this;
     }
-    this.tenantIdLike = tenantIdLike;
-    return this;
-  }
 
-  public SuspendedJobQueryImpl jobWithoutTenantId() {
-    this.withoutTenantId = true;
-    return this;
-  }
+    public SuspendedJobQueryImpl duedateHigherThen(Date date) {
+        return duedateHigherThan(date);
+    }
 
-  // sorting //////////////////////////////////////////
+    public SuspendedJobQueryImpl duedateHigherThenOrEquals(Date date) {
+        if (date == null) {
+            throw new ActivitiIllegalArgumentException("Provided date is null");
+        }
+        this.duedateHigherThanOrEqual = date;
+        return this;
+    }
 
-  public SuspendedJobQuery orderByJobDuedate() {
-    return orderBy(JobQueryProperty.DUEDATE);
-  }
+    public SuspendedJobQueryImpl duedateLowerThen(Date date) {
+        return duedateLowerThan(date);
+    }
 
-  public SuspendedJobQuery orderByExecutionId() {
-    return orderBy(JobQueryProperty.EXECUTION_ID);
-  }
+    public SuspendedJobQueryImpl duedateLowerThenOrEquals(Date date) {
+        if (date == null) {
+            throw new ActivitiIllegalArgumentException("Provided date is null");
+        }
+        this.duedateLowerThanOrEqual = date;
+        return this;
+    }
 
-  public SuspendedJobQuery orderByJobId() {
-    return orderBy(JobQueryProperty.JOB_ID);
-  }
+    public SuspendedJobQueryImpl noRetriesLeft() {
+        noRetriesLeft = true;
+        return this;
+    }
 
-  public SuspendedJobQuery orderByProcessInstanceId() {
-    return orderBy(JobQueryProperty.PROCESS_INSTANCE_ID);
-  }
+    public SuspendedJobQueryImpl withException() {
+        this.withException = true;
+        return this;
+    }
 
-  public SuspendedJobQuery orderByJobRetries() {
-    return orderBy(JobQueryProperty.RETRIES);
-  }
+    public SuspendedJobQueryImpl exceptionMessage(String exceptionMessage) {
+        if (exceptionMessage == null) {
+            throw new ActivitiIllegalArgumentException("Provided exception message is null");
+        }
+        this.exceptionMessage = exceptionMessage;
+        return this;
+    }
 
-  public SuspendedJobQuery orderByTenantId() {
-    return orderBy(JobQueryProperty.TENANT_ID);
-  }
+    public SuspendedJobQueryImpl jobTenantId(String tenantId) {
+        if (tenantId == null) {
+            throw new ActivitiIllegalArgumentException("job is null");
+        }
+        this.tenantId = tenantId;
+        return this;
+    }
 
-  // results //////////////////////////////////////////
+    public SuspendedJobQueryImpl jobTenantIdLike(String tenantIdLike) {
+        if (tenantIdLike == null) {
+            throw new ActivitiIllegalArgumentException("job is null");
+        }
+        this.tenantIdLike = tenantIdLike;
+        return this;
+    }
 
-  public long executeCount(CommandContext commandContext) {
-    checkQueryOk();
-    return commandContext.getSuspendedJobEntityManager().findJobCountByQueryCriteria(this);
-  }
+    public SuspendedJobQueryImpl jobWithoutTenantId() {
+        this.withoutTenantId = true;
+        return this;
+    }
 
-  public List<Job> executeList(CommandContext commandContext, Page page) {
-    checkQueryOk();
-    return commandContext.getSuspendedJobEntityManager().findJobsByQueryCriteria(this, page);
-  }
+    // sorting //////////////////////////////////////////
 
-  // getters //////////////////////////////////////////
+    public SuspendedJobQuery orderByJobDuedate() {
+        return orderBy(JobQueryProperty.DUEDATE);
+    }
 
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
+    public SuspendedJobQuery orderByExecutionId() {
+        return orderBy(JobQueryProperty.EXECUTION_ID);
+    }
 
-  public String getExecutionId() {
-    return executionId;
-  }
+    public SuspendedJobQuery orderByJobId() {
+        return orderBy(JobQueryProperty.JOB_ID);
+    }
 
-  public boolean getRetriesLeft() {
-    return retriesLeft;
-  }
+    public SuspendedJobQuery orderByProcessInstanceId() {
+        return orderBy(JobQueryProperty.PROCESS_INSTANCE_ID);
+    }
 
-  public boolean getExecutable() {
-    return executable;
-  }
+    public SuspendedJobQuery orderByJobRetries() {
+        return orderBy(JobQueryProperty.RETRIES);
+    }
 
-  public Date getNow() {
-    return Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-  }
+    public SuspendedJobQuery orderByTenantId() {
+        return orderBy(JobQueryProperty.TENANT_ID);
+    }
 
-  public boolean isWithException() {
-    return withException;
-  }
+    // results //////////////////////////////////////////
 
-  public String getExceptionMessage() {
-    return exceptionMessage;
-  }
+    public long executeCount(CommandContext commandContext) {
+        checkQueryOk();
+        return commandContext.getSuspendedJobEntityManager().findJobCountByQueryCriteria(this);
+    }
 
-  public String getTenantId() {
-    return tenantId;
-  }
+    public List<Job> executeList(CommandContext commandContext, Page page) {
+        checkQueryOk();
+        return commandContext.getSuspendedJobEntityManager().findJobsByQueryCriteria(this, page);
+    }
 
-  public String getTenantIdLike() {
-    return tenantIdLike;
-  }
+    // getters //////////////////////////////////////////
 
-  public boolean isWithoutTenantId() {
-    return withoutTenantId;
-  }
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
 
-  public static long getSerialversionuid() {
-    return serialVersionUID;
-  }
+    public String getExecutionId() {
+        return executionId;
+    }
 
-  public String getId() {
-    return id;
-  }
+    public boolean getRetriesLeft() {
+        return retriesLeft;
+    }
 
-  public String getProcessDefinitionId() {
-    return processDefinitionId;
-  }
+    public boolean getExecutable() {
+        return executable;
+    }
 
-  public boolean isOnlyTimers() {
-    return onlyTimers;
-  }
+    public Date getNow() {
+        return Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+    }
 
-  public boolean isOnlyMessages() {
-    return onlyMessages;
-  }
+    public boolean isWithException() {
+        return withException;
+    }
 
-  public Date getDuedateHigherThan() {
-    return duedateHigherThan;
-  }
+    public String getExceptionMessage() {
+        return exceptionMessage;
+    }
 
-  public Date getDuedateLowerThan() {
-    return duedateLowerThan;
-  }
+    public String getTenantId() {
+        return tenantId;
+    }
 
-  public Date getDuedateHigherThanOrEqual() {
-    return duedateHigherThanOrEqual;
-  }
+    public String getTenantIdLike() {
+        return tenantIdLike;
+    }
 
-  public Date getDuedateLowerThanOrEqual() {
-    return duedateLowerThanOrEqual;
-  }
+    public boolean isWithoutTenantId() {
+        return withoutTenantId;
+    }
 
-  public boolean isNoRetriesLeft() {
-    return noRetriesLeft;
-  }
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getProcessDefinitionId() {
+        return processDefinitionId;
+    }
+
+    public boolean isOnlyTimers() {
+        return onlyTimers;
+    }
+
+    public boolean isOnlyMessages() {
+        return onlyMessages;
+    }
+
+    public Date getDuedateHigherThan() {
+        return duedateHigherThan;
+    }
+
+    public Date getDuedateLowerThan() {
+        return duedateLowerThan;
+    }
+
+    public Date getDuedateHigherThanOrEqual() {
+        return duedateHigherThanOrEqual;
+    }
+
+    public Date getDuedateLowerThanOrEqual() {
+        return duedateLowerThanOrEqual;
+    }
+
+    public boolean isNoRetriesLeft() {
+        return noRetriesLeft;
+    }
 
 }

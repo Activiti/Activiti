@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+  typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+  targetNamespace="http://www.activiti.org/test">
   <process id="InclusiveGateway" name="InclusiveGateway">
     <documentation>Place documentation for the 'InclusiveGateway' process here.</documentation>
     <startEvent id="startevent1" name="Start"></startEvent>
     <inclusiveGateway id="inclusivegateway1" name="Inclusive Gateway"></inclusiveGateway>
-    <sequenceFlow id="flow1" name="" sourceRef="startevent1" targetRef="inclusivegateway1"></sequenceFlow>
+    <sequenceFlow id="flow1" name="" sourceRef="startevent1"
+      targetRef="inclusivegateway1"></sequenceFlow>
     <subProcess id="subprocess1" name="Sub Process1">
       <startEvent id="startevent2" name="Start"></startEvent>
       <userTask id="usertask1" name="Task1" activiti:assignee="a"></userTask>
@@ -26,10 +33,13 @@
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${b==1}]]></conditionExpression>
     </sequenceFlow>
     <inclusiveGateway id="inclusivegateway2" name="Inclusive Gateway"></inclusiveGateway>
-    <sequenceFlow id="flow8" name="" sourceRef="subprocess1" targetRef="inclusivegateway2"></sequenceFlow>
-    <sequenceFlow id="flow9" name="" sourceRef="subprocess2" targetRef="inclusivegateway2"></sequenceFlow>
+    <sequenceFlow id="flow8" name="" sourceRef="subprocess1"
+      targetRef="inclusivegateway2"></sequenceFlow>
+    <sequenceFlow id="flow9" name="" sourceRef="subprocess2"
+      targetRef="inclusivegateway2"></sequenceFlow>
     <userTask id="usertask3" name="Task3" activiti:assignee="c"></userTask>
-    <sequenceFlow id="flow10" name="" sourceRef="inclusivegateway2" targetRef="usertask3"></sequenceFlow>
+    <sequenceFlow id="flow10" name="" sourceRef="inclusivegateway2"
+      targetRef="usertask3"></sequenceFlow>
     <endEvent id="endevent3" name="End"></endEvent>
     <sequenceFlow id="flow11" name="" sourceRef="usertask3" targetRef="endevent3"></sequenceFlow>
   </process>

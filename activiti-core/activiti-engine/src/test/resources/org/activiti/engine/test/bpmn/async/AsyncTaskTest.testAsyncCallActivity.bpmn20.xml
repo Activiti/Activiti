@@ -6,23 +6,23 @@
 
   <process id="asyncCallactivity">
 
-    <startEvent id="theStart" />
+    <startEvent id="theStart"/>
 
-    <sequenceFlow sourceRef="theStart" targetRef="callactivity" />
+    <sequenceFlow sourceRef="theStart" targetRef="callactivity"/>
 
     <callActivity id="callactivity" calledElement="asyncService" activiti:async="true">
-    	<!-- isSequential="true" should fail with OptimisticLocking exception in 99% of the cases
-    		because the called process contains an async task, which means that the
-    		spawned executions will be "actually" concurrent
-    	 -->
-    	<multiInstanceLoopCharacteristics isSequential="true">
-    		<loopCardinality>10</loopCardinality>
-    	</multiInstanceLoopCharacteristics>
+      <!-- isSequential="true" should fail with OptimisticLocking exception in 99% of the cases
+        because the called process contains an async task, which means that the
+        spawned executions will be "actually" concurrent
+       -->
+      <multiInstanceLoopCharacteristics isSequential="true">
+        <loopCardinality>10</loopCardinality>
+      </multiInstanceLoopCharacteristics>
     </callActivity>
 
-    <sequenceFlow sourceRef="callactivity" targetRef="theEnd" />
+    <sequenceFlow sourceRef="callactivity" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

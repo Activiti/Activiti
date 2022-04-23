@@ -22,7 +22,7 @@ import org.activiti.engine.impl.persistence.entity.integration.IntegrationContex
 
 public class IntegrationContextServiceImpl implements IntegrationContextService {
 
-    private CommandExecutor commandExecutor;
+    private final CommandExecutor commandExecutor;
 
     public IntegrationContextServiceImpl(CommandExecutor commandExecutor) {
         this.commandExecutor = commandExecutor;

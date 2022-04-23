@@ -20,14 +20,16 @@ import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntity;
 
 /**
-
+ *
  */
-public class DeadLetterJobsByExecutionIdMatcher extends CachedEntityMatcherAdapter<DeadLetterJobEntity> {
+public class DeadLetterJobsByExecutionIdMatcher extends
+    CachedEntityMatcherAdapter<DeadLetterJobEntity> {
 
-  @Override
-  public boolean isRetained(DeadLetterJobEntity jobEntity, Object param) {
-    return jobEntity.getExecutionId() != null && jobEntity.getExecutionId().equals(param); // param = executionId
-  }
+    @Override
+    public boolean isRetained(DeadLetterJobEntity jobEntity, Object param) {
+        return jobEntity.getExecutionId() != null && jobEntity.getExecutionId()
+            .equals(param); // param = executionId
+    }
 
 
 }

@@ -15,14 +15,13 @@
 
 <definitions id="definitions"
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-  xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
 
   <process id="failingScript">
 
-    <startEvent id="theStart" />
+    <startEvent id="theStart"/>
 
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theScript" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theScript"/>
 
     <scriptTask id="theScript" scriptFormat="groovy">
       <script>
@@ -30,9 +29,9 @@
       </script>
     </scriptTask>
 
-    <sequenceFlow id="flow2" sourceRef="theScript" targetRef="theEnd" />
+    <sequenceFlow id="flow2" sourceRef="theScript" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

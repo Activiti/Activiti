@@ -18,7 +18,6 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.JobQueryImpl;
@@ -28,15 +27,14 @@ import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.JobDataManager;
 import org.activiti.engine.runtime.Job;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> implements JobEntityManager {
+public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> implements
+    JobEntityManager {
 
     protected JobDataManager jobDataManager;
 
     public JobEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration,
-                                JobDataManager jobDataManager) {
+        JobDataManager jobDataManager) {
         super(processEngineConfiguration);
         this.jobDataManager = jobDataManager;
     }
@@ -49,21 +47,22 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
     @Override
     public boolean insertJobEntity(JobEntity timerJobEntity) {
         return doInsert(timerJobEntity,
-                        true);
+            true);
     }
 
     @Override
     public void insert(JobEntity jobEntity,
-                       boolean fireCreateEvent) {
+        boolean fireCreateEvent) {
         doInsert(jobEntity,
-                 fireCreateEvent);
+            fireCreateEvent);
     }
 
     protected boolean doInsert(JobEntity jobEntity,
-                               boolean fireCreateEvent) {
+        boolean fireCreateEvent) {
         // add link to execution
         if (jobEntity.getExecutionId() != null) {
-            ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
+            ExecutionEntity execution = getExecutionEntityManager().findById(
+                jobEntity.getExecutionId());
             if (execution != null) {
                 execution.getJobs().add(jobEntity);
 
@@ -82,7 +81,7 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
         }
 
         super.insert(jobEntity,
-                     fireCreateEvent);
+            fireCreateEvent);
         return true;
     }
 
@@ -102,9 +101,9 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
 
     @Override
     public List<JobEntity> findJobsByTypeAndProcessDefinitionId(String jobTypeTimer,
-                                                                String id) {
+        String id) {
         return jobDataManager.findJobsByTypeAndProcessDefinitionId(jobTypeTimer,
-                                                                   id);
+            id);
     }
 
     @Override
@@ -124,9 +123,9 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
 
     @Override
     public List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery,
-                                             Page page) {
+        Page page) {
         return jobDataManager.findJobsByQueryCriteria(jobQuery,
-                                                      page);
+            page);
     }
 
     @Override
@@ -136,9 +135,9 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
 
     @Override
     public void updateJobTenantIdForDeployment(String deploymentId,
-                                               String newTenantId) {
+        String newTenantId) {
         jobDataManager.updateJobTenantIdForDeployment(deploymentId,
-                                                      newTenantId);
+            newTenantId);
     }
 
     @Override
@@ -151,22 +150,24 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
 
         // Send event
         if (getEventDispatcher().isEnabled()) {
-            getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED,
-                                                                                      this));
+            getEventDispatcher().dispatchEvent(
+                ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED,
+                    this));
         }
     }
 
     @Override
     public void delete(JobEntity entity,
-                       boolean fireDeleteEvent) {
+        boolean fireDeleteEvent) {
         if (entity.getExecutionId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
-            CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(entity.getExecutionId());
+            CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(
+                entity.getExecutionId());
             if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
                 executionEntity.setJobCount(executionEntity.getJobCount() - 1);
             }
         }
         super.delete(entity,
-                     fireDeleteEvent);
+            fireDeleteEvent);
     }
 
     /**
@@ -175,7 +176,8 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
      */
     protected void removeExecutionLink(JobEntity jobEntity) {
         if (jobEntity.getExecutionId() != null) {
-            ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
+            ExecutionEntity execution = getExecutionEntityManager().findById(
+                jobEntity.getExecutionId());
             if (execution != null) {
                 execution.getJobs().remove(jobEntity);
             }
@@ -183,8 +185,8 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
     }
 
     /**
-     * Deletes a the byte array used to store the exception information.  Subclasses may override
-     * to provide custom implementations.
+     * Deletes a the byte array used to store the exception information.  Subclasses may override to
+     * provide custom implementations.
      */
     protected void deleteExceptionByteArrayRef(JobEntity jobEntity) {
         ByteArrayRef exceptionByteArrayRef = jobEntity.getExceptionByteArrayRef();

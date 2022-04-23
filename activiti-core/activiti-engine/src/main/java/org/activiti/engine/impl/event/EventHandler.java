@@ -22,12 +22,14 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 
 /**
+ *
  */
 @Internal
 public interface EventHandler {
 
-  public String getEventHandlerType();
+    String getEventHandlerType();
 
-  public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext);
+    void handleEvent(EventSubscriptionEntity eventSubscription, Object payload,
+        CommandContext commandContext);
 
 }

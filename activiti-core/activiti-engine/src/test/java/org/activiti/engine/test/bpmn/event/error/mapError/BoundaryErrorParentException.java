@@ -17,11 +17,11 @@
 package org.activiti.engine.test.bpmn.event.error.mapError;
 
 /**
-
+ *
  */
 
 public class BoundaryErrorParentException extends RuntimeException {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 }

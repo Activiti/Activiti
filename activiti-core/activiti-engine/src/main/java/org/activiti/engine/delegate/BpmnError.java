@@ -22,42 +22,43 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.bpmn.parser.Error;
 
 /**
- * Special exception that can be used to throw a BPMN Error from {@link JavaDelegate}s and expressions.
- *
- * This should only be used for business faults, which shall be handled by a Boundary Error Event or Error Event Sub-Process modeled in the process definition. Technical errors should be represented
+ * Special exception that can be used to throw a BPMN Error from {@link JavaDelegate}s and
+ * expressions.
+ * <p>
+ * This should only be used for business faults, which shall be handled by a Boundary Error Event or
+ * Error Event Sub-Process modeled in the process definition. Technical errors should be represented
  * by other exception types.
- *
- * This class represents an actual instance of a BPMN Error, whereas {@link Error} represents an Error definition.
- *
-
+ * <p>
+ * This class represents an actual instance of a BPMN Error, whereas {@link Error} represents an
+ * Error definition.
  */
 public class BpmnError extends ActivitiException {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private String errorCode;
+    private String errorCode;
 
-  public BpmnError(String errorCode) {
-    super("");
-    setErrorCode(errorCode);
-  }
-
-  public BpmnError(String errorCode, String message) {
-    super(message);
-    setErrorCode(errorCode);
-  }
-
-  protected void setErrorCode(String errorCode) {
-    if (errorCode == null) {
-      throw new ActivitiIllegalArgumentException("Error Code must not be null.");
+    public BpmnError(String errorCode) {
+        super("");
+        setErrorCode(errorCode);
     }
-    if (errorCode.length() < 1) {
-      throw new ActivitiIllegalArgumentException("Error Code must not be empty.");
-    }
-    this.errorCode = errorCode;
-  }
 
-  public String getErrorCode() {
-    return errorCode;
-  }
+    public BpmnError(String errorCode, String message) {
+        super(message);
+        setErrorCode(errorCode);
+    }
+
+    protected void setErrorCode(String errorCode) {
+        if (errorCode == null) {
+            throw new ActivitiIllegalArgumentException("Error Code must not be null.");
+        }
+        if (errorCode.length() < 1) {
+            throw new ActivitiIllegalArgumentException("Error Code must not be empty.");
+        }
+        this.errorCode = errorCode;
+    }
+
+    public String getErrorCode() {
+        return errorCode;
+    }
 }

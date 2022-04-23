@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="definitions"
-	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-	xmlns:activiti="http://activiti.org/bpmn"
-	targetNamespace="Examples">
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  targetNamespace="Examples">
 
-	<process id="checkCreditProcess">
+  <process id="checkCreditProcess">
 
-		<startEvent id="theStart" />
-		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="verifyCreditHistoryTask" />
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="verifyCreditHistoryTask"/>
 
-		<userTask id="verifyCreditHistoryTask" name="Verify credit history" />
-    <sequenceFlow id="flow2" sourceRef="verifyCreditHistoryTask" targetRef="approvalDecision" />
+    <userTask id="verifyCreditHistoryTask" name="Verify credit history"/>
+    <sequenceFlow id="flow2" sourceRef="verifyCreditHistoryTask" targetRef="approvalDecision"/>
 
-    <exclusiveGateway id="approvalDecision" />
+    <exclusiveGateway id="approvalDecision"/>
     <sequenceFlow id="flow3" sourceRef="approvalDecision" targetRef="contactCustomerTask">
       <conditionExpression><![CDATA[${!creditApproved}]]></conditionExpression>
     </sequenceFlow>
@@ -21,11 +20,11 @@
     </sequenceFlow>
 
     <userTask id="contactCustomerTask" name="Contact customer for further information"/>
-    <sequenceFlow id="flow5" sourceRef="contactCustomerTask" targetRef="customerContactedEnd" />
-    <endEvent id="customerContactedEnd" />
+    <sequenceFlow id="flow5" sourceRef="contactCustomerTask" targetRef="customerContactedEnd"/>
+    <endEvent id="customerContactedEnd"/>
 
-    <endEvent id="normalEnd" />
+    <endEvent id="normalEnd"/>
 
-	</process>
+  </process>
 
 </definitions>

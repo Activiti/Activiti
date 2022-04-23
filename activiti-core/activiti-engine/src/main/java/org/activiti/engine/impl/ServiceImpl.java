@@ -20,28 +20,27 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 /**
-
-
+ *
  */
 public class ServiceImpl {
 
-  protected ProcessEngineConfigurationImpl processEngineConfiguration;
+    protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
-  public ServiceImpl() {
+    public ServiceImpl() {
 
-  }
+    }
 
-  public ServiceImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
-    this.processEngineConfiguration = processEngineConfiguration;
-  }
+    public ServiceImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+        this.processEngineConfiguration = processEngineConfiguration;
+    }
 
-  protected CommandExecutor commandExecutor;
+    protected CommandExecutor commandExecutor;
 
-  public CommandExecutor getCommandExecutor() {
-    return commandExecutor;
-  }
+    public CommandExecutor getCommandExecutor() {
+        return commandExecutor;
+    }
 
-  public void setCommandExecutor(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
-  }
+    public void setCommandExecutor(CommandExecutor commandExecutor) {
+        this.commandExecutor = commandExecutor;
+    }
 }

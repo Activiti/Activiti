@@ -20,7 +20,6 @@ import org.activiti.engine.api.internal.Internal;
 
 /**
  * Suspended jobs are stored separately to increase the normal job query performance
- *
  */
 @Internal
 public interface SuspendedJobEntity extends AbstractJobEntity {

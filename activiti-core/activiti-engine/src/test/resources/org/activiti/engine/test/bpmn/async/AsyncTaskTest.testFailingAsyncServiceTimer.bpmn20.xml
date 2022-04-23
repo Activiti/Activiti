@@ -6,22 +6,24 @@
 
   <process id="asyncService">
 
-    <startEvent id="theStart" />
+    <startEvent id="theStart"/>
 
-    <sequenceFlow sourceRef="theStart" targetRef="service" />
+    <sequenceFlow sourceRef="theStart" targetRef="service"/>
 
-    <serviceTask id="service" activiti:class="org.activiti.engine.test.bpmn.async.FailingAsyncService" activiti:async="true" />
+    <serviceTask id="service"
+      activiti:class="org.activiti.engine.test.bpmn.async.FailingAsyncService"
+      activiti:async="true"/>
 
     <boundaryEvent attachedToRef="service" id="timer" cancelActivity="true">
-    	<timerEventDefinition>
-    		<timeDuration>PT5S</timeDuration>
-    	</timerEventDefinition>
+      <timerEventDefinition>
+        <timeDuration>PT5S</timeDuration>
+      </timerEventDefinition>
     </boundaryEvent>
 
-    <sequenceFlow sourceRef="timer" targetRef="theEnd" />
-    <sequenceFlow sourceRef="service" targetRef="theEnd" />
+    <sequenceFlow sourceRef="timer" targetRef="theEnd"/>
+    <sequenceFlow sourceRef="service" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

@@ -3,47 +3,54 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
 
-  <signal id="alertSignal" name="alert" />
+  <signal id="alertSignal" name="alert"/>
 
   <process id="executionListenersProcess">
-	  <extensionElements>
-        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener" event="start">
-          <activiti:field name="parameter" stringValue="Process Start" />
-        </activiti:executionListener>
-        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener" event="end">
-          <activiti:field name="parameter" stringValue="Process End" />
-        </activiti:executionListener>
-      </extensionElements>
+    <extensionElements>
+      <activiti:executionListener
+        class="org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener"
+        event="start">
+        <activiti:field name="parameter" stringValue="Process Start"/>
+      </activiti:executionListener>
+      <activiti:executionListener
+        class="org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener" event="end">
+        <activiti:field name="parameter" stringValue="Process End"/>
+      </activiti:executionListener>
+    </extensionElements>
 
     <startEvent id="theStart" name="Start Event"/>
 
-    <sequenceFlow sourceRef="theStart" targetRef="userTask" />
+    <sequenceFlow sourceRef="theStart" targetRef="userTask"/>
 
-	<userTask id="userTask"/>
+    <userTask id="userTask"/>
 
-    <sequenceFlow sourceRef="userTask" targetRef="subprocess" />
+    <sequenceFlow sourceRef="userTask" targetRef="subprocess"/>
 
     <subProcess id="subprocess">
-	  <extensionElements>
-        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener" event="start">
-          <activiti:field name="parameter" stringValue="Subprocess Start" />
+      <extensionElements>
+        <activiti:executionListener
+          class="org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener"
+          event="start">
+          <activiti:field name="parameter" stringValue="Subprocess Start"/>
         </activiti:executionListener>
-        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener" event="end">
-          <activiti:field name="parameter" stringValue="Subprocess End" />
+        <activiti:executionListener
+          class="org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener"
+          event="end">
+          <activiti:field name="parameter" stringValue="Subprocess End"/>
         </activiti:executionListener>
       </extensionElements>
 
       <startEvent id="subStart" name="Start Event"/>
       <endEvent id="subEnd" name="End Event"/>
 
-      <sequenceFlow sourceRef="subStart" targetRef="manualTask" />
+      <sequenceFlow sourceRef="subStart" targetRef="manualTask"/>
       <manualTask id="manualTask"/>
-      <sequenceFlow sourceRef="manualTask" targetRef="subEnd" />
+      <sequenceFlow sourceRef="manualTask" targetRef="subEnd"/>
 
     </subProcess>
 
 
-    <sequenceFlow sourceRef="subprocess" targetRef="theEnd" />
+    <sequenceFlow sourceRef="subprocess" targetRef="theEnd"/>
 
     <endEvent id="theEnd" name="End Event"/>
 

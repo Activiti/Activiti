@@ -20,23 +20,21 @@ import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.db.HasRevision;
 
 /**
-
-
-
+ *
  */
 @Internal
 public interface ByteArrayEntity extends Entity, HasRevision {
 
-  byte[] getBytes();
+    byte[] getBytes();
 
-  String getName();
+    String getName();
 
-  void setName(String name);
+    void setName(String name);
 
-  String getDeploymentId();
+    String getDeploymentId();
 
-  void setDeploymentId(String deploymentId);
+    void setDeploymentId(String deploymentId);
 
-  void setBytes(byte[] bytes);
+    void setBytes(byte[] bytes);
 
 }

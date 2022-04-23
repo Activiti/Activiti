@@ -21,29 +21,27 @@ import java.io.Serializable;
 
 /**
  * Simple POJO, just for test purposes
- *
-
  */
 public class UelExpressionTestOrder implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected int price;
+    protected int price;
 
-  public UelExpressionTestOrder(int price) {
-    this.price = price;
-  }
+    public UelExpressionTestOrder(int price) {
+        this.price = price;
+    }
 
-  public void setPrice(int price) {
-    this.price = price;
-  }
+    public void setPrice(int price) {
+        this.price = price;
+    }
 
-  public int getPrice() {
-    return price;
-  }
+    public int getPrice() {
+        return price;
+    }
 
-  public boolean isPremiumOrder() {
-    return price >= 250;
-  }
+    public boolean isPremiumOrder() {
+        return price >= 250;
+    }
 
 }

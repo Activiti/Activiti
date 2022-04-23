@@ -20,20 +20,20 @@ import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.db.HasRevision;
 
 /**
-
+ *
  */
 @Internal
 public interface ProcessDefinitionInfoEntity extends Entity, HasRevision {
 
-  String getId();
+    String getId();
 
-  void setId(String id);
+    void setId(String id);
 
-  String getProcessDefinitionId();
+    String getProcessDefinitionId();
 
-  void setProcessDefinitionId(String processDefinitionId);
+    void setProcessDefinitionId(String processDefinitionId);
 
-  String getInfoJsonId();
+    String getInfoJsonId();
 
-  void setInfoJsonId(String infoJsonId);
+    void setInfoJsonId(String infoJsonId);
 }

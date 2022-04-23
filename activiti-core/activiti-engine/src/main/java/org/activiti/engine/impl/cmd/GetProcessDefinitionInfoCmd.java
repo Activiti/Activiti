@@ -16,8 +16,8 @@
 
 package org.activiti.engine.impl.cmd;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -25,41 +25,43 @@ import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionInfoCacheObject;
 import org.activiti.engine.repository.ProcessDefinition;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 
 /**
-
+ *
  */
 public class GetProcessDefinitionInfoCmd implements Command<ObjectNode>, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String processDefinitionId;
+    protected String processDefinitionId;
 
-  public GetProcessDefinitionInfoCmd(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
-
-  public ObjectNode execute(CommandContext commandContext) {
-    if (processDefinitionId == null) {
-      throw new ActivitiIllegalArgumentException("process definition id is null");
+    public GetProcessDefinitionInfoCmd(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
     }
 
-    DeploymentManager deploymentManager = commandContext.getProcessEngineConfiguration().getDeploymentManager();
-    // make sure the process definition is in the cache
-    ProcessDefinition processDefinition = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
+    public ObjectNode execute(CommandContext commandContext) {
+        if (processDefinitionId == null) {
+            throw new ActivitiIllegalArgumentException("process definition id is null");
+        }
 
-    return executeInternal(deploymentManager,commandContext,processDefinition);
-  }
+        DeploymentManager deploymentManager = commandContext.getProcessEngineConfiguration()
+            .getDeploymentManager();
+        // make sure the process definition is in the cache
+        ProcessDefinition processDefinition = deploymentManager.findDeployedProcessDefinitionById(
+            processDefinitionId);
 
-  protected ObjectNode executeInternal(DeploymentManager deploymentManager,CommandContext commandContext,ProcessDefinition processDefinition){
-      ObjectNode resultNode = null;
-      ProcessDefinitionInfoCacheObject definitionInfoCacheObject = deploymentManager.getProcessDefinitionInfoCache().get(processDefinitionId);
-      if (definitionInfoCacheObject != null) {
-          resultNode = definitionInfoCacheObject.getInfoNode();
-      }
-      return resultNode;
-  }
+        return executeInternal(deploymentManager, commandContext, processDefinition);
+    }
+
+    protected ObjectNode executeInternal(DeploymentManager deploymentManager,
+        CommandContext commandContext, ProcessDefinition processDefinition) {
+        ObjectNode resultNode = null;
+        ProcessDefinitionInfoCacheObject definitionInfoCacheObject = deploymentManager.getProcessDefinitionInfoCache()
+            .get(processDefinitionId);
+        if (definitionInfoCacheObject != null) {
+            resultNode = definitionInfoCacheObject.getInfoNode();
+        }
+        return resultNode;
+    }
 
 }

@@ -17,18 +17,17 @@
 
 package org.activiti.engine.test.mock;
 
-import org.activiti.engine.api.internal.Internal;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import org.activiti.engine.api.internal.Internal;
 
 /**
-
+ *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Internal
 public @interface MockServiceTasks {
 
-  public MockServiceTask[] value();
+    MockServiceTask[] value();
 
 }

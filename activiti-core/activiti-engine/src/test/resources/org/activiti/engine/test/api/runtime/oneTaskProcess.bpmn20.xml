@@ -5,18 +5,18 @@
   targetNamespace="org.activiti.enginge.test.api.runtime.Category">
 
   <process id="oneTaskProcess" name="oneTaskProcessName">
-	<documentation>oneTaskProcessDescription</documentation>
+    <documentation>oneTaskProcessDescription</documentation>
     <extensionElements>
-    	<activiti:localization locale="es" name="Nombre del proceso">
-    		<activiti:documentation>Descripción del proceso</activiti:documentation>
-    	</activiti:localization>
+      <activiti:localization locale="es" name="Nombre del proceso">
+        <activiti:documentation>Descripción del proceso</activiti:documentation>
+      </activiti:localization>
     </extensionElements>
 
-    <startEvent id="theStart" />
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
-    <userTask id="theTask" name="my task" />
-    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
-    <endEvent id="theEnd" />
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask"/>
+    <userTask id="theTask" name="my task"/>
+    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd"/>
+    <endEvent id="theEnd"/>
 
   </process>
 

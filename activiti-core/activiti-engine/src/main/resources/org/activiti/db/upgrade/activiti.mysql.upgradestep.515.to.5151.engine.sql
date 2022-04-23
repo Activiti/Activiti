@@ -1,5 +1,6 @@
 #
-# Activiti 5.15 shipped with some broken DDL statements for MySQL 5.6+ concering timestamps with millisecond precision
+# Activiti 5.15 shipped
+with some broken DDL statements for MySQL 5.6+ concering timestamps with millisecond precision
 # If you are currently running on <= 5.14, simply execute the 5.15 and 5.15.1 update scripts.
 # They have some duplication, but your shema will be in a correct state afterwards
 # If you are currently running 5.15 on MySQL 5.6+ (by a sheer of luck of having data that didn't clash with the DDL),
@@ -79,4 +80,6 @@ ALTER TABLE ACT_RU_EVENT_SUBSCR CHANGE CREATED_TEMP_ CREATED_ timestamp(3) not n
 
 
 
-update ACT_GE_PROPERTY set VALUE_ = '5.15.1' where NAME_ = 'schema.version';
+update ACT_GE_PROPERTY set VALUE_ = '
+          5.15.1
+          ' where NAME_ = 'schema.version';

@@ -1,39 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="definitions"
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-  xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
 
-	<process id="transactionProcess">
+  <process id="transactionProcess">
 
-		<startEvent id="start" />
+    <startEvent id="start"/>
 
-		<sequenceFlow sourceRef="start"	targetRef="tx" />
+    <sequenceFlow sourceRef="start" targetRef="tx"/>
 
-		<subProcess id="tx">
+    <subProcess id="tx">
 
-			<startEvent id="txStart" />
+      <startEvent id="txStart"/>
 
-			<sequenceFlow sourceRef="txStart" targetRef="failure" />
+      <sequenceFlow sourceRef="txStart" targetRef="failure"/>
 
-			<endEvent id="failure" >
-			</endEvent>
+      <endEvent id="failure">
+      </endEvent>
 
 
-		</subProcess>
+    </subProcess>
 
-		<endEvent id="end" />
+    <endEvent id="end"/>
 
-		<sequenceFlow sourceRef="tx" targetRef="end" />
+    <sequenceFlow sourceRef="tx" targetRef="end"/>
 
-		<boundaryEvent attachedToRef="tx" id="catchCancelTx">
-			<cancelEventDefinition id="calcel"/>
-		</boundaryEvent>
+    <boundaryEvent attachedToRef="tx" id="catchCancelTx">
+      <cancelEventDefinition id="calcel"/>
+    </boundaryEvent>
 
-		<endEvent id="cancelled" />
+    <endEvent id="cancelled"/>
 
-		<sequenceFlow sourceRef="catchCancelTx" targetRef="cancelled" />
+    <sequenceFlow sourceRef="catchCancelTx" targetRef="cancelled"/>
 
-	</process>
+  </process>
 
 </definitions>

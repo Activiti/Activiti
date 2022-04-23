@@ -21,25 +21,23 @@ import java.io.Serializable;
 
 /**
  * Simple pojo than will be used to act as an event listener.
- *
-
  */
 public class ExampleExecutionListenerPojo implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private String receivedEventName;
+    private String receivedEventName;
 
-  public void myMethod(String eventName) {
-    this.receivedEventName = eventName;
-  }
+    public void myMethod(String eventName) {
+        this.receivedEventName = eventName;
+    }
 
-  public String getReceivedEventName() {
-    return receivedEventName;
-  }
+    public String getReceivedEventName() {
+        return receivedEventName;
+    }
 
-  public void setReceivedEventName(String receivedEventName) {
-    this.receivedEventName = receivedEventName;
-  }
+    public void setReceivedEventName(String receivedEventName) {
+        this.receivedEventName = receivedEventName;
+    }
 
 }

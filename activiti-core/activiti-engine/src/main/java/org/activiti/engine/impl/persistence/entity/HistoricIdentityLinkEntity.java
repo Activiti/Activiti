@@ -20,23 +20,23 @@ import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.history.HistoricIdentityLink;
 
 /**
-
+ *
  */
 @Internal
 public interface HistoricIdentityLinkEntity extends HistoricIdentityLink, Entity {
 
-  boolean isUser();
+    boolean isUser();
 
-  boolean isGroup();
+    boolean isGroup();
 
-  void setType(String type);
+    void setType(String type);
 
-  void setUserId(String userId);
+    void setUserId(String userId);
 
-  void setGroupId(String groupId);
+    void setGroupId(String groupId);
 
-  void setTaskId(String taskId);
+    void setTaskId(String taskId);
 
-  void setProcessInstanceId(String processInstanceId);
+    void setProcessInstanceId(String processInstanceId);
 
 }

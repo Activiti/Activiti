@@ -6,18 +6,19 @@
 
   <process id="asyncService">
 
-    <startEvent id="theStart" />
-    <sequenceFlow sourceRef="theStart" targetRef="service" />
+    <startEvent id="theStart"/>
+    <sequenceFlow sourceRef="theStart" targetRef="service"/>
 
-    <serviceTask id="service" activiti:class="org.activiti.engine.test.bpmn.async.AsyncService" activiti:async="true">
-	 	<multiInstanceLoopCharacteristics isSequential="true">
-	 		<loopCardinality>5</loopCardinality>
-	 	</multiInstanceLoopCharacteristics>
+    <serviceTask id="service" activiti:class="org.activiti.engine.test.bpmn.async.AsyncService"
+      activiti:async="true">
+      <multiInstanceLoopCharacteristics isSequential="true">
+        <loopCardinality>5</loopCardinality>
+      </multiInstanceLoopCharacteristics>
     </serviceTask>
 
-    <sequenceFlow sourceRef="service" targetRef="theEnd" />
+    <sequenceFlow sourceRef="service" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

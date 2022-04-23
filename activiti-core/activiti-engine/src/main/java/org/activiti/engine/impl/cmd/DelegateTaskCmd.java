@@ -22,31 +22,30 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.DelegationState;
 
 /**
-
-
+ *
  */
 public class DelegateTaskCmd extends NeedsActiveTaskCmd<Object> {
 
-  private static final long serialVersionUID = 1L;
-  protected String userId;
+    private static final long serialVersionUID = 1L;
+    protected String userId;
 
-  public DelegateTaskCmd(String taskId, String userId) {
-    super(taskId);
-    this.userId = userId;
-  }
-
-  protected Object execute(CommandContext commandContext, TaskEntity task) {
-    task.setDelegationState(DelegationState.PENDING);
-    if (task.getOwner() == null) {
-      task.setOwner(task.getAssignee());
+    public DelegateTaskCmd(String taskId, String userId) {
+        super(taskId);
+        this.userId = userId;
     }
-    commandContext.getTaskEntityManager().changeTaskAssignee(task, userId);
-    return null;
-  }
 
-  @Override
-  protected String getSuspendedTaskException() {
-    return "Cannot delegate a suspended task";
-  }
+    protected Object execute(CommandContext commandContext, TaskEntity task) {
+        task.setDelegationState(DelegationState.PENDING);
+        if (task.getOwner() == null) {
+            task.setOwner(task.getAssignee());
+        }
+        commandContext.getTaskEntityManager().changeTaskAssignee(task, userId);
+        return null;
+    }
+
+    @Override
+    protected String getSuspendedTaskException() {
+        return "Cannot delegate a suspended task";
+    }
 
 }

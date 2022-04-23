@@ -19,48 +19,46 @@ package org.activiti.engine.impl.persistence.entity;
 
 /**
  * Abstract superclass for the common properties of all {@link Entity} implementations.
- *
-
  */
 public abstract class AbstractEntityNoRevision implements Entity {
 
-  protected String id;
-  protected boolean isInserted;
-  protected boolean isUpdated;
-  protected boolean isDeleted;
+    protected String id;
+    protected boolean isInserted;
+    protected boolean isUpdated;
+    protected boolean isDeleted;
 
-  @Override
-  public String getId() {
-    return id;
-  }
+    @Override
+    public String getId() {
+        return id;
+    }
 
-  @Override
-  public void setId(String id) {
-    this.id = id;
-  }
+    @Override
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  public boolean isInserted() {
-    return isInserted;
-  }
+    public boolean isInserted() {
+        return isInserted;
+    }
 
-  public void setInserted(boolean isInserted) {
-    this.isInserted = isInserted;
-  }
+    public void setInserted(boolean isInserted) {
+        this.isInserted = isInserted;
+    }
 
-  public boolean isUpdated() {
-    return isUpdated;
-  }
+    public boolean isUpdated() {
+        return isUpdated;
+    }
 
-  public void setUpdated(boolean isUpdated) {
-    this.isUpdated = isUpdated;
-  }
+    public void setUpdated(boolean isUpdated) {
+        this.isUpdated = isUpdated;
+    }
 
-  public boolean isDeleted() {
-    return isDeleted;
-  }
+    public boolean isDeleted() {
+        return isDeleted;
+    }
 
-  public void setDeleted(boolean isDeleted) {
-    this.isDeleted = isDeleted;
-  }
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 
 }

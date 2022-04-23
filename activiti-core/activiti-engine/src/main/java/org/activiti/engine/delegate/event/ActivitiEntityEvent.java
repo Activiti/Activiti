@@ -18,17 +18,15 @@ package org.activiti.engine.delegate.event;
 
 /**
  * An {@link ActivitiEvent} related to a single entity.
- *
-
  */
 public interface ActivitiEntityEvent extends ActivitiEvent {
 
-  /**
-   * @return the entity that is targeted by this event.
-   */
-  Object getEntity();
+    /**
+     * @return the entity that is targeted by this event.
+     */
+    Object getEntity();
 
-  default String getReason(){
-      return null;
-  }
+    default String getReason() {
+        return null;
+    }
 }

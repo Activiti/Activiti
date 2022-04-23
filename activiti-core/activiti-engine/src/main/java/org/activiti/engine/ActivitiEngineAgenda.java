@@ -32,7 +32,8 @@ public interface ActivitiEngineAgenda extends Agenda {
 
     void planContinueMultiInstanceOperation(ExecutionEntity execution);
 
-    void planTakeOutgoingSequenceFlowsOperation(ExecutionEntity execution, boolean evaluateConditions);
+    void planTakeOutgoingSequenceFlowsOperation(ExecutionEntity execution,
+        boolean evaluateConditions);
 
     void planEndExecutionOperation(ExecutionEntity execution);
 

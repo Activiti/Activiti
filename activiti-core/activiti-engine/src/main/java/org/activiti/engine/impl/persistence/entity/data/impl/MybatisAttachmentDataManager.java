@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.List;
-
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityImpl;
@@ -26,34 +25,36 @@ import org.activiti.engine.impl.persistence.entity.data.AttachmentDataManager;
 
 
 /**
-
+ *
  */
-public class MybatisAttachmentDataManager extends AbstractDataManager<AttachmentEntity> implements AttachmentDataManager {
+public class MybatisAttachmentDataManager extends AbstractDataManager<AttachmentEntity> implements
+    AttachmentDataManager {
 
-  public MybatisAttachmentDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
-    super(processEngineConfiguration);
-  }
+    public MybatisAttachmentDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
+        super(processEngineConfiguration);
+    }
 
-  @Override
-  public Class<? extends AttachmentEntity> getManagedEntityClass() {
-    return AttachmentEntityImpl.class;
-  }
+    @Override
+    public Class<? extends AttachmentEntity> getManagedEntityClass() {
+        return AttachmentEntityImpl.class;
+    }
 
-  @Override
-  public AttachmentEntity create() {
-    return new AttachmentEntityImpl();
-  }
+    @Override
+    public AttachmentEntity create() {
+        return new AttachmentEntityImpl();
+    }
 
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<AttachmentEntity> findAttachmentsByProcessInstanceId(String processInstanceId) {
-    return getDbSqlSession().selectList("selectAttachmentsByProcessInstanceId", processInstanceId);
-  }
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<AttachmentEntity> findAttachmentsByProcessInstanceId(String processInstanceId) {
+        return getDbSqlSession().selectList("selectAttachmentsByProcessInstanceId",
+            processInstanceId);
+    }
 
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<AttachmentEntity> findAttachmentsByTaskId(String taskId) {
-    return getDbSqlSession().selectList("selectAttachmentsByTaskId", taskId);
-  }
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<AttachmentEntity> findAttachmentsByTaskId(String taskId) {
+        return getDbSqlSession().selectList("selectAttachmentsByTaskId", taskId);
+    }
 
 }

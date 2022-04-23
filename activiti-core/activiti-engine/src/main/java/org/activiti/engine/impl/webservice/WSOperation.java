@@ -19,13 +19,10 @@ package org.activiti.engine.impl.webservice;
 import java.net.URL;
 import java.util.concurrent.ConcurrentMap;
 import javax.xml.namespace.QName;
-
 import org.activiti.engine.impl.bpmn.webservice.MessageDefinition;
 import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
 import org.activiti.engine.impl.bpmn.webservice.Operation;
 import org.activiti.engine.impl.bpmn.webservice.OperationImplementation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Represents a WS implementation of a {@link Operation}
@@ -40,8 +37,8 @@ public class WSOperation implements OperationImplementation {
     protected WSService service;
 
     public WSOperation(String id,
-                       String operationName,
-                       WSService service) {
+        String operationName,
+        WSService service) {
         this.id = id;
         this.name = operationName;
         this.service = service;
@@ -65,13 +62,13 @@ public class WSOperation implements OperationImplementation {
      * {@inheritDoc}
      */
     public MessageInstance sendFor(MessageInstance message,
-                                   Operation operation,
-                                   ConcurrentMap<QName, URL> overridenEndpointAddresses) throws Exception {
+        Operation operation,
+        ConcurrentMap<QName, URL> overridenEndpointAddresses) throws Exception {
         Object[] arguments = this.getArguments(message);
         Object[] results = this.safeSend(arguments,
-                                         overridenEndpointAddresses);
+            overridenEndpointAddresses);
         return this.createResponseMessage(results,
-                                          operation);
+            operation);
     }
 
     private Object[] getArguments(MessageInstance message) {
@@ -79,12 +76,12 @@ public class WSOperation implements OperationImplementation {
     }
 
     private Object[] safeSend(Object[] arguments,
-                              ConcurrentMap<QName, URL> overridenEndpointAddresses) throws Exception {
+        ConcurrentMap<QName, URL> overridenEndpointAddresses) throws Exception {
         Object[] results = null;
 
         results = this.service.getClient().send(this.name,
-                                                arguments,
-                                                overridenEndpointAddresses);
+            arguments,
+            overridenEndpointAddresses);
 
         if (results == null) {
             results = new Object[]{};
@@ -93,7 +90,7 @@ public class WSOperation implements OperationImplementation {
     }
 
     private MessageInstance createResponseMessage(Object[] results,
-                                                  Operation operation) {
+        Operation operation) {
         MessageInstance message = null;
         MessageDefinition outMessage = operation.getOutMessage();
         if (outMessage != null) {

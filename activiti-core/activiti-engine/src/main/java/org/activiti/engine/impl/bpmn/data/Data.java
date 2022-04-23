@@ -18,32 +18,30 @@ package org.activiti.engine.impl.bpmn.data;
 
 /**
  * Implementation of the BPMN 2.0 'dataInput' and 'dataOutput'
- *
-
  */
 public class Data {
 
-  protected String id;
+    protected String id;
 
-  protected String name;
+    protected String name;
 
-  protected ItemDefinition definition;
+    protected ItemDefinition definition;
 
-  public Data(String id, String name, ItemDefinition definition) {
-    this.id = id;
-    this.name = name;
-    this.definition = definition;
-  }
+    public Data(String id, String name, ItemDefinition definition) {
+        this.id = id;
+        this.name = name;
+        this.definition = definition;
+    }
 
-  public String getId() {
-    return this.id;
-  }
+    public String getId() {
+        return this.id;
+    }
 
-  public String getName() {
-    return this.name;
-  }
+    public String getName() {
+        return this.name;
+    }
 
-  public ItemDefinition getDefinition() {
-    return this.definition;
-  }
+    public ItemDefinition getDefinition() {
+        return this.definition;
+    }
 }

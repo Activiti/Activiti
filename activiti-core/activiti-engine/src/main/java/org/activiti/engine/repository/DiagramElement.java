@@ -21,40 +21,38 @@ import java.io.Serializable;
 
 /**
  * Represents a diagram node.
- *
-
  */
 abstract public class DiagramElement implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String id;
+    protected String id;
 
-  public DiagramElement() {
-  }
+    public DiagramElement() {
+    }
 
-  public DiagramElement(String id) {
-    this.id = id;
-  }
+    public DiagramElement(String id) {
+        this.id = id;
+    }
 
-  /**
-   * Id of the diagram element.
-   */
-  public String getId() {
-    return id;
-  }
+    /**
+     * Id of the diagram element.
+     */
+    public String getId() {
+        return id;
+    }
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  @Override
-  public String toString() {
-    return "id=" + getId();
-  }
+    @Override
+    public String toString() {
+        return "id=" + getId();
+    }
 
-  public abstract boolean isNode();
+    public abstract boolean isNode();
 
-  public abstract boolean isEdge();
+    public abstract boolean isEdge();
 
 }

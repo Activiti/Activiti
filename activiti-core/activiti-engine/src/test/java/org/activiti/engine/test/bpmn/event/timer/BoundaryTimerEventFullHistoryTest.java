@@ -22,18 +22,19 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
 /**
-
+ *
  */
 public class BoundaryTimerEventFullHistoryTest extends ResourceActivitiTestCase {
 
-  public BoundaryTimerEventFullHistoryTest() {
-    super("org/activiti/standalone/history/fullhistory.activiti.cfg.xml");
-  }
+    public BoundaryTimerEventFullHistoryTest() {
+        super("org/activiti/standalone/history/fullhistory.activiti.cfg.xml");
+    }
 
-  @Deployment
-  public void testSetProcessVariablesFromTaskWhenTimerOnTask() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerVariablesProcess");
-    runtimeService.setVariable(processInstance.getId(), "myVar", 123456L);
-  }
+    @Deployment
+    public void testSetProcessVariablesFromTaskWhenTimerOnTask() {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "timerVariablesProcess");
+        runtimeService.setVariable(processInstance.getId(), "myVar", 123456L);
+    }
 
 }

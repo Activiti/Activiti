@@ -20,13 +20,11 @@ import java.math.BigDecimal;
 
 /**
  * Transforms a {@link String} to a {@link BigDecimal}
- *
-
  */
 public class StringToBigDecimal extends AbstractTransformer {
 
-  @Override
-  protected Object primTransform(Object anObject) throws Exception {
-    return new BigDecimal((String) anObject);
-  }
+    @Override
+    protected Object primTransform(Object anObject) throws Exception {
+        return new BigDecimal((String) anObject);
+    }
 }

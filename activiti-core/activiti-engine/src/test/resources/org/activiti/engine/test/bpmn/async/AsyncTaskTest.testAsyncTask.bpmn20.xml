@@ -6,15 +6,15 @@
 
   <process id="asyncTask">
 
-    <startEvent id="theStart" />
+    <startEvent id="theStart"/>
 
-    <sequenceFlow sourceRef="theStart" targetRef="task" />
+    <sequenceFlow sourceRef="theStart" targetRef="task"/>
 
-    <task id="task" activiti:async="true" />
+    <task id="task" activiti:async="true"/>
 
-    <sequenceFlow sourceRef="task" targetRef="theEnd" />
+    <sequenceFlow sourceRef="task" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

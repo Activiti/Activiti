@@ -28,7 +28,7 @@ public class ProcessInitiatorELResolverTest {
 
     private static final String INITIATOR = "initiator";
 
-    private ProcessInitiatorELResolver resolver = new ProcessInitiatorELResolver();
+    private final ProcessInitiatorELResolver resolver = new ProcessInitiatorELResolver();
 
     @Test
     public void canResolve_should_returnTrueWhenItsExecutionEntityAndPropertyIsInitiator() {

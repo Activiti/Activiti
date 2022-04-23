@@ -1,34 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="definitions"
-             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-             xmlns:activiti="http://activiti.org/bpmn"
-             targetNamespace="Examples">
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  targetNamespace="Examples">
 
-    <error id="errorOne" name="Error One" errorCode="errorOne" />
+  <error id="errorOne" name="Error One" errorCode="errorOne"/>
 
-    <process id="uncaughtErrorOnScriptTask">
+  <process id="uncaughtErrorOnScriptTask">
 
-        <startEvent id="theStart" />
-        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theScript" />
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theScript"/>
 
-        <scriptTask id="theScript" scriptFormat="groovy">
-            <script><![CDATA[
+    <scriptTask id="theScript" scriptFormat="groovy">
+      <script><![CDATA[
 			import org.activiti.engine.delegate.BpmnError;
 
 			throw new BpmnError("errorUncaught"); // non-defined error code!
 			]]></script>
-        </scriptTask>
+    </scriptTask>
 
-        <sequenceFlow id="flow4" sourceRef="theScript" targetRef="theEnd" />
+    <sequenceFlow id="flow4" sourceRef="theScript" targetRef="theEnd"/>
 
-        <boundaryEvent id="catchErrorOne" attachedToRef="theScript" cancelActivity="true">
-            <errorEventDefinition id="one" errorRef="errorOne" />
-        </boundaryEvent>
+    <boundaryEvent id="catchErrorOne" attachedToRef="theScript" cancelActivity="true">
+      <errorEventDefinition id="one" errorRef="errorOne"/>
+    </boundaryEvent>
 
-        <sequenceFlow id="errorFlow" sourceRef="catchErrorOne" targetRef="theEnd"/>
+    <sequenceFlow id="errorFlow" sourceRef="catchErrorOne" targetRef="theEnd"/>
 
-        <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
-    </process>
+  </process>
 
 </definitions>

@@ -18,16 +18,14 @@ package org.activiti.engine.impl.transformer;
 
 /**
  * Transforms a {@link Long} to a {@link Integer}
- *
-
  */
 public class LongToInteger extends AbstractTransformer {
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected Object primTransform(Object anObject) throws Exception {
-    return Integer.valueOf(((Long) anObject).toString());
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Object primTransform(Object anObject) throws Exception {
+        return Integer.valueOf(((Long) anObject).toString());
+    }
 }

@@ -18,27 +18,26 @@
 package org.activiti.standalone.jpa;
 
 import java.math.BigInteger;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 /**
-
+ *
  */
 @Entity(name = "BIGINT_ID_ENTITY")
 public class BigIntegerIdJPAEntity {
 
-  @Id
-  @Column(name = "ID_")
-  private BigInteger bigIntegerId;
+    @Id
+    @Column(name = "ID_")
+    private BigInteger bigIntegerId;
 
-  public BigInteger getBigIntegerId() {
-    return bigIntegerId;
-  }
+    public BigInteger getBigIntegerId() {
+        return bigIntegerId;
+    }
 
-  public void setBigIntegerId(BigInteger bigIntegerId) {
-    this.bigIntegerId = bigIntegerId;
-  }
+    public void setBigIntegerId(BigInteger bigIntegerId) {
+        this.bigIntegerId = bigIntegerId;
+    }
 
 }

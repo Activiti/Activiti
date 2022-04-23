@@ -4,13 +4,13 @@
 
   <process id="globalSignalProcess">
     <extensionElements>
-      <activiti:eventListener events="TASK_ASSIGNED" throwEvent="globalSignal" signalName="Signal" />
+      <activiti:eventListener events="TASK_ASSIGNED" throwEvent="globalSignal" signalName="Signal"/>
     </extensionElements>
-      <startEvent id="Start" />
-      <sequenceFlow sourceRef="Start" targetRef="Task" />
-      <userTask id="Task" />
-      <sequenceFlow sourceRef="Task" targetRef="End" />
-      <endEvent id="End" />
+    <startEvent id="Start"/>
+    <sequenceFlow sourceRef="Start" targetRef="Task"/>
+    <userTask id="Task"/>
+    <sequenceFlow sourceRef="Task" targetRef="End"/>
+    <endEvent id="End"/>
   </process>
 
 </definitions>

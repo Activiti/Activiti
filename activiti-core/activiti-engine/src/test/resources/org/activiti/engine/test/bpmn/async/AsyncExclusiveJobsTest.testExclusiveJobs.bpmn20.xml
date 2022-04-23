@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-             xmlns:activiti="http://activiti.org/bpmn"
-             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
-             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
-             xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
-             typeLanguage="http://www.w3.org/2001/XMLSchema"
-             expressionLanguage="http://www.w3.org/1999/XPath"
-             targetNamespace="http://www.activiti.org/test">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  typeLanguage="http://www.w3.org/2001/XMLSchema"
+  expressionLanguage="http://www.w3.org/1999/XPath"
+  targetNamespace="http://www.activiti.org/test">
   <process id="testExclusiveJobs" name="Asynchronous" isExecutable="true">
     <startEvent id="startevent1" name="Start"></startEvent>
 
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="servicetask1"></sequenceFlow>
-    <serviceTask id="servicetask1" name="Service Task" activiti:class="org.activiti.engine.test.helper.PassThroughServiceTask" activiti:async="true" activiti:exclusive="true" />
+    <serviceTask id="servicetask1" name="Service Task"
+      activiti:class="org.activiti.engine.test.helper.PassThroughServiceTask" activiti:async="true"
+      activiti:exclusive="true"/>
 
     <sequenceFlow id="flow2" sourceRef="servicetask1" targetRef="inclusivegateway1"></sequenceFlow>
     <parallelGateway id="inclusivegateway1" name="Inclusive Gateway"></parallelGateway>
 
     <sequenceFlow id="flowToScriptA" sourceRef="inclusivegateway1" targetRef="scriptTaskA">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${takeFlowA == true}]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${takeFlowA == true}]]></conditionExpression>
     </sequenceFlow>
-    <scriptTask id="scriptTaskA" name="Script Task A" scriptFormat="groovy" activiti:async="true" activiti:exclusive="true">
+    <scriptTask id="scriptTaskA" name="Script Task A" scriptFormat="groovy" activiti:async="true"
+      activiti:exclusive="true">
       <script>
         <![CDATA[
           println ""
@@ -30,16 +31,18 @@
           println "done."
           println "AAAAAAAAAAAAAAAAAAAA"
           println "[A] ----> ScriptA ending"]]>
-        </script>
+      </script>
     </scriptTask>
 
 
     <sequenceFlow id="flowToScriptB" sourceRef="inclusivegateway1" targetRef="scriptTaskB">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${takeFlowB == true}]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${takeFlowB == true}]]></conditionExpression>
     </sequenceFlow>
-    <scriptTask id="scriptTaskB" name="Script Task B" scriptFormat="groovy" activiti:async="true" activiti:exclusive="true">
+    <scriptTask id="scriptTaskB" name="Script Task B" scriptFormat="groovy" activiti:async="true"
+      activiti:exclusive="true">
       <script>
-          <![CDATA[
+        <![CDATA[
           println ""
           println "[B] ----> ScriptB starting"
           println "\tsleeping for 6 sec..."

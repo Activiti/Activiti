@@ -20,13 +20,12 @@ import org.activiti.engine.api.internal.Internal;
 
 /**
  * Represents an implementation of a {@link BpmnInterface}
- *
  */
 @Internal
 public interface BpmnInterfaceImplementation {
 
-  /**
-   * @return the name of this implementation
-   */
-  String getName();
+    /**
+     * @return the name of this implementation
+     */
+    String getName();
 }

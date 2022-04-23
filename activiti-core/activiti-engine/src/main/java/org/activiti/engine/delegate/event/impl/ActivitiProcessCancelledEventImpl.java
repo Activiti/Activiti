@@ -22,24 +22,22 @@ import org.activiti.engine.runtime.ProcessInstance;
 
 /**
  * An {@link org.activiti.engine.delegate.event.ActivitiCancelledEvent} implementation.
- *
-
  */
 public class ActivitiProcessCancelledEventImpl extends ActivitiEntityEventImpl implements
     ActivitiProcessCancelledEvent {
 
-  protected Object cause;
+    protected Object cause;
 
-  public ActivitiProcessCancelledEventImpl(ProcessInstance processInstance) {
-    super(processInstance, ActivitiEventType.PROCESS_CANCELLED);
-  }
+    public ActivitiProcessCancelledEventImpl(ProcessInstance processInstance) {
+        super(processInstance, ActivitiEventType.PROCESS_CANCELLED);
+    }
 
-  public void setCause(Object cause) {
-    this.cause = cause;
-  }
+    public void setCause(Object cause) {
+        this.cause = cause;
+    }
 
-  public Object getCause() {
-    return cause;
-  }
+    public Object getCause() {
+        return cause;
+    }
 
 }

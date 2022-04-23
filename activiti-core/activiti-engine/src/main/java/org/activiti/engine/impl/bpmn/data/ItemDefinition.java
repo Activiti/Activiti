@@ -18,55 +18,53 @@ package org.activiti.engine.impl.bpmn.data;
 
 /**
  * Implementation of the BPMN 2.0 'itemDefinition'
- *
-
  */
 public class ItemDefinition {
 
-  protected String id;
+    protected String id;
 
-  protected StructureDefinition structure;
+    protected StructureDefinition structure;
 
-  protected boolean isCollection;
+    protected boolean isCollection;
 
-  protected ItemKind itemKind;
+    protected ItemKind itemKind;
 
-  private ItemDefinition() {
-    this.isCollection = false;
-    this.itemKind = ItemKind.Information;
-  }
+    private ItemDefinition() {
+        this.isCollection = false;
+        this.itemKind = ItemKind.Information;
+    }
 
-  public ItemDefinition(String id, StructureDefinition structure) {
-    this();
-    this.id = id;
-    this.structure = structure;
-  }
+    public ItemDefinition(String id, StructureDefinition structure) {
+        this();
+        this.id = id;
+        this.structure = structure;
+    }
 
-  public ItemInstance createInstance() {
-    return new ItemInstance(this, this.structure.createInstance());
-  }
+    public ItemInstance createInstance() {
+        return new ItemInstance(this, this.structure.createInstance());
+    }
 
-  public StructureDefinition getStructureDefinition() {
-    return this.structure;
-  }
+    public StructureDefinition getStructureDefinition() {
+        return this.structure;
+    }
 
-  public boolean isCollection() {
-    return isCollection;
-  }
+    public boolean isCollection() {
+        return isCollection;
+    }
 
-  public void setCollection(boolean isCollection) {
-    this.isCollection = isCollection;
-  }
+    public void setCollection(boolean isCollection) {
+        this.isCollection = isCollection;
+    }
 
-  public ItemKind getItemKind() {
-    return itemKind;
-  }
+    public ItemKind getItemKind() {
+        return itemKind;
+    }
 
-  public void setItemKind(ItemKind itemKind) {
-    this.itemKind = itemKind;
-  }
+    public void setItemKind(ItemKind itemKind) {
+        this.itemKind = itemKind;
+    }
 
-  public String getId() {
-    return this.id;
-  }
+    public String getId() {
+        return this.id;
+    }
 }

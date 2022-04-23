@@ -16,24 +16,20 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import org.activiti.engine.api.internal.Internal;
-
 import java.util.Date;
+import org.activiti.engine.api.internal.Internal;
 
 /**
  * Represents an async job: a piece of logic that needs to be executed asynchronously.
- *
-
-
  */
 @Internal
 public interface JobEntity extends AbstractJobEntity {
 
-  String getLockOwner();
+    String getLockOwner();
 
-  void setLockOwner(String claimedBy);
+    void setLockOwner(String claimedBy);
 
-  Date getLockExpirationTime();
+    Date getLockExpirationTime();
 
-  void setLockExpirationTime(Date claimedUntil);
+    void setLockExpirationTime(Date claimedUntil);
 }

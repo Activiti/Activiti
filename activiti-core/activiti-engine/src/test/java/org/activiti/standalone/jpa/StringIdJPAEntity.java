@@ -22,21 +22,21 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 /**
-
+ *
  */
 @Entity(name = "STRING_ID_ENTITY")
 public class StringIdJPAEntity {
 
-  @Id
-  @Column(name = "ID_")
-  private String stringId;
+    @Id
+    @Column(name = "ID_")
+    private String stringId;
 
-  public String getStringId() {
-    return stringId;
-  }
+    public String getStringId() {
+        return stringId;
+    }
 
-  public void setStringId(String stringId) {
-    this.stringId = stringId;
-  }
+    public void setStringId(String stringId) {
+        this.stringId = stringId;
+    }
 
 }

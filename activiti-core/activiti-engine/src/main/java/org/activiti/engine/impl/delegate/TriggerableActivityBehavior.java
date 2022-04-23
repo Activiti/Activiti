@@ -20,11 +20,11 @@ import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.delegate.DelegateExecution;
 
 /**
-
+ *
  */
 @Internal
 public interface TriggerableActivityBehavior extends ActivityBehavior {
 
-  void trigger(DelegateExecution execution, String signalEvent, Object signalData);
+    void trigger(DelegateExecution execution, String signalEvent, Object signalData);
 
 }

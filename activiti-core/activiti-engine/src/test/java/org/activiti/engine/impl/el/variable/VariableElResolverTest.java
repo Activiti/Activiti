@@ -28,8 +28,8 @@ import org.junit.Test;
 
 public class VariableElResolverTest {
 
-    private ObjectMapper objectMapper = new ObjectMapper();
-    private VariableElResolver resolver = new VariableElResolver(objectMapper);
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final VariableElResolver resolver = new VariableElResolver(objectMapper);
 
     @Test
     public void canResolve_should_returnTrueWhenVariableScopeHasVariableForProperty() {
@@ -70,7 +70,8 @@ public class VariableElResolverTest {
     }
 
     @Test
-    public void resolve_should_returnVariableInstanceValueConvertedToListWhenItsJsonArray() throws Exception {
+    public void resolve_should_returnVariableInstanceValueConvertedToListWhenItsJsonArray()
+        throws Exception {
         //given
         JsonNode jsonNode = objectMapper.readTree("[\"green\", \"blue\", \"red\"]");
         VariableScope variableScope = buildVariableScope("colors", jsonNode, "json");
@@ -82,7 +83,8 @@ public class VariableElResolverTest {
         assertThat(result).isEqualTo(Arrays.asList("green", "blue", "red"));
     }
 
-    private VariableScope buildVariableScope(String variableName, Object variableValue, String type) {
+    private VariableScope buildVariableScope(String variableName, Object variableValue,
+        String type) {
         VariableScope variableScope = mock(VariableScope.class);
         VariableInstance variableInstance = mock(VariableInstance.class);
         given(variableInstance.getValue()).willReturn(variableValue);

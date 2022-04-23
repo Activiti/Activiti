@@ -16,7 +16,6 @@
 package org.activiti.engine.repository;
 
 import java.util.Set;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.query.Query;
@@ -43,7 +42,8 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
     ProcessDefinitionQuery processDefinitionCategory(String processDefinitionCategory);
 
     /**
-     * Only select process definitions where the category matches the given parameter. The syntax that should be used is the same as in SQL, eg. %activiti%
+     * Only select process definitions where the category matches the given parameter. The syntax
+     * that should be used is the same as in SQL, eg. %activiti%
      */
     ProcessDefinitionQuery processDefinitionCategoryLike(String processDefinitionCategoryLike);
 
@@ -60,12 +60,14 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
     ProcessDefinitionQuery processDefinitionName(String processDefinitionName);
 
     /**
-     * Only select process definitions where the name matches the given parameter. The syntax that should be used is the same as in SQL, eg. %activiti%
+     * Only select process definitions where the name matches the given parameter. The syntax that
+     * should be used is the same as in SQL, eg. %activiti%
      */
     ProcessDefinitionQuery processDefinitionNameLike(String processDefinitionNameLike);
 
     /**
-     * Only select process definitions that are deployed in a deployment with the given deployment id
+     * Only select process definitions that are deployed in a deployment with the given deployment
+     * id
      */
     ProcessDefinitionQuery deploymentId(String deploymentId);
 
@@ -85,12 +87,14 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
     ProcessDefinitionQuery processDefinitionKeys(Set<String> processDefinitionKeys);
 
     /**
-     * Only select process definitions where the key matches the given parameter. The syntax that should be used is the same as in SQL, eg. %activiti%
+     * Only select process definitions where the key matches the given parameter. The syntax that
+     * should be used is the same as in SQL, eg. %activiti%
      */
     ProcessDefinitionQuery processDefinitionKeyLike(String processDefinitionKeyLike);
 
     /**
-     * Only select process definition with a certain version. Particulary useful when used in combination with {@link #processDefinitionKey(String)}
+     * Only select process definition with a certain version. Particulary useful when used in
+     * combination with {@link #processDefinitionKey(String)}
      */
     ProcessDefinitionQuery processDefinitionVersion(Integer processDefinitionVersion);
 
@@ -102,7 +106,8 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
     /**
      * Only select process definitions which version are greater than or equals a certain version.
      */
-    ProcessDefinitionQuery processDefinitionVersionGreaterThanOrEquals(Integer processDefinitionVersion);
+    ProcessDefinitionQuery processDefinitionVersionGreaterThanOrEquals(
+        Integer processDefinitionVersion);
 
     /**
      * Only select process definitions which version are lower than a certain version.
@@ -112,15 +117,19 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
     /**
      * Only select process definitions which version are lower than or equals a certain version.
      */
-    ProcessDefinitionQuery processDefinitionVersionLowerThanOrEquals(Integer processDefinitionVersion);
+    ProcessDefinitionQuery processDefinitionVersionLowerThanOrEquals(
+        Integer processDefinitionVersion);
 
     /**
-     * Only select the process definitions which are the latest deployed (ie. which have the highest version number for the given key).
+     * Only select the process definitions which are the latest deployed (ie. which have the highest
+     * version number for the given key).
      * <p>
-     * Can also be used without any other criteria (ie. query.latest().list()),
-     * which will then give all the latest versions of all the deployed process definitions.
+     * Can also be used without any other criteria (ie. query.latest().list()), which will then give
+     * all the latest versions of all the deployed process definitions.
      *
-     * @throws ActivitiIllegalArgumentException if used in combination with {@link #groupId(string)}, {@link #processDefinitionVersion(int)} or {@link #deploymentId(String)}
+     * @throws ActivitiIllegalArgumentException if used in combination with {@link #groupId(string)},
+     *                                          {@link #processDefinitionVersion(int)} or {@link
+     *                                          #deploymentId(String)}
      */
     ProcessDefinitionQuery latestVersion();
 
@@ -174,7 +183,8 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
     // ordering ////////////////////////////////////////////////////////////
 
     /**
-     * Order by the category of the process definitions (needs to be followed by {@link #asc()} or {@link #desc()}).
+     * Order by the category of the process definitions (needs to be followed by {@link #asc()} or
+     * {@link #desc()}).
      */
     ProcessDefinitionQuery orderByProcessDefinitionCategory();
 
@@ -184,22 +194,26 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
     ProcessDefinitionQuery orderByProcessDefinitionKey();
 
     /**
-     * Order by the id of the process definitions (needs to be followed by {@link #asc()} or {@link #desc()}).
+     * Order by the id of the process definitions (needs to be followed by {@link #asc()} or {@link
+     * #desc()}).
      */
     ProcessDefinitionQuery orderByProcessDefinitionId();
 
     /**
-     * Order by the version of the process definitions (needs to be followed by {@link #asc()} or {@link #desc()}).
+     * Order by the version of the process definitions (needs to be followed by {@link #asc()} or
+     * {@link #desc()}).
      */
     ProcessDefinitionQuery orderByProcessDefinitionVersion();
 
     /**
-     * Order by the app version of the process definitions (needs to be followed by {@link #asc()} or {@link #desc()}).
+     * Order by the app version of the process definitions (needs to be followed by {@link #asc()}
+     * or {@link #desc()}).
      */
     ProcessDefinitionQuery orderByProcessDefinitionAppVersion();
 
     /**
-     * Order by the name of the process definitions (needs to be followed by {@link #asc()} or {@link #desc()}).
+     * Order by the name of the process definitions (needs to be followed by {@link #asc()} or
+     * {@link #desc()}).
      */
     ProcessDefinitionQuery orderByProcessDefinitionName();
 

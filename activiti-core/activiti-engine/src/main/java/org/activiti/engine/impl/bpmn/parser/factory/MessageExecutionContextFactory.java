@@ -22,7 +22,7 @@ import org.activiti.engine.impl.el.ExpressionManager;
 public interface MessageExecutionContextFactory {
 
     MessageExecutionContext create(MessageEventDefinition messageEventDefinition,
-                                   MessagePayloadMappingProvider messagePayloadMappingProvider,
-                                   ExpressionManager expressionManager);
+        MessagePayloadMappingProvider messagePayloadMappingProvider,
+        ExpressionManager expressionManager);
 
 }

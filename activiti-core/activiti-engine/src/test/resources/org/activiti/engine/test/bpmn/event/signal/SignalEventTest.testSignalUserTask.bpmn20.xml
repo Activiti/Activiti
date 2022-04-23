@@ -1,29 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="definitions"
-	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-	xmlns:activiti="http://activiti.org/bpmn"
-	targetNamespace="Examples">
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  targetNamespace="Examples">
 
 
-	<process id="catchSignal">
+  <process id="catchSignal">
 
-		<startEvent id="start" />
-		<sequenceFlow sourceRef="start" targetRef="waitState" />
+    <startEvent id="start"/>
+    <sequenceFlow sourceRef="start" targetRef="waitState"/>
 
-<!--
-		<receiveTask id="waitState" name="wait" />
--->
- 	 <userTask id="waitState" name="Test User Task" >
-          </userTask>
-
-
-		<sequenceFlow sourceRef="waitState" targetRef="end" />
+    <!--
+        <receiveTask id="waitState" name="wait" />
+    -->
+    <userTask id="waitState" name="Test User Task">
+    </userTask>
 
 
-		<endEvent id="end" />
+    <sequenceFlow sourceRef="waitState" targetRef="end"/>
 
-	</process>
 
+    <endEvent id="end"/>
+
+  </process>
 
 
 </definitions>

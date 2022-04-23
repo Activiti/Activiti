@@ -1,36 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="definitions"
-	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-	xmlns:activiti="http://activiti.org/bpmn"
-	targetNamespace="Examples">
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  targetNamespace="Examples">
 
-	<error id="myError" errorCode="123" />
+  <error id="myError" errorCode="123"/>
 
-	<process id="CatchErrorInEmbeddedSubProcess">
+  <process id="CatchErrorInEmbeddedSubProcess">
 
-		<startEvent id="theStart" />
-		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="subprocess" />
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="subprocess"/>
 
     <subProcess id="subprocess">
-      <startEvent id="subprocessStart" />
-      <sequenceFlow id="subFlow1" sourceRef="subprocessStart" targetRef="subprocessEnd" />
+      <startEvent id="subprocessStart"/>
+      <sequenceFlow id="subFlow1" sourceRef="subprocessStart" targetRef="subprocessEnd"/>
       <endEvent id="subprocessEnd">
-        <errorEventDefinition errorRef="myError" />
+        <errorEventDefinition errorRef="myError"/>
       </endEvent>
 
       <subProcess id="eventSubProcess" triggeredByEvent="true">
-		    <startEvent id="catchError">
-		      <errorEventDefinition /> <!-- no errorCode: catch any error -->
-		    </startEvent>
-		    <sequenceFlow id="flow2" sourceRef="catchError" targetRef="taskAfterErrorCatch" />
-		    <userTask id="taskAfterErrorCatch" name="Escalated Task" />
+        <startEvent id="catchError">
+          <errorEventDefinition/> <!-- no errorCode: catch any error -->
+        </startEvent>
+        <sequenceFlow id="flow2" sourceRef="catchError" targetRef="taskAfterErrorCatch"/>
+        <userTask id="taskAfterErrorCatch" name="Escalated Task"/>
       </subProcess>
 
     </subProcess>
-    <sequenceFlow id="flow3" sourceRef="subprocess" targetRef="theEnd" />
+    <sequenceFlow id="flow3" sourceRef="subprocess" targetRef="theEnd"/>
 
-		<endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
-	</process>
+  </process>
 
 </definitions>

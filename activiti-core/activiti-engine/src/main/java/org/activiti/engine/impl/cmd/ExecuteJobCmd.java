@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.JobNotFoundException;
@@ -29,54 +28,54 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
-
-
+ *
  */
 public class ExecuteJobCmd implements Command<Object>, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private static Logger log = LoggerFactory.getLogger(ExecuteJobCmd.class);
+    private static final Logger log = LoggerFactory.getLogger(ExecuteJobCmd.class);
 
-  protected String jobId;
+    protected String jobId;
 
-  public ExecuteJobCmd(String jobId) {
-    this.jobId = jobId;
-  }
-
-  public Object execute(CommandContext commandContext) {
-
-    if (jobId == null) {
-      throw new ActivitiIllegalArgumentException("jobId and job is null");
+    public ExecuteJobCmd(String jobId) {
+        this.jobId = jobId;
     }
 
-    Job job = commandContext.getJobEntityManager().findById(jobId);
+    public Object execute(CommandContext commandContext) {
 
-    if (job == null) {
-      throw new JobNotFoundException(jobId);
+        if (jobId == null) {
+            throw new ActivitiIllegalArgumentException("jobId and job is null");
+        }
+
+        Job job = commandContext.getJobEntityManager().findById(jobId);
+
+        if (job == null) {
+            throw new JobNotFoundException(jobId);
+        }
+
+        if (log.isDebugEnabled()) {
+            log.debug("Executing job {}", job.getId());
+        }
+
+        executeInternal(commandContext, job);
+        return null;
     }
 
-    if (log.isDebugEnabled()) {
-      log.debug("Executing job {}", job.getId());
+    protected void executeInternal(CommandContext commandContext, Job job) {
+        commandContext.addCloseListener(new FailedJobListener(
+            commandContext.getProcessEngineConfiguration().getCommandExecutor(), job));
+
+        try {
+            commandContext.getJobManager().execute(job);
+        } catch (Throwable exception) {
+            // Finally, Throw the exception to indicate the ExecuteJobCmd failed
+            throw new ActivitiException("Job " + jobId + " failed", exception);
+        }
     }
 
-    executeInternal(commandContext,job);
-    return null;
-  }
-
-  protected void executeInternal(CommandContext commandContext,Job job) {
-      commandContext.addCloseListener(new FailedJobListener(commandContext.getProcessEngineConfiguration().getCommandExecutor(), job));
-
-      try {
-          commandContext.getJobManager().execute(job);
-      } catch (Throwable exception) {
-          // Finally, Throw the exception to indicate the ExecuteJobCmd failed
-          throw new ActivitiException("Job " + jobId + " failed", exception);
-      }
-  }
-
-  public String getJobId() {
-    return jobId;
-  }
+    public String getJobId() {
+        return jobId;
+    }
 
 }

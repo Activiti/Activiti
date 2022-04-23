@@ -27,7 +27,8 @@ public class GenericManagerFactory implements SessionFactory {
     protected Class<? extends Session> typeClass;
     protected Class<? extends Session> implementationClass;
 
-    public GenericManagerFactory(Class<? extends Session> typeClass, Class<? extends Session> implementationClass) {
+    public GenericManagerFactory(Class<? extends Session> typeClass,
+        Class<? extends Session> implementationClass) {
         this.typeClass = typeClass;
         this.implementationClass = implementationClass;
     }
@@ -44,7 +45,8 @@ public class GenericManagerFactory implements SessionFactory {
         try {
             return implementationClass.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
-            throw new ActivitiException("couldn't instantiate " + implementationClass.getName() + ": " + e.getMessage(), e);
+            throw new ActivitiException(
+                "couldn't instantiate " + implementationClass.getName() + ": " + e.getMessage(), e);
         }
     }
 

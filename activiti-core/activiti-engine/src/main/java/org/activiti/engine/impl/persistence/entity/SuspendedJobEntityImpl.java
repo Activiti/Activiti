@@ -18,16 +18,14 @@ package org.activiti.engine.impl.persistence.entity;
 
 /**
  * TimerJob entity, necessary for persistence.
- *
-
  */
 public class SuspendedJobEntityImpl extends AbstractJobEntityImpl implements SuspendedJobEntity {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  @Override
-  public String toString() {
-    return "SuspendedJobEntity [id=" + id + "]";
-  }
+    @Override
+    public String toString() {
+        return "SuspendedJobEntity [id=" + id + "]";
+    }
 
 }

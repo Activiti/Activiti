@@ -20,24 +20,22 @@ import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.variable.VariableType;
 
 /**
-
-
-
+ *
  */
 @Internal
 public interface VariableInstanceEntity extends VariableInstance {
 
-  void setDeleted(boolean isDeleted);
+    void setDeleted(boolean isDeleted);
 
-  boolean isDeleted();
+    boolean isDeleted();
 
-  void setExecution(ExecutionEntity execution);
+    void setExecution(ExecutionEntity execution);
 
-  void forceUpdate();
+    void forceUpdate();
 
-  ByteArrayRef getByteArrayRef();
+    ByteArrayRef getByteArrayRef();
 
-  VariableType getType();
+    VariableType getType();
 
-  void setType(VariableType type);
+    void setType(VariableType type);
 }

@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
-  <process id="multiInstanceSubProcessParallelTasks" name="Multi-Instance SubProcess with a parallel gateway" isExecutable="true">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+  typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+  targetNamespace="http://www.activiti.org/test">
+  <process id="multiInstanceSubProcessParallelTasks"
+    name="Multi-Instance SubProcess with a parallel gateway" isExecutable="true">
     <startEvent id="startevent1" name="Start"></startEvent>
     <subProcess id="subprocess1" name="Sub Process">
       <multiInstanceLoopCharacteristics isSequential="false">
@@ -8,9 +14,9 @@
       </multiInstanceLoopCharacteristics>
       <startEvent id="startevent2" name="Start"></startEvent>
       <endEvent id="endevent2" name="End"></endEvent>
-      <userTask id="usertask2" name="User Task 2" ></userTask>
-      <userTask id="usertask3" name="User Task 3" ></userTask>
-      <userTask id="usertask1" name="User Task 1" ></userTask>
+      <userTask id="usertask2" name="User Task 2"></userTask>
+      <userTask id="usertask3" name="User Task 3"></userTask>
+      <userTask id="usertask1" name="User Task 1"></userTask>
       <sequenceFlow id="flow9" sourceRef="startevent2" targetRef="usertask1"></sequenceFlow>
       <parallelGateway id="parallelgateway1" name="Parallel Gateway"></parallelGateway>
       <sequenceFlow id="flow12" sourceRef="usertask1" targetRef="parallelgateway1"></sequenceFlow>
@@ -26,7 +32,8 @@
     <sequenceFlow id="flow2" sourceRef="subprocess1" targetRef="endevent1"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_multiInstanceSubProcessParallelTasks">
-    <bpmndi:BPMNPlane bpmnElement="multiInstanceSubProcessParallelTasks" id="BPMNPlane_multiInstanceSubProcessParallelTasks">
+    <bpmndi:BPMNPlane bpmnElement="multiInstanceSubProcessParallelTasks"
+      id="BPMNPlane_multiInstanceSubProcessParallelTasks">
       <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
         <omgdc:Bounds height="35.0" width="35.0" x="50.0" y="350.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>

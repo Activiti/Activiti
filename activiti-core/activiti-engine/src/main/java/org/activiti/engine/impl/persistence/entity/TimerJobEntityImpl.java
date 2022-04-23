@@ -22,46 +22,44 @@ import java.util.Map;
 
 /**
  * TimerJob entity, necessary for persistence.
- *
-
  */
 public class TimerJobEntityImpl extends AbstractJobEntityImpl implements TimerJobEntity {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String lockOwner;
-  protected Date lockExpirationTime;
+    protected String lockOwner;
+    protected Date lockExpirationTime;
 
-  @SuppressWarnings("unchecked")
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = (Map<String, Object>) super.getPersistentState();
-    persistentState.put("lockOwner", lockOwner);
-    persistentState.put("lockExpirationTime", lockExpirationTime);
+    @SuppressWarnings("unchecked")
+    public Object getPersistentState() {
+        Map<String, Object> persistentState = (Map<String, Object>) super.getPersistentState();
+        persistentState.put("lockOwner", lockOwner);
+        persistentState.put("lockExpirationTime", lockExpirationTime);
 
-    return persistentState;
-  }
+        return persistentState;
+    }
 
-  // getters and setters ////////////////////////////////////////////////////////
+    // getters and setters ////////////////////////////////////////////////////////
 
-  public String getLockOwner() {
-    return lockOwner;
-  }
+    public String getLockOwner() {
+        return lockOwner;
+    }
 
-  public void setLockOwner(String claimedBy) {
-    this.lockOwner = claimedBy;
-  }
+    public void setLockOwner(String claimedBy) {
+        this.lockOwner = claimedBy;
+    }
 
-  public Date getLockExpirationTime() {
-    return lockExpirationTime;
-  }
+    public Date getLockExpirationTime() {
+        return lockExpirationTime;
+    }
 
-  public void setLockExpirationTime(Date claimedUntil) {
-    this.lockExpirationTime = claimedUntil;
-  }
+    public void setLockExpirationTime(Date claimedUntil) {
+        this.lockExpirationTime = claimedUntil;
+    }
 
-  @Override
-  public String toString() {
-    return "TimerJobEntity [id=" + id + "]";
-  }
+    @Override
+    public String toString() {
+        return "TimerJobEntity [id=" + id + "]";
+    }
 
 }

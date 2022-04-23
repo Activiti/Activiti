@@ -19,38 +19,38 @@ package org.activiti.engine.impl.variable;
 import org.joda.time.LocalDate;
 
 /**
-
+ *
  */
 public class JodaDateType implements VariableType {
 
-  public String getTypeName() {
-    return "jodadate";
-  }
-
-  public boolean isCachable() {
-    return true;
-  }
-
-  public boolean isAbleToStore(Object value) {
-    if (value == null) {
-      return true;
+    public String getTypeName() {
+        return "jodadate";
     }
-    return LocalDate.class.isAssignableFrom(value.getClass());
-  }
 
-  public Object getValue(ValueFields valueFields) {
-    Long longValue = valueFields.getLongValue();
-    if (longValue != null) {
-      return new LocalDate(longValue);
+    public boolean isCachable() {
+        return true;
     }
-    return null;
-  }
 
-  public void setValue(Object value, ValueFields valueFields) {
-    if (value != null) {
-      valueFields.setLongValue(((LocalDate) value).toDateTimeAtStartOfDay().getMillis());
-    } else {
-      valueFields.setLongValue(null);
+    public boolean isAbleToStore(Object value) {
+        if (value == null) {
+            return true;
+        }
+        return LocalDate.class.isAssignableFrom(value.getClass());
     }
-  }
+
+    public Object getValue(ValueFields valueFields) {
+        Long longValue = valueFields.getLongValue();
+        if (longValue != null) {
+            return new LocalDate(longValue);
+        }
+        return null;
+    }
+
+    public void setValue(Object value, ValueFields valueFields) {
+        if (value != null) {
+            valueFields.setLongValue(((LocalDate) value).toDateTimeAtStartOfDay().getMillis());
+        } else {
+            valueFields.setLongValue(null);
+        }
+    }
 }

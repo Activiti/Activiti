@@ -22,10 +22,11 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import java.util.List;
 import javax.el.ELContext;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
@@ -112,7 +113,8 @@ public class VariableScopeElResolverTest {
     @Test
     public void getVariableScopeItemELResolvers_should_return_defaultItemResolvers() {
         //given
-        ProcessEngineConfigurationImpl processEngineConfiguration = mock(ProcessEngineConfigurationImpl.class);
+        ProcessEngineConfigurationImpl processEngineConfiguration = mock(
+            ProcessEngineConfigurationImpl.class);
         given(processEngineConfiguration.getObjectMapper()).willReturn(new ObjectMapper());
         Context.setProcessEngineConfiguration(processEngineConfiguration);
         doCallRealMethod().when(variableScopeElResolver).getVariableScopeItemELResolvers();

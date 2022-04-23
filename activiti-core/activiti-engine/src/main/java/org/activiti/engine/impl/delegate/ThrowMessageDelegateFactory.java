@@ -21,6 +21,6 @@ public interface ThrowMessageDelegateFactory {
 
     default ThrowMessageDelegate create() {
         return new DefaultThrowMessageJavaDelegate();
-    };
+    }
 
 }

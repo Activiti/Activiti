@@ -19,7 +19,6 @@ package org.activiti.engine.impl.cmd;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -28,36 +27,40 @@ import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.repository.Deployment;
 
 /**
-
+ *
  */
 public class GetDeploymentResourceCmd implements Command<InputStream>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String deploymentId;
-  protected String resourceName;
+    private static final long serialVersionUID = 1L;
+    protected String deploymentId;
+    protected String resourceName;
 
-  public GetDeploymentResourceCmd(String deploymentId, String resourceName) {
-    this.deploymentId = deploymentId;
-    this.resourceName = resourceName;
-  }
-
-  public InputStream execute(CommandContext commandContext) {
-    if (deploymentId == null) {
-      throw new ActivitiIllegalArgumentException("deploymentId is null");
-    }
-    if (resourceName == null) {
-      throw new ActivitiIllegalArgumentException("resourceName is null");
+    public GetDeploymentResourceCmd(String deploymentId, String resourceName) {
+        this.deploymentId = deploymentId;
+        this.resourceName = resourceName;
     }
 
-    ResourceEntity resource = commandContext.getResourceEntityManager().findResourceByDeploymentIdAndResourceName(deploymentId, resourceName);
-    if (resource == null) {
-      if (commandContext.getDeploymentEntityManager().findById(deploymentId) == null) {
-        throw new ActivitiObjectNotFoundException("deployment does not exist: " + deploymentId, Deployment.class);
-      } else {
-        throw new ActivitiObjectNotFoundException("no resource found with name '" + resourceName + "' in deployment '" + deploymentId + "'", InputStream.class);
-      }
+    public InputStream execute(CommandContext commandContext) {
+        if (deploymentId == null) {
+            throw new ActivitiIllegalArgumentException("deploymentId is null");
+        }
+        if (resourceName == null) {
+            throw new ActivitiIllegalArgumentException("resourceName is null");
+        }
+
+        ResourceEntity resource = commandContext.getResourceEntityManager()
+            .findResourceByDeploymentIdAndResourceName(deploymentId, resourceName);
+        if (resource == null) {
+            if (commandContext.getDeploymentEntityManager().findById(deploymentId) == null) {
+                throw new ActivitiObjectNotFoundException(
+                    "deployment does not exist: " + deploymentId, Deployment.class);
+            } else {
+                throw new ActivitiObjectNotFoundException(
+                    "no resource found with name '" + resourceName + "' in deployment '"
+                        + deploymentId + "'", InputStream.class);
+            }
+        }
+        return new ByteArrayInputStream(resource.getBytes());
     }
-    return new ByteArrayInputStream(resource.getBytes());
-  }
 
 }

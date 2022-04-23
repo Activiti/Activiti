@@ -23,26 +23,30 @@ import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.ProcessDefinitionInfoDataManager;
 
 /**
-
+ *
  */
-public class MybatisProcessDefinitionInfoDataManager extends AbstractDataManager<ProcessDefinitionInfoEntity> implements ProcessDefinitionInfoDataManager {
+public class MybatisProcessDefinitionInfoDataManager extends
+    AbstractDataManager<ProcessDefinitionInfoEntity> implements ProcessDefinitionInfoDataManager {
 
-  public MybatisProcessDefinitionInfoDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
-    super(processEngineConfiguration);
-  }
+    public MybatisProcessDefinitionInfoDataManager(
+        ProcessEngineConfigurationImpl processEngineConfiguration) {
+        super(processEngineConfiguration);
+    }
 
-  @Override
-  public Class<? extends ProcessDefinitionInfoEntity> getManagedEntityClass() {
-    return ProcessDefinitionInfoEntityImpl.class;
-  }
+    @Override
+    public Class<? extends ProcessDefinitionInfoEntity> getManagedEntityClass() {
+        return ProcessDefinitionInfoEntityImpl.class;
+    }
 
-  @Override
-  public ProcessDefinitionInfoEntity create() {
-    return new ProcessDefinitionInfoEntityImpl();
-  }
+    @Override
+    public ProcessDefinitionInfoEntity create() {
+        return new ProcessDefinitionInfoEntityImpl();
+    }
 
-  @Override
-  public ProcessDefinitionInfoEntity findProcessDefinitionInfoByProcessDefinitionId(String processDefinitionId) {
-    return (ProcessDefinitionInfoEntity) getDbSqlSession().selectOne("selectProcessDefinitionInfoByProcessDefinitionId", processDefinitionId);
-  }
+    @Override
+    public ProcessDefinitionInfoEntity findProcessDefinitionInfoByProcessDefinitionId(
+        String processDefinitionId) {
+        return (ProcessDefinitionInfoEntity) getDbSqlSession().selectOne(
+            "selectProcessDefinitionInfoByProcessDefinitionId", processDefinitionId);
+    }
 }

@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="definitions"
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-  xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
 
-	<process id="compensationHandler">
+  <process id="compensationHandler">
 
-		<startEvent id="start" />
+    <startEvent id="start"/>
 
-		<sequenceFlow sourceRef="start"	targetRef="end" />
+    <sequenceFlow sourceRef="start" targetRef="end"/>
 
-		<endEvent id="end" />
-	</process>
+    <endEvent id="end"/>
+  </process>
 
 </definitions>

@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+  typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+  targetNamespace="http://www.activiti.org/test">
   <process id="testSequentialSubProcessEmptyCollection" isExecutable="true">
     <startEvent id="start"></startEvent>
     <endEvent id="end"></endEvent>
     <subProcess id="subprocess1" name="Sub Process">
-      <multiInstanceLoopCharacteristics isSequential="true" activiti:collection="collection"></multiInstanceLoopCharacteristics>
+      <multiInstanceLoopCharacteristics isSequential="true"
+        activiti:collection="collection"></multiInstanceLoopCharacteristics>
       <startEvent id="startevent1" name="Start"></startEvent>
       <userTask id="usertask1" name="User Task"></userTask>
       <endEvent id="endevent1" name="End"></endEvent>
@@ -15,7 +21,8 @@
     <sequenceFlow id="flow2" sourceRef="subprocess1" targetRef="end"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_testSequentialSubProcessEmptyCollection">
-    <bpmndi:BPMNPlane bpmnElement="testSequentialSubProcessEmptyCollection" id="BPMNPlane_testSequentialSubProcessEmptyCollection">
+    <bpmndi:BPMNPlane bpmnElement="testSequentialSubProcessEmptyCollection"
+      id="BPMNPlane_testSequentialSubProcessEmptyCollection">
       <bpmndi:BPMNShape bpmnElement="start" id="BPMNShape_start">
         <omgdc:Bounds height="35.0" width="35.0" x="40.0" y="156.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>

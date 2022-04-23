@@ -4,46 +4,47 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
 
-	<process id="compensateProcess">
+  <process id="compensateProcess">
 
-		<startEvent id="start" />
+    <startEvent id="start"/>
 
-		<sequenceFlow sourceRef="start"	targetRef="scope" />
+    <sequenceFlow sourceRef="start" targetRef="scope"/>
 
-		<subProcess id="scope">
+    <subProcess id="scope">
 
-			<startEvent id="startInScope" />
+      <startEvent id="startInScope"/>
 
-			<sequenceFlow sourceRef="startInScope" targetRef="bookHotel" />
+      <sequenceFlow sourceRef="startInScope" targetRef="bookHotel"/>
 
-			<serviceTask id="bookHotel" activiti:expression="${true}" />
+      <serviceTask id="bookHotel" activiti:expression="${true}"/>
 
-			<boundaryEvent id="compensateBookHotelEvt" name="Boundary event" attachedToRef="bookHotel">
-				<compensateEventDefinition />
-			</boundaryEvent>
+      <boundaryEvent id="compensateBookHotelEvt" name="Boundary event" attachedToRef="bookHotel">
+        <compensateEventDefinition/>
+      </boundaryEvent>
 
-      <userTask id="undoBookHotel" name="Manually undo book hotel" isForCompensation="true" />
+      <userTask id="undoBookHotel" name="Manually undo book hotel" isForCompensation="true"/>
 
-			<sequenceFlow sourceRef="bookHotel" targetRef="endInScope" />
+      <sequenceFlow sourceRef="bookHotel" targetRef="endInScope"/>
 
-			<endEvent id="endInScope" />
+      <endEvent id="endInScope"/>
 
-			<association associationDirection="One" sourceRef="compensateBookHotelEvt" targetRef="undoBookHotel" />
+      <association associationDirection="One" sourceRef="compensateBookHotelEvt"
+        targetRef="undoBookHotel"/>
 
-		</subProcess>
+    </subProcess>
 
-		<sequenceFlow sourceRef="scope" targetRef="throwCompensate" />
+    <sequenceFlow sourceRef="scope" targetRef="throwCompensate"/>
 
-		<intermediateThrowEvent id="throwCompensate">
-			<compensateEventDefinition activityRef="scope" />
-		</intermediateThrowEvent>
+    <intermediateThrowEvent id="throwCompensate">
+      <compensateEventDefinition activityRef="scope"/>
+    </intermediateThrowEvent>
 
-		<sequenceFlow sourceRef="throwCompensate" targetRef="beforeEnd" />
-		<sequenceFlow sourceRef="beforeEnd" targetRef="end" />
+    <sequenceFlow sourceRef="throwCompensate" targetRef="beforeEnd"/>
+    <sequenceFlow sourceRef="beforeEnd" targetRef="end"/>
 
-		<receiveTask id="beforeEnd" />
+    <receiveTask id="beforeEnd"/>
 
-		<endEvent id="end" />
-	</process>
+    <endEvent id="end"/>
+  </process>
 
 </definitions>

@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="Examples">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+  typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+  targetNamespace="Examples">
   <process id="testJsonVarInExpression" name="Test Json Var In Expression" isExecutable="true">
     <startEvent id="theStart"></startEvent>
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="userTask"></sequenceFlow>
     <userTask id="userTask"></userTask>
     <endEvent id="theEndSuccess"></endEvent>
-    <userTask id="usertask1" name="User Task" activiti:assignee="${userMap.assignee}" activiti:candidateUsers="${userMap.mapInMap.user}" activiti:category="${userMap.category}"></userTask>
+    <userTask id="usertask1" name="User Task" activiti:assignee="${userMap.assignee}"
+      activiti:candidateUsers="${userMap.mapInMap.user}"
+      activiti:category="${userMap.category}"></userTask>
     <sequenceFlow id="flow2" sourceRef="userTask" targetRef="usertask1"></sequenceFlow>
     <sequenceFlow id="flow3" sourceRef="usertask1" targetRef="theEndSuccess"></sequenceFlow>
   </process>

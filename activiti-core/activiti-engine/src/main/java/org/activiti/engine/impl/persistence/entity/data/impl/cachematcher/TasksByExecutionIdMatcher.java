@@ -20,13 +20,13 @@ import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 /**
-
+ *
  */
 public class TasksByExecutionIdMatcher extends CachedEntityMatcherAdapter<TaskEntity> {
 
-  @Override
-  public boolean isRetained(TaskEntity taskEntity, Object parameter) {
-    return taskEntity.getExecutionId() != null && parameter.equals(taskEntity.getExecutionId());
-  }
+    @Override
+    public boolean isRetained(TaskEntity taskEntity, Object parameter) {
+        return taskEntity.getExecutionId() != null && parameter.equals(taskEntity.getExecutionId());
+    }
 
 }

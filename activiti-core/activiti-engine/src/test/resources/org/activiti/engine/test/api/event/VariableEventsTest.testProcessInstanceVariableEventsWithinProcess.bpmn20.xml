@@ -3,13 +3,14 @@
   xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
   <process id="variableProcess">
 
-    <startEvent id="theStart" />
+    <startEvent id="theStart"/>
     <sequenceFlow sourceRef="theStart" targetRef="theEnd">
       <extensionElements>
-        <activiti:executionListener event="take" class="org.activiti.engine.test.api.event.VariableEventsExecutionListener" />
+        <activiti:executionListener event="take"
+          class="org.activiti.engine.test.api.event.VariableEventsExecutionListener"/>
       </extensionElements>
     </sequenceFlow>
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

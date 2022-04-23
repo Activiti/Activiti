@@ -20,20 +20,20 @@ import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
 /**
-
+ *
  */
 public class TaskAllEventsListener implements TaskListener {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public void notify(DelegateTask delegateTask) {
-    String events = (String) delegateTask.getVariable("events");
-    if (events == null) {
-      events = delegateTask.getEventName();
-    } else {
-      events = events + " - " + delegateTask.getEventName();
+    public void notify(DelegateTask delegateTask) {
+        String events = (String) delegateTask.getVariable("events");
+        if (events == null) {
+            events = delegateTask.getEventName();
+        } else {
+            events = events + " - " + delegateTask.getEventName();
+        }
+        delegateTask.setVariable("events", events);
     }
-    delegateTask.setVariable("events", events);
-  }
 
 }

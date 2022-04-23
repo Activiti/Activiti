@@ -3,15 +3,16 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
 
-  <process id="simpleTextOnlyMultipleRecipients" >
+  <process id="simpleTextOnlyMultipleRecipients">
 
-    <startEvent id="theStart" />
-    <sequenceFlow sourceRef="theStart" targetRef="sendMail" />
+    <startEvent id="theStart"/>
+    <sequenceFlow sourceRef="theStart" targetRef="sendMail"/>
 
     <serviceTask id="sendMail" activiti:type="mail">
       <extensionElements>
         <activiti:field name="to">
-          <activiti:string>kermit@activiti.org, fozzie@activiti.org,mispiggy@activiti.org</activiti:string>
+          <activiti:string>kermit@activiti.org, fozzie@activiti.org,mispiggy@activiti.org
+          </activiti:string>
         </activiti:field>
         <activiti:field name="subject">
           <activiti:string>Hello Kermit!</activiti:string>
@@ -21,9 +22,9 @@
         </activiti:field>
       </extensionElements>
     </serviceTask>
-    <sequenceFlow sourceRef="sendMail" targetRef="theEnd" />
+    <sequenceFlow sourceRef="sendMail" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

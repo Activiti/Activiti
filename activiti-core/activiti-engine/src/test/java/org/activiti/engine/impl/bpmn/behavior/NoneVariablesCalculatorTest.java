@@ -26,7 +26,7 @@ import org.junit.Test;
 
 public class NoneVariablesCalculatorTest {
 
-    private NoneVariablesCalculator variablesCalculator = new NoneVariablesCalculator();
+    private final NoneVariablesCalculator variablesCalculator = new NoneVariablesCalculator();
 
     @Test
     public void calculateOutPutVariables_should_returnEmptyMap() {

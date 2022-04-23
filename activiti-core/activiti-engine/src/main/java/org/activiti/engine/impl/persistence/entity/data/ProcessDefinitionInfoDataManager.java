@@ -19,9 +19,10 @@ package org.activiti.engine.impl.persistence.entity.data;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntity;
 
 /**
-
+ *
  */
 public interface ProcessDefinitionInfoDataManager extends DataManager<ProcessDefinitionInfoEntity> {
 
-  ProcessDefinitionInfoEntity findProcessDefinitionInfoByProcessDefinitionId(String processDefinitionId);
+    ProcessDefinitionInfoEntity findProcessDefinitionInfoByProcessDefinitionId(
+        String processDefinitionId);
 }

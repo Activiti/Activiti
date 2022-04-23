@@ -22,21 +22,20 @@ import org.activiti.engine.delegate.DelegateExecution;
 
 /**
  * A receive task is a wait state that waits for the receival of some message.
- *
- * Currently, the only message that is supported is the external trigger, given by calling the {@link RuntimeService#signal(String)} operation.
- *
-
+ * <p>
+ * Currently, the only message that is supported is the external trigger, given by calling the
+ * {@link RuntimeService#signal(String)} operation.
  */
 public class ReceiveTaskActivityBehavior extends TaskActivityBehavior {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public void execute(DelegateExecution execution) {
-    // Do nothing: waitstate behavior
-  }
+    public void execute(DelegateExecution execution) {
+        // Do nothing: waitstate behavior
+    }
 
-  public void trigger(DelegateExecution execution, String signalName, Object data) {
-    leave(execution);
-  }
+    public void trigger(DelegateExecution execution, String signalName, Object data) {
+        leave(execution);
+    }
 
 }

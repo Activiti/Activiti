@@ -1,5 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.gossinteractive.com/processdef">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+  targetNamespace="http://www.gossinteractive.com/processdef">
   <process id="repeattimertest" name="Repeat Timer Test" isExecutable="true">
     <documentation>Attempt to reproduce timer "bug" seen on demo8</documentation>
     <startEvent id="outerStartEvent"/>
@@ -11,7 +14,7 @@
       <endEvent id="outterSubprocessEnd"/>
       <endEvent id="end1"/>
       <subProcess id="innerSubprocess" name="subProcess">
-        <userTask id="innerUserTask" />
+        <userTask id="innerUserTask"/>
         <startEvent id="innerSubprocessStart" activiti:initiator="initiator"/>
         <endEvent id="innerSubprocessEnd"/>
         <sequenceFlow id="flow3" sourceRef="innerSubprocessStart" targetRef="innerUserTask"/>

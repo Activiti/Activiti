@@ -20,27 +20,27 @@ package org.activiti.engine.impl.persistence.entity;
 import org.activiti.engine.api.internal.Internal;
 
 /**
-
+ *
  */
 @Internal
 public interface EntityManager<EntityImpl extends Entity> {
 
-  EntityImpl create();
+    EntityImpl create();
 
-  EntityImpl findById(String entityId);
+    EntityImpl findById(String entityId);
 
-  void insert(EntityImpl entity);
+    void insert(EntityImpl entity);
 
-  void insert(EntityImpl entity, boolean fireCreateEvent);
+    void insert(EntityImpl entity, boolean fireCreateEvent);
 
-  EntityImpl update(EntityImpl entity);
+    EntityImpl update(EntityImpl entity);
 
-  EntityImpl update(EntityImpl entity, boolean fireUpdateEvent);
+    EntityImpl update(EntityImpl entity, boolean fireUpdateEvent);
 
-  void delete(String id);
+    void delete(String id);
 
-  void delete(EntityImpl entity);
+    void delete(EntityImpl entity);
 
-  void delete(EntityImpl entity, boolean fireDeleteEvent);
+    void delete(EntityImpl entity, boolean fireDeleteEvent);
 
 }

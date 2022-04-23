@@ -11,11 +11,12 @@
 
     <callActivity id="callactivity" calledElement="TrivialSubProcess"></callActivity>
 
-	<sequenceFlow id="flow2" sourceRef="callactivity" targetRef="buzzz"/>
+    <sequenceFlow id="flow2" sourceRef="callactivity" targetRef="buzzz"/>
 
-	<serviceTask id="buzzz" activiti:class="org.activiti.engine.test.transactions.TransactionRollbackTest$Buzzz" />
+    <serviceTask id="buzzz"
+      activiti:class="org.activiti.engine.test.transactions.TransactionRollbackTest$Buzzz"/>
 
-	<sequenceFlow id="flow3" sourceRef="buzzz" targetRef="end"/>
+    <sequenceFlow id="flow3" sourceRef="buzzz" targetRef="end"/>
 
     <endEvent id="end"/>
 

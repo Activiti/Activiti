@@ -21,7 +21,7 @@ import org.activiti.engine.impl.persistence.entity.integration.IntegrationContex
 
 public class DeleteIntegrationContextCmd implements Command<IntegrationContextEntity> {
 
-    private IntegrationContextEntity integrationContext;
+    private final IntegrationContextEntity integrationContext;
 
     public DeleteIntegrationContextCmd(IntegrationContextEntity integrationContext) {
         this.integrationContext = integrationContext;
@@ -29,7 +29,8 @@ public class DeleteIntegrationContextCmd implements Command<IntegrationContextEn
 
     @Override
     public IntegrationContextEntity execute(CommandContext commandContext) {
-        commandContext.getProcessEngineConfiguration().getIntegrationContextManager().delete(integrationContext);
+        commandContext.getProcessEngineConfiguration().getIntegrationContextManager()
+            .delete(integrationContext);
         return integrationContext;
     }
 }

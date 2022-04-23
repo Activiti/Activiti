@@ -22,12 +22,12 @@ import org.activiti.engine.api.internal.Internal;
 @Internal
 public interface HistoricFormPropertyEntity extends HistoricDetailEntity {
 
-  String getPropertyId();
+    String getPropertyId();
 
-  void setPropertyId(String propertyId);
+    void setPropertyId(String propertyId);
 
-  String getPropertyValue();
+    String getPropertyValue();
 
-  void setPropertyValue(String propertyValue);
+    void setPropertyValue(String propertyValue);
 
 }

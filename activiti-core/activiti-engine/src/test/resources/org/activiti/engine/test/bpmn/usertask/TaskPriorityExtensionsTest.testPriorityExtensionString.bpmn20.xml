@@ -5,10 +5,10 @@
   targetNamespace="Examples">
 
   <process id="taskPriorityExtensionString">
-    <startEvent id="start" />
-    <sequenceFlow id="flow1" sourceRef="start" targetRef="task" />
-    <userTask id="task" name="Task with String Priority" activiti:priority="42" />
-    <sequenceFlow id="flow2" sourceRef="task" targetRef="end" />
-    <endEvent id="end" />
+    <startEvent id="start"/>
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="task"/>
+    <userTask id="task" name="Task with String Priority" activiti:priority="42"/>
+    <sequenceFlow id="flow2" sourceRef="task" targetRef="end"/>
+    <endEvent id="end"/>
   </process>
 </definitions>

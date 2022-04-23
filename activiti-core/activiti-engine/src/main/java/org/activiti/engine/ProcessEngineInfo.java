@@ -22,24 +22,24 @@ import org.activiti.engine.api.internal.Internal;
  * Represents information about the initialization of the process engine.
  *
  * @see ProcessEngines
-
  */
 @Internal
 public interface ProcessEngineInfo {
 
-  /**
-   * Returns the name of the process engine.
-   */
-  String getName();
+    /**
+     * Returns the name of the process engine.
+     */
+    String getName();
 
-  /**
-   * Returns the resources the engine was configured from.
-   */
-  String getResourceUrl();
+    /**
+     * Returns the resources the engine was configured from.
+     */
+    String getResourceUrl();
 
-  /**
-   * Returns the exception stacktrace in case an exception occurred while initializing the engine. When no exception occurred, null is returned.
-   */
-  String getException();
+    /**
+     * Returns the exception stacktrace in case an exception occurred while initializing the engine.
+     * When no exception occurred, null is returned.
+     */
+    String getException();
 
 }

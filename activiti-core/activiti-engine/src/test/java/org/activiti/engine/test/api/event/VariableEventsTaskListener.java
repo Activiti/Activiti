@@ -21,13 +21,13 @@ import org.activiti.engine.delegate.TaskListener;
 
 public class VariableEventsTaskListener implements TaskListener {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  @Override
-  public void notify(DelegateTask delegateTask) {
-    delegateTask.setVariableLocal("variable", 123);
-    delegateTask.setVariableLocal("variable", 456);
-    delegateTask.removeVariableLocal("variable");
-  }
+    @Override
+    public void notify(DelegateTask delegateTask) {
+        delegateTask.setVariableLocal("variable", 123);
+        delegateTask.setVariableLocal("variable", 456);
+        delegateTask.removeVariableLocal("variable");
+    }
 
 }

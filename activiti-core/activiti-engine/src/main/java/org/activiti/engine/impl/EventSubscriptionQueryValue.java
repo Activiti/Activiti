@@ -20,34 +20,34 @@ package org.activiti.engine.impl;
 import java.io.Serializable;
 
 /**
-
+ *
  */
 public class EventSubscriptionQueryValue implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String eventType;
-  protected String eventName;
+    protected String eventType;
+    protected String eventName;
 
-  public EventSubscriptionQueryValue(String eventName, String eventType) {
-    this.eventName = eventName;
-    this.eventType = eventType;
-  }
+    public EventSubscriptionQueryValue(String eventName, String eventType) {
+        this.eventName = eventName;
+        this.eventType = eventType;
+    }
 
-  public String getEventType() {
-    return eventType;
-  }
+    public String getEventType() {
+        return eventType;
+    }
 
-  public void setEventType(String eventType) {
-    this.eventType = eventType;
-  }
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
+    }
 
-  public String getEventName() {
-    return eventName;
-  }
+    public String getEventName() {
+        return eventName;
+    }
 
-  public void setEventName(String eventName) {
-    this.eventName = eventName;
-  }
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
 
 }

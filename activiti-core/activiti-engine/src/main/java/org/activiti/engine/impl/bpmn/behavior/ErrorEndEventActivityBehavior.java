@@ -20,30 +20,29 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 
 /**
-
-
+ *
  */
 public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String errorRef;
+    protected String errorRef;
 
-  public ErrorEndEventActivityBehavior(String errorRef) {
-    this.errorRef = errorRef;
-  }
+    public ErrorEndEventActivityBehavior(String errorRef) {
+        this.errorRef = errorRef;
+    }
 
-  @Override
-  public void execute(DelegateExecution execution) {
-    ErrorPropagation.propagateError(errorRef, execution);
-  }
+    @Override
+    public void execute(DelegateExecution execution) {
+        ErrorPropagation.propagateError(errorRef, execution);
+    }
 
-  public String getErrorRef() {
-    return errorRef;
-  }
+    public String getErrorRef() {
+        return errorRef;
+    }
 
-  public void setErrorRef(String errorRef) {
-    this.errorRef = errorRef;
-  }
+    public void setErrorRef(String errorRef) {
+        this.errorRef = errorRef;
+    }
 
 }

@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="definition"
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
 
   <process id="process" name="process1">
 
-    <startEvent id="startevent1" name="Start" />
+    <startEvent id="startevent1" name="Start"/>
 
     <callActivity id="callActivity1" name="Call activity" calledElement="callActivityProcess">
-      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="assignees" activiti:elementVariable="assignee"></multiInstanceLoopCharacteristics>
+      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="assignees"
+        activiti:elementVariable="assignee"></multiInstanceLoopCharacteristics>
     </callActivity>
 
     <boundaryEvent id="boundaryerror1" cancelActivity="true" attachedToRef="callActivity1">
       <errorEventDefinition errorRef="errorId1"></errorEventDefinition>
     </boundaryEvent>
 
-    <sequenceFlow id="flow1" name="" sourceRef="startevent1" targetRef="callActivity1" />
+    <sequenceFlow id="flow1" name="" sourceRef="startevent1" targetRef="callActivity1"/>
 
-    <endEvent id="endevent1" name="End" />
+    <endEvent id="endevent1" name="End"/>
 
     <sequenceFlow id="flow2" name="" sourceRef="callActivity1" targetRef="endevent1"/>
 

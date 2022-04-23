@@ -32,14 +32,11 @@ import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 
 /**
  * Expression implementation backed by a JUEL {@link ValueExpression}.
- *
-
-
  */
 public class JuelExpression implements Expression {
 
-    private String expressionText;
-    private ValueExpression valueExpression;
+    private final String expressionText;
+    private final ValueExpression valueExpression;
 
     public JuelExpression(ValueExpression valueExpression, String expressionText) {
         this.valueExpression = valueExpression;
@@ -49,19 +46,22 @@ public class JuelExpression implements Expression {
     @Override
     public Object getValue(VariableScope variableScope) {
         ELContext elContext = Context.getProcessEngineConfiguration()
-                                     .getExpressionManager()
-                                     .getElContext(variableScope);
-        return getValueFromContext(elContext, Context.getProcessEngineConfiguration().getDelegateInterceptor());
+            .getExpressionManager()
+            .getElContext(variableScope);
+        return getValueFromContext(elContext,
+            Context.getProcessEngineConfiguration().getDelegateInterceptor());
     }
 
     @Override
     public void setValue(Object value, VariableScope variableScope) {
         ELContext elContext = Context.getProcessEngineConfiguration()
-                                     .getExpressionManager()
-                                     .getElContext(variableScope);
+            .getExpressionManager()
+            .getElContext(variableScope);
         try {
-            ExpressionSetInvocation invocation = new ExpressionSetInvocation(valueExpression, elContext, value);
-            Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(invocation);
+            ExpressionSetInvocation invocation = new ExpressionSetInvocation(valueExpression,
+                elContext, value);
+            Context.getProcessEngineConfiguration().getDelegateInterceptor()
+                .handleInvocation(invocation);
         } catch (Exception e) {
             throw new ActivitiException("Error while evaluating expression: " + expressionText, e);
         }
@@ -90,15 +90,19 @@ public class JuelExpression implements Expression {
     private Object getValueFromContext(ELContext elContext,
         DelegateInterceptor delegateInterceptor) {
         try {
-            ExpressionGetInvocation invocation = new ExpressionGetInvocation(valueExpression, elContext);
+            ExpressionGetInvocation invocation = new ExpressionGetInvocation(valueExpression,
+                elContext);
             delegateInterceptor.handleInvocation(invocation);
             return invocation.getInvocationResult();
         } catch (PropertyNotFoundException pnfe) {
-            throw new ActivitiException("Unknown property used in expression: " + expressionText, pnfe);
+            throw new ActivitiException("Unknown property used in expression: " + expressionText,
+                pnfe);
         } catch (MethodNotFoundException mnfe) {
-            throw new ActivitiException("Unknown method used in expression: " + expressionText, mnfe);
+            throw new ActivitiException("Unknown method used in expression: " + expressionText,
+                mnfe);
         } catch (Exception ele) {
-            throw new ActivitiException("Error while evaluating expression: " + expressionText, ele);
+            throw new ActivitiException("Error while evaluating expression: " + expressionText,
+                ele);
         }
     }
 }

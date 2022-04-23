@@ -21,25 +21,24 @@ import org.activiti.engine.delegate.TaskListener;
 
 /**
  * Class handling invocations of {@link TaskListener TaskListeners}
- *
-
  */
 public class TaskListenerInvocation extends DelegateInvocation {
 
-  protected final TaskListener executionListenerInstance;
-  protected final DelegateTask delegateTask;
+    protected final TaskListener executionListenerInstance;
+    protected final DelegateTask delegateTask;
 
-  public TaskListenerInvocation(TaskListener executionListenerInstance, DelegateTask delegateTask) {
-    this.executionListenerInstance = executionListenerInstance;
-    this.delegateTask = delegateTask;
-  }
+    public TaskListenerInvocation(TaskListener executionListenerInstance,
+        DelegateTask delegateTask) {
+        this.executionListenerInstance = executionListenerInstance;
+        this.delegateTask = delegateTask;
+    }
 
-  protected void invoke() {
-    executionListenerInstance.notify(delegateTask);
-  }
+    protected void invoke() {
+        executionListenerInstance.notify(delegateTask);
+    }
 
-  public Object getTarget() {
-    return executionListenerInstance;
-  }
+    public Object getTarget() {
+        return executionListenerInstance;
+    }
 
 }

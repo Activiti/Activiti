@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -33,7 +32,8 @@ public class GetExecutionVariableInstanceCmd implements Command<VariableInstance
     protected String variableName;
     protected boolean isLocal;
 
-    public GetExecutionVariableInstanceCmd(String executionId, String variableName, boolean isLocal) {
+    public GetExecutionVariableInstanceCmd(String executionId, String variableName,
+        boolean isLocal) {
         this.executionId = executionId;
         this.variableName = variableName;
         this.isLocal = isLocal;
@@ -48,13 +48,15 @@ public class GetExecutionVariableInstanceCmd implements Command<VariableInstance
             throw new ActivitiIllegalArgumentException("variableName is null");
         }
 
-        ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
+        ExecutionEntity execution = commandContext.getExecutionEntityManager()
+            .findById(executionId);
 
         if (execution == null) {
-            throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
+            throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist",
+                Execution.class);
         }
 
-        VariableInstance variableEntity = getVariable(execution,commandContext);
+        VariableInstance variableEntity = getVariable(execution, commandContext);
 
         if (variableEntity != null) {
             variableEntity.getValue();
@@ -63,7 +65,8 @@ public class GetExecutionVariableInstanceCmd implements Command<VariableInstance
         return variableEntity;
     }
 
-    protected VariableInstance getVariable(ExecutionEntity execution,CommandContext commandContext){
+    protected VariableInstance getVariable(ExecutionEntity execution,
+        CommandContext commandContext) {
         VariableInstance variableEntity = null;
         if (isLocal) {
             variableEntity = execution.getVariableInstanceLocal(variableName, false);

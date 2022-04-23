@@ -6,13 +6,13 @@
 
   <process id="mockSupportTest">
 
-    <startEvent id="start" />
-    <sequenceFlow id="flow1" sourceRef="start" targetRef="serviceTask" />
+    <startEvent id="start"/>
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="serviceTask"/>
 
     <serviceTask id="serviceTask" activiti:class="com.yourcompany.anotherDelegate"/>
-    <sequenceFlow id="flow2" sourceRef="serviceTask" targetRef="theEnd" />
+    <sequenceFlow id="flow2" sourceRef="serviceTask" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

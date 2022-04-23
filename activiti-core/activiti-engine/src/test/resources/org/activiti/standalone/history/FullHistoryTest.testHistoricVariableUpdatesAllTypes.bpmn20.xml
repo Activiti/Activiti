@@ -7,16 +7,16 @@
 
   <process id="HistoricVariableUpdateProcess">
 
-    <startEvent id="start" />
-    <sequenceFlow id="flow1" sourceRef="start" targetRef="setVariables" />
+    <startEvent id="start"/>
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="setVariables"/>
 
-    <serviceTask id="setVariables" activiti:class="org.activiti.standalone.history.VariableSetter" />
-    <sequenceFlow id="flow2" sourceRef="setVariables" targetRef="task" />
+    <serviceTask id="setVariables" activiti:class="org.activiti.standalone.history.VariableSetter"/>
+    <sequenceFlow id="flow2" sourceRef="setVariables" targetRef="task"/>
 
-    <userTask id="task" name="Schedule meeting" activiti:assignee="kermit" />
-    <sequenceFlow id="flow3" sourceRef="task" targetRef="end" />
+    <userTask id="task" name="Schedule meeting" activiti:assignee="kermit"/>
+    <sequenceFlow id="flow3" sourceRef="task" targetRef="end"/>
 
-    <endEvent id="end" />
+    <endEvent id="end"/>
 
   </process>
 

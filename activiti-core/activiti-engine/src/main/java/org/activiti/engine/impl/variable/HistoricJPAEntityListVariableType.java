@@ -18,21 +18,20 @@
 package org.activiti.engine.impl.variable;
 
 /**
- * Subclass of {@link JPAEntityListVariableType} which is cacheable, unlike the super-class. This is used when fetching historic variables
- *
-
+ * Subclass of {@link JPAEntityListVariableType} which is cacheable, unlike the super-class. This is
+ * used when fetching historic variables
  */
 public class HistoricJPAEntityListVariableType extends JPAEntityListVariableType {
 
-  private static final HistoricJPAEntityListVariableType INSTANCE = new HistoricJPAEntityListVariableType();
+    private static final HistoricJPAEntityListVariableType INSTANCE = new HistoricJPAEntityListVariableType();
 
-  @Override
-  public boolean isCachable() {
-    return true;
-  }
+    @Override
+    public boolean isCachable() {
+        return true;
+    }
 
-  public static HistoricJPAEntityListVariableType getSharedInstance() {
-    return INSTANCE;
-  }
+    public static HistoricJPAEntityListVariableType getSharedInstance() {
+        return INSTANCE;
+    }
 
 }

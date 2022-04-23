@@ -7,23 +7,25 @@
 
   <process id="testSkipExpression">
 
-    <startEvent id="theStart" />
+    <startEvent id="theStart"/>
 
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="task1" activiti:skipExpression="${skipLeft}">
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="task1"
+      activiti:skipExpression="${skipLeft}">
       <conditionExpression xsi:type="tFormalExpression">
-         <![CDATA[${input == 'left'}]]>
+        <![CDATA[${input == 'left'}]]>
       </conditionExpression>
     </sequenceFlow>
 
-    <sequenceFlow id="flow2" sourceRef="theStart" targetRef="task2" activiti:skipExpression="${skipRight}">
+    <sequenceFlow id="flow2" sourceRef="theStart" targetRef="task2"
+      activiti:skipExpression="${skipRight}">
       <conditionExpression xsi:type="tFormalExpression">
-         <![CDATA[${input == 'right'}]]>
+        <![CDATA[${input == 'right'}]]>
       </conditionExpression>
     </sequenceFlow>
 
-    <userTask id="task1" name="task left" />
+    <userTask id="task1" name="task left"/>
 
-    <userTask id="task2" name="task right" />
+    <userTask id="task2" name="task right"/>
 
   </process>
 

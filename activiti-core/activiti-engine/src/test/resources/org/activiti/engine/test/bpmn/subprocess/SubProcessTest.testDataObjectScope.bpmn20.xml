@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsd="http://www.w3.org/2001/XMLSchema" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+  typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+  targetNamespace="http://www.activiti.org/test">
   <process id="dataObjectScope" name="Data Object Scope" isExecutable="true">
     <dataObject id="dObj123" name="StringTest123" itemSubjectRef="xsd:string">
       <extensionElements>
@@ -16,9 +22,9 @@
     <subProcess id="subprocess1" name="subProcess">
       <dataObject id="dObj456" name="StringTest456" itemSubjectRef="xsd:string">
         <extensionElements>
-        	<activiti:value>Testing456</activiti:value>
+          <activiti:value>Testing456</activiti:value>
         </extensionElements>
-	  </dataObject>
+      </dataObject>
       <userTask id="userTask2" name="Complete SubTask" activiti:assignee="kermit"></userTask>
       <endEvent id="end2"></endEvent>
       <startEvent id="start2"></startEvent>

@@ -16,7 +16,6 @@
 package org.activiti.engine.impl.agenda;
 
 import java.util.Collection;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntity;
@@ -35,19 +34,18 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 
 /**
- * Destroys a scope (for example a subprocess): this means that all child executions,
- * tasks, jobs, variables, etc within that scope are deleted.
+ * Destroys a scope (for example a subprocess): this means that all child executions, tasks, jobs,
+ * variables, etc within that scope are deleted.
  * <p>
- * The typical example is an interrupting boundary event that is on the boundary
- * of a subprocess and is triggered. At that point, everything within the subprocess would
- * need to be destroyed.
+ * The typical example is an interrupting boundary event that is on the boundary of a subprocess and
+ * is triggered. At that point, everything within the subprocess would need to be destroyed.
  */
 public class DestroyScopeOperation extends AbstractOperation {
 
     public DestroyScopeOperation(CommandContext commandContext,
-                                 ExecutionEntity execution) {
+        ExecutionEntity execution) {
         super(commandContext,
-              execution);
+            execution);
     }
 
     @Override
@@ -57,88 +55,98 @@ public class DestroyScopeOperation extends AbstractOperation {
         // This could be the incoming execution, or the first parent execution where isScope = true
 
         // Find parent scope execution
-        ExecutionEntity scopeExecution = execution.isScope() ? execution : findFirstParentScopeExecution(execution);
+        ExecutionEntity scopeExecution =
+            execution.isScope() ? execution : findFirstParentScopeExecution(execution);
 
         if (scopeExecution == null) {
-            throw new ActivitiException("Programmatic error: no parent scope execution found for boundary event");
+            throw new ActivitiException(
+                "Programmatic error: no parent scope execution found for boundary event");
         }
 
         ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
         deleteAllChildExecutions(executionEntityManager,
-                                 scopeExecution);
+            scopeExecution);
 
         // Delete all scope tasks
         TaskEntityManager taskEntityManager = commandContext.getTaskEntityManager();
         deleteAllScopeTasks(scopeExecution,
-                            taskEntityManager);
+            taskEntityManager);
 
         // Delete all scope jobs
         TimerJobEntityManager timerJobEntityManager = commandContext.getTimerJobEntityManager();
         deleteAllScopeJobs(scopeExecution,
-                           timerJobEntityManager);
-
+            timerJobEntityManager);
 
         // Remove variables associated with this scope
         VariableInstanceEntityManager variableInstanceEntityManager = commandContext.getVariableInstanceEntityManager();
         removeAllVariablesFromScope(scopeExecution,
-                                    variableInstanceEntityManager);
+            variableInstanceEntityManager);
 
         commandContext.getHistoryManager().recordActivityEnd(scopeExecution,
-                                                             scopeExecution.getDeleteReason());
+            scopeExecution.getDeleteReason());
         executionEntityManager.delete(scopeExecution);
     }
 
     private void removeAllVariablesFromScope(ExecutionEntity scopeExecution,
-                                             VariableInstanceEntityManager variableInstanceEntityManager) {
-        Collection<VariableInstanceEntity> variablesForExecution = variableInstanceEntityManager.findVariableInstancesByExecutionId(scopeExecution.getId());
+        VariableInstanceEntityManager variableInstanceEntityManager) {
+        Collection<VariableInstanceEntity> variablesForExecution = variableInstanceEntityManager.findVariableInstancesByExecutionId(
+            scopeExecution.getId());
         for (VariableInstanceEntity variable : variablesForExecution) {
             variableInstanceEntityManager.delete(variable);
         }
     }
 
     private void deleteAllScopeJobs(ExecutionEntity scopeExecution,
-                                    TimerJobEntityManager timerJobEntityManager) {
-        Collection<TimerJobEntity> timerJobsForExecution = timerJobEntityManager.findJobsByExecutionId(scopeExecution.getId());
+        TimerJobEntityManager timerJobEntityManager) {
+        Collection<TimerJobEntity> timerJobsForExecution = timerJobEntityManager.findJobsByExecutionId(
+            scopeExecution.getId());
         for (TimerJobEntity job : timerJobsForExecution) {
             timerJobEntityManager.delete(job);
         }
 
         JobEntityManager jobEntityManager = commandContext.getJobEntityManager();
-        Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(scopeExecution.getId());
+        Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(
+            scopeExecution.getId());
         for (JobEntity job : jobsForExecution) {
             jobEntityManager.delete(job);
         }
 
         SuspendedJobEntityManager suspendedJobEntityManager = commandContext.getSuspendedJobEntityManager();
-        Collection<SuspendedJobEntity> suspendedJobsForExecution = suspendedJobEntityManager.findJobsByExecutionId(scopeExecution.getId());
+        Collection<SuspendedJobEntity> suspendedJobsForExecution = suspendedJobEntityManager.findJobsByExecutionId(
+            scopeExecution.getId());
         for (SuspendedJobEntity job : suspendedJobsForExecution) {
             suspendedJobEntityManager.delete(job);
         }
 
         DeadLetterJobEntityManager deadLetterJobEntityManager = commandContext.getDeadLetterJobEntityManager();
-        Collection<DeadLetterJobEntity> deadLetterJobsForExecution = deadLetterJobEntityManager.findJobsByExecutionId(scopeExecution.getId());
+        Collection<DeadLetterJobEntity> deadLetterJobsForExecution = deadLetterJobEntityManager.findJobsByExecutionId(
+            scopeExecution.getId());
         for (DeadLetterJobEntity job : deadLetterJobsForExecution) {
             deadLetterJobEntityManager.delete(job);
         }
     }
 
     private void deleteAllScopeTasks(ExecutionEntity scopeExecution,
-                                     TaskEntityManager taskEntityManager) {
-        Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(scopeExecution.getId());
+        TaskEntityManager taskEntityManager) {
+        Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(
+            scopeExecution.getId());
         for (TaskEntity taskEntity : tasksForExecution) {
             taskEntityManager.deleteTask(taskEntity,
-                                         execution.getDeleteReason(),
-                                         false,
-                                         false);
+                execution.getDeleteReason(),
+                false,
+                false);
         }
     }
 
-    private ExecutionEntityManager deleteAllChildExecutions(ExecutionEntityManager executionEntityManager,
-                                                            ExecutionEntity scopeExecution) {
+    private ExecutionEntityManager deleteAllChildExecutions(
+        ExecutionEntityManager executionEntityManager,
+        ExecutionEntity scopeExecution) {
         // Delete all child executions
-        Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(scopeExecution.getId());
+        Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(
+            scopeExecution.getId());
         for (ExecutionEntity childExecution : childExecutions) {
-            executionEntityManager.deleteExecutionAndRelatedData(childExecution, execution.getDeleteReason());
+            executionEntityManager.deleteExecutionAndRelatedData(childExecution,
+                execution.getDeleteReason());
         }
         return executionEntityManager;
     }

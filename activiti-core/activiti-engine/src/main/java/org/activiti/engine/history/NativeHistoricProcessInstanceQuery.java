@@ -20,9 +20,9 @@ import org.activiti.engine.query.NativeQuery;
 
 /**
  * Allows querying of {@link HistoricTaskInstanceQuery}s via native (SQL) queries
- *
  */
 @Internal
-public interface NativeHistoricProcessInstanceQuery extends NativeQuery<NativeHistoricProcessInstanceQuery, HistoricProcessInstance> {
+public interface NativeHistoricProcessInstanceQuery extends
+    NativeQuery<NativeHistoricProcessInstanceQuery, HistoricProcessInstance> {
 
 }

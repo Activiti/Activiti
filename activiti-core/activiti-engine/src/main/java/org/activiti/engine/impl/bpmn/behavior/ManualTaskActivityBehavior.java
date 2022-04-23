@@ -18,14 +18,13 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 /**
- * Implementation of the BPMN 2.0 'manual task': a task that is external to the BPMS and to which there is no reference to IT systems whatsoever.
- *
+ * Implementation of the BPMN 2.0 'manual task': a task that is external to the BPMS and to which
+ * there is no reference to IT systems whatsoever.
+ * <p>
  * Given this definition, this activity will behave simply as a pass-though step in the process.
- *
-
  */
 public class ManualTaskActivityBehavior extends TaskActivityBehavior {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 }

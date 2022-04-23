@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.agenda;
 
 import java.util.LinkedList;
-
 import org.activiti.engine.ActivitiEngineAgenda;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -26,8 +25,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
-
-
+ *
  */
 public class DefaultActivitiEngineAgenda implements ActivitiEngineAgenda {
 
@@ -37,7 +35,7 @@ public class DefaultActivitiEngineAgenda implements ActivitiEngineAgenda {
     protected CommandContext commandContext;
 
     public DefaultActivitiEngineAgenda(CommandContext commandContext) {
-      this.commandContext = commandContext;
+        this.commandContext = commandContext;
     }
 
     @Override
@@ -88,8 +86,10 @@ public class DefaultActivitiEngineAgenda implements ActivitiEngineAgenda {
     }
 
     @Override
-    public void planTakeOutgoingSequenceFlowsOperation(ExecutionEntity execution, boolean evaluateConditions) {
-        planOperation(new TakeOutgoingSequenceFlowsOperation(commandContext, execution, evaluateConditions));
+    public void planTakeOutgoingSequenceFlowsOperation(ExecutionEntity execution,
+        boolean evaluateConditions) {
+        planOperation(
+            new TakeOutgoingSequenceFlowsOperation(commandContext, execution, evaluateConditions));
     }
 
     @Override

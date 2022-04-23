@@ -6,20 +6,20 @@
 
   <process id="asyncScript">
 
-    <startEvent id="theStart" />
-    <sequenceFlow sourceRef="theStart" targetRef="script" />
+    <startEvent id="theStart"/>
+    <sequenceFlow sourceRef="theStart" targetRef="script"/>
 
     <scriptTask id="script" activiti:async="true" scriptFormat="juel">
-    	<script>#{execution.setVariable('invoked','true')}</script>
+      <script>#{execution.setVariable('invoked','true')}</script>
     </scriptTask>
 
-    <sequenceFlow sourceRef="script" targetRef="wait" />
+    <sequenceFlow sourceRef="script" targetRef="wait"/>
 
-    <receiveTask id="wait" />
+    <receiveTask id="wait"/>
 
-    <sequenceFlow sourceRef="wait" targetRef="theEnd" />
+    <sequenceFlow sourceRef="wait" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

@@ -6,9 +6,9 @@
 
   <process id="customIdentityLink">
 
-    <startEvent id="theStart" />
+    <startEvent id="theStart"/>
 
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask"/>
 
     <userTask id="theTask" name="make profit">
       <extensionElements>
@@ -20,9 +20,9 @@
       </extensionElements>
     </userTask>
 
-    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
+    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

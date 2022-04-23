@@ -18,7 +18,6 @@
 package org.activiti.engine.impl;
 
 import java.util.List;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -26,262 +25,263 @@ import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
 
 /**
-
-
+ *
  */
 public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements ModelQuery {
 
-  private static final long serialVersionUID = 1L;
-  protected String id;
-  protected String category;
-  protected String categoryLike;
-  protected String categoryNotEquals;
-  protected String name;
-  protected String nameLike;
-  protected String key;
-  protected Integer version;
-  protected boolean latest;
-  protected String deploymentId;
-  protected boolean notDeployed;
-  protected boolean deployed;
-  protected String tenantId;
-  protected String tenantIdLike;
-  protected boolean withoutTenantId;
+    private static final long serialVersionUID = 1L;
+    protected String id;
+    protected String category;
+    protected String categoryLike;
+    protected String categoryNotEquals;
+    protected String name;
+    protected String nameLike;
+    protected String key;
+    protected Integer version;
+    protected boolean latest;
+    protected String deploymentId;
+    protected boolean notDeployed;
+    protected boolean deployed;
+    protected String tenantId;
+    protected String tenantIdLike;
+    protected boolean withoutTenantId;
 
-  public ModelQueryImpl() {
-  }
-
-  public ModelQueryImpl(CommandContext commandContext) {
-    super(commandContext);
-  }
-
-  public ModelQueryImpl(CommandExecutor commandExecutor) {
-    super(commandExecutor);
-  }
-
-  public ModelQueryImpl modelId(String modelId) {
-    this.id = modelId;
-    return this;
-  }
-
-  public ModelQueryImpl modelCategory(String category) {
-    if (category == null) {
-      throw new ActivitiIllegalArgumentException("category is null");
+    public ModelQueryImpl() {
     }
-    this.category = category;
-    return this;
-  }
 
-  public ModelQueryImpl modelCategoryLike(String categoryLike) {
-    if (categoryLike == null) {
-      throw new ActivitiIllegalArgumentException("categoryLike is null");
+    public ModelQueryImpl(CommandContext commandContext) {
+        super(commandContext);
     }
-    this.categoryLike = categoryLike;
-    return this;
-  }
 
-  public ModelQueryImpl modelCategoryNotEquals(String categoryNotEquals) {
-    if (categoryNotEquals == null) {
-      throw new ActivitiIllegalArgumentException("categoryNotEquals is null");
+    public ModelQueryImpl(CommandExecutor commandExecutor) {
+        super(commandExecutor);
     }
-    this.categoryNotEquals = categoryNotEquals;
-    return this;
-  }
 
-  public ModelQueryImpl modelName(String name) {
-    if (name == null) {
-      throw new ActivitiIllegalArgumentException("name is null");
+    public ModelQueryImpl modelId(String modelId) {
+        this.id = modelId;
+        return this;
     }
-    this.name = name;
-    return this;
-  }
 
-  public ModelQueryImpl modelNameLike(String nameLike) {
-    if (nameLike == null) {
-      throw new ActivitiIllegalArgumentException("nameLike is null");
+    public ModelQueryImpl modelCategory(String category) {
+        if (category == null) {
+            throw new ActivitiIllegalArgumentException("category is null");
+        }
+        this.category = category;
+        return this;
     }
-    this.nameLike = nameLike;
-    return this;
-  }
 
-  public ModelQuery modelKey(String key) {
-    if (key == null) {
-      throw new ActivitiIllegalArgumentException("key is null");
+    public ModelQueryImpl modelCategoryLike(String categoryLike) {
+        if (categoryLike == null) {
+            throw new ActivitiIllegalArgumentException("categoryLike is null");
+        }
+        this.categoryLike = categoryLike;
+        return this;
     }
-    this.key = key;
-    return this;
-  }
 
-  public ModelQueryImpl modelVersion(Integer version) {
-    if (version == null) {
-      throw new ActivitiIllegalArgumentException("version is null");
-    } else if (version <= 0) {
-      throw new ActivitiIllegalArgumentException("version must be positive");
+    public ModelQueryImpl modelCategoryNotEquals(String categoryNotEquals) {
+        if (categoryNotEquals == null) {
+            throw new ActivitiIllegalArgumentException("categoryNotEquals is null");
+        }
+        this.categoryNotEquals = categoryNotEquals;
+        return this;
     }
-    this.version = version;
-    return this;
-  }
 
-  public ModelQuery latestVersion() {
-    this.latest = true;
-    return this;
-  }
-
-  public ModelQuery deploymentId(String deploymentId) {
-    if (deploymentId == null) {
-      throw new ActivitiIllegalArgumentException("DeploymentId is null");
+    public ModelQueryImpl modelName(String name) {
+        if (name == null) {
+            throw new ActivitiIllegalArgumentException("name is null");
+        }
+        this.name = name;
+        return this;
     }
-    this.deploymentId = deploymentId;
-    return this;
-  }
 
-  public ModelQuery notDeployed() {
-    if (deployed) {
-      throw new ActivitiIllegalArgumentException("Invalid usage: cannot use deployed() and notDeployed() in the same query");
+    public ModelQueryImpl modelNameLike(String nameLike) {
+        if (nameLike == null) {
+            throw new ActivitiIllegalArgumentException("nameLike is null");
+        }
+        this.nameLike = nameLike;
+        return this;
     }
-    this.notDeployed = true;
-    return this;
-  }
 
-  public ModelQuery deployed() {
-    if (notDeployed) {
-      throw new ActivitiIllegalArgumentException("Invalid usage: cannot use deployed() and notDeployed() in the same query");
+    public ModelQuery modelKey(String key) {
+        if (key == null) {
+            throw new ActivitiIllegalArgumentException("key is null");
+        }
+        this.key = key;
+        return this;
     }
-    this.deployed = true;
-    return this;
-  }
 
-  public ModelQuery modelTenantId(String tenantId) {
-    if (tenantId == null) {
-      throw new ActivitiIllegalArgumentException("Model tenant id is null");
+    public ModelQueryImpl modelVersion(Integer version) {
+        if (version == null) {
+            throw new ActivitiIllegalArgumentException("version is null");
+        } else if (version <= 0) {
+            throw new ActivitiIllegalArgumentException("version must be positive");
+        }
+        this.version = version;
+        return this;
     }
-    this.tenantId = tenantId;
-    return this;
-  }
 
-  public ModelQuery modelTenantIdLike(String tenantIdLike) {
-    if (tenantIdLike == null) {
-      throw new ActivitiIllegalArgumentException("Model tenant id is null");
+    public ModelQuery latestVersion() {
+        this.latest = true;
+        return this;
     }
-    this.tenantIdLike = tenantIdLike;
-    return this;
-  }
 
-  public ModelQuery modelWithoutTenantId() {
-    this.withoutTenantId = true;
-    return this;
-  }
+    public ModelQuery deploymentId(String deploymentId) {
+        if (deploymentId == null) {
+            throw new ActivitiIllegalArgumentException("DeploymentId is null");
+        }
+        this.deploymentId = deploymentId;
+        return this;
+    }
 
-  // sorting ////////////////////////////////////////////
+    public ModelQuery notDeployed() {
+        if (deployed) {
+            throw new ActivitiIllegalArgumentException(
+                "Invalid usage: cannot use deployed() and notDeployed() in the same query");
+        }
+        this.notDeployed = true;
+        return this;
+    }
 
-  public ModelQuery orderByModelCategory() {
-    return orderBy(ModelQueryProperty.MODEL_CATEGORY);
-  }
+    public ModelQuery deployed() {
+        if (notDeployed) {
+            throw new ActivitiIllegalArgumentException(
+                "Invalid usage: cannot use deployed() and notDeployed() in the same query");
+        }
+        this.deployed = true;
+        return this;
+    }
 
-  public ModelQuery orderByModelId() {
-    return orderBy(ModelQueryProperty.MODEL_ID);
-  }
+    public ModelQuery modelTenantId(String tenantId) {
+        if (tenantId == null) {
+            throw new ActivitiIllegalArgumentException("Model tenant id is null");
+        }
+        this.tenantId = tenantId;
+        return this;
+    }
 
-  public ModelQuery orderByModelKey() {
-    return orderBy(ModelQueryProperty.MODEL_KEY);
-  }
+    public ModelQuery modelTenantIdLike(String tenantIdLike) {
+        if (tenantIdLike == null) {
+            throw new ActivitiIllegalArgumentException("Model tenant id is null");
+        }
+        this.tenantIdLike = tenantIdLike;
+        return this;
+    }
 
-  public ModelQuery orderByModelVersion() {
-    return orderBy(ModelQueryProperty.MODEL_VERSION);
-  }
+    public ModelQuery modelWithoutTenantId() {
+        this.withoutTenantId = true;
+        return this;
+    }
 
-  public ModelQuery orderByModelName() {
-    return orderBy(ModelQueryProperty.MODEL_NAME);
-  }
+    // sorting ////////////////////////////////////////////
 
-  public ModelQuery orderByCreateTime() {
-    return orderBy(ModelQueryProperty.MODEL_CREATE_TIME);
-  }
+    public ModelQuery orderByModelCategory() {
+        return orderBy(ModelQueryProperty.MODEL_CATEGORY);
+    }
 
-  public ModelQuery orderByLastUpdateTime() {
-    return orderBy(ModelQueryProperty.MODEL_LAST_UPDATE_TIME);
-  }
+    public ModelQuery orderByModelId() {
+        return orderBy(ModelQueryProperty.MODEL_ID);
+    }
 
-  public ModelQuery orderByTenantId() {
-    return orderBy(ModelQueryProperty.MODEL_TENANT_ID);
-  }
+    public ModelQuery orderByModelKey() {
+        return orderBy(ModelQueryProperty.MODEL_KEY);
+    }
 
-  // results ////////////////////////////////////////////
+    public ModelQuery orderByModelVersion() {
+        return orderBy(ModelQueryProperty.MODEL_VERSION);
+    }
 
-  public long executeCount(CommandContext commandContext) {
-    checkQueryOk();
-    return commandContext.getModelEntityManager().findModelCountByQueryCriteria(this);
-  }
+    public ModelQuery orderByModelName() {
+        return orderBy(ModelQueryProperty.MODEL_NAME);
+    }
 
-  public List<Model> executeList(CommandContext commandContext, Page page) {
-    checkQueryOk();
-    return commandContext.getModelEntityManager().findModelsByQueryCriteria(this, page);
-  }
+    public ModelQuery orderByCreateTime() {
+        return orderBy(ModelQueryProperty.MODEL_CREATE_TIME);
+    }
 
-  // getters ////////////////////////////////////////////
+    public ModelQuery orderByLastUpdateTime() {
+        return orderBy(ModelQueryProperty.MODEL_LAST_UPDATE_TIME);
+    }
 
-  public String getId() {
-    return id;
-  }
+    public ModelQuery orderByTenantId() {
+        return orderBy(ModelQueryProperty.MODEL_TENANT_ID);
+    }
 
-  public String getName() {
-    return name;
-  }
+    // results ////////////////////////////////////////////
 
-  public String getNameLike() {
-    return nameLike;
-  }
+    public long executeCount(CommandContext commandContext) {
+        checkQueryOk();
+        return commandContext.getModelEntityManager().findModelCountByQueryCriteria(this);
+    }
 
-  public Integer getVersion() {
-    return version;
-  }
+    public List<Model> executeList(CommandContext commandContext, Page page) {
+        checkQueryOk();
+        return commandContext.getModelEntityManager().findModelsByQueryCriteria(this, page);
+    }
 
-  public String getCategory() {
-    return category;
-  }
+    // getters ////////////////////////////////////////////
 
-  public String getCategoryLike() {
-    return categoryLike;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public String getCategoryNotEquals() {
-    return categoryNotEquals;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public static long getSerialversionuid() {
-    return serialVersionUID;
-  }
+    public String getNameLike() {
+        return nameLike;
+    }
 
-  public String getKey() {
-    return key;
-  }
+    public Integer getVersion() {
+        return version;
+    }
 
-  public boolean isLatest() {
-    return latest;
-  }
+    public String getCategory() {
+        return category;
+    }
 
-  public String getDeploymentId() {
-    return deploymentId;
-  }
+    public String getCategoryLike() {
+        return categoryLike;
+    }
 
-  public boolean isNotDeployed() {
-    return notDeployed;
-  }
+    public String getCategoryNotEquals() {
+        return categoryNotEquals;
+    }
 
-  public boolean isDeployed() {
-    return deployed;
-  }
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
 
-  public String getTenantId() {
-    return tenantId;
-  }
+    public String getKey() {
+        return key;
+    }
 
-  public String getTenantIdLike() {
-    return tenantIdLike;
-  }
+    public boolean isLatest() {
+        return latest;
+    }
 
-  public boolean isWithoutTenantId() {
-    return withoutTenantId;
-  }
+    public String getDeploymentId() {
+        return deploymentId;
+    }
+
+    public boolean isNotDeployed() {
+        return notDeployed;
+    }
+
+    public boolean isDeployed() {
+        return deployed;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public String getTenantIdLike() {
+        return tenantIdLike;
+    }
+
+    public boolean isWithoutTenantId() {
+        return withoutTenantId;
+    }
 
 }

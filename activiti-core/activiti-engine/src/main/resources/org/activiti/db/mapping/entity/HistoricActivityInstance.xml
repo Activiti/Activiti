@@ -14,169 +14,178 @@
   ~ limitations under the License.
   -->
 
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityImpl">
 
   <!-- HISTORIC ACTIVITY INSTANCE INSERT -->
 
-  <insert id="insertHistoricActivityInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityImpl">
-      insert into ${prefix}ACT_HI_ACTINST (
-        ID_,
-        PROC_DEF_ID_,
-        PROC_INST_ID_,
-        EXECUTION_ID_,
-        ACT_ID_,
-        TASK_ID_,
-        CALL_PROC_INST_ID_,
-        ACT_NAME_,
-        ACT_TYPE_,
-        ASSIGNEE_,
-        START_TIME_,
-        END_TIME_,
-        DURATION_,
-        DELETE_REASON_,
-        TENANT_ID_
-      ) values (
-        #{id ,jdbcType=VARCHAR},
-        #{processDefinitionId, jdbcType=VARCHAR},
-        #{processInstanceId, jdbcType=VARCHAR},
-        #{executionId, jdbcType=VARCHAR},
-        #{activityId ,jdbcType=VARCHAR},
-        #{taskId ,jdbcType=VARCHAR},
-        #{calledProcessInstanceId ,jdbcType=VARCHAR},
-        #{activityName ,jdbcType=VARCHAR},
-        #{activityType ,jdbcType=VARCHAR},
-        #{assignee ,jdbcType=VARCHAR},
-        #{startTime, jdbcType=TIMESTAMP},
-        #{endTime, jdbcType=TIMESTAMP},
-        #{durationInMillis ,jdbcType=BIGINT},
-        #{deleteReason, jdbcType=VARCHAR},
-        #{tenantId, jdbcType=VARCHAR}
-      )
+  <insert id="insertHistoricActivityInstance"
+    parameterType="org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityImpl">
+    insert into ${prefix}ACT_HI_ACTINST (ID_,
+                                         PROC_DEF_ID_,
+                                         PROC_INST_ID_,
+                                         EXECUTION_ID_,
+                                         ACT_ID_,
+                                         TASK_ID_,
+                                         CALL_PROC_INST_ID_,
+                                         ACT_NAME_,
+                                         ACT_TYPE_,
+                                         ASSIGNEE_,
+                                         START_TIME_,
+                                         END_TIME_,
+                                         DURATION_,
+                                         DELETE_REASON_,
+                                         TENANT_ID_)
+    values (#{id ,jdbcType=VARCHAR},
+            #{processDefinitionId, jdbcType=VARCHAR},
+            #{processInstanceId, jdbcType=VARCHAR},
+            #{executionId, jdbcType=VARCHAR},
+            #{activityId ,jdbcType=VARCHAR},
+            #{taskId ,jdbcType=VARCHAR},
+            #{calledProcessInstanceId ,jdbcType=VARCHAR},
+            #{activityName ,jdbcType=VARCHAR},
+            #{activityType ,jdbcType=VARCHAR},
+            #{assignee ,jdbcType=VARCHAR},
+            #{startTime, jdbcType=TIMESTAMP},
+            #{endTime, jdbcType=TIMESTAMP},
+            #{durationInMillis ,jdbcType=BIGINT},
+            #{deleteReason, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR})
   </insert>
 
   <insert id="bulkInsertHistoricActivityInstance" parameterType="java.util.List">
-      insert into ${prefix}ACT_HI_ACTINST (
-        ID_,
-        PROC_DEF_ID_,
-        PROC_INST_ID_,
-        EXECUTION_ID_,
-        ACT_ID_,
-        TASK_ID_,
-        CALL_PROC_INST_ID_,
-        ACT_NAME_,
-        ACT_TYPE_,
-        ASSIGNEE_,
-        START_TIME_,
-        END_TIME_,
-        DURATION_,
-        DELETE_REASON_,
-        TENANT_ID_
-      ) values
-      <foreach collection="list" item="historicActivityInstance" index="index" separator=",">
-         (#{historicActivityInstance.id ,jdbcType=VARCHAR},
-          #{historicActivityInstance.processDefinitionId, jdbcType=VARCHAR},
-          #{historicActivityInstance.processInstanceId, jdbcType=VARCHAR},
-          #{historicActivityInstance.executionId, jdbcType=VARCHAR},
-          #{historicActivityInstance.activityId ,jdbcType=VARCHAR},
-          #{historicActivityInstance.taskId ,jdbcType=VARCHAR},
-          #{historicActivityInstance.calledProcessInstanceId ,jdbcType=VARCHAR},
-          #{historicActivityInstance.activityName ,jdbcType=VARCHAR},
-          #{historicActivityInstance.activityType ,jdbcType=VARCHAR},
-          #{historicActivityInstance.assignee ,jdbcType=VARCHAR},
-          #{historicActivityInstance.startTime, jdbcType=TIMESTAMP},
-          #{historicActivityInstance.endTime, jdbcType=TIMESTAMP},
-          #{historicActivityInstance.durationInMillis ,jdbcType=BIGINT},
-          #{historicActivityInstance.deleteReason ,jdbcType=VARCHAR},
-          #{historicActivityInstance.tenantId, jdbcType=VARCHAR})
-      </foreach>
+    insert into ${prefix}ACT_HI_ACTINST (
+    ID_,
+    PROC_DEF_ID_,
+    PROC_INST_ID_,
+    EXECUTION_ID_,
+    ACT_ID_,
+    TASK_ID_,
+    CALL_PROC_INST_ID_,
+    ACT_NAME_,
+    ACT_TYPE_,
+    ASSIGNEE_,
+    START_TIME_,
+    END_TIME_,
+    DURATION_,
+    DELETE_REASON_,
+    TENANT_ID_
+    ) values
+    <foreach collection="list" item="historicActivityInstance" index="index" separator=",">
+      (#{historicActivityInstance.id ,jdbcType=VARCHAR},
+      #{historicActivityInstance.processDefinitionId, jdbcType=VARCHAR},
+      #{historicActivityInstance.processInstanceId, jdbcType=VARCHAR},
+      #{historicActivityInstance.executionId, jdbcType=VARCHAR},
+      #{historicActivityInstance.activityId ,jdbcType=VARCHAR},
+      #{historicActivityInstance.taskId ,jdbcType=VARCHAR},
+      #{historicActivityInstance.calledProcessInstanceId ,jdbcType=VARCHAR},
+      #{historicActivityInstance.activityName ,jdbcType=VARCHAR},
+      #{historicActivityInstance.activityType ,jdbcType=VARCHAR},
+      #{historicActivityInstance.assignee ,jdbcType=VARCHAR},
+      #{historicActivityInstance.startTime, jdbcType=TIMESTAMP},
+      #{historicActivityInstance.endTime, jdbcType=TIMESTAMP},
+      #{historicActivityInstance.durationInMillis ,jdbcType=BIGINT},
+      #{historicActivityInstance.deleteReason ,jdbcType=VARCHAR},
+      #{historicActivityInstance.tenantId, jdbcType=VARCHAR})
+    </foreach>
   </insert>
 
-  <insert id="bulkInsertHistoricActivityInstance" databaseId="oracle" parameterType="java.util.List">
-      INSERT ALL
-      <foreach collection="list" item="historicActivityInstance" index="index">
-        INTO ${prefix}ACT_HI_ACTINST (
-          ID_,
-          PROC_DEF_ID_,
-          PROC_INST_ID_,
-          EXECUTION_ID_,
-          ACT_ID_,
-          TASK_ID_,
-          CALL_PROC_INST_ID_,
-          ACT_NAME_,
-          ACT_TYPE_,
-          ASSIGNEE_,
-          START_TIME_,
-          END_TIME_,
-          DURATION_,
-          DELETE_REASON_,
-          TENANT_ID_
-        ) VALUES
-           (#{historicActivityInstance.id ,jdbcType=VARCHAR},
-            #{historicActivityInstance.processDefinitionId, jdbcType=VARCHAR},
-            #{historicActivityInstance.processInstanceId, jdbcType=VARCHAR},
-            #{historicActivityInstance.executionId, jdbcType=VARCHAR},
-            #{historicActivityInstance.activityId ,jdbcType=VARCHAR},
-            #{historicActivityInstance.taskId ,jdbcType=VARCHAR},
-            #{historicActivityInstance.calledProcessInstanceId ,jdbcType=VARCHAR},
-            #{historicActivityInstance.activityName ,jdbcType=VARCHAR},
-            #{historicActivityInstance.activityType ,jdbcType=VARCHAR},
-            #{historicActivityInstance.assignee ,jdbcType=VARCHAR},
-            #{historicActivityInstance.startTime, jdbcType=TIMESTAMP},
-            #{historicActivityInstance.endTime, jdbcType=TIMESTAMP},
-            #{historicActivityInstance.durationInMillis ,jdbcType=BIGINT},
-            #{historicActivityInstance.deleteReason ,jdbcType=VARCHAR},
-            #{historicActivityInstance.tenantId, jdbcType=VARCHAR})
-      </foreach>
+  <insert id="bulkInsertHistoricActivityInstance" databaseId="oracle"
+    parameterType="java.util.List">
+    INSERT ALL
+    <foreach collection="list" item="historicActivityInstance" index="index">
+      INTO ${prefix}ACT_HI_ACTINST (
+      ID_,
+      PROC_DEF_ID_,
+      PROC_INST_ID_,
+      EXECUTION_ID_,
+      ACT_ID_,
+      TASK_ID_,
+      CALL_PROC_INST_ID_,
+      ACT_NAME_,
+      ACT_TYPE_,
+      ASSIGNEE_,
+      START_TIME_,
+      END_TIME_,
+      DURATION_,
+      DELETE_REASON_,
+      TENANT_ID_
+      ) VALUES
+      (#{historicActivityInstance.id ,jdbcType=VARCHAR},
+      #{historicActivityInstance.processDefinitionId, jdbcType=VARCHAR},
+      #{historicActivityInstance.processInstanceId, jdbcType=VARCHAR},
+      #{historicActivityInstance.executionId, jdbcType=VARCHAR},
+      #{historicActivityInstance.activityId ,jdbcType=VARCHAR},
+      #{historicActivityInstance.taskId ,jdbcType=VARCHAR},
+      #{historicActivityInstance.calledProcessInstanceId ,jdbcType=VARCHAR},
+      #{historicActivityInstance.activityName ,jdbcType=VARCHAR},
+      #{historicActivityInstance.activityType ,jdbcType=VARCHAR},
+      #{historicActivityInstance.assignee ,jdbcType=VARCHAR},
+      #{historicActivityInstance.startTime, jdbcType=TIMESTAMP},
+      #{historicActivityInstance.endTime, jdbcType=TIMESTAMP},
+      #{historicActivityInstance.durationInMillis ,jdbcType=BIGINT},
+      #{historicActivityInstance.deleteReason ,jdbcType=VARCHAR},
+      #{historicActivityInstance.tenantId, jdbcType=VARCHAR})
+    </foreach>
     SELECT * FROM dual
   </insert>
 
   <!-- HISTORIC ACTIVITY INSTANCE UPDATE -->
 
-  <update id="updateHistoricActivityInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityImpl">
-    update ${prefix}ACT_HI_ACTINST set
-      EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
-      ASSIGNEE_ = #{assignee, jdbcType=VARCHAR},
-      END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
-      DURATION_ = #{durationInMillis ,jdbcType=BIGINT},
-      DELETE_REASON_ = #{deleteReason, jdbcType=VARCHAR}
+  <update id="updateHistoricActivityInstance"
+    parameterType="org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityImpl">
+    update ${prefix}ACT_HI_ACTINST
+    set EXECUTION_ID_  = #{executionId, jdbcType=VARCHAR},
+        ASSIGNEE_      = #{assignee, jdbcType=VARCHAR},
+        END_TIME_      = #{endTime, jdbcType=TIMESTAMP},
+        DURATION_      = #{durationInMillis ,jdbcType=BIGINT},
+        DELETE_REASON_ = #{deleteReason, jdbcType=VARCHAR}
     where ID_ = #{id}
   </update>
 
   <!-- HISTORIC ACTIVITY INSTANCE DELETE -->
 
   <delete id="deleteHistoricActivityInstancesByProcessInstanceId">
-    delete from ${prefix}ACT_HI_ACTINST where PROC_INST_ID_ = #{processInstanceId}
+    delete
+    from ${prefix}ACT_HI_ACTINST
+    where PROC_INST_ID_ = #{processInstanceId}
   </delete>
 
   <!-- HISTORIC ACTIVITY INSTANCE RESULT MAP -->
 
-  <resultMap id="historicActivityInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityImpl">
-    <id property="id" column="ID_" jdbcType="VARCHAR" />
-    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
-    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
-    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
-    <result property="activityId" column="ACT_ID_" jdbcType="VARCHAR" />
-    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
-    <result property="calledProcessInstanceId" column="CALL_PROC_INST_ID_" jdbcType="VARCHAR" />
-    <result property="activityName" column="ACT_NAME_" jdbcType="VARCHAR" />
-    <result property="activityType" column="ACT_TYPE_" jdbcType="VARCHAR" />
-    <result property="assignee" column="ASSIGNEE_" jdbcType="VARCHAR" />
-    <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
-    <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
-    <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
-    <result property="deleteReason" column="DELETE_REASON_" jdbcType="VARCHAR" />
-    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
+  <resultMap id="historicActivityInstanceResultMap"
+    type="org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityImpl">
+    <id property="id" column="ID_" jdbcType="VARCHAR"/>
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR"/>
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR"/>
+    <result property="activityId" column="ACT_ID_" jdbcType="VARCHAR"/>
+    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR"/>
+    <result property="calledProcessInstanceId" column="CALL_PROC_INST_ID_" jdbcType="VARCHAR"/>
+    <result property="activityName" column="ACT_NAME_" jdbcType="VARCHAR"/>
+    <result property="activityType" column="ACT_TYPE_" jdbcType="VARCHAR"/>
+    <result property="assignee" column="ASSIGNEE_" jdbcType="VARCHAR"/>
+    <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP"/>
+    <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP"/>
+    <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT"/>
+    <result property="deleteReason" column="DELETE_REASON_" jdbcType="VARCHAR"/>
+    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR"/>
   </resultMap>
 
   <!-- HISTORIC ACTIVITY INSTANCE SELECT -->
 
   <select id="selectHistoricActivityInstance" resultMap="historicActivityInstanceResultMap">
-    select * from ${prefix}ACT_HI_ACTINST where ACT_ID_ = #{activityId} and PROC_INST_ID_ = #{processInstanceId}
+    select *
+    from ${prefix}ACT_HI_ACTINST
+    where ACT_ID_ = #{activityId}
+      and PROC_INST_ID_ = #{processInstanceId}
   </select>
 
-  <select id="selectHistoricActivityInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricActivityInstanceQueryImpl" resultMap="historicActivityInstanceResultMap">
+  <select id="selectHistoricActivityInstancesByQueryCriteria"
+    parameterType="org.activiti.engine.impl.HistoricActivityInstanceQueryImpl"
+    resultMap="historicActivityInstanceResultMap">
     ${limitBefore}
     select RES.* ${limitBetween}
     <include refid="selectHistoricActivityInstancesByQueryCriteriaSql"/>
@@ -184,7 +193,8 @@
     ${limitAfter}
   </select>
 
-  <select id="selectHistoricActivityInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricActivityInstanceQueryImpl" resultType="long">
+  <select id="selectHistoricActivityInstanceCountByQueryCriteria"
+    parameterType="org.activiti.engine.impl.HistoricActivityInstanceQueryImpl" resultType="long">
     select count(RES.ID_)
     <include refid="selectHistoricActivityInstancesByQueryCriteriaSql"/>
   </select>
@@ -229,7 +239,7 @@
         and RES.END_TIME_ is null
       </if>
       <if test="finished">
-       and RES.END_TIME_ is not null
+        and RES.END_TIME_ is not null
       </if>
       <if test="deleteReason != null">
         and RES.DELETE_REASON_ = #{deleteReason}
@@ -240,22 +250,33 @@
     </where>
   </sql>
 
-  <select id="selectHistoricActivityInstanceByNativeQuery" parameterType="java.util.Map" resultMap="historicActivityInstanceResultMap">
-  	<include refid="org.activiti.engine.db.common.selectByNativeQuery"/>
+  <select id="selectHistoricActivityInstanceByNativeQuery" parameterType="java.util.Map"
+    resultMap="historicActivityInstanceResultMap">
+    <include refid="org.activiti.engine.db.common.selectByNativeQuery"/>
   </select>
 
-  <select id="selectHistoricActivityInstanceCountByNativeQuery" parameterType="java.util.Map" resultType="long">
+  <select id="selectHistoricActivityInstanceCountByNativeQuery" parameterType="java.util.Map"
+    resultType="long">
     ${sql}
   </select>
 
-  <select id="selectUnfinishedHistoricActivityInstanceExecutionIdAndActivityId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicActivityInstanceResultMap">
-    select * from ${prefix}ACT_HI_ACTINST RES
-    where EXECUTION_ID_ = #{parameter.executionId, jdbcType=VARCHAR} and ACT_ID_ = #{parameter.activityId, jdbcType=VARCHAR} and END_TIME_ is null
+  <select id="selectUnfinishedHistoricActivityInstanceExecutionIdAndActivityId"
+    parameterType="org.activiti.engine.impl.db.ListQueryParameterObject"
+    resultMap="historicActivityInstanceResultMap">
+    select *
+    from ${prefix}ACT_HI_ACTINST RES
+    where EXECUTION_ID_ = #{parameter.executionId, jdbcType=VARCHAR}
+      and ACT_ID_ = #{parameter.activityId, jdbcType=VARCHAR}
+      and END_TIME_ is null
   </select>
 
-   <select id="selectUnfinishedHistoricActivityInstanceByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicActivityInstanceResultMap">
-    select * from ${prefix}ACT_HI_ACTINST RES
-    where PROC_INST_ID_ = #{parameter.processInstanceId, jdbcType=VARCHAR} and END_TIME_ is null
+  <select id="selectUnfinishedHistoricActivityInstanceByProcessInstanceId"
+    parameterType="org.activiti.engine.impl.db.ListQueryParameterObject"
+    resultMap="historicActivityInstanceResultMap">
+    select *
+    from ${prefix}ACT_HI_ACTINST RES
+    where PROC_INST_ID_ = #{parameter.processInstanceId, jdbcType=VARCHAR}
+      and END_TIME_ is null
   </select>
 
 </mapper>

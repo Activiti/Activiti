@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+  typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+  targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL">
   <process id="calledExternalSubProcessId" name="External sub process" isExecutable="true">
     <startEvent id="startevent2"></startEvent>
-    <sequenceFlow id="flow5" sourceRef="startevent2" targetRef="calledSubprocessTask"></sequenceFlow>
+    <sequenceFlow id="flow5" sourceRef="startevent2"
+      targetRef="calledSubprocessTask"></sequenceFlow>
     <userTask id="calledSubprocessTask" name="Sample User Task2 in External"></userTask>
     <sequenceFlow id="flow6" sourceRef="calledSubprocessTask" targetRef="noneevent2"></sequenceFlow>
     <endEvent id="noneevent2"></endEvent>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_calledExternalSubProcessId">
-    <bpmndi:BPMNPlane bpmnElement="calledExternalSubProcessId" id="BPMNPlane_calledExternalSubProcessId">
+    <bpmndi:BPMNPlane bpmnElement="calledExternalSubProcessId"
+      id="BPMNPlane_calledExternalSubProcessId">
       <bpmndi:BPMNShape bpmnElement="startevent2" id="BPMNShape_startevent2">
         <omgdc:Bounds height="30.0" width="30.0" x="225.0" y="90.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>

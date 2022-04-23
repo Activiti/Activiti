@@ -20,27 +20,27 @@ package org.activiti.engine.impl.bpmn.parser;
 import java.io.Serializable;
 
 /**
-
+ *
  */
 public class CompensateEventDefinition implements Serializable {
 
-  protected String activityRef;
-  protected boolean waitForCompletion;
+    protected String activityRef;
+    protected boolean waitForCompletion;
 
-  public String getActivityRef() {
-    return activityRef;
-  }
+    public String getActivityRef() {
+        return activityRef;
+    }
 
-  public void setActivityRef(String activityRef) {
-    this.activityRef = activityRef;
-  }
+    public void setActivityRef(String activityRef) {
+        this.activityRef = activityRef;
+    }
 
-  public boolean isWaitForCompletion() {
-    return waitForCompletion;
-  }
+    public boolean isWaitForCompletion() {
+        return waitForCompletion;
+    }
 
-  public void setWaitForCompletion(boolean waitForCompletion) {
-    this.waitForCompletion = waitForCompletion;
-  }
+    public void setWaitForCompletion(boolean waitForCompletion) {
+        this.waitForCompletion = waitForCompletion;
+    }
 
 }

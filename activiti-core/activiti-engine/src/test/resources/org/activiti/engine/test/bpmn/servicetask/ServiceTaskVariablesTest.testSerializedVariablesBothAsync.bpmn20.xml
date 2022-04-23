@@ -6,19 +6,24 @@
 
   <process id="process">
 
-    <startEvent id="theStart" />
-    <sequenceFlow sourceRef="theStart" targetRef="service1" />
+    <startEvent id="theStart"/>
+    <sequenceFlow sourceRef="theStart" targetRef="service1"/>
 
-    <serviceTask id="service1" activiti:class="org.activiti.engine.test.bpmn.servicetask.ServiceTaskVariablesTest$Delegate1" />
-    <sequenceFlow sourceRef="service1" targetRef="service2" />
+    <serviceTask id="service1"
+      activiti:class="org.activiti.engine.test.bpmn.servicetask.ServiceTaskVariablesTest$Delegate1"/>
+    <sequenceFlow sourceRef="service1" targetRef="service2"/>
 
-    <serviceTask id="service2" activiti:class="org.activiti.engine.test.bpmn.servicetask.ServiceTaskVariablesTest$Delegate2" activiti:async="true" />
-    <sequenceFlow sourceRef="service2" targetRef="service3" />
+    <serviceTask id="service2"
+      activiti:class="org.activiti.engine.test.bpmn.servicetask.ServiceTaskVariablesTest$Delegate2"
+      activiti:async="true"/>
+    <sequenceFlow sourceRef="service2" targetRef="service3"/>
 
-    <serviceTask id="service3" activiti:class="org.activiti.engine.test.bpmn.servicetask.ServiceTaskVariablesTest$Delegate3" activiti:async="true" />
-    <sequenceFlow sourceRef="service3" targetRef="theEnd" />
+    <serviceTask id="service3"
+      activiti:class="org.activiti.engine.test.bpmn.servicetask.ServiceTaskVariablesTest$Delegate3"
+      activiti:async="true"/>
+    <sequenceFlow sourceRef="service3" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

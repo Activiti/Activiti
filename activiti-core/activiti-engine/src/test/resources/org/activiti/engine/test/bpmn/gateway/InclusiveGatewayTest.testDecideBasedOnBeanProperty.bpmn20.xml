@@ -2,16 +2,15 @@
 <definitions id="definitions"
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
 
   <process id="inclusiveDecisionBasedOnBeanProperty">
 
-    <startEvent id="theStart" />
+    <startEvent id="theStart"/>
 
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="inclusiveGw" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="inclusiveGw"/>
 
-    <inclusiveGateway id="inclusiveGw" name="Inclusive Gateway" />
+    <inclusiveGateway id="inclusiveGw" name="Inclusive Gateway"/>
 
     <sequenceFlow id="flow2" sourceRef="inclusiveGw" targetRef="basicService">
       <conditionExpression xsi:type="tFormalExpression">
@@ -31,11 +30,11 @@
       </conditionExpression>
     </sequenceFlow>
 
-    <userTask id="basicService" name="Basic service" />
+    <userTask id="basicService" name="Basic service"/>
 
-    <userTask id="standardService" name="Standard service" />
+    <userTask id="standardService" name="Standard service"/>
 
-    <userTask id="goldMemberService" name="Gold Member service" />
+    <userTask id="goldMemberService" name="Gold Member service"/>
 
   </process>
 

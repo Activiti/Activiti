@@ -1,60 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="definitions"
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-  xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples"
-  xmlns:tns="Examples">
+>
 
-  <message id="messageId" name="messageName" />
-  <message id="messageId2" name="messageName2" />
+  <message id="messageId" name="messageName"/>
+  <message id="messageId2" name="messageName2"/>
 
   <process id="process">
 
-    <startEvent id="theStart" />
+    <startEvent id="theStart"/>
 
-    <sequenceFlow sourceRef="theStart" targetRef="subProcess" />
+    <sequenceFlow sourceRef="theStart" targetRef="subProcess"/>
 
     <subProcess id="subProcess">
 
-    	<startEvent id="innerStart" />
+      <startEvent id="innerStart"/>
 
-    	<sequenceFlow targetRef="task" sourceRef="innerStart" />
+      <sequenceFlow targetRef="task" sourceRef="innerStart"/>
 
-	    <userTask id="task" />
+      <userTask id="task"/>
 
-	    <boundaryEvent id="messageBoundary" attachedToRef="task">
-	  		<messageEventDefinition messageRef="messageId" />
-	  	</boundaryEvent>
+      <boundaryEvent id="messageBoundary" attachedToRef="task">
+        <messageEventDefinition messageRef="messageId"/>
+      </boundaryEvent>
 
-	  	<sequenceFlow sourceRef="task" targetRef="taskAfterTask" />
-	  	<sequenceFlow sourceRef="taskAfterTask" targetRef="innerEnd" />
+      <sequenceFlow sourceRef="task" targetRef="taskAfterTask"/>
+      <sequenceFlow sourceRef="taskAfterTask" targetRef="innerEnd"/>
 
-	  	<userTask id="taskAfterTask" />
+      <userTask id="taskAfterTask"/>
 
-	  	<sequenceFlow sourceRef="messageBoundary" targetRef="taskAfterMessage" />
+      <sequenceFlow sourceRef="messageBoundary" targetRef="taskAfterMessage"/>
 
-	    <userTask id="taskAfterMessage" />
+      <userTask id="taskAfterMessage"/>
 
-	    <sequenceFlow sourceRef="taskAfterMessage" targetRef="innerEnd" />
+      <sequenceFlow sourceRef="taskAfterMessage" targetRef="innerEnd"/>
 
-	    <endEvent id="innerEnd" />
+      <endEvent id="innerEnd"/>
 
     </subProcess>
 
-   	<boundaryEvent id="outerMessageBoundary" attachedToRef="subProcess">
-		<messageEventDefinition messageRef="messageId2" />
-	</boundaryEvent>
+    <boundaryEvent id="outerMessageBoundary" attachedToRef="subProcess">
+      <messageEventDefinition messageRef="messageId2"/>
+    </boundaryEvent>
 
-	<sequenceFlow targetRef="taskAfterSubprocess" sourceRef="subProcess" />
-	<sequenceFlow targetRef="taskAfterOuterMessageBoundary" sourceRef="outerMessageBoundary" />
+    <sequenceFlow targetRef="taskAfterSubprocess" sourceRef="subProcess"/>
+    <sequenceFlow targetRef="taskAfterOuterMessageBoundary" sourceRef="outerMessageBoundary"/>
 
-	<userTask id="taskAfterSubprocess" />
-	<userTask id="taskAfterOuterMessageBoundary" />
+    <userTask id="taskAfterSubprocess"/>
+    <userTask id="taskAfterOuterMessageBoundary"/>
 
-    <sequenceFlow targetRef="theEnd" sourceRef="taskAfterSubprocess" />
-    <sequenceFlow targetRef="theEnd" sourceRef="taskAfterOuterMessageBoundary" />
+    <sequenceFlow targetRef="theEnd" sourceRef="taskAfterSubprocess"/>
+    <sequenceFlow targetRef="theEnd" sourceRef="taskAfterOuterMessageBoundary"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

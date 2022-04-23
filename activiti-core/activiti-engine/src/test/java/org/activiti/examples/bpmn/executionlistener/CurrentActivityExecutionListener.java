@@ -19,51 +19,52 @@ package org.activiti.examples.bpmn.executionlistener;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**
- * Simple {@link ExecutionListener} that sets the current activity id and name attributes on the execution.
- *
-
+ * Simple {@link ExecutionListener} that sets the current activity id and name attributes on the
+ * execution.
  */
 public class CurrentActivityExecutionListener implements ExecutionListener {
 
-  private static List<CurrentActivity> currentActivities = new ArrayList<CurrentActivity>();
+    private static final List<CurrentActivity> currentActivities = new ArrayList<CurrentActivity>();
 
-  public static class CurrentActivity {
-    private final String activityId;
-    private final String activityName;
+    public static class CurrentActivity {
 
-    public CurrentActivity(String activityId, String activityName) {
-      this.activityId = activityId;
-      this.activityName = activityName;
+        private final String activityId;
+        private final String activityName;
+
+        public CurrentActivity(String activityId, String activityName) {
+            this.activityId = activityId;
+            this.activityName = activityName;
+        }
+
+        public String getActivityId() {
+            return activityId;
+        }
+
+        public String getActivityName() {
+            return activityName;
+        }
     }
 
-    public String getActivityId() {
-      return activityId;
+    public void notify(DelegateExecution execution) {
+        org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(
+            execution.getProcessDefinitionId());
+        String activityId = execution.getCurrentActivityId();
+        FlowElement currentFlowElement = process.getFlowElement(activityId, true);
+        currentActivities.add(
+            new CurrentActivity(execution.getCurrentActivityId(), currentFlowElement.getName()));
     }
 
-    public String getActivityName() {
-      return activityName;
+    public static List<CurrentActivity> getCurrentActivities() {
+        return currentActivities;
     }
-  }
 
-  public void notify(DelegateExecution execution) {
-    org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
-    String activityId = execution.getCurrentActivityId();
-    FlowElement currentFlowElement = process.getFlowElement(activityId, true);
-    currentActivities.add(new CurrentActivity(execution.getCurrentActivityId(), currentFlowElement.getName()));
-  }
-
-  public static List<CurrentActivity> getCurrentActivities() {
-    return currentActivities;
-  }
-
-  public static void clear() {
-    currentActivities.clear();
-  }
+    public static void clear() {
+        currentActivities.clear();
+    }
 }

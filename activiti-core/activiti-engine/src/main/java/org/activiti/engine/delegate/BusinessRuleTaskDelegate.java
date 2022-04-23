@@ -20,11 +20,11 @@ import org.activiti.engine.impl.delegate.ActivityBehavior;
 
 public interface BusinessRuleTaskDelegate extends ActivityBehavior {
 
-  void addRuleVariableInputIdExpression(Expression inputId);
+    void addRuleVariableInputIdExpression(Expression inputId);
 
-  void addRuleIdExpression(Expression inputId);
+    void addRuleIdExpression(Expression inputId);
 
-  void setExclude(boolean exclude);
+    void setExclude(boolean exclude);
 
-  void setResultVariable(String resultVariableName);
+    void setResultVariable(String resultVariableName);
 }

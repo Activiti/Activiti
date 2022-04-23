@@ -20,7 +20,6 @@ import org.activiti.engine.query.NativeQuery;
 
 /**
  * Allows querying of {@link org.activiti.engine.repository.Model}s via native (SQL) queries
- *
  */
 @Internal
 public interface NativeModelQuery extends NativeQuery<NativeModelQuery, Model> {

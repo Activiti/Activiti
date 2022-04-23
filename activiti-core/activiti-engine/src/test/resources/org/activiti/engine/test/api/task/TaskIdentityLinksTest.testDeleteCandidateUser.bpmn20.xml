@@ -6,11 +6,12 @@
 
   <process id="TaskIdentityLinks">
 
-    <startEvent id="theStart" />
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask"/>
     <userTask id="theTask" name="my task">
       <extensionElements>
-        <activiti:taskListener event="create" class="org.activiti.engine.test.api.task.DeleteCandidateTaskListener" />
+        <activiti:taskListener event="create"
+          class="org.activiti.engine.test.api.task.DeleteCandidateTaskListener"/>
       </extensionElements>
       <potentialOwner>
         <resourceAssignmentExpression>
@@ -18,8 +19,8 @@
         </resourceAssignmentExpression>
       </potentialOwner>
     </userTask>
-    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
-    <endEvent id="theEnd" />
+    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd"/>
+    <endEvent id="theEnd"/>
 
   </process>
 

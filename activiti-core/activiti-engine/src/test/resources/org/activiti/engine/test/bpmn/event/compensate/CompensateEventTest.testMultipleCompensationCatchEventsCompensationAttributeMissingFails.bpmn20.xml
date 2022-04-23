@@ -4,66 +4,69 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
 
-	<process id="compensateProcess">
+  <process id="compensateProcess">
 
-		<startEvent id="start" />
+    <startEvent id="start"/>
 
-		<sequenceFlow sourceRef="start"	targetRef="fork" />
+    <sequenceFlow sourceRef="start" targetRef="fork"/>
 
-		<parallelGateway id="fork" />
+    <parallelGateway id="fork"/>
 
-		<sequenceFlow sourceRef="fork" targetRef="bookHotel" />
-		<sequenceFlow sourceRef="fork" targetRef="bookFlight" />
+    <sequenceFlow sourceRef="fork" targetRef="bookHotel"/>
+    <sequenceFlow sourceRef="fork" targetRef="bookFlight"/>
 
-		<serviceTask id="bookHotel" activiti:expression="${true}">
-			<multiInstanceLoopCharacteristics isSequential="true">
-			  <loopCardinality>5</loopCardinality>
-			</multiInstanceLoopCharacteristics>
-		</serviceTask>
+    <serviceTask id="bookHotel" activiti:expression="${true}">
+      <multiInstanceLoopCharacteristics isSequential="true">
+        <loopCardinality>5</loopCardinality>
+      </multiInstanceLoopCharacteristics>
+    </serviceTask>
 
-		<boundaryEvent id="compensateBookHotelEvt" name="Boundary event" attachedToRef="bookHotel">
-			<compensateEventDefinition />
-		</boundaryEvent>
+    <boundaryEvent id="compensateBookHotelEvt" name="Boundary event" attachedToRef="bookHotel">
+      <compensateEventDefinition/>
+    </boundaryEvent>
 
-		<!-- not supported -->
-		<boundaryEvent id="compensateBookHotelEvt2" name="Boundary event" attachedToRef="bookHotel">
-			<compensateEventDefinition />
-		</boundaryEvent>
+    <!-- not supported -->
+    <boundaryEvent id="compensateBookHotelEvt2" name="Boundary event" attachedToRef="bookHotel">
+      <compensateEventDefinition/>
+    </boundaryEvent>
 
-		<serviceTask id="undoBookHotel" activiti:expression="${true}" />
-		<serviceTask id="undoBookHotel2" activiti:expression="${true}" />
-
-
-		<serviceTask id="bookFlight" activiti:expression="${true}">
-			<multiInstanceLoopCharacteristics isSequential="true">
-			  <loopCardinality>5</loopCardinality>
-			</multiInstanceLoopCharacteristics>
-		</serviceTask>
-
-		<boundaryEvent id="compensateBookFlightEvt" name="Boundary event" attachedToRef="bookFlight">
-			<compensateEventDefinition  />
-		</boundaryEvent>
-
-		<serviceTask id="undoBookFlight" activiti:expression="${true}" />
-
-		<parallelGateway id="join" />
-
-		<sequenceFlow sourceRef="bookHotel" targetRef="join" />
-		<sequenceFlow sourceRef="bookFlight" targetRef="join" />
-		<sequenceFlow sourceRef="join" targetRef="throwCompensate" />
+    <serviceTask id="undoBookHotel" activiti:expression="${true}"/>
+    <serviceTask id="undoBookHotel2" activiti:expression="${true}"/>
 
 
-		<intermediateThrowEvent id="throwCompensate">
-			<compensateEventDefinition  />
-		</intermediateThrowEvent>
+    <serviceTask id="bookFlight" activiti:expression="${true}">
+      <multiInstanceLoopCharacteristics isSequential="true">
+        <loopCardinality>5</loopCardinality>
+      </multiInstanceLoopCharacteristics>
+    </serviceTask>
 
-		<sequenceFlow sourceRef="throwCompensate" targetRef="end" />
+    <boundaryEvent id="compensateBookFlightEvt" name="Boundary event" attachedToRef="bookFlight">
+      <compensateEventDefinition/>
+    </boundaryEvent>
 
-		<endEvent id="end" />
+    <serviceTask id="undoBookFlight" activiti:expression="${true}"/>
 
-		<association associationDirection="One" sourceRef="compensateBookHotelEvt" targetRef="undoBookHotel" />
-		<association associationDirection="One" sourceRef="compensateBookHotelEvt2" targetRef="undoBookHotel2" />
-		<association associationDirection="One" sourceRef="compensateBookFlightEvt" targetRef="undoBookFlight" />
-	</process>
+    <parallelGateway id="join"/>
+
+    <sequenceFlow sourceRef="bookHotel" targetRef="join"/>
+    <sequenceFlow sourceRef="bookFlight" targetRef="join"/>
+    <sequenceFlow sourceRef="join" targetRef="throwCompensate"/>
+
+
+    <intermediateThrowEvent id="throwCompensate">
+      <compensateEventDefinition/>
+    </intermediateThrowEvent>
+
+    <sequenceFlow sourceRef="throwCompensate" targetRef="end"/>
+
+    <endEvent id="end"/>
+
+    <association associationDirection="One" sourceRef="compensateBookHotelEvt"
+      targetRef="undoBookHotel"/>
+    <association associationDirection="One" sourceRef="compensateBookHotelEvt2"
+      targetRef="undoBookHotel2"/>
+    <association associationDirection="One" sourceRef="compensateBookFlightEvt"
+      targetRef="undoBookFlight"/>
+  </process>
 
 </definitions>

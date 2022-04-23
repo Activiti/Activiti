@@ -17,31 +17,35 @@
 package org.activiti.engine.task;
 
 /**
- * This is a helper class to help you work with the {@link TaskInfoQuery}, without having to care about the awful generics.
- *
+ * This is a helper class to help you work with the {@link TaskInfoQuery}, without having to care
+ * about the awful generics.
+ * <p>
  * Example usage:
- *
- * TaskInfoQueryWrapper taskInfoQueryWrapper = new TaskInfoQueryWrapper(taskService.createTaskQuery()); List<? extends TaskInfo> taskInfos = taskInfoQueryWrapper.getTaskInfoQuery().or()
+ * <p>
+ * TaskInfoQueryWrapper taskInfoQueryWrapper = new TaskInfoQueryWrapper(taskService.createTaskQuery());
+ * List<? extends TaskInfo> taskInfos = taskInfoQueryWrapper.getTaskInfoQuery().or()
  * .taskNameLike("%task%") .taskDescriptionLike("%blah%"); .endOr() .list();
- *
- * First line can be switched to TaskInfoQueryWrapper taskInfoQueryWrapper = new TaskInfoQueryWrapper(historyService.createTaskQuery()); and the same methods can be used on the result.
- *
-
+ * <p>
+ * First line can be switched to TaskInfoQueryWrapper taskInfoQueryWrapper = new
+ * TaskInfoQueryWrapper(historyService.createTaskQuery()); and the same methods can be used on the
+ * result.
  */
 public class TaskInfoQueryWrapper {
 
-  protected TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery;
+    protected TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery;
 
-  public TaskInfoQueryWrapper(TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery) {
-    this.taskInfoQuery = taskInfoQuery;
-  }
+    public TaskInfoQueryWrapper(
+        TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery) {
+        this.taskInfoQuery = taskInfoQuery;
+    }
 
-  public TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> getTaskInfoQuery() {
-    return taskInfoQuery;
-  }
+    public TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> getTaskInfoQuery() {
+        return taskInfoQuery;
+    }
 
-  public void setTaskInfoQuery(TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery) {
-    this.taskInfoQuery = taskInfoQuery;
-  }
+    public void setTaskInfoQuery(
+        TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery) {
+        this.taskInfoQuery = taskInfoQuery;
+    }
 
 }

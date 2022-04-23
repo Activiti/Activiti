@@ -18,21 +18,19 @@
 package org.activiti.engine.impl.el;
 
 import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 
 /**
- * Expression that always returns the same value when <code>getValue</code> is called. Setting of the value is not supported.
- *
-
+ * Expression that always returns the same value when <code>getValue</code> is called. Setting of
+ * the value is not supported.
  */
 public class FixedValue implements Expression {
 
     private static final long serialVersionUID = 1L;
-    private Object value;
+    private final Object value;
 
     public FixedValue(Object value) {
         this.value = value;

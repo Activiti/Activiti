@@ -6,15 +6,15 @@
 
   <process id="invalidExpression">
 
-    <startEvent id="start" />
+    <startEvent id="start"/>
 
-    <sequenceFlow sourceRef="start" targetRef="task" />
+    <sequenceFlow sourceRef="start" targetRef="task"/>
 
-    <userTask id="task" activiti:assignee="${}" />
+    <userTask id="task" activiti:assignee="${}"/>
 
-    <sequenceFlow sourceRef="task" targetRef="end" />
+    <sequenceFlow sourceRef="task" targetRef="end"/>
 
-    <endEvent id="end" />
+    <endEvent id="end"/>
 
   </process>
 

@@ -21,8 +21,10 @@ import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.delegate.DelegateExecution;
 
 /**
+ *
  */
 @Internal
 public interface CommandExecutor {
+
     void executeCommand(DelegateExecution execution) throws Exception;
 }

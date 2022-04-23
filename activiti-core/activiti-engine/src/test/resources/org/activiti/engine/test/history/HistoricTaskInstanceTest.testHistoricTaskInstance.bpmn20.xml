@@ -6,9 +6,9 @@
 
   <process id="HistoricTaskInstanceTest">
 
-    <startEvent id="start" />
+    <startEvent id="start"/>
 
-    <sequenceFlow id="flow1" sourceRef="start" targetRef="task" />
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="task"/>
 
     <userTask id="task" name="Clean up" activiti:formKey="#{formKeyVar}">
       <documentation>
@@ -21,9 +21,9 @@
       </humanPerformer>
     </userTask>
 
-    <sequenceFlow id="flow2" sourceRef="task" targetRef="end" />
+    <sequenceFlow id="flow2" sourceRef="task" targetRef="end"/>
 
-    <endEvent id="end" />
+    <endEvent id="end"/>
 
   </process>
 

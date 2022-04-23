@@ -7,25 +7,26 @@
 
   <process id="testLongServiceTaskLoop">
 
-    <startEvent id="theStart" />
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="serviceTask" />
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="serviceTask"/>
 
-    <serviceTask id="serviceTask" activiti:class="org.activiti.engine.test.api.v6.CountingServiceTaskTestDelegate"/>
-    <sequenceFlow id="flow2" sourceRef="serviceTask" targetRef="exclusiveGw" />
+    <serviceTask id="serviceTask"
+      activiti:class="org.activiti.engine.test.api.v6.CountingServiceTaskTestDelegate"/>
+    <sequenceFlow id="flow2" sourceRef="serviceTask" targetRef="exclusiveGw"/>
 
-    <exclusiveGateway id="exclusiveGw" />
+    <exclusiveGateway id="exclusiveGw"/>
     <sequenceFlow id="flow3" sourceRef="exclusiveGw" targetRef="serviceTask">
       <conditionExpression xsi:type="tFormalExpression">
-      	<![CDATA[${counter < maxCount}]]>
+        <![CDATA[${counter < maxCount}]]>
       </conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow4" sourceRef="exclusiveGw" targetRef="theEnd">
       <conditionExpression xsi:type="tFormalExpression">
-      	<![CDATA[${counter == maxCount}]]>
+        <![CDATA[${counter == maxCount}]]>
       </conditionExpression>
     </sequenceFlow>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

@@ -6,22 +6,23 @@
 
   <process id="dynamicServiceTask">
 
-    <startEvent id="theStart" />
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="task1" />
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="task1"/>
 
-    <userTask id="task1" activiti:assignee="test" />
+    <userTask id="task1" activiti:assignee="test"/>
 
-    <sequenceFlow id="flow2" sourceRef="task1" targetRef="service" />
+    <sequenceFlow id="flow2" sourceRef="task1" targetRef="service"/>
 
-    <serviceTask id="service" activiti:class="org.activiti.engine.test.bpmn.servicetask.DummyServiceTask" />
+    <serviceTask id="service"
+      activiti:class="org.activiti.engine.test.bpmn.servicetask.DummyServiceTask"/>
 
-    <sequenceFlow id="flow3" sourceRef="service" targetRef="task2" />
+    <sequenceFlow id="flow3" sourceRef="service" targetRef="task2"/>
 
-    <userTask id="task2" activiti:assignee="test" />
+    <userTask id="task2" activiti:assignee="test"/>
 
-    <sequenceFlow id="flow4" sourceRef="task2" targetRef="theEnd" />
+    <sequenceFlow id="flow4" sourceRef="task2" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

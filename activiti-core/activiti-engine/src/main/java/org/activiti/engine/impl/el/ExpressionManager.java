@@ -17,6 +17,7 @@
 
 package org.activiti.engine.impl.el;
 
+import de.odysseus.el.ExpressionFactoryImpl;
 import java.util.Collections;
 import java.util.Map;
 import javax.el.ArrayELResolver;
@@ -28,7 +29,6 @@ import javax.el.ExpressionFactory;
 import javax.el.ListELResolver;
 import javax.el.MapELResolver;
 import javax.el.ValueExpression;
-import de.odysseus.el.ExpressionFactoryImpl;
 import org.activiti.core.el.ActivitiElContext;
 import org.activiti.core.el.ELContextBuilder;
 import org.activiti.core.el.ELResolverReflectionBlockerDecorator;
@@ -43,7 +43,8 @@ import org.activiti.engine.impl.persistence.entity.VariableScopeImpl;
  * Central manager for all expressions.
  * </p>
  * <p>
- * Process parsers will use this to build expression objects that are stored in the process definitions.
+ * Process parsers will use this to build expression objects that are stored in the process
+ * definitions.
  * </p>
  * <p>
  * Then also this class is used as an entry point for runtime evaluation of the expressions.
@@ -60,16 +61,16 @@ public class ExpressionManager {
 
     public ExpressionManager(boolean initFactory) {
         this(null,
-             initFactory);
+            initFactory);
     }
 
     public ExpressionManager(Map<Object, Object> beans) {
         this(beans,
-             true);
+            true);
     }
 
     public ExpressionManager(Map<Object, Object> beans,
-                             boolean initFactory) {
+        boolean initFactory) {
         // Use the ExpressionFactoryImpl in activiti build in version of juel,
         // with parametrised method expressions enabled
         if (initFactory) {
@@ -79,7 +80,8 @@ public class ExpressionManager {
     }
 
     public Expression createExpression(String expression) {
-        ValueExpression valueExpression = expressionFactory.createValueExpression(getElContext(Collections.emptyMap()),
+        ValueExpression valueExpression = expressionFactory.createValueExpression(
+            getElContext(Collections.emptyMap()),
             expression.trim(),
             Object.class);
         return new JuelExpression(valueExpression,
@@ -108,7 +110,8 @@ public class ExpressionManager {
     }
 
     protected ActivitiElContext createElContext(VariableScope variableScope) {
-        return (ActivitiElContext) new ELContextBuilder().withResolvers(createElResolver(variableScope)).buildWithCustomFunctions();
+        return (ActivitiElContext) new ELContextBuilder().withResolvers(
+            createElResolver(variableScope)).buildWithCustomFunctions();
     }
 
     protected ELResolver createElResolver(VariableScope variableScope) {
@@ -134,8 +137,8 @@ public class ExpressionManager {
         elResolver.add(new MapELResolver());
         elResolver.add(new CustomMapperJsonNodeELResolver());
         elResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class,
-                                                         "getFieldValue",
-                                                         "setFieldValue")); // TODO: needs verification
+            "getFieldValue",
+            "setFieldValue")); // TODO: needs verification
         elResolver.add(new ELResolverReflectionBlockerDecorator(new BeanELResolver()));
     }
 
@@ -150,6 +153,7 @@ public class ExpressionManager {
     public ELContext getElContext(Map<String, Object> availableVariables) {
         CompositeELResolver elResolver = new CompositeELResolver();
         addBaseResolvers(elResolver);
-        return new ELContextBuilder().withResolvers(elResolver).withVariables(availableVariables).buildWithCustomFunctions();
+        return new ELContextBuilder().withResolvers(elResolver).withVariables(availableVariables)
+            .buildWithCustomFunctions();
     }
 }

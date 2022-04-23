@@ -22,20 +22,20 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 /**
-
+ *
  */
 @Entity(name = "DOUBLE_ID_ENTITY")
 public class DoubleIdJPAEntity {
 
-  @Id
-  @Column(name = "ID_")
-  private double doubleId;
+    @Id
+    @Column(name = "ID_")
+    private double doubleId;
 
-  public double getDoubleId() {
-    return doubleId;
-  }
+    public double getDoubleId() {
+        return doubleId;
+    }
 
-  public void setDoubleId(double doubleId) {
-    this.doubleId = doubleId;
-  }
+    public void setDoubleId(double doubleId) {
+        this.doubleId = doubleId;
+    }
 }

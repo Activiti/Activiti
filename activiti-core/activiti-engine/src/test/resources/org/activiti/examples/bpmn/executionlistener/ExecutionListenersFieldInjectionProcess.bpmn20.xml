@@ -5,18 +5,20 @@
 
   <process id="executionListenersProcess">
     <extensionElements>
-      <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.ExampleFieldInjectedExecutionListener" event="start">
-        <activiti:field name="fixedValue" stringValue="Yes, I am " />
-        <activiti:field name="dynamicValue" expression="${myVar}" />
+      <activiti:executionListener
+        class="org.activiti.examples.bpmn.executionlistener.ExampleFieldInjectedExecutionListener"
+        event="start">
+        <activiti:field name="fixedValue" stringValue="Yes, I am "/>
+        <activiti:field name="dynamicValue" expression="${myVar}"/>
       </activiti:executionListener>
     </extensionElements>
 
-    <startEvent id="theStart" />
-    <sequenceFlow sourceRef="theStart" targetRef="firstTask" />
+    <startEvent id="theStart"/>
+    <sequenceFlow sourceRef="theStart" targetRef="firstTask"/>
 
-    <userTask id="firstTask" />
-    <sequenceFlow sourceRef="firstTask" targetRef="theEnd" />
+    <userTask id="firstTask"/>
+    <sequenceFlow sourceRef="firstTask" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
   </process>
 </definitions>

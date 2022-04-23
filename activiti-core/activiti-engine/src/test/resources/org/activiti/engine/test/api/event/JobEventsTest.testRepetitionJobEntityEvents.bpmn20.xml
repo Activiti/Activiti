@@ -17,11 +17,11 @@
       </timerEventDefinition>
     </boundaryEvent>
 
-      <sequenceFlow sourceRef="timer" targetRef="scriptExecutor"/>
+    <sequenceFlow sourceRef="timer" targetRef="scriptExecutor"/>
 
-      <scriptTask id="scriptExecutor" name="Script Executor" scriptFormat="groovy">
-          <script>System.out.println("Boundary event executed ");</script>
-      </scriptTask>
+    <scriptTask id="scriptExecutor" name="Script Executor" scriptFormat="groovy">
+      <script>System.out.println("Boundary event executed ");</script>
+    </scriptTask>
 
     <sequenceFlow sourceRef="task" targetRef="theEnd"/>
 

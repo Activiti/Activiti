@@ -21,12 +21,12 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
 /**
-
+ *
  */
 public class ParallelTest extends PluggableActivitiTestCase {
 
-  @Deployment
-  public void testParallel() {
-    runtimeService.startProcessInstanceByKey("myProc");
-  }
+    @Deployment
+    public void testParallel() {
+        runtimeService.startProcessInstanceByKey("myProc");
+    }
 }

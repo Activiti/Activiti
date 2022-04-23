@@ -18,42 +18,41 @@ package org.activiti.engine.test.api.event;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 
 /**
-
+ *
  */
 public class TestHistoricActivityEventListener implements ActivitiEventListener {
 
-	private List<ActivitiEvent> eventsReceived;
+    private final List<ActivitiEvent> eventsReceived;
 
-	public TestHistoricActivityEventListener() {
-		eventsReceived = new ArrayList<ActivitiEvent>();
-  }
+    public TestHistoricActivityEventListener() {
+        eventsReceived = new ArrayList<ActivitiEvent>();
+    }
 
-	public List<ActivitiEvent> getEventsReceived() {
-	  return eventsReceived;
-  }
+    public List<ActivitiEvent> getEventsReceived() {
+        return eventsReceived;
+    }
 
-	public void clearEventsReceived() {
-		eventsReceived.clear();
-	}
+    public void clearEventsReceived() {
+        eventsReceived.clear();
+    }
 
-	@Override
-	public void onEvent(ActivitiEvent event) {
-		if (event.getType().equals(ActivitiEventType.HISTORIC_PROCESS_INSTANCE_CREATED)
-				|| event.getType().equals(ActivitiEventType.HISTORIC_PROCESS_INSTANCE_ENDED)
-				|| event.getType().equals(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_CREATED)
-			  || event.getType().equals(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED)) {
-					eventsReceived.add(event);
-				}
-	}
+    @Override
+    public void onEvent(ActivitiEvent event) {
+        if (event.getType().equals(ActivitiEventType.HISTORIC_PROCESS_INSTANCE_CREATED)
+            || event.getType().equals(ActivitiEventType.HISTORIC_PROCESS_INSTANCE_ENDED)
+            || event.getType().equals(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_CREATED)
+            || event.getType().equals(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED)) {
+            eventsReceived.add(event);
+        }
+    }
 
-	@Override
-	public boolean isFailOnException() {
-		return false;
-	}
+    @Override
+    public boolean isFailOnException() {
+        return false;
+    }
 }

@@ -27,7 +27,7 @@ public class TaskElResolverTest {
 
     private static final String TASK_KEY = "task";
 
-    private TaskElResolver resolver = new TaskElResolver();
+    private final TaskElResolver resolver = new TaskElResolver();
 
     @Test
     public void canResolve_should_returnTrueWhenItsTaskEntityAndPropertyIsTask() {

@@ -78,7 +78,8 @@ public class ProcessInstanceBuilderImplTest {
         //given
         ProcessInstance processInstance = mock(
             ProcessInstance.class);
-        given(runtimeService.createProcessInstance(processInstanceBuilder)).willReturn(processInstance);
+        given(runtimeService.createProcessInstance(processInstanceBuilder)).willReturn(
+            processInstance);
         //when
         ProcessInstance createdProcess = processInstanceBuilder.create();
         //then

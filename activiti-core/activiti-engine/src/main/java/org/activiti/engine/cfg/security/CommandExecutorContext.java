@@ -20,7 +20,8 @@ public class CommandExecutorContext {
 
     private static CommandExecutorFactory shellCommandExecutorFactory;
 
-    public static void setShellExecutorContextFactory(CommandExecutorFactory shellCommandExecutorFactory) {
+    public static void setShellExecutorContextFactory(
+        CommandExecutorFactory shellCommandExecutorFactory) {
         CommandExecutorContext.shellCommandExecutorFactory = shellCommandExecutorFactory;
     }
 

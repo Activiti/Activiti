@@ -21,55 +21,53 @@ import java.util.List;
 
 /**
  * Represents a simple in memory structure
- *
-
  */
 public class SimpleStructureDefinition implements FieldBaseStructureDefinition {
 
-  protected String id;
+    protected String id;
 
-  protected List<String> fieldNames;
+    protected List<String> fieldNames;
 
-  protected List<Class<?>> fieldTypes;
+    protected List<Class<?>> fieldTypes;
 
-  public SimpleStructureDefinition(String id) {
-    this.id = id;
-    this.fieldNames = new ArrayList<String>();
-    this.fieldTypes = new ArrayList<Class<?>>();
-  }
-
-  public int getFieldSize() {
-    return this.fieldNames.size();
-  }
-
-  public String getId() {
-    return this.id;
-  }
-
-  public void setFieldName(int index, String fieldName, Class<?> type) {
-    this.growListToContain(index, this.fieldNames);
-    this.growListToContain(index, this.fieldTypes);
-    this.fieldNames.set(index, fieldName);
-    this.fieldTypes.set(index, type);
-  }
-
-  private void growListToContain(int index, List<?> list) {
-    if (!(list.size() - 1 >= index)) {
-      for (int i = list.size(); i <= index; i++) {
-        list.add(null);
-      }
+    public SimpleStructureDefinition(String id) {
+        this.id = id;
+        this.fieldNames = new ArrayList<String>();
+        this.fieldTypes = new ArrayList<Class<?>>();
     }
-  }
 
-  public String getFieldNameAt(int index) {
-    return this.fieldNames.get(index);
-  }
+    public int getFieldSize() {
+        return this.fieldNames.size();
+    }
 
-  public Class<?> getFieldTypeAt(int index) {
-    return this.fieldTypes.get(index);
-  }
+    public String getId() {
+        return this.id;
+    }
 
-  public StructureInstance createInstance() {
-    return new FieldBaseStructureInstance(this);
-  }
+    public void setFieldName(int index, String fieldName, Class<?> type) {
+        this.growListToContain(index, this.fieldNames);
+        this.growListToContain(index, this.fieldTypes);
+        this.fieldNames.set(index, fieldName);
+        this.fieldTypes.set(index, type);
+    }
+
+    private void growListToContain(int index, List<?> list) {
+        if (!(list.size() - 1 >= index)) {
+            for (int i = list.size(); i <= index; i++) {
+                list.add(null);
+            }
+        }
+    }
+
+    public String getFieldNameAt(int index) {
+        return this.fieldNames.get(index);
+    }
+
+    public Class<?> getFieldTypeAt(int index) {
+        return this.fieldTypes.get(index);
+    }
+
+    public StructureInstance createInstance() {
+        return new FieldBaseStructureInstance(this);
+    }
 }

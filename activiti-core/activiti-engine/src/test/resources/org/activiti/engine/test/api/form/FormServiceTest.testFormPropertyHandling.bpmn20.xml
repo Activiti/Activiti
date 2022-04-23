@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <definitions id="definitions"
-             targetNamespace="http://activiti.org/bpmn20"
-             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-             xmlns:activiti="http://activiti.org/bpmn">
+  targetNamespace="http://activiti.org/bpmn20"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn">
 
   <process id="FormPropertyHandlingProcess">
 
@@ -11,32 +11,32 @@
       <extensionElements>
         <activiti:formProperty id="speaker" variable="SpeakerName"/>
         <activiti:formProperty id="duration" type="long"/>
-        <activiti:formProperty id="free" type="boolean" />
-        <activiti:formProperty id="double" type="double" />
+        <activiti:formProperty id="free" type="boolean"/>
+        <activiti:formProperty id="double" type="double"/>
       </extensionElements>
     </startEvent>
 
-    <sequenceFlow id="flow1" sourceRef="start" targetRef="wait" />
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="wait"/>
 
-    <receiveTask id="wait" />
+    <receiveTask id="wait"/>
 
-    <sequenceFlow id="flow2" sourceRef="wait" targetRef="task" />
+    <sequenceFlow id="flow2" sourceRef="wait" targetRef="task"/>
 
     <userTask id="task"
-              activiti:assignee="kermit">
+      activiti:assignee="kermit">
       <extensionElements>
-        <activiti:formProperty id="room" />
+        <activiti:formProperty id="room"/>
         <activiti:formProperty id="duration" type="long"/>
-        <activiti:formProperty id="speaker" variable="SpeakerName" writable="false" />
-        <activiti:formProperty id="street" expression="#{address.street}" required="true" />
+        <activiti:formProperty id="speaker" variable="SpeakerName" writable="false"/>
+        <activiti:formProperty id="street" expression="#{address.street}" required="true"/>
         <activiti:formProperty id="free" type="boolean"/>
         <activiti:formProperty id="double" type="double"/>
       </extensionElements>
     </userTask>
 
-    <sequenceFlow id="flow3" sourceRef="task" targetRef="wait2" />
+    <sequenceFlow id="flow3" sourceRef="task" targetRef="wait2"/>
 
-    <receiveTask id="wait2" />
+    <receiveTask id="wait2"/>
 
   </process>
 

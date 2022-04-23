@@ -21,36 +21,34 @@ import org.activiti.engine.impl.bpmn.data.StructureDefinition;
 
 /**
  * Implementation of the BPMN 2.0 'message'
- *
-
  */
 public class MessageDefinition {
 
-  protected String id;
+    protected String id;
 
-  protected ItemDefinition itemDefinition;
+    protected ItemDefinition itemDefinition;
 
-  public MessageDefinition(String id) {
-    this.id = id;
-  }
+    public MessageDefinition(String id) {
+        this.id = id;
+    }
 
-  public MessageInstance createInstance() {
-    return new MessageInstance(this, this.itemDefinition.createInstance());
-  }
+    public MessageInstance createInstance() {
+        return new MessageInstance(this, this.itemDefinition.createInstance());
+    }
 
-  public ItemDefinition getItemDefinition() {
-    return this.itemDefinition;
-  }
+    public ItemDefinition getItemDefinition() {
+        return this.itemDefinition;
+    }
 
-  public StructureDefinition getStructureDefinition() {
-    return this.itemDefinition.getStructureDefinition();
-  }
+    public StructureDefinition getStructureDefinition() {
+        return this.itemDefinition.getStructureDefinition();
+    }
 
-  public void setItemDefinition(ItemDefinition itemDefinition) {
-    this.itemDefinition = itemDefinition;
-  }
+    public void setItemDefinition(ItemDefinition itemDefinition) {
+        this.itemDefinition = itemDefinition;
+    }
 
-  public String getId() {
-    return this.id;
-  }
+    public String getId() {
+        return this.id;
+    }
 }

@@ -6,17 +6,18 @@
 
   <process id="asyncEndEvent">
 
-    <startEvent id="theStart" />
+    <startEvent id="theStart"/>
 
-    <sequenceFlow sourceRef="theStart" targetRef="task" />
+    <sequenceFlow sourceRef="theStart" targetRef="task"/>
 
-    <manualTask id="task" />
+    <manualTask id="task"/>
 
-    <sequenceFlow sourceRef="task" targetRef="theEnd" />
+    <sequenceFlow sourceRef="task" targetRef="theEnd"/>
 
     <endEvent id="theEnd" activiti:async="true">
       <extensionElements>
-        <activiti:executionListener event="start" class="org.activiti.examples.bpmn.executionlistener.ExampleExecutionListenerOne"></activiti:executionListener>
+        <activiti:executionListener event="start"
+          class="org.activiti.examples.bpmn.executionlistener.ExampleExecutionListenerOne"></activiti:executionListener>
       </extensionElements>
     </endEvent>
 

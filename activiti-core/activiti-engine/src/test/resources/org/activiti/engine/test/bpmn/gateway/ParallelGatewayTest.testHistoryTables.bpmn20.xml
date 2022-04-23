@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="RCS-PRUEBA9">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+  typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+  targetNamespace="RCS-PRUEBA9">
   <process id="testHistoryRecords" name="Mi proceso con subprocesos FINAL" isExecutable="true">
-    <documentation>Test if end of parallell gateways are properly marked in hostory tables</documentation>
+    <documentation>Test if end of parallell gateways are properly marked in hostory tables
+    </documentation>
     <startEvent id="comienzo" name="Registrar proceso"></startEvent>
     <parallelGateway id="parallelgateway1" name="Parallel Gateway"></parallelGateway>
     <serviceTask id="servicetask1" name="Service Task 1" activiti:expression="${1}"></serviceTask>
@@ -13,7 +20,8 @@
     <sequenceFlow id="flow7" sourceRef="servicetask2" targetRef="parallelgateway2"></sequenceFlow>
     <endEvent id="endevent2" name="End"></endEvent>
     <serviceTask id="servicetask3" name="Service Task 3" activiti:expression="${1}"></serviceTask>
-    <userTask id="usertask2" name="Example 2 of User Task" activiti:assignee="D10367:002001"></userTask>
+    <userTask id="usertask2" name="Example 2 of User Task"
+      activiti:assignee="D10367:002001"></userTask>
     <sequenceFlow id="flow14" sourceRef="usertask2" targetRef="endevent2"></sequenceFlow>
     <serviceTask id="servicetask4" name="Service Task 4" activiti:expression="${1}"></serviceTask>
     <sequenceFlow id="flow15" sourceRef="parallelgateway1" targetRef="servicetask4"></sequenceFlow>

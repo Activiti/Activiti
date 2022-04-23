@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
-
+ *
  */
 public class ProfileSession {
 
@@ -51,7 +51,8 @@ public class ProfileSession {
         currentCommandExecution.set(null);
     }
 
-    public synchronized void addCommandExecution(String classFqn, CommandExecutionResult commandExecutionResult) {
+    public synchronized void addCommandExecution(String classFqn,
+        CommandExecutionResult commandExecutionResult) {
         if (!commandExecutionResults.containsKey(classFqn)) {
             commandExecutionResults.put(classFqn, new ArrayList<CommandExecutionResult>());
         }
@@ -98,7 +99,8 @@ public class ProfileSession {
         return commandExecutionResults;
     }
 
-    public void setCommandExecutions(Map<String, List<CommandExecutionResult>> commandExecutionResults) {
+    public void setCommandExecutions(
+        Map<String, List<CommandExecutionResult>> commandExecutionResults) {
         this.commandExecutionResults = commandExecutionResults;
     }
 

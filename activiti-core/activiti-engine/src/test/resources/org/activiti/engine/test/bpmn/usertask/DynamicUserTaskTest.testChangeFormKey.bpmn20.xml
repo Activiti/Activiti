@@ -6,14 +6,14 @@
 
   <process id="dynamicUserTask">
 
-    <startEvent id="theStart" />
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="task1" />
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="task1"/>
 
-    <userTask id="task1" activiti:formKey="test" activiti:assignee="test" />
+    <userTask id="task1" activiti:formKey="test" activiti:assignee="test"/>
 
-    <sequenceFlow id="flow2" sourceRef="task1" targetRef="theEnd" />
+    <sequenceFlow id="flow2" sourceRef="task1" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

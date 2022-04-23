@@ -20,14 +20,14 @@ import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
 /**
-
+ *
  */
 public class TaskCreateListener implements TaskListener {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public void notify(DelegateTask delegateTask) {
-    delegateTask.setDescription("TaskCreateListener is listening!");
-  }
+    public void notify(DelegateTask delegateTask) {
+        delegateTask.setDescription("TaskCreateListener is listening!");
+    }
 
 }

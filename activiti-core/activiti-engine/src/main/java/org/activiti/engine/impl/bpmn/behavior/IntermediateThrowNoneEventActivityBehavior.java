@@ -18,6 +18,6 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 public class IntermediateThrowNoneEventActivityBehavior extends FlowNodeActivityBehavior {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 }

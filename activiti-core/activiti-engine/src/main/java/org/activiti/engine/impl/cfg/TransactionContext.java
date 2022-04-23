@@ -19,13 +19,15 @@ package org.activiti.engine.impl.cfg;
 import org.activiti.engine.api.internal.Internal;
 
 /**
+ *
  */
 @Internal
 public interface TransactionContext {
 
-  void commit();
+    void commit();
 
-  void rollback();
+    void rollback();
 
-  void addTransactionListener(TransactionState transactionState, TransactionListener transactionListener);
+    void addTransactionListener(TransactionState transactionState,
+        TransactionListener transactionListener);
 }

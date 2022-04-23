@@ -5,25 +5,26 @@
 
   <process id="transactionDependentExecutionListenerProcess">
 
-    <startEvent id="theStart" name="Start Event" />
+    <startEvent id="theStart" name="Start Event"/>
 
-    <sequenceFlow sourceRef="theStart" targetRef="serviceTask1" />
+    <sequenceFlow sourceRef="theStart" targetRef="serviceTask1"/>
 
     <serviceTask
-            id="serviceTask1"
-            name="Service Task 1"
-            activiti:class="org.activiti.examples.bpmn.executionlistener.ConditionalThrowExceptionDelegate">
+      id="serviceTask1"
+      name="Service Task 1"
+      activiti:class="org.activiti.examples.bpmn.executionlistener.ConditionalThrowExceptionDelegate">
       <extensionElements>
-        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.CurrentActivityTransactionDependentExecutionListener"
-                                    event="start"
-                                    onTransaction="committed"
-                                    customPropertiesResolverClass="org.activiti.examples.bpmn.executionlistener.MyCustomPropertiesResolver"/>
+        <activiti:executionListener
+          class="org.activiti.examples.bpmn.executionlistener.CurrentActivityTransactionDependentExecutionListener"
+          event="start"
+          onTransaction="committed"
+          customPropertiesResolverClass="org.activiti.examples.bpmn.executionlistener.MyCustomPropertiesResolver"/>
       </extensionElements>
     </serviceTask>
 
     <sequenceFlow sourceRef="serviceTask1" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" name="End Event" />
+    <endEvent id="theEnd" name="End Event"/>
 
   </process>
 </definitions>

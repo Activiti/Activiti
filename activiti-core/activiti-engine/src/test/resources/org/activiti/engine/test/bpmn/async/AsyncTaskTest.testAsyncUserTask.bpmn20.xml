@@ -6,20 +6,22 @@
 
   <process id="asyncUserTask">
 
-    <startEvent id="theStart" />
+    <startEvent id="theStart"/>
 
-    <sequenceFlow sourceRef="theStart" targetRef="userTask" />
+    <sequenceFlow sourceRef="theStart" targetRef="userTask"/>
 
     <userTask id="userTask" activiti:async="true">
-    	<extensionElements>
-			<activiti:executionListener event="start" class="org.activiti.engine.test.bpmn.async.AsyncListener" />
-            <activiti:taskListener event="create" class="org.activiti.engine.test.bpmn.async.AsyncTaskListener" />
-		</extensionElements>
+      <extensionElements>
+        <activiti:executionListener event="start"
+          class="org.activiti.engine.test.bpmn.async.AsyncListener"/>
+        <activiti:taskListener event="create"
+          class="org.activiti.engine.test.bpmn.async.AsyncTaskListener"/>
+      </extensionElements>
     </userTask>
 
-    <sequenceFlow sourceRef="userTask" targetRef="theEnd" />
+    <sequenceFlow sourceRef="userTask" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

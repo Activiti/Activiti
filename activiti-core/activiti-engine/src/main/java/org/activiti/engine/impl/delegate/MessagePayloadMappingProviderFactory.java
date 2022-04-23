@@ -23,7 +23,7 @@ import org.activiti.engine.impl.el.ExpressionManager;
 public interface MessagePayloadMappingProviderFactory {
 
     MessagePayloadMappingProvider create(Event bpmnEvent,
-                                         MessageEventDefinition messageEventDefinition,
-                                         ExpressionManager expressionManager);
+        MessageEventDefinition messageEventDefinition,
+        ExpressionManager expressionManager);
 
 }

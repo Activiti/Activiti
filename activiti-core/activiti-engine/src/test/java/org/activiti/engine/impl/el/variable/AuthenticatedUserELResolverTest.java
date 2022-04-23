@@ -27,7 +27,7 @@ public class AuthenticatedUserELResolverTest {
 
     private static final String AUTHENTICATED_USER_KEY = "authenticatedUserId";
 
-    private AuthenticatedUserELResolver resolver = new AuthenticatedUserELResolver();
+    private final AuthenticatedUserELResolver resolver = new AuthenticatedUserELResolver();
 
     @AfterClass
     public static void tearDown() {

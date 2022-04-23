@@ -24,29 +24,30 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 /**
-
-
+ *
  */
 public class ProcessEventJobHandler implements JobHandler {
 
-  public final static String TYPE = "event";
+    public final static String TYPE = "event";
 
-  public String getType() {
-    return TYPE;
-  }
-
-  public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
-
-    EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
-
-    // lookup subscription:
-    EventSubscriptionEntity eventSubscriptionEntity = eventSubscriptionEntityManager.findById(configuration);
-
-    // if event subscription is null, ignore
-    if (eventSubscriptionEntity != null) {
-      eventSubscriptionEntityManager.eventReceived(eventSubscriptionEntity, null, false);
+    public String getType() {
+        return TYPE;
     }
 
-  }
+    public void execute(JobEntity job, String configuration, ExecutionEntity execution,
+        CommandContext commandContext) {
+
+        EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
+
+        // lookup subscription:
+        EventSubscriptionEntity eventSubscriptionEntity = eventSubscriptionEntityManager.findById(
+            configuration);
+
+        // if event subscription is null, ignore
+        if (eventSubscriptionEntity != null) {
+            eventSubscriptionEntityManager.eventReceived(eventSubscriptionEntity, null, false);
+        }
+
+    }
 
 }

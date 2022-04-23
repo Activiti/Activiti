@@ -21,30 +21,28 @@ import java.io.Serializable;
 
 /**
  * Stores the position of a waypoint of a diagram edge.
- *
-
  */
 public class DiagramEdgeWaypoint implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private Double x;
-  private Double y;
+    private Double x;
+    private Double y;
 
-  public Double getX() {
-    return x;
-  }
+    public Double getX() {
+        return x;
+    }
 
-  public void setX(Double x) {
-    this.x = x;
-  }
+    public void setX(Double x) {
+        this.x = x;
+    }
 
-  public Double getY() {
-    return y;
-  }
+    public Double getY() {
+        return y;
+    }
 
-  public void setY(Double y) {
-    this.y = y;
-  }
+    public void setY(Double y) {
+        this.y = y;
+    }
 
 }

@@ -19,12 +19,10 @@ package org.activiti.engine.delegate;
 import java.util.Map;
 
 /**
- * Can be used to pass a custom properties {@link java.util.HashMap} to a {@link TransactionDependentExecutionListener}
- * or to a {@link TransactionDependentTaskListener}
- *
-
+ * Can be used to pass a custom properties {@link java.util.HashMap} to a {@link
+ * TransactionDependentExecutionListener} or to a {@link TransactionDependentTaskListener}
  */
 public interface CustomPropertiesResolver {
 
-  Map<String, Object> getCustomPropertiesMap(DelegateExecution execution);
+    Map<String, Object> getCustomPropertiesMap(DelegateExecution execution);
 }

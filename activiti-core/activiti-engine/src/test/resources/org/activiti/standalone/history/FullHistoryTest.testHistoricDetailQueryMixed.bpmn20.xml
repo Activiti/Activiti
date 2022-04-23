@@ -12,19 +12,19 @@
         <activiti:formProperty id="formProp1"
           name="Property 1"
           variable="variable1"
-          type="string" />
+          type="string"/>
 
-       <activiti:formProperty id="formProp2"
+        <activiti:formProperty id="formProp2"
           name="Property 2"
           variable="variable2"
-          type="long" />
-        </extensionElements>
+          type="long"/>
+      </extensionElements>
     </startEvent>
-    <sequenceFlow id="flow1" sourceRef="start" targetRef="task" />
-    <userTask id="task" name="Schedule meeting" activiti:assignee="kermit" />
-    <sequenceFlow id="flow2" sourceRef="task" targetRef="end" />
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="task"/>
+    <userTask id="task" name="Schedule meeting" activiti:assignee="kermit"/>
+    <sequenceFlow id="flow2" sourceRef="task" targetRef="end"/>
 
-    <endEvent id="end" />
+    <endEvent id="end"/>
 
   </process>
 

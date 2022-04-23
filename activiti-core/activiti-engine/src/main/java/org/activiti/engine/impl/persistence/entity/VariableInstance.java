@@ -21,33 +21,31 @@ import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.variable.ValueFields;
 
 /**
-
- *
  * Generic variable class that can be reused for Activiti 6 and 5 engine
  */
 @Internal
 public interface VariableInstance extends ValueFields, Entity, HasRevision {
 
-  void setName(String name);
+    void setName(String name);
 
-  void setProcessInstanceId(String processInstanceId);
+    void setProcessInstanceId(String processInstanceId);
 
-  void setExecutionId(String executionId);
+    void setExecutionId(String executionId);
 
-  Object getValue();
+    Object getValue();
 
-  void setValue(Object value);
+    void setValue(Object value);
 
-  String getTypeName();
+    String getTypeName();
 
-  void setTypeName(String typeName);
+    void setTypeName(String typeName);
 
-  String getProcessInstanceId();
+    String getProcessInstanceId();
 
-  String getTaskId();
+    String getTaskId();
 
-  void setTaskId(String taskId);
+    void setTaskId(String taskId);
 
-  String getExecutionId();
+    String getExecutionId();
 
 }

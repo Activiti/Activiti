@@ -6,16 +6,17 @@
 
   <process id="CompetingSignalsProcess">
 
-    <startEvent id="start" />
-    <sequenceFlow id="flow1" sourceRef="start" targetRef="waitOne" />
+    <startEvent id="start"/>
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="waitOne"/>
 
-    <receiveTask id="waitOne" />
-    <sequenceFlow id="flow2" sourceRef="waitOne" targetRef="controlledConcurrency" />
+    <receiveTask id="waitOne"/>
+    <sequenceFlow id="flow2" sourceRef="waitOne" targetRef="controlledConcurrency"/>
 
-    <serviceTask id="controlledConcurrency" activiti:class="org.activiti.engine.test.concurrency.CompetingSignalsTest$ControlledConcurrencyBehavior"/>
-    <sequenceFlow id="flow3" sourceRef="controlledConcurrency" targetRef="waitTwo" />
+    <serviceTask id="controlledConcurrency"
+      activiti:class="org.activiti.engine.test.concurrency.CompetingSignalsTest$ControlledConcurrencyBehavior"/>
+    <sequenceFlow id="flow3" sourceRef="controlledConcurrency" targetRef="waitTwo"/>
 
-    <receiveTask id="waitTwo" />
+    <receiveTask id="waitTwo"/>
 
   </process>
 

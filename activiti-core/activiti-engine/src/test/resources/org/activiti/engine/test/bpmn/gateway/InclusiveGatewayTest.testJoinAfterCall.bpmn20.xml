@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+  typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+  targetNamespace="http://www.activiti.org/test">
   <process id="InclusiveGatewayAfterCall" name="InclusiveGatewayAfterCall">
     <documentation>Test inclusive gateway join after call. act-1026</documentation>
     <userTask id="taskA" name="Task A"></userTask>
@@ -14,11 +19,15 @@
     <sequenceFlow id="flow5" name="" sourceRef="taskA" targetRef="inclusivegateway2"></sequenceFlow>
     <sequenceFlow id="flow6" name="" sourceRef="taskB" targetRef="inclusivegateway2"></sequenceFlow>
     <sequenceFlow id="flow8" name="" sourceRef="inclusivegateway2" targetRef="taskD"></sequenceFlow>
-    <sequenceFlow id="flow1" name="" sourceRef="startevent1" targetRef="inclusivegateway1"></sequenceFlow>
+    <sequenceFlow id="flow1" name="" sourceRef="startevent1"
+      targetRef="inclusivegateway1"></sequenceFlow>
     <sequenceFlow id="flow9" name="" sourceRef="taskD" targetRef="endevent1"></sequenceFlow>
-    <callActivity id="callActivity" name="Call activity" calledElement="InclusiveGatewayAfterCallSubProcess"></callActivity>
-    <sequenceFlow id="flow10" name="" sourceRef="inclusivegateway1" targetRef="callActivity"></sequenceFlow>
-    <sequenceFlow id="flow11" name="" sourceRef="callActivity" targetRef="inclusivegateway2"></sequenceFlow>
+    <callActivity id="callActivity" name="Call activity"
+      calledElement="InclusiveGatewayAfterCallSubProcess"></callActivity>
+    <sequenceFlow id="flow10" name="" sourceRef="inclusivegateway1"
+      targetRef="callActivity"></sequenceFlow>
+    <sequenceFlow id="flow11" name="" sourceRef="callActivity"
+      targetRef="inclusivegateway2"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_InclusiveGateway">
     <bpmndi:BPMNPlane bpmnElement="InclusiveGateway" id="BPMNPlane_InclusiveGateway">

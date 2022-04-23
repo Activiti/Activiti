@@ -1,2 +1,2 @@
 alter table ACT_HI_PROCINST
-	add NAME_ NVARCHAR2(255);
+  add NAME_ NVARCHAR2(255);

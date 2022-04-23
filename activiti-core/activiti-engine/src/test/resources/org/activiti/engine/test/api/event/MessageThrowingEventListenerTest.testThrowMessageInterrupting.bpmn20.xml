@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-  xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+  targetNamespace="Examples">
 
-  <message id="myMessage" name="Message" />
+  <message id="myMessage" name="Message"/>
 
   <process id="testMessage">
-    <startEvent id="theStart" />
-    <sequenceFlow sourceRef="theStart" targetRef="subProcess" />
+    <startEvent id="theStart"/>
+    <sequenceFlow sourceRef="theStart" targetRef="subProcess"/>
 
     <subProcess id="subProcess">
-      <startEvent id="subStart" />
-      <sequenceFlow sourceRef="subStart" targetRef="subTask" />
-      <userTask id="subTask" />
-      <sequenceFlow sourceRef="subTask" targetRef="subEnd" />
-      <endEvent id="subEnd" />
+      <startEvent id="subStart"/>
+      <sequenceFlow sourceRef="subStart" targetRef="subTask"/>
+      <userTask id="subTask"/>
+      <sequenceFlow sourceRef="subTask" targetRef="subEnd"/>
+      <endEvent id="subEnd"/>
     </subProcess>
 
     <boundaryEvent id="boundary" attachedToRef="subProcess"
       cancelActivity="true">
-      <messageEventDefinition messageRef="myMessage" />
+      <messageEventDefinition messageRef="myMessage"/>
     </boundaryEvent>
-    <sequenceFlow sourceRef="boundary" targetRef="boundaryTask" />
+    <sequenceFlow sourceRef="boundary" targetRef="boundaryTask"/>
 
-  <userTask id="boundaryTask" />
-    <sequenceFlow sourceRef="subProcess" targetRef="end" />
+    <userTask id="boundaryTask"/>
+    <sequenceFlow sourceRef="subProcess" targetRef="end"/>
 
-    <endEvent id="end" />
+    <endEvent id="end"/>
 
   </process>
 

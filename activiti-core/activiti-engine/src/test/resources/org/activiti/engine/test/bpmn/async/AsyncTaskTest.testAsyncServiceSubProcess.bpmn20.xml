@@ -6,18 +6,18 @@
 
   <process id="asyncService">
 
-    <startEvent id="theStart" />
-    <sequenceFlow sourceRef="theStart" targetRef="subProcess" />
+    <startEvent id="theStart"/>
+    <sequenceFlow sourceRef="theStart" targetRef="subProcess"/>
 
     <subProcess id="subProcess" activiti:async="true">
-    	<startEvent id="subStart" />
-    	<sequenceFlow sourceRef="subStart" targetRef="subEnd" />
-    	<endEvent id="subEnd" />
+      <startEvent id="subStart"/>
+      <sequenceFlow sourceRef="subStart" targetRef="subEnd"/>
+      <endEvent id="subEnd"/>
     </subProcess>
 
-    <sequenceFlow sourceRef="subProcess" targetRef="theEnd" />
+    <sequenceFlow sourceRef="subProcess" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

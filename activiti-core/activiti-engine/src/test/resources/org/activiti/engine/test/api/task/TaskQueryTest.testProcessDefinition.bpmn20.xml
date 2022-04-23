@@ -6,19 +6,19 @@
 
   <process id="oneTaskProcess" name="The One Task Process">
 
-    <startEvent id="theStart" />
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask"/>
     <userTask id="theTask" name="my task">
-    	<documentation>My Task Description</documentation>
+      <documentation>My Task Description</documentation>
 
-    	<extensionElements>
-    	  <activiti:localization locale="es" name="Mi Tarea">
-    		<activiti:documentation>Mi Tarea Descripción</activiti:documentation>
-    	  </activiti:localization>
-    	</extensionElements>
+      <extensionElements>
+        <activiti:localization locale="es" name="Mi Tarea">
+          <activiti:documentation>Mi Tarea Descripción</activiti:documentation>
+        </activiti:localization>
+      </extensionElements>
     </userTask>
-    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
-    <endEvent id="theEnd" />
+    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd"/>
+    <endEvent id="theEnd"/>
 
   </process>
 

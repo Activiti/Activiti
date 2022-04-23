@@ -18,7 +18,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -52,7 +51,8 @@ public class GetTaskVariableInstanceCmd implements Command<VariableInstance>, Se
         TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);
 
         if (task == null) {
-            throw new ActivitiObjectNotFoundException("task " + taskId + " doesn't exist", Task.class);
+            throw new ActivitiObjectNotFoundException("task " + taskId + " doesn't exist",
+                Task.class);
         }
 
         VariableInstance variableEntity;

@@ -20,7 +20,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandConfig;
 
 /**
-
+ *
  */
 public class TotalExecutionTimeCommandInterceptor extends AbstractCommandInterceptor {
 

@@ -21,52 +21,49 @@ import java.io.Serializable;
 
 /**
  * Represents a field declaration in object form:
- *
+ * <p>
  * &lt;field name='someField&gt; &lt;string ...
- *
-
-
  */
 public class FieldDeclaration implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String name;
-  protected String type;
-  protected Object value;
+    protected String name;
+    protected String type;
+    protected Object value;
 
-  public FieldDeclaration(String name, String type, Object value) {
-    this.name = name;
-    this.type = type;
-    this.value = value;
-  }
+    public FieldDeclaration(String name, String type, Object value) {
+        this.name = name;
+        this.type = type;
+        this.value = value;
+    }
 
-  public FieldDeclaration() {
+    public FieldDeclaration() {
 
-  }
+    }
 
-  public String getName() {
-    return name;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public String getType() {
-    return type;
-  }
+    public String getType() {
+        return type;
+    }
 
-  public void setType(String type) {
-    this.type = type;
-  }
+    public void setType(String type) {
+        this.type = type;
+    }
 
-  public Object getValue() {
-    return value;
-  }
+    public Object getValue() {
+        return value;
+    }
 
-  public void setValue(Object value) {
-    this.value = value;
-  }
+    public void setValue(Object value) {
+        this.value = value;
+    }
 
 }

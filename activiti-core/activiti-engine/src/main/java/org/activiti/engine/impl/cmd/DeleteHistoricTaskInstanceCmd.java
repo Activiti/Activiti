@@ -18,30 +18,29 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 /**
-
+ *
  */
 public class DeleteHistoricTaskInstanceCmd implements Command<Object>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String taskId;
+    private static final long serialVersionUID = 1L;
+    protected String taskId;
 
-  public DeleteHistoricTaskInstanceCmd(String taskId) {
-    this.taskId = taskId;
-  }
-
-  public Object execute(CommandContext commandContext) {
-
-    if (taskId == null) {
-      throw new ActivitiIllegalArgumentException("taskId is null");
+    public DeleteHistoricTaskInstanceCmd(String taskId) {
+        this.taskId = taskId;
     }
-    commandContext.getHistoricTaskInstanceEntityManager().delete(taskId);
-    return null;
-  }
+
+    public Object execute(CommandContext commandContext) {
+
+        if (taskId == null) {
+            throw new ActivitiIllegalArgumentException("taskId is null");
+        }
+        commandContext.getHistoricTaskInstanceEntityManager().delete(taskId);
+        return null;
+    }
 
 }

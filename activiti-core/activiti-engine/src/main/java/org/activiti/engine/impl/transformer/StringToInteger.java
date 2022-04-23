@@ -18,13 +18,11 @@ package org.activiti.engine.impl.transformer;
 
 /**
  * Transforms a {@link String} to a {@link Integer}
- *
-
  */
 public class StringToInteger extends AbstractTransformer {
 
-  @Override
-  protected Object primTransform(Object anObject) throws Exception {
-    return Integer.valueOf((String) anObject);
-  }
+    @Override
+    protected Object primTransform(Object anObject) throws Exception {
+        return Integer.valueOf((String) anObject);
+    }
 }

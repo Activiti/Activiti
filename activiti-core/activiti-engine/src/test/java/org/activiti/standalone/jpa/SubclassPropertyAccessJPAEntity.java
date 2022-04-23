@@ -21,20 +21,20 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 
 /**
-
+ *
  */
 @Entity(name = "JPA_SUBCLASS_PROPERTY")
 public class SubclassPropertyAccessJPAEntity extends MappedSuperClassPropertyAccessJPAEntity {
 
-  private String value;
+    private String value;
 
-  @Column(name = "VALUE_")
-  public String getValue() {
-    return value;
-  }
+    @Column(name = "VALUE_")
+    public String getValue() {
+        return value;
+    }
 
-  public void setValue(String value) {
-    this.value = value;
-  }
+    public void setValue(String value) {
+        this.value = value;
+    }
 
 }

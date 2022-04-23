@@ -1,21 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+  typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+  targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL">
   <message id="messageid1" name="cancel"></message>
-  <process id="messageEventOnCallActivity" name="Message boundary event on Call activity" isExecutable="true">
+  <process id="messageEventOnCallActivity" name="Message boundary event on Call activity"
+    isExecutable="true">
     <startEvent id="startevent1"></startEvent>
-    <callActivity id="callActivity1" name="Call activity" calledElement="calledExternalSubProcessId" activiti:inheritVariables="false"></callActivity>
+    <callActivity id="callActivity1" name="Call activity" calledElement="calledExternalSubProcessId"
+      activiti:inheritVariables="false"></callActivity>
     <endEvent id="noneevent1"></endEvent>
     <userTask id="usertask1" name="Sample User Task1"></userTask>
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="callActivity1"></sequenceFlow>
     <sequenceFlow id="flow3" sourceRef="usertask1" targetRef="noneevent1"></sequenceFlow>
     <sequenceFlow id="flow4" sourceRef="callActivity1" targetRef="usertask1"></sequenceFlow>
-    <sequenceFlow id="flow2" sourceRef="cancelBoundaryMessageEvent" targetRef="usertask1"></sequenceFlow>
-    <boundaryEvent id="cancelBoundaryMessageEvent" attachedToRef="callActivity1" cancelActivity="true">
+    <sequenceFlow id="flow2" sourceRef="cancelBoundaryMessageEvent"
+      targetRef="usertask1"></sequenceFlow>
+    <boundaryEvent id="cancelBoundaryMessageEvent" attachedToRef="callActivity1"
+      cancelActivity="true">
       <messageEventDefinition messageRef="messageid1"></messageEventDefinition>
     </boundaryEvent>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_messageEventOnCallActivity">
-    <bpmndi:BPMNPlane bpmnElement="messageEventOnCallActivity" id="BPMNPlane_messageEventOnCallActivity">
+    <bpmndi:BPMNPlane bpmnElement="messageEventOnCallActivity"
+      id="BPMNPlane_messageEventOnCallActivity">
       <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
         <omgdc:Bounds height="30.0" width="30.0" x="120.0" y="55.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
@@ -28,8 +38,10 @@
       <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
         <omgdc:Bounds height="60.0" width="100.0" x="345.0" y="39.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="cancelBoundaryMessageEvent" id="BPMNShape_cancelBoundaryMessageEvent">
-        <omgdc:Bounds height="30.0" width="30.0" x="251.06419050502558" y="84.82564464150082"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="cancelBoundaryMessageEvent"
+        id="BPMNShape_cancelBoundaryMessageEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="251.06419050502558"
+          y="84.82564464150082"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
         <omgdi:waypoint x="445.0" y="69.0"></omgdi:waypoint>

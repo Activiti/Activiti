@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -26,35 +25,41 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**
-
+ *
  */
 public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String processInstanceId;
-  protected String deleteReason;
+    private static final long serialVersionUID = 1L;
+    protected String processInstanceId;
+    protected String deleteReason;
 
-  public DeleteProcessInstanceCmd(String processInstanceId, String deleteReason) {
-    this.processInstanceId = processInstanceId;
-    this.deleteReason = deleteReason;
-  }
-
-  public Void execute(CommandContext commandContext) {
-    if (processInstanceId == null) {
-      throw new ActivitiIllegalArgumentException("processInstanceId is null");
+    public DeleteProcessInstanceCmd(String processInstanceId, String deleteReason) {
+        this.processInstanceId = processInstanceId;
+        this.deleteReason = deleteReason;
     }
 
-    ExecutionEntity processInstanceEntity = commandContext.getExecutionEntityManager().findById(processInstanceId);
+    public Void execute(CommandContext commandContext) {
+        if (processInstanceId == null) {
+            throw new ActivitiIllegalArgumentException("processInstanceId is null");
+        }
 
-    if (processInstanceEntity == null) {
-      throw new ActivitiObjectNotFoundException("No process instance found for id '" + processInstanceId + "'", ProcessInstance.class);
+        ExecutionEntity processInstanceEntity = commandContext.getExecutionEntityManager()
+            .findById(processInstanceId);
+
+        if (processInstanceEntity == null) {
+            throw new ActivitiObjectNotFoundException(
+                "No process instance found for id '" + processInstanceId + "'",
+                ProcessInstance.class);
+        }
+
+        executeInternal(commandContext, processInstanceEntity);
+        return null;
     }
 
-    executeInternal(commandContext,processInstanceEntity);
-    return null;
-  }
-
-  protected void executeInternal(CommandContext commandContext,ExecutionEntity processInstanceEntity) {
-      commandContext.getExecutionEntityManager().deleteProcessInstance(processInstanceEntity.getProcessInstanceId(), deleteReason, false);
-  }
+    protected void executeInternal(CommandContext commandContext,
+        ExecutionEntity processInstanceEntity) {
+        commandContext.getExecutionEntityManager()
+            .deleteProcessInstance(processInstanceEntity.getProcessInstanceId(), deleteReason,
+                false);
+    }
 }

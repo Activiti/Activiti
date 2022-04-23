@@ -15,9 +15,16 @@
  */
 package org.activiti.engine.impl.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.activiti.engine.ActivitiException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,14 +34,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.io.Resource;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DeploymentBuilderImplTest {
@@ -53,7 +52,7 @@ public class DeploymentBuilderImplTest {
 
         //when
         deploymentBuilder.addInputStream("my.bar",
-                                         resource);
+            resource);
 
         //then
         verify(deploymentBuilder).addZipInputStream(any());
@@ -67,28 +66,30 @@ public class DeploymentBuilderImplTest {
         given(resource.getInputStream()).willReturn(inputStream);
 
         doReturn(deploymentBuilder).when(deploymentBuilder).addInputStream(resourceName,
-                                                                           inputStream);
+            inputStream);
 
         //when
         deploymentBuilder.addInputStream(resourceName,
-                                         resource);
+            resource);
 
         //then
         verify(deploymentBuilder).addInputStream(resourceName,
-                                                 inputStream);
+            inputStream);
     }
 
     @Test
-    public void addInputStreamShouldThrowActivitiExceptionWhenIOExceptionIsThrown() throws Exception {
+    public void addInputStreamShouldThrowActivitiExceptionWhenIOExceptionIsThrown()
+        throws Exception {
         //given
         given(resource.getInputStream()).willThrow(new IOException());
 
         //when
-        Throwable thrown = catchThrowable(() -> deploymentBuilder.addInputStream("any.xml", resource));
+        Throwable thrown = catchThrowable(
+            () -> deploymentBuilder.addInputStream("any.xml", resource));
 
         //then
         assertThat(thrown)
-                .isInstanceOf(ActivitiException.class)
-                .hasMessageContaining("Couldn't auto deploy resource");
+            .isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("Couldn't auto deploy resource");
     }
 }

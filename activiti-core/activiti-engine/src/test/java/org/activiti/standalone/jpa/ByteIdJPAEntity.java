@@ -22,20 +22,20 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 /**
-
+ *
  */
 @Entity(name = "BYTE_ID_ENTITY")
 public class ByteIdJPAEntity {
 
-  @Id
-  @Column(name = "ID_")
-  private byte byteId;
+    @Id
+    @Column(name = "ID_")
+    private byte byteId;
 
-  public byte getByteId() {
-    return byteId;
-  }
+    public byte getByteId() {
+        return byteId;
+    }
 
-  public void setByteId(byte byteId) {
-    this.byteId = byteId;
-  }
+    public void setByteId(byte byteId) {
+        this.byteId = byteId;
+    }
 }

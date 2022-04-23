@@ -15,26 +15,26 @@
  */
 package org.activiti.engine.impl.bpmn.helper;
 
-import java.util.Map;
-
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.junit.Test;
-
 import static java.util.Collections.singletonMap;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
+import java.util.Map;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.junit.Test;
 
+/**
+ *
  */
 public class SubProcessVariableSnapshotterTest {
 
-    private SubProcessVariableSnapshotter snapshotter = new SubProcessVariableSnapshotter();
+    private final SubProcessVariableSnapshotter snapshotter = new SubProcessVariableSnapshotter();
 
     @Test
-    public void setVariablesSnapshots_should_set_all_source_local_variables_in_the_snapshot_holder() throws Exception {
+    public void setVariablesSnapshots_should_set_all_source_local_variables_in_the_snapshot_holder()
+        throws Exception {
         //given
         Map<String, Object> variables = singletonMap("subCount", 1L);
         ExecutionEntity subProcessExecution = buildExecutionEntity(variables);
@@ -55,7 +55,8 @@ public class SubProcessVariableSnapshotterTest {
     }
 
     @Test
-    public void setVariablesSnapshots_should_set_parent_variables_in_the_snapshot_holder_when_parent_is_multi_instance() throws Exception {
+    public void setVariablesSnapshots_should_set_parent_variables_in_the_snapshot_holder_when_parent_is_multi_instance()
+        throws Exception {
         //given
         Map<String, Object> parentVariables = singletonMap("parentCount", 1L);
         ExecutionEntity parentExecution = buildExecutionEntity(parentVariables);
@@ -74,14 +75,16 @@ public class SubProcessVariableSnapshotterTest {
         verify(snapshotHolderExecution).setVariablesLocal(parentVariables);
     }
 
-    private ExecutionEntity buildExecutionEntity(ExecutionEntity parentExecution, Map<String, Object> localVariables) {
+    private ExecutionEntity buildExecutionEntity(ExecutionEntity parentExecution,
+        Map<String, Object> localVariables) {
         ExecutionEntity subProcessExecution = buildExecutionEntity(localVariables);
         when(subProcessExecution.getParent()).thenReturn(parentExecution);
         return subProcessExecution;
     }
 
     @Test
-    public void setVariablesSnapshots_should_not_set_parent_variables_in_the_snapshot_holder_when_parent_is_not_multi_instance() throws Exception {
+    public void setVariablesSnapshots_should_not_set_parent_variables_in_the_snapshot_holder_when_parent_is_not_multi_instance()
+        throws Exception {
         //given
         Map<String, Object> parentVariables = singletonMap("parentCount", 1L);
         ExecutionEntity parentExecution = buildExecutionEntity(parentVariables);

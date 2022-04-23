@@ -19,7 +19,6 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.Artifact;
 import org.activiti.bpmn.model.Association;
@@ -46,34 +45,41 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
 
     @SuppressWarnings("unchecked")
     public void parse(BpmnParse bpmnParse,
-                      BaseElement element) {
+        BaseElement element) {
         T baseElement = (T) element;
         executeParse(bpmnParse,
-                     baseElement);
+            baseElement);
     }
 
     protected abstract void executeParse(BpmnParse bpmnParse,
-                                         T element);
+        T element);
 
     protected ExecutionListener createExecutionListener(BpmnParse bpmnParse,
-                                                        ActivitiListener activitiListener) {
+        ActivitiListener activitiListener) {
         ExecutionListener executionListener = null;
 
-        if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
-            executionListener = bpmnParse.getListenerFactory().createClassDelegateExecutionListener(activitiListener);
-        } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
-            executionListener = bpmnParse.getListenerFactory().createExpressionExecutionListener(activitiListener);
-        } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
-            executionListener = bpmnParse.getListenerFactory().createDelegateExpressionExecutionListener(activitiListener);
+        if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(
+            activitiListener.getImplementationType())) {
+            executionListener = bpmnParse.getListenerFactory()
+                .createClassDelegateExecutionListener(activitiListener);
+        } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(
+            activitiListener.getImplementationType())) {
+            executionListener = bpmnParse.getListenerFactory()
+                .createExpressionExecutionListener(activitiListener);
+        } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(
+            activitiListener.getImplementationType())) {
+            executionListener = bpmnParse.getListenerFactory()
+                .createDelegateExpressionExecutionListener(activitiListener);
         }
         return executionListener;
     }
 
     protected String getPrecedingEventBasedGateway(BpmnParse bpmnParse,
-                                                   IntermediateCatchEvent event) {
+        IntermediateCatchEvent event) {
         String eventBasedGatewayId = null;
         for (SequenceFlow sequenceFlow : event.getIncomingFlows()) {
-            FlowElement sourceElement = bpmnParse.getBpmnModel().getFlowElement(sequenceFlow.getSourceRef());
+            FlowElement sourceElement = bpmnParse.getBpmnModel()
+                .getFlowElement(sequenceFlow.getSourceRef());
             if (sourceElement instanceof EventGateway) {
                 eventBasedGatewayId = sourceElement.getId();
                 break;
@@ -83,20 +89,21 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
     }
 
     protected void processArtifacts(BpmnParse bpmnParse,
-                                    Collection<Artifact> artifacts) {
+        Collection<Artifact> artifacts) {
         // associations
         for (Artifact artifact : artifacts) {
             if (artifact instanceof Association) {
                 createAssociation(bpmnParse,
-                                  (Association) artifact);
+                    (Association) artifact);
             }
         }
     }
 
     protected void createAssociation(BpmnParse bpmnParse,
-                                     Association association) {
+        Association association) {
         BpmnModel bpmnModel = bpmnParse.getBpmnModel();
-        if (bpmnModel.getArtifact(association.getSourceRef()) != null || bpmnModel.getArtifact(association.getTargetRef()) != null) {
+        if (bpmnModel.getArtifact(association.getSourceRef()) != null
+            || bpmnModel.getArtifact(association.getTargetRef()) != null) {
 
             // connected to a text annotation so skipping it
             return;
@@ -120,10 +127,10 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
         // bpmnModel.addProblem("Invalid reference targetRef '" +
         // association.getTargetRef() + "' of association element ",
         // association.getId());
-    /*
-     * } else { if (sourceActivity.getProperty("type").equals("compensationBoundaryCatch" )) { Object isForCompensation = targetActivity.getProperty(PROPERTYNAME_IS_FOR_COMPENSATION); if
-     * (isForCompensation == null || !(Boolean) isForCompensation) { logger.warn( "compensation boundary catch must be connected to element with isForCompensation=true" ); } else { ActivityImpl
-     * compensatedActivity = sourceActivity.getParentActivity(); compensatedActivity.setProperty(BpmnParse .PROPERTYNAME_COMPENSATION_HANDLER_ID, targetActivity.getId()); } } }
-     */
+        /*
+         * } else { if (sourceActivity.getProperty("type").equals("compensationBoundaryCatch" )) { Object isForCompensation = targetActivity.getProperty(PROPERTYNAME_IS_FOR_COMPENSATION); if
+         * (isForCompensation == null || !(Boolean) isForCompensation) { logger.warn( "compensation boundary catch must be connected to element with isForCompensation=true" ); } else { ActivityImpl
+         * compensatedActivity = sourceActivity.getParentActivity(); compensatedActivity.setProperty(BpmnParse .PROPERTYNAME_COMPENSATION_HANDLER_ID, targetActivity.getId()); } } }
+         */
     }
 }

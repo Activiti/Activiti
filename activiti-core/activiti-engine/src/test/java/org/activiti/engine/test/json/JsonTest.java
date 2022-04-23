@@ -19,20 +19,18 @@ package org.activiti.engine.test.json;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class JsonTest extends PluggableActivitiTestCase {
 
@@ -53,10 +51,12 @@ public class JsonTest extends PluggableActivitiTestCase {
         ObjectNode varNode = objectMapper.createObjectNode();
         varNode.put("var", "myValue");
         vars.put(MY_JSON_OBJ, varNode);
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testJsonAvailableProcess", vars);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "testJsonAvailableProcess", vars);
 
         // Check JSON has been parsed as expected
-        ObjectNode value = (ObjectNode) runtimeService.getVariable(processInstance.getId(), MY_JSON_OBJ);
+        ObjectNode value = (ObjectNode) runtimeService.getVariable(processInstance.getId(),
+            MY_JSON_OBJ);
         assertThat(value).isNotNull();
         assertThat(value.get("var").asText()).isEqualTo("myValue");
 
@@ -98,7 +98,8 @@ public class JsonTest extends PluggableActivitiTestCase {
 
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             List<HistoricVariableInstance> historicVariableInstances = historyService.createHistoricVariableInstanceQuery()
-                .processInstanceId(processInstance.getProcessInstanceId()).orderByVariableName().asc().list();
+                .processInstanceId(processInstance.getProcessInstanceId()).orderByVariableName()
+                .asc().list();
             assertThat(historicVariableInstances).hasSize(2);
 
             assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo(BIG_JSON_OBJ);
@@ -130,10 +131,12 @@ public class JsonTest extends PluggableActivitiTestCase {
         ObjectNode varNode = objectMapper.createObjectNode();
         varNode.put("var", "myValue");
         vars.put("myJsonObj", varNode);
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testJsonAvailableProcess", vars);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "testJsonAvailableProcess", vars);
 
         // Check JSON has been parsed as expected
-        ObjectNode value = (ObjectNode) runtimeService.getVariable(processInstance.getId(), "myJsonObj");
+        ObjectNode value = (ObjectNode) runtimeService.getVariable(processInstance.getId(),
+            "myJsonObj");
         assertThat(value).isNotNull();
         assertThat(value.get("var").asText()).isEqualTo("myValue");
 
@@ -167,10 +170,12 @@ public class JsonTest extends PluggableActivitiTestCase {
         varNode.put("var", "myValue");
         varArray.add(varNode);
         vars.put("myJsonArr", varArray);
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testJsonAvailableProcess", vars);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "testJsonAvailableProcess", vars);
 
         // Check JSON has been parsed as expected
-        ArrayNode value = (ArrayNode) runtimeService.getVariable(processInstance.getId(), "myJsonArr");
+        ArrayNode value = (ArrayNode) runtimeService.getVariable(processInstance.getId(),
+            "myJsonArr");
         assertThat(value).isNotNull();
         assertThat(value.get(0).get("var").asText()).isEqualTo("myValue");
 

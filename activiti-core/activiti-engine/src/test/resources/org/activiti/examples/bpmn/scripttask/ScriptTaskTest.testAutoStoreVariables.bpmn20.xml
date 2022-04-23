@@ -20,8 +20,8 @@
 
   <process id="testAutoStoreVariables">
 
-    <startEvent id="theStart" />
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="script1" />
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="script1"/>
 
     <scriptTask id="script1" scriptFormat="JavaScript" activiti:autoStoreVariables="false">
       <script><![CDATA[
@@ -30,10 +30,10 @@
 
         ]]></script>
     </scriptTask>
-    <sequenceFlow id="flow2" sourceRef="script1" targetRef="task1" />
+    <sequenceFlow id="flow2" sourceRef="script1" targetRef="task1"/>
 
-    <userTask id="task1" />
-    <sequenceFlow id="flow3" sourceRef="task1" targetRef="script2" />
+    <userTask id="task1"/>
+    <sequenceFlow id="flow3" sourceRef="task1" targetRef="script2"/>
 
     <scriptTask id="script2" scriptFormat="JavaScript">
       <script><![CDATA[
@@ -43,12 +43,12 @@
 
         ]]></script>
     </scriptTask>
-    <sequenceFlow id="flow4" sourceRef="script2" targetRef="task2" />
+    <sequenceFlow id="flow4" sourceRef="script2" targetRef="task2"/>
 
-    <userTask id="task2" />
-    <sequenceFlow id="flow5" sourceRef="task2" targetRef="theEnd" />
+    <userTask id="task2"/>
+    <sequenceFlow id="flow5" sourceRef="task2" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

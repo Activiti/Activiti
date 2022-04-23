@@ -20,15 +20,15 @@ package org.activiti.engine.impl.interceptor;
 import org.activiti.engine.api.internal.Internal;
 
 /**
-
+ *
  */
 @Internal
 public interface CommandInterceptor {
 
-  <T> T execute(CommandConfig config, Command<T> command);
+    <T> T execute(CommandConfig config, Command<T> command);
 
-  CommandInterceptor getNext();
+    CommandInterceptor getNext();
 
-  void setNext(CommandInterceptor next);
+    void setNext(CommandInterceptor next);
 
 }

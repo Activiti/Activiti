@@ -24,30 +24,31 @@ import org.activiti.engine.test.api.event.TestActivitiEventListener;
 
 /**
  * Test to verify event-listeners, which are configured in the cfg.xml, are notified.
- *
-
  */
 public class EngineEventsTest extends ResourceActivitiTestCase {
 
-  public EngineEventsTest() {
-    super("org/activiti/standalone/event/activiti-eventlistener.cfg.xml");
-  }
+    public EngineEventsTest() {
+        super("org/activiti/standalone/event/activiti-eventlistener.cfg.xml");
+    }
 
-  public void testEngineEventsTest() {
-    // Fetch the listener to check received events
-    TestActivitiEventListener listener = (TestActivitiEventListener) processEngineConfiguration.getBeans().get("eventListener");
-    assertThat(listener).isNotNull();
+    public void testEngineEventsTest() {
+        // Fetch the listener to check received events
+        TestActivitiEventListener listener = (TestActivitiEventListener) processEngineConfiguration.getBeans()
+            .get("eventListener");
+        assertThat(listener).isNotNull();
 
-    // Check create-event
-    assertThat(listener.getEventsReceived()).hasSize(1);
-    assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.ENGINE_CREATED);
-    listener.clearEventsReceived();
+        // Check create-event
+        assertThat(listener.getEventsReceived()).hasSize(1);
+        assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(
+            ActivitiEventType.ENGINE_CREATED);
+        listener.clearEventsReceived();
 
-    // Check close-event
-    processEngine.close();
-    assertThat(listener.getEventsReceived()).hasSize(1);
-    assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.ENGINE_CLOSED);
+        // Check close-event
+        processEngine.close();
+        assertThat(listener.getEventsReceived()).hasSize(1);
+        assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(
+            ActivitiEventType.ENGINE_CLOSED);
 
-  }
+    }
 
 }

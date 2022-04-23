@@ -21,20 +21,20 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
 
 public class TestExceptionActivitiEventListener implements ActivitiEventListener {
 
-  private boolean failOnException;
+    private final boolean failOnException;
 
-  public TestExceptionActivitiEventListener(boolean failOnException) {
-    this.failOnException = failOnException;
-  }
+    public TestExceptionActivitiEventListener(boolean failOnException) {
+        this.failOnException = failOnException;
+    }
 
-  @Override
-  public void onEvent(ActivitiEvent event) {
-    throw new RuntimeException("Test exception");
-  }
+    @Override
+    public void onEvent(ActivitiEvent event) {
+        throw new RuntimeException("Test exception");
+    }
 
-  @Override
-  public boolean isFailOnException() {
-    return failOnException;
-  }
+    @Override
+    public boolean isFailOnException() {
+        return failOnException;
+    }
 
 }

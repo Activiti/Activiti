@@ -28,7 +28,7 @@ public class ExecutionElResolverTest {
 
     private static final String EXECUTION_KEY = "execution";
 
-    private ExecutionElResolver resolver = new ExecutionElResolver();
+    private final ExecutionElResolver resolver = new ExecutionElResolver();
 
     @Test
     public void canResolve_should_returnTrueWhenItsExecutionEntityAndPropertyIsExecution() {

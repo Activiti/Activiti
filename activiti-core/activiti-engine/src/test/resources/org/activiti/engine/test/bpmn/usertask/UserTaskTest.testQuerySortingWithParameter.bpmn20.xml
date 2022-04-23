@@ -8,16 +8,16 @@
 
     <startEvent id="start"/>
 
-    <sequenceFlow id="flow1" sourceRef="start" targetRef="theTask" />
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="theTask"/>
 
     <userTask id="theTask" name="my task" activiti:assignee="kermit"
-              activiti:candidateUsers="fozzie, gonzo" activiti:candidateGroups="management">
+      activiti:candidateUsers="fozzie, gonzo" activiti:candidateGroups="management">
       <documentation>Very important</documentation>
     </userTask>
 
-    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
+    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

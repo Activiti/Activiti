@@ -20,16 +20,19 @@
 
   <process id="ScriptBeanAccess">
 
-    <startEvent id="theStart" />
+    <startEvent id="theStart"/>
 
-    <scriptTask id="theScriptTaskWithExistingProcessVariableName" scriptFormat="juel" activiti:resultVariable="myVariable">
+    <scriptTask id="theScriptTaskWithExistingProcessVariableName" scriptFormat="juel"
+      activiti:resultVariable="myVariable">
       <script>#{myBean}</script>
     </scriptTask>
 
-    <receiveTask id="wait" />
+    <receiveTask id="wait"/>
 
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theScriptTaskWithExistingProcessVariableName" />
-    <sequenceFlow id="flow2" sourceRef="theScriptTaskWithExistingProcessVariableName" targetRef="wait" />
+    <sequenceFlow id="flow1" sourceRef="theStart"
+      targetRef="theScriptTaskWithExistingProcessVariableName"/>
+    <sequenceFlow id="flow2" sourceRef="theScriptTaskWithExistingProcessVariableName"
+      targetRef="wait"/>
 
   </process>
 

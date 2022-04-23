@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.bpmn.parser;
 
 import java.util.Map;
-
 import org.activiti.bpmn.model.Import;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.bpmn.data.StructureDefinition;
@@ -26,22 +25,20 @@ import org.activiti.engine.impl.webservice.WSService;
 
 /**
  * A XML importer
- *
  */
 @Internal
 public interface XMLImporter {
 
-  /**
-   * Imports the definitions in the XML declared in element
-   *
-   * @param element
-   *          the declarations to be imported
-   */
-  void importFrom(Import theImport, String sourceSystemId);
+    /**
+     * Imports the definitions in the XML declared in element
+     *
+     * @param element the declarations to be imported
+     */
+    void importFrom(Import theImport, String sourceSystemId);
 
-  Map<String, StructureDefinition> getStructures();
+    Map<String, StructureDefinition> getStructures();
 
-  Map<String, WSService> getServices();
+    Map<String, WSService> getServices();
 
-  Map<String, WSOperation> getOperations();
+    Map<String, WSOperation> getOperations();
 }

@@ -1,14 +1,14 @@
 alter table ACT_HI_COMMENT
-add TYPE_ varchar(255);
+  add TYPE_ varchar(255);
 
 alter table ACT_HI_COMMENT
-add ACTION_ varchar(255);
+  add ACTION_ varchar(255);
 
 alter table ACT_HI_COMMENT
-add FULL_MSG_ longvarbinary;
+  add FULL_MSG_ longvarbinary;
 
 alter table ACT_HI_TASKINST
-add OWNER_ varchar(64);
+  add OWNER_ varchar(64);
 
 alter table ACT_HI_TASKINST
-add PARENT_TASK_ID_ varchar(64);
+  add PARENT_TASK_ID_ varchar(64);

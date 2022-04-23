@@ -6,11 +6,11 @@
 
   <process id="oneTaskProcess" name="The One Task Process">
 
-    <startEvent id="theStart" />
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theProcessTask" />
-    <userTask id="theProcessTask" name="my process task" activiti:assignee="kermit" />
-    <sequenceFlow id="flow2" sourceRef="theProcessTask" targetRef="theEnd" />
-    <endEvent id="theEnd" />
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theProcessTask"/>
+    <userTask id="theProcessTask" name="my process task" activiti:assignee="kermit"/>
+    <sequenceFlow id="flow2" sourceRef="theProcessTask" targetRef="theEnd"/>
+    <endEvent id="theEnd"/>
 
   </process>
 

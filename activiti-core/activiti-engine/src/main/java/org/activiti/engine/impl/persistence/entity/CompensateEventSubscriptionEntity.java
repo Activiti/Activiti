@@ -21,12 +21,11 @@ package org.activiti.engine.impl.persistence.entity;
 import org.activiti.engine.api.internal.Internal;
 
 /**
-
-
+ *
  */
 @Internal
 public interface CompensateEventSubscriptionEntity extends EventSubscriptionEntity {
 
-  String EVENT_TYPE = "compensate";
+    String EVENT_TYPE = "compensate";
 
 }

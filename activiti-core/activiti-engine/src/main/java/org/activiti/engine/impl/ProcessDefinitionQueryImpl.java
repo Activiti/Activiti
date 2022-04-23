@@ -17,7 +17,6 @@ package org.activiti.engine.impl;
 
 import java.util.List;
 import java.util.Set;
-
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -30,7 +29,8 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQuery, ProcessDefinition> implements ProcessDefinitionQuery {
+public class ProcessDefinitionQueryImpl extends
+    AbstractQuery<ProcessDefinitionQuery, ProcessDefinition> implements ProcessDefinitionQuery {
 
     private static final long serialVersionUID = 1L;
 
@@ -190,25 +190,29 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
         return this;
     }
 
-    public ProcessDefinitionQuery processDefinitionVersionGreaterThan(Integer processDefinitionVersion) {
+    public ProcessDefinitionQuery processDefinitionVersionGreaterThan(
+        Integer processDefinitionVersion) {
         checkVersion(processDefinitionVersion);
         this.versionGt = processDefinitionVersion;
         return this;
     }
 
-    public ProcessDefinitionQuery processDefinitionVersionGreaterThanOrEquals(Integer processDefinitionVersion) {
+    public ProcessDefinitionQuery processDefinitionVersionGreaterThanOrEquals(
+        Integer processDefinitionVersion) {
         checkVersion(processDefinitionVersion);
         this.versionGte = processDefinitionVersion;
         return this;
     }
 
-    public ProcessDefinitionQuery processDefinitionVersionLowerThan(Integer processDefinitionVersion) {
+    public ProcessDefinitionQuery processDefinitionVersionLowerThan(
+        Integer processDefinitionVersion) {
         checkVersion(processDefinitionVersion);
         this.versionLt = processDefinitionVersion;
         return this;
     }
 
-    public ProcessDefinitionQuery processDefinitionVersionLowerThanOrEquals(Integer processDefinitionVersion) {
+    public ProcessDefinitionQuery processDefinitionVersionLowerThanOrEquals(
+        Integer processDefinitionVersion) {
         checkVersion(processDefinitionVersion);
         this.versionLte = processDefinitionVersion;
         return this;
@@ -260,12 +264,12 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
 
     public ProcessDefinitionQuery messageEventSubscription(String messageName) {
         return eventSubscription("message",
-                                 messageName);
+            messageName);
     }
 
     public ProcessDefinitionQuery messageEventSubscriptionName(String messageName) {
         return eventSubscription("message",
-                                 messageName);
+            messageName);
     }
 
     public ProcessDefinitionQuery processDefinitionStarter(String procDefId) {
@@ -274,7 +278,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     }
 
     public ProcessDefinitionQuery eventSubscription(String eventType,
-                                                    String eventName) {
+        String eventName) {
         if (eventName == null) {
             throw new ActivitiIllegalArgumentException("event name is null");
         }
@@ -291,11 +295,13 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
         // includes the groups the candidate
         // user is part of
         if (authorizationUserId != null) {
-            UserGroupManager userGroupManager = Context.getProcessEngineConfiguration().getUserGroupManager();
+            UserGroupManager userGroupManager = Context.getProcessEngineConfiguration()
+                .getUserGroupManager();
             if (userGroupManager != null) {
                 return userGroupManager.getUserGroups(authorizationUserId);
             } else {
-                log.warn("No UserGroupManager set on ProcessEngineConfiguration. Tasks queried only where user is directly related, not through groups.");
+                log.warn(
+                    "No UserGroupManager set on ProcessEngineConfiguration. Tasks queried only where user is directly related, not through groups.");
             }
         }
 
@@ -340,14 +346,16 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
 
     public long executeCount(CommandContext commandContext) {
         checkQueryOk();
-        return commandContext.getProcessDefinitionEntityManager().findProcessDefinitionCountByQueryCriteria(this);
+        return commandContext.getProcessDefinitionEntityManager()
+            .findProcessDefinitionCountByQueryCriteria(this);
     }
 
     public List<ProcessDefinition> executeList(CommandContext commandContext,
-                                               Page page) {
+        Page page) {
         checkQueryOk();
-        return commandContext.getProcessDefinitionEntityManager().findProcessDefinitionsByQueryCriteria(this,
-                                                                                                        page);
+        return commandContext.getProcessDefinitionEntityManager()
+            .findProcessDefinitionsByQueryCriteria(this,
+                page);
     }
 
     public void checkQueryOk() {
@@ -388,7 +396,9 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
         return keyLike;
     }
 
-    public Set<String> getKeys() { return keys; }
+    public Set<String> getKeys() {
+        return keys;
+    }
 
     public Integer getVersion() {
         return version;

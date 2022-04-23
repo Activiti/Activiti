@@ -21,33 +21,32 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 
 /**
  * Implementation of an {@link ActivitiErrorEvent}.
- *
-
  */
-public class ActivitiErrorEventImpl extends ActivitiActivityEventImpl implements ActivitiErrorEvent {
+public class ActivitiErrorEventImpl extends ActivitiActivityEventImpl implements
+    ActivitiErrorEvent {
 
-  protected String errorId;
-  protected String errorCode;
+    protected String errorId;
+    protected String errorCode;
 
-  public ActivitiErrorEventImpl(ActivitiEventType type) {
-    super(type);
-  }
+    public ActivitiErrorEventImpl(ActivitiEventType type) {
+        super(type);
+    }
 
-  public String getErrorId() {
-    return errorId;
-  }
+    public String getErrorId() {
+        return errorId;
+    }
 
-  public void setErrorId(String errorId) {
-    this.errorId = errorId;
-  }
+    public void setErrorId(String errorId) {
+        this.errorId = errorId;
+    }
 
-  public void setErrorCode(String errorCode) {
-    this.errorCode = errorCode;
-  }
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
 
-  @Override
-  public String getErrorCode() {
-    return errorCode;
-  }
+    @Override
+    public String getErrorCode() {
+        return errorCode;
+    }
 
 }

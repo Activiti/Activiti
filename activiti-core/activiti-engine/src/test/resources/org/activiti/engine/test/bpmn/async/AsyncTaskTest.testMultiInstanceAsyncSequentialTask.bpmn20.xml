@@ -6,9 +6,9 @@
 
   <process id="asyncTask">
 
-    <startEvent id="theStart" />
+    <startEvent id="theStart"/>
 
-    <sequenceFlow sourceRef="theStart" targetRef="task" />
+    <sequenceFlow sourceRef="theStart" targetRef="task"/>
 
     <manualTask id="task" activiti:async="true">
       <multiInstanceLoopCharacteristics isSequential="true">
@@ -16,9 +16,9 @@
       </multiInstanceLoopCharacteristics>
     </manualTask>
 
-    <sequenceFlow sourceRef="task" targetRef="theEnd" />
+    <sequenceFlow sourceRef="task" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
 
   </process>
 

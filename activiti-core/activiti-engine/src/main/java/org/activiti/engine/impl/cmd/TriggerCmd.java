@@ -25,24 +25,26 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected Map<String, Object> processVariables;
-  protected Map<String, Object> transientVariables;
-  private Map<String, Object> availableVariables;
-  private VariablesPropagator variablesPropagator;
+    protected Map<String, Object> processVariables;
+    protected Map<String, Object> transientVariables;
+    private Map<String, Object> availableVariables;
+    private VariablesPropagator variablesPropagator;
 
-  public TriggerCmd(String executionId, Map<String, Object> processVariables) {
-    super(executionId);
-    this.processVariables = processVariables;
-  }
+    public TriggerCmd(String executionId, Map<String, Object> processVariables) {
+        super(executionId);
+        this.processVariables = processVariables;
+    }
 
-  public TriggerCmd(String executionId, Map<String, Object> processVariables, Map<String, Object> transientVariables) {
-    this(executionId, processVariables);
-    this.transientVariables = transientVariables;
-  }
+    public TriggerCmd(String executionId, Map<String, Object> processVariables,
+        Map<String, Object> transientVariables) {
+        this(executionId, processVariables);
+        this.transientVariables = transientVariables;
+    }
 
-    public TriggerCmd(String executionId, Map<String, Object> availableVariables, VariablesPropagator variablesPropagator) {
+    public TriggerCmd(String executionId, Map<String, Object> availableVariables,
+        VariablesPropagator variablesPropagator) {
         super(executionId);
         this.availableVariables = availableVariables;
         this.variablesPropagator = variablesPropagator;
@@ -57,7 +59,7 @@ public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
             execution.setTransientVariables(transientVariables);
         }
 
-        if (variablesPropagator != null ) {
+        if (variablesPropagator != null) {
             variablesPropagator.propagate(execution, availableVariables);
         }
 
@@ -68,9 +70,9 @@ public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
         return null;
     }
 
-  @Override
-  protected String getSuspendedExceptionMessage() {
-    return "Cannot trigger an execution that is suspended";
-  }
+    @Override
+    protected String getSuspendedExceptionMessage() {
+        return "Cannot trigger an execution that is suspended";
+    }
 
 }

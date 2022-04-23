@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiEngineAgenda;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
@@ -68,7 +67,7 @@ import org.slf4j.LoggerFactory;
 
 public class CommandContext {
 
-    private static Logger log = LoggerFactory.getLogger(CommandContext.class);
+    private static final Logger log = LoggerFactory.getLogger(CommandContext.class);
 
     protected Command<?> command;
     protected Map<Class<?>, SessionFactory> sessionFactories;
@@ -81,11 +80,12 @@ public class CommandContext {
     protected boolean reused;
 
     protected ActivitiEngineAgenda agenda;
-    protected Map<String, ExecutionEntity> involvedExecutions = new HashMap<>(1); // The executions involved with the command
+    protected Map<String, ExecutionEntity> involvedExecutions = new HashMap<>(
+        1); // The executions involved with the command
     protected LinkedList<Object> resultStack = new LinkedList<>(); // needs to be a stack, as JavaDelegates can do api calls again
 
     public CommandContext(Command<?> command,
-                          ProcessEngineConfigurationImpl processEngineConfiguration) {
+        ProcessEngineConfigurationImpl processEngineConfiguration) {
         this.command = command;
         this.processEngineConfiguration = processEngineConfiguration;
         this.failedJobCommandFactory = processEngineConfiguration.getFailedJobCommandFactory();
@@ -142,16 +142,17 @@ public class CommandContext {
     }
 
     protected void logException() {
-        if (exception instanceof JobNotFoundException || exception instanceof ActivitiTaskAlreadyClaimedException) {
+        if (exception instanceof JobNotFoundException
+            || exception instanceof ActivitiTaskAlreadyClaimedException) {
             // reduce log level, because this may have been caused because of job deletion due to cancelActiviti="true"
             log.info("Error while closing command context",
-                     exception);
+                exception);
         } else if (exception instanceof ActivitiOptimisticLockingException) {
             // reduce log level, as normally we're not interested in logging this exception
             log.debug("Optimistic locking exception : " + exception);
         } else {
             log.error("Error while closing command context",
-                      exception);
+                exception);
         }
     }
 
@@ -162,7 +163,7 @@ public class CommandContext {
             throw (RuntimeException) exception;
         } else {
             throw new ActivitiException("exception while executing command " + command,
-                                        exception);
+                exception);
         }
     }
 
@@ -253,8 +254,8 @@ public class CommandContext {
     }
 
     /**
-     * Stores the provided exception on this {@link CommandContext} instance.
-     * That exception will be rethrown at the end of closing the {@link CommandContext} instance.
+     * Stores the provided exception on this {@link CommandContext} instance. That exception will be
+     * rethrown at the end of closing the {@link CommandContext} instance.
      * <p>
      * If there is already an exception being stored, a 'masked exception' message will be logged.
      */
@@ -262,19 +263,20 @@ public class CommandContext {
         if (this.exception == null) {
             this.exception = exception;
         } else {
-            log.error("masked exception in command context. for root cause, see below as it will be rethrown later.",
-                      exception);
+            log.error(
+                "masked exception in command context. for root cause, see below as it will be rethrown later.",
+                exception);
             LogMDC.clear();
         }
     }
 
     public void addAttribute(String key,
-                             Object value) {
+        Object value) {
         if (attributes == null) {
             attributes = new HashMap<>(1);
         }
         attributes.put(key,
-                       value);
+            value);
     }
 
     public Object getAttribute(String key) {
@@ -298,11 +300,12 @@ public class CommandContext {
         if (session == null) {
             SessionFactory sessionFactory = sessionFactories.get(sessionClass);
             if (sessionFactory == null) {
-                throw new ActivitiException("no session factory configured for " + sessionClass.getName());
+                throw new ActivitiException(
+                    "no session factory configured for " + sessionClass.getName());
             }
             session = sessionFactory.openSession(this);
             sessions.put(sessionClass,
-                         session);
+                session);
         }
 
         return (T) session;
@@ -437,7 +440,7 @@ public class CommandContext {
     public void addInvolvedExecution(ExecutionEntity executionEntity) {
         if (executionEntity.getId() != null) {
             involvedExecutions.put(executionEntity.getId(),
-                                   executionEntity);
+                executionEntity);
         }
     }
 

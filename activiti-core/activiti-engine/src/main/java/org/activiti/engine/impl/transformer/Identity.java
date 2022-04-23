@@ -18,29 +18,27 @@ package org.activiti.engine.impl.transformer;
 
 /**
  *
- *
-
  */
 public class Identity extends AbstractTransformer {
 
-  private static Identity instance = new Identity();
+    private static Identity instance = new Identity();
 
-  public static synchronized Identity getInstance() {
-    if (instance == null) {
-      instance = new Identity();
+    public static synchronized Identity getInstance() {
+        if (instance == null) {
+            instance = new Identity();
+        }
+        return instance;
     }
-    return instance;
-  }
 
-  private Identity() {
+    private Identity() {
 
-  }
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected Object primTransform(Object anObject) throws Exception {
-    return anObject;
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Object primTransform(Object anObject) throws Exception {
+        return anObject;
+    }
 }

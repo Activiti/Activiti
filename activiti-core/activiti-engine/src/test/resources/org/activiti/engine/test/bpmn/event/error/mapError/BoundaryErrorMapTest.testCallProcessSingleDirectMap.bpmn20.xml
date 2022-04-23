@@ -1,27 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
-  <error id="myError" errorCode="myErrorCode1" />
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+  typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+  targetNamespace="http://www.activiti.org/test">
+  <error id="myError" errorCode="myErrorCode1"/>
 
   <process id="callProcssWithSingleExceptionMap" isExecutable="true">
     <startEvent id="theStart"></startEvent>
-    <serviceTask id="servicetask2" name="Set Flag" activiti:class="org.activiti.engine.test.bpmn.event.error.mapError.FlagDelegate"></serviceTask>
+    <serviceTask id="servicetask2" name="Set Flag"
+      activiti:class="org.activiti.engine.test.bpmn.event.error.mapError.FlagDelegate"></serviceTask>
     <callActivity id="callactivity1" name="Call activity" calledElement="testCallProcessCalee">
-     	<extensionElements>
-    		<activiti:in source="exceptionClass" target="exceptionClass" />
-	        <activiti:mapException xmlns:activiti="http://activiti.org/bpmn" errorCode="myErrorCode1" includeChildExceptions="true">org.activiti.engine.test.bpmn.event.error.mapError.BoundaryErrorParentException</activiti:mapException>
-	 	</extensionElements>
+      <extensionElements>
+        <activiti:in source="exceptionClass" target="exceptionClass"/>
+        <activiti:mapException xmlns:activiti="http://activiti.org/bpmn" errorCode="myErrorCode1"
+          includeChildExceptions="true">
+          org.activiti.engine.test.bpmn.event.error.mapError.BoundaryErrorParentException
+        </activiti:mapException>
+      </extensionElements>
     </callActivity>
     <sequenceFlow id="flow7" sourceRef="theStart" targetRef="callactivity1"></sequenceFlow>
     <endEvent id="endevent2" name="End"></endEvent>
     <sequenceFlow id="flow8" sourceRef="callactivity1" targetRef="endevent2"></sequenceFlow>
     <boundaryEvent id="boundaryerror1" name="Error" attachedToRef="callactivity1">
- 		<errorEventDefinition errorRef="myErrorCode1" />
- 	</boundaryEvent>
+      <errorEventDefinition errorRef="myErrorCode1"/>
+    </boundaryEvent>
     <sequenceFlow id="flow9" sourceRef="boundaryerror1" targetRef="servicetask2"></sequenceFlow>
     <sequenceFlow id="flow10" sourceRef="servicetask2" targetRef="endevent2"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_subprocssWithSingleExceptionMap">
-    <bpmndi:BPMNPlane bpmnElement="subprocssWithSingleExceptionMap" id="BPMNPlane_subprocssWithSingleExceptionMap">
+    <bpmndi:BPMNPlane bpmnElement="subprocssWithSingleExceptionMap"
+      id="BPMNPlane_subprocssWithSingleExceptionMap">
       <bpmndi:BPMNShape bpmnElement="theStart" id="BPMNShape_theStart">
         <omgdc:Bounds height="35.0" width="35.0" x="70.0" y="125.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>

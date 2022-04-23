@@ -33,37 +33,39 @@ import org.activiti.engine.api.internal.Internal;
  * <li>
  * <b>{@link org.activiti.engine.HistoryService}: </b> Service exposing information about ongoing and past process instances.</li>
  * </ul>
- *
+ * <p>
  * Typically, there will be only one central ProcessEngine instance needed in a end-user application. Building a ProcessEngine is done through a {@link ProcessEngineConfiguration} instance and is a
  * costly operation which should be avoided. For that purpose, it is advised to store it in a static field or JNDI location (or something similar). This is a thread-safe object, so no special
  * precautions need to be taken.
- *
  */
 @Internal
 public interface ProcessEngine {
 
-  /** the version of the activiti library */
-  public static String VERSION = "7.1.0-M6"; // Note the extra -x at the end. To cater for snapshot releases with different database changes
+    /**
+     * the version of the activiti library
+     */
+    String VERSION = "7.1.0-M6"; // Note the extra -x at the end. To cater for snapshot releases with different database changes
 
-  /**
-   * The name as specified in 'process-engine-name' in the activiti.cfg.xml configuration file. The default name for a process engine is 'default
-   */
-  String getName();
+    /**
+     * The name as specified in 'process-engine-name' in the activiti.cfg.xml configuration file.
+     * The default name for a process engine is 'default
+     */
+    String getName();
 
-  void close();
+    void close();
 
-  RepositoryService getRepositoryService();
+    RepositoryService getRepositoryService();
 
-  RuntimeService getRuntimeService();
+    RuntimeService getRuntimeService();
 
-  TaskService getTaskService();
+    TaskService getTaskService();
 
-  HistoryService getHistoryService();
+    HistoryService getHistoryService();
 
-  ManagementService getManagementService();
+    ManagementService getManagementService();
 
-  DynamicBpmnService getDynamicBpmnService();
+    DynamicBpmnService getDynamicBpmnService();
 
-  ProcessEngineConfiguration getProcessEngineConfiguration();
+    ProcessEngineConfiguration getProcessEngineConfiguration();
 
 }

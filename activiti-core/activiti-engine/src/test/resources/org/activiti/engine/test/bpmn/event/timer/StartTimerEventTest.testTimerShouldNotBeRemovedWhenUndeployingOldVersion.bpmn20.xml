@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions id="definitions" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
-             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-             xmlns:activiti="http://activiti.org/bpmn"
-             targetNamespace="Examples">
+<definitions id="definitions"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  targetNamespace="Examples">
 
-    <process id="processWithTimer">
+  <process id="processWithTimer">
 
-        <startEvent id="theStart">
-            <timerEventDefinition>
-                <timeCycle>0 0/5 * * * ?</timeCycle>
-            </timerEventDefinition>
-        </startEvent>
+    <startEvent id="theStart">
+      <timerEventDefinition>
+        <timeCycle>0 0/5 * * * ?</timeCycle>
+      </timerEventDefinition>
+    </startEvent>
 
-        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="beforeChange"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="beforeChange"/>
 
-        <receiveTask id="beforeChange"/>
+    <receiveTask id="beforeChange"/>
 
-        <sequenceFlow id="flow2" sourceRef="beforeChange" targetRef="theEnd"/>
+    <sequenceFlow id="flow2" sourceRef="beforeChange" targetRef="theEnd"/>
 
-        <endEvent id="theEnd"/>
+    <endEvent id="theEnd"/>
 
-    </process>
+  </process>
 
 </definitions>

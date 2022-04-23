@@ -2,37 +2,37 @@
 <definitions
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd"
+  xsi:schemaLocation=""
   typeLanguage="http://www.w3.org/2001/XMLSchema"
   targetNamespace="http://www.activiti.org/bpmn2.0">
 
   <process id="process02">
 
-    <startEvent id="theStart" />
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="passthrough1" />
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="passthrough1"/>
 
-    <manualTask id="passthrough1" />
-    <sequenceFlow id="flow2" sourceRef="passthrough1" targetRef="passthrough2" />
+    <manualTask id="passthrough1"/>
+    <sequenceFlow id="flow2" sourceRef="passthrough1" targetRef="passthrough2"/>
 
-    <manualTask id="passthrough2" />
-    <sequenceFlow id="flow3" sourceRef="passthrough2" targetRef="passthrough3" />
+    <manualTask id="passthrough2"/>
+    <sequenceFlow id="flow3" sourceRef="passthrough2" targetRef="passthrough3"/>
 
-    <manualTask id="passthrough3" />
-    <sequenceFlow id="flow4" sourceRef="passthrough3" targetRef="passthrough4" />
+    <manualTask id="passthrough3"/>
+    <sequenceFlow id="flow4" sourceRef="passthrough3" targetRef="passthrough4"/>
 
-    <manualTask id="passthrough4" />
-    <sequenceFlow id="flow5" sourceRef="passthrough4" targetRef="passthrough5" />
+    <manualTask id="passthrough4"/>
+    <sequenceFlow id="flow5" sourceRef="passthrough4" targetRef="passthrough5"/>
 
-    <manualTask id="passthrough5" />
-    <sequenceFlow id="flow6" sourceRef="passthrough5" targetRef="passthrough6" />
+    <manualTask id="passthrough5"/>
+    <sequenceFlow id="flow6" sourceRef="passthrough5" targetRef="passthrough6"/>
 
-    <manualTask id="passthrough6" />
-    <sequenceFlow id="flow7" sourceRef="passthrough6" targetRef="passthrough7" />
+    <manualTask id="passthrough6"/>
+    <sequenceFlow id="flow7" sourceRef="passthrough6" targetRef="passthrough7"/>
 
-    <manualTask id="passthrough7" />
-    <sequenceFlow id="flow8" sourceRef="passthrough7" targetRef="theEnd" />
+    <manualTask id="passthrough7"/>
+    <sequenceFlow id="flow8" sourceRef="passthrough7" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
   </process>
 
 </definitions>

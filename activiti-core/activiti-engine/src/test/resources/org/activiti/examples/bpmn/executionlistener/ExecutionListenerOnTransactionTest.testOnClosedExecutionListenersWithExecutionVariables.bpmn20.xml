@@ -5,53 +5,56 @@
 
   <process id="transactionDependentExecutionListenerProcess">
 
-    <startEvent id="theStart" name="Start Event" />
+    <startEvent id="theStart" name="Start Event"/>
 
-    <sequenceFlow sourceRef="theStart" targetRef="serviceTask1" />
+    <sequenceFlow sourceRef="theStart" targetRef="serviceTask1"/>
 
     <serviceTask
-            id="serviceTask1"
-            name="Service Task 1"
-            activiti:class="org.activiti.examples.bpmn.executionlistener.ConditionalThrowExceptionDelegate">
+      id="serviceTask1"
+      name="Service Task 1"
+      activiti:class="org.activiti.examples.bpmn.executionlistener.ConditionalThrowExceptionDelegate">
       <extensionElements>
-        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.CurrentActivityTransactionDependentExecutionListener"
-                                    event="start"
-                                    onTransaction="committed"/>
-        <activiti:field name="injectedVar" stringValue="test1" />
+        <activiti:executionListener
+          class="org.activiti.examples.bpmn.executionlistener.CurrentActivityTransactionDependentExecutionListener"
+          event="start"
+          onTransaction="committed"/>
+        <activiti:field name="injectedVar" stringValue="test1"/>
       </extensionElements>
     </serviceTask>
 
-    <sequenceFlow sourceRef="serviceTask1" targetRef="serviceTask2" />
+    <sequenceFlow sourceRef="serviceTask1" targetRef="serviceTask2"/>
 
     <serviceTask
-            id="serviceTask2"
-            name="Service Task 2"
-            activiti:class="org.activiti.examples.bpmn.executionlistener.ConditionalThrowExceptionDelegate">
+      id="serviceTask2"
+      name="Service Task 2"
+      activiti:class="org.activiti.examples.bpmn.executionlistener.ConditionalThrowExceptionDelegate">
       <extensionElements>
-        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.CurrentActivityTransactionDependentExecutionListener"
-                                    event="start"
-                                    onTransaction="committed"/>
-        <activiti:field name="injectedVar" stringValue="test2" />
+        <activiti:executionListener
+          class="org.activiti.examples.bpmn.executionlistener.CurrentActivityTransactionDependentExecutionListener"
+          event="start"
+          onTransaction="committed"/>
+        <activiti:field name="injectedVar" stringValue="test2"/>
       </extensionElements>
     </serviceTask>
 
-    <sequenceFlow sourceRef="serviceTask2" targetRef="serviceTask3" />
+    <sequenceFlow sourceRef="serviceTask2" targetRef="serviceTask3"/>
 
     <serviceTask
-            id="serviceTask3"
-            name="Service Task 3"
-            activiti:class="org.activiti.examples.bpmn.executionlistener.ConditionalThrowExceptionDelegate">
+      id="serviceTask3"
+      name="Service Task 3"
+      activiti:class="org.activiti.examples.bpmn.executionlistener.ConditionalThrowExceptionDelegate">
       <extensionElements>
-        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.CurrentActivityTransactionDependentExecutionListener"
-                                    event="start"
-                                    onTransaction="committed"/>
-        <activiti:field name="injectedVar" stringValue="test3" />
+        <activiti:executionListener
+          class="org.activiti.examples.bpmn.executionlistener.CurrentActivityTransactionDependentExecutionListener"
+          event="start"
+          onTransaction="committed"/>
+        <activiti:field name="injectedVar" stringValue="test3"/>
       </extensionElements>
     </serviceTask>
 
     <sequenceFlow sourceRef="serviceTask3" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" name="End Event" />
+    <endEvent id="theEnd" name="End Event"/>
 
   </process>
 </definitions>

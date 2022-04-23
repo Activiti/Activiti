@@ -69,11 +69,12 @@ public class VariablesPropagatorTest {
         final ExecutionEntity processInstanceEntity = mock(ExecutionEntity.class);
         given(executionEntityManager.findById(processInstanceId)).willReturn(processInstanceEntity);
 
-        final Map<String, Object> availableVariables = Collections.singletonMap("beforeMapping", "value");
+        final Map<String, Object> availableVariables = Collections.singletonMap("beforeMapping",
+            "value");
         final Map<String, Object> outboundVariables = Collections.singletonMap("mapped", "value");
-        given(variablesCalculator.calculateOutPutVariables(MappingExecutionContext.buildMappingExecutionContext(execution), availableVariables))
+        given(variablesCalculator.calculateOutPutVariables(
+            MappingExecutionContext.buildMappingExecutionContext(execution), availableVariables))
             .willReturn(outboundVariables);
-
 
         //when
         variablesPropagator.propagate(execution, availableVariables);
@@ -99,8 +100,8 @@ public class VariablesPropagatorTest {
         //given
         final String processInstanceId = UUID.randomUUID().toString();
         final DelegateExecution execution = buildExecution(processInstanceId, true);
-        final Map<String, Object> availableVariables = Collections.singletonMap("beforeMapping", "value");
-
+        final Map<String, Object> availableVariables = Collections.singletonMap("beforeMapping",
+            "value");
 
         //when
         variablesPropagator.propagate(execution, availableVariables);

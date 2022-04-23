@@ -22,14 +22,12 @@ import org.activiti.engine.delegate.ExecutionListener;
 
 /**
  * Simple {@link ExecutionListener} that sets 2 variables on the execution.
- *
-
  */
 public class ExampleExecutionListenerOne implements ExecutionListener {
 
-  public void notify(DelegateExecution execution) {
-    execution.setVariable("variableSetInExecutionListener", "firstValue");
-    execution.setVariable("eventNameReceived", execution.getEventName());
-    execution.setVariable("businessKeyInExecution", execution.getProcessInstanceBusinessKey());
-  }
+    public void notify(DelegateExecution execution) {
+        execution.setVariable("variableSetInExecutionListener", "firstValue");
+        execution.setVariable("eventNameReceived", execution.getEventName());
+        execution.setVariable("businessKeyInExecution", execution.getProcessInstanceBusinessKey());
+    }
 }

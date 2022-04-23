@@ -21,14 +21,14 @@ import org.activiti.engine.delegate.ExecutionListener;
 
 public class VariableEventsExecutionListener implements ExecutionListener {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  @Override
-  public void notify(DelegateExecution execution) {
-    // Create, update and remove variable
-    execution.setVariable("variable", 123);
-    execution.setVariable("variable", 456);
-    execution.removeVariable("variable");
-  }
+    @Override
+    public void notify(DelegateExecution execution) {
+        // Create, update and remove variable
+        execution.setVariable("variable", 123);
+        execution.setVariable("variable", 456);
+        execution.removeVariable("variable");
+    }
 
 }

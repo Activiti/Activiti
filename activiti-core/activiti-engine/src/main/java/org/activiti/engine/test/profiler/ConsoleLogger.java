@@ -18,7 +18,7 @@ package org.activiti.engine.test.profiler;
 import java.util.Map;
 
 /**
-
+ *
  */
 public class ConsoleLogger {
 
@@ -49,13 +49,15 @@ public class ConsoleLogger {
                 CommandStats stats = allStats.get(classFqn);
                 System.out.println("Command class: " + classFqn);
                 System.out.println("Number of times invoked: " + stats.getCount());
-                double commandPercentage = (double) stats.getTotalCommandTime / (double) profileSession.getTotalTime();
-                System.out.println((100.0 * Math.round(commandPercentage * 100.0) / 100.0) + "% of profile session was spent executing this command");
+                double commandPercentage =
+                    (double) stats.getTotalCommandTime / (double) profileSession.getTotalTime();
+                System.out.println((100.0 * Math.round(commandPercentage * 100.0) / 100.0)
+                    + "% of profile session was spent executing this command");
 
                 System.out.println();
                 System.out.println("Average execution time: " + stats.getAverageExecutionTime()
-                        + " ms (Average database time: " + stats.getAverageDatabaseExecutionTime()
-                        + " ms (" + stats.getAverageDatabaseExecutionTimePercentage() + "%) )");
+                    + " ms (Average database time: " + stats.getAverageDatabaseExecutionTime()
+                    + " ms (" + stats.getAverageDatabaseExecutionTimePercentage() + "%) )");
 
                 System.out.println();
                 System.out.println("Database selects:");
@@ -80,7 +82,6 @@ public class ConsoleLogger {
                 for (String delete : stats.getDbDeletes().keySet()) {
                     System.out.println(delete + " : " + stats.getDbDeletes().get(delete));
                 }
-
 
                 System.out.println();
                 System.out.println();

@@ -23,23 +23,21 @@ import javax.persistence.MappedSuperclass;
 
 /**
  * Mapped superclass containing an
- *
-
  */
 
 @MappedSuperclass
 public class MappedSuperClassPropertyAccessJPAEntity {
 
-  private Long id;
+    private Long id;
 
-  @Id
-  @Column(name = "ID_")
-  public Long getId() {
-    return id;
-  }
+    @Id
+    @Column(name = "ID_")
+    public Long getId() {
+        return id;
+    }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
 }

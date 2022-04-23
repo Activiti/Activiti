@@ -3,10 +3,10 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
 
-  <process id="textMailWithDataSourceAttachment" >
+  <process id="textMailWithDataSourceAttachment">
 
-    <startEvent id="theStart" />
-    <sequenceFlow sourceRef="theStart" targetRef="sendMail" />
+    <startEvent id="theStart"/>
+    <sequenceFlow sourceRef="theStart" targetRef="sendMail"/>
 
     <serviceTask id="sendMail" activiti:type="mail">
       <extensionElements>
@@ -20,12 +20,13 @@
           <activiti:string>This a text only e-mail.</activiti:string>
         </activiti:field>
         <activiti:field name="attachments">
-          <activiti:expression>#{attachmentsBean.getDataSource(fileContent, fileName)}</activiti:expression>
+          <activiti:expression>#{attachmentsBean.getDataSource(fileContent, fileName)}
+          </activiti:expression>
         </activiti:field>
       </extensionElements>
     </serviceTask>
-    <sequenceFlow sourceRef="sendMail" targetRef="theEnd" />
+    <sequenceFlow sourceRef="sendMail" targetRef="theEnd"/>
 
-    <endEvent id="theEnd" />
+    <endEvent id="theEnd"/>
   </process>
 </definitions>

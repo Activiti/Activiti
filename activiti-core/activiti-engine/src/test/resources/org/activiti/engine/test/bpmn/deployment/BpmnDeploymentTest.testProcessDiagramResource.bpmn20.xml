@@ -6,11 +6,11 @@
 
   <process id="processDiagramProcess">
 
-    <startEvent id="start" activiti:formKey="someFormKey" />
+    <startEvent id="start" activiti:formKey="someFormKey"/>
 
-    <sequenceFlow id="flow1" sourceRef="start" targetRef="end" />
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="end"/>
 
-    <endEvent id="end" />
+    <endEvent id="end"/>
 
   </process>
 
