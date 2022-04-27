@@ -26,9 +26,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 
-/**
 
- */
 public class BeansConfigurationHelper {
 
   public static ProcessEngineConfiguration parseProcessEngineConfiguration(Resource springResource, String beanName) {

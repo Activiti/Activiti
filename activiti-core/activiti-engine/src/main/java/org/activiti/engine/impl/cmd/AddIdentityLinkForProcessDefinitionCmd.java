@@ -25,9 +25,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 
-/**
 
- */
 public class AddIdentityLinkForProcessDefinitionCmd implements Command<Void>, Serializable {
 
   private static final long serialVersionUID = 1L;

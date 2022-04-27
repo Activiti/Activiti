@@ -20,9 +20,7 @@ import java.util.Map;
 
 import org.activiti.editor.language.json.model.ModelInfo;
 
-/**
 
- */
 public interface DecisionTableKeyAwareConverter {
 
     public void setDecisionTableKeyMap(Map<String, ModelInfo> decisionTableMap);

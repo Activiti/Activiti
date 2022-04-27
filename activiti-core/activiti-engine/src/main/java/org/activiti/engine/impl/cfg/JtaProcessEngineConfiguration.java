@@ -23,9 +23,7 @@ import org.activiti.engine.impl.cfg.jta.JtaTransactionContextFactory;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.JtaTransactionInterceptor;
 
-/**
 
- */
 public class JtaProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
 
   protected TransactionManager transactionManager;

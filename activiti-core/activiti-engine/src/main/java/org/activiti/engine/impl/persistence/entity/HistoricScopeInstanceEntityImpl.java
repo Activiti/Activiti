@@ -22,9 +22,7 @@ import java.util.Date;
 
 import org.activiti.engine.impl.context.Context;
 
-/**
 
- */
 public abstract class HistoricScopeInstanceEntityImpl extends AbstractEntityNoRevision implements HistoricScopeInstanceEntity, Serializable {
 
   private static final long serialVersionUID = 1L;

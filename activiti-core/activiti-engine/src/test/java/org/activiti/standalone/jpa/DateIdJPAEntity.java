@@ -23,9 +23,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-/**
 
- */
 @Entity(name = "DATE_ID_ENTITY")
 public class DateIdJPAEntity {
 

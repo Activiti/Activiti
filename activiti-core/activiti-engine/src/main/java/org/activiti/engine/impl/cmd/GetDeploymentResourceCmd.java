@@ -27,9 +27,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.repository.Deployment;
 
-/**
 
- */
 public class GetDeploymentResourceCmd implements Command<InputStream>, Serializable {
 
   private static final long serialVersionUID = 1L;

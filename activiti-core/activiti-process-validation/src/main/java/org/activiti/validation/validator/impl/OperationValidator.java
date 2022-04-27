@@ -25,9 +25,7 @@ import org.activiti.validation.ValidationError;
 import org.activiti.validation.validator.Problems;
 import org.activiti.validation.validator.ValidatorImpl;
 
-/**
 
- */
 public class OperationValidator extends ValidatorImpl {
 
   @Override

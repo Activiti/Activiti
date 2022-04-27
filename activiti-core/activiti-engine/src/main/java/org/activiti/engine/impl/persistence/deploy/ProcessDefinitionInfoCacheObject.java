@@ -18,9 +18,7 @@ package org.activiti.engine.impl.persistence.deploy;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-/**
 
- */
 public class ProcessDefinitionInfoCacheObject {
 
   protected String id;

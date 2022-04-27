@@ -31,9 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/**
 
- */
 public abstract class AbstractDatabaseEventLoggerEventHandler implements EventLoggerEventHandler {
 
   private static final Logger logger = LoggerFactory.getLogger(AbstractDatabaseEventLoggerEventHandler.class);

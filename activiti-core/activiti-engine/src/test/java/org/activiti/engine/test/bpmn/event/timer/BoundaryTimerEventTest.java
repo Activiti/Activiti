@@ -34,9 +34,7 @@ import org.activiti.engine.runtime.TimerJobQuery;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
 
- */
 public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
   private static boolean listenerExecutedStartEvent;

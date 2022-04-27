@@ -31,9 +31,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.util.ReflectUtil;
 
-/**
 
- */
 public class JPAEntityMappings {
 
   private Map<String, EntityMetaData> classMetaDatamap;

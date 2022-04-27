@@ -22,9 +22,7 @@ import java.util.Set;
 
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 
-/**
 
- */
 public interface VariableInstanceDataManager extends DataManager<VariableInstanceEntity> {
 
   List<VariableInstanceEntity> findVariableInstancesByTaskId(String taskId);

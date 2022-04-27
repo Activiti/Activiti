@@ -27,9 +27,7 @@ import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
 
- */
 public class MoveJobToDeadLetterJobCmd implements Command<DeadLetterJobEntity>, Serializable {
 
   private static final long serialVersionUID = 1L;

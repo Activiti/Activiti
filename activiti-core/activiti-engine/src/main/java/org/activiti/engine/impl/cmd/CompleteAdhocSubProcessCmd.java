@@ -29,9 +29,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import java.io.Serializable;
 import java.util.List;
 
-/**
 
- */
 public class CompleteAdhocSubProcessCmd implements Command<Void>, Serializable {
 
   private static final long serialVersionUID = 1L;

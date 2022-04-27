@@ -23,9 +23,7 @@ import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
-/**
 
- */
 public class InitiatorTest extends PluggableActivitiTestCase {
 
   @Deployment

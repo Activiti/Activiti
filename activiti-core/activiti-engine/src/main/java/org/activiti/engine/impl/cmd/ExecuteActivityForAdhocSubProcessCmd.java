@@ -30,9 +30,7 @@ import org.activiti.engine.runtime.Execution;
 
 import java.io.Serializable;
 
-/**
 
- */
 public class ExecuteActivityForAdhocSubProcessCmd implements Command<Execution>, Serializable {
 
   private static final long serialVersionUID = 1L;

@@ -21,9 +21,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.TimerEventDefinition;
 
-/**
 
- */
 public class TimeDurationParser extends BaseChildElementParser {
 
   public String getElementName() {

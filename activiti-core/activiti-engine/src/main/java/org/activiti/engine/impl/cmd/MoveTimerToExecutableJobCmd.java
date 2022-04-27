@@ -27,9 +27,7 @@ import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
 
- */
 public class MoveTimerToExecutableJobCmd implements Command<JobEntity>, Serializable {
 
   private static final long serialVersionUID = 1L;

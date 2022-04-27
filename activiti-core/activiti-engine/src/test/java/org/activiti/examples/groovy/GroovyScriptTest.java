@@ -27,9 +27,7 @@ import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
-/**
 
- */
 public class GroovyScriptTest extends PluggableActivitiTestCase {
 
     @Deployment

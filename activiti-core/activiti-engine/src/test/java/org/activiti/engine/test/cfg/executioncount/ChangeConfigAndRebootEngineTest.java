@@ -35,9 +35,7 @@ import org.activiti.engine.test.Deployment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
 
- */
 public class ChangeConfigAndRebootEngineTest extends ResourceActivitiTestCase {
 
   private static final Logger logger = LoggerFactory.getLogger(ChangeConfigAndRebootEngineTest.class);

@@ -24,9 +24,7 @@ import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 
-/**
 
- */
 public interface ProcessDefinitionDataManager extends DataManager<ProcessDefinitionEntity> {
 
   ProcessDefinitionEntity findLatestProcessDefinitionByKey(String processDefinitionKey);

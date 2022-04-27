@@ -28,9 +28,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
 
- */
 public class MetaDataTest extends PluggableActivitiTestCase {
 
   private static Logger log = LoggerFactory.getLogger(MetaDataTest.class);

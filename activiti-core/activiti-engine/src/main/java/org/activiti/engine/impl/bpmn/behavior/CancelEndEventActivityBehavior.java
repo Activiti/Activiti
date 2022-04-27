@@ -35,9 +35,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
 
- */
 public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
 
   private static final long serialVersionUID = 1L;

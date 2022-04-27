@@ -32,9 +32,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.api.event.TestActivitiEntityEventListener;
 
-/**
 
- */
 public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivitiTestCase {
 
   private TestActivitiEntityEventListener listener;

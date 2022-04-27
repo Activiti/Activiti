@@ -28,9 +28,7 @@ import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.ModelDataManager;
 import org.activiti.engine.repository.Model;
 
-/**
 
- */
 public class MybatisModelDataManager extends AbstractDataManager<ModelEntity> implements ModelDataManager {
 
   public MybatisModelDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {

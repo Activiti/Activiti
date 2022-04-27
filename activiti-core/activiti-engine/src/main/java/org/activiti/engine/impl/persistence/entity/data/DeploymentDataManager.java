@@ -24,9 +24,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.repository.Deployment;
 
-/**
 
- */
 public interface DeploymentDataManager extends DataManager<DeploymentEntity> {
 
   DeploymentEntity findLatestDeploymentByName(String deploymentName);

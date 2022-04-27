@@ -21,9 +21,7 @@ import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
 
- */
 public class DatabaseEventFlusher extends AbstractEventFlusher {
 
   private static final Logger logger = LoggerFactory.getLogger(DatabaseEventFlusher.class);

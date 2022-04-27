@@ -34,9 +34,7 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
-/**
 
- */
 public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
 
   public void testQueryByEventName() {

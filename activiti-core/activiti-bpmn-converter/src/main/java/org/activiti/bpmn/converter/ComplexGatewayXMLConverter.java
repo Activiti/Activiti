@@ -24,9 +24,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ComplexGateway;
 import org.activiti.bpmn.model.ExclusiveGateway;
 
-/**
 
- */
 public class ComplexGatewayXMLConverter extends BaseBpmnXMLConverter {
 
   public Class<? extends BaseElement> getBpmnElementType() {

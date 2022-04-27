@@ -24,9 +24,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Task;
 
-/**
 
- */
 public class GetSubTasksCmd implements Command<List<Task>>, Serializable {
 
   private static final long serialVersionUID = 1L;

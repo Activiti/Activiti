@@ -21,9 +21,7 @@ import java.util.List;
 import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 
-/**
 
- */
 public interface EventLogEntryDataManager extends DataManager<EventLogEntryEntity> {
 
   List<EventLogEntry> findAllEventLogEntries();

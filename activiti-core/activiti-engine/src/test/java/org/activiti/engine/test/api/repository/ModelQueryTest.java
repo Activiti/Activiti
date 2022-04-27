@@ -26,9 +26,7 @@ import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
 
- */
 public class ModelQueryTest extends PluggableActivitiTestCase {
 
   private String modelOneId;

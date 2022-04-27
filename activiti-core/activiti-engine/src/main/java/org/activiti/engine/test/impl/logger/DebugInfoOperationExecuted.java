@@ -22,9 +22,7 @@ import java.text.SimpleDateFormat;
 import org.activiti.engine.impl.agenda.AbstractOperation;
 import org.slf4j.Logger;
 
-/**
 
- */
 public class DebugInfoOperationExecuted extends AbstractDebugInfo {
 
   protected long preExecutionTime;

@@ -30,9 +30,7 @@ import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.Task;
 
-/**
 
- */
 public class AddCommentCmd implements Command<Comment> {
 
   protected String taskId;

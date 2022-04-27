@@ -20,9 +20,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
-/**
 
- */
 public class SequenceFlowParseHandler extends AbstractBpmnParseHandler<SequenceFlow> {
 
   public static final String PROPERTYNAME_CONDITION = "condition";

@@ -20,9 +20,7 @@ import java.util.List;
 import org.activiti.engine.impl.event.logger.handler.EventLoggerEventHandler;
 import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
 
-/**
 
- */
 public interface EventFlusher extends CommandContextCloseListener {
 
   List<EventLoggerEventHandler> getEventHandlers();

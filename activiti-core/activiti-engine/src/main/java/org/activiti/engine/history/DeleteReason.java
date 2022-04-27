@@ -18,9 +18,7 @@ package org.activiti.engine.history;
 
 import org.activiti.engine.api.internal.Internal;
 
-/**
 
- */
 @Internal
 public interface DeleteReason {
 

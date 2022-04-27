@@ -23,9 +23,7 @@ import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
-/**
 
- */
 public class ScriptBeanAccessTest extends ResourceActivitiTestCase {
 
   public ScriptBeanAccessTest() {

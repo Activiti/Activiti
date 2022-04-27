@@ -26,9 +26,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
-/**
 
- */
 public class CallServiceInServiceTaskTest extends PluggableActivitiTestCase {
 
   @Deployment

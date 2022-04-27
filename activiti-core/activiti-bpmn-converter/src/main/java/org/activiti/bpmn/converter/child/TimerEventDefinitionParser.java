@@ -24,9 +24,7 @@ import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.apache.commons.lang3.StringUtils;
 
-/**
 
- */
 public class TimerEventDefinitionParser extends BaseChildElementParser {
 
     public String getElementName() {

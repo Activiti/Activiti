@@ -34,9 +34,7 @@ import org.activiti.engine.test.profiler.ProfilingDbSqlSessionFactory;
 import org.activiti.engine.test.profiler.TotalExecutionTimeCommandInterceptor;
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
 
- */
 public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
 
   protected boolean oldExecutionTreeFetchValue;

@@ -28,9 +28,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
-/**
 
- */
 public class GetProcessDefinitionInfoCmd implements Command<ObjectNode>, Serializable {
 
   private static final long serialVersionUID = 1L;

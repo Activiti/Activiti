@@ -18,9 +18,7 @@ package org.activiti.examples.bpmn.usertask.taskcandidate;
 
 import java.io.Serializable;
 
-/**
 
- */
 
 public class TestBean implements Serializable {
 

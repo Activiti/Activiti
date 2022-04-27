@@ -24,9 +24,7 @@ import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.repository.Deployment;
 
-/**
 
- */
 @Internal
 public interface DeploymentEntityManager extends EntityManager<DeploymentEntity> {
 

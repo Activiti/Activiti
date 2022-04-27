@@ -21,9 +21,7 @@ import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-/**
 
- */
 public class GetEventLogEntriesCmd implements Command<List<EventLogEntry>> {
 
   protected String processInstanceId;

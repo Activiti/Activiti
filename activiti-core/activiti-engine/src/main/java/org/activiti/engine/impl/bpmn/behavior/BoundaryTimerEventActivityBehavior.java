@@ -27,9 +27,7 @@ import org.activiti.engine.impl.jobexecutor.TriggerTimerEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 
-/**
 
- */
 public class BoundaryTimerEventActivityBehavior extends BoundaryEventActivityBehavior {
 
   private static final long serialVersionUID = 1L;

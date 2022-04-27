@@ -27,9 +27,7 @@ import org.activiti.bpmn.model.SendTask;
 import org.activiti.bpmn.model.ServiceTask;
 import org.apache.commons.lang3.StringUtils;
 
-/**
 
- */
 public class FieldExtensionParser extends BaseChildElementParser {
 
   public String getElementName() {

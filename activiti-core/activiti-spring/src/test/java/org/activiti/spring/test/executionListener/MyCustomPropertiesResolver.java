@@ -22,9 +22,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
 
- */
 public class MyCustomPropertiesResolver implements CustomPropertiesResolver {
 
   @Override

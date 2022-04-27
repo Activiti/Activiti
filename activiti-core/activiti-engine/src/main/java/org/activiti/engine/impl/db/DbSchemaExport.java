@@ -28,9 +28,7 @@ import java.util.Properties;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-/**
 
- */
 public class DbSchemaExport {
 
   public static void main(String[] args) throws Exception {

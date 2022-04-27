@@ -20,9 +20,7 @@ package org.activiti.standalone.jpa;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
-/**
 
- */
 @Entity(name = "JPA_SUBCLASS_PROPERTY")
 public class SubclassPropertyAccessJPAEntity extends MappedSuperClassPropertyAccessJPAEntity {
 

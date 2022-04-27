@@ -23,9 +23,7 @@ import java.text.MessageFormat;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.repository.Deployment;
 
-/**
 
- */
 public class CustomDeploymentCacheTest extends ResourceActivitiTestCase {
 
   public CustomDeploymentCacheTest() {

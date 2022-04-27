@@ -23,9 +23,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Task;
 
-/**
 
- */
 public class TaskXMLConverter extends BaseBpmnXMLConverter {
 
     @Override

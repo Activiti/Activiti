@@ -24,9 +24,7 @@ import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.cfg.DelegateExpressionFieldInjectionMode;
 import org.activiti.engine.impl.context.Context;
 
-/**
 
- */
 public class DelegateExpressionUtil {
 
   public static Object resolveDelegateExpression(Expression expression, VariableScope variableScope) {

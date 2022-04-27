@@ -22,9 +22,7 @@ import java.util.List;
 import org.activiti.bpmn.converter.util.CommaSplitter;
 import org.junit.jupiter.api.Test;
 
-/**
 
- */
 
 public class CommaSplitterTest {
 

@@ -23,9 +23,7 @@ import java.util.Set;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.variable.VariableType;
 
-/**
 
- */
 @Internal
 public interface VariableInstanceEntityManager extends EntityManager<VariableInstanceEntity> {
 

@@ -19,9 +19,7 @@ package org.activiti.engine.impl;
 
 import org.activiti.engine.query.QueryProperty;
 
-/**
 
- */
 public class EventSubscriptionQueryProperty implements QueryProperty {
 
   private static final long serialVersionUID = 1L;

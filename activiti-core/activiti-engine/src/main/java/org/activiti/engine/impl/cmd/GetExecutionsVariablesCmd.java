@@ -27,9 +27,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 
-/**
 
- */
 public class GetExecutionsVariablesCmd implements Command<List<VariableInstance>>, Serializable{
 
   private static final long serialVersionUID = 1L;

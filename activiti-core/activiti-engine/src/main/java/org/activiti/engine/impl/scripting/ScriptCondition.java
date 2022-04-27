@@ -21,9 +21,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.Condition;
 import org.activiti.engine.impl.context.Context;
 
-/**
 
- */
 public class ScriptCondition implements Condition {
 
   private final String expression;

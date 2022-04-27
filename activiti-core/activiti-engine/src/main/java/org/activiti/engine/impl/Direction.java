@@ -20,9 +20,7 @@ package org.activiti.engine.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
 
- */
 public class Direction {
 
   private static final Map<String, Direction> directions = new HashMap<String, Direction>();

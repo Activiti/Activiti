@@ -23,9 +23,7 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 
-/**
 
- */
 public class TestHistoricActivityEventListener implements ActivitiEventListener {
 
 	private List<ActivitiEvent> eventsReceived;

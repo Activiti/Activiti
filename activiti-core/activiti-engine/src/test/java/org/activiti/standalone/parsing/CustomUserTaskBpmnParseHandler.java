@@ -20,9 +20,7 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.handler.UserTaskParseHandler;
 
-/**
 
- */
 public class CustomUserTaskBpmnParseHandler extends UserTaskParseHandler {
 
   protected void executeParse(BpmnParse bpmnParse, UserTask userTask) {

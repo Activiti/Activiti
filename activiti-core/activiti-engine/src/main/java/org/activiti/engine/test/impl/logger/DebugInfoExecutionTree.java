@@ -21,9 +21,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 
-/**
 
- */
 public class DebugInfoExecutionTree {
 
   protected DebugInfoExecutionTreeNode processInstance;

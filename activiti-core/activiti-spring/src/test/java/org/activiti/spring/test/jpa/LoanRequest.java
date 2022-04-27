@@ -19,9 +19,7 @@ package org.activiti.spring.test.jpa;
 
 import javax.persistence.*;
 
-/**
 
- */
 @Entity(name = "SPRING_TEST_ORDER")
 public class LoanRequest {
 

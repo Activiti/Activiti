@@ -26,9 +26,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 
-/**
 
- */
 public class DatabaseTablePrefixTest extends TestCase {
 
   public void testPerformDatabaseSchemaOperationCreate() throws Exception {

@@ -24,9 +24,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
-/**
 
- */
 public class GetBpmnModelCmd implements Command<BpmnModel>, Serializable {
 
   private static final long serialVersionUID = 8167762371289445046L;

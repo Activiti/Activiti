@@ -28,9 +28,7 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
 
- */
 public class InstanceInvolvementTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/api/runtime/threeParallelTasks.bpmn20.xml" })

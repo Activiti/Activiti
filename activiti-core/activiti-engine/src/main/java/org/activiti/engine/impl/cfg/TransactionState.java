@@ -16,9 +16,7 @@
 
 package org.activiti.engine.impl.cfg;
 
-/**
 
- */
 public enum TransactionState {
 
   COMMITTED, ROLLED_BACK, COMMITTING, ROLLINGBACK

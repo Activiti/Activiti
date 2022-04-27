@@ -20,9 +20,7 @@ import java.util.List;
 
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 
-/**
 
- */
 public interface ResourceDataManager extends DataManager<ResourceEntity> {
 
   void deleteResourcesByDeploymentId(String deploymentId);

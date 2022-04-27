@@ -29,9 +29,7 @@ import org.activiti.engine.impl.variable.VariableTypes;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 
-/**
 
- */
 public class IbatisVariableTypeHandler implements TypeHandler<VariableType> {
 
   protected VariableTypes variableTypes;

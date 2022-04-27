@@ -20,9 +20,7 @@ package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.api.internal.Internal;
 
-/**
 
- */
 @Internal
 public interface ResourceEntity extends Entity {
 

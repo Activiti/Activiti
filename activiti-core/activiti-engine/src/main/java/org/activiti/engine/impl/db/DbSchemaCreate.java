@@ -20,9 +20,7 @@ package org.activiti.engine.impl.db;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
-/**
 
- */
 public class DbSchemaCreate {
 
   public static void main(String[] args) {

@@ -38,9 +38,7 @@ import org.activiti.engine.impl.variable.EntityManagerSessionFactory;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
 
- */
 public class HistoricJPAVariableTest extends AbstractActivitiTestCase {
 
 	protected static ProcessEngine cachedProcessEngine;

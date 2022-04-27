@@ -16,9 +16,7 @@
 
 package org.activiti.engine.impl.variable;
 
-/**
 
- */
 public class LongStringType extends SerializableType {
 
   private final int minLength;

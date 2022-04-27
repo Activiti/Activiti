@@ -20,9 +20,7 @@ import java.util.List;
 
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
 
-/**
 
- */
 public interface ByteArrayDataManager extends DataManager<ByteArrayEntity> {
 
   List<ByteArrayEntity> findAll();

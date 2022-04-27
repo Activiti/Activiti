@@ -27,9 +27,7 @@ import org.activiti.engine.test.Deployment;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
-/**
 
- */
 public class JobExecutorExceptionsTest extends PluggableActivitiTestCase {
 
   @Test

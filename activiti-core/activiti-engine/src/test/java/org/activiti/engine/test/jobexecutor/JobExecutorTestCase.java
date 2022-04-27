@@ -24,9 +24,7 @@ import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntityImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
-/**
 
- */
 public abstract class JobExecutorTestCase extends PluggableActivitiTestCase {
 
   protected TweetHandler tweetHandler = new TweetHandler();

@@ -21,9 +21,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 
-/**
 
- */
 public class GetNextIdBlockCmd implements Command<IdBlock> {
 
   private static final long serialVersionUID = 1L;

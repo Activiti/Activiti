@@ -28,9 +28,7 @@ import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 
-/**
 
- */
 public class ChangeDeploymentTenantIdCmd implements Command<Void>, Serializable {
 
   private static final long serialVersionUID = 1L;

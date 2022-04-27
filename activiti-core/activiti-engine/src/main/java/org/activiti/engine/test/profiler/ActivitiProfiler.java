@@ -23,9 +23,7 @@ import org.activiti.engine.cfg.ProcessEngineConfigurator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 
-/**
 
- */
 public class ActivitiProfiler implements ProcessEngineConfigurator {
 
     protected static ActivitiProfiler INSTANCE = new ActivitiProfiler();

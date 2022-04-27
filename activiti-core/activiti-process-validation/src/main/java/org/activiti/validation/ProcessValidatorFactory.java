@@ -18,9 +18,7 @@ package org.activiti.validation;
 
 import org.activiti.validation.validator.ValidatorSetFactory;
 
-/**
 
- */
 public class ProcessValidatorFactory {
 
   public ProcessValidator createDefaultProcessValidator() {

@@ -15,9 +15,7 @@
  */
 package org.activiti.engine.impl.util;
 
-/**
 
- */
 public class JvmUtil {
 
   public static String getJavaVersion() {

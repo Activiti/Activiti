@@ -23,9 +23,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntity;
 import org.activiti.engine.runtime.Job;
 
-/**
 
- */
 public interface DeadLetterJobDataManager extends DataManager<DeadLetterJobEntity> {
 
   List<DeadLetterJobEntity> findJobsByExecutionId(String executionId);

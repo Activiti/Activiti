@@ -32,9 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
 
- */
 public class SaveTaskCmd implements Command<Task>, Serializable {
 
   private static final long serialVersionUID = 1L;

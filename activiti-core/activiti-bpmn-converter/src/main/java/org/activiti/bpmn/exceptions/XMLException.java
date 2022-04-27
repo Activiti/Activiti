@@ -15,9 +15,7 @@
  */
 package org.activiti.bpmn.exceptions;
 
-/**
 
- */
 public class XMLException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;

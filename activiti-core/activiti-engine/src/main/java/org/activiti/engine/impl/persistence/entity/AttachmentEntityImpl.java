@@ -24,9 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
 
- */
 @Internal
 @Deprecated
 public class AttachmentEntityImpl extends AbstractEntity implements AttachmentEntity, Serializable {

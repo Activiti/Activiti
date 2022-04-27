@@ -20,9 +20,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.EventGateway;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
-/**
 
- */
 public class EventBasedGatewayParseHandler extends AbstractActivityBpmnParseHandler<EventGateway> {
 
   public Class<? extends BaseElement> getHandledType() {

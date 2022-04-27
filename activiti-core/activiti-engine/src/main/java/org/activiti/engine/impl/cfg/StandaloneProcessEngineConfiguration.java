@@ -19,9 +19,7 @@ package org.activiti.engine.impl.cfg;
 
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 
-/**
 
- */
 public class StandaloneProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
 
   @Override

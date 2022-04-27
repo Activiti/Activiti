@@ -33,9 +33,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.io.InputStreamSource;
 import org.activiti.engine.repository.Deployment;
 
-/**
 
- */
 public class EventJavaTest extends PluggableActivitiTestCase {
 
   public void testStartEventWithExecutionListener() throws Exception {

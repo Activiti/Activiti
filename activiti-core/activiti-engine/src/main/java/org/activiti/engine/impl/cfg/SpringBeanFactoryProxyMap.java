@@ -24,9 +24,7 @@ import java.util.Set;
 import org.activiti.engine.ActivitiException;
 import org.springframework.beans.factory.BeanFactory;
 
-/**
 
- */
 public class SpringBeanFactoryProxyMap implements Map<Object, Object> {
 
   protected BeanFactory beanFactory;

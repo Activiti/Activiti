@@ -28,9 +28,7 @@ import org.activiti.validation.validator.Problems;
 import org.activiti.validation.validator.ProcessLevelValidator;
 import org.apache.commons.lang3.StringUtils;
 
-/**
 
- */
 public class DataObjectValidator extends ProcessLevelValidator {
 
   @Override

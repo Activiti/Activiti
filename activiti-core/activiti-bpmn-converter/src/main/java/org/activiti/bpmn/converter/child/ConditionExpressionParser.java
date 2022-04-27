@@ -21,9 +21,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.SequenceFlow;
 
-/**
 
- */
 public class ConditionExpressionParser extends BaseChildElementParser {
 
   public String getElementName() {

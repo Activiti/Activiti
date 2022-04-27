@@ -25,9 +25,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.runtime.Execution;
 
-/**
 
- */
 public class HasExecutionVariableCmd implements Command<Boolean>, Serializable {
 
   private static final long serialVersionUID = 1L;

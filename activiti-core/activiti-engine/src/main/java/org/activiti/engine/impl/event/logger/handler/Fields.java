@@ -15,9 +15,7 @@
  */
 package org.activiti.engine.impl.event.logger.handler;
 
-/**
 
- */
 public interface Fields {
 
   String ACTIVITY_ID = "activityId";

@@ -27,9 +27,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 
-/**
 
- */
 public class AcquireTimerJobsCmd implements Command<AcquiredTimerJobEntities> {
 
   private final AsyncExecutor asyncExecutor;

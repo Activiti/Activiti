@@ -38,9 +38,7 @@ import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
-/**
 
- */
 public class TimerUtil {
 
   /**

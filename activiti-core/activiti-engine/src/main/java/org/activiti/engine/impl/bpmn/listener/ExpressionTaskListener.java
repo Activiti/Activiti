@@ -21,9 +21,7 @@ import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
 
-/**
 
- */
 public class ExpressionTaskListener implements TaskListener {
 
   protected Expression expression;

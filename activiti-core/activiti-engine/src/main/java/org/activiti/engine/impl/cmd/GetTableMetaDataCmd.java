@@ -23,9 +23,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.management.TableMetaData;
 
-/**
 
- */
 public class GetTableMetaDataCmd implements Command<TableMetaData>, Serializable {
 
   private static final long serialVersionUID = 1L;

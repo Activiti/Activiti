@@ -28,9 +28,7 @@ import org.activiti.engine.impl.persistence.entity.data.CommentDataManager;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 
-/**
 
- */
 public class MybatisCommentDataManager extends AbstractDataManager<CommentEntity> implements CommentDataManager {
 
   public MybatisCommentDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {

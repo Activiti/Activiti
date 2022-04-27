@@ -20,9 +20,7 @@ import org.activiti.engine.impl.cmd.JobRetryCmd;
 
 import org.activiti.engine.impl.interceptor.Command;
 
-/**
 
- */
 public class DefaultFailedJobCommandFactory implements FailedJobCommandFactory {
 
   @Override

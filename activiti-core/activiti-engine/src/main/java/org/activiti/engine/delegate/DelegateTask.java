@@ -26,9 +26,7 @@ import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 
-/**
 
- */
 public interface DelegateTask extends VariableScope {
 
   /** DB id of the task. */

@@ -23,9 +23,7 @@ import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
 
- */
 public abstract class AbstractTestCase extends TestCase {
 
   protected static final String EMPTY_LINE = "\n";

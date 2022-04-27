@@ -30,9 +30,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 
-/**
 
- */
 public class StandaloneTaskTest extends PluggableActivitiTestCase {
 
 

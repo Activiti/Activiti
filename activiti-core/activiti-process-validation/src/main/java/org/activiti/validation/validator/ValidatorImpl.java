@@ -23,9 +23,7 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.activiti.validation.ValidationError;
 
-/**
 
- */
 public abstract class ValidatorImpl implements Validator {
 
   public void addError(List<ValidationError> validationErrors, ValidationError error) {

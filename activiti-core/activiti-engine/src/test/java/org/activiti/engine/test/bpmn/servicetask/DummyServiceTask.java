@@ -20,9 +20,7 @@ package org.activiti.engine.test.bpmn.servicetask;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
-/**
 
- */
 public class DummyServiceTask implements JavaDelegate {
 
   public void execute(DelegateExecution execution) {

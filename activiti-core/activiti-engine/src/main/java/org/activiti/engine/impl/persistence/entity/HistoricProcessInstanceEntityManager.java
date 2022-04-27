@@ -23,9 +23,7 @@ import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
 
-/**
 
- */
 @Internal
 public interface HistoricProcessInstanceEntityManager extends EntityManager<HistoricProcessInstanceEntity> {
 

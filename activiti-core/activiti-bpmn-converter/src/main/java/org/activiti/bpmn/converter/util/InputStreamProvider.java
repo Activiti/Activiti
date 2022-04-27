@@ -17,9 +17,7 @@ package org.activiti.bpmn.converter.util;
 
 import java.io.InputStream;
 
-/**
 
- */
 public interface InputStreamProvider {
 
   /**

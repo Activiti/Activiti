@@ -22,9 +22,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
-/**
 
- */
 public class DeployNonExecutableProcessDefinitionTest extends PluggableActivitiTestCase {
 
   /**

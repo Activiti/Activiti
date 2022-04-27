@@ -20,9 +20,7 @@ package org.activiti.engine.impl.bpmn.parser;
 import java.io.Serializable;
 import java.util.Comparator;
 
-/**
 
- */
 public class ErrorEventDefinition implements Serializable {
 
   public static Comparator<ErrorEventDefinition> comparator = new Comparator<ErrorEventDefinition>() {

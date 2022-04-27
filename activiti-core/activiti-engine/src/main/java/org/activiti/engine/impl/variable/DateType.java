@@ -18,9 +18,7 @@ package org.activiti.engine.impl.variable;
 
 import java.util.Date;
 
-/**
 
- */
 public class DateType implements VariableType {
 
   public String getTypeName() {

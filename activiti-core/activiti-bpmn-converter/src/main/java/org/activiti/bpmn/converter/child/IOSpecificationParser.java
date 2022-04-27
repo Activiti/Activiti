@@ -26,9 +26,7 @@ import org.activiti.bpmn.model.IOSpecification;
 import org.activiti.bpmn.model.Process;
 import org.apache.commons.lang3.StringUtils;
 
-/**
 
- */
 public class IOSpecificationParser extends BaseChildElementParser {
 
   public String getElementName() {

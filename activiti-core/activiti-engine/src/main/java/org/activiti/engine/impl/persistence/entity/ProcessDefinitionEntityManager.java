@@ -24,9 +24,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.repository.ProcessDefinition;
 
-/**
 
- */
 @Internal
 public interface ProcessDefinitionEntityManager extends EntityManager<ProcessDefinitionEntity> {
 

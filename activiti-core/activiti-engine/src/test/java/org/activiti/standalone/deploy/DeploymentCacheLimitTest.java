@@ -25,9 +25,7 @@ import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.repository.Deployment;
 
-/**
 
- */
 public class DeploymentCacheLimitTest extends ResourceActivitiTestCase {
 
   public DeploymentCacheLimitTest() {

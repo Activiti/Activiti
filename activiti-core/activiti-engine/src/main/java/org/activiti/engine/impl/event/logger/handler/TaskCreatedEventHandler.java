@@ -22,9 +22,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-/**
 
- */
 public class TaskCreatedEventHandler extends AbstractTaskEventHandler {
 
   @Override

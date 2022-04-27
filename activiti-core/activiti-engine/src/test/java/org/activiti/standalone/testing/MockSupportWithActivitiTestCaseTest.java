@@ -25,9 +25,7 @@ import org.activiti.engine.test.mock.MockServiceTasks;
 import org.activiti.engine.test.mock.NoOpServiceTasks;
 import org.activiti.standalone.testing.helpers.ServiceTaskTestMock;
 
-/**
 
- */
 public class MockSupportWithActivitiTestCaseTest extends ActivitiTestCase {
 
   @Override

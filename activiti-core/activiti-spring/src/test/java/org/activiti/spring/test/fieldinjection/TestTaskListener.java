@@ -24,9 +24,7 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
 import org.springframework.stereotype.Component;
 
-/**
 
- */
 @Component("testTaskListener")
 public class TestTaskListener implements TaskListener {
 

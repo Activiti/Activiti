@@ -16,9 +16,7 @@
 
 package org.activiti.spring.test.servicetask;
 
-/**
 
- */
 public class SentenceGenerator {
 
   public String getSentence() {

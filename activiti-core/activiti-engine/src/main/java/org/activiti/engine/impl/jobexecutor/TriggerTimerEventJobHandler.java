@@ -24,9 +24,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 
-/**
 
- */
 public class TriggerTimerEventJobHandler implements JobHandler {
 
   public static final String TYPE = "trigger-timer";

@@ -25,9 +25,7 @@ import org.activiti.bpmn.model.ScriptTask;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-/**
 
- */
 public class ScriptTaskJsonConverter extends BaseBpmnJsonConverter {
 
   public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {

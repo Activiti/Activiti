@@ -18,9 +18,7 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-/**
 
- */
 public class ExecuteCustomSqlCmd<Mapper, ResultType> implements Command<ResultType> {
 
   protected Class<Mapper> mapperClass;

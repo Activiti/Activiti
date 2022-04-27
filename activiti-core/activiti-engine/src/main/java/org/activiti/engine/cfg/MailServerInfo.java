@@ -17,9 +17,7 @@
 
 package org.activiti.engine.cfg;
 
-/**
 
- */
 public class MailServerInfo {
 
   protected String mailServerDefaultFrom;

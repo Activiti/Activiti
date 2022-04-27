@@ -19,9 +19,7 @@ package org.activiti.engine.test.impl.logger;
 import org.activiti.engine.api.internal.Internal;
 import org.slf4j.Logger;
 
-/**
 
- */
 @Internal
 public interface DebugInfo {
 

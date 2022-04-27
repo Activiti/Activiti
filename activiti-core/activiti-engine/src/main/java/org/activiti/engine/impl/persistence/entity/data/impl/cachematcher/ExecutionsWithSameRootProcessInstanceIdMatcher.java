@@ -22,9 +22,7 @@ import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.cache.CachedEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-/**
 
- */
 public class ExecutionsWithSameRootProcessInstanceIdMatcher implements CachedEntityMatcher<ExecutionEntity> {
 
   @Override

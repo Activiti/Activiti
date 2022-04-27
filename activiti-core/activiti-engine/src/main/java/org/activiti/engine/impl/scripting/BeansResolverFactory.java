@@ -20,9 +20,7 @@ package org.activiti.engine.impl.scripting;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
-/**
 
- */
 public class BeansResolverFactory implements ResolverFactory, Resolver {
 
   protected ProcessEngineConfigurationImpl processEngineConfiguration;

@@ -24,9 +24,7 @@ import org.activiti.engine.impl.HistoricVariableInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
 
-/**
 
- */
 public interface HistoricVariableInstanceDataManager extends DataManager<HistoricVariableInstanceEntity> {
 
   List<HistoricVariableInstanceEntity> findHistoricVariableInstancesByProcessInstanceId(String processInstanceId);

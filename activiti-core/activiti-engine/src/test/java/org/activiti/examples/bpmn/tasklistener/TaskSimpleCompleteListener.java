@@ -21,9 +21,7 @@ import java.util.List;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
-/**
 
- */
 
 public class TaskSimpleCompleteListener implements TaskListener {
 

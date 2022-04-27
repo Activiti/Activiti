@@ -27,9 +27,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
 
-/**
 
- */
 public class ParallelGatewayTest extends PluggableActivitiTestCase {
 
   @Deployment

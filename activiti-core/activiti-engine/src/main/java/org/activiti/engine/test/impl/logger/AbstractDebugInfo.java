@@ -19,9 +19,7 @@ package org.activiti.engine.test.impl.logger;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
 
- */
 public abstract class AbstractDebugInfo implements DebugInfo {
 
   protected List<DebugInfoExecutionTree> executionTrees = new ArrayList<DebugInfoExecutionTree>();

@@ -33,9 +33,7 @@ import org.activiti.engine.impl.cfg.TransactionPropagation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
 
- */
 public class JtaTransactionInterceptor extends AbstractCommandInterceptor {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(JtaTransactionInterceptor.class);

@@ -24,9 +24,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.BusinessRuleTask;
 import org.apache.commons.lang3.StringUtils;
 
-/**
 
- */
 public class BusinessRuleTaskXMLConverter extends BaseBpmnXMLConverter {
 
   public Class<? extends BaseElement> getBpmnElementType() {

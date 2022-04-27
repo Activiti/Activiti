@@ -16,9 +16,7 @@
 
 package org.activiti.validation.validator;
 
-/**
 
- */
 public interface Problems {
 
   String ALL_PROCESS_DEFINITIONS_NOT_EXECUTABLE = "activiti-process-definition-not-executable";

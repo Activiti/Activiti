@@ -20,9 +20,7 @@ import org.activiti.engine.RuntimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
 
- */
 @Component("startProcessInstanceDelegate")
 public class StartProcessInstanceTestDelegateWithInjection {
 

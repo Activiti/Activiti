@@ -19,9 +19,7 @@ package org.activiti.engine.test.bpmn.event.end;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
-/**
 
- */
 public class EndEventTestJavaDelegate implements JavaDelegate {
 
   public static int timesCalled;

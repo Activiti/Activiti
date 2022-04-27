@@ -28,9 +28,7 @@ import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.invocation.TaskListenerInvocation;
 
-/**
 
- */
 public class DelegateExpressionTaskListener implements TaskListener {
 
   protected Expression expression;

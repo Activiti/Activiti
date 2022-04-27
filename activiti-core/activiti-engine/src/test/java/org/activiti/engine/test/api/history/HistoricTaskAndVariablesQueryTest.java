@@ -38,9 +38,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.mockito.Mockito;
 
-/**
 
- */
 public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase {
 
     private List<String> taskIds;

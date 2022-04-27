@@ -22,9 +22,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-/**
 
- */
 public class MessageEventHandler extends AbstractEventHandler {
 
     public final static String EVENT_HANDLER_TYPE = "message";

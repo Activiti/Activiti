@@ -32,9 +32,7 @@ import org.activiti.engine.test.Deployment;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
-/**
 
- */
 public class DynamicServiceTaskTest extends PluggableActivitiTestCase {
 
   @Deployment

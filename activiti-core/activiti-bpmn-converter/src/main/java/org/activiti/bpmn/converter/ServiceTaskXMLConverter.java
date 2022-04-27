@@ -27,9 +27,7 @@ import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.ServiceTask;
 import org.apache.commons.lang3.StringUtils;
 
-/**
 
- */
 public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
 
   public Class<? extends BaseElement> getBpmnElementType() {

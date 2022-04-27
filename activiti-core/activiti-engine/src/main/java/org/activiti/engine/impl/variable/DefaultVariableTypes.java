@@ -24,9 +24,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 
-/**
 
- */
 public class DefaultVariableTypes implements VariableTypes, Serializable {
 
   private static final long serialVersionUID = 1L;

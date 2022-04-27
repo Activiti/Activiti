@@ -16,9 +16,7 @@
 
 package org.activiti.editor.constants;
 
-/**
 
- */
 public interface EditorJsonConstants {
 
   final String EDITOR_CHILD_SHAPES = "childShapes";

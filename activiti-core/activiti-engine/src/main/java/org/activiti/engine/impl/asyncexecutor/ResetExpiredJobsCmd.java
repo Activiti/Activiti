@@ -22,9 +22,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.runtime.Job;
 
-/**
 
- */
 public class ResetExpiredJobsCmd implements Command<Void> {
 
   protected Collection<String> jobIds;

@@ -20,9 +20,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
-/**
 
- */
 public class UserTaskParseHandler extends AbstractActivityBpmnParseHandler<UserTask> {
 
   public Class<? extends BaseElement> getHandledType() {

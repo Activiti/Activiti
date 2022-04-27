@@ -26,9 +26,7 @@ import java.util.Map;
 
 import org.activiti.engine.impl.persistence.entity.Entity;
 
-/**
 
- */
 public class EntityCacheImpl implements EntityCache {
 
   protected Map<Class<?>, Map<String, CachedEntity>> cachedObjects = new HashMap<Class<?>, Map<String,CachedEntity>>();

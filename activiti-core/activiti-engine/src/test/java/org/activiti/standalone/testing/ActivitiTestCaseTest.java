@@ -23,9 +23,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.ActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
-/**
 
- */
 public class ActivitiTestCaseTest extends ActivitiTestCase {
 
   @Deployment

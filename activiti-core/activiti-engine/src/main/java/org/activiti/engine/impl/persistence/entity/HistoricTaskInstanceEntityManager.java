@@ -23,9 +23,7 @@ import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
 
-/**
 
- */
 @Internal
 public interface HistoricTaskInstanceEntityManager extends EntityManager<HistoricTaskInstanceEntity> {
 

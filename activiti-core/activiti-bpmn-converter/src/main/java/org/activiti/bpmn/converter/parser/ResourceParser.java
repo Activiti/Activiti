@@ -24,9 +24,7 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Resource;
 import org.activiti.bpmn.model.UserTask;
 
-/**
 
- */
 public class ResourceParser implements BpmnXMLConstants {
 
   public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {

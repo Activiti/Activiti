@@ -30,9 +30,7 @@ import org.activiti.engine.impl.persistence.entity.data.DeadLetterJobDataManager
 import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.DeadLetterJobsByExecutionIdMatcher;
 import org.activiti.engine.runtime.Job;
 
-/**
 
- */
 public class MybatisDeadLetterJobDataManager extends AbstractDataManager<DeadLetterJobEntity> implements DeadLetterJobDataManager {
 
   protected CachedEntityMatcher<DeadLetterJobEntity> deadLetterByExecutionIdMatcher = new DeadLetterJobsByExecutionIdMatcher();

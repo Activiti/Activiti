@@ -28,9 +28,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 
-/**
 
- */
 @Internal
 public interface ExecutionEntityManager extends EntityManager<ExecutionEntity> {
 

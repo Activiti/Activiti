@@ -27,9 +27,7 @@ import javax.mail.URLName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
 
- */
 public class MockEmailTransport extends Transport {
 
   private static Logger logger = LoggerFactory.getLogger(MockEmailTransport.class);

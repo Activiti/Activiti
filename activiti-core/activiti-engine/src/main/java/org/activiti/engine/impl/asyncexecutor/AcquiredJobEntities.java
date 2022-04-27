@@ -22,9 +22,7 @@ import java.util.Map;
 
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 
-/**
 
- */
 public class AcquiredJobEntities {
 
   protected Map<String, JobEntity> acquiredJobs = new HashMap<String, JobEntity>();

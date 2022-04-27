@@ -19,9 +19,7 @@ package org.activiti.engine.test.impl.logger;
 import org.activiti.engine.impl.agenda.AbstractOperation;
 import org.activiti.engine.impl.interceptor.CommandInvoker;
 
-/**
 
- */
 public class LoggingCommandInvoker extends CommandInvoker {
 
   protected ProcessExecutionLogger processExecutionLogger;

@@ -16,9 +16,7 @@
 
 package org.activiti.editor.constants;
 
-/**
 
- */
 public interface StencilConstants {
 
   // stencil items

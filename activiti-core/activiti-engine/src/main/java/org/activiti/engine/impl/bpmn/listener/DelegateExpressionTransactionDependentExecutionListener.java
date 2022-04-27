@@ -24,9 +24,7 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TransactionDependentExecutionListener;
 import org.activiti.engine.impl.el.NoExecutionVariableScope;
 
-/**
 
- */
 public class DelegateExpressionTransactionDependentExecutionListener implements TransactionDependentExecutionListener {
 
   protected Expression expression;

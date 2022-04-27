@@ -21,9 +21,7 @@ import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
-/**
 
- */
 public class ThrowBpmnErrorDelegate implements JavaDelegate {
 
   public void execute(DelegateExecution execution) {

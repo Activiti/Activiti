@@ -27,9 +27,7 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
 
- */
 public class AsyncJobAddedNotification implements CommandContextCloseListener {
 
   private static Logger log = LoggerFactory.getLogger(AsyncJobAddedNotification.class);

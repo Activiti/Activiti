@@ -24,9 +24,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.SuspendedJobQueryImpl;
 import org.activiti.engine.runtime.Job;
 
-/**
 
- */
 @Internal
 public interface SuspendedJobEntityManager extends EntityManager<SuspendedJobEntity> {
 

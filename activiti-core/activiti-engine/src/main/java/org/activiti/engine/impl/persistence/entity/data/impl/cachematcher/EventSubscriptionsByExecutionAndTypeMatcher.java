@@ -21,9 +21,7 @@ import java.util.Map;
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 
-/**
 
- */
 public class EventSubscriptionsByExecutionAndTypeMatcher extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
 
   @Override

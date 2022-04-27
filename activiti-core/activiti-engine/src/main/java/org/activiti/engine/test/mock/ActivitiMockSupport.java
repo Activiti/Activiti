@@ -27,9 +27,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.test.NoOpServiceTask;
 import org.activiti.engine.test.TestActivityBehaviorFactory;
 
-/**
 
- */
 public class ActivitiMockSupport {
 
   protected TestActivityBehaviorFactory testActivityBehaviorFactory;

@@ -26,9 +26,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
 
-/**
 
- */
 public class GetAttachmentContentCmd implements Command<InputStream>, Serializable {
 
   private static final long serialVersionUID = 1L;

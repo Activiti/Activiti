@@ -22,9 +22,7 @@ import org.activiti.engine.impl.cfg.TransactionContextFactory;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.springframework.transaction.PlatformTransactionManager;
 
-/**
 
- */
 public class SpringTransactionContextFactory implements TransactionContextFactory {
 
   protected PlatformTransactionManager transactionManager;

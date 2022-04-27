@@ -24,9 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
 
- */
 public class MyTransactionDependentTaskListener implements TransactionDependentTaskListener {
 
   protected List<CurrentTask> currentTasks = new ArrayList<CurrentTask>();

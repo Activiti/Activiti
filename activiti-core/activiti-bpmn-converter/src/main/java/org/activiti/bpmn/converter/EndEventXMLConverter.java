@@ -23,9 +23,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EndEvent;
 
-/**
 
- */
 public class EndEventXMLConverter extends BaseBpmnXMLConverter {
 
   @Override

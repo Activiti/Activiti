@@ -19,9 +19,7 @@ package org.activiti.engine.impl.bpmn.parser;
 
 import java.io.Serializable;
 
-/**
 
- */
 public class CompensateEventDefinition implements Serializable {
 
   protected String activityRef;

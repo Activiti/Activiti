@@ -28,9 +28,7 @@ import org.activiti.engine.impl.util.CollectionUtil;
 
 import java.util.Collection;
 
-/**
 
- */
 public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
 
   private static final long serialVersionUID = 1L;

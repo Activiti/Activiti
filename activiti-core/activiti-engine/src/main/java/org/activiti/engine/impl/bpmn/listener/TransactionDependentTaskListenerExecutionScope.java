@@ -20,9 +20,7 @@ import java.util.Map;
 
 import org.activiti.bpmn.model.Task;
 
-/**
 
- */
 public class TransactionDependentTaskListenerExecutionScope {
 
   protected final String processInstanceId;

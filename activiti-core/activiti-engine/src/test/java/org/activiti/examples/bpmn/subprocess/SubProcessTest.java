@@ -26,9 +26,7 @@ import org.activiti.engine.task.Task;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
-/**
 
- */
 public class SubProcessTest extends PluggableActivitiTestCase {
 
   @Test

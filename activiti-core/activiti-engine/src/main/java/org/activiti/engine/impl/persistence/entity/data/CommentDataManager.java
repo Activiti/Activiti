@@ -22,9 +22,7 @@ import org.activiti.engine.impl.persistence.entity.CommentEntity;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 
-/**
 
- */
 public interface CommentDataManager extends DataManager<CommentEntity> {
 
   List<Comment> findCommentsByTaskId(String taskId);

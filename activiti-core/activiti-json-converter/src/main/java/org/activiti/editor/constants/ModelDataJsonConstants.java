@@ -16,9 +16,7 @@
 
 package org.activiti.editor.constants;
 
-/**
 
- */
 public interface ModelDataJsonConstants {
 
   final String MODEL_ID = "modelId";

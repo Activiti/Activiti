@@ -28,9 +28,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 
-/**
 
- */
 public interface ExecutionDataManager extends DataManager<ExecutionEntity> {
 
   ExecutionEntity findSubProcessInstanceBySuperExecutionId(final String superExecutionId);

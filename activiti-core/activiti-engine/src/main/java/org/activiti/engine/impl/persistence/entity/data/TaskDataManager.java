@@ -23,9 +23,7 @@ import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
 
-/**
 
- */
 public interface TaskDataManager extends DataManager<TaskEntity> {
 
   List<TaskEntity> findTasksByExecutionId(final String executionId);

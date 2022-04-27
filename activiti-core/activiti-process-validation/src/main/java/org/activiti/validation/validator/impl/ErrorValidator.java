@@ -27,9 +27,7 @@ import org.activiti.validation.validator.Problems;
 import org.activiti.validation.validator.ValidatorImpl;
 import org.apache.commons.lang3.StringUtils;
 
-/**
 
- */
 public class ErrorValidator extends ValidatorImpl {
 
   @Override

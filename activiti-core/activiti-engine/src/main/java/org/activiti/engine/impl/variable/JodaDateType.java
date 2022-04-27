@@ -18,9 +18,7 @@ package org.activiti.engine.impl.variable;
 
 import org.joda.time.LocalDate;
 
-/**
 
- */
 public class JodaDateType implements VariableType {
 
   public String getTypeName() {

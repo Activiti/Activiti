@@ -27,9 +27,7 @@ import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
 
- */
 public class UuidGeneratorTest extends ResourceActivitiTestCase {
 
   public UuidGeneratorTest() {

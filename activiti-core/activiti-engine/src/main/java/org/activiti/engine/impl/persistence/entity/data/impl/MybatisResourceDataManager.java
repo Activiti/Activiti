@@ -26,9 +26,7 @@ import org.activiti.engine.impl.persistence.entity.ResourceEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.ResourceDataManager;
 
-/**
 
- */
 public class MybatisResourceDataManager extends AbstractDataManager<ResourceEntity> implements ResourceDataManager {
 
   public MybatisResourceDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {

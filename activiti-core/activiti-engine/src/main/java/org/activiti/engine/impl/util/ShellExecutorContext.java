@@ -20,9 +20,7 @@ import java.util.List;
 
 import org.activiti.engine.cfg.security.ExecutorContext;
 
-/**
 
- */
 public class ShellExecutorContext implements ExecutorContext {
     private Boolean waitFlag;
     private final Boolean cleanEnvBoolan;

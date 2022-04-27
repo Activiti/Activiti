@@ -20,9 +20,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
-/**
 
- */
 public class FailingDelegate implements JavaDelegate {
 
   public static final String EXCEPTION_MESSAGE = "Expected exception.";

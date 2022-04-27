@@ -30,9 +30,7 @@ import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntit
 
 import java.util.List;
 
-/**
 
- */
 public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityBehavior {
 
   private static final long serialVersionUID = 1L;

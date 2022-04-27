@@ -22,9 +22,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.repository.ProcessDefinition;
 
-/**
 
- */
 public class ProcessDefinitionCacheEntry implements Serializable {
 
   private static final long serialVersionUID = 6833801933658529070L;

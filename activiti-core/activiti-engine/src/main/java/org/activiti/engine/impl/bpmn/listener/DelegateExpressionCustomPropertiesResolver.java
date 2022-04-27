@@ -23,9 +23,7 @@ import org.activiti.engine.delegate.Expression;
 
 import java.util.Map;
 
-/**
 
- */
 public class DelegateExpressionCustomPropertiesResolver implements CustomPropertiesResolver {
 
   protected Expression expression;

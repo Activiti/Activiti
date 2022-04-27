@@ -25,9 +25,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-/**
 
- */
 public interface HistoricTaskInstanceDataManager extends DataManager<HistoricTaskInstanceEntity> {
 
   HistoricTaskInstanceEntity create(TaskEntity task, ExecutionEntity execution);

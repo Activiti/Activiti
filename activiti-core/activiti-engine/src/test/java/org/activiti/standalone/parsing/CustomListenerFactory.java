@@ -21,9 +21,7 @@ import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultListenerFactory;
 
-/**
 
- */
 public class CustomListenerFactory extends DefaultListenerFactory {
 
   @Override

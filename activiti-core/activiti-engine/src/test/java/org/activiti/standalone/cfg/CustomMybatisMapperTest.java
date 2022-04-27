@@ -25,9 +25,7 @@ import org.activiti.engine.impl.cmd.CustomSqlExecution;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.task.Task;
 
-/**
 
- */
 public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
 
   public CustomMybatisMapperTest() {

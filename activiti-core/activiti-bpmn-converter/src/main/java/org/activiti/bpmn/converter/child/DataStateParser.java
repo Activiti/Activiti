@@ -22,9 +22,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.DataStore;
 import org.activiti.bpmn.model.DataStoreReference;
 
-/**
 
- */
 public class DataStateParser extends BaseChildElementParser {
 
   public String getElementName() {

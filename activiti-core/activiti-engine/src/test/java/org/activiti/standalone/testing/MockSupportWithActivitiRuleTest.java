@@ -27,9 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Rule;
 import org.junit.Test;
 
-/**
 
- */
 public class MockSupportWithActivitiRuleTest {
 
   @Rule

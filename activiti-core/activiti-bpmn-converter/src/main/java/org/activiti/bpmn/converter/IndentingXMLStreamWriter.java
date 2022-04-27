@@ -20,9 +20,7 @@ import java.util.Stack;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-/**
 
- */
 public class IndentingXMLStreamWriter extends DelegatingXMLStreamWriter {
 
   private final static Object SEEN_NOTHING = new Object();

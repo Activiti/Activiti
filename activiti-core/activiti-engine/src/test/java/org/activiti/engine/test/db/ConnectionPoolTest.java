@@ -26,9 +26,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.test.AbstractTestCase;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 
-/**
 
- */
 public class ConnectionPoolTest extends AbstractTestCase {
 
   public void testMyBatisConnectionPoolProperlyConfigured() {

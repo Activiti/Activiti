@@ -22,9 +22,7 @@ import java.util.List;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.history.HistoricProcessInstance;
 
-/**
 
- */
 @Internal
 public interface HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity, HistoricProcessInstance {
 

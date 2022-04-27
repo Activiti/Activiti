@@ -26,9 +26,7 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 
-/**
 
- */
 public abstract class NeedsActiveProcessDefinitionCmd<T> implements Command<T>, Serializable {
 
   private static final long serialVersionUID = 1L;

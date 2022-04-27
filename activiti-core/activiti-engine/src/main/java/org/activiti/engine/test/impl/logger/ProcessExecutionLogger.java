@@ -26,9 +26,7 @@ import org.activiti.engine.test.impl.logger.DebugInfoExecutionTree.DebugInfoExec
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
 
- */
 public class ProcessExecutionLogger {
 
   private static final Logger logger = LoggerFactory.getLogger(ProcessExecutionLogger.class);

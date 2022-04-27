@@ -16,9 +16,7 @@
 
 package org.activiti.engine.impl.cfg;
 
-/**
 
- */
 public class PerformanceSettings {
 
   /**

@@ -21,9 +21,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 
-/**
 
- */
 public class VariableUpdateExecutionListener implements ExecutionListener {
 
   private Expression varName;

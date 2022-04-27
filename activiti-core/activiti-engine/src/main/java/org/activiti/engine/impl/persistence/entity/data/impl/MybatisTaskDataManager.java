@@ -32,9 +32,7 @@ import org.activiti.engine.impl.persistence.entity.data.TaskDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.TasksByExecutionIdMatcher;
 import org.activiti.engine.task.Task;
 
-/**
 
- */
 public class MybatisTaskDataManager extends AbstractDataManager<TaskEntity> implements TaskDataManager {
 
   protected CachedEntityMatcher<TaskEntity> tasksByExecutionIdMatcher = new TasksByExecutionIdMatcher();

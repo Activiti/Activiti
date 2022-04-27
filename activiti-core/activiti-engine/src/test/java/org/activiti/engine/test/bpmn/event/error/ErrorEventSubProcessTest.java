@@ -22,9 +22,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
 
- */
 public class ErrorEventSubProcessTest extends PluggableActivitiTestCase {
 
   @Deployment

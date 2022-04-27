@@ -24,9 +24,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
 
- */
 @Component("testExecutionListener")
 public class TestExecutionListener implements ExecutionListener {
 

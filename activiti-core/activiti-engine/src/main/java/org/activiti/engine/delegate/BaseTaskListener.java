@@ -19,9 +19,7 @@ package org.activiti.engine.delegate;
 
 import java.io.Serializable;
 
-/**
 
- */
 public interface BaseTaskListener extends Serializable {
 
   String EVENTNAME_CREATE = "create";

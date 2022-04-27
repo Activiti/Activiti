@@ -26,9 +26,7 @@ import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
 
-/**
 
- */
 public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
 
   public CustomMybatisXMLMapperTest() {

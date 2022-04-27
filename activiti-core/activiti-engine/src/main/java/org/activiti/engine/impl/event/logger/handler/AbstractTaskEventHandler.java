@@ -21,9 +21,7 @@ import java.util.Map;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-/**
 
- */
 public abstract class AbstractTaskEventHandler extends AbstractDatabaseEventLoggerEventHandler {
 
   protected Map<String, Object> handleCommonTaskFields(TaskEntity task) {

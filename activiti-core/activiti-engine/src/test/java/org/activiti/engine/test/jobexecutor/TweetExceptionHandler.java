@@ -23,9 +23,7 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
 
- */
 public class TweetExceptionHandler implements JobHandler {
 
   private static Logger log = LoggerFactory.getLogger(TweetExceptionHandler.class);

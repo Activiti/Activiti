@@ -23,9 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
-/**
 
- */
 public class CustomActivityBehaviorFactoryTest extends ResourceActivitiTestCase {
 
   public CustomActivityBehaviorFactoryTest() {

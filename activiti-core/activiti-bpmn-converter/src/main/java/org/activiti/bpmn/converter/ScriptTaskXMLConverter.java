@@ -29,9 +29,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ScriptTask;
 import org.apache.commons.lang3.StringUtils;
 
-/**
 
- */
 public class ScriptTaskXMLConverter extends BaseBpmnXMLConverter {
 
   protected Map<String, BaseChildElementParser> childParserMap = new HashMap<String, BaseChildElementParser>();

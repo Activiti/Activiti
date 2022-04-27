@@ -29,9 +29,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
-/**
 
- */
 public class SaveProcessDefinitionInfoCmd implements Command<Void>, Serializable {
 
   private static final long serialVersionUID = 1L;

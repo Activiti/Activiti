@@ -24,9 +24,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 
-/**
 
- */
 public class EntityManagerSessionFactory implements SessionFactory {
 
   protected EntityManagerFactory entityManagerFactory;

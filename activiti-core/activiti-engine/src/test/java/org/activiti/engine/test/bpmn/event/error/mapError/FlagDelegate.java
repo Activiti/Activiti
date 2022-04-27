@@ -19,9 +19,7 @@ package org.activiti.engine.test.bpmn.event.error.mapError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
-/**
 
- */
 public class FlagDelegate implements JavaDelegate {
   static boolean visited;
 

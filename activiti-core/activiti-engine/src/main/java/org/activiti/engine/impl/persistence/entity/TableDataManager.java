@@ -24,9 +24,7 @@ import org.activiti.engine.impl.TablePageQueryImpl;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.management.TablePage;
 
-/**
 
- */
 @Internal
 public interface TableDataManager {
 

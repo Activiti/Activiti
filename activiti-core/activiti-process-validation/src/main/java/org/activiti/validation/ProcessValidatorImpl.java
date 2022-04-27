@@ -23,9 +23,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.validation.validator.Validator;
 import org.activiti.validation.validator.ValidatorSet;
 
-/**
 
- */
 public class ProcessValidatorImpl implements ProcessValidator {
 
   protected List<ValidatorSet> validatorSets;

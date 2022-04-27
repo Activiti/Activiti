@@ -22,9 +22,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
 
- */
 public class ProcessInstanceIdentityLinkTest extends PluggableActivitiTestCase {
 
   // Test specific for fix introduced by

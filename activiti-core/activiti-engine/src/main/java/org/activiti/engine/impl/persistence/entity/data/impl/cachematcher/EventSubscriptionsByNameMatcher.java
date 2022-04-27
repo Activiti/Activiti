@@ -22,9 +22,7 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 
-/**
 
- */
 public class EventSubscriptionsByNameMatcher extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
 
   @Override

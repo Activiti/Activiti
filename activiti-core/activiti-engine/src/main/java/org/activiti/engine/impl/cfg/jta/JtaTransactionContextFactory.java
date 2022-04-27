@@ -23,9 +23,7 @@ import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionContextFactory;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-/**
 
- */
 public class JtaTransactionContextFactory implements TransactionContextFactory {
 
   protected final TransactionManager transactionManager;

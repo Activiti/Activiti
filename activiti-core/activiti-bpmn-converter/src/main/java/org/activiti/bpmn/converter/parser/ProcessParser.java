@@ -26,9 +26,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.apache.commons.lang3.StringUtils;
 
-/**
 
- */
 public class ProcessParser implements BpmnXMLConstants {
 
   public Process parse(XMLStreamReader xtr, BpmnModel model) throws Exception {

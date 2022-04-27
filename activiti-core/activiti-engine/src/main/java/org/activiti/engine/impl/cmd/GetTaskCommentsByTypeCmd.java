@@ -22,9 +22,7 @@ import java.util.List;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Comment;
 
-/**
 
- */
 public class GetTaskCommentsByTypeCmd extends GetTaskCommentsCmd {
 
   private static final long serialVersionUID = 1L;

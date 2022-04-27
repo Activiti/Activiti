@@ -22,9 +22,7 @@ import java.util.Map;
 
 import org.activiti.engine.query.QueryProperty;
 
-/**
 
- */
 public class HistoricTaskInstanceQueryProperty implements QueryProperty {
 
   private static final long serialVersionUID = 1L;

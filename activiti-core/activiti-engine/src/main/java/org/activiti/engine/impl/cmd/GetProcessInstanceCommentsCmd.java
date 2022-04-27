@@ -25,9 +25,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Comment;
 import org.apache.commons.lang3.StringUtils;
 
-/**
 
- */
 public class GetProcessInstanceCommentsCmd implements Command<List<Comment>>, Serializable {
 
   private static final long serialVersionUID = 1L;

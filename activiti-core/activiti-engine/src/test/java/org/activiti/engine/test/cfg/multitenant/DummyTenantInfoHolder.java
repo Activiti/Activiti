@@ -24,9 +24,7 @@ import java.util.Map;
 import org.activiti.engine.impl.cfg.multitenant.TenantInfoHolder;
 import org.activiti.engine.impl.identity.Authentication;
 
-/**
 
- */
 public class DummyTenantInfoHolder implements TenantInfoHolder {
 
   protected Map<String, List<String>> tenantToUserMapping = new HashMap<String, List<String>>();

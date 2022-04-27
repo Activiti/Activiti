@@ -21,9 +21,7 @@ import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionContextFactory;
 import org.activiti.engine.impl.context.Context;
 
-/**
 
- */
 public class TransactionContextInterceptor extends AbstractCommandInterceptor {
 
   protected TransactionContextFactory transactionContextFactory;

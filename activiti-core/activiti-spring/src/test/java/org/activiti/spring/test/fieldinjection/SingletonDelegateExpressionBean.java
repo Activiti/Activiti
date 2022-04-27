@@ -23,9 +23,7 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.DelegateHelper;
 
-/**
 
- */
 public class SingletonDelegateExpressionBean implements JavaDelegate {
 
   public static AtomicInteger INSTANCE_COUNT = new AtomicInteger(0);

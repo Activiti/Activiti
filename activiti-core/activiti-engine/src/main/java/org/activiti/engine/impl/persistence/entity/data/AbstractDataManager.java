@@ -31,9 +31,7 @@ import org.activiti.engine.impl.persistence.cache.CachedEntity;
 import org.activiti.engine.impl.persistence.cache.EntityCache;
 import org.activiti.engine.impl.persistence.entity.Entity;
 
-/**
 
- */
 public abstract class AbstractDataManager<EntityImpl extends Entity> extends AbstractManager implements DataManager<EntityImpl> {
 
   public AbstractDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {

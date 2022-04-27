@@ -24,9 +24,7 @@ import org.activiti.bpmn.model.UserTask;
 
 import java.util.UUID;
 
-/**
 
- */
 public class TestProcessUtil {
 
   /**

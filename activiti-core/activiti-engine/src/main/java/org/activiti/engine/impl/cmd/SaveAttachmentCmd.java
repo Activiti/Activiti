@@ -27,9 +27,7 @@ import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.task.Attachment;
 
-/**
 
- */
 public class SaveAttachmentCmd implements Command<Object>, Serializable {
 
   private static final long serialVersionUID = 1L;

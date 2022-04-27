@@ -23,9 +23,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.DataStore;
 import org.apache.commons.lang3.StringUtils;
 
-/**
 
- */
 public class DataStoreParser implements BpmnXMLConstants {
 
   public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {

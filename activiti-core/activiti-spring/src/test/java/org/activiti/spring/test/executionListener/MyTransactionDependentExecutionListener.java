@@ -24,9 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
 
- */
 public class MyTransactionDependentExecutionListener implements TransactionDependentExecutionListener {
 
   protected List<CurrentActivity> currentActivities = new ArrayList<CurrentActivity>();

@@ -27,9 +27,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskInfo;
 import org.activiti.engine.task.TaskInfoQueryWrapper;
 
-/**
 
- */
 public class TaskInfoQueryTest extends PluggableActivitiTestCase {
 
   protected void tearDown() throws Exception {

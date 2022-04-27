@@ -26,9 +26,7 @@ import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
-/**
 
- */
 public class CustomFlowExecutionListenerTest extends ResourceActivitiTestCase {
 
   public CustomFlowExecutionListenerTest() {

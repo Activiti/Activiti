@@ -30,9 +30,7 @@ import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.IOParameter;
 import org.apache.commons.lang3.StringUtils;
 
-/**
 
- */
 public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
 
   protected Map<String, BaseChildElementParser> childParserMap = new HashMap<String, BaseChildElementParser>();

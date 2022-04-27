@@ -17,9 +17,7 @@
 
 package org.activiti.engine.impl.cfg;
 
-/**
 
- */
 public class StandaloneInMemProcessEngineConfiguration extends StandaloneProcessEngineConfiguration {
 
   public StandaloneInMemProcessEngineConfiguration() {

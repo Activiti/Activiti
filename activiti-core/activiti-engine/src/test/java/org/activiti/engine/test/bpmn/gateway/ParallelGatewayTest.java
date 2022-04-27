@@ -28,9 +28,7 @@ import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
 
- */
 public class ParallelGatewayTest extends PluggableActivitiTestCase {
 
   /**

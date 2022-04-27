@@ -17,9 +17,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-/**
 
- */
 public class MessageEventSubscriptionEntityImpl extends EventSubscriptionEntityImpl implements MessageEventSubscriptionEntity {
 
   private static final long serialVersionUID = 1L;

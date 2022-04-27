@@ -23,9 +23,7 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-/**
 
- */
 public class ExecutionTreeNode implements Iterable<ExecutionTreeNode> {
 
   protected ExecutionEntity executionEntity;

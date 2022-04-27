@@ -20,9 +20,7 @@ import org.activiti.engine.api.internal.Internal;
 
 import java.util.List;
 
-/**
 
- */
 @Internal
 public interface PropertyEntityManager extends EntityManager<PropertyEntity> {
 

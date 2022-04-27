@@ -22,9 +22,7 @@ import org.activiti.engine.delegate.event.ActivitiMessageEvent;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 
-/**
 
- */
 public class ActivityMessageEventHandler extends AbstractDatabaseEventLoggerEventHandler {
 
   @Override

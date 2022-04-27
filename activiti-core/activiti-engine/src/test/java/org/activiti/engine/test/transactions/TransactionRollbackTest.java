@@ -26,9 +26,7 @@ import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
-/**
 
- */
 public class TransactionRollbackTest extends PluggableActivitiTestCase {
 
     public static class Buzzz implements ActivityBehavior {

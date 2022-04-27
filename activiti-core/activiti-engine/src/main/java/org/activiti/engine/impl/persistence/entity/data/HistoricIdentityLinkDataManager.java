@@ -20,9 +20,7 @@ import java.util.List;
 
 import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity;
 
-/**
 
- */
 public interface HistoricIdentityLinkDataManager extends DataManager<HistoricIdentityLinkEntity> {
 
   List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByTaskId(String taskId);

@@ -28,9 +28,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.io.UrlResource;
 
-/**
 
- */
 public class SpringConfigurationHelper {
 
   private static Logger log = LoggerFactory.getLogger(SpringConfigurationHelper.class);

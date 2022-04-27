@@ -29,9 +29,7 @@ import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
 import org.activiti.engine.task.IdentityLinkType;
 
-/**
 
- */
 public class GetHistoricIdentityLinksForTaskCmd implements Command<List<HistoricIdentityLink>>, Serializable {
 
   private static final long serialVersionUID = 1L;

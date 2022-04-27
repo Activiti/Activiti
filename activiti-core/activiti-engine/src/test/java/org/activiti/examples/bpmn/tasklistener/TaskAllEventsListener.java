@@ -19,9 +19,7 @@ package org.activiti.examples.bpmn.tasklistener;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
-/**
 
- */
 public class TaskAllEventsListener implements TaskListener {
 
   private static final long serialVersionUID = 1L;

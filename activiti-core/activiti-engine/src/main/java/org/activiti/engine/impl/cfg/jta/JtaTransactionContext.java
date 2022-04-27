@@ -31,9 +31,7 @@ import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-/**
 
- */
 public class JtaTransactionContext implements TransactionContext {
 
   protected final TransactionManager transactionManager;

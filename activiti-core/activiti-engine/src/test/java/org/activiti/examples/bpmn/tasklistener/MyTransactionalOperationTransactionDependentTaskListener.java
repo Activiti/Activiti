@@ -25,9 +25,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoryLevel;
 
-/**
 
- */
 public class MyTransactionalOperationTransactionDependentTaskListener extends CurrentTaskTransactionDependentTaskListener {
 
   @Override

@@ -23,9 +23,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 
-/**
 
- */
 public class FindExpiredJobsCmd implements Command<List<JobEntity>> {
 
   protected int pageSize;

@@ -28,9 +28,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.runtime.Job;
 
-/**
 
- */
 public class SetJobRetriesCmd implements Command<Void>, Serializable {
 
   private static final long serialVersionUID = 1L;

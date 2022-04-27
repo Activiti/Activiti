@@ -16,9 +16,7 @@
 
 package org.activiti.engine.impl.interceptor;
 
-/**
 
- */
 public abstract class AbstractCommandInterceptor implements CommandInterceptor {
 
   /**

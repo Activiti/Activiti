@@ -16,9 +16,7 @@
 
 package org.activiti.engine.impl.db;
 
-/**
 
- */
 public class IdBlock {
 
   long nextId;

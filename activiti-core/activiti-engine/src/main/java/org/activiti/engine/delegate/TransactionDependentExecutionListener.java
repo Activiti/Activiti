@@ -21,9 +21,7 @@ import org.activiti.bpmn.model.FlowElement;
 
 import java.util.Map;
 
-/**
 
- */
 public interface TransactionDependentExecutionListener extends BaseExecutionListener {
 
   String ON_TRANSACTION_BEFORE_COMMIT = "before-commit";

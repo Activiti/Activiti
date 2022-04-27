@@ -22,9 +22,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.apache.commons.lang3.StringUtils;
 
-/**
 
- */
 public class TimeCycleParser extends BaseChildElementParser {
 
   public String getElementName() {

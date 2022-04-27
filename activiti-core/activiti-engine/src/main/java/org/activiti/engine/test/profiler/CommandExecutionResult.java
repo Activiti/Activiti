@@ -18,9 +18,7 @@ package org.activiti.engine.test.profiler;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
 
- */
 public class CommandExecutionResult {
 
     protected String commandFqn;

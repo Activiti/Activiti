@@ -28,9 +28,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 
-/**
 
- */
 public class DeleteCommentCmd implements Command<Void>, Serializable {
 
   private static final long serialVersionUID = 1L;

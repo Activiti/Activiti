@@ -21,9 +21,7 @@ import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 
-/**
 
- */
 public class VariableCreatedEventHandler extends VariableEventHandler {
 
   @Override

@@ -16,9 +16,7 @@
 
 package org.activiti.validation.validator;
 
-/**
 
- */
 public class Constraints {
 
   /**

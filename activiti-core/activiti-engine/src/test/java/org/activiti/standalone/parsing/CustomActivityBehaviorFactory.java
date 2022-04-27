@@ -21,9 +21,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.NoneStartEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 
-/**
 
- */
 public class CustomActivityBehaviorFactory extends DefaultActivityBehaviorFactory {
 
   @Override

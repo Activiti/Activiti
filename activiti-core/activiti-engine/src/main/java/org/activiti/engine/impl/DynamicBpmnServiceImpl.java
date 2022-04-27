@@ -29,9 +29,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 
-/**
 
- */
 public class DynamicBpmnServiceImpl extends ServiceImpl implements DynamicBpmnService, DynamicBpmnConstants {
 
   public DynamicBpmnServiceImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {

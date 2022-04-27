@@ -19,9 +19,7 @@ import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.UserTask;
 
-/**
 
- */
 public class TaskListenerParser extends ActivitiListenerParser {
 
   public String getElementName() {

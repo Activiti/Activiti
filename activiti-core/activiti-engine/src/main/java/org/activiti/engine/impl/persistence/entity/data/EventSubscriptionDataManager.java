@@ -25,9 +25,7 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 
-/**
 
- */
 public interface EventSubscriptionDataManager extends DataManager<EventSubscriptionEntity> {
 
   MessageEventSubscriptionEntity createMessageEventSubscription();

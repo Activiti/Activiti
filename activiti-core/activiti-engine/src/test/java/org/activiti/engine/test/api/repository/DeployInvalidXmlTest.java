@@ -25,9 +25,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 
-/**
 
- */
 public class DeployInvalidXmlTest extends PluggableActivitiTestCase {
 
   @Override

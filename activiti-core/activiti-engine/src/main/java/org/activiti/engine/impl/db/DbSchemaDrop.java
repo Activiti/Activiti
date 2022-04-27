@@ -24,9 +24,7 @@ import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
-/**
 
- */
 public class DbSchemaDrop {
 
   public static void main(String[] args) {

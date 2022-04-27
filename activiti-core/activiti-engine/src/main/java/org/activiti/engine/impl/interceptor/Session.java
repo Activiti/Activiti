@@ -18,9 +18,7 @@ package org.activiti.engine.impl.interceptor;
 
 import org.activiti.engine.api.internal.Internal;
 
-/**
 
- */
 @Internal
 public interface Session {
 

@@ -33,9 +33,7 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 import java.util.List;
 
-/**
 
- */
 public class CompensationEventHandler implements EventHandler {
 
   public String getEventHandlerType() {

@@ -26,9 +26,7 @@ import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.handler.SequenceFlowParseHandler;
 
-/**
 
- */
 public class CustomSequenceFlowBpmnParseHandler extends SequenceFlowParseHandler {
 
   protected void executeParse(BpmnParse bpmnParse, SequenceFlow flow) {

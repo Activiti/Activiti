@@ -22,9 +22,7 @@ import java.io.UnsupportedEncodingException;
 
 import org.activiti.engine.ActivitiException;
 
-/**
 
- */
 public class StringStreamSource implements StreamSource {
 
   String string;

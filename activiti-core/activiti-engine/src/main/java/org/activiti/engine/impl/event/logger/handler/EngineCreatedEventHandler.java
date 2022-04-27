@@ -23,9 +23,7 @@ import java.util.Map;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 
-/**
 
- */
 public class EngineCreatedEventHandler extends AbstractDatabaseEventLoggerEventHandler {
 
   @Override

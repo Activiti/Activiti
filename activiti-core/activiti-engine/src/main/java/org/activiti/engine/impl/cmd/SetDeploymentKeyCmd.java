@@ -25,9 +25,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.repository.Deployment;
 
-/**
 
- */
 public class SetDeploymentKeyCmd implements Command<Void> {
 
   protected String deploymentId;

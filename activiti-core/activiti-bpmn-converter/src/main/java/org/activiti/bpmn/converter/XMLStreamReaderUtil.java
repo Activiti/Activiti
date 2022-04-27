@@ -21,9 +21,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
 
- */
 public class XMLStreamReaderUtil {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(XMLStreamReaderUtil.class);

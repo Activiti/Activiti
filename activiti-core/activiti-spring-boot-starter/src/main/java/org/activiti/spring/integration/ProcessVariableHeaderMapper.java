@@ -24,9 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-/**
 
- */
 public class ProcessVariableHeaderMapper implements HeaderMapper<Map<String, Object>> {
 
     private final Set<String> keysToPreserve = new ConcurrentSkipListSet<String>();

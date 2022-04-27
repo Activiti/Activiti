@@ -44,9 +44,7 @@ import org.activiti.bpmn.model.SubProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
 
- */
 public class SubprocessXMLConverter extends BpmnXMLConverter {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(SubprocessXMLConverter.class);

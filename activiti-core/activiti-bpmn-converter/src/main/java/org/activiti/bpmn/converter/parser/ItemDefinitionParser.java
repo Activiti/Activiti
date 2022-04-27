@@ -23,9 +23,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ItemDefinition;
 import org.apache.commons.lang3.StringUtils;
 
-/**
 
- */
 public class ItemDefinitionParser implements BpmnXMLConstants {
 
   public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {

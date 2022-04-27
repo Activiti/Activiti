@@ -55,9 +55,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-/**
 
- */
 public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConstants {
 
   private static final Logger logger = LoggerFactory.getLogger(BpmnJsonConverterUtil.class);

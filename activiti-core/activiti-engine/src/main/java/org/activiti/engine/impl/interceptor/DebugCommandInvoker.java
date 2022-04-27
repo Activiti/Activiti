@@ -21,9 +21,7 @@ import org.activiti.engine.impl.agenda.AbstractOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
 
- */
 public class DebugCommandInvoker extends CommandInvoker {
 
   private static final Logger logger = LoggerFactory.getLogger(DebugCommandInvoker.class);

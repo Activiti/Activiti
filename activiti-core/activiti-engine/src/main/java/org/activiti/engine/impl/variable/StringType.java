@@ -16,9 +16,7 @@
 
 package org.activiti.engine.impl.variable;
 
-/**
 
- */
 public class StringType implements VariableType {
 
   private final int maxLength;

@@ -24,9 +24,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Comment;
 
-/**
 
- */
 public class GetTypeCommentsCmd implements Command<List<Comment>>, Serializable {
 
   private static final long serialVersionUID = 1L;

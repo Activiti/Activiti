@@ -24,9 +24,7 @@ import java.util.Map;
 
 import org.activiti.engine.query.QueryProperty;
 
-/**
 
- */
 public class AttachmentQueryProperty implements QueryProperty {
 
   private static final long serialVersionUID = 1L;

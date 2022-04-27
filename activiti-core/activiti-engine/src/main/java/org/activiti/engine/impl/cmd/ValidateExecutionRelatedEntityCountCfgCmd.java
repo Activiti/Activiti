@@ -23,9 +23,7 @@ import org.activiti.engine.impl.persistence.entity.PropertyEntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
 
- */
 public class ValidateExecutionRelatedEntityCountCfgCmd implements Command<Void> {
 
   private static final Logger logger = LoggerFactory.getLogger(ValidateExecutionRelatedEntityCountCfgCmd.class);

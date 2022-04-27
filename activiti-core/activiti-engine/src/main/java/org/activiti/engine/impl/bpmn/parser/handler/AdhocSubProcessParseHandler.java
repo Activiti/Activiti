@@ -21,9 +21,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
-/**
 
- */
 public class AdhocSubProcessParseHandler extends AbstractActivityBpmnParseHandler<SubProcess> {
 
   protected Class<? extends BaseElement> getHandledType() {

@@ -22,9 +22,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 
-/**
 
- */
 public class ExecutionContext {
 
   protected ExecutionEntity execution;

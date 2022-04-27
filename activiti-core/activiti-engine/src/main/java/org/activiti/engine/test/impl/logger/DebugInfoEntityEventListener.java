@@ -21,9 +21,7 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.BaseEntityEventListener;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-/**
 
- */
 public class DebugInfoEntityEventListener extends BaseEntityEventListener {
 
   protected ProcessExecutionLogger processExecutionLogger;

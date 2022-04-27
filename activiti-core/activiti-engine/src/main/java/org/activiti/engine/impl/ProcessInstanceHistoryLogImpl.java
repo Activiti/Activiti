@@ -26,9 +26,7 @@ import org.activiti.engine.history.HistoricData;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.ProcessInstanceHistoryLog;
 
-/**
 
- */
 public class ProcessInstanceHistoryLogImpl implements ProcessInstanceHistoryLog {
 
   protected HistoricProcessInstance historicProcessInstance;

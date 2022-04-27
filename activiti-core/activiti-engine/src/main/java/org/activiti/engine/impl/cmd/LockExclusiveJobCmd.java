@@ -26,9 +26,7 @@ import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
 
- */
 public class LockExclusiveJobCmd implements Command<Object>, Serializable {
 
   private static final long serialVersionUID = 1L;

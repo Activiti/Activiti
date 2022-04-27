@@ -26,9 +26,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 
-/**
 
- */
 public class GetPropertiesCmd implements Command<Map<String, String>>, Serializable {
 
   private static final long serialVersionUID = 1L;

@@ -50,9 +50,7 @@ import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.SubPro
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 
-/**
 
- */
 public class MybatisExecutionDataManager extends AbstractDataManager<ExecutionEntity> implements ExecutionDataManager {
 
   protected PerformanceSettings performanceSettings;

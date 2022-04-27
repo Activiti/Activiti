@@ -24,9 +24,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Comment;
 
-/**
 
- */
 public class GetCommentCmd implements Command<Comment>, Serializable {
 
   private static final long serialVersionUID = 1L;

@@ -26,9 +26,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.util.ReflectUtil;
 
-/**
 
- */
 public class ClassDelegateUtil {
 
   public static Object instantiateDelegate(Class<?> clazz, List<FieldDeclaration> fieldDeclarations) {

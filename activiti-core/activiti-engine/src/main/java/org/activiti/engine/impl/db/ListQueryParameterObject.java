@@ -17,9 +17,7 @@
 
 package org.activiti.engine.impl.db;
 
-/**
 
- */
 public class ListQueryParameterObject {
 
   protected int maxResults = Integer.MAX_VALUE;

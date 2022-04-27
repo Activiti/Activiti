@@ -17,9 +17,7 @@ package org.activiti.engine.test.profiler;
 
 import java.util.Map;
 
-/**
 
- */
 public class ConsoleLogger {
 
     protected ActivitiProfiler profiler;

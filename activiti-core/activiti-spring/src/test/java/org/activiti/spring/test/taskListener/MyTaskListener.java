@@ -20,9 +20,7 @@ package org.activiti.spring.test.taskListener;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
-/**
 
- */
 public class MyTaskListener implements TaskListener {
 
   public void notify(DelegateTask delegateTask) {

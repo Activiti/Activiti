@@ -28,9 +28,7 @@ import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.DeploymentDataManager;
 import org.activiti.engine.repository.Deployment;
 
-/**
 
- */
 public class MybatisDeploymentDataManager extends AbstractDataManager<DeploymentEntity> implements DeploymentDataManager {
 
   public MybatisDeploymentDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {

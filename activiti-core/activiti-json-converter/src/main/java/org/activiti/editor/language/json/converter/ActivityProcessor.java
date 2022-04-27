@@ -26,9 +26,7 @@ import org.activiti.editor.language.json.model.ModelInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-/**
 
- */
 public interface ActivityProcessor {
 
   public void processFlowElements(FlowElementsContainer container, BpmnModel model, ArrayNode shapesArrayNode,

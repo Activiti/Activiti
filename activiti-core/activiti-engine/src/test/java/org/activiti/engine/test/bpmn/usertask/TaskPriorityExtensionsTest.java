@@ -27,9 +27,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
 
- */
 public class TaskPriorityExtensionsTest extends PluggableActivitiTestCase {
 
   @Deployment

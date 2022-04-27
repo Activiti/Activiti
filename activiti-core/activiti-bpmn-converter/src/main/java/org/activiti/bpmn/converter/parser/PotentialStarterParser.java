@@ -27,9 +27,7 @@ import org.activiti.bpmn.converter.XMLStreamReaderUtil;
 import org.activiti.bpmn.model.Process;
 import org.apache.commons.lang3.StringUtils;
 
-/**
 
- */
 public class PotentialStarterParser implements BpmnXMLConstants {
 
   public void parse(XMLStreamReader xtr, Process activeProcess) throws Exception {

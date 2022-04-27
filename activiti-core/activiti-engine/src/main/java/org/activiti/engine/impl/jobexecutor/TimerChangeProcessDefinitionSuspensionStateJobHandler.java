@@ -18,9 +18,7 @@ package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.impl.util.json.JSONObject;
 
-/**
 
- */
 public abstract class TimerChangeProcessDefinitionSuspensionStateJobHandler implements JobHandler {
 
   private static final String JOB_HANDLER_CFG_INCLUDE_PROCESS_INSTANCES = "includeProcessInstances";

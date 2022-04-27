@@ -24,9 +24,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ValidationError;
 
-/**
 
- */
 public class ValidateBpmnModelCmd implements Command<List<ValidationError>> {
 
   protected BpmnModel bpmnModel;

@@ -27,9 +27,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 
-/**
 
- */
 public class AcquireJobsCmd implements Command<AcquiredJobEntities> {
 
   private final AsyncExecutor asyncExecutor;

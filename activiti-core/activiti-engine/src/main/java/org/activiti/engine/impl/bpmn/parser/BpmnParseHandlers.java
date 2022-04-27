@@ -27,9 +27,7 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.slf4j.Logger;
 
-/**
 
- */
 public class BpmnParseHandlers {
 
   private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(BpmnParseHandlers.class);

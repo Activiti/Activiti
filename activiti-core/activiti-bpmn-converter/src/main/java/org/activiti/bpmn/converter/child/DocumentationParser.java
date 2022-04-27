@@ -23,9 +23,7 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.apache.commons.lang3.StringUtils;
 
-/**
 
- */
 public class DocumentationParser extends BaseChildElementParser {
 
   public String getElementName() {

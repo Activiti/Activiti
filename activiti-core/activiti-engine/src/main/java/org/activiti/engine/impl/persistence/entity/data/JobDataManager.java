@@ -23,9 +23,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.runtime.Job;
 
-/**
 
- */
 public interface JobDataManager extends DataManager<JobEntity> {
 
   List<JobEntity> findJobsToExecute(Page page);

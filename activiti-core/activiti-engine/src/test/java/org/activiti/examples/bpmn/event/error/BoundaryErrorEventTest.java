@@ -27,9 +27,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
 
- */
 public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
 
   @Override

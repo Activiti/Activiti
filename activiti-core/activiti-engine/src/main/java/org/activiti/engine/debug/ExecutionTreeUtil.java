@@ -27,9 +27,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-/**
 
- */
 public class ExecutionTreeUtil {
 
   public static ExecutionTree buildExecutionTree(DelegateExecution executionEntity) {

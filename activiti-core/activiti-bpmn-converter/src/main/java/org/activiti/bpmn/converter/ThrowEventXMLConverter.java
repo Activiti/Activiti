@@ -23,9 +23,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ThrowEvent;
 
-/**
 
- */
 public class ThrowEventXMLConverter extends BaseBpmnXMLConverter {
 
   @Override

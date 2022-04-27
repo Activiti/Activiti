@@ -21,9 +21,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.apache.commons.lang3.StringUtils;
 
-/**
 
- */
 public class ThrowCustomExceptionDelegate implements JavaDelegate {
 
   @Override

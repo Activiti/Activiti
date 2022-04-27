@@ -24,9 +24,7 @@ import org.activiti.engine.impl.persistence.entity.ByteArrayEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.ByteArrayDataManager;
 
-/**
 
- */
 public class MybatisByteArrayDataManager extends AbstractDataManager<ByteArrayEntity> implements ByteArrayDataManager {
 
   public MybatisByteArrayDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {

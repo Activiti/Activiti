@@ -25,9 +25,7 @@ import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.persistence.cache.EntityCache;
 import org.activiti.engine.impl.persistence.entity.Entity;
 
-/**
 
- */
 public class ProfilingDbSqlSession extends DbSqlSession {
 
   protected CommandExecutionResult commandExecutionResult;

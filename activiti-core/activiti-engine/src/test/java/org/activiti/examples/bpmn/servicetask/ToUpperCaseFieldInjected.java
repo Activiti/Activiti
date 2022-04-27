@@ -20,9 +20,7 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.DelegateExecution;
 
-/**
 
- */
 public class ToUpperCaseFieldInjected implements JavaDelegate {
 
   private Expression text;

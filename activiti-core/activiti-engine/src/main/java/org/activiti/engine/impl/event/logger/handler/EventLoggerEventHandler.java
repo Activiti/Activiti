@@ -23,9 +23,7 @@ import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/**
 
- */
 public interface EventLoggerEventHandler {
 
   EventLogEntryEntity generateEventLogEntry(CommandContext commandContext);

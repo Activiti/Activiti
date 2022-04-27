@@ -22,9 +22,7 @@ import java.io.Serializable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
-/**
 
- */
 @Entity
 public class CompoundIdJPAEntity implements Serializable {
 

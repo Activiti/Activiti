@@ -19,9 +19,7 @@ package org.activiti.engine.test.bpmn.multiinstance;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
-/**
 
- */
 public class MultiInstanceDelegate implements JavaDelegate {
 
   public void execute(DelegateExecution execution) {

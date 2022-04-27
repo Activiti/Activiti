@@ -24,9 +24,7 @@ import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.Event;
 import org.apache.commons.lang3.StringUtils;
 
-/**
 
- */
 public class CompensateEventDefinitionParser extends BaseChildElementParser {
 
   public String getElementName() {

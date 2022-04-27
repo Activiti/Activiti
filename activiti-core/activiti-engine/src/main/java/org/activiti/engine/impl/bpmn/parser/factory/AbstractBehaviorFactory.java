@@ -29,9 +29,7 @@ import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.FixedValue;
 import org.apache.commons.lang3.StringUtils;
 
-/**
 
- */
 public abstract class AbstractBehaviorFactory {
 
   protected ExpressionManager expressionManager;

@@ -29,9 +29,7 @@ import org.activiti.engine.repository.DeploymentQuery;
 
 import java.util.List;
 
-/**
 
- */
 public class DeploymentQueryTest extends PluggableActivitiTestCase {
 
   private String deploymentOneId;

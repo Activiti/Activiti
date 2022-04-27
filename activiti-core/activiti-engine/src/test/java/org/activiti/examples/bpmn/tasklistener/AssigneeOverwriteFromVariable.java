@@ -22,9 +22,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
-/**
 
- */
 public class AssigneeOverwriteFromVariable implements TaskListener {
 
   @SuppressWarnings("unchecked")

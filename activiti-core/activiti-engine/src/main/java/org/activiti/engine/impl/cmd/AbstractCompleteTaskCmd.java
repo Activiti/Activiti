@@ -31,9 +31,7 @@ import org.activiti.engine.task.IdentityLinkType;
 
 import java.util.Map;
 
-/**
 
- */
 public abstract class AbstractCompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
 
   private static final long serialVersionUID = 1L;

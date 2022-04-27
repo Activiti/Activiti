@@ -31,9 +31,7 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
 
- */
 public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProcessParseHandler.class);

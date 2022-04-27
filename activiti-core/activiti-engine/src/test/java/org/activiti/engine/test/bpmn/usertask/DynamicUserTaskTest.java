@@ -33,9 +33,7 @@ import org.activiti.engine.test.Deployment;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
-/**
 
- */
 public class DynamicUserTaskTest extends PluggableActivitiTestCase {
 
   @Deployment(resources={"org/activiti/engine/test/bpmn/usertask/DynamicUserTaskTest.assignment.bpmn20.xml"})

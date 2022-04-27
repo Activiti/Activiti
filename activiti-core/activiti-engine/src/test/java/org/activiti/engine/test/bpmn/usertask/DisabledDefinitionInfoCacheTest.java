@@ -33,9 +33,7 @@ import org.activiti.engine.test.Deployment;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
-/**
 
- */
 public class DisabledDefinitionInfoCacheTest extends AbstractActivitiTestCase {
 
   protected static ProcessEngine cachedProcessEngine;

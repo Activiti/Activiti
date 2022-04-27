@@ -21,9 +21,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.IdentityLinkType;
 
-/**
 
- */
 public class AddIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
 
   private static final long serialVersionUID = 1L;

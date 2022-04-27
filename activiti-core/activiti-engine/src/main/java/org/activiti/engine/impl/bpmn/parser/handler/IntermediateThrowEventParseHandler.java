@@ -28,9 +28,7 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
 
- */
 public class IntermediateThrowEventParseHandler extends AbstractActivityBpmnParseHandler<ThrowEvent> {
 
   private static final Logger logger = LoggerFactory.getLogger(IntermediateThrowEventParseHandler.class);

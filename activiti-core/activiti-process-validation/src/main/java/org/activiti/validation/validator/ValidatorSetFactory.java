@@ -43,9 +43,7 @@ import org.activiti.validation.validator.impl.StartEventValidator;
 import org.activiti.validation.validator.impl.SubprocessValidator;
 import org.activiti.validation.validator.impl.UserTaskValidator;
 
-/**
 
- */
 public class ValidatorSetFactory {
 
   public ValidatorSet createActivitiExecutableProcessValidatorSet() {

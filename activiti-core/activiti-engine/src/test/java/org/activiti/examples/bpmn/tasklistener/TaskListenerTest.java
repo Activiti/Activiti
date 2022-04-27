@@ -25,9 +25,7 @@ import org.activiti.engine.test.Deployment;
 
 import java.util.List;
 
-/**
 
- */
 public class TaskListenerTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml" })

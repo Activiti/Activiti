@@ -20,9 +20,7 @@ import java.util.Map;
 
 import org.activiti.bpmn.model.FlowElement;
 
-/**
 
- */
 public class TransactionDependentExecutionListenerExecutionScope {
 
   protected final String processInstanceId;

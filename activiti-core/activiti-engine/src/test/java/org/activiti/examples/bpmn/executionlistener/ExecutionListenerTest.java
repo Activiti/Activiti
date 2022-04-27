@@ -30,9 +30,7 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.examples.bpmn.executionlistener.CurrentActivityExecutionListener.CurrentActivity;
 import org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener.RecordedEvent;
 
-/**
 
- */
 public class ExecutionListenerTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/examples/bpmn/executionlistener/ExecutionListenersProcess.bpmn20.xml" })

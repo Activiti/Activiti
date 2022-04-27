@@ -16,9 +16,7 @@
 
 package org.activiti.engine.impl.variable;
 
-/**
 
- */
 public class IntegerType implements VariableType {
 
   private static final long serialVersionUID = 1L;

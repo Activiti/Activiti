@@ -22,9 +22,7 @@ import java.io.Serializable;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.JavaDelegate;
 
-/**
 
- */
 public class BpmnErrorBean implements Serializable {
 
   private static final long serialVersionUID = 1L;

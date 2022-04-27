@@ -20,9 +20,7 @@ import java.util.Collection;
 import org.activiti.engine.impl.persistence.cache.CachedEntity;
 import org.activiti.engine.impl.persistence.entity.Entity;
 
-/**
 
- */
 public abstract class CachedEntityMatcherAdapter<EntityImpl extends Entity> implements CachedEntityMatcher<EntityImpl> {
 
   @Override

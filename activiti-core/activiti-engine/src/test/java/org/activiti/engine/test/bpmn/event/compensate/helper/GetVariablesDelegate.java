@@ -21,9 +21,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
-/**
 
- */
 public class GetVariablesDelegate implements JavaDelegate {
 
   public void execute(DelegateExecution execution) {

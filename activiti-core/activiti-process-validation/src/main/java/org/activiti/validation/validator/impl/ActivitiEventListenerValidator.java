@@ -26,9 +26,7 @@ import org.activiti.validation.ValidationError;
 import org.activiti.validation.validator.Problems;
 import org.activiti.validation.validator.ProcessLevelValidator;
 
-/**
 
- */
 public class ActivitiEventListenerValidator extends ProcessLevelValidator {
 
   @Override

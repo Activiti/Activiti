@@ -21,9 +21,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 
-/**
 
- */
 public class ConditionalThrowExceptionDelegate implements JavaDelegate {
 
   private Expression injectedVar;

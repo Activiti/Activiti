@@ -34,9 +34,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
 
- */
 public class StandaloneMybatisTransactionContext implements TransactionContext {
 
   private static Logger log = LoggerFactory.getLogger(StandaloneMybatisTransactionContext.class);

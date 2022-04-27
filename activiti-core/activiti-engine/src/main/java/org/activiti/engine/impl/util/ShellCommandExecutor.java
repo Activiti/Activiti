@@ -29,9 +29,7 @@ import java.util.Map;
 
 import org.activiti.engine.delegate.DelegateExecution;
 
-/**
 
- */
 public class ShellCommandExecutor implements CommandExecutor {
     private Boolean waitFlag;
     private final Boolean cleanEnvBoolean;

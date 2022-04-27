@@ -22,9 +22,7 @@ import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 
-/**
 
- */
 public class SignalEventSubscriptionByNameAndExecutionMatcher extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
 
   @Override

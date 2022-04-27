@@ -26,9 +26,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.runtime.Execution;
 
-/**
 
- */
 public abstract class NeedsActiveExecutionCmd<T> implements Command<T>, Serializable {
 
   private static final long serialVersionUID = 1L;

@@ -21,9 +21,7 @@ import java.util.List;
 
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-/**
 
- */
 public class ExecutionTree implements Iterable<ExecutionTreeNode> {
 
   protected ExecutionTreeNode root;

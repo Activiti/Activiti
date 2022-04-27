@@ -29,9 +29,7 @@ import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SubProcess;
 
-/**
 
- */
 public class ExtensionElementsParser implements BpmnXMLConstants {
 
   public void parse(XMLStreamReader xtr, List<SubProcess> activeSubProcessList, Process activeProcess, BpmnModel model) throws Exception {

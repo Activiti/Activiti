@@ -25,9 +25,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 
-/**
 
- */
 public class ProcessDefinitionCategoryTest extends PluggableActivitiTestCase {
 
   public void testQueryByCategoryNotEquals() {

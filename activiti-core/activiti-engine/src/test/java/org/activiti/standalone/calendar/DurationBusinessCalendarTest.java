@@ -27,9 +27,7 @@ import org.activiti.engine.impl.test.AbstractTestCase;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.runtime.Clock;
 
-/**
 
- */
 public class DurationBusinessCalendarTest extends AbstractTestCase {
 
   public void testSimpleDuration() throws Exception {

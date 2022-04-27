@@ -20,9 +20,7 @@ import java.util.List;
 
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 
-/**
 
- */
 public interface IdentityLinkDataManager extends DataManager<IdentityLinkEntity> {
 
   List<IdentityLinkEntity> findIdentityLinksByTaskId(String taskId);

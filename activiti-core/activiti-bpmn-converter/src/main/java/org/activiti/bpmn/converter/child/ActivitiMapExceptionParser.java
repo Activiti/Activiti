@@ -24,9 +24,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.apache.commons.lang3.StringUtils;
 
-/**
 
- */
 
 public class ActivitiMapExceptionParser extends BaseChildElementParser {
 

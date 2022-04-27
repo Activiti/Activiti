@@ -22,9 +22,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-/**
 
- */
 public class ProcessInstanceEndedEventHandler extends AbstractDatabaseEventLoggerEventHandler {
 
   private static final String TYPE = "PROCESSINSTANCE_END";

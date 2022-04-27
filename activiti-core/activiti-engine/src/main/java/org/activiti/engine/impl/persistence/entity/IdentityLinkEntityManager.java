@@ -21,9 +21,7 @@ import org.activiti.engine.api.internal.Internal;
 import java.util.Collection;
 import java.util.List;
 
-/**
 
- */
 @Internal
 public interface IdentityLinkEntityManager extends EntityManager<IdentityLinkEntity> {
 

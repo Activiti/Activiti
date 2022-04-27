@@ -29,9 +29,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.invocation.ExecutionListenerInvocation;
 import org.activiti.engine.impl.delegate.invocation.JavaDelegateInvocation;
 
-/**
 
- */
 public class DelegateExpressionExecutionListener implements ExecutionListener {
 
   protected Expression expression;

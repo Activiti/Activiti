@@ -38,9 +38,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/**
 
- */
 public abstract class VariableEventHandler extends AbstractDatabaseEventLoggerEventHandler {
 
   private static final Logger logger = LoggerFactory.getLogger(VariableEventHandler.class);

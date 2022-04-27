@@ -27,9 +27,7 @@ import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 
-/**
 
- */
 public class SetProcessDefinitionCategoryCmd implements Command<Void> {
 
   protected String processDefinitionId;

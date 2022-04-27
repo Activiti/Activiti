@@ -23,9 +23,7 @@ import org.activiti.engine.impl.SuspendedJobQueryImpl;
 import org.activiti.engine.impl.persistence.entity.SuspendedJobEntity;
 import org.activiti.engine.runtime.Job;
 
-/**
 
- */
 public interface SuspendedJobDataManager extends DataManager<SuspendedJobEntity> {
 
   List<SuspendedJobEntity> findJobsByExecutionId(String executionId);
