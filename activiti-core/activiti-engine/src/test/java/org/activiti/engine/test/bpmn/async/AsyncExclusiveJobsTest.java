@@ -34,9 +34,9 @@ public class AsyncExclusiveJobsTest extends PluggableActivitiTestCase {
 		if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
 
 			// The process has two script tasks in parallel, both exclusive.
-			// They should be executed with at least 6 seconds in between (as they both sleep for 6 seconds)
+			// They should be executed with at least 1 second in between (as they both sleep for 1 second)
 			runtimeService.startProcessInstanceByKey("testExclusiveJobs");
-			waitForJobExecutorToProcessAllJobs(20000L, 500L);
+			waitForJobExecutorToProcessAllJobs(20000L, 100L);
 
 			HistoricActivityInstance scriptTaskAInstance = historyService.createHistoricActivityInstanceQuery().activityId("scriptTaskA").singleResult();
 			HistoricActivityInstance scriptTaskBInstance = historyService.createHistoricActivityInstanceQuery().activityId("scriptTaskB").singleResult();
@@ -49,7 +49,7 @@ public class AsyncExclusiveJobsTest extends PluggableActivitiTestCase {
 			} else {
 				endTimeDifference = endTimeA - endTimeB;
 			}
-			assertThat(endTimeDifference > 6000).isTrue(); // > 6000 -> jobs were executed in parallel
+			assertThat(endTimeDifference > 1000).isTrue(); // > 1000 -> jobs were executed in parallel
 		}
 
 	}
