@@ -37,6 +37,7 @@ class ToVariableCreatedConverterTest {
         ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_CREATED);
         internalEvent.setVariableName("variableName");
         internalEvent.setProcessInstanceId("processInstanceId");
+        internalEvent.setProcessDefinitionId("processDefinitionId");
         internalEvent.setTaskId("taskId");
         VariableType variableType = new StringType(100);
         internalEvent.setVariableType(variableType);
@@ -49,6 +50,7 @@ class ToVariableCreatedConverterTest {
         VariableCreatedEvent actualEvent = result.get();
         assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_CREATED);
         assertThat(actualEvent.getProcessInstanceId()).isEqualTo("processInstanceId");
+        assertThat(actualEvent.getProcessDefinitionId()).isEqualTo("processDefinitionId");
         VariableInstance actualEntity = actualEvent.getEntity();
         assertThat(actualEntity.getName()).isEqualTo("variableName");
         assertThat(actualEntity.getProcessInstanceId()).isEqualTo("processInstanceId");
