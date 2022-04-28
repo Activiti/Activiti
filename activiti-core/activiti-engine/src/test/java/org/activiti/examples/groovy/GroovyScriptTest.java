@@ -61,7 +61,7 @@ public class GroovyScriptTest extends PluggableActivitiTestCase {
         assertThat(jobs).hasSize(1);
 
         // After setting the clock to time '1 hour and 5 seconds', the second timer should fire
-        waitForJobExecutorToProcessAllJobs(5000L, 100L);assertThat(jobQuery.count()).isEqualTo(0L);
+        waitForJobExecutorToProcessAllJobs(5000L);assertThat(jobQuery.count()).isEqualTo(0L);
 
         assertProcessEnded(processInstance.getId());
     }

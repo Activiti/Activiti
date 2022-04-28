@@ -157,7 +157,7 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
   @Deployment
   public void testAsyncBehavior() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("async");
-    waitForJobExecutorToProcessAllJobs(5000L, 250L);
+    waitForJobExecutorToProcessAllJobs(5000L);
     assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
   }
 

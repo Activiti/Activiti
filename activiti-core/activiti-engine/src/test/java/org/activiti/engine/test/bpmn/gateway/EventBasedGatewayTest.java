@@ -72,8 +72,8 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
         processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + 10000));
 
         // wait for timer to fire
-        waitForJobExecutorToProcessAllJobs(10000,
-                                           100);
+        waitForJobExecutorToProcessAllJobs(10000
+        );
 
         assertThat(createEventSubscriptionQuery().count()).isEqualTo(0);
         assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);

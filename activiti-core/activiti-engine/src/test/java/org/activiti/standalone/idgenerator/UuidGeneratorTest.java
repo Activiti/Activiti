@@ -26,6 +26,8 @@ import java.util.concurrent.TimeUnit;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.awaitility.Awaitility;
+import org.awaitility.core.ConditionTimeoutException;
 
 /**
 
@@ -58,12 +60,12 @@ public class UuidGeneratorTest extends ResourceActivitiTestCase {
         tasksFound = taskService.createTaskQuery().count() > 0;
 
         if (!tasksFound) {
-          try {
-            Thread.sleep(1500L); // just to be sure
-          } catch (InterruptedException e) {
-            e.printStackTrace();
-          }
-          tasksFound = taskService.createTaskQuery().count() > 0;
+            try {
+                Awaitility.await().atMost(500L, TimeUnit.MILLISECONDS).until(() -> taskService.createTaskQuery().count() > 0);
+                tasksFound = true;
+            } catch (ConditionTimeoutException cte) {
+                // expected exception
+            }
         }
       }
     });

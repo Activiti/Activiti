@@ -448,7 +448,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
 
     // Activation of the process instance should now allow for job execution
     runtimeService.activateProcessInstanceById(processInstance.getId());
-    waitForJobExecutorToProcessAllJobs(10000L, 100L);
+    waitForJobExecutorToProcessAllJobs(10000L);
     assertThat(managementService.createJobQuery().count()).isEqualTo(0);
     assertThat(managementService.createTimerJobQuery().count()).isEqualTo(0);
     assertThat(managementService.createSuspendedJobQuery().count()).isEqualTo(0);

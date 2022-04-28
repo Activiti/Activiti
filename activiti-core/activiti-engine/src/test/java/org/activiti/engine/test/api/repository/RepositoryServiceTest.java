@@ -148,7 +148,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     // definitions will be active
     Date inFourDays = new Date(startTime.getTime() + (4 * 24 * 60 * 60 * 1000));
     processEngineConfiguration.getClock().setCurrentTime(inFourDays);
-    waitForJobExecutorToProcessAllJobs(5000L, 50L);
+    waitForJobExecutorToProcessAllJobs(5000L);
 
     assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(1);
     assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(2);

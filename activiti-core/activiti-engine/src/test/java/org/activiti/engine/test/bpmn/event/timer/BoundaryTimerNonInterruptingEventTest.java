@@ -76,7 +76,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
 
     // After setting the clock to time '2 hour and 5 seconds', the second timer should fire
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((2 * 60 * 60 * 1000) + 5000)));
-    waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    waitForJobExecutorToProcessAllJobs(5000L);
 
     // no more timers to fire
     assertThat(jobQuery.count()).isEqualTo(0L);
@@ -117,7 +117,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
 
     // After setting the clock to time '1 hour and 5 seconds', the first timer should fire
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
-    waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    waitForJobExecutorToProcessAllJobs(5000L);
 
     // timer has fired
     assertThat(jobQuery.count()).isEqualTo(0L);
@@ -195,13 +195,13 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     assertThat(jobs).hasSize(1);
 
     // boundary events
-    waitForJobExecutorToProcessAllJobs(2000, 100);
+    waitForJobExecutorToProcessAllJobs(2000);
 
     // a new job must be prepared because there are indefinite number of repeats 1 hour interval");
     assertThat(managementService.createTimerJobQuery().processInstanceId(processInstanceId).count()).isEqualTo(1);
 
     moveByMinutes(60);
-    waitForJobExecutorToProcessAllJobs(2000, 100);
+    waitForJobExecutorToProcessAllJobs(2000);
 
     // a new job must be prepared because there are indefinite number of repeats 1 hour interval");
     assertThat(managementService.createTimerJobQuery().processInstanceId(processInstanceId).count()).isEqualTo(1);
@@ -211,7 +211,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
 
     moveByMinutes(60);
     try {
-      waitForJobExecutorToProcessAllJobs(2000, 100);
+      waitForJobExecutorToProcessAllJobs(2000);
     } catch (Exception ex) {
       fail("No more jobs since the user completed the task");
     }

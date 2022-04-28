@@ -39,8 +39,6 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertThat(task.getName()).isEqualTo("First line support");
 
-      Thread.sleep(2000);
-
     // Manually execute the job
     Job timer = managementService.createTimerJobQuery().singleResult();
     managementService.moveTimerToExecutableJob(timer.getId());

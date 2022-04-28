@@ -1199,7 +1199,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     // Signal only one execution. Then the timer will fire
     runtimeService.trigger(executions.get(1).getId());
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + 60000L));
-    waitForJobExecutorToProcessAllJobs(10000L, 1000L);
+    waitForJobExecutorToProcessAllJobs(10000L);
 
     // The process should now be in the task after the timer
     Task task = taskService.createTaskQuery().singleResult();

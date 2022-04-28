@@ -73,7 +73,7 @@ public class StartTimerEventRepeatWithoutN extends PluggableActivitiTestCase {
 		counter = 0;
 
 		try {
-			waitForJobExecutorToProcessAllJobs(5500, 500);
+			waitForJobExecutorToProcessAllJobs(5500);
 			fail("job is finished sooner than expected");
 		} catch (ActivitiException e) {
 			assertThat(e.getMessage().startsWith("time limit")).isTrue();

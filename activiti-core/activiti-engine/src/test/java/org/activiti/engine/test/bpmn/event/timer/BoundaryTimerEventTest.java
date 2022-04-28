@@ -76,7 +76,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     // After setting the clock to time '1 hour and 5 seconds', the second
     // timer should fire
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
-    waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    waitForJobExecutorToProcessAllJobs(5000L);
     assertThat(jobQuery.count()).isEqualTo(0L);
 
     // which means that the third task is reached
@@ -123,7 +123,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     // After setting the clock to time '1 hour and 5 seconds', the second
     // timer should fire
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
-    waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    waitForJobExecutorToProcessAllJobs(5000L);
     assertThat(jobQuery.count()).isEqualTo(0L);
 
     // start execution listener is not executed

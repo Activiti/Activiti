@@ -87,7 +87,7 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
     Job timerJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertThat(timerJob).isNotNull();
 
-    waitForJobExecutorToProcessAllJobs(2000, 500);
+    waitForJobExecutorToProcessAllJobs(2000);
 
     // Expected that job isn't executed because the timer is in t0");
     Job timerJobAfter = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
@@ -97,7 +97,7 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
     nextTimeCal.add(Calendar.MINUTE, 5);
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
-    waitForJobExecutorToProcessAllJobs(2000, 200);
+    waitForJobExecutorToProcessAllJobs(2000);
     // expect to execute because the time is reached.
 
     List<Job> jobs = managementService.createTimerJobQuery().list();
@@ -114,7 +114,7 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
     nextTimeCal.add(Calendar.MINUTE, 5);
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
-    waitForJobExecutorToProcessAllJobs(2000, 500);
+    waitForJobExecutorToProcessAllJobs(2000);
     // expect to execute because the end time is reached.
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {

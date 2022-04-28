@@ -21,10 +21,8 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.activiti.engine.history.DeleteReason;
@@ -239,7 +237,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
 
     // When the timer on the subprocess is fired, the complete subprocess is destroyed
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (6 * 60 * 1000))); // + 6 minutes, timer fires on 5 minutes
-    waitForJobExecutorToProcessAllJobs(10000, 500L);
+    waitForJobExecutorToProcessAllJobs(10000);
 
     Task escalatedTask = taskQuery.singleResult();
     assertThat(escalatedTask.getName()).isEqualTo("Escalated Task");

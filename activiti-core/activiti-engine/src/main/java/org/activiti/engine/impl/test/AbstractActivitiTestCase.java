@@ -287,7 +287,7 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
     }
   }
 
-  public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait, long intervalMillis) {
+  public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait) {
     JobTestHelper.waitForJobExecutorToProcessAllJobs(processEngineConfiguration, managementService, maxMillisToWait);
   }
 

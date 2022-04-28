@@ -47,7 +47,7 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
 
     // After setting the clock to time '50minutes and 5 seconds', the second timer should fire
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
-    waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    waitForJobExecutorToProcessAllJobs(5000L);
 
     assertThat(jobQuery.count()).isEqualTo(0);
     assertProcessEnded(pi.getProcessInstanceId());
@@ -85,7 +85,7 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
     assertThat(jobQuery.count()).isEqualTo(0);
 
     processEngineConfiguration.getClock().setCurrentTime(new Date(startDate.getTime() + 11000L));
-    waitForJobExecutorToProcessAllJobs(15000L, 25L);
+    waitForJobExecutorToProcessAllJobs(15000L);
 
     jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
     assertThat(jobQuery.count()).isEqualTo(0);

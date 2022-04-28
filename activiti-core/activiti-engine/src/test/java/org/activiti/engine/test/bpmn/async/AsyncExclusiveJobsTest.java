@@ -36,7 +36,7 @@ public class AsyncExclusiveJobsTest extends PluggableActivitiTestCase {
 			// The process has two script tasks in parallel, both exclusive.
 			// They should be executed with at least 1 second in between (as they both sleep for 1 second)
 			runtimeService.startProcessInstanceByKey("testExclusiveJobs");
-			waitForJobExecutorToProcessAllJobs(20000L, 100L);
+			waitForJobExecutorToProcessAllJobs(20000L);
 
 			HistoricActivityInstance scriptTaskAInstance = historyService.createHistoricActivityInstanceQuery().activityId("scriptTaskA").singleResult();
 			HistoricActivityInstance scriptTaskBInstance = historyService.createHistoricActivityInstanceQuery().activityId("scriptTaskB").singleResult();
