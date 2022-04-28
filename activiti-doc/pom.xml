@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.activiti</groupId>
+    <artifactId>activiti-parent</artifactId>
+    <version>7.1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>activiti-doc</artifactId>
+  <!-- do not set packaging to pom, because otherwise we will receive "Not executing Javadoc as the project is not a Java classpath-capable package" -->
+
+  <name>Activiti :: Documentation</name>
+  <description>Activiti Documentation</description>
+
+  <properties>
+    <maven.deploy.skip>true</maven.deploy.skip>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-api-model-shared</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-api-runtime-shared</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-api-process-model</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-api-process-runtime</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-api-task-model</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-api-task-runtime</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+<!--
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-api-impl</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+-->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-bpmn-model</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-bpmn-layout</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-bpmn-converter</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-process-validation</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+<!--
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-image-generator</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+-->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-json-converter</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-engine</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-spring</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-spring-resource-loader</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-spring-boot-starter</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-spring-app-process</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-spring-process-extensions</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>${project.groupId}</groupId>-->
+<!--      <artifactId>activiti-spring-conformance-tests</artifactId>-->
+<!--      <version>${project.version}</version>-->
+<!--    </dependency>-->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-spring-identity</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-spring-security</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-spring-security-policies</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-spring-connector</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-connector-model</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-spring-application</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-spring-resource-finder</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+<!--
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-core-test</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+-->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-project-model</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-spring-project</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-common-util</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>activiti-expression-language</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+
+    <plugins>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.8</version>
+        <executions>
+          <execution>
+            <id>report-aggregate</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>report-aggregate</goal>
+            </goals>
+            <configuration>
+              <title>Activiti</title>
+              <footer>Code Coverage Report for Activiti ${project.version}</footer>
+              <includes>
+                <!-- Analyze class files only to exclude shaded agent JAR from report -->
+                <include>**/*.class</include>
+              </includes>
+              <excludes>
+                <exclude>**/HelpMojo.class</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>prepare-reports</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <echo message="JUnit report"/>
+                <mkdir dir="${project.build.directory}/junit"/>
+                <junitreport todir="${project.build.directory}/junit">
+                  <fileset dir="activiti-api/**/target" includes="surefire-reports/**/*.xml"/>
+                  <fileset dir="activiti-core/**/target" includes="surefire-reports/**/*.xml"/>
+                  <fileset dir="activiti-core-common/**/target" includes="surefire-reports/**/*.xml"/>
+                  <fileset dir="activiti-dependency/**/target" includes="surefire-reports/**/*.xml"/>
+                  <fileset dir="activiti-dependency-check/**/target" includes="surefire-reports/**/*.xml"/>
+                  <fileset dir="activiti-examples/**/target" includes="surefire-reports/**/*.xml"/>
+                </junitreport>
+<!--                <move file="${project.build.directory}/junit/junit-noframes.html" tofile="${project.build.directory}/junit/index.html"/>-->
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-junit</artifactId>
+            <version>1.8.2</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+<!--
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <reportOutputDirectory>${project.build.directory}/apidocs</reportOutputDirectory>
+              <includeDependencySources>true</includeDependencySources>
+              <excludePackageNames>*.internal,org.jacoco.ant,org.jacoco.maven,org.jacoco.examples</excludePackageNames>
+              <dependencySourceIncludes>
+                <dependencySourceInclude>org.jacoco:*</dependencySourceInclude>
+              </dependencySourceIncludes>
+              <dependencySourceExcludes>
+                <dependencySourceExclude>org.jacoco:*.test</dependencySourceExclude>
+              </dependencySourceExcludes>
+              <doctitle>JaCoCo ${qualified.bundle.version} API</doctitle>
+              <windowtitle>JaCoCo ${qualified.bundle.version} API</windowtitle>
+              <use>true</use>
+              <version>false</version>
+              <groups>
+                &lt;!&ndash; Note: using org.jacoco.core.* for packages would omit the org.jacoco.core package but using org.jacoco* will include it. &ndash;&gt;
+                <group>
+                  <title>Bundle org.jacoco.core</title>
+                  <packages>org.jacoco.core*</packages>
+                </group>
+                <group>
+                  <title>Bundle org.jacoco.report</title>
+                  <packages>org.jacoco.report*</packages>
+                </group>
+                <group>
+                  <title>Bundle org.jacoco.agent</title>
+                  <packages>org.jacoco.agent*</packages>
+                </group>
+                <group>
+                  <title>JaCoCo Runtime</title>
+                  <packages>org.jacoco.agent.rt:com.vladium.emma.rt</packages>
+                </group>
+              </groups>
+              <overview>javadoc/overview.html</overview>
+              <stylesheetfile>javadoc/stylesheet.css</stylesheetfile>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+-->
+    </plugins>
+  </build>
+</project>
