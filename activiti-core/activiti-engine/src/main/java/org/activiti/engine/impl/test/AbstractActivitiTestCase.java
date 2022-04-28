@@ -288,19 +288,19 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
   }
 
   public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait, long intervalMillis) {
-    JobTestHelper.waitForJobExecutorToProcessAllJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis);
+    JobTestHelper.waitForJobExecutorToProcessAllJobs(processEngineConfiguration, managementService, maxMillisToWait);
   }
 
-  public void waitForJobExecutorOnCondition(long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
-    JobTestHelper.waitForJobExecutorOnCondition(processEngineConfiguration, maxMillisToWait, intervalMillis, condition);
+  public void waitForJobExecutorOnCondition(long maxMillisToWait, Callable<Boolean> condition) {
+    JobTestHelper.waitForJobExecutorOnCondition(processEngineConfiguration, maxMillisToWait, condition);
   }
 
   public void executeJobExecutorForTime(long maxMillisToWait, long intervalMillis) {
     JobTestHelper.executeJobExecutorForTime(processEngineConfiguration, maxMillisToWait, intervalMillis);
   }
 
-  public void waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(long maxMillisToWait, long intervalMillis) {
-    JobTestHelper.waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis);
+  public void waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(long maxMillisToWait) {
+    JobTestHelper.waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(processEngineConfiguration, managementService, maxMillisToWait);
   }
 
   /**

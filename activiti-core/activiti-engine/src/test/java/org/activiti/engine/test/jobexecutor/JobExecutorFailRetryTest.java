@@ -36,14 +36,14 @@ public class JobExecutorFailRetryTest extends PluggableActivitiTestCase {
     waitForJobExecutorToProcessAllJobs(1000, 200);
     assertThat(RetryFailingDelegate.times).hasSize(1); // check number of calls of delegate
 
-    // process throws exception two times, with 6 seconds in between
+    // process throws exception two times, with 1 second in between
     RetryFailingDelegate.shallThrow = true; // throw exception in Service delegate
     RetryFailingDelegate.resetTimeList();
     runtimeService.startProcessInstanceByKey("failedJobRetry");
 
-    executeJobExecutorForTime(14000, 500);
+    executeJobExecutorForTime(3000, 100);
     assertThat(RetryFailingDelegate.times).hasSize(2); // check number of calls of delegate
     long timeDiff = RetryFailingDelegate.times.get(1) - RetryFailingDelegate.times.get(0);
-    assertThat(timeDiff > 6000 && timeDiff < 12000).isTrue(); // check time difference between calls. Just roughly
+    assertThat(timeDiff > 1000 && timeDiff < 3000).isTrue(); // check time difference between calls. Just roughly
   }
 }

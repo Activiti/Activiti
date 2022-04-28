@@ -126,7 +126,7 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
     // (last execution)
     moveByMinutes(60 * 24);
     try {
-      waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000, 200);
+      waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000);
     } catch (Exception e) {
       fail("Because the maximum number of repeats is reached no other jobs are created");
     }

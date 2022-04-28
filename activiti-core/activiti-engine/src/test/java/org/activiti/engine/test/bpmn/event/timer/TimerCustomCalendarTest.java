@@ -74,7 +74,7 @@ public class TimerCustomCalendarTest extends ResourceActivitiTestCase {
 
     managementService.moveTimerToExecutableJob(jobs.get(0).getId());
     managementService.executeJob(jobs.get(0).getId());
-    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(10000, 200);
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(10000);
 
     Execution execution = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).activityId("receive").singleResult();
     runtimeService.trigger(execution.getId());
@@ -98,7 +98,7 @@ public class TimerCustomCalendarTest extends ResourceActivitiTestCase {
 
     managementService.moveTimerToExecutableJob(jobs.get(0).getId());
     managementService.executeJob(jobs.get(0).getId());
-    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(10000, 200);
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(10000);
   }
 
   public static class CustomBusinessCalendar implements BusinessCalendar {
