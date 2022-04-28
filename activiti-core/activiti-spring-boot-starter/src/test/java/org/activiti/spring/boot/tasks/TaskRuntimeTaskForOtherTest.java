@@ -39,9 +39,6 @@ public class TaskRuntimeTaskForOtherTest {
     private TaskRuntime taskRuntime;
 
     @Autowired
-    private TaskAdminRuntime taskAdminRuntime;
-
-    @Autowired
     private SecurityUtil securityUtil;
 
     @Autowired

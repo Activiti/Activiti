@@ -15,10 +15,12 @@
  */
 package org.activiti.spring.boot.tasks;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.impl.TaskImpl;
-import org.activiti.api.task.runtime.TaskAdminRuntime;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.activiti.spring.boot.security.util.SecurityUtil;
@@ -28,18 +30,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class TaskRuntimeCandidatesTest {
 
     @Autowired
     private TaskRuntime taskRuntime;
-
-    @Autowired
-    private TaskAdminRuntime taskAdminRuntime;
 
     @Autowired
     private SecurityUtil securityUtil;
@@ -61,10 +56,10 @@ public class TaskRuntimeCandidatesTest {
         securityUtil.logInAs("garth");
 
         Task createTask = taskRuntime.create(TaskPayloadBuilder.create()
-                .withName("task for dean")
-                                                     .withCandidateUsers("garth")
-                .withAssignee("dean") //but he should still be assigned the task
-                .build());
+            .withName("task for dean")
+            .withCandidateUsers("garth")
+            .withAssignee("dean") //but he should still be assigned the task
+            .build());
 
         // Check the task should be visible for dean
         securityUtil.logInAs("dean");
@@ -121,7 +116,7 @@ public class TaskRuntimeCandidatesTest {
 
     @Test
     public void should_addAndRemoveCandidateGroup() {
-        clearTaskCandidateEvents();
+        RuntimeTestConfiguration.clearTaskCandidateEvents();
         securityUtil.logInAs("garth");
 
         Task createTask = taskRuntime.create(TaskPayloadBuilder.create()
@@ -179,13 +174,6 @@ public class TaskRuntimeCandidatesTest {
 
         groupCandidates = taskRuntime.groupCandidates(createTask.getId());
         assertThat(groupCandidates).hasSize(1);
-    }
-
-    private void clearTaskCandidateEvents() {
-        RuntimeTestConfiguration.taskCandidateUserRemovedEvents.clear();
-        RuntimeTestConfiguration.taskCandidateUserAddedEvents.clear();
-        RuntimeTestConfiguration.taskCandidateGroupAddedEvents.clear();
-        RuntimeTestConfiguration.taskCandidateGroupRemovedEvents.clear();
     }
 
 }

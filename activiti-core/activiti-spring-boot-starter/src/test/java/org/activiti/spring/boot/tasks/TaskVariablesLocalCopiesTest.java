@@ -54,7 +54,6 @@ public class TaskVariablesLocalCopiesTest {
     @Autowired
     private TaskAdminRuntime taskAdminRuntime;
 
-
     @Autowired
     private SecurityUtil securityUtil;
 

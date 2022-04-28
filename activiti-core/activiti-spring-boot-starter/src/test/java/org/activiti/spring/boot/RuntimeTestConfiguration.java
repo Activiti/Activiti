@@ -370,4 +370,11 @@ public class RuntimeTestConfiguration {
             return integrationContext;
         };
     }
+
+    public static void clearTaskCandidateEvents() {
+        RuntimeTestConfiguration.taskCandidateUserRemovedEvents.clear();
+        RuntimeTestConfiguration.taskCandidateUserAddedEvents.clear();
+        RuntimeTestConfiguration.taskCandidateGroupAddedEvents.clear();
+        RuntimeTestConfiguration.taskCandidateGroupRemovedEvents.clear();
+    }
 }

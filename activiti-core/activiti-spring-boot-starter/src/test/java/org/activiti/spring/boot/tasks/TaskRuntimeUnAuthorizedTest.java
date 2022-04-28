@@ -41,9 +41,6 @@ public class TaskRuntimeUnAuthorizedTest {
     private TaskRuntime taskRuntime;
 
     @Autowired
-    private TaskAdminRuntime taskAdminRuntime;
-
-    @Autowired
     private SecurityUtil securityUtil;
 
     @Autowired

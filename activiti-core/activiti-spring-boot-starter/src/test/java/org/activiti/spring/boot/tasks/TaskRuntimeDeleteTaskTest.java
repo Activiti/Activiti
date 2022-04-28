@@ -40,8 +40,7 @@ public class TaskRuntimeDeleteTaskTest {
 
     @Autowired
     private TaskRuntime taskRuntime;
-    @Autowired
-    private TaskAdminRuntime taskAdminRuntime;
+
     @Autowired
     private SecurityUtil securityUtil;
 
