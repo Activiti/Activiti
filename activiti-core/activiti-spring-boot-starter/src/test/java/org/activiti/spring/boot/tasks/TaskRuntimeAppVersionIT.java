@@ -15,6 +15,7 @@
  */
 package org.activiti.spring.boot.tasks;
 
+import java.util.Optional;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
@@ -50,15 +51,15 @@ public class TaskRuntimeAppVersionIT {
     public void should_standaloneTaskAlwaysHaveAppVersion() {
         securityUtil.logInAs("user");
 
-        taskRuntime.create(TaskPayloadBuilder.create()
+        Task createdTask = taskRuntime.create(TaskPayloadBuilder.create()
                                    .withName("new task")
                                    .build());
 
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
-
-        assertThat(tasks.getContent()).hasSize(1);
-
-        Task result = tasks.getContent().get(0);
+        Task result = taskRuntime.tasks(Pageable.of(0, 50)).getContent()
+            .stream()
+            .filter(task -> task.getId().equals(createdTask.getId()))
+            .findFirst()
+            .get();
 
         assertThat(result.getName()).isEqualTo("new task");
         assertThat(result.getAppVersion()).isEqualTo("1");
