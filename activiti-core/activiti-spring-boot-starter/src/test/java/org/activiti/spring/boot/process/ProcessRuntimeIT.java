@@ -775,30 +775,6 @@ public class ProcessRuntimeIT {
     }
 
     @Test
-    public void should_processInstanceAlwaysHaveAppVersion(){
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
-                                                                         .withProcessDefinitionKey(SUPER_PROCESS)
-                                                                         .build());
-        assertThat(processInstance.getAppVersion()).isEqualTo("1");
-    }
-
-    @Test
-    public void should_processDefinitionAlwaysHaveAppVersion(){
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
-            PAGEABLE);
-        assertThat(processDefinitionPage.getContent()).isNotEmpty();
-
-        List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent().stream()
-                .filter(c -> c.getKey().equals(SUPER_PROCESS))
-                .collect(Collectors.toList());
-        assertThat(processDefinitions).hasSize(1);
-
-        ProcessDefinition result = processDefinitions.get(0);
-
-        assertThat(result.getAppVersion()).isEqualTo("1");
-    }
-
-    @Test
     public void should_selectLatestDeployment(){
         Deployment deployment = processRuntime.selectLatestDeployment();
 
