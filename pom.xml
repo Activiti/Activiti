@@ -188,10 +188,10 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <project.scm.organization>Activiti</project.scm.organization>
     <project.scm.repository>Activiti</project.scm.repository>
-    <project.year>2020</project.year>
+    <project.year>2022</project.year>
 
     <java.release>11</java.release>
-    <java.version>1.${java.release}</java.version>
+    <java.version>${java.release}</java.version>
     <maven.compiler.release>${java.release}</maven.compiler.release>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
