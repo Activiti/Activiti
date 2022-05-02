@@ -98,6 +98,8 @@ jobs:
       - name: Upload coverage to codacy
         run: bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r \
           activiti-doc/target/site/jacoco-aggregate/jacoco.xml
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
       - name: Configure git user
         if: ${{ github.event_name == 'push' }}
