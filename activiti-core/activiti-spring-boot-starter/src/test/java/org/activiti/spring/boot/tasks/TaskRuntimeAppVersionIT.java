@@ -15,8 +15,6 @@
  */
 package org.activiti.spring.boot.tasks;
 
-import java.util.Optional;
-import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
