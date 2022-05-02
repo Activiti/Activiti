@@ -252,11 +252,9 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
           Operation operation = new Operation(operationObject.getId(), operationObject.getName(), bpmnInterface, inMessage);
           operation.setImplementation(wsOperationMap.get(operationObject.getImplementationRef()));
 
-          if (StringUtils.isNotEmpty(operationObject.getOutMessageRef())) {
-            if (messageDefinitionMap.containsKey(operationObject.getOutMessageRef())) {
-              MessageDefinition outMessage = messageDefinitionMap.get(operationObject.getOutMessageRef());
-              operation.setOutMessage(outMessage);
-            }
+          if (StringUtils.isNotEmpty(operationObject.getOutMessageRef()) && messageDefinitionMap.containsKey(operationObject.getOutMessageRef())) {
+            MessageDefinition outMessage = messageDefinitionMap.get(operationObject.getOutMessageRef());
+            operation.setOutMessage(outMessage);
           }
 
           operationMap.put(operation.getId(), operation);
