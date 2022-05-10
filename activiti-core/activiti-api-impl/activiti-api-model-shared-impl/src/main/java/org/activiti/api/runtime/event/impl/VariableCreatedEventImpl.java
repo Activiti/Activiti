@@ -24,9 +24,10 @@ public class VariableCreatedEventImpl extends VariableEventImpl implements Varia
     public VariableCreatedEventImpl() {
     }
 
-    public VariableCreatedEventImpl(VariableInstance entity) {
+    public VariableCreatedEventImpl(VariableInstance entity, String processDefinitionId) {
         super(entity);
         setProcessInstanceId(entity.getProcessInstanceId());
+        setProcessDefinitionId(processDefinitionId);
     }
 
     @Override
