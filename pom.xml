@@ -223,6 +223,7 @@
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
     <spring-boot.version>2.7.0</spring-boot.version>
+    <h2.version>1.4.200</h2.version>
     <versions-maven-plugin.version>2.9.0</versions-maven-plugin.version>
 
     <!-- configuration properties for tests -->
@@ -239,6 +240,11 @@
         <version>${project.version}</version>
         <type>xml</type>
         <classifier>suppression</classifier>
+      </dependency>
+      <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <version>${h2.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
