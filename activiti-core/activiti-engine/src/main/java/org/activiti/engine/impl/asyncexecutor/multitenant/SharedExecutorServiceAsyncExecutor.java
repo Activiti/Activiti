@@ -104,7 +104,7 @@ public class SharedExecutorServiceAsyncExecutor extends DefaultAsyncJobExecutor 
 
   private void startThreadsForTenant(String tenantId) {
       Boolean jobStarted = startedJobs.get(tenantId);
-      if( jobStarted==null || jobStarted==false )
+      if( Boolean.FALSE.equals(jobStarted) )
       {
           startTimerJobAcquisitionForTenant(tenantId);
           startAsyncJobAcquisitionForTenant(tenantId);
