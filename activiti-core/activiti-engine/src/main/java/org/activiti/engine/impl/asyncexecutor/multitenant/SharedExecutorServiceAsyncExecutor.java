@@ -53,6 +53,8 @@ public class SharedExecutorServiceAsyncExecutor extends DefaultAsyncJobExecutor 
     = new HashMap<String, TenantAwareAcquireAsyncJobsDueRunnable>();
 
   protected Map<String, Thread> resetExpiredJobsThreads = new HashMap<String, Thread>();
+
+  protected Map<String, Boolean> startedJobs = new HashMap<>();
   protected Map<String, TenantAwareResetExpiredJobsRunnable> resetExpiredJobsRunnables
     = new HashMap<String, TenantAwareResetExpiredJobsRunnable>();
 
@@ -95,10 +97,20 @@ public class SharedExecutorServiceAsyncExecutor extends DefaultAsyncJobExecutor 
     resetExpiredJobsThreads.put(tenantId, new Thread(resetExpiredJobsRunnable));
 
     if (startExecutor) {
-      startTimerJobAcquisitionForTenant(tenantId);
-      startAsyncJobAcquisitionForTenant(tenantId);
-      startResetExpiredJobsForTenant(tenantId);
+        startThreadsForTenant(tenantId);
     }
+    this.start();
+  }
+
+  private void startThreadsForTenant(String tenantId) {
+      Boolean jobStarted = startedJobs.get(tenantId);
+      if( jobStarted==null || jobStarted==false )
+      {
+          startTimerJobAcquisitionForTenant(tenantId);
+          startAsyncJobAcquisitionForTenant(tenantId);
+          startResetExpiredJobsForTenant(tenantId);
+          startedJobs.put(tenantId, true);
+      }
   }
 
   @Override
@@ -109,10 +121,9 @@ public class SharedExecutorServiceAsyncExecutor extends DefaultAsyncJobExecutor 
   @Override
   public void start() {
     for (String tenantId : timerJobAcquisitionRunnables.keySet()) {
-      startTimerJobAcquisitionForTenant(tenantId);
-      startAsyncJobAcquisitionForTenant(tenantId);
-      startResetExpiredJobsForTenant(tenantId);
+        startThreadsForTenant(tenantId);
     }
+    super.start();
   }
 
   protected  void startTimerJobAcquisitionForTenant(String tenantId) {
