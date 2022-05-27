@@ -53,7 +53,6 @@ public class SharedExecutorServiceAsyncExecutor extends DefaultAsyncJobExecutor 
     = new HashMap<String, TenantAwareAcquireAsyncJobsDueRunnable>();
 
   protected Map<String, Thread> resetExpiredJobsThreads = new HashMap<String, Thread>();
-
   protected Map<String, TenantAwareResetExpiredJobsRunnable> resetExpiredJobsRunnables
     = new HashMap<String, TenantAwareResetExpiredJobsRunnable>();
 
