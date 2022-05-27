@@ -99,18 +99,12 @@ public class SharedExecutorServiceAsyncExecutor extends DefaultAsyncJobExecutor 
     if (startExecutor) {
         startThreadsForTenant(tenantId);
     }
-    this.start();
   }
 
   private void startThreadsForTenant(String tenantId) {
-      Boolean jobStarted = startedJobs.get(tenantId);
-      if( Boolean.FALSE.equals(jobStarted) )
-      {
-          startTimerJobAcquisitionForTenant(tenantId);
-          startAsyncJobAcquisitionForTenant(tenantId);
-          startResetExpiredJobsForTenant(tenantId);
-          startedJobs.put(tenantId, true);
-      }
+      startTimerJobAcquisitionForTenant(tenantId);
+      startAsyncJobAcquisitionForTenant(tenantId);
+      startResetExpiredJobsForTenant(tenantId);
   }
 
   @Override
