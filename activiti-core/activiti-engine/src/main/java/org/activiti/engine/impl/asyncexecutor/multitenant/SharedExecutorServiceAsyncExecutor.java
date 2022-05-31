@@ -112,10 +112,17 @@ public class SharedExecutorServiceAsyncExecutor extends DefaultAsyncJobExecutor 
 
   @Override
   public void start() {
+    if (isActive) {
+      return;
+    }
+
+    isActive = true;
+
+    initAsyncJobExecutionThreadPool();
+
     for (String tenantId : timerJobAcquisitionRunnables.keySet()) {
         startThreadsForTenant(tenantId);
     }
-    super.start();
   }
 
   protected  void startTimerJobAcquisitionForTenant(String tenantId) {
