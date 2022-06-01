@@ -174,17 +174,17 @@ public class MultiTenantProcessEngineTest {
 
 
   private void deployProcesses(String userId) {
-      tenantInfoHolder.setCurrentUserId(userId);
+    tenantInfoHolder.setCurrentUserId(userId);
 
-      Deployment deployment = processEngine.getRepositoryService().createDeployment()
-          .addClasspathResource("org/activiti/engine/test/cfg/multitenant/oneTaskProcess.bpmn20.xml")
-          .addClasspathResource("org/activiti/engine/test/cfg/multitenant/jobTest.bpmn20.xml")
-          .addClasspathResource("org/activiti/engine/test/cfg/multitenant/TimerJob_test.bpmn20.xml")
-          .deploy();
-      System.out.println("Process deployed! Deployment id is " + deployment.getId());
+    Deployment deployment = processEngine.getRepositoryService().createDeployment()
+      .addClasspathResource("org/activiti/engine/test/cfg/multitenant/oneTaskProcess.bpmn20.xml")
+      .addClasspathResource("org/activiti/engine/test/cfg/multitenant/jobTest.bpmn20.xml")
+      .addClasspathResource("org/activiti/engine/test/cfg/multitenant/TimerJob_test.bpmn20.xml")
+      .deploy();
+    System.out.println("Process deployed! Deployment id is " + deployment.getId());
 
-      tenantInfoHolder.clearCurrentUserId();
-      tenantInfoHolder.clearCurrentTenantId();
+    tenantInfoHolder.clearCurrentUserId();
+    tenantInfoHolder.clearCurrentTenantId();
   }
   private void startProcessInstance( String userId, String processDefinitionKey ) {
     tenantInfoHolder.setCurrentUserId(userId);
