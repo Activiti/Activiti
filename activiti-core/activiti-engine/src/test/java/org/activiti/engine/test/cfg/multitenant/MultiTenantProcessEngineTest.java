@@ -186,46 +186,19 @@ public class MultiTenantProcessEngineTest {
     tenantInfoHolder.clearCurrentUserId();
     tenantInfoHolder.clearCurrentTenantId();
   }
-  private void startProcessInstance( String userId, String processDefinitionKey ) {
+  private void startProcessInstance( String userId, String processDefinitionKey, Map<String,Object> vars ) {
     tenantInfoHolder.setCurrentUserId(userId);
 
-    Map<String, Object> vars = new HashMap<>();
-    ProcessInstance processInstance = null;
-    List<Task> tasks;
-
-    switch( processDefinitionKey ) {
-      case "oneTaskProcess":
-        vars.put("data", "Hello from " + userId);
-
-        processInstance = processEngine.getRuntimeService().startProcessInstanceByKey("oneTaskProcess", vars);
-        break;
-      case "jobTest":
-        processInstance = processEngine.getRuntimeService().startProcessInstanceByKey("jobTest");
-        break;
-      case "TimerJob_test":
-        vars.put("name", "some test from " + userId);
-        vars.put("time", "PT1M");
-
-        processInstance = processEngine.getRuntimeService().startProcessInstanceByKey("TimerJob_test", vars);
-        break;
-      default:
-        fail("Invalid processDefinitionKey: "+processDefinitionKey);
-    }
-
-    if( processInstance!=null ) {
-      tasks = processEngine.getTaskService().createTaskQuery().processInstanceId(processInstance.getId()).list();
-      System.out.println("Got " + tasks.size() + " tasks");
-    }
-    System.out.println("Got " + processEngine.getHistoryService().createHistoricProcessInstanceQuery().count() + " process instances in the system");
+    processEngine.getRuntimeService().startProcessInstanceByKey(processDefinitionKey, vars);
 
     tenantInfoHolder.clearCurrentUserId();
     tenantInfoHolder.clearCurrentTenantId();
   }
 
   private void startProcessInstances(String userId) {
-    startProcessInstance( userId, "oneTaskProcess" );
-    startProcessInstance( userId, "jobTest" );
-    startProcessInstance( userId, "TimerJob_test" );
+    startProcessInstance( userId, "oneTaskProcess", Map.of("data", "Hello from " + userId) );
+    startProcessInstance( userId, "jobTest", null );
+    startProcessInstance( userId, "TimerJob_test", Map.of("name", "some test from " + userId, "time", "PT1M") );
   }
 
   private void completeTasks(String userId) {
