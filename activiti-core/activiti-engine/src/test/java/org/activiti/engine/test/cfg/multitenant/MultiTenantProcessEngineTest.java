@@ -17,28 +17,23 @@
 
 package org.activiti.engine.test.cfg.multitenant;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.asyncexecutor.multitenant.ExecutorPerTenantAsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.multitenant.SharedExecutorServiceAsyncExecutor;
 import org.activiti.engine.impl.cfg.multitenant.MultiSchemaMultiTenantProcessEngineConfiguration;
 import org.activiti.engine.repository.Deployment;
-import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.After;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import javax.sql.DataSource;
+import java.util.Date;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
 
