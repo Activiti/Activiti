@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<bpmn2:definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20220531191022249" modeler:modelId="3" modeler:modelVersion="2" modeler:modelLastUpdated="1652882080676">
+  <bpmn2:process id="TimerJob_test" name="TimerJob_test" isExecutable="true">
+    <extensionElements>
+      <modeler:executionvariables xmlns:modeler="http://activiti.com/modeler" modeler:variableName="name" modeler:variableType="string"/>
+    </extensionElements>
+    <bpmn2:startEvent id="START">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[startEvent1]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:outgoing>start_firstUserTask</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:userTask id="FIRST_USER_TASK" name="first form" activiti:assignee="$INITIATOR" activiti:formKey="1">
+      <extensionElements>
+        <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:form-reference-id><![CDATA[1]]></modeler:form-reference-id>
+        <modeler:form-reference-name><![CDATA[ss]]></modeler:form-reference-name>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:initiator-can-complete><![CDATA[false]]></modeler:initiator-can-complete>
+        <modeler:deactivate-user-task-reassignment><![CDATA[false]]></modeler:deactivate-user-task-reassignment>
+        <modeler:editor-resource-id><![CDATA[sid-DB4A8E0B-EE9A-403D-8C6E-1841FFF201A3]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:incoming>start_firstUserTask</bpmn2:incoming>
+      <bpmn2:outgoing>firstUserTask_timer</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:intermediateCatchEvent id="TIMER">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-7DFD46CC-32A6-4E44-8F54-45C8BA2619F8]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:incoming>firstUserTask_timer</bpmn2:incoming>
+      <bpmn2:outgoing>timer_secondUserTask</bpmn2:outgoing>
+      <timerEventDefinition>
+        <timeDuration>${time}</timeDuration>
+      </timerEventDefinition>
+    </bpmn2:intermediateCatchEvent>
+    <bpmn2:userTask id="SECOND_USER_TASK" name="second form" activiti:assignee="$INITIATOR" activiti:formKey="2">
+      <extensionElements>
+        <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:form-reference-id><![CDATA[2]]></modeler:form-reference-id>
+        <modeler:form-reference-name><![CDATA[nn]]></modeler:form-reference-name>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:initiator-can-complete><![CDATA[false]]></modeler:initiator-can-complete>
+        <modeler:deactivate-user-task-reassignment><![CDATA[false]]></modeler:deactivate-user-task-reassignment>
+        <modeler:editor-resource-id><![CDATA[sid-D8E2A754-5D1A-401B-9D9D-3DECC6DB4A85]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:incoming>timer_secondUserTask</bpmn2:incoming>
+      <bpmn2:outgoing>secondUserTask_end</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:endEvent id="END">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-D33953B7-F09C-44A7-92FC-E4985BE62FC8]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:incoming>secondUserTask_end</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="start_firstUserTask" sourceRef="START" targetRef="FIRST_USER_TASK">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-823E3335-BDA8-4811-8AA7-C8BAC368BBE6]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="firstUserTask_timer" sourceRef="FIRST_USER_TASK" targetRef="TIMER">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-5BFE05AC-A909-44DB-A568-74923A414486]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="timer_secondUserTask" sourceRef="TIMER" targetRef="SECOND_USER_TASK">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-713D9C1C-D787-416B-9B72-C5033CDC8742]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="secondUserTask_end" sourceRef="SECOND_USER_TASK" targetRef="END">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-DF64C35A-51D3-4E71-A540-23F83D995787]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_TimerJob_test">
+    <bpmndi:BPMNPlane bpmnElement="TimerJob_test" id="BPMNPlane_TimerJob_test">
+      <bpmndi:BPMNShape bpmnElement="START" id="BPMNShape_START">
+        <omgdc:Bounds height="30.0" width="30.0" x="90.0" y="150.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="FIRST_USER_TASK" id="BPMNShape_FIRST_USER_TASK">
+        <omgdc:Bounds height="80.0" width="100.0" x="247.5" y="125.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="TIMER" id="BPMNShape_TIMER">
+        <omgdc:Bounds height="31.0" width="31.0" x="510.0" y="149.5"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="SECOND_USER_TASK" id="BPMNShape_SECOND_USER_TASK">
+        <omgdc:Bounds height="80.0" width="100.0" x="645.0" y="125.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="END" id="BPMNShape_END">
+        <omgdc:Bounds height="28.0" width="28.0" x="885.0" y="151.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="firstUserTask_timer" id="BPMNEdge_firstUserTask_timer">
+        <omgdi:waypoint x="347.5" y="165.0"/>
+        <omgdi:waypoint x="510.0" y="165.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="start_firstUserTask" id="BPMNEdge_start_firstUserTask">
+        <omgdi:waypoint x="120.0" y="165.0"/>
+        <omgdi:waypoint x="247.5" y="165.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="timer_secondUserTask" id="BPMNEdge_timer_secondUserTask">
+        <omgdi:waypoint x="541.0" y="165.0"/>
+        <omgdi:waypoint x="645.0" y="165.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="secondUserTask_end" id="BPMNEdge_secondUserTask_end">
+        <omgdi:waypoint x="745.0" y="165.0"/>
+        <omgdi:waypoint x="885.0" y="165.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
