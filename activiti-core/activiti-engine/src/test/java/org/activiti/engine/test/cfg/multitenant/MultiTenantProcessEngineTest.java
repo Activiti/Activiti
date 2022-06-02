@@ -17,6 +17,14 @@
 
 package org.activiti.engine.test.cfg.multitenant;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import javax.sql.DataSource;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.asyncexecutor.multitenant.ExecutorPerTenantAsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.multitenant.SharedExecutorServiceAsyncExecutor;
@@ -28,12 +36,6 @@ import org.h2.jdbcx.JdbcDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import javax.sql.DataSource;
-import java.util.Date;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
 
@@ -142,33 +144,31 @@ public class MultiTenantProcessEngineTest {
     startProcessInstances("clark");
     assertData("clark", 6, 2);
 
-    // Move the clock 2 hours (jobs fire in one hour)
-    config.getClock().setCurrentTime(new Date(config.getClock().getCurrentTime().getTime() + (2 * 60 * 60 * 1000)));
-    Thread.sleep(15000L); // acquire time is 10 seconds, so 15 should be ok
+    moveClockToGetTimerFired();
+    await().atMost(15, TimeUnit.SECONDS).untilAsserted(() -> {
 
-    // Verify
-    assertData("joram", 9, 0);
-    assertData("raphael", 2, 0);
-    assertData("tony", 3, 0);
-    assertData("clark", 6, 0);
-
-    // After completing first user-task in "TimerJob_test", there's an intermediate timer event and then a second user-task
-    // complete first user-task
-    completeTasks("joram");
-
-    // Move the clock 2 hours (jobs fire in one hour)
-    config.getClock().setCurrentTime(new Date(config.getClock().getCurrentTime().getTime() + (2 * 60 * 60 * 1000)));
-    Thread.sleep(15000L); // acquire time is 10 seconds, so 15 should be ok
-
-    // complete second user-task
-    completeTasks("joram");
-
-    // Verify
-    assertData("joram", 0, 0);
+        assertData("joram", 9, 0);
+        assertData("raphael", 2, 0);
+        assertData("tony", 3, 0);
+        assertData("clark", 6, 0);
+    });
+    assertExecutionReachesTaskAfterTimer();
   }
 
+    private void assertExecutionReachesTaskAfterTimer() {
+        await().untilAsserted(() ->
+            assertThat(getTasks("raphael", "TimerJob_test"))
+                .extracting(Task::getName)
+                .containsOnly("second form")
+            );
+    }
 
-  private void deployProcesses(String userId) {
+    private void moveClockToGetTimerFired() {
+        config.getClock().setCurrentTime(new Date(config.getClock().getCurrentTime().getTime() + (2 * 60 * 60 * 1000)));
+    }
+
+
+    private void deployProcesses(String userId) {
     tenantInfoHolder.setCurrentUserId(userId);
 
     Deployment deployment = processEngine.getRepositoryService().createDeployment()
@@ -197,16 +197,9 @@ public class MultiTenantProcessEngineTest {
   }
 
   private void completeTasks(String userId) {
-    completeTasks(userId, null);
-  }
-  private void completeTasks(String userId, String processDefinitionKey) {
     tenantInfoHolder.setCurrentUserId(userId);
 
     TaskQuery taskQuery = processEngine.getTaskService().createTaskQuery();
-    if( processDefinitionKey!=null ) {
-        taskQuery.processDefinitionKey(processDefinitionKey);
-    }
-
    for (Task task : taskQuery.list()) {
      processEngine.getTaskService().complete(task.getId());
    }
@@ -214,6 +207,17 @@ public class MultiTenantProcessEngineTest {
     tenantInfoHolder.clearCurrentUserId();
     tenantInfoHolder.clearCurrentTenantId();
   }
+
+    private List<Task> getTasks(String userId, String processDefinitionKey) {
+        tenantInfoHolder.setCurrentUserId(userId);
+
+        TaskQuery taskQuery = processEngine.getTaskService().createTaskQuery().processDefinitionKey(processDefinitionKey);
+        final List<Task> tasks = taskQuery.list();
+
+        tenantInfoHolder.clearCurrentUserId();
+        tenantInfoHolder.clearCurrentTenantId();
+        return tasks;
+    }
 
   private void assertData(String userId, long nrOfActiveProcessInstances, long nrOfActiveJobs) {
     tenantInfoHolder.setCurrentUserId(userId);
