@@ -17,25 +17,25 @@
 
 package org.activiti.engine.test.cfg.multitenant;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.sql.DataSource;
-
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.multitenant.ExecutorPerTenantAsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.multitenant.SharedExecutorServiceAsyncExecutor;
 import org.activiti.engine.impl.cfg.multitenant.MultiSchemaMultiTenantProcessEngineConfiguration;
 import org.activiti.engine.repository.Deployment;
-import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.After;
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import static org.awaitility.Awaitility.await;
@@ -116,6 +116,11 @@ public class MultiTenantProcessEngineTest {
   }
 
   protected void runProcessInstanceTest() throws InterruptedException {
+    // deploy processes per user
+    deployProcesses("joram");
+    deployProcesses("raphael");
+    deployProcesses("tony");
+
     // Generate data
     startProcessInstances("joram");
     startProcessInstances("joram");
@@ -126,9 +131,9 @@ public class MultiTenantProcessEngineTest {
     startProcessInstances("tony");
 
     // Verify
-    assertData("joram", 6, 3);
-    assertData("raphael", 0, 0);
-    assertData("tony", 2, 1);
+    assertData("joram", 9, 3);
+    assertData("raphael", 2, 2);
+    assertData("tony", 3, 1);
 
     // Adding a new tenant
     tenantInfoHolder.addTenant("dailyplanet");
@@ -137,61 +142,88 @@ public class MultiTenantProcessEngineTest {
 
     config.registerTenant("dailyplanet", createDataSource("jdbc:h2:mem:activiti-mt-daily;DB_CLOSE_DELAY=1000", "sa", ""));
 
+    deployProcesses("louis");
+    deployProcesses("clark");
+
     // Start process instance for new tenant
     startProcessInstances("clark");
     startProcessInstances("clark");
-    assertData("clark", 4, 2);
+    assertData("clark", 6, 2);
 
-    // Move the clock 2 hours (jobs fire in one hour)
-    config.getClock().setCurrentTime(new Date(config.getClock().getCurrentTime().getTime() + (2 * 60 * 60 * 1000)));
-    await().atMost(1L, TimeUnit.SECONDS).untilAsserted(()->
-      {
-          assertData("joram", 6, 0);
-          assertData("raphael", 0, 0);
-          assertData("tony", 2, 0);
-          assertData("clark", 4, 0);
-      });
+    moveClockToGetTimerFired();
+    await().atMost(1L, TimeUnit.SECONDS).untilAsserted(() -> {
+
+        assertData("joram", 9, 0);
+        assertData("raphael", 2, 0);
+        assertData("tony", 3, 0);
+        assertData("clark", 6, 0);
+    });
+    assertExecutionReachesTaskAfterTimer();
   }
 
-  private void startProcessInstances(String userId) {
+    private void assertExecutionReachesTaskAfterTimer() {
+        await().untilAsserted(() ->
+            assertThat(getTasks("raphael", "TimerJob_test"))
+                .extracting(Task::getName)
+                .containsOnly("second form")
+            );
+    }
 
-    System.out.println();
-    System.out.println("Starting process instance for user " + userId);
+    private void moveClockToGetTimerFired() {
+        config.getClock().setCurrentTime(new Date(config.getClock().getCurrentTime().getTime() + (2 * 60 * 60 * 1000)));
+    }
 
+
+    private void deployProcesses(String userId) {
     tenantInfoHolder.setCurrentUserId(userId);
 
     Deployment deployment = processEngine.getRepositoryService().createDeployment()
-          .addClasspathResource("org/activiti/engine/test/cfg/multitenant/oneTaskProcess.bpmn20.xml")
-          .addClasspathResource("org/activiti/engine/test/cfg/multitenant/jobTest.bpmn20.xml")
-          .deploy();
+      .addClasspathResource("org/activiti/engine/test/cfg/multitenant/oneTaskProcess.bpmn20.xml")
+      .addClasspathResource("org/activiti/engine/test/cfg/multitenant/jobTest.bpmn20.xml")
+      .addClasspathResource("org/activiti/engine/test/cfg/multitenant/TimerJob_test.bpmn20.xml")
+      .deploy();
     System.out.println("Process deployed! Deployment id is " + deployment.getId());
 
-    Map<String, Object> vars = new HashMap<String, Object>();
-    vars.put("data", "Hello from " + userId);
+    tenantInfoHolder.clearCurrentUserId();
+    tenantInfoHolder.clearCurrentTenantId();
+  }
+  private void startProcessInstance( String userId, String processDefinitionKey, Map<String,Object> vars ) {
+    tenantInfoHolder.setCurrentUserId(userId);
 
-    ProcessInstance processInstance = processEngine.getRuntimeService().startProcessInstanceByKey("oneTaskProcess", vars);
-    List<Task> tasks = processEngine.getTaskService().createTaskQuery().processInstanceId(processInstance.getId()).list();
-    System.out.println("Got " + tasks.size() + " tasks");
-
-    System.out.println("Got " + processEngine.getHistoryService().createHistoricProcessInstanceQuery().count() + " process instances in the system");
-
-    // Start a process instance with a Job
-    processEngine.getRuntimeService().startProcessInstanceByKey("jobTest");
+    processEngine.getRuntimeService().startProcessInstanceByKey(processDefinitionKey, vars);
 
     tenantInfoHolder.clearCurrentUserId();
     tenantInfoHolder.clearCurrentTenantId();
   }
 
+  private void startProcessInstances(String userId) {
+    startProcessInstance( userId, "oneTaskProcess", Map.of("data", "Hello from " + userId) );
+    startProcessInstance( userId, "jobTest", null );
+    startProcessInstance( userId, "TimerJob_test", Map.of("name", "some test from " + userId, "time", "PT1M") );
+  }
+
   private void completeTasks(String userId) {
     tenantInfoHolder.setCurrentUserId(userId);
 
-   for (Task task : processEngine.getTaskService().createTaskQuery().list()) {
+    TaskQuery taskQuery = processEngine.getTaskService().createTaskQuery();
+   for (Task task : taskQuery.list()) {
      processEngine.getTaskService().complete(task.getId());
    }
 
     tenantInfoHolder.clearCurrentUserId();
     tenantInfoHolder.clearCurrentTenantId();
   }
+
+    private List<Task> getTasks(String userId, String processDefinitionKey) {
+        tenantInfoHolder.setCurrentUserId(userId);
+
+        TaskQuery taskQuery = processEngine.getTaskService().createTaskQuery().processDefinitionKey(processDefinitionKey);
+        final List<Task> tasks = taskQuery.list();
+
+        tenantInfoHolder.clearCurrentUserId();
+        tenantInfoHolder.clearCurrentTenantId();
+        return tasks;
+    }
 
   private void assertData(String userId, long nrOfActiveProcessInstances, long nrOfActiveJobs) {
     tenantInfoHolder.setCurrentUserId(userId);
