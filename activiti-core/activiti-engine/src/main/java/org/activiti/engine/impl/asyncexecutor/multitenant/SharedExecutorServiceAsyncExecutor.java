@@ -95,10 +95,14 @@ public class SharedExecutorServiceAsyncExecutor extends DefaultAsyncJobExecutor 
     resetExpiredJobsThreads.put(tenantId, new Thread(resetExpiredJobsRunnable));
 
     if (startExecutor) {
+        startThreadsForTenant(tenantId);
+    }
+  }
+
+  private void startThreadsForTenant(String tenantId) {
       startTimerJobAcquisitionForTenant(tenantId);
       startAsyncJobAcquisitionForTenant(tenantId);
       startResetExpiredJobsForTenant(tenantId);
-    }
   }
 
   @Override
@@ -108,10 +112,16 @@ public class SharedExecutorServiceAsyncExecutor extends DefaultAsyncJobExecutor 
 
   @Override
   public void start() {
+    if (isActive) {
+      return;
+    }
+
+    isActive = true;
+
+    initAsyncJobExecutionThreadPool();
+
     for (String tenantId : timerJobAcquisitionRunnables.keySet()) {
-      startTimerJobAcquisitionForTenant(tenantId);
-      startAsyncJobAcquisitionForTenant(tenantId);
-      startResetExpiredJobsForTenant(tenantId);
+        startThreadsForTenant(tenantId);
     }
   }
 
