@@ -17,15 +17,21 @@ package org.activiti.runtime.api.connector;
 
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Map;
 
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.bpmn.model.ServiceTask;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntityImpl;
@@ -34,6 +40,7 @@ import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -58,6 +65,12 @@ public class IntegrationContextBuilderTest {
     @Mock
     private ExtensionsVariablesMappingProvider inboundVariablesProvider;
 
+    @Mock
+    private ExpressionManager expressionManager;
+
+    @Mock
+    private Expression expression;
+
     @BeforeEach
     public void setUp() {
         ProcessEngineConfigurationImpl processEngineConfiguration = mock(ProcessEngineConfigurationImpl.class);
@@ -68,6 +81,7 @@ public class IntegrationContextBuilderTest {
 
         given(processEngineConfiguration.getDeploymentManager()).willReturn(deploymentManager);
         given(deploymentManager.findDeployedProcessDefinitionById(PROCESS_DEFINITION_ID)).willReturn(processDefinition);
+        given(processEngineConfiguration.getExpressionManager()).willReturn(expressionManager);
 
         given(processDefinition.getKey()).willReturn(PROCESS_DEFINITION_KEY);
         given(processDefinition.getVersion()).willReturn(PROCESS_DEFINITION_VERSION);
@@ -82,7 +96,8 @@ public class IntegrationContextBuilderTest {
 
         Map<String, Object> variables = singletonMap("key", "value");
         given(inboundVariablesProvider.calculateInputVariables(execution)).willReturn(variables);
-
+        given(expression.getValue(execution)).willReturn(SERVICE_TASK_NAME);
+        given(expressionManager.createExpression(SERVICE_TASK_NAME)).willReturn(expression);
 
         given(serviceTask.getImplementation()).willReturn(IMPLEMENTATION);
         given(serviceTask.getName()).willReturn(SERVICE_TASK_NAME);
@@ -100,6 +115,7 @@ public class IntegrationContextBuilderTest {
         IntegrationContext integrationContext = builder.from(execution);
 
         //then
+        verify(expressionManager.createExpression(SERVICE_TASK_NAME)).getValue(eq(execution));
         assertThat(integrationContext).isNotNull();
         assertThat(integrationContext.getConnectorType()).isEqualTo(IMPLEMENTATION);
         assertThat(integrationContext.getClientId()).isEqualTo(CURRENT_ACTIVITY_ID);
@@ -124,6 +140,8 @@ public class IntegrationContextBuilderTest {
 
         Map<String, Object> variables = singletonMap("key", "value");
         given(inboundVariablesProvider.calculateInputVariables(execution)).willReturn(variables);
+        given(expression.getValue(execution)).willReturn(SERVICE_TASK_NAME);
+        given(expressionManager.createExpression(SERVICE_TASK_NAME)).willReturn(expression);
 
         given(serviceTask.getImplementation()).willReturn(IMPLEMENTATION);
         given(serviceTask.getName()).willReturn(SERVICE_TASK_NAME);
@@ -143,6 +161,7 @@ public class IntegrationContextBuilderTest {
         IntegrationContext integrationContext = builder.from(integrationContextEntity, execution);
 
         //then
+        verify(expressionManager.createExpression(SERVICE_TASK_NAME)).getValue(eq(execution));
         assertThat(integrationContext).isNotNull();
         assertThat(integrationContext.getId()).isEqualTo("entityId");
         assertThat(integrationContext.getConnectorType()).isEqualTo(IMPLEMENTATION);
