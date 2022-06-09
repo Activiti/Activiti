@@ -23,8 +23,6 @@ import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.context.ExecutionContext;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
