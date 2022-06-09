@@ -214,11 +214,7 @@ public class ContinueProcessOperation extends AbstractOperation {
                 !(activityBehavior instanceof MultiInstanceActivityBehavior)) {
             Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
                     ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED,
-                                                             flowNode.getId(),
-                                                             flowNode.getName(),
-                                                             execution.getId(),
-                                                             execution.getProcessInstanceId(),
-                                                             execution.getProcessDefinitionId(),
+                                                             execution,
                                                              flowNode));
         }
 

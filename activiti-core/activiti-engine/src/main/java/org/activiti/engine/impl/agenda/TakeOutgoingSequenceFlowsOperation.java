@@ -121,11 +121,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
             if (!(execution.getCurrentFlowElement() instanceof SubProcess) && !(flowNode.getBehavior() instanceof MultiInstanceActivityBehavior)) {
                 Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
                         ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED,
-                                                                 flowNode.getId(),
-                                                                 flowNode.getName(),
-                                                                 execution.getId(),
-                                                                 execution.getProcessInstanceId(),
-                                                                 execution.getProcessDefinitionId(),
+                                                                 execution,
                                                                  flowNode));
             }
         }

@@ -352,14 +352,12 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
 
   protected void dispatchActivityCompletedEvent(DelegateExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
+    FlowElement flowElement = executionEntity.getCurrentFlowElement();
+
     getCommandContext().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createActivityEvent(
             ActivitiEventType.ACTIVITY_COMPLETED,
-            executionEntity.getActivityId(),
-            executionEntity.getName(),
-            executionEntity.getId(),
-            executionEntity.getProcessInstanceId(),
-            executionEntity.getProcessDefinitionId(),
-            executionEntity.getCurrentFlowElement()
+            executionEntity,
+            flowElement
     ));
   }
 

@@ -19,6 +19,7 @@ package org.activiti.engine.delegate.event.impl;
 import java.util.Map;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
@@ -36,7 +37,10 @@ import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
 import org.activiti.engine.delegate.event.ActivitiSignalEvent;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti.engine.impl.bpmn.behavior.TerminateEndEventActivityBehavior;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.context.ExecutionContext;
+import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
@@ -45,6 +49,9 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Builder class used to create {@link ActivitiEvent} implementations.
@@ -52,6 +59,8 @@ import org.activiti.engine.task.Task;
 
  */
 public class ActivitiEventBuilder {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ActivitiEventBuilder.class);
 
   /**
    * @param type
@@ -222,6 +231,37 @@ public class ActivitiEventBuilder {
     }
 
     return newEvent;
+  }
+
+  public static ActivitiActivityEvent createActivityEvent(ActivitiEventType type,
+                                                          DelegateExecution execution,
+                                                          FlowElement flowElement) {
+    String activityId = flowElement.getId();
+    String activityName = mayBeResolveExpression(flowElement.getName(),
+                                                 execution);
+    return createActivityEvent(type,
+                               activityId,
+                               activityName,
+                               execution.getId(),
+                               execution.getProcessInstanceId(),
+                               execution.getProcessDefinitionId(),
+                               flowElement);
+  }
+
+  protected static String mayBeResolveExpression(String expression,
+                                                 DelegateExecution execution) {
+    if (StringUtils.isNotEmpty(expression)) {
+      ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+      ExpressionManager expressionManager = processEngineConfiguration.getExpressionManager();
+
+      try {
+        return (String) expressionManager.createExpression(expression)
+                                         .getValue(execution);
+      } catch (ActivitiException e) {
+        LOGGER.warn("property not found in activity name expression " + e.getMessage());
+      }
+    }
+    return expression;
   }
 
   protected static String parseActivityType(FlowNode flowNode) {

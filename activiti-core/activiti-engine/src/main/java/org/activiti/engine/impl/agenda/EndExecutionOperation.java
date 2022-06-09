@@ -261,11 +261,7 @@ public class EndExecutionOperation extends AbstractOperation {
 
         Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
                 ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED,
-                                                         subProcess.getId(),
-                                                         subProcess.getName(),
-                                                         parentExecution.getId(),
-                                                         parentExecution.getProcessInstanceId(),
-                                                         parentExecution.getProcessDefinitionId(),
+                                                         parentExecution,
                                                          subProcess));
         return executionToContinue;
     }
