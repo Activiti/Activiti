@@ -72,8 +72,7 @@ public class CompensationEventHandler implements EventHandler {
 
         if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
           commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-                ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPENSATE, flowElement.getId(), flowElement.getName(),
-                    compensatingExecution.getId(), compensatingExecution.getProcessInstanceId(), compensatingExecution.getProcessDefinitionId(), flowElement));
+                ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPENSATE, compensatingExecution, flowElement));
         }
         compensatingExecution.setCurrentFlowElement(flowElement);
         Context.getAgenda().planContinueProcessInCompensation(compensatingExecution);

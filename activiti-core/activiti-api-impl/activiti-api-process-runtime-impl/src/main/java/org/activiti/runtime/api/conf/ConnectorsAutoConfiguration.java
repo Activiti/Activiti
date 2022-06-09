@@ -49,9 +49,10 @@ public class ConnectorsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public IntegrationContextBuilder integrationContextBuilder(
-        ExtensionsVariablesMappingProvider variablesMappingProvider) {
-        return new IntegrationContextBuilder(variablesMappingProvider);
+    public IntegrationContextBuilder integrationContextBuilder(ExtensionsVariablesMappingProvider variablesMappingProvider,
+                                                               ExpressionManager expressionManager) {
+        return new IntegrationContextBuilder(variablesMappingProvider,
+                                             expressionManager);
     }
 
     @Bean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)

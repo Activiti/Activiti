@@ -82,8 +82,7 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
 
       if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
         Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-            ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, flowNode.getId(), flowNode.getName(), execution.getId(),
-                execution.getProcessInstanceId(), execution.getProcessDefinitionId(), flowNode));
+            ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, execution, flowNode));
       }
 
       try {

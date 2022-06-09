@@ -21,19 +21,29 @@ import java.util.Objects;
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
 import org.activiti.bpmn.model.ServiceTask;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.ExecutionContext;
+import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class IntegrationContextBuilder {
 
-    private ExtensionsVariablesMappingProvider inboundVariablesProvider;
+    private static final Logger LOGGER = LoggerFactory.getLogger(IntegrationContextBuilder.class);
 
-    public IntegrationContextBuilder(ExtensionsVariablesMappingProvider inboundVariablesProvider) {
+    private final ExtensionsVariablesMappingProvider inboundVariablesProvider;
+    private final ExpressionManager expressionManager;
+
+    public IntegrationContextBuilder(ExtensionsVariablesMappingProvider inboundVariablesProvider,
+                                     ExpressionManager expressionManager) {
         this.inboundVariablesProvider = inboundVariablesProvider;
+        this.expressionManager = expressionManager;
     }
 
     public IntegrationContext from(IntegrationContextEntity integrationContextEntity,
@@ -80,14 +90,29 @@ public class IntegrationContextBuilder {
         ServiceTask serviceTask = (ServiceTask) execution.getCurrentFlowElement();
         if (serviceTask != null) {
             integrationContext.setConnectorType(serviceTask.getImplementation());
-            integrationContext.setClientName(serviceTask.getName());
+            integrationContext.setClientName(resolveServiceTaskNameExpression(serviceTask, execution));
             integrationContext.setClientType(ServiceTask.class.getSimpleName());
         }
-
 
         integrationContext.addInBoundVariables(inboundVariablesProvider.calculateInputVariables(execution));
 
         return integrationContext;
+    }
+
+    protected String resolveServiceTaskNameExpression(ServiceTask serviceTask,
+                                                      DelegateExecution execution) {
+        String clientName = serviceTask.getName();
+
+        if (StringUtils.isNotEmpty(clientName)) {
+            try {
+                return (String) expressionManager.createExpression(clientName)
+                                                 .getValue(execution);
+            } catch (ActivitiException e) {
+                LOGGER.warn("property not found in service task name expression " + e.getMessage());
+            }
+        }
+
+        return clientName;
     }
 
 }
