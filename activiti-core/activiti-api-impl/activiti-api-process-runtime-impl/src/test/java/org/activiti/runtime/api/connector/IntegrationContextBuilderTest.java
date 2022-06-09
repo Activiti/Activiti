@@ -78,7 +78,6 @@ public class IntegrationContextBuilderTest {
 
         given(processEngineConfiguration.getDeploymentManager()).willReturn(deploymentManager);
         given(deploymentManager.findDeployedProcessDefinitionById(PROCESS_DEFINITION_ID)).willReturn(processDefinition);
-        given(processEngineConfiguration.getExpressionManager()).willReturn(expressionManager);
 
         given(processDefinition.getKey()).willReturn(PROCESS_DEFINITION_KEY);
         given(processDefinition.getVersion()).willReturn(PROCESS_DEFINITION_VERSION);

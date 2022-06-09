@@ -39,10 +39,13 @@ public class IntegrationContextBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IntegrationContextBuilder.class);
 
-    private ExtensionsVariablesMappingProvider inboundVariablesProvider;
+    private final ExtensionsVariablesMappingProvider inboundVariablesProvider;
+    private final ExpressionManager expressionManager;
 
-    public IntegrationContextBuilder(ExtensionsVariablesMappingProvider inboundVariablesProvider) {
+    public IntegrationContextBuilder(ExtensionsVariablesMappingProvider inboundVariablesProvider,
+                                     ExpressionManager expressionManager) {
         this.inboundVariablesProvider = inboundVariablesProvider;
+        this.expressionManager = expressionManager;
     }
 
     public IntegrationContext from(IntegrationContextEntity integrationContextEntity,
@@ -103,9 +106,6 @@ public class IntegrationContextBuilder {
         String clientName = serviceTask.getName();
 
         if (StringUtils.isNotEmpty(clientName)) {
-            ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
-            ExpressionManager expressionManager = processEngineConfiguration.getExpressionManager();
-
             try {
                 return (String) expressionManager.createExpression(clientName)
                                                  .getValue(execution);
