@@ -1,0 +1,31 @@
+{
+  "id": "taskImplicitVarMapping",
+  "extensions": {
+    "Process_taskImplicitVarMapping": {
+      "properties": {},
+      "mappings": {
+        "Task_One": {
+          "mappingType": "MAP_ALL_OUTPUTS"
+        },
+        "Task_Two": {
+          "mappingType": "MAP_ALL_INPUTS"
+        },
+        "Task_Three": {
+          "inputs": {
+            "task_input_variable_name_1": {
+              "type": "VARIABLE",
+              "value": "process_variable_inputmap_1"
+            }
+          },
+          "outputs": {
+            "process_variable_outputmap_1": {
+              "type": "VARIABLE",
+              "value": "task_output_variable_name_1"
+            }
+          }
+        },
+        "constants": {}
+      }
+    }
+  }
+}
