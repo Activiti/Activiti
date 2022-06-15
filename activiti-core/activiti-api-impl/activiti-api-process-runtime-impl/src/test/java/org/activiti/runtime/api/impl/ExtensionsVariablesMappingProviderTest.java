@@ -534,6 +534,7 @@ public class ExtensionsVariablesMappingProviderTest {
         Map<String, Object> entityVariables = singletonMap("task_output_variable_name_1", "var-one");
 
         ExpressionResolverHelper.setExecutionVariables(execution, entityVariables);
+        given(execution.getVariable("process_variable_outputmap_1")).willReturn(("process-value"));
 
         Map<String, Object> outputVariables = variablesMappingProvider.calculateOutPutVariables(
             buildMappingExecutionContext(execution),

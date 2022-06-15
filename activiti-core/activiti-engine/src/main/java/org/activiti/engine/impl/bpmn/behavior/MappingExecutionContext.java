@@ -22,10 +22,12 @@ public class MappingExecutionContext {
 
     private String processDefinitionId;
     private String activityId;
+    private DelegateExecution execution;
 
     public MappingExecutionContext(DelegateExecution delegateExecution) {
         this.processDefinitionId = delegateExecution.getProcessDefinitionId();
         this.activityId = delegateExecution.getCurrentActivityId();
+        this.execution = delegateExecution;
     }
 
     public MappingExecutionContext(String processDefinitionId,
@@ -40,6 +42,14 @@ public class MappingExecutionContext {
 
     public String getActivityId() {
         return activityId;
+    }
+
+    public boolean hasExecution() {
+        return this.execution != null;
+    }
+
+    public DelegateExecution getExecution() {
+        return execution;
     }
 
     public static MappingExecutionContext buildMappingExecutionContext(DelegateExecution delegateExecution) {

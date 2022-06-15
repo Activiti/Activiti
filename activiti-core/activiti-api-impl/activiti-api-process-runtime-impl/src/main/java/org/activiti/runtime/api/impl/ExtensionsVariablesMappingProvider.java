@@ -52,7 +52,11 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
             }
 
             if (Mapping.SourceMappingType.VARIABLE.equals(inputMapping.getType())) {
-                return Optional.ofNullable(execution.getVariable(inputMapping.getValue().toString()));
+                String name = inputMapping.getValue().toString();
+
+                if (isTargetProcessVariableDefined(extensions, execution, name)) {
+                    return Optional.ofNullable(execution.getVariable(name));
+                }
             }
         }
         return Optional.empty();
@@ -150,17 +154,30 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
     private Map<String, Object> calculateOutPutVariables(MappingExecutionContext mappingExecutionContext,
                                                          Extension extensions,
                                                          Map<String, Object> availableVariables) {
+
         Map<String, Object> outboundVariables = new HashMap<>();
         ProcessVariablesMapping processVariablesMapping = extensions.getMappingForFlowElement(
             mappingExecutionContext.getActivityId());
         Map<String, Mapping> outputMappings = processVariablesMapping.getOutputs();
 
         for (Map.Entry<String, Mapping> mapping : outputMappings.entrySet()) {
-            calculateOutPutMappedValue(mapping.getValue(), availableVariables).ifPresent(
-                value -> outboundVariables.put(mapping.getKey(), value));
+            String name = mapping.getKey();
+
+            if (isTargetProcessVariableDefined(extensions, mappingExecutionContext.getExecution(), name)) {
+                calculateOutPutMappedValue(mapping.getValue(), availableVariables).ifPresent(
+                    value -> outboundVariables.put(mapping.getKey(), value));
+            }
         }
 
         return expressionResolver.resolveExpressionsMap(new SimpleMapExpressionEvaluator(availableVariables),
             outboundVariables);
+    }
+
+    private boolean isTargetProcessVariableDefined(Extension extensions,
+                                            DelegateExecution execution,
+                                            String variableName) {
+        return extensions.getPropertyByName(variableName) != null ||
+            (execution != null
+                && execution.getVariable(variableName) != null);
     }
 }
