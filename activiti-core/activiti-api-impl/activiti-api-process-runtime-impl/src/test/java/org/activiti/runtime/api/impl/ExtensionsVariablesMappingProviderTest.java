@@ -24,11 +24,10 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.spring.process.ProcessExtensionService;
@@ -84,10 +83,14 @@ public class ExtensionsVariablesMappingProviderTest {
     }
 
     private DelegateExecution buildExecution(Extension extensions) {
+        return buildExecution(extensions, "simpleTask");
+    }
+
+    private DelegateExecution buildExecution(Extension extensions, String taskName) {
         DelegateExecution execution = mock(DelegateExecution.class);
         String processDefinitionId = "procDefId";
         given(execution.getProcessDefinitionId()).willReturn(processDefinitionId);
-        given(execution.getCurrentActivityId()).willReturn("simpleTask");
+        given(execution.getCurrentActivityId()).willReturn(taskName);
         given(processExtensionService.getExtensionsForId(processDefinitionId)).willReturn(extensions);
         return execution;
     }
@@ -427,5 +430,115 @@ public class ExtensionsVariablesMappingProviderTest {
             buildMappingExecutionContext(execution), singletonMap("not_matching_variable", "variable_value_1"));
 
         assertThat(outputMapping).isEmpty();
+    }
+
+    @Test
+    public void should_returnAllExecutionVariables_when_calculatingAnImplicitInputMapping()
+        throws Exception {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProcessExtensionModel extensions = objectMapper.readValue(
+            new File("src/test/resources/task-variable-implicit-mapping-extensions.json"),
+            ProcessExtensionModel.class);
+
+        Extension processExtensions = extensions.getExtensions("Process_taskImplicitVarMapping");
+        DelegateExecution execution = buildExecution(processExtensions, "Task_Two");
+        Map<String, Object> executionVariables = map("process_variable_1", "value1", "process_variable_2", "value2");
+
+        ExpressionResolver expressionResolver = ExpressionResolverHelper.initContext(execution,
+            processExtensions);
+
+        ReflectionTestUtils.setField(variablesMappingProvider,
+            "expressionResolver",
+            expressionResolver);
+
+        given(execution.getVariables()).willReturn(executionVariables);
+
+        Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
+
+        assertThat(inputVariables).isEqualTo(executionVariables);
+    }
+
+    @Test
+    public void should_returnAllTaskVariables_when_calculatingAnImplicitOutputMapping()
+        throws Exception {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProcessExtensionModel extensions = objectMapper.readValue(
+            new File("src/test/resources/task-variable-implicit-mapping-extensions.json"),
+            ProcessExtensionModel.class);
+
+        Extension processExtensions = extensions.getExtensions("Process_taskImplicitVarMapping");
+        DelegateExecution execution = buildExecution(processExtensions, "Task_One");
+        Map<String, Object> taskVariables = map("task_variable_1", "value1", "task_variable_2", "value2");
+
+        ExpressionResolver expressionResolver = ExpressionResolverHelper.initContext(execution, processExtensions);
+
+        ReflectionTestUtils.setField(variablesMappingProvider,
+            "expressionResolver",
+            expressionResolver);
+
+        ExpressionResolverHelper.setExecutionVariables(execution, taskVariables);
+
+        Map<String, Object> outputVariables = variablesMappingProvider.calculateOutPutVariables(
+            buildMappingExecutionContext(execution),
+            taskVariables);
+
+        assertThat(outputVariables).isEqualTo(taskVariables);
+    }
+
+
+    @Test
+    public void should_calculateInputVariables_when_variableIsInProcessInstanceContextButNotDefinedInExtensions()
+        throws Exception {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProcessExtensionModel extensions = objectMapper.readValue(
+            new File("src/test/resources/task-variable-implicit-mapping-extensions.json"),
+            ProcessExtensionModel.class);
+
+        Extension processExtensions = extensions.getExtensions("Process_taskImplicitVarMapping");
+        DelegateExecution execution = buildExecution(processExtensions, "Task_Three");
+        given(execution.getVariable("process_variable_inputmap_1")).willReturn("new-input-value");
+
+        ExpressionResolver expressionResolver = ExpressionResolverHelper.initContext(execution,
+            processExtensions);
+
+        ReflectionTestUtils.setField(variablesMappingProvider,
+            "expressionResolver",
+            expressionResolver);
+
+        Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
+
+        assertThat(inputVariables.get("task_input_variable_name_1")).isEqualTo("new-input-value");
+    }
+
+    @Test
+    public void should_calculateOutputVariables_when_variableIsInProcessInstanceContextButNotDefinedInExtensions()
+        throws Exception {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProcessExtensionModel extensions = objectMapper.readValue(
+            new File("src/test/resources/task-variable-implicit-mapping-extensions.json"),
+            ProcessExtensionModel.class);
+
+        Extension processExtensions = extensions.getExtensions("Process_taskImplicitVarMapping");
+        DelegateExecution execution = buildExecution(processExtensions, "Task_Three");
+
+        ExpressionResolver expressionResolver = ExpressionResolverHelper.initContext(execution, processExtensions);
+
+        ReflectionTestUtils.setField(variablesMappingProvider,
+            "expressionResolver",
+            expressionResolver);
+
+        Map<String, Object> entityVariables = singletonMap("task_output_variable_name_1", "var-one");
+
+        ExpressionResolverHelper.setExecutionVariables(execution, entityVariables);
+
+        Map<String, Object> outputVariables = variablesMappingProvider.calculateOutPutVariables(
+            buildMappingExecutionContext(execution),
+            Map.of("task_output_variable_name_1", "task-value"));
+
+        assertThat(outputVariables.get("process_variable_outputmap_1")).isEqualTo("task-value");
     }
 }
