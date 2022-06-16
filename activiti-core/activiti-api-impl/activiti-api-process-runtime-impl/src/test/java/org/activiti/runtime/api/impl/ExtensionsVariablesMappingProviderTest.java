@@ -30,6 +30,8 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl;
+import org.activiti.engine.impl.variable.StringType;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.ProcessExtensionModel;
@@ -91,6 +93,7 @@ public class ExtensionsVariablesMappingProviderTest {
         String processDefinitionId = "procDefId";
         given(execution.getProcessDefinitionId()).willReturn(processDefinitionId);
         given(execution.getCurrentActivityId()).willReturn(taskName);
+
         given(processExtensionService.getExtensionsForId(processDefinitionId)).willReturn(extensions);
         return execution;
     }
@@ -411,14 +414,14 @@ public class ExtensionsVariablesMappingProviderTest {
     }
 
     @Test
-    public void should_returnEmptyOutputMapping_when_thereIsNoAvaliableVariableInTask() throws Exception {
+    public void should_returnTheOutputMappingValue_when_thereIsNoAvailableVariablesInTask() throws Exception {
         DelegateExecution execution = initExpressionResolverTest("expression-in-mapping-output-value.json",
             "Process_expressionMappingOutputValue");
 
         Map<String, Object> outputMapping = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
                                                                                               null);
 
-        assertThat(outputMapping).isEmpty();
+        assertThat(outputMapping).containsOnly(Map.entry("process_variable_4", "${task_input_variable_name_2}"));
     }
 
     @Test
@@ -541,5 +544,27 @@ public class ExtensionsVariablesMappingProviderTest {
             Map.of("task_output_variable_name_1", "task-value"));
 
         assertThat(outputVariables.get("process_variable_outputmap_1")).isEqualTo("task-value");
+    }
+
+    @Test
+    public void should_resolveExpressionsBasedInExecutionContext_when_calculatingOutputMappingAndHasExecution()
+        throws Exception {
+        DelegateExecution execution = initExpressionResolverTest(
+            "expression-based-in-execution-in-mapping-output-value.json",
+            "Process_expressionMappingOutputValue");
+
+        VariableInstanceEntityImpl variableInstance = new VariableInstanceEntityImpl();
+        variableInstance.setTypeName("string");
+        variableInstance.setType(new StringType(255));
+        variableInstance.setValue("variableValue");
+        given(execution.getVariableInstance("process_variable_3")).willReturn(variableInstance);
+
+        Map<String, Object> outputMapping = variablesMappingProvider.calculateOutPutVariables(
+            buildMappingExecutionContext(execution),
+            null);
+
+        assertThat(outputMapping).containsOnlyKeys("process_variable_1", "process_variable_2");
+        assertThat(outputMapping.get("process_variable_1")).isNotEqualTo("${authenticatedUserId}");
+        assertThat(outputMapping.get("process_variable_2")).isEqualTo("This is the variableValue");
     }
 }

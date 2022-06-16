@@ -141,14 +141,11 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
             return (availableVariables != null ? new HashMap<>(availableVariables) : emptyMap());
         }
 
-        if (availableVariables != null && !availableVariables.isEmpty()) {
-            if (expressionResolver.containsExpression(availableVariables)) {
+        if (expressionResolver.containsExpression(availableVariables)) {
                 throw new ActivitiIllegalArgumentException("Expressions are not allowed as variable values in the output mapping");
-            }
-            return calculateOutPutVariables(mappingExecutionContext, extensions, availableVariables);
-        } else {
-            return emptyMap();
         }
+
+        return calculateOutPutVariables(mappingExecutionContext, extensions, availableVariables);
     }
 
     private Map<String, Object> calculateOutPutVariables(MappingExecutionContext mappingExecutionContext,
@@ -169,8 +166,15 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
             }
         }
 
-        return expressionResolver.resolveExpressionsMap(new SimpleMapExpressionEvaluator(availableVariables),
-            outboundVariables);
+        Map<String, Object> result = expressionResolver.resolveExpressionsMap(
+            new SimpleMapExpressionEvaluator(availableVariables), outboundVariables);
+
+        if (mappingExecutionContext.hasExecution()) {
+            result = expressionResolver.resolveExpressionsMap(
+                new VariableScopeExpressionEvaluator(mappingExecutionContext.getExecution()), result);
+        }
+
+        return result;
     }
 
     private boolean isTargetProcessVariableDefined(Extension extensions,
