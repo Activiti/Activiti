@@ -394,6 +394,10 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
         return key;
     }
 
+    public String getIdOrKey() {
+        return idOrKey;
+    }
+
     public String getKeyLike() {
         return keyLike;
     }
