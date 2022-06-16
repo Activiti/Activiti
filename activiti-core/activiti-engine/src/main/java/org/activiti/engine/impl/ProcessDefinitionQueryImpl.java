@@ -46,6 +46,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     private String deploymentId;
     private Set<String> deploymentIds;
     private String key;
+    private String idOrKey;
     private String keyLike;
     private Set<String> keys;
     private String resourceName;
@@ -149,6 +150,15 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
             throw new ActivitiIllegalArgumentException("key is null");
         }
         this.key = key;
+        return this;
+    }
+
+    @Override
+    public ProcessDefinitionQuery processDefinitionIdOrKey(String idOrKey) {
+        if (idOrKey == null) {
+            throw new ActivitiIllegalArgumentException("processDefinitionIdOrKey is null");
+        }
+        this.idOrKey = idOrKey;
         return this;
     }
 
