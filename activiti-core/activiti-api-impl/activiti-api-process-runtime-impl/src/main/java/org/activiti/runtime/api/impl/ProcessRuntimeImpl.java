@@ -15,7 +15,6 @@
  */
 package org.activiti.runtime.api.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -68,6 +67,7 @@ import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.query.impl.PageImpl;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,6 +99,9 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     private final SecurityManager securityManager;
 
+    @Value("${spring.activiti.candidateStarter.enabled:false}")
+    private boolean candidateStartersEnabled;
+
     public ProcessRuntimeImpl(RepositoryService repositoryService,
                               APIProcessDefinitionConverter processDefinitionConverter,
                               RuntimeService runtimeService,
@@ -127,24 +130,34 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public ProcessDefinition processDefinition(String processDefinitionId) {
-        org.activiti.engine.repository.ProcessDefinition processDefinition;
-        // try searching by Key if there is no matching by Id
-        processDefinition = findLatestProcessDefinitionByKey(processDefinitionId)
-            .orElseGet(() -> repositoryService.getProcessDefinition(processDefinitionId));
+        ProcessDefinitionQuery processDefinitionQuery = createProcessDefinitionQueryWithAccessCheck()
+                                                        .processDefinitionIdOrKey(processDefinitionId);
+
+        org.activiti.engine.repository.ProcessDefinition processDefinition = findLatestProcessDefinition(processDefinitionQuery)
+            .orElseThrow(() ->
+                new ActivitiObjectNotFoundException("Unable to find process definition for the given id:'" + processDefinitionId + "'"));
 
         checkProcessDefinitionBelongsToLatestDeployment(processDefinition);
 
         if (!securityPoliciesManager.canRead(processDefinition.getKey())) {
             throw new ActivitiObjectNotFoundException("Unable to find process definition for the given id:'" + processDefinitionId + "'");
         }
+
         return processDefinitionConverter.from(processDefinition);
     }
 
-    private Optional<org.activiti.engine.repository.ProcessDefinition> findLatestProcessDefinitionByKey(String processDefinitionKey) {
-        return repositoryService.createProcessDefinitionQuery()
+    private ProcessDefinitionQuery createProcessDefinitionQueryWithAccessCheck() {
+        ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
+        if (candidateStartersEnabled) {
+            processDefinitionQuery.startableByUser(securityManager.getAuthenticatedUserId());
+        }
+        return processDefinitionQuery;
+    }
+
+    private Optional<org.activiti.engine.repository.ProcessDefinition> findLatestProcessDefinition(ProcessDefinitionQuery processDefinitionQuery) {
+        return processDefinitionQuery
             .latestVersion()
             .deploymentIds(latestDeploymentIds())
-            .processDefinitionKey(processDefinitionKey)
             .orderByProcessDefinitionAppVersion()
             .desc()
             .list()
@@ -199,8 +212,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             getProcessDefinitionsPayload.setProcessDefinitionKeys(securityKeysInPayload.getProcessDefinitionKeys());
         }
 
-        ProcessDefinitionQuery processDefinitionQuery = repositoryService
-                .createProcessDefinitionQuery()
+        ProcessDefinitionQuery processDefinitionQuery = createProcessDefinitionQueryWithAccessCheck()
                 .latestVersion()
                 .deploymentIds(latestDeploymentIds());
 

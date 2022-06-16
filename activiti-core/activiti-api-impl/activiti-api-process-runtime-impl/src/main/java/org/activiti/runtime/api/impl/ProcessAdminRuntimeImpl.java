@@ -42,6 +42,7 @@ import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
@@ -88,20 +89,18 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
 
     @Override
     public ProcessDefinition processDefinition(String processDefinitionId) {
-        org.activiti.engine.repository.ProcessDefinition processDefinition;
-        // try searching by Key if there is no matching by Id
-        List<org.activiti.engine.repository.ProcessDefinition> list = repositoryService
+        org.activiti.engine.repository.ProcessDefinition processDefinition = repositoryService
             .createProcessDefinitionQuery()
-            .processDefinitionKey(processDefinitionId)
+            .processDefinitionIdOrKey(processDefinitionId)
             .deploymentIds(latestDeploymentIds())
             .orderByProcessDefinitionVersion()
             .asc()
-            .list();
-        if (!list.isEmpty()) {
-            processDefinition = list.get(0);
-        } else {
-            processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
-        }
+            .list()
+            .stream()
+            .findFirst()
+            .orElseThrow(() ->
+                new ActivitiObjectNotFoundException("Unable to find process definition for the given id:'" + processDefinitionId + "'"));
+
         return processDefinitionConverter.from(processDefinition);
     }
 
