@@ -53,7 +53,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 
-@PreAuthorize("hasRole('ACTIVITI_ADMIN')")
+@PreAuthorize("hasAnyRole('ACTIVITI_ADMIN','APPLICATION_MANAGER')")
 public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
 
     private final RepositoryService repositoryService;
