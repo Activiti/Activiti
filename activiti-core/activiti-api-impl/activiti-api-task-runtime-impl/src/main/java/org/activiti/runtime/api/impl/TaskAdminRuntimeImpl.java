@@ -47,7 +47,7 @@ import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.query.impl.PageImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-@PreAuthorize("hasRole('ACTIVITI_ADMIN')")
+@PreAuthorize("hasAnyRole('ACTIVITI_ADMIN','APPLICATION_MANAGER')")
 public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
 
     private final TaskService taskService;
