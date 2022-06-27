@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2022 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,7 @@ import java.text.SimpleDateFormat;
 import org.activiti.engine.impl.agenda.AbstractOperation;
 import org.slf4j.Logger;
 
-/**
 
- */
 public class DebugInfoOperationExecuted extends AbstractDebugInfo {
 
   protected long preExecutionTime;

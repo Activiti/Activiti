@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2022 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,7 @@ package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.impl.util.json.JSONObject;
 
-/**
 
- */
 public abstract class TimerChangeProcessDefinitionSuspensionStateJobHandler implements JobHandler {
 
   private static final String JOB_HANDLER_CFG_INCLUDE_PROCESS_INSTANCES = "includeProcessInstances";

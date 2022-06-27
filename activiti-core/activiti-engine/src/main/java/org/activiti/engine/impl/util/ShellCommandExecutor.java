@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2022 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,7 @@ import java.util.Map;
 
 import org.activiti.engine.delegate.DelegateExecution;
 
-/**
 
- */
 public class ShellCommandExecutor implements CommandExecutor {
     private Boolean waitFlag;
     private final Boolean cleanEnvBoolean;

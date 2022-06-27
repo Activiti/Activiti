@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2022 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -772,30 +772,6 @@ public class ProcessRuntimeIT {
         assertThat(processInstancePage.getContent().get(0).getProcessDefinitionKey()).isEqualTo("processWithSignalStart1");
 
         processAdminRuntimeMock.delete(ProcessPayloadBuilder.delete(processInstancePage.getContent().get(0).getId()));
-    }
-
-    @Test
-    public void should_processInstanceAlwaysHaveAppVersion(){
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
-                                                                         .withProcessDefinitionKey(SUPER_PROCESS)
-                                                                         .build());
-        assertThat(processInstance.getAppVersion()).isEqualTo("1");
-    }
-
-    @Test
-    public void should_processDefinitionAlwaysHaveAppVersion(){
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
-            PAGEABLE);
-        assertThat(processDefinitionPage.getContent()).isNotEmpty();
-
-        List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent().stream()
-                .filter(c -> c.getKey().equals(SUPER_PROCESS))
-                .collect(Collectors.toList());
-        assertThat(processDefinitions).hasSize(1);
-
-        ProcessDefinition result = processDefinitions.get(0);
-
-        assertThat(result.getAppVersion()).isEqualTo("1");
     }
 
     @Test

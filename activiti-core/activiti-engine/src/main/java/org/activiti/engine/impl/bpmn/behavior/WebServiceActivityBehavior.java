@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2022 Alfresco Software, Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -252,11 +252,9 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
           Operation operation = new Operation(operationObject.getId(), operationObject.getName(), bpmnInterface, inMessage);
           operation.setImplementation(wsOperationMap.get(operationObject.getImplementationRef()));
 
-          if (StringUtils.isNotEmpty(operationObject.getOutMessageRef())) {
-            if (messageDefinitionMap.containsKey(operationObject.getOutMessageRef())) {
-              MessageDefinition outMessage = messageDefinitionMap.get(operationObject.getOutMessageRef());
-              operation.setOutMessage(outMessage);
-            }
+          if (StringUtils.isNotEmpty(operationObject.getOutMessageRef()) && messageDefinitionMap.containsKey(operationObject.getOutMessageRef())) {
+            MessageDefinition outMessage = messageDefinitionMap.get(operationObject.getOutMessageRef());
+            operation.setOutMessage(outMessage);
           }
 
           operationMap.put(operation.getId(), operation);
