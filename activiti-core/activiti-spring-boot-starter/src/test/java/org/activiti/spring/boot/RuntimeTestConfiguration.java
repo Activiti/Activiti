@@ -120,6 +120,13 @@ public class RuntimeTestConfiguration {
                                                                "password",
                                                                deanAuthorities));
 
+        List<GrantedAuthority> managerAuthorities = new ArrayList<>();
+        managerAuthorities.add(new SimpleGrantedAuthority("ROLE_APPLICATION_MANAGER"));
+
+        extendedInMemoryUserDetailsManager.createUser(new User("manager",
+            "password",
+            managerAuthorities));
+
         return extendedInMemoryUserDetailsManager;
     }
 

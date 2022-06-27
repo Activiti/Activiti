@@ -1005,4 +1005,14 @@ public class ProcessRuntimeIT {
         assertThat(processInstancePage.getContent()).hasSize(1);
         assertThat(processInstancePage.getContent().get(0).getId()).isEqualTo(processInstance.getId());
     }
+
+    @Test
+    public void should_returnProcessesWhenUserIsApplicationManager() {
+        securityUtil.logInAs("manager");
+
+        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0,
+            50));
+
+        assertThat(processInstancePage).isNotNull();
+    }
 }

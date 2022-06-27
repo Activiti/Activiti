@@ -86,4 +86,14 @@ public class TaskRuntimeUnAuthorizedTest {
                 .isInstanceOf(NotFoundException.class);
     }
 
+    @Test
+    public void shouldGetTasksAsApplicationManager() {
+        securityUtil.logInAs("manager");
+
+        Page<Task> tasks = taskAdminRuntime.tasks(Pageable.of(0,
+            50));
+
+        assertThat(tasks.getContent()).hasSize(0);
+    }
+
 }
