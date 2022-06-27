@@ -68,7 +68,7 @@ jobs:
         name: Calculate next internal release
         uses: Alfresco/alfresco-build-tools/.github/actions/calculate-next-internal-version@v1.2.1
         with:
-          next-version: 7.4.0
+          next-version: 7.5.0
 
       - name: Update VERSION file
         if: ${{ github.event_name == 'push' }}
