@@ -38,8 +38,6 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 public class ProcessRuntimeCandidateStartersIT {
 
     private static final String RESTRICTED_PROCESS_DEFINITION_KEY = "SingleTaskProcessRestricted";
-    private static final Pageable PAGEABLE = Pageable.of(0,
-        50);
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -57,7 +55,7 @@ public class ProcessRuntimeCandidateStartersIT {
 
     @Test
     public void candidateStarterUser_should_getProcessDefinitions() {
-        securityUtil.logInAs("user");
+        loginAsUserCandidateStarter();
 
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
                                                                                                       50));
@@ -68,7 +66,7 @@ public class ProcessRuntimeCandidateStartersIT {
 
     @Test
     public void candidateStarterGroupMembers_should_getProcessDefinitions() {
-        securityUtil.logInAs("john");
+        loginAsGroupMemberCandidateStarter();
 
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
             50));
@@ -79,18 +77,18 @@ public class ProcessRuntimeCandidateStartersIT {
 
     @Test
     public void nonCandidateStarters_shouldNot_getProcessDefinitions() {
-        securityUtil.logInAs("garth");
+        loginAsANonCandidateStarter();
 
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
             50));
         assertThat(processDefinitionPage.getContent()).isNotNull();
-        assertThat(processDefinitionPage.getContent()).hasSize(0);
+        assertThat(processDefinitionPage.getContent()).isEmpty();
     }
 
 
     @Test
     public void candidateStarterUser_should_getProcessDefinition() {
-        securityUtil.logInAs("user");
+        loginAsUserCandidateStarter();
 
         ProcessDefinition processDefinition = processRuntime.processDefinition(RESTRICTED_PROCESS_DEFINITION_KEY);
         assertThat(processDefinition).isNotNull();
@@ -99,7 +97,7 @@ public class ProcessRuntimeCandidateStartersIT {
 
     @Test
     public void candidateStarterGroupMembers_should_getProcessDefinition() {
-        securityUtil.logInAs("john");
+        loginAsGroupMemberCandidateStarter();
 
         ProcessDefinition processDefinition = processRuntime.processDefinition(RESTRICTED_PROCESS_DEFINITION_KEY);
         assertThat(processDefinition).isNotNull();
@@ -108,23 +106,18 @@ public class ProcessRuntimeCandidateStartersIT {
 
     @Test
     public void nonCandidateStarters_shouldNot_getProcessDefinition() {
-        securityUtil.logInAs("garth");
+        loginAsANonCandidateStarter();
 
         Throwable throwable = catchThrowable(() -> processRuntime.processDefinition(RESTRICTED_PROCESS_DEFINITION_KEY));
 
         assertThat(throwable)
             .isInstanceOf(ActivitiObjectNotFoundException.class)
-            .hasMessage("Unable to find process definition for the given id:'" + RESTRICTED_PROCESS_DEFINITION_KEY + "'");
+            .hasMessage("Unable to find process definition for the given id or key:'" + RESTRICTED_PROCESS_DEFINITION_KEY + "'");
     }
 
     @Test
     public void candidateStarterUser_can_startProcess() {
-        securityUtil.logInAs("user");
-
-        Page<ProcessInstance> processInstancePage = processRuntime.processInstances(PAGEABLE);
-
-        assertThat(processInstancePage).isNotNull();
-        assertThat(processInstancePage.getContent()).isEmpty();
+        loginAsUserCandidateStarter();
 
         ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
             .withProcessDefinitionKey(RESTRICTED_PROCESS_DEFINITION_KEY)
@@ -132,6 +125,18 @@ public class ProcessRuntimeCandidateStartersIT {
 
         assertThat(processInstance).isNotNull();
         assertThat(processInstance.getProcessDefinitionKey()).isEqualTo(RESTRICTED_PROCESS_DEFINITION_KEY);
+    }
+
+    private void loginAsUserCandidateStarter() {
+        securityUtil.logInAs("user");
+    }
+
+    private void loginAsGroupMemberCandidateStarter() {
+        securityUtil.logInAs("john");
+    }
+
+    private void loginAsANonCandidateStarter() {
+        securityUtil.logInAs("garth");
     }
 
 }

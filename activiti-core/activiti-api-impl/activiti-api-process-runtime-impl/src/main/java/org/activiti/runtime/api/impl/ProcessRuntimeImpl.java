@@ -99,7 +99,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     private final SecurityManager securityManager;
 
-    @Value("${spring.activiti.candidateStarter.enabled:false}")
+    @Value("${activiti.candidateStarter.enabled:false}")
     private boolean candidateStartersEnabled;
 
     public ProcessRuntimeImpl(RepositoryService repositoryService,
@@ -135,12 +135,12 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
         org.activiti.engine.repository.ProcessDefinition processDefinition = findLatestProcessDefinition(processDefinitionQuery)
             .orElseThrow(() ->
-                new ActivitiObjectNotFoundException("Unable to find process definition for the given id:'" + processDefinitionId + "'"));
+                new ActivitiObjectNotFoundException("Unable to find process definition for the given id or key:'" + processDefinitionId + "'"));
 
         checkProcessDefinitionBelongsToLatestDeployment(processDefinition);
 
         if (!securityPoliciesManager.canRead(processDefinition.getKey())) {
-            throw new ActivitiObjectNotFoundException("Unable to find process definition for the given id:'" + processDefinitionId + "'");
+            throw new ActivitiObjectNotFoundException("Unable to find process definition for the given id or key:'" + processDefinitionId + "'");
         }
 
         return processDefinitionConverter.from(processDefinition);

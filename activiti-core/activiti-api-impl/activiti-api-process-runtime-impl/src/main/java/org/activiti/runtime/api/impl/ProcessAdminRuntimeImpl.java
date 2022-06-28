@@ -99,7 +99,7 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
             .stream()
             .findFirst()
             .orElseThrow(() ->
-                new ActivitiObjectNotFoundException("Unable to find process definition for the given id:'" + processDefinitionId + "'"));
+                new ActivitiObjectNotFoundException("Unable to find process definition for the given id or key:'" + processDefinitionId + "'"));
 
         return processDefinitionConverter.from(processDefinition);
     }

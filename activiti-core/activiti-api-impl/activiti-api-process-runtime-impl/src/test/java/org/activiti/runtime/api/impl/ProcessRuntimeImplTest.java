@@ -232,7 +232,7 @@ public class ProcessRuntimeImplTest {
 
         assertThat(exception)
             .isInstanceOf(ActivitiObjectNotFoundException.class)
-            .hasMessage("Unable to find process definition for the given id:'processDefinitionId'");
+            .hasMessage("Unable to find process definition for the given id or key:'processDefinitionId'");
     }
 
     @Test
