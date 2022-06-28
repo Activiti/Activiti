@@ -18,7 +18,6 @@ package org.activiti.spring.boot.process;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.runtime.ProcessAdminRuntime;
 import org.activiti.api.process.runtime.ProcessRuntime;
-import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.spring.boot.security.util.SecurityUtil;
@@ -27,8 +26,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,14 +56,10 @@ public class ProcessRuntimeSecurityPoliciesIT {
 
         securityUtil.logInAs("user");
 
-        ProcessRuntimeConfiguration configuration = processRuntime.configuration(); //@TODO: I should get the security policies defined here.
-        assertThat(configuration).isNotNull();
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
                                                                                                       50));
         assertThat(processDefinitionPage.getContent()).isNotNull();
         assertThat(processDefinitionPage.getContent()).hasSize(2);
-
-
 
     }
 
@@ -82,12 +75,11 @@ public class ProcessRuntimeSecurityPoliciesIT {
                 .extracting(ProcessDefinition::getKey)
                 .contains("categorizeProcessConnectors",
                           "categorizeHumanProcess",
+                          "SingleTaskProcessRestricted",
                           "categorizeProcess",
                           "integrationGatewayProcess",
                           "waiter");
 
     }
-
-
 
 }

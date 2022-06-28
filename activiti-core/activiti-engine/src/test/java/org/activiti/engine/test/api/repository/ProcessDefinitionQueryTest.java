@@ -27,16 +27,10 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
-
- */
 public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
 
   private String deploymentOneId;
@@ -129,6 +123,21 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
 
     // process two
     query = repositoryService.createProcessDefinitionQuery().processDefinitionKey("two");
+    verifyQueryResults(query, 1);
+  }
+
+  public void testQueryByIdOrKey() {
+    ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionIdOrKey("one");
+    verifyQueryResults(query, 2);
+
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+        .processDefinitionKey("one")
+        .list()
+        .stream()
+        .findFirst()
+        .get();
+
+    query = repositoryService.createProcessDefinitionQuery().processDefinitionIdOrKey(processDefinition.getId());
     verifyQueryResults(query, 1);
   }
 

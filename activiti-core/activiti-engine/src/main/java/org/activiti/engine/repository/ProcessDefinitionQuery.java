@@ -90,6 +90,11 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
     ProcessDefinitionQuery processDefinitionKeyLike(String processDefinitionKeyLike);
 
     /**
+     * Selects process definitions with id or key equals to processDefinitionIdOrKey
+     */
+    ProcessDefinitionQuery processDefinitionIdOrKey(String processDefinitionIdOrKey);
+
+    /**
      * Only select process definition with a certain version. Particulary useful when used in combination with {@link #processDefinitionKey(String)}
      */
     ProcessDefinitionQuery processDefinitionVersion(Integer processDefinitionVersion);

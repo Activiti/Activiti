@@ -372,6 +372,17 @@ public class ProcessRuntimeIT {
     }
 
     @Test
+    public void shouldGetProcessDefinitionById() {
+        ProcessDefinition categorizeHumanProcess = processRuntime.processDefinition(CATEGORIZE_HUMAN_PROCESS);
+        assertThat(categorizeHumanProcess).isNotNull();
+
+        categorizeHumanProcess = processRuntime.processDefinition(categorizeHumanProcess.getId());
+
+        assertThat(categorizeHumanProcess).isNotNull();
+        assertThat(categorizeHumanProcess.getName()).isEqualTo(CATEGORIZE_HUMAN_PROCESS);
+    }
+
+    @Test
     public void getProcessInstances() {
         //when
         Page<ProcessInstance> processInstancePage = processRuntime.processInstances(PAGEABLE);

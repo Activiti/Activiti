@@ -179,6 +179,9 @@
       <if test="key != null">
         and RES.KEY_ = #{key}
       </if>
+      <if test="idOrKey != null">
+        and (RES.ID_ = #{idOrKey} or RES.KEY_ = #{idOrKey})
+      </if>
       <if test="keyLike != null">
         and RES.KEY_ like #{keyLike}${wildcardEscapeClause}
       </if>
