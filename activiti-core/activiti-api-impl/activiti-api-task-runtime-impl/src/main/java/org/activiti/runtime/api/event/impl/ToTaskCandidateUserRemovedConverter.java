@@ -22,11 +22,10 @@ import org.activiti.runtime.api.model.impl.APITaskCandidateUserConverter;
 
 import java.util.Optional;
 
-import static org.activiti.engine.task.IdentityLinkType.CANDIDATE;
-
 public class ToTaskCandidateUserRemovedConverter implements EventConverter<TaskCandidateUserRemovedEvent, ActivitiEntityEvent> {
 
     private APITaskCandidateUserConverter converter;
+    private TaskCandidateEventConverterHelper taskCandidateEventConverterHelper = new TaskCandidateEventConverterHelper();
 
     public ToTaskCandidateUserRemovedConverter(APITaskCandidateUserConverter converter) {
         this.converter = converter;
@@ -37,16 +36,11 @@ public class ToTaskCandidateUserRemovedConverter implements EventConverter<TaskC
         TaskCandidateUserRemovedEvent event = null;
         if (internalEvent.getEntity() instanceof IdentityLink) {
             IdentityLink entity = (IdentityLink) internalEvent.getEntity();
-            if (isCandidateUserEntity(entity)) {
+            if (taskCandidateEventConverterHelper.isTaskCandidateUserLink(entity)) {
                 event = new TaskCandidateUserRemovedImpl(converter.from(entity));
             }
         }
         return Optional.ofNullable(event);
-    }
-
-    private boolean isCandidateUserEntity(IdentityLink identityLinkEntity) {
-        return CANDIDATE.equalsIgnoreCase(identityLinkEntity.getType()) &&
-                identityLinkEntity.getUserId() != null;
     }
 
 }
