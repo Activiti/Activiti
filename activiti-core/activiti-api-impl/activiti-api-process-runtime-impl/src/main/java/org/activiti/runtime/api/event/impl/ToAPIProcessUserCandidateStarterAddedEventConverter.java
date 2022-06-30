@@ -18,17 +18,15 @@ package org.activiti.runtime.api.event.impl;
 import org.activiti.api.process.runtime.events.ProcessUserCandidateStarterAddedEvent;
 import org.activiti.api.runtime.event.impl.ProcessUserCandidateStarterAddedEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
-import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.runtime.api.model.impl.APIProcessUserCandidateStarterConverter;
 
 import java.util.Optional;
 
-import static org.activiti.engine.task.IdentityLinkType.CANDIDATE;
-
 public class ToAPIProcessUserCandidateStarterAddedEventConverter implements EventConverter<ProcessUserCandidateStarterAddedEvent, ActivitiEntityEvent> {
 
     private APIProcessUserCandidateStarterConverter converter;
+    private ProcessCandidateStarterEventConverterHelper processCandidateStarterEventConverterHelper = new ProcessCandidateStarterEventConverterHelper();
 
     public ToAPIProcessUserCandidateStarterAddedEventConverter(APIProcessUserCandidateStarterConverter converter) {
         this.converter = converter;
@@ -37,18 +35,13 @@ public class ToAPIProcessUserCandidateStarterAddedEventConverter implements Even
     @Override
     public Optional<ProcessUserCandidateStarterAddedEvent> from(ActivitiEntityEvent internalEvent) {
         ProcessUserCandidateStarterAddedEventImpl event = null;
-        if (internalEvent.getEntity() instanceof IdentityLinkEntity) {
-            IdentityLinkEntity entity = (IdentityLinkEntity) internalEvent.getEntity();
-            if (isProcessUserCandidateStarterEntity(entity)) {
-                event = new ProcessUserCandidateStarterAddedEventImpl(converter.from(entity));
+        if (internalEvent.getEntity() instanceof IdentityLink) {
+            IdentityLink identityLink = (IdentityLink) internalEvent.getEntity();
+            if (processCandidateStarterEventConverterHelper.isProcessUserCandidateStarterLink(identityLink)) {
+                event = new ProcessUserCandidateStarterAddedEventImpl(converter.from(identityLink));
             }
         }
         return Optional.ofNullable(event);
     }
 
-    private boolean isProcessUserCandidateStarterEntity(IdentityLink identityLinkEntity) {
-        return identityLinkEntity.getProcessDefinitionId() != null &&
-                CANDIDATE.equalsIgnoreCase(identityLinkEntity.getType()) &&
-                identityLinkEntity.getUserId() != null;
-    }
 }
