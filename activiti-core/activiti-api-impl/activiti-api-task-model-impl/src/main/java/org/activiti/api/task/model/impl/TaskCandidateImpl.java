@@ -35,22 +35,4 @@ public abstract class TaskCandidateImpl implements TaskCandidate {
         return taskId;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        TaskCandidateImpl that = (TaskCandidateImpl) o;
-        return Objects.equals(taskId,
-                              that.taskId);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(taskId);
-    }
 }

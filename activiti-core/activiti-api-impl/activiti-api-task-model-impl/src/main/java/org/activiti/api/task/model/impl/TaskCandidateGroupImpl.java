@@ -46,13 +46,12 @@ public class TaskCandidateGroupImpl extends TaskCandidateImpl implements TaskCan
             return false;
         }
         TaskCandidateGroupImpl that = (TaskCandidateGroupImpl) o;
-        return Objects.equals(groupId,
-                              that.groupId);
+        return Objects.equals(groupId, that.groupId) &&
+                Objects.equals(getTaskId(), that.getTaskId());
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(groupId);
+        return Objects.hash(groupId, getTaskId());
     }
 }

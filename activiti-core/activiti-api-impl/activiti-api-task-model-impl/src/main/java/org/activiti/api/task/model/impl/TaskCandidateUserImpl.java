@@ -46,13 +46,12 @@ public class TaskCandidateUserImpl extends TaskCandidateImpl implements TaskCand
             return false;
         }
         TaskCandidateUserImpl that = (TaskCandidateUserImpl) o;
-        return Objects.equals(userId,
-                              that.userId);
+        return Objects.equals(userId, that.userId) &&
+                Objects.equals(getTaskId(), that.getTaskId());
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(userId);
+        return Objects.hash(userId, getTaskId());
     }
 }
