@@ -28,6 +28,7 @@ public class VariableDefinitionImpl implements VariableDefinition {
     private boolean required;
     private Boolean display;
     private String displayName;
+    private boolean analytics;
 
     @Override
     public String getId() {
@@ -93,6 +94,15 @@ public class VariableDefinitionImpl implements VariableDefinition {
     }
 
     @Override
+    public boolean isAnalytics() {
+        return analytics;
+    }
+
+    public void setAnalytics(boolean analytics) {
+        this.analytics = analytics;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -103,12 +113,13 @@ public class VariableDefinitionImpl implements VariableDefinition {
             Objects.equals(name, that.name) &&
             Objects.equals(description, that.description) &&
             Objects.equals(type, that.type) &&
-            Objects.equals(displayName, that.displayName);
+            Objects.equals(displayName, that.displayName) &&
+            Objects.equals(analytics, that.analytics);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, type, required, display, displayName);
+        return Objects.hash(id, name, description, type, required, display, displayName, analytics);
     }
 
     @Override
@@ -121,6 +132,8 @@ public class VariableDefinitionImpl implements VariableDefinition {
             ", required=" + required +
             ", display=" + display +
             ", displayName='" + displayName + '\'' +
+            ", analytics='" + analytics + '\'' +
             '}';
     }
+
 }
