@@ -4,9 +4,9 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the default branch
   push:
-    branches: [ develop ]
+    branches: [7.4.x]
   pull_request:
-    branches: [ develop ]
+    branches: [7.4.x]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -68,8 +68,7 @@ jobs:
         name: Calculate next internal release
         uses: Alfresco/alfresco-build-tools/.github/actions/calculate-next-internal-version@v1.2.1
         with:
-          next-version: 7.4.0
-
+          next-version: 7.4.1
       - name: Update VERSION file
         if: ${{ github.event_name == 'push' }}
         run: |

@@ -3,5 +3,5 @@ github:
   - name: activiti
     repositories:
     - name: activiti-cloud
-      branch: develop
+      branch: 7.4.x
       useSinglePullRequest: true
