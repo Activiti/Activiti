@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.api.process.runtime.events;
+package org.activiti.api.process.model;
 
-import org.activiti.api.process.model.events.ProcessGroupCandidateStarterEvent;
+public interface ProcessCandidateStarterUser extends ProcessCandidateStarter {
 
-public interface ProcessGroupCandidateStarterRemovedEvent extends ProcessGroupCandidateStarterEvent {
+    String getUserId();
+
 }

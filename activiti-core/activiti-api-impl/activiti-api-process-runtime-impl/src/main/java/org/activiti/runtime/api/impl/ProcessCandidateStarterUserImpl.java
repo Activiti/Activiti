@@ -15,38 +15,38 @@
  */
 package org.activiti.runtime.api.impl;
 
-import org.activiti.api.process.model.ProcessGroupCandidateStarter;
+import org.activiti.api.process.model.ProcessCandidateStarterUser;
 
 import java.util.Objects;
 
-public class ProcessGroupCandidateStarterImpl extends ProcessCandidateStarterImpl implements ProcessGroupCandidateStarter {
+public class ProcessCandidateStarterUserImpl extends ProcessCandidateStarterImpl implements ProcessCandidateStarterUser {
 
-    private String groupId;
+    private String userId;
 
-    public ProcessGroupCandidateStarterImpl() {
+    public ProcessCandidateStarterUserImpl() {
     }
 
-    public ProcessGroupCandidateStarterImpl(String processDefinitionId, String groupId) {
+    public ProcessCandidateStarterUserImpl(String processDefinitionId, String userId) {
         super(processDefinitionId);
-        this.groupId = groupId;
+        this.userId = userId;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ProcessGroupCandidateStarterImpl that = (ProcessGroupCandidateStarterImpl) o;
-        return Objects.equals(groupId, that.groupId) &&
+        ProcessCandidateStarterUserImpl that = (ProcessCandidateStarterUserImpl) o;
+        return Objects.equals(userId, that.userId) &&
                 Objects.equals(getProcessDefinitionId(), that.getProcessDefinitionId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getProcessDefinitionId(), groupId);
+        return Objects.hash(getProcessDefinitionId(), userId);
     }
 
     @Override
-    public String getGroupId() {
-        return this.groupId;
+    public String getUserId() {
+        return this.userId;
     }
 }

@@ -13,9 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.api.process.runtime.events;
+package org.activiti.api.process.model.events;
 
-import org.activiti.api.process.model.events.ProcessUserCandidateStarterEvent;
+import org.activiti.api.model.shared.event.RuntimeEvent;
+import org.activiti.api.process.model.ProcessCandidateStarterGroup;
 
-public interface ProcessUserCandidateStarterRemovedEvent extends ProcessUserCandidateStarterEvent {
+public interface ProcessCandidateStarterGroupEvent extends RuntimeEvent<ProcessCandidateStarterGroup, ProcessCandidateStarterGroupEvent.ProcessCandidateStarterGroupEvents> {
+
+    enum ProcessCandidateStarterGroupEvents {
+
+        PROCESS_CANDIDATE_STARER_GROUP_ADDED,
+
+        PROCESS_CANDIDATE_STARER_GROUP_REMOVED
+    }
 }

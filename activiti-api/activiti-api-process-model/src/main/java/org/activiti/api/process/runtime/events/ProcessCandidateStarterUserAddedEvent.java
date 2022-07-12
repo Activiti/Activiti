@@ -15,7 +15,7 @@
  */
 package org.activiti.api.process.runtime.events;
 
-import org.activiti.api.process.model.events.ProcessGroupCandidateStarterEvent;
+import org.activiti.api.process.model.events.ProcessCandidateStarterUserEvent;
 
-public interface ProcessGroupCandidateStarterAddedEvent extends ProcessGroupCandidateStarterEvent {
+public interface ProcessCandidateStarterUserAddedEvent extends ProcessCandidateStarterUserEvent {
 }

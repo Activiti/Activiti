@@ -15,33 +15,33 @@
  */
 package org.activiti.runtime.api.event.internal;
 
-import org.activiti.api.process.runtime.events.ProcessUserCandidateStarterAddedEvent;
+import org.activiti.api.process.runtime.events.ProcessCandidateStarterUserRemovedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
-import org.activiti.runtime.api.event.impl.ToAPIProcessUserCandidateStarterAddedEventConverter;
+import org.activiti.runtime.api.event.impl.ToAPIProcessCandidateStarterUserRemovedEventConverter;
 
 import java.util.List;
 
-public class ProcessUserCandidateStarterAddedListenerDelegate implements ActivitiEventListener {
+public class ProcessCandidateStarterUserRemovedListenerDelegate implements ActivitiEventListener {
 
-    private List<ProcessRuntimeEventListener<ProcessUserCandidateStarterAddedEvent>> listeners;
+    private List<ProcessRuntimeEventListener<ProcessCandidateStarterUserRemovedEvent>> listeners;
 
-    private ToAPIProcessUserCandidateStarterAddedEventConverter processUserCandidateStarterAddedEventConverter;
+    private ToAPIProcessCandidateStarterUserRemovedEventConverter processCandidateStarterUserRemovedEventConverter;
 
-    public ProcessUserCandidateStarterAddedListenerDelegate(List<ProcessRuntimeEventListener<ProcessUserCandidateStarterAddedEvent>> listeners,
-                                                            ToAPIProcessUserCandidateStarterAddedEventConverter processUserCandidateStarterAddedEventConverter) {
+    public ProcessCandidateStarterUserRemovedListenerDelegate(List<ProcessRuntimeEventListener<ProcessCandidateStarterUserRemovedEvent>> listeners,
+                                                              ToAPIProcessCandidateStarterUserRemovedEventConverter processCandidateStarterUserRemovedEventConverter) {
         this.listeners = listeners;
-        this.processUserCandidateStarterAddedEventConverter = processUserCandidateStarterAddedEventConverter;
+        this.processCandidateStarterUserRemovedEventConverter = processCandidateStarterUserRemovedEventConverter;
     }
 
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiEntityEvent) {
-            processUserCandidateStarterAddedEventConverter.from((ActivitiEntityEvent) event)
+            processCandidateStarterUserRemovedEventConverter.from((ActivitiEntityEvent) event)
                     .ifPresent(convertedEvent -> {
-                        for (ProcessRuntimeEventListener<ProcessUserCandidateStarterAddedEvent> listener : listeners ) {
+                        for (ProcessRuntimeEventListener<ProcessCandidateStarterUserRemovedEvent> listener : listeners ) {
                             listener.onEvent(convertedEvent);
                         }
                     });

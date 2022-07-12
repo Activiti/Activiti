@@ -27,51 +27,51 @@ public class ProcessCandidateStarterEventConverterHelperTest {
     private ProcessCandidateStarterEventConverterHelper processCandidateStarterEventConverterHelper = new ProcessCandidateStarterEventConverterHelper();
 
     @Test
-    public void isProcessUserCandidateStarterLink_when_processDefId_userId_and_typeCandidate() {
+    public void isProcessCandidateStarterUserLink_when_processDefId_userId_and_typeCandidate() {
         IdentityLink identityLink = createUserIdentityLink("aProcessDefId", "aUserId", IdentityLinkType.CANDIDATE);
-        assertThat(processCandidateStarterEventConverterHelper.isProcessUserCandidateStarterLink(identityLink)).isTrue();
+        assertThat(processCandidateStarterEventConverterHelper.isProcessCandidateStarterUserLink(identityLink)).isTrue();
     }
 
     @Test
-    public void isNotProcessUserCandidateStarterLink_when_processDefId_isNull() {
+    public void isNotProcessCandidateStarterUserLink_when_processDefId_isNull() {
         IdentityLink identityLink = createUserIdentityLink(null, "aUserId", IdentityLinkType.CANDIDATE);
-        assertThat(processCandidateStarterEventConverterHelper.isProcessUserCandidateStarterLink(identityLink)).isFalse();
+        assertThat(processCandidateStarterEventConverterHelper.isProcessCandidateStarterUserLink(identityLink)).isFalse();
     }
 
     @Test
-    public void isNotProcessUserCandidateStarterLink_when_userId_isNull() {
+    public void isNotProcessCandidateStarterUserLink_when_userId_isNull() {
         IdentityLink identityLink = createUserIdentityLink("aProcessDefId", null, IdentityLinkType.CANDIDATE);
-        assertThat(processCandidateStarterEventConverterHelper.isProcessUserCandidateStarterLink(identityLink)).isFalse();
+        assertThat(processCandidateStarterEventConverterHelper.isProcessCandidateStarterUserLink(identityLink)).isFalse();
     }
 
     @Test
-    public void isNotProcessUserCandidateStarterLink_when_type_is_notCandidate() {
+    public void isNotProcessCandidateStarterUserLink_when_type_is_notCandidate() {
         IdentityLink identityLink = createUserIdentityLink("aProcessDefId", "aUserId", IdentityLinkType.PARTICIPANT);
-        assertThat(processCandidateStarterEventConverterHelper.isProcessUserCandidateStarterLink(identityLink)).isFalse();
+        assertThat(processCandidateStarterEventConverterHelper.isProcessCandidateStarterUserLink(identityLink)).isFalse();
     }
 
     @Test
-    public void isProcessGroupCandidateStarterLink_when_processDefId_groupId_and_typeCandidate() {
+    public void isProcessCandidateStarterGroupLink_when_processDefId_groupId_and_typeCandidate() {
         IdentityLink identityLink = createGroupIdentityLink("aProcessDefId", "aGroupId", IdentityLinkType.CANDIDATE);
-        assertThat(processCandidateStarterEventConverterHelper.isProcessGroupCandidateStarterLink(identityLink)).isTrue();
+        assertThat(processCandidateStarterEventConverterHelper.isProcessCandidateStarterGroupLink(identityLink)).isTrue();
     }
 
     @Test
-    public void isNotProcessGroupCandidateStarterLink_when_processDefId_isNull() {
+    public void isNotProcessCandidateStarterGroupLink_when_processDefId_isNull() {
         IdentityLink identityLink = createGroupIdentityLink(null,"aGroupId", IdentityLinkType.CANDIDATE);
-        assertThat(processCandidateStarterEventConverterHelper.isProcessGroupCandidateStarterLink(identityLink)).isFalse();
+        assertThat(processCandidateStarterEventConverterHelper.isProcessCandidateStarterGroupLink(identityLink)).isFalse();
     }
 
     @Test
-    public void isNotProcessGroupCandidateStarterLink_when_groupId_isNull() {
+    public void isNotProcessCandidateStarterGroupLink_when_groupId_isNull() {
         IdentityLink identityLink = createGroupIdentityLink("aProcessDefId",null, IdentityLinkType.CANDIDATE);
-        assertThat(processCandidateStarterEventConverterHelper.isProcessGroupCandidateStarterLink(identityLink)).isFalse();
+        assertThat(processCandidateStarterEventConverterHelper.isProcessCandidateStarterGroupLink(identityLink)).isFalse();
     }
 
     @Test
-    public void isNotProcessGroupCandidateStarterLink_when_type_is_notCandidate() {
+    public void isNotProcessCandidateStarterGroupLink_when_type_is_notCandidate() {
         IdentityLink identityLink = createUserIdentityLink("aProcessDefId", "aUserId", IdentityLinkType.PARTICIPANT);
-        assertThat(processCandidateStarterEventConverterHelper.isProcessGroupCandidateStarterLink(identityLink)).isFalse();
+        assertThat(processCandidateStarterEventConverterHelper.isProcessCandidateStarterGroupLink(identityLink)).isFalse();
     }
 
     private IdentityLinkEntityImpl createUserIdentityLink(String processDefinitionId, String userId, String type) {

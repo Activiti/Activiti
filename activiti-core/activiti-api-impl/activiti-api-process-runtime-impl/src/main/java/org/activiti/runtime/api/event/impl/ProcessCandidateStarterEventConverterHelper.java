@@ -21,12 +21,12 @@ import static org.activiti.engine.task.IdentityLinkType.CANDIDATE;
 
 public class ProcessCandidateStarterEventConverterHelper {
 
-    public boolean isProcessUserCandidateStarterLink(IdentityLink identityLink) {
+    public boolean isProcessCandidateStarterUserLink(IdentityLink identityLink) {
         return isProcessCandidateStarterLink(identityLink) &&
             identityLink.getUserId() != null;
     }
 
-    public boolean isProcessGroupCandidateStarterLink(IdentityLink identityLink) {
+    public boolean isProcessCandidateStarterGroupLink(IdentityLink identityLink) {
         return isProcessCandidateStarterLink(identityLink) &&
             identityLink.getGroupId() != null;
     }

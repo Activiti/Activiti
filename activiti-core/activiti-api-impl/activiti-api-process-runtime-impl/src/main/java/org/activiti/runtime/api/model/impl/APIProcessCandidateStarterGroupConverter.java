@@ -15,15 +15,15 @@
  */
 package org.activiti.runtime.api.model.impl;
 
-import org.activiti.api.process.model.ProcessUserCandidateStarter;
+import org.activiti.api.process.model.ProcessCandidateStarterGroup;
 import org.activiti.engine.task.IdentityLink;
-import org.activiti.runtime.api.impl.ProcessUserCandidateStarterImpl;
+import org.activiti.runtime.api.impl.ProcessCandidateStarterGroupImpl;
 
-public class APIProcessUserCandidateStarterConverter extends ListConverter<IdentityLink, ProcessUserCandidateStarter>
-        implements ModelConverter<IdentityLink, ProcessUserCandidateStarter> {
+public class APIProcessCandidateStarterGroupConverter extends ListConverter<IdentityLink, ProcessCandidateStarterGroup>
+        implements ModelConverter<IdentityLink, ProcessCandidateStarterGroup> {
 
     @Override
-    public ProcessUserCandidateStarter from(IdentityLink identityLink) {
-        return new ProcessUserCandidateStarterImpl(identityLink.getProcessDefinitionId(), identityLink.getUserId());
+    public ProcessCandidateStarterGroup from(IdentityLink identityLink) {
+        return new ProcessCandidateStarterGroupImpl(identityLink.getProcessDefinitionId(), identityLink.getGroupId());
     }
 }

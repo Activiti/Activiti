@@ -42,10 +42,10 @@ import org.activiti.api.process.runtime.events.ProcessResumedEvent;
 import org.activiti.api.process.runtime.events.ProcessStartedEvent;
 import org.activiti.api.process.runtime.events.ProcessSuspendedEvent;
 import org.activiti.api.process.runtime.events.ProcessUpdatedEvent;
-import org.activiti.api.process.runtime.events.ProcessUserCandidateStarterAddedEvent;
-import org.activiti.api.process.runtime.events.ProcessUserCandidateStarterRemovedEvent;
-import org.activiti.api.process.runtime.events.ProcessGroupCandidateStarterAddedEvent;
-import org.activiti.api.process.runtime.events.ProcessGroupCandidateStarterRemovedEvent;
+import org.activiti.api.process.runtime.events.ProcessCandidateStarterUserAddedEvent;
+import org.activiti.api.process.runtime.events.ProcessCandidateStarterUserRemovedEvent;
+import org.activiti.api.process.runtime.events.ProcessCandidateStarterGroupAddedEvent;
+import org.activiti.api.process.runtime.events.ProcessCandidateStarterGroupRemovedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
@@ -66,10 +66,10 @@ import org.activiti.runtime.api.event.impl.MessageSubscriptionConverter;
 import org.activiti.runtime.api.event.impl.StartMessageSubscriptionConverter;
 import org.activiti.runtime.api.event.impl.ToAPIProcessCreatedEventConverter;
 import org.activiti.runtime.api.event.impl.ToAPIProcessStartedEventConverter;
-import org.activiti.runtime.api.event.impl.ToAPIProcessUserCandidateStarterAddedEventConverter;
-import org.activiti.runtime.api.event.impl.ToAPIProcessUserCandidateStarterRemovedEventConverter;
-import org.activiti.runtime.api.event.impl.ToAPIProcessGroupCandidateStarterAddedEventConverter;
-import org.activiti.runtime.api.event.impl.ToAPIProcessGroupCandidateStarterRemovedEventConverter;
+import org.activiti.runtime.api.event.impl.ToAPIProcessCandidateStarterUserAddedEventConverter;
+import org.activiti.runtime.api.event.impl.ToAPIProcessCandidateStarterUserRemovedEventConverter;
+import org.activiti.runtime.api.event.impl.ToAPIProcessCandidateStarterGroupAddedEventConverter;
+import org.activiti.runtime.api.event.impl.ToAPIProcessCandidateStarterGroupRemovedEventConverter;
 import org.activiti.runtime.api.event.impl.ToActivityCancelledConverter;
 import org.activiti.runtime.api.event.impl.ToActivityCompletedConverter;
 import org.activiti.runtime.api.event.impl.ToActivityStartedConverter;
@@ -106,10 +106,10 @@ import org.activiti.runtime.api.event.internal.ProcessResumedEventListenerDelega
 import org.activiti.runtime.api.event.internal.ProcessStartedListenerDelegate;
 import org.activiti.runtime.api.event.internal.ProcessSuspendedListenerDelegate;
 import org.activiti.runtime.api.event.internal.ProcessUpdatedListenerDelegate;
-import org.activiti.runtime.api.event.internal.ProcessUserCandidateStarterAddedListenerDelegate;
-import org.activiti.runtime.api.event.internal.ProcessUserCandidateStarterRemovedListenerDelegate;
-import org.activiti.runtime.api.event.internal.ProcessGroupCandidateStarterAddedListenerDelegate;
-import org.activiti.runtime.api.event.internal.ProcessGroupCandidateStarterRemovedListenerDelegate;
+import org.activiti.runtime.api.event.internal.ProcessCandidateStarterUserAddedListenerDelegate;
+import org.activiti.runtime.api.event.internal.ProcessCandidateStarterUserRemovedListenerDelegate;
+import org.activiti.runtime.api.event.internal.ProcessCandidateStarterGroupAddedListenerDelegate;
+import org.activiti.runtime.api.event.internal.ProcessCandidateStarterGroupRemovedListenerDelegate;
 import org.activiti.runtime.api.event.internal.SequenceFlowTakenListenerDelegate;
 import org.activiti.runtime.api.event.internal.SignalReceivedListenerDelegate;
 import org.activiti.runtime.api.event.internal.TimerCancelledListenerDelegate;
@@ -134,8 +134,8 @@ import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.model.impl.ToActivityConverter;
 import org.activiti.runtime.api.model.impl.ToSignalConverter;
-import org.activiti.runtime.api.model.impl.APIProcessUserCandidateStarterConverter;
-import org.activiti.runtime.api.model.impl.APIProcessGroupCandidateStarterConverter;
+import org.activiti.runtime.api.model.impl.APIProcessCandidateStarterUserConverter;
+import org.activiti.runtime.api.model.impl.APIProcessCandidateStarterGroupConverter;
 import org.activiti.runtime.api.signal.SignalPayloadEventListener;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.ProcessVariablesInitiator;
@@ -597,79 +597,79 @@ public class ProcessRuntimeAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(name = "registerProcessUserCandidateStarterAddedListenerDelegate")
-    public InitializingBean registerProcessUserCandidateStarterAddedListenerDelegate(RuntimeService runtimeService,
-                                                                        @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessUserCandidateStarterAddedEvent>> listeners,
-                                                                        ToAPIProcessUserCandidateStarterAddedEventConverter processUserCandidateStarterAddedEventConverter) {
-        return () -> runtimeService.addEventListener(new ProcessUserCandidateStarterAddedListenerDelegate(getInitializedListeners(listeners),
-                processUserCandidateStarterAddedEventConverter),
+    @ConditionalOnMissingBean(name = "registerProcessCandidateStarterUserAddedListenerDelegate")
+    public InitializingBean registerProcessCandidateStarterUserAddedListenerDelegate(RuntimeService runtimeService,
+                                                                        @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessCandidateStarterUserAddedEvent>> listeners,
+                                                                        ToAPIProcessCandidateStarterUserAddedEventConverter processCandidateStarterUserAddedEventConverter) {
+        return () -> runtimeService.addEventListener(new ProcessCandidateStarterUserAddedListenerDelegate(getInitializedListeners(listeners),
+                processCandidateStarterUserAddedEventConverter),
             ActivitiEventType.ENTITY_CREATED);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ToAPIProcessUserCandidateStarterAddedEventConverter processUserCandidateStarterAddedEventConverter(APIProcessUserCandidateStarterConverter processUserCandidateStarterConverter) {
-        return new ToAPIProcessUserCandidateStarterAddedEventConverter(processUserCandidateStarterConverter);
+    public ToAPIProcessCandidateStarterUserAddedEventConverter processCandidateStarterUserAddedEventConverter(APIProcessCandidateStarterUserConverter processCandidateStarterUserConverter) {
+        return new ToAPIProcessCandidateStarterUserAddedEventConverter(processCandidateStarterUserConverter);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public APIProcessUserCandidateStarterConverter apiProcessUserCandidateStarterConverter() {
-        return new APIProcessUserCandidateStarterConverter();
+    public APIProcessCandidateStarterUserConverter apiProcessCandidateStarterUserConverter() {
+        return new APIProcessCandidateStarterUserConverter();
     }
 
     @Bean
-    @ConditionalOnMissingBean(name = "registerProcessGroupCandidateStarterAddedListenerDelegate")
-    public InitializingBean registerProcessGroupCandidateStarterAddedListenerDelegate(RuntimeService runtimeService,
-                                                                        @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessGroupCandidateStarterAddedEvent>> listeners,
-                                                                        ToAPIProcessGroupCandidateStarterAddedEventConverter processGroupCandidateStarterAddedEventConverter) {
-        return () -> runtimeService.addEventListener(new ProcessGroupCandidateStarterAddedListenerDelegate(getInitializedListeners(listeners),
-                processGroupCandidateStarterAddedEventConverter),
+    @ConditionalOnMissingBean(name = "registerProcessCandidateStarterGroupAddedListenerDelegate")
+    public InitializingBean registerProcessCandidateStarterGroupAddedListenerDelegate(RuntimeService runtimeService,
+                                                                        @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessCandidateStarterGroupAddedEvent>> listeners,
+                                                                        ToAPIProcessCandidateStarterGroupAddedEventConverter processCandidateStarterGroupAddedEventConverter) {
+        return () -> runtimeService.addEventListener(new ProcessCandidateStarterGroupAddedListenerDelegate(getInitializedListeners(listeners),
+                processCandidateStarterGroupAddedEventConverter),
             ActivitiEventType.ENTITY_CREATED);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ToAPIProcessGroupCandidateStarterAddedEventConverter processGroupCandidateStarterAddedEventConverter(APIProcessGroupCandidateStarterConverter processGroupCandidateStarterConverter) {
-        return new ToAPIProcessGroupCandidateStarterAddedEventConverter(processGroupCandidateStarterConverter);
+    public ToAPIProcessCandidateStarterGroupAddedEventConverter processCandidateStarterGroupAddedEventConverter(APIProcessCandidateStarterGroupConverter processCandidateStarterGroupConverter) {
+        return new ToAPIProcessCandidateStarterGroupAddedEventConverter(processCandidateStarterGroupConverter);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public APIProcessGroupCandidateStarterConverter apiProcessGroupCandidateStarterConverter() {
-        return new APIProcessGroupCandidateStarterConverter();
+    public APIProcessCandidateStarterGroupConverter apiProcessCandidateStarterGroupConverter() {
+        return new APIProcessCandidateStarterGroupConverter();
     }
 
     @Bean
-    @ConditionalOnMissingBean(name = "registerProcessUserCandidateStarterRemovedListenerDelegate")
-    public InitializingBean registerProcessUserCandidateStarterRemovedListenerDelegate(RuntimeService runtimeService,
-                                                                                     @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessUserCandidateStarterRemovedEvent>> listeners,
-                                                                                     ToAPIProcessUserCandidateStarterRemovedEventConverter processUserCandidateStarterRemovedEventConverter) {
-        return () -> runtimeService.addEventListener(new ProcessUserCandidateStarterRemovedListenerDelegate(getInitializedListeners(listeners),
-                processUserCandidateStarterRemovedEventConverter),
+    @ConditionalOnMissingBean(name = "registerProcessCandidateStarterUserRemovedListenerDelegate")
+    public InitializingBean registerProcessCandidateStarterUserRemovedListenerDelegate(RuntimeService runtimeService,
+                                                                                     @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessCandidateStarterUserRemovedEvent>> listeners,
+                                                                                     ToAPIProcessCandidateStarterUserRemovedEventConverter processCandidateStarterUserRemovedEventConverter) {
+        return () -> runtimeService.addEventListener(new ProcessCandidateStarterUserRemovedListenerDelegate(getInitializedListeners(listeners),
+                processCandidateStarterUserRemovedEventConverter),
             ActivitiEventType.ENTITY_CREATED);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ToAPIProcessUserCandidateStarterRemovedEventConverter processUserCandidateStarterRemovedEventConverter(APIProcessUserCandidateStarterConverter processUserCandidateStarterConverter) {
-        return new ToAPIProcessUserCandidateStarterRemovedEventConverter(processUserCandidateStarterConverter);
+    public ToAPIProcessCandidateStarterUserRemovedEventConverter processCandidateStarterUserRemovedEventConverter(APIProcessCandidateStarterUserConverter processCandidateStarterUserConverter) {
+        return new ToAPIProcessCandidateStarterUserRemovedEventConverter(processCandidateStarterUserConverter);
     }
 
     @Bean
-    @ConditionalOnMissingBean(name = "registerProcessGroupCandidateStarterRemovedListenerDelegate")
-    public InitializingBean registerProcessGroupCandidateStarterRemovedListenerDelegate(RuntimeService runtimeService,
-                                                                                      @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessGroupCandidateStarterRemovedEvent>> listeners,
-                                                                                      ToAPIProcessGroupCandidateStarterRemovedEventConverter processGroupCandidateStarterRemovedEventConverter) {
-        return () -> runtimeService.addEventListener(new ProcessGroupCandidateStarterRemovedListenerDelegate(getInitializedListeners(listeners),
-                processGroupCandidateStarterRemovedEventConverter),
+    @ConditionalOnMissingBean(name = "registerProcessCandidateStarterGroupRemovedListenerDelegate")
+    public InitializingBean registerProcessCandidateStarterGroupRemovedListenerDelegate(RuntimeService runtimeService,
+                                                                                      @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessCandidateStarterGroupRemovedEvent>> listeners,
+                                                                                      ToAPIProcessCandidateStarterGroupRemovedEventConverter processCandidateStarterGroupRemovedEventConverter) {
+        return () -> runtimeService.addEventListener(new ProcessCandidateStarterGroupRemovedListenerDelegate(getInitializedListeners(listeners),
+                processCandidateStarterGroupRemovedEventConverter),
             ActivitiEventType.ENTITY_CREATED);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ToAPIProcessGroupCandidateStarterRemovedEventConverter processGroupCandidateStarterRemovedEventConverter(APIProcessGroupCandidateStarterConverter processGroupCandidateStarterConverter) {
-        return new ToAPIProcessGroupCandidateStarterRemovedEventConverter(processGroupCandidateStarterConverter);
+    public ToAPIProcessCandidateStarterGroupRemovedEventConverter processCandidateStarterGroupRemovedEventConverter(APIProcessCandidateStarterGroupConverter processCandidateStarterGroupConverter) {
+        return new ToAPIProcessCandidateStarterGroupRemovedEventConverter(processCandidateStarterGroupConverter);
     }
 
 }

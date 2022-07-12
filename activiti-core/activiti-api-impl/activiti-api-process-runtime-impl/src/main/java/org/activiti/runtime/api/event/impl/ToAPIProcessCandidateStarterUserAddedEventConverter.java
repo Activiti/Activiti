@@ -15,32 +15,33 @@
  */
 package org.activiti.runtime.api.event.impl;
 
-import org.activiti.api.process.runtime.events.ProcessGroupCandidateStarterAddedEvent;
-import org.activiti.api.runtime.event.impl.ProcessGroupCandidateStarterAddedEventImpl;
+import org.activiti.api.process.runtime.events.ProcessCandidateStarterUserAddedEvent;
+import org.activiti.api.runtime.event.impl.ProcessCandidateStarterUserAddedEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.task.IdentityLink;
-import org.activiti.runtime.api.model.impl.APIProcessGroupCandidateStarterConverter;
+import org.activiti.runtime.api.model.impl.APIProcessCandidateStarterUserConverter;
 
 import java.util.Optional;
 
-public class ToAPIProcessGroupCandidateStarterAddedEventConverter implements EventConverter<ProcessGroupCandidateStarterAddedEvent, ActivitiEntityEvent> {
+public class ToAPIProcessCandidateStarterUserAddedEventConverter implements EventConverter<ProcessCandidateStarterUserAddedEvent, ActivitiEntityEvent> {
 
-    private APIProcessGroupCandidateStarterConverter converter;
+    private APIProcessCandidateStarterUserConverter converter;
     private ProcessCandidateStarterEventConverterHelper processCandidateStarterEventConverterHelper = new ProcessCandidateStarterEventConverterHelper();
 
-    public ToAPIProcessGroupCandidateStarterAddedEventConverter(APIProcessGroupCandidateStarterConverter converter) {
+    public ToAPIProcessCandidateStarterUserAddedEventConverter(APIProcessCandidateStarterUserConverter converter) {
         this.converter = converter;
     }
 
     @Override
-    public Optional<ProcessGroupCandidateStarterAddedEvent> from(ActivitiEntityEvent internalEvent) {
-        ProcessGroupCandidateStarterAddedEventImpl event = null;
+    public Optional<ProcessCandidateStarterUserAddedEvent> from(ActivitiEntityEvent internalEvent) {
+        ProcessCandidateStarterUserAddedEventImpl event = null;
         if (internalEvent.getEntity() instanceof IdentityLink) {
             IdentityLink identityLink = (IdentityLink) internalEvent.getEntity();
-            if (processCandidateStarterEventConverterHelper.isProcessGroupCandidateStarterLink(identityLink)) {
-                event = new ProcessGroupCandidateStarterAddedEventImpl(converter.from(identityLink));
+            if (processCandidateStarterEventConverterHelper.isProcessCandidateStarterUserLink(identityLink)) {
+                event = new ProcessCandidateStarterUserAddedEventImpl(converter.from(identityLink));
             }
         }
         return Optional.ofNullable(event);
     }
+
 }
