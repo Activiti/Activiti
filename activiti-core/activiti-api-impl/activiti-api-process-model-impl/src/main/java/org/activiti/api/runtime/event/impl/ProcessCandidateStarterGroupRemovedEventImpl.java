@@ -30,6 +30,6 @@ public class ProcessCandidateStarterGroupRemovedEventImpl extends RuntimeEventIm
 
     @Override
     public ProcessCandidateStarterGroupEvents getEventType() {
-        return ProcessCandidateStarterGroupEvents.PROCESS_CANDIDATE_STARER_GROUP_REMOVED;
+        return ProcessCandidateStarterGroupEvents.PROCESS_CANDIDATE_STARTER_GROUP_REMOVED;
     }
 }

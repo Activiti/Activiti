@@ -30,6 +30,6 @@ public class ProcessCandidateStarterUserAddedEventImpl extends RuntimeEventImpl<
 
     @Override
     public ProcessCandidateStarterUserEvents getEventType() {
-        return ProcessCandidateStarterUserEvents.PROCESS_CANDIDATE_STARER_USER_ADDED;
+        return ProcessCandidateStarterUserEvents.PROCESS_CANDIDATE_STARTER_USER_ADDED;
     }
 }

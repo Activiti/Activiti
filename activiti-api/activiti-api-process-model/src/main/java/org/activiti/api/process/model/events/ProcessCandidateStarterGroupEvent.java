@@ -22,8 +22,8 @@ public interface ProcessCandidateStarterGroupEvent extends RuntimeEvent<ProcessC
 
     enum ProcessCandidateStarterGroupEvents {
 
-        PROCESS_CANDIDATE_STARER_GROUP_ADDED,
+        PROCESS_CANDIDATE_STARTER_GROUP_ADDED,
 
-        PROCESS_CANDIDATE_STARER_GROUP_REMOVED
+        PROCESS_CANDIDATE_STARTER_GROUP_REMOVED
     }
 }

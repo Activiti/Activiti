@@ -22,8 +22,8 @@ public interface ProcessCandidateStarterUserEvent extends RuntimeEvent<ProcessCa
 
     enum ProcessCandidateStarterUserEvents {
 
-        PROCESS_CANDIDATE_STARER_USER_ADDED,
+        PROCESS_CANDIDATE_STARTER_USER_ADDED,
 
-        PROCESS_CANDIDATE_STARER_USER_REMOVED
+        PROCESS_CANDIDATE_STARTER_USER_REMOVED
     }
 }

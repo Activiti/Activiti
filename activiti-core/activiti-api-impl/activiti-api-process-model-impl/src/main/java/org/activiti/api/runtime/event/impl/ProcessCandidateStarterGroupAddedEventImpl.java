@@ -30,6 +30,6 @@ public class ProcessCandidateStarterGroupAddedEventImpl extends RuntimeEventImpl
 
     @Override
     public ProcessCandidateStarterGroupEvents getEventType() {
-        return ProcessCandidateStarterGroupEvents.PROCESS_CANDIDATE_STARER_GROUP_ADDED;
+        return ProcessCandidateStarterGroupEvents.PROCESS_CANDIDATE_STARTER_GROUP_ADDED;
     }
 }
