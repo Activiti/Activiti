@@ -53,7 +53,7 @@ jobs:
           MAVEN_VERSION: 3.6.3
 
       - name: Cache Maven packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
