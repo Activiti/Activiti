@@ -40,6 +40,8 @@ jobs:
         uses: actions/setup-java@v3.4.1
         with:
           java-version: 11
+          distribution: 'temurin'
+          cache: 'maven'
 
       # step required for https://github.com/nektos/act/issues/161 to run locally with https://github.com/nektos/act
       - name: Download Maven
@@ -51,13 +53,6 @@ jobs:
           ln -s /usr/share/apache-maven-$MAVEN_VERSION/bin/mvn /usr/bin/mvn
         env:
           MAVEN_VERSION: 3.6.3
-
-      - name: Cache Maven packages
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
 
       - uses: actions/setup-python@v2
         if: ${{ github.event_name == 'push' }}
