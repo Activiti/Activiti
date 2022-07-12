@@ -4,5 +4,5 @@ on: pull_request
 jobs:
   enable-auto-merge:
     uses: Alfresco/alfresco-build-tools/.github/workflows/dependabot-auto-merge.yml@AAE-8814-improve-dependabot-usage
-    with:
+    secrets:
       token: ${{ secrets.DEPENDABOT_GITHUB_TOKEN }}
