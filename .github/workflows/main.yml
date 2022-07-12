@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up python
         uses: actions/setup-python@v2
       - name: Run pre-commit
@@ -29,17 +29,19 @@ jobs:
     steps:
 
       - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.8.0
+        uses: styfle/cancel-workflow-action@0.10.0
         with:
           access_token: ${{ github.token }}
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Java JDK 11
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3.4.1
         with:
           java-version: 11
+          distribution: 'temurin'
+          cache: 'maven'
 
       # step required for https://github.com/nektos/act/issues/161 to run locally with https://github.com/nektos/act
       - name: Download Maven
@@ -52,21 +54,14 @@ jobs:
         env:
           MAVEN_VERSION: 3.6.3
 
-      - name: Cache Maven packages
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-
       - uses: actions/setup-python@v2
         if: ${{ github.event_name == 'push' }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-pysemver@v1.2.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-pysemver@v1.8.0
         if: ${{ github.event_name == 'push' }}
       - id: next-release
         if: ${{ github.event_name == 'push' }}
         name: Calculate next internal release
-        uses: Alfresco/alfresco-build-tools/.github/actions/calculate-next-internal-version@v1.2.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/calculate-next-internal-version@v1.8.0
         with:
           next-version: 7.5.0
 
@@ -120,7 +115,7 @@ jobs:
 
       - name: Install updatebot
         if: ${{ github.event_name == 'push' }}
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@v1.2.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@v1.8.0
 
       - name: Run updatebot
         if: ${{ github.event_name == 'push' }}
