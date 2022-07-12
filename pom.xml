@@ -224,7 +224,7 @@
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
     <spring-boot.version>2.7.0</spring-boot.version>
     <h2.version>1.4.200</h2.version>
-    <versions-maven-plugin.version>2.9.0</versions-maven-plugin.version>
+    <versions-maven-plugin.version>2.11.0</versions-maven-plugin.version>
 
     <!-- configuration properties for tests -->
     <generated-assertions-folder>
