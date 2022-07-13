@@ -31,4 +31,6 @@ public interface VariableDefinition {
 
     String getDisplayName();
 
+    boolean isAnalytics();
+
 }

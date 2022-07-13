@@ -31,6 +31,8 @@ public class VariableDefinition {
 
     private String displayName;
 
+    private boolean analytics;
+
     public String getId() {
         return id;
     }
@@ -85,5 +87,13 @@ public class VariableDefinition {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public boolean isAnalytics() {
+        return analytics;
+    }
+
+    public void setAnalytics(boolean analytics) {
+        this.analytics = analytics;
     }
 }
