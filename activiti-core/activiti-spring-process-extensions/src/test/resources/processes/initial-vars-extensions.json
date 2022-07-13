@@ -44,6 +44,21 @@
               "type": "file",
               "required": false,
               "value": {}
+            },
+            "379dc1a1-481d-4617-a027-ef39fdadf6667": {
+              "id": "379dc1a1-481d-4617-a027-ef39fdadf6667",
+              "name": "trackedId",
+              "type": "integer",
+              "required": false,
+              "value": 0,
+              "analytics": true
+            },
+            "379dc1a1-481d-4617-a027-ef39fdadf6668": {
+              "id": "379dc1a1-481d-4617-a027-ef39fdadf6668",
+              "name": "notTrackedId",
+              "type": "integer",
+              "required": false,
+              "value": 0
             }
           }
         }
