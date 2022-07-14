@@ -13,26 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.api.task.model.impl;
+package org.activiti.api.process.model;
 
-import java.util.Objects;
+public interface ProcessCandidateStarterUser extends ProcessCandidateStarter {
 
-import org.activiti.api.task.model.TaskCandidate;
-
-public abstract class TaskCandidateImpl implements TaskCandidate {
-
-    private String taskId;
-
-    public TaskCandidateImpl() {
-    }
-
-    public TaskCandidateImpl(String taskId) {
-        this.taskId = taskId;
-    }
-
-    @Override
-    public String getTaskId() {
-        return taskId;
-    }
+    String getUserId();
 
 }

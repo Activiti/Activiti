@@ -55,7 +55,7 @@ public class ProcessRuntimeCandidateStartersIT {
 
     @Test
     public void candidateStarterUser_should_getProcessDefinitions() {
-        loginAsUserCandidateStarter();
+        loginAsCandidateStarterUser();
 
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
                                                                                                       50));
@@ -88,7 +88,7 @@ public class ProcessRuntimeCandidateStartersIT {
 
     @Test
     public void candidateStarterUser_should_getProcessDefinition() {
-        loginAsUserCandidateStarter();
+        loginAsCandidateStarterUser();
 
         ProcessDefinition processDefinition = processRuntime.processDefinition(RESTRICTED_PROCESS_DEFINITION_KEY);
         assertThat(processDefinition).isNotNull();
@@ -117,7 +117,7 @@ public class ProcessRuntimeCandidateStartersIT {
 
     @Test
     public void candidateStarterUser_can_startProcess() {
-        loginAsUserCandidateStarter();
+        loginAsCandidateStarterUser();
 
         ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
             .withProcessDefinitionKey(RESTRICTED_PROCESS_DEFINITION_KEY)
@@ -127,7 +127,7 @@ public class ProcessRuntimeCandidateStartersIT {
         assertThat(processInstance.getProcessDefinitionKey()).isEqualTo(RESTRICTED_PROCESS_DEFINITION_KEY);
     }
 
-    private void loginAsUserCandidateStarter() {
+    private void loginAsCandidateStarterUser() {
         securityUtil.logInAs("user");
     }
 

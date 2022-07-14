@@ -13,26 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.api.task.model.impl;
+package org.activiti.api.process.runtime.events.listener;
 
-import java.util.Objects;
+import org.activiti.api.model.shared.event.RuntimeEvent;
+import org.activiti.api.process.model.ProcessCandidateStarter;
 
-import org.activiti.api.task.model.TaskCandidate;
-
-public abstract class TaskCandidateImpl implements TaskCandidate {
-
-    private String taskId;
-
-    public TaskCandidateImpl() {
-    }
-
-    public TaskCandidateImpl(String taskId) {
-        this.taskId = taskId;
-    }
-
-    @Override
-    public String getTaskId() {
-        return taskId;
-    }
-
+public interface ProcessCandidateStarterEventListener <E extends RuntimeEvent<? extends ProcessCandidateStarter, ?>> extends ProcessRuntimeEventListener<E>{
 }

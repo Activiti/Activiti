@@ -17,17 +17,15 @@ package org.activiti.runtime.api.event.impl;
 
 import org.activiti.api.task.runtime.events.TaskCandidateGroupAddedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
-import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.runtime.api.model.impl.APITaskCandidateGroupConverter;
 
 import java.util.Optional;
 
-import static org.activiti.engine.task.IdentityLinkType.CANDIDATE;
-
 public class ToAPITaskCandidateGroupAddedEventConverter implements EventConverter<TaskCandidateGroupAddedEvent, ActivitiEntityEvent> {
 
     private APITaskCandidateGroupConverter converter;
+    private TaskCandidateEventConverterHelper taskCandidateEventConverterHelper = new TaskCandidateEventConverterHelper();
 
     public ToAPITaskCandidateGroupAddedEventConverter(APITaskCandidateGroupConverter converter) {
         this.converter = converter;
@@ -36,17 +34,13 @@ public class ToAPITaskCandidateGroupAddedEventConverter implements EventConverte
     @Override
     public Optional<TaskCandidateGroupAddedEvent> from(ActivitiEntityEvent internalEvent) {
         TaskCandidateGroupAddedEventImpl event = null;
-        if (internalEvent.getEntity() instanceof IdentityLinkEntity) {
-            IdentityLinkEntity entity = (IdentityLinkEntity) internalEvent.getEntity();
-            if (isCandidateGroupEntity(entity)) {
-                event = new TaskCandidateGroupAddedEventImpl(converter.from(entity));
+        if (internalEvent.getEntity() instanceof IdentityLink) {
+            IdentityLink identityLink = (IdentityLink) internalEvent.getEntity();
+            if (taskCandidateEventConverterHelper.isTaskCandidateGroupLink(identityLink)) {
+                event = new TaskCandidateGroupAddedEventImpl(converter.from(identityLink));
             }
         }
         return Optional.ofNullable(event);
     }
 
-    private boolean isCandidateGroupEntity(IdentityLink identityLinkEntity) {
-        return CANDIDATE.equalsIgnoreCase(identityLinkEntity.getType()) &&
-                identityLinkEntity.getGroupId() != null;
-    }
 }

@@ -13,26 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.api.task.model.impl;
+package org.activiti.runtime.api.model.impl;
 
-import java.util.Objects;
+import org.activiti.api.process.model.ProcessCandidateStarterUser;
+import org.activiti.engine.task.IdentityLink;
+import org.activiti.runtime.api.impl.ProcessCandidateStarterUserImpl;
 
-import org.activiti.api.task.model.TaskCandidate;
-
-public abstract class TaskCandidateImpl implements TaskCandidate {
-
-    private String taskId;
-
-    public TaskCandidateImpl() {
-    }
-
-    public TaskCandidateImpl(String taskId) {
-        this.taskId = taskId;
-    }
+public class APIProcessCandidateStarterUserConverter extends ListConverter<IdentityLink, ProcessCandidateStarterUser>
+        implements ModelConverter<IdentityLink, ProcessCandidateStarterUser> {
 
     @Override
-    public String getTaskId() {
-        return taskId;
+    public ProcessCandidateStarterUser from(IdentityLink identityLink) {
+        return new ProcessCandidateStarterUserImpl(identityLink.getProcessDefinitionId(), identityLink.getUserId());
     }
-
 }
