@@ -91,7 +91,7 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   }
   
   /**
-   * Searches the whole process, including subprocesses (unlike {@link getFlowElements(String)}
+   * Searches the whole process, including subprocesses
    */
   public FlowElement getFlowElementRecursive(String flowElementId) {
   	 return getFlowElementRecursive(this, flowElementId);

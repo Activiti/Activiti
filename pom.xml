@@ -704,6 +704,7 @@
           <version>${maven-javadoc-plugin.version}</version>
           <configuration>
             <quiet>true</quiet>
+            <source>8</source>
           </configuration>
         </plugin>
         <plugin>
