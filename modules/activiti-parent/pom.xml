@@ -22,7 +22,7 @@
             <artifactId>dependency-check-maven</artifactId>
             <version>6.4.0</version>
             <configuration>
-              <failBuildOnCVSS>7</failBuildOnCVSS>
+              <!--<failBuildOnCVSS>7</failBuildOnCVSS>-->
               <suppressionFiles>
                 <suppressionFile>${settings.localRepository}/org/activiti/activiti-dependency-check/${project.version}/activiti-dependency-check-${project.version}-suppression.xml</suppressionFile>
               </suppressionFiles>
