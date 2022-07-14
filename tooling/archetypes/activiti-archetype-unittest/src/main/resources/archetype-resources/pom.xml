@@ -13,7 +13,7 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-engine</artifactId>
-      <version>5.23.0</version>
+      <version>5.23.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

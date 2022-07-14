@@ -10,7 +10,7 @@
   </parent>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-root</artifactId>
-  <version>5.23.0</version>
+  <version>5.23.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Activiti</name>
   <description>BPM and workflow engine</description>
