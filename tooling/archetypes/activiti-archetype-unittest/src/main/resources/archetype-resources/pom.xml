@@ -5,8 +5,7 @@
   <artifactId>${artifactId}</artifactId>
   <version>${version}</version>
   <properties>
-    <junit.version>4.12</junit.version>
-    <h2.version>1.4.196</h2.version>
+    <junit.version>4.13.2</junit.version>
     <logback.version>1.2.0</logback.version>
   </properties>
   <dependencies>
