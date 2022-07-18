@@ -17,7 +17,7 @@ package org.activiti.runtime.api.model.impl;
 
 import org.activiti.api.process.model.ProcessCandidateStarterGroup;
 import org.activiti.engine.task.IdentityLink;
-import org.activiti.runtime.api.impl.ProcessCandidateStarterGroupImpl;
+import org.activiti.api.runtime.model.impl.ProcessCandidateStarterGroupImpl;
 
 public class APIProcessCandidateStarterGroupConverter extends ListConverter<IdentityLink, ProcessCandidateStarterGroup>
         implements ModelConverter<IdentityLink, ProcessCandidateStarterGroup> {

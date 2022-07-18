@@ -13,40 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.runtime.api.impl;
+package org.activiti.api.runtime.model.impl;
 
-import org.activiti.api.process.model.ProcessCandidateStarterGroup;
+import org.activiti.api.process.model.ProcessCandidateStarterUser;
 
 import java.util.Objects;
 
-public class ProcessCandidateStarterGroupImpl extends ProcessCandidateStarterImpl implements ProcessCandidateStarterGroup {
+public class ProcessCandidateStarterUserImpl extends ProcessCandidateStarterImpl implements ProcessCandidateStarterUser {
 
-    private String groupId;
+    private String userId;
 
-    public ProcessCandidateStarterGroupImpl() {
+    public ProcessCandidateStarterUserImpl() {
     }
 
-    public ProcessCandidateStarterGroupImpl(String processDefinitionId, String groupId) {
+    public ProcessCandidateStarterUserImpl(String processDefinitionId, String userId) {
         super(processDefinitionId);
-        this.groupId = groupId;
+        this.userId = userId;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ProcessCandidateStarterGroupImpl that = (ProcessCandidateStarterGroupImpl) o;
-        return Objects.equals(groupId, that.groupId) &&
+        ProcessCandidateStarterUserImpl that = (ProcessCandidateStarterUserImpl) o;
+        return Objects.equals(userId, that.userId) &&
                 Objects.equals(getProcessDefinitionId(), that.getProcessDefinitionId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getProcessDefinitionId(), groupId);
+        return Objects.hash(getProcessDefinitionId(), userId);
     }
 
     @Override
-    public String getGroupId() {
-        return this.groupId;
+    public String getUserId() {
+        return this.userId;
     }
 }
