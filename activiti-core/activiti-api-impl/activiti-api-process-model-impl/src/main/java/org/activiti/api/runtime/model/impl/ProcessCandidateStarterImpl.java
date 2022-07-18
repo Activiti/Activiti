@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.runtime.api.impl;
+package org.activiti.api.runtime.model.impl;
 
 import org.activiti.api.process.model.ProcessCandidateStarter;
 
