@@ -3,7 +3,6 @@ sudo: required
 services:
   - docker
 jdk:
-  - oraclejdk8
   - openjdk11
 notifications:
   webhooks:
