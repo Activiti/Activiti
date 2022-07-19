@@ -81,7 +81,7 @@ public class VariableInstanceImpl<T> implements VariableInstance {
                 ", type='" + type + '\'' +
                 ", processInstanceId='" + processInstanceId + '\'' +
                 ", taskId='" + taskId + '\'' +
-                ", value='" + value.toString() + '\'' +
+                ", value='" + value + '\'' +
                 '}';
     }
 
