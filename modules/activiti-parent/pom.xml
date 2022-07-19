@@ -22,6 +22,7 @@
             <artifactId>dependency-check-maven</artifactId>
             <version>6.4.0</version>
             <configuration>
+              <!-- Commented because H2 upgrade from 1.x to 2.x isn't trivial -->
               <!--<failBuildOnCVSS>7</failBuildOnCVSS>-->
               <suppressionFiles>
                 <suppressionFile>${settings.localRepository}/org/activiti/activiti-dependency-check/${project.version}/activiti-dependency-check-${project.version}-suppression.xml</suppressionFile>
