@@ -21,7 +21,7 @@ jobs:
       - name: Set up python
         uses: actions/setup-python@v2
       - name: Run pre-commit
-        uses: pre-commit/action@v2.0.0
+        uses: pre-commit/action@v3.0.0
 
   build:
     runs-on: ubuntu-20.04
