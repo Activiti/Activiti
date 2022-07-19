@@ -56,12 +56,12 @@ jobs:
 
       - uses: actions/setup-python@v2
         if: ${{ github.event_name == 'push' }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-pysemver@v1.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-pysemver@v1.9.1
         if: ${{ github.event_name == 'push' }}
       - id: next-release
         if: ${{ github.event_name == 'push' }}
         name: Calculate next internal release
-        uses: Alfresco/alfresco-build-tools/.github/actions/calculate-next-internal-version@v1.8.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/calculate-next-internal-version@v1.9.1
         with:
           next-version: 7.5.0
 
@@ -115,7 +115,7 @@ jobs:
 
       - name: Install updatebot
         if: ${{ github.event_name == 'push' }}
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@v1.8.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@v1.9.1
 
       - name: Run updatebot
         if: ${{ github.event_name == 'push' }}
