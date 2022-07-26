@@ -211,7 +211,7 @@
     <maven-enforcer-plugin.version>3.1.0</maven-enforcer-plugin.version>
     <maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
     <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
-    <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
+    <maven-install-plugin.version>3.0.1</maven-install-plugin.version>
     <maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>
     <maven-javadoc-plugin.version>3.4.0</maven-javadoc-plugin.version>
     <maven-jxr-plugin.version>3.2.0</maven-jxr-plugin.version>
