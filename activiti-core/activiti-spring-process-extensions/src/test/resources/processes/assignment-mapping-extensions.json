@@ -1,0 +1,32 @@
+{
+  "id":"processDefinitionIdExtension",
+  "name":"processDefinition.bpmn",
+  "extensions": {
+    "processDefinitionId": {
+      "properties": {},
+      "assignments": {
+        "task-1": {
+          "id": "1",
+          "assignment": "assignee",
+          "type": "static",
+          "mode": "manual"
+        },
+        "task-2": {
+          "id": "2",
+          "assignment": "candidates",
+          "type": "identity",
+          "mode": "manual"
+        },
+        "task-3": {
+          "id": "3",
+          "assignment": "candidates",
+          "type": "expression",
+          "mode": "sequential"
+        }
+      },
+      "mappings": {},
+      "templates": {},
+      "constants": {}
+    }
+  }
+}
