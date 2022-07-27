@@ -218,7 +218,7 @@
     <maven-pmd-plugin.version>3.17.0</maven-pmd-plugin.version>
     <maven-project-info-reports-plugin.version>3.4.0</maven-project-info-reports-plugin.version>
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
-    <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
+    <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
     <maven-site-plugin.version>3.12.0</maven-site-plugin.version>
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
