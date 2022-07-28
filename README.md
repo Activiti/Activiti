@@ -40,8 +40,8 @@ Configuring IntelliJ
     * Open menu *File*, menu item *Settings* or menu *IntelliJ IDEA*, menu item *Preferences...* if on a Mac
     * Click tree item *Code Style*, click cogwheel and select *Import scheme*, then *IntelliJ code style xml*
     * Browse where you downloaded the xml and open it. Check that GoogleStyle is the active scheme.
-        * Note: IntelliJ IDEA doesn't format your code automatically. You have to press Ctrl+Alt+L keyboard combination to trigger auto formatting when coding is done.
-    * There's an `.editorconfig` what has definition for indents, file encoding, line endings.
+        * Note: IntelliJ IDEA doesn't format your code automatically. You must to press Ctrl+Alt+L keyboard combination to trigger auto-formatting when coding is done.
+    * There's a `.editorconfig` that has definition for indents, file encoding, line endings.
     * If you disable it, you need to set the file encoding and number of spaces correctly manually.
     * Eclipse code style xml: [https://google.github.io/styleguide/eclipse-java-google-style.xml]
     * Eclipse needs [editorconfig-eclipse](https://marketplace.eclipse.org/content/editorconfig-eclipse) plugin in order to support EditorConfig files.
