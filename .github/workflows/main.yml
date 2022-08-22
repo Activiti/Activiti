@@ -54,21 +54,14 @@ jobs:
         env:
           MAVEN_VERSION: 3.6.3
 
-      - uses: actions/setup-python@v2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@v1.10.0
+        id: update-pom-to-next-version
         if: ${{ github.event_name == 'push' }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-pysemver@v1.9.2
-        if: ${{ github.event_name == 'push' }}
-      - id: next-release
-        if: ${{ github.event_name == 'push' }}
-        name: Calculate next internal release
-        uses: Alfresco/alfresco-build-tools/.github/actions/calculate-next-internal-version@v1.9.2
-        with:
-          next-version: 7.5.0
 
       - name: Update VERSION file
         if: ${{ github.event_name == 'push' }}
         run: |
-          echo ${{steps.next-release.outputs.next-prerelease}} > VERSION
+          echo ${{steps.update-pom-to-next-version.outputs.next-prerelease}} > VERSION
 
       - name: Set preview version
         if: ${{ contains(github.head_ref, 'preview') }}
@@ -84,7 +77,7 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Update pom files to the new version
-        if: ${{ github.event_name == 'push' || contains(github.head_ref, 'preview') }}
+        if: ${{ contains(github.head_ref, 'preview') }}
         run: mvn -B versions:set -DnewVersion=$VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
 
       - name: Build with Maven
