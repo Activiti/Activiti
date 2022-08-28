@@ -10,10 +10,15 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+  
+permissions:
+  contents: read
 
 jobs:
 
   pre-commit:
+    permissions:
+      pull-requests: read # for pre-commit
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repository
@@ -24,6 +29,9 @@ jobs:
         uses: pre-commit/action@v3.0.0
 
   build:
+    permissions:
+      actions: write  # for styfle/cancel-workflow-action to cancel/stop running workflows
+      contents: write # for git push
     runs-on: ubuntu-20.04
     needs: pre-commit
     steps:
