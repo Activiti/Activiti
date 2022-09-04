@@ -18,9 +18,6 @@ package org.activiti.spring.process.model;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.InputStream;
-import java.util.Optional;
-
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.activiti.spring.process.model.ProcessVariablesMapping.MappingType;
 import org.activiti.spring.process.model.TemplateDefinition.TemplateType;
@@ -29,8 +26,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
+import static org.activiti.spring.process.model.AssignmentDefinition.AssignmentEnum.ASSIGNEE;
+import static org.activiti.spring.process.model.AssignmentDefinition.AssignmentEnum.CANDIDATES;
+import static org.activiti.spring.process.model.AssignmentDefinition.AssignmentMode.MANUAL;
+import static org.activiti.spring.process.model.AssignmentDefinition.AssignmentMode.SEQUENTIAL;
+import static org.activiti.spring.process.model.AssignmentDefinition.AssignmentType.EXPRESSION;
+import static org.activiti.spring.process.model.AssignmentDefinition.AssignmentType.IDENTITY;
+import static org.activiti.spring.process.model.AssignmentDefinition.AssignmentType.STATIC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
@@ -227,6 +234,27 @@ public class ExtensionTest {
 
             //then
             assertThat(templateDefinition).isEmpty();
+        }
+    }
+
+    @Test
+    public void should_readAssignmentDefinitionExtension() throws Exception {
+        //given
+        try (InputStream inputStream = Thread.currentThread()
+                                             .getContextClassLoader()
+                                             .getResourceAsStream("processes/assignment-mapping-extensions.json")) {
+            ProcessExtensionModel processExtensionModel = MAPPER.readValue(inputStream, ProcessExtensionModel.class);
+            Extension extensions = processExtensionModel
+                .getExtensions("processDefinitionId");
+
+            //when
+            Map<String, AssignmentDefinition> assignments = extensions.getAssignments();
+
+            //then
+            assertThat(assignments).hasSize(3)
+                .containsValues(new AssignmentDefinition("1", ASSIGNEE, STATIC, MANUAL),
+                                new AssignmentDefinition("2", CANDIDATES, IDENTITY, MANUAL),
+                                new AssignmentDefinition("3", CANDIDATES, EXPRESSION, SEQUENTIAL));
         }
     }
 }
