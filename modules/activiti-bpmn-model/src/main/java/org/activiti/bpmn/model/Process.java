@@ -207,6 +207,12 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
     element.setParentContainer(this);
     if (StringUtils.isNotEmpty(element.getId())) {
       flowElementMap.put(element.getId(), element);
+      if(element instanceof SubProcess){
+	      SubProcess sp = (SubProcess) element;
+        for(String key : sp.getFlowElementMap().keySet()){
+          this.addFlowElementToMap(sp.getFlowElementMap().get(key));
+        }
+      }
     }
   }
   
