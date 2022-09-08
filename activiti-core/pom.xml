@@ -92,11 +92,31 @@
         <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>batik-awt-util</artifactId>
         <version>${batik.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xalan</groupId>
+            <artifactId>serializer</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>batik-dom</artifactId>
         <version>${batik.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xalan</groupId>
+            <artifactId>serializer</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.xmlgraphics</groupId>
