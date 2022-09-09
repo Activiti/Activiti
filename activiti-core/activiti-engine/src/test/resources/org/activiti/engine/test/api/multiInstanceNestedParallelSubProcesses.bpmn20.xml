@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             targetNamespace="Examples">
+
+    <process id="parallelNestedMultiInstanceSubProcesses">
+
+        <startEvent id="theStart"/>
+        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="parallelSubProcessOuter"/>
+
+        <subProcess id="parallelSubProcessOuter">
+            <multiInstanceLoopCharacteristics isSequential="false">
+                <loopCardinality>3</loopCardinality>
+            </multiInstanceLoopCharacteristics>
+
+            <startEvent id="theSubProcessStart" />
+            <sequenceFlow id="subflow1" sourceRef="theSubProcessStart" targetRef="subTask1" />
+            <userTask id="subTask1" />
+            <sequenceFlow id="subflow2" sourceRef="subTask1" targetRef="parallelNestedSubProcess" />
+
+            <subProcess id="parallelNestedSubProcess">
+                <multiInstanceLoopCharacteristics isSequential="false">
+                    <loopCardinality>3</loopCardinality>
+                </multiInstanceLoopCharacteristics>
+                <startEvent id="theNestedSubProcessStart" />
+                <sequenceFlow id="nestedSubflow1" sourceRef="theNestedSubProcessStart" targetRef="nestedSubTask1" />
+                <userTask id="nestedSubTask1" />
+                <sequenceFlow id="nestedSubflow2" sourceRef="nestedSubTask1" targetRef="nestedSubTask2" />
+                <userTask id="nestedSubTask2" />
+                <sequenceFlow id="nestedSubflow3" sourceRef="nestedSubTask2" targetRef="theNestedSubProcessEnd" />
+                <endEvent id="theNestedSubProcessEnd" />
+            </subProcess>
+
+            <sequenceFlow id="subflow3" sourceRef="parallelNestedSubProcess" targetRef="subTask2" />
+            <userTask id="subTask2" />
+            <sequenceFlow id="subflow4" sourceRef="subTask2" targetRef="theSubProcessEnd" />
+            <endEvent id="theSubProcessEnd" />
+        </subProcess>
+
+        <sequenceFlow id="flow2" sourceRef="parallelSubProcessOuter" targetRef="lastTask"/>
+        <userTask id="lastTask" name="last task"/>
+        <sequenceFlow id="flow3" sourceRef="lastTask" targetRef="theEnd"/>
+        <endEvent id="theEnd"/>
+
+    </process>
+
+</definitions>

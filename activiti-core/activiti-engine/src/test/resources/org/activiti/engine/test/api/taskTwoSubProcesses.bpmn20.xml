@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+
+  <process id="twoSubProcesses">
+
+    <startEvent id="theStart" />
+
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="taskBefore" />
+    
+    <userTask id="taskBefore" name="Task before sub process" />
+    
+    <sequenceFlow id="flow2" sourceRef="taskBefore" targetRef="subProcess" />
+
+    <subProcess id="subProcess">
+
+      <startEvent id="theSubProcessStart" />
+
+      <sequenceFlow id="subflow1" sourceRef="theSubProcessStart" targetRef="subtask" />
+
+      <userTask id="subtask" name="Task in subprocess" />
+
+      <sequenceFlow id="subflow2" sourceRef="subtask" targetRef="theSubProcessEnd" />
+
+      <endEvent id="theSubProcessEnd" />
+
+    </subProcess>
+    
+    <sequenceFlow id="flow5" sourceRef="subProcess" targetRef="subProcess2" />
+    
+    <subProcess id="subProcess2">
+
+      <startEvent id="theSubProcessStart2" />
+
+      <sequenceFlow id="subflow3" sourceRef="theSubProcessStart2" targetRef="subtask2" />
+
+      <userTask id="subtask2" name="Task in subprocess" />
+
+      <sequenceFlow id="subflow4" sourceRef="subtask2" targetRef="theSubProcessEnd2" />
+
+      <endEvent id="theSubProcessEnd2" />
+
+    </subProcess>
+
+    <sequenceFlow id="flow3" sourceRef="subProcess2" targetRef="taskAfter" />
+    
+    <userTask id="taskAfter" name="Task after sub process" />
+    
+    <sequenceFlow id="flow4" sourceRef="taskAfter" targetRef="theEnd" />
+
+    <endEvent id="theEnd" />
+
+  </process>
+
+</definitions>

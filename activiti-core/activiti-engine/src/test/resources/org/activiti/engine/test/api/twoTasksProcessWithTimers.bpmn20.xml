@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" targetNamespace="Examples">
+
+    <process id="twoTasksProcessWithTimers">
+
+        <startEvent id="theStart"/>
+        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="firstTask"/>
+        <userTask id="firstTask" name="First task"/>
+        <boundaryEvent id="firstTimerEvent" attachedToRef="firstTask">
+            <timerEventDefinition>
+                <timeDuration>PT1H</timeDuration>
+            </timerEventDefinition>
+        </boundaryEvent>
+        <sequenceFlow id="flow2" sourceRef="firstTask" targetRef="secondTask"/>
+        <sequenceFlow id="flow3" sourceRef="firstTimerEvent" targetRef="theEnd"/>
+        <userTask id="secondTask" name="Second task"/>
+        <boundaryEvent id="secondTimerEvent" attachedToRef="secondTask">
+            <timerEventDefinition>
+                <timeDuration>PT1H</timeDuration>
+            </timerEventDefinition>
+        </boundaryEvent>
+        <sequenceFlow id="flow4" sourceRef="secondTask" targetRef="theEnd"/>
+        <sequenceFlow id="flow5" sourceRef="secondTimerEvent" targetRef="thirdTask"/>
+        <userTask id="thirdTask" name="Third task"/>
+        <sequenceFlow id="flow6" sourceRef="thirdTask" targetRef="theEnd"/>
+        <endEvent id="theEnd"/>
+
+    </process>
+
+</definitions>

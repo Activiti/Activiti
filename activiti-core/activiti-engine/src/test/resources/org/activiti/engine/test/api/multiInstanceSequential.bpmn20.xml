@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             targetNamespace="Examples">
+
+    <process id="sequentialMultiInstance">
+
+        <startEvent id="theStart"/>
+        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="beforeMultiInstance"/>
+
+        <userTask id="beforeMultiInstance"/>
+
+        <sequenceFlow id="flow2" sourceRef="beforeMultiInstance" targetRef="seqTasks"/>
+
+        <userTask id="seqTasks" name="Sequential Task">
+            <multiInstanceLoopCharacteristics isSequential="true">
+                <loopCardinality>${nrOfLoops}</loopCardinality>
+            </multiInstanceLoopCharacteristics>
+        </userTask>
+
+        <sequenceFlow id="flow3" sourceRef="seqTasks" targetRef="nextTask"/>
+        <userTask id="nextTask" name="next task"/>
+        <sequenceFlow id="flow4" sourceRef="nextTask" targetRef="theEnd"/>
+        <endEvent id="theEnd"/>
+
+    </process>
+
+</definitions>
