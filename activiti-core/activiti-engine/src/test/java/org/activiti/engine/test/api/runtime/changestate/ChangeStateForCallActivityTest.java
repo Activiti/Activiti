@@ -280,7 +280,7 @@ public class ChangeStateForCallActivityTest extends PluggableActivitiTestCase {
     public void testSetCurrentActivityInSubProcessInstanceSpecificVersion() {
         try {
             // Deploy second version of the process definition
-            ProcessDefinition processDefinition = deployProcessDefinition("my deploy", "org/activiti/engine/test/api/oneTaskProcessV2.bpmn20.xml");
+            deployProcessDefinition("my deploy", "org/activiti/engine/test/api/oneTaskProcessV2.bpmn20.xml");
 
             ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("twoTasksParentProcess");
 

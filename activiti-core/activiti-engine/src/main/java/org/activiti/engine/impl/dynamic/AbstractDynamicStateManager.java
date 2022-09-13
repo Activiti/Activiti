@@ -1,6 +1,5 @@
 package org.activiti.engine.impl.dynamic;
 
-import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.*;
 import org.activiti.engine.ActivitiException;
@@ -383,10 +382,8 @@ public abstract class AbstractDynamicStateManager {
     }
 
     protected void processPendingEventSubProcessesStartEvents(ProcessInstanceChangeState processInstanceChangeState, CommandContext commandContext) {
-        ProcessInstanceHelper processInstanceHelper = CommandContextUtil.getProcessEngineConfiguration(commandContext).getProcessInstanceHelper();
         for (Map.Entry<? extends StartEvent, ExecutionEntity> pendingStartEventEntry : processInstanceChangeState.getPendingEventSubProcessesStartEvents().entrySet()) {
             StartEvent startEvent = pendingStartEventEntry.getKey();
-            ExecutionEntity parentExecution = pendingStartEventEntry.getValue();
             if (!processInstanceChangeState.getCreatedEmbeddedSubProcesses().containsKey(startEvent.getSubProcess().getId())) {
                 throw new ActivitiException("The current version does not support it, please wait");
             }
@@ -639,13 +636,6 @@ public abstract class AbstractDynamicStateManager {
         return false;
     }
 
-    protected List<FlowElement> getFlowElementsInSubProcess(SubProcess subProcess, Collection<FlowElement> flowElements) {
-        return flowElements.stream()
-            .filter(e -> e.getSubProcess() != null)
-            .filter(e -> e.getSubProcess().getId().equals(subProcess.getId()))
-            .collect(Collectors.toList());
-    }
-
     protected ExecutionEntity createEmbeddedSubProcessHierarchy(SubProcess subProcess, ExecutionEntity defaultParentExecution, Map<String, SubProcess> subProcessesToCreate, Set<String> movingExecutionIds, ProcessInstanceChangeState processInstanceChangeState, CommandContext commandContext) {
         ProcessEngineConfigurationImpl processEngineConfiguration = CommandContextUtil.getProcessEngineConfiguration(commandContext);
         if (processInstanceChangeState.getProcessInstanceActiveEmbeddedExecutions().containsKey(subProcess.getId())) {
@@ -687,16 +677,6 @@ public abstract class AbstractDynamicStateManager {
         if (subProcess instanceof EventSubProcess) {
             processCreatedEventSubProcess((EventSubProcess) subProcess, subProcessExecution, movingExecutionIds, commandContext);
         }
-
-        ProcessInstanceHelper processInstanceHelper = processEngineConfiguration.getProcessInstanceHelper();
-
-        //Process containing child Event SubProcesses not contained in this creation hierarchy
-
-//        List<EventSubProcess> childEventSubProcesses = subProcess.findAllSubFlowElementInFlowMapOfType(EventSubProcess.class);
-//        childEventSubProcesses.stream()
-//                .filter(childEventSubProcess -> !subProcessesToCreate.containsKey(childEventSubProcess.getId()))
-//                .forEach(childEventSubProcess -> processInstanceHelper.processEventSubProcess(subProcessExecution, childEventSubProcess, commandContext));
-
         return subProcessExecution;
     }
 
@@ -760,8 +740,6 @@ public abstract class AbstractDynamicStateManager {
 
         ExecutionEntity subProcessInstance = executionEntityManager.createSubprocessInstance(subProcessDefinition, parentExecution, businessKey);
 
-//        EntityLinkUtil.createEntityLinks(parentExecution.getProcessInstanceId(), parentExecution.getId(), callActivity.getId(),
-//                subProcessInstance.getId(), ScopeTypes.BPMN);
         CommandContextUtil.getHistoryManager().recordSubProcessInstanceStart(parentExecution, subProcessInstance, callActivity);
 
         ActivitiEventDispatcher eventDispatcher = processEngineConfiguration.getEventDispatcher();
