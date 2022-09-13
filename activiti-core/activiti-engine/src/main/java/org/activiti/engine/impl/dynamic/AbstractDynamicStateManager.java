@@ -23,7 +23,6 @@ import org.activiti.engine.impl.runtime.MoveExecutionIdContainer;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.CommandContextUtil;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
-import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

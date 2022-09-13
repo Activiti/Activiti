@@ -28,10 +28,6 @@ public class ChangeStateEventListener implements ActivitiEventListener {
     private List<ActivitiEvent> events = new ArrayList<>();
     private static final Logger logger = LoggerFactory.getLogger(ChangeStateEventListener.class);
 
-    public ChangeStateEventListener() {
-
-    }
-
     @Override
     public void onEvent(ActivitiEvent event) {
         ActivitiEventType type = event.getType();
