@@ -30,9 +30,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
 
-/**
-    @author LoveMyOrange
- */
+
 public class ChangeStateTest extends PluggableActivitiTestCase {
 
     private ChangeStateEventListener changeStateEventListener = new ChangeStateEventListener();

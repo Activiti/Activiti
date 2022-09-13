@@ -32,9 +32,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/**
- * @author LoveMyOrange
- */
+
 public abstract class AbstractDynamicStateManager {
 
     protected final Logger LOGGER = LoggerFactory.getLogger(this.getClass());

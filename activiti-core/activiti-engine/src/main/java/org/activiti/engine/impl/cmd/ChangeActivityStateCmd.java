@@ -8,9 +8,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.runtime.ChangeActivityStateBuilderImpl;
 
-/**
- * @author LoveMyOrange
- */
+
 public class ChangeActivityStateCmd implements Command<Void> {
 
     protected ChangeActivityStateBuilderImpl changeActivityStateBuilder;

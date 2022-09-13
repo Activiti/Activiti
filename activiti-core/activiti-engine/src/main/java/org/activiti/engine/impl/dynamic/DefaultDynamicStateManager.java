@@ -15,9 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * @author LoveMyOrange
- */
+
 public class DefaultDynamicStateManager extends AbstractDynamicStateManager implements DynamicStateManager {
 
     @Override

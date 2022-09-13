@@ -9,9 +9,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 
 import java.util.*;
 
-/**
- * @author LoveMyOrange
- */
+
 public class MoveExecutionEntityContainer {
 
     protected List<ExecutionEntity> executions;

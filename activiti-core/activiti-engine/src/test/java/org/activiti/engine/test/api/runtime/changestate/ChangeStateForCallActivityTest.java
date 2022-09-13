@@ -26,9 +26,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
-/**
-    @author LoveMyOrange
- */
+
 public class ChangeStateForCallActivityTest extends PluggableActivitiTestCase {
 
     private ChangeStateEventListener changeStateEventListener = new ChangeStateEventListener();

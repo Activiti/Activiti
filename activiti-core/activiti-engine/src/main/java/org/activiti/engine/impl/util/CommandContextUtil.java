@@ -16,9 +16,7 @@ import org.activiti.engine.impl.persistence.entity.*;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author LoveMyOrange
- */
+
 public class CommandContextUtil {
 
     public static final String ATTRIBUTE_INVOLVED_EXECUTIONS = "ctx.attribute.involvedExecutions";

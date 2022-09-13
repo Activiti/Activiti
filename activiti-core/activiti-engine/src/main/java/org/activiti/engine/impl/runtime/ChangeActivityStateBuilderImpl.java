@@ -13,9 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author LoveMyOrange
- */
+
 public class ChangeActivityStateBuilderImpl implements ChangeActivityStateBuilder {
 
     protected final Logger LOGGER = LoggerFactory.getLogger(this.getClass());

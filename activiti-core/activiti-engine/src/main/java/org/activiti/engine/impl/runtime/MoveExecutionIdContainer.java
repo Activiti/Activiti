@@ -5,9 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * @author LoveMyOrange
- */
+
 public class MoveExecutionIdContainer {
 
     protected List<String> executionIds;

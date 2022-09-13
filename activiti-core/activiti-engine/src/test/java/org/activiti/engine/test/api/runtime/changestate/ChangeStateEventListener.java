@@ -21,9 +21,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * @author LoveMyOrange
- */
+
 public class ChangeStateEventListener implements ActivitiEventListener {
     private List<ActivitiEvent> events = new ArrayList<>();
     private static final Logger logger = LoggerFactory.getLogger(ChangeStateEventListener.class);

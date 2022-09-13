@@ -30,9 +30,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * @author LoveMyOrange
- */
+
 public class ChangeStateForMultiInstanceTest extends PluggableActivitiTestCase {
 
     private ChangeStateEventListener changeStateEventListener = new ChangeStateEventListener();

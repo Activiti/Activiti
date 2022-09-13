@@ -4,9 +4,7 @@ package org.activiti.engine.runtime;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author LoveMyOrange
- */
+
 public interface ChangeActivityStateBuilder {
 
     /**
