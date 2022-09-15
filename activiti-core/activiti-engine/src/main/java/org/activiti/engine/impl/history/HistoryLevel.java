@@ -40,7 +40,7 @@ public enum HistoryLevel {
    */
   public static HistoryLevel getHistoryLevelForKey(String key) {
     for (HistoryLevel level : values()) {
-      if (level.key.equals(key)) {
+      if (level.key.equalsIgnoreCase(key)) {
         return level;
       }
     }
