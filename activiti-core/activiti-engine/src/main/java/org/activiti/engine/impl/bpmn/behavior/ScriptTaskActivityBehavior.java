@@ -74,7 +74,11 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
     boolean noErrors = true;
     try {
       Object result = scriptingEngines.evaluate(script, language, execution, storeScriptVariables);
-
+      if(null != result){
+        if(language.equalsIgnoreCase("juel") && (result instanceof String) && script.equalsIgnoreCase(result.toString())) {
+          throw new ActivitiException("Error in Script");
+        }
+      }
       if (resultVariable != null) {
         execution.setVariable(resultVariable, result);
       }
