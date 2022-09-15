@@ -15,6 +15,7 @@ package org.activiti.engine.impl.util;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
@@ -83,7 +84,7 @@ public class ProcessDefinitionUtil {
     ProcessDefinitionEntityManager processDefinitionEntityManager = Context.getProcessEngineConfiguration().getProcessDefinitionEntityManager();
     ProcessDefinitionEntity processDefinition = processDefinitionEntityManager.findById(processDefinitionId);
     if (processDefinition == null) {
-      throw new ActivitiException("No process definition found with id " + processDefinitionId);
+      throw new ActivitiObjectNotFoundException("No process definition found with id " + processDefinitionId);
     }
     
     return processDefinition;

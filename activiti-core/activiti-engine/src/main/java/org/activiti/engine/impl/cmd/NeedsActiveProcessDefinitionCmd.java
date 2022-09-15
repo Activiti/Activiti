@@ -37,11 +37,7 @@ public abstract class NeedsActiveProcessDefinitionCmd<T> implements Command<T>, 
 
   public T execute(CommandContext commandContext) {
     ProcessDefinitionEntity processDefinition = ProcessDefinitionUtil.getProcessDefinitionFromDatabase(processDefinitionId);
-
-    if (processDefinition == null) {
-      throw new ActivitiObjectNotFoundException("No process definition found for id = '" + processDefinitionId + "'", ProcessDefinition.class);
-    }
-
+    
     if (processDefinition.isSuspended()) {
       throw new ActivitiException("Cannot execute operation because process definition '" + processDefinition.getName() + "' (id=" + processDefinition.getId() + ") is suspended");
     }
