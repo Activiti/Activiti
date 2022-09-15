@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import java.util.concurrent.ConcurrentHashMap;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti.engine.impl.asyncexecutor.JobManager;
@@ -39,7 +40,7 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
   protected TenantInfoHolder tenantInfoHolder;
   protected TenantAwareAsyncExecutorFactory tenantAwareAyncExecutorFactory;
   
-  protected Map<String, AsyncExecutor> tenantExecutors = new HashMap<String, AsyncExecutor>();
+  protected Map<String, AsyncExecutor> tenantExecutors = new ConcurrentHashMap<>();
   
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
   protected boolean active;
