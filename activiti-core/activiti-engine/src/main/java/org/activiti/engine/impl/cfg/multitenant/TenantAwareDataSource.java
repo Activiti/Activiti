@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
@@ -40,7 +41,7 @@ import org.activiti.engine.ActivitiException;
 public class TenantAwareDataSource implements DataSource {
   
   protected TenantInfoHolder tenantInfoHolder;
-  protected Map<Object, DataSource> dataSources = new HashMap<Object, DataSource>();
+  protected Map<Object, DataSource> dataSources = new ConcurrentHashMap<>();
   
   public TenantAwareDataSource(TenantInfoHolder tenantInfoHolder) {
     this.tenantInfoHolder = tenantInfoHolder;
