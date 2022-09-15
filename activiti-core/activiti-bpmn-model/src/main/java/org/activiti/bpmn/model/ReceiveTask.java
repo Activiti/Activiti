@@ -20,7 +20,7 @@ public class ReceiveTask extends Task {
     return clone;
   }
 
-  public void setValues(ReceiveTask otherElement) {
+  public void setValues(ReceiveTask  otherElement) {
     super.setValues(otherElement);
   }
 }
