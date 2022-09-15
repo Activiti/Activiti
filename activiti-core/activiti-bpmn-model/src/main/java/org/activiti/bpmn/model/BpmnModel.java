@@ -346,12 +346,16 @@ public class BpmnModel {
   }
 
   public Signal getSignal(String id) {
-    for (Signal signal : signals) {
-      if (id.equals(signal.getId())) {
-        return signal;
-      }
+    Signal foundSignal = null;
+    if(StringUtils.isNotEmpty(id)){
+        for (Signal signal : signals) {
+            if (id.equals(signal.getId())) {
+                foundSignal = signal;
+                break;
+            }
+        }
     }
-    return null;
+    return foundSignal;
   }
 
   public Map<String, MessageFlow> getMessageFlows() {
