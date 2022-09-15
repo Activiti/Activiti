@@ -88,6 +88,41 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
   }
 
   @Deployment
+  public void testErrorInScript() {
+    try {
+      runtimeService.startProcessInstanceByKey("testErrorInScript");
+    } catch (ActivitiException e) {
+      assertTextPresent("Error in Script", e.getMessage());
+    }
+  }
+
+  @Deployment
+  public void testNoErrorInScript() {
+    boolean noError = true;
+    try {
+      Map<String, Object> variables = new HashMap<>();
+      variables.put("scriptVar", "1212");
+      runtimeService.startProcessInstanceByKey("testNoErrorInScript", variables);
+    } catch (ActivitiException e) {
+      noError = false;
+    }
+    assertTrue(noError);
+  }
+
+  @Deployment
+  public void testSetScriptResultToProcessVariableWithoutFormat() {
+    Map<String, Object> variables = new HashMap<>();
+    variables.put("echo", "hello");
+    variables.put("existingProcessVariableName", "one");
+
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("setScriptResultToProcessVariable", variables);
+
+    assertEquals("hello", runtimeService.getVariable(pi.getId(), "existingProcessVariableName"));
+    assertEquals(pi.getId(), runtimeService.getVariable(pi.getId(), "newProcessVariableName"));
+  }
+  
+  
+  @Deployment
   public void testDynamicScript() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testDynamicScript", CollectionUtil.map("a", 20, "b", 22));
     assertThat(((Number) runtimeService.getVariable(processInstance.getId(), "test")).intValue()).isEqualTo(42);
