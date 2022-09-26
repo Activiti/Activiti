@@ -45,7 +45,6 @@ import org.activiti.api.task.runtime.events.TaskCreatedEvent;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.spring.boot.process.ProcessBaseRuntime;
 import org.activiti.spring.boot.process.ProcessRuntimeBPMNTimerIT;
-import org.activiti.spring.boot.process.TimerTestConfigurator;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.activiti.test.LocalEventSource;
@@ -1500,8 +1499,10 @@ public class TaskRuntimeMultiInstanceIT {
             .contains(
                 tuple("miResult",
                     asList(
-                        Map.of("meal", "pizza", "size", "small"),
-                        Map.of("meal", "pasta", "size", "medium"))));
+                        Map.of("meal", "pizza", "size", "small", "taskAssignee", "user"),
+                        Map.of("meal", "pasta", "size", "medium", "taskAssignee", "user"))
+                    )
+                );
     }
 
     @Test
@@ -1541,8 +1542,10 @@ public class TaskRuntimeMultiInstanceIT {
             .extracting(VariableInstance::getName, VariableInstance::getValue)
             .contains(tuple("miResult",
                 asList(
-                    Map.of("meal", "pizza", "size", "small"),
-                    Map.of("meal", "pasta", "size", "medium"))));
+                    Map.of("meal", "pizza", "size", "small", "taskAssignee", "user"),
+                    Map.of("meal", "pasta", "size", "medium", "taskAssignee", "user"))
+                )
+            );
     }
 
     @Test

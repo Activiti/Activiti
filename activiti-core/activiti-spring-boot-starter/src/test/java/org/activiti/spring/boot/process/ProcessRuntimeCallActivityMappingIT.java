@@ -214,7 +214,10 @@ public class ProcessRuntimeCallActivityMappingIT {
                         tuple("subprocess_static_value",
                                 "static some value"),
                         tuple("input_variable_name_1",
-                                "fromSubprocessName")
+                                "fromSubprocessName"),
+
+                        tuple("taskAssignee",
+                                "user")
                 );
     }
 

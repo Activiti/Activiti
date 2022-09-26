@@ -249,9 +249,10 @@ public class TaskRuntimeCompleteTaskTest {
         assertThat(processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(twoTaskInstance).build()))
                 .extracting(VariableInstance::getName,
                             VariableInstance::getValue)
-                .containsExactly(
+                .containsOnly(
                         tuple("start1", "modagainstart1"),
-                        tuple("start2", "start2"));
+                        tuple("start2", "start2"),
+                        tuple("taskAssignee", "user"));
 
     }
 }
