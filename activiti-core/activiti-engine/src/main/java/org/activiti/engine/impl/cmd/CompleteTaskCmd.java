@@ -16,18 +16,18 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 
-/**
-
- */
 public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
 
   private static final long serialVersionUID = 1L;
+  private static final String ASSIGNEE_VARIABLE_NAME = "taskAssignee";
+
   protected Map<String, Object> variables;
   protected Map<String, Object> transientVariables;
   protected Map<String, Object> taskVariables;
@@ -67,8 +67,12 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
       }
     }
 
-    setTaskVariables(task.getVariablesLocal());
+    Map<String, Object> taskLocalVariables = new HashMap<>(task.getVariablesLocal());
+    if (!taskLocalVariables.containsKey(ASSIGNEE_VARIABLE_NAME)) {
+        taskLocalVariables.put(ASSIGNEE_VARIABLE_NAME, task.getAssignee());
+    }
 
+    setTaskVariables(taskLocalVariables);
 
     executeTaskComplete(commandContext, task, variables, localScope);
     return null;
