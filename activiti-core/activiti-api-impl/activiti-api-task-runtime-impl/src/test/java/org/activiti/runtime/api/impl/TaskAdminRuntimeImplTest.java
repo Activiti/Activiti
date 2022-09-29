@@ -113,4 +113,5 @@ class TaskAdminRuntimeImplTest {
         verify(taskService, never()).claim(any(), any());
         Assertions.assertThat(tasks.getContent()).hasSize(0);
     }
+
 }
