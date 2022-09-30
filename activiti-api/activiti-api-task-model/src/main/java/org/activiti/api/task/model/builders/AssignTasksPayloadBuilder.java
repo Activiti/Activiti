@@ -19,6 +19,7 @@ import org.activiti.api.task.model.payloads.AssignTasksPayload;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class AssignTasksPayloadBuilder {
 
@@ -31,10 +32,7 @@ public class AssignTasksPayloadBuilder {
     }
 
     public AssignTasksPayloadBuilder withTaskIds(List<String> taskIds) {
-        if (taskIds == null) {
-            taskIds = new ArrayList<>();
-        }
-        this.taskIds = taskIds;
+        this.taskIds = Objects.requireNonNullElseGet(taskIds, ArrayList::new);
         return this;
     }
 
