@@ -22,6 +22,7 @@ import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.payloads.AssignTaskPayload;
+import org.activiti.api.task.model.payloads.AssignTasksPayload;
 import org.activiti.api.task.model.payloads.CandidateGroupsPayload;
 import org.activiti.api.task.model.payloads.CandidateUsersPayload;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
@@ -99,6 +100,8 @@ public interface TaskAdminRuntime {
      *  - after the assign the task should be in assigned status
      */
     Task assign(AssignTaskPayload assignTaskPayload);
+
+    Page<Task> assignMultiple(AssignTasksPayload assignTasksPayload);
 
     void addCandidateUsers(CandidateUsersPayload candidateUsersPayload);
     void deleteCandidateUsers(CandidateUsersPayload candidateUsersPayload);
