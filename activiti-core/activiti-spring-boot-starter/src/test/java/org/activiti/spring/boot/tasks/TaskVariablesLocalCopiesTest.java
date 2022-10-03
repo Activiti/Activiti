@@ -161,7 +161,7 @@ public class TaskVariablesLocalCopiesTest {
                 .containsOnly(
                         tuple("start1", "modagainstart1"),
                         tuple("start2", "start2"),
-                        tuple("taskAssignee", "user"));
+                        tuple("sys_task_assignee", "user"));
 
         securityUtil.logInAs("garth");
         //and task2 should not see the change
@@ -230,7 +230,7 @@ public class TaskVariablesLocalCopiesTest {
                 .containsOnly(
                         tuple("start1", "modagainstart1"),
                         tuple("start2", "start2"),
-                        tuple("taskAssignee", "user"));
+                        tuple("sys_task_assignee", "user"));
 
 
     }

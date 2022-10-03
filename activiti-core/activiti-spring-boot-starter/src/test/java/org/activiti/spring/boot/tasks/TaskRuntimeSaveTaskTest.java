@@ -140,7 +140,7 @@ public class TaskRuntimeSaveTaskTest {
         List<VariableInstance> variables1 = taskRuntime.variables(TaskPayloadBuilder.variables().withTaskId(task2.getId()).build());
 
         assertThat(variables1).extracting(VariableInstance::getName, VariableInstance::getValue)
-                              .containsExactly(tuple("name", "wrong"), tuple("taskAssignee", "garth"));
+                              .containsOnly(tuple("name", "wrong"), tuple("sys_task_assignee", "garth"));
 
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task2.getId()).withVariable("approved", false).build());
 

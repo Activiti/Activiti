@@ -5,7 +5,7 @@
   "extensions": {
     "taskAssigneeMapping": {
       "properties": {
-        "taskAssignee": {
+        "theTaskAssignee": {
           "id": "theTaskAssignee",
           "name": "theTaskAssignee",
           "type": "string"
@@ -43,7 +43,7 @@
           "outputs": {
             "theTaskAssignee": {
               "type": "variable",
-              "value": "taskAssignee"
+              "value": "sys_task_assignee"
             },
             "process_variable_outputmap_1": {
               "type": "variable",

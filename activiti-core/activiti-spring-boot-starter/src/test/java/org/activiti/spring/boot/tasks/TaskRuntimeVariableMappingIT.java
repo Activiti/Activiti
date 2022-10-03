@@ -55,7 +55,11 @@ public class TaskRuntimeVariableMappingIT {
 
     private static final String TASK_ASSIGNEE_MAPPING = "taskAssigneeMapping";
 
+    private static final String TASK_ASSIGNEE_SEQUENTIAL_MAP_ALL = "taskAssigneeSequentialMapAll";
+
     private static final String TASK_ASSIGNEE_MULTI_INSTANCE_MAPPING = "taskMultiInstanceVariableMapping";
+
+    private static final String ASSIGNEE_VARIABLE_NAME = "sys_task_assignee";
 
     @Autowired
     private SecurityUtil securityUtil;
@@ -269,7 +273,7 @@ public class TaskRuntimeVariableMappingIT {
                               "outputValue"),
                         tuple("task_output_variable_name_1",
                               "outputTaskValue"),
-                        tuple("taskAssignee",
+                        tuple(ASSIGNEE_VARIABLE_NAME,
                               "user")
                         //since there is no mapping for outputs either, all the variables are passed
                 );
@@ -396,7 +400,7 @@ public class TaskRuntimeVariableMappingIT {
                 "newOutputMappedValue"),
                 tuple("task_input_variable_name_1",
                     "inputmap1Value"),
-                tuple("taskAssignee",
+                tuple(ASSIGNEE_VARIABLE_NAME,
                     "user")
             );
 
@@ -463,7 +467,7 @@ public class TaskRuntimeVariableMappingIT {
                     "outputValue"),
                 tuple("task_output_variable_name_1",
                     "outputTaskValue"),
-                tuple("taskAssignee",
+                tuple(ASSIGNEE_VARIABLE_NAME,
                     "user")
                 //since there is no mapping for outputs either, all the variables are passed
             );
@@ -628,14 +632,14 @@ public class TaskRuntimeVariableMappingIT {
     }
 
     @Test
-    public void should_notMapTaskAssignee_when_thereIsAVariableWithSameName() {
-        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_ASSIGNEE_MAPPING);
+    public void should_haveLastTaskAssigneeValue_when_sequentialTasks() {
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_ASSIGNEE_SEQUENTIAL_MAP_ALL);
 
         Task task = checkTasks(processInstance.getId());
 
-        assertThat(task.getName()).isEqualTo("testSimpleTask");
+        assertThat(task.getName()).isEqualTo("task1");
 
-        taskBaseRuntime.completeTask(task.getId(), Map.of("taskAssignee", "doNotChange"));
+        taskBaseRuntime.completeTask(task.getId());
 
         List<VariableInstance> procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
         assertThat(procVariables)
@@ -643,16 +647,30 @@ public class TaskRuntimeVariableMappingIT {
             .extracting(VariableInstance::getName,
                 VariableInstance::getValue)
             .containsOnly(
-                tuple("process_variable_unmapped_1",
-                    "unmapped1Value"),
-                tuple("process_variable_inputmap_1",
-                    "inputmap1Value"),
-                tuple("process_variable_outputmap_1",
-                    "outputmap1Value"),
-                tuple("theTaskAssignee",
-                    "doNotChange")
-
+                tuple(ASSIGNEE_VARIABLE_NAME,
+                    "user")
             );
+
+
+        securityUtil.logInAs("garth");
+
+        task = checkTasks(processInstance.getId());
+
+        assertThat(task.getName()).isEqualTo("task2");
+
+        taskBaseRuntime.completeTask(task.getId());
+
+        securityUtil.logInAs("user");
+        procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
+        assertThat(procVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .containsOnly(
+                tuple(ASSIGNEE_VARIABLE_NAME,
+                    "garth")
+            );
+
         processBaseRuntime.delete(processInstance.getId());
     }
 
@@ -678,8 +696,8 @@ public class TaskRuntimeVariableMappingIT {
             .contains(
                  tuple("miResult",
                      asList(
-                         Map.of("taskAssignee", "user"),
-                         Map.of("taskAssignee", "garth")
+                         Map.of(ASSIGNEE_VARIABLE_NAME, "user"),
+                         Map.of(ASSIGNEE_VARIABLE_NAME, "garth")
                     )
                  )
             );

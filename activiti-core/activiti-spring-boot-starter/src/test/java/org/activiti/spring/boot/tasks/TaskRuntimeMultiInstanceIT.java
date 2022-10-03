@@ -1499,8 +1499,8 @@ public class TaskRuntimeMultiInstanceIT {
             .contains(
                 tuple("miResult",
                     asList(
-                        Map.of("meal", "pizza", "size", "small", "taskAssignee", "user"),
-                        Map.of("meal", "pasta", "size", "medium", "taskAssignee", "user"))
+                        Map.of("meal", "pizza", "size", "small", "sys_task_assignee", "user"),
+                        Map.of("meal", "pasta", "size", "medium", "sys_task_assignee", "user"))
                     )
                 );
     }
@@ -1542,8 +1542,8 @@ public class TaskRuntimeMultiInstanceIT {
             .extracting(VariableInstance::getName, VariableInstance::getValue)
             .contains(tuple("miResult",
                 asList(
-                    Map.of("meal", "pizza", "size", "small", "taskAssignee", "user"),
-                    Map.of("meal", "pasta", "size", "medium", "taskAssignee", "user"))
+                    Map.of("meal", "pizza", "size", "small", "sys_task_assignee", "user"),
+                    Map.of("meal", "pasta", "size", "medium", "sys_task_assignee", "user"))
                 )
             );
     }
