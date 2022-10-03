@@ -26,7 +26,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
 
   private static final long serialVersionUID = 1L;
-  private static final String ASSIGNEE_VARIABLE_NAME = "taskAssignee";
+  private static final String ASSIGNEE_VARIABLE_NAME = "sys_task_assignee";
 
   protected Map<String, Object> variables;
   protected Map<String, Object> transientVariables;
@@ -68,9 +68,7 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
     }
 
     Map<String, Object> taskLocalVariables = new HashMap<>(task.getVariablesLocal());
-    if (!taskLocalVariables.containsKey(ASSIGNEE_VARIABLE_NAME)) {
-        taskLocalVariables.put(ASSIGNEE_VARIABLE_NAME, task.getAssignee());
-    }
+    taskLocalVariables.put(ASSIGNEE_VARIABLE_NAME, task.getAssignee());
 
     setTaskVariables(taskLocalVariables);
 

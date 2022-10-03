@@ -252,7 +252,7 @@ public class TaskRuntimeCompleteTaskTest {
                 .containsOnly(
                         tuple("start1", "modagainstart1"),
                         tuple("start2", "start2"),
-                        tuple("taskAssignee", "user"));
+                        tuple("sys_task_assignee", "user"));
 
     }
 }

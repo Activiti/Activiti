@@ -216,7 +216,7 @@ public class ProcessRuntimeCallActivityMappingIT {
                         tuple("input_variable_name_1",
                                 "fromSubprocessName"),
 
-                        tuple("taskAssignee",
+                        tuple("sys_task_assignee",
                                 "user")
                 );
     }
