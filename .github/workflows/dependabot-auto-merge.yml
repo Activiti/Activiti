@@ -1,8 +1,13 @@
 name: Dependabot auto-merge
-on: pull_request
+on:
+  pull_request:
+    branches:
+      - develop
 
 jobs:
-  enable-auto-merge:
-    uses: Alfresco/alfresco-build-tools/.github/workflows/dependabot-auto-merge.yml@v1.9.0
-    secrets:
-      token: ${{ secrets.DEPENDABOT_GITHUB_TOKEN }}
+  dependabot-auto-merge:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: Alfresco/alfresco-build-tools/.github/actions/automate-dependabot@v1.15.0
+      with:
+        token: ${{ secrets.DEPENDABOT_GITHUB_TOKEN }}
