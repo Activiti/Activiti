@@ -1,0 +1,18 @@
+{
+  "id": "taskAssigneeSequentialMapAllModel",
+  "type": "PROCESS",
+  "name": "process",
+  "extensions": {
+    "taskAssigneeSequentialMapAll": {
+      "properties": {},
+      "mappings": {
+        "task1": {
+          "mappingType": "MAP_ALL"
+          },
+        "task2": {
+          "mappingType": "MAP_ALL"
+        }
+      }
+    }
+  }
+}
