@@ -55,12 +55,21 @@ public class ELContextBuilder {
         return new ActivitiElContext(elResolver);
     }
 
-    public ELContext buildWithCustomFunctions() {
+    public ELContext buildWithCustomFunctions(List<CustomFunctionProvider> customFunctionProviders) {
         CompositeELResolver elResolver = createCompositeResolver();
         ActivitiElContext elContext = new ActivitiElContext(elResolver);
         try {
             addDateFunctions(elContext);
             addListFunctions(elContext);
+            if (customFunctionProviders != null) {
+                customFunctionProviders.forEach(provider -> {
+                    try {
+                        provider.addCustomFunctions(elContext);
+                    } catch (NoSuchMethodException e) {
+                        logger.error("Error setting up EL custom functions", e);
+                    }
+                });
+            }
         } catch (NoSuchMethodException e) {
             logger.error("Error setting up EL custom functions", e);
         }

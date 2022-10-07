@@ -17,6 +17,7 @@
 package org.activiti.runtime.api.conf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
 import org.activiti.engine.impl.bpmn.behavior.VariablesPropagator;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
@@ -32,13 +33,17 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 @Configuration
 public class ConnectorsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ExpressionManager expressionManager() {
-        return new ExpressionManager();
+    public ExpressionManager expressionManager(List<CustomFunctionProvider> customFunctionProviders) {
+        ExpressionManager expressionManager = new ExpressionManager();
+        expressionManager.setCustomFunctionProviders(customFunctionProviders);
+        return expressionManager;
     }
 
     @Bean
