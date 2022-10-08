@@ -23,7 +23,7 @@ public class ReceiveTask extends Task {
     return clone;
   }
 
-  public void setValues(ManualTask otherElement) {
+  public void setValues(ReceiveTask otherElement) {
     super.setValues(otherElement);
   }
 }
