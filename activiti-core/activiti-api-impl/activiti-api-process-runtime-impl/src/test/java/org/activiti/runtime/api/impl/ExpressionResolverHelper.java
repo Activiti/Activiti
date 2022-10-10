@@ -19,8 +19,13 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
@@ -34,21 +39,31 @@ public class ExpressionResolverHelper {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    private static void initializeExpressionResolver() {
+    private static void initializeExpressionResolver(List<CustomFunctionProvider> customFunctionProviders) {
         ProcessEngineConfigurationImpl processEngineConfiguration = mock(ProcessEngineConfigurationImpl.class);
         Context.setProcessEngineConfiguration(processEngineConfiguration);
-        given(processEngineConfiguration.getExpressionManager()).willReturn(new ExpressionManager());
+        ExpressionManager expressionManager = new ExpressionManager();
+        expressionManager.setCustomFunctionProviders(customFunctionProviders);
+        given(processEngineConfiguration.getExpressionManager()).willReturn(expressionManager);
         given(processEngineConfiguration.getDelegateInterceptor()).willReturn(new DefaultDelegateInterceptor());
     }
 
     public static ExpressionResolver initContext(DelegateExecution execution,
-                                                Extension extensions) {
-        initializeExpressionResolver();
+                                                 Extension extensions) {
+        return initContext(execution, extensions, new ArrayList<>());
+    }
+
+    public static ExpressionResolver initContext(DelegateExecution execution,
+                                                 Extension extensions,
+                                                 List<CustomFunctionProvider> customFunctionProviders) {
+        initializeExpressionResolver(customFunctionProviders);
 
         Map<String, Object> variables = convertToStringObjectMap(extensions.getProperties());
 
         setExecutionVariables(execution, variables);
-        return new ExpressionResolver(new ExpressionManager(),
+        ExpressionManager expressionManager = new ExpressionManager();
+        expressionManager.setCustomFunctionProviders(customFunctionProviders);
+        return new ExpressionResolver(expressionManager,
                                       objectMapper, new DefaultDelegateInterceptor());
     }
 

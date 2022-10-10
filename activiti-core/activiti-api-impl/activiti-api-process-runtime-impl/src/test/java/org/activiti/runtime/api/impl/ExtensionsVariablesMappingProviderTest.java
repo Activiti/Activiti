@@ -15,19 +15,9 @@
  */
 package org.activiti.runtime.api.impl;
 
-import static java.util.Arrays.asList;
-import static org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext.buildMappingExecutionContext;
-import static org.activiti.engine.impl.util.CollectionUtil.map;
-import static org.activiti.engine.impl.util.CollectionUtil.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.tuple;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.core.el.ActivitiElContext;
+import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl;
@@ -43,6 +33,22 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Arrays.asList;
+import static org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext.buildMappingExecutionContext;
+import static org.activiti.engine.impl.util.CollectionUtil.map;
+import static org.activiti.engine.impl.util.CollectionUtil.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.tuple;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -245,13 +251,19 @@ public class ExtensionsVariablesMappingProviderTest {
     }
 
     private DelegateExecution initExpressionResolverTest(String fileName, String processDefinitionKey) throws IOException {
+        return initExpressionResolverTest(fileName, processDefinitionKey, new ArrayList<>());
+    }
+
+    private DelegateExecution initExpressionResolverTest(String fileName, String processDefinitionKey,
+                                                         List<CustomFunctionProvider> customFunctionProviders) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/expressions/" + fileName),
                                                                   ProcessExtensionModel.class);
 
         DelegateExecution execution = buildExecution(extensions.getExtensions(processDefinitionKey));
         ExpressionResolver expressionResolver = ExpressionResolverHelper.initContext(execution,
-                                                                                     extensions.getExtensions(processDefinitionKey));
+                extensions.getExtensions(processDefinitionKey),
+                customFunctionProviders);
 
         ReflectionTestUtils.setField(variablesMappingProvider,
                                      "expressionResolver",
@@ -566,5 +578,39 @@ public class ExtensionsVariablesMappingProviderTest {
         assertThat(outputMapping).containsOnlyKeys("process_variable_1", "process_variable_2");
         assertThat(outputMapping.get("process_variable_1")).isNotEqualTo("${authenticatedUserId}");
         assertThat(outputMapping.get("process_variable_2")).isEqualTo("This is the variableValue");
+    }
+
+    @Test
+    public void should_substituteExpressions_when_customExpression() throws Exception {
+        List<CustomFunctionProvider> customFunctionProviders = List.of(new TestCustomFunctionProvider());
+
+        DelegateExecution execution = initExpressionResolverTest("custom-expression-in-mapping-input-value.json",
+                "Process_expressionMappingInputValue", customFunctionProviders);
+
+        Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
+
+        assertThat(inputVariables).isNotEmpty();
+        assertThat(inputVariables.entrySet()).extracting(Map.Entry::getKey, Map.Entry::getValue)
+                .containsOnly(tuple("process_constant_1", "constant_1_value"),
+                        tuple("process_constant_2", "constant_2_value"),
+                        tuple("task_input_variable_name_1", 1),
+                        tuple("task_input_variable_name_2", 2));
+    }
+
+    public static class TestCustomFunctionProvider implements CustomFunctionProvider {
+
+        public static Integer plusOne(Integer number) {
+            return number + 1;
+        }
+
+        @Override
+        public void addCustomFunctions(ActivitiElContext elContext) {
+            try {
+                elContext.setFunction("", "plusOne",
+                        TestCustomFunctionProvider.class.getMethod("plusOne", Integer.class));
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

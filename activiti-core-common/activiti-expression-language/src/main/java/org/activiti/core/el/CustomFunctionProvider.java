@@ -17,5 +17,5 @@ package org.activiti.core.el;
 
 public interface CustomFunctionProvider {
 
-    void addCustomFunctions(ActivitiElContext elContext) throws NoSuchMethodException;
+    void addCustomFunctions(ActivitiElContext elContext);
 }

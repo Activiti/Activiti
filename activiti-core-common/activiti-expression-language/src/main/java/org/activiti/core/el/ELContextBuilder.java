@@ -65,7 +65,7 @@ public class ELContextBuilder {
                 customFunctionProviders.forEach(provider -> {
                     try {
                         provider.addCustomFunctions(elContext);
-                    } catch (NoSuchMethodException e) {
+                    } catch (Exception e) {
                         logger.error("Error setting up EL custom functions", e);
                     }
                 });
