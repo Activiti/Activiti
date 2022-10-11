@@ -20,6 +20,9 @@ import static org.activiti.core.el.CommonELResolversUtil.beanResolver;
 import static org.activiti.core.el.CommonELResolversUtil.jsonNodeResolver;
 import static org.activiti.core.el.CommonELResolversUtil.listResolver;
 import static org.activiti.core.el.CommonELResolversUtil.mapResolver;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
@@ -29,13 +32,19 @@ import de.odysseus.el.ExpressionFactoryImpl;
 public class JuelExpressionResolver implements ExpressionResolver {
 
     private final ExpressionFactory expressionFactory;
+    private final List<CustomFunctionProvider> customFunctionProviders;
 
     public JuelExpressionResolver() {
         this(new ExpressionFactoryImpl());
     }
 
     public JuelExpressionResolver(ExpressionFactory expressionFactory) {
+        this(expressionFactory, new ArrayList<>());
+    }
+
+    public JuelExpressionResolver(ExpressionFactory expressionFactory, List<CustomFunctionProvider> customFunctionProviders) {
         this.expressionFactory = expressionFactory;
+        this.customFunctionProviders = customFunctionProviders;
     }
 
     @Override
@@ -58,6 +67,6 @@ public class JuelExpressionResolver implements ExpressionResolver {
                 beanResolver()
             )
             .withVariables(variables)
-            .buildWithCustomFunctions();
+            .buildWithCustomFunctions(customFunctionProviders);
     }
 }

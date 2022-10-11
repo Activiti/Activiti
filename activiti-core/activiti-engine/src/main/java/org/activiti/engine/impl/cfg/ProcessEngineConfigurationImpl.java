@@ -45,6 +45,7 @@ import javax.sql.DataSource;
 import javax.xml.namespace.QName;
 
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
+import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.DynamicBpmnService;
 import org.activiti.engine.HistoryService;
@@ -744,6 +745,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected List<String> customScriptingEngineClasses;
   protected ScriptingEngines scriptingEngines;
   protected List<ResolverFactory> resolverFactories;
+  protected List<CustomFunctionProvider> customFunctionProviders;
 
   protected BusinessCalendarManager businessCalendarManager;
 
@@ -2007,6 +2009,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public void initExpressionManager() {
     if (expressionManager == null) {
       expressionManager = new ExpressionManager(beans);
+      if (customFunctionProviders != null) {
+        expressionManager.setCustomFunctionProviders(customFunctionProviders);
+      }
     }
   }
 
@@ -2744,6 +2749,23 @@ public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
 
   public ProcessEngineConfigurationImpl setResolverFactories(List<ResolverFactory> resolverFactories) {
     this.resolverFactories = resolverFactories;
+    return this;
+  }
+
+  public List<CustomFunctionProvider> getCustomFunctionProviders() {
+    return customFunctionProviders;
+  }
+
+  public ProcessEngineConfigurationImpl setCustomFunctionProviders(List<CustomFunctionProvider> customFunctionProviders) {
+    this.customFunctionProviders = customFunctionProviders;
+    return this;
+  }
+
+  public ProcessEngineConfigurationImpl addCustomFunctionProvider(CustomFunctionProvider customFunctionProvider) {
+    if (customFunctionProviders == null) {
+      customFunctionProviders = new ArrayList<>();
+    }
+    customFunctionProviders.add(customFunctionProvider);
     return this;
   }
 

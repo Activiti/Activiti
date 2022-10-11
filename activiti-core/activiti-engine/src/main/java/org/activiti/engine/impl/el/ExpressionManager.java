@@ -18,6 +18,7 @@
 package org.activiti.engine.impl.el;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import javax.el.ArrayELResolver;
 import javax.el.BeanELResolver;
@@ -30,6 +31,7 @@ import javax.el.MapELResolver;
 import javax.el.ValueExpression;
 import de.odysseus.el.ExpressionFactoryImpl;
 import org.activiti.core.el.ActivitiElContext;
+import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.core.el.ELContextBuilder;
 import org.activiti.core.el.ELResolverReflectionBlockerDecorator;
 import org.activiti.core.el.ReadOnlyMapELResolver;
@@ -53,6 +55,7 @@ public class ExpressionManager {
 
     protected ExpressionFactory expressionFactory;
     protected Map<Object, Object> beans;
+    protected List<CustomFunctionProvider> customFunctionProviders;
 
     public ExpressionManager() {
         this(null);
@@ -90,6 +93,14 @@ public class ExpressionManager {
         this.expressionFactory = expressionFactory;
     }
 
+    public List<CustomFunctionProvider> getCustomFunctionProviders() {
+        return customFunctionProviders;
+    }
+
+    public void setCustomFunctionProviders(List<CustomFunctionProvider> customFunctionProviders) {
+        this.customFunctionProviders = customFunctionProviders;
+    }
+
     public ELContext getElContext(VariableScope variableScope) {
         ELContext elContext = null;
         if (variableScope instanceof VariableScopeImpl) {
@@ -108,7 +119,7 @@ public class ExpressionManager {
     }
 
     protected ActivitiElContext createElContext(VariableScope variableScope) {
-        return (ActivitiElContext) new ELContextBuilder().withResolvers(createElResolver(variableScope)).buildWithCustomFunctions();
+        return (ActivitiElContext) new ELContextBuilder().withResolvers(createElResolver(variableScope)).buildWithCustomFunctions(customFunctionProviders);
     }
 
     protected ELResolver createElResolver(VariableScope variableScope) {
@@ -150,6 +161,6 @@ public class ExpressionManager {
     public ELContext getElContext(Map<String, Object> availableVariables) {
         CompositeELResolver elResolver = new CompositeELResolver();
         addBaseResolvers(elResolver);
-        return new ELContextBuilder().withResolvers(elResolver).withVariables(availableVariables).buildWithCustomFunctions();
+        return new ELContextBuilder().withResolvers(elResolver).withVariables(availableVariables).buildWithCustomFunctions(customFunctionProviders);
     }
 }
