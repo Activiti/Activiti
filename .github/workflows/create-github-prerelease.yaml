@@ -17,4 +17,4 @@ jobs:
           TAG: ${{ github.ref_name }}
           GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
         run: |
-          gh release create $TAG --prerelease
+          gh release create $TAG --prerelease -t $TAG
