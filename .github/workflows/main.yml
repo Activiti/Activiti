@@ -56,7 +56,7 @@ jobs:
         env:
           MAVEN_VERSION: 3.6.3
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@v1.18.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@v1.18.1
         id: update-pom-to-next-version
         if: ${{ github.event_name == 'push' }}
 
@@ -110,7 +110,7 @@ jobs:
 
       - name: Install updatebot
         if: ${{ github.event_name == 'push' }}
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@v1.18.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@v1.18.1
 
       - name: Run updatebot
         if: ${{ github.event_name == 'push' }}
