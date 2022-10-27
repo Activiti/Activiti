@@ -26,6 +26,8 @@ import org.activiti.api.process.model.BPMNSignal;
 import org.activiti.api.process.model.BPMNTimer;
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.api.process.model.MessageSubscription;
+import org.activiti.api.process.model.ProcessCandidateStarterGroup;
+import org.activiti.api.process.model.ProcessCandidateStarterUser;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.StartMessageDeploymentDefinition;
@@ -64,6 +66,8 @@ import org.activiti.api.runtime.model.impl.LocalDateToStringConverter;
 import org.activiti.api.runtime.model.impl.MapToStringConverter;
 import org.activiti.api.runtime.model.impl.MessageSubscriptionImpl;
 import org.activiti.api.runtime.model.impl.ObjectValueToStringConverter;
+import org.activiti.api.runtime.model.impl.ProcessCandidateStarterGroupImpl;
+import org.activiti.api.runtime.model.impl.ProcessCandidateStarterUserImpl;
 import org.activiti.api.runtime.model.impl.ProcessDefinitionImpl;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
 import org.activiti.api.runtime.model.impl.ProcessVariableTypeConverter;
@@ -158,6 +162,10 @@ public class ProcessModelAutoConfiguration {
                             StartMessageDeployedEventImpl.class);
         resolver.addMapping(StartMessageDeploymentDefinition.class,
                             StartMessageDeploymentDefinitionImpl.class);
+        resolver.addMapping(ProcessCandidateStarterUser.class,
+                            ProcessCandidateStarterUserImpl.class);
+        resolver.addMapping(ProcessCandidateStarterGroup.class,
+                            ProcessCandidateStarterGroupImpl.class);
 
         module.registerSubtypes(new NamedType(ProcessInstanceResult.class,
                                               ProcessInstanceResult.class.getSimpleName()));
