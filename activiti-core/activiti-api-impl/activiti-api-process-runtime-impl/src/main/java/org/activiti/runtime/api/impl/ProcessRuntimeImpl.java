@@ -99,7 +99,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     private final SecurityManager securityManager;
 
-    @Value("${activiti.candidateStarter.enabled:false}")
+    @Value("${activiti.candidateStarters.enabled:false}")
     private boolean candidateStartersEnabled;
 
     public ProcessRuntimeImpl(RepositoryService repositoryService,
