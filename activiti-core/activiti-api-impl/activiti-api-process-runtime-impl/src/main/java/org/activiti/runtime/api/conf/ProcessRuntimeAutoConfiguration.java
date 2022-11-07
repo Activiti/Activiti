@@ -647,7 +647,7 @@ public class ProcessRuntimeAutoConfiguration {
                                                                                      ToAPIProcessCandidateStarterUserRemovedEventConverter processCandidateStarterUserRemovedEventConverter) {
         return () -> runtimeService.addEventListener(new ProcessCandidateStarterUserRemovedListenerDelegate(getInitializedListeners(listeners),
                 processCandidateStarterUserRemovedEventConverter),
-            ActivitiEventType.ENTITY_CREATED);
+            ActivitiEventType.ENTITY_DELETED);
     }
 
     @Bean
@@ -663,7 +663,7 @@ public class ProcessRuntimeAutoConfiguration {
                                                                                       ToAPIProcessCandidateStarterGroupRemovedEventConverter processCandidateStarterGroupRemovedEventConverter) {
         return () -> runtimeService.addEventListener(new ProcessCandidateStarterGroupRemovedListenerDelegate(getInitializedListeners(listeners),
                 processCandidateStarterGroupRemovedEventConverter),
-            ActivitiEventType.ENTITY_CREATED);
+            ActivitiEventType.ENTITY_DELETED);
     }
 
     @Bean
