@@ -20,12 +20,7 @@ jobs:
   pre-commit:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Set up python
-        uses: actions/setup-python@v2
-      - name: Run pre-commit
-        uses: pre-commit/action@v3.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@v1.20.1
 
   build:
     runs-on: ubuntu-latest
