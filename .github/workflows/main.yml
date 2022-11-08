@@ -127,3 +127,14 @@ jobs:
         env:
           GITHUB_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
           GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: build
+    if: always() && failure() && github.event_name == 'push'
+    steps:
+      - name: Slack Notification
+        uses: Alfresco/alfresco-build-tools/.github/actions/send-slack-notification@v1.20.1
+        with:
+          channel-id: 'eng-hxp-studio-activiti-gh-notifs'
+          token: ${{ secrets.SLACK_NOTIFICATION_BOT_TOKEN }}
