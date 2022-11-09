@@ -8,6 +8,6 @@ jobs:
   dependabot-auto-merge:
     runs-on: ubuntu-latest
     steps:
-    - uses: Alfresco/alfresco-build-tools/.github/actions/automate-dependabot@v1.20.0
+    - uses: Alfresco/alfresco-build-tools/.github/actions/automate-dependabot@v1.20.1
       with:
         token: ${{ secrets.DEPENDABOT_GITHUB_TOKEN }}
