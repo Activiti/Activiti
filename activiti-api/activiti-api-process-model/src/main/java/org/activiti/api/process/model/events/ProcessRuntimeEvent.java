@@ -34,7 +34,9 @@ public interface ProcessRuntimeEvent<T extends ProcessInstance> extends RuntimeE
 
         PROCESS_RESUMED,
 
-        PROCESS_UPDATED
+        PROCESS_UPDATED,
+
+        PROCESS_DELETED
     }
 
 }
