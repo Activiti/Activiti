@@ -21,3 +21,12 @@ repos:
         name: "Validate Dependabot Config"
         files: '.github/dependabot\.yml$'
         args: ["--schemafile", "https://json.schemastore.org/dependabot-2.0.json"]
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.0.0-alpha.4
+    hooks:
+      - id: prettier
+        types:
+          - java
+        additional_dependencies:
+          - prettier@2.7.1
+          - prettier-plugin-java@1.4.0

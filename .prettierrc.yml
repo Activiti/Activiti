@@ -1,0 +1,8 @@
+# Prettier configuration
+trailingComma: none
+
+overrides:
+  - files:
+      - "*.java"
+    options:
+      editorconfig: true
