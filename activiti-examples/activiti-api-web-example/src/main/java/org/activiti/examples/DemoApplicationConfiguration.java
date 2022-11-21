@@ -64,7 +64,7 @@ public class DemoApplicationConfiguration extends WebSecurityConfigurerAdapter {
             { "john", "{bcrypt}password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam" },
             { "hannah", "{bcrypt}password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam" },
             { "other", "{bcrypt}password", "ROLE_ACTIVITI_USER", "GROUP_otherTeam" },
-            { "admin", "{bcrypt}password", "ROLE_ACTIVITI_ADMIN" },
+            { "admin", "{bcrypt}password", "ROLE_ACTIVITI_ADMIN" }
         };
 
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();

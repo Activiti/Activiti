@@ -35,7 +35,7 @@ public class JobExecutorExceptionsTest extends PluggableActivitiTestCase {
     @Test
     @Deployment(
         resources = {
-            "org/activiti/engine/test/api/mgmt/ManagementServiceTest.testGetJobExceptionStacktrace.bpmn20.xml",
+            "org/activiti/engine/test/api/mgmt/ManagementServiceTest.testGetJobExceptionStacktrace.bpmn20.xml"
         }
     )
     public void testQueryByExceptionWithRealJobExecutor() {

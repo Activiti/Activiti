@@ -49,7 +49,7 @@ public class CallActivityBasedOnSpringBeansExpressionTest extends SpringActiviti
     @Deployment(
         resources = {
             "org/activiti/spring/test/expression/callactivity/CallActivityBasedOnSpringBeansExpressionTest.testCallActivityByExpression.bpmn20.xml",
-            "org/activiti/spring/test/expression/callactivity/simpleSubProcess.bpmn20.xml",
+            "org/activiti/spring/test/expression/callactivity/simpleSubProcess.bpmn20.xml"
         }
     )
     public void testCallActivityByExpression() throws Exception {

@@ -42,7 +42,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.catchAlertSignal.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.throwAlertSignal.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.throwAlertSignal.bpmn20.xml"
         }
     )
     public void testSignalCatchIntermediate() {
@@ -60,7 +60,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.catchAlertSignalExpression.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.throwAlertSignalExpression.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.throwAlertSignalExpression.bpmn20.xml"
         }
     )
     public void testSignalCatchIntermediateExpression() {
@@ -80,7 +80,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.catchAlertSignalBoundary.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.throwAlertSignal.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.throwAlertSignal.bpmn20.xml"
         }
     )
     public void testSignalCatchBoundary() {
@@ -98,7 +98,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.catchAlertSignalBoundaryWithReceiveTask.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.throwAlertSignal.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.throwAlertSignal.bpmn20.xml"
         }
     )
     public void testSignalCatchBoundaryWithVariables() {
@@ -116,7 +116,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.catchAlertSignal.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.throwAlertSignalAsynch.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.throwAlertSignalAsynch.bpmn20.xml"
         }
     )
     public void testSignalCatchIntermediateAsynch() {
@@ -149,7 +149,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         resources = {
             "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.catchMultipleSignals.bpmn20.xml",
             "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.throwAlertSignal.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.throwAbortSignal.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.throwAbortSignal.bpmn20.xml"
         }
     )
     public void testSignalCatchDifferentSignals() {

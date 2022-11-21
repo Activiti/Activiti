@@ -24,6 +24,6 @@ public interface ProcessCandidateStarterUserEvent
     enum ProcessCandidateStarterUserEvents {
         PROCESS_CANDIDATE_STARTER_USER_ADDED,
 
-        PROCESS_CANDIDATE_STARTER_USER_REMOVED,
+        PROCESS_CANDIDATE_STARTER_USER_REMOVED
     }
 }

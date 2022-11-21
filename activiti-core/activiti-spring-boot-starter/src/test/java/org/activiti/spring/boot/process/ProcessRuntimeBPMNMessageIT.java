@@ -66,7 +66,7 @@ import org.springframework.stereotype.Component;
     classes = {
         Application.class,
         TestStartMessageDeployedRuntimeEventListener.class,
-        TestStartMessageDeployedApplicationEventListener.class,
+        TestStartMessageDeployedApplicationEventListener.class
     }
 )
 public class ProcessRuntimeBPMNMessageIT {

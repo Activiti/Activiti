@@ -157,7 +157,7 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/event/end/TerminateMultiInstanceEndEventTest.testTerminateMiCallactivity-parentProcess.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/event/end/TerminateMultiInstanceEndEventTest.testTerminateMiCallactivity-calledProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/event/end/TerminateMultiInstanceEndEventTest.testTerminateMiCallactivity-calledProcess.bpmn20.xml"
         }
     )
     public void testTerminateMiCallactivity() {
@@ -198,7 +198,7 @@ public class TerminateMultiInstanceEndEventTest extends PluggableActivitiTestCas
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/event/end/TerminateMultiInstanceEndEventTest.testTerminateMiCallactivity-parentProcessSequential.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/event/end/TerminateMultiInstanceEndEventTest.testTerminateMiCallactivity-calledProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/event/end/TerminateMultiInstanceEndEventTest.testTerminateMiCallactivity-calledProcess.bpmn20.xml"
         }
     )
     public void testTerminateMiCallactivitySequential() {

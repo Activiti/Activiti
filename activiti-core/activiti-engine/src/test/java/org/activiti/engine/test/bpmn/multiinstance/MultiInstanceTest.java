@@ -437,7 +437,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialScriptTasks.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialScriptTasks.bpmn20.xml"
         }
     )
     public void testSequentialScriptTasksHistory() {
@@ -509,7 +509,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelScriptTasks.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelScriptTasks.bpmn20.xml"
         }
     )
     public void testParallelScriptTasksHistory() {
@@ -546,7 +546,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelScriptTasksCompletionCondition.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelScriptTasksCompletionCondition.bpmn20.xml"
         }
     )
     public void testParallelScriptTasksCompletionConditionHistory() {
@@ -612,7 +612,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialSubProcess.bpmn20.xml"
         }
     )
     public void testSequentialSubProcessHistory() {
@@ -747,7 +747,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelSubProcess.bpmn20.xml"
         }
     )
     public void testParallelSubProcessHistory() {
@@ -856,7 +856,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelSubProcessAllAutomatic.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelSubProcessAllAutomatic.bpmn20.xml"
         }
     )
     public void testParallelSubProcessAllAutomaticCompletionCondition() {
@@ -920,7 +920,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialCallActivity.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml"
         }
     )
     public void testSequentialCallActivity() {
@@ -977,7 +977,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialCallActivityWithTimer.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml"
         }
     )
     public void testSequentialCallActivityWithTimer() {
@@ -1006,7 +1006,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelCallActivity.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml"
         }
     )
     public void testParallelCallActivity() {
@@ -1023,7 +1023,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelCallActivity.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml"
         }
     )
     public void testParallelCallActivityHistory() {
@@ -1072,7 +1072,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelCallActivityWithTimer.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml"
         }
     )
     public void testParallelCallActivityWithTimer() {
@@ -1098,7 +1098,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedSequentialCallActivity.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml"
         }
     )
     public void testNestedSequentialCallActivity() {
@@ -1119,7 +1119,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedSequentialCallActivityWithTimer.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml"
         }
     )
     public void testNestedSequentialCallActivityWithTimer() {
@@ -1153,7 +1153,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedParallelCallActivity.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml"
         }
     )
     public void testNestedParallelCallActivity() {
@@ -1171,7 +1171,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedParallelCallActivityWithTimer.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml"
         }
     )
     public void testNestedParallelCallActivityWithTimer() {
@@ -1198,7 +1198,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedParallelCallActivityCompletionCondition.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml"
         }
     )
     public void testNestedParallelCallActivityCompletionCondition() {
@@ -1290,7 +1290,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.callActivityWithBoundaryErrorEvent.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.throwingErrorEventSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.throwingErrorEventSubProcess.bpmn20.xml"
         }
     )
     public void testMultiInstanceCallActivityWithErrorBoundaryEvent() {
@@ -1323,7 +1323,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.callActivityWithBoundaryErrorEventSequential.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.throwingErrorEventSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.throwingErrorEventSubProcess.bpmn20.xml"
         }
     )
     public void testSequentialMultiInstanceCallActivityWithErrorBoundaryEvent() {
@@ -1417,7 +1417,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedMultiInstanceTasks.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedMultiInstanceTasks.bpmn20.xml"
         }
     )
     public void testNestedMultiInstanceTasks() {
@@ -1449,7 +1449,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialSubprocessEmptyCollection.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialSubprocessEmptyCollection.bpmn20.xml"
         }
     )
     public void testSequentialSubprocessEmptyCollection() {
@@ -1468,7 +1468,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialEmptyCollection.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialEmptyCollection.bpmn20.xml"
         }
     )
     public void testSequentialEmptyCollection() {
@@ -1487,7 +1487,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialEmptyCollection.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialEmptyCollection.bpmn20.xml"
         }
     )
     public void testSequentialEmptyCollectionWithNonEmptyCollection() {
@@ -1507,7 +1507,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelEmptyCollection.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelEmptyCollection.bpmn20.xml"
         }
     )
     public void testParalellEmptyCollection() throws Exception {
@@ -1526,7 +1526,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelEmptyCollection.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelEmptyCollection.bpmn20.xml"
         }
     )
     public void testParalellEmptyCollectionWithNonEmptyCollection() {

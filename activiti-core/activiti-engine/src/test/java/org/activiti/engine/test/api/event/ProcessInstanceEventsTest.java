@@ -190,7 +190,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/api/runtime/nestedSubProcess.bpmn20.xml",
-            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml",
+            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml"
         }
     )
     public void testSubProcessInstanceEvents() throws Exception {
@@ -288,7 +288,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
      */
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/event/signal/SignalEventTest.testSignalWithGlobalScope.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/event/signal/SignalEventTest.testSignalWithGlobalScope.bpmn20.xml"
         }
     )
     public void testSignalProcessInstanceStart() throws Exception {
@@ -334,7 +334,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
      */
     @Deployment(
         resources = {
-            "org/activiti/engine/test/api/event/ProcessInstanceEventsTest.parallelGatewayNoEndProcess.bpmn20.xml",
+            "org/activiti/engine/test/api/event/ProcessInstanceEventsTest.parallelGatewayNoEndProcess.bpmn20.xml"
         }
     )
     public void testProcessCompleted_ParallelGatewayNoEnd() throws Exception {
@@ -352,7 +352,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
      */
     @Deployment(
         resources = {
-            "org/activiti/engine/test/api/event/ProcessInstanceEventsTest.parallelGatewayTwoEndsProcess.bpmn20.xml",
+            "org/activiti/engine/test/api/event/ProcessInstanceEventsTest.parallelGatewayTwoEndsProcess.bpmn20.xml"
         }
     )
     public void testProcessCompleted_ParallelGatewayTwoEnds() throws Exception {
@@ -407,7 +407,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/api/runtime/nestedSubProcess.bpmn20.xml",
-            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml",
+            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml"
         }
     )
     public void testProcessInstanceCancelledEvents_cancelProcessHierarchy() throws Exception {
@@ -554,7 +554,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateInCallActivity.bpmn",
-            "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessTerminate.bpmn",
+            "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessTerminate.bpmn"
         }
     )
     public void testProcessInstanceTerminatedEvents_callActivity() throws Exception {
@@ -582,7 +582,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateInParentProcess.bpmn",
-            "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml",
+            "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"
         }
     )
     public void testProcessInstanceTerminatedEvents_terminateInParentProcess() throws Exception {
@@ -641,7 +641,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnCallActivity-parent.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.subprocess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.subprocess.bpmn20.xml"
         }
     )
     public void testProcessCompletedEvents_callActivityErrorEndEvent() throws Exception {
@@ -681,7 +681,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelCallActivity.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml"
         }
     )
     public void testDeleteMultiInstanceCallActivityProcessInstance() {

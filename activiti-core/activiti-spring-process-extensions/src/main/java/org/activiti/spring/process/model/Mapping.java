@@ -40,6 +40,6 @@ public class Mapping {
     public enum SourceMappingType {
         VARIABLE,
 
-        VALUE,
+        VALUE
     }
 }

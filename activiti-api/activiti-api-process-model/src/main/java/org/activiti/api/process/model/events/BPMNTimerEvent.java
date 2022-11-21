@@ -25,6 +25,6 @@ public interface BPMNTimerEvent extends RuntimeEvent<BPMNTimer, BPMNTimerEvent.T
         TIMER_CANCELLED,
         TIMER_EXECUTED,
         TIMER_FAILED,
-        TIMER_RETRIES_DECREMENTED,
+        TIMER_RETRIES_DECREMENTED
     }
 }

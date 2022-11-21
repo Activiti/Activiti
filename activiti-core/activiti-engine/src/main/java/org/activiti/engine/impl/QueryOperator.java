@@ -31,5 +31,5 @@ public enum QueryOperator {
     LIKE,
     EQUALS_IGNORE_CASE,
     NOT_EQUALS_IGNORE_CASE,
-    LIKE_IGNORE_CASE,
+    LIKE_IGNORE_CASE
 }

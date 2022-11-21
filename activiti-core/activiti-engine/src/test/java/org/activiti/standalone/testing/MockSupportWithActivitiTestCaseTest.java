@@ -71,7 +71,7 @@ public class MockSupportWithActivitiTestCaseTest extends ActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/standalone/testing/MockSupportWithActivitiTestCaseTest.testMockedServiceTaskAnnotation.bpmn20.xml",
+            "org/activiti/standalone/testing/MockSupportWithActivitiTestCaseTest.testMockedServiceTaskAnnotation.bpmn20.xml"
         }
     )
     @MockServiceTask(
@@ -94,7 +94,7 @@ public class MockSupportWithActivitiTestCaseTest extends ActivitiTestCase {
             @MockServiceTask(
                 originalClassName = "com.yourcompany.delegate2",
                 mockedClassName = "org.activiti.standalone.testing.helpers.ServiceTaskTestMock"
-            ),
+            )
         }
     )
     public void testMockedServiceTasksAnnotation() {
@@ -118,7 +118,7 @@ public class MockSupportWithActivitiTestCaseTest extends ActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/standalone/testing/MockSupportWithActivitiTestCaseTest.testNoOpServiceTasksAnnotation.bpmn20.xml",
+            "org/activiti/standalone/testing/MockSupportWithActivitiTestCaseTest.testNoOpServiceTasksAnnotation.bpmn20.xml"
         }
     )
     @NoOpServiceTasks(

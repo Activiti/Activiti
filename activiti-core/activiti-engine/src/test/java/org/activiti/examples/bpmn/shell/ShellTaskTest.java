@@ -28,7 +28,7 @@ public class ShellTaskTest extends PluggableActivitiTestCase {
         WINDOWS,
         MAC,
         SOLARIS,
-        UNKOWN,
+        UNKOWN
     }
 
     OsType osType;

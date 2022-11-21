@@ -22,6 +22,6 @@ public interface BPMNMessageEvent extends RuntimeEvent<BPMNMessage, BPMNMessageE
     enum MessageEvents {
         MESSAGE_WAITING,
         MESSAGE_RECEIVED,
-        MESSAGE_SENT,
+        MESSAGE_SENT
     }
 }

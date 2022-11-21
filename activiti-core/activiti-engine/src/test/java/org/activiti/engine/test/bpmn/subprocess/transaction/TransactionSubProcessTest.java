@@ -37,7 +37,7 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/subprocess/transaction/TransactionSubProcessTest.testSimpleCase.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/subprocess/transaction/TransactionSubProcessTest.testSimpleCase.bpmn20.xml"
         }
     )
     public void testSimpleCaseTxSuccessful() {
@@ -117,7 +117,7 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/subprocess/transaction/TransactionSubProcessTest.testSimpleCase.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/subprocess/transaction/TransactionSubProcessTest.testSimpleCase.bpmn20.xml"
         }
     )
     public void testSimpleCaseTxCancelled() {
@@ -374,7 +374,7 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/subprocess/transaction/TransactionSubProcessTest.testMultiInstanceTx.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/subprocess/transaction/TransactionSubProcessTest.testMultiInstanceTx.bpmn20.xml"
         }
     )
     public void testMultiInstanceTxSuccessful() {

@@ -69,7 +69,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 @AutoConfigureAfter(
     name = {
         "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
-        "org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration",
+        "org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration"
     }
 )
 @EnableConfigurationProperties({ ActivitiProperties.class, AsyncExecutorProperties.class })

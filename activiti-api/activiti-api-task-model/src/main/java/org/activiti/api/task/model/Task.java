@@ -26,7 +26,7 @@ public interface Task extends ApplicationElement {
         SUSPENDED,
         COMPLETED,
         CANCELLED,
-        DELETED,
+        DELETED
     }
 
     String getId();

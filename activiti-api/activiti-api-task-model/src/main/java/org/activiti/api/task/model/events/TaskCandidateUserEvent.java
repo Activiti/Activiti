@@ -23,6 +23,6 @@ public interface TaskCandidateUserEvent
     enum TaskCandidateUserEvents {
         TASK_CANDIDATE_USER_ADDED,
 
-        TASK_CANDIDATE_USER_REMOVED,
+        TASK_CANDIDATE_USER_REMOVED
     }
 }

@@ -702,7 +702,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/api/runtime/superProcess.bpmn20.xml",
-            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml",
+            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml"
         }
     )
     public void testQueryBySuperProcessInstanceId() {
@@ -720,7 +720,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/api/runtime/superProcess.bpmn20.xml",
-            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml",
+            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml"
         }
     )
     public void testQueryParentProcessInstanceIdResultMapping() {
@@ -739,7 +739,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/api/runtime/superProcess.bpmn20.xml",
-            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml",
+            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml"
         }
     )
     public void testQueryWithVariablesParentProcessInstanceIdResultMapping() {
@@ -760,7 +760,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/api/runtime/superProcess.bpmn20.xml",
-            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml",
+            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml"
         }
     )
     public void testOrQueryBySuperProcessInstanceId() {
@@ -787,7 +787,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/api/runtime/superProcess.bpmn20.xml",
-            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml",
+            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml"
         }
     )
     public void testQueryBySubProcessInstanceId() {
@@ -811,7 +811,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/api/runtime/superProcess.bpmn20.xml",
-            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml",
+            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml"
         }
     )
     public void testOrQueryBySubProcessInstanceId() {
@@ -846,7 +846,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
         resources = {
             "org/activiti/engine/test/api/runtime/superProcessWithNestedSubProcess.bpmn20.xml",
             "org/activiti/engine/test/api/runtime/nestedSubProcess.bpmn20.xml",
-            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml",
+            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml"
         }
     )
     public void testQueryBySuperProcessInstanceIdNested() {
@@ -870,7 +870,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
         resources = {
             "org/activiti/engine/test/api/runtime/superProcessWithNestedSubProcess.bpmn20.xml",
             "org/activiti/engine/test/api/runtime/nestedSubProcess.bpmn20.xml",
-            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml",
+            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml"
         }
     )
     public void testQueryBySubProcessInstanceIdNested() {
@@ -907,7 +907,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
         resources = {
             "org/activiti/engine/test/api/runtime/superProcessWithNestedSubProcess.bpmn20.xml",
             "org/activiti/engine/test/api/runtime/nestedSubProcess.bpmn20.xml",
-            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml",
+            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml"
         }
     )
     public void testQueryWithExcludeSubprocesses() {

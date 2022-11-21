@@ -164,7 +164,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testDivergingInclusiveGateway.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testDivergingInclusiveGateway.bpmn20.xml"
         }
     )
     public void testUnknownVariableInExpression() {
@@ -430,7 +430,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testJoinAfterCall.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testJoinAfterCallSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testJoinAfterCallSubProcess.bpmn20.xml"
         }
     )
     public void testJoinAfterCall() {

@@ -42,7 +42,7 @@ public abstract class AbstractNativeQuery<T extends NativeQuery<?, ?>, U>
         LIST,
         LIST_PAGE,
         SINGLE_RESULT,
-        COUNT,
+        COUNT
     }
 
     protected transient CommandExecutor commandExecutor;

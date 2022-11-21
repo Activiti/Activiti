@@ -24,5 +24,5 @@ package org.activiti.engine.impl.cfg;
 public enum TransactionPropagation {
     REQUIRED,
     REQUIRES_NEW,
-    NOT_SUPPORTED,
+    NOT_SUPPORTED
 }

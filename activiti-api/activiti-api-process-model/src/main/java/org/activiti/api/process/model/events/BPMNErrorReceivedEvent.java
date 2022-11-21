@@ -20,6 +20,6 @@ import org.activiti.api.process.model.BPMNError;
 
 public interface BPMNErrorReceivedEvent extends RuntimeEvent<BPMNError, BPMNErrorReceivedEvent.ErrorEvents> {
     enum ErrorEvents {
-        ERROR_RECEIVED,
+        ERROR_RECEIVED
     }
 }

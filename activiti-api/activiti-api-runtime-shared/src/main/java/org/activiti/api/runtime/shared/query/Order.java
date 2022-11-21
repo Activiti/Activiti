@@ -20,7 +20,7 @@ public class Order {
     public enum Direction {
         ASC,
 
-        DESC,
+        DESC
     }
 
     private String property;

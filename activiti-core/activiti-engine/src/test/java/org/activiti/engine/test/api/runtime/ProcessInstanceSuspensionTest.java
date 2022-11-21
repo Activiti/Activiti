@@ -94,7 +94,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
         resources = {
             "org/activiti/engine/test/api/runtime/superProcessWithMultipleNestedSubProcess.bpmn20.xml",
             "org/activiti/engine/test/api/runtime/nestedSubProcess.bpmn20.xml",
-            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml",
+            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml"
         }
     )
     public void testQueryForActiveAndSuspendedProcessInstances() {

@@ -23,6 +23,6 @@ public interface TaskCandidateGroupEvent
     enum TaskCandidateGroupEvents {
         TASK_CANDIDATE_GROUP_ADDED,
 
-        TASK_CANDIDATE_GROUP_REMOVED,
+        TASK_CANDIDATE_GROUP_REMOVED
     }
 }

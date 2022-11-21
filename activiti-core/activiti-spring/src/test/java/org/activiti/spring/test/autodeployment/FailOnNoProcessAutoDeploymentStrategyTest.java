@@ -68,7 +68,7 @@ public class FailOnNoProcessAutoDeploymentStrategyTest extends SpringActivitiTes
         final Resource[] resources = new Resource[] {
             new ClassPathResource(validName1),
             new ClassPathResource(invalidName1),
-            new ClassPathResource(invalidName2),
+            new ClassPathResource(invalidName2)
         };
         FailOnNoProcessAutoDeploymentStrategy deploymentStrategy = new FailOnNoProcessAutoDeploymentStrategy(null);
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
@@ -79,7 +79,7 @@ public class FailOnNoProcessAutoDeploymentStrategyTest extends SpringActivitiTes
     public void testWithParsingErrorResources() {
         final Resource[] resources = new Resource[] {
             new ClassPathResource(validName1),
-            new ClassPathResource(invalidName1),
+            new ClassPathResource(invalidName1)
         };
         FailOnNoProcessAutoDeploymentStrategy deploymentStrategy = new FailOnNoProcessAutoDeploymentStrategy(null);
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
@@ -90,7 +90,7 @@ public class FailOnNoProcessAutoDeploymentStrategyTest extends SpringActivitiTes
     public void testWithValidationErrorResources() {
         final Resource[] resources = new Resource[] {
             new ClassPathResource(validName1),
-            new ClassPathResource(invalidName2),
+            new ClassPathResource(invalidName2)
         };
         FailOnNoProcessAutoDeploymentStrategy deploymentStrategy = new FailOnNoProcessAutoDeploymentStrategy(null);
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);

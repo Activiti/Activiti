@@ -113,7 +113,7 @@ class IntegrationContextImplTest {
                     put("field2", "field2");
                 }
             }
-        ),
+        )
     };
 
     @SpringBootApplication

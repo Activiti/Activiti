@@ -56,7 +56,7 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
         String.class,
         String[].class,
         DataSource.class,
-        DataSource[].class,
+        DataSource[].class
     };
 
     protected Expression to;

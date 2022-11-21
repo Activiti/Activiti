@@ -42,7 +42,7 @@ public class DemoApplicationConfiguration {
 
         String[][] usersGroupsAndRoles = {
             { "system", "password", "ROLE_ACTIVITI_USER" },
-            { "admin", "password", "ROLE_ACTIVITI_ADMIN" },
+            { "admin", "password", "ROLE_ACTIVITI_ADMIN" }
         };
 
         for (String[] user : usersGroupsAndRoles) {

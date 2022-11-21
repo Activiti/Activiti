@@ -21,7 +21,7 @@ public class TemplateDefinition {
 
     public enum TemplateType {
         VARIABLE,
-        FILE,
+        FILE
     }
 
     private String from;

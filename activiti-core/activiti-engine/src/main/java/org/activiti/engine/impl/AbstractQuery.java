@@ -48,7 +48,7 @@ public abstract class AbstractQuery<T extends Query<?, ?>, U>
         LIST,
         LIST_PAGE,
         SINGLE_RESULT,
-        COUNT,
+        COUNT
     }
 
     protected transient CommandExecutor commandExecutor;
@@ -64,7 +64,7 @@ public abstract class AbstractQuery<T extends Query<?, ?>, U>
 
     public static enum NullHandlingOnOrder {
         NULLS_FIRST,
-        NULLS_LAST,
+        NULLS_LAST
     }
 
     protected NullHandlingOnOrder nullHandlingOnOrder;

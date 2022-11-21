@@ -249,7 +249,7 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.throwMessage.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.catchMessage.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.catchMessage.bpmn20.xml"
         }
     )
     public void testThrowCatchIntermediateMessageEvent() throws Exception {
@@ -291,7 +291,7 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.throwMessage.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.startMessage.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.startMessage.bpmn20.xml"
         }
     )
     public void testThrowCatchStartMessageEvent() throws Exception {
@@ -339,7 +339,7 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.endMessage.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.startMessage.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.startMessage.bpmn20.xml"
         }
     )
     public void testThrowCatchEndMessageEvent() throws Exception {
@@ -923,7 +923,7 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.throwMessageCorrelationKey.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.catchMessageCorrelationKey.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.catchMessageCorrelationKey.bpmn20.xml"
         }
     )
     public void testThrowCatchIntermediateMessageEventCorrelationKey() throws Exception {
@@ -977,7 +977,7 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.catchMessageCorrelationKey.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.catchMessageCorrelationKey.bpmn20.xml"
         }
     )
     public void testMessageEventSubscriptionQueryWithCorrelationKey() {
@@ -1002,7 +1002,7 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.catchMessageCorrelationKey.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.catchMessageCorrelationKey.bpmn20.xml"
         }
     )
     public void testMessageEventSubscriptionWithSameCorrelationKeyFails() {

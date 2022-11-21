@@ -112,7 +112,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/examples/bpmn/callactivity/orderProcess.bpmn20.xml",
-            "org/activiti/examples/bpmn/callactivity/checkCreditProcess.bpmn20.xml",
+            "org/activiti/examples/bpmn/callactivity/checkCreditProcess.bpmn20.xml"
         }
     )
     public void testOrderProcessWithCallActivity() {
@@ -142,7 +142,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/examples/bpmn/callactivity/orderProcess.bpmn20.xml",
-            "org/activiti/examples/bpmn/callactivity/checkCreditProcess.bpmn20.xml",
+            "org/activiti/examples/bpmn/callactivity/checkCreditProcess.bpmn20.xml"
         }
     )
     public void testExcludeSubprocesses() {
@@ -166,7 +166,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
         resources = {
             "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml",
             "org/activiti/examples/bpmn/callactivity/orderProcess.bpmn20.xml",
-            "org/activiti/examples/bpmn/callactivity/checkCreditProcess.bpmn20.xml",
+            "org/activiti/examples/bpmn/callactivity/checkCreditProcess.bpmn20.xml"
         }
     )
     public void testHistoricProcessInstanceQueryByProcessDefinitionKey() {
@@ -202,7 +202,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml",
-            "org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml",
+            "org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml"
         }
     )
     public void testHistoricProcessInstanceQueryByProcessInstanceIds() {
@@ -295,7 +295,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml",
-            "org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml",
+            "org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml"
         }
     )
     public void testHistoricProcessInstanceQueryByDeploymentId() {
@@ -323,7 +323,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml",
-            "org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml",
+            "org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml"
         }
     )
     public void testHistoricProcessInstanceQueryByDeploymentIdIn() {
@@ -355,7 +355,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml",
-            "org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml",
+            "org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml"
         }
     )
     public void testHistoricTaskInstanceQueryByDeploymentId() {
@@ -382,7 +382,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml",
-            "org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml",
+            "org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml"
         }
     )
     public void testHistoricTaskInstanceQueryByDeploymentIdIn() {
@@ -417,7 +417,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml",
-            "org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml",
+            "org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml"
         }
     )
     public void testHistoricTaskInstanceOrQueryByDeploymentId() {
@@ -532,7 +532,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml",
-            "org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml",
+            "org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml"
         }
     )
     public void testHistoricTaskInstanceOrQueryByDeploymentIdIn() {

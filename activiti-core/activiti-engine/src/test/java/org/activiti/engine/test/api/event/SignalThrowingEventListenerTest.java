@@ -200,7 +200,7 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
      */
     @Deployment(
         resources = {
-            "org/activiti/engine/test/api/event/SignalThrowingEventListenerTest.testThrowSignalInNewTransaction.bpmn20.xml",
+            "org/activiti/engine/test/api/event/SignalThrowingEventListenerTest.testThrowSignalInNewTransaction.bpmn20.xml"
         }
     )
     public void testThrowSignalInRolledbackTransaction() throws Exception {
@@ -255,7 +255,7 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/api/event/SignalThrowingEventListenerTest.globalSignal.bpmn20.xml",
-            "org/activiti/engine/test/api/event/SignalThrowingEventListenerTest.globalSignalExternalProcess.bpmn20.xml",
+            "org/activiti/engine/test/api/event/SignalThrowingEventListenerTest.globalSignalExternalProcess.bpmn20.xml"
         }
     )
     public void testGlobalSignal() throws Exception {
@@ -303,7 +303,7 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/api/event/SignalThrowingEventListenerTest.globalSignalDefinedInProcessDefinition.bpmn20.xml",
-            "org/activiti/engine/test/api/event/SignalThrowingEventListenerTest.globalSignalExternalProcess.bpmn20.xml",
+            "org/activiti/engine/test/api/event/SignalThrowingEventListenerTest.globalSignalExternalProcess.bpmn20.xml"
         }
     )
     public void testGlobalSignalDefinedInProcessDefinition() throws Exception {

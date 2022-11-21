@@ -42,7 +42,7 @@ public class ProcessDefinitionScopedEventListenerTest extends PluggableActivitiT
     @Deployment(
         resources = {
             "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml",
-            "org/activiti/engine/test/api/event/simpleProcess.bpmn20.xml",
+            "org/activiti/engine/test/api/event/simpleProcess.bpmn20.xml"
         }
     )
     public void testProcessDefinitionScopedListener() throws Exception {

@@ -23,5 +23,5 @@ public enum TransactionState {
     COMMITTED,
     ROLLED_BACK,
     COMMITTING,
-    ROLLINGBACK,
+    ROLLINGBACK
 }

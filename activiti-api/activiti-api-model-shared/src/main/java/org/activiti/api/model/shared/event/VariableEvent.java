@@ -23,6 +23,6 @@ public interface VariableEvent extends RuntimeEvent<VariableInstance, VariableEv
 
         VARIABLE_UPDATED,
 
-        VARIABLE_DELETED,
+        VARIABLE_DELETED
     }
 }

@@ -24,6 +24,6 @@ public interface ProcessCandidateStarterGroupEvent
     enum ProcessCandidateStarterGroupEvents {
         PROCESS_CANDIDATE_STARTER_GROUP_ADDED,
 
-        PROCESS_CANDIDATE_STARTER_GROUP_REMOVED,
+        PROCESS_CANDIDATE_STARTER_GROUP_REMOVED
     }
 }

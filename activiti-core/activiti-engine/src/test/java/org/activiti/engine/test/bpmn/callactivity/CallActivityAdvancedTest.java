@@ -42,7 +42,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/callactivity/CallActivity.testCallSimpleSubProcess.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/callactivity/simpleSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/callactivity/simpleSubProcess.bpmn20.xml"
         }
     )
     public void testCallSimpleSubProcess() {
@@ -98,7 +98,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/callactivity/CallActivity.testCallSimpleSubProcessWithExpressions.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/callactivity/simpleSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/callactivity/simpleSubProcess.bpmn20.xml"
         }
     )
     public void testCallSimpleSubProcessWithExpressions() {
@@ -136,7 +136,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/callactivity/CallActivity.testSubProcessEndsSuperProcess.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/callactivity/simpleSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/callactivity/simpleSubProcess.bpmn20.xml"
         }
     )
     public void testSubProcessEndsSuperProcess() {
@@ -158,7 +158,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/callactivity/CallActivity.testCallParallelSubProcess.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/callactivity/simpleParallelSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/callactivity/simpleParallelSubProcess.bpmn20.xml"
         }
     )
     public void testCallParallelSubProcess() {
@@ -189,7 +189,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
             "org/activiti/engine/test/bpmn/callactivity/CallActivity.testCallSequentialSubProcess.bpmn20.xml",
             "org/activiti/engine/test/bpmn/callactivity/CallActivity.testCallSimpleSubProcessWithExpressions.bpmn20.xml",
             "org/activiti/engine/test/bpmn/callactivity/simpleSubProcess.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/callactivity/simpleSubProcess2.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/callactivity/simpleSubProcess2.bpmn20.xml"
         }
     )
     public void testCallSequentialSubProcessWithExpressions() {
@@ -252,7 +252,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/callactivity/CallActivity.testTimerOnCallActivity.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/callactivity/simpleSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/callactivity/simpleSubProcess.bpmn20.xml"
         }
     )
     public void testTimerOnCallActivity() {
@@ -301,7 +301,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/callactivity/CallActivity.testTwoSubProcesses.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/callactivity/simpleSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/callactivity/simpleSubProcess.bpmn20.xml"
         }
     )
     public void testTwoSubProcesses() {

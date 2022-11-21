@@ -190,7 +190,7 @@ public class BpmnDeploymentHelper {
 
     enum ExpressionType {
         USER,
-        GROUP,
+        GROUP
     }
 
     /**

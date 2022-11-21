@@ -1948,7 +1948,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/api/runtime/multipleSubProcess.bpmn20.xml",
-            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml",
+            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml"
         }
     )
     public void testOnlySubProcessExecutions() throws Exception {
@@ -1970,7 +1970,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/api/runtime/superProcess.bpmn20.xml",
-            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml",
+            "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml"
         }
     )
     public void testExecutionQueryParentProcessInstanceIdResultMapping() throws Exception {

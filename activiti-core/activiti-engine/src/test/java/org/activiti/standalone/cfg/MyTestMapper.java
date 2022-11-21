@@ -27,7 +27,7 @@ public interface MyTestMapper {
         {
             "SELECT task.ID_ as taskId, variable.LONG_ as variableValue FROM ACT_RU_VARIABLE variable",
             "inner join ACT_RU_TASK task on variable.TASK_ID_ = task.ID_",
-            "where variable.NAME_ = #{variableName}",
+            "where variable.NAME_ = #{variableName}"
         }
     )
     List<Map<String, Object>> selectTaskWithSpecificVariable(String variableName);

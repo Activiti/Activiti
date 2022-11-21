@@ -24,6 +24,6 @@ public interface IntegrationEvent extends RuntimeEvent<IntegrationContext, Integ
 
         INTEGRATION_RESULT_RECEIVED,
 
-        INTEGRATION_ERROR_RECEIVED,
+        INTEGRATION_ERROR_RECEIVED
     }
 }

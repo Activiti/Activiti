@@ -165,7 +165,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     // Difference with previous test: now the join will be reached first
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/event/timer/BoundaryTimerNonInterruptingEventTest.testTimerOnConcurrentTasks.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/event/timer/BoundaryTimerNonInterruptingEventTest.testTimerOnConcurrentTasks.bpmn20.xml"
         }
     )
     public void testTimerOnConcurrentTasks2() {

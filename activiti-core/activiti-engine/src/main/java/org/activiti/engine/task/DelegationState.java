@@ -31,5 +31,5 @@ public enum DelegationState {
     /**
      * The assignee has resolved the task, the assignee was set to the owner again and the owner now finds this task back in the ToDo list for review. The owner now is able to complete the task.
      */
-    RESOLVED,
+    RESOLVED
 }

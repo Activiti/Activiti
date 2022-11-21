@@ -55,7 +55,7 @@ public class SingleResourceAutoDeploymentStrategyTest extends AbstractAutoDeploy
             resourceMock2,
             resourceMock3,
             resourceMock4,
-            resourceMock5,
+            resourceMock5
         };
         deploymentStrategy.deployResources(deploymentNameHint, resources, repositoryServiceMock);
 

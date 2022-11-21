@@ -34,7 +34,7 @@ public class CallActivityTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/examples/bpmn/callactivity/orderProcess.bpmn20.xml",
-            "org/activiti/examples/bpmn/callactivity/checkCreditProcess.bpmn20.xml",
+            "org/activiti/examples/bpmn/callactivity/checkCreditProcess.bpmn20.xml"
         }
     )
     public void testOrderProcessWithCallActivity() {
@@ -70,7 +70,7 @@ public class CallActivityTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/examples/bpmn/callactivity/mainProcess.bpmn20.xml",
-            "org/activiti/examples/bpmn/callactivity/childProcess.bpmn20.xml",
+            "org/activiti/examples/bpmn/callactivity/childProcess.bpmn20.xml"
         }
     )
     public void testCallActivityWithModeledDataObjectsInSubProcess() {
@@ -103,7 +103,7 @@ public class CallActivityTest extends PluggableActivitiTestCase {
             "org/activiti/examples/bpmn/callactivity/mainProcess.bpmn20.xml",
             "org/activiti/examples/bpmn/callactivity/childProcess.bpmn20.xml",
             "org/activiti/examples/bpmn/callactivity/mainProcessBusinessKey.bpmn20.xml",
-            "org/activiti/examples/bpmn/callactivity/mainProcessInheritBusinessKey.bpmn20.xml",
+            "org/activiti/examples/bpmn/callactivity/mainProcessInheritBusinessKey.bpmn20.xml"
         }
     )
     public void testCallActivityWithBusinessKey() {

@@ -45,7 +45,7 @@ public class BitMaskUtil {
         FLAG_BIT_5,
         FLAG_BIT_6,
         FLAG_BIT_7,
-        FLAG_BIT_8,
+        FLAG_BIT_8
     };
 
     /**

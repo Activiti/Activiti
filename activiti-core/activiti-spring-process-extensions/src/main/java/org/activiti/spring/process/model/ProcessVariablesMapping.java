@@ -56,6 +56,6 @@ public class ProcessVariablesMapping {
     public enum MappingType {
         MAP_ALL,
         MAP_ALL_INPUTS,
-        MAP_ALL_OUTPUTS,
+        MAP_ALL_OUTPUTS
     }
 }

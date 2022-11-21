@@ -113,7 +113,7 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/bpmn/event/compensate/CompensateEventTest.testCallActivityCompensationHandler.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/event/compensate/CompensationHandler.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/event/compensate/CompensationHandler.bpmn20.xml"
         }
     )
     public void testCallActivityCompensationHandler() {
@@ -178,7 +178,7 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/event/compensate/CompensateEventTest.testCompensationStepEndRecorded.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/event/compensate/CompensateEventTest.testCompensationStepEndRecorded.bpmn20.xml"
         }
     )
     public void testCompensationStepEndTimeRecorded() {
@@ -251,7 +251,7 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/event/compensate/CompensateEventTest.testCompensateWithSubprocess.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/event/compensate/CompensateEventTest.testCompensateWithSubprocess.bpmn20.xml"
         }
     )
     public void testCompensateWithSubprocess2() {

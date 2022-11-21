@@ -81,7 +81,7 @@ public class MockSupportWithActivitiRuleTest {
     @Test
     @Deployment(
         resources = {
-            "org/activiti/standalone/testing/MockSupportWithActivitiRuleTest.testMockedServiceTaskAnnotation.bpmn20.xml",
+            "org/activiti/standalone/testing/MockSupportWithActivitiRuleTest.testMockedServiceTaskAnnotation.bpmn20.xml"
         }
     )
     @MockServiceTask(
@@ -105,7 +105,7 @@ public class MockSupportWithActivitiRuleTest {
             @MockServiceTask(
                 originalClassName = "com.yourcompany.delegate2",
                 mockedClassName = "org.activiti.standalone.testing.helpers.ServiceTaskTestMock"
-            ),
+            )
         }
     )
     public void testMockedServiceTasksAnnotation() {
@@ -131,7 +131,7 @@ public class MockSupportWithActivitiRuleTest {
     @Test
     @Deployment(
         resources = {
-            "org/activiti/standalone/testing/MockSupportWithActivitiRuleTest.testNoOpServiceTasksAnnotation.bpmn20.xml",
+            "org/activiti/standalone/testing/MockSupportWithActivitiRuleTest.testNoOpServiceTasksAnnotation.bpmn20.xml"
         }
     )
     @NoOpServiceTasks(

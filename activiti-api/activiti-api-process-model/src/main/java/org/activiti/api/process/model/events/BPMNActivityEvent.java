@@ -24,6 +24,6 @@ public interface BPMNActivityEvent extends RuntimeEvent<BPMNActivity, BPMNActivi
 
         ACTIVITY_CANCELLED,
 
-        ACTIVITY_COMPLETED,
+        ACTIVITY_COMPLETED
     }
 }

@@ -27,5 +27,5 @@ public enum JobType {
     ASYNC,
     TIMER,
     SUSPENDED,
-    DEADLETTER,
+    DEADLETTER
 }

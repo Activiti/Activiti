@@ -32,6 +32,6 @@ public interface TaskRuntimeEvent<T extends Task> extends RuntimeEvent<T, TaskRu
 
         TASK_SUSPENDED,
 
-        TASK_CANCELLED,
+        TASK_CANCELLED
     }
 }

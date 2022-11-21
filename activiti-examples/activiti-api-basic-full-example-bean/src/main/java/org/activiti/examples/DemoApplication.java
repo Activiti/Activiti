@@ -161,7 +161,7 @@ public class DemoApplication implements CommandLineRunner {
             "all good news over here.",
             "I've tweeted about activiti today.",
             "other boring projects.",
-            "activiti cloud - Cloud Native Java BPM",
+            "activiti cloud - Cloud Native Java BPM"
         };
         return new Content(texts[new Random().nextInt(texts.length)], false, null);
     }

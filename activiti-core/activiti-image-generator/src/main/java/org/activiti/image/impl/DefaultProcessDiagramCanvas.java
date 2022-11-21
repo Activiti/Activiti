@@ -89,7 +89,7 @@ public class DefaultProcessDiagramCanvas {
     public enum SHAPE_TYPE {
         Rectangle,
         Rhombus,
-        Ellipse,
+        Ellipse
     }
 
     // Predefined sized

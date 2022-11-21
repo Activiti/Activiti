@@ -180,7 +180,7 @@ public class DemoApplication implements CommandLineRunner {
             "all good news over here.",
             "I've tweeted about activiti today.",
             "other boring projects.",
-            "activiti cloud - Cloud Native Java BPM",
+            "activiti cloud - Cloud Native Java BPM"
         };
         LinkedHashMap<Object, Object> content = new LinkedHashMap<>();
         content.put("body", texts[new Random().nextInt(texts.length)]);

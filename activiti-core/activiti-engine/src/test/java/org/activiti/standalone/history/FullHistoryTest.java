@@ -1204,7 +1204,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/standalone/history/FullHistoryTest.testHistoricProcessInstanceVariableValueEquals.bpmn20.xml",
+            "org/activiti/standalone/history/FullHistoryTest.testHistoricProcessInstanceVariableValueEquals.bpmn20.xml"
         }
     )
     public void testHistoricProcessInstanceVariableValueNotEquals() throws Exception {
@@ -1376,7 +1376,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/standalone/history/FullHistoryTest.testHistoricProcessInstanceVariableValueEquals.bpmn20.xml",
+            "org/activiti/standalone/history/FullHistoryTest.testHistoricProcessInstanceVariableValueEquals.bpmn20.xml"
         }
     )
     public void testHistoricProcessInstanceVariableValueLessThanAndGreaterThan() throws Exception {
@@ -1407,7 +1407,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/standalone/history/FullHistoryTest.testVariableUpdatesAreLinkedToActivity.bpmn20.xml",
+            "org/activiti/standalone/history/FullHistoryTest.testVariableUpdatesAreLinkedToActivity.bpmn20.xml"
         }
     )
     public void testVariableUpdatesLinkedToActivity() throws Exception {

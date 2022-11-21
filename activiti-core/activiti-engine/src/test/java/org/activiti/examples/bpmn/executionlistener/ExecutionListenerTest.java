@@ -130,7 +130,7 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/examples/bpmn/executionlistener/ExecutionListenersFieldInjectionProcess.bpmn20.xml",
+            "org/activiti/examples/bpmn/executionlistener/ExecutionListenersFieldInjectionProcess.bpmn20.xml"
         }
     )
     public void testExecutionListenerFieldInjection() {
@@ -174,7 +174,7 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/examples/bpmn/executionlistener/ExecutionListenersForSubprocessStartEndEvent.bpmn20.xml",
+            "org/activiti/examples/bpmn/executionlistener/ExecutionListenersForSubprocessStartEndEvent.bpmn20.xml"
         }
     )
     public void testExecutionListenersForSubprocessStartEndEvents() {

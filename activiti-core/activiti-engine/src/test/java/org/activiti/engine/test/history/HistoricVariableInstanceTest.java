@@ -44,7 +44,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/examples/bpmn/callactivity/orderProcess.bpmn20.xml",
-            "org/activiti/examples/bpmn/callactivity/checkCreditProcess.bpmn20.xml",
+            "org/activiti/examples/bpmn/callactivity/checkCreditProcess.bpmn20.xml"
         }
     )
     public void testOrderProcessWithCallActivity() {
@@ -197,7 +197,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/history/HistoricVariableInstanceTest.testCallSimpleSubProcess.bpmn20.xml",
-            "org/activiti/engine/test/history/simpleSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/history/simpleSubProcess.bpmn20.xml"
         }
     )
     public void testHistoricVariableInstanceQuery() {
@@ -566,7 +566,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/standalone/history/FullHistoryTest.testVariableUpdatesAreLinkedToActivity.bpmn20.xml",
+            "org/activiti/standalone/history/FullHistoryTest.testVariableUpdatesAreLinkedToActivity.bpmn20.xml"
         }
     )
     public void testVariableUpdatesLinkedToActivity() throws Exception {

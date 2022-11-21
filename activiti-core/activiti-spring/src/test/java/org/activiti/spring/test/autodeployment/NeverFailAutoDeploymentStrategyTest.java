@@ -66,7 +66,7 @@ public class NeverFailAutoDeploymentStrategyTest extends SpringActivitiTestCase 
         final Resource[] resources = new Resource[] {
             new ClassPathResource(validName1),
             new ClassPathResource(invalidName1),
-            new ClassPathResource(invalidName2),
+            new ClassPathResource(invalidName2)
         };
         NeverFailAutoDeploymentStrategy deploymentStrategy = new NeverFailAutoDeploymentStrategy(null);
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
@@ -77,7 +77,7 @@ public class NeverFailAutoDeploymentStrategyTest extends SpringActivitiTestCase 
     public void testWithParsingErrorResources() {
         final Resource[] resources = new Resource[] {
             new ClassPathResource(validName1),
-            new ClassPathResource(invalidName1),
+            new ClassPathResource(invalidName1)
         };
         NeverFailAutoDeploymentStrategy deploymentStrategy = new NeverFailAutoDeploymentStrategy(null);
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
@@ -88,7 +88,7 @@ public class NeverFailAutoDeploymentStrategyTest extends SpringActivitiTestCase 
     public void testWithValidationErrorResources() {
         final Resource[] resources = new Resource[] {
             new ClassPathResource(validName1),
-            new ClassPathResource(invalidName2),
+            new ClassPathResource(invalidName2)
         };
         NeverFailAutoDeploymentStrategy deploymentStrategy = new NeverFailAutoDeploymentStrategy(null);
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);

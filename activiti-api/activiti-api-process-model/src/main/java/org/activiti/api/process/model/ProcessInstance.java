@@ -24,7 +24,7 @@ public interface ProcessInstance extends ApplicationElement {
         RUNNING,
         SUSPENDED,
         CANCELLED,
-        COMPLETED,
+        COMPLETED
     }
 
     String getId();

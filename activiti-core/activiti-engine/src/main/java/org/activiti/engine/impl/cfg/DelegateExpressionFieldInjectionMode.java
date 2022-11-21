@@ -44,5 +44,5 @@ public enum DelegateExpressionFieldInjectionMode {
      *
      * Disables field injection when using delegateExpressions, no field injection will happen.
      */
-    DISABLED,
+    DISABLED
 }

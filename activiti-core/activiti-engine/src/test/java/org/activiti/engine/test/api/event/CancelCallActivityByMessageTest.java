@@ -44,7 +44,7 @@ public class CancelCallActivityByMessageTest extends PluggableActivitiTestCase {
     @Deployment(
         resources = {
             "org/activiti/engine/test/api/event/CancelCallActivityByMessageTest.testActivityMessageBoundaryEventsOnCallActivity.bpmn20.xml",
-            "org/activiti/engine/test/api/event/CancelCallActivityByMessageTest.testActivityMessageBoundaryEventsExternalSubProcess.bpmn20.xml",
+            "org/activiti/engine/test/api/event/CancelCallActivityByMessageTest.testActivityMessageBoundaryEventsExternalSubProcess.bpmn20.xml"
         }
     )
     public void testCancelCallActivityByMessage() throws Exception {
