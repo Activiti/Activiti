@@ -351,8 +351,7 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
         assertThatExceptionOfType(
             ActivitiInterchangeInfoNotFoundException.class
         )
-            .isThrownBy(//WHEN
-            () ->
+            .isThrownBy(() -> //WHEN
                 imageGenerator.generateDiagram(
                     bpmnModel,
                     emptyList(),
@@ -367,8 +366,7 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
 
         //THEN
         assertThatExceptionOfType(ActivitiImageException.class)
-            .isThrownBy(//WHEN
-            () ->
+            .isThrownBy(() -> //WHEN
                 imageGenerator.generateDiagram(
                     bpmnModel,
                     emptyList(),

@@ -1343,8 +1343,7 @@ public abstract class ProcessEngineConfigurationImpl
     ) {
         if (
             getCustomMybatisXMLMappers() != null
-        ) // see XMLConfigBuilder.mapperElement()
-        for (String resource : getCustomMybatisXMLMappers()) {
+        ) for (String resource : getCustomMybatisXMLMappers()) { // see XMLConfigBuilder.mapperElement()
             XMLMapperBuilder mapperParser = new XMLMapperBuilder(
                 getResourceAsStream(resource),
                 configuration,
