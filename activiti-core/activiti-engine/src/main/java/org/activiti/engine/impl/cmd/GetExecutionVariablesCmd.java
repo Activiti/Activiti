@@ -30,19 +30,14 @@ import org.activiti.engine.runtime.Execution;
 
 
  */
-public class GetExecutionVariablesCmd
-    implements Command<Map<String, Object>>, Serializable {
+public class GetExecutionVariablesCmd implements Command<Map<String, Object>>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String executionId;
     protected Collection<String> variableNames;
     protected boolean isLocal;
 
-    public GetExecutionVariablesCmd(
-        String executionId,
-        Collection<String> variableNames,
-        boolean isLocal
-    ) {
+    public GetExecutionVariablesCmd(String executionId, Collection<String> variableNames, boolean isLocal) {
         this.executionId = executionId;
         this.variableNames = variableNames;
         this.isLocal = isLocal;
@@ -54,24 +49,16 @@ public class GetExecutionVariablesCmd
             throw new ActivitiIllegalArgumentException("executionId is null");
         }
 
-        ExecutionEntity execution = commandContext
-            .getExecutionEntityManager()
-            .findById(executionId);
+        ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
 
         if (execution == null) {
-            throw new ActivitiObjectNotFoundException(
-                "execution " + executionId + " doesn't exist",
-                Execution.class
-            );
+            throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
         }
 
         return getVariable(execution, commandContext);
     }
 
-    public Map<String, Object> getVariable(
-        ExecutionEntity execution,
-        CommandContext commandContext
-    ) {
+    public Map<String, Object> getVariable(ExecutionEntity execution, CommandContext commandContext) {
         if (variableNames == null || variableNames.isEmpty()) {
             // Fetch all
 

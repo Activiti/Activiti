@@ -21,11 +21,7 @@ public class MapExceptionEntry {
     String className;
     boolean andChildren;
 
-    public MapExceptionEntry(
-        String errorCode,
-        String className,
-        boolean andChildren
-    ) {
+    public MapExceptionEntry(String errorCode, String className, boolean andChildren) {
         this.errorCode = errorCode;
         this.className = className;
         this.andChildren = andChildren;

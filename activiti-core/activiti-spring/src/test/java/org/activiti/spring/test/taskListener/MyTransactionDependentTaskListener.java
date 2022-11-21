@@ -25,8 +25,7 @@ import org.activiti.engine.delegate.TransactionDependentTaskListener;
 /**
 
  */
-public class MyTransactionDependentTaskListener
-    implements TransactionDependentTaskListener {
+public class MyTransactionDependentTaskListener implements TransactionDependentTaskListener {
 
     protected List<CurrentTask> currentTasks = new ArrayList<CurrentTask>();
 

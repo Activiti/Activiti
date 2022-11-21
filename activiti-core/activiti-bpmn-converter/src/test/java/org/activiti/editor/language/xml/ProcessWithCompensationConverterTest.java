@@ -33,11 +33,7 @@ public class ProcessWithCompensationConverterTest {
     @Test
     public void testConvertingAfterAutoLayout() {
         final InputStream inputStream =
-            this.getClass()
-                .getClassLoader()
-                .getResourceAsStream(
-                    "ProcessWithCompensationAssociation.bpmn20.xml"
-                );
+            this.getClass().getClassLoader().getResourceAsStream("ProcessWithCompensationAssociation.bpmn20.xml");
 
         BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
 
@@ -58,9 +54,7 @@ public class ProcessWithCompensationConverterTest {
         }
 
         byte[] xmlByte = bpmnXMLConverter.convertToXML(bpmnModel1);
-        final InputStream byteArrayInputStream = new ByteArrayInputStream(
-            xmlByte
-        );
+        final InputStream byteArrayInputStream = new ByteArrayInputStream(xmlByte);
 
         BpmnModel bpmnModel2 = bpmnXMLConverter.convertToBpmnModel(
             new InputStreamProvider() {

@@ -33,8 +33,7 @@ public class SubProcessVariableSnapshotterTest {
     private SubProcessVariableSnapshotter snapshotter = new SubProcessVariableSnapshotter();
 
     @Test
-    public void setVariablesSnapshots_should_set_all_source_local_variables_in_the_snapshot_holder()
-        throws Exception {
+    public void setVariablesSnapshots_should_set_all_source_local_variables_in_the_snapshot_holder() throws Exception {
         //given
         Map<String, Object> variables = singletonMap("subCount", 1L);
         ExecutionEntity subProcessExecution = buildExecutionEntity(variables);
@@ -42,18 +41,13 @@ public class SubProcessVariableSnapshotterTest {
         ExecutionEntity snapshotHolderExecution = mock(ExecutionEntity.class);
 
         //when
-        snapshotter.setVariablesSnapshots(
-            subProcessExecution,
-            snapshotHolderExecution
-        );
+        snapshotter.setVariablesSnapshots(subProcessExecution, snapshotHolderExecution);
 
         //then
         verify(snapshotHolderExecution).setVariablesLocal(variables);
     }
 
-    private ExecutionEntity buildExecutionEntity(
-        Map<String, Object> variables
-    ) {
+    private ExecutionEntity buildExecutionEntity(Map<String, Object> variables) {
         ExecutionEntity subProcessExecution = mock(ExecutionEntity.class);
         when(subProcessExecution.getVariablesLocal()).thenReturn(variables);
         return subProcessExecution;
@@ -68,31 +62,20 @@ public class SubProcessVariableSnapshotterTest {
         when(parentExecution.isMultiInstanceRoot()).thenReturn(true);
 
         Map<String, Object> localVariables = singletonMap("subCount", 1L);
-        ExecutionEntity subProcessExecution = buildExecutionEntity(
-            parentExecution,
-            localVariables
-        );
+        ExecutionEntity subProcessExecution = buildExecutionEntity(parentExecution, localVariables);
 
         ExecutionEntity snapshotHolderExecution = mock(ExecutionEntity.class);
 
         //when
-        snapshotter.setVariablesSnapshots(
-            subProcessExecution,
-            snapshotHolderExecution
-        );
+        snapshotter.setVariablesSnapshots(subProcessExecution, snapshotHolderExecution);
 
         //then
         verify(snapshotHolderExecution).setVariablesLocal(localVariables);
         verify(snapshotHolderExecution).setVariablesLocal(parentVariables);
     }
 
-    private ExecutionEntity buildExecutionEntity(
-        ExecutionEntity parentExecution,
-        Map<String, Object> localVariables
-    ) {
-        ExecutionEntity subProcessExecution = buildExecutionEntity(
-            localVariables
-        );
+    private ExecutionEntity buildExecutionEntity(ExecutionEntity parentExecution, Map<String, Object> localVariables) {
+        ExecutionEntity subProcessExecution = buildExecutionEntity(localVariables);
         when(subProcessExecution.getParent()).thenReturn(parentExecution);
         return subProcessExecution;
     }
@@ -106,22 +89,15 @@ public class SubProcessVariableSnapshotterTest {
         when(parentExecution.isMultiInstanceRoot()).thenReturn(false);
 
         Map<String, Object> localVariables = singletonMap("subCount", 1L);
-        ExecutionEntity subProcessExecution = buildExecutionEntity(
-            parentExecution,
-            localVariables
-        );
+        ExecutionEntity subProcessExecution = buildExecutionEntity(parentExecution, localVariables);
 
         ExecutionEntity snapshotHolderExecution = mock(ExecutionEntity.class);
 
         //when
-        snapshotter.setVariablesSnapshots(
-            subProcessExecution,
-            snapshotHolderExecution
-        );
+        snapshotter.setVariablesSnapshots(subProcessExecution, snapshotHolderExecution);
 
         //then
         verify(snapshotHolderExecution).setVariablesLocal(localVariables);
-        verify(snapshotHolderExecution, never())
-            .setVariablesLocal(parentVariables);
+        verify(snapshotHolderExecution, never()).setVariablesLocal(parentVariables);
     }
 }

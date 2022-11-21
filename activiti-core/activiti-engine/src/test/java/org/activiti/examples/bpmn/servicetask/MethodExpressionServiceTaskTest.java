@@ -33,13 +33,9 @@ public class MethodExpressionServiceTaskTest extends PluggableActivitiTestCase {
         Map<String, Object> variables = new HashMap<String, Object>();
         variables.put("okReturningService", new OkReturningService());
 
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "setServiceResultToProcessVariables",
-            variables
-        );
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("setServiceResultToProcessVariables", variables);
 
-        assertThat(runtimeService.getVariable(pi.getId(), "result"))
-            .isEqualTo("ok");
+        assertThat(runtimeService.getVariable(pi.getId(), "result")).isEqualTo("ok");
     }
 
     @Deployment
@@ -53,8 +49,7 @@ public class MethodExpressionServiceTaskTest extends PluggableActivitiTestCase {
             variables
         );
 
-        assertThat(runtimeService.getVariable(pi.getId(), "result"))
-            .isEqualTo("ok");
+        assertThat(runtimeService.getVariable(pi.getId(), "result")).isEqualTo("ok");
 
         Map<String, Object> variables2 = new HashMap<String, Object>();
         variables2.put("okReturningService", new OkReturningService());
@@ -66,7 +61,6 @@ public class MethodExpressionServiceTaskTest extends PluggableActivitiTestCase {
             variables2
         );
 
-        assertThat(runtimeService.getVariable(pi2.getId(), "result"))
-            .isEqualTo(null);
+        assertThat(runtimeService.getVariable(pi2.getId(), "result")).isEqualTo(null);
     }
 }

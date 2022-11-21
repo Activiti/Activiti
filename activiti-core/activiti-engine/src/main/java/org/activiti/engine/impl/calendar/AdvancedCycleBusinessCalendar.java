@@ -64,9 +64,7 @@ public class AdvancedCycleBusinessCalendar extends CycleBusinessCalendar {
 
     private static final Integer DEFAULT_VERSION = 2;
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        AdvancedCycleBusinessCalendar.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(AdvancedCycleBusinessCalendar.class);
 
     private static final Map<Integer, AdvancedSchedulerResolver> resolvers;
 
@@ -80,18 +78,13 @@ public class AdvancedCycleBusinessCalendar extends CycleBusinessCalendar {
         super(clockReader);
     }
 
-    public AdvancedCycleBusinessCalendar(
-        ClockReader clockReader,
-        Integer defaultScheduleVersion
-    ) {
+    public AdvancedCycleBusinessCalendar(ClockReader clockReader, Integer defaultScheduleVersion) {
         this(clockReader);
         this.defaultScheduleVersion = defaultScheduleVersion;
     }
 
     public Integer getDefaultScheduleVersion() {
-        return defaultScheduleVersion == null
-            ? DEFAULT_VERSION
-            : defaultScheduleVersion;
+        return defaultScheduleVersion == null ? DEFAULT_VERSION : defaultScheduleVersion;
     }
 
     public void setDefaultScheduleVersion(Integer defaultScheduleVersion) {
@@ -112,43 +105,24 @@ public class AdvancedCycleBusinessCalendar extends CycleBusinessCalendar {
         // String startDate = getValueFrom("START", duedateDescription);
 
         duedateDescription =
-            removeValueFrom(
-                "VER",
-                removeValueFrom(
-                    "START",
-                    removeValueFrom("DSTZONE", duedateDescription)
-                )
-            )
-                .trim();
+            removeValueFrom("VER", removeValueFrom("START", removeValueFrom("DSTZONE", duedateDescription))).trim();
 
         try {
             logger.info("Base Due Date: " + duedateDescription);
 
             Date date = resolvers
-                .get(
-                    version == null
-                        ? getDefaultScheduleVersion()
-                        : Integer.valueOf(version)
-                )
+                .get(version == null ? getDefaultScheduleVersion() : Integer.valueOf(version))
                 .resolve(
                     duedateDescription,
                     clockReader,
-                    timeZone == null
-                        ? clockReader.getCurrentTimeZone()
-                        : TimeZone.getTimeZone(timeZone)
+                    timeZone == null ? clockReader.getCurrentTimeZone() : TimeZone.getTimeZone(timeZone)
                 );
 
-            logger.info(
-                "Calculated Date: " +
-                (date == null ? "Will Not Run Again" : date)
-            );
+            logger.info("Calculated Date: " + (date == null ? "Will Not Run Again" : date));
 
             return date;
         } catch (Exception e) {
-            throw new ActivitiIllegalArgumentException(
-                "Cannot parse duration",
-                e
-            );
+            throw new ActivitiIllegalArgumentException("Cannot parse duration", e);
         }
     }
 
@@ -177,10 +151,7 @@ public class AdvancedCycleBusinessCalendar extends CycleBusinessCalendar {
             int nextWhiteSpace = duedateDescription.indexOf(" ", fieldIndex);
 
             if (nextWhiteSpace > -1) {
-                return duedateDescription.replace(
-                    duedateDescription.substring(fieldIndex, nextWhiteSpace),
-                    ""
-                );
+                return duedateDescription.replace(duedateDescription.substring(fieldIndex, nextWhiteSpace), "");
             } else {
                 return duedateDescription.substring(0, fieldIndex);
             }

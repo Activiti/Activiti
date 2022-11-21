@@ -17,8 +17,7 @@ package org.activiti.test.matchers;
 
 public class IntermediateCatchEventMatchers extends ActivityMatchers {
 
-    private static final String INTERMEDIATE_CATCH_EVENT =
-        "intermediateCatchEvent";
+    private static final String INTERMEDIATE_CATCH_EVENT = "intermediateCatchEvent";
 
     private IntermediateCatchEventMatchers(String definitionKey) {
         super(definitionKey);
@@ -29,9 +28,7 @@ public class IntermediateCatchEventMatchers extends ActivityMatchers {
         return INTERMEDIATE_CATCH_EVENT;
     }
 
-    public static IntermediateCatchEventMatchers intermediateCatchEvent(
-        String definitionKey
-    ) {
+    public static IntermediateCatchEventMatchers intermediateCatchEvent(String definitionKey) {
         return new IntermediateCatchEventMatchers(definitionKey);
     }
 }

@@ -24,8 +24,7 @@ import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
 import org.activiti.engine.impl.delegate.MessagePayloadMappingProvider;
 import org.activiti.engine.impl.el.ExpressionManager;
 
-public class JsonMessagePayloadMappingProvider
-    implements MessagePayloadMappingProvider {
+public class JsonMessagePayloadMappingProvider implements MessagePayloadMappingProvider {
 
     private final Event bpmnEvent;
     private final MessageEventDefinition messageEventDefinition;
@@ -44,9 +43,7 @@ public class JsonMessagePayloadMappingProvider
         this.variablesCalculator = variablesCalculator;
     }
 
-    public Optional<Map<String, Object>> getMessagePayload(
-        DelegateExecution execution
-    ) {
+    public Optional<Map<String, Object>> getMessagePayload(DelegateExecution execution) {
         return Optional
             .of(variablesCalculator.calculateInputVariables(execution))
             .filter(payload -> !payload.isEmpty());

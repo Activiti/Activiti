@@ -31,25 +31,19 @@ import org.activiti.engine.runtime.Execution;
 /**
 
  */
-public class ExecuteActivityForAdhocSubProcessCmd
-    implements Command<Execution>, Serializable {
+public class ExecuteActivityForAdhocSubProcessCmd implements Command<Execution>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String executionId;
     protected String activityId;
 
-    public ExecuteActivityForAdhocSubProcessCmd(
-        String executionId,
-        String activityId
-    ) {
+    public ExecuteActivityForAdhocSubProcessCmd(String executionId, String activityId) {
         this.executionId = executionId;
         this.activityId = activityId;
     }
 
     public Execution execute(CommandContext commandContext) {
-        ExecutionEntity execution = commandContext
-            .getExecutionEntityManager()
-            .findById(executionId);
+        ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
         if (execution == null) {
             throw new ActivitiObjectNotFoundException(
                 "No execution found for id '" + executionId + "'",
@@ -69,17 +63,12 @@ public class ExecuteActivityForAdhocSubProcessCmd
         // if sequential ordering, only one child execution can be active
         if (adhocSubProcess.hasSequentialOrdering()) {
             if (execution.getExecutions().size() > 0) {
-                throw new ActivitiException(
-                    "Sequential ad-hoc sub process already has an active execution"
-                );
+                throw new ActivitiException("Sequential ad-hoc sub process already has an active execution");
             }
         }
 
         for (FlowElement flowElement : adhocSubProcess.getFlowElements()) {
-            if (
-                activityId.equals(flowElement.getId()) &&
-                flowElement instanceof FlowNode
-            ) {
+            if (activityId.equals(flowElement.getId()) && flowElement instanceof FlowNode) {
                 FlowNode flowNode = (FlowNode) flowElement;
                 if (flowNode.getIncomingFlows().size() == 0) {
                     foundNode = flowNode;
@@ -88,11 +77,7 @@ public class ExecuteActivityForAdhocSubProcessCmd
         }
 
         if (foundNode == null) {
-            throw new ActivitiException(
-                "The requested activity with id " +
-                activityId +
-                " can not be enabled"
-            );
+            throw new ActivitiException("The requested activity with id " + activityId + " can not be enabled");
         }
 
         ExecutionEntity activityExecution = Context

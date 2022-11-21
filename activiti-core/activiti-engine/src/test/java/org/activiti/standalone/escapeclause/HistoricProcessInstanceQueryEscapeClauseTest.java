@@ -29,8 +29,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.junit.Test;
 
-public class HistoricProcessInstanceQueryEscapeClauseTest
-    extends AbstractEscapeClauseTestCase {
+public class HistoricProcessInstanceQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
     private String deploymentOneId;
 
@@ -46,9 +45,7 @@ public class HistoricProcessInstanceQueryEscapeClauseTest
             repositoryService
                 .createDeployment()
                 .tenantId("One%")
-                .addClasspathResource(
-                    "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"
-                )
+                .addClasspathResource("org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml")
                 .deploy()
                 .getId();
 
@@ -56,43 +53,24 @@ public class HistoricProcessInstanceQueryEscapeClauseTest
             repositoryService
                 .createDeployment()
                 .tenantId("Two_")
-                .addClasspathResource(
-                    "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"
-                )
+                .addClasspathResource("org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml")
                 .deploy()
                 .getId();
 
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("var1", "One%");
-        processInstance1 =
-            runtimeService.startProcessInstanceByKeyAndTenantId(
-                "oneTaskProcess",
-                vars,
-                "One%"
-            );
+        processInstance1 = runtimeService.startProcessInstanceByKeyAndTenantId("oneTaskProcess", vars, "One%");
         runtimeService.setProcessInstanceName(processInstance1.getId(), "One%");
 
         vars = new HashMap<String, Object>();
         vars.put("var1", "Two_");
-        processInstance2 =
-            runtimeService.startProcessInstanceByKeyAndTenantId(
-                "oneTaskProcess",
-                vars,
-                "Two_"
-            );
+        processInstance2 = runtimeService.startProcessInstanceByKeyAndTenantId("oneTaskProcess", vars, "Two_");
         runtimeService.setProcessInstanceName(processInstance2.getId(), "Two_");
 
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance1.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance1.getId()).singleResult();
         taskService.complete(task.getId());
 
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance2.getId())
-                .singleResult();
+        task = taskService.createTaskQuery().processInstanceId(processInstance2.getId()).singleResult();
         taskService.complete(task.getId());
 
         super.setUp();
@@ -107,11 +85,7 @@ public class HistoricProcessInstanceQueryEscapeClauseTest
 
     @Test
     public void testQueryByProcessKeyNotIn() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // processKeyNotIn
             List<String> processDefinitionKeyNotIn1 = new ArrayList<String>();
             processDefinitionKeyNotIn1.add("%\\%%");
@@ -193,28 +167,19 @@ public class HistoricProcessInstanceQueryEscapeClauseTest
 
     @Test
     public void testQueryByTenantIdLike() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // tenantIdLike
             HistoricProcessInstance historicProcessInstance = historyService
                 .createHistoricProcessInstanceQuery()
                 .processInstanceTenantIdLike("%\\%%")
                 .singleResult();
             assertThat(historicProcessInstance).isNotNull();
-            assertThat(historicProcessInstance.getId())
-                .isEqualTo(processInstance1.getId());
+            assertThat(historicProcessInstance.getId()).isEqualTo(processInstance1.getId());
 
             historicProcessInstance =
-                historyService
-                    .createHistoricProcessInstanceQuery()
-                    .processInstanceTenantIdLike("%\\_%")
-                    .singleResult();
+                historyService.createHistoricProcessInstanceQuery().processInstanceTenantIdLike("%\\_%").singleResult();
             assertThat(historicProcessInstance).isNotNull();
-            assertThat(historicProcessInstance.getId())
-                .isEqualTo(processInstance2.getId());
+            assertThat(historicProcessInstance.getId()).isEqualTo(processInstance2.getId());
 
             // orQuery
             historicProcessInstance =
@@ -225,8 +190,7 @@ public class HistoricProcessInstanceQueryEscapeClauseTest
                     .processDefinitionId("undefined")
                     .singleResult();
             assertThat(historicProcessInstance).isNotNull();
-            assertThat(historicProcessInstance.getId())
-                .isEqualTo(processInstance1.getId());
+            assertThat(historicProcessInstance.getId()).isEqualTo(processInstance1.getId());
 
             historicProcessInstance =
                 historyService
@@ -236,35 +200,25 @@ public class HistoricProcessInstanceQueryEscapeClauseTest
                     .processDefinitionId("undefined")
                     .singleResult();
             assertThat(historicProcessInstance).isNotNull();
-            assertThat(historicProcessInstance.getId())
-                .isEqualTo(processInstance2.getId());
+            assertThat(historicProcessInstance.getId()).isEqualTo(processInstance2.getId());
         }
     }
 
     @Test
     public void testQueryByProcessInstanceNameLike() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // processInstanceNameLike
             HistoricProcessInstance historicProcessInstance = historyService
                 .createHistoricProcessInstanceQuery()
                 .processInstanceNameLike("%\\%%")
                 .singleResult();
             assertThat(historicProcessInstance).isNotNull();
-            assertThat(historicProcessInstance.getId())
-                .isEqualTo(processInstance1.getId());
+            assertThat(historicProcessInstance.getId()).isEqualTo(processInstance1.getId());
 
             historicProcessInstance =
-                historyService
-                    .createHistoricProcessInstanceQuery()
-                    .processInstanceNameLike("%\\_%")
-                    .singleResult();
+                historyService.createHistoricProcessInstanceQuery().processInstanceNameLike("%\\_%").singleResult();
             assertThat(historicProcessInstance).isNotNull();
-            assertThat(historicProcessInstance.getId())
-                .isEqualTo(processInstance2.getId());
+            assertThat(historicProcessInstance.getId()).isEqualTo(processInstance2.getId());
 
             // orQuery
             historicProcessInstance =
@@ -275,8 +229,7 @@ public class HistoricProcessInstanceQueryEscapeClauseTest
                     .processDefinitionId("undefined")
                     .singleResult();
             assertThat(historicProcessInstance).isNotNull();
-            assertThat(historicProcessInstance.getId())
-                .isEqualTo(processInstance1.getId());
+            assertThat(historicProcessInstance.getId()).isEqualTo(processInstance1.getId());
 
             historicProcessInstance =
                 historyService
@@ -286,26 +239,20 @@ public class HistoricProcessInstanceQueryEscapeClauseTest
                     .processDefinitionId("undefined")
                     .singleResult();
             assertThat(historicProcessInstance).isNotNull();
-            assertThat(historicProcessInstance.getId())
-                .isEqualTo(processInstance2.getId());
+            assertThat(historicProcessInstance.getId()).isEqualTo(processInstance2.getId());
         }
     }
 
     @Test
     public void testQueryByProcessInstanceNameLikeIgnoreCase() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // processInstanceNameLike
             HistoricProcessInstance historicProcessInstance = historyService
                 .createHistoricProcessInstanceQuery()
                 .processInstanceNameLikeIgnoreCase("%\\%%")
                 .singleResult();
             assertThat(historicProcessInstance).isNotNull();
-            assertThat(historicProcessInstance.getId())
-                .isEqualTo(processInstance1.getId());
+            assertThat(historicProcessInstance.getId()).isEqualTo(processInstance1.getId());
 
             historicProcessInstance =
                 historyService
@@ -313,8 +260,7 @@ public class HistoricProcessInstanceQueryEscapeClauseTest
                     .processInstanceNameLikeIgnoreCase("%\\_%")
                     .singleResult();
             assertThat(historicProcessInstance).isNotNull();
-            assertThat(historicProcessInstance.getId())
-                .isEqualTo(processInstance2.getId());
+            assertThat(historicProcessInstance.getId()).isEqualTo(processInstance2.getId());
 
             // orQuery
             historicProcessInstance =
@@ -325,8 +271,7 @@ public class HistoricProcessInstanceQueryEscapeClauseTest
                     .processDefinitionId("undefined")
                     .singleResult();
             assertThat(historicProcessInstance).isNotNull();
-            assertThat(historicProcessInstance.getId())
-                .isEqualTo(processInstance1.getId());
+            assertThat(historicProcessInstance.getId()).isEqualTo(processInstance1.getId());
 
             historicProcessInstance =
                 historyService
@@ -336,35 +281,25 @@ public class HistoricProcessInstanceQueryEscapeClauseTest
                     .processDefinitionId("undefined")
                     .singleResult();
             assertThat(historicProcessInstance).isNotNull();
-            assertThat(historicProcessInstance.getId())
-                .isEqualTo(processInstance2.getId());
+            assertThat(historicProcessInstance.getId()).isEqualTo(processInstance2.getId());
         }
     }
 
     @Test
     public void testQueryLikeByQueryVariableValue() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // queryVariableValue
             HistoricProcessInstance historicProcessInstance = historyService
                 .createHistoricProcessInstanceQuery()
                 .variableValueLike("var1", "%\\%%")
                 .singleResult();
             assertThat(historicProcessInstance).isNotNull();
-            assertThat(historicProcessInstance.getId())
-                .isEqualTo(processInstance1.getId());
+            assertThat(historicProcessInstance.getId()).isEqualTo(processInstance1.getId());
 
             historicProcessInstance =
-                historyService
-                    .createHistoricProcessInstanceQuery()
-                    .variableValueLike("var1", "%\\_%")
-                    .singleResult();
+                historyService.createHistoricProcessInstanceQuery().variableValueLike("var1", "%\\_%").singleResult();
             assertThat(historicProcessInstance).isNotNull();
-            assertThat(historicProcessInstance.getId())
-                .isEqualTo(processInstance2.getId());
+            assertThat(historicProcessInstance.getId()).isEqualTo(processInstance2.getId());
 
             // orQuery
             historicProcessInstance =
@@ -375,8 +310,7 @@ public class HistoricProcessInstanceQueryEscapeClauseTest
                     .processDefinitionId("undefined")
                     .singleResult();
             assertThat(historicProcessInstance).isNotNull();
-            assertThat(historicProcessInstance.getId())
-                .isEqualTo(processInstance1.getId());
+            assertThat(historicProcessInstance.getId()).isEqualTo(processInstance1.getId());
 
             historicProcessInstance =
                 historyService
@@ -386,26 +320,20 @@ public class HistoricProcessInstanceQueryEscapeClauseTest
                     .processDefinitionId("undefined")
                     .singleResult();
             assertThat(historicProcessInstance).isNotNull();
-            assertThat(historicProcessInstance.getId())
-                .isEqualTo(processInstance2.getId());
+            assertThat(historicProcessInstance.getId()).isEqualTo(processInstance2.getId());
         }
     }
 
     @Test
     public void testQueryLikeIgnoreCaseByQueryVariableValue() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // queryVariableValueIgnoreCase
             HistoricProcessInstance historicProcessInstance = historyService
                 .createHistoricProcessInstanceQuery()
                 .variableValueLikeIgnoreCase("var1", "%\\%%")
                 .singleResult();
             assertThat(historicProcessInstance).isNotNull();
-            assertThat(historicProcessInstance.getId())
-                .isEqualTo(processInstance1.getId());
+            assertThat(historicProcessInstance.getId()).isEqualTo(processInstance1.getId());
 
             historicProcessInstance =
                 historyService
@@ -413,8 +341,7 @@ public class HistoricProcessInstanceQueryEscapeClauseTest
                     .variableValueLikeIgnoreCase("var1", "%\\_%")
                     .singleResult();
             assertThat(historicProcessInstance).isNotNull();
-            assertThat(historicProcessInstance.getId())
-                .isEqualTo(processInstance2.getId());
+            assertThat(historicProcessInstance.getId()).isEqualTo(processInstance2.getId());
 
             // orQuery
             historicProcessInstance =
@@ -425,8 +352,7 @@ public class HistoricProcessInstanceQueryEscapeClauseTest
                     .processDefinitionId("undefined")
                     .singleResult();
             assertThat(historicProcessInstance).isNotNull();
-            assertThat(historicProcessInstance.getId())
-                .isEqualTo(processInstance1.getId());
+            assertThat(historicProcessInstance.getId()).isEqualTo(processInstance1.getId());
 
             historicProcessInstance =
                 historyService
@@ -436,8 +362,7 @@ public class HistoricProcessInstanceQueryEscapeClauseTest
                     .processDefinitionId("undefined")
                     .singleResult();
             assertThat(historicProcessInstance).isNotNull();
-            assertThat(historicProcessInstance.getId())
-                .isEqualTo(processInstance2.getId());
+            assertThat(historicProcessInstance.getId()).isEqualTo(processInstance2.getId());
         }
     }
 }

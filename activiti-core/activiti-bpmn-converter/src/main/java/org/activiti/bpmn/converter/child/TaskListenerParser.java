@@ -28,10 +28,7 @@ public class TaskListenerParser extends ActivitiListenerParser {
         return ELEMENT_TASK_LISTENER;
     }
 
-    public void addListenerToParent(
-        ActivitiListener listener,
-        BaseElement parentElement
-    ) {
+    public void addListenerToParent(ActivitiListener listener, BaseElement parentElement) {
         if (parentElement instanceof UserTask) {
             ((UserTask) parentElement).getTaskListeners().add(listener);
         }

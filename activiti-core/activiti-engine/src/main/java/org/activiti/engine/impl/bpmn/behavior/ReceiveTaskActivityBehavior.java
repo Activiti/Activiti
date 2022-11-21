@@ -34,11 +34,7 @@ public class ReceiveTaskActivityBehavior extends TaskActivityBehavior {
         // Do nothing: waitstate behavior
     }
 
-    public void trigger(
-        DelegateExecution execution,
-        String signalName,
-        Object data
-    ) {
+    public void trigger(DelegateExecution execution, String signalName, Object data) {
         leave(execution);
     }
 }

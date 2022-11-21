@@ -57,9 +57,7 @@ public abstract class AbstractManager {
 
     protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
-    public AbstractManager(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public AbstractManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         this.processEngineConfiguration = processEngineConfiguration;
     }
 
@@ -116,13 +114,11 @@ public abstract class AbstractManager {
     }
 
     protected ProcessDefinitionEntityManager getProcessDefinitionEntityManager() {
-        return getProcessEngineConfiguration()
-            .getProcessDefinitionEntityManager();
+        return getProcessEngineConfiguration().getProcessDefinitionEntityManager();
     }
 
     protected ProcessDefinitionInfoEntityManager getProcessDefinitionInfoEntityManager() {
-        return getProcessEngineConfiguration()
-            .getProcessDefinitionInfoEntityManager();
+        return getProcessEngineConfiguration().getProcessDefinitionInfoEntityManager();
     }
 
     protected ModelEntityManager getModelEntityManager() {
@@ -142,13 +138,11 @@ public abstract class AbstractManager {
     }
 
     protected EventSubscriptionEntityManager getEventSubscriptionEntityManager() {
-        return getProcessEngineConfiguration()
-            .getEventSubscriptionEntityManager();
+        return getProcessEngineConfiguration().getEventSubscriptionEntityManager();
     }
 
     protected VariableInstanceEntityManager getVariableInstanceEntityManager() {
-        return getProcessEngineConfiguration()
-            .getVariableInstanceEntityManager();
+        return getProcessEngineConfiguration().getVariableInstanceEntityManager();
     }
 
     protected JobEntityManager getJobEntityManager() {
@@ -168,8 +162,7 @@ public abstract class AbstractManager {
     }
 
     protected HistoricProcessInstanceEntityManager getHistoricProcessInstanceEntityManager() {
-        return getProcessEngineConfiguration()
-            .getHistoricProcessInstanceEntityManager();
+        return getProcessEngineConfiguration().getHistoricProcessInstanceEntityManager();
     }
 
     protected HistoricDetailEntityManager getHistoricDetailEntityManager() {
@@ -177,23 +170,19 @@ public abstract class AbstractManager {
     }
 
     protected HistoricActivityInstanceEntityManager getHistoricActivityInstanceEntityManager() {
-        return getProcessEngineConfiguration()
-            .getHistoricActivityInstanceEntityManager();
+        return getProcessEngineConfiguration().getHistoricActivityInstanceEntityManager();
     }
 
     protected HistoricVariableInstanceEntityManager getHistoricVariableInstanceEntityManager() {
-        return getProcessEngineConfiguration()
-            .getHistoricVariableInstanceEntityManager();
+        return getProcessEngineConfiguration().getHistoricVariableInstanceEntityManager();
     }
 
     protected HistoricTaskInstanceEntityManager getHistoricTaskInstanceEntityManager() {
-        return getProcessEngineConfiguration()
-            .getHistoricTaskInstanceEntityManager();
+        return getProcessEngineConfiguration().getHistoricTaskInstanceEntityManager();
     }
 
     protected HistoricIdentityLinkEntityManager getHistoricIdentityLinkEntityManager() {
-        return getProcessEngineConfiguration()
-            .getHistoricIdentityLinkEntityManager();
+        return getProcessEngineConfiguration().getHistoricIdentityLinkEntityManager();
     }
 
     protected AttachmentEntityManager getAttachmentEntityManager() {

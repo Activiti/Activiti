@@ -36,20 +36,10 @@ public class RuntimeVariablesTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testGetVariablesByExecutionIds() {
-        ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey(
-            "oneTaskProcess"
-        );
-        ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey(
-            "oneTaskProcess"
-        );
-        Task task1 = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance1.getId())
-            .singleResult();
-        Task task2 = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance2.getId())
-            .singleResult();
+        ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+        ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+        Task task1 = taskService.createTaskQuery().processInstanceId(processInstance1.getId()).singleResult();
+        Task task2 = taskService.createTaskQuery().processInstanceId(processInstance2.getId()).singleResult();
 
         // Task local variables
         taskService.setVariableLocal(task1.getId(), "taskVar1", "sayHello1");
@@ -64,36 +54,18 @@ public class RuntimeVariablesTest extends PluggableActivitiTestCase {
         // only 1 process
         Set<String> executionIds = new HashSet<String>();
         executionIds.add(processInstance1.getId());
-        List<VariableInstance> variables = runtimeService.getVariableInstancesByExecutionIds(
-            executionIds
-        );
+        List<VariableInstance> variables = runtimeService.getVariableInstancesByExecutionIds(executionIds);
         assertThat(variables).hasSize(1);
-        checkVariable(
-            processInstance1.getId(),
-            "executionVar1",
-            "helloWorld1",
-            variables
-        );
+        checkVariable(processInstance1.getId(), "executionVar1", "helloWorld1", variables);
 
         // 2 process
         executionIds = new HashSet<String>();
         executionIds.add(processInstance1.getId());
         executionIds.add(processInstance2.getId());
-        variables =
-            runtimeService.getVariableInstancesByExecutionIds(executionIds);
+        variables = runtimeService.getVariableInstancesByExecutionIds(executionIds);
         assertThat(variables).hasSize(2);
-        checkVariable(
-            processInstance1.getId(),
-            "executionVar1",
-            "helloWorld1",
-            variables
-        );
-        checkVariable(
-            processInstance2.getId(),
-            "executionVar2",
-            "helloWorld2",
-            variables
-        );
+        checkVariable(processInstance1.getId(), "executionVar1", "helloWorld1", variables);
+        checkVariable(processInstance2.getId(), "executionVar2", "helloWorld2", variables);
     }
 
     @Deployment(
@@ -102,13 +74,8 @@ public class RuntimeVariablesTest extends PluggableActivitiTestCase {
         }
     )
     public void testGetSerializableTypeVariable() {
-        ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey(
-            "oneTaskProcess"
-        );
-        Task task1 = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance1.getId())
-            .singleResult();
+        ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+        Task task1 = taskService.createTaskQuery().processInstanceId(processInstance1.getId()).singleResult();
 
         StringBuilder sb = new StringBuilder("a");
         for (int i = 0; i < 4001; i++) {
@@ -117,61 +84,32 @@ public class RuntimeVariablesTest extends PluggableActivitiTestCase {
         String serializableTypeVar = sb.toString();
 
         // Task variables
-        taskService.setVariableLocal(
-            task1.getId(),
-            "taskVar1",
-            serializableTypeVar
-        );
+        taskService.setVariableLocal(task1.getId(), "taskVar1", serializableTypeVar);
 
-        VariableInstance variableInstance = taskService.getVariableInstance(
-            task1.getId(),
-            "taskVar1"
-        );
+        VariableInstance variableInstance = taskService.getVariableInstance(task1.getId(), "taskVar1");
         assertThat(variableInstance.getValue()).isEqualTo(serializableTypeVar);
 
-        Map<String, VariableInstance> variableInstances = taskService.getVariableInstances(
-            task1.getId()
-        );
-        assertThat(variableInstances.get("taskVar1").getValue())
-            .isEqualTo(serializableTypeVar);
+        Map<String, VariableInstance> variableInstances = taskService.getVariableInstances(task1.getId());
+        assertThat(variableInstances.get("taskVar1").getValue()).isEqualTo(serializableTypeVar);
 
         // Execution variables
-        taskService.setVariable(
-            task1.getId(),
-            "executionVar1",
-            serializableTypeVar
-        );
+        taskService.setVariable(task1.getId(), "executionVar1", serializableTypeVar);
 
         Set<String> executionIds = new HashSet<String>();
         executionIds.add(processInstance1.getId());
-        List<VariableInstance> variables = runtimeService.getVariableInstancesByExecutionIds(
-            executionIds
-        );
+        List<VariableInstance> variables = runtimeService.getVariableInstancesByExecutionIds(executionIds);
         assertThat(variables.get(0).getValue()).isEqualTo(serializableTypeVar);
 
-        variableInstance =
-            runtimeService.getVariableInstance(
-                processInstance1.getId(),
-                "executionVar1"
-            );
+        variableInstance = runtimeService.getVariableInstance(processInstance1.getId(), "executionVar1");
         assertThat(variableInstance.getValue()).isEqualTo(serializableTypeVar);
 
-        variableInstances =
-            runtimeService.getVariableInstances(processInstance1.getId());
-        assertThat(variableInstances.get("executionVar1").getValue())
-            .isEqualTo(serializableTypeVar);
+        variableInstances = runtimeService.getVariableInstances(processInstance1.getId());
+        assertThat(variableInstances.get("executionVar1").getValue()).isEqualTo(serializableTypeVar);
     }
 
-    private void checkVariable(
-        String executionId,
-        String name,
-        String value,
-        List<VariableInstance> variables
-    ) {
+    private void checkVariable(String executionId, String name, String value, List<VariableInstance> variables) {
         assertThat(variables)
-            .filteredOn(variable ->
-                executionId.equals(variable.getExecutionId())
-            )
+            .filteredOn(variable -> executionId.equals(variable.getExecutionId()))
             .first()
             .satisfies(variable -> {
                 assertThat(variable.getName()).isEqualTo(name);
@@ -179,18 +117,11 @@ public class RuntimeVariablesTest extends PluggableActivitiTestCase {
             });
     }
 
-    @Deployment(
-        resources = {
-            "org/activiti/engine/test/api/runtime/variableScope.bpmn20.xml",
-        }
-    )
+    @Deployment(resources = { "org/activiti/engine/test/api/runtime/variableScope.bpmn20.xml" })
     public void testGetVariablesByExecutionIdsForScope() {
         Map<String, Object> processVars = new HashMap<String, Object>();
         processVars.put("processVar", "processVar");
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "variableScopeProcess",
-            processVars
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("variableScopeProcess", processVars);
 
         Set<String> executionIds = new HashSet<String>();
         List<Execution> executions = runtimeService
@@ -200,18 +131,11 @@ public class RuntimeVariablesTest extends PluggableActivitiTestCase {
         for (Execution execution : executions) {
             if (!processInstance.getId().equals(execution.getId())) {
                 executionIds.add(execution.getId());
-                runtimeService.setVariableLocal(
-                    execution.getId(),
-                    "executionVar",
-                    "executionVar"
-                );
+                runtimeService.setVariableLocal(execution.getId(), "executionVar", "executionVar");
             }
         }
 
-        List<Task> tasks = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .list();
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
         Set<String> taskIds = new HashSet<String>();
         for (Task task : tasks) {
             taskService.setVariableLocal(task.getId(), "taskVar", "taskVar");
@@ -222,23 +146,16 @@ public class RuntimeVariablesTest extends PluggableActivitiTestCase {
             executionIds
         );
         assertThat(2).isEqualTo(executionVariableInstances.size());
-        assertThat("executionVar")
-            .isEqualTo(executionVariableInstances.get(0).getName());
-        assertThat("executionVar")
-            .isEqualTo(executionVariableInstances.get(0).getValue());
-        assertThat("executionVar")
-            .isEqualTo(executionVariableInstances.get(1).getName());
-        assertThat("executionVar")
-            .isEqualTo(executionVariableInstances.get(1).getValue());
+        assertThat("executionVar").isEqualTo(executionVariableInstances.get(0).getName());
+        assertThat("executionVar").isEqualTo(executionVariableInstances.get(0).getValue());
+        assertThat("executionVar").isEqualTo(executionVariableInstances.get(1).getName());
+        assertThat("executionVar").isEqualTo(executionVariableInstances.get(1).getValue());
 
         executionIds = new HashSet<String>();
         executionIds.add(processInstance.getId());
-        executionVariableInstances =
-            runtimeService.getVariableInstancesByExecutionIds(executionIds);
+        executionVariableInstances = runtimeService.getVariableInstancesByExecutionIds(executionIds);
         assertThat(1).isEqualTo(executionVariableInstances.size());
-        assertThat("processVar")
-            .isEqualTo(executionVariableInstances.get(0).getName());
-        assertThat("processVar")
-            .isEqualTo(executionVariableInstances.get(0).getValue());
+        assertThat("processVar").isEqualTo(executionVariableInstances.get(0).getName());
+        assertThat("processVar").isEqualTo(executionVariableInstances.get(0).getValue());
     }
 }

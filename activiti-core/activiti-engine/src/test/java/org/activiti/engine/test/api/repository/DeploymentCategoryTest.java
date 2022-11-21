@@ -43,9 +43,7 @@ public class DeploymentCategoryTest extends PluggableActivitiTestCase {
                 repositoryService
                     .createDeployment()
                     .name("0")
-                    .addClasspathResource(
-                        "org/activiti/engine/test/service/oneTaskProcess.bpmn20.xml"
-                    )
+                    .addClasspathResource("org/activiti/engine/test/service/oneTaskProcess.bpmn20.xml")
                     .deploy()
                     .getId();
 
@@ -54,9 +52,7 @@ public class DeploymentCategoryTest extends PluggableActivitiTestCase {
                     .createDeployment()
                     .name("1")
                     .category("one")
-                    .addClasspathResource(
-                        "org/activiti/engine/test/repository/one.bpmn20.xml"
-                    )
+                    .addClasspathResource("org/activiti/engine/test/repository/one.bpmn20.xml")
                     .deploy()
                     .getId();
 
@@ -65,9 +61,7 @@ public class DeploymentCategoryTest extends PluggableActivitiTestCase {
                     .createDeployment()
                     .name("2v1")
                     .category("two")
-                    .addClasspathResource(
-                        "org/activiti/engine/test/repository/two.bpmn20.xml"
-                    )
+                    .addClasspathResource("org/activiti/engine/test/repository/two.bpmn20.xml")
                     .deploy()
                     .getId();
 
@@ -76,9 +70,7 @@ public class DeploymentCategoryTest extends PluggableActivitiTestCase {
                     .createDeployment()
                     .name("2v2")
                     .category("two")
-                    .addClasspathResource(
-                        "org/activiti/engine/test/repository/two.bpmn20.xml"
-                    )
+                    .addClasspathResource("org/activiti/engine/test/repository/two.bpmn20.xml")
                     .deploy()
                     .getId();
 
@@ -86,10 +78,7 @@ public class DeploymentCategoryTest extends PluggableActivitiTestCase {
             assertThat(query.list()).hasSize(4);
 
             Set<String> deploymentNames = getDeploymentNames(
-                repositoryService
-                    .createDeploymentQuery()
-                    .deploymentCategory("one")
-                    .list()
+                repositoryService.createDeploymentQuery().deploymentCategory("one").list()
             );
 
             Set<String> expectedDeploymentNames = new HashSet<String>();
@@ -98,12 +87,7 @@ public class DeploymentCategoryTest extends PluggableActivitiTestCase {
             assertThat(deploymentNames).isEqualTo(expectedDeploymentNames);
 
             deploymentNames =
-                getDeploymentNames(
-                    repositoryService
-                        .createDeploymentQuery()
-                        .deploymentCategoryNotEquals("two")
-                        .list()
-                );
+                getDeploymentNames(repositoryService.createDeploymentQuery().deploymentCategoryNotEquals("two").list());
 
             expectedDeploymentNames.add("0");
 
@@ -113,9 +97,7 @@ public class DeploymentCategoryTest extends PluggableActivitiTestCase {
                 repositoryService
                     .createDeployment()
                     .name("noCategory")
-                    .addClasspathResource(
-                        "org/activiti/engine/test/repository/two.bpmn20.xml"
-                    )
+                    .addClasspathResource("org/activiti/engine/test/repository/two.bpmn20.xml")
                     .deploy()
                     .getId();
 
@@ -125,27 +107,16 @@ public class DeploymentCategoryTest extends PluggableActivitiTestCase {
                 .singleResult();
             assertThat(deploymentNoCategory.getCategory()).isNull();
 
-            repositoryService.setDeploymentCategory(
-                deploymentTwoNoCategory,
-                "newCategory"
-            );
+            repositoryService.setDeploymentCategory(deploymentTwoNoCategory, "newCategory");
             deploymentNoCategory =
-                repositoryService
-                    .createDeploymentQuery()
-                    .deploymentId(deploymentTwoNoCategory)
-                    .singleResult();
-            assertThat(deploymentNoCategory.getCategory())
-                .isEqualTo("newCategory");
+                repositoryService.createDeploymentQuery().deploymentId(deploymentTwoNoCategory).singleResult();
+            assertThat(deploymentNoCategory.getCategory()).isEqualTo("newCategory");
         } finally {
-            if (noCategoryDeploymentId != null) undeploy(
-                noCategoryDeploymentId
-            );
+            if (noCategoryDeploymentId != null) undeploy(noCategoryDeploymentId);
             if (deploymentOneId != null) undeploy(deploymentOneId);
             if (deploymentTwoV1Id != null) undeploy(deploymentTwoV1Id);
             if (deploymentTwoV2Id != null) undeploy(deploymentTwoV2Id);
-            if (deploymentTwoNoCategory != null) undeploy(
-                deploymentTwoNoCategory
-            );
+            if (deploymentTwoNoCategory != null) undeploy(deploymentTwoNoCategory);
         }
     }
 
@@ -161,9 +132,7 @@ public class DeploymentCategoryTest extends PluggableActivitiTestCase {
                 repositoryService
                     .createDeployment()
                     .name("0")
-                    .addClasspathResource(
-                        "org/activiti/engine/test/service/oneTaskProcess.bpmn20.xml"
-                    )
+                    .addClasspathResource("org/activiti/engine/test/service/oneTaskProcess.bpmn20.xml")
                     .deploy()
                     .getId();
 
@@ -172,9 +141,7 @@ public class DeploymentCategoryTest extends PluggableActivitiTestCase {
                     .createDeployment()
                     .name("1")
                     .key("one")
-                    .addClasspathResource(
-                        "org/activiti/engine/test/repository/one.bpmn20.xml"
-                    )
+                    .addClasspathResource("org/activiti/engine/test/repository/one.bpmn20.xml")
                     .deploy()
                     .getId();
 
@@ -183,9 +150,7 @@ public class DeploymentCategoryTest extends PluggableActivitiTestCase {
                     .createDeployment()
                     .name("2v1")
                     .key("two")
-                    .addClasspathResource(
-                        "org/activiti/engine/test/repository/two.bpmn20.xml"
-                    )
+                    .addClasspathResource("org/activiti/engine/test/repository/two.bpmn20.xml")
                     .deploy()
                     .getId();
 
@@ -194,9 +159,7 @@ public class DeploymentCategoryTest extends PluggableActivitiTestCase {
                     .createDeployment()
                     .name("2v2")
                     .key("two")
-                    .addClasspathResource(
-                        "org/activiti/engine/test/repository/two.bpmn20.xml"
-                    )
+                    .addClasspathResource("org/activiti/engine/test/repository/two.bpmn20.xml")
                     .deploy()
                     .getId();
 
@@ -204,10 +167,7 @@ public class DeploymentCategoryTest extends PluggableActivitiTestCase {
             assertThat(query.list()).hasSize(4);
 
             Set<String> deploymentNames = getDeploymentNames(
-                repositoryService
-                    .createDeploymentQuery()
-                    .deploymentKey("one")
-                    .list()
+                repositoryService.createDeploymentQuery().deploymentKey("one").list()
             );
 
             Set<String> expectedDeploymentNames = new HashSet<String>();
@@ -219,9 +179,7 @@ public class DeploymentCategoryTest extends PluggableActivitiTestCase {
                 repositoryService
                     .createDeployment()
                     .name("noCategory")
-                    .addClasspathResource(
-                        "org/activiti/engine/test/repository/two.bpmn20.xml"
-                    )
+                    .addClasspathResource("org/activiti/engine/test/repository/two.bpmn20.xml")
                     .deploy()
                     .getId();
 
@@ -233,10 +191,7 @@ public class DeploymentCategoryTest extends PluggableActivitiTestCase {
 
             repositoryService.setDeploymentKey(deploymentTwoNoKey, "newKey");
             deploymentNoCategory =
-                repositoryService
-                    .createDeploymentQuery()
-                    .deploymentId(deploymentTwoNoKey)
-                    .singleResult();
+                repositoryService.createDeploymentQuery().deploymentId(deploymentTwoNoKey).singleResult();
             assertThat(deploymentNoCategory.getKey()).isEqualTo("newKey");
         } finally {
             if (noKeyDeploymentId != null) undeploy(noKeyDeploymentId);

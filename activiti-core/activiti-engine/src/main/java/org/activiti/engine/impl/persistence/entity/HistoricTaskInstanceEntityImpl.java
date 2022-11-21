@@ -54,10 +54,7 @@ public class HistoricTaskInstanceEntityImpl
 
     public HistoricTaskInstanceEntityImpl() {}
 
-    public HistoricTaskInstanceEntityImpl(
-        TaskEntity task,
-        ExecutionEntity execution
-    ) {
+    public HistoricTaskInstanceEntityImpl(TaskEntity task, ExecutionEntity execution) {
         this.id = task.getId();
         if (execution != null) {
             this.processDefinitionId = execution.getProcessDefinitionId();
@@ -69,8 +66,7 @@ public class HistoricTaskInstanceEntityImpl
         this.description = task.getDescription();
         this.owner = task.getOwner();
         this.assignee = task.getAssignee();
-        this.startTime =
-            Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+        this.startTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
         this.taskDefinitionKey = task.getTaskDefinitionKey();
         this.businessKey = task.getBusinessKey();
 
@@ -263,14 +259,8 @@ public class HistoricTaskInstanceEntityImpl
         Map<String, Object> variables = new HashMap<String, Object>();
         if (queryVariables != null) {
             for (HistoricVariableInstanceEntity variableInstance : queryVariables) {
-                if (
-                    variableInstance.getId() != null &&
-                    variableInstance.getTaskId() != null
-                ) {
-                    variables.put(
-                        variableInstance.getName(),
-                        variableInstance.getValue()
-                    );
+                if (variableInstance.getId() != null && variableInstance.getTaskId() != null) {
+                    variables.put(variableInstance.getName(), variableInstance.getValue());
                 }
             }
         }
@@ -281,14 +271,8 @@ public class HistoricTaskInstanceEntityImpl
         Map<String, Object> variables = new HashMap<String, Object>();
         if (queryVariables != null) {
             for (HistoricVariableInstanceEntity variableInstance : queryVariables) {
-                if (
-                    variableInstance.getId() != null &&
-                    variableInstance.getTaskId() == null
-                ) {
-                    variables.put(
-                        variableInstance.getName(),
-                        variableInstance.getValue()
-                    );
+                if (variableInstance.getId() != null && variableInstance.getTaskId() == null) {
+                    variables.put(variableInstance.getName(), variableInstance.getValue());
                 }
             }
         }
@@ -302,9 +286,7 @@ public class HistoricTaskInstanceEntityImpl
         return queryVariables;
     }
 
-    public void setQueryVariables(
-        List<HistoricVariableInstanceEntity> queryVariables
-    ) {
+    public void setQueryVariables(List<HistoricVariableInstanceEntity> queryVariables) {
         this.queryVariables = queryVariables;
     }
 }

@@ -28,9 +28,7 @@ public class DebugInfoEntityEventListener extends BaseEntityEventListener {
 
     protected ProcessExecutionLogger processExecutionLogger;
 
-    public DebugInfoEntityEventListener(
-        ProcessExecutionLogger processExecutionLogger
-    ) {
+    public DebugInfoEntityEventListener(ProcessExecutionLogger processExecutionLogger) {
         this.processExecutionLogger = processExecutionLogger;
     }
 
@@ -39,9 +37,7 @@ public class DebugInfoEntityEventListener extends BaseEntityEventListener {
         ExecutionEntity executionEntity = getExecutionEntity(event);
         if (executionEntity != null) {
             processExecutionLogger.executionCreated(executionEntity);
-            processExecutionLogger.addDebugInfo(
-                new DebugInfoExecutionCreated(executionEntity)
-            );
+            processExecutionLogger.addDebugInfo(new DebugInfoExecutionCreated(executionEntity));
         }
     }
 
@@ -50,9 +46,7 @@ public class DebugInfoEntityEventListener extends BaseEntityEventListener {
         ExecutionEntity executionEntity = getExecutionEntity(event);
         if (executionEntity != null) {
             processExecutionLogger.executionDeleted(executionEntity);
-            processExecutionLogger.addDebugInfo(
-                new DebugInfoExecutionDeleted(executionEntity)
-            );
+            processExecutionLogger.addDebugInfo(new DebugInfoExecutionDeleted(executionEntity));
         }
     }
 

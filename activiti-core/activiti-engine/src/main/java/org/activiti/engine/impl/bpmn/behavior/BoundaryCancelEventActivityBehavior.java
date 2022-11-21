@@ -33,17 +33,12 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 /**
 
  */
-public class BoundaryCancelEventActivityBehavior
-    extends BoundaryEventActivityBehavior {
+public class BoundaryCancelEventActivityBehavior extends BoundaryEventActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    public void trigger(
-        DelegateExecution execution,
-        String triggerName,
-        Object triggerData
-    ) {
+    public void trigger(DelegateExecution execution, String triggerName, Object triggerData) {
         BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
 
         CommandContext commandContext = Context.getCommandContext();
@@ -57,10 +52,7 @@ public class BoundaryCancelEventActivityBehavior
         for (ExecutionEntity childExecution : processInstanceExecutions) {
             if (
                 childExecution.getCurrentFlowElement() != null &&
-                childExecution
-                    .getCurrentFlowElement()
-                    .getId()
-                    .equals(boundaryEvent.getAttachedToRefId())
+                childExecution.getCurrentFlowElement().getId().equals(boundaryEvent.getAttachedToRefId())
             ) {
                 subProcessExecution = childExecution;
                 break;
@@ -69,8 +61,7 @@ public class BoundaryCancelEventActivityBehavior
 
         if (subProcessExecution == null) {
             throw new ActivitiException(
-                "No execution found for sub process of boundary cancel event " +
-                boundaryEvent.getId()
+                "No execution found for sub process of boundary cancel event " + boundaryEvent.getId()
             );
         }
 
@@ -82,25 +73,12 @@ public class BoundaryCancelEventActivityBehavior
         if (eventSubscriptions.isEmpty()) {
             leave(execution);
         } else {
-            String deleteReason =
-                DeleteReason.BOUNDARY_EVENT_INTERRUPTING +
-                "(" +
-                boundaryEvent.getId() +
-                ")";
+            String deleteReason = DeleteReason.BOUNDARY_EVENT_INTERRUPTING + "(" + boundaryEvent.getId() + ")";
 
             // cancel boundary is always sync
-            ScopeUtil.throwCompensationEvent(
-                eventSubscriptions,
-                execution,
-                false
-            );
-            executionEntityManager.deleteExecutionAndRelatedData(
-                subProcessExecution,
-                deleteReason
-            );
-            if (
-                subProcessExecution.getCurrentFlowElement() instanceof Activity
-            ) {
+            ScopeUtil.throwCompensationEvent(eventSubscriptions, execution, false);
+            executionEntityManager.deleteExecutionAndRelatedData(subProcessExecution, deleteReason);
+            if (subProcessExecution.getCurrentFlowElement() instanceof Activity) {
                 Activity activity = (Activity) subProcessExecution.getCurrentFlowElement();
                 if (activity.getLoopCharacteristics() != null) {
                     ExecutionEntity miExecution = subProcessExecution.getParent();
@@ -109,18 +87,10 @@ public class BoundaryCancelEventActivityBehavior
                     );
                     for (ExecutionEntity miChildExecution : miChildExecutions) {
                         if (
-                            subProcessExecution
-                                .getId()
-                                .equals(miChildExecution.getId()) ==
-                            false &&
-                            activity
-                                .getId()
-                                .equals(miChildExecution.getCurrentActivityId())
+                            subProcessExecution.getId().equals(miChildExecution.getId()) == false &&
+                            activity.getId().equals(miChildExecution.getCurrentActivityId())
                         ) {
-                            executionEntityManager.deleteExecutionAndRelatedData(
-                                miChildExecution,
-                                deleteReason
-                            );
+                            executionEntityManager.deleteExecutionAndRelatedData(miChildExecution, deleteReason);
                         }
                     }
                 }

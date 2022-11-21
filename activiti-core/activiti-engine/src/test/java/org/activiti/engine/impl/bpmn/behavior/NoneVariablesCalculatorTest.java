@@ -35,10 +35,7 @@ public class NoneVariablesCalculatorTest {
             "procDefId",
             "activityId"
         );
-        Map<String, Object> availableVariables = Collections.singletonMap(
-            "any",
-            "any"
-        );
+        Map<String, Object> availableVariables = Collections.singletonMap("any", "any");
 
         //when
         Map<String, Object> calculatedVariables = variablesCalculator.calculateOutPutVariables(
@@ -56,9 +53,7 @@ public class NoneVariablesCalculatorTest {
         DelegateExecution mock = mock(DelegateExecution.class);
 
         //when
-        Map<String, Object> calculatedVariables = variablesCalculator.calculateInputVariables(
-            mock
-        );
+        Map<String, Object> calculatedVariables = variablesCalculator.calculateInputVariables(mock);
 
         //then
         assertThat(calculatedVariables).isEmpty();

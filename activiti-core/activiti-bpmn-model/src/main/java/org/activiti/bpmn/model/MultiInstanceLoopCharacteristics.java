@@ -96,18 +96,12 @@ public class MultiInstanceLoopCharacteristics extends BaseElement {
         return clone;
     }
 
-    public void setValues(
-        MultiInstanceLoopCharacteristics otherLoopCharacteristics
-    ) {
+    public void setValues(MultiInstanceLoopCharacteristics otherLoopCharacteristics) {
         setInputDataItem(otherLoopCharacteristics.getInputDataItem());
         setLoopCardinality(otherLoopCharacteristics.getLoopCardinality());
-        setCompletionCondition(
-            otherLoopCharacteristics.getCompletionCondition()
-        );
+        setCompletionCondition(otherLoopCharacteristics.getCompletionCondition());
         setElementVariable(otherLoopCharacteristics.getElementVariable());
-        setElementIndexVariable(
-            otherLoopCharacteristics.getElementIndexVariable()
-        );
+        setElementIndexVariable(otherLoopCharacteristics.getElementIndexVariable());
         setSequential(otherLoopCharacteristics.isSequential());
         setLoopDataOutputRef(otherLoopCharacteristics.getLoopDataOutputRef());
         setOutputDataItem(otherLoopCharacteristics.getOutputDataItem());

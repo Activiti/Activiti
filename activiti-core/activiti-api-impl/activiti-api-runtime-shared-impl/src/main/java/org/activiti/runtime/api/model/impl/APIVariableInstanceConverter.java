@@ -20,8 +20,7 @@ import org.activiti.api.runtime.model.impl.VariableInstanceImpl;
 
 public class APIVariableInstanceConverter
     extends ListConverter<org.activiti.engine.impl.persistence.entity.VariableInstance, VariableInstance>
-    implements
-        ModelConverter<org.activiti.engine.impl.persistence.entity.VariableInstance, VariableInstance> {
+    implements ModelConverter<org.activiti.engine.impl.persistence.entity.VariableInstance, VariableInstance> {
 
     @Override
     public VariableInstance from(

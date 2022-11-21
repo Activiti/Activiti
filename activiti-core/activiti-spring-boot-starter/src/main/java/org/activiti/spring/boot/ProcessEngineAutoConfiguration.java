@@ -72,14 +72,10 @@ import org.springframework.transaction.PlatformTransactionManager;
         "org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration",
     }
 )
-@EnableConfigurationProperties(
-    { ActivitiProperties.class, AsyncExecutorProperties.class }
-)
-public class ProcessEngineAutoConfiguration
-    extends AbstractProcessEngineAutoConfiguration {
+@EnableConfigurationProperties({ ActivitiProperties.class, AsyncExecutorProperties.class })
+public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoConfiguration {
 
-    public static final String BEHAVIOR_FACTORY_MAPPING_CONFIGURER =
-        "behaviorFactoryMappingConfigurer";
+    public static final String BEHAVIOR_FACTORY_MAPPING_CONFIGURER = "behaviorFactoryMappingConfigurer";
     private final UserGroupManager userGroupManager;
 
     public ProcessEngineAutoConfiguration(UserGroupManager userGroupManager) {
@@ -96,16 +92,10 @@ public class ProcessEngineAutoConfiguration
         ResourceFinder resourceFinder,
         List<ResourceFinderDescriptor> resourceFinderDescriptors,
         ApplicationUpgradeContextService applicationUpgradeContextService,
-        @Autowired(
-            required = false
-        ) List<ProcessEngineConfigurationConfigurer> processEngineConfigurationConfigurers,
-        @Autowired(
-            required = false
-        ) List<ProcessEngineConfigurator> processEngineConfigurators
+        @Autowired(required = false) List<ProcessEngineConfigurationConfigurer> processEngineConfigurationConfigurers,
+        @Autowired(required = false) List<ProcessEngineConfigurator> processEngineConfigurators
     ) throws IOException {
-        SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration(
-            applicationUpgradeContextService
-        );
+        SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration(applicationUpgradeContextService);
         conf.setConfigurators(processEngineConfigurators);
 
         configureResources(resourceFinder, resourceFinderDescriptors, conf);
@@ -116,21 +106,15 @@ public class ProcessEngineAutoConfiguration
         conf.setAsyncExecutor(springAsyncExecutor);
         conf.setDeploymentName(activitiProperties.getDeploymentName());
         conf.setDatabaseSchema(activitiProperties.getDatabaseSchema());
-        conf.setDatabaseSchemaUpdate(
-            activitiProperties.getDatabaseSchemaUpdate()
-        );
+        conf.setDatabaseSchemaUpdate(activitiProperties.getDatabaseSchemaUpdate());
         conf.setDbHistoryUsed(activitiProperties.isDbHistoryUsed());
-        conf.setAsyncExecutorActivate(
-            activitiProperties.isAsyncExecutorActivate()
-        );
+        conf.setAsyncExecutorActivate(activitiProperties.isAsyncExecutorActivate());
         addAsyncPropertyValidator(activitiProperties, conf);
         conf.setMailServerHost(activitiProperties.getMailServerHost());
         conf.setMailServerPort(activitiProperties.getMailServerPort());
         conf.setMailServerUsername(activitiProperties.getMailServerUserName());
         conf.setMailServerPassword(activitiProperties.getMailServerPassword());
-        conf.setMailServerDefaultFrom(
-            activitiProperties.getMailServerDefaultFrom()
-        );
+        conf.setMailServerDefaultFrom(activitiProperties.getMailServerDefaultFrom());
         conf.setMailServerUseSSL(activitiProperties.isMailServerUseSsl());
         conf.setMailServerUseTLS(activitiProperties.isMailServerUseTls());
 
@@ -139,34 +123,20 @@ public class ProcessEngineAutoConfiguration
         }
 
         conf.setHistoryLevel(activitiProperties.getHistoryLevel());
-        conf.setCopyVariablesToLocalForTasks(
-            activitiProperties.isCopyVariablesToLocalForTasks()
-        );
-        conf.setSerializePOJOsInVariablesToJson(
-            activitiProperties.isSerializePOJOsInVariablesToJson()
-        );
-        conf.setJavaClassFieldForJackson(
-            activitiProperties.getJavaClassFieldForJackson()
-        );
+        conf.setCopyVariablesToLocalForTasks(activitiProperties.isCopyVariablesToLocalForTasks());
+        conf.setSerializePOJOsInVariablesToJson(activitiProperties.isSerializePOJOsInVariablesToJson());
+        conf.setJavaClassFieldForJackson(activitiProperties.getJavaClassFieldForJackson());
 
         if (activitiProperties.getCustomMybatisMappers() != null) {
-            conf.setCustomMybatisMappers(
-                getCustomMybatisMapperClasses(
-                    activitiProperties.getCustomMybatisMappers()
-                )
-            );
+            conf.setCustomMybatisMappers(getCustomMybatisMapperClasses(activitiProperties.getCustomMybatisMappers()));
         }
 
         if (activitiProperties.getCustomMybatisXMLMappers() != null) {
-            conf.setCustomMybatisXMLMappers(
-                new HashSet<>(activitiProperties.getCustomMybatisXMLMappers())
-            );
+            conf.setCustomMybatisXMLMappers(new HashSet<>(activitiProperties.getCustomMybatisXMLMappers()));
         }
 
         if (activitiProperties.getCustomMybatisXMLMappers() != null) {
-            conf.setCustomMybatisXMLMappers(
-                new HashSet<>(activitiProperties.getCustomMybatisXMLMappers())
-            );
+            conf.setCustomMybatisXMLMappers(new HashSet<>(activitiProperties.getCustomMybatisXMLMappers()));
         }
 
         if (activitiProperties.isUseStrongUuids()) {
@@ -193,9 +163,7 @@ public class ProcessEngineAutoConfiguration
     ) throws IOException {
         List<Resource> resources = new ArrayList<>();
         for (ResourceFinderDescriptor resourceFinderDescriptor : resourceFinderDescriptors) {
-            resources.addAll(
-                resourceFinder.discoverResources(resourceFinderDescriptor)
-            );
+            resources.addAll(resourceFinder.discoverResources(resourceFinderDescriptor));
         }
 
         conf.setDeploymentResources(resources.toArray(new Resource[0]));
@@ -206,21 +174,14 @@ public class ProcessEngineAutoConfiguration
         SpringProcessEngineConfiguration conf
     ) {
         if (!activitiProperties.isAsyncExecutorActivate()) {
-            ValidatorSet springBootStarterValidatorSet = new ValidatorSet(
-                "activiti-spring-boot-starter"
-            );
-            springBootStarterValidatorSet.addValidator(
-                new AsyncPropertyValidator()
-            );
+            ValidatorSet springBootStarterValidatorSet = new ValidatorSet("activiti-spring-boot-starter");
+            springBootStarterValidatorSet.addValidator(new AsyncPropertyValidator());
             if (conf.getProcessValidator() == null) {
                 ProcessValidatorImpl processValidator = new ProcessValidatorImpl();
                 processValidator.addValidatorSet(springBootStarterValidatorSet);
                 conf.setProcessValidator(processValidator);
             } else {
-                conf
-                    .getProcessValidator()
-                    .getValidatorSets()
-                    .add(springBootStarterValidatorSet);
+                conf.getProcessValidator().getValidatorSets().add(springBootStarterValidatorSet);
             }
         }
     }
@@ -230,21 +191,15 @@ public class ProcessEngineAutoConfiguration
     public ProcessDefinitionResourceFinderDescriptor processDefinitionResourceFinderDescriptor(
         ActivitiProperties activitiProperties
     ) {
-        return new ProcessDefinitionResourceFinderDescriptor(
-            activitiProperties
-        );
+        return new ProcessDefinitionResourceFinderDescriptor(activitiProperties);
     }
 
     @Bean
     @ConditionalOnMissingBean
     public ProcessExtensionResourceFinderDescriptor processExtensionResourceFinderDescriptor(
         ActivitiProperties activitiProperties,
-        @Value(
-            "${spring.activiti.process.extensions.dir:NOT_DEFINED}"
-        ) String locationPrefix,
-        @Value(
-            "${spring.activiti.process.extensions.suffix:**-extensions.json}"
-        ) String locationSuffix
+        @Value("${spring.activiti.process.extensions.dir:NOT_DEFINED}") String locationPrefix,
+        @Value("${spring.activiti.process.extensions.suffix:**-extensions.json}") String locationSuffix
     ) {
         if (locationPrefix.equalsIgnoreCase("NOT_DEFINED")) locationPrefix =
             activitiProperties.getProcessDefinitionLocationPrefix();
@@ -260,9 +215,7 @@ public class ProcessEngineAutoConfiguration
     public ProcessDeployedEventProducer processDeployedEventProducer(
         RepositoryService repositoryService,
         APIProcessDefinitionConverter converter,
-        @Autowired(
-            required = false
-        ) List<ProcessRuntimeEventListener<ProcessDeployedEvent>> listeners,
+        @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessDeployedEvent>> listeners,
         ApplicationEventPublisher eventPublisher
     ) {
         return new ProcessDeployedEventProducer(
@@ -311,22 +264,12 @@ public class ProcessEngineAutoConfiguration
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public ProcessEngineConfigurationConfigurer asyncExecutorPropertiesConfigurer(
-        AsyncExecutorProperties properties
-    ) {
+    public ProcessEngineConfigurationConfigurer asyncExecutorPropertiesConfigurer(AsyncExecutorProperties properties) {
         return configuration -> {
-            configuration.setAsyncExecutorMessageQueueMode(
-                properties.isMessageQueueMode()
-            );
-            configuration.setAsyncExecutorCorePoolSize(
-                properties.getCorePoolSize()
-            );
-            configuration.setAsyncExecutorAsyncJobLockTimeInMillis(
-                properties.getAsyncJobLockTimeInMillis()
-            );
-            configuration.setAsyncExecutorNumberOfRetries(
-                properties.getNumberOfRetries()
-            );
+            configuration.setAsyncExecutorMessageQueueMode(properties.isMessageQueueMode());
+            configuration.setAsyncExecutorCorePoolSize(properties.getCorePoolSize());
+            configuration.setAsyncExecutorAsyncJobLockTimeInMillis(properties.getAsyncJobLockTimeInMillis());
+            configuration.setAsyncExecutorNumberOfRetries(properties.getNumberOfRetries());
 
             configuration.setAsyncExecutorDefaultAsyncJobAcquireWaitTime(
                 properties.getDefaultAsyncJobAcquireWaitTimeInMillis()
@@ -334,43 +277,21 @@ public class ProcessEngineAutoConfiguration
             configuration.setAsyncExecutorDefaultTimerJobAcquireWaitTime(
                 properties.getDefaultTimerJobAcquireWaitTimeInMillis()
             );
-            configuration.setAsyncExecutorDefaultQueueSizeFullWaitTime(
-                properties.getDefaultQueueSizeFullWaitTime()
-            );
+            configuration.setAsyncExecutorDefaultQueueSizeFullWaitTime(properties.getDefaultQueueSizeFullWaitTime());
 
-            configuration.setAsyncExecutorMaxAsyncJobsDuePerAcquisition(
-                properties.getMaxAsyncJobsDuePerAcquisition()
-            );
-            configuration.setAsyncExecutorMaxTimerJobsPerAcquisition(
-                properties.getMaxTimerJobsPerAcquisition()
-            );
-            configuration.setAsyncExecutorMaxPoolSize(
-                properties.getMaxPoolSize()
-            );
+            configuration.setAsyncExecutorMaxAsyncJobsDuePerAcquisition(properties.getMaxAsyncJobsDuePerAcquisition());
+            configuration.setAsyncExecutorMaxTimerJobsPerAcquisition(properties.getMaxTimerJobsPerAcquisition());
+            configuration.setAsyncExecutorMaxPoolSize(properties.getMaxPoolSize());
 
-            configuration.setAsyncExecutorResetExpiredJobsInterval(
-                properties.getResetExpiredJobsInterval()
-            );
-            configuration.setAsyncExecutorResetExpiredJobsPageSize(
-                properties.getResetExpiredJobsPageSize()
-            );
+            configuration.setAsyncExecutorResetExpiredJobsInterval(properties.getResetExpiredJobsInterval());
+            configuration.setAsyncExecutorResetExpiredJobsPageSize(properties.getResetExpiredJobsPageSize());
 
-            configuration.setAsyncExecutorSecondsToWaitOnShutdown(
-                properties.getSecondsToWaitOnShutdown()
-            );
-            configuration.setAsyncExecutorThreadKeepAliveTime(
-                properties.getKeepAliveTime()
-            );
-            configuration.setAsyncExecutorTimerLockTimeInMillis(
-                properties.getTimerLockTimeInMillis()
-            );
-            configuration.setAsyncExecutorThreadPoolQueueSize(
-                properties.getQueueSize()
-            );
+            configuration.setAsyncExecutorSecondsToWaitOnShutdown(properties.getSecondsToWaitOnShutdown());
+            configuration.setAsyncExecutorThreadKeepAliveTime(properties.getKeepAliveTime());
+            configuration.setAsyncExecutorTimerLockTimeInMillis(properties.getTimerLockTimeInMillis());
+            configuration.setAsyncExecutorThreadPoolQueueSize(properties.getQueueSize());
 
-            configuration.setAsyncFailedJobWaitTime(
-                properties.getRetryWaitTimeInMillis()
-            );
+            configuration.setAsyncFailedJobWaitTime(properties.getRetryWaitTimeInMillis());
         };
     }
 
@@ -379,9 +300,7 @@ public class ProcessEngineAutoConfiguration
     public ApplicationDeployedEventProducer applicationDeployedEventProducer(
         RepositoryService repositoryService,
         APIDeploymentConverter converter,
-        @Autowired(
-            required = false
-        ) List<ProcessRuntimeEventListener<ApplicationDeployedEvent>> listeners,
+        @Autowired(required = false) List<ProcessRuntimeEventListener<ApplicationDeployedEvent>> listeners,
         ApplicationEventPublisher eventPublisher
     ) {
         return new ApplicationDeployedEventProducer(

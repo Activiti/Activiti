@@ -26,8 +26,7 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.UserTask;
 import org.junit.jupiter.api.Test;
 
-public class CustomNamespaceAttributeConverterTest
-    extends AbstractConverterTest {
+public class CustomNamespaceAttributeConverterTest extends AbstractConverterTest {
 
     @Test
     public void convertXMLToModel() throws Exception {
@@ -51,23 +50,18 @@ public class CustomNamespaceAttributeConverterTest
         Process process = model.getMainProcess();
         assertThat(process.getAttributes()).isNotNull();
         assertThat(process.getAttributes()).hasSize(1);
-        List<ExtensionAttribute> attributes = process
-            .getAttributes()
-            .get("version");
+        List<ExtensionAttribute> attributes = process.getAttributes().get("version");
         assertThat(attributes).isNotNull();
         assertThat(attributes).hasSize(1);
         ExtensionAttribute attribute = attributes.get(0);
         // custom:version = "9"
         assertThat(attribute).isNotNull();
-        assertThat(attribute.getNamespace())
-            .isEqualTo("http://custom.org/bpmn");
+        assertThat(attribute.getNamespace()).isEqualTo("http://custom.org/bpmn");
         assertThat(attribute.getNamespacePrefix()).isEqualTo("custom");
         assertThat(attribute.getName()).isEqualTo("version");
         assertThat(attribute.getValue()).isEqualTo("9");
 
-        FlowElement flowElement = model
-            .getMainProcess()
-            .getFlowElement("usertask");
+        FlowElement flowElement = model.getMainProcess().getFlowElement("usertask");
         assertThat(flowElement).isNotNull();
         assertThat(flowElement).isInstanceOf(UserTask.class);
         assertThat(flowElement.getId()).isEqualTo("usertask");

@@ -33,27 +33,18 @@ import org.springframework.transaction.support.TransactionTemplate;
  */
 public class SpringTransactionInterceptor extends AbstractCommandInterceptor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(
-        SpringTransactionInterceptor.class
-    );
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpringTransactionInterceptor.class);
 
     protected PlatformTransactionManager transactionManager;
 
-    public SpringTransactionInterceptor(
-        PlatformTransactionManager transactionManager
-    ) {
+    public SpringTransactionInterceptor(PlatformTransactionManager transactionManager) {
         this.transactionManager = transactionManager;
     }
 
     public <T> T execute(final CommandConfig config, final Command<T> command) {
-        LOGGER.debug(
-            "Running command with propagation {}",
-            config.getTransactionPropagation()
-        );
+        LOGGER.debug("Running command with propagation {}", config.getTransactionPropagation());
 
-        TransactionTemplate transactionTemplate = new TransactionTemplate(
-            transactionManager
-        );
+        TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
         transactionTemplate.setPropagationBehavior(getPropagation(config));
 
         T result = transactionTemplate.execute(
@@ -77,8 +68,7 @@ public class SpringTransactionInterceptor extends AbstractCommandInterceptor {
                 return TransactionTemplate.PROPAGATION_REQUIRES_NEW;
             default:
                 throw new ActivitiIllegalArgumentException(
-                    "Unsupported transaction propagation: " +
-                    config.getTransactionPropagation()
+                    "Unsupported transaction propagation: " + config.getTransactionPropagation()
                 );
         }
     }

@@ -65,9 +65,7 @@ public class ProcessDefinitionQueryProperty implements QueryProperty {
         return name;
     }
 
-    public static ProcessDefinitionQueryProperty findByName(
-        String propertyName
-    ) {
+    public static ProcessDefinitionQueryProperty findByName(String propertyName) {
         return properties.get(propertyName);
     }
 }

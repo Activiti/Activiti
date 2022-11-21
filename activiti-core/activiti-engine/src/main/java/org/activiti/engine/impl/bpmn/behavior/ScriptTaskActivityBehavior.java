@@ -40,9 +40,7 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(
-        ScriptTaskActivityBehavior.class
-    );
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScriptTaskActivityBehavior.class);
 
     protected String scriptTaskId;
     protected String script;
@@ -50,11 +48,7 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
     protected String resultVariable;
     protected boolean storeScriptVariables = false; // see https://activiti.atlassian.net/browse/ACT-1626
 
-    public ScriptTaskActivityBehavior(
-        String script,
-        String language,
-        String resultVariable
-    ) {
+    public ScriptTaskActivityBehavior(String script, String language, String resultVariable) {
         this.script = script;
         this.language = language;
         this.resultVariable = resultVariable;
@@ -73,32 +67,16 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
     }
 
     public void execute(DelegateExecution execution) {
-        ScriptingEngines scriptingEngines = Context
-            .getProcessEngineConfiguration()
-            .getScriptingEngines();
+        ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
 
-        if (
-            Context
-                .getProcessEngineConfiguration()
-                .isEnableProcessDefinitionInfoCache()
-        ) {
+        if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {
             ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(
                 scriptTaskId,
                 execution.getProcessDefinitionId()
             );
-            if (
-                taskElementProperties != null &&
-                taskElementProperties.has(
-                    DynamicBpmnConstants.SCRIPT_TASK_SCRIPT
-                )
-            ) {
-                String overrideScript = taskElementProperties
-                    .get(DynamicBpmnConstants.SCRIPT_TASK_SCRIPT)
-                    .asText();
-                if (
-                    StringUtils.isNotEmpty(overrideScript) &&
-                    !overrideScript.equals(script)
-                ) {
+            if (taskElementProperties != null && taskElementProperties.has(DynamicBpmnConstants.SCRIPT_TASK_SCRIPT)) {
+                String overrideScript = taskElementProperties.get(DynamicBpmnConstants.SCRIPT_TASK_SCRIPT).asText();
+                if (StringUtils.isNotEmpty(overrideScript) && !overrideScript.equals(script)) {
                     script = overrideScript;
                 }
             }
@@ -106,31 +84,20 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
 
         boolean noErrors = true;
         try {
-            Object result = scriptingEngines.evaluate(
-                script,
-                language,
-                execution,
-                storeScriptVariables
-            );
+            Object result = scriptingEngines.evaluate(script, language, execution, storeScriptVariables);
 
             if (resultVariable != null) {
                 execution.setVariable(resultVariable, result);
             }
         } catch (ActivitiException e) {
             LOGGER.warn(
-                "Exception while executing " +
-                execution.getCurrentFlowElement().getId() +
-                " : " +
-                e.getMessage()
+                "Exception while executing " + execution.getCurrentFlowElement().getId() + " : " + e.getMessage()
             );
 
             noErrors = false;
             Throwable rootCause = ExceptionUtils.getRootCause(e);
             if (rootCause instanceof BpmnError) {
-                ErrorPropagation.propagateError(
-                    (BpmnError) rootCause,
-                    execution
-                );
+                ErrorPropagation.propagateError((BpmnError) rootCause, execution);
             } else {
                 throw e;
             }

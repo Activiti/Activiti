@@ -28,8 +28,7 @@ import org.activiti.engine.repository.ProcessDefinition;
  *
 
  */
-public class GetDeploymentProcessModelCmd
-    implements Command<InputStream>, Serializable {
+public class GetDeploymentProcessModelCmd implements Command<InputStream>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String processDefinitionId;
@@ -37,9 +36,7 @@ public class GetDeploymentProcessModelCmd
     public GetDeploymentProcessModelCmd(String processDefinitionId) {
         if (processDefinitionId == null || processDefinitionId.length() < 1) {
             throw new ActivitiIllegalArgumentException(
-                "The process definition id is mandatory, but '" +
-                processDefinitionId +
-                "' has been provided."
+                "The process definition id is mandatory, but '" + processDefinitionId + "' has been provided."
             );
         }
         this.processDefinitionId = processDefinitionId;
@@ -52,10 +49,7 @@ public class GetDeploymentProcessModelCmd
             .findDeployedProcessDefinitionById(processDefinitionId);
         String deploymentId = processDefinition.getDeploymentId();
         String resourceName = processDefinition.getResourceName();
-        InputStream processModelStream = new GetDeploymentResourceCmd(
-            deploymentId,
-            resourceName
-        )
+        InputStream processModelStream = new GetDeploymentResourceCmd(deploymentId, resourceName)
             .execute(commandContext);
         return processModelStream;
     }

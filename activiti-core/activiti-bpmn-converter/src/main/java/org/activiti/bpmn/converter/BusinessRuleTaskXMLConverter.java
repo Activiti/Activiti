@@ -38,44 +38,22 @@ public class BusinessRuleTaskXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected BaseElement convertXMLToElement(
-        XMLStreamReader xtr,
-        BpmnModel model
-    ) throws Exception {
+    protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
         BusinessRuleTask businessRuleTask = new BusinessRuleTask();
         BpmnXMLUtil.addXMLLocation(businessRuleTask, xtr);
         businessRuleTask.setInputVariables(
             parseDelimitedList(
-                xtr.getAttributeValue(
-                    ACTIVITI_EXTENSIONS_NAMESPACE,
-                    ATTRIBUTE_TASK_RULE_VARIABLES_INPUT
-                )
+                xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_RULE_VARIABLES_INPUT)
             )
         );
         businessRuleTask.setRuleNames(
-            parseDelimitedList(
-                xtr.getAttributeValue(
-                    ACTIVITI_EXTENSIONS_NAMESPACE,
-                    ATTRIBUTE_TASK_RULE_RULES
-                )
-            )
+            parseDelimitedList(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_RULE_RULES))
         );
         businessRuleTask.setResultVariableName(
-            xtr.getAttributeValue(
-                ACTIVITI_EXTENSIONS_NAMESPACE,
-                ATTRIBUTE_TASK_RULE_RESULT_VARIABLE
-            )
+            xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_RULE_RESULT_VARIABLE)
         );
-        businessRuleTask.setClassName(
-            xtr.getAttributeValue(
-                ACTIVITI_EXTENSIONS_NAMESPACE,
-                ATTRIBUTE_TASK_RULE_CLASS
-            )
-        );
-        String exclude = xtr.getAttributeValue(
-            ACTIVITI_EXTENSIONS_NAMESPACE,
-            ATTRIBUTE_TASK_RULE_EXCLUDE
-        );
+        businessRuleTask.setClassName(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_RULE_CLASS));
+        String exclude = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_RULE_EXCLUDE);
         if (ATTRIBUTE_VALUE_TRUE.equalsIgnoreCase(exclude)) {
             businessRuleTask.setExclude(true);
         }
@@ -84,55 +62,29 @@ public class BusinessRuleTaskXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalAttributes(
-        BaseElement element,
-        BpmnModel model,
-        XMLStreamWriter xtw
-    ) throws Exception {
+    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+        throws Exception {
         BusinessRuleTask businessRuleTask = (BusinessRuleTask) element;
-        String inputVariables = convertToDelimitedString(
-            businessRuleTask.getInputVariables()
-        );
+        String inputVariables = convertToDelimitedString(businessRuleTask.getInputVariables());
         if (StringUtils.isNotEmpty(inputVariables)) {
-            writeQualifiedAttribute(
-                ATTRIBUTE_TASK_RULE_VARIABLES_INPUT,
-                inputVariables,
-                xtw
-            );
+            writeQualifiedAttribute(ATTRIBUTE_TASK_RULE_VARIABLES_INPUT, inputVariables, xtw);
         }
-        String ruleNames = convertToDelimitedString(
-            businessRuleTask.getRuleNames()
-        );
+        String ruleNames = convertToDelimitedString(businessRuleTask.getRuleNames());
         if (StringUtils.isNotEmpty(ruleNames)) {
             writeQualifiedAttribute(ATTRIBUTE_TASK_RULE_RULES, ruleNames, xtw);
         }
         if (StringUtils.isNotEmpty(businessRuleTask.getResultVariableName())) {
-            writeQualifiedAttribute(
-                ATTRIBUTE_TASK_RULE_RESULT_VARIABLE,
-                businessRuleTask.getResultVariableName(),
-                xtw
-            );
+            writeQualifiedAttribute(ATTRIBUTE_TASK_RULE_RESULT_VARIABLE, businessRuleTask.getResultVariableName(), xtw);
         }
         if (StringUtils.isNotEmpty(businessRuleTask.getClassName())) {
-            writeQualifiedAttribute(
-                ATTRIBUTE_TASK_RULE_CLASS,
-                businessRuleTask.getClassName(),
-                xtw
-            );
+            writeQualifiedAttribute(ATTRIBUTE_TASK_RULE_CLASS, businessRuleTask.getClassName(), xtw);
         }
         if (businessRuleTask.isExclude()) {
-            writeQualifiedAttribute(
-                ATTRIBUTE_TASK_RULE_EXCLUDE,
-                ATTRIBUTE_VALUE_TRUE,
-                xtw
-            );
+            writeQualifiedAttribute(ATTRIBUTE_TASK_RULE_EXCLUDE, ATTRIBUTE_VALUE_TRUE, xtw);
         }
     }
 
     @Override
-    protected void writeAdditionalChildElements(
-        BaseElement element,
-        BpmnModel model,
-        XMLStreamWriter xtw
-    ) throws Exception {}
+    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+        throws Exception {}
 }

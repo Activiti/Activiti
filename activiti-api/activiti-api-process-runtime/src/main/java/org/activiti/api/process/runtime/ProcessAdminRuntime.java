@@ -71,10 +71,7 @@ public interface ProcessAdminRuntime {
      * - Notice that only in-flight or suspended processes will be returned here
      * - For already completed process instance check at the query service
      */
-    Page<ProcessInstance> processInstances(
-        Pageable pageable,
-        GetProcessInstancesPayload getProcessInstancesPayload
-    );
+    Page<ProcessInstance> processInstances(Pageable pageable, GetProcessInstancesPayload getProcessInstancesPayload);
 
     /**
      * Get Process Instance by id
@@ -108,9 +105,7 @@ public interface ProcessAdminRuntime {
 
     void setVariables(SetProcessVariablesPayload setProcessVariablesPayload);
 
-    void removeVariables(
-        RemoveProcessVariablesPayload removeProcessVariablesPayload
-    );
+    void removeVariables(RemoveProcessVariablesPayload removeProcessVariablesPayload);
 
     List<VariableInstance> variables(GetVariablesPayload getVariablesPayload);
 

@@ -25,8 +25,7 @@ public class ProcessEntryDiscovery implements ApplicationEntryDiscovery {
 
     @Override
     public Predicate<ZipEntry> filter(ZipEntry entry) {
-        return zipEntry ->
-            !zipEntry.isDirectory() && zipEntry.getName().contains(PROCESSES);
+        return zipEntry -> !zipEntry.isDirectory() && zipEntry.getName().contains(PROCESSES);
     }
 
     @Override

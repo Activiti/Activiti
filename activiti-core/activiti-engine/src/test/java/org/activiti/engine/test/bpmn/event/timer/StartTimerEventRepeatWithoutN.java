@@ -53,16 +53,12 @@ public class StartTimerEventRepeatWithoutN extends PluggableActivitiTestCase {
         super.setUp();
 
         startEventListener = new StartEventListener();
-        processEngineConfiguration
-            .getEventDispatcher()
-            .addEventListener(startEventListener);
+        processEngineConfiguration.getEventDispatcher().addEventListener(startEventListener);
     }
 
     @Override
     protected void tearDown() throws Exception {
-        processEngineConfiguration
-            .getEventDispatcher()
-            .removeEventListener(startEventListener);
+        processEngineConfiguration.getEventDispatcher().removeEventListener(startEventListener);
         super.tearDown();
     }
 

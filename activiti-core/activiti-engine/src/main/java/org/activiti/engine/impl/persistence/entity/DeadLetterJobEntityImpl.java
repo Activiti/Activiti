@@ -21,9 +21,7 @@ package org.activiti.engine.impl.persistence.entity;
  *
 
  */
-public class DeadLetterJobEntityImpl
-    extends AbstractJobEntityImpl
-    implements DeadLetterJobEntity {
+public class DeadLetterJobEntityImpl extends AbstractJobEntityImpl implements DeadLetterJobEntity {
 
     private static final long serialVersionUID = 1L;
 

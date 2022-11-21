@@ -26,9 +26,7 @@ public class ApplicationReader {
 
     private List<ApplicationEntryDiscovery> applicationEntryDiscoveries;
 
-    public ApplicationReader(
-        List<ApplicationEntryDiscovery> applicationEntryDiscoveries
-    ) {
+    public ApplicationReader(List<ApplicationEntryDiscovery> applicationEntryDiscoveries) {
         this.applicationEntryDiscoveries = applicationEntryDiscoveries;
     }
 
@@ -41,19 +39,14 @@ public class ApplicationReader {
                 applicationEntryDiscoveries
                     .stream()
                     .filter(applicationEntryDiscovery ->
-                        applicationEntryDiscovery
-                            .filter(currentEntry)
-                            .test(currentEntry)
+                        applicationEntryDiscovery.filter(currentEntry).test(currentEntry)
                     )
                     .findFirst()
                     .ifPresent(applicationEntryDiscovery ->
                         application.add(
                             new ApplicationEntry(
                                 applicationEntryDiscovery.getEntryType(),
-                                new FileContent(
-                                    currentEntry.getName(),
-                                    readBytes(zipInputStream)
-                                )
+                                new FileContent(currentEntry.getName(), readBytes(zipInputStream))
                             )
                         )
                     );

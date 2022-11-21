@@ -29,9 +29,7 @@ import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JobEntityManagerImpl
-    extends AbstractEntityManager<JobEntity>
-    implements JobEntityManager {
+public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> implements JobEntityManager {
 
     protected JobDataManager jobDataManager;
 
@@ -61,8 +59,7 @@ public class JobEntityManagerImpl
     protected boolean doInsert(JobEntity jobEntity, boolean fireCreateEvent) {
         // add link to execution
         if (jobEntity.getExecutionId() != null) {
-            ExecutionEntity execution = getExecutionEntityManager()
-                .findById(jobEntity.getExecutionId());
+            ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
             if (execution != null) {
                 execution.getJobs().add(jobEntity);
 
@@ -73,9 +70,7 @@ public class JobEntityManagerImpl
 
                 if (isExecutionRelatedEntityCountEnabled(execution)) {
                     CountingExecutionEntity countingExecutionEntity = (CountingExecutionEntity) execution;
-                    countingExecutionEntity.setJobCount(
-                        countingExecutionEntity.getJobCount() + 1
-                    );
+                    countingExecutionEntity.setJobCount(countingExecutionEntity.getJobCount() + 1);
                 }
             } else {
                 return false;
@@ -96,29 +91,17 @@ public class JobEntityManagerImpl
     }
 
     @Override
-    public List<JobEntity> findJobsByProcessDefinitionId(
-        String processDefinitionId
-    ) {
-        return jobDataManager.findJobsByProcessDefinitionId(
-            processDefinitionId
-        );
+    public List<JobEntity> findJobsByProcessDefinitionId(String processDefinitionId) {
+        return jobDataManager.findJobsByProcessDefinitionId(processDefinitionId);
     }
 
     @Override
-    public List<JobEntity> findJobsByTypeAndProcessDefinitionId(
-        String jobTypeTimer,
-        String id
-    ) {
-        return jobDataManager.findJobsByTypeAndProcessDefinitionId(
-            jobTypeTimer,
-            id
-        );
+    public List<JobEntity> findJobsByTypeAndProcessDefinitionId(String jobTypeTimer, String id) {
+        return jobDataManager.findJobsByTypeAndProcessDefinitionId(jobTypeTimer, id);
     }
 
     @Override
-    public List<JobEntity> findJobsByProcessInstanceId(
-        String processInstanceId
-    ) {
+    public List<JobEntity> findJobsByProcessInstanceId(String processInstanceId) {
         return jobDataManager.findJobsByProcessInstanceId(processInstanceId);
     }
 
@@ -143,14 +126,8 @@ public class JobEntityManagerImpl
     }
 
     @Override
-    public void updateJobTenantIdForDeployment(
-        String deploymentId,
-        String newTenantId
-    ) {
-        jobDataManager.updateJobTenantIdForDeployment(
-            deploymentId,
-            newTenantId
-        );
+    public void updateJobTenantIdForDeployment(String deploymentId, String newTenantId) {
+        jobDataManager.updateJobTenantIdForDeployment(deploymentId, newTenantId);
     }
 
     @Override
@@ -164,21 +141,13 @@ public class JobEntityManagerImpl
         // Send event
         if (getEventDispatcher().isEnabled()) {
             getEventDispatcher()
-                .dispatchEvent(
-                    ActivitiEventBuilder.createEntityEvent(
-                        ActivitiEventType.ENTITY_DELETED,
-                        this
-                    )
-                );
+                .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, this));
         }
     }
 
     @Override
     public void delete(JobEntity entity, boolean fireDeleteEvent) {
-        if (
-            entity.getExecutionId() != null &&
-            isExecutionRelatedEntityCountEnabledGlobally()
-        ) {
+        if (entity.getExecutionId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
             CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager()
                 .findById(entity.getExecutionId());
             if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
@@ -194,8 +163,7 @@ public class JobEntityManagerImpl
      */
     protected void removeExecutionLink(JobEntity jobEntity) {
         if (jobEntity.getExecutionId() != null) {
-            ExecutionEntity execution = getExecutionEntityManager()
-                .findById(jobEntity.getExecutionId());
+            ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
             if (execution != null) {
                 execution.getJobs().remove(jobEntity);
             }

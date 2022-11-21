@@ -47,15 +47,11 @@ public class ToTimerScheduledConverterTest {
         given(internalEvent.getProcessInstanceId()).willReturn("procInstId");
 
         BPMNTimerImpl bpmnTimer = new BPMNTimerImpl("myTimer");
-        given(bpmnTimerConverter.convertToBPMNTimer(internalEvent))
-            .willReturn(bpmnTimer);
-        given(bpmnTimerConverter.isTimerRelatedEvent(internalEvent))
-            .willReturn(true);
+        given(bpmnTimerConverter.convertToBPMNTimer(internalEvent)).willReturn(bpmnTimer);
+        given(bpmnTimerConverter.isTimerRelatedEvent(internalEvent)).willReturn(true);
 
         //when
-        BPMNTimerScheduledEvent timerEvent = toTimerConverter
-            .from(internalEvent)
-            .orElse(null);
+        BPMNTimerScheduledEvent timerEvent = toTimerConverter.from(internalEvent).orElse(null);
 
         //then
         assertThat(timerEvent).isNotNull();
@@ -67,16 +63,11 @@ public class ToTimerScheduledConverterTest {
     @Test
     public void shouldReturnEmptyOptionalWhenInternalEventIsNotRelatedToTimers() {
         //given
-        ActivitiEntityEvent mockActivitiEntityEvent = mock(
-            ActivitiEntityEvent.class
-        );
-        given(bpmnTimerConverter.isTimerRelatedEvent(mockActivitiEntityEvent))
-            .willReturn(false);
+        ActivitiEntityEvent mockActivitiEntityEvent = mock(ActivitiEntityEvent.class);
+        given(bpmnTimerConverter.isTimerRelatedEvent(mockActivitiEntityEvent)).willReturn(false);
 
         //when
-        Optional<BPMNTimerScheduledEvent> optional = toTimerConverter.from(
-            mockActivitiEntityEvent
-        );
+        Optional<BPMNTimerScheduledEvent> optional = toTimerConverter.from(mockActivitiEntityEvent);
 
         //then
         assertThat(optional).isEmpty();

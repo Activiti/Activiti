@@ -55,10 +55,7 @@ public class ProcessExtensionsAutoConfiguration {
         ObjectMapper objectMapper,
         Map<String, VariableType> variableTypeMap
     ) {
-        return new ProcessExtensionResourceReader(
-            objectMapper,
-            variableTypeMap
-        );
+        return new ProcessExtensionResourceReader(objectMapper, variableTypeMap);
     }
 
     @Bean
@@ -67,10 +64,7 @@ public class ProcessExtensionsAutoConfiguration {
         ProcessExtensionResourceReader processExtensionResourceReader,
         DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader
     ) {
-        return new ProcessExtensionService(
-            deploymentResourceLoader,
-            processExtensionResourceReader
-        );
+        return new ProcessExtensionService(deploymentResourceLoader, processExtensionResourceReader);
     }
 
     @Bean
@@ -78,8 +72,7 @@ public class ProcessExtensionsAutoConfiguration {
         RepositoryService repositoryService,
         ProcessExtensionService processExtensionService
     ) {
-        return () ->
-            processExtensionService.setRepositoryService(repositoryService);
+        return () -> processExtensionService.setRepositoryService(repositoryService);
     }
 
     @Bean
@@ -87,8 +80,7 @@ public class ProcessExtensionsAutoConfiguration {
         RepositoryService repositoryService,
         DeploymentResourceLoader deploymentResourceLoader
     ) {
-        return () ->
-            deploymentResourceLoader.setRepositoryService(repositoryService);
+        return () -> deploymentResourceLoader.setRepositoryService(repositoryService);
     }
 
     @Bean
@@ -98,41 +90,25 @@ public class ProcessExtensionsAutoConfiguration {
         DateFormatterProvider dateFormatterProvider
     ) {
         Map<String, VariableType> variableTypeMap = new HashMap<>();
-        variableTypeMap.put(
-            "boolean",
-            new JavaObjectVariableType(Boolean.class)
-        );
+        variableTypeMap.put("boolean", new JavaObjectVariableType(Boolean.class));
         variableTypeMap.put("string", new JavaObjectVariableType(String.class));
-        variableTypeMap.put(
-            "integer",
-            new JavaObjectVariableType(Integer.class)
-        );
+        variableTypeMap.put("integer", new JavaObjectVariableType(Integer.class));
         variableTypeMap.put("json", new JsonObjectVariableType(objectMapper));
         variableTypeMap.put("file", new JsonObjectVariableType(objectMapper));
         variableTypeMap.put("folder", new JsonObjectVariableType(objectMapper));
-        variableTypeMap.put(
-            "date",
-            new DateVariableType(Date.class, dateFormatterProvider)
-        );
-        variableTypeMap.put(
-            "datetime",
-            new DateVariableType(Date.class, dateFormatterProvider)
-        );
+        variableTypeMap.put("date", new DateVariableType(Date.class, dateFormatterProvider));
+        variableTypeMap.put("datetime", new DateVariableType(Date.class, dateFormatterProvider));
         variableTypeMap.put("array", new JsonObjectVariableType(objectMapper));
         return variableTypeMap;
     }
 
     @Bean
-    public VariableValidationService variableValidationService(
-        Map<String, VariableType> variableTypeMap
-    ) {
+    public VariableValidationService variableValidationService(Map<String, VariableType> variableTypeMap) {
         return new VariableValidationService(variableTypeMap);
     }
 
     @Bean
-    public VariableParsingService variableParsingService(
-        Map<String, VariableType> variableTypeMap
-    ) {
+    public VariableParsingService variableParsingService(Map<String, VariableType> variableTypeMap) {
         return new VariableParsingService(variableTypeMap);
     }
 

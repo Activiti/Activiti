@@ -23,17 +23,12 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 /**
 
  */
-public class InactiveExecutionsInActivityMatcher
-    extends CachedEntityMatcherAdapter<ExecutionEntity> {
+public class InactiveExecutionsInActivityMatcher extends CachedEntityMatcherAdapter<ExecutionEntity> {
 
     @Override
     public boolean isRetained(ExecutionEntity entity, Object parameter) {
         Map<String, Object> paramMap = (Map<String, Object>) parameter;
         String activityId = (String) paramMap.get("activityId");
-        return (
-            !entity.isActive() &&
-            entity.getActivityId() != null &&
-            entity.getActivityId().equals(activityId)
-        );
+        return (!entity.isActive() && entity.getActivityId() != null && entity.getActivityId().equals(activityId));
     }
 }

@@ -36,16 +36,12 @@ import org.slf4j.LoggerFactory;
  */
 public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
 
-    private static Logger log = LoggerFactory.getLogger(
-        DeleteProcessInstanceTest.class
-    );
+    private static Logger log = LoggerFactory.getLogger(DeleteProcessInstanceTest.class);
 
     @Deployment
     public void testNoEndTimeSet() {
         // Note that the instance with a Task Type of "user" is being started.
-        log.info(
-            "Starting an instance of \"Demo Partial Deletion\" with a Task Type of \"user\"."
-        );
+        log.info("Starting an instance of \"Demo Partial Deletion\" with a Task Type of \"user\".");
 
         // Set the inputs for the first process instance, which we will be able
         // to completely delete.
@@ -53,10 +49,7 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
         inputParamsUser.put("taskType", "user");
 
         // Start the process instance & ensure it's started.
-        ProcessInstance instanceUser = runtimeService.startProcessInstanceByKey(
-            "DemoPartialDeletion",
-            inputParamsUser
-        );
+        ProcessInstance instanceUser = runtimeService.startProcessInstanceByKey("DemoPartialDeletion", inputParamsUser);
         assertThat(instanceUser).isNotNull();
         log.info(
             "Process instance (of process model " +
@@ -84,11 +77,7 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
         // Delete the process instance.
         runtimeService.deleteProcessInstance(instanceUser.getId(), null);
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // Retrieve the HistoricProcessInstance and assert that there is an
             // end time.
             HistoricProcessInstance hInstanceUser = historyService
@@ -107,9 +96,7 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
         }
 
         // Note that the instance with a Task Type of "java" is being started.
-        log.info(
-            "Starting an instance of \"Demo Partial Deletion\" with a Task Type of \"java\"."
-        );
+        log.info("Starting an instance of \"Demo Partial Deletion\" with a Task Type of \"java\".");
 
         // Set the inputs for the second process instance, which we will NOT be
         // able to completely delete.
@@ -117,10 +104,7 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
         inputParamsJava.put("taskType", "java");
 
         // Start the process instance & ensure it's started.
-        ProcessInstance instanceJava = runtimeService.startProcessInstanceByKey(
-            "DemoPartialDeletion",
-            inputParamsJava
-        );
+        ProcessInstance instanceJava = runtimeService.startProcessInstanceByKey("DemoPartialDeletion", inputParamsJava);
         assertThat(instanceJava).isNotNull();
         log.info(
             "Process instance (of process model " +
@@ -146,33 +130,22 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
         assertThat(jobJavaForException).isNotNull();
 
         assertThatExceptionOfType(Exception.class)
-            .isThrownBy(() ->
-                managementService.executeJob(jobJavaForException.getId())
-            );
+            .isThrownBy(() -> managementService.executeJob(jobJavaForException.getId()));
 
         assertThatExceptionOfType(Exception.class)
             .isThrownBy(() -> {
-                managementService.moveTimerToExecutableJob(
-                    jobJavaForException.getId()
-                );
+                managementService.moveTimerToExecutableJob(jobJavaForException.getId());
                 managementService.executeJob(jobJavaForException.getId());
             });
 
         assertThatExceptionOfType(Exception.class)
             .isThrownBy(() -> {
-                managementService.moveTimerToExecutableJob(
-                    jobJavaForException.getId()
-                );
+                managementService.moveTimerToExecutableJob(jobJavaForException.getId());
                 managementService.executeJob(jobJavaForException.getId());
             });
 
         // Assert that there is a failed job.
-        assertThat(
-            managementService
-                .createTimerJobQuery()
-                .processInstanceId(instanceJava.getId())
-                .count()
-        )
+        assertThat(managementService.createTimerJobQuery().processInstanceId(instanceJava.getId()).count())
             .isEqualTo(0);
         Job jobJava = managementService
             .createDeadLetterJobQuery()
@@ -183,11 +156,7 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
         // Delete the process instance.
         runtimeService.deleteProcessInstance(instanceJava.getId(), null);
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // Retrieve the HistoricProcessInstance and assert that there is no
             // end time.
             HistoricProcessInstance hInstanceJava = historyService

@@ -44,11 +44,7 @@ public class GetDataObjectCmd implements Command<DataObject>, Serializable {
     protected String locale;
     protected boolean withLocalizationFallback;
 
-    public GetDataObjectCmd(
-        String executionId,
-        String dataObjectName,
-        boolean isLocal
-    ) {
+    public GetDataObjectCmd(String executionId, String dataObjectName, boolean isLocal) {
         this.executionId = executionId;
         this.dataObjectName = dataObjectName;
         this.isLocal = isLocal;
@@ -73,28 +69,18 @@ public class GetDataObjectCmd implements Command<DataObject>, Serializable {
             throw new ActivitiIllegalArgumentException("executionId is null");
         }
         if (dataObjectName == null) {
-            throw new ActivitiIllegalArgumentException(
-                "dataObjectName is null"
-            );
+            throw new ActivitiIllegalArgumentException("dataObjectName is null");
         }
 
-        ExecutionEntity execution = commandContext
-            .getExecutionEntityManager()
-            .findById(executionId);
+        ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
 
         if (execution == null) {
-            throw new ActivitiObjectNotFoundException(
-                "execution " + executionId + " doesn't exist",
-                Execution.class
-            );
+            throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
         }
 
         DataObject dataObject = null;
 
-        VariableInstance variableEntity = getVariable(
-            execution,
-            commandContext
-        );
+        VariableInstance variableEntity = getVariable(execution, commandContext);
 
         String localizedName = null;
         String localizedDescription = null;
@@ -107,33 +93,19 @@ public class GetDataObjectCmd implements Command<DataObject>, Serializable {
                 executionEntity = executionEntity.getParent();
             }
 
-            BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(
-                executionEntity.getProcessDefinitionId()
-            );
+            BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(executionEntity.getProcessDefinitionId());
             ValuedDataObject foundDataObject = null;
             if (executionEntity.getParentId() == null) {
-                for (ValuedDataObject dataObjectDefinition : bpmnModel
-                    .getMainProcess()
-                    .getDataObjects()) {
-                    if (
-                        dataObjectDefinition
-                            .getName()
-                            .equals(variableEntity.getName())
-                    ) {
+                for (ValuedDataObject dataObjectDefinition : bpmnModel.getMainProcess().getDataObjects()) {
+                    if (dataObjectDefinition.getName().equals(variableEntity.getName())) {
                         foundDataObject = dataObjectDefinition;
                         break;
                     }
                 }
             } else {
-                SubProcess subProcess = (SubProcess) bpmnModel.getFlowElement(
-                    execution.getActivityId()
-                );
+                SubProcess subProcess = (SubProcess) bpmnModel.getFlowElement(execution.getActivityId());
                 for (ValuedDataObject dataObjectDefinition : subProcess.getDataObjects()) {
-                    if (
-                        dataObjectDefinition
-                            .getName()
-                            .equals(variableEntity.getName())
-                    ) {
+                    if (dataObjectDefinition.getName().equals(variableEntity.getName())) {
                         foundDataObject = dataObjectDefinition;
                         break;
                     }
@@ -149,15 +121,11 @@ public class GetDataObjectCmd implements Command<DataObject>, Serializable {
                 );
 
                 if (variableEntity != null && languageNode != null) {
-                    JsonNode nameNode = languageNode.get(
-                        DynamicBpmnConstants.LOCALIZATION_NAME
-                    );
+                    JsonNode nameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
                     if (nameNode != null) {
                         localizedName = nameNode.asText();
                     }
-                    JsonNode descriptionNode = languageNode.get(
-                        DynamicBpmnConstants.LOCALIZATION_DESCRIPTION
-                    );
+                    JsonNode descriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
                     if (descriptionNode != null) {
                         localizedDescription = descriptionNode.asText();
                     }
@@ -181,17 +149,12 @@ public class GetDataObjectCmd implements Command<DataObject>, Serializable {
         return dataObject;
     }
 
-    protected VariableInstance getVariable(
-        ExecutionEntity execution,
-        CommandContext commandContext
-    ) {
+    protected VariableInstance getVariable(ExecutionEntity execution, CommandContext commandContext) {
         VariableInstance variableEntity = null;
         if (isLocal) {
-            variableEntity =
-                execution.getVariableInstanceLocal(dataObjectName, false);
+            variableEntity = execution.getVariableInstanceLocal(dataObjectName, false);
         } else {
-            variableEntity =
-                execution.getVariableInstance(dataObjectName, false);
+            variableEntity = execution.getVariableInstance(dataObjectName, false);
         }
         return variableEntity;
     }

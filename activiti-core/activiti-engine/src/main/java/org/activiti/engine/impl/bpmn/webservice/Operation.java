@@ -44,27 +44,16 @@ public class Operation {
 
     public Operation() {}
 
-    public Operation(
-        String id,
-        String name,
-        BpmnInterface bpmnInterface,
-        MessageDefinition inMessage
-    ) {
+    public Operation(String id, String name, BpmnInterface bpmnInterface, MessageDefinition inMessage) {
         setId(id);
         setName(name);
         setInterface(bpmnInterface);
         setInMessage(inMessage);
     }
 
-    public MessageInstance sendMessage(
-        MessageInstance message,
-        ConcurrentMap<QName, URL> overridenEndpointAddresses
-    ) throws Exception {
-        return this.implementation.sendFor(
-                message,
-                this,
-                overridenEndpointAddresses
-            );
+    public MessageInstance sendMessage(MessageInstance message, ConcurrentMap<QName, URL> overridenEndpointAddresses)
+        throws Exception {
+        return this.implementation.sendFor(message, this, overridenEndpointAddresses);
     }
 
     public String getId() {

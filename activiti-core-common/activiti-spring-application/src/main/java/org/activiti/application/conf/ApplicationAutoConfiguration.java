@@ -38,32 +38,17 @@ public class ApplicationAutoConfiguration {
     @Bean
     public InitializingBean deployApplications(
         ResourcePatternResolver resourceLoader,
-        @Autowired(
-            required = false
-        ) List<ApplicationEntryDiscovery> applicationEntryDiscoveries,
-        @Autowired(
-            required = false
-        ) List<ApplicationEntryDeployer> applicationEntryDeployers,
-        @Value(
-            "${spring.activiti.applicationsLocation:classpath:/applications/}"
-        ) String applicationsLocation
+        @Autowired(required = false) List<ApplicationEntryDiscovery> applicationEntryDiscoveries,
+        @Autowired(required = false) List<ApplicationEntryDeployer> applicationEntryDeployers,
+        @Value("${spring.activiti.applicationsLocation:classpath:/applications/}") String applicationsLocation
     ) {
         return () ->
             new ApplicationDeployer(
                 new ApplicationService(
-                    new ApplicationDiscovery(
-                        resourceLoader,
-                        applicationsLocation
-                    ),
-                    new ApplicationReader(
-                        Optional
-                            .ofNullable(applicationEntryDiscoveries)
-                            .orElse(emptyList())
-                    )
+                    new ApplicationDiscovery(resourceLoader, applicationsLocation),
+                    new ApplicationReader(Optional.ofNullable(applicationEntryDiscoveries).orElse(emptyList()))
                 ),
-                Optional
-                    .ofNullable(applicationEntryDeployers)
-                    .orElse(emptyList())
+                Optional.ofNullable(applicationEntryDeployers).orElse(emptyList())
             )
                 .deploy();
     }

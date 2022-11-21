@@ -44,8 +44,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class BasicExclusiveGatewayTest {
 
-    private static final String PROCESS_KEY =
-        "basicexclu-15cdd4ac-ff4d-4925-9b4e-87ea77528613";
+    private static final String PROCESS_KEY = "basicexclu-15cdd4ac-ff4d-4925-9b4e-87ea77528613";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -81,19 +80,11 @@ public class BasicExclusiveGatewayTest {
             )
             //then
             .expectFields(
-                processInstance()
-                    .status(ProcessInstance.ProcessInstanceStatus.RUNNING),
+                processInstance().status(ProcessInstance.ProcessInstanceStatus.RUNNING),
                 processInstance().name("my-process-instance-name"),
                 processInstance().businessKey("my-business-key")
             )
-            .expect(
-                processInstance()
-                    .hasTask(
-                        "Task 1 User 1",
-                        Task.TaskStatus.ASSIGNED,
-                        withAssignee("user1")
-                    )
-            )
+            .expect(processInstance().hasTask("Task 1 User 1", Task.TaskStatus.ASSIGNED, withAssignee("user1")))
             .expectEvents(
                 processInstance().hasBeenStarted(),
                 startEvent("StartEvent_1").hasBeenStarted(),
@@ -105,9 +96,7 @@ public class BasicExclusiveGatewayTest {
             .andReturn();
 
         // I should be able to get the process instance from the Runtime because it is still running
-        ProcessInstance processInstanceById = processRuntime.processInstance(
-            processInstance.getId()
-        );
+        ProcessInstance processInstanceById = processRuntime.processInstance(processInstance.getId());
         assertThat(processInstanceById).isEqualTo(processInstance);
 
         // I should get a task for User1
@@ -120,9 +109,7 @@ public class BasicExclusiveGatewayTest {
 
         //given
         taskOperations
-            .complete(
-                TaskPayloadBuilder.complete().withTaskId(task.getId()).build()
-            )
+            .complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build())
             //then
             .expectEvents(
                 task().hasBeenCompleted(),
@@ -133,14 +120,7 @@ public class BasicExclusiveGatewayTest {
                 taskWithName("Task 2 User 1").hasBeenCreated(),
                 taskWithName("Task 2 User 1").hasBeenAssigned()
             )
-            .expect(
-                processInstance()
-                    .hasTask(
-                        "Task 2 User 1",
-                        Task.TaskStatus.ASSIGNED,
-                        withAssignee("user1")
-                    )
-            );
+            .expect(processInstance().hasTask("Task 2 User 1", Task.TaskStatus.ASSIGNED, withAssignee("user1")));
 
         tasks = taskRuntime.tasks(Pageable.of(0, 50));
         assertThat(tasks.getTotalItems()).isEqualTo(1);
@@ -153,13 +133,9 @@ public class BasicExclusiveGatewayTest {
     @AfterEach
     public void cleanup() {
         securityUtil.logInAs("admin");
-        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(
-            Pageable.of(0, 50)
-        );
+        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0, 50));
         for (ProcessInstance pi : processInstancePage.getContent()) {
-            processAdminRuntime.delete(
-                ProcessPayloadBuilder.delete(pi.getId())
-            );
+            processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
     }
 }

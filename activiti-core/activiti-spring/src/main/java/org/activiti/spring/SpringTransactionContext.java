@@ -35,10 +35,7 @@ public class SpringTransactionContext implements TransactionContext {
     protected CommandContext commandContext;
     protected Integer transactionSynchronizationAdapterOrder;
 
-    public SpringTransactionContext(
-        PlatformTransactionManager transactionManager,
-        CommandContext commandContext
-    ) {
+    public SpringTransactionContext(PlatformTransactionManager transactionManager, CommandContext commandContext) {
         this(transactionManager, commandContext, null);
     }
 
@@ -50,8 +47,7 @@ public class SpringTransactionContext implements TransactionContext {
         this.transactionManager = transactionManager;
         this.commandContext = commandContext;
         if (transactionSynchronizationAdapterOrder != null) {
-            this.transactionSynchronizationAdapterOrder =
-                transactionSynchronizationAdapterOrder;
+            this.transactionSynchronizationAdapterOrder = transactionSynchronizationAdapterOrder;
         } else {
             // Revert to default, which is a high number as the behaviour prior
             // to adding the order would
@@ -107,10 +103,7 @@ public class SpringTransactionContext implements TransactionContext {
                 new TransactionSynchronizationAdapter() {
                     @Override
                     public void afterCompletion(int status) {
-                        if (
-                            TransactionSynchronization.STATUS_ROLLED_BACK ==
-                            status
-                        ) {
+                        if (TransactionSynchronization.STATUS_ROLLED_BACK == status) {
                             transactionListener.execute(commandContext);
                         }
                     }
@@ -119,8 +112,7 @@ public class SpringTransactionContext implements TransactionContext {
         }
     }
 
-    protected abstract class TransactionSynchronizationAdapter
-        implements TransactionSynchronization, Ordered {
+    protected abstract class TransactionSynchronizationAdapter implements TransactionSynchronization, Ordered {
 
         public void suspend() {}
 

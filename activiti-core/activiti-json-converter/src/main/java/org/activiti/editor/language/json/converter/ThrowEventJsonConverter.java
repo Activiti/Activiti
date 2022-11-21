@@ -39,26 +39,15 @@ public class ThrowEventJsonConverter extends BaseBpmnJsonConverter {
         fillBpmnTypes(convertersToJsonMap);
     }
 
-    public static void fillJsonTypes(
-        Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap
-    ) {
-        convertersToBpmnMap.put(
-            STENCIL_EVENT_THROW_NONE,
-            ThrowEventJsonConverter.class
-        );
-        convertersToBpmnMap.put(
-            STENCIL_EVENT_THROW_SIGNAL,
-            ThrowEventJsonConverter.class
-        );
+    public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
+        convertersToBpmnMap.put(STENCIL_EVENT_THROW_NONE, ThrowEventJsonConverter.class);
+        convertersToBpmnMap.put(STENCIL_EVENT_THROW_SIGNAL, ThrowEventJsonConverter.class);
     }
 
     public static void fillBpmnTypes(
         Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap
     ) {
-        convertersToJsonMap.put(
-            ThrowEvent.class,
-            ThrowEventJsonConverter.class
-        );
+        convertersToJsonMap.put(ThrowEvent.class, ThrowEventJsonConverter.class);
     }
 
     protected String getStencilId(BaseElement baseElement) {
@@ -77,10 +66,7 @@ public class ThrowEventJsonConverter extends BaseBpmnJsonConverter {
         }
     }
 
-    protected void convertElementToJson(
-        ObjectNode propertiesNode,
-        BaseElement baseElement
-    ) {
+    protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
         ThrowEvent throwEvent = (ThrowEvent) baseElement;
         addEventProperties(throwEvent, propertiesNode);
     }

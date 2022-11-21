@@ -30,26 +30,17 @@ import org.activiti.engine.impl.util.ReflectUtil;
  */
 public class ClassDelegateUtil {
 
-    public static Object instantiateDelegate(
-        Class<?> clazz,
-        List<FieldDeclaration> fieldDeclarations
-    ) {
+    public static Object instantiateDelegate(Class<?> clazz, List<FieldDeclaration> fieldDeclarations) {
         return instantiateDelegate(clazz.getName(), fieldDeclarations);
     }
 
-    public static Object instantiateDelegate(
-        String className,
-        List<FieldDeclaration> fieldDeclarations
-    ) {
+    public static Object instantiateDelegate(String className, List<FieldDeclaration> fieldDeclarations) {
         Object object = ReflectUtil.instantiate(className);
         applyFieldDeclaration(fieldDeclarations, object);
         return object;
     }
 
-    public static void applyFieldDeclaration(
-        List<FieldDeclaration> fieldDeclarations,
-        Object target
-    ) {
+    public static void applyFieldDeclaration(List<FieldDeclaration> fieldDeclarations, Object target) {
         if (fieldDeclarations != null) {
             for (FieldDeclaration declaration : fieldDeclarations) {
                 applyFieldDeclaration(declaration, target);
@@ -57,10 +48,7 @@ public class ClassDelegateUtil {
         }
     }
 
-    public static void applyFieldDeclaration(
-        FieldDeclaration declaration,
-        Object target
-    ) {
+    public static void applyFieldDeclaration(FieldDeclaration declaration, Object target) {
         Method setterMethod = ReflectUtil.getSetter(
             declaration.getName(),
             target.getClass(),
@@ -72,10 +60,7 @@ public class ClassDelegateUtil {
                 setterMethod.invoke(target, declaration.getValue());
             } catch (IllegalArgumentException e) {
                 throw new ActivitiException(
-                    "Error while invoking '" +
-                    declaration.getName() +
-                    "' on class " +
-                    target.getClass().getName(),
+                    "Error while invoking '" + declaration.getName() + "' on class " + target.getClass().getName(),
                     e
                 );
             } catch (IllegalAccessException e) {
@@ -88,10 +73,7 @@ public class ClassDelegateUtil {
                 );
             } catch (InvocationTargetException e) {
                 throw new ActivitiException(
-                    "Exception while invoking '" +
-                    declaration.getName() +
-                    "' on class " +
-                    target.getClass().getName(),
+                    "Exception while invoking '" + declaration.getName() + "' on class " + target.getClass().getName(),
                     e
                 );
             }
@@ -122,14 +104,9 @@ public class ClassDelegateUtil {
         }
     }
 
-    public static boolean fieldTypeCompatible(
-        FieldDeclaration declaration,
-        Field field
-    ) {
+    public static boolean fieldTypeCompatible(FieldDeclaration declaration, Field field) {
         if (declaration.getValue() != null) {
-            return field
-                .getType()
-                .isAssignableFrom(declaration.getValue().getClass());
+            return field.getType().isAssignableFrom(declaration.getValue().getClass());
         } else {
             // Null can be set any field type
             return true;

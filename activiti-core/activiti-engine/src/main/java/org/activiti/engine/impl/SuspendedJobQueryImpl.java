@@ -66,9 +66,7 @@ public class SuspendedJobQueryImpl
 
     public SuspendedJobQueryImpl jobId(String jobId) {
         if (jobId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Provided job id is null"
-            );
+            throw new ActivitiIllegalArgumentException("Provided job id is null");
         }
         this.id = jobId;
         return this;
@@ -76,21 +74,15 @@ public class SuspendedJobQueryImpl
 
     public SuspendedJobQueryImpl processInstanceId(String processInstanceId) {
         if (processInstanceId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Provided process instance id is null"
-            );
+            throw new ActivitiIllegalArgumentException("Provided process instance id is null");
         }
         this.processInstanceId = processInstanceId;
         return this;
     }
 
-    public SuspendedJobQueryImpl processDefinitionId(
-        String processDefinitionId
-    ) {
+    public SuspendedJobQueryImpl processDefinitionId(String processDefinitionId) {
         if (processDefinitionId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Provided process definition id is null"
-            );
+            throw new ActivitiIllegalArgumentException("Provided process definition id is null");
         }
         this.processDefinitionId = processDefinitionId;
         return this;
@@ -98,9 +90,7 @@ public class SuspendedJobQueryImpl
 
     public SuspendedJobQueryImpl executionId(String executionId) {
         if (executionId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Provided execution id is null"
-            );
+            throw new ActivitiIllegalArgumentException("Provided execution id is null");
         }
         this.executionId = executionId;
         return this;
@@ -188,9 +178,7 @@ public class SuspendedJobQueryImpl
 
     public SuspendedJobQueryImpl exceptionMessage(String exceptionMessage) {
         if (exceptionMessage == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Provided exception message is null"
-            );
+            throw new ActivitiIllegalArgumentException("Provided exception message is null");
         }
         this.exceptionMessage = exceptionMessage;
         return this;
@@ -247,16 +235,12 @@ public class SuspendedJobQueryImpl
 
     public long executeCount(CommandContext commandContext) {
         checkQueryOk();
-        return commandContext
-            .getSuspendedJobEntityManager()
-            .findJobCountByQueryCriteria(this);
+        return commandContext.getSuspendedJobEntityManager().findJobCountByQueryCriteria(this);
     }
 
     public List<Job> executeList(CommandContext commandContext, Page page) {
         checkQueryOk();
-        return commandContext
-            .getSuspendedJobEntityManager()
-            .findJobsByQueryCriteria(this, page);
+        return commandContext.getSuspendedJobEntityManager().findJobsByQueryCriteria(this, page);
     }
 
     // getters //////////////////////////////////////////
@@ -278,10 +262,7 @@ public class SuspendedJobQueryImpl
     }
 
     public Date getNow() {
-        return Context
-            .getProcessEngineConfiguration()
-            .getClock()
-            .getCurrentTime();
+        return Context.getProcessEngineConfiguration().getClock().getCurrentTime();
     }
 
     public boolean isWithException() {

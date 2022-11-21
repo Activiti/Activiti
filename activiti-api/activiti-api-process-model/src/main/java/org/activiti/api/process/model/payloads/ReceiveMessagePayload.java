@@ -32,11 +32,7 @@ public class ReceiveMessagePayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public ReceiveMessagePayload(
-        String name,
-        String correlationKey,
-        Map<String, Object> variables
-    ) {
+    public ReceiveMessagePayload(String name, String correlationKey, Map<String, Object> variables) {
         this();
         Objects.requireNonNull(name, "name must not be null");
 

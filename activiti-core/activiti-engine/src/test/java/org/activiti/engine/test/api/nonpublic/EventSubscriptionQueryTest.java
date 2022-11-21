@@ -46,41 +46,27 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
                         MessageEventSubscriptionEntity messageEventSubscriptionEntity1 = commandContext
                             .getEventSubscriptionEntityManager()
                             .createMessageEventSubscription();
-                        messageEventSubscriptionEntity1.setEventName(
-                            "messageName"
-                        );
-                        commandContext
-                            .getEventSubscriptionEntityManager()
-                            .insert(messageEventSubscriptionEntity1);
+                        messageEventSubscriptionEntity1.setEventName("messageName");
+                        commandContext.getEventSubscriptionEntityManager().insert(messageEventSubscriptionEntity1);
 
                         MessageEventSubscriptionEntity messageEventSubscriptionEntity2 = commandContext
                             .getEventSubscriptionEntityManager()
                             .createMessageEventSubscription();
-                        messageEventSubscriptionEntity2.setEventName(
-                            "messageName"
-                        );
-                        commandContext
-                            .getEventSubscriptionEntityManager()
-                            .insert(messageEventSubscriptionEntity2);
+                        messageEventSubscriptionEntity2.setEventName("messageName");
+                        commandContext.getEventSubscriptionEntityManager().insert(messageEventSubscriptionEntity2);
 
                         MessageEventSubscriptionEntity messageEventSubscriptionEntity3 = commandContext
                             .getEventSubscriptionEntityManager()
                             .createMessageEventSubscription();
-                        messageEventSubscriptionEntity3.setEventName(
-                            "messageName2"
-                        );
-                        commandContext
-                            .getEventSubscriptionEntityManager()
-                            .insert(messageEventSubscriptionEntity3);
+                        messageEventSubscriptionEntity3.setEventName("messageName2");
+                        commandContext.getEventSubscriptionEntityManager().insert(messageEventSubscriptionEntity3);
 
                         return null;
                     }
                 }
             );
 
-        List<EventSubscriptionEntity> list = newEventSubscriptionQuery()
-            .eventName("messageName")
-            .list();
+        List<EventSubscriptionEntity> list = newEventSubscriptionQuery().eventName("messageName").list();
         assertThat(list).hasSize(2);
 
         list = newEventSubscriptionQuery().eventName("messageName2").list();
@@ -98,41 +84,27 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
                         MessageEventSubscriptionEntity messageEventSubscriptionEntity1 = commandContext
                             .getEventSubscriptionEntityManager()
                             .createMessageEventSubscription();
-                        messageEventSubscriptionEntity1.setEventName(
-                            "messageName"
-                        );
-                        commandContext
-                            .getEventSubscriptionEntityManager()
-                            .insert(messageEventSubscriptionEntity1);
+                        messageEventSubscriptionEntity1.setEventName("messageName");
+                        commandContext.getEventSubscriptionEntityManager().insert(messageEventSubscriptionEntity1);
 
                         MessageEventSubscriptionEntity messageEventSubscriptionEntity2 = commandContext
                             .getEventSubscriptionEntityManager()
                             .createMessageEventSubscription();
-                        messageEventSubscriptionEntity2.setEventName(
-                            "messageName"
-                        );
-                        commandContext
-                            .getEventSubscriptionEntityManager()
-                            .insert(messageEventSubscriptionEntity2);
+                        messageEventSubscriptionEntity2.setEventName("messageName");
+                        commandContext.getEventSubscriptionEntityManager().insert(messageEventSubscriptionEntity2);
 
                         SignalEventSubscriptionEntity signalEventSubscriptionEntity3 = commandContext
                             .getEventSubscriptionEntityManager()
                             .createSignalEventSubscription();
-                        signalEventSubscriptionEntity3.setEventName(
-                            "messageName2"
-                        );
-                        commandContext
-                            .getEventSubscriptionEntityManager()
-                            .insert(signalEventSubscriptionEntity3);
+                        signalEventSubscriptionEntity3.setEventName("messageName2");
+                        commandContext.getEventSubscriptionEntityManager().insert(signalEventSubscriptionEntity3);
 
                         return null;
                     }
                 }
             );
 
-        List<EventSubscriptionEntity> list = newEventSubscriptionQuery()
-            .eventType("signal")
-            .list();
+        List<EventSubscriptionEntity> list = newEventSubscriptionQuery().eventType("signal").list();
         assertThat(list).hasSize(1);
 
         list = newEventSubscriptionQuery().eventType("message").list();
@@ -150,57 +122,33 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
                         MessageEventSubscriptionEntity messageEventSubscriptionEntity1 = commandContext
                             .getEventSubscriptionEntityManager()
                             .createMessageEventSubscription();
-                        messageEventSubscriptionEntity1.setEventName(
-                            "messageName"
-                        );
-                        messageEventSubscriptionEntity1.setActivityId(
-                            "someActivity"
-                        );
-                        commandContext
-                            .getEventSubscriptionEntityManager()
-                            .insert(messageEventSubscriptionEntity1);
+                        messageEventSubscriptionEntity1.setEventName("messageName");
+                        messageEventSubscriptionEntity1.setActivityId("someActivity");
+                        commandContext.getEventSubscriptionEntityManager().insert(messageEventSubscriptionEntity1);
 
                         MessageEventSubscriptionEntity messageEventSubscriptionEntity2 = commandContext
                             .getEventSubscriptionEntityManager()
                             .createMessageEventSubscription();
-                        messageEventSubscriptionEntity2.setEventName(
-                            "messageName"
-                        );
-                        messageEventSubscriptionEntity2.setActivityId(
-                            "someActivity"
-                        );
-                        commandContext
-                            .getEventSubscriptionEntityManager()
-                            .insert(messageEventSubscriptionEntity2);
+                        messageEventSubscriptionEntity2.setEventName("messageName");
+                        messageEventSubscriptionEntity2.setActivityId("someActivity");
+                        commandContext.getEventSubscriptionEntityManager().insert(messageEventSubscriptionEntity2);
 
                         SignalEventSubscriptionEntity signalEventSubscriptionEntity3 = commandContext
                             .getEventSubscriptionEntityManager()
                             .createSignalEventSubscription();
-                        signalEventSubscriptionEntity3.setEventName(
-                            "messageName2"
-                        );
-                        signalEventSubscriptionEntity3.setActivityId(
-                            "someOtherActivity"
-                        );
-                        commandContext
-                            .getEventSubscriptionEntityManager()
-                            .insert(signalEventSubscriptionEntity3);
+                        signalEventSubscriptionEntity3.setEventName("messageName2");
+                        signalEventSubscriptionEntity3.setActivityId("someOtherActivity");
+                        commandContext.getEventSubscriptionEntityManager().insert(signalEventSubscriptionEntity3);
 
                         return null;
                     }
                 }
             );
 
-        List<EventSubscriptionEntity> list = newEventSubscriptionQuery()
-            .activityId("someOtherActivity")
-            .list();
+        List<EventSubscriptionEntity> list = newEventSubscriptionQuery().activityId("someOtherActivity").list();
         assertThat(list).hasSize(1);
 
-        list =
-            newEventSubscriptionQuery()
-                .activityId("someActivity")
-                .eventType("message")
-                .list();
+        list = newEventSubscriptionQuery().activityId("someActivity").eventType("message").list();
         assertThat(list).hasSize(2);
 
         cleanDb();
@@ -215,45 +163,28 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
                         MessageEventSubscriptionEntity messageEventSubscriptionEntity1 = commandContext
                             .getEventSubscriptionEntityManager()
                             .createMessageEventSubscription();
-                        messageEventSubscriptionEntity1.setEventName(
-                            "messageName"
-                        );
-                        messageEventSubscriptionEntity1.setActivityId(
-                            "someActivity"
-                        );
-                        commandContext
-                            .getEventSubscriptionEntityManager()
-                            .insert(messageEventSubscriptionEntity1);
+                        messageEventSubscriptionEntity1.setEventName("messageName");
+                        messageEventSubscriptionEntity1.setActivityId("someActivity");
+                        commandContext.getEventSubscriptionEntityManager().insert(messageEventSubscriptionEntity1);
 
                         MessageEventSubscriptionEntity messageEventSubscriptionEntity2 = commandContext
                             .getEventSubscriptionEntityManager()
                             .createMessageEventSubscription();
-                        messageEventSubscriptionEntity2.setEventName(
-                            "messageName"
-                        );
-                        messageEventSubscriptionEntity2.setActivityId(
-                            "someOtherActivity"
-                        );
-                        commandContext
-                            .getEventSubscriptionEntityManager()
-                            .insert(messageEventSubscriptionEntity2);
+                        messageEventSubscriptionEntity2.setEventName("messageName");
+                        messageEventSubscriptionEntity2.setActivityId("someOtherActivity");
+                        commandContext.getEventSubscriptionEntityManager().insert(messageEventSubscriptionEntity2);
 
                         return null;
                     }
                 }
             );
 
-        List<EventSubscriptionEntity> list = newEventSubscriptionQuery()
-            .activityId("someOtherActivity")
-            .list();
+        List<EventSubscriptionEntity> list = newEventSubscriptionQuery().activityId("someOtherActivity").list();
         assertThat(list).hasSize(1);
 
         final EventSubscriptionEntity entity = list.get(0);
 
-        list =
-            newEventSubscriptionQuery()
-                .eventSubscriptionId(entity.getId())
-                .list();
+        list = newEventSubscriptionQuery().eventSubscriptionId(entity.getId()).list();
 
         assertThat(list).hasSize(1);
 
@@ -263,9 +194,7 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
     @Deployment
     public void testQueryByExecutionId() {
         // starting two instances:
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "catchSignal"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("catchSignal");
         runtimeService.startProcessInstanceByKey("catchSignal");
 
         // test query by process instance id
@@ -292,9 +221,7 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
     }
 
     protected EventSubscriptionQueryImpl newEventSubscriptionQuery() {
-        return new EventSubscriptionQueryImpl(
-            processEngineConfiguration.getCommandExecutor()
-        );
+        return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor());
     }
 
     protected void cleanDb() {
@@ -311,9 +238,7 @@ public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
                             EventSubscriptionEntityManager eventSubscriptionEntityManager = Context
                                 .getCommandContext()
                                 .getEventSubscriptionEntityManager();
-                            eventSubscriptionEntityManager.delete(
-                                eventSubscriptionEntity
-                            );
+                            eventSubscriptionEntityManager.delete(eventSubscriptionEntity);
                         }
                         return null;
                     }

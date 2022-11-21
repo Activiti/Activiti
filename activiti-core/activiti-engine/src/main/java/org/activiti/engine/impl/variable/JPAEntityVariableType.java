@@ -52,15 +52,9 @@ public class JPAEntityVariableType implements VariableType, CacheableVariable {
     }
 
     public void setValue(Object value, ValueFields valueFields) {
-        EntityManagerSession entityManagerSession = Context
-            .getCommandContext()
-            .getSession(EntityManagerSession.class);
+        EntityManagerSession entityManagerSession = Context.getCommandContext().getSession(EntityManagerSession.class);
         if (entityManagerSession == null) {
-            throw new ActivitiException(
-                "Cannot set JPA variable: " +
-                EntityManagerSession.class +
-                " not configured"
-            );
+            throw new ActivitiException("Cannot set JPA variable: " + EntityManagerSession.class + " not configured");
         } else {
             // Before we set the value we must flush all pending changes from
             // the entitymanager
@@ -82,14 +76,8 @@ public class JPAEntityVariableType implements VariableType, CacheableVariable {
     }
 
     public Object getValue(ValueFields valueFields) {
-        if (
-            valueFields.getTextValue() != null &&
-            valueFields.getTextValue2() != null
-        ) {
-            return mappings.getJPAEntity(
-                valueFields.getTextValue(),
-                valueFields.getTextValue2()
-            );
+        if (valueFields.getTextValue() != null && valueFields.getTextValue2() != null) {
+            return mappings.getJPAEntity(valueFields.getTextValue(), valueFields.getTextValue2());
         }
         return null;
     }

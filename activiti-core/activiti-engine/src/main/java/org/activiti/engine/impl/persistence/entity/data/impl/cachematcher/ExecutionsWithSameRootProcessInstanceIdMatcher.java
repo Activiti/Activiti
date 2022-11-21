@@ -24,8 +24,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 /**
 
  */
-public class ExecutionsWithSameRootProcessInstanceIdMatcher
-    implements CachedEntityMatcher<ExecutionEntity> {
+public class ExecutionsWithSameRootProcessInstanceIdMatcher implements CachedEntityMatcher<ExecutionEntity> {
 
     @Override
     public boolean isRetained(
@@ -34,16 +33,10 @@ public class ExecutionsWithSameRootProcessInstanceIdMatcher
         ExecutionEntity entity,
         Object param
     ) {
-        ExecutionEntity executionEntity = getMatchingExecution(
-            databaseEntities,
-            cachedEntities,
-            (String) param
-        );
+        ExecutionEntity executionEntity = getMatchingExecution(databaseEntities, cachedEntities, (String) param);
         return (
             executionEntity.getRootProcessInstanceId() != null &&
-            executionEntity
-                .getRootProcessInstanceId()
-                .equals(entity.getRootProcessInstanceId())
+            executionEntity.getRootProcessInstanceId().equals(entity.getRootProcessInstanceId())
         );
     }
 

@@ -32,8 +32,7 @@ import org.activiti.runtime.api.message.ReceiveMessagePayloadEventListener;
  * Spring SignalPayload event into embedded RuntimeService.
  *
  */
-public class RuntimeReceiveMessagePayloadEventListener
-    implements ReceiveMessagePayloadEventListener {
+public class RuntimeReceiveMessagePayloadEventListener implements ReceiveMessagePayloadEventListener {
 
     private final RuntimeService runtimeService;
 
@@ -55,18 +54,11 @@ public class RuntimeReceiveMessagePayloadEventListener
         EventSubscriptionEntity subscription = managementService.executeCommand(
             new FindMessageEventSubscription(messageName, correlationKey)
         );
-        if (
-            subscription != null &&
-            Objects.equals(correlationKey, subscription.getConfiguration())
-        ) {
+        if (subscription != null && Objects.equals(correlationKey, subscription.getConfiguration())) {
             Map<String, Object> variables = messagePayload.getVariables();
             String executionId = subscription.getExecutionId();
 
-            runtimeService.messageEventReceived(
-                messageName,
-                executionId,
-                variables
-            );
+            runtimeService.messageEventReceived(messageName, executionId, variables);
         } else {
             throw new ActivitiObjectNotFoundException(
                 "Message subscription name '" +
@@ -78,16 +70,12 @@ public class RuntimeReceiveMessagePayloadEventListener
         }
     }
 
-    static class FindMessageEventSubscription
-        implements Command<EventSubscriptionEntity> {
+    static class FindMessageEventSubscription implements Command<EventSubscriptionEntity> {
 
         private final String messageName;
         private final String correlationKey;
 
-        public FindMessageEventSubscription(
-            String messageName,
-            String correlationKey
-        ) {
+        public FindMessageEventSubscription(String messageName, String correlationKey) {
             this.messageName = messageName;
             this.correlationKey = correlationKey;
         }

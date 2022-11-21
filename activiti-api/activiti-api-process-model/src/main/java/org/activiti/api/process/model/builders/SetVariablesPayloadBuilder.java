@@ -35,23 +35,17 @@ public class SetVariablesPayloadBuilder {
         this.processInstanceId = processInstance.getId();
     }
 
-    public SetVariablesPayloadBuilder withProcessInstanceId(
-        String processInstanceId
-    ) {
+    public SetVariablesPayloadBuilder withProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
         return this;
     }
 
-    public SetVariablesPayloadBuilder withProcessInstance(
-        ProcessInstance processInstance
-    ) {
+    public SetVariablesPayloadBuilder withProcessInstance(ProcessInstance processInstance) {
         this.processInstanceId = processInstance.getId();
         return this;
     }
 
-    public SetVariablesPayloadBuilder withVariables(
-        Map<String, Object> variables
-    ) {
+    public SetVariablesPayloadBuilder withVariables(Map<String, Object> variables) {
         this.variables = variables;
         return this;
     }

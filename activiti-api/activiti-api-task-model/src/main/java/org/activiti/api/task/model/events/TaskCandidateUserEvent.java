@@ -19,8 +19,7 @@ import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.task.model.TaskCandidateUser;
 
 public interface TaskCandidateUserEvent
-    extends
-        RuntimeEvent<TaskCandidateUser, TaskCandidateUserEvent.TaskCandidateUserEvents> {
+    extends RuntimeEvent<TaskCandidateUser, TaskCandidateUserEvent.TaskCandidateUserEvents> {
     enum TaskCandidateUserEvents {
         TASK_CANDIDATE_USER_ADDED,
 

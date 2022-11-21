@@ -32,16 +32,9 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ConditionUtil {
 
-    public static boolean hasTrueCondition(
-        SequenceFlow sequenceFlow,
-        DelegateExecution execution
-    ) {
+    public static boolean hasTrueCondition(SequenceFlow sequenceFlow, DelegateExecution execution) {
         String conditionExpression = null;
-        if (
-            Context
-                .getProcessEngineConfiguration()
-                .isEnableProcessDefinitionInfoCache()
-        ) {
+        if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {
             ObjectNode elementProperties = Context.getBpmnOverrideElementProperties(
                 sequenceFlow.getId(),
                 execution.getProcessDefinitionId()
@@ -72,11 +65,7 @@ public class ConditionUtil {
         }
     }
 
-    protected static String getActiveValue(
-        String originalValue,
-        String propertyName,
-        ObjectNode elementProperties
-    ) {
+    protected static String getActiveValue(String originalValue, String propertyName, ObjectNode elementProperties) {
         String activeValue = originalValue;
         if (elementProperties != null) {
             JsonNode overrideValueNode = elementProperties.get(propertyName);

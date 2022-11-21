@@ -27,8 +27,7 @@ import org.activiti.engine.management.TablePageQuery;
  *
 
  */
-public class TablePageQueryImpl
-    implements TablePageQuery, Command<TablePage>, Serializable {
+public class TablePageQueryImpl implements TablePageQuery, Command<TablePage>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -80,9 +79,7 @@ public class TablePageQueryImpl
     }
 
     public TablePage execute(CommandContext commandContext) {
-        return commandContext
-            .getTableDataManager()
-            .getTablePage(this, firstResult, maxResults);
+        return commandContext.getTableDataManager().getTablePage(this, firstResult, maxResults);
     }
 
     public String getOrder() {

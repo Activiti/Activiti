@@ -47,9 +47,7 @@ public class ResourceStreamSource implements StreamSource {
             inputStream = classLoader.getResourceAsStream(resource);
         }
         if (inputStream == null) {
-            throw new ActivitiIllegalArgumentException(
-                "resource '" + resource + "' doesn't exist"
-            );
+            throw new ActivitiIllegalArgumentException("resource '" + resource + "' doesn't exist");
         }
         return new BufferedInputStream(inputStream);
     }

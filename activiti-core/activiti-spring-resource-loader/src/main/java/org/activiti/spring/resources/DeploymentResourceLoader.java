@@ -30,18 +30,13 @@ public class DeploymentResourceLoader<T> {
 
     private Map<String, List<T>> loadedResources = new HashMap<>();
 
-    public List<T> loadResourcesForDeployment(
-        String deploymentId,
-        ResourceReader<T> resourceLoaderDescriptor
-    ) {
+    public List<T> loadResourcesForDeployment(String deploymentId, ResourceReader<T> resourceLoaderDescriptor) {
         List<T> resources = loadedResources.get(deploymentId);
         if (resources != null) {
             return resources;
         }
 
-        List<String> resourceNames = repositoryService.getDeploymentResourceNames(
-            deploymentId
-        );
+        List<String> resourceNames = repositoryService.getDeploymentResourceNames(deploymentId);
 
         if (resourceNames != null && !resourceNames.isEmpty()) {
             List<String> selectedResources = resourceNames
@@ -49,12 +44,7 @@ public class DeploymentResourceLoader<T> {
                 .filter(resourceLoaderDescriptor.getResourceNameSelector())
                 .collect(Collectors.toList());
 
-            resources =
-                loadResources(
-                    deploymentId,
-                    resourceLoaderDescriptor,
-                    selectedResources
-                );
+            resources = loadResources(deploymentId, resourceLoaderDescriptor, selectedResources);
         } else {
             resources = new ArrayList<>();
         }
@@ -69,21 +59,13 @@ public class DeploymentResourceLoader<T> {
     ) {
         List<T> resources = new ArrayList<>();
         for (String name : selectedResources) {
-            try (
-                InputStream resourceAsStream = repositoryService.getResourceAsStream(
-                    deploymentId,
-                    name
-                )
-            ) {
+            try (InputStream resourceAsStream = repositoryService.getResourceAsStream(deploymentId, name)) {
                 T resource = resourceReader.read(resourceAsStream);
                 if (resource != null) {
                     resources.add(resource);
                 }
             } catch (IOException e) {
-                throw new IllegalStateException(
-                    "Unable to read process extension",
-                    e
-                );
+                throw new IllegalStateException("Unable to read process extension", e);
             }
         }
         return resources;

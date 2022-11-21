@@ -20,8 +20,7 @@ import org.activiti.api.task.runtime.events.TaskCreatedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 
-public class ToAPITaskCreatedEventConverter
-    implements EventConverter<TaskCreatedEvent, ActivitiEntityEvent> {
+public class ToAPITaskCreatedEventConverter implements EventConverter<TaskCreatedEvent, ActivitiEntityEvent> {
 
     private final APITaskConverter taskConverter;
 
@@ -33,9 +32,7 @@ public class ToAPITaskCreatedEventConverter
     public Optional<TaskCreatedEvent> from(ActivitiEntityEvent internalEvent) {
         return Optional.of(
             new TaskCreatedEventImpl(
-                taskConverter.fromWithCandidates(
-                    (org.activiti.engine.task.Task) internalEvent.getEntity()
-                )
+                taskConverter.fromWithCandidates((org.activiti.engine.task.Task) internalEvent.getEntity())
             )
         );
     }

@@ -25,9 +25,6 @@ public class APITaskCandidateGroupConverter
 
     @Override
     public TaskCandidateGroup from(IdentityLink identityLink) {
-        return new TaskCandidateGroupImpl(
-            identityLink.getGroupId(),
-            identityLink.getTaskId()
-        );
+        return new TaskCandidateGroupImpl(identityLink.getGroupId(), identityLink.getTaskId());
     }
 }

@@ -38,10 +38,7 @@ public class ThrowEventXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected BaseElement convertXMLToElement(
-        XMLStreamReader xtr,
-        BpmnModel model
-    ) throws Exception {
+    protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
         ThrowEvent throwEvent = new ThrowEvent();
         BpmnXMLUtil.addXMLLocation(throwEvent, xtr);
         parseChildElements(getXMLElementName(), throwEvent, model, xtr);
@@ -49,24 +46,13 @@ public class ThrowEventXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalAttributes(
-        BaseElement element,
-        BpmnModel model,
-        XMLStreamWriter xtw
-    ) throws Exception {}
+    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+        throws Exception {}
 
     @Override
-    protected void writeAdditionalChildElements(
-        BaseElement element,
-        BpmnModel model,
-        XMLStreamWriter xtw
-    ) throws Exception {
+    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+        throws Exception {
         ThrowEvent throwEvent = (ThrowEvent) element;
-        writeEventDefinitions(
-            throwEvent,
-            throwEvent.getEventDefinitions(),
-            model,
-            xtw
-        );
+        writeEventDefinitions(throwEvent, throwEvent.getEventDefinitions(), model, xtw);
     }
 }

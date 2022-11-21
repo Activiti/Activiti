@@ -37,25 +37,16 @@ public class ExpressionResolverHelper {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    private static void initializeExpressionResolver(
-        List<CustomFunctionProvider> customFunctionProviders
-    ) {
-        ProcessEngineConfigurationImpl processEngineConfiguration = mock(
-            ProcessEngineConfigurationImpl.class
-        );
+    private static void initializeExpressionResolver(List<CustomFunctionProvider> customFunctionProviders) {
+        ProcessEngineConfigurationImpl processEngineConfiguration = mock(ProcessEngineConfigurationImpl.class);
         Context.setProcessEngineConfiguration(processEngineConfiguration);
         ExpressionManager expressionManager = new ExpressionManager();
         expressionManager.setCustomFunctionProviders(customFunctionProviders);
-        given(processEngineConfiguration.getExpressionManager())
-            .willReturn(expressionManager);
-        given(processEngineConfiguration.getDelegateInterceptor())
-            .willReturn(new DefaultDelegateInterceptor());
+        given(processEngineConfiguration.getExpressionManager()).willReturn(expressionManager);
+        given(processEngineConfiguration.getDelegateInterceptor()).willReturn(new DefaultDelegateInterceptor());
     }
 
-    public static ExpressionResolver initContext(
-        DelegateExecution execution,
-        Extension extensions
-    ) {
+    public static ExpressionResolver initContext(DelegateExecution execution, Extension extensions) {
         return initContext(execution, extensions, new ArrayList<>());
     }
 
@@ -66,24 +57,15 @@ public class ExpressionResolverHelper {
     ) {
         initializeExpressionResolver(customFunctionProviders);
 
-        Map<String, Object> variables = convertToStringObjectMap(
-            extensions.getProperties()
-        );
+        Map<String, Object> variables = convertToStringObjectMap(extensions.getProperties());
 
         setExecutionVariables(execution, variables);
         ExpressionManager expressionManager = new ExpressionManager();
         expressionManager.setCustomFunctionProviders(customFunctionProviders);
-        return new ExpressionResolver(
-            expressionManager,
-            objectMapper,
-            new DefaultDelegateInterceptor()
-        );
+        return new ExpressionResolver(expressionManager, objectMapper, new DefaultDelegateInterceptor());
     }
 
-    public static void setExecutionVariables(
-        DelegateExecution execution,
-        Map<String, Object> variables
-    ) {
+    public static void setExecutionVariables(DelegateExecution execution, Map<String, Object> variables) {
         given(execution.getVariables()).willReturn(variables);
         given(execution.getVariablesLocal()).willReturn(variables);
         for (String key : variables.keySet()) {
@@ -94,20 +76,13 @@ public class ExpressionResolverHelper {
         }
     }
 
-    private static Map<String, Object> convertToStringObjectMap(
-        Map<String, VariableDefinition> sourceMap
-    ) {
+    private static Map<String, Object> convertToStringObjectMap(Map<String, VariableDefinition> sourceMap) {
         Map<String, Object> result = new HashMap<>();
-        sourceMap.forEach((key, value) ->
-            result.put(value.getName(), value.getValue())
-        );
+        sourceMap.forEach((key, value) -> result.put(value.getName(), value.getValue()));
         return result;
     }
 
-    private static VariableInstance getVariableInstance(
-        String key,
-        Object value
-    ) {
+    private static VariableInstance getVariableInstance(String key, Object value) {
         VariableInstance var = new VariableInstance() {
             @Override
             public void setRevision(int revision) {}

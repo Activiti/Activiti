@@ -24,8 +24,7 @@ import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.StartEvent;
 import org.junit.jupiter.api.Test;
 
-public class StartEventNonInterruptingEventSubprocessConverterTest
-    extends AbstractConverterTest {
+public class StartEventNonInterruptingEventSubprocessConverterTest extends AbstractConverterTest {
 
     @Test
     public void convertXMLToModel() throws Exception {

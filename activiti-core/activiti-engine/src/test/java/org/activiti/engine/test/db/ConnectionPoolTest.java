@@ -58,12 +58,9 @@ public class ConnectionPoolTest extends AbstractTestCase {
         assertThat(datasource).isInstanceOf(PooledDataSource.class);
 
         PooledDataSource pooledDataSource = (PooledDataSource) datasource;
-        assertThat(pooledDataSource.getPoolMaximumActiveConnections())
-            .isEqualTo(maxActive);
-        assertThat(pooledDataSource.getPoolMaximumIdleConnections())
-            .isEqualTo(maxIdle);
-        assertThat(pooledDataSource.getPoolMaximumCheckoutTime())
-            .isEqualTo(maxCheckoutTime);
+        assertThat(pooledDataSource.getPoolMaximumActiveConnections()).isEqualTo(maxActive);
+        assertThat(pooledDataSource.getPoolMaximumIdleConnections()).isEqualTo(maxIdle);
+        assertThat(pooledDataSource.getPoolMaximumCheckoutTime()).isEqualTo(maxCheckoutTime);
         assertThat(pooledDataSource.getPoolTimeToWait()).isEqualTo(maxWaitTime);
     }
 }

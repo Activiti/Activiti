@@ -32,30 +32,20 @@ import org.slf4j.LoggerFactory;
  */
 public class AsyncJobAddedNotification implements CommandContextCloseListener {
 
-    private static Logger log = LoggerFactory.getLogger(
-        AsyncJobAddedNotification.class
-    );
+    private static Logger log = LoggerFactory.getLogger(AsyncJobAddedNotification.class);
 
     protected JobEntity job;
     protected AsyncExecutor asyncExecutor;
 
-    public AsyncJobAddedNotification(
-        JobEntity job,
-        AsyncExecutor asyncExecutor
-    ) {
+    public AsyncJobAddedNotification(JobEntity job, AsyncExecutor asyncExecutor) {
         this.job = job;
         this.asyncExecutor = asyncExecutor;
     }
 
     @Override
     public void closed(CommandContext commandContext) {
-        CommandExecutor commandExecutor = commandContext
-            .getProcessEngineConfiguration()
-            .getCommandExecutor();
-        CommandConfig commandConfig = new CommandConfig(
-            false,
-            TransactionPropagation.REQUIRES_NEW
-        );
+        CommandExecutor commandExecutor = commandContext.getProcessEngineConfiguration().getCommandExecutor();
+        CommandConfig commandConfig = new CommandConfig(false, TransactionPropagation.REQUIRES_NEW);
         commandExecutor.execute(
             commandConfig,
             new Command<Void>() {

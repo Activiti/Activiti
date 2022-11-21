@@ -25,8 +25,7 @@ import org.activiti.engine.delegate.Expression;
  *
 
  */
-public class ExampleFieldInjectedExecutionListener
-    implements ExecutionListener {
+public class ExampleFieldInjectedExecutionListener implements ExecutionListener {
 
     private Expression fixedValue;
 
@@ -35,8 +34,7 @@ public class ExampleFieldInjectedExecutionListener
     public void notify(DelegateExecution execution) {
         execution.setVariable(
             "var",
-            fixedValue.getValue(execution).toString() +
-            dynamicValue.getValue(execution).toString()
+            fixedValue.getValue(execution).toString() + dynamicValue.getValue(execution).toString()
         );
     }
 }

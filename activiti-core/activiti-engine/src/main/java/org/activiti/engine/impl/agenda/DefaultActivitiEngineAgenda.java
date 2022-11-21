@@ -29,9 +29,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultActivitiEngineAgenda implements ActivitiEngineAgenda {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        DefaultActivitiEngineAgenda.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(DefaultActivitiEngineAgenda.class);
 
     protected LinkedList<Runnable> operations = new LinkedList<Runnable>();
     protected CommandContext commandContext;
@@ -58,8 +56,7 @@ public class DefaultActivitiEngineAgenda implements ActivitiEngineAgenda {
         operations.add(operation);
 
         if (operation instanceof AbstractOperation) {
-            ExecutionEntity execution =
-                ((AbstractOperation) operation).getExecution();
+            ExecutionEntity execution = ((AbstractOperation) operation).getExecution();
             if (execution != null) {
                 commandContext.addInvolvedExecution(execution);
             }
@@ -74,40 +71,23 @@ public class DefaultActivitiEngineAgenda implements ActivitiEngineAgenda {
     }
 
     @Override
-    public void planContinueProcessSynchronousOperation(
-        ExecutionEntity execution
-    ) {
-        planOperation(
-            new ContinueProcessOperation(commandContext, execution, true, false)
-        );
+    public void planContinueProcessSynchronousOperation(ExecutionEntity execution) {
+        planOperation(new ContinueProcessOperation(commandContext, execution, true, false));
     }
 
     @Override
     public void planContinueProcessInCompensation(ExecutionEntity execution) {
-        planOperation(
-            new ContinueProcessOperation(commandContext, execution, false, true)
-        );
+        planOperation(new ContinueProcessOperation(commandContext, execution, false, true));
     }
 
     @Override
     public void planContinueMultiInstanceOperation(ExecutionEntity execution) {
-        planOperation(
-            new ContinueMultiInstanceOperation(commandContext, execution)
-        );
+        planOperation(new ContinueMultiInstanceOperation(commandContext, execution));
     }
 
     @Override
-    public void planTakeOutgoingSequenceFlowsOperation(
-        ExecutionEntity execution,
-        boolean evaluateConditions
-    ) {
-        planOperation(
-            new TakeOutgoingSequenceFlowsOperation(
-                commandContext,
-                execution,
-                evaluateConditions
-            )
-        );
+    public void planTakeOutgoingSequenceFlowsOperation(ExecutionEntity execution, boolean evaluateConditions) {
+        planOperation(new TakeOutgoingSequenceFlowsOperation(commandContext, execution, evaluateConditions));
     }
 
     @Override

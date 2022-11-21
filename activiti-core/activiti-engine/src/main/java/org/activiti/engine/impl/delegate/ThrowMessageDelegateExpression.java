@@ -26,10 +26,7 @@ public class ThrowMessageDelegateExpression implements ThrowMessageDelegate {
     private final Expression delegateExpression;
     private final List<FieldDeclaration> fieldDeclarations;
 
-    public ThrowMessageDelegateExpression(
-        Expression delegateExpression,
-        List<FieldDeclaration> fieldDeclarations
-    ) {
+    public ThrowMessageDelegateExpression(Expression delegateExpression, List<FieldDeclaration> fieldDeclarations) {
         this.delegateExpression = delegateExpression;
         this.fieldDeclarations = fieldDeclarations;
     }
@@ -42,8 +39,7 @@ public class ThrowMessageDelegateExpression implements ThrowMessageDelegate {
             fieldDeclarations
         );
         if (ThrowMessageDelegate.class.isInstance(delegate)) {
-            return ThrowMessageDelegate.class.cast(delegate)
-                .send(execution, message);
+            return ThrowMessageDelegate.class.cast(delegate).send(execution, message);
         }
 
         return false;

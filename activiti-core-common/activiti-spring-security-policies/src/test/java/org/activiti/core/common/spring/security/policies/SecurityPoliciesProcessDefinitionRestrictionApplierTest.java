@@ -32,9 +32,7 @@ public class SecurityPoliciesProcessDefinitionRestrictionApplierTest {
         Set<String> keys = singleton("procDef");
 
         //when
-        GetProcessDefinitionsPayload filter = restrictionApplier.restrictToKeys(
-            keys
-        );
+        GetProcessDefinitionsPayload filter = restrictionApplier.restrictToKeys(keys);
 
         //then
         assertThat(filter.getProcessDefinitionKeys()).isEqualTo(keys);
@@ -47,7 +45,6 @@ public class SecurityPoliciesProcessDefinitionRestrictionApplierTest {
 
         //then
         assertThat(filter.getProcessDefinitionKeys()).hasSize(1);
-        assertThat(filter.getProcessDefinitionKeys().iterator().next())
-            .startsWith("missing-");
+        assertThat(filter.getProcessDefinitionKeys().iterator().next()).startsWith("missing-");
     }
 }

@@ -44,8 +44,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessExtensionsIT {
 
-    private static final String INITIAL_VARS_PROCESS =
-        "Process_initialVarsProcess";
+    private static final String INITIAL_VARS_PROCESS = "Process_initialVarsProcess";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -86,14 +85,10 @@ public class ProcessExtensionsIT {
         );
 
         assertThat(initialVarsProcess).isNotNull();
-        assertThat(initialVarsProcess.getStatus())
-            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(initialVarsProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
 
         List<VariableInstance> variableInstances = processRuntime.variables(
-            ProcessPayloadBuilder
-                .variables()
-                .withProcessInstance(initialVarsProcess)
-                .build()
+            ProcessPayloadBuilder.variables().withProcessInstance(initialVarsProcess).build()
         );
 
         assertThat(variableInstances).isNotNull();
@@ -109,8 +104,7 @@ public class ProcessExtensionsIT {
     }
 
     @Test
-    public void processInstanceHasValidInitialVariables()
-        throws ParseException {
+    public void processInstanceHasValidInitialVariables() throws ParseException {
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
 
@@ -123,31 +117,22 @@ public class ProcessExtensionsIT {
                 .withVariable("age", 10)
                 .withVariable("name", "bob")
                 .withVariable("subscribe", true)
-                .withVariable(
-                    "birth",
-                    new SimpleDateFormat("yyyy-MM-dd").parse("2009-11-30")
-                )
+                .withVariable("birth", new SimpleDateFormat("yyyy-MM-dd").parse("2009-11-30"))
                 .withBusinessKey("my business key")
                 .build()
         );
 
         assertThat(initialVarsProcess).isNotNull();
-        assertThat(initialVarsProcess.getStatus())
-            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(initialVarsProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
 
         List<VariableInstance> variableInstances = processRuntime.variables(
-            ProcessPayloadBuilder
-                .variables()
-                .withProcessInstance(initialVarsProcess)
-                .build()
+            ProcessPayloadBuilder.variables().withProcessInstance(initialVarsProcess).build()
         );
 
         assertThat(variableInstances).isNotNull();
         assertThat(variableInstances).hasSize(5);
 
-        assertThat(variableInstances)
-            .extracting("name")
-            .contains("extraVar", "name", "age", "birth", "subscribe");
+        assertThat(variableInstances).extracting("name").contains("extraVar", "name", "age", "birth", "subscribe");
 
         // cleanup
         processRuntime.delete(ProcessPayloadBuilder.delete(initialVarsProcess));
@@ -168,11 +153,7 @@ public class ProcessExtensionsIT {
                         .build()
                 );
             })
-            .withMessage(
-                "Can't start process '" +
-                INITIAL_VARS_PROCESS +
-                "' without required variables - age"
-            );
+            .withMessage("Can't start process '" + INITIAL_VARS_PROCESS + "' without required variables - age");
     }
 
     @Test
@@ -193,9 +174,7 @@ public class ProcessExtensionsIT {
                         .build()
                 );
             })
-            .withMessage(
-                "Variables fail type validation: subscribe, name, age"
-            );
+            .withMessage("Variables fail type validation: subscribe, name, age");
     }
 
     @Test
@@ -204,9 +183,7 @@ public class ProcessExtensionsIT {
         ProcessInstance process = processRuntime.start(
             ProcessPayloadBuilder
                 .start()
-                .withProcessDefinitionKey(
-                    "process-b42a166d-605b-4eec-8b96-82b1253666bf"
-                )
+                .withProcessDefinitionKey("process-b42a166d-605b-4eec-8b96-82b1253666bf")
                 .withVariable("Text0xfems", "name_value")
                 .withVariable("Text0rvs0o", "email_value")
                 .withBusinessKey("my business key")
@@ -215,10 +192,7 @@ public class ProcessExtensionsIT {
 
         //when
         List<VariableInstance> variableInstances = processRuntime.variables(
-            ProcessPayloadBuilder
-                .variables()
-                .withProcessInstance(process)
-                .build()
+            ProcessPayloadBuilder.variables().withProcessInstance(process).build()
         );
 
         //then
@@ -226,40 +200,27 @@ public class ProcessExtensionsIT {
             .isNotNull()
             .hasSize(2)
             .extracting(VariableInstance::getName, VariableInstance::getValue)
-            .containsOnly(
-                tuple("name", "name_value"),
-                tuple("email", "email_value")
-            );
+            .containsOnly(tuple("name", "name_value"), tuple("email", "email_value"));
 
         //when
-        List<VariableInstance> taskVariables = retrieveVariablesForFirstTaskOfProcess(
-            process
-        );
+        List<VariableInstance> taskVariables = retrieveVariablesForFirstTaskOfProcess(process);
 
         //then
         assertThat(taskVariables)
             .isNotNull()
             .hasSize(2)
             .extracting(VariableInstance::getName, VariableInstance::getValue)
-            .containsOnly(
-                tuple("nameInTask", "name_value"),
-                tuple("emailInTask", "email_value")
-            );
+            .containsOnly(tuple("nameInTask", "name_value"), tuple("emailInTask", "email_value"));
     }
 
-    private List<VariableInstance> retrieveVariablesForFirstTaskOfProcess(
-        ProcessInstance processInstance
-    ) {
+    private List<VariableInstance> retrieveVariablesForFirstTaskOfProcess(ProcessInstance processInstance) {
         Page<Task> tasks = taskRuntime.tasks(
             Pageable.of(0, 1),
             TaskPayloadBuilder.tasksForProcess(processInstance).build()
         );
         assertThat(tasks.getContent()).hasSize(1);
         return taskRuntime.variables(
-            TaskPayloadBuilder
-                .variables()
-                .withTaskId(tasks.getContent().get(0).getId())
-                .build()
+            TaskPayloadBuilder.variables().withTaskId(tasks.getContent().get(0).getId()).build()
         );
     }
 
@@ -269,9 +230,7 @@ public class ProcessExtensionsIT {
         ProcessInstance createdProcess = processRuntime.create(
             ProcessPayloadBuilder
                 .create()
-                .withProcessDefinitionKey(
-                    "process-b42a166d-605b-4eec-8b96-82b1253666bf"
-                )
+                .withProcessDefinitionKey("process-b42a166d-605b-4eec-8b96-82b1253666bf")
                 .withName("TEST")
                 .build()
         );
@@ -280,9 +239,7 @@ public class ProcessExtensionsIT {
             createdProcess.getId(),
             ProcessPayloadBuilder
                 .start()
-                .withProcessDefinitionKey(
-                    "process-b42a166d-605b-4eec-8b96-82b1253666bf"
-                )
+                .withProcessDefinitionKey("process-b42a166d-605b-4eec-8b96-82b1253666bf")
                 .withVariable("Text0xfems", "name_value")
                 .withVariable("Text0rvs0o", "email_value")
                 .withBusinessKey("my business key")
@@ -291,33 +248,22 @@ public class ProcessExtensionsIT {
 
         //then
         List<VariableInstance> variableInstances = processRuntime.variables(
-            ProcessPayloadBuilder
-                .variables()
-                .withProcessInstance(startedProcess)
-                .build()
+            ProcessPayloadBuilder.variables().withProcessInstance(startedProcess).build()
         );
 
         assertThat(variableInstances)
             .isNotNull()
             .hasSize(2)
             .extracting(VariableInstance::getName, VariableInstance::getValue)
-            .containsOnly(
-                tuple("name", "name_value"),
-                tuple("email", "email_value")
-            );
+            .containsOnly(tuple("name", "name_value"), tuple("email", "email_value"));
 
         //when
-        List<VariableInstance> taskVariables = retrieveVariablesForFirstTaskOfProcess(
-            createdProcess
-        );
+        List<VariableInstance> taskVariables = retrieveVariablesForFirstTaskOfProcess(createdProcess);
 
         //then
         assertThat(taskVariables)
             .isNotNull()
             .extracting(VariableInstance::getName, VariableInstance::getValue)
-            .containsOnly(
-                tuple("nameInTask", "name_value"),
-                tuple("emailInTask", "email_value")
-            );
+            .containsOnly(tuple("nameInTask", "name_value"), tuple("emailInTask", "email_value"));
     }
 }

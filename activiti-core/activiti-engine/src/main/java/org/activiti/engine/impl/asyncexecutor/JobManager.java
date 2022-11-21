@@ -117,15 +117,10 @@ public interface JobManager {
      * making it executable again. Note that a 'retries' parameter needs to be passed,
      * as the job got into the deadletter table because of it failed and retries became 0.
      */
-    JobEntity moveDeadLetterJobToExecutableJob(
-        DeadLetterJobEntity deadLetterJobEntity,
-        int retries
-    );
+    JobEntity moveDeadLetterJobToExecutableJob(DeadLetterJobEntity deadLetterJobEntity, int retries);
 
     /**
      * The ProcessEngineCongiguration instance will be passed when the {@link ProcessEngine} is built.
      */
-    void setProcessEngineConfiguration(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    );
+    void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration);
 }

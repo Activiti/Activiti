@@ -28,9 +28,7 @@ import org.activiti.engine.test.Deployment;
 public class CustomListenerFactoryTest extends ResourceActivitiTestCase {
 
     public CustomListenerFactoryTest() {
-        super(
-            "org/activiti/standalone/parsing/custom.listenerfactory.activiti.cfg.xml"
-        );
+        super("org/activiti/standalone/parsing/custom.listenerfactory.activiti.cfg.xml");
     }
 
     // The custom activity factory will change this value

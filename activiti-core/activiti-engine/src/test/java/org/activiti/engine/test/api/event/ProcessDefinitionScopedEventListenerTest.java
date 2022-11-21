@@ -31,8 +31,7 @@ import org.activiti.engine.test.Deployment;
  *
 
  */
-public class ProcessDefinitionScopedEventListenerTest
-    extends PluggableActivitiTestCase {
+public class ProcessDefinitionScopedEventListenerTest extends PluggableActivitiTestCase {
 
     protected TestActivitiEventListener testListenerAsBean;
     protected Map<Object, Object> oldBeans;
@@ -63,28 +62,20 @@ public class ProcessDefinitionScopedEventListenerTest
 
         // Fetch a reference to the process definition entity to add the listener
         TestActivitiEventListener listener = new TestActivitiEventListener();
-        BpmnModel bpmnModel = repositoryService.getBpmnModel(
-            firstDefinition.getId()
-        );
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(firstDefinition.getId());
         assertThat(bpmnModel).isNotNull();
 
-        ((ActivitiEventSupport) bpmnModel.getEventSupport()).addEventListener(
-                listener
-            );
+        ((ActivitiEventSupport) bpmnModel.getEventSupport()).addEventListener(listener);
 
         // Start a process for the first definition, events should be received
-        ProcessInstance processInstance = runtimeService.startProcessInstanceById(
-            firstDefinition.getId()
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceById(firstDefinition.getId());
         assertThat(processInstance).isNotNull();
 
         assertThat(listener.getEventsReceived().isEmpty()).isFalse();
         listener.clearEventsReceived();
 
         // Start an instance of the other definition
-        ProcessInstance otherInstance = runtimeService.startProcessInstanceById(
-            secondDefinition.getId()
-        );
+        ProcessInstance otherInstance = runtimeService.startProcessInstanceById(secondDefinition.getId());
         assertThat(otherInstance).isNotNull();
         assertThat(listener.getEventsReceived().isEmpty()).isTrue();
     }

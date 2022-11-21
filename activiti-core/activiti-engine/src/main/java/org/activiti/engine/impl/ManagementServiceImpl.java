@@ -61,18 +61,14 @@ import org.activiti.engine.runtime.TimerJobQuery;
 
 
  */
-public class ManagementServiceImpl
-    extends ServiceImpl
-    implements ManagementService {
+public class ManagementServiceImpl extends ServiceImpl implements ManagementService {
 
     public Map<String, Long> getTableCount() {
         return commandExecutor.execute(new GetTableCountCmd());
     }
 
     public String getTableName(Class<?> activitiEntityClass) {
-        return commandExecutor.execute(
-            new GetTableNameCmd(activitiEntityClass)
-        );
+        return commandExecutor.execute(new GetTableNameCmd(activitiEntityClass));
     }
 
     public TableMetaData getTableMetaData(String tableName) {
@@ -105,9 +101,7 @@ public class ManagementServiceImpl
 
     @Override
     public Job moveDeadLetterJobToExecutableJob(String jobId, int retries) {
-        return commandExecutor.execute(
-            new MoveDeadLetterJobToExecutableJobCmd(jobId, retries)
-        );
+        return commandExecutor.execute(new MoveDeadLetterJobToExecutableJobCmd(jobId, retries));
     }
 
     public void deleteJob(String jobId) {
@@ -151,41 +145,27 @@ public class ManagementServiceImpl
     }
 
     public String getJobExceptionStacktrace(String jobId) {
-        return commandExecutor.execute(
-            new GetJobExceptionStacktraceCmd(jobId, JobType.ASYNC)
-        );
+        return commandExecutor.execute(new GetJobExceptionStacktraceCmd(jobId, JobType.ASYNC));
     }
 
     public String getTimerJobExceptionStacktrace(String jobId) {
-        return commandExecutor.execute(
-            new GetJobExceptionStacktraceCmd(jobId, JobType.TIMER)
-        );
+        return commandExecutor.execute(new GetJobExceptionStacktraceCmd(jobId, JobType.TIMER));
     }
 
     public String getSuspendedJobExceptionStacktrace(String jobId) {
-        return commandExecutor.execute(
-            new GetJobExceptionStacktraceCmd(jobId, JobType.SUSPENDED)
-        );
+        return commandExecutor.execute(new GetJobExceptionStacktraceCmd(jobId, JobType.SUSPENDED));
     }
 
     public String getDeadLetterJobExceptionStacktrace(String jobId) {
-        return commandExecutor.execute(
-            new GetJobExceptionStacktraceCmd(jobId, JobType.DEADLETTER)
-        );
+        return commandExecutor.execute(new GetJobExceptionStacktraceCmd(jobId, JobType.DEADLETTER));
     }
 
     public Map<String, String> getProperties() {
         return commandExecutor.execute(new GetPropertiesCmd());
     }
 
-    public String databaseSchemaUpgrade(
-        final Connection connection,
-        final String catalog,
-        final String schema
-    ) {
-        CommandConfig config = commandExecutor
-            .getDefaultConfig()
-            .transactionNotSupported();
+    public String databaseSchemaUpgrade(final Connection connection, final String catalog, final String schema) {
+        CommandConfig config = commandExecutor.getDefaultConfig().transactionNotSupported();
         return commandExecutor.execute(
             config,
             new Command<String>() {
@@ -200,9 +180,7 @@ public class ManagementServiceImpl
                         catalog,
                         schema
                     );
-                    commandContext
-                        .getSessions()
-                        .put(DbSqlSession.class, dbSqlSession);
+                    commandContext.getSessions().put(DbSqlSession.class, dbSqlSession);
                     return dbSqlSession.dbSchemaUpdate();
                 }
             }
@@ -232,30 +210,18 @@ public class ManagementServiceImpl
     ) {
         Class<MapperType> mapperClass = customSqlExecution.getMapperClass();
         return commandExecutor.execute(
-            new ExecuteCustomSqlCmd<MapperType, ResultType>(
-                mapperClass,
-                customSqlExecution
-            )
+            new ExecuteCustomSqlCmd<MapperType, ResultType>(mapperClass, customSqlExecution)
         );
     }
 
     @Override
-    public List<EventLogEntry> getEventLogEntries(
-        Long startLogNr,
-        Long pageSize
-    ) {
-        return commandExecutor.execute(
-            new GetEventLogEntriesCmd(startLogNr, pageSize)
-        );
+    public List<EventLogEntry> getEventLogEntries(Long startLogNr, Long pageSize) {
+        return commandExecutor.execute(new GetEventLogEntriesCmd(startLogNr, pageSize));
     }
 
     @Override
-    public List<EventLogEntry> getEventLogEntriesByProcessInstanceId(
-        String processInstanceId
-    ) {
-        return commandExecutor.execute(
-            new GetEventLogEntriesCmd(processInstanceId)
-        );
+    public List<EventLogEntry> getEventLogEntriesByProcessInstanceId(String processInstanceId) {
+        return commandExecutor.execute(new GetEventLogEntriesCmd(processInstanceId));
     }
 
     @Override

@@ -36,9 +36,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(
-    "classpath:org/activiti/spring/test/junit4/springTypicalUsageTest-context.xml"
-)
+@ContextConfiguration("classpath:org/activiti/spring/test/junit4/springTypicalUsageTest-context.xml")
 public class SpringJunit4Test {
 
     @Autowired
@@ -73,7 +71,6 @@ public class SpringJunit4Test {
         assertThat(activitiSpringRule.getRuntimeService()).isNotNull();
 
         taskService.complete(task.getId());
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
     }
 }

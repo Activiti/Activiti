@@ -37,9 +37,7 @@ public class DefinitionsParser implements BpmnXMLConstants {
 
     @SuppressWarnings("unchecked")
     public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
-        model.setTargetNamespace(
-            xtr.getAttributeValue(null, TARGET_NAMESPACE_ATTRIBUTE)
-        );
+        model.setTargetNamespace(xtr.getAttributeValue(null, TARGET_NAMESPACE_ATTRIBUTE));
         for (int i = 0; i < xtr.getNamespaceCount(); i++) {
             String prefix = xtr.getNamespacePrefix(i);
             if (StringUtils.isNotEmpty(prefix)) {
@@ -55,16 +53,9 @@ public class DefinitionsParser implements BpmnXMLConstants {
                 extensionAttribute.setNamespace(xtr.getAttributeNamespace(i));
             }
             if (StringUtils.isNotEmpty(xtr.getAttributePrefix(i))) {
-                extensionAttribute.setNamespacePrefix(
-                    xtr.getAttributePrefix(i)
-                );
+                extensionAttribute.setNamespacePrefix(xtr.getAttributePrefix(i));
             }
-            if (
-                !BpmnXMLUtil.isBlacklisted(
-                    extensionAttribute,
-                    defaultAttributes
-                )
-            ) {
+            if (!BpmnXMLUtil.isBlacklisted(extensionAttribute, defaultAttributes)) {
                 model.addDefinitionsAttribute(extensionAttribute);
             }
         }

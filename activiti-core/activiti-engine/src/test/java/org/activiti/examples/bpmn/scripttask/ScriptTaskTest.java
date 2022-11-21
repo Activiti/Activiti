@@ -38,22 +38,10 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
         variables.put("echo", "hello");
         variables.put("existingProcessVariableName", "one");
 
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "setScriptResultToProcessVariable",
-            variables
-        );
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("setScriptResultToProcessVariable", variables);
 
-        assertThat(
-            runtimeService.getVariable(
-                pi.getId(),
-                "existingProcessVariableName"
-            )
-        )
-            .isEqualTo("hello");
-        assertThat(
-            runtimeService.getVariable(pi.getId(), "newProcessVariableName")
-        )
-            .isEqualTo(pi.getId());
+        assertThat(runtimeService.getVariable(pi.getId(), "existingProcessVariableName")).isEqualTo("hello");
+        assertThat(runtimeService.getVariable(pi.getId(), "newProcessVariableName")).isEqualTo(pi.getId());
     }
 
     @Deployment
@@ -66,10 +54,7 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
         }
 
         // Check if correct exception is found in the stacktrace
-        verifyExceptionInStacktrace(
-            expectedException,
-            MissingPropertyException.class
-        );
+        verifyExceptionInStacktrace(expectedException, MissingPropertyException.class);
     }
 
     @Deployment
@@ -81,29 +66,20 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
             expectedException = e;
         }
 
-        verifyExceptionInStacktrace(
-            expectedException,
-            IllegalStateException.class
-        );
+        verifyExceptionInStacktrace(expectedException, IllegalStateException.class);
     }
 
     @Deployment
     public void testAutoStoreVariables() {
         // The first script should NOT store anything as 'autoStoreVariables' is set to false
         String id = runtimeService
-            .startProcessInstanceByKey(
-                "testAutoStoreVariables",
-                CollectionUtil.map("a", 20, "b", 22)
-            )
+            .startProcessInstanceByKey("testAutoStoreVariables", CollectionUtil.map("a", 20, "b", 22))
             .getId();
         assertThat(runtimeService.getVariable(id, "sum")).isNull();
 
         // The second script, after the user task will set the variable
-        taskService.complete(
-            taskService.createTaskQuery().singleResult().getId()
-        );
-        assertThat(((Number) runtimeService.getVariable(id, "sum")).intValue())
-            .isEqualTo(42);
+        taskService.complete(taskService.createTaskQuery().singleResult().getId());
+        assertThat(((Number) runtimeService.getVariable(id, "sum")).intValue()).isEqualTo(42);
     }
 
     public void testNoScriptProvided() {
@@ -125,18 +101,8 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
             "testDynamicScript",
             CollectionUtil.map("a", 20, "b", 22)
         );
-        assertThat(
-            (
-                (Number) runtimeService.getVariable(
-                    processInstance.getId(),
-                    "test"
-                )
-            ).intValue()
-        )
-            .isEqualTo(42);
-        taskService.complete(
-            taskService.createTaskQuery().singleResult().getId()
-        );
+        assertThat(((Number) runtimeService.getVariable(processInstance.getId(), "test")).intValue()).isEqualTo(42);
+        taskService.complete(taskService.createTaskQuery().singleResult().getId());
         assertProcessEnded(processInstance.getId());
 
         String processDefinitionId = processInstance.getProcessDefinitionId();
@@ -144,35 +110,16 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
             "script1",
             "var sum = c + d;\nexecution.setVariable('test2', sum);"
         );
-        dynamicBpmnService.saveProcessDefinitionInfo(
-            processDefinitionId,
-            infoNode
-        );
+        dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
 
         processInstance =
-            runtimeService.startProcessInstanceByKey(
-                "testDynamicScript",
-                CollectionUtil.map("c", 10, "d", 12)
-            );
-        assertThat(
-            (
-                (Number) runtimeService.getVariable(
-                    processInstance.getId(),
-                    "test2"
-                )
-            ).intValue()
-        )
-            .isEqualTo(22);
-        taskService.complete(
-            taskService.createTaskQuery().singleResult().getId()
-        );
+            runtimeService.startProcessInstanceByKey("testDynamicScript", CollectionUtil.map("c", 10, "d", 12));
+        assertThat(((Number) runtimeService.getVariable(processInstance.getId(), "test2")).intValue()).isEqualTo(22);
+        taskService.complete(taskService.createTaskQuery().singleResult().getId());
         assertProcessEnded(processInstance.getId());
     }
 
-    protected void verifyExceptionInStacktrace(
-        Exception rootException,
-        Class<?> expectedExceptionClass
-    ) {
+    protected void verifyExceptionInStacktrace(Exception rootException, Class<?> expectedExceptionClass) {
         Throwable expectedException = rootException;
         boolean found = false;
         while (!found && expectedException != null) {
@@ -183,7 +130,6 @@ public class ScriptTaskTest extends PluggableActivitiTestCase {
             }
         }
 
-        assertThat(expectedException.getClass())
-            .isEqualTo(expectedExceptionClass);
+        assertThat(expectedException.getClass()).isEqualTo(expectedExceptionClass);
     }
 }

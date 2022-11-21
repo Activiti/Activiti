@@ -60,9 +60,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testAsyncServiceListeners() {
-        String pid = runtimeService
-            .startProcessInstanceByKey("asyncService")
-            .getProcessInstanceId();
+        String pid = runtimeService.startProcessInstanceByKey("asyncService").getProcessInstanceId();
         assertThat(managementService.createJobQuery().count()).isEqualTo(1);
         // the listener was not yet invoked:
         assertThat(runtimeService.getVariable(pid, "listener")).isNull();
@@ -116,8 +114,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
         assertThat(managementService.createJobQuery().count()).isEqualTo(1);
         Job job = managementService.createJobQuery().singleResult();
 
-        assertThatExceptionOfType(Exception.class)
-            .isThrownBy(() -> managementService.executeJob(job.getId()));
+        assertThatExceptionOfType(Exception.class).isThrownBy(() -> managementService.executeJob(job.getId()));
 
         // the service failed: the execution is still sitting in the service task:
         Execution execution = null;
@@ -127,15 +124,11 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
             }
         }
         assertThat(execution).isNotNull();
-        assertThat(
-            runtimeService.getActiveActivityIds(execution.getId()).get(0)
-        )
-            .isEqualTo("service");
+        assertThat(runtimeService.getActiveActivityIds(execution.getId()).get(0)).isEqualTo("service");
 
         // there is still a single job because the timer was created in the same
         // transaction as the service was executed (which rolled back)
-        assertThat(managementService.createTimerJobQuery().count())
-            .isEqualTo(1);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
 
         runtimeService.deleteProcessInstance(execution.getId(), "dead");
     }
@@ -153,29 +146,20 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
 
         // the service failed: the execution is still sitting in the service
         // task:
-        Execution execution = runtimeService
-            .createExecutionQuery()
-            .singleResult();
+        Execution execution = runtimeService.createExecutionQuery().singleResult();
         assertThat(execution).isNotNull();
-        assertThat(
-            runtimeService.getActiveActivityIds(execution.getId()).get(0)
-        )
-            .isEqualTo("service");
+        assertThat(runtimeService.getActiveActivityIds(execution.getId()).get(0)).isEqualTo("service");
 
         // there are tow jobs, the message and the timer (the message will not
         // be retried anymore, max retires is reached.)
         assertThat(managementService.createJobQuery().count()).isEqualTo(2);
 
         // now the timer triggers:
-        Context
-            .getProcessEngineConfiguration()
-            .getClock()
-            .setCurrentTime(new Date(System.currentTimeMillis() + 10000));
+        Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(System.currentTimeMillis() + 10000));
         waitForJobExecutorToProcessAllJobs(5000L, 100L);
 
         // and we are done:
-        assertThat(runtimeService.createExecutionQuery().singleResult())
-            .isNull();
+        assertThat(runtimeService.createExecutionQuery().singleResult()).isNull();
         // and there are no more jobs left:
         assertThat(managementService.createJobQuery().count()).isEqualTo(0);
     }
@@ -240,16 +224,11 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     @Deployment
     public void testAsyncEndEvent() {
         // start process
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "asyncEndEvent"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncEndEvent");
         // now there should be one job in the database:
         assertThat(managementService.createJobQuery().count()).isEqualTo(1);
 
-        Object value = runtimeService.getVariable(
-            processInstance.getId(),
-            "variableSetInExecutionListener"
-        );
+        Object value = runtimeService.getVariable(processInstance.getId(), "variableSetInExecutionListener");
         assertThat(value).isNull();
 
         waitForJobExecutorToProcessAllJobs(2000L, 200L);
@@ -259,11 +238,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
 
         assertProcessEnded(processInstance.getId());
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.AUDIT)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             List<HistoricVariableInstance> variables = historyService
                 .createHistoricVariableInstanceQuery()
                 .processInstanceId(processInstance.getId())
@@ -272,11 +247,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
 
             Object historyValue = null;
             for (HistoricVariableInstance variable : variables) {
-                if (
-                    "variableSetInExecutionListener".equals(
-                            variable.getVariableName()
-                        )
-                ) {
+                if ("variableSetInExecutionListener".equals(variable.getVariableName())) {
                     historyValue = variable.getValue();
                 }
             }
@@ -287,9 +258,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     @Deployment
     public void testAsyncScript() {
         // start process
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "asyncScript"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncScript");
         // now there should be one job in the database:
         assertThat(managementService.createJobQuery().count()).isEqualTo(1);
         // the script was not invoked:
@@ -311,8 +280,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
         assertThat(managementService.createJobQuery().count()).isEqualTo(0);
 
         // the script was invoked
-        assertThat(runtimeService.getVariable(eid, "invoked"))
-            .isEqualTo("true");
+        assertThat(runtimeService.getVariable(eid, "invoked")).isEqualTo("true");
 
         runtimeService.trigger(eid);
     }
@@ -332,8 +300,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
         waitForJobExecutorToProcessAllJobs(20000L, 250L);
 
         assertThat(managementService.createJobQuery().count()).isEqualTo(0);
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
     }
 
     @Deployment(
@@ -344,9 +311,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     )
     public void testBasicAsyncCallActivity() {
         runtimeService.startProcessInstanceByKey("myProcess");
-        assertThat(managementService.createJobQuery().count())
-            .as("There should be one job available.")
-            .isEqualTo(1);
+        assertThat(managementService.createJobQuery().count()).as("There should be one job available.").isEqualTo(1);
         waitForJobExecutorToProcessAllJobs(5000L, 250L);
         assertThat(managementService.createJobQuery().count()).isEqualTo(0);
     }
@@ -354,9 +319,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     @Deployment
     public void testAsyncUserTask() {
         // start process
-        String pid = runtimeService
-            .startProcessInstanceByKey("asyncUserTask")
-            .getId();
+        String pid = runtimeService.startProcessInstanceByKey("asyncUserTask").getId();
         // now there should be one job in the database:
         assertThat(managementService.createJobQuery().count()).isEqualTo(1);
         // the listener was not yet invoked:
@@ -384,76 +347,32 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     @Deployment
     public void testMultiInstanceAsyncTask() {
         // start process
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "asyncTask"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncTask");
 
         // now there should be one job in the database:
-        assertThat(
-            managementService
-                .createJobQuery()
-                .processInstanceId(processInstance.getId())
-                .count()
-        )
-            .isEqualTo(3);
+        assertThat(managementService.createJobQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(3);
 
         // execute first of 3 parallel multi instance tasks
         managementService.executeJob(
-            managementService
-                .createJobQuery()
-                .processInstanceId(processInstance.getId())
-                .list()
-                .get(0)
-                .getId()
+            managementService.createJobQuery().processInstanceId(processInstance.getId()).list().get(0).getId()
         );
-        assertThat(
-            managementService
-                .createJobQuery()
-                .processInstanceId(processInstance.getId())
-                .count()
-        )
-            .isEqualTo(2);
+        assertThat(managementService.createJobQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(2);
 
         // execute second of 3 parallel multi instance tasks
         managementService.executeJob(
-            managementService
-                .createJobQuery()
-                .processInstanceId(processInstance.getId())
-                .list()
-                .get(0)
-                .getId()
+            managementService.createJobQuery().processInstanceId(processInstance.getId()).list().get(0).getId()
         );
-        assertThat(
-            managementService
-                .createJobQuery()
-                .processInstanceId(processInstance.getId())
-                .count()
-        )
-            .isEqualTo(1);
+        assertThat(managementService.createJobQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(1);
 
         // execute third of 3 parallel multi instance tasks
         managementService.executeJob(
-            managementService
-                .createJobQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult()
-                .getId()
+            managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult().getId()
         );
 
         // the job is done
-        assertThat(
-            managementService
-                .createJobQuery()
-                .processInstanceId(processInstance.getId())
-                .count()
-        )
-            .isEqualTo(0);
+        assertThat(managementService.createJobQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             List<HistoricActivityInstance> historicActivities = historyService
                 .createHistoricActivityInstanceQuery()
                 .processInstanceId(processInstance.getId())
@@ -465,19 +384,12 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
             for (HistoricActivityInstance historicActivityInstance : historicActivities) {
                 if ("task".equals(historicActivityInstance.getActivityId())) {
                     taskCount++;
-                } else if (
-                    "theStart".equals(historicActivityInstance.getActivityId())
-                ) {
+                } else if ("theStart".equals(historicActivityInstance.getActivityId())) {
                     startCount++;
-                } else if (
-                    "theEnd".equals(historicActivityInstance.getActivityId())
-                ) {
+                } else if ("theEnd".equals(historicActivityInstance.getActivityId())) {
                     endCount++;
                 } else {
-                    fail(
-                        "Unexpected activity found " +
-                        historicActivityInstance.getActivityId()
-                    );
+                    fail("Unexpected activity found " + historicActivityInstance.getActivityId());
                 }
             }
 
@@ -490,15 +402,9 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     @Deployment
     public void testMultiInstanceTask() {
         // start process
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "asyncTask"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncTask");
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             List<HistoricActivityInstance> historicActivities = historyService
                 .createHistoricActivityInstanceQuery()
                 .processInstanceId(processInstance.getId())
@@ -510,19 +416,12 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
             for (HistoricActivityInstance historicActivityInstance : historicActivities) {
                 if ("task".equals(historicActivityInstance.getActivityId())) {
                     taskCount++;
-                } else if (
-                    "theStart".equals(historicActivityInstance.getActivityId())
-                ) {
+                } else if ("theStart".equals(historicActivityInstance.getActivityId())) {
                     startCount++;
-                } else if (
-                    "theEnd".equals(historicActivityInstance.getActivityId())
-                ) {
+                } else if ("theEnd".equals(historicActivityInstance.getActivityId())) {
                     endCount++;
                 } else {
-                    fail(
-                        "Unexpected activity found " +
-                        historicActivityInstance.getActivityId()
-                    );
+                    fail("Unexpected activity found " + historicActivityInstance.getActivityId());
                 }
             }
 
@@ -535,74 +434,32 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     @Deployment
     public void testMultiInstanceAsyncSequentialTask() {
         // start process
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "asyncTask"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncTask");
 
         // now there should be one job in the database:
-        assertThat(
-            managementService
-                .createJobQuery()
-                .processInstanceId(processInstance.getId())
-                .count()
-        )
-            .isEqualTo(1);
+        assertThat(managementService.createJobQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(1);
 
         // execute first of 3 sequential multi instance tasks
         managementService.executeJob(
-            managementService
-                .createJobQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult()
-                .getId()
+            managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult().getId()
         );
-        assertThat(
-            managementService
-                .createJobQuery()
-                .processInstanceId(processInstance.getId())
-                .count()
-        )
-            .isEqualTo(1);
+        assertThat(managementService.createJobQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(1);
 
         // execute second of 3 sequential multi instance tasks
         managementService.executeJob(
-            managementService
-                .createJobQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult()
-                .getId()
+            managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult().getId()
         );
-        assertThat(
-            managementService
-                .createJobQuery()
-                .processInstanceId(processInstance.getId())
-                .count()
-        )
-            .isEqualTo(1);
+        assertThat(managementService.createJobQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(1);
 
         // execute third of 3 sequential multi instance tasks
         managementService.executeJob(
-            managementService
-                .createJobQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult()
-                .getId()
+            managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult().getId()
         );
 
         // the job is done
-        assertThat(
-            managementService
-                .createJobQuery()
-                .processInstanceId(processInstance.getId())
-                .count()
-        )
-            .isEqualTo(0);
+        assertThat(managementService.createJobQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             List<HistoricActivityInstance> historicActivities = historyService
                 .createHistoricActivityInstanceQuery()
                 .processInstanceId(processInstance.getId())
@@ -614,19 +471,12 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
             for (HistoricActivityInstance historicActivityInstance : historicActivities) {
                 if ("task".equals(historicActivityInstance.getActivityId())) {
                     taskCount++;
-                } else if (
-                    "theStart".equals(historicActivityInstance.getActivityId())
-                ) {
+                } else if ("theStart".equals(historicActivityInstance.getActivityId())) {
                     startCount++;
-                } else if (
-                    "theEnd".equals(historicActivityInstance.getActivityId())
-                ) {
+                } else if ("theEnd".equals(historicActivityInstance.getActivityId())) {
                     endCount++;
                 } else {
-                    fail(
-                        "Unexpected activity found " +
-                        historicActivityInstance.getActivityId()
-                    );
+                    fail("Unexpected activity found " + historicActivityInstance.getActivityId());
                 }
             }
 
@@ -639,15 +489,9 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     @Deployment
     public void testMultiInstanceSequentialTask() {
         // start process
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "asyncTask"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncTask");
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             List<HistoricActivityInstance> historicActivities = historyService
                 .createHistoricActivityInstanceQuery()
                 .processInstanceId(processInstance.getId())
@@ -659,19 +503,12 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
             for (HistoricActivityInstance historicActivityInstance : historicActivities) {
                 if ("task".equals(historicActivityInstance.getActivityId())) {
                     taskCount++;
-                } else if (
-                    "theStart".equals(historicActivityInstance.getActivityId())
-                ) {
+                } else if ("theStart".equals(historicActivityInstance.getActivityId())) {
                     startCount++;
-                } else if (
-                    "theEnd".equals(historicActivityInstance.getActivityId())
-                ) {
+                } else if ("theEnd".equals(historicActivityInstance.getActivityId())) {
                     endCount++;
                 } else {
-                    fail(
-                        "Unexpected activity found " +
-                        historicActivityInstance.getActivityId()
-                    );
+                    fail("Unexpected activity found " + historicActivityInstance.getActivityId());
                 }
             }
 
@@ -681,8 +518,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
         }
     }
 
-    private void waitForAllExecutionsToComplete(long timeout, long sleep)
-        throws InterruptedException {
+    private void waitForAllExecutionsToComplete(long timeout, long sleep) throws InterruptedException {
         long counter = 0;
 
         while (runtimeService.createExecutionQuery().count() > 0) {
@@ -691,11 +527,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
 
             // timeout
             assertThat(counter)
-                .as(
-                    "Should have finished all process executions within " +
-                    timeout +
-                    " ms"
-                )
+                .as("Should have finished all process executions within " + timeout + " ms")
                 .isLessThan(timeout);
         }
     }

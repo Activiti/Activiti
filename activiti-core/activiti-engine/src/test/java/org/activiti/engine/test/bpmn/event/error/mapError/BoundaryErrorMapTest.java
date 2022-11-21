@@ -35,15 +35,9 @@ public class BoundaryErrorMapTest extends PluggableActivitiTestCase {
     public void testClassDelegateSingleDirectMap() {
         FlagDelegate.reset();
         Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put(
-            "exceptionClass",
-            BoundaryErrorParentException.class.getName()
-        );
+        vars.put("exceptionClass", BoundaryErrorParentException.class.getName());
 
-        runtimeService.startProcessInstanceByKey(
-            "processWithSingleExceptionMap",
-            vars
-        );
+        runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
         assertThat(FlagDelegate.isVisited()).isTrue();
     }
 
@@ -60,12 +54,7 @@ public class BoundaryErrorMapTest extends PluggableActivitiTestCase {
 
         assertThatExceptionOfType(Exception.class)
             .as("exception expected, as there is no matching exception map")
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByKey(
-                    "processWithSingleExceptionMap",
-                    vars
-                )
-            );
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars));
         assertThat(FlagDelegate.isVisited()).isFalse();
     }
 
@@ -76,10 +65,7 @@ public class BoundaryErrorMapTest extends PluggableActivitiTestCase {
         vars.put("exceptionClass", BoundaryEventChildException.class.getName());
         FlagDelegate.reset();
 
-        runtimeService.startProcessInstanceByKey(
-            "processWithSingleExceptionMap",
-            vars
-        );
+        runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
         assertThat(FlagDelegate.isVisited()).isTrue();
     }
 
@@ -90,10 +76,7 @@ public class BoundaryErrorMapTest extends PluggableActivitiTestCase {
         vars.put("exceptionClass", Exception.class.getName());
         FlagDelegate.reset();
 
-        runtimeService.startProcessInstanceByKey(
-            "processWithSingleExceptionMap",
-            vars
-        );
+        runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
         assertThat(FlagDelegate.isVisited()).isTrue();
     }
 
@@ -101,15 +84,9 @@ public class BoundaryErrorMapTest extends PluggableActivitiTestCase {
     public void testSeqMultInstanceSingleDirectMap() {
         FlagDelegate.reset();
         Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put(
-            "exceptionClass",
-            BoundaryErrorParentException.class.getName()
-        );
+        vars.put("exceptionClass", BoundaryErrorParentException.class.getName());
 
-        runtimeService.startProcessInstanceByKey(
-            "processWithSingleExceptionMap",
-            vars
-        );
+        runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
         assertThat(FlagDelegate.isVisited()).isTrue();
     }
 
@@ -117,15 +94,9 @@ public class BoundaryErrorMapTest extends PluggableActivitiTestCase {
     public void testSubProcessSingleDirectMap() {
         FlagDelegate.reset();
         Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put(
-            "exceptionClass",
-            BoundaryErrorParentException.class.getName()
-        );
+        vars.put("exceptionClass", BoundaryErrorParentException.class.getName());
 
-        runtimeService.startProcessInstanceByKey(
-            "subprocssWithSingleExceptionMap",
-            vars
-        );
+        runtimeService.startProcessInstanceByKey("subprocssWithSingleExceptionMap", vars);
         assertThat(FlagDelegate.isVisited()).isTrue();
     }
 
@@ -138,15 +109,9 @@ public class BoundaryErrorMapTest extends PluggableActivitiTestCase {
     public void testCallProcessSingleDirectMap() {
         FlagDelegate.reset();
         Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put(
-            "exceptionClass",
-            BoundaryErrorParentException.class.getName()
-        );
+        vars.put("exceptionClass", BoundaryErrorParentException.class.getName());
 
-        runtimeService.startProcessInstanceByKey(
-            "callProcssWithSingleExceptionMap",
-            vars
-        );
+        runtimeService.startProcessInstanceByKey("callProcssWithSingleExceptionMap", vars);
         assertThat(FlagDelegate.isVisited()).isTrue();
     }
 }

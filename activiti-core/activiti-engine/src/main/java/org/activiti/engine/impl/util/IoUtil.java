@@ -35,10 +35,7 @@ import org.activiti.engine.ActivitiException;
  */
 public class IoUtil {
 
-    public static byte[] readInputStream(
-        InputStream inputStream,
-        String inputStreamName
-    ) {
+    public static byte[] readInputStream(InputStream inputStream, String inputStreamName) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         byte[] buffer = new byte[16 * 1024];
         try {
@@ -48,10 +45,7 @@ public class IoUtil {
                 bytesRead = inputStream.read(buffer);
             }
         } catch (Exception e) {
-            throw new ActivitiException(
-                "couldn't read input stream " + inputStreamName,
-                e
-            );
+            throw new ActivitiException("couldn't read input stream " + inputStreamName, e);
         }
         return outputStream.toByteArray();
     }
@@ -60,13 +54,10 @@ public class IoUtil {
         byte[] buffer = new byte[(int) getFile(filePath).length()];
         BufferedInputStream inputStream = null;
         try {
-            inputStream =
-                new BufferedInputStream(new FileInputStream(getFile(filePath)));
+            inputStream = new BufferedInputStream(new FileInputStream(getFile(filePath)));
             inputStream.read(buffer);
         } catch (Exception e) {
-            throw new ActivitiException(
-                "Couldn't read file " + filePath + ": " + e.getMessage()
-            );
+            throw new ActivitiException("Couldn't read file " + filePath + ": " + e.getMessage());
         } finally {
             IoUtil.closeSilently(inputStream);
         }
@@ -78,19 +69,14 @@ public class IoUtil {
         try {
             return new File(url.toURI());
         } catch (Exception e) {
-            throw new ActivitiException(
-                "Couldn't get file " + filePath + ": " + e.getMessage()
-            );
+            throw new ActivitiException("Couldn't get file " + filePath + ": " + e.getMessage());
         }
     }
 
     public static void writeStringToFile(String content, String filePath) {
         BufferedOutputStream outputStream = null;
         try {
-            outputStream =
-                new BufferedOutputStream(
-                    new FileOutputStream(getFile(filePath))
-                );
+            outputStream = new BufferedOutputStream(new FileOutputStream(getFile(filePath)));
             outputStream.write(content.getBytes());
             outputStream.flush();
         } catch (Exception e) {

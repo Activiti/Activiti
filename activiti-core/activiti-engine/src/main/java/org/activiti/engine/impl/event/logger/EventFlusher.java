@@ -27,7 +27,5 @@ public interface EventFlusher extends CommandContextCloseListener {
 
     void setEventHandlers(List<EventLoggerEventHandler> eventHandlers);
 
-    void addEventHandler(
-        EventLoggerEventHandler databaseEventLoggerEventHandler
-    );
+    void addEventHandler(EventLoggerEventHandler databaseEventLoggerEventHandler);
 }

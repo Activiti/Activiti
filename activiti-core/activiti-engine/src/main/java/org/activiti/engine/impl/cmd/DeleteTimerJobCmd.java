@@ -35,9 +35,7 @@ import org.slf4j.LoggerFactory;
 
 public class DeleteTimerJobCmd implements Command<Object>, Serializable {
 
-    private static final Logger log = LoggerFactory.getLogger(
-        DeleteTimerJobCmd.class
-    );
+    private static final Logger log = LoggerFactory.getLogger(DeleteTimerJobCmd.class);
     private static final long serialVersionUID = 1L;
 
     protected String timerJobId;
@@ -56,21 +54,11 @@ public class DeleteTimerJobCmd implements Command<Object>, Serializable {
     }
 
     protected void sendCancelEvent(TimerJobEntity jobToDelete) {
-        if (
+        if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
             Context
                 .getProcessEngineConfiguration()
                 .getEventDispatcher()
-                .isEnabled()
-        ) {
-            Context
-                .getProcessEngineConfiguration()
-                .getEventDispatcher()
-                .dispatchEvent(
-                    ActivitiEventBuilder.createEntityEvent(
-                        ActivitiEventType.JOB_CANCELED,
-                        jobToDelete
-                    )
-                );
+                .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, jobToDelete));
         }
     }
 
@@ -82,23 +70,16 @@ public class DeleteTimerJobCmd implements Command<Object>, Serializable {
             log.debug("Deleting job {}", timerJobId);
         }
 
-        TimerJobEntity job = commandContext
-            .getTimerJobEntityManager()
-            .findById(timerJobId);
+        TimerJobEntity job = commandContext.getTimerJobEntityManager().findById(timerJobId);
         if (job == null) {
-            throw new ActivitiObjectNotFoundException(
-                "No timer job found with id '" + timerJobId + "'",
-                Job.class
-            );
+            throw new ActivitiObjectNotFoundException("No timer job found with id '" + timerJobId + "'", Job.class);
         }
 
         // We need to check if the job was locked, ie acquired by the job acquisition thread
         // This happens if the job was already acquired, but not yet executed.
         // In that case, we can't allow to delete the job.
         if (job.getLockOwner() != null) {
-            throw new ActivitiException(
-                "Cannot delete timer job when the job is being executed. Try again later."
-            );
+            throw new ActivitiException("Cannot delete timer job when the job is being executed. Try again later.");
         }
         return job;
     }

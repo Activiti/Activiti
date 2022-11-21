@@ -50,34 +50,20 @@ public class JsonTest extends PluggableActivitiTestCase {
         ObjectNode varNode = objectMapper.createObjectNode();
         varNode.put("var", "myValue");
         vars.put(MY_JSON_OBJ, varNode);
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testJsonAvailableProcess",
-            vars
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testJsonAvailableProcess", vars);
 
         // Check JSON has been parsed as expected
-        ObjectNode value = (ObjectNode) runtimeService.getVariable(
-            processInstance.getId(),
-            MY_JSON_OBJ
-        );
+        ObjectNode value = (ObjectNode) runtimeService.getVariable(processInstance.getId(), MY_JSON_OBJ);
         assertThat(value).isNotNull();
         assertThat(value.get("var").asText()).isEqualTo("myValue");
 
         ObjectNode var2Node = objectMapper.createObjectNode();
         var2Node.put("var", "myValue");
         var2Node.put("var2", "myOtherValue");
-        runtimeService.setVariable(
-            processInstance.getId(),
-            MY_JSON_OBJ,
-            var2Node
-        );
+        runtimeService.setVariable(processInstance.getId(), MY_JSON_OBJ, var2Node);
 
         // Check JSON has been updated as expected
-        value =
-            (ObjectNode) runtimeService.getVariable(
-                processInstance.getId(),
-                MY_JSON_OBJ
-            );
+        value = (ObjectNode) runtimeService.getVariable(processInstance.getId(), MY_JSON_OBJ);
         assertThat(value).isNotNull();
         assertThat(value.get("var").asText()).isEqualTo("myValue");
         assertThat(value.get("var2").asText()).isEqualTo("myOtherValue");
@@ -93,34 +79,21 @@ public class JsonTest extends PluggableActivitiTestCase {
         vars.put(MY_JSON_OBJ, var3Node);
         vars.put(BIG_JSON_OBJ, createBigJsonObject());
         taskService.complete(task.getId(), vars);
-        value =
-            (ObjectNode) runtimeService.getVariable(
-                processInstance.getId(),
-                MY_JSON_OBJ
-            );
+        value = (ObjectNode) runtimeService.getVariable(processInstance.getId(), MY_JSON_OBJ);
         assertThat(value).isNotNull();
         assertThat(value.get("var").asText()).isEqualTo("myValue");
         assertThat(value.get("var2").asText()).isEqualTo("myOtherValue");
         assertThat(value.get("var3").asText()).isEqualTo("myThirdValue");
 
-        value =
-            (ObjectNode) runtimeService.getVariable(
-                processInstance.getId(),
-                BIG_JSON_OBJ
-            );
+        value = (ObjectNode) runtimeService.getVariable(processInstance.getId(), BIG_JSON_OBJ);
         assertThat(value).isNotNull();
-        assertThat(value.toString())
-            .isEqualTo(createBigJsonObject().toString());
+        assertThat(value.toString()).isEqualTo(createBigJsonObject().toString());
 
         task = taskService.createTaskQuery().active().singleResult();
         assertThat(task).isNotNull();
         assertThat(task.getTaskDefinitionKey()).isEqualTo("userTaskSuccess");
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.AUDIT)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             List<HistoricVariableInstance> historicVariableInstances = historyService
                 .createHistoricVariableInstanceQuery()
                 .processInstanceId(processInstance.getProcessInstanceId())
@@ -129,15 +102,12 @@ public class JsonTest extends PluggableActivitiTestCase {
                 .list();
             assertThat(historicVariableInstances).hasSize(2);
 
-            assertThat(historicVariableInstances.get(0).getVariableName())
-                .isEqualTo(BIG_JSON_OBJ);
+            assertThat(historicVariableInstances.get(0).getVariableName()).isEqualTo(BIG_JSON_OBJ);
             value = (ObjectNode) historicVariableInstances.get(0).getValue();
             assertThat(value).isNotNull();
-            assertThat(value.toString())
-                .isEqualTo(createBigJsonObject().toString());
+            assertThat(value.toString()).isEqualTo(createBigJsonObject().toString());
 
-            assertThat(historicVariableInstances.get(1).getVariableName())
-                .isEqualTo(MY_JSON_OBJ);
+            assertThat(historicVariableInstances.get(1).getVariableName()).isEqualTo(MY_JSON_OBJ);
             value = (ObjectNode) historicVariableInstances.get(1).getValue();
             assertThat(value).isNotNull();
             assertThat(value.get("var").asText()).isEqualTo("myValue");
@@ -147,17 +117,11 @@ public class JsonTest extends PluggableActivitiTestCase {
 
         // It should be possible do remove a json variable
         runtimeService.removeVariable(processInstance.getId(), MY_JSON_OBJ);
-        assertThat(
-            runtimeService.getVariable(processInstance.getId(), MY_JSON_OBJ)
-        )
-            .isNull();
+        assertThat(runtimeService.getVariable(processInstance.getId(), MY_JSON_OBJ)).isNull();
 
         // It should be possible do remove a longJson variable
         runtimeService.removeVariable(processInstance.getId(), BIG_JSON_OBJ);
-        assertThat(
-            runtimeService.getVariable(processInstance.getId(), BIG_JSON_OBJ)
-        )
-            .isNull();
+        assertThat(runtimeService.getVariable(processInstance.getId(), BIG_JSON_OBJ)).isNull();
     }
 
     @Deployment
@@ -167,16 +131,10 @@ public class JsonTest extends PluggableActivitiTestCase {
         ObjectNode varNode = objectMapper.createObjectNode();
         varNode.put("var", "myValue");
         vars.put("myJsonObj", varNode);
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testJsonAvailableProcess",
-            vars
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testJsonAvailableProcess", vars);
 
         // Check JSON has been parsed as expected
-        ObjectNode value = (ObjectNode) runtimeService.getVariable(
-            processInstance.getId(),
-            "myJsonObj"
-        );
+        ObjectNode value = (ObjectNode) runtimeService.getVariable(processInstance.getId(), "myJsonObj");
         assertThat(value).isNotNull();
         assertThat(value.get("var").asText()).isEqualTo("myValue");
 
@@ -190,11 +148,7 @@ public class JsonTest extends PluggableActivitiTestCase {
         vars.put("myJsonObj", var3Node);
         taskService.complete(task.getId(), vars);
 
-        value =
-            (ObjectNode) runtimeService.getVariable(
-                processInstance.getId(),
-                "myJsonObj"
-            );
+        value = (ObjectNode) runtimeService.getVariable(processInstance.getId(), "myJsonObj");
         assertThat(value).isNotNull();
         assertThat(value.get("var").asText()).isEqualTo("myValue");
         assertThat(value.get("var2").asText()).isEqualTo("myOtherValue");
@@ -214,16 +168,10 @@ public class JsonTest extends PluggableActivitiTestCase {
         varNode.put("var", "myValue");
         varArray.add(varNode);
         vars.put("myJsonArr", varArray);
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testJsonAvailableProcess",
-            vars
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testJsonAvailableProcess", vars);
 
         // Check JSON has been parsed as expected
-        ArrayNode value = (ArrayNode) runtimeService.getVariable(
-            processInstance.getId(),
-            "myJsonArr"
-        );
+        ArrayNode value = (ArrayNode) runtimeService.getVariable(processInstance.getId(), "myJsonArr");
         assertThat(value).isNotNull();
         assertThat(value.get(0).get("var").asText()).isEqualTo("myValue");
 
@@ -234,18 +182,10 @@ public class JsonTest extends PluggableActivitiTestCase {
         varNode = objectMapper.createObjectNode();
         varNode.put("var", "myOtherValue");
         varArray2.add(varNode);
-        runtimeService.setVariable(
-            processInstance.getId(),
-            "myJsonArr",
-            varArray2
-        );
+        runtimeService.setVariable(processInstance.getId(), "myJsonArr", varArray2);
 
         // Check JSON has been updated as expected
-        value =
-            (ArrayNode) runtimeService.getVariable(
-                processInstance.getId(),
-                "myJsonArr"
-            );
+        value = (ArrayNode) runtimeService.getVariable(processInstance.getId(), "myJsonArr");
         assertThat(value).isNotNull();
         assertThat(value.get(0).get("var").asText()).isEqualTo("myValue");
         assertThat(value.get(1).get("var").asText()).isEqualTo("myOtherValue");
@@ -265,11 +205,7 @@ public class JsonTest extends PluggableActivitiTestCase {
         vars = new HashMap<String, Object>();
         vars.put("myJsonArr", varArray3);
         taskService.complete(task.getId(), vars);
-        value =
-            (ArrayNode) runtimeService.getVariable(
-                processInstance.getId(),
-                "myJsonArr"
-            );
+        value = (ArrayNode) runtimeService.getVariable(processInstance.getId(), "myJsonArr");
         assertThat(value).isNotNull();
         assertThat(value.get(0).get("var").asText()).isEqualTo("myValue");
         assertThat(value.get(1).get("var").asText()).isEqualTo("myOtherValue");
@@ -279,11 +215,7 @@ public class JsonTest extends PluggableActivitiTestCase {
         assertThat(task).isNotNull();
         assertThat(task.getTaskDefinitionKey()).isEqualTo("userTaskSuccess");
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.AUDIT)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             HistoricVariableInstance historicVariableInstance = historyService
                 .createHistoricVariableInstanceQuery()
                 .processInstanceId(processInstance.getProcessInstanceId())
@@ -291,10 +223,8 @@ public class JsonTest extends PluggableActivitiTestCase {
             value = (ArrayNode) historicVariableInstance.getValue();
             assertThat(value).isNotNull();
             assertThat(value.get(0).get("var").asText()).isEqualTo("myValue");
-            assertThat(value.get(1).get("var").asText())
-                .isEqualTo("myOtherValue");
-            assertThat(value.get(2).get("var").asText())
-                .isEqualTo("myThirdValue");
+            assertThat(value.get(1).get("var").asText()).isEqualTo("myOtherValue");
+            assertThat(value.get(2).get("var").asText()).isEqualTo("myThirdValue");
         }
     }
 

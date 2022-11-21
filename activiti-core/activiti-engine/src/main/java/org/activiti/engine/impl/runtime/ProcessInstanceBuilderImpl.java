@@ -43,16 +43,12 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
         this.runtimeService = runtimeService;
     }
 
-    public ProcessInstanceBuilder processDefinitionId(
-        String processDefinitionId
-    ) {
+    public ProcessInstanceBuilder processDefinitionId(String processDefinitionId) {
         this.processDefinitionId = processDefinitionId;
         return this;
     }
 
-    public ProcessInstanceBuilder processDefinitionKey(
-        String processDefinitionKey
-    ) {
+    public ProcessInstanceBuilder processDefinitionKey(String processDefinitionKey) {
         this.processDefinitionKey = processDefinitionKey;
         return this;
     }
@@ -97,27 +93,19 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
         return this;
     }
 
-    public ProcessInstanceBuilder transientVariables(
-        Map<String, Object> transientVariables
-    ) {
+    public ProcessInstanceBuilder transientVariables(Map<String, Object> transientVariables) {
         if (this.transientVariables == null) {
             this.transientVariables = new HashMap<String, Object>();
         }
         if (transientVariables != null) {
             for (String variableName : transientVariables.keySet()) {
-                this.transientVariables.put(
-                        variableName,
-                        transientVariables.get(variableName)
-                    );
+                this.transientVariables.put(variableName, transientVariables.get(variableName));
             }
         }
         return this;
     }
 
-    public ProcessInstanceBuilder transientVariable(
-        String variableName,
-        Object value
-    ) {
+    public ProcessInstanceBuilder transientVariable(String variableName, Object value) {
         if (this.transientVariables == null) {
             this.transientVariables = new HashMap<String, Object>();
         }
@@ -126,10 +114,7 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
     }
 
     public boolean hasProcessDefinitionIdOrKey() {
-        return (
-            this.getProcessDefinitionId() != null ||
-            this.getProcessDefinitionKey() != null
-        );
+        return (this.getProcessDefinitionId() != null || this.getProcessDefinitionKey() != null);
     }
 
     public ProcessInstance start() {

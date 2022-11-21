@@ -41,9 +41,7 @@ public class LaneExtensionTest extends PluggableActivitiTestCase {
             .createProcessDefinitionQuery()
             .processDefinitionKey("swimlane-extension")
             .singleResult();
-        BpmnModel bpmnModel = repositoryService.getBpmnModel(
-            processDefinition.getId()
-        );
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition.getId());
         byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel);
         System.out.println(new String(xml));
         Process bpmnProcess = bpmnModel.getMainProcess();

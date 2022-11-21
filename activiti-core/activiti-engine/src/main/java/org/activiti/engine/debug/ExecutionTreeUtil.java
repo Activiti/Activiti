@@ -31,15 +31,10 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  */
 public class ExecutionTreeUtil {
 
-    public static ExecutionTree buildExecutionTree(
-        DelegateExecution executionEntity
-    ) {
+    public static ExecutionTree buildExecutionTree(DelegateExecution executionEntity) {
         // Find highest parent
         ExecutionEntity parentExecution = (ExecutionEntity) executionEntity;
-        while (
-            parentExecution.getParentId() != null ||
-            parentExecution.getSuperExecutionId() != null
-        ) {
+        while (parentExecution.getParentId() != null || parentExecution.getSuperExecutionId() != null) {
             if (parentExecution.getParentId() != null) {
                 parentExecution = parentExecution.getParent();
             } else {
@@ -65,16 +60,11 @@ public class ExecutionTreeUtil {
 
         if (rootExecutionEntity.getSubProcessInstance() != null) {
             allExecutions.add(rootExecutionEntity.getSubProcessInstance());
-            collectChildExecutions(
-                rootExecutionEntity.getSubProcessInstance(),
-                allExecutions
-            );
+            collectChildExecutions(rootExecutionEntity.getSubProcessInstance(), allExecutions);
         }
     }
 
-    public static ExecutionTree buildExecutionTree(
-        Collection<ExecutionEntity> executions
-    ) {
+    public static ExecutionTree buildExecutionTree(Collection<ExecutionEntity> executions) {
         ExecutionTree executionTree = new ExecutionTree();
 
         // Map the executions to their parents. Catch and store the root element (process instance execution) while were at it
@@ -89,10 +79,7 @@ public class ExecutionTreeUtil {
 
             if (parentId != null) {
                 if (!parentMapping.containsKey(parentId)) {
-                    parentMapping.put(
-                        parentId,
-                        new ArrayList<ExecutionEntity>()
-                    );
+                    parentMapping.put(parentId, new ArrayList<ExecutionEntity>());
                 }
                 parentMapping.get(parentId).add(executionEntity);
             } else if (executionEntity.getSuperExecutionId() == null) {
@@ -104,9 +91,7 @@ public class ExecutionTreeUtil {
         return executionTree;
     }
 
-    public static ExecutionTree buildExecutionTreeForProcessInstance(
-        Collection<ExecutionEntity> executions
-    ) {
+    public static ExecutionTree buildExecutionTreeForProcessInstance(Collection<ExecutionEntity> executions) {
         ExecutionTree executionTree = new ExecutionTree();
         if (executions.size() == 0) {
             return executionTree;
@@ -119,10 +104,7 @@ public class ExecutionTreeUtil {
 
             if (parentId != null) {
                 if (!parentMapping.containsKey(parentId)) {
-                    parentMapping.put(
-                        parentId,
-                        new ArrayList<ExecutionEntity>()
-                    );
+                    parentMapping.put(parentId, new ArrayList<ExecutionEntity>());
                 }
                 parentMapping.get(parentId).add(executionEntity);
             } else {
@@ -152,17 +134,11 @@ public class ExecutionTreeUtil {
             ExecutionTreeNode parentNode = executionsToHandle.pop();
             String parentId = parentNode.getExecutionEntity().getId();
             if (parentMapping.containsKey(parentId)) {
-                List<ExecutionEntity> childExecutions = parentMapping.get(
-                    parentId
-                );
-                List<ExecutionTreeNode> childNodes = new ArrayList<ExecutionTreeNode>(
-                    childExecutions.size()
-                );
+                List<ExecutionEntity> childExecutions = parentMapping.get(parentId);
+                List<ExecutionTreeNode> childNodes = new ArrayList<ExecutionTreeNode>(childExecutions.size());
 
                 for (ExecutionEntity childExecutionEntity : childExecutions) {
-                    ExecutionTreeNode childNode = new ExecutionTreeNode(
-                        childExecutionEntity
-                    );
+                    ExecutionTreeNode childNode = new ExecutionTreeNode(childExecutionEntity);
                     childNode.setParent(parentNode);
                     childNodes.add(childNode);
 

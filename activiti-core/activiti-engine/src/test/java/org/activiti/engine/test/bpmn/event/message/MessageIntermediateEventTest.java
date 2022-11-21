@@ -36,13 +36,9 @@ public class MessageIntermediateEventTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testSingleIntermediateMessageEvent() {
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "process"
-        );
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("process");
 
-        List<String> activeActivityIds = runtimeService.getActiveActivityIds(
-            pi.getId()
-        );
+        List<String> activeActivityIds = runtimeService.getActiveActivityIds(pi.getId());
         assertThat(activeActivityIds).isNotNull();
         assertThat(activeActivityIds).hasSize(1);
         assertThat(activeActivityIds.contains("messageCatch")).isTrue();
@@ -66,14 +62,9 @@ public class MessageIntermediateEventTest extends PluggableActivitiTestCase {
     public void testSingleIntermediateMessageExpressionEvent() {
         Map<String, Object> variableMap = new HashMap<String, Object>();
         variableMap.put("myMessageName", "testMessage");
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "process",
-            variableMap
-        );
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("process", variableMap);
 
-        List<String> activeActivityIds = runtimeService.getActiveActivityIds(
-            pi.getId()
-        );
+        List<String> activeActivityIds = runtimeService.getActiveActivityIds(pi.getId());
         assertThat(activeActivityIds).isNotNull();
         assertThat(activeActivityIds).hasSize(1);
         assertThat(activeActivityIds.contains("messageCatch")).isTrue();
@@ -100,21 +91,15 @@ public class MessageIntermediateEventTest extends PluggableActivitiTestCase {
         variableMap.put("myMessageName", null);
 
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByKey("process", variableMap)
-            )
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("process", variableMap))
             .withMessage("Expression '${myMessageName}' is null");
     }
 
     @Deployment
     public void testConcurrentIntermediateMessageEvent() {
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "process"
-        );
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("process");
 
-        List<String> activeActivityIds = runtimeService.getActiveActivityIds(
-            pi.getId()
-        );
+        List<String> activeActivityIds = runtimeService.getActiveActivityIds(pi.getId());
         assertThat(activeActivityIds).isNotNull();
         assertThat(activeActivityIds).hasSize(2);
         assertThat(activeActivityIds.contains("messageCatch1")).isTrue();
@@ -129,18 +114,12 @@ public class MessageIntermediateEventTest extends PluggableActivitiTestCase {
         assertThat(executions).isNotNull();
         assertThat(executions).hasSize(2);
 
-        runtimeService.messageEventReceived(
-            messageName,
-            executions.get(0).getId()
-        );
+        runtimeService.messageEventReceived(messageName, executions.get(0).getId());
 
         Task task = taskService.createTaskQuery().singleResult();
         assertThat(task).isNull();
 
-        runtimeService.messageEventReceived(
-            messageName,
-            executions.get(1).getId()
-        );
+        runtimeService.messageEventReceived(messageName, executions.get(1).getId());
 
         task = taskService.createTaskQuery().singleResult();
         assertThat(task).isNotNull();
@@ -150,9 +129,7 @@ public class MessageIntermediateEventTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testAsyncTriggeredMessageEvent() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "process"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("process");
 
         assertThat(processInstance).isNotNull();
         Execution execution = runtimeService
@@ -164,24 +141,17 @@ public class MessageIntermediateEventTest extends PluggableActivitiTestCase {
         assertThat(createEventSubscriptionQuery().count()).isEqualTo(1);
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(2);
 
-        runtimeService.messageEventReceivedAsync(
-            "newMessage",
-            execution.getId()
-        );
+        runtimeService.messageEventReceivedAsync("newMessage", execution.getId());
 
-        assertThat(managementService.createJobQuery().messages().count())
-            .isEqualTo(1);
+        assertThat(managementService.createJobQuery().messages().count()).isEqualTo(1);
 
         waitForJobExecutorToProcessAllJobs(8000L, 200L);
         assertThat(createEventSubscriptionQuery().count()).isEqualTo(0);
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
         assertThat(managementService.createJobQuery().count()).isEqualTo(0);
     }
 
     private EventSubscriptionQueryImpl createEventSubscriptionQuery() {
-        return new EventSubscriptionQueryImpl(
-            processEngineConfiguration.getCommandExecutor()
-        );
+        return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor());
     }
 }

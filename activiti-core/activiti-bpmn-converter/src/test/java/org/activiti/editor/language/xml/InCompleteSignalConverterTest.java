@@ -44,8 +44,7 @@ public class InCompleteSignalConverterTest extends AbstractConverterTest {
         assertThat(flowElement).isInstanceOf(UserTask.class);
         assertThat(flowElement.getId()).isEqualTo("task");
 
-        ProcessValidator processValidator = new ProcessValidatorFactory()
-            .createDefaultProcessValidator();
+        ProcessValidator processValidator = new ProcessValidatorFactory().createDefaultProcessValidator();
         List<ValidationError> errors = processValidator.validate(model);
         assertThat(errors).isNotNull();
         assertThat(errors).hasSize(2);

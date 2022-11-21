@@ -32,12 +32,9 @@ import org.slf4j.LoggerFactory;
 /**
 
  */
-public abstract class AbstractDatabaseEventLoggerEventHandler
-    implements EventLoggerEventHandler {
+public abstract class AbstractDatabaseEventLoggerEventHandler implements EventLoggerEventHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        AbstractDatabaseEventLoggerEventHandler.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(AbstractDatabaseEventLoggerEventHandler.class);
 
     protected ActivitiEvent event;
     protected Date timeStamp;
@@ -45,9 +42,7 @@ public abstract class AbstractDatabaseEventLoggerEventHandler
 
     public AbstractDatabaseEventLoggerEventHandler() {}
 
-    protected EventLogEntryEntity createEventLogEntry(
-        Map<String, Object> data
-    ) {
+    protected EventLogEntryEntity createEventLogEntry(Map<String, Object> data) {
         return createEventLogEntry(null, null, null, null, data);
     }
 
@@ -76,10 +71,7 @@ public abstract class AbstractDatabaseEventLoggerEventHandler
         String taskId,
         Map<String, Object> data
     ) {
-        EventLogEntryEntity eventLogEntry = Context
-            .getCommandContext()
-            .getEventLogEntryEntityManager()
-            .create();
+        EventLogEntryEntity eventLogEntry = Context.getCommandContext().getEventLogEntryEntityManager().create();
         eventLogEntry.setProcessDefinitionId(processDefinitionId);
         eventLogEntry.setProcessInstanceId(processInstanceId);
         eventLogEntry.setExecutionId(executionId);
@@ -96,33 +88,20 @@ public abstract class AbstractDatabaseEventLoggerEventHandler
         }
 
         // Current tenant
-        if (
-            !data.containsKey(Fields.TENANT_ID) && processDefinitionId != null
-        ) {
-            ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinition(
-                processDefinitionId
-            );
+        if (!data.containsKey(Fields.TENANT_ID) && processDefinitionId != null) {
+            ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinition(processDefinitionId);
             if (
                 processDefinition != null &&
-                !ProcessEngineConfigurationImpl.NO_TENANT_ID.equals(
-                    processDefinition.getTenantId()
-                )
+                !ProcessEngineConfigurationImpl.NO_TENANT_ID.equals(processDefinition.getTenantId())
             ) {
-                putInMapIfNotNull(
-                    data,
-                    Fields.TENANT_ID,
-                    processDefinition.getTenantId()
-                );
+                putInMapIfNotNull(data, Fields.TENANT_ID, processDefinition.getTenantId());
             }
         }
 
         try {
             eventLogEntry.setData(objectMapper.writeValueAsBytes(data));
         } catch (Exception e) {
-            logger.warn(
-                "Could not serialize event data. Data will not be written to the database",
-                e
-            );
+            logger.warn("Could not serialize event data. Data will not be written to the database", e);
         }
 
         return eventLogEntry;
@@ -150,11 +129,7 @@ public abstract class AbstractDatabaseEventLoggerEventHandler
         return (T) ((ActivitiEntityEvent) event).getEntity();
     }
 
-    public void putInMapIfNotNull(
-        Map<String, Object> map,
-        String key,
-        Object value
-    ) {
+    public void putInMapIfNotNull(Map<String, Object> map, String key, Object value) {
         if (value != null) {
             map.put(key, value);
         }

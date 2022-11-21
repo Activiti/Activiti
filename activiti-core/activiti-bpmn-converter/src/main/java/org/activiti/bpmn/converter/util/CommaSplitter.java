@@ -32,10 +32,7 @@ public class CommaSplitter {
                     result.add(st.substring(offset, i));
                 }
                 offset = i + 1;
-            } else if (
-                (st.charAt(i) == '$' || st.charAt(i) == '#') &&
-                st.charAt(i + 1) == '{'
-            ) {
+            } else if ((st.charAt(i) == '$' || st.charAt(i) == '#') && st.charAt(i + 1) == '{') {
                 inExpression = true;
             } else if (st.charAt(i) == '}') {
                 inExpression = false;

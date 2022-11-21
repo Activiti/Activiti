@@ -38,13 +38,8 @@ import org.junit.Test;
 public class OptimisticLockingExceptionTest extends PluggableActivitiTestCase {
 
     @Test
-    @Deployment(
-        resources = {
-            "org/activiti/engine/test/concurrency/CompetingJoinTest.testCompetingJoins.bpmn20.xml",
-        }
-    )
-    public void testOptimisticLockExceptionForConcurrentJoin()
-        throws Exception {
+    @Deployment(resources = { "org/activiti/engine/test/concurrency/CompetingJoinTest.testCompetingJoins.bpmn20.xml" })
+    public void testOptimisticLockExceptionForConcurrentJoin() throws Exception {
         // The optimistic locking exception should happen for this test to be useful.
         // But with concurrency, you never know. Hence why this test is repeated 10 time to make sure the chance for
         // the optimistic exception happening is as big as possible.
@@ -52,9 +47,7 @@ public class OptimisticLockingExceptionTest extends PluggableActivitiTestCase {
         boolean optimisticLockingExceptionHappenedOnce = false;
 
         for (int i = 0; i < 10; i++) {
-            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-                "CompetingJoinsProcess"
-            );
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("CompetingJoinsProcess");
             Execution execution1 = runtimeService
                 .createExecutionQuery()
                 .activityId("wait1")
@@ -66,14 +59,8 @@ public class OptimisticLockingExceptionTest extends PluggableActivitiTestCase {
                 .processInstanceId(processInstance.getId())
                 .singleResult();
 
-            TestTriggerableThread t1 = new TestTriggerableThread(
-                processEngine,
-                execution1.getId()
-            );
-            TestTriggerableThread t2 = new TestTriggerableThread(
-                processEngine,
-                execution2.getId()
-            );
+            TestTriggerableThread t1 = new TestTriggerableThread(processEngine, execution1.getId());
+            TestTriggerableThread t2 = new TestTriggerableThread(processEngine, execution2.getId());
 
             // Start the two trigger threads. They will wait at the barrier
             t1.start();
@@ -86,11 +73,7 @@ public class OptimisticLockingExceptionTest extends PluggableActivitiTestCase {
             while (
                 t1.getException() == null &&
                 t2.getException() == null &&
-                runtimeService
-                    .createProcessInstanceQuery()
-                    .processInstanceId(processInstance.getId())
-                    .count() ==
-                1
+                runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count() == 1
             ) {
                 Thread.sleep(250L);
                 totalWaitTime += 250L;
@@ -105,25 +88,15 @@ public class OptimisticLockingExceptionTest extends PluggableActivitiTestCase {
 
             // Optimistic locking exception happened, yay. We can stop the test.
             if (
-                (
-                    t1.getException() != null &&
-                    t1.getException() instanceof ActivitiOptimisticLockingException
-                ) ||
-                (
-                    t2.getException() != null &&
-                    t2.getException() instanceof ActivitiOptimisticLockingException
-                )
+                (t1.getException() != null && t1.getException() instanceof ActivitiOptimisticLockingException) ||
+                (t2.getException() != null && t2.getException() instanceof ActivitiOptimisticLockingException)
             ) {
                 optimisticLockingExceptionHappenedOnce = true;
                 break;
             }
 
             boolean processInstanceEnded =
-                runtimeService
-                    .createProcessInstanceQuery()
-                    .processInstanceId(processInstance.getId())
-                    .count() ==
-                0;
+                runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count() == 0;
             assertThat(processInstanceEnded).isTrue();
         }
 
@@ -139,19 +112,14 @@ public class OptimisticLockingExceptionTest extends PluggableActivitiTestCase {
         protected String executionId;
         protected Exception exception;
 
-        public TestTriggerableThread(
-            ProcessEngine processEngine,
-            String executionid
-        ) {
+        public TestTriggerableThread(ProcessEngine processEngine, String executionid) {
             this.processEngine = processEngine;
             this.executionId = executionid;
         }
 
         public void run() {
             try {
-                processEngine
-                    .getManagementService()
-                    .executeCommand(new TestTriggerCommand(executionId, null));
+                processEngine.getManagementService().executeCommand(new TestTriggerCommand(executionId, null));
             } catch (Exception e) {
                 exception = e;
             }
@@ -172,18 +140,13 @@ public class OptimisticLockingExceptionTest extends PluggableActivitiTestCase {
      */
     public static class TestTriggerCommand extends TriggerCmd {
 
-        public TestTriggerCommand(
-            String executionId,
-            Map<String, Object> processVariables
-        ) {
+        public TestTriggerCommand(String executionId, Map<String, Object> processVariables) {
             super(executionId, processVariables);
         }
 
         @Override
         public Object execute(CommandContext commandContext) {
-            commandContext.addCloseListener(
-                new OptimisticLockingTestCommandContextCloseListener()
-            );
+            commandContext.addCloseListener(new OptimisticLockingTestCommandContextCloseListener());
             return super.execute(commandContext);
         }
     }
@@ -191,12 +154,9 @@ public class OptimisticLockingExceptionTest extends PluggableActivitiTestCase {
     /**
      * {@link CommandContextCloseListener} that halts the closing of the {@link CommandContext} until all threads are synchronized.
      */
-    public static class OptimisticLockingTestCommandContextCloseListener
-        implements CommandContextCloseListener {
+    public static class OptimisticLockingTestCommandContextCloseListener implements CommandContextCloseListener {
 
-        public static CyclicBarrier TEST_BARRIER_BEFORE_CLOSE = new CyclicBarrier(
-            3
-        ); // 2 threads for triggering the wait state, one for the unit test thread
+        public static CyclicBarrier TEST_BARRIER_BEFORE_CLOSE = new CyclicBarrier(3); // 2 threads for triggering the wait state, one for the unit test thread
 
         @Override
         public void closing(CommandContext commandContext) {

@@ -42,9 +42,7 @@ public class AsyncEndEventConverterTest extends AbstractConverterTest {
     }
 
     private void validateModel(BpmnModel model) {
-        FlowElement flowElement = model
-            .getMainProcess()
-            .getFlowElement("endEvent");
+        FlowElement flowElement = model.getMainProcess().getFlowElement("endEvent");
         assertThat(flowElement).isNotNull();
         assertThat(flowElement).isInstanceOf(EndEvent.class);
         assertThat(flowElement.getId()).isEqualTo("endEvent");
@@ -55,19 +53,12 @@ public class AsyncEndEventConverterTest extends AbstractConverterTest {
         List<ActivitiListener> listeners = endEvent.getExecutionListeners();
         assertThat(listeners).hasSize(1);
         ActivitiListener listener = listeners.get(0);
-        assertThat(
-            ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(
-                listener.getImplementationType()
-            )
-        )
-            .isTrue();
-        assertThat(listener.getImplementation())
-            .isEqualTo("org.test.TestClass");
+        assertThat(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())).isTrue();
+        assertThat(listener.getImplementation()).isEqualTo("org.test.TestClass");
         assertThat(listener.getEvent()).isEqualTo("start");
 
         assertThat(endEvent.getIncomingFlows()).hasSize(1);
         SequenceFlow sequence = endEvent.getIncomingFlows().get(0);
-        assertThat(sequence.getId())
-            .isEqualTo("sid-91C0F3A0-649F-462E-A1C1-1CE499FEDE3E");
+        assertThat(sequence.getId()).isEqualTo("sid-91C0F3A0-649F-462E-A1C1-1CE499FEDE3E");
     }
 }

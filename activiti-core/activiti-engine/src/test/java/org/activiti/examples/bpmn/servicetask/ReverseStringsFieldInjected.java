@@ -33,15 +33,9 @@ public class ReverseStringsFieldInjected implements JavaDelegate {
 
     public void execute(DelegateExecution execution) {
         String value1 = (String) text1.getValue(execution);
-        execution.setVariable(
-            "var1",
-            new StringBuffer(value1).reverse().toString()
-        );
+        execution.setVariable("var1", new StringBuffer(value1).reverse().toString());
 
         String value2 = (String) text2.getValue(execution);
-        execution.setVariable(
-            "var2",
-            new StringBuffer(value2).reverse().toString()
-        );
+        execution.setVariable("var2", new StringBuffer(value2).reverse().toString());
     }
 }

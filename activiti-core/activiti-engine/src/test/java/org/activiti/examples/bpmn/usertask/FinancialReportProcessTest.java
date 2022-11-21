@@ -32,20 +32,11 @@ public class FinancialReportProcessTest extends PluggableActivitiTestCase {
     private static final String FOZZIE = "fozzie";
     private static final List<String> FOZZIESGROUPS = asList("accountancy");
 
-    @Deployment(
-        resources = {
-            "org/activiti/examples/bpmn/usertask/FinancialReportProcess.bpmn20.xml",
-        }
-    )
+    @Deployment(resources = { "org/activiti/examples/bpmn/usertask/FinancialReportProcess.bpmn20.xml" })
     public void testProcess() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "financialReport"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("financialReport");
 
-        List<Task> tasks = taskService
-            .createTaskQuery()
-            .taskCandidateUser("fozzie", FOZZIESGROUPS)
-            .list();
+        List<Task> tasks = taskService.createTaskQuery().taskCandidateUser("fozzie", FOZZIESGROUPS).list();
         assertThat(tasks).hasSize(1);
         Task task = tasks.get(0);
         assertThat(task.getName()).isEqualTo("Write monthly financial report");
@@ -56,20 +47,11 @@ public class FinancialReportProcessTest extends PluggableActivitiTestCase {
         assertThat(tasks).hasSize(1);
         taskService.complete(task.getId());
 
-        tasks =
-            taskService
-                .createTaskQuery()
-                .taskCandidateUser(FOZZIE, FOZZIESGROUPS)
-                .list();
+        tasks = taskService.createTaskQuery().taskCandidateUser(FOZZIE, FOZZIESGROUPS).list();
         assertThat(tasks).hasSize(0);
-        tasks =
-            taskService
-                .createTaskQuery()
-                .taskCandidateUser(KERMIT, KERMITSGROUPS)
-                .list();
+        tasks = taskService.createTaskQuery().taskCandidateUser(KERMIT, KERMITSGROUPS).list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName())
-            .isEqualTo("Verify monthly financial report");
+        assertThat(tasks.get(0).getName()).isEqualTo("Verify monthly financial report");
         taskService.complete(tasks.get(0).getId());
 
         assertProcessEnded(processInstance.getId());

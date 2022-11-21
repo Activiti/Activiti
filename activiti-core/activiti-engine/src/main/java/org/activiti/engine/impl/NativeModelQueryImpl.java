@@ -22,9 +22,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.NativeModelQuery;
 
-public class NativeModelQueryImpl
-    extends AbstractNativeQuery<NativeModelQuery, Model>
-    implements NativeModelQuery {
+public class NativeModelQueryImpl extends AbstractNativeQuery<NativeModelQuery, Model> implements NativeModelQuery {
 
     private static final long serialVersionUID = 1L;
 
@@ -44,17 +42,10 @@ public class NativeModelQueryImpl
         int firstResult,
         int maxResults
     ) {
-        return commandContext
-            .getModelEntityManager()
-            .findModelsByNativeQuery(parameterMap, firstResult, maxResults);
+        return commandContext.getModelEntityManager().findModelsByNativeQuery(parameterMap, firstResult, maxResults);
     }
 
-    public long executeCount(
-        CommandContext commandContext,
-        Map<String, Object> parameterMap
-    ) {
-        return commandContext
-            .getModelEntityManager()
-            .findModelCountByNativeQuery(parameterMap);
+    public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
+        return commandContext.getModelEntityManager().findModelCountByNativeQuery(parameterMap);
     }
 }

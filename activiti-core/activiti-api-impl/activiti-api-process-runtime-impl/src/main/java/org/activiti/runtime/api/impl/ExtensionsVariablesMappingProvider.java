@@ -52,22 +52,14 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         Extension extensions
     ) {
         if (inputMapping != null) {
-            if (
-                Mapping.SourceMappingType.VALUE.equals(inputMapping.getType())
-            ) {
+            if (Mapping.SourceMappingType.VALUE.equals(inputMapping.getType())) {
                 return Optional.of(inputMapping.getValue());
             }
 
-            if (
-                Mapping.SourceMappingType.VARIABLE.equals(
-                    inputMapping.getType()
-                )
-            ) {
+            if (Mapping.SourceMappingType.VARIABLE.equals(inputMapping.getType())) {
                 String name = inputMapping.getValue().toString();
 
-                if (
-                    isTargetProcessVariableDefined(extensions, execution, name)
-                ) {
+                if (isTargetProcessVariableDefined(extensions, execution, name)) {
                     return Optional.ofNullable(execution.getVariable(name));
                 }
             }
@@ -75,17 +67,10 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         return Optional.empty();
     }
 
-    public Map<String, Object> calculateInputVariables(
-        DelegateExecution execution
-    ) {
-        Extension extensions = processExtensionService.getExtensionsForId(
-            execution.getProcessDefinitionId()
-        );
+    public Map<String, Object> calculateInputVariables(DelegateExecution execution) {
+        Extension extensions = processExtensionService.getExtensionsForId(execution.getProcessDefinitionId());
 
-        Map<String, Object> constants = calculateConstants(
-            execution,
-            extensions
-        );
+        Map<String, Object> constants = calculateConstants(execution, extensions);
 
         if (!extensions.hasMapping(execution.getCurrentActivityId())) {
             return constants;
@@ -99,18 +84,12 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
             inboundVariables = calculateInputVariables(execution, extensions);
         }
         inboundVariables =
-            expressionResolver.resolveExpressionsMap(
-                new VariableScopeExpressionEvaluator(execution),
-                inboundVariables
-            );
+            expressionResolver.resolveExpressionsMap(new VariableScopeExpressionEvaluator(execution), inboundVariables);
         inboundVariables.putAll(constants);
         return inboundVariables;
     }
 
-    private Map<String, Object> calculateConstants(
-        DelegateExecution execution,
-        Extension extensions
-    ) {
+    private Map<String, Object> calculateConstants(DelegateExecution execution, Extension extensions) {
         Map<String, Object> constants = new HashMap<>();
 
         ProcessConstantsMapping processConstantsMapping = extensions.getConstantForFlowElement(
@@ -122,10 +101,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         return constants;
     }
 
-    private Map<String, Object> calculateInputVariables(
-        DelegateExecution execution,
-        Extension extensions
-    ) {
+    private Map<String, Object> calculateInputVariables(DelegateExecution execution, Extension extensions) {
         Map<String, Object> inboundVariables = new HashMap<>();
 
         ProcessVariablesMapping processVariablesMapping = extensions.getMappingForFlowElement(
@@ -134,29 +110,18 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
         Map<String, Mapping> inputMappings = processVariablesMapping.getInputs();
         for (Map.Entry<String, Mapping> mapping : inputMappings.entrySet()) {
-            Optional<Object> mappedValue = calculateMappedValue(
-                mapping.getValue(),
-                execution,
-                extensions
-            );
-            mappedValue.ifPresent(value ->
-                inboundVariables.put(mapping.getKey(), value)
-            );
+            Optional<Object> mappedValue = calculateMappedValue(mapping.getValue(), execution, extensions);
+            mappedValue.ifPresent(value -> inboundVariables.put(mapping.getKey(), value));
         }
         return inboundVariables;
     }
 
-    private Optional<Object> calculateOutPutMappedValue(
-        Mapping mapping,
-        Map<String, Object> currentContextVariables
-    ) {
+    private Optional<Object> calculateOutPutMappedValue(Mapping mapping, Map<String, Object> currentContextVariables) {
         if (mapping != null) {
             if (Mapping.SourceMappingType.VALUE.equals(mapping.getType())) {
                 return Optional.of(mapping.getValue());
             } else {
-                if (
-                    Mapping.SourceMappingType.VARIABLE.equals(mapping.getType())
-                ) {
+                if (Mapping.SourceMappingType.VARIABLE.equals(mapping.getType())) {
                     String name = mapping.getValue().toString();
 
                     return currentContextVariables != null
@@ -180,16 +145,8 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
             return emptyMap();
         }
 
-        if (
-            extensions.shouldMapAllOutputs(
-                mappingExecutionContext.getActivityId()
-            )
-        ) {
-            return (
-                availableVariables != null
-                    ? new HashMap<>(availableVariables)
-                    : emptyMap()
-            );
+        if (extensions.shouldMapAllOutputs(mappingExecutionContext.getActivityId())) {
+            return (availableVariables != null ? new HashMap<>(availableVariables) : emptyMap());
         }
 
         if (expressionResolver.containsExpression(availableVariables)) {
@@ -198,11 +155,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
             );
         }
 
-        return calculateOutPutVariables(
-            mappingExecutionContext,
-            extensions,
-            availableVariables
-        );
+        return calculateOutPutVariables(mappingExecutionContext, extensions, availableVariables);
     }
 
     private Map<String, Object> calculateOutPutVariables(
@@ -219,20 +172,9 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         for (Map.Entry<String, Mapping> mapping : outputMappings.entrySet()) {
             String name = mapping.getKey();
 
-            if (
-                isTargetProcessVariableDefined(
-                    extensions,
-                    mappingExecutionContext.getExecution(),
-                    name
-                )
-            ) {
-                calculateOutPutMappedValue(
-                    mapping.getValue(),
-                    availableVariables
-                )
-                    .ifPresent(value ->
-                        outboundVariables.put(mapping.getKey(), value)
-                    );
+            if (isTargetProcessVariableDefined(extensions, mappingExecutionContext.getExecution(), name)) {
+                calculateOutPutMappedValue(mapping.getValue(), availableVariables)
+                    .ifPresent(value -> outboundVariables.put(mapping.getKey(), value));
             }
         }
 
@@ -244,9 +186,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         if (mappingExecutionContext.hasExecution()) {
             result =
                 expressionResolver.resolveExpressionsMap(
-                    new VariableScopeExpressionEvaluator(
-                        mappingExecutionContext.getExecution()
-                    ),
+                    new VariableScopeExpressionEvaluator(mappingExecutionContext.getExecution()),
                     result
                 );
         }

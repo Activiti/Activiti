@@ -29,10 +29,7 @@ public class MockElResolver extends ELResolver {
     }
 
     @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(
-        ELContext context,
-        Object base
-    ) {
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
         return null;
     }
 
@@ -56,10 +53,5 @@ public class MockElResolver extends ELResolver {
     }
 
     @Override
-    public void setValue(
-        ELContext context,
-        Object base,
-        Object property,
-        Object value
-    ) {}
+    public void setValue(ELContext context, Object base, Object property, Object value) {}
 }

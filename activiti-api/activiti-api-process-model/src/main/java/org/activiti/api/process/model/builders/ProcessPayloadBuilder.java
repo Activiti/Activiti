@@ -42,9 +42,7 @@ public class ProcessPayloadBuilder {
             .withVariables(from.getVariables());
     }
 
-    public static CreateProcessPayloadBuilder create(
-        CreateProcessInstancePayload from
-    ) {
+    public static CreateProcessPayloadBuilder create(CreateProcessInstancePayload from) {
         return new CreateProcessPayloadBuilder()
             .withName(from.getName())
             .withProcessDefinitionId(from.getProcessDefinitionId())
@@ -76,15 +74,11 @@ public class ProcessPayloadBuilder {
         return new SetVariablesPayloadBuilder();
     }
 
-    public static SetVariablesPayloadBuilder setVariables(
-        ProcessInstance processInstance
-    ) {
+    public static SetVariablesPayloadBuilder setVariables(ProcessInstance processInstance) {
         return new SetVariablesPayloadBuilder(processInstance);
     }
 
-    public static SetVariablesPayloadBuilder setVariables(
-        String processInstanceId
-    ) {
+    public static SetVariablesPayloadBuilder setVariables(String processInstanceId) {
         return new SetVariablesPayloadBuilder(processInstanceId);
     }
 
@@ -104,17 +98,11 @@ public class ProcessPayloadBuilder {
         return new GetProcessInstancesPayloadBuilder();
     }
 
-    public static GetProcessInstancesPayload subprocesses(
-        String parentProcessInstanceId
-    ) {
-        return new GetProcessInstancesPayloadBuilder()
-            .withParentProcessInstanceId(parentProcessInstanceId)
-            .build();
+    public static GetProcessInstancesPayload subprocesses(String parentProcessInstanceId) {
+        return new GetProcessInstancesPayloadBuilder().withParentProcessInstanceId(parentProcessInstanceId).build();
     }
 
-    public static GetProcessInstancesPayload subprocesses(
-        ProcessInstance parentProcessInstance
-    ) {
+    public static GetProcessInstancesPayload subprocesses(ProcessInstance parentProcessInstance) {
         return new GetProcessInstancesPayloadBuilder()
             .withParentProcessInstanceId(parentProcessInstance.getId())
             .build();
@@ -123,40 +111,26 @@ public class ProcessPayloadBuilder {
     /* shortcuts - This needs to be justified and validated before adding any new one*/
 
     public static SuspendProcessPayload suspend(String processInstanceId) {
-        return new SuspendProcessPayloadBuilder()
-            .withProcessInstanceId(processInstanceId)
-            .build();
+        return new SuspendProcessPayloadBuilder().withProcessInstanceId(processInstanceId).build();
     }
 
-    public static SuspendProcessPayload suspend(
-        ProcessInstance processInstance
-    ) {
-        return new SuspendProcessPayloadBuilder()
-            .withProcessInstance(processInstance)
-            .build();
+    public static SuspendProcessPayload suspend(ProcessInstance processInstance) {
+        return new SuspendProcessPayloadBuilder().withProcessInstance(processInstance).build();
     }
 
     public static ResumeProcessPayload resume(String processInstanceId) {
-        return new ResumeProcessPayloadBuilder()
-            .withProcessInstanceId(processInstanceId)
-            .build();
+        return new ResumeProcessPayloadBuilder().withProcessInstanceId(processInstanceId).build();
     }
 
     public static ResumeProcessPayload resume(ProcessInstance processInstance) {
-        return new ResumeProcessPayloadBuilder()
-            .withProcessInstance(processInstance)
-            .build();
+        return new ResumeProcessPayloadBuilder().withProcessInstance(processInstance).build();
     }
 
     public static DeleteProcessPayload delete(String processInstanceId) {
-        return new DeleteProcessPayloadBuilder()
-            .withProcessInstanceId(processInstanceId)
-            .build();
+        return new DeleteProcessPayloadBuilder().withProcessInstanceId(processInstanceId).build();
     }
 
     public static DeleteProcessPayload delete(ProcessInstance processInstance) {
-        return new DeleteProcessPayloadBuilder()
-            .withProcessInstance(processInstance)
-            .build();
+        return new DeleteProcessPayloadBuilder().withProcessInstance(processInstance).build();
     }
 }

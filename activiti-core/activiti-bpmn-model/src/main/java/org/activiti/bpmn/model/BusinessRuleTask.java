@@ -78,7 +78,6 @@ public class BusinessRuleTask extends Task {
         setExclude(otherElement.isExclude());
         setClassName(otherElement.getClassName());
         ruleNames = new ArrayList<String>(otherElement.getRuleNames());
-        inputVariables =
-            new ArrayList<String>(otherElement.getInputVariables());
+        inputVariables = new ArrayList<String>(otherElement.getInputVariables());
     }
 }

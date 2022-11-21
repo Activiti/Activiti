@@ -30,11 +30,7 @@ public class UserBean {
 
     private final DataSource dataSource;
 
-    public UserBean(
-        final RuntimeService runtimeService,
-        final TaskService taskService,
-        final DataSource dataSource
-    ) {
+    public UserBean(final RuntimeService runtimeService, final TaskService taskService, final DataSource dataSource) {
         this.runtimeService = runtimeService;
         this.taskService = taskService;
         this.dataSource = dataSource;
@@ -52,9 +48,7 @@ public class UserBean {
     public void completeTask(String taskId) {
         // First insert a record in the MY_TABLE table
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        int nrOfRows = jdbcTemplate.update(
-            "insert into MY_TABLE values ('test');"
-        );
+        int nrOfRows = jdbcTemplate.update("insert into MY_TABLE values ('test');");
         if (nrOfRows != 1) {
             throw new RuntimeException("Insert into MY_TABLE failed");
         }

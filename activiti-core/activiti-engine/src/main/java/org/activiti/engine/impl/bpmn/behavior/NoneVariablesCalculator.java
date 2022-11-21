@@ -31,9 +31,7 @@ public class NoneVariablesCalculator implements VariablesCalculator {
     }
 
     @Override
-    public Map<String, Object> calculateInputVariables(
-        DelegateExecution execution
-    ) {
+    public Map<String, Object> calculateInputVariables(DelegateExecution execution) {
         return Collections.emptyMap();
     }
 }

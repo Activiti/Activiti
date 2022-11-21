@@ -24,9 +24,7 @@ import org.activiti.engine.delegate.event.ActivitiMembershipEvent;
  *
 
  */
-public class ActivitiMembershipEventImpl
-    extends ActivitiEventImpl
-    implements ActivitiMembershipEvent {
+public class ActivitiMembershipEventImpl extends ActivitiEventImpl implements ActivitiMembershipEvent {
 
     protected String userId;
     protected String groupId;

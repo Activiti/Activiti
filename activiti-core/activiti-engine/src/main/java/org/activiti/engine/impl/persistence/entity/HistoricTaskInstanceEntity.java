@@ -26,8 +26,7 @@ import org.activiti.engine.history.HistoricTaskInstance;
 
  */
 @Internal
-public interface HistoricTaskInstanceEntity
-    extends HistoricScopeInstanceEntity, HistoricTaskInstance, Entity {
+public interface HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity, HistoricTaskInstance, Entity {
     void setExecutionId(String executionId);
 
     void setName(String name);

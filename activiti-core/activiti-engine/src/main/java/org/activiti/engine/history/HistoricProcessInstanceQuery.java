@@ -30,8 +30,7 @@ import org.activiti.engine.runtime.ProcessInstanceQuery;
  *
  */
 @Internal
-public interface HistoricProcessInstanceQuery
-    extends Query<HistoricProcessInstanceQuery, HistoricProcessInstance> {
+public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInstanceQuery, HistoricProcessInstance> {
     /**
      * Only select historic process instances with the given process instance. {@link ProcessInstance) ids and {@link HistoricProcessInstance} ids match.
      */
@@ -40,58 +39,40 @@ public interface HistoricProcessInstanceQuery
     /**
      * Only select historic process instances whose id is in the given set of ids. {@link ProcessInstance) ids and {@link HistoricProcessInstance} ids match.
      */
-    HistoricProcessInstanceQuery processInstanceIds(
-        Set<String> processInstanceIds
-    );
+    HistoricProcessInstanceQuery processInstanceIds(Set<String> processInstanceIds);
 
     /** Only select historic process instances for the given process definition */
-    HistoricProcessInstanceQuery processDefinitionId(
-        String processDefinitionId
-    );
+    HistoricProcessInstanceQuery processDefinitionId(String processDefinitionId);
 
     /**
      * Only select historic process instances that are defined by a process definition with the given key.
      */
-    HistoricProcessInstanceQuery processDefinitionKey(
-        String processDefinitionKey
-    );
+    HistoricProcessInstanceQuery processDefinitionKey(String processDefinitionKey);
 
     /**
      * Only select historic process instances that are defined by a process definition with one of the given process definition keys.
      */
-    HistoricProcessInstanceQuery processDefinitionKeyIn(
-        List<String> processDefinitionKeys
-    );
+    HistoricProcessInstanceQuery processDefinitionKeyIn(List<String> processDefinitionKeys);
 
     /**
      * Only select historic process instances that don't have a process-definition of which the key is present in the given list
      */
-    HistoricProcessInstanceQuery processDefinitionKeyNotIn(
-        List<String> processDefinitionKeys
-    );
+    HistoricProcessInstanceQuery processDefinitionKeyNotIn(List<String> processDefinitionKeys);
 
     /** Only select historic process instances whose process definition category is processDefinitionCategory. */
-    HistoricProcessInstanceQuery processDefinitionCategory(
-        String processDefinitionCategory
-    );
+    HistoricProcessInstanceQuery processDefinitionCategory(String processDefinitionCategory);
 
     /** Select process historic instances whose process definition name is processDefinitionName*/
-    HistoricProcessInstanceQuery processDefinitionName(
-        String processDefinitionName
-    );
+    HistoricProcessInstanceQuery processDefinitionName(String processDefinitionName);
 
     /**
      * Only select historic process instances with a certain process definition version.
      * Particulary useful when used in combination with {@link #processDefinitionKey(String)}
      */
-    HistoricProcessInstanceQuery processDefinitionVersion(
-        Integer processDefinitionVersion
-    );
+    HistoricProcessInstanceQuery processDefinitionVersion(Integer processDefinitionVersion);
 
     /** Only select historic process instances with the given business key */
-    HistoricProcessInstanceQuery processInstanceBusinessKey(
-        String processInstanceBusinessKey
-    );
+    HistoricProcessInstanceQuery processInstanceBusinessKey(String processInstanceBusinessKey);
 
     /**
      * Only select historic process instances that are defined by a process definition with the given deployment identifier.
@@ -145,10 +126,7 @@ public interface HistoricProcessInstanceQuery
      * @param value
      *          value of the variable, cannot be null.
      */
-    HistoricProcessInstanceQuery variableValueEqualsIgnoreCase(
-        String name,
-        String value
-    );
+    HistoricProcessInstanceQuery variableValueEqualsIgnoreCase(String name, String value);
 
     /**
      * Only select process instances which had a global variable with the given name, but with a different value than the passed value when they ended. Only select process instances which have a
@@ -157,10 +135,7 @@ public interface HistoricProcessInstanceQuery
      * @param name
      *          of the variable, cannot be null.
      */
-    HistoricProcessInstanceQuery variableValueNotEquals(
-        String name,
-        Object value
-    );
+    HistoricProcessInstanceQuery variableValueNotEquals(String name, Object value);
 
     /**
      * Only select process instances which had a global variable value greater than the passed value when they ended. Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type
@@ -171,10 +146,7 @@ public interface HistoricProcessInstanceQuery
      * @param value
      *          cannot be null.
      */
-    HistoricProcessInstanceQuery variableValueGreaterThan(
-        String name,
-        Object value
-    );
+    HistoricProcessInstanceQuery variableValueGreaterThan(String name, Object value);
 
     /**
      * Only select process instances which had a global variable value greater than or equal to the passed value when they ended. Booleans, Byte-arrays and {@link Serializable} objects (which are not
@@ -185,10 +157,7 @@ public interface HistoricProcessInstanceQuery
      * @param value
      *          cannot be null.
      */
-    HistoricProcessInstanceQuery variableValueGreaterThanOrEqual(
-        String name,
-        Object value
-    );
+    HistoricProcessInstanceQuery variableValueGreaterThanOrEqual(String name, Object value);
 
     /**
      * Only select process instances which had a global variable value less than the passed value when the ended. Only applies to already ended process instances, otherwise use a
@@ -199,10 +168,7 @@ public interface HistoricProcessInstanceQuery
      * @param value
      *          cannot be null.
      */
-    HistoricProcessInstanceQuery variableValueLessThan(
-        String name,
-        Object value
-    );
+    HistoricProcessInstanceQuery variableValueLessThan(String name, Object value);
 
     /**
      * Only select process instances which has a global variable value less than or equal to the passed value when they ended. Only applies to already ended process instances, otherwise use a
@@ -213,10 +179,7 @@ public interface HistoricProcessInstanceQuery
      * @param value
      *          cannot be null.
      */
-    HistoricProcessInstanceQuery variableValueLessThanOrEqual(
-        String name,
-        Object value
-    );
+    HistoricProcessInstanceQuery variableValueLessThanOrEqual(String name, Object value);
 
     /**
      * Only select process instances which had global variable value like the given value when they ended. Only applies to already ended process instances, otherwise use a {@link ProcessInstanceQuery}
@@ -237,10 +200,7 @@ public interface HistoricProcessInstanceQuery
      * @param value cannot be null. The string can include the
      *          wildcard character '%' to express like-strategy: starts with
      *          (string%), ends with (%string) or contains (%string%). */
-    HistoricProcessInstanceQuery variableValueLikeIgnoreCase(
-        String name,
-        String value
-    );
+    HistoricProcessInstanceQuery variableValueLikeIgnoreCase(String name, String value);
 
     /**
      * Only select historic process instances that were started before the given date.
@@ -271,9 +231,7 @@ public interface HistoricProcessInstanceQuery
     HistoricProcessInstanceQuery processInstanceTenantId(String tenantId);
 
     /** Only select process instances with a tenant id like the given one. */
-    HistoricProcessInstanceQuery processInstanceTenantIdLike(
-        String tenantIdLike
-    );
+    HistoricProcessInstanceQuery processInstanceTenantIdLike(String tenantIdLike);
 
     /** Only select process instances that do not have a tenant id. */
     HistoricProcessInstanceQuery processInstanceWithoutTenantId();
@@ -326,16 +284,12 @@ public interface HistoricProcessInstanceQuery
     /**
      * Only select historic process instances started by the given process instance. {@link ProcessInstance) ids and {@link HistoricProcessInstance} ids match.
      */
-    HistoricProcessInstanceQuery superProcessInstanceId(
-        String superProcessInstanceId
-    );
+    HistoricProcessInstanceQuery superProcessInstanceId(String superProcessInstanceId);
 
     /**
      * Exclude sub processes from the query result;
      */
-    HistoricProcessInstanceQuery excludeSubprocesses(
-        boolean excludeSubprocesses
-    );
+    HistoricProcessInstanceQuery excludeSubprocesses(boolean excludeSubprocesses);
 
     /**
      * Include process variables in the process query result
@@ -345,9 +299,7 @@ public interface HistoricProcessInstanceQuery
     /**
      * Limit process instance variables
      */
-    HistoricProcessInstanceQuery limitProcessInstanceVariables(
-        Integer processInstanceVariablesLimit
-    );
+    HistoricProcessInstanceQuery limitProcessInstanceVariables(Integer processInstanceVariablesLimit);
 
     /**
      * Only select process instances that failed due to an exception happening during a job execution.
@@ -367,9 +319,7 @@ public interface HistoricProcessInstanceQuery
     /**
      * Only select process instances with a name like the given value, ignoring upper/lower case.
      */
-    HistoricProcessInstanceQuery processInstanceNameLikeIgnoreCase(
-        String nameLikeIgnoreCase
-    );
+    HistoricProcessInstanceQuery processInstanceNameLikeIgnoreCase(String nameLikeIgnoreCase);
 
     /**
      * Localize historic process name and description to specified locale.

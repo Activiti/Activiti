@@ -37,14 +37,8 @@ public class StartEventXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected BaseElement convertXMLToElement(
-        XMLStreamReader xtr,
-        BpmnModel model
-    ) throws Exception {
-        String formKey = xtr.getAttributeValue(
-            ACTIVITI_EXTENSIONS_NAMESPACE,
-            ATTRIBUTE_FORM_FORMKEY
-        );
+    protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
+        String formKey = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_FORM_FORMKEY);
         StartEvent startEvent = null;
 
         if (
@@ -58,17 +52,9 @@ public class StartEventXMLConverter extends BaseBpmnXMLConverter {
             startEvent = new StartEvent();
         }
         BpmnXMLUtil.addXMLLocation(startEvent, xtr);
-        startEvent.setInitiator(
-            xtr.getAttributeValue(
-                ACTIVITI_EXTENSIONS_NAMESPACE,
-                ATTRIBUTE_EVENT_START_INITIATOR
-            )
-        );
+        startEvent.setInitiator(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_EVENT_START_INITIATOR));
         boolean interrupting = true;
-        String interruptingAttribute = xtr.getAttributeValue(
-            null,
-            ATTRIBUTE_EVENT_START_INTERRUPTING
-        );
+        String interruptingAttribute = xtr.getAttributeValue(null, ATTRIBUTE_EVENT_START_INTERRUPTING);
         if (ATTRIBUTE_VALUE_FALSE.equalsIgnoreCase(interruptingAttribute)) {
             interrupting = false;
         }
@@ -81,32 +67,14 @@ public class StartEventXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalAttributes(
-        BaseElement element,
-        BpmnModel model,
-        XMLStreamWriter xtw
-    ) throws Exception {
+    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+        throws Exception {
         StartEvent startEvent = (StartEvent) element;
-        writeQualifiedAttribute(
-            ATTRIBUTE_EVENT_START_INITIATOR,
-            startEvent.getInitiator(),
-            xtw
-        );
-        writeQualifiedAttribute(
-            ATTRIBUTE_FORM_FORMKEY,
-            startEvent.getFormKey(),
-            xtw
-        );
+        writeQualifiedAttribute(ATTRIBUTE_EVENT_START_INITIATOR, startEvent.getInitiator(), xtw);
+        writeQualifiedAttribute(ATTRIBUTE_FORM_FORMKEY, startEvent.getFormKey(), xtw);
 
-        if (
-            startEvent.getEventDefinitions() != null &&
-            startEvent.getEventDefinitions().size() > 0
-        ) {
-            writeDefaultAttribute(
-                ATTRIBUTE_EVENT_START_INTERRUPTING,
-                String.valueOf(startEvent.isInterrupting()),
-                xtw
-            );
+        if (startEvent.getEventDefinitions() != null && startEvent.getEventDefinitions().size() > 0) {
+            writeDefaultAttribute(ATTRIBUTE_EVENT_START_INTERRUPTING, String.valueOf(startEvent.isInterrupting()), xtw);
         }
     }
 
@@ -117,23 +85,14 @@ public class StartEventXMLConverter extends BaseBpmnXMLConverter {
         XMLStreamWriter xtw
     ) throws Exception {
         StartEvent startEvent = (StartEvent) element;
-        didWriteExtensionStartElement =
-            writeFormProperties(startEvent, didWriteExtensionStartElement, xtw);
+        didWriteExtensionStartElement = writeFormProperties(startEvent, didWriteExtensionStartElement, xtw);
         return didWriteExtensionStartElement;
     }
 
     @Override
-    protected void writeAdditionalChildElements(
-        BaseElement element,
-        BpmnModel model,
-        XMLStreamWriter xtw
-    ) throws Exception {
+    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+        throws Exception {
         StartEvent startEvent = (StartEvent) element;
-        writeEventDefinitions(
-            startEvent,
-            startEvent.getEventDefinitions(),
-            model,
-            xtw
-        );
+        writeEventDefinitions(startEvent, startEvent.getEventDefinitions(), model, xtw);
     }
 }

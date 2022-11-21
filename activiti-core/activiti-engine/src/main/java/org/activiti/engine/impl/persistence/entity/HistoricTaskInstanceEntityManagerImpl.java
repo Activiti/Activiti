@@ -49,17 +49,12 @@ public class HistoricTaskInstanceEntityManagerImpl
     }
 
     @Override
-    public HistoricTaskInstanceEntity create(
-        TaskEntity task,
-        ExecutionEntity execution
-    ) {
+    public HistoricTaskInstanceEntity create(TaskEntity task, ExecutionEntity execution) {
         return historicTaskInstanceDataManager.create(task, execution);
     }
 
     @Override
-    public void deleteHistoricTaskInstancesByProcessInstanceId(
-        String processInstanceId
-    ) {
+    public void deleteHistoricTaskInstancesByProcessInstanceId(String processInstanceId) {
         if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
             List<HistoricTaskInstanceEntity> taskInstances = historicTaskInstanceDataManager.findHistoricTaskInstanceByProcessInstanceId(
                 processInstanceId
@@ -71,9 +66,7 @@ public class HistoricTaskInstanceEntityManagerImpl
     }
 
     @Override
-    public long findHistoricTaskInstanceCountByQueryCriteria(
-        HistoricTaskInstanceQueryImpl historicTaskInstanceQuery
-    ) {
+    public long findHistoricTaskInstanceCountByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
         if (getHistoryManager().isHistoryEnabled()) {
             return historicTaskInstanceDataManager.findHistoricTaskInstanceCountByQueryCriteria(
                 historicTaskInstanceQuery
@@ -88,9 +81,7 @@ public class HistoricTaskInstanceEntityManagerImpl
         HistoricTaskInstanceQueryImpl historicTaskInstanceQuery
     ) {
         if (getHistoryManager().isHistoryEnabled()) {
-            return historicTaskInstanceDataManager.findHistoricTaskInstancesByQueryCriteria(
-                historicTaskInstanceQuery
-            );
+            return historicTaskInstanceDataManager.findHistoricTaskInstancesByQueryCriteria(historicTaskInstanceQuery);
         }
         return emptyList();
     }
@@ -118,10 +109,7 @@ public class HistoricTaskInstanceEntityManagerImpl
         }
     }
 
-    protected void deleteInternal(
-        String id,
-        HistoricTaskInstanceEntity historicTaskInstance
-    ) {
+    protected void deleteInternal(String id, HistoricTaskInstanceEntity historicTaskInstance) {
         List<HistoricTaskInstanceEntity> subTasks = historicTaskInstanceDataManager.findHistoricTasksByParentTaskId(
             historicTaskInstance.getId()
         );
@@ -130,12 +118,10 @@ public class HistoricTaskInstanceEntityManagerImpl
         }
 
         getHistoricDetailEntityManager().deleteHistoricDetailsByTaskId(id);
-        getHistoricVariableInstanceEntityManager()
-            .deleteHistoricVariableInstancesByTaskId(id);
+        getHistoricVariableInstanceEntityManager().deleteHistoricVariableInstancesByTaskId(id);
         getCommentEntityManager().deleteCommentsByTaskId(id);
         getAttachmentEntityManager().deleteAttachmentsByTaskId(id);
-        getHistoricIdentityLinkEntityManager()
-            .deleteHistoricIdentityLinksByTaskId(id);
+        getHistoricIdentityLinkEntityManager().deleteHistoricIdentityLinksByTaskId(id);
 
         delete(historicTaskInstance);
     }
@@ -154,21 +140,15 @@ public class HistoricTaskInstanceEntityManagerImpl
     }
 
     @Override
-    public long findHistoricTaskInstanceCountByNativeQuery(
-        Map<String, Object> parameterMap
-    ) {
-        return historicTaskInstanceDataManager.findHistoricTaskInstanceCountByNativeQuery(
-            parameterMap
-        );
+    public long findHistoricTaskInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
+        return historicTaskInstanceDataManager.findHistoricTaskInstanceCountByNativeQuery(parameterMap);
     }
 
     public HistoricTaskInstanceDataManager getHistoricTaskInstanceDataManager() {
         return historicTaskInstanceDataManager;
     }
 
-    public void setHistoricTaskInstanceDataManager(
-        HistoricTaskInstanceDataManager historicTaskInstanceDataManager
-    ) {
+    public void setHistoricTaskInstanceDataManager(HistoricTaskInstanceDataManager historicTaskInstanceDataManager) {
         this.historicTaskInstanceDataManager = historicTaskInstanceDataManager;
     }
 }

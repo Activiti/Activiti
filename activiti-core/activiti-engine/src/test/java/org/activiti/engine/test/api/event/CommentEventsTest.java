@@ -39,76 +39,44 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
     /**
      * Test create, update and delete events of comments on a task/process.
      */
-    @Deployment(
-        resources = {
-            "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml",
-        }
-    )
+    @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
     public void testCommentEntityEvents() throws Exception {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.AUDIT)
-        ) {
-            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-                "oneTaskProcess"
-            );
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
-            Task task = taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+            Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
             assertThat(task).isNotNull();
 
             // Create link-comment
-            Comment comment = taskService.addComment(
-                task.getId(),
-                task.getProcessInstanceId(),
-                "comment"
-            );
+            Comment comment = taskService.addComment(task.getId(), task.getProcessInstanceId(), "comment");
             assertThat(listener.getEventsReceived()).hasSize(2);
-            ActivitiEntityEvent event = (ActivitiEntityEvent) listener
-                .getEventsReceived()
-                .get(0);
-            assertThat(event.getType())
-                .isEqualTo(ActivitiEventType.ENTITY_CREATED);
-            assertThat(event.getProcessInstanceId())
-                .isEqualTo(processInstance.getId());
-            assertThat(event.getExecutionId())
-                .isEqualTo(processInstance.getId());
-            assertThat(event.getProcessDefinitionId())
-                .isEqualTo(processInstance.getProcessDefinitionId());
+            ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+            assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
+            assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+            assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
+            assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
             Comment commentFromEvent = (Comment) event.getEntity();
             assertThat(commentFromEvent.getId()).isEqualTo(comment.getId());
 
             event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-            assertThat(event.getType())
-                .isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+            assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
             listener.clearEventsReceived();
 
             // Finally, delete comment
             taskService.deleteComment(comment.getId());
             assertThat(listener.getEventsReceived()).hasSize(1);
             event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-            assertThat(event.getType())
-                .isEqualTo(ActivitiEventType.ENTITY_DELETED);
-            assertThat(event.getProcessInstanceId())
-                .isEqualTo(processInstance.getId());
-            assertThat(event.getExecutionId())
-                .isEqualTo(processInstance.getId());
-            assertThat(event.getProcessDefinitionId())
-                .isEqualTo(processInstance.getProcessDefinitionId());
+            assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
+            assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+            assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
+            assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
             commentFromEvent = (Comment) event.getEntity();
             assertThat(commentFromEvent.getId()).isEqualTo(comment.getId());
         }
     }
 
     public void testCommentEntityEventsStandaloneTask() throws Exception {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.AUDIT)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             Task task = null;
             try {
                 task = taskService.newTask();
@@ -116,36 +84,25 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
                 assertThat(task).isNotNull();
 
                 // Create link-comment
-                Comment comment = taskService.addComment(
-                    task.getId(),
-                    null,
-                    "comment"
-                );
+                Comment comment = taskService.addComment(task.getId(), null, "comment");
                 assertThat(listener.getEventsReceived()).hasSize(2);
-                ActivitiEntityEvent event = (ActivitiEntityEvent) listener
-                    .getEventsReceived()
-                    .get(0);
-                assertThat(event.getType())
-                    .isEqualTo(ActivitiEventType.ENTITY_CREATED);
+                ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+                assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
                 assertThat(event.getProcessInstanceId()).isNull();
                 assertThat(event.getExecutionId()).isNull();
                 assertThat(event.getProcessDefinitionId()).isNull();
                 Comment commentFromEvent = (Comment) event.getEntity();
                 assertThat(commentFromEvent.getId()).isEqualTo(comment.getId());
 
-                event =
-                    (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-                assertThat(event.getType())
-                    .isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+                event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+                assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
                 listener.clearEventsReceived();
 
                 // Finally, delete comment
                 taskService.deleteComment(comment.getId());
                 assertThat(listener.getEventsReceived()).hasSize(1);
-                event =
-                    (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-                assertThat(event.getType())
-                    .isEqualTo(ActivitiEventType.ENTITY_DELETED);
+                event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+                assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
                 assertThat(event.getProcessInstanceId()).isNull();
                 assertThat(event.getExecutionId()).isNull();
                 assertThat(event.getProcessDefinitionId()).isNull();
@@ -164,9 +121,7 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         listener = new TestActivitiEntityEventListener(Comment.class);
-        processEngineConfiguration
-            .getEventDispatcher()
-            .addEventListener(listener);
+        processEngineConfiguration.getEventDispatcher().addEventListener(listener);
     }
 
     @Override
@@ -174,9 +129,7 @@ public class CommentEventsTest extends PluggableActivitiTestCase {
         super.tearDown();
 
         if (listener != null) {
-            processEngineConfiguration
-                .getEventDispatcher()
-                .removeEventListener(listener);
+            processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
         }
     }
 }

@@ -29,9 +29,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 public class TaskCompletedEventHandler extends AbstractTaskEventHandler {
 
     @Override
-    public EventLogEntryEntity generateEventLogEntry(
-        CommandContext commandContext
-    ) {
+    public EventLogEntryEntity generateEventLogEntry(CommandContext commandContext) {
         ActivitiEntityEvent activitiEntityEvent = (ActivitiEntityEvent) event;
 
         TaskEntity task = (TaskEntity) activitiEntityEvent.getEntity();
@@ -47,23 +45,15 @@ public class TaskCompletedEventHandler extends AbstractTaskEventHandler {
                 !activitiEntityWithVariablesEvent.getVariables().isEmpty()
             ) {
                 Map<String, Object> variableMap = new HashMap<String, Object>();
-                for (Object variableName : activitiEntityWithVariablesEvent
-                    .getVariables()
-                    .keySet()) {
+                for (Object variableName : activitiEntityWithVariablesEvent.getVariables().keySet()) {
                     putInMapIfNotNull(
                         variableMap,
                         (String) variableName,
-                        activitiEntityWithVariablesEvent
-                            .getVariables()
-                            .get(variableName)
+                        activitiEntityWithVariablesEvent.getVariables().get(variableName)
                     );
                 }
                 if (activitiEntityWithVariablesEvent.isLocalScope()) {
-                    putInMapIfNotNull(
-                        data,
-                        Fields.LOCAL_VARIABLES,
-                        variableMap
-                    );
+                    putInMapIfNotNull(data, Fields.LOCAL_VARIABLES, variableMap);
                 } else {
                     putInMapIfNotNull(data, Fields.VARIABLES, variableMap);
                 }

@@ -39,36 +39,25 @@ public class GroovyScriptTest extends PluggableActivitiTestCase {
             singletonMap("inputArray", inputArray)
         );
 
-        Integer result = (Integer) runtimeService.getVariable(
-            pi.getId(),
-            "sum"
-        );
+        Integer result = (Integer) runtimeService.getVariable(pi.getId(), "sum");
         assertThat(result.intValue()).isEqualTo(15);
     }
 
     @Deployment
     public void testSetVariableThroughExecutionInScript() {
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "setScriptVariableThroughExecution"
-        );
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("setScriptVariableThroughExecution");
 
         // Since 'def' is used, the 'scriptVar' will be script local and not automatically stored as a process variable.
-        assertThat(runtimeService.getVariable(pi.getId(), "scriptVar"))
-            .isNull();
-        assertThat(runtimeService.getVariable(pi.getId(), "myVar"))
-            .isEqualTo("test123");
+        assertThat(runtimeService.getVariable(pi.getId(), "scriptVar")).isNull();
+        assertThat(runtimeService.getVariable(pi.getId(), "myVar")).isEqualTo("test123");
     }
 
     @Deployment
     public void testAsyncScript() {
         // Set the clock fixed
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testAsyncScript"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testAsyncScript");
 
-        JobQuery jobQuery = managementService
-            .createJobQuery()
-            .processInstanceId(processInstance.getId());
+        JobQuery jobQuery = managementService.createJobQuery().processInstanceId(processInstance.getId());
         List<Job> jobs = jobQuery.list();
         assertThat(jobs).hasSize(1);
 

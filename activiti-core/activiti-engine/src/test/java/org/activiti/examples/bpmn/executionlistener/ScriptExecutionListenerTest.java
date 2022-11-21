@@ -32,31 +32,18 @@ import org.activiti.engine.test.Deployment;
  */
 public class ScriptExecutionListenerTest extends PluggableActivitiTestCase {
 
-    @Deployment(
-        resources = {
-            "org/activiti/examples/bpmn/executionlistener/ScriptExecutionListenerTest.bpmn20.xml",
-        }
-    )
+    @Deployment(resources = { "org/activiti/examples/bpmn/executionlistener/ScriptExecutionListenerTest.bpmn20.xml" })
     public void testScriptExecutionListener() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "scriptExecutionListenerProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("scriptExecutionListenerProcess");
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             List<HistoricVariableInstance> historicVariables = historyService
                 .createHistoricVariableInstanceQuery()
                 .processInstanceId(processInstance.getId())
                 .list();
             Map<String, Object> varMap = new HashMap<String, Object>();
             for (HistoricVariableInstance historicVariableInstance : historicVariables) {
-                varMap.put(
-                    historicVariableInstance.getVariableName(),
-                    historicVariableInstance.getValue()
-                );
+                varMap.put(historicVariableInstance.getVariableName(), historicVariableInstance.getValue());
             }
 
             assertThat(varMap.containsKey("foo")).isTrue();

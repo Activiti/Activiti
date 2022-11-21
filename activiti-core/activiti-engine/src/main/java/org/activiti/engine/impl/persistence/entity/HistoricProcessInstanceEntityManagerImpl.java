@@ -39,8 +39,7 @@ public class HistoricProcessInstanceEntityManagerImpl
         HistoricProcessInstanceDataManager historicProcessInstanceDataManager
     ) {
         super(processEngineConfiguration);
-        this.historicProcessInstanceDataManager =
-            historicProcessInstanceDataManager;
+        this.historicProcessInstanceDataManager = historicProcessInstanceDataManager;
     }
 
     @Override
@@ -49,18 +48,12 @@ public class HistoricProcessInstanceEntityManagerImpl
     }
 
     @Override
-    public HistoricProcessInstanceEntity create(
-        ExecutionEntity processInstanceExecutionEntity
-    ) {
-        return historicProcessInstanceDataManager.create(
-            processInstanceExecutionEntity
-        );
+    public HistoricProcessInstanceEntity create(ExecutionEntity processInstanceExecutionEntity) {
+        return historicProcessInstanceDataManager.create(processInstanceExecutionEntity);
     }
 
     @Override
-    public void deleteHistoricProcessInstanceByProcessDefinitionId(
-        String processDefinitionId
-    ) {
+    public void deleteHistoricProcessInstanceByProcessDefinitionId(String processDefinitionId) {
         if (getHistoryManager().isHistoryEnabled()) {
             List<String> historicProcessInstanceIds = historicProcessInstanceDataManager.findHistoricProcessInstanceIdsByProcessDefinitionId(
                 processDefinitionId
@@ -74,32 +67,17 @@ public class HistoricProcessInstanceEntityManagerImpl
     @Override
     public void delete(String historicProcessInstanceId) {
         if (getHistoryManager().isHistoryEnabled()) {
-            HistoricProcessInstanceEntity historicProcessInstance = findById(
-                historicProcessInstanceId
-            );
+            HistoricProcessInstanceEntity historicProcessInstance = findById(historicProcessInstanceId);
 
-            getHistoricDetailEntityManager()
-                .deleteHistoricDetailsByProcessInstanceId(
-                    historicProcessInstanceId
-                );
+            getHistoricDetailEntityManager().deleteHistoricDetailsByProcessInstanceId(historicProcessInstanceId);
             getHistoricVariableInstanceEntityManager()
-                .deleteHistoricVariableInstanceByProcessInstanceId(
-                    historicProcessInstanceId
-                );
+                .deleteHistoricVariableInstanceByProcessInstanceId(historicProcessInstanceId);
             getHistoricActivityInstanceEntityManager()
-                .deleteHistoricActivityInstancesByProcessInstanceId(
-                    historicProcessInstanceId
-                );
+                .deleteHistoricActivityInstancesByProcessInstanceId(historicProcessInstanceId);
             getHistoricTaskInstanceEntityManager()
-                .deleteHistoricTaskInstancesByProcessInstanceId(
-                    historicProcessInstanceId
-                );
-            getHistoricIdentityLinkEntityManager()
-                .deleteHistoricIdentityLinksByProcInstance(
-                    historicProcessInstanceId
-                );
-            getCommentEntityManager()
-                .deleteCommentsByProcessInstanceId(historicProcessInstanceId);
+                .deleteHistoricTaskInstancesByProcessInstanceId(historicProcessInstanceId);
+            getHistoricIdentityLinkEntityManager().deleteHistoricIdentityLinksByProcInstance(historicProcessInstanceId);
+            getCommentEntityManager().deleteCommentsByProcessInstanceId(historicProcessInstanceId);
 
             delete(historicProcessInstance, false);
 
@@ -166,12 +144,8 @@ public class HistoricProcessInstanceEntityManagerImpl
     }
 
     @Override
-    public long findHistoricProcessInstanceCountByNativeQuery(
-        Map<String, Object> parameterMap
-    ) {
-        return historicProcessInstanceDataManager.findHistoricProcessInstanceCountByNativeQuery(
-            parameterMap
-        );
+    public long findHistoricProcessInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
+        return historicProcessInstanceDataManager.findHistoricProcessInstanceCountByNativeQuery(parameterMap);
     }
 
     public HistoricProcessInstanceDataManager getHistoricProcessInstanceDataManager() {
@@ -181,7 +155,6 @@ public class HistoricProcessInstanceEntityManagerImpl
     public void setHistoricProcessInstanceDataManager(
         HistoricProcessInstanceDataManager historicProcessInstanceDataManager
     ) {
-        this.historicProcessInstanceDataManager =
-            historicProcessInstanceDataManager;
+        this.historicProcessInstanceDataManager = historicProcessInstanceDataManager;
     }
 }

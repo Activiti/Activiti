@@ -31,9 +31,7 @@ import org.activiti.engine.task.Task;
 public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
 
     public CustomMybatisXMLMapperTest() {
-        super(
-            "org/activiti/standalone/cfg/custom-mybatis-xml-mappers-activiti.cfg.xml"
-        );
+        super("org/activiti/standalone/cfg/custom-mybatis-xml-mappers-activiti.cfg.xml");
     }
 
     public void testSelectOneTask() {
@@ -48,9 +46,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
             new Command<CustomTask>() {
                 @Override
                 public CustomTask execute(CommandContext commandContext) {
-                    return (CustomTask) commandContext
-                        .getDbSqlSession()
-                        .selectOne("selectOneCustomTask", taskId);
+                    return (CustomTask) commandContext.getDbSqlSession().selectOne("selectOneCustomTask", taskId);
                 }
             }
         );
@@ -79,9 +75,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
                 @SuppressWarnings("unchecked")
                 @Override
                 public List<CustomTask> execute(CommandContext commandContext) {
-                    return (List<CustomTask>) commandContext
-                        .getDbSqlSession()
-                        .selectList("selectCustomTaskList");
+                    return (List<CustomTask>) commandContext.getDbSqlSession().selectList("selectCustomTaskList");
                 }
             }
         );
@@ -99,13 +93,10 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
         }
         createTask("Owned task", "kermit", null, 0);
 
-        List<CustomTask> tasks = new CustomTaskQuery(managementService)
-            .unOwned()
-            .list();
+        List<CustomTask> tasks = new CustomTaskQuery(managementService).unOwned().list();
 
         assertThat(tasks).hasSize(5);
-        assertThat(new CustomTaskQuery(managementService).unOwned().count())
-            .isEqualTo(5);
+        assertThat(new CustomTaskQuery(managementService).unOwned().count()).isEqualTo(5);
 
         tasks = new CustomTaskQuery(managementService).list();
 
@@ -120,9 +111,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
         }
         createTask("Owned task", "kermit", null, 0);
 
-        CustomTask task = new CustomTaskQuery(managementService)
-            .taskOwner("kermit")
-            .singleResult();
+        CustomTask task = new CustomTaskQuery(managementService).taskOwner("kermit").singleResult();
 
         assertThat(task.getOwner()).isEqualTo("kermit");
 
@@ -137,8 +126,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
             createTask(i + "", null, null, 0);
         }
 
-        List<CustomTask> tasks = new CustomTaskQuery(managementService)
-            .listPage(0, 10);
+        List<CustomTask> tasks = new CustomTaskQuery(managementService).listPage(0, 10);
 
         assertThat(tasks).hasSize(10);
 
@@ -154,10 +142,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
             createTask(i + "", null, null, i * 20);
         }
 
-        List<CustomTask> tasks = new CustomTaskQuery(managementService)
-            .orderByTaskPriority()
-            .desc()
-            .list();
+        List<CustomTask> tasks = new CustomTaskQuery(managementService).orderByTaskPriority().desc().list();
 
         assertThat(tasks).hasSize(5);
 
@@ -166,11 +151,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
             assertThat(task.getPriority()).isEqualTo(j * 20);
         }
 
-        tasks =
-            new CustomTaskQuery(managementService)
-                .orderByTaskPriority()
-                .asc()
-                .list();
+        tasks = new CustomTaskQuery(managementService).orderByTaskPriority().asc().list();
 
         assertThat(tasks).hasSize(5);
 
@@ -188,14 +169,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
         Authentication.setAuthenticatedUserId("kermit");
 
         String attachmentId = taskService
-            .createAttachment(
-                "image/png",
-                taskId,
-                null,
-                "attachment1",
-                "",
-                "http://activiti.org/"
-            )
+            .createAttachment("image/png", taskId, null, "attachment1", "", "http://activiti.org/")
             .getId();
         taskService.createAttachment(
             "image/jpeg",
@@ -230,79 +204,39 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
             );
         }
 
-        assertThat(
-            new AttachmentQuery(managementService)
-                .attachmentId(attachmentId)
-                .singleResult()
-                .getId()
-        )
+        assertThat(new AttachmentQuery(managementService).attachmentId(attachmentId).singleResult().getId())
             .isEqualTo(attachmentId);
 
-        assertThat(
-            new AttachmentQuery(managementService)
-                .attachmentName("attachment1")
-                .singleResult()
-                .getName()
-        )
+        assertThat(new AttachmentQuery(managementService).attachmentName("attachment1").singleResult().getName())
             .isEqualTo("attachment1");
 
-        assertThat(new AttachmentQuery(managementService).count())
-            .isEqualTo(18);
-        List<Attachment> attachments = new AttachmentQuery(managementService)
-            .list();
+        assertThat(new AttachmentQuery(managementService).count()).isEqualTo(18);
+        List<Attachment> attachments = new AttachmentQuery(managementService).list();
         assertThat(attachments).hasSize(18);
 
         attachments = new AttachmentQuery(managementService).listPage(0, 10);
         assertThat(attachments).hasSize(10);
 
-        assertThat(
-            new AttachmentQuery(managementService).taskId(taskId).count()
-        )
-            .isEqualTo(3);
-        attachments =
-            new AttachmentQuery(managementService).taskId(taskId).list();
+        assertThat(new AttachmentQuery(managementService).taskId(taskId).count()).isEqualTo(3);
+        attachments = new AttachmentQuery(managementService).taskId(taskId).list();
         assertThat(attachments).hasSize(3);
 
-        assertThat(
-            new AttachmentQuery(managementService).userId("kermit").count()
-        )
-            .isEqualTo(2);
-        attachments =
-            new AttachmentQuery(managementService).userId("kermit").list();
+        assertThat(new AttachmentQuery(managementService).userId("kermit").count()).isEqualTo(2);
+        attachments = new AttachmentQuery(managementService).userId("kermit").list();
         assertThat(attachments).hasSize(2);
 
-        assertThat(
-            new AttachmentQuery(managementService)
-                .attachmentType("image/jpeg")
-                .count()
-        )
-            .isEqualTo(1);
-        attachments =
-            new AttachmentQuery(managementService)
-                .attachmentType("image/jpeg")
-                .list();
+        assertThat(new AttachmentQuery(managementService).attachmentType("image/jpeg").count()).isEqualTo(1);
+        attachments = new AttachmentQuery(managementService).attachmentType("image/jpeg").list();
         assertThat(attachments).hasSize(1);
 
-        assertThat(
-            new AttachmentQuery(managementService)
-                .orderByAttachmentName()
-                .desc()
-                .list()
-                .get(0)
-                .getName()
-        )
+        assertThat(new AttachmentQuery(managementService).orderByAttachmentName().desc().list().get(0).getName())
             .isEqualTo("zattachment3");
 
         // Cleanup
         deleteTasks(taskService.createTaskQuery().list());
     }
 
-    protected String createTask(
-        String name,
-        String owner,
-        String assignee,
-        int priority
-    ) {
+    protected String createTask(String name, String owner, String assignee, int priority) {
         Task task = taskService.newTask();
         task.setName(name);
         task.setOwner(owner);

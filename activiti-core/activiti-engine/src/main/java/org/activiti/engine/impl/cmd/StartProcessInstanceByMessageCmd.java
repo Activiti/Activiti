@@ -33,8 +33,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 
 
  */
-public class StartProcessInstanceByMessageCmd
-    implements Command<ProcessInstance> {
+public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance> {
 
     protected String messageName;
     protected String businessKey;
@@ -54,14 +53,11 @@ public class StartProcessInstanceByMessageCmd
         this.tenantId = tenantId;
     }
 
-    public StartProcessInstanceByMessageCmd(
-        ProcessInstanceBuilderImpl processInstanceBuilder
-    ) {
+    public StartProcessInstanceByMessageCmd(ProcessInstanceBuilderImpl processInstanceBuilder) {
         this.messageName = processInstanceBuilder.getMessageName();
         this.businessKey = processInstanceBuilder.getBusinessKey();
         this.processVariables = processInstanceBuilder.getVariables();
-        this.transientVariables =
-            processInstanceBuilder.getTransientVariables();
+        this.transientVariables = processInstanceBuilder.getTransientVariables();
         this.tenantId = processInstanceBuilder.getTenantId();
     }
 
@@ -94,18 +90,12 @@ public class StartProcessInstanceByMessageCmd
             );
         }
 
-        DeploymentManager deploymentCache = commandContext
-            .getProcessEngineConfiguration()
-            .getDeploymentManager();
+        DeploymentManager deploymentCache = commandContext.getProcessEngineConfiguration().getDeploymentManager();
 
-        ProcessDefinition processDefinition = deploymentCache.findDeployedProcessDefinitionById(
-            processDefinitionId
-        );
+        ProcessDefinition processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
         if (processDefinition == null) {
             throw new ActivitiObjectNotFoundException(
-                "No process definition found for id '" +
-                processDefinitionId +
-                "'",
+                "No process definition found for id '" + processDefinitionId + "'",
                 ProcessDefinition.class
             );
         }

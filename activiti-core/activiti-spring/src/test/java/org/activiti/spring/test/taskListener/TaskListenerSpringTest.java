@@ -28,15 +28,11 @@ import org.springframework.test.context.ContextConfiguration;
 /**
 
  */
-@ContextConfiguration(
-    "classpath:org/activiti/spring/test/taskListener/TaskListenerDelegateExpressionTest-context.xml"
-)
+@ContextConfiguration("classpath:org/activiti/spring/test/taskListener/TaskListenerDelegateExpressionTest-context.xml")
 public class TaskListenerSpringTest extends SpringActivitiTestCase {
 
     private void cleanUp() {
-        List<org.activiti.engine.repository.Deployment> deployments = repositoryService
-            .createDeploymentQuery()
-            .list();
+        List<org.activiti.engine.repository.Deployment> deployments = repositoryService.createDeploymentQuery().list();
         for (org.activiti.engine.repository.Deployment deployment : deployments) {
             repositoryService.deleteDeployment(deployment.getId(), true);
         }
@@ -49,30 +45,18 @@ public class TaskListenerSpringTest extends SpringActivitiTestCase {
 
     @Deployment
     public void testTaskListenerDelegateExpression() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "taskListenerDelegateExpression"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskListenerDelegateExpression");
 
         // Completing first task will set variable on process instance
         Task task = taskService.createTaskQuery().singleResult();
         taskService.complete(task.getId());
-        assertThat(
-            runtimeService.getVariable(
-                processInstance.getId(),
-                "calledInExpression"
-            )
-        )
+        assertThat(runtimeService.getVariable(processInstance.getId(), "calledInExpression"))
             .isEqualTo("task1-complete");
 
         // Completing second task will set variable on process instance
         task = taskService.createTaskQuery().singleResult();
         taskService.complete(task.getId());
-        assertThat(
-            runtimeService.getVariable(
-                processInstance.getId(),
-                "calledThroughNotify"
-            )
-        )
+        assertThat(runtimeService.getVariable(processInstance.getId(), "calledThroughNotify"))
             .isEqualTo("task2-notify");
     }
 }

@@ -46,16 +46,13 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
         }
     )
     public void testCallSimpleSubProcess() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "callSimpleSubProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("callSimpleSubProcess");
 
         // one task in the subprocess should be active after starting the
         // process instance
         TaskQuery taskQuery = taskService.createTaskQuery();
         Task taskBeforeSubProcess = taskQuery.singleResult();
-        assertThat(taskBeforeSubProcess.getName())
-            .isEqualTo("Task before subprocess");
+        assertThat(taskBeforeSubProcess.getName()).isEqualTo("Task before subprocess");
 
         // Completing the task continues the process which leads to calling the
         // subprocess
@@ -66,27 +63,21 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
         // Completing the task in the subprocess, finishes the subprocess
         taskService.complete(taskInSubProcess.getId());
         Task taskAfterSubProcess = taskQuery.singleResult();
-        assertThat(taskAfterSubProcess.getName())
-            .isEqualTo("Task after subprocess");
+        assertThat(taskAfterSubProcess.getName()).isEqualTo("Task after subprocess");
 
         // Completing this task end the process instance
         taskService.complete(taskAfterSubProcess.getId());
         assertProcessEnded(processInstance.getId());
 
         // Validate subprocess history
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // Subprocess should have initial activity set
             HistoricProcessInstance historicProcess = historyService
                 .createHistoricProcessInstanceQuery()
                 .processInstanceId(taskInSubProcess.getProcessInstanceId())
                 .singleResult();
             assertThat(historicProcess).isNotNull();
-            assertThat(historicProcess.getStartActivityId())
-                .isEqualTo("theStart");
+            assertThat(historicProcess.getStartActivityId()).isEqualTo("theStart");
 
             List<HistoricActivityInstance> historicInstances = historyService
                 .createHistoricActivityInstanceQuery()
@@ -95,16 +86,12 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
 
             // Should contain a start-event, the task and an end-event
             assertThat(historicInstances).hasSize(3);
-            Set<String> expectedActivities = new HashSet<String>(
-                asList("theStart", "task", "theEnd")
-            );
+            Set<String> expectedActivities = new HashSet<String>(asList("theStart", "task", "theEnd"));
 
             for (HistoricActivityInstance act : historicInstances) {
                 expectedActivities.remove(act.getActivityId());
             }
-            assertThat(expectedActivities)
-                .as("Not all expected activities were found in the history")
-                .isEmpty();
+            assertThat(expectedActivities).as("Not all expected activities were found in the history").isEmpty();
         }
     }
 
@@ -115,27 +102,20 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
         }
     )
     public void testCallSimpleSubProcessWithExpressions() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "callSimpleSubProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("callSimpleSubProcess");
 
         // one task in the subprocess should be active after starting the
         // process
         // instance
         TaskQuery taskQuery = taskService.createTaskQuery();
         Task taskBeforeSubProcess = taskQuery.singleResult();
-        assertThat(taskBeforeSubProcess.getName())
-            .isEqualTo("Task before subprocess");
+        assertThat(taskBeforeSubProcess.getName()).isEqualTo("Task before subprocess");
 
         // Completing the task continues the process which leads to calling the
         // subprocess. The sub process we want to call is passed in as a
         // variable
         // into this task
-        taskService.setVariable(
-            taskBeforeSubProcess.getId(),
-            "simpleSubProcessExpression",
-            "simpleSubProcess"
-        );
+        taskService.setVariable(taskBeforeSubProcess.getId(), "simpleSubProcessExpression", "simpleSubProcess");
         taskService.complete(taskBeforeSubProcess.getId());
         Task taskInSubProcess = taskQuery.singleResult();
         assertThat(taskInSubProcess.getName()).isEqualTo("Task in subprocess");
@@ -143,8 +123,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
         // Completing the task in the subprocess, finishes the subprocess
         taskService.complete(taskInSubProcess.getId());
         Task taskAfterSubProcess = taskQuery.singleResult();
-        assertThat(taskAfterSubProcess.getName())
-            .isEqualTo("Task after subprocess");
+        assertThat(taskAfterSubProcess.getName()).isEqualTo("Task after subprocess");
 
         // Completing this task end the process instance
         taskService.complete(taskAfterSubProcess.getId());
@@ -161,16 +140,13 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
         }
     )
     public void testSubProcessEndsSuperProcess() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "subProcessEndsSuperProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("subProcessEndsSuperProcess");
 
         // one task in the subprocess should be active after starting the
         // process instance
         TaskQuery taskQuery = taskService.createTaskQuery();
         Task taskBeforeSubProcess = taskQuery.singleResult();
-        assertThat(taskBeforeSubProcess.getName())
-            .isEqualTo("Task in subprocess");
+        assertThat(taskBeforeSubProcess.getName()).isEqualTo("Task in subprocess");
 
         // Completing this task ends the subprocess which leads to the end of
         // the whole process instance
@@ -189,10 +165,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("callParallelSubProcess");
 
         // The two tasks in the parallel subprocess should be active
-        TaskQuery taskQuery = taskService
-            .createTaskQuery()
-            .orderByTaskName()
-            .asc();
+        TaskQuery taskQuery = taskService.createTaskQuery().orderByTaskName().asc();
         List<Task> tasks = taskQuery.list();
         assertThat(tasks).hasSize(2);
 
@@ -220,9 +193,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
         }
     )
     public void testCallSequentialSubProcessWithExpressions() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "callSequentialSubProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("callSequentialSubProcess");
 
         // FIRST sub process calls simpleSubProcess
 
@@ -231,18 +202,13 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
         // instance
         TaskQuery taskQuery = taskService.createTaskQuery();
         Task taskBeforeSubProcess = taskQuery.singleResult();
-        assertThat(taskBeforeSubProcess.getName())
-            .isEqualTo("Task before subprocess");
+        assertThat(taskBeforeSubProcess.getName()).isEqualTo("Task before subprocess");
 
         // Completing the task continues the process which leads to calling the
         // subprocess. The sub process we want to call is passed in as a
         // variable
         // into this task
-        taskService.setVariable(
-            taskBeforeSubProcess.getId(),
-            "simpleSubProcessExpression",
-            "simpleSubProcess"
-        );
+        taskService.setVariable(taskBeforeSubProcess.getId(), "simpleSubProcessExpression", "simpleSubProcess");
         taskService.complete(taskBeforeSubProcess.getId());
         Task taskInSubProcess = taskQuery.singleResult();
         assertThat(taskInSubProcess.getName()).isEqualTo("Task in subprocess");
@@ -250,8 +216,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
         // Completing the task in the subprocess, finishes the subprocess
         taskService.complete(taskInSubProcess.getId());
         Task taskAfterSubProcess = taskQuery.singleResult();
-        assertThat(taskAfterSubProcess.getName())
-            .isEqualTo("Task after subprocess");
+        assertThat(taskAfterSubProcess.getName()).isEqualTo("Task after subprocess");
 
         // Completing this task end the process instance
         taskService.complete(taskAfterSubProcess.getId());
@@ -263,28 +228,21 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
         // instance
         taskQuery = taskService.createTaskQuery();
         taskBeforeSubProcess = taskQuery.singleResult();
-        assertThat(taskBeforeSubProcess.getName())
-            .isEqualTo("Task before subprocess");
+        assertThat(taskBeforeSubProcess.getName()).isEqualTo("Task before subprocess");
 
         // Completing the task continues the process which leads to calling the
         // subprocess. The sub process we want to call is passed in as a
         // variable
         // into this task
-        taskService.setVariable(
-            taskBeforeSubProcess.getId(),
-            "simpleSubProcessExpression",
-            "simpleSubProcess2"
-        );
+        taskService.setVariable(taskBeforeSubProcess.getId(), "simpleSubProcessExpression", "simpleSubProcess2");
         taskService.complete(taskBeforeSubProcess.getId());
         taskInSubProcess = taskQuery.singleResult();
-        assertThat(taskInSubProcess.getName())
-            .isEqualTo("Task in subprocess 2");
+        assertThat(taskInSubProcess.getName()).isEqualTo("Task in subprocess 2");
 
         // Completing the task in the subprocess, finishes the subprocess
         taskService.complete(taskInSubProcess.getId());
         taskAfterSubProcess = taskQuery.singleResult();
-        assertThat(taskAfterSubProcess.getName())
-            .isEqualTo("Task after subprocess");
+        assertThat(taskAfterSubProcess.getName()).isEqualTo("Task after subprocess");
 
         // Completing this task end the process instance
         taskService.complete(taskAfterSubProcess.getId());
@@ -301,9 +259,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
         Date startTime = processEngineConfiguration.getClock().getCurrentTime();
 
         // After process start, the task in the subprocess should be active
-        ProcessInstance pi1 = runtimeService.startProcessInstanceByKey(
-            "timerOnCallActivity"
-        );
+        ProcessInstance pi1 = runtimeService.startProcessInstanceByKey("timerOnCallActivity");
         TaskQuery taskQuery = taskService.createTaskQuery();
         Task taskInSubProcess = taskQuery.singleResult();
         assertThat(taskInSubProcess.getName()).isEqualTo("Task in subprocess");
@@ -314,9 +270,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
             .singleResult();
 
         // When the timer on the subprocess is fired, the complete subprocess is destroyed
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(new Date(startTime.getTime() + (6 * 60 * 1000))); // + 6 minutes, timer fires on 5 minutes
+        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (6 * 60 * 1000))); // + 6 minutes, timer fires on 5 minutes
         waitForJobExecutorToProcessAllJobs(10000, 5000L);
 
         Task escalatedTask = taskQuery.singleResult();
@@ -326,11 +280,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
         taskService.complete(escalatedTask.getId());
         assertThat(runtimeService.createExecutionQuery().list()).hasSize(0);
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.AUDIT)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             assertThat(
                 historyService
                     .createHistoricProcessInstanceQuery()
@@ -339,21 +289,9 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
                     .getDeleteReason()
             )
                 .startsWith(DeleteReason.BOUNDARY_EVENT_INTERRUPTING);
-            assertHistoricTasksDeleteReason(
-                pi2,
-                DeleteReason.BOUNDARY_EVENT_INTERRUPTING,
-                "Task in subprocess"
-            );
-            assertHistoricActivitiesDeleteReason(
-                pi1,
-                DeleteReason.BOUNDARY_EVENT_INTERRUPTING,
-                "callSubProcess"
-            );
-            assertHistoricActivitiesDeleteReason(
-                pi2,
-                DeleteReason.BOUNDARY_EVENT_INTERRUPTING,
-                "task"
-            );
+            assertHistoricTasksDeleteReason(pi2, DeleteReason.BOUNDARY_EVENT_INTERRUPTING, "Task in subprocess");
+            assertHistoricActivitiesDeleteReason(pi1, DeleteReason.BOUNDARY_EVENT_INTERRUPTING, "callSubProcess");
+            assertHistoricActivitiesDeleteReason(pi2, DeleteReason.BOUNDARY_EVENT_INTERRUPTING, "task");
         }
     }
 
@@ -367,13 +305,9 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
         }
     )
     public void testTwoSubProcesses() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "callTwoSubProcesses"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("callTwoSubProcesses");
 
-        List<ProcessInstance> instanceList = runtimeService
-            .createProcessInstanceQuery()
-            .list();
+        List<ProcessInstance> instanceList = runtimeService.createProcessInstanceQuery().list();
         assertThat(instanceList).isNotNull();
         assertThat(instanceList).hasSize(3);
 
@@ -381,10 +315,7 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
         assertThat(taskList).isNotNull();
         assertThat(taskList).hasSize(2);
 
-        runtimeService.deleteProcessInstance(
-            processInstance.getId(),
-            "Test cascading"
-        );
+        runtimeService.deleteProcessInstance(processInstance.getId(), "Test cascading");
 
         instanceList = runtimeService.createProcessInstanceQuery().list();
         assertThat(instanceList).isNotNull();

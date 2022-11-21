@@ -22,8 +22,7 @@ import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 
-public class ToTaskCancelledConverter
-    implements EventConverter<TaskCancelledEvent, ActivitiEntityEvent> {
+public class ToTaskCancelledConverter implements EventConverter<TaskCancelledEvent, ActivitiEntityEvent> {
 
     private APITaskConverter taskConverter;
 
@@ -32,16 +31,11 @@ public class ToTaskCancelledConverter
     }
 
     @Override
-    public Optional<TaskCancelledEvent> from(
-        ActivitiEntityEvent internalEvent
-    ) {
+    public Optional<TaskCancelledEvent> from(ActivitiEntityEvent internalEvent) {
         TaskCancelledEvent event = null;
         if (isTaskCancelled(internalEvent)) {
             TaskEntity taskEntity = (TaskEntity) internalEvent.getEntity();
-            Task task = taskConverter.from(
-                taskEntity,
-                Task.TaskStatus.CANCELLED
-            );
+            Task task = taskConverter.from(taskEntity, Task.TaskStatus.CANCELLED);
             String reason = internalEvent.getReason();
             event = new TaskCancelledImpl(task, reason);
         }

@@ -39,16 +39,12 @@ public class SetTimerJobRetriesCmd implements Command<Void>, Serializable {
     public SetTimerJobRetriesCmd(String jobId, int retries) {
         if (jobId == null || jobId.length() < 1) {
             throw new ActivitiIllegalArgumentException(
-                "The job id is mandatory, but '" +
-                jobId +
-                "' has been provided."
+                "The job id is mandatory, but '" + jobId + "' has been provided."
             );
         }
         if (retries < 0) {
             throw new ActivitiIllegalArgumentException(
-                "The number of job retries must be a non-negative Integer, but '" +
-                retries +
-                "' has been provided."
+                "The number of job retries must be a non-negative Integer, but '" + retries + "' has been provided."
             );
         }
         this.jobId = jobId;
@@ -56,27 +52,17 @@ public class SetTimerJobRetriesCmd implements Command<Void>, Serializable {
     }
 
     public Void execute(CommandContext commandContext) {
-        TimerJobEntity job = commandContext
-            .getTimerJobEntityManager()
-            .findById(jobId);
+        TimerJobEntity job = commandContext.getTimerJobEntityManager().findById(jobId);
         if (job != null) {
             job.setRetries(retries);
 
             if (commandContext.getEventDispatcher().isEnabled()) {
                 commandContext
                     .getEventDispatcher()
-                    .dispatchEvent(
-                        ActivitiEventBuilder.createEntityEvent(
-                            ActivitiEventType.ENTITY_UPDATED,
-                            job
-                        )
-                    );
+                    .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, job));
             }
         } else {
-            throw new ActivitiObjectNotFoundException(
-                "No timer job found with id '" + jobId + "'.",
-                Job.class
-            );
+            throw new ActivitiObjectNotFoundException("No timer job found with id '" + jobId + "'.", Job.class);
         }
         return null;
     }

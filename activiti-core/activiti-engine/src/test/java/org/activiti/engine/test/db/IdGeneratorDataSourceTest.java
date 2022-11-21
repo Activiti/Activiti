@@ -23,9 +23,7 @@ import org.activiti.engine.test.Deployment;
 public class IdGeneratorDataSourceTest extends ResourceActivitiTestCase {
 
     public IdGeneratorDataSourceTest() {
-        super(
-            "org/activiti/engine/test/db/IdGeneratorDataSourceTest.activiti.cfg.xml"
-        );
+        super("org/activiti/engine/test/db/IdGeneratorDataSourceTest.activiti.cfg.xml");
     }
 
     @Deployment
@@ -35,9 +33,7 @@ public class IdGeneratorDataSourceTest extends ResourceActivitiTestCase {
             Thread thread = new Thread() {
                 public void run() {
                     for (int j = 0; j < 5; j++) {
-                        runtimeService.startProcessInstanceByKey(
-                            "idGeneratorDataSource"
-                        );
+                        runtimeService.startProcessInstanceByKey("idGeneratorDataSource");
                     }
                 }
             };

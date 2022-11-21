@@ -71,9 +71,7 @@ public class StatefulObject implements Serializable, InitializingBean {
         StatefulObject that = (StatefulObject) o;
 
         if (visitedCount != that.visitedCount) return false;
-        if (
-            name != null ? !name.equals(that.name) : that.name != null
-        ) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
 
         return true;
     }
@@ -87,15 +85,7 @@ public class StatefulObject implements Serializable, InitializingBean {
 
     @Override
     public String toString() {
-        return (
-            "StatefulObject{" +
-            "name='" +
-            name +
-            '\'' +
-            ", visitedCount=" +
-            visitedCount +
-            '}'
-        );
+        return ("StatefulObject{" + "name='" + name + '\'' + ", visitedCount=" + visitedCount + '}');
     }
 
     public void increment() {
@@ -119,9 +109,6 @@ public class StatefulObject implements Serializable, InitializingBean {
             this.processInstance,
             "the processInstance should be equal to the currently active processInstance!"
         );
-        logger.info(
-            "the 'processInstance' property is non-null: PI ID#{}",
-            this.processInstance.getId()
-        );
+        logger.info("the 'processInstance' property is non-null: PI ID#{}", this.processInstance.getId());
     }
 }

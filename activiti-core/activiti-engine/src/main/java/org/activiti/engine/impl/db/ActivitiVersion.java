@@ -38,10 +38,7 @@ public class ActivitiVersion {
         this.alternativeVersionStrings = singletonList(mainVersion);
     }
 
-    public ActivitiVersion(
-        String mainVersion,
-        List<String> alternativeVersionStrings
-    ) {
+    public ActivitiVersion(String mainVersion, List<String> alternativeVersionStrings) {
         this.mainVersion = mainVersion;
         this.alternativeVersionStrings = alternativeVersionStrings;
     }
@@ -70,9 +67,7 @@ public class ActivitiVersion {
             return false;
         } else {
             if (alternativeVersionStrings != null) {
-                return alternativeVersionStrings.equals(
-                    other.alternativeVersionStrings
-                );
+                return alternativeVersionStrings.equals(other.alternativeVersionStrings);
             } else {
                 return other.alternativeVersionStrings == null;
             }

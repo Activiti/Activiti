@@ -31,10 +31,7 @@ public class SubProcessTest extends AbstractConverterTest {
     }
 
     private void validateModel(BpmnModel model) {
-        assertThat(10)
-            .isEqualTo(
-                model.getMainProcess().getFlowElementMap().keySet().size()
-            );
+        assertThat(10).isEqualTo(model.getMainProcess().getFlowElementMap().keySet().size());
     }
 
     protected String getResource() {

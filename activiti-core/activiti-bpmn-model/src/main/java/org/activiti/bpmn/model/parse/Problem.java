@@ -25,12 +25,7 @@ public class Problem {
     protected int line;
     protected int column;
 
-    public Problem(
-        String errorMessage,
-        String localName,
-        int lineNumber,
-        int columnNumber
-    ) {
+    public Problem(String errorMessage, String localName, int lineNumber, int columnNumber) {
         this.errorMessage = errorMessage;
         this.resource = localName;
         this.line = lineNumber;
@@ -51,13 +46,6 @@ public class Problem {
     }
 
     public String toString() {
-        return (
-            errorMessage +
-            (resource != null ? " | " + resource : "") +
-            " | line " +
-            line +
-            " | column " +
-            column
-        );
+        return (errorMessage + (resource != null ? " | " + resource : "") + " | line " + line + " | column " + column);
     }
 }

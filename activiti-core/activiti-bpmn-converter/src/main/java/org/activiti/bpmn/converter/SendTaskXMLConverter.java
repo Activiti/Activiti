@@ -40,29 +40,15 @@ public class SendTaskXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected BaseElement convertXMLToElement(
-        XMLStreamReader xtr,
-        BpmnModel model
-    ) throws Exception {
+    protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
         SendTask sendTask = new SendTask();
         BpmnXMLUtil.addXMLLocation(sendTask, xtr);
-        sendTask.setType(
-            xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TYPE)
-        );
+        sendTask.setType(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TYPE));
 
-        if (
-            "##WebService".equals(
-                    xtr.getAttributeValue(null, ATTRIBUTE_TASK_IMPLEMENTATION)
-                )
-        ) {
-            sendTask.setImplementationType(
-                ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE
-            );
+        if ("##WebService".equals(xtr.getAttributeValue(null, ATTRIBUTE_TASK_IMPLEMENTATION))) {
+            sendTask.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE);
             sendTask.setOperationRef(
-                parseOperationRef(
-                    xtr.getAttributeValue(null, ATTRIBUTE_TASK_OPERATION_REF),
-                    model
-                )
+                parseOperationRef(xtr.getAttributeValue(null, ATTRIBUTE_TASK_OPERATION_REF), model)
             );
         }
 
@@ -72,11 +58,8 @@ public class SendTaskXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalAttributes(
-        BaseElement element,
-        BpmnModel model,
-        XMLStreamWriter xtw
-    ) throws Exception {
+    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+        throws Exception {
         SendTask sendTask = (SendTask) element;
 
         if (StringUtils.isNotEmpty(sendTask.getType())) {
@@ -101,11 +84,8 @@ public class SendTaskXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalChildElements(
-        BaseElement element,
-        BpmnModel model,
-        XMLStreamWriter xtw
-    ) throws Exception {}
+    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+        throws Exception {}
 
     protected String parseOperationRef(String operationRef, BpmnModel model) {
         String result = null;
@@ -114,10 +94,7 @@ public class SendTaskXMLConverter extends BaseBpmnXMLConverter {
             if (indexOfP != -1) {
                 String prefix = operationRef.substring(0, indexOfP);
                 String resolvedNamespace = model.getNamespace(prefix);
-                result =
-                    resolvedNamespace +
-                    ":" +
-                    operationRef.substring(indexOfP + 1);
+                result = resolvedNamespace + ":" + operationRef.substring(indexOfP + 1);
             } else {
                 result = model.getTargetNamespace() + ":" + operationRef;
             }

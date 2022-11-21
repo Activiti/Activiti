@@ -23,18 +23,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 
-public class FailOnNoProcessAutoDeploymentStrategy
-    extends AbstractAutoDeploymentStrategy {
+public class FailOnNoProcessAutoDeploymentStrategy extends AbstractAutoDeploymentStrategy {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(
-        FailOnNoProcessAutoDeploymentStrategy.class
-    );
+    protected static final Logger LOGGER = LoggerFactory.getLogger(FailOnNoProcessAutoDeploymentStrategy.class);
 
     public static final String DEPLOYMENT_MODE = "fail-on-no-process";
 
-    public FailOnNoProcessAutoDeploymentStrategy(
-        ApplicationUpgradeContextService applicationUpgradeContextService
-    ) {
+    public FailOnNoProcessAutoDeploymentStrategy(ApplicationUpgradeContextService applicationUpgradeContextService) {
         super(applicationUpgradeContextService);
     }
 
@@ -44,11 +39,7 @@ public class FailOnNoProcessAutoDeploymentStrategy
     }
 
     @Override
-    public void deployResources(
-        String deploymentNameHint,
-        Resource[] resources,
-        RepositoryService repositoryService
-    ) {
+    public void deployResources(String deploymentNameHint, Resource[] resources, RepositoryService repositoryService) {
         DeploymentBuilder deploymentBuilder = repositoryService
             .createDeployment()
             .enableDuplicateFiltering()

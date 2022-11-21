@@ -30,9 +30,7 @@ public class DbSchemaDrop {
 
     public static void main(String[] args) {
         ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine();
-        CommandExecutor commandExecutor = processEngine
-            .getProcessEngineConfiguration()
-            .getCommandExecutor();
+        CommandExecutor commandExecutor = processEngine.getProcessEngineConfiguration().getCommandExecutor();
         CommandConfig config = new CommandConfig().transactionNotSupported();
         commandExecutor.execute(
             config,

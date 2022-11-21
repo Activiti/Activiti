@@ -56,9 +56,7 @@ public class TaskRuntimeClaimReleaseTest {
     public void should_ownerClaimATask_when_taskHasNotAssignOrCandidates() {
         securityUtil.logInAs("garth");
 
-        Task standAloneTask = taskRuntime.create(
-            TaskPayloadBuilder.create().withName("group task").build()
-        );
+        Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create().withName("group task").build());
 
         // the owner should be able to see the created task
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
@@ -72,16 +70,12 @@ public class TaskRuntimeClaimReleaseTest {
         assertThat(task.getCandidateUsers()).isNullOrEmpty();
         assertThat(task.getCandidateGroups()).isNullOrEmpty();
 
-        Task claimedTask = taskRuntime.claim(
-            TaskPayloadBuilder.claim().withTaskId(task.getId()).build()
-        );
+        Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
         assertThat(claimedTask.getAssignee()).isEqualTo("garth");
         assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
         assertThat(claimedTask.getTaskDefinitionKey()).isNull();
 
-        Task releasedTask = taskRuntime.release(
-            TaskPayloadBuilder.release().withTaskId(claimedTask.getId()).build()
-        );
+        Task releasedTask = taskRuntime.release(TaskPayloadBuilder.release().withTaskId(claimedTask.getId()).build());
         assertThat(releasedTask.getAssignee()).isNull();
         assertThat(releasedTask.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
     }
@@ -91,11 +85,7 @@ public class TaskRuntimeClaimReleaseTest {
         securityUtil.logInAs("garth");
 
         Task standAloneTask = taskRuntime.create(
-            TaskPayloadBuilder
-                .create()
-                .withName("group task")
-                .withCandidateGroup("activitiTeam")
-                .build()
+            TaskPayloadBuilder.create().withName("group task").withCandidateGroup("activitiTeam").build()
         );
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
@@ -109,16 +99,12 @@ public class TaskRuntimeClaimReleaseTest {
         // Claim and Release
         securityUtil.logInAs("user");
 
-        Task claimedTask = taskRuntime.claim(
-            TaskPayloadBuilder.claim().withTaskId(task.getId()).build()
-        );
+        Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
         assertThat(claimedTask.getAssignee()).isEqualTo("user");
         assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
         assertThat(claimedTask.getTaskDefinitionKey()).isNull();
 
-        Task releasedTask = taskRuntime.release(
-            TaskPayloadBuilder.release().withTaskId(claimedTask.getId()).build()
-        );
+        Task releasedTask = taskRuntime.release(TaskPayloadBuilder.release().withTaskId(claimedTask.getId()).build());
         assertThat(releasedTask.getAssignee()).isNull();
         assertThat(releasedTask.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
     }
@@ -137,17 +123,11 @@ public class TaskRuntimeClaimReleaseTest {
         );
 
         assertThat(standAloneTask.getAssignee()).isNull();
-        assertThat(standAloneTask.getStatus())
-            .isEqualTo(Task.TaskStatus.CREATED);
+        assertThat(standAloneTask.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
         Throwable thrown = catchThrowable(() -> {
             // UnAuthorized release, task is not assigned
-            taskRuntime.release(
-                TaskPayloadBuilder
-                    .release()
-                    .withTaskId(standAloneTask.getId())
-                    .build()
-            );
+            taskRuntime.release(TaskPayloadBuilder.release().withTaskId(standAloneTask.getId()).build());
         });
         assertThat(thrown)
             .isInstanceOf(IllegalStateException.class)
@@ -159,16 +139,11 @@ public class TaskRuntimeClaimReleaseTest {
         securityUtil.logInAs("garth");
 
         Task standAloneTask = taskRuntime.create(
-            TaskPayloadBuilder
-                .create()
-                .withName("group task")
-                .withCandidateGroup("activitiTeam")
-                .build()
+            TaskPayloadBuilder.create().withName("group task").withCandidateGroup("activitiTeam").build()
         );
 
         assertThat(standAloneTask.getAssignee()).isNull();
-        assertThat(standAloneTask.getStatus())
-            .isEqualTo(Task.TaskStatus.CREATED);
+        assertThat(standAloneTask.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
         securityUtil.logInAs("user");
         assertThat(taskRuntime.task(standAloneTask.getId())).isNotNull();
@@ -179,21 +154,14 @@ public class TaskRuntimeClaimReleaseTest {
         securityUtil.logInAs("user");
 
         // Claim task
-        Task claimedTask = taskRuntime.claim(
-            TaskPayloadBuilder
-                .claim()
-                .withTaskId(standAloneTask.getId())
-                .build()
-        );
+        Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(standAloneTask.getId()).build());
         assertThat(claimedTask.getAssignee()).isEqualTo("user");
         assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
         // UnAuthorized release, task is assigned not to you and hence not visible anymore
         securityUtil.logInAs("john");
 
-        Throwable throwable = catchThrowable(() ->
-            taskRuntime.task(standAloneTask.getId())
-        );
+        Throwable throwable = catchThrowable(() -> taskRuntime.task(standAloneTask.getId()));
 
         //then
         assertThat(throwable)
@@ -210,26 +178,16 @@ public class TaskRuntimeClaimReleaseTest {
         securityUtil.logInAs("garth");
 
         Task standAloneTask = taskRuntime.create(
-            TaskPayloadBuilder
-                .create()
-                .withName("group task")
-                .withCandidateGroup("activitiTeam")
-                .build()
+            TaskPayloadBuilder.create().withName("group task").withCandidateGroup("activitiTeam").build()
         );
 
         assertThat(standAloneTask.getAssignee()).isNull();
-        assertThat(standAloneTask.getStatus())
-            .isEqualTo(Task.TaskStatus.CREATED);
+        assertThat(standAloneTask.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
         securityUtil.logInAs("user");
 
         // Claim task
-        Task claimedTask = taskRuntime.claim(
-            TaskPayloadBuilder
-                .claim()
-                .withTaskId(standAloneTask.getId())
-                .build()
-        );
+        Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(standAloneTask.getId()).build());
         assertThat(claimedTask.getAssignee()).isEqualTo("user");
         assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
@@ -237,12 +195,7 @@ public class TaskRuntimeClaimReleaseTest {
         securityUtil.logInAs("john");
 
         Throwable throwable = catchThrowable(() ->
-            taskRuntime.release(
-                TaskPayloadBuilder
-                    .release()
-                    .withTaskId(standAloneTask.getId())
-                    .build()
-            )
+            taskRuntime.release(TaskPayloadBuilder.release().withTaskId(standAloneTask.getId()).build())
         );
 
         //then
@@ -260,26 +213,16 @@ public class TaskRuntimeClaimReleaseTest {
         securityUtil.logInAs("garth");
 
         Task standAloneTask = taskRuntime.create(
-            TaskPayloadBuilder
-                .create()
-                .withName("group task")
-                .withCandidateGroup("activitiTeam")
-                .build()
+            TaskPayloadBuilder.create().withName("group task").withCandidateGroup("activitiTeam").build()
         );
 
         assertThat(standAloneTask.getAssignee()).isNull();
-        assertThat(standAloneTask.getStatus())
-            .isEqualTo(Task.TaskStatus.CREATED);
+        assertThat(standAloneTask.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
         securityUtil.logInAs("user");
 
         // Claim task
-        Task claimedTask = taskRuntime.claim(
-            TaskPayloadBuilder
-                .claim()
-                .withTaskId(standAloneTask.getId())
-                .build()
-        );
+        Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(standAloneTask.getId()).build());
         assertThat(claimedTask.getAssignee()).isEqualTo("user");
         assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
@@ -287,19 +230,12 @@ public class TaskRuntimeClaimReleaseTest {
         securityUtil.logInAs("garth");
 
         Throwable throwable = catchThrowable(() ->
-            taskRuntime.release(
-                TaskPayloadBuilder
-                    .release()
-                    .withTaskId(standAloneTask.getId())
-                    .build()
-            )
+            taskRuntime.release(TaskPayloadBuilder.release().withTaskId(standAloneTask.getId()).build())
         );
 
         //then
         assertThat(throwable)
             .isInstanceOf(IllegalStateException.class)
-            .hasMessage(
-                "You cannot release a task where you are not the assignee"
-            );
+            .hasMessage("You cannot release a task where you are not the assignee");
     }
 }

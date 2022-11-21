@@ -59,11 +59,7 @@ public class TaskRuntimeUnAuthorizedTest {
         securityUtil.logInAs("garth");
 
         Task standAloneTask = taskRuntime.create(
-            TaskPayloadBuilder
-                .create()
-                .withName("group task")
-                .withCandidateGroup("doctor")
-                .build()
+            TaskPayloadBuilder.create().withName("group task").withCandidateGroup("doctor").build()
         );
 
         // the owner should be able to see the created task
@@ -80,9 +76,7 @@ public class TaskRuntimeUnAuthorizedTest {
 
         //when
         Throwable throwable = catchThrowable(() ->
-            taskRuntime.claim(
-                TaskPayloadBuilder.claim().withTaskId(task.getId()).build()
-            )
+            taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build())
         );
 
         //then

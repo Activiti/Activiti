@@ -55,9 +55,7 @@ public class ProcessRuntimeSecurityPoliciesIT {
     public void getRestrictedProcessDefs() {
         securityUtil.logInAs("user");
 
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
-            Pageable.of(0, 50)
-        );
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0, 50));
         assertThat(processDefinitionPage.getContent()).isNotNull();
         assertThat(processDefinitionPage.getContent()).hasSize(2);
     }
@@ -66,9 +64,7 @@ public class ProcessRuntimeSecurityPoliciesIT {
     public void getAllProcessDefsForAdmin() {
         securityUtil.logInAs("admin");
 
-        Page<ProcessDefinition> processDefinitionPage = processAdminRuntime.processDefinitions(
-            Pageable.of(0, 50)
-        );
+        Page<ProcessDefinition> processDefinitionPage = processAdminRuntime.processDefinitions(Pageable.of(0, 50));
         assertThat(processDefinitionPage.getContent()).isNotNull();
         assertThat(processDefinitionPage.getContent())
             .extracting(ProcessDefinition::getKey)

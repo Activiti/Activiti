@@ -44,9 +44,7 @@ public class SimpleUserTaskConverterTest extends AbstractConverterTest {
     }
 
     private void validateModel(BpmnModel model) throws Exception {
-        FlowElement flowElement = model
-            .getMainProcess()
-            .getFlowElement("UserTask_0ej3luy");
+        FlowElement flowElement = model.getMainProcess().getFlowElement("UserTask_0ej3luy");
         assertThat(flowElement).isNotNull();
         assertThat(flowElement).isInstanceOf(UserTask.class);
 
@@ -54,15 +52,8 @@ public class SimpleUserTaskConverterTest extends AbstractConverterTest {
     }
 
     private void checkXml(BpmnModel model) throws Exception {
-        String xml = new String(
-            new BpmnXMLConverter().convertToXML(model),
-            "UTF-8"
-        );
+        String xml = new String(new BpmnXMLConverter().convertToXML(model), "UTF-8");
 
-        assertThat(xml)
-            .contains(
-                "incoming>SequenceFlow_12e82d4<",
-                "outgoing>SequenceFlow_0zx88mt<"
-            );
+        assertThat(xml).contains("incoming>SequenceFlow_12e82d4<", "outgoing>SequenceFlow_0zx88mt<");
     }
 }

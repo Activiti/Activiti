@@ -32,10 +32,7 @@ public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
     private Map<String, Object> availableVariables;
     private VariablesPropagator variablesPropagator;
 
-    public TriggerCmd(
-        String executionId,
-        Map<String, Object> processVariables
-    ) {
+    public TriggerCmd(String executionId, Map<String, Object> processVariables) {
         super(executionId);
         this.processVariables = processVariables;
     }
@@ -59,10 +56,7 @@ public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
         this.variablesPropagator = variablesPropagator;
     }
 
-    protected Object execute(
-        CommandContext commandContext,
-        ExecutionEntity execution
-    ) {
+    protected Object execute(CommandContext commandContext, ExecutionEntity execution) {
         if (processVariables != null) {
             execution.setVariables(processVariables);
         }
@@ -78,13 +72,7 @@ public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
         Context
             .getProcessEngineConfiguration()
             .getEventDispatcher()
-            .dispatchEvent(
-                ActivitiEventBuilder.createActivitiySignalledEvent(
-                    execution,
-                    null,
-                    null
-                )
-            );
+            .dispatchEvent(ActivitiEventBuilder.createActivitiySignalledEvent(execution, null, null));
 
         Context.getAgenda().planTriggerExecutionOperation(execution);
         return null;

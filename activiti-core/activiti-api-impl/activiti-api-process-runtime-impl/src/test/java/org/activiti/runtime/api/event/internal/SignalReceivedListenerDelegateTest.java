@@ -49,22 +49,15 @@ public class SignalReceivedListenerDelegateTest {
 
     @BeforeEach
     public void setUp() {
-        listenerDelegate =
-            new SignalReceivedListenerDelegate(
-                asList(firstListener, secondListener),
-                converter
-            );
+        listenerDelegate = new SignalReceivedListenerDelegate(asList(firstListener, secondListener), converter);
     }
 
     @Test
     public void onEventShouldCallOnAvailableListenersWhenIsASignalEvent() {
         //given
-        ActivitiSignalEventImpl internalEvent = new ActivitiSignalEventImpl(
-            ActivitiEventType.ACTIVITY_SIGNALED
-        );
+        ActivitiSignalEventImpl internalEvent = new ActivitiSignalEventImpl(ActivitiEventType.ACTIVITY_SIGNALED);
         BPMNSignalReceivedEventImpl signalReceivedEvent = new BPMNSignalReceivedEventImpl();
-        given(converter.from(internalEvent))
-            .willReturn(Optional.of(signalReceivedEvent));
+        given(converter.from(internalEvent)).willReturn(Optional.of(signalReceivedEvent));
 
         //when
         listenerDelegate.onEvent(internalEvent);

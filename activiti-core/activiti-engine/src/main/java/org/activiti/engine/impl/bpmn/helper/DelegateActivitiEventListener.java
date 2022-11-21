@@ -36,10 +36,7 @@ public class DelegateActivitiEventListener extends BaseDelegateEventListener {
     protected ActivitiEventListener delegateInstance;
     protected boolean failOnException = false;
 
-    public DelegateActivitiEventListener(
-        String className,
-        Class<?> entityClass
-    ) {
+    public DelegateActivitiEventListener(String className, Class<?> entityClass) {
         this.className = className;
         setEntityClass(entityClass);
     }
@@ -69,10 +66,7 @@ public class DelegateActivitiEventListener extends BaseDelegateEventListener {
                 // cannot be created
                 failOnException = true;
                 throw new ActivitiIllegalArgumentException(
-                    "Class " +
-                    className +
-                    " does not implement " +
-                    ActivitiEventListener.class.getName()
+                    "Class " + className + " does not implement " + ActivitiEventListener.class.getName()
                 );
             }
         }

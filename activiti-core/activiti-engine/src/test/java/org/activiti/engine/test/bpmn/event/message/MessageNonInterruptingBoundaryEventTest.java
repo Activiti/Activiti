@@ -27,8 +27,7 @@ import org.activiti.engine.test.Deployment;
  *
 
  */
-public class MessageNonInterruptingBoundaryEventTest
-    extends PluggableActivitiTestCase {
+public class MessageNonInterruptingBoundaryEventTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testSingleNonInterruptingBoundaryMessageEvent() {
@@ -36,10 +35,7 @@ public class MessageNonInterruptingBoundaryEventTest
 
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(3);
 
-        Task userTask = taskService
-            .createTaskQuery()
-            .taskDefinitionKey("task")
-            .singleResult();
+        Task userTask = taskService.createTaskQuery().taskDefinitionKey("task").singleResult();
         assertThat(userTask).isNotNull();
 
         Execution execution = runtimeService
@@ -52,109 +48,63 @@ public class MessageNonInterruptingBoundaryEventTest
 
         runtimeService.messageEventReceived("messageName", execution.getId());
         // event subscription not removed
-        execution =
-            runtimeService
-                .createExecutionQuery()
-                .messageEventSubscriptionName("messageName")
-                .singleResult();
+        execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName").singleResult();
         assertThat(execution).isNotNull();
 
         assertThat(taskService.createTaskQuery().count()).isEqualTo(2);
 
-        userTask =
-            taskService
-                .createTaskQuery()
-                .taskDefinitionKey("taskAfterMessage")
-                .singleResult();
+        userTask = taskService.createTaskQuery().taskDefinitionKey("taskAfterMessage").singleResult();
         assertThat(userTask).isNotNull();
-        assertThat(userTask.getTaskDefinitionKey())
-            .isEqualTo("taskAfterMessage");
+        assertThat(userTask.getTaskDefinitionKey()).isEqualTo("taskAfterMessage");
         taskService.complete(userTask.getId());
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(1);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
 
         // send a message a second time
         runtimeService.messageEventReceived("messageName", execution.getId());
         // event subscription not removed
-        execution =
-            runtimeService
-                .createExecutionQuery()
-                .messageEventSubscriptionName("messageName")
-                .singleResult();
+        execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName").singleResult();
         assertThat(execution).isNotNull();
 
         assertThat(taskService.createTaskQuery().count()).isEqualTo(2);
 
-        userTask =
-            taskService
-                .createTaskQuery()
-                .taskDefinitionKey("taskAfterMessage")
-                .singleResult();
+        userTask = taskService.createTaskQuery().taskDefinitionKey("taskAfterMessage").singleResult();
         assertThat(userTask).isNotNull();
-        assertThat(userTask.getTaskDefinitionKey())
-            .isEqualTo("taskAfterMessage");
+        assertThat(userTask.getTaskDefinitionKey()).isEqualTo("taskAfterMessage");
         taskService.complete(userTask.getId());
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(1);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
 
         // now complete the user task with the message boundary event
-        userTask =
-            taskService
-                .createTaskQuery()
-                .taskDefinitionKey("task")
-                .singleResult();
+        userTask = taskService.createTaskQuery().taskDefinitionKey("task").singleResult();
         assertThat(userTask).isNotNull();
 
         taskService.complete(userTask.getId());
 
         // event subscription removed
-        execution =
-            runtimeService
-                .createExecutionQuery()
-                .messageEventSubscriptionName("messageName")
-                .singleResult();
+        execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName").singleResult();
         assertThat(execution).isNull();
 
-        userTask =
-            taskService
-                .createTaskQuery()
-                .taskDefinitionKey("taskAfterTask")
-                .singleResult();
+        userTask = taskService.createTaskQuery().taskDefinitionKey("taskAfterTask").singleResult();
         assertThat(userTask).isNotNull();
 
         taskService.complete(userTask.getId());
 
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
 
         // 2nd. case: complete the user task cancels the message subscription
 
         runtimeService.startProcessInstanceByKey("process");
 
-        userTask =
-            taskService
-                .createTaskQuery()
-                .taskDefinitionKey("task")
-                .singleResult();
+        userTask = taskService.createTaskQuery().taskDefinitionKey("task").singleResult();
         assertThat(userTask).isNotNull();
         taskService.complete(userTask.getId());
 
-        execution =
-            runtimeService
-                .createExecutionQuery()
-                .messageEventSubscriptionName("messageName")
-                .singleResult();
+        execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName").singleResult();
         assertThat(execution).isNull();
 
-        userTask =
-            taskService
-                .createTaskQuery()
-                .taskDefinitionKey("taskAfterTask")
-                .singleResult();
+        userTask = taskService.createTaskQuery().taskDefinitionKey("taskAfterTask").singleResult();
         assertThat(userTask).isNotNull();
         assertThat(userTask.getTaskDefinitionKey()).isEqualTo("taskAfterTask");
         taskService.complete(userTask.getId());
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
     }
 }

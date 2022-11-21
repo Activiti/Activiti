@@ -31,9 +31,7 @@ public class StringToListConverter implements Converter<String, List<Object>> {
 
     @Override
     public List<Object> convert(String source) {
-        JavaType javaType = objectMapper
-            .getTypeFactory()
-            .constructParametricType(List.class, Object.class);
+        JavaType javaType = objectMapper.getTypeFactory().constructParametricType(List.class, Object.class);
         try {
             return objectMapper.readValue(source, javaType);
         } catch (Exception cause) {

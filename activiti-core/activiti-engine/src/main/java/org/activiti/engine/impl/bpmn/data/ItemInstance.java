@@ -27,10 +27,7 @@ public class ItemInstance {
 
     protected StructureInstance structureInstance;
 
-    public ItemInstance(
-        ItemDefinition item,
-        StructureInstance structureInstance
-    ) {
+    public ItemInstance(ItemDefinition item, StructureInstance structureInstance) {
         this.item = item;
         this.structureInstance = structureInstance;
     }

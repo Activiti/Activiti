@@ -48,9 +48,6 @@ public class LongType implements VariableType {
         if (value == null) {
             return true;
         }
-        return (
-            Long.class.isAssignableFrom(value.getClass()) ||
-            long.class.isAssignableFrom(value.getClass())
-        );
+        return (Long.class.isAssignableFrom(value.getClass()) || long.class.isAssignableFrom(value.getClass()));
     }
 }

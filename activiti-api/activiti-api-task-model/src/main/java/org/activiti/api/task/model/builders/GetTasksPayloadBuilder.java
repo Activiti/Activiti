@@ -36,9 +36,7 @@ public class GetTasksPayloadBuilder {
         return this;
     }
 
-    public GetTasksPayloadBuilder withProcessInstanceId(
-        String processInstanceId
-    ) {
+    public GetTasksPayloadBuilder withProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
         return this;
     }
@@ -57,11 +55,6 @@ public class GetTasksPayloadBuilder {
     }
 
     public GetTasksPayload build() {
-        return new GetTasksPayload(
-            assignee,
-            groups,
-            processInstanceId,
-            parentTaskId
-        );
+        return new GetTasksPayload(assignee, groups, processInstanceId, parentTaskId);
     }
 }

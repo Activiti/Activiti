@@ -31,11 +31,7 @@ import org.activiti.validation.validator.ProcessLevelValidator;
 public class AsyncPropertyValidator extends ProcessLevelValidator {
 
     @Override
-    protected void executeValidation(
-        BpmnModel bpmnModel,
-        Process process,
-        List<ValidationError> errors
-    ) {
+    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
         validateFlowElementsInContainer(process, errors, process);
     }
 
@@ -50,10 +46,7 @@ public class AsyncPropertyValidator extends ProcessLevelValidator {
                 validateFlowElementsInContainer(subProcess, errors, process);
             }
 
-            if (
-                (flowElement instanceof FlowNode) &&
-                ((FlowNode) flowElement).isAsynchronous()
-            ) {
+            if ((flowElement instanceof FlowNode) && ((FlowNode) flowElement).isAsynchronous()) {
                 addWarning(
                     errors,
                     Problems.FLOW_ELEMENT_ASYNC_NOT_AVAILABLE,
@@ -76,8 +69,7 @@ public class AsyncPropertyValidator extends ProcessLevelValidator {
                                 "Timer event is not available when asyncExecutor is disabled."
                             );
                         } else if (
-                            (event instanceof SignalEventDefinition) &&
-                            ((SignalEventDefinition) event).isAsync()
+                            (event instanceof SignalEventDefinition) && ((SignalEventDefinition) event).isAsync()
                         ) {
                             addWarning(
                                 errors,

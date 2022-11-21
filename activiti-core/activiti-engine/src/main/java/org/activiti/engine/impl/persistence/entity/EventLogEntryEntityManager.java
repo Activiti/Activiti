@@ -24,15 +24,12 @@ import org.activiti.engine.event.EventLogEntry;
 
  */
 @Internal
-public interface EventLogEntryEntityManager
-    extends EntityManager<EventLogEntryEntity> {
+public interface EventLogEntryEntityManager extends EntityManager<EventLogEntryEntity> {
     List<EventLogEntry> findAllEventLogEntries();
 
     List<EventLogEntry> findEventLogEntries(long startLogNr, long pageSize);
 
-    List<EventLogEntry> findEventLogEntriesByProcessInstanceId(
-        String processInstanceId
-    );
+    List<EventLogEntry> findEventLogEntriesByProcessInstanceId(String processInstanceId);
 
     void deleteEventLogEntry(long logNr);
 }

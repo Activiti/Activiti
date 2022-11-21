@@ -62,9 +62,7 @@ public class ActivitiTestCaseProcessValidator implements ProcessValidator {
 
         protected void executeParse(BpmnModel bpmnModel, Process element) {
             for (FlowElement flowElement : element.getFlowElements()) {
-                if (
-                    !ServiceTask.class.isAssignableFrom(flowElement.getClass())
-                ) {
+                if (!ServiceTask.class.isAssignableFrom(flowElement.getClass())) {
                     continue;
                 }
                 ServiceTask serviceTask = (ServiceTask) flowElement;
@@ -72,16 +70,10 @@ public class ActivitiTestCaseProcessValidator implements ProcessValidator {
             }
         }
 
-        void validateAsyncAttribute(
-            ServiceTask serviceTask,
-            BpmnModel bpmnModel,
-            FlowElement flowElement
-        ) {
+        void validateAsyncAttribute(ServiceTask serviceTask, BpmnModel bpmnModel, FlowElement flowElement) {
             if (!serviceTask.isAsynchronous()) {
                 bpmnModel.addError(
-                    "Please set value of 'activiti:async'" +
-                    "attribute as true for task:" +
-                    serviceTask.getName(),
+                    "Please set value of 'activiti:async'" + "attribute as true for task:" + serviceTask.getName(),
                     "error-" + serviceTask.getName(),
                     flowElement.getId()
                 );

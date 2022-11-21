@@ -33,11 +33,7 @@ public class TaskRuntimeOperations implements TaskOperations {
 
     private List<TaskSource> taskSources;
 
-    public TaskRuntimeOperations(
-        TaskRuntime taskRuntime,
-        EventSource eventSource,
-        List<TaskSource> taskSources
-    ) {
+    public TaskRuntimeOperations(TaskRuntime taskRuntime, EventSource eventSource, List<TaskSource> taskSources) {
         this.taskRuntime = taskRuntime;
         this.eventSource = eventSource;
         this.taskSources = taskSources;

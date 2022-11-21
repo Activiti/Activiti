@@ -50,23 +50,13 @@ public class EventLogEntryEntityManagerImpl
     }
 
     @Override
-    public List<EventLogEntry> findEventLogEntries(
-        long startLogNr,
-        long pageSize
-    ) {
-        return eventLogEntryDataManager.findEventLogEntries(
-            startLogNr,
-            pageSize
-        );
+    public List<EventLogEntry> findEventLogEntries(long startLogNr, long pageSize) {
+        return eventLogEntryDataManager.findEventLogEntries(startLogNr, pageSize);
     }
 
     @Override
-    public List<EventLogEntry> findEventLogEntriesByProcessInstanceId(
-        String processInstanceId
-    ) {
-        return eventLogEntryDataManager.findEventLogEntriesByProcessInstanceId(
-            processInstanceId
-        );
+    public List<EventLogEntry> findEventLogEntriesByProcessInstanceId(String processInstanceId) {
+        return eventLogEntryDataManager.findEventLogEntriesByProcessInstanceId(processInstanceId);
     }
 
     @Override
@@ -78,9 +68,7 @@ public class EventLogEntryEntityManagerImpl
         return eventLogEntryDataManager;
     }
 
-    public void setEventLogEntryDataManager(
-        EventLogEntryDataManager eventLogEntryDataManager
-    ) {
+    public void setEventLogEntryDataManager(EventLogEntryDataManager eventLogEntryDataManager) {
         this.eventLogEntryDataManager = eventLogEntryDataManager;
     }
 }

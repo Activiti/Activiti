@@ -21,8 +21,7 @@ import org.activiti.api.runtime.event.impl.BPMNTimerFailedEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 
-public class ToTimerFailedConverter
-    implements EventConverter<BPMNTimerFailedEvent, ActivitiEvent> {
+public class ToTimerFailedConverter implements EventConverter<BPMNTimerFailedEvent, ActivitiEvent> {
 
     private BPMNTimerConverter bpmnTimerConverter;
 
@@ -36,14 +35,10 @@ public class ToTimerFailedConverter
         if (bpmnTimerConverter.isTimerRelatedEvent(internalEvent)) {
             event =
                 new BPMNTimerFailedEventImpl(
-                    bpmnTimerConverter.convertToBPMNTimer(
-                        (ActivitiEntityEvent) internalEvent
-                    )
+                    bpmnTimerConverter.convertToBPMNTimer((ActivitiEntityEvent) internalEvent)
                 );
             event.setProcessInstanceId(internalEvent.getProcessInstanceId());
-            event.setProcessDefinitionId(
-                internalEvent.getProcessDefinitionId()
-            );
+            event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         }
         return Optional.ofNullable(event);
     }

@@ -25,9 +25,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 
 
  */
-public class ActivitiActivityEventImpl
-    extends ActivitiEventImpl
-    implements ActivitiActivityEvent {
+public class ActivitiActivityEventImpl extends ActivitiEventImpl implements ActivitiActivityEvent {
 
     protected String activityId;
     protected String activityName;

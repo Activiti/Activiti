@@ -85,19 +85,11 @@ public class BasicInclusiveGatewayTest {
             )
             //then
             .expectFields(
-                processInstance()
-                    .status(ProcessInstance.ProcessInstanceStatus.RUNNING),
+                processInstance().status(ProcessInstance.ProcessInstanceStatus.RUNNING),
                 processInstance().name("my-process-instance-name"),
                 processInstance().businessKey("my-business-key")
             )
-            .expect(
-                processInstance()
-                    .hasTask(
-                        "Start Process",
-                        Task.TaskStatus.ASSIGNED,
-                        withAssignee("user1")
-                    )
-            )
+            .expect(processInstance().hasTask("Start Process", Task.TaskStatus.ASSIGNED, withAssignee("user1")))
             .expectEvents(
                 processInstance().hasBeenStarted(),
                 startEvent("theStart").hasBeenStarted(),
@@ -109,9 +101,7 @@ public class BasicInclusiveGatewayTest {
             .andReturn();
 
         // I should be able to get the process instance from the Runtime
-        ProcessInstance processInstanceById = processRuntime.processInstance(
-            processInstance.getId()
-        );
+        ProcessInstance processInstanceById = processRuntime.processInstance(processInstance.getId());
         assertThat(processInstanceById).isEqualTo(processInstance);
 
         // I should get a task for User1
@@ -120,18 +110,13 @@ public class BasicInclusiveGatewayTest {
             .withProcessInstanceId(processInstance.getId())
             .build();
 
-        Page<Task> tasks = taskRuntime.tasks(
-            Pageable.of(0, 50),
-            processInstanceTasksPayload
-        );
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50), processInstanceTasksPayload);
         assertThat(tasks.getTotalItems()).isEqualTo(1);
         Task task = tasks.getContent().get(0);
 
         //given
         taskOperations
-            .complete(
-                TaskPayloadBuilder.complete().withTaskId(task.getId()).build()
-            )
+            .complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build())
             //then
             .expectEvents(
                 task().hasBeenCompleted(),
@@ -144,10 +129,8 @@ public class BasicInclusiveGatewayTest {
                 taskWithName("Check account").hasBeenCreated()
             )
             .expect(
-                processInstance()
-                    .hasTask("Send e-mail", Task.TaskStatus.ASSIGNED),
-                processInstance()
-                    .hasTask("Check account", Task.TaskStatus.ASSIGNED)
+                processInstance().hasTask("Send e-mail", Task.TaskStatus.ASSIGNED),
+                processInstance().hasTask("Check account", Task.TaskStatus.ASSIGNED)
             );
 
         //then - two tasks should be available
@@ -159,17 +142,10 @@ public class BasicInclusiveGatewayTest {
 
         //given
         taskOperations
-            .complete(
-                TaskPayloadBuilder.complete().withTaskId(task1.getId()).build()
-            )
+            .complete(TaskPayloadBuilder.complete().withTaskId(task1.getId()).build())
             //then
-            .expectEvents(
-                task().hasBeenCompleted(),
-                inclusiveGateway("inclusiveGatewayEnd").hasBeenStarted()
-            )
-            .expect(
-                processInstance().hasTask(task2.getName(), task2.getStatus())
-            );
+            .expectEvents(task().hasBeenCompleted(), inclusiveGateway("inclusiveGatewayEnd").hasBeenStarted())
+            .expect(processInstance().hasTask(task2.getName(), task2.getStatus()));
 
         //then - only second task should be available
         tasks = taskRuntime.tasks(Pageable.of(0, 50));
@@ -181,9 +157,7 @@ public class BasicInclusiveGatewayTest {
 
         //complete second task
         taskOperations
-            .complete(
-                TaskPayloadBuilder.complete().withTaskId(task2.getId()).build()
-            )
+            .complete(TaskPayloadBuilder.complete().withTaskId(task2.getId()).build())
             //then
             .expectEvents(
                 task().hasBeenCompleted(),
@@ -200,13 +174,9 @@ public class BasicInclusiveGatewayTest {
     @AfterEach
     public void cleanup() {
         securityUtil.logInAs("admin");
-        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(
-            Pageable.of(0, 50)
-        );
+        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0, 50));
         for (ProcessInstance pi : processInstancePage.getContent()) {
-            processAdminRuntime.delete(
-                ProcessPayloadBuilder.delete(pi.getId())
-            );
+            processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
     }
 }

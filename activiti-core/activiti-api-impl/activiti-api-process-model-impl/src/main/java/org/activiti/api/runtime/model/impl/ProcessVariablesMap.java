@@ -17,9 +17,7 @@ package org.activiti.api.runtime.model.impl;
 
 import java.util.HashMap;
 
-public class ProcessVariablesMap<K, V>
-    extends HashMap<K, V>
-    implements Cloneable {
+public class ProcessVariablesMap<K, V> extends HashMap<K, V> implements Cloneable {
 
     private static final long serialVersionUID = 1L;
 

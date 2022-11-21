@@ -255,11 +255,7 @@ public class BPMNLayout extends mxGraphLayout {
                     double x0 = graph.getGridSize();
                     double y0 = x0;
 
-                    if (
-                        !moveTree ||
-                        parent == graph.getDefaultParent() ||
-                        parent == graph.getCurrentRoot()
-                    ) {
+                    if (!moveTree || parent == graph.getDefaultParent() || parent == graph.getCurrentRoot()) {
                         mxGeometry g = model.getGeometry(root);
                         if (g.isRelative()) {
                             g = model.getGeometry(model.getParent(root));
@@ -296,24 +292,12 @@ public class BPMNLayout extends mxGraphLayout {
                             dy += size.getHeight();
 
                             // Resize parent swimlane
-                            if (
-                                resizeParent && !graph.isCellCollapsed(parent)
-                            ) {
+                            if (resizeParent && !graph.isCellCollapsed(parent)) {
                                 mxGeometry g = model.getGeometry(parent);
 
                                 if (g != null) {
-                                    double width =
-                                        bounds.getWidth() +
-                                        size.getWidth() -
-                                        bounds.getX() +
-                                        2 *
-                                        x0;
-                                    double height =
-                                        bounds.getHeight() +
-                                        size.getHeight() -
-                                        bounds.getY() +
-                                        2 *
-                                        y0;
+                                    double width = bounds.getWidth() + size.getWidth() - bounds.getX() + 2 * x0;
+                                    double height = bounds.getHeight() + size.getHeight() - bounds.getY() + 2 * y0;
 
                                     g = (mxGeometry) g.clone();
 
@@ -336,10 +320,8 @@ public class BPMNLayout extends mxGraphLayout {
                             }
                         }
                         if (
-                            model.getParent(node.cell) !=
-                            graph.getCurrentRoot() &&
-                            model.getParent(node.cell) !=
-                            graph.getDefaultParent()
+                            model.getParent(node.cell) != graph.getCurrentRoot() &&
+                            model.getParent(node.cell) != graph.getDefaultParent()
                         ) {
                             moveNode(node, dx, dy);
                         }
@@ -386,11 +368,7 @@ public class BPMNLayout extends mxGraphLayout {
         TreeNode node = null;
 
         mxIGraphModel model = graph.getModel();
-        if (
-            cell != null &&
-            !visited.contains(cell) &&
-            (!isVertexIgnored(cell) || isBoundaryEvent(cell))
-        ) {
+        if (cell != null && !visited.contains(cell) && (!isVertexIgnored(cell) || isBoundaryEvent(cell))) {
             visited.add(cell);
             node = createNode(cell);
 
@@ -407,9 +385,7 @@ public class BPMNLayout extends mxGraphLayout {
                     }
 
                     // Checks if terminal in same swimlane
-                    Object target = graph
-                        .getView()
-                        .getVisibleTerminal(edge, invert);
+                    Object target = graph.getView().getVisibleTerminal(edge, invert);
                     TreeNode tmp = dfs(target, parent, visited);
 
                     if (tmp != null && model.getGeometry(target) != null) {
@@ -448,12 +424,7 @@ public class BPMNLayout extends mxGraphLayout {
         }
     }
 
-    protected mxRectangle horizontalLayout(
-        TreeNode node,
-        double x0,
-        double y0,
-        mxRectangle bounds
-    ) {
+    protected mxRectangle horizontalLayout(TreeNode node, double x0, double y0, mxRectangle bounds) {
         node.x += x0 + node.offsetX;
         node.y += y0 + node.offsetY;
         bounds = apply(node, bounds);
@@ -465,13 +436,7 @@ public class BPMNLayout extends mxGraphLayout {
             TreeNode s = child.next;
 
             while (s != null) {
-                bounds =
-                    horizontalLayout(
-                        s,
-                        node.x + child.offsetX,
-                        siblingOffset,
-                        bounds
-                    );
+                bounds = horizontalLayout(s, node.x + child.offsetX, siblingOffset, bounds);
                 siblingOffset += s.offsetY;
                 s = s.next;
             }
@@ -480,13 +445,7 @@ public class BPMNLayout extends mxGraphLayout {
         return bounds;
     }
 
-    protected mxRectangle verticalLayout(
-        TreeNode node,
-        Object parent,
-        double x0,
-        double y0,
-        mxRectangle bounds
-    ) {
+    protected mxRectangle verticalLayout(TreeNode node, Object parent, double x0, double y0, mxRectangle bounds) {
         node.x += x0 + node.offsetY;
         node.y += y0 + node.offsetX;
         bounds = apply(node, bounds);
@@ -498,14 +457,7 @@ public class BPMNLayout extends mxGraphLayout {
             TreeNode s = child.next;
 
             while (s != null) {
-                bounds =
-                    verticalLayout(
-                        s,
-                        node,
-                        siblingOffset,
-                        node.y + child.offsetX,
-                        bounds
-                    );
+                bounds = verticalLayout(s, node, siblingOffset, node.y + child.offsetX, bounds);
                 siblingOffset += s.offsetY;
                 s = s.next;
             }
@@ -529,18 +481,8 @@ public class BPMNLayout extends mxGraphLayout {
             node.child.offsetY = y1;
         }
 
-        node.contour.upperHead =
-            createLine(
-                node.height,
-                0,
-                createLine(x, y1, node.contour.upperHead)
-            );
-        node.contour.lowerHead =
-            createLine(
-                node.height,
-                0,
-                createLine(x, y2, node.contour.lowerHead)
-            );
+        node.contour.upperHead = createLine(node.height, 0, createLine(x, y1, node.contour.upperHead));
+        node.contour.lowerHead = createLine(node.height, 0, createLine(x, y2, node.contour.lowerHead));
     }
 
     /**
@@ -552,8 +494,7 @@ public class BPMNLayout extends mxGraphLayout {
         node.contour.upperTail = createLine(node.height + dist, 0, null);
         node.contour.upperHead = node.contour.upperTail;
         node.contour.lowerTail = createLine(0, -node.width - dist, null);
-        node.contour.lowerHead =
-            createLine(node.height + dist, 0, node.contour.lowerTail);
+        node.contour.lowerHead = createLine(node.height + dist, 0, node.contour.lowerTail);
     }
 
     /**
@@ -627,14 +568,7 @@ public class BPMNLayout extends mxGraphLayout {
     /**
      *
      */
-    protected double offset(
-        double p1,
-        double p2,
-        double a1,
-        double a2,
-        double b1,
-        double b2
-    ) {
+    protected double offset(double p1, double p2, double a1, double a2, double b1, double b2) {
         double d = 0;
 
         if (b1 <= p1 || p1 + a1 <= 0) {
@@ -673,14 +607,7 @@ public class BPMNLayout extends mxGraphLayout {
     /**
      *
      */
-    protected Polyline bridge(
-        Polyline line1,
-        double x1,
-        double y1,
-        Polyline line2,
-        double x2,
-        double y2
-    ) {
+    protected Polyline bridge(Polyline line1, double x1, double y1, Polyline line2, double x2, double y2) {
         double dx = x2 + line2.dx - x1;
         double dy = 0;
         double s = 0;
@@ -731,26 +658,14 @@ public class BPMNLayout extends mxGraphLayout {
             }
 
             if (bounds == null) {
-                bounds =
-                    new mxRectangle(
-                        g.getX(),
-                        g.getY(),
-                        g.getWidth(),
-                        g.getHeight()
-                    );
+                bounds = new mxRectangle(g.getX(), g.getY(), g.getWidth(), g.getHeight());
             } else {
                 bounds =
                     new mxRectangle(
                         Math.min(bounds.getX(), g.getX()),
                         Math.min(bounds.getY(), g.getY()),
-                        Math.max(
-                            bounds.getX() + bounds.getWidth(),
-                            g.getX() + g.getWidth()
-                        ),
-                        Math.max(
-                            bounds.getY() + bounds.getHeight(),
-                            g.getY() + g.getHeight()
-                        )
+                        Math.max(bounds.getX() + bounds.getWidth(), g.getX() + g.getWidth()),
+                        Math.max(bounds.getY() + bounds.getHeight(), g.getY() + g.getHeight())
                     );
             }
         }

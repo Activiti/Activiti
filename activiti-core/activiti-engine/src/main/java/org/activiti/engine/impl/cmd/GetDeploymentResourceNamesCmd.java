@@ -25,8 +25,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 /**
 
  */
-public class GetDeploymentResourceNamesCmd
-    implements Command<List>, Serializable {
+public class GetDeploymentResourceNamesCmd implements Command<List>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String deploymentId;
@@ -40,8 +39,6 @@ public class GetDeploymentResourceNamesCmd
             throw new ActivitiIllegalArgumentException("deploymentId is null");
         }
 
-        return commandContext
-            .getDeploymentEntityManager()
-            .getDeploymentResourceNames(deploymentId);
+        return commandContext.getDeploymentEntityManager().getDeploymentResourceNames(deploymentId);
     }
 }

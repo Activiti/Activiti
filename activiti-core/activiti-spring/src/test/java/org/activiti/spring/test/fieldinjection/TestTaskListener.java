@@ -37,21 +37,12 @@ public class TestTaskListener implements TaskListener {
 
     @Override
     public void notify(DelegateTask delegateTask) {
-        Expression inputExpression = DelegateHelper.getFieldExpression(
-            delegateTask,
-            "input"
-        );
+        Expression inputExpression = DelegateHelper.getFieldExpression(delegateTask, "input");
         Number input = (Number) inputExpression.getValue(delegateTask);
 
         int result = input.intValue() / 2;
 
-        Expression resultVarExpression = DelegateHelper.getFieldExpression(
-            delegateTask,
-            "resultVar"
-        );
-        delegateTask.setVariable(
-            resultVarExpression.getValue(delegateTask).toString(),
-            result
-        );
+        Expression resultVarExpression = DelegateHelper.getFieldExpression(delegateTask, "resultVar");
+        delegateTask.setVariable(resultVarExpression.getValue(delegateTask).toString(), result);
     }
 }

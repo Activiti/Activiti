@@ -33,9 +33,7 @@ public class NativeHistoricTaskInstanceQueryImpl
         super(commandContext);
     }
 
-    public NativeHistoricTaskInstanceQueryImpl(
-        CommandExecutor commandExecutor
-    ) {
+    public NativeHistoricTaskInstanceQueryImpl(CommandExecutor commandExecutor) {
         super(commandExecutor);
     }
 
@@ -49,17 +47,10 @@ public class NativeHistoricTaskInstanceQueryImpl
     ) {
         return commandContext
             .getHistoricTaskInstanceEntityManager()
-            .findHistoricTaskInstancesByNativeQuery(
-                parameterMap,
-                firstResult,
-                maxResults
-            );
+            .findHistoricTaskInstancesByNativeQuery(parameterMap, firstResult, maxResults);
     }
 
-    public long executeCount(
-        CommandContext commandContext,
-        Map<String, Object> parameterMap
-    ) {
+    public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
         return commandContext
             .getHistoricTaskInstanceEntityManager()
             .findHistoricTaskInstanceCountByNativeQuery(parameterMap);

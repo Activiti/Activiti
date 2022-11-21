@@ -124,13 +124,7 @@ public class ValidationError {
     @Override
     public String toString() {
         StringBuilder strb = new StringBuilder();
-        strb.append(
-            "[Validation set: '" +
-            validatorSetName +
-            "' | Problem: '" +
-            problem +
-            "'] : "
-        );
+        strb.append("[Validation set: '" + validatorSetName + "' | Problem: '" + problem + "'] : ");
         strb.append(defaultDescription);
         strb.append(" - [Extra info : ");
         boolean extraInfoAlreadyPresent = false;
@@ -142,9 +136,7 @@ public class ValidationError {
             if (extraInfoAlreadyPresent) {
                 strb.append(" | ");
             }
-            strb.append(
-                "processDefinitionName = " + processDefinitionName + " | "
-            );
+            strb.append("processDefinitionName = " + processDefinitionName + " | ");
             extraInfoAlreadyPresent = true;
         }
         if (activityId != null) {
@@ -163,13 +155,7 @@ public class ValidationError {
         }
         strb.append("]");
         if (xmlLineNumber > 0 && xmlColumnNumber > 0) {
-            strb.append(
-                " ( line: " +
-                xmlLineNumber +
-                ", column: " +
-                xmlColumnNumber +
-                ")"
-            );
+            strb.append(" ( line: " + xmlLineNumber + ", column: " + xmlColumnNumber + ")");
         }
         return strb.toString();
     }

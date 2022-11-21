@@ -37,26 +37,18 @@ public class ActivitiProfiler implements ProcessEngineConfigurator {
     }
 
     @Override
-    public void beforeInit(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public void beforeInit(ProcessEngineConfigurationImpl processEngineConfiguration) {
         // Command interceptor
         List<CommandInterceptor> interceptors = new ArrayList<CommandInterceptor>();
         interceptors.add(new TotalExecutionTimeCommandInterceptor());
-        processEngineConfiguration.setCustomPreCommandInterceptors(
-            interceptors
-        );
+        processEngineConfiguration.setCustomPreCommandInterceptors(interceptors);
 
         // DbsqlSession
-        processEngineConfiguration.setDbSqlSessionFactory(
-            new ProfilingDbSqlSessionFactory()
-        );
+        processEngineConfiguration.setDbSqlSessionFactory(new ProfilingDbSqlSessionFactory());
     }
 
     @Override
-    public void configure(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {}
+    public void configure(ProcessEngineConfigurationImpl processEngineConfiguration) {}
 
     @Override
     public int getPriority() {

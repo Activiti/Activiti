@@ -30,24 +30,15 @@ import org.slf4j.LoggerFactory;
  */
 public class InterfaceParser implements BpmnXMLConstants {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(
-        InterfaceParser.class.getName()
-    );
+    protected static final Logger LOGGER = LoggerFactory.getLogger(InterfaceParser.class.getName());
 
     public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
         Interface interfaceObject = new Interface();
         BpmnXMLUtil.addXMLLocation(interfaceObject, xtr);
-        interfaceObject.setId(
-            model.getTargetNamespace() +
-            ":" +
-            xtr.getAttributeValue(null, ATTRIBUTE_ID)
-        );
+        interfaceObject.setId(model.getTargetNamespace() + ":" + xtr.getAttributeValue(null, ATTRIBUTE_ID));
         interfaceObject.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
         interfaceObject.setImplementationRef(
-            parseMessageRef(
-                xtr.getAttributeValue(null, ATTRIBUTE_IMPLEMENTATION_REF),
-                model
-            )
+            parseMessageRef(xtr.getAttributeValue(null, ATTRIBUTE_IMPLEMENTATION_REF), model)
         );
 
         boolean readyWithInterface = false;
@@ -55,69 +46,29 @@ public class InterfaceParser implements BpmnXMLConstants {
         try {
             while (!readyWithInterface && xtr.hasNext()) {
                 xtr.next();
-                if (
-                    xtr.isStartElement() &&
-                    ELEMENT_OPERATION.equals(xtr.getLocalName())
-                ) {
+                if (xtr.isStartElement() && ELEMENT_OPERATION.equals(xtr.getLocalName())) {
                     operation = new Operation();
                     BpmnXMLUtil.addXMLLocation(operation, xtr);
-                    operation.setId(
-                        model.getTargetNamespace() +
-                        ":" +
-                        xtr.getAttributeValue(null, ATTRIBUTE_ID)
-                    );
-                    operation.setName(
-                        xtr.getAttributeValue(null, ATTRIBUTE_NAME)
-                    );
+                    operation.setId(model.getTargetNamespace() + ":" + xtr.getAttributeValue(null, ATTRIBUTE_ID));
+                    operation.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
                     operation.setImplementationRef(
-                        parseMessageRef(
-                            xtr.getAttributeValue(
-                                null,
-                                ATTRIBUTE_IMPLEMENTATION_REF
-                            ),
-                            model
-                        )
+                        parseMessageRef(xtr.getAttributeValue(null, ATTRIBUTE_IMPLEMENTATION_REF), model)
                     );
-                } else if (
-                    xtr.isStartElement() &&
-                    ELEMENT_IN_MESSAGE.equals(xtr.getLocalName())
-                ) {
+                } else if (xtr.isStartElement() && ELEMENT_IN_MESSAGE.equals(xtr.getLocalName())) {
                     String inMessageRef = xtr.getElementText();
-                    if (
-                        operation != null &&
-                        StringUtils.isNotEmpty(inMessageRef)
-                    ) {
-                        operation.setInMessageRef(
-                            parseMessageRef(inMessageRef.trim(), model)
-                        );
+                    if (operation != null && StringUtils.isNotEmpty(inMessageRef)) {
+                        operation.setInMessageRef(parseMessageRef(inMessageRef.trim(), model));
                     }
-                } else if (
-                    xtr.isStartElement() &&
-                    ELEMENT_OUT_MESSAGE.equals(xtr.getLocalName())
-                ) {
+                } else if (xtr.isStartElement() && ELEMENT_OUT_MESSAGE.equals(xtr.getLocalName())) {
                     String outMessageRef = xtr.getElementText();
-                    if (
-                        operation != null &&
-                        StringUtils.isNotEmpty(outMessageRef)
-                    ) {
-                        operation.setOutMessageRef(
-                            parseMessageRef(outMessageRef.trim(), model)
-                        );
+                    if (operation != null && StringUtils.isNotEmpty(outMessageRef)) {
+                        operation.setOutMessageRef(parseMessageRef(outMessageRef.trim(), model));
                     }
-                } else if (
-                    xtr.isEndElement() &&
-                    ELEMENT_OPERATION.equalsIgnoreCase(xtr.getLocalName())
-                ) {
-                    if (
-                        operation != null &&
-                        StringUtils.isNotEmpty(operation.getImplementationRef())
-                    ) {
+                } else if (xtr.isEndElement() && ELEMENT_OPERATION.equalsIgnoreCase(xtr.getLocalName())) {
+                    if (operation != null && StringUtils.isNotEmpty(operation.getImplementationRef())) {
                         interfaceObject.getOperations().add(operation);
                     }
-                } else if (
-                    xtr.isEndElement() &&
-                    ELEMENT_INTERFACE.equals(xtr.getLocalName())
-                ) {
+                } else if (xtr.isEndElement() && ELEMENT_INTERFACE.equals(xtr.getLocalName())) {
                     readyWithInterface = true;
                 }
             }
@@ -142,11 +93,7 @@ public class InterfaceParser implements BpmnXMLConstants {
                     // namespace prefix so will be used as part of the
                     // stringReference
                     messageRef = prefix + ":" + messageRef;
-                } else if (
-                    !resolvedNamespace.equalsIgnoreCase(
-                        model.getTargetNamespace()
-                    )
-                ) {
+                } else if (!resolvedNamespace.equalsIgnoreCase(model.getTargetNamespace())) {
                     // if it's a valid namespace prefix but it's not the
                     // targetNamespace then we'll use it as a valid namespace
                     // (even out editor does not support defining namespaces it

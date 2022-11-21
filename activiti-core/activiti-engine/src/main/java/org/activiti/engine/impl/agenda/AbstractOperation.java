@@ -43,10 +43,7 @@ public abstract class AbstractOperation implements Runnable {
 
     public AbstractOperation() {}
 
-    public AbstractOperation(
-        CommandContext commandContext,
-        ExecutionEntity execution
-    ) {
+    public AbstractOperation(CommandContext commandContext, ExecutionEntity execution) {
         this.commandContext = commandContext;
         this.execution = execution;
         this.agenda = commandContext.getAgenda();
@@ -55,21 +52,14 @@ public abstract class AbstractOperation implements Runnable {
     /**
      * Helper method to match the activityId of an execution with a FlowElement of the process definition referenced by the execution.
      */
-    protected FlowElement getCurrentFlowElement(
-        final ExecutionEntity execution
-    ) {
+    protected FlowElement getCurrentFlowElement(final ExecutionEntity execution) {
         if (execution.getCurrentFlowElement() != null) {
             return execution.getCurrentFlowElement();
         } else if (execution.getCurrentActivityId() != null) {
             String processDefinitionId = execution.getProcessDefinitionId();
-            org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(
-                processDefinitionId
-            );
+            org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
             String activityId = execution.getCurrentActivityId();
-            FlowElement currentFlowElement = process.getFlowElement(
-                activityId,
-                true
-            );
+            FlowElement currentFlowElement = process.getFlowElement(activityId, true);
             return currentFlowElement;
         }
         return null;
@@ -79,15 +69,8 @@ public abstract class AbstractOperation implements Runnable {
      * Executes the execution listeners defined on the given element, with the given event type.
      * Uses the {@link #execution} of this operation instance as argument for the execution listener.
      */
-    protected void executeExecutionListeners(
-        HasExecutionListeners elementWithExecutionListeners,
-        String eventType
-    ) {
-        executeExecutionListeners(
-            elementWithExecutionListeners,
-            execution,
-            eventType
-        );
+    protected void executeExecutionListeners(HasExecutionListeners elementWithExecutionListeners, String eventType) {
+        executeExecutionListeners(elementWithExecutionListeners, execution, eventType);
     }
 
     /**
@@ -102,34 +85,21 @@ public abstract class AbstractOperation implements Runnable {
         commandContext
             .getProcessEngineConfiguration()
             .getListenerNotificationHelper()
-            .executeExecutionListeners(
-                elementWithExecutionListeners,
-                executionEntity,
-                eventType
-            );
+            .executeExecutionListeners(elementWithExecutionListeners, executionEntity, eventType);
     }
 
     /**
      * Returns the first parent execution of the provided execution that is a scope.
      */
-    protected ExecutionEntity findFirstParentScopeExecution(
-        ExecutionEntity executionEntity
-    ) {
+    protected ExecutionEntity findFirstParentScopeExecution(ExecutionEntity executionEntity) {
         ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
         ExecutionEntity parentScopeExecution = null;
-        ExecutionEntity currentlyExaminedExecution = executionEntityManager.findById(
-            executionEntity.getParentId()
-        );
-        while (
-            currentlyExaminedExecution != null && parentScopeExecution == null
-        ) {
+        ExecutionEntity currentlyExaminedExecution = executionEntityManager.findById(executionEntity.getParentId());
+        while (currentlyExaminedExecution != null && parentScopeExecution == null) {
             if (currentlyExaminedExecution.isScope()) {
                 parentScopeExecution = currentlyExaminedExecution;
             } else {
-                currentlyExaminedExecution =
-                    executionEntityManager.findById(
-                        currentlyExaminedExecution.getParentId()
-                    );
+                currentlyExaminedExecution = executionEntityManager.findById(currentlyExaminedExecution.getParentId());
             }
         }
         return parentScopeExecution;

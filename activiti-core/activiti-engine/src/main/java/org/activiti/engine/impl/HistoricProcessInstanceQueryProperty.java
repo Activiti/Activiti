@@ -71,9 +71,7 @@ public class HistoricProcessInstanceQueryProperty implements QueryProperty {
         return name;
     }
 
-    public static HistoricProcessInstanceQueryProperty findByName(
-        String propertyName
-    ) {
+    public static HistoricProcessInstanceQueryProperty findByName(String propertyName) {
         return properties.get(propertyName);
     }
 }

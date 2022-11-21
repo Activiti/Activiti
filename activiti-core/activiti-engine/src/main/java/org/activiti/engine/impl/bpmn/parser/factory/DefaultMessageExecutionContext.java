@@ -63,16 +63,11 @@ public class DefaultMessageExecutionContext implements MessageExecutionContext {
         return Optional
             .ofNullable(messageEventDefinition.getCorrelationKey())
             .map(correlationKey -> {
-                return evaluateExpression(
-                    messageEventDefinition.getCorrelationKey(),
-                    execution
-                );
+                return evaluateExpression(messageEventDefinition.getCorrelationKey(), execution);
             });
     }
 
-    public Optional<Map<String, Object>> getMessagePayload(
-        DelegateExecution execution
-    ) {
+    public Optional<Map<String, Object>> getMessagePayload(DelegateExecution execution) {
         return messagePayloadMappingProvider.getMessagePayload(execution);
     }
 
@@ -80,9 +75,7 @@ public class DefaultMessageExecutionContext implements MessageExecutionContext {
     public ThrowMessage createThrowMessage(DelegateExecution execution) {
         String name = getMessageName(execution);
         Optional<String> correlationKey = getCorrelationKey(execution);
-        Optional<String> businessKey = Optional.ofNullable(
-            execution.getProcessInstanceBusinessKey()
-        );
+        Optional<String> businessKey = Optional.ofNullable(execution.getProcessInstanceBusinessKey());
         Optional<Map<String, Object>> payload = getMessagePayload(execution);
 
         return ThrowMessage
@@ -102,20 +95,11 @@ public class DefaultMessageExecutionContext implements MessageExecutionContext {
         String messageName = getMessageName(execution);
         Optional<String> correlationKey = getCorrelationKey(execution);
 
-        correlationKey.ifPresent(key ->
-            assertNoExistingDuplicateEventSubscriptions(
-                messageName,
-                key,
-                commandContext
-            )
-        );
+        correlationKey.ifPresent(key -> assertNoExistingDuplicateEventSubscriptions(messageName, key, commandContext));
 
         MessageEventSubscriptionEntity messageEvent = commandContext
             .getEventSubscriptionEntityManager()
-            .insertMessageEvent(
-                messageName,
-                ExecutionEntity.class.cast(execution)
-            );
+            .insertMessageEvent(messageName, ExecutionEntity.class.cast(execution));
         correlationKey.ifPresent(messageEvent::setConfiguration);
 
         return messageEvent;
@@ -129,19 +113,12 @@ public class DefaultMessageExecutionContext implements MessageExecutionContext {
         return messagePayloadMappingProvider;
     }
 
-    protected String evaluateExpression(
-        String expression,
-        DelegateExecution execution
-    ) {
+    protected String evaluateExpression(String expression, DelegateExecution execution) {
         return Optional
             .ofNullable(expressionManager.createExpression(expression))
             .map(it -> it.getValue(execution))
             .map(Object::toString)
-            .orElseThrow(() ->
-                new ActivitiIllegalArgumentException(
-                    "Expression '" + expression + "' is null"
-                )
-            );
+            .orElseThrow(() -> new ActivitiIllegalArgumentException("Expression '" + expression + "' is null"));
     }
 
     protected void assertNoExistingDuplicateEventSubscriptions(
@@ -154,9 +131,7 @@ public class DefaultMessageExecutionContext implements MessageExecutionContext {
             .findEventSubscriptionsByName("message", messageName, null);
         existing
             .stream()
-            .filter(subscription ->
-                Objects.equals(subscription.getConfiguration(), correlationKey)
-            )
+            .filter(subscription -> Objects.equals(subscription.getConfiguration(), correlationKey))
             .findFirst()
             .ifPresent(subscription -> {
                 throw new ActivitiIllegalArgumentException(

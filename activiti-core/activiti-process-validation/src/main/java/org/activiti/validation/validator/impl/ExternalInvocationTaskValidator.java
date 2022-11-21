@@ -23,8 +23,7 @@ import org.activiti.validation.ValidationError;
 import org.activiti.validation.validator.Problems;
 import org.activiti.validation.validator.ProcessLevelValidator;
 
-public abstract class ExternalInvocationTaskValidator
-    extends ProcessLevelValidator {
+public abstract class ExternalInvocationTaskValidator extends ProcessLevelValidator {
 
     protected void validateFieldDeclarationsForEmail(
         org.activiti.bpmn.model.Process process,
@@ -90,11 +89,7 @@ public abstract class ExternalInvocationTaskValidator
             }
 
             if (
-                (
-                    fieldName.equals("wait") ||
-                    fieldName.equals("redirectError") ||
-                    fieldName.equals("cleanEnv")
-                ) &&
+                (fieldName.equals("wait") || fieldName.equals("redirectError") || fieldName.equals("cleanEnv")) &&
                 !fieldValue.toLowerCase().equals("true") &&
                 !fieldValue.toLowerCase().equals("false")
             ) {
@@ -131,11 +126,7 @@ public abstract class ExternalInvocationTaskValidator
             String fieldName = fieldExtension.getFieldName();
             String fieldValue = fieldExtension.getStringValue();
 
-            if (
-                fieldName.equals("decisionTableReferenceKey") &&
-                fieldValue != null &&
-                fieldValue.length() > 0
-            ) {
+            if (fieldName.equals("decisionTableReferenceKey") && fieldValue != null && fieldValue.length() > 0) {
                 keyDefined = true;
             }
         }

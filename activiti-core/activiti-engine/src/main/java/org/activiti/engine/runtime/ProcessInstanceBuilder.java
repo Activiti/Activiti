@@ -76,9 +76,7 @@ public interface ProcessInstanceBuilder {
     /**
      * Sets the transient variables
      */
-    ProcessInstanceBuilder transientVariables(
-        Map<String, Object> transientVariables
-    );
+    ProcessInstanceBuilder transientVariables(Map<String, Object> transientVariables);
 
     /**
      * Adds a transient variable to the process instance

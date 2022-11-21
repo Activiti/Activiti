@@ -20,9 +20,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Select;
 
 public interface MyTestMapper {
-    @Select(
-        "SELECT ID_ as id, NAME_ as name, CREATE_TIME_ as createTime FROM ACT_RU_TASK"
-    )
+    @Select("SELECT ID_ as id, NAME_ as name, CREATE_TIME_ as createTime FROM ACT_RU_TASK")
     List<Map<String, Object>> selectTasks();
 
     @Select(
@@ -32,7 +30,5 @@ public interface MyTestMapper {
             "where variable.NAME_ = #{variableName}",
         }
     )
-    List<Map<String, Object>> selectTaskWithSpecificVariable(
-        String variableName
-    );
+    List<Map<String, Object>> selectTaskWithSpecificVariable(String variableName);
 }

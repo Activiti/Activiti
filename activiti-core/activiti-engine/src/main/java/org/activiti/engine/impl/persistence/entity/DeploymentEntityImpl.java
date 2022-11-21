@@ -29,9 +29,7 @@ import org.activiti.engine.impl.context.Context;
 
 
  */
-public class DeploymentEntityImpl
-    extends AbstractEntityNoRevision
-    implements DeploymentEntity, Serializable {
+public class DeploymentEntityImpl extends AbstractEntityNoRevision implements DeploymentEntity, Serializable {
 
     private static final long serialVersionUID = 1L;
 

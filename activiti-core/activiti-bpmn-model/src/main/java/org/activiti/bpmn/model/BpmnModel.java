@@ -54,13 +54,10 @@ public class BpmnModel {
     }
 
     public String getDefinitionsAttributeValue(String namespace, String name) {
-        List<ExtensionAttribute> attributes = getDefinitionsAttributes()
-            .get(name);
+        List<ExtensionAttribute> attributes = getDefinitionsAttributes().get(name);
         if (attributes != null && !attributes.isEmpty()) {
             for (ExtensionAttribute attribute : attributes) {
-                if (
-                    namespace.equals(attribute.getNamespace())
-                ) return attribute.getValue();
+                if (namespace.equals(attribute.getNamespace())) return attribute.getValue();
             }
         }
         return null;
@@ -71,18 +68,13 @@ public class BpmnModel {
             List<ExtensionAttribute> attributeList = null;
             if (!this.definitionsAttributes.containsKey(attribute.getName())) {
                 attributeList = new ArrayList<ExtensionAttribute>();
-                this.definitionsAttributes.put(
-                        attribute.getName(),
-                        attributeList
-                    );
+                this.definitionsAttributes.put(attribute.getName(), attributeList);
             }
             this.definitionsAttributes.get(attribute.getName()).add(attribute);
         }
     }
 
-    public void setDefinitionsAttributes(
-        Map<String, List<ExtensionAttribute>> attributes
-    ) {
+    public void setDefinitionsAttributes(Map<String, List<ExtensionAttribute>> attributes) {
         this.definitionsAttributes = attributes;
     }
 
@@ -181,14 +173,8 @@ public class BpmnModel {
 
         if (foundFlowElement == null) {
             for (Process process : processes) {
-                for (FlowElement flowElement : process.findFlowElementsOfType(
-                    SubProcess.class
-                )) {
-                    foundFlowElement =
-                        getFlowElementInSubProcess(
-                            id,
-                            (SubProcess) flowElement
-                        );
+                for (FlowElement flowElement : process.findFlowElementsOfType(SubProcess.class)) {
+                    foundFlowElement = getFlowElementInSubProcess(id, (SubProcess) flowElement);
                     if (foundFlowElement != null) {
                         break;
                     }
@@ -202,19 +188,12 @@ public class BpmnModel {
         return foundFlowElement;
     }
 
-    protected FlowElement getFlowElementInSubProcess(
-        String id,
-        SubProcess subProcess
-    ) {
+    protected FlowElement getFlowElementInSubProcess(String id, SubProcess subProcess) {
         FlowElement foundFlowElement = subProcess.getFlowElement(id);
         if (foundFlowElement == null) {
             for (FlowElement flowElement : subProcess.getFlowElements()) {
                 if (flowElement instanceof SubProcess) {
-                    foundFlowElement =
-                        getFlowElementInSubProcess(
-                            id,
-                            (SubProcess) flowElement
-                        );
+                    foundFlowElement = getFlowElementInSubProcess(id, (SubProcess) flowElement);
                     if (foundFlowElement != null) {
                         break;
                     }
@@ -235,11 +214,8 @@ public class BpmnModel {
 
         if (foundArtifact == null) {
             for (Process process : processes) {
-                for (FlowElement flowElement : process.findFlowElementsOfType(
-                    SubProcess.class
-                )) {
-                    foundArtifact =
-                        getArtifactInSubProcess(id, (SubProcess) flowElement);
+                for (FlowElement flowElement : process.findFlowElementsOfType(SubProcess.class)) {
+                    foundArtifact = getArtifactInSubProcess(id, (SubProcess) flowElement);
                     if (foundArtifact != null) {
                         break;
                     }
@@ -253,16 +229,12 @@ public class BpmnModel {
         return foundArtifact;
     }
 
-    protected Artifact getArtifactInSubProcess(
-        String id,
-        SubProcess subProcess
-    ) {
+    protected Artifact getArtifactInSubProcess(String id, SubProcess subProcess) {
         Artifact foundArtifact = subProcess.getArtifact(id);
         if (foundArtifact == null) {
             for (FlowElement flowElement : subProcess.getFlowElements()) {
                 if (flowElement instanceof SubProcess) {
-                    foundArtifact =
-                        getArtifactInSubProcess(id, (SubProcess) flowElement);
+                    foundArtifact = getArtifactInSubProcess(id, (SubProcess) flowElement);
                     if (foundArtifact != null) {
                         break;
                     }
@@ -320,10 +292,7 @@ public class BpmnModel {
         return labelLocationMap;
     }
 
-    public void addFlowGraphicInfoList(
-        String key,
-        List<GraphicInfo> graphicInfoList
-    ) {
+    public void addFlowGraphicInfoList(String key, List<GraphicInfo> graphicInfoList) {
         flowLocationMap.put(key, graphicInfoList);
     }
 
@@ -396,9 +365,7 @@ public class BpmnModel {
     }
 
     public void addMessageFlow(MessageFlow messageFlow) {
-        if (
-            messageFlow != null && StringUtils.isNotEmpty(messageFlow.getId())
-        ) {
+        if (messageFlow != null && StringUtils.isNotEmpty(messageFlow.getId())) {
             messageFlowMap.put(messageFlow.getId(), messageFlow);
         }
     }
@@ -471,9 +438,7 @@ public class BpmnModel {
         return itemDefinitionMap;
     }
 
-    public void setItemDefinitions(
-        Map<String, ItemDefinition> itemDefinitionMap
-    ) {
+    public void setItemDefinitions(Map<String, ItemDefinition> itemDefinitionMap) {
         this.itemDefinitionMap = itemDefinitionMap;
     }
 
@@ -603,8 +568,7 @@ public class BpmnModel {
     }
 
     public String getStartFormKey(String processId) {
-        FlowElement initialFlowElement = getProcessById(processId)
-            .getInitialFlowElement();
+        FlowElement initialFlowElement = getProcessById(processId).getInitialFlowElement();
         if (initialFlowElement instanceof StartEvent) {
             StartEvent startEvent = (StartEvent) initialFlowElement;
             return startEvent.getFormKey();

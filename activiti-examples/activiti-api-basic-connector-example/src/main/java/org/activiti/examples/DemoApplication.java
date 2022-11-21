@@ -55,11 +55,7 @@ public class DemoApplication {
 
     private List<ProcessCompletedEvent> processCompletedEvents = new ArrayList<>();
 
-    public DemoApplication(
-        ProcessRuntime processRuntime,
-        TaskRuntime taskRuntime,
-        SecurityUtil securityUtil
-    ) {
+    public DemoApplication(ProcessRuntime processRuntime, TaskRuntime taskRuntime, SecurityUtil securityUtil) {
         this.processRuntime = processRuntime;
         this.taskRuntime = taskRuntime;
         this.securityUtil = securityUtil;
@@ -86,9 +82,7 @@ public class DemoApplication {
     private void listCompletedProcesses() {
         logger.info(">>> Completed process Instances: ");
         processCompletedEvents.forEach(processCompletedEvent ->
-            logger.info(
-                "\t> Process instance : " + processCompletedEvent.getEntity()
-            )
+            logger.info("\t> Process instance : " + processCompletedEvent.getEntity())
         );
     }
 
@@ -117,11 +111,7 @@ public class DemoApplication {
                 logger.info(">>> Performing task -> " + task);
                 listTaskVariables(task);
                 taskRuntime.complete(
-                    TaskPayloadBuilder
-                        .complete()
-                        .withTaskId(task.getId())
-                        .withVariable("rating", 5)
-                        .build()
+                    TaskPayloadBuilder.complete().withTaskId(task.getId()).withVariable("rating", 5).build()
                 );
             });
     }
@@ -129,34 +119,19 @@ public class DemoApplication {
     private void listTaskVariables(Task task) {
         logger.info(">>> Task variables:");
         taskRuntime
-            .variables(
-                TaskPayloadBuilder.variables().withTaskId(task.getId()).build()
-            )
+            .variables(TaskPayloadBuilder.variables().withTaskId(task.getId()).build())
             .forEach(variableInstance ->
-                logger.info(
-                    "\t> " +
-                    variableInstance.getName() +
-                    " -> " +
-                    variableInstance.getValue()
-                )
+                logger.info("\t> " + variableInstance.getName() + " -> " + variableInstance.getValue())
             );
     }
 
     private void listProcessVariables(ProcessInstance processInstance) {
         logger.info(">>> Process variables:");
         List<VariableInstance> variables = processRuntime.variables(
-            ProcessPayloadBuilder
-                .variables()
-                .withProcessInstance(processInstance)
-                .build()
+            ProcessPayloadBuilder.variables().withProcessInstance(processInstance).build()
         );
         variables.forEach(variableInstance ->
-            logger.info(
-                "\t> " +
-                variableInstance.getName() +
-                " -> " +
-                variableInstance.getValue()
-            )
+            logger.info("\t> " + variableInstance.getName() + " -> " + variableInstance.getValue())
         );
     }
 
@@ -174,13 +149,8 @@ public class DemoApplication {
     }
 
     private void listAvailableProcesses() {
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
-            Pageable.of(0, 10)
-        );
-        logger.info(
-            "> Available Process definitions: " +
-            processDefinitionPage.getTotalItems()
-        );
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0, 10));
+        logger.info("> Available Process definitions: " + processDefinitionPage.getTotalItems());
         for (ProcessDefinition pd : processDefinitionPage.getContent()) {
             logger.info("\t > Process definition: " + pd);
         }
@@ -210,13 +180,11 @@ public class DemoApplication {
 
     @Bean
     public VariableEventListener<VariableCreatedEvent> variableCreatedEventListener() {
-        return variableCreatedEvent ->
-            variableCreatedEvents.add(variableCreatedEvent);
+        return variableCreatedEvent -> variableCreatedEvents.add(variableCreatedEvent);
     }
 
     @Bean
     public ProcessRuntimeEventListener<ProcessCompletedEvent> processCompletedEventListener() {
-        return processCompletedEvent ->
-            processCompletedEvents.add(processCompletedEvent);
+        return processCompletedEvent -> processCompletedEvents.add(processCompletedEvent);
     }
 }

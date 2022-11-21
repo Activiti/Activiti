@@ -29,10 +29,7 @@ public class ActivityBehaviorInvocation extends DelegateInvocation {
 
     protected final DelegateExecution execution;
 
-    public ActivityBehaviorInvocation(
-        ActivityBehavior behaviorInstance,
-        DelegateExecution execution
-    ) {
+    public ActivityBehaviorInvocation(ActivityBehavior behaviorInstance, DelegateExecution execution) {
         this.behaviorInstance = behaviorInstance;
         this.execution = execution;
     }

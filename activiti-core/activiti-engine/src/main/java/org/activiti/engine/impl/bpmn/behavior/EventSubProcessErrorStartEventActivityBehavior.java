@@ -31,8 +31,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  *
 
  */
-public class EventSubProcessErrorStartEventActivityBehavior
-    extends AbstractBpmnActivityBehavior {
+public class EventSubProcessErrorStartEventActivityBehavior extends AbstractBpmnActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 
@@ -43,9 +42,7 @@ public class EventSubProcessErrorStartEventActivityBehavior
         execution.setScope(true);
 
         // initialize the template-defined data objects as variables
-        Map<String, Object> dataObjectVars = processDataObjects(
-            eventSubProcess.getDataObjects()
-        );
+        Map<String, Object> dataObjectVars = processDataObjects(eventSubProcess.getDataObjects());
         if (dataObjectVars != null) {
             execution.setVariablesLocal(dataObjectVars);
         }
@@ -55,17 +52,10 @@ public class EventSubProcessErrorStartEventActivityBehavior
             .getExecutionEntityManager()
             .createChildExecution((ExecutionEntity) execution);
         startSubProcessExecution.setCurrentFlowElement(startEvent);
-        Context
-            .getAgenda()
-            .planTakeOutgoingSequenceFlowsOperation(
-                startSubProcessExecution,
-                true
-            );
+        Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(startSubProcessExecution, true);
     }
 
-    protected Map<String, Object> processDataObjects(
-        Collection<ValuedDataObject> dataObjects
-    ) {
+    protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
         Map<String, Object> variablesMap = new HashMap<String, Object>();
         // convert data objects to process variables
         if (dataObjects != null) {

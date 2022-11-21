@@ -21,8 +21,7 @@ import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.factory.MessageExecutionContext;
 import org.activiti.engine.impl.delegate.ThrowMessageDelegate;
 
-public class ThrowMessageEndEventActivityBehavior
-    extends AbstractThrowMessageEventActivityBehavior {
+public class ThrowMessageEndEventActivityBehavior extends AbstractThrowMessageEventActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 

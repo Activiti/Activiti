@@ -46,8 +46,7 @@ public abstract class EventSubscriptionEntityImpl
     protected ExecutionEntity execution;
 
     public EventSubscriptionEntityImpl() {
-        this.created =
-            Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+        this.created = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
     }
 
     public Object getPersistentState() {
@@ -85,11 +84,7 @@ public abstract class EventSubscriptionEntityImpl
 
     public ExecutionEntity getExecution() {
         if (execution == null && executionId != null) {
-            execution =
-                Context
-                    .getCommandContext()
-                    .getExecutionEntityManager()
-                    .findById(executionId);
+            execution = Context.getCommandContext().getExecutionEntityManager().findById(executionId);
         }
         return execution;
     }

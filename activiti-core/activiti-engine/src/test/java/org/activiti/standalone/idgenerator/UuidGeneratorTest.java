@@ -32,9 +32,7 @@ import org.activiti.engine.test.Deployment;
 public class UuidGeneratorTest extends ResourceActivitiTestCase {
 
     public UuidGeneratorTest() {
-        super(
-            "org/activiti/standalone/idgenerator/uuidgenerator.test.activiti.cfg.xml"
-        );
+        super("org/activiti/standalone/idgenerator/uuidgenerator.test.activiti.cfg.xml");
     }
 
     @Deployment
@@ -43,9 +41,7 @@ public class UuidGeneratorTest extends ResourceActivitiTestCase {
 
         // Start processes
         for (int i = 0; i < 50; i++) {
-            executorService.execute(() ->
-                runtimeService.startProcessInstanceByKey("simpleProcess")
-            );
+            executorService.execute(() -> runtimeService.startProcessInstanceByKey("simpleProcess"));
         }
 
         // Complete tasks
@@ -73,7 +69,6 @@ public class UuidGeneratorTest extends ResourceActivitiTestCase {
         executorService.shutdown();
         executorService.awaitTermination(1, TimeUnit.MINUTES);
 
-        assertThat(historyService.createHistoricProcessInstanceQuery().count())
-            .isEqualTo(50);
+        assertThat(historyService.createHistoricProcessInstanceQuery().count()).isEqualTo(50);
     }
 }

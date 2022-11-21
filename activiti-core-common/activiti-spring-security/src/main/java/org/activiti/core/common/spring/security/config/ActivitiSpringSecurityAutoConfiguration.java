@@ -74,10 +74,7 @@ public class ActivitiSpringSecurityAutoConfiguration {
         GrantedAuthoritiesResolver grantedAuthoritiesResolver,
         GrantedAuthoritiesGroupsMapper grantedAuthoritiesGroupsMapper
     ) {
-        return new AuthenticationPrincipalGroupsProvider(
-            grantedAuthoritiesResolver,
-            grantedAuthoritiesGroupsMapper
-        );
+        return new AuthenticationPrincipalGroupsProvider(grantedAuthoritiesResolver, grantedAuthoritiesGroupsMapper);
     }
 
     @Bean
@@ -86,10 +83,7 @@ public class ActivitiSpringSecurityAutoConfiguration {
         GrantedAuthoritiesResolver grantedAuthoritiesResolver,
         GrantedAuthoritiesRolesMapper grantedAuthoritiesRolesMapper
     ) {
-        return new AuthenticationPrincipalRolesProvider(
-            grantedAuthoritiesResolver,
-            grantedAuthoritiesRolesMapper
-        );
+        return new AuthenticationPrincipalRolesProvider(grantedAuthoritiesResolver, grantedAuthoritiesRolesMapper);
     }
 
     @Bean

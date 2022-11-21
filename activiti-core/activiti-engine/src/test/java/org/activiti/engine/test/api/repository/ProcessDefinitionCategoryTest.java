@@ -32,48 +32,32 @@ public class ProcessDefinitionCategoryTest extends PluggableActivitiTestCase {
     public void testQueryByCategoryNotEquals() {
         Deployment deployment = repositoryService
             .createDeployment()
-            .addClasspathResource(
-                "org/activiti/engine/test/api/repository/processCategoryOne.bpmn20.xml"
-            )
-            .addClasspathResource(
-                "org/activiti/engine/test/api/repository/processCategoryTwo.bpmn20.xml"
-            )
-            .addClasspathResource(
-                "org/activiti/engine/test/api/repository/processCategoryThree.bpmn20.xml"
-            )
+            .addClasspathResource("org/activiti/engine/test/api/repository/processCategoryOne.bpmn20.xml")
+            .addClasspathResource("org/activiti/engine/test/api/repository/processCategoryTwo.bpmn20.xml")
+            .addClasspathResource("org/activiti/engine/test/api/repository/processCategoryThree.bpmn20.xml")
             .deploy();
 
         HashSet<String> processDefinitionNames = getProcessDefinitionNames(
-            repositoryService
-                .createProcessDefinitionQuery()
-                .processDefinitionCategoryNotEquals("one")
-                .list()
+            repositoryService.createProcessDefinitionQuery().processDefinitionCategoryNotEquals("one").list()
         );
         HashSet<String> expectedProcessDefinitionNames = new HashSet<String>();
         expectedProcessDefinitionNames.add("processTwo");
         expectedProcessDefinitionNames.add("processThree");
-        assertThat(processDefinitionNames)
-            .isEqualTo(expectedProcessDefinitionNames);
+        assertThat(processDefinitionNames).isEqualTo(expectedProcessDefinitionNames);
 
         processDefinitionNames =
             getProcessDefinitionNames(
-                repositoryService
-                    .createProcessDefinitionQuery()
-                    .processDefinitionCategoryNotEquals("two")
-                    .list()
+                repositoryService.createProcessDefinitionQuery().processDefinitionCategoryNotEquals("two").list()
             );
         expectedProcessDefinitionNames = new HashSet<String>();
         expectedProcessDefinitionNames.add("processOne");
         expectedProcessDefinitionNames.add("processThree");
-        assertThat(processDefinitionNames)
-            .isEqualTo(expectedProcessDefinitionNames);
+        assertThat(processDefinitionNames).isEqualTo(expectedProcessDefinitionNames);
 
         repositoryService.deleteDeployment(deployment.getId());
     }
 
-    private HashSet<String> getProcessDefinitionNames(
-        List<ProcessDefinition> processDefinitions
-    ) {
+    private HashSet<String> getProcessDefinitionNames(List<ProcessDefinition> processDefinitions) {
         HashSet<String> processDefinitionNames = new HashSet<String>();
         for (ProcessDefinition processDefinition : processDefinitions) {
             processDefinitionNames.add(processDefinition.getKey());
@@ -84,16 +68,11 @@ public class ProcessDefinitionCategoryTest extends PluggableActivitiTestCase {
     @org.activiti.engine.test.Deployment
     public void testSetProcessDefinitionCategory() {
         // Verify category and see if we can start a process instance
-        ProcessDefinition processDefinition = repositoryService
-            .createProcessDefinitionQuery()
-            .singleResult();
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
         assertThat(processDefinition.getCategory()).isEqualTo("testCategory");
 
         processDefinition =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .processDefinitionCategory("testCategory")
-                .singleResult();
+            repositoryService.createProcessDefinitionQuery().processDefinitionCategory("testCategory").singleResult();
         assertThat(processDefinition).isNotNull();
 
         long count = runtimeService.createProcessInstanceQuery().count();
@@ -102,17 +81,9 @@ public class ProcessDefinitionCategoryTest extends PluggableActivitiTestCase {
         assertThat(newCount == count + 1).isTrue();
 
         // Update category
-        repositoryService.setProcessDefinitionCategory(
-            processDefinition.getId(),
-            "UpdatedCategory"
-        );
+        repositoryService.setProcessDefinitionCategory(processDefinition.getId(), "UpdatedCategory");
 
-        assertThat(
-            repositoryService
-                .createProcessDefinitionQuery()
-                .processDefinitionCategory("testCategory")
-                .count()
-        )
+        assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionCategory("testCategory").count())
             .isEqualTo(0);
         processDefinition =
             repositoryService
@@ -127,22 +98,11 @@ public class ProcessDefinitionCategoryTest extends PluggableActivitiTestCase {
         assertThat(newCount == count + 2).isTrue();
 
         // Set category to null
-        repositoryService.setProcessDefinitionCategory(
-            processDefinition.getId(),
-            null
-        );
-        assertThat(
-            repositoryService
-                .createProcessDefinitionQuery()
-                .processDefinitionCategory("testCategory")
-                .count()
-        )
+        repositoryService.setProcessDefinitionCategory(processDefinition.getId(), null);
+        assertThat(repositoryService.createProcessDefinitionQuery().processDefinitionCategory("testCategory").count())
             .isEqualTo(0);
         assertThat(
-            repositoryService
-                .createProcessDefinitionQuery()
-                .processDefinitionCategory("UpdatedCategory")
-                .count()
+            repositoryService.createProcessDefinitionQuery().processDefinitionCategory("UpdatedCategory").count()
         )
             .isEqualTo(0);
         assertThat(

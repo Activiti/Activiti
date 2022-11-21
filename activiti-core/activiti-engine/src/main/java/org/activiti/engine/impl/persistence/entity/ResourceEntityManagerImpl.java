@@ -25,9 +25,7 @@ import org.activiti.engine.impl.persistence.entity.data.ResourceDataManager;
 
 
  */
-public class ResourceEntityManagerImpl
-    extends AbstractEntityManager<ResourceEntity>
-    implements ResourceEntityManager {
+public class ResourceEntityManagerImpl extends AbstractEntityManager<ResourceEntity> implements ResourceEntityManager {
 
     protected ResourceDataManager resourceDataManager;
 
@@ -50,20 +48,12 @@ public class ResourceEntityManagerImpl
     }
 
     @Override
-    public ResourceEntity findResourceByDeploymentIdAndResourceName(
-        String deploymentId,
-        String resourceName
-    ) {
-        return resourceDataManager.findResourceByDeploymentIdAndResourceName(
-            deploymentId,
-            resourceName
-        );
+    public ResourceEntity findResourceByDeploymentIdAndResourceName(String deploymentId, String resourceName) {
+        return resourceDataManager.findResourceByDeploymentIdAndResourceName(deploymentId, resourceName);
     }
 
     @Override
-    public List<ResourceEntity> findResourcesByDeploymentId(
-        String deploymentId
-    ) {
+    public List<ResourceEntity> findResourcesByDeploymentId(String deploymentId) {
         return resourceDataManager.findResourcesByDeploymentId(deploymentId);
     }
 
@@ -71,9 +61,7 @@ public class ResourceEntityManagerImpl
         return resourceDataManager;
     }
 
-    public void setResourceDataManager(
-        ResourceDataManager resourceDataManager
-    ) {
+    public void setResourceDataManager(ResourceDataManager resourceDataManager) {
         this.resourceDataManager = resourceDataManager;
     }
 }

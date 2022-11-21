@@ -35,11 +35,7 @@ public class TaskMatchers {
         return (operationScope, events) -> {
             List<TaskAssignedEvent> taskAssignedEvents = events
                 .stream()
-                .filter(event ->
-                    TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED.equals(
-                        event.getEventType()
-                    )
-                )
+                .filter(event -> TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED.equals(event.getEventType()))
                 .map(TaskAssignedEvent.class::cast)
                 .collect(Collectors.toList());
             assertThat(taskAssignedEvents)
@@ -58,11 +54,7 @@ public class TaskMatchers {
         return (operationScope, events) -> {
             List<TaskCompletedEvent> taskCompletedEvents = events
                 .stream()
-                .filter(event ->
-                    TaskRuntimeEvent.TaskEvents.TASK_COMPLETED.equals(
-                        event.getEventType()
-                    )
-                )
+                .filter(event -> TaskRuntimeEvent.TaskEvents.TASK_COMPLETED.equals(event.getEventType()))
                 .map(TaskCompletedEvent.class::cast)
                 .collect(Collectors.toList());
             assertThat(taskCompletedEvents)

@@ -48,9 +48,7 @@ public class JodaDateType implements VariableType {
 
     public void setValue(Object value, ValueFields valueFields) {
         if (value != null) {
-            valueFields.setLongValue(
-                ((LocalDate) value).toDateTimeAtStartOfDay().getMillis()
-            );
+            valueFields.setLongValue(((LocalDate) value).toDateTimeAtStartOfDay().getMillis());
         } else {
             valueFields.setLongValue(null);
         }

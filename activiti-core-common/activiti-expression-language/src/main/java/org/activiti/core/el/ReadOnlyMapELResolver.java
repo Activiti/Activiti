@@ -50,17 +50,10 @@ public class ReadOnlyMapELResolver extends ELResolver {
         return true;
     }
 
-    public void setValue(
-        ELContext context,
-        Object base,
-        Object property,
-        Object value
-    ) {
+    public void setValue(ELContext context, Object base, Object property, Object value) {
         if (base == null) {
             if (wrappedMap.containsKey(property)) {
-                throw new IllegalArgumentException(
-                    "Cannot set value of '" + property + "', it's readonly!"
-                );
+                throw new IllegalArgumentException("Cannot set value of '" + property + "', it's readonly!");
             }
         }
     }
@@ -69,10 +62,7 @@ public class ReadOnlyMapELResolver extends ELResolver {
         return Object.class;
     }
 
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(
-        ELContext context,
-        Object arg
-    ) {
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object arg) {
         return null;
     }
 

@@ -43,9 +43,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        JPAEnhancedVariableTest.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(JPAEnhancedVariableTest.class);
     private static EntityManagerFactory entityManagerFactory;
     protected static ProcessEngine cachedProcessEngine;
 
@@ -60,15 +58,13 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
                 "org/activiti/standalone/jpa/activiti.cfg.xml"
             );
 
-            cachedProcessEngine =
-                processEngineConfiguration.buildProcessEngine();
+            cachedProcessEngine = processEngineConfiguration.buildProcessEngine();
 
             EntityManagerSessionFactory entityManagerSessionFactory = (EntityManagerSessionFactory) processEngineConfiguration
                 .getSessionFactories()
                 .get(EntityManagerSession.class);
 
-            entityManagerFactory =
-                entityManagerSessionFactory.getEntityManagerFactory();
+            entityManagerFactory = entityManagerSessionFactory.getEntityManagerFactory();
 
             setupJPAVariables();
         }
@@ -97,8 +93,7 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
         em = entityManagerFactory.createEntityManager();
 
         fieldEntity = em.find(FieldAccessJPAEntity.class, fieldEntity.getId());
-        propertyEntity =
-            em.find(PropertyAccessJPAEntity.class, propertyEntity.getId());
+        propertyEntity = em.find(PropertyAccessJPAEntity.class, propertyEntity.getId());
 
         em.getTransaction().begin();
 
@@ -121,11 +116,7 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
             .singleResult();
     }
 
-    @Deployment(
-        resources = {
-            "org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml",
-        }
-    )
+    @Deployment(resources = { "org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml" })
     public void testEnhancedEntityVariables() throws Exception {
         // test if enhancement is used
         if (
@@ -145,9 +136,7 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
             .startProcessInstanceByKey("JPAVariableProcess", params);
 
         Task task = getTask(instance);
-        for (Map.Entry<String, Object> entry : task
-            .getProcessVariables()
-            .entrySet()) {
+        for (Map.Entry<String, Object> entry : task.getProcessVariables().entrySet()) {
             String name = entry.getKey();
             Object value = entry.getValue();
             if (name.equals("fieldEntity")) {
@@ -160,11 +149,7 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
         }
     }
 
-    @Deployment(
-        resources = {
-            "org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml",
-        }
-    )
+    @Deployment(resources = { "org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml" })
     public void testEnhancedEntityListVariables() throws Exception {
         // test if enhancement is used
         if (
@@ -197,37 +182,27 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
         // start process with enhanced and persisted only jpa variables in the
         // same list
         params.putAll(singletonMap("list", asList(fieldEntity, fieldEntity2)));
-        instance =
-            processEngine
-                .getRuntimeService()
-                .startProcessInstanceByKey("JPAVariableProcess", params);
+        instance = processEngine.getRuntimeService().startProcessInstanceByKey("JPAVariableProcess", params);
 
         task = getTask(instance);
         list = (List) task.getProcessVariables().get("list");
         assertThat(list.size() == 2).isTrue();
         assertThat(list.get(0)).isInstanceOf(FieldAccessJPAEntity.class);
-        assertThat(((FieldAccessJPAEntity) list.get(0)).getId().equals(1L))
-            .isTrue();
+        assertThat(((FieldAccessJPAEntity) list.get(0)).getId().equals(1L)).isTrue();
         assertThat(list.get(1)).isInstanceOf(FieldAccessJPAEntity.class);
-        assertThat(((FieldAccessJPAEntity) list.get(1)).getId().equals(2L))
-            .isTrue();
+        assertThat(((FieldAccessJPAEntity) list.get(1)).getId().equals(2L)).isTrue();
 
         // shuffle list and start a new process
         params.putAll(singletonMap("list", asList(fieldEntity2, fieldEntity)));
-        instance =
-            processEngine
-                .getRuntimeService()
-                .startProcessInstanceByKey("JPAVariableProcess", params);
+        instance = processEngine.getRuntimeService().startProcessInstanceByKey("JPAVariableProcess", params);
 
         task = getTask(instance);
         list = (List) task.getProcessVariables().get("list");
         assertThat(list.size() == 2).isTrue();
         assertThat(list.get(0)).isInstanceOf(FieldAccessJPAEntity.class);
-        assertThat(((FieldAccessJPAEntity) list.get(0)).getId().equals(2L))
-            .isTrue();
+        assertThat(((FieldAccessJPAEntity) list.get(0)).getId().equals(2L)).isTrue();
         assertThat(list.get(1)).isInstanceOf(FieldAccessJPAEntity.class);
-        assertThat(((FieldAccessJPAEntity) list.get(1)).getId().equals(1L))
-            .isTrue();
+        assertThat(((FieldAccessJPAEntity) list.get(1)).getId().equals(1L)).isTrue();
 
         // start process with mixed jpa entities in list
         assertThatExceptionOfType(Exception.class)
@@ -236,10 +211,7 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
                     .getRuntimeService()
                     .startProcessInstanceByKey(
                         "JPAVariableProcess",
-                        singletonMap(
-                            "list",
-                            asList(fieldEntity, propertyEntity)
-                        )
+                        singletonMap("list", asList(fieldEntity, propertyEntity))
                     )
             );
     }

@@ -36,9 +36,7 @@ public class MybatisProcessDefinitionDataManager
     extends AbstractDataManager<ProcessDefinitionEntity>
     implements ProcessDefinitionDataManager {
 
-    public MybatisProcessDefinitionDataManager(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public MybatisProcessDefinitionDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);
     }
 
@@ -53,14 +51,9 @@ public class MybatisProcessDefinitionDataManager
     }
 
     @Override
-    public ProcessDefinitionEntity findLatestProcessDefinitionByKey(
-        String processDefinitionKey
-    ) {
+    public ProcessDefinitionEntity findLatestProcessDefinitionByKey(String processDefinitionKey) {
         return (ProcessDefinitionEntity) getDbSqlSession()
-            .selectOne(
-                "selectLatestProcessDefinitionByKey",
-                processDefinitionKey
-            );
+            .selectOne("selectLatestProcessDefinitionByKey", processDefinitionKey);
     }
 
     @Override
@@ -78,11 +71,7 @@ public class MybatisProcessDefinitionDataManager
     @Override
     public void deleteProcessDefinitionsByDeploymentId(String deploymentId) {
         getDbSqlSession()
-            .delete(
-                "deleteProcessDefinitionsByDeploymentId",
-                deploymentId,
-                ProcessDefinitionEntityImpl.class
-            );
+            .delete("deleteProcessDefinitionsByDeploymentId", deploymentId, ProcessDefinitionEntityImpl.class);
     }
 
     @Override
@@ -92,12 +81,7 @@ public class MybatisProcessDefinitionDataManager
         Page page
     ) {
         // List<ProcessDefinition> processDefinitions =
-        return getDbSqlSession()
-            .selectList(
-                "selectProcessDefinitionsByQueryCriteria",
-                processDefinitionQuery,
-                page
-            );
+        return getDbSqlSession().selectList("selectProcessDefinitionsByQueryCriteria", processDefinitionQuery, page);
         // skipped this after discussion within the team
         // // retrieve process definitions from cache
         // (https://activiti.atlassian.net/browse/ACT-1020) to have all available
@@ -115,14 +99,9 @@ public class MybatisProcessDefinitionDataManager
     }
 
     @Override
-    public long findProcessDefinitionCountByQueryCriteria(
-        ProcessDefinitionQueryImpl processDefinitionQuery
-    ) {
+    public long findProcessDefinitionCountByQueryCriteria(ProcessDefinitionQueryImpl processDefinitionQuery) {
         return (Long) getDbSqlSession()
-            .selectOne(
-                "selectProcessDefinitionCountByQueryCriteria",
-                processDefinitionQuery
-            );
+            .selectOne("selectProcessDefinitionCountByQueryCriteria", processDefinitionQuery);
     }
 
     @Override
@@ -148,10 +127,7 @@ public class MybatisProcessDefinitionDataManager
         parameters.put("processDefinitionKey", processDefinitionKey);
         parameters.put("tenantId", tenantId);
         return (ProcessDefinitionEntity) getDbSqlSession()
-            .selectOne(
-                "selectProcessDefinitionByDeploymentAndKeyAndTenantId",
-                parameters
-            );
+            .selectOne("selectProcessDefinitionByDeploymentAndKeyAndTenantId", parameters);
     }
 
     @Override
@@ -192,10 +168,7 @@ public class MybatisProcessDefinitionDataManager
         params.put("processDefinitionVersion", processDefinitionVersion);
         params.put("tenantId", tenantId);
         List<ProcessDefinitionEntity> results = getDbSqlSession()
-            .selectList(
-                "selectProcessDefinitionsByKeyAndVersionAndTenantId",
-                params
-            );
+            .selectList("selectProcessDefinitionsByKeyAndVersionAndTenantId", params);
         if (results.size() == 1) {
             return results.get(0);
         } else if (results.size() > 1) {
@@ -220,34 +193,19 @@ public class MybatisProcessDefinitionDataManager
         int maxResults
     ) {
         return getDbSqlSession()
-            .selectListWithRawParameter(
-                "selectProcessDefinitionByNativeQuery",
-                parameterMap,
-                firstResult,
-                maxResults
-            );
+            .selectListWithRawParameter("selectProcessDefinitionByNativeQuery", parameterMap, firstResult, maxResults);
     }
 
     @Override
-    public long findProcessDefinitionCountByNativeQuery(
-        Map<String, Object> parameterMap
-    ) {
-        return (Long) getDbSqlSession()
-            .selectOne(
-                "selectProcessDefinitionCountByNativeQuery",
-                parameterMap
-            );
+    public long findProcessDefinitionCountByNativeQuery(Map<String, Object> parameterMap) {
+        return (Long) getDbSqlSession().selectOne("selectProcessDefinitionCountByNativeQuery", parameterMap);
     }
 
     @Override
-    public void updateProcessDefinitionTenantIdForDeployment(
-        String deploymentId,
-        String newTenantId
-    ) {
+    public void updateProcessDefinitionTenantIdForDeployment(String deploymentId, String newTenantId) {
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("deploymentId", deploymentId);
         params.put("tenantId", newTenantId);
-        getDbSqlSession()
-            .update("updateProcessDefinitionTenantIdForDeploymentId", params);
+        getDbSqlSession().update("updateProcessDefinitionTenantIdForDeploymentId", params);
     }
 }

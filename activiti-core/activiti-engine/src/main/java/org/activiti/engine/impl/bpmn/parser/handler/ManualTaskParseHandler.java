@@ -23,18 +23,13 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 /**
 
  */
-public class ManualTaskParseHandler
-    extends AbstractActivityBpmnParseHandler<ManualTask> {
+public class ManualTaskParseHandler extends AbstractActivityBpmnParseHandler<ManualTask> {
 
     public Class<? extends BaseElement> getHandledType() {
         return ManualTask.class;
     }
 
     protected void executeParse(BpmnParse bpmnParse, ManualTask manualTask) {
-        manualTask.setBehavior(
-            bpmnParse
-                .getActivityBehaviorFactory()
-                .createManualTaskActivityBehavior(manualTask)
-        );
+        manualTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createManualTaskActivityBehavior(manualTask));
     }
 }

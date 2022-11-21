@@ -21,8 +21,7 @@ package org.activiti.engine.impl.variable;
  *
 
  */
-public class HistoricJPAEntityListVariableType
-    extends JPAEntityListVariableType {
+public class HistoricJPAEntityListVariableType extends JPAEntityListVariableType {
 
     private static final HistoricJPAEntityListVariableType INSTANCE = new HistoricJPAEntityListVariableType();
 

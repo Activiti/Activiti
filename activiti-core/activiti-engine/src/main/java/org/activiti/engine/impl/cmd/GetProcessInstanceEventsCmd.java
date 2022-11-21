@@ -25,8 +25,7 @@ import org.activiti.engine.task.Event;
 /**
 
  */
-public class GetProcessInstanceEventsCmd
-    implements Command<List<Event>>, Serializable {
+public class GetProcessInstanceEventsCmd implements Command<List<Event>>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String processInstanceId;
@@ -36,8 +35,6 @@ public class GetProcessInstanceEventsCmd
     }
 
     public List<Event> execute(CommandContext commandContext) {
-        return commandContext
-            .getCommentEntityManager()
-            .findEventsByProcessInstanceId(processInstanceId);
+        return commandContext.getCommentEntityManager().findEventsByProcessInstanceId(processInstanceId);
     }
 }

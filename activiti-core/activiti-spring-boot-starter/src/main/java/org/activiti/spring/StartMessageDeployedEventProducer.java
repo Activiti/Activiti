@@ -36,12 +36,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 
-public class StartMessageDeployedEventProducer
-    extends AbstractActivitiSmartLifeCycle {
+public class StartMessageDeployedEventProducer extends AbstractActivitiSmartLifeCycle {
 
-    private static Logger logger = LoggerFactory.getLogger(
-        StartMessageDeployedEventProducer.class
-    );
+    private static Logger logger = LoggerFactory.getLogger(StartMessageDeployedEventProducer.class);
 
     private RepositoryService repositoryService;
     private ManagementService managementService;
@@ -74,11 +71,7 @@ public class StartMessageDeployedEventProducer
 
         for (ProcessDefinition processDefinition : processDefinitions) {
             managementService
-                .executeCommand(
-                    new FindStartMessageEventSubscriptions(
-                        processDefinition.getId()
-                    )
-                )
+                .executeCommand(new FindStartMessageEventSubscriptions(processDefinition.getId()))
                 .stream()
                 .map(subscriptionConverter::convertToStartMessageSubscription)
                 .map(messageSubscription ->
@@ -89,22 +82,15 @@ public class StartMessageDeployedEventProducer
                         .build()
                 )
                 .map(startMessageDeploymentDefinition ->
-                    StartMessageDeployedEventImpl
-                        .builder()
-                        .withEntity(startMessageDeploymentDefinition)
-                        .build()
+                    StartMessageDeployedEventImpl.builder().withEntity(startMessageDeploymentDefinition).build()
                 )
                 .forEach(messageDeployedEvents::add);
         }
 
-        managementService.executeCommand(
-            new DispatchStartMessageDeployedEvents(messageDeployedEvents)
-        );
+        managementService.executeCommand(new DispatchStartMessageDeployedEvents(messageDeployedEvents));
 
         if (!messageDeployedEvents.isEmpty()) {
-            eventPublisher.publishEvent(
-                new StartMessageDeployedEvents(messageDeployedEvents)
-            );
+            eventPublisher.publishEvent(new StartMessageDeployedEvents(messageDeployedEvents));
         }
     }
 
@@ -116,9 +102,7 @@ public class StartMessageDeployedEventProducer
 
         private final List<StartMessageDeployedEvent> messageDeployedEvents;
 
-        public DispatchStartMessageDeployedEvents(
-            List<StartMessageDeployedEvent> messageDeployedEvents
-        ) {
+        public DispatchStartMessageDeployedEvents(List<StartMessageDeployedEvent> messageDeployedEvents) {
             this.messageDeployedEvents = messageDeployedEvents;
         }
 
@@ -131,8 +115,7 @@ public class StartMessageDeployedEventProducer
         }
     }
 
-    static class FindStartMessageEventSubscriptions
-        implements Command<List<MessageEventSubscriptionEntity>> {
+    static class FindStartMessageEventSubscriptions implements Command<List<MessageEventSubscriptionEntity>> {
 
         private static final String MESSAGE = "message";
         private final String processDefinitionId;
@@ -141,9 +124,7 @@ public class StartMessageDeployedEventProducer
             this.processDefinitionId = processDefinitionId;
         }
 
-        public List<MessageEventSubscriptionEntity> execute(
-            CommandContext commandContext
-        ) {
+        public List<MessageEventSubscriptionEntity> execute(CommandContext commandContext) {
             return new EventSubscriptionQueryImpl(commandContext)
                 .eventType(MESSAGE)
                 .configuration(processDefinitionId)

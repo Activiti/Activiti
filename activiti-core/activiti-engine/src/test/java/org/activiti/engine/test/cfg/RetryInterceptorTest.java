@@ -46,15 +46,11 @@ public class RetryInterceptorTest {
     @Before
     public void setupProcessEngine() {
         ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl) new StandaloneInMemProcessEngineConfiguration();
-        processEngineConfiguration.setJdbcUrl(
-            "jdbc:h2:mem:retryInterceptorTest"
-        );
+        processEngineConfiguration.setJdbcUrl("jdbc:h2:mem:retryInterceptorTest");
         List<CommandInterceptor> interceptors = new ArrayList<CommandInterceptor>();
         retryInterceptor = new RetryInterceptor();
         interceptors.add(retryInterceptor);
-        processEngineConfiguration.setCustomPreCommandInterceptors(
-            interceptors
-        );
+        processEngineConfiguration.setCustomPreCommandInterceptors(interceptors);
         processEngine = processEngineConfiguration.buildProcessEngine();
     }
 
@@ -68,24 +64,16 @@ public class RetryInterceptorTest {
     public void testRetryInterceptor() {
         assertThatExceptionOfType(ActivitiException.class)
             .isThrownBy(() ->
-                processEngine
-                    .getManagementService()
-                    .executeCommand(
-                        new CommandThrowingOptimisticLockingException()
-                    )
+                processEngine.getManagementService().executeCommand(new CommandThrowingOptimisticLockingException())
             )
-            .withMessageContaining(
-                retryInterceptor.getNumOfRetries() + " retries failed"
-            );
+            .withMessageContaining(retryInterceptor.getNumOfRetries() + " retries failed");
 
-        assertThat(counter.get())
-            .isEqualTo(retryInterceptor.getNumOfRetries() + 1); // +1, we retry 3 times, so one extra for the regular execution
+        assertThat(counter.get()).isEqualTo(retryInterceptor.getNumOfRetries() + 1); // +1, we retry 3 times, so one extra for the regular execution
     }
 
     public static AtomicInteger counter = new AtomicInteger();
 
-    protected class CommandThrowingOptimisticLockingException
-        implements Command<Void> {
+    protected class CommandThrowingOptimisticLockingException implements Command<Void> {
 
         public Void execute(CommandContext commandContext) {
             counter.incrementAndGet();

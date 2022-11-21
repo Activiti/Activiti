@@ -32,9 +32,7 @@ import org.slf4j.LoggerFactory;
 
 public class ParsedDeploymentBuilder {
 
-    private static final Logger log = LoggerFactory.getLogger(
-        ParsedDeploymentBuilder.class
-    );
+    private static final Logger log = LoggerFactory.getLogger(ParsedDeploymentBuilder.class);
 
     protected DeploymentEntity deployment;
     protected BpmnParser bpmnParser;
@@ -61,14 +59,8 @@ public class ParsedDeploymentBuilder {
                 BpmnParse parse = createBpmnParseFromResource(resource);
                 for (ProcessDefinitionEntity processDefinition : parse.getProcessDefinitions()) {
                     processDefinitions.add(processDefinition);
-                    processDefinitionsToBpmnParseMap.put(
-                        processDefinition,
-                        parse
-                    );
-                    processDefinitionsToResourceMap.put(
-                        processDefinition,
-                        resource
-                    );
+                    processDefinitionsToBpmnParseMap.put(processDefinition, parse);
+                    processDefinitionsToResourceMap.put(processDefinition, resource);
                 }
             }
         }
@@ -83,9 +75,7 @@ public class ParsedDeploymentBuilder {
 
     protected BpmnParse createBpmnParseFromResource(ResourceEntity resource) {
         String resourceName = resource.getName();
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(
-            resource.getBytes()
-        );
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(resource.getBytes());
 
         BpmnParse bpmnParse = bpmnParser
             .createParse()
@@ -96,28 +86,16 @@ public class ParsedDeploymentBuilder {
 
         if (deploymentSettings != null) {
             // Schema validation if needed
-            if (
-                deploymentSettings.containsKey(
-                    DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED
-                )
-            ) {
+            if (deploymentSettings.containsKey(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED)) {
                 bpmnParse.setValidateSchema(
-                    (Boolean) deploymentSettings.get(
-                        DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED
-                    )
+                    (Boolean) deploymentSettings.get(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED)
                 );
             }
 
             // Process validation if needed
-            if (
-                deploymentSettings.containsKey(
-                    DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED
-                )
-            ) {
+            if (deploymentSettings.containsKey(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED)) {
                 bpmnParse.setValidateProcess(
-                    (Boolean) deploymentSettings.get(
-                        DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED
-                    )
+                    (Boolean) deploymentSettings.get(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED)
                 );
             }
         } else {

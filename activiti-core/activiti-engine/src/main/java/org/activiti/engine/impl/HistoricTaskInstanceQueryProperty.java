@@ -62,9 +62,7 @@ public class HistoricTaskInstanceQueryProperty implements QueryProperty {
     public static final HistoricTaskInstanceQueryProperty START = new HistoricTaskInstanceQueryProperty(
         "RES.START_TIME_"
     );
-    public static final HistoricTaskInstanceQueryProperty END = new HistoricTaskInstanceQueryProperty(
-        "RES.END_TIME_"
-    );
+    public static final HistoricTaskInstanceQueryProperty END = new HistoricTaskInstanceQueryProperty("RES.END_TIME_");
     public static final HistoricTaskInstanceQueryProperty DURATION = new HistoricTaskInstanceQueryProperty(
         "RES.DURATION_"
     );
@@ -93,9 +91,7 @@ public class HistoricTaskInstanceQueryProperty implements QueryProperty {
         return name;
     }
 
-    public static HistoricTaskInstanceQueryProperty findByName(
-        String propertyName
-    ) {
+    public static HistoricTaskInstanceQueryProperty findByName(String propertyName) {
         return properties.get(propertyName);
     }
 }

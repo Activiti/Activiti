@@ -40,30 +40,17 @@ public class ScriptBindingsFactory {
     }
 
     public Bindings createBindings(VariableScope variableScope) {
-        return new ScriptBindings(
-            createResolvers(variableScope),
-            variableScope
-        );
+        return new ScriptBindings(createResolvers(variableScope), variableScope);
     }
 
-    public Bindings createBindings(
-        VariableScope variableScope,
-        boolean storeScriptVariables
-    ) {
-        return new ScriptBindings(
-            createResolvers(variableScope),
-            variableScope,
-            storeScriptVariables
-        );
+    public Bindings createBindings(VariableScope variableScope, boolean storeScriptVariables) {
+        return new ScriptBindings(createResolvers(variableScope), variableScope, storeScriptVariables);
     }
 
     protected List<Resolver> createResolvers(VariableScope variableScope) {
         List<Resolver> scriptResolvers = new ArrayList<Resolver>();
         for (ResolverFactory scriptResolverFactory : resolverFactories) {
-            Resolver resolver = scriptResolverFactory.createResolver(
-                processEngineConfiguration,
-                variableScope
-            );
+            Resolver resolver = scriptResolverFactory.createResolver(processEngineConfiguration, variableScope);
             if (resolver != null) {
                 scriptResolvers.add(resolver);
             }

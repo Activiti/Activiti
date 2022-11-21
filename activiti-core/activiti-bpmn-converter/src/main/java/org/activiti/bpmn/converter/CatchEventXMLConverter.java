@@ -38,10 +38,7 @@ public class CatchEventXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected BaseElement convertXMLToElement(
-        XMLStreamReader xtr,
-        BpmnModel model
-    ) throws Exception {
+    protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
         IntermediateCatchEvent catchEvent = new IntermediateCatchEvent();
         BpmnXMLUtil.addXMLLocation(catchEvent, xtr);
         parseChildElements(getXMLElementName(), catchEvent, model, xtr);
@@ -49,24 +46,13 @@ public class CatchEventXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalAttributes(
-        BaseElement element,
-        BpmnModel model,
-        XMLStreamWriter xtw
-    ) throws Exception {}
+    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+        throws Exception {}
 
     @Override
-    protected void writeAdditionalChildElements(
-        BaseElement element,
-        BpmnModel model,
-        XMLStreamWriter xtw
-    ) throws Exception {
+    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+        throws Exception {
         IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) element;
-        writeEventDefinitions(
-            catchEvent,
-            catchEvent.getEventDefinitions(),
-            model,
-            xtw
-        );
+        writeEventDefinitions(catchEvent, catchEvent.getEventDefinitions(), model, xtw);
     }
 }

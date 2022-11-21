@@ -26,13 +26,8 @@ public class StartMessagePayloadBuilder {
     private String businessKey;
     private Map<String, Object> variables;
 
-    public static StartMessagePayloadBuilder from(
-        StartMessagePayload messagePayload
-    ) {
-        Objects.requireNonNull(
-            messagePayload,
-            "messagePayload must not be null"
-        );
+    public static StartMessagePayloadBuilder from(StartMessagePayload messagePayload) {
+        Objects.requireNonNull(messagePayload, "messagePayload must not be null");
 
         return new StartMessagePayloadBuilder()
             .withName(messagePayload.getName())
@@ -52,9 +47,7 @@ public class StartMessagePayloadBuilder {
         return this;
     }
 
-    public StartMessagePayloadBuilder withVariables(
-        Map<String, Object> variables
-    ) {
+    public StartMessagePayloadBuilder withVariables(Map<String, Object> variables) {
         this.variables = variables;
 
         return this;

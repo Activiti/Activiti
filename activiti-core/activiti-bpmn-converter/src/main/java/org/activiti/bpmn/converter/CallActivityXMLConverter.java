@@ -37,15 +37,9 @@ public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
 
     public CallActivityXMLConverter() {
         InParameterParser inParameterParser = new InParameterParser();
-        childParserMap.put(
-            inParameterParser.getElementName(),
-            inParameterParser
-        );
+        childParserMap.put(inParameterParser.getElementName(), inParameterParser);
         OutParameterParser outParameterParser = new OutParameterParser();
-        childParserMap.put(
-            outParameterParser.getElementName(),
-            outParameterParser
-        );
+        childParserMap.put(outParameterParser.getElementName(), outParameterParser);
     }
 
     public Class<? extends BaseElement> getBpmnElementType() {
@@ -58,73 +52,39 @@ public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected BaseElement convertXMLToElement(
-        XMLStreamReader xtr,
-        BpmnModel model
-    ) throws Exception {
+    protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
         CallActivity callActivity = new CallActivity();
         BpmnXMLUtil.addXMLLocation(callActivity, xtr);
-        callActivity.setCalledElement(
-            xtr.getAttributeValue(null, ATTRIBUTE_CALL_ACTIVITY_CALLEDELEMENT)
-        );
+        callActivity.setCalledElement(xtr.getAttributeValue(null, ATTRIBUTE_CALL_ACTIVITY_CALLEDELEMENT));
         callActivity.setBusinessKey(
-            xtr.getAttributeValue(
-                ACTIVITI_EXTENSIONS_NAMESPACE,
-                ATTRIBUTE_CALL_ACTIVITY_BUSINESS_KEY
-            )
+            xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_CALL_ACTIVITY_BUSINESS_KEY)
         );
         callActivity.setInheritBusinessKey(
             Boolean.parseBoolean(
-                xtr.getAttributeValue(
-                    ACTIVITI_EXTENSIONS_NAMESPACE,
-                    ATTRIBUTE_CALL_ACTIVITY_INHERIT_BUSINESS_KEY
-                )
+                xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_CALL_ACTIVITY_INHERIT_BUSINESS_KEY)
             )
         );
         callActivity.setInheritVariables(
             Boolean.valueOf(
-                xtr.getAttributeValue(
-                    ACTIVITI_EXTENSIONS_NAMESPACE,
-                    ATTRIBUTE_CALL_ACTIVITY_INHERITVARIABLES
-                )
+                xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_CALL_ACTIVITY_INHERITVARIABLES)
             )
         );
-        parseChildElements(
-            getXMLElementName(),
-            callActivity,
-            childParserMap,
-            model,
-            xtr
-        );
+        parseChildElements(getXMLElementName(), callActivity, childParserMap, model, xtr);
         return callActivity;
     }
 
     @Override
-    protected void writeAdditionalAttributes(
-        BaseElement element,
-        BpmnModel model,
-        XMLStreamWriter xtw
-    ) throws Exception {
+    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+        throws Exception {
         CallActivity callActivity = (CallActivity) element;
         if (StringUtils.isNotEmpty(callActivity.getCalledElement())) {
-            xtw.writeAttribute(
-                ATTRIBUTE_CALL_ACTIVITY_CALLEDELEMENT,
-                callActivity.getCalledElement()
-            );
+            xtw.writeAttribute(ATTRIBUTE_CALL_ACTIVITY_CALLEDELEMENT, callActivity.getCalledElement());
         }
         if (StringUtils.isNotEmpty(callActivity.getBusinessKey())) {
-            writeQualifiedAttribute(
-                ATTRIBUTE_CALL_ACTIVITY_BUSINESS_KEY,
-                callActivity.getBusinessKey(),
-                xtw
-            );
+            writeQualifiedAttribute(ATTRIBUTE_CALL_ACTIVITY_BUSINESS_KEY, callActivity.getBusinessKey(), xtw);
         }
         if (callActivity.isInheritBusinessKey()) {
-            writeQualifiedAttribute(
-                ATTRIBUTE_CALL_ACTIVITY_INHERIT_BUSINESS_KEY,
-                "true",
-                xtw
-            );
+            writeQualifiedAttribute(ATTRIBUTE_CALL_ACTIVITY_INHERIT_BUSINESS_KEY, "true", xtw);
         }
         if (callActivity.isInheritVariables()) {
             xtw.writeAttribute(
@@ -160,11 +120,8 @@ public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalChildElements(
-        BaseElement element,
-        BpmnModel model,
-        XMLStreamWriter xtw
-    ) throws Exception {}
+    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+        throws Exception {}
 
     private boolean writeIOParameters(
         String elementName,
@@ -182,31 +139,15 @@ public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
                 didWriteExtensionStartElement = true;
             }
 
-            xtw.writeStartElement(
-                ACTIVITI_EXTENSIONS_PREFIX,
-                elementName,
-                ACTIVITI_EXTENSIONS_NAMESPACE
-            );
+            xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, elementName, ACTIVITI_EXTENSIONS_NAMESPACE);
             if (StringUtils.isNotEmpty(ioParameter.getSource())) {
-                writeDefaultAttribute(
-                    ATTRIBUTE_IOPARAMETER_SOURCE,
-                    ioParameter.getSource(),
-                    xtw
-                );
+                writeDefaultAttribute(ATTRIBUTE_IOPARAMETER_SOURCE, ioParameter.getSource(), xtw);
             }
             if (StringUtils.isNotEmpty(ioParameter.getSourceExpression())) {
-                writeDefaultAttribute(
-                    ATTRIBUTE_IOPARAMETER_SOURCE_EXPRESSION,
-                    ioParameter.getSourceExpression(),
-                    xtw
-                );
+                writeDefaultAttribute(ATTRIBUTE_IOPARAMETER_SOURCE_EXPRESSION, ioParameter.getSourceExpression(), xtw);
             }
             if (StringUtils.isNotEmpty(ioParameter.getTarget())) {
-                writeDefaultAttribute(
-                    ATTRIBUTE_IOPARAMETER_TARGET,
-                    ioParameter.getTarget(),
-                    xtw
-                );
+                writeDefaultAttribute(ATTRIBUTE_IOPARAMETER_TARGET, ioParameter.getTarget(), xtw);
             }
 
             xtw.writeEndElement();
@@ -221,28 +162,13 @@ public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
             return ELEMENT_CALL_ACTIVITY_IN_PARAMETERS;
         }
 
-        public void parseChildElement(
-            XMLStreamReader xtr,
-            BaseElement parentElement,
-            BpmnModel model
-        ) throws Exception {
-            String source = xtr.getAttributeValue(
-                null,
-                ATTRIBUTE_IOPARAMETER_SOURCE
-            );
-            String sourceExpression = xtr.getAttributeValue(
-                null,
-                ATTRIBUTE_IOPARAMETER_SOURCE_EXPRESSION
-            );
-            String target = xtr.getAttributeValue(
-                null,
-                ATTRIBUTE_IOPARAMETER_TARGET
-            );
+        public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
+            throws Exception {
+            String source = xtr.getAttributeValue(null, ATTRIBUTE_IOPARAMETER_SOURCE);
+            String sourceExpression = xtr.getAttributeValue(null, ATTRIBUTE_IOPARAMETER_SOURCE_EXPRESSION);
+            String target = xtr.getAttributeValue(null, ATTRIBUTE_IOPARAMETER_TARGET);
             if (
-                (
-                    StringUtils.isNotEmpty(source) ||
-                    StringUtils.isNotEmpty(sourceExpression)
-                ) &&
+                (StringUtils.isNotEmpty(source) || StringUtils.isNotEmpty(sourceExpression)) &&
                 StringUtils.isNotEmpty(target)
             ) {
                 IOParameter parameter = new IOParameter();
@@ -265,28 +191,13 @@ public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
             return ELEMENT_CALL_ACTIVITY_OUT_PARAMETERS;
         }
 
-        public void parseChildElement(
-            XMLStreamReader xtr,
-            BaseElement parentElement,
-            BpmnModel model
-        ) throws Exception {
-            String source = xtr.getAttributeValue(
-                null,
-                ATTRIBUTE_IOPARAMETER_SOURCE
-            );
-            String sourceExpression = xtr.getAttributeValue(
-                null,
-                ATTRIBUTE_IOPARAMETER_SOURCE_EXPRESSION
-            );
-            String target = xtr.getAttributeValue(
-                null,
-                ATTRIBUTE_IOPARAMETER_TARGET
-            );
+        public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
+            throws Exception {
+            String source = xtr.getAttributeValue(null, ATTRIBUTE_IOPARAMETER_SOURCE);
+            String sourceExpression = xtr.getAttributeValue(null, ATTRIBUTE_IOPARAMETER_SOURCE_EXPRESSION);
+            String target = xtr.getAttributeValue(null, ATTRIBUTE_IOPARAMETER_TARGET);
             if (
-                (
-                    StringUtils.isNotEmpty(source) ||
-                    StringUtils.isNotEmpty(sourceExpression)
-                ) &&
+                (StringUtils.isNotEmpty(source) || StringUtils.isNotEmpty(sourceExpression)) &&
                 StringUtils.isNotEmpty(target)
             ) {
                 IOParameter parameter = new IOParameter();
@@ -298,8 +209,7 @@ public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
 
                 parameter.setTarget(target);
 
-                ((CallActivity) parentElement).getOutParameters()
-                    .add(parameter);
+                ((CallActivity) parentElement).getOutParameters().add(parameter);
             }
         }
     }

@@ -58,9 +58,7 @@ public class BitMaskUtil {
      */
     public static int setBitOn(int value, int bitNumber) {
         if (bitNumber <= 0 || bitNumber > 8) {
-            throw new IllegalArgumentException(
-                "Only bits 1 through 8 are supported"
-            );
+            throw new IllegalArgumentException("Only bits 1 through 8 are supported");
         }
 
         // To turn on, OR with the correct mask
@@ -77,9 +75,7 @@ public class BitMaskUtil {
      */
     public static int setBitOff(int value, int bitNumber) {
         if (bitNumber <= 0 || bitNumber > 8) {
-            throw new IllegalArgumentException(
-                "Only bits 1 through 8 are supported"
-            );
+            throw new IllegalArgumentException("Only bits 1 through 8 are supported");
         }
 
         // To turn on, OR with the correct mask
@@ -96,9 +92,7 @@ public class BitMaskUtil {
      */
     public static boolean isBitOn(int value, int bitNumber) {
         if (bitNumber <= 0 || bitNumber > 8) {
-            throw new IllegalArgumentException(
-                "Only bits 1 through 8 are supported"
-            );
+            throw new IllegalArgumentException("Only bits 1 through 8 are supported");
         }
 
         return ((value & MASKS[bitNumber - 1]) == MASKS[bitNumber - 1]);

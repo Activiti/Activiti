@@ -46,13 +46,10 @@ public class ToErrorReceivedConverterTest {
 
         BPMNErrorImpl bpmnError = new BPMNErrorImpl("myError");
 
-        given(bpmnErrorConverter.convertToBPMNError(internalEvent))
-            .willReturn(bpmnError);
+        given(bpmnErrorConverter.convertToBPMNError(internalEvent)).willReturn(bpmnError);
 
         //when
-        BPMNErrorReceivedEvent errorEvent = toErrorReceivedConverter
-            .from(internalEvent)
-            .orElse(null);
+        BPMNErrorReceivedEvent errorEvent = toErrorReceivedConverter.from(internalEvent).orElse(null);
 
         //then
         assertThat(errorEvent).isNotNull();

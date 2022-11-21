@@ -31,8 +31,7 @@ import org.activiti.engine.runtime.Execution;
 
 
  */
-public class FindActiveActivityIdsCmd
-    implements Command<List<String>>, Serializable {
+public class FindActiveActivityIdsCmd implements Command<List<String>>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String executionId;
@@ -47,15 +46,10 @@ public class FindActiveActivityIdsCmd
         }
 
         ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-        ExecutionEntity execution = executionEntityManager.findById(
-            executionId
-        );
+        ExecutionEntity execution = executionEntityManager.findById(executionId);
 
         if (execution == null) {
-            throw new ActivitiObjectNotFoundException(
-                "execution " + executionId + " doesn't exist",
-                Execution.class
-            );
+            throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
         }
 
         return findActiveActivityIds(execution);
@@ -67,14 +61,8 @@ public class FindActiveActivityIdsCmd
         return activeActivityIds;
     }
 
-    protected void collectActiveActivityIds(
-        ExecutionEntity executionEntity,
-        List<String> activeActivityIds
-    ) {
-        if (
-            executionEntity.isActive() &&
-            executionEntity.getActivityId() != null
-        ) {
+    protected void collectActiveActivityIds(ExecutionEntity executionEntity, List<String> activeActivityIds) {
+        if (executionEntity.isActive() && executionEntity.getActivityId() != null) {
             activeActivityIds.add(executionEntity.getActivityId());
         }
 

@@ -28,15 +28,11 @@ public class ListResolverHelper {
 
     private ListResolverHelper() {}
 
-    public static void addListFunctions(ActivitiElContext elContext)
-        throws NoSuchMethodException {
+    public static void addListFunctions(ActivitiElContext elContext) throws NoSuchMethodException {
         elContext.setFunction(
             "",
             LIST_FUNCTION_NAME,
-            ListResolverHelper.class.getMethod(
-                    LIST_INVOKE_METHOD,
-                    Object[].class
-                )
+            ListResolverHelper.class.getMethod(LIST_INVOKE_METHOD, Object[].class)
         );
     }
 }

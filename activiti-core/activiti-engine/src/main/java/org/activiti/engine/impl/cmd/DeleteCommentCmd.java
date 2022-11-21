@@ -37,11 +37,7 @@ public class DeleteCommentCmd implements Command<Void>, Serializable {
     protected String processInstanceId;
     protected String commentId;
 
-    public DeleteCommentCmd(
-        String taskId,
-        String processInstanceId,
-        String commentId
-    ) {
+    public DeleteCommentCmd(String taskId, String processInstanceId, String commentId) {
         this.taskId = taskId;
         this.processInstanceId = processInstanceId;
         this.commentId = commentId;
@@ -65,11 +61,7 @@ public class DeleteCommentCmd implements Command<Void>, Serializable {
             // Delete all comments on a task of process
             ArrayList<Comment> comments = new ArrayList<Comment>();
             if (processInstanceId != null) {
-                comments.addAll(
-                    commentManager.findCommentsByProcessInstanceId(
-                        processInstanceId
-                    )
-                );
+                comments.addAll(commentManager.findCommentsByProcessInstanceId(processInstanceId));
             }
 
             if (taskId != null) {

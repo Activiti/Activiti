@@ -35,10 +35,7 @@ public class OperationValidator extends ValidatorImpl {
             for (Interface bpmnInterface : bpmnModel.getInterfaces()) {
                 if (bpmnInterface.getOperations() != null) {
                     for (Operation operation : bpmnInterface.getOperations()) {
-                        if (
-                            bpmnModel.getMessage(operation.getInMessageRef()) ==
-                            null
-                        ) {
+                        if (bpmnModel.getMessage(operation.getInMessageRef()) == null) {
                             addError(
                                 errors,
                                 Problems.OPERATION_INVALID_IN_MESSAGE_REFERENCE,

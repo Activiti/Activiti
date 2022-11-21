@@ -53,17 +53,11 @@ public interface ExecutionEntityManager extends EntityManager<ExecutionEntity> {
      */
     ExecutionEntity findByRootProcessInstanceId(String rootProcessInstanceId);
 
-    ExecutionEntity findSubProcessInstanceBySuperExecutionId(
-        String superExecutionId
-    );
+    ExecutionEntity findSubProcessInstanceBySuperExecutionId(String superExecutionId);
 
-    List<ExecutionEntity> findChildExecutionsByParentExecutionId(
-        String parentExecutionId
-    );
+    List<ExecutionEntity> findChildExecutionsByParentExecutionId(String parentExecutionId);
 
-    List<ExecutionEntity> findChildExecutionsByProcessInstanceId(
-        String processInstanceId
-    );
+    List<ExecutionEntity> findChildExecutionsByProcessInstanceId(String processInstanceId);
 
     List<ExecutionEntity> findExecutionsByParentExecutionAndActivityIds(
         String parentExecutionId,
@@ -72,37 +66,22 @@ public interface ExecutionEntityManager extends EntityManager<ExecutionEntity> {
 
     long findExecutionCountByQueryCriteria(ExecutionQueryImpl executionQuery);
 
-    List<ExecutionEntity> findExecutionsByQueryCriteria(
-        ExecutionQueryImpl executionQuery,
-        Page page
-    );
+    List<ExecutionEntity> findExecutionsByQueryCriteria(ExecutionQueryImpl executionQuery, Page page);
 
-    long findProcessInstanceCountByQueryCriteria(
-        ProcessInstanceQueryImpl executionQuery
-    );
+    long findProcessInstanceCountByQueryCriteria(ProcessInstanceQueryImpl executionQuery);
 
-    List<ProcessInstance> findProcessInstanceByQueryCriteria(
-        ProcessInstanceQueryImpl executionQuery
-    );
+    List<ProcessInstance> findProcessInstanceByQueryCriteria(ProcessInstanceQueryImpl executionQuery);
 
-    List<ProcessInstance> findProcessInstanceAndVariablesByQueryCriteria(
-        ProcessInstanceQueryImpl executionQuery
-    );
+    List<ProcessInstance> findProcessInstanceAndVariablesByQueryCriteria(ProcessInstanceQueryImpl executionQuery);
 
-    Collection<ExecutionEntity> findInactiveExecutionsByProcessInstanceId(
-        String processInstanceId
-    );
+    Collection<ExecutionEntity> findInactiveExecutionsByProcessInstanceId(String processInstanceId);
 
     Collection<ExecutionEntity> findInactiveExecutionsByActivityIdAndProcessInstanceId(
         String activityId,
         String processInstanceId
     );
 
-    List<Execution> findExecutionsByNativeQuery(
-        Map<String, Object> parameterMap,
-        int firstResult,
-        int maxResults
-    );
+    List<Execution> findExecutionsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
 
     List<ProcessInstance> findProcessInstanceByNativeQuery(
         Map<String, Object> parameterMap,
@@ -122,31 +101,15 @@ public interface ExecutionEntityManager extends EntityManager<ExecutionEntity> {
 
     ExecutionEntity findFirstMultiInstanceRoot(ExecutionEntity executionEntity);
 
-    void updateExecutionTenantIdForDeployment(
-        String deploymentId,
-        String newTenantId
-    );
+    void updateExecutionTenantIdForDeployment(String deploymentId, String newTenantId);
 
-    String updateProcessInstanceBusinessKey(
-        ExecutionEntity executionEntity,
-        String businessKey
-    );
+    String updateProcessInstanceBusinessKey(ExecutionEntity executionEntity, String businessKey);
 
-    ExecutionEntity updateProcessInstanceStartDate(
-        ExecutionEntity processInstanceExecution
-    );
+    ExecutionEntity updateProcessInstanceStartDate(ExecutionEntity processInstanceExecution);
 
-    void deleteProcessInstancesByProcessDefinition(
-        String processDefinitionId,
-        String deleteReason,
-        boolean cascade
-    );
+    void deleteProcessInstancesByProcessDefinition(String processDefinitionId, String deleteReason, boolean cascade);
 
-    void deleteProcessInstance(
-        String processInstanceId,
-        String deleteReason,
-        boolean cascade
-    );
+    void deleteProcessInstance(String processInstanceId, String deleteReason, boolean cascade);
 
     void deleteProcessInstanceExecutionEntity(
         String processInstanceId,
@@ -156,25 +119,13 @@ public interface ExecutionEntityManager extends EntityManager<ExecutionEntity> {
         boolean cancel
     );
 
-    void deleteChildExecutions(
-        ExecutionEntity executionEntity,
-        String deleteReason
-    );
+    void deleteChildExecutions(ExecutionEntity executionEntity, String deleteReason);
 
-    void cancelChildExecutions(
-        ExecutionEntity executionEntity,
-        String deleteReason
-    );
+    void cancelChildExecutions(ExecutionEntity executionEntity, String deleteReason);
 
-    void deleteExecutionAndRelatedData(
-        ExecutionEntity executionEntity,
-        String deleteReason
-    );
+    void deleteExecutionAndRelatedData(ExecutionEntity executionEntity, String deleteReason);
 
-    void cancelExecutionAndRelatedData(
-        ExecutionEntity executionEntity,
-        String deleteReason
-    );
+    void cancelExecutionAndRelatedData(ExecutionEntity executionEntity, String deleteReason);
 
     void updateProcessInstanceLockTime(String processInstanceId);
 

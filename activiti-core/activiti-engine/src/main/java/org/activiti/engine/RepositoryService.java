@@ -166,11 +166,7 @@ public interface RepositoryService {
      * @throws ActivitiException
      *           if the process definition is already in state suspended.
      */
-    void suspendProcessDefinitionById(
-        String processDefinitionId,
-        boolean suspendProcessInstances,
-        Date suspensionDate
-    );
+    void suspendProcessDefinitionById(String processDefinitionId, boolean suspendProcessInstances, Date suspensionDate);
 
     /**
      * Suspends the <strong>all</strong> process definitions with the given key (= id in the bpmn20.xml file).
@@ -209,10 +205,7 @@ public interface RepositoryService {
     /**
      * Similar to {@link #suspendProcessDefinitionByKey(String)}, but only applicable for the given tenant identifier.
      */
-    void suspendProcessDefinitionByKey(
-        String processDefinitionKey,
-        String tenantId
-    );
+    void suspendProcessDefinitionByKey(String processDefinitionKey, String tenantId);
 
     /**
      * Similar to {@link #suspendProcessDefinitionByKey(String, boolean, Date)}, but only applicable for the given tenant identifier.
@@ -279,10 +272,7 @@ public interface RepositoryService {
     /**
      * Similar to {@link #activateProcessDefinitionByKey(String)}, but only applicable for the given tenant identifier.
      */
-    void activateProcessDefinitionByKey(
-        String processDefinitionKey,
-        String tenantId
-    );
+    void activateProcessDefinitionByKey(String processDefinitionKey, String tenantId);
 
     /**
      * Similar to {@link #activateProcessDefinitionByKey(String, boolean, Date)} , but only applicable for the given tenant identifier.
@@ -300,10 +290,7 @@ public interface RepositoryService {
      * @throws ActivitiObjectNotFoundException
      *           if no process definition with the provided id can be found.
      */
-    void setProcessDefinitionCategory(
-        String processDefinitionId,
-        String category
-    );
+    void setProcessDefinitionCategory(String processDefinitionId, String category);
 
     /**
      * Gives access to a deployed process model, e.g., a BPMN 2.0 XML file, through a stream of bytes.
@@ -444,18 +431,13 @@ public interface RepositoryService {
      * @throws ActivitiObjectNotFoundException
      *           when the process definition or group doesn't exist.
      */
-    void deleteCandidateStarterGroup(
-        String processDefinitionId,
-        String groupId
-    );
+    void deleteCandidateStarterGroup(String processDefinitionId, String groupId);
 
     /**
      * Retrieves the {@link IdentityLink}s associated with the given process definition. Such an {@link IdentityLink} informs how a certain identity (eg. group or user) is authorized for a certain
      * process definition
      */
-    List<IdentityLink> getIdentityLinksForProcessDefinition(
-        String processDefinitionId
-    );
+    List<IdentityLink> getIdentityLinksForProcessDefinition(String processDefinitionId);
 
     /**
      * Validates the given process definition against the rules for executing a process definition on the Activiti engine.

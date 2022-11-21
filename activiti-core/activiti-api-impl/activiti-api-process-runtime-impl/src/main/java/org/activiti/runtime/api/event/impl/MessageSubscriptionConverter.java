@@ -38,9 +38,7 @@ public class MessageSubscriptionConverter {
                     .withBusinessKey(
                         Optional
                             .ofNullable(entity.getExecution())
-                            .map(
-                                DelegateExecution::getProcessInstanceBusinessKey
-                            )
+                            .map(DelegateExecution::getProcessInstanceBusinessKey)
                             .orElse(null)
                     )
                     .withCreated(entity.getCreated())
@@ -48,10 +46,6 @@ public class MessageSubscriptionConverter {
                     .withProcessInstanceId(entity.getProcessInstanceId())
                     .build()
             )
-            .orElseThrow(() ->
-                new IllegalArgumentException(
-                    "messageEventSubscriptionEntity must not be null"
-                )
-            );
+            .orElseThrow(() -> new IllegalArgumentException("messageEventSubscriptionEntity must not be null"));
     }
 }

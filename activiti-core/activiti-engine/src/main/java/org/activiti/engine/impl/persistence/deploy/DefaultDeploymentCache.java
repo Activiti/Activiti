@@ -31,9 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultDeploymentCache<T> implements DeploymentCache<T> {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        DefaultDeploymentCache.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(DefaultDeploymentCache.class);
 
     protected Map<String, T> cache;
 
@@ -53,15 +51,10 @@ public class DefaultDeploymentCache<T> implements DeploymentCache<T> {
                     // true will keep the 'access-order', which is needed to have a real LRU cache
                     private static final long serialVersionUID = 1L;
 
-                    protected boolean removeEldestEntry(
-                        Map.Entry<String, T> eldest
-                    ) {
+                    protected boolean removeEldestEntry(Map.Entry<String, T> eldest) {
                         boolean removeEldest = size() > limit;
                         if (removeEldest && logger.isTraceEnabled()) {
-                            logger.trace(
-                                "Cache limit is reached, {} will be evicted",
-                                eldest.getKey()
-                            );
+                            logger.trace("Cache limit is reached, {} will be evicted", eldest.getKey());
                         }
                         return removeEldest;
                     }

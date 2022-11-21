@@ -23,8 +23,7 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToAPIProcessCandidateStarterGroupAddedEventConverter;
 
-public class ProcessCandidateStarterGroupAddedListenerDelegate
-    implements ActivitiEventListener {
+public class ProcessCandidateStarterGroupAddedListenerDelegate implements ActivitiEventListener {
 
     private List<ProcessRuntimeEventListener<ProcessCandidateStarterGroupAddedEvent>> listeners;
 
@@ -35,8 +34,7 @@ public class ProcessCandidateStarterGroupAddedListenerDelegate
         ToAPIProcessCandidateStarterGroupAddedEventConverter processCandidateStarterGroupAddedEventConverter
     ) {
         this.listeners = listeners;
-        this.processCandidateStarterGroupAddedEventConverter =
-            processCandidateStarterGroupAddedEventConverter;
+        this.processCandidateStarterGroupAddedEventConverter = processCandidateStarterGroupAddedEventConverter;
     }
 
     @Override

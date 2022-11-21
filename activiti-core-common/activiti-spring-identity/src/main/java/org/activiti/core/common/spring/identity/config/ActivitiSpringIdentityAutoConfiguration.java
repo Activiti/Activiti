@@ -27,9 +27,7 @@ public class ActivitiSpringIdentityAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public UserGroupManager userGroupManager(
-        UserDetailsService userDetailsService
-    ) {
+    public UserGroupManager userGroupManager(UserDetailsService userDetailsService) {
         return new ActivitiUserGroupManagerImpl(userDetailsService);
     }
 }

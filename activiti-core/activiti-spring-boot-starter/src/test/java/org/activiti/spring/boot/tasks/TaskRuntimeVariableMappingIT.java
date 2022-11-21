@@ -47,22 +47,17 @@ public class TaskRuntimeVariableMappingIT {
 
     private static final String TASK_NO_MAPPING = "taskVariableMappingSendNone";
 
-    private static final String TASK_MAP_ALL_INPUTS =
-        "taskVariableMappingSendAllInputs";
+    private static final String TASK_MAP_ALL_INPUTS = "taskVariableMappingSendAllInputs";
 
-    private static final String TASK_MAP_ALL_OUTPUTS =
-        "taskVariableMappingSendAllOutputs";
+    private static final String TASK_MAP_ALL_OUTPUTS = "taskVariableMappingSendAllOutputs";
 
-    private static final String TASK_MAP_ALL_PREVALENCE =
-        "taskVariableMappingSendAllPrevalence";
+    private static final String TASK_MAP_ALL_PREVALENCE = "taskVariableMappingSendAllPrevalence";
 
     private static final String TASK_ASSIGNEE_MAPPING = "taskAssigneeMapping";
 
-    private static final String TASK_ASSIGNEE_SEQUENTIAL_MAP_ALL =
-        "taskAssigneeSequentialMapAll";
+    private static final String TASK_ASSIGNEE_SEQUENTIAL_MAP_ALL = "taskAssigneeSequentialMapAll";
 
-    private static final String TASK_ASSIGNEE_MULTI_INSTANCE_MAPPING =
-        "taskMultiInstanceVariableMapping";
+    private static final String TASK_ASSIGNEE_MULTI_INSTANCE_MAPPING = "taskMultiInstanceVariableMapping";
 
     private static final String ASSIGNEE_VARIABLE_NAME = "sys_task_assignee";
 
@@ -92,9 +87,7 @@ public class TaskRuntimeVariableMappingIT {
 
     @Test
     public void should_mapTaskVariables_when_thereIsMapping() {
-        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
-            TASK_REGULAR_MAPPING
-        );
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_REGULAR_MAPPING);
 
         Date date = dateFormatterProvider.parse("2019-09-01");
         Date datetime = dateFormatterProvider.parse("2019-09-01T10:20:30.000Z");
@@ -108,42 +101,20 @@ public class TaskRuntimeVariableMappingIT {
         );
         assertThat(procVariables)
             .isNotNull()
-            .extracting(
-                VariableInstance::getName,
-                VariableInstance::getType,
-                VariableInstance::getValue
-            )
+            .extracting(VariableInstance::getName, VariableInstance::getType, VariableInstance::getValue)
             .containsOnly(
-                tuple(
-                    "process_variable_unmapped_1",
-                    "string",
-                    "unmapped1Value"
-                ),
-                tuple(
-                    "process_variable_inputmap_1",
-                    "string",
-                    "inputmap1Value"
-                ),
-                tuple(
-                    "process_variable_outputmap_1",
-                    "string",
-                    "outputmap1Value"
-                ),
+                tuple("process_variable_unmapped_1", "string", "unmapped1Value"),
+                tuple("process_variable_inputmap_1", "string", "inputmap1Value"),
+                tuple("process_variable_outputmap_1", "string", "outputmap1Value"),
                 tuple("process-variable-date", "date", date),
                 tuple("process-variable-datetime", "date", datetime)
             );
 
-        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(
-            task.getId()
-        );
+        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(task.getId());
 
         assertThat(taskVariables)
             .isNotNull()
-            .extracting(
-                VariableInstance::getName,
-                VariableInstance::getType,
-                VariableInstance::getValue
-            )
+            .extracting(VariableInstance::getName, VariableInstance::getType, VariableInstance::getValue)
             .containsOnly(
                 tuple("task_input_variable_name_1", "string", "inputmap1Value"),
                 tuple("task-variable-date", "date", date),
@@ -156,10 +127,7 @@ public class TaskRuntimeVariableMappingIT {
 
         taskBaseRuntime.completeTask(task.getId(), variables);
 
-        procVariables =
-            processBaseRuntime.getProcessVariablesByProcessId(
-                processInstance.getId()
-            );
+        procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
         assertThat(procVariables)
             .isNotNull()
             .extracting(VariableInstance::getName, VariableInstance::getValue)
@@ -175,13 +143,9 @@ public class TaskRuntimeVariableMappingIT {
 
     @Test
     public void should_notMapTaskVariables_when_thereIsNoMapping() {
-        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
-            TASK_NO_MAPPING
-        );
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_NO_MAPPING);
 
-        List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(
-            processInstance.getId()
-        );
+        List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId());
         assertThat(tasks).hasSize(1);
 
         Task task = tasks.get(0);
@@ -200,9 +164,7 @@ public class TaskRuntimeVariableMappingIT {
                 tuple("process_variable_outputmap_1", "outputmap1Value")
             );
 
-        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(
-            task.getId()
-        );
+        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(task.getId());
 
         assertThat(taskVariables).isEmpty();
 
@@ -224,9 +186,7 @@ public class TaskRuntimeVariableMappingIT {
 
     @Test
     public void should_sendAllTaskVariables_when_thereIsMappingTypeMAP_ALL() {
-        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
-            TASK_MAP_ALL
-        );
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_MAP_ALL);
 
         Task task = checkTasks(processInstance.getId());
 
@@ -245,9 +205,7 @@ public class TaskRuntimeVariableMappingIT {
                 tuple("process_variable_outputmap_1", "outputmap1Value")
             );
 
-        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(
-            task.getId()
-        );
+        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(task.getId());
 
         assertThat(taskVariables)
             .isNotNull()
@@ -264,10 +222,7 @@ public class TaskRuntimeVariableMappingIT {
 
         taskBaseRuntime.completeTask(task.getId(), variables);
 
-        procVariables =
-            processBaseRuntime.getProcessVariablesByProcessId(
-                processInstance.getId()
-            );
+        procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
         assertThat(procVariables)
             .isNotNull()
             .extracting(VariableInstance::getName, VariableInstance::getValue)
@@ -285,9 +240,7 @@ public class TaskRuntimeVariableMappingIT {
 
     @Test
     public void should_sendAllInputTasksVariablesAndOnlySelectedOuputs_when_thereIsMappingTypeMAP_ALL_INPUTS() {
-        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
-            TASK_MAP_ALL_INPUTS
-        );
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_MAP_ALL_INPUTS);
 
         Task task = checkTasks(processInstance.getId());
 
@@ -306,9 +259,7 @@ public class TaskRuntimeVariableMappingIT {
                 tuple("process_variable_outputmap_1", "outputmap1Value")
             );
 
-        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(
-            task.getId()
-        );
+        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(task.getId());
 
         assertThat(taskVariables)
             .isNotNull()
@@ -325,10 +276,7 @@ public class TaskRuntimeVariableMappingIT {
 
         taskBaseRuntime.completeTask(task.getId(), variables);
 
-        procVariables =
-            processBaseRuntime.getProcessVariablesByProcessId(
-                processInstance.getId()
-            );
+        procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
 
         assertThat(procVariables)
             .isNotNull()
@@ -344,13 +292,9 @@ public class TaskRuntimeVariableMappingIT {
 
     @Test
     public void should_sendAllOutputTaskVariablesAndOnlySelectedInputs_when_thereIsMappingTypeMAP_ALL_OUTPUTS() {
-        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
-            TASK_MAP_ALL_OUTPUTS
-        );
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_MAP_ALL_OUTPUTS);
 
-        List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(
-            processInstance.getId()
-        );
+        List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId());
         assertThat(tasks).isNotEmpty();
         assertThat(tasks).hasSize(1);
 
@@ -370,20 +314,12 @@ public class TaskRuntimeVariableMappingIT {
                 tuple("process_variable_outputmap_1", "outputmap1Value")
             );
 
-        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(
-            task.getId()
-        );
+        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(task.getId());
 
         assertThat(taskVariables)
             .isNotNull()
-            .extracting(
-                VariableInstance::getName,
-                VariableInstance::getType,
-                VariableInstance::getValue
-            )
-            .containsOnly(
-                tuple("task_input_variable_name_1", "string", "inputmap1Value")
-            );
+            .extracting(VariableInstance::getName, VariableInstance::getType, VariableInstance::getValue)
+            .containsOnly(tuple("task_input_variable_name_1", "string", "inputmap1Value"));
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("process_variable_outputmap_1", "outputMappedValue");
@@ -391,10 +327,7 @@ public class TaskRuntimeVariableMappingIT {
 
         taskBaseRuntime.completeTask(task.getId(), variables);
 
-        procVariables =
-            processBaseRuntime.getProcessVariablesByProcessId(
-                processInstance.getId()
-            );
+        procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
 
         assertThat(procVariables)
             .isNotNull()
@@ -434,9 +367,7 @@ public class TaskRuntimeVariableMappingIT {
                 tuple("process_variable_outputmap_1", "outputmap1Value")
             );
 
-        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(
-            task.getId()
-        );
+        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(task.getId());
 
         assertThat(taskVariables)
             .isNotNull()
@@ -453,10 +384,7 @@ public class TaskRuntimeVariableMappingIT {
 
         taskBaseRuntime.completeTask(task.getId(), variables);
 
-        procVariables =
-            processBaseRuntime.getProcessVariablesByProcessId(
-                processInstance.getId()
-            );
+        procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
         assertThat(procVariables)
             .isNotNull()
             .extracting(VariableInstance::getName, VariableInstance::getValue)
@@ -473,9 +401,7 @@ public class TaskRuntimeVariableMappingIT {
     }
 
     private Task checkTasks(String processInstanceId) {
-        List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(
-            processInstanceId
-        );
+        List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstanceId);
         assertThat(tasks).isNotEmpty();
         assertThat(tasks).hasSize(1);
         return tasks.get(0);
@@ -487,37 +413,22 @@ public class TaskRuntimeVariableMappingIT {
         final ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
             "Process_N4qkN051N"
         );
-        List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(
-            processInstance.getId()
-        );
-        assertThat(tasks)
-            .extracting(Task::getName)
-            .containsExactly("Enter values");
+        List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId());
+        assertThat(tasks).extracting(Task::getName).containsExactly("Enter values");
 
         //when the task completes with a variable value causing a loop back
-        taskBaseRuntime.completeTask(
-            tasks.get(0),
-            singletonMap("formInput", "provided-it1")
-        );
+        taskBaseRuntime.completeTask(tasks.get(0), singletonMap("formInput", "provided-it1"));
 
         //then process loops back to the first task
         waitForTaskOnProcessInstance(processInstance, "Enter values");
-        List<VariableInstance> variables = processBaseRuntime.getVariables(
-            processInstance
-        );
+        List<VariableInstance> variables = processBaseRuntime.getVariables(processInstance);
         assertThat(variables)
             .extracting(VariableInstance::getName, VariableInstance::getValue)
             .containsExactly(tuple("providedValue", "provided-it1"));
 
         //when the task completes with a variable value not causing a loop back
-        tasks =
-            taskBaseRuntime.getTasksByProcessInstanceId(
-                processInstance.getId()
-            );
-        taskBaseRuntime.completeTask(
-            tasks.get(0),
-            singletonMap("formInput", "go")
-        );
+        tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId());
+        taskBaseRuntime.completeTask(tasks.get(0), singletonMap("formInput", "go"));
 
         //then the process reaches the next task
         waitForTaskOnProcessInstance(processInstance, "Wait");
@@ -527,18 +438,11 @@ public class TaskRuntimeVariableMappingIT {
             .containsExactly(tuple("providedValue", "go"));
     }
 
-    private void waitForTaskOnProcessInstance(
-        ProcessInstance processInstance,
-        String taskName
-    ) {
+    private void waitForTaskOnProcessInstance(ProcessInstance processInstance, String taskName) {
         await()
             .untilAsserted(() -> {
                 securityUtil.logInAs("user");
-                assertThat(
-                    taskBaseRuntime.getTasksByProcessInstanceId(
-                        processInstance.getId()
-                    )
-                )
+                assertThat(taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId()))
                     .extracting(Task::getName)
                     .containsExactly(taskName);
             });
@@ -550,38 +454,24 @@ public class TaskRuntimeVariableMappingIT {
         final ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
             "Process_at2zjUes"
         );
-        List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(
-            processInstance.getId()
-        );
-        assertThat(tasks)
-            .extracting(Task::getName)
-            .containsExactly("Input Task");
+        List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId());
+        assertThat(tasks).extracting(Task::getName).containsExactly("Input Task");
 
         //when
-        taskBaseRuntime.completeTask(
-            tasks.get(0),
-            singletonMap("inputText", "From input task")
-        );
+        taskBaseRuntime.completeTask(tasks.get(0), singletonMap("inputText", "From input task"));
 
         //then the process has executed the service task as well and reached the next user task
         waitForTaskOnProcessInstance(processInstance, "Output Task");
 
         //the process variable is updated with the output of the service task
-        List<VariableInstance> variables = processBaseRuntime.getVariables(
-            processInstance
-        );
+        List<VariableInstance> variables = processBaseRuntime.getVariables(processInstance);
         assertThat(variables)
             .extracting(VariableInstance::getName, VariableInstance::getValue)
             .containsExactly(tuple("stringVar", "From output connector"));
 
         //the task variables are updated based on the input mapping
-        tasks =
-            taskBaseRuntime.getTasksByProcessInstanceId(
-                processInstance.getId()
-            );
-        final List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(
-            tasks.get(0).getId()
-        );
+        tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId());
+        final List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(tasks.get(0).getId());
         assertThat(taskVariables)
             .extracting(VariableInstance::getName, VariableInstance::getValue)
             .containsExactly(tuple("outputText", "From output connector"));
@@ -593,38 +483,24 @@ public class TaskRuntimeVariableMappingIT {
         final ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
             "Process_1wyjgrj"
         );
-        List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(
-            processInstance.getId()
-        );
-        assertThat(tasks)
-            .extracting(Task::getName)
-            .containsExactly("Input Task");
+        List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId());
+        assertThat(tasks).extracting(Task::getName).containsExactly("Input Task");
 
         //when
-        taskBaseRuntime.completeTask(
-            tasks.get(0),
-            singletonMap("inputText", "From input task")
-        );
+        taskBaseRuntime.completeTask(tasks.get(0), singletonMap("inputText", "From input task"));
 
         //then the process has executed the call activity as well and reached the next user task
         waitForTaskOnProcessInstance(processInstance, "Output Task");
 
         //the process variable is updated with the output of the call activity
-        List<VariableInstance> variables = processBaseRuntime.getVariables(
-            processInstance
-        );
+        List<VariableInstance> variables = processBaseRuntime.getVariables(processInstance);
         assertThat(variables)
             .extracting(VariableInstance::getName, VariableInstance::getValue)
             .containsExactly(tuple("stringVar", "From child"));
 
         //the task variables are updated based on the input mapping
-        tasks =
-            taskBaseRuntime.getTasksByProcessInstanceId(
-                processInstance.getId()
-            );
-        final List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(
-            tasks.get(0).getId()
-        );
+        tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId());
+        final List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(tasks.get(0).getId());
         assertThat(taskVariables)
             .extracting(VariableInstance::getName, VariableInstance::getValue)
             .containsExactly(tuple("outputText", "From child"));
@@ -686,10 +562,7 @@ public class TaskRuntimeVariableMappingIT {
         taskBaseRuntime.completeTask(task.getId());
 
         securityUtil.logInAs("user");
-        procVariables =
-            processBaseRuntime.getProcessVariablesByProcessId(
-                processInstance.getId()
-            );
+        procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
         assertThat(procVariables)
             .isNotNull()
             .extracting(VariableInstance::getName, VariableInstance::getValue)
@@ -723,22 +596,14 @@ public class TaskRuntimeVariableMappingIT {
             .contains(
                 tuple(
                     "miResult",
-                    asList(
-                        Map.of(ASSIGNEE_VARIABLE_NAME, "user"),
-                        Map.of(ASSIGNEE_VARIABLE_NAME, "garth")
-                    )
+                    asList(Map.of(ASSIGNEE_VARIABLE_NAME, "user"), Map.of(ASSIGNEE_VARIABLE_NAME, "garth"))
                 )
             );
         processBaseRuntime.delete(processInstance.getId());
     }
 
-    private List<Task> checkMultiInstanceTasks(
-        String processInstanceId,
-        int size
-    ) {
-        List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(
-            processInstanceId
-        );
+    private List<Task> checkMultiInstanceTasks(String processInstanceId, int size) {
+        List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstanceId);
         assertThat(tasks).isNotEmpty();
         assertThat(tasks).hasSize(size);
         return tasks;

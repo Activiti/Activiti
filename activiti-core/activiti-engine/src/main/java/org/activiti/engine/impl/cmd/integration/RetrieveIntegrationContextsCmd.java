@@ -19,8 +19,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 
-public class RetrieveIntegrationContextsCmd
-    implements Command<IntegrationContextEntity> {
+public class RetrieveIntegrationContextsCmd implements Command<IntegrationContextEntity> {
 
     private String integrationContextId;
 

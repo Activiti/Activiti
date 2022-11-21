@@ -36,13 +36,8 @@ public class CamelTaskJsonConverter extends BaseBpmnJsonConverter {
         fillBpmnTypes(convertersToJsonMap);
     }
 
-    public static void fillJsonTypes(
-        Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap
-    ) {
-        convertersToBpmnMap.put(
-            STENCIL_TASK_CAMEL,
-            CamelTaskJsonConverter.class
-        );
+    public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
+        convertersToBpmnMap.put(STENCIL_TASK_CAMEL, CamelTaskJsonConverter.class);
     }
 
     public static void fillBpmnTypes(
@@ -53,10 +48,7 @@ public class CamelTaskJsonConverter extends BaseBpmnJsonConverter {
         return STENCIL_TASK_CAMEL;
     }
 
-    protected void convertElementToJson(
-        ObjectNode propertiesNode,
-        BaseElement baseElement
-    ) {
+    protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
         // done in service task
     }
 
@@ -67,12 +59,7 @@ public class CamelTaskJsonConverter extends BaseBpmnJsonConverter {
     ) {
         ServiceTask task = new ServiceTask();
         task.setType("camel");
-        addField(
-            "camelContext",
-            PROPERTY_CAMELTASK_CAMELCONTEXT,
-            elementNode,
-            task
-        );
+        addField("camelContext", PROPERTY_CAMELTASK_CAMELCONTEXT, elementNode, task);
         return task;
     }
 }

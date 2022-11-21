@@ -25,8 +25,7 @@ import org.activiti.engine.runtime.Execution;
  *
  */
 @Internal
-public interface HistoricDetailQuery
-    extends Query<HistoricDetailQuery, HistoricDetail> {
+public interface HistoricDetailQuery extends Query<HistoricDetailQuery, HistoricDetail> {
     /** Only select historic info with the given id. */
     HistoricDetailQuery id(String id);
 

@@ -49,13 +49,8 @@ public class JobEventsTest extends PluggableActivitiTestCase {
      */
     @Deployment
     public void testJobEntityEvents() throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testJobEvents"
-        );
-        Job theJob = managementService
-            .createTimerJobQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testJobEvents");
+        Job theJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(theJob).isNotNull();
 
         // Check if create-event has been dispatched
@@ -65,13 +60,11 @@ public class JobEventsTest extends PluggableActivitiTestCase {
         checkEventContext(event, theJob);
 
         event = listener.getEventsReceived().get(1);
-        assertThat(event.getType())
-            .isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
         checkEventContext(event, theJob);
 
         event = listener.getEventsReceived().get(2);
-        assertThat(event.getType())
-            .isEqualTo(ActivitiEventType.TIMER_SCHEDULED);
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.TIMER_SCHEDULED);
         checkEventContext(event, theJob);
 
         listener.clearEventsReceived();
@@ -91,13 +84,8 @@ public class JobEventsTest extends PluggableActivitiTestCase {
         // Force timer to fire
         Calendar tomorrow = Calendar.getInstance();
         tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(tomorrow.getTime());
-        String jobId = managementService
-            .createTimerJobQuery()
-            .singleResult()
-            .getId();
+        processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
+        String jobId = managementService.createTimerJobQuery().singleResult().getId();
         managementService.moveTimerToExecutableJob(jobId);
         managementService.executeJob(jobId);
 
@@ -109,8 +97,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
         checkEventContext(event, theJob);
 
         event = listener.getEventsReceived().get(1);
-        assertThat(event.getType())
-            .isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
         checkEventContext(event, theJob);
 
         // First, a timer fired event has been dispatched
@@ -125,8 +112,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 
         // Finally, a complete event has been dispatched
         event = listener.getEventsReceived().get(5);
-        assertThat(event.getType())
-            .isEqualTo(ActivitiEventType.JOB_EXECUTION_SUCCESS);
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.JOB_EXECUTION_SUCCESS);
         checkEventContext(event, theJob);
 
         checkEventCount(0, ActivitiEventType.TIMER_SCHEDULED);
@@ -148,13 +134,8 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 
         Calendar nowCalendar = new GregorianCalendar();
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testRepetitionJobEvents"
-        );
-        Job theJob = managementService
-            .createTimerJobQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testRepetitionJobEvents");
+        Job theJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(theJob).isNotNull();
 
         // Check if create-event has been dispatched
@@ -164,13 +145,11 @@ public class JobEventsTest extends PluggableActivitiTestCase {
         checkEventContext(event, theJob);
 
         event = listener.getEventsReceived().get(1);
-        assertThat(event.getType())
-            .isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
         checkEventContext(event, theJob);
 
         event = listener.getEventsReceived().get(2);
-        assertThat(event.getType())
-            .isEqualTo(ActivitiEventType.TIMER_SCHEDULED);
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.TIMER_SCHEDULED);
         checkEventContext(event, theJob);
 
         listener.clearEventsReceived();
@@ -178,12 +157,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
         // no timer jobs will be fired
         waitForJobExecutorToProcessAllJobs(2000, 200);
         assertThat(listener.getEventsReceived()).hasSize(0);
-        assertThat(
-            managementService
-                .createTimerJobQuery()
-                .processInstanceId(processInstance.getId())
-                .count()
-        )
+        assertThat(managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).count())
             .isEqualTo(1);
         Job firstTimerInstance = managementService
             .createTimerJobQuery()
@@ -198,30 +172,18 @@ public class JobEventsTest extends PluggableActivitiTestCase {
         waitForJobExecutorToProcessAllJobs(2000, 200);
 
         // a new timer should be created with the repeat
-        assertThat(
-            managementService
-                .createTimerJobQuery()
-                .processInstanceId(processInstance.getId())
-                .count()
-        )
+        assertThat(managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).count())
             .isEqualTo(1);
         Job secondTimerInstance = managementService
             .createTimerJobQuery()
             .processInstanceId(processInstance.getId())
             .singleResult();
-        assertThat(firstTimerInstance.getId() != secondTimerInstance.getId())
-            .isTrue();
+        assertThat(firstTimerInstance.getId() != secondTimerInstance.getId()).isTrue();
 
         checkEventCount(1, ActivitiEventType.TIMER_FIRED);
-        checkEventContext(
-            filterEvents(ActivitiEventType.TIMER_FIRED).get(0),
-            firstTimerInstance
-        );
+        checkEventContext(filterEvents(ActivitiEventType.TIMER_FIRED).get(0), firstTimerInstance);
         checkEventCount(1, ActivitiEventType.TIMER_SCHEDULED);
-        checkEventContext(
-            filterEvents(ActivitiEventType.TIMER_SCHEDULED).get(0),
-            secondTimerInstance
-        );
+        checkEventContext(filterEvents(ActivitiEventType.TIMER_SCHEDULED).get(0), secondTimerInstance);
 
         listener.clearEventsReceived();
 
@@ -231,12 +193,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 
         // the second timer job will be fired and no jobs should be remaining
         waitForJobExecutorToProcessAllJobs(2000, 200);
-        assertThat(
-            managementService
-                .createTimerJobQuery()
-                .processInstanceId(processInstance.getId())
-                .count()
-        )
+        assertThat(managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).count())
             .isEqualTo(0);
 
         nowCalendar.add(Calendar.HOUR, 1);
@@ -244,19 +201,11 @@ public class JobEventsTest extends PluggableActivitiTestCase {
         testClock.setCurrentTime(nowCalendar.getTime());
         waitForJobExecutorToProcessAllJobs(2000, 200);
 
-        assertThat(
-            managementService
-                .createTimerJobQuery()
-                .processInstanceId(processInstance.getId())
-                .count()
-        )
+        assertThat(managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).count())
             .isEqualTo(0);
 
         checkEventCount(1, ActivitiEventType.TIMER_FIRED);
-        checkEventContext(
-            filterEvents(ActivitiEventType.TIMER_FIRED).get(0),
-            secondTimerInstance
-        );
+        checkEventContext(filterEvents(ActivitiEventType.TIMER_FIRED).get(0), secondTimerInstance);
         checkEventCount(0, ActivitiEventType.TIMER_SCHEDULED);
 
         listener.clearEventsReceived();
@@ -286,15 +235,10 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     public void testJobCanceledEventByManagementService() throws Exception {
         // GIVEN
         processEngineConfiguration.getClock().setCurrentTime(new Date());
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testTimerCancelledEvent"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testTimerCancelledEvent");
         listener.clearEventsReceived();
 
-        Job job = managementService
-            .createTimerJobQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Job job = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
 
         // WHEN
         managementService.deleteTimerJob(job.getId());
@@ -303,8 +247,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
         checkEventCount(1, ActivitiEventType.JOB_CANCELED);
     }
 
-    public void testJobCanceledAndTimerStartEventOnProcessRedeploy()
-        throws Exception {
+    public void testJobCanceledAndTimerStartEventOnProcessRedeploy() throws Exception {
         // GIVEN deploy process definition
         String deployment1 = repositoryService
             .createDeployment()
@@ -341,10 +284,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
         checkEventCount(1, ActivitiEventType.JOB_CANCELED);
     }
 
-    private void checkEventCount(
-        int expectedCount,
-        ActivitiEventType eventType
-    ) { // count
+    private void checkEventCount(int expectedCount, ActivitiEventType eventType) { // count
         // timer
         // cancelled
         // events
@@ -356,12 +296,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
             }
         }
         assertThat(timerCancelledCount)
-            .as(
-                eventType.name() +
-                " event was expected " +
-                expectedCount +
-                " times."
-            )
+            .as(eventType.name() + " event was expected " + expectedCount + " times.")
             .isEqualTo(expectedCount);
     }
 
@@ -386,29 +321,22 @@ public class JobEventsTest extends PluggableActivitiTestCase {
         // Force timer to start the process
         Calendar tomorrow = Calendar.getInstance();
         tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(tomorrow.getTime());
+        processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
         waitForJobExecutorToProcessAllJobs(2000, 100);
 
         // Check Timer fired event has been dispatched
         assertThat(listener.getEventsReceived()).hasSize(6);
 
         // timer entity created first
-        assertThat(listener.getEventsReceived().get(0).getType())
-            .isEqualTo(ActivitiEventType.ENTITY_CREATED);
+        assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
         // timer entity initialized
-        assertThat(listener.getEventsReceived().get(1).getType())
-            .isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+        assertThat(listener.getEventsReceived().get(1).getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
         // timer entity deleted
-        assertThat(listener.getEventsReceived().get(2).getType())
-            .isEqualTo(ActivitiEventType.ENTITY_DELETED);
+        assertThat(listener.getEventsReceived().get(2).getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
         // job fired
-        assertThat(listener.getEventsReceived().get(3).getType())
-            .isEqualTo(ActivitiEventType.TIMER_FIRED);
+        assertThat(listener.getEventsReceived().get(3).getType()).isEqualTo(ActivitiEventType.TIMER_FIRED);
         // job executed successfully
-        assertThat(listener.getEventsReceived().get(5).getType())
-            .isEqualTo(ActivitiEventType.JOB_EXECUTION_SUCCESS);
+        assertThat(listener.getEventsReceived().get(5).getType()).isEqualTo(ActivitiEventType.JOB_EXECUTION_SUCCESS);
 
         checkEventCount(0, ActivitiEventType.JOB_CANCELED);
     }
@@ -418,16 +346,12 @@ public class JobEventsTest extends PluggableActivitiTestCase {
      */
     @Deployment
     public void testTimerFiredForIntermediateTimer() throws Exception {
-        runtimeService.startProcessInstanceByKey(
-            "testTimerFiredForIntermediateTimer"
-        );
+        runtimeService.startProcessInstanceByKey("testTimerFiredForIntermediateTimer");
 
         // Force timer to start the process
         Calendar tomorrow = Calendar.getInstance();
         tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(tomorrow.getTime());
+        processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
         waitForJobExecutorToProcessAllJobs(2000, 100);
 
         checkEventCount(1, ActivitiEventType.TIMER_SCHEDULED);
@@ -440,13 +364,8 @@ public class JobEventsTest extends PluggableActivitiTestCase {
      */
     @Deployment
     public void testJobEntityEventsException() throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testJobEvents"
-        );
-        Job theJob = managementService
-            .createTimerJobQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testJobEvents");
+        Job theJob = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(theJob).isNotNull();
 
         // Set retries to 1, to prevent multiple chains of events being thrown
@@ -455,26 +374,16 @@ public class JobEventsTest extends PluggableActivitiTestCase {
         // Force timer to fire
         Calendar tomorrow = Calendar.getInstance();
         tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(tomorrow.getTime());
+        processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
 
-        Job executableJob = managementService.moveTimerToExecutableJob(
-            theJob.getId()
-        );
+        Job executableJob = managementService.moveTimerToExecutableJob(theJob.getId());
 
         listener.clearEventsReceived();
 
         assertThatExceptionOfType(Exception.class)
-            .isThrownBy(() ->
-                managementService.executeJob(executableJob.getId())
-            );
+            .isThrownBy(() -> managementService.executeJob(executableJob.getId()));
 
-        theJob =
-            managementService
-                .createDeadLetterJobQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+        theJob = managementService.createDeadLetterJobQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(theJob).isNotNull();
 
         // Check delete-event has been dispatched
@@ -492,8 +401,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 
         // Next, a job failed event is dispatched
         event = listener.getEventsReceived().get(2);
-        assertThat(event.getType())
-            .isEqualTo(ActivitiEventType.JOB_EXECUTION_FAILURE);
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.JOB_EXECUTION_FAILURE);
         checkEventContext(event, theJob);
 
         // Finally, an timer create event is received and the job count is decremented
@@ -502,8 +410,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
         checkEventContext(event, theJob);
 
         event = listener.getEventsReceived().get(4);
-        assertThat(event.getType())
-            .isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
         checkEventContext(event, theJob);
 
         // original job is deleted
@@ -517,12 +424,8 @@ public class JobEventsTest extends PluggableActivitiTestCase {
         checkEventContext(event, theJob);
 
         event = listener.getEventsReceived().get(7);
-        assertThat(event.getType())
-            .isEqualTo(ActivitiEventType.JOB_RETRIES_DECREMENTED);
-        assertThat(
-            ((Job) ((ActivitiEntityEvent) event).getEntity()).getRetries()
-        )
-            .isEqualTo(0);
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.JOB_RETRIES_DECREMENTED);
+        assertThat(((Job) ((ActivitiEntityEvent) event).getEntity()).getRetries()).isEqualTo(0);
         checkEventContext(event, theJob);
     }
 
@@ -531,23 +434,16 @@ public class JobEventsTest extends PluggableActivitiTestCase {
         Clock previousClock = processEngineConfiguration.getClock();
 
         TestActivitiEventListener activitiEventListener = new TestActivitiEventListener();
-        processEngineConfiguration
-            .getEventDispatcher()
-            .addEventListener(activitiEventListener);
+        processEngineConfiguration.getEventDispatcher().addEventListener(activitiEventListener);
         Clock testClock = new DefaultClockImpl();
 
         processEngineConfiguration.setClock(testClock);
 
         testClock.setCurrentTime(new Date());
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testTerminateEndEvent"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testTerminateEndEvent");
         listener.clearEventsReceived();
 
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task.getName()).isEqualTo("Inside Task");
 
         // Force timer to trigger so that subprocess will flow to terminate end event
@@ -559,21 +455,13 @@ public class JobEventsTest extends PluggableActivitiTestCase {
         // Process Cancelled event should not be sent for the subprocess
         List<ActivitiEvent> eventsReceived = activitiEventListener.getEventsReceived();
         assertThat(eventsReceived)
-            .filteredOn(eventReceived ->
-                ActivitiEventType.PROCESS_CANCELLED.equals(
-                    eventReceived.getType()
-                )
-            )
+            .filteredOn(eventReceived -> ActivitiEventType.PROCESS_CANCELLED.equals(eventReceived.getType()))
             .as("Should not have received PROCESS_CANCELLED event")
             .isEmpty();
 
         // validate the activityType string
         for (ActivitiEvent eventReceived : eventsReceived) {
-            if (
-                ActivitiEventType.ACTIVITY_CANCELLED.equals(
-                    eventReceived.getType()
-                )
-            ) {
+            if (ActivitiEventType.ACTIVITY_CANCELLED.equals(eventReceived.getType())) {
                 ActivitiActivityEvent event = (ActivitiActivityEvent) eventReceived;
                 String activityType = event.getActivityType();
                 assertThat(activityType)
@@ -582,11 +470,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
             }
         }
 
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task.getName()).isEqualTo("Outside Task");
 
         taskService.complete(task.getId());
@@ -597,26 +481,21 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     }
 
     protected void checkEventContext(ActivitiEvent event, Job entity) {
-        assertThat(event.getProcessInstanceId())
-            .isEqualTo(entity.getProcessInstanceId());
-        assertThat(event.getProcessDefinitionId())
-            .isEqualTo(entity.getProcessDefinitionId());
+        assertThat(event.getProcessInstanceId()).isEqualTo(entity.getProcessInstanceId());
+        assertThat(event.getProcessDefinitionId()).isEqualTo(entity.getProcessDefinitionId());
         assertThat(event.getExecutionId()).isNotNull();
 
         assertThat(event).isInstanceOf(ActivitiEntityEvent.class);
         ActivitiEntityEvent entityEvent = (ActivitiEntityEvent) event;
         assertThat(entityEvent.getEntity()).isInstanceOf(Job.class);
-        assertThat(((Job) entityEvent.getEntity()).getId())
-            .isEqualTo(entity.getId());
+        assertThat(((Job) entityEvent.getEntity()).getId()).isEqualTo(entity.getId());
     }
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         listener = new TestActivitiEntityEventListener(Job.class);
-        processEngineConfiguration
-            .getEventDispatcher()
-            .addEventListener(listener);
+        processEngineConfiguration.getEventDispatcher().addEventListener(listener);
     }
 
     @Override
@@ -624,9 +503,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
         super.tearDown();
 
         if (listener != null) {
-            processEngineConfiguration
-                .getEventDispatcher()
-                .removeEventListener(listener);
+            processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
         }
     }
 }

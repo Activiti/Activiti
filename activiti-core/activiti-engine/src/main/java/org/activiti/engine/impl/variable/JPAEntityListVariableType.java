@@ -32,8 +32,7 @@ import org.activiti.engine.impl.context.Context;
  *
 
  */
-public class JPAEntityListVariableType
-    implements VariableType, CacheableVariable {
+public class JPAEntityListVariableType implements VariableType, CacheableVariable {
 
     public static final String TYPE_NAME = "jpa-entity-list";
 
@@ -71,18 +70,13 @@ public class JPAEntityListVariableType
                 // list of JPA entities. In case the
                 // list is empty, we don't store it.
                 canStore = true;
-                Class<?> entityClass = mappings
-                    .getEntityMetaData(list.get(0).getClass())
-                    .getEntityClass();
+                Class<?> entityClass = mappings.getEntityMetaData(list.get(0).getClass()).getEntityClass();
 
                 for (Object entity : list) {
                     canStore =
                         entity != null &&
                         mappings.isJPAEntity(entity) &&
-                        mappings
-                            .getEntityMetaData(entity.getClass())
-                            .getEntityClass()
-                            .equals(entityClass);
+                        mappings.getEntityMetaData(entity.getClass()).getEntityClass().equals(entityClass);
                     if (!canStore) {
                         // In case the object is not a JPA entity or the class
                         // doesn't match, we can't store the list
@@ -96,15 +90,9 @@ public class JPAEntityListVariableType
 
     @Override
     public void setValue(Object value, ValueFields valueFields) {
-        EntityManagerSession entityManagerSession = Context
-            .getCommandContext()
-            .getSession(EntityManagerSession.class);
+        EntityManagerSession entityManagerSession = Context.getCommandContext().getSession(EntityManagerSession.class);
         if (entityManagerSession == null) {
-            throw new ActivitiException(
-                "Cannot set JPA variable: " +
-                EntityManagerSession.class +
-                " not configured"
-            );
+            throw new ActivitiException("Cannot set JPA variable: " + EntityManagerSession.class + " not configured");
         } else {
             // Before we set the value we must flush all pending changes from
             // the entitymanager
@@ -130,9 +118,7 @@ public class JPAEntityListVariableType
             valueFields.setBytes(null);
             valueFields.setTextValue(null);
         } else {
-            throw new ActivitiIllegalArgumentException(
-                "Value is not a list of JPA entities: " + value
-            );
+            throw new ActivitiIllegalArgumentException("Value is not a list of JPA entities: " + value);
         }
     }
 
@@ -166,10 +152,7 @@ public class JPAEntityListVariableType
             out.writeObject(toStore);
             return baos.toByteArray();
         } catch (IOException ioe) {
-            throw new ActivitiException(
-                "Unexpected exception when serializing JPA id's",
-                ioe
-            );
+            throw new ActivitiException("Unexpected exception when serializing JPA id's", ioe);
         }
     }
 
@@ -180,22 +163,14 @@ public class JPAEntityListVariableType
 
             Object read = in.readObject();
             if (!(read instanceof String[])) {
-                throw new ActivitiIllegalArgumentException(
-                    "Deserialized value is not an array of ID's: " + read
-                );
+                throw new ActivitiIllegalArgumentException("Deserialized value is not an array of ID's: " + read);
             }
 
             return (String[]) read;
         } catch (IOException ioe) {
-            throw new ActivitiException(
-                "Unexpected exception when deserializing JPA id's",
-                ioe
-            );
+            throw new ActivitiException("Unexpected exception when deserializing JPA id's", ioe);
         } catch (ClassNotFoundException e) {
-            throw new ActivitiException(
-                "Unexpected exception when deserializing JPA id's",
-                e
-            );
+            throw new ActivitiException("Unexpected exception when deserializing JPA id's", e);
         }
     }
 }

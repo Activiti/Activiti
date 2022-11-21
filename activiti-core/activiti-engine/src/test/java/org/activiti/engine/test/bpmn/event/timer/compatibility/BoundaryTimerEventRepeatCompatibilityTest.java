@@ -29,8 +29,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-public class BoundaryTimerEventRepeatCompatibilityTest
-    extends TimerEventCompatibilityTest {
+public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompatibilityTest {
 
     @Deployment
     public void testRepeatWithoutEnd() throws Throwable {
@@ -46,19 +45,11 @@ public class BoundaryTimerEventRepeatCompatibilityTest
         // reset the timer
         Calendar nextTimeCal = Calendar.getInstance();
         nextTimeCal.setTime(baseTime);
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(nextTimeCal.getTime());
+        processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "repeatWithEnd"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("repeatWithEnd");
 
-        runtimeService.setVariable(
-            processInstance.getId(),
-            "EndDateForBoundary",
-            dateStr
-        );
+        runtimeService.setVariable(processInstance.getId(), "EndDateForBoundary", dateStr);
 
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
@@ -88,9 +79,7 @@ public class BoundaryTimerEventRepeatCompatibilityTest
 
         for (int i = 0; i < 9; i++) {
             nextTimeCal.add(Calendar.SECOND, 2);
-            processEngineConfiguration
-                .getClock()
-                .setCurrentTime(nextTimeCal.getTime());
+            processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
             waitForJobExecutorToProcessAllJobs(2000, 100);
             // a new job must be prepared because there are 10 repeats 2 seconds interval
 
@@ -99,16 +88,12 @@ public class BoundaryTimerEventRepeatCompatibilityTest
         }
 
         nextTimeCal.add(Calendar.SECOND, 2);
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(nextTimeCal.getTime());
+        processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
         try {
             waitForJobExecutorToProcessAllJobs(2000, 100);
         } catch (Exception ex) {
-            fail(
-                "Should not have any other jobs because the endDate is reached"
-            );
+            fail("Should not have any other jobs because the endDate is reached");
         }
 
         tasks = taskService.createTaskQuery().list();
@@ -124,9 +109,7 @@ public class BoundaryTimerEventRepeatCompatibilityTest
         }
 
         // now All the process instances should be completed
-        List<ProcessInstance> processInstances = runtimeService
-            .createProcessInstanceQuery()
-            .list();
+        List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
         assertThat(processInstances).hasSize(0);
 
         // no jobs

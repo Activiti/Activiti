@@ -40,10 +40,7 @@ public abstract class AbstractDataAssociation implements Serializable {
         this.target = target;
     }
 
-    protected AbstractDataAssociation(
-        Expression sourceExpression,
-        String target
-    ) {
+    protected AbstractDataAssociation(Expression sourceExpression, String target) {
         this.sourceExpression = sourceExpression;
         this.target = target;
     }

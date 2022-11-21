@@ -120,16 +120,7 @@ public class VariableDefinitionImpl implements VariableDefinition {
 
     @Override
     public int hashCode() {
-        return Objects.hash(
-            id,
-            name,
-            description,
-            type,
-            required,
-            display,
-            displayName,
-            analytics
-        );
+        return Objects.hash(id, name, description, type, required, display, displayName, analytics);
     }
 
     @Override

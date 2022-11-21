@@ -26,8 +26,7 @@ import org.activiti.test.matchers.OperationScopeMatcher;
 import org.activiti.test.matchers.ProcessResultMatcher;
 import org.activiti.test.matchers.ProcessTaskMatcher;
 
-public class ProcessInstanceAssertionsImpl
-    implements ProcessInstanceAssertions {
+public class ProcessInstanceAssertionsImpl implements ProcessInstanceAssertions {
 
     private EventSource eventSource;
 
@@ -45,9 +44,7 @@ public class ProcessInstanceAssertionsImpl
     }
 
     @Override
-    public ProcessInstanceAssertions expectFields(
-        ProcessResultMatcher... processResultMatcher
-    ) {
+    public ProcessInstanceAssertions expectFields(ProcessResultMatcher... processResultMatcher) {
         List<RuntimeEvent<?, ?>> events = eventSource.getEvents();
         for (ProcessResultMatcher matcher : processResultMatcher) {
             matcher.match(processInstance);
@@ -56,15 +53,10 @@ public class ProcessInstanceAssertionsImpl
     }
 
     @Override
-    public ProcessInstanceAssertions expectEvents(
-        OperationScopeMatcher... matchers
-    ) {
+    public ProcessInstanceAssertions expectEvents(OperationScopeMatcher... matchers) {
         List<RuntimeEvent<?, ?>> events = eventSource.getEvents();
         for (OperationScopeMatcher matcher : matchers) {
-            matcher.match(
-                processInstanceScope(processInstance.getId()),
-                events
-            );
+            matcher.match(processInstanceScope(processInstance.getId()), events);
         }
         return this;
     }

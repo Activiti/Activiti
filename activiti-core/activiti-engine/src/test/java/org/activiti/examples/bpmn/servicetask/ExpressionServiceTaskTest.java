@@ -32,12 +32,8 @@ public class ExpressionServiceTaskTest extends PluggableActivitiTestCase {
     public void testSetServiceResultToProcessVariables() {
         Map<String, Object> variables = new HashMap<String, Object>();
         variables.put("bean", new ValueBean("ok"));
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "setServiceResultToProcessVariables",
-            variables
-        );
-        assertThat(runtimeService.getVariable(pi.getId(), "result"))
-            .isEqualTo("ok");
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("setServiceResultToProcessVariables", variables);
+        assertThat(runtimeService.getVariable(pi.getId(), "result")).isEqualTo("ok");
     }
 
     @Deployment
@@ -50,8 +46,7 @@ public class ExpressionServiceTaskTest extends PluggableActivitiTestCase {
             "setServiceResultToProcessVariablesWithSkipExpression",
             variables
         );
-        assertThat(runtimeService.getVariable(pi.getId(), "result"))
-            .isEqualTo("ok");
+        assertThat(runtimeService.getVariable(pi.getId(), "result")).isEqualTo("ok");
 
         Map<String, Object> variables2 = new HashMap<String, Object>();
         variables2.put("bean", new ValueBean("ok"));
@@ -61,8 +56,7 @@ public class ExpressionServiceTaskTest extends PluggableActivitiTestCase {
             "setServiceResultToProcessVariablesWithSkipExpression",
             variables2
         );
-        assertThat(runtimeService.getVariable(pi2.getId(), "result"))
-            .isEqualTo(null);
+        assertThat(runtimeService.getVariable(pi2.getId(), "result")).isEqualTo(null);
 
         Map<String, Object> variables3 = new HashMap<String, Object>();
         variables3.put("bean", new ValueBean("okBean"));
@@ -71,8 +65,7 @@ public class ExpressionServiceTaskTest extends PluggableActivitiTestCase {
             "setServiceResultToProcessVariablesWithSkipExpression",
             variables3
         );
-        assertThat(runtimeService.getVariable(pi3.getId(), "result"))
-            .isEqualTo("okBean");
+        assertThat(runtimeService.getVariable(pi3.getId(), "result")).isEqualTo("okBean");
     }
 
     @Deployment
@@ -83,7 +76,6 @@ public class ExpressionServiceTaskTest extends PluggableActivitiTestCase {
             "BackwardsCompatibleExpressionProcess",
             variables
         );
-        assertThat(runtimeService.getVariable(pi.getId(), "result"))
-            .isEqualTo("...---...");
+        assertThat(runtimeService.getVariable(pi.getId(), "result")).isEqualTo("...---...");
     }
 }

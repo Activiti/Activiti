@@ -39,8 +39,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class BasicCallActivityAndServiceTaskTest {
 
-    private final String processKey =
-        "basiccalla-bdf1f7af-7cc7-45c7-a206-8b5c46a8198f";
+    private final String processKey = "basiccalla-bdf1f7af-7cc7-45c7-a206-8b5c46a8198f";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -71,12 +70,9 @@ public class BasicCallActivityAndServiceTaskTest {
 
         //then
         assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getStatus())
-            .isEqualTo(ProcessInstance.ProcessInstanceStatus.COMPLETED);
-        assertThat(processInstance.getBusinessKey())
-            .isEqualTo("my-business-key");
-        assertThat(processInstance.getName())
-            .isEqualTo("my-process-instance-name");
+        assertThat(processInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.COMPLETED);
+        assertThat(processInstance.getBusinessKey()).isEqualTo("my-business-key");
+        assertThat(processInstance.getName()).isEqualTo("my-process-instance-name");
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
             .extracting(RuntimeEvent::getEventType)
@@ -111,15 +107,11 @@ public class BasicCallActivityAndServiceTaskTest {
     @AfterEach
     public void cleanup() {
         securityUtil.logInAs("admin");
-        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(
-            Pageable.of(0, 50)
-        );
+        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0, 50));
         for (ProcessInstance pi : processInstancePage.getContent()) {
             // We want to delete root processes instances because sub processes will be deleted automatically when the root ones are deleted
             if (pi.getParentId() == null) {
-                processAdminRuntime.delete(
-                    ProcessPayloadBuilder.delete(pi.getId())
-                );
+                processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
             }
         }
 

@@ -31,9 +31,7 @@ public class HistoricTaskInstanceUpdateTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testHistoricTaskInstanceUpdate() {
-        runtimeService
-            .startProcessInstanceByKey("HistoricTaskInstanceTest")
-            .getId();
+        runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest").getId();
 
         Task task = taskService.createTaskQuery().singleResult();
 
@@ -45,24 +43,17 @@ public class HistoricTaskInstanceUpdateTest extends PluggableActivitiTestCase {
         taskService.saveTask(task);
 
         taskService.complete(task.getId());
-        assertThat(historyService.createHistoricTaskInstanceQuery().count())
-            .isEqualTo(1);
+        assertThat(historyService.createHistoricTaskInstanceQuery().count()).isEqualTo(1);
 
-        HistoricTaskInstance historicTaskInstance = historyService
-            .createHistoricTaskInstanceQuery()
-            .singleResult();
+        HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().singleResult();
         assertThat(historicTaskInstance.getName()).isEqualTo("Updated name");
-        assertThat(historicTaskInstance.getDescription())
-            .isEqualTo("Updated description");
+        assertThat(historicTaskInstance.getDescription()).isEqualTo("Updated description");
         assertThat(historicTaskInstance.getAssignee()).isEqualTo("gonzo");
-        assertThat(historicTaskInstance.getTaskDefinitionKey())
-            .isEqualTo("task");
+        assertThat(historicTaskInstance.getTaskDefinitionKey()).isEqualTo("task");
 
         // Validate fix of ACT-1923: updating assignee to null should be
         // reflected in history
-        ProcessInstance secondInstance = runtimeService.startProcessInstanceByKey(
-            "HistoricTaskInstanceTest"
-        );
+        ProcessInstance secondInstance = runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest");
 
         task = taskService.createTaskQuery().singleResult();
 
@@ -72,19 +63,11 @@ public class HistoricTaskInstanceUpdateTest extends PluggableActivitiTestCase {
         taskService.saveTask(task);
 
         taskService.complete(task.getId());
-        assertThat(
-            historyService
-                .createHistoricTaskInstanceQuery()
-                .processInstanceId(secondInstance.getId())
-                .count()
-        )
+        assertThat(historyService.createHistoricTaskInstanceQuery().processInstanceId(secondInstance.getId()).count())
             .isEqualTo(1);
 
         historicTaskInstance =
-            historyService
-                .createHistoricTaskInstanceQuery()
-                .processInstanceId(secondInstance.getId())
-                .singleResult();
+            historyService.createHistoricTaskInstanceQuery().processInstanceId(secondInstance.getId()).singleResult();
         assertThat(historicTaskInstance.getName()).isNull();
         assertThat(historicTaskInstance.getDescription()).isNull();
         assertThat(historicTaskInstance.getAssignee()).isNull();

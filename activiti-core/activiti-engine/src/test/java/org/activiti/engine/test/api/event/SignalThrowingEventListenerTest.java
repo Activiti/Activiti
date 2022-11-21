@@ -44,20 +44,13 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
             listener.setSignalName("Signal");
             listener.setProcessInstanceScope(true);
 
-            processEngineConfiguration
-                .getEventDispatcher()
-                .addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
+            processEngineConfiguration.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
 
-            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-                "testSignal"
-            );
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testSignal");
             assertThat(processInstance).isNotNull();
 
             // Fetch the task and re-assign it to trigger the event-listener
-            Task task = taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+            Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
             assertThat(task).isNotNull();
             taskService.setAssignee(task.getId(), "kermit");
 
@@ -80,24 +73,17 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
                 .singleResult();
             assertThat(boundaryTask).isNotNull();
         } finally {
-            processEngineConfiguration
-                .getEventDispatcher()
-                .removeEventListener(listener);
+            processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
         }
     }
 
     @Deployment
     public void testThrowSignalDefinedInProcessDefinition() throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testSignal"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testSignal");
         assertThat(processInstance).isNotNull();
 
         // Fetch the task and re-assign it to trigger the event-listener
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task).isNotNull();
         taskService.setAssignee(task.getId(), "kermit");
 
@@ -128,20 +114,13 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
             listener = new SignalThrowingEventListener();
             listener.setSignalName("Signal");
             listener.setProcessInstanceScope(true);
-            processEngineConfiguration
-                .getEventDispatcher()
-                .addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
+            processEngineConfiguration.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
 
-            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-                "testSignal"
-            );
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testSignal");
             assertThat(processInstance).isNotNull();
 
             // Fetch the task and re-assign it to trigger the event-listener
-            Task task = taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+            Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
             assertThat(task).isNotNull();
             taskService.setAssignee(task.getId(), "kermit");
 
@@ -163,9 +142,7 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
                 .singleResult();
             assertThat(boundaryTask).isNotNull();
         } finally {
-            processEngineConfiguration
-                .getEventDispatcher()
-                .removeEventListener(listener);
+            processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
         }
     }
 
@@ -181,14 +158,9 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
             listener.setProcessInstanceScope(true);
             processEngineConfiguration
                 .getEventDispatcher()
-                .addEventListener(
-                    listener,
-                    ActivitiEventType.JOB_RETRIES_DECREMENTED
-                );
+                .addEventListener(listener, ActivitiEventType.JOB_RETRIES_DECREMENTED);
 
-            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-                "testSignal"
-            );
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testSignal");
             assertThat(processInstance).isNotNull();
 
             Job signalJob = managementService
@@ -197,9 +169,7 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
                 .singleResult();
 
             assertThatExceptionOfType(ActivitiException.class)
-                .isThrownBy(() ->
-                    managementService.executeJob(signalJob.getId())
-                );
+                .isThrownBy(() -> managementService.executeJob(signalJob.getId()));
 
             Job failedJob = managementService
                 .createTimerJobQuery()
@@ -211,33 +181,17 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
             assertThat(failedJob.getRetries()).isEqualTo(2);
 
             // One retry should have triggered dispatching of a retry-decrement event
-            assertThat(
-                taskService
-                    .createTaskQuery()
-                    .processInstanceId(processInstance.getId())
-                    .count()
-            )
-                .isEqualTo(1);
+            assertThat(taskService.createTaskQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(1);
 
             assertThatExceptionOfType(ActivitiException.class)
                 .isThrownBy(() -> {
-                    managementService.moveTimerToExecutableJob(
-                        failedJob.getId()
-                    );
+                    managementService.moveTimerToExecutableJob(failedJob.getId());
                     managementService.executeJob(failedJob.getId());
                 });
 
-            assertThat(
-                taskService
-                    .createTaskQuery()
-                    .processInstanceId(processInstance.getId())
-                    .count()
-            )
-                .isEqualTo(2);
+            assertThat(taskService.createTaskQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(2);
         } finally {
-            processEngineConfiguration
-                .getEventDispatcher()
-                .removeEventListener(listener);
+            processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
         }
     }
 
@@ -258,14 +212,9 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
             listener.setProcessInstanceScope(true);
             processEngineConfiguration
                 .getEventDispatcher()
-                .addEventListener(
-                    listener,
-                    ActivitiEventType.JOB_EXECUTION_FAILURE
-                );
+                .addEventListener(listener, ActivitiEventType.JOB_EXECUTION_FAILURE);
 
-            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-                "testSignal"
-            );
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testSignal");
             assertThat(processInstance).isNotNull();
 
             Job signalJob = managementService
@@ -274,9 +223,7 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
                 .singleResult();
 
             assertThatExceptionOfType(ActivitiException.class)
-                .isThrownBy(() ->
-                    managementService.executeJob(signalJob.getId())
-                );
+                .isThrownBy(() -> managementService.executeJob(signalJob.getId()));
 
             Job failedJob = managementService
                 .createTimerJobQuery()
@@ -284,39 +231,21 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
                 .processInstanceId(processInstance.getId())
                 .singleResult();
 
-            assertThat(failedJob)
-                .as("Expected job with exception, found no such job")
-                .isNotNull();
+            assertThat(failedJob).as("Expected job with exception, found no such job").isNotNull();
             assertThat(failedJob.getRetries()).isEqualTo(2);
 
             // Three retries should each have triggered dispatching of a retry-decrement event
-            assertThat(
-                taskService
-                    .createTaskQuery()
-                    .processInstanceId(processInstance.getId())
-                    .count()
-            )
-                .isEqualTo(0);
+            assertThat(taskService.createTaskQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
 
             assertThatExceptionOfType(ActivitiException.class)
                 .isThrownBy(() -> {
-                    managementService.moveTimerToExecutableJob(
-                        failedJob.getId()
-                    );
+                    managementService.moveTimerToExecutableJob(failedJob.getId());
                     managementService.executeJob(failedJob.getId());
                 });
 
-            assertThat(
-                taskService
-                    .createTaskQuery()
-                    .processInstanceId(processInstance.getId())
-                    .count()
-            )
-                .isEqualTo(0);
+            assertThat(taskService.createTaskQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
         } finally {
-            processEngineConfiguration
-                .getEventDispatcher()
-                .removeEventListener(listener);
+            processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
         }
     }
 
@@ -336,31 +265,19 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
             listener = new SignalThrowingEventListener();
             listener.setSignalName("Signal");
             listener.setProcessInstanceScope(false);
-            processEngineConfiguration
-                .getEventDispatcher()
-                .addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
+            processEngineConfiguration.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
 
-            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-                "globalSignalProcess"
-            );
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("globalSignalProcess");
             assertThat(processInstance).isNotNull();
 
-            ProcessInstance externalProcess = runtimeService.startProcessInstanceByKey(
-                "globalSignalProcessExternal"
-            );
+            ProcessInstance externalProcess = runtimeService.startProcessInstanceByKey("globalSignalProcessExternal");
             assertThat(processInstance).isNotNull();
             // Make sure process is not ended yet by querying it again
             externalProcess =
-                runtimeService
-                    .createProcessInstanceQuery()
-                    .processInstanceId(externalProcess.getId())
-                    .singleResult();
+                runtimeService.createProcessInstanceQuery().processInstanceId(externalProcess.getId()).singleResult();
             assertThat(externalProcess).isNotNull();
 
-            Task task = taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+            Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
             assertThat(task).isNotNull();
 
             // Assign task to trigger signal
@@ -368,24 +285,15 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
 
             // Second process should have been signaled
             externalProcess =
-                runtimeService
-                    .createProcessInstanceQuery()
-                    .processInstanceId(externalProcess.getId())
-                    .singleResult();
+                runtimeService.createProcessInstanceQuery().processInstanceId(externalProcess.getId()).singleResult();
             assertThat(externalProcess).isNull();
 
             // Task assignee should still be set
-            task =
-                taskService
-                    .createTaskQuery()
-                    .processInstanceId(processInstance.getId())
-                    .singleResult();
+            task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getAssignee()).isEqualTo("kermit");
         } finally {
-            processEngineConfiguration
-                .getEventDispatcher()
-                .removeEventListener(listener);
+            processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
         }
     }
 
@@ -399,27 +307,17 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
         }
     )
     public void testGlobalSignalDefinedInProcessDefinition() throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "globalSignalProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("globalSignalProcess");
         assertThat(processInstance).isNotNull();
 
-        ProcessInstance externalProcess = runtimeService.startProcessInstanceByKey(
-            "globalSignalProcessExternal"
-        );
+        ProcessInstance externalProcess = runtimeService.startProcessInstanceByKey("globalSignalProcessExternal");
         assertThat(processInstance).isNotNull();
         // Make sure process is not ended yet by querying it again
         externalProcess =
-            runtimeService
-                .createProcessInstanceQuery()
-                .processInstanceId(externalProcess.getId())
-                .singleResult();
+            runtimeService.createProcessInstanceQuery().processInstanceId(externalProcess.getId()).singleResult();
         assertThat(externalProcess).isNotNull();
 
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task).isNotNull();
 
         // Assign task to trigger signal
@@ -427,18 +325,11 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
 
         // Second process should have been signaled
         externalProcess =
-            runtimeService
-                .createProcessInstanceQuery()
-                .processInstanceId(externalProcess.getId())
-                .singleResult();
+            runtimeService.createProcessInstanceQuery().processInstanceId(externalProcess.getId()).singleResult();
         assertThat(externalProcess).isNull();
 
         // Task assignee should still be set
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task).isNotNull();
         assertThat(task.getAssignee()).isEqualTo("kermit");
     }

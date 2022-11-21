@@ -32,10 +32,7 @@ public class TaskElResolverTest {
     @Test
     public void canResolve_should_returnTrueWhenItsTaskEntityAndPropertyIsTask() {
         //when
-        boolean canResolve = resolver.canResolve(
-            TASK_KEY,
-            new TaskEntityImpl()
-        );
+        boolean canResolve = resolver.canResolve(TASK_KEY, new TaskEntityImpl());
         //then
         assertThat(canResolve).isTrue();
     }
@@ -43,10 +40,7 @@ public class TaskElResolverTest {
     @Test
     public void canResolve_should_returnFalseWhenItsTaskEntityAndPropertyIsNotTask() {
         //when
-        boolean canResolve = resolver.canResolve(
-            "differentFromTask",
-            new TaskEntityImpl()
-        );
+        boolean canResolve = resolver.canResolve("differentFromTask", new TaskEntityImpl());
         //then
         assertThat(canResolve).isFalse();
     }
@@ -54,10 +48,7 @@ public class TaskElResolverTest {
     @Test
     public void canResolve_should_returnFalseWhenItsNotTaskEntityEntityAndPropertyIsTask() {
         //when
-        boolean canResolve = resolver.canResolve(
-            TASK_KEY,
-            mock(VariableScope.class)
-        );
+        boolean canResolve = resolver.canResolve(TASK_KEY, mock(VariableScope.class));
         //then
         assertThat(canResolve).isFalse();
     }

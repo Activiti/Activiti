@@ -47,11 +47,7 @@ public class TimerCancelledListenerDelegateTest {
 
     @BeforeEach
     public void setUp() {
-        listenerDelegate =
-            new TimerCancelledListenerDelegate(
-                singletonList(listener),
-                converter
-            );
+        listenerDelegate = new TimerCancelledListenerDelegate(singletonList(listener), converter);
     }
 
     @Test
@@ -59,8 +55,7 @@ public class TimerCancelledListenerDelegateTest {
         //given
         ActivitiEntityEvent internalEvent = mock(ActivitiEntityEvent.class);
         BPMNTimerCancelledEventImpl convertedEvent = new BPMNTimerCancelledEventImpl();
-        given(converter.from(internalEvent))
-            .willReturn(Optional.of(convertedEvent));
+        given(converter.from(internalEvent)).willReturn(Optional.of(convertedEvent));
 
         //when
         listenerDelegate.onEvent(internalEvent);

@@ -38,10 +38,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
     private List<String> multipleTaskIds;
 
     private static final String KERMIT = "kermit";
-    private static final List<String> KERMITSGROUPS = asList(
-        "management",
-        "accountancy"
-    );
+    private static final List<String> KERMITSGROUPS = asList("management", "accountancy");
 
     private static final String GONZO = "gonzo";
 
@@ -55,11 +52,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testQuery() {
-        Task task = taskService
-            .createTaskQuery()
-            .includeTaskLocalVariables()
-            .taskAssignee(GONZO)
-            .singleResult();
+        Task task = taskService.createTaskQuery().includeTaskLocalVariables().taskAssignee(GONZO).singleResult();
         Map<String, Object> variableMap = task.getTaskLocalVariables();
         assertThat(variableMap).hasSize(3);
         assertThat(task.getProcessVariables()).hasSize(0);
@@ -68,97 +61,51 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
         assertThat(variableMap.get("testVar2")).isNotNull();
         assertThat(variableMap.get("testVar2")).isEqualTo(123);
         assertThat(variableMap.get("testVarBinary")).isNotNull();
-        assertThat(new String((byte[]) variableMap.get("testVarBinary")))
-            .isEqualTo("This is a binary variable");
+        assertThat(new String((byte[]) variableMap.get("testVarBinary"))).isEqualTo("This is a binary variable");
 
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(3);
 
-        task =
-            taskService
-                .createTaskQuery()
-                .includeProcessVariables()
-                .taskAssignee(GONZO)
-                .singleResult();
+        task = taskService.createTaskQuery().includeProcessVariables().taskAssignee(GONZO).singleResult();
         assertThat(task.getProcessVariables()).hasSize(0);
         assertThat(task.getTaskLocalVariables()).hasSize(0);
 
         Map<String, Object> startMap = new HashMap<String, Object>();
         startMap.put("processVar", true);
-        startMap.put(
-            "binaryVariable",
-            "This is a binary process variable".getBytes()
-        );
+        startMap.put("binaryVariable", "This is a binary process variable".getBytes());
         runtimeService.startProcessInstanceByKey("oneTaskProcess", startMap);
 
-        task =
-            taskService
-                .createTaskQuery()
-                .includeProcessVariables()
-                .taskAssignee(KERMIT)
-                .singleResult();
+        task = taskService.createTaskQuery().includeProcessVariables().taskAssignee(KERMIT).singleResult();
         assertThat(task.getProcessVariables()).hasSize(2);
         assertThat(task.getTaskLocalVariables()).hasSize(0);
-        assertThat((Boolean) task.getProcessVariables().get("processVar"))
-            .isTrue();
-        assertThat(
-            new String(
-                (byte[]) task.getProcessVariables().get("binaryVariable")
-            )
-        )
+        assertThat((Boolean) task.getProcessVariables().get("processVar")).isTrue();
+        assertThat(new String((byte[]) task.getProcessVariables().get("binaryVariable")))
             .isEqualTo("This is a binary process variable");
 
         taskService.setVariable(task.getId(), "anotherProcessVar", 123);
         taskService.setVariableLocal(task.getId(), "localVar", "test");
 
-        task =
-            taskService
-                .createTaskQuery()
-                .includeTaskLocalVariables()
-                .taskAssignee(KERMIT)
-                .singleResult();
+        task = taskService.createTaskQuery().includeTaskLocalVariables().taskAssignee(KERMIT).singleResult();
         assertThat(task.getProcessVariables()).hasSize(0);
         assertThat(task.getTaskLocalVariables()).hasSize(1);
-        assertThat(task.getTaskLocalVariables().get("localVar"))
-            .isEqualTo("test");
+        assertThat(task.getTaskLocalVariables().get("localVar")).isEqualTo("test");
 
-        task =
-            taskService
-                .createTaskQuery()
-                .includeProcessVariables()
-                .taskAssignee(KERMIT)
-                .singleResult();
+        task = taskService.createTaskQuery().includeProcessVariables().taskAssignee(KERMIT).singleResult();
         assertThat(task.getProcessVariables()).hasSize(3);
         assertThat(task.getTaskLocalVariables()).hasSize(0);
-        assertThat(task.getProcessVariables().get("processVar"))
-            .isEqualTo(true);
-        assertThat(task.getProcessVariables().get("anotherProcessVar"))
-            .isEqualTo(123);
-        assertThat(
-            new String(
-                (byte[]) task.getProcessVariables().get("binaryVariable")
-            )
-        )
+        assertThat(task.getProcessVariables().get("processVar")).isEqualTo(true);
+        assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
+        assertThat(new String((byte[]) task.getProcessVariables().get("binaryVariable")))
             .isEqualTo("This is a binary process variable");
 
         tasks =
-            taskService
-                .createTaskQuery()
-                .includeTaskLocalVariables()
-                .taskCandidateUser(KERMIT, KERMITSGROUPS)
-                .list();
+            taskService.createTaskQuery().includeTaskLocalVariables().taskCandidateUser(KERMIT, KERMITSGROUPS).list();
         assertThat(tasks).hasSize(2);
         assertThat(tasks.get(0).getTaskLocalVariables()).hasSize(2);
-        assertThat(tasks.get(0).getTaskLocalVariables().get("test"))
-            .isEqualTo("test");
+        assertThat(tasks.get(0).getTaskLocalVariables().get("test")).isEqualTo("test");
         assertThat(tasks.get(0).getProcessVariables()).hasSize(0);
 
-        tasks =
-            taskService
-                .createTaskQuery()
-                .includeProcessVariables()
-                .taskCandidateUser(KERMIT, KERMITSGROUPS)
-                .list();
+        tasks = taskService.createTaskQuery().includeProcessVariables().taskCandidateUser(KERMIT, KERMITSGROUPS).list();
         assertThat(tasks).hasSize(2);
         assertThat(tasks.get(0).getProcessVariables()).hasSize(0);
         assertThat(tasks.get(0).getTaskLocalVariables()).hasSize(0);
@@ -172,8 +119,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
                 .singleResult();
         assertThat(task.getProcessVariables()).hasSize(0);
         assertThat(task.getTaskLocalVariables()).hasSize(1);
-        assertThat(task.getTaskLocalVariables().get("localVar"))
-            .isEqualTo("test");
+        assertThat(task.getTaskLocalVariables().get("localVar")).isEqualTo("test");
 
         task =
             taskService
@@ -184,10 +130,8 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
                 .singleResult();
         assertThat(task.getProcessVariables()).hasSize(3);
         assertThat(task.getTaskLocalVariables()).hasSize(0);
-        assertThat(task.getProcessVariables().get("processVar"))
-            .isEqualTo(true);
-        assertThat(task.getProcessVariables().get("anotherProcessVar"))
-            .isEqualTo(123);
+        assertThat(task.getProcessVariables().get("processVar")).isEqualTo(true);
+        assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
 
         task =
             taskService
@@ -198,17 +142,10 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
                 .singleResult();
         assertThat(task.getProcessVariables()).hasSize(3);
         assertThat(task.getTaskLocalVariables()).hasSize(1);
-        assertThat(task.getTaskLocalVariables().get("localVar"))
-            .isEqualTo("test");
-        assertThat(task.getProcessVariables().get("processVar"))
-            .isEqualTo(true);
-        assertThat(task.getProcessVariables().get("anotherProcessVar"))
-            .isEqualTo(123);
-        assertThat(
-            new String(
-                (byte[]) task.getProcessVariables().get("binaryVariable")
-            )
-        )
+        assertThat(task.getTaskLocalVariables().get("localVar")).isEqualTo("test");
+        assertThat(task.getProcessVariables().get("processVar")).isEqualTo(true);
+        assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
+        assertThat(new String((byte[]) task.getProcessVariables().get("binaryVariable")))
             .isEqualTo("This is a binary process variable");
     }
 
@@ -226,8 +163,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
         assertThat(variableMap).hasSize(3);
         assertThat(variableMap.get("testVar")).isEqualTo("someVariable");
         assertThat(variableMap.get("testVar2")).isEqualTo(123);
-        assertThat(new String((byte[]) variableMap.get("testVarBinary")))
-            .isEqualTo("This is a binary variable");
+        assertThat(new String((byte[]) variableMap.get("testVarBinary"))).isEqualTo("This is a binary variable");
 
         tasks =
             taskService
@@ -243,8 +179,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
         assertThat(variableMap).hasSize(3);
         assertThat(variableMap.get("testVar")).isEqualTo("someVariable");
         assertThat(variableMap.get("testVar2")).isEqualTo(123);
-        assertThat(new String((byte[]) variableMap.get("testVarBinary")))
-            .isEqualTo("This is a binary variable");
+        assertThat(new String((byte[]) variableMap.get("testVarBinary"))).isEqualTo("This is a binary variable");
 
         tasks =
             taskService
@@ -260,8 +195,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
         assertThat(variableMap).hasSize(3);
         assertThat(variableMap.get("testVar")).isEqualTo("someVariable");
         assertThat(variableMap.get("testVar2")).isEqualTo(123);
-        assertThat(new String((byte[]) variableMap.get("testVarBinary")))
-            .isEqualTo("This is a binary variable");
+        assertThat(new String((byte[]) variableMap.get("testVarBinary"))).isEqualTo("This is a binary variable");
 
         tasks =
             taskService
@@ -276,32 +210,19 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
 
     // Unit test for https://activiti.atlassian.net/browse/ACT-4152
     public void testQueryWithIncludeTaskVariableAndTaskCategory() {
-        List<Task> tasks = taskService
-            .createTaskQuery()
-            .taskAssignee(GONZO)
-            .list();
+        List<Task> tasks = taskService.createTaskQuery().taskAssignee(GONZO).list();
         for (Task task : tasks) {
             assertThat(task.getCategory()).isNotNull();
             assertThat(task.getCategory()).isEqualTo("testCategory");
         }
 
-        tasks =
-            taskService
-                .createTaskQuery()
-                .taskAssignee(GONZO)
-                .includeTaskLocalVariables()
-                .list();
+        tasks = taskService.createTaskQuery().taskAssignee(GONZO).includeTaskLocalVariables().list();
         for (Task task : tasks) {
             assertThat(task.getCategory()).isNotNull();
             assertThat(task.getCategory()).isEqualTo("testCategory");
         }
 
-        tasks =
-            taskService
-                .createTaskQuery()
-                .taskAssignee(GONZO)
-                .includeProcessVariables()
-                .list();
+        tasks = taskService.createTaskQuery().taskAssignee(GONZO).includeProcessVariables().list();
         for (Task task : tasks) {
             assertThat(task.getCategory()).isNotNull();
             assertThat(task.getCategory()).isEqualTo("testCategory");
@@ -359,8 +280,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
             .endOr()
             .singleResult();
         assertThat(task.getProcessVariables()).hasSize(1);
-        assertThat(task.getProcessVariables().get("anotherProcessVar"))
-            .isEqualTo(123);
+        assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
 
         task =
             taskService
@@ -382,8 +302,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
                 .endOr()
                 .singleResult();
         assertThat(task.getProcessVariables()).hasSize(1);
-        assertThat(task.getProcessVariables().get("anotherProcessVar"))
-            .isEqualTo(123);
+        assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
 
         task =
             taskService
@@ -394,8 +313,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
                 .endOr()
                 .singleResult();
         assertThat(task.getProcessVariables()).hasSize(1);
-        assertThat(task.getProcessVariables().get("anotherProcessVar"))
-            .isEqualTo(123);
+        assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
 
         task =
             taskService
@@ -417,8 +335,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
                 .endOr()
                 .singleResult();
         assertThat(task.getProcessVariables()).hasSize(1);
-        assertThat(task.getProcessVariables().get("anotherProcessVar"))
-            .isEqualTo(123);
+        assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
     }
 
     @Deployment
@@ -428,10 +345,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
         startMap.put("anotherProcessVar", 123);
         runtimeService.startProcessInstanceByKey("oneTaskProcess", startMap);
 
-        TaskQuery query0 = taskService
-            .createTaskQuery()
-            .includeProcessVariables()
-            .or();
+        TaskQuery query0 = taskService.createTaskQuery().includeProcessVariables().or();
         for (int i = 0; i < 20; i++) {
             query0 = query0.processVariableValueEquals("anotherProcessVar", i);
         }
@@ -449,8 +363,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
         query1 = query1.endOr();
         Task task = query1.singleResult();
         assertThat(task.getProcessVariables()).hasSize(2);
-        assertThat(task.getProcessVariables().get("anotherProcessVar"))
-            .isEqualTo(123);
+        assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
     }
 
     /**
@@ -461,9 +374,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
         // 2 tasks for kermit
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(sdf.parse("01/01/2001 01:01:01.000"));
+        processEngineConfiguration.getClock().setCurrentTime(sdf.parse("01/01/2001 01:01:01.000"));
         for (int i = 0; i < 2; i++) {
             Task task = taskService.newTask();
             task.setName("testTask");
@@ -472,17 +383,11 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
             taskService.saveTask(task);
             ids.add(task.getId());
             taskService.setVariableLocal(task.getId(), "test", "test");
-            taskService.setVariableLocal(
-                task.getId(),
-                "testBinary",
-                "This is a binary variable".getBytes()
-            );
+            taskService.setVariableLocal(task.getId(), "testBinary", "This is a binary variable".getBytes());
             taskService.addCandidateUser(task.getId(), KERMIT);
         }
 
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(sdf.parse("02/02/2002 02:02:02.000"));
+        processEngineConfiguration.getClock().setCurrentTime(sdf.parse("02/02/2002 02:02:02.000"));
         // 1 task for gonzo
         Task task = taskService.newTask();
         task.setName("gonzoTask");
@@ -492,11 +397,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
         taskService.saveTask(task);
         taskService.setAssignee(task.getId(), GONZO);
         taskService.setVariableLocal(task.getId(), "testVar", "someVariable");
-        taskService.setVariableLocal(
-            task.getId(),
-            "testVarBinary",
-            "This is a binary variable".getBytes()
-        );
+        taskService.setVariableLocal(task.getId(), "testVarBinary", "This is a binary variable".getBytes());
         taskService.setVariableLocal(task.getId(), "testVar2", 123);
         ids.add(task.getId());
 
@@ -510,9 +411,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
         List<String> ids = new ArrayList<String>();
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(sdf.parse("01/01/2001 01:01:01.000"));
+        processEngineConfiguration.getClock().setCurrentTime(sdf.parse("01/01/2001 01:01:01.000"));
         for (int i = 0; i < 100; i++) {
             Task task = taskService.newTask();
             task.setName("testTask");
@@ -521,11 +420,7 @@ public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
             taskService.saveTask(task);
             ids.add(task.getId());
             taskService.setVariableLocal(task.getId(), "test", "test");
-            taskService.setVariableLocal(
-                task.getId(),
-                "testBinary",
-                "This is a binary variable".getBytes()
-            );
+            taskService.setVariableLocal(task.getId(), "testBinary", "This is a binary variable".getBytes());
             taskService.addCandidateUser(task.getId(), KERMIT);
         }
         return ids;

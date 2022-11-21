@@ -27,8 +27,7 @@ import org.activiti.engine.runtime.Job;
 
  */
 @Internal
-public interface DeadLetterJobEntityManager
-    extends EntityManager<DeadLetterJobEntity> {
+public interface DeadLetterJobEntityManager extends EntityManager<DeadLetterJobEntity> {
     /**
      * Returns all {@link DeadLetterJobEntity} instances related to on {@link ExecutionEntity}.
      */
@@ -37,10 +36,7 @@ public interface DeadLetterJobEntityManager
     /**
      * Executes a {@link JobQueryImpl} and returns the matching {@link DeadLetterJobEntity} instances.
      */
-    List<Job> findJobsByQueryCriteria(
-        DeadLetterJobQueryImpl jobQuery,
-        Page page
-    );
+    List<Job> findJobsByQueryCriteria(DeadLetterJobQueryImpl jobQuery, Page page);
 
     /**
      * Same as {@link #findJobsByQueryCriteria(DeadLetterJobQueryImpl, Page)}, but only returns a count
@@ -51,8 +47,5 @@ public interface DeadLetterJobEntityManager
     /**
      * Changes the tenantId for all jobs related to a given {@link DeploymentEntity}.
      */
-    void updateJobTenantIdForDeployment(
-        String deploymentId,
-        String newTenantId
-    );
+    void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
 }

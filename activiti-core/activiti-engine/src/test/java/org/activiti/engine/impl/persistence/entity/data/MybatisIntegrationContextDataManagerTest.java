@@ -46,7 +46,6 @@ public class MybatisIntegrationContextDataManagerTest {
         Class<? extends IntegrationContextEntity> managedEntityClass = manager.getManagedEntityClass();
 
         //then
-        assertThat(managedEntityClass)
-            .isEqualTo(IntegrationContextEntityImpl.class);
+        assertThat(managedEntityClass).isEqualTo(IntegrationContextEntityImpl.class);
     }
 }

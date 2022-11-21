@@ -48,9 +48,7 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {
                     StartEvent startEvent = (StartEvent) subElement;
 
                     // start none event
-                    if (
-                        CollectionUtil.isEmpty(startEvent.getEventDefinitions())
-                    ) {
+                    if (CollectionUtil.isEmpty(startEvent.getEventDefinitions())) {
                         startElement = startEvent;
                         break;
                     }
@@ -59,18 +57,14 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {
         }
 
         if (startElement == null) {
-            throw new ActivitiException(
-                "No initial activity found for subprocess " + subProcess.getId()
-            );
+            throw new ActivitiException("No initial activity found for subprocess " + subProcess.getId());
         }
 
         ExecutionEntity executionEntity = (ExecutionEntity) execution;
         executionEntity.setScope(true);
 
         // initialize the template-defined data objects as variables
-        Map<String, Object> dataObjectVars = processDataObjects(
-            subProcess.getDataObjects()
-        );
+        Map<String, Object> dataObjectVars = processDataObjects(subProcess.getDataObjects());
         if (dataObjectVars != null) {
             executionEntity.setVariablesLocal(dataObjectVars);
         }
@@ -80,14 +74,10 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {
             .getExecutionEntityManager()
             .createChildExecution(executionEntity);
         startSubProcessExecution.setCurrentFlowElement(startElement);
-        Context
-            .getAgenda()
-            .planContinueProcessOperation(startSubProcessExecution);
+        Context.getAgenda().planContinueProcessOperation(startSubProcessExecution);
     }
 
-    protected SubProcess getSubProcessFromExecution(
-        DelegateExecution execution
-    ) {
+    protected SubProcess getSubProcessFromExecution(DelegateExecution execution) {
         FlowElement flowElement = execution.getCurrentFlowElement();
         SubProcess subProcess = null;
         if (flowElement instanceof SubProcess) {
@@ -102,9 +92,7 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {
         return subProcess;
     }
 
-    protected Map<String, Object> processDataObjects(
-        Collection<ValuedDataObject> dataObjects
-    ) {
+    protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
         Map<String, Object> variablesMap = new HashMap<String, Object>();
         // convert data objects to process variables
         if (dataObjects != null) {

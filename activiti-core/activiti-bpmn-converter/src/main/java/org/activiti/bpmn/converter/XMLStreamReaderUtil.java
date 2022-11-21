@@ -25,9 +25,7 @@ import org.slf4j.LoggerFactory;
  */
 public class XMLStreamReaderUtil {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(
-        XMLStreamReaderUtil.class
-    );
+    protected static final Logger LOGGER = LoggerFactory.getLogger(XMLStreamReaderUtil.class);
 
     public static String moveDown(XMLStreamReader xtr) {
         try {
@@ -48,10 +46,7 @@ public class XMLStreamReaderUtil {
         return null;
     }
 
-    public static boolean moveToEndOfElement(
-        XMLStreamReader xtr,
-        String elementName
-    ) {
+    public static boolean moveToEndOfElement(XMLStreamReader xtr, String elementName) {
         try {
             while (xtr.hasNext()) {
                 int event = xtr.next();
@@ -64,11 +59,7 @@ public class XMLStreamReaderUtil {
                 }
             }
         } catch (Exception e) {
-            LOGGER.warn(
-                "Error while moving to end of element {}",
-                elementName,
-                e
-            );
+            LOGGER.warn("Error while moving to end of element {}", elementName, e);
         }
         return false;
     }

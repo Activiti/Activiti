@@ -34,19 +34,12 @@ public class ProcessExport implements BpmnXMLConstants {
         new ExtensionAttribute(ATTRIBUTE_ID),
         new ExtensionAttribute(ATTRIBUTE_NAME),
         new ExtensionAttribute(ATTRIBUTE_PROCESS_EXECUTABLE),
-        new ExtensionAttribute(
-            ACTIVITI_EXTENSIONS_NAMESPACE,
-            ATTRIBUTE_PROCESS_CANDIDATE_USERS
-        ),
-        new ExtensionAttribute(
-            ACTIVITI_EXTENSIONS_NAMESPACE,
-            ATTRIBUTE_PROCESS_CANDIDATE_GROUPS
-        )
+        new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_PROCESS_CANDIDATE_USERS),
+        new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_PROCESS_CANDIDATE_GROUPS)
     );
 
     @SuppressWarnings("unchecked")
-    public static void writeProcess(Process process, XMLStreamWriter xtw)
-        throws Exception {
+    public static void writeProcess(Process process, XMLStreamWriter xtw) throws Exception {
         // start process element
         xtw.writeStartElement(BPMN2_PREFIX, ELEMENT_PROCESS, BPMN2_NAMESPACE);
         xtw.writeAttribute(ATTRIBUTE_ID, process.getId());
@@ -55,19 +48,14 @@ public class ProcessExport implements BpmnXMLConstants {
             xtw.writeAttribute(ATTRIBUTE_NAME, process.getName());
         }
 
-        xtw.writeAttribute(
-            ATTRIBUTE_PROCESS_EXECUTABLE,
-            Boolean.toString(process.isExecutable())
-        );
+        xtw.writeAttribute(ATTRIBUTE_PROCESS_EXECUTABLE, Boolean.toString(process.isExecutable()));
 
         if (!process.getCandidateStarterUsers().isEmpty()) {
             xtw.writeAttribute(
                 ACTIVITI_EXTENSIONS_PREFIX,
                 ACTIVITI_EXTENSIONS_NAMESPACE,
                 ATTRIBUTE_PROCESS_CANDIDATE_USERS,
-                BpmnXMLUtil.convertToDelimitedString(
-                    process.getCandidateStarterUsers()
-                )
+                BpmnXMLUtil.convertToDelimitedString(process.getCandidateStarterUsers())
             );
         }
 
@@ -76,40 +64,21 @@ public class ProcessExport implements BpmnXMLConstants {
                 ACTIVITI_EXTENSIONS_PREFIX,
                 ACTIVITI_EXTENSIONS_NAMESPACE,
                 ATTRIBUTE_PROCESS_CANDIDATE_GROUPS,
-                BpmnXMLUtil.convertToDelimitedString(
-                    process.getCandidateStarterGroups()
-                )
+                BpmnXMLUtil.convertToDelimitedString(process.getCandidateStarterGroups())
             );
         }
 
         // write custom attributes
-        BpmnXMLUtil.writeCustomAttributes(
-            process.getAttributes().values(),
-            xtw,
-            defaultProcessAttributes
-        );
+        BpmnXMLUtil.writeCustomAttributes(process.getAttributes().values(), xtw, defaultProcessAttributes);
 
         if (StringUtils.isNotEmpty(process.getDocumentation())) {
-            xtw.writeStartElement(
-                BPMN2_PREFIX,
-                ELEMENT_DOCUMENTATION,
-                BPMN2_NAMESPACE
-            );
+            xtw.writeStartElement(BPMN2_PREFIX, ELEMENT_DOCUMENTATION, BPMN2_NAMESPACE);
             xtw.writeCharacters(process.getDocumentation());
             xtw.writeEndElement();
         }
 
-        boolean didWriteExtensionStartElement = ActivitiListenerExport.writeListeners(
-            process,
-            false,
-            xtw
-        );
-        didWriteExtensionStartElement =
-            BpmnXMLUtil.writeExtensionElements(
-                process,
-                didWriteExtensionStartElement,
-                xtw
-            );
+        boolean didWriteExtensionStartElement = ActivitiListenerExport.writeListeners(process, false, xtw);
+        didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(process, didWriteExtensionStartElement, xtw);
 
         if (didWriteExtensionStartElement) {
             // closing extensions element

@@ -29,8 +29,7 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 /**
 
  */
-public class GetExecutionsVariablesCmd
-    implements Command<List<VariableInstance>>, Serializable {
+public class GetExecutionsVariablesCmd implements Command<List<VariableInstance>>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected Set<String> executionIds;
@@ -46,9 +45,7 @@ public class GetExecutionsVariablesCmd
             throw new ActivitiIllegalArgumentException("executionIds is null");
         }
         if (executionIds.isEmpty()) {
-            throw new ActivitiIllegalArgumentException(
-                "Set of executionIds is empty"
-            );
+            throw new ActivitiIllegalArgumentException("Set of executionIds is empty");
         }
 
         List<VariableInstance> instances = new ArrayList<VariableInstance>();

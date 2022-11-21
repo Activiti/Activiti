@@ -22,16 +22,12 @@ public class ResumeProcessPayloadBuilder {
 
     private String processInstanceId;
 
-    public ResumeProcessPayloadBuilder withProcessInstanceId(
-        String processDefinitionId
-    ) {
+    public ResumeProcessPayloadBuilder withProcessInstanceId(String processDefinitionId) {
         this.processInstanceId = processDefinitionId;
         return this;
     }
 
-    public ResumeProcessPayloadBuilder withProcessInstance(
-        ProcessInstance processInstance
-    ) {
+    public ResumeProcessPayloadBuilder withProcessInstance(ProcessInstance processInstance) {
         this.processInstanceId = processInstance.getId();
         return this;
     }

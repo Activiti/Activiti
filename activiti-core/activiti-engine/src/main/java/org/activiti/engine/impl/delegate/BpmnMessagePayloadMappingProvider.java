@@ -27,22 +27,17 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 
-public class BpmnMessagePayloadMappingProvider
-    implements MessagePayloadMappingProvider {
+public class BpmnMessagePayloadMappingProvider implements MessagePayloadMappingProvider {
 
     private final List<FieldDeclaration> fieldDeclarations;
 
-    public BpmnMessagePayloadMappingProvider(
-        List<FieldDeclaration> fieldDeclarations
-    ) {
+    public BpmnMessagePayloadMappingProvider(List<FieldDeclaration> fieldDeclarations) {
         super();
         this.fieldDeclarations = fieldDeclarations;
     }
 
     @Override
-    public Optional<Map<String, Object>> getMessagePayload(
-        DelegateExecution execution
-    ) {
+    public Optional<Map<String, Object>> getMessagePayload(DelegateExecution execution) {
         Map<String, Object> payload = new LinkedHashMap<>();
 
         fieldDeclarations
@@ -50,32 +45,19 @@ public class BpmnMessagePayloadMappingProvider
             .map(field -> applyFieldDeclaration(execution, field))
             .forEach(entry -> payload.put(entry.getKey(), entry.getValue()));
 
-        return Optional
-            .of(payload)
-            .filter(map -> !map.isEmpty())
-            .map(map -> unmodifiableMap(map));
+        return Optional.of(payload).filter(map -> !map.isEmpty()).map(map -> unmodifiableMap(map));
     }
 
-    protected Map.Entry<String, Object> applyFieldDeclaration(
-        DelegateExecution execution,
-        FieldDeclaration field
-    ) {
+    protected Map.Entry<String, Object> applyFieldDeclaration(DelegateExecution execution, FieldDeclaration field) {
         return Optional
             .of(field)
             .map(f -> {
                 Object value = Optional
                     .ofNullable(f.getValue())
-                    .map(v ->
-                        (Expression.class.isInstance(v))
-                            ? Expression.class.cast(v).getValue(execution)
-                            : v
-                    )
+                    .map(v -> (Expression.class.isInstance(v)) ? Expression.class.cast(v).getValue(execution) : v)
                     .orElse(null);
 
-                return new AbstractMap.SimpleImmutableEntry<>(
-                    field.getName(),
-                    value
-                );
+                return new AbstractMap.SimpleImmutableEntry<>(field.getName(), value);
             })
             .get();
     }

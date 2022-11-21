@@ -27,17 +27,12 @@ public class ToSignalConverter {
 
     @SuppressWarnings("unchecked")
     public BPMNSignal from(ActivitiSignalEvent internalEvent) {
-        BPMNSignalImpl signal = new BPMNSignalImpl(
-            internalEvent.getActivityId()
-        );
+        BPMNSignalImpl signal = new BPMNSignalImpl(internalEvent.getActivityId());
 
         signal.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         signal.setProcessInstanceId(internalEvent.getProcessInstanceId());
 
-        SignalPayload signalPayload = ProcessPayloadBuilder
-            .signal()
-            .withName(internalEvent.getSignalName())
-            .build();
+        SignalPayload signalPayload = ProcessPayloadBuilder.signal().withName(internalEvent.getSignalName()).build();
 
         if (internalEvent.getSignalData() != null) {
             Map<String, Object> sourceVariables = (Map<String, Object>) internalEvent.getSignalData();

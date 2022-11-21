@@ -34,36 +34,24 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
 
         String tablePrefix = processEngineConfiguration.getDatabaseTablePrefix();
 
-        assertThat(tableCount.get(tablePrefix + "ACT_GE_PROPERTY"))
-            .isEqualTo(Long.valueOf(4));
-        assertThat(tableCount.get(tablePrefix + "ACT_GE_BYTEARRAY"))
-            .isEqualTo(Long.valueOf(0));
-        assertThat(tableCount.get(tablePrefix + "ACT_RE_DEPLOYMENT"))
-            .isEqualTo(Long.valueOf(0));
-        assertThat(tableCount.get(tablePrefix + "ACT_RU_EXECUTION"))
-            .isEqualTo(Long.valueOf(0));
-        assertThat(tableCount.get(tablePrefix + "ACT_RE_PROCDEF"))
-            .isEqualTo(Long.valueOf(0));
-        assertThat(tableCount.get(tablePrefix + "ACT_RU_TASK"))
-            .isEqualTo(Long.valueOf(0));
-        assertThat(tableCount.get(tablePrefix + "ACT_RU_IDENTITYLINK"))
-            .isEqualTo(Long.valueOf(0));
+        assertThat(tableCount.get(tablePrefix + "ACT_GE_PROPERTY")).isEqualTo(Long.valueOf(4));
+        assertThat(tableCount.get(tablePrefix + "ACT_GE_BYTEARRAY")).isEqualTo(Long.valueOf(0));
+        assertThat(tableCount.get(tablePrefix + "ACT_RE_DEPLOYMENT")).isEqualTo(Long.valueOf(0));
+        assertThat(tableCount.get(tablePrefix + "ACT_RU_EXECUTION")).isEqualTo(Long.valueOf(0));
+        assertThat(tableCount.get(tablePrefix + "ACT_RE_PROCDEF")).isEqualTo(Long.valueOf(0));
+        assertThat(tableCount.get(tablePrefix + "ACT_RU_TASK")).isEqualTo(Long.valueOf(0));
+        assertThat(tableCount.get(tablePrefix + "ACT_RU_IDENTITYLINK")).isEqualTo(Long.valueOf(0));
     }
 
     public void testGetTableMetaData() {
         String tablePrefix = processEngineConfiguration.getDatabaseTablePrefix();
 
-        TableMetaData tableMetaData = managementService.getTableMetaData(
-            tablePrefix + "ACT_RU_TASK"
-        );
-        assertThat(tableMetaData.getColumnTypes())
-            .hasSize(tableMetaData.getColumnNames().size());
+        TableMetaData tableMetaData = managementService.getTableMetaData(tablePrefix + "ACT_RU_TASK");
+        assertThat(tableMetaData.getColumnTypes()).hasSize(tableMetaData.getColumnNames().size());
         assertThat(tableMetaData.getColumnNames()).hasSize(22);
 
         int assigneeIndex = tableMetaData.getColumnNames().indexOf("ASSIGNEE_");
-        int createTimeIndex = tableMetaData
-            .getColumnNames()
-            .indexOf("CREATE_TIME_");
+        int createTimeIndex = tableMetaData.getColumnNames().indexOf("CREATE_TIME_");
 
         assertThat(assigneeIndex).isGreaterThanOrEqualTo(0);
         assertThat(createTimeIndex).isGreaterThanOrEqualTo(0);

@@ -41,17 +41,12 @@ public class ExecutionContext {
     }
 
     public ProcessDefinition getProcessDefinition() {
-        return ProcessDefinitionUtil.getProcessDefinition(
-            execution.getProcessDefinitionId()
-        );
+        return ProcessDefinitionUtil.getProcessDefinition(execution.getProcessDefinitionId());
     }
 
     public DeploymentEntity getDeployment() {
         String deploymentId = getProcessDefinition().getDeploymentId();
-        DeploymentEntity deployment = Context
-            .getCommandContext()
-            .getDeploymentEntityManager()
-            .findById(deploymentId);
+        DeploymentEntity deployment = Context.getCommandContext().getDeploymentEntityManager().findById(deploymentId);
         return deployment;
     }
 }

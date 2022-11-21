@@ -46,19 +46,10 @@ public class NativeHistoricDetailQueryImpl
     ) {
         return commandContext
             .getHistoricDetailEntityManager()
-            .findHistoricDetailsByNativeQuery(
-                parameterMap,
-                firstResult,
-                maxResults
-            );
+            .findHistoricDetailsByNativeQuery(parameterMap, firstResult, maxResults);
     }
 
-    public long executeCount(
-        CommandContext commandContext,
-        Map<String, Object> parameterMap
-    ) {
-        return commandContext
-            .getHistoricDetailEntityManager()
-            .findHistoricDetailCountByNativeQuery(parameterMap);
+    public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
+        return commandContext.getHistoricDetailEntityManager().findHistoricDetailCountByNativeQuery(parameterMap);
     }
 }

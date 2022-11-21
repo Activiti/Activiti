@@ -35,46 +35,28 @@ public class StartToEndTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testStartToEnd() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "startToEnd"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("startToEnd");
         assertProcessEnded(processInstance.getId());
         assertThat(processInstance.isEnded()).isTrue();
     }
 
-    @Deployment(
-        resources = {
-            "org/activiti/engine/test/bpmn/StartToEndTest.testStartToEnd.bpmn20.xml",
-        }
-    )
+    @Deployment(resources = { "org/activiti/engine/test/bpmn/StartToEndTest.testStartToEnd.bpmn20.xml" })
     public void testStartProcessInstanceWithVariables() {
         Map<String, Object> varMap = new HashMap<String, Object>();
         varMap.put("test", "hello");
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "startToEnd",
-            varMap
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("startToEnd", varMap);
         assertProcessEnded(processInstance.getId());
-        Map<String, Object> returnVarMap =
-            ((ExecutionEntity) processInstance).getVariables();
+        Map<String, Object> returnVarMap = ((ExecutionEntity) processInstance).getVariables();
         assertThat(returnVarMap.get("test")).isEqualTo("hello");
     }
 
-    @Deployment(
-        resources = {
-            "org/activiti/engine/test/bpmn/StartToEndTest.testStartWithServiceTask.bpmn20.xml",
-        }
-    )
+    @Deployment(resources = { "org/activiti/engine/test/bpmn/StartToEndTest.testStartWithServiceTask.bpmn20.xml" })
     public void testStartProcessInstanceWithServiceTask() {
         Map<String, Object> varMap = new HashMap<String, Object>();
         varMap.put("test", "hello");
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "startToEnd",
-            varMap
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("startToEnd", varMap);
         assertProcessEnded(processInstance.getId());
-        Map<String, Object> returnVarMap =
-            ((ExecutionEntity) processInstance).getVariables();
+        Map<String, Object> returnVarMap = ((ExecutionEntity) processInstance).getVariables();
         assertThat(returnVarMap.get("test")).isEqualTo("hello");
         assertThat(returnVarMap.get("string")).isEqualTo("string");
         assertThat(returnVarMap.get("boolean")).isEqualTo(true);
@@ -83,20 +65,14 @@ public class StartToEndTest extends PluggableActivitiTestCase {
     }
 
     @Deployment(
-        resources = {
-            "org/activiti/engine/test/bpmn/StartToEndTest.testStartWithSerializableVariables.bpmn20.xml",
-        }
+        resources = { "org/activiti/engine/test/bpmn/StartToEndTest.testStartWithSerializableVariables.bpmn20.xml" }
     )
     public void testStartProcessInstanceWithSerializbleVariables() {
         Map<String, Object> varMap = new HashMap<String, Object>();
         varMap.put("test", "hello");
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "startToEnd",
-            varMap
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("startToEnd", varMap);
         assertProcessEnded(processInstance.getId());
-        Map<String, Object> returnVarMap =
-            ((ExecutionEntity) processInstance).getVariables();
+        Map<String, Object> returnVarMap = ((ExecutionEntity) processInstance).getVariables();
         assertThat(returnVarMap.get("test")).isEqualTo("hello");
         Person person1 = (Person) returnVarMap.get("person1");
         assertThat(person1.getId()).isEqualTo("1");
@@ -117,8 +93,7 @@ public class StartToEndTest extends PluggableActivitiTestCase {
         }
     }
 
-    public static class SerializableServiceTaskDelegate
-        implements JavaDelegate {
+    public static class SerializableServiceTaskDelegate implements JavaDelegate {
 
         @Override
         public void execute(DelegateExecution execution) {

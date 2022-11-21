@@ -40,10 +40,7 @@ public class BPMNTimerImpl extends BPMNElementImpl implements BPMNTimer {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result =
-            prime *
-            result +
-            ((timerPayload == null) ? 0 : timerPayload.hashCode());
+        result = prime * result + ((timerPayload == null) ? 0 : timerPayload.hashCode());
         return result;
     }
 

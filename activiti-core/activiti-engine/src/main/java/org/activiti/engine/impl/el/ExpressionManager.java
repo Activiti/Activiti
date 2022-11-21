@@ -94,9 +94,7 @@ public class ExpressionManager {
         return customFunctionProviders;
     }
 
-    public void setCustomFunctionProviders(
-        List<CustomFunctionProvider> customFunctionProviders
-    ) {
+    public void setCustomFunctionProviders(List<CustomFunctionProvider> customFunctionProviders) {
         this.customFunctionProviders = customFunctionProviders;
     }
 
@@ -110,9 +108,7 @@ public class ExpressionManager {
         if (elContext == null) {
             elContext = createElContext(variableScope);
             if (variableScope instanceof VariableScopeImpl) {
-                ((VariableScopeImpl) variableScope).setCachedElContext(
-                        elContext
-                    );
+                ((VariableScopeImpl) variableScope).setCachedElContext(elContext);
             }
         }
 
@@ -147,16 +143,8 @@ public class ExpressionManager {
         elResolver.add(new ListELResolver());
         elResolver.add(new MapELResolver());
         elResolver.add(new CustomMapperJsonNodeELResolver());
-        elResolver.add(
-            new DynamicBeanPropertyELResolver(
-                ItemInstance.class,
-                "getFieldValue",
-                "setFieldValue"
-            )
-        ); // TODO: needs verification
-        elResolver.add(
-            new ELResolverReflectionBlockerDecorator(new BeanELResolver())
-        );
+        elResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class, "getFieldValue", "setFieldValue")); // TODO: needs verification
+        elResolver.add(new ELResolverReflectionBlockerDecorator(new BeanELResolver()));
     }
 
     public Map<Object, Object> getBeans() {

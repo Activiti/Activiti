@@ -25,9 +25,7 @@ import org.activiti.engine.impl.persistence.entity.data.PropertyDataManager;
 
 
  */
-public class PropertyEntityManagerImpl
-    extends AbstractEntityManager<PropertyEntity>
-    implements PropertyEntityManager {
+public class PropertyEntityManagerImpl extends AbstractEntityManager<PropertyEntity> implements PropertyEntityManager {
 
     protected PropertyDataManager propertyDataManager;
 

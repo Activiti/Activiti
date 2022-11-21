@@ -88,15 +88,11 @@ public class DemoApplication implements CommandLineRunner {
 
         // Let's claim the task, after the claim, nobody else can see the task and 'john' becomes the assignee
         logger.info("> Claiming the task");
-        taskRuntime.claim(
-            TaskPayloadBuilder.claim().withTaskId(availableTaskId).build()
-        );
+        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(availableTaskId).build());
 
         // Let's complete the task
         logger.info("> Completing the task");
-        taskRuntime.complete(
-            TaskPayloadBuilder.complete().withTaskId(availableTaskId).build()
-        );
+        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(availableTaskId).build());
     }
 
     @Bean

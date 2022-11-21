@@ -36,33 +36,17 @@ public class SignalValidator extends ValidatorImpl {
         if (signals != null && !signals.isEmpty()) {
             for (Signal signal : signals) {
                 if (StringUtils.isEmpty(signal.getId())) {
-                    addError(
-                        errors,
-                        Problems.SIGNAL_MISSING_ID,
-                        signal,
-                        "Signal must have an id"
-                    );
+                    addError(errors, Problems.SIGNAL_MISSING_ID, signal, "Signal must have an id");
                 }
 
                 if (StringUtils.isEmpty(signal.getName())) {
-                    addError(
-                        errors,
-                        Problems.SIGNAL_MISSING_NAME,
-                        signal,
-                        "Signal must have a name"
-                    );
+                    addError(errors, Problems.SIGNAL_MISSING_NAME, signal, "Signal must have a name");
                 }
 
                 if (
-                    !StringUtils.isEmpty(signal.getName()) &&
-                    duplicateName(signals, signal.getId(), signal.getName())
+                    !StringUtils.isEmpty(signal.getName()) && duplicateName(signals, signal.getId(), signal.getName())
                 ) {
-                    addError(
-                        errors,
-                        Problems.SIGNAL_DUPLICATE_NAME,
-                        signal,
-                        "Duplicate signal name found"
-                    );
+                    addError(errors, Problems.SIGNAL_DUPLICATE_NAME, signal, "Duplicate signal name found");
                 }
 
                 if (
@@ -81,16 +65,10 @@ public class SignalValidator extends ValidatorImpl {
         }
     }
 
-    protected boolean duplicateName(
-        Collection<Signal> signals,
-        String id,
-        String name
-    ) {
+    protected boolean duplicateName(Collection<Signal> signals, String id, String name) {
         for (Signal signal : signals) {
             if (id != null && signal.getId() != null) {
-                if (
-                    name.equals(signal.getName()) && !id.equals(signal.getId())
-                ) {
+                if (name.equals(signal.getName()) && !id.equals(signal.getId())) {
                     return true;
                 }
             }

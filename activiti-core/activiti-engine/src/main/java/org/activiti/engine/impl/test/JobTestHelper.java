@@ -94,9 +94,7 @@ public class JobTestHelper {
                 timer.cancel();
             }
             if (areJobsAvailable) {
-                throw new ActivitiException(
-                    "time limit of " + maxMillisToWait + " was exceeded"
-                );
+                throw new ActivitiException("time limit of " + maxMillisToWait + " was exceeded");
             }
         } finally {
             if (shutdownExecutorWhenFinished) {
@@ -140,10 +138,7 @@ public class JobTestHelper {
                 while (areJobsAvailable && !task.isTimeLimitExceeded()) {
                     Thread.sleep(intervalMillis);
                     try {
-                        areJobsAvailable =
-                            areJobsOrExecutableTimersAvailable(
-                                managementService
-                            );
+                        areJobsAvailable = areJobsOrExecutableTimersAvailable(managementService);
                     } catch (Throwable t) {
                         // Ignore, possible that exception occurs due to locking/updating of table on MSSQL when
                         // isolation level doesn't allow READ of the table
@@ -155,9 +150,7 @@ public class JobTestHelper {
                 timer.cancel();
             }
             if (areJobsAvailable) {
-                throw new ActivitiException(
-                    "time limit of " + maxMillisToWait + " was exceeded"
-                );
+                throw new ActivitiException("time limit of " + maxMillisToWait + " was exceeded");
             }
         } finally {
             if (shutdownExecutorWhenFinished) {
@@ -203,29 +196,20 @@ public class JobTestHelper {
             } catch (InterruptedException e) {
                 // ignore
             } catch (Exception e) {
-                throw new ActivitiException(
-                    "Exception while waiting on condition: " + e.getMessage(),
-                    e
-                );
+                throw new ActivitiException("Exception while waiting on condition: " + e.getMessage(), e);
             } finally {
                 timer.cancel();
             }
 
             if (conditionIsViolated) {
-                throw new ActivitiException(
-                    "time limit of " + maxMillisToWait + " was exceeded"
-                );
+                throw new ActivitiException("time limit of " + maxMillisToWait + " was exceeded");
             }
         } finally {
             asyncExecutor.shutdown();
         }
     }
 
-    public static void executeJobExecutorForTime(
-        ActivitiRule activitiRule,
-        long maxMillisToWait,
-        long intervalMillis
-    ) {
+    public static void executeJobExecutorForTime(ActivitiRule activitiRule, long maxMillisToWait, long intervalMillis) {
         executeJobExecutorForTime(
             activitiRule.getProcessEngine().getProcessEngineConfiguration(),
             maxMillisToWait,
@@ -263,22 +247,14 @@ public class JobTestHelper {
         return areJobsAvailable(activitiRule.getManagementService());
     }
 
-    public static boolean areJobsAvailable(
-        ManagementService managementService
-    ) {
+    public static boolean areJobsAvailable(ManagementService managementService) {
         return !managementService.createJobQuery().list().isEmpty();
     }
 
-    public static boolean areJobsOrExecutableTimersAvailable(
-        ManagementService managementService
-    ) {
+    public static boolean areJobsOrExecutableTimersAvailable(ManagementService managementService) {
         boolean emptyJobs = managementService.createJobQuery().list().isEmpty();
         if (emptyJobs) {
-            return !managementService
-                .createTimerJobQuery()
-                .executable()
-                .list()
-                .isEmpty();
+            return !managementService.createTimerJobQuery().executable().list().isEmpty();
         } else {
             return true;
         }

@@ -23,8 +23,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 /**
 
  */
-public class AddEditorSourceExtraForModelCmd
-    implements Command<Object>, Serializable {
+public class AddEditorSourceExtraForModelCmd implements Command<Object>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -37,9 +36,7 @@ public class AddEditorSourceExtraForModelCmd
     }
 
     public Object execute(CommandContext commandContext) {
-        commandContext
-            .getModelEntityManager()
-            .insertEditorSourceExtraForModel(modelId, bytes);
+        commandContext.getModelEntityManager().insertEditorSourceExtraForModel(modelId, bytes);
 
         return null;
     }

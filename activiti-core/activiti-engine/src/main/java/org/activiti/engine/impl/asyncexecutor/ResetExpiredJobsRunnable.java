@@ -38,9 +38,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ResetExpiredJobsRunnable implements Runnable {
 
-    private static Logger log = LoggerFactory.getLogger(
-        ResetExpiredJobsRunnable.class
-    );
+    private static Logger log = LoggerFactory.getLogger(ResetExpiredJobsRunnable.class);
 
     protected final AsyncExecutor asyncExecutor;
 
@@ -61,15 +59,9 @@ public class ResetExpiredJobsRunnable implements Runnable {
                 List<JobEntity> expiredJobs = asyncExecutor
                     .getProcessEngineConfiguration()
                     .getCommandExecutor()
-                    .execute(
-                        new FindExpiredJobsCmd(
-                            asyncExecutor.getResetExpiredJobsPageSize()
-                        )
-                    );
+                    .execute(new FindExpiredJobsCmd(asyncExecutor.getResetExpiredJobsPageSize()));
 
-                List<String> expiredJobIds = new ArrayList<String>(
-                    expiredJobs.size()
-                );
+                List<String> expiredJobIds = new ArrayList<String>(expiredJobs.size());
                 for (JobEntity expiredJob : expiredJobs) {
                     expiredJobIds.add(expiredJob.getId());
                 }
@@ -82,16 +74,9 @@ public class ResetExpiredJobsRunnable implements Runnable {
                 }
             } catch (Throwable e) {
                 if (e instanceof ActivitiOptimisticLockingException) {
-                    log.debug(
-                        "Optmistic lock exception while resetting locked jobs",
-                        e
-                    );
+                    log.debug("Optmistic lock exception while resetting locked jobs", e);
                 } else {
-                    log.error(
-                        "exception during resetting expired jobs",
-                        e.getMessage(),
-                        e
-                    );
+                    log.error("exception during resetting expired jobs", e.getMessage(), e);
                 }
             }
 
@@ -100,9 +85,7 @@ public class ResetExpiredJobsRunnable implements Runnable {
                 synchronized (MONITOR) {
                     if (!isInterrupted) {
                         isWaiting.set(true);
-                        MONITOR.wait(
-                            asyncExecutor.getResetExpiredJobsInterval()
-                        );
+                        MONITOR.wait(asyncExecutor.getResetExpiredJobsInterval());
                     }
                 }
             } catch (InterruptedException e) {

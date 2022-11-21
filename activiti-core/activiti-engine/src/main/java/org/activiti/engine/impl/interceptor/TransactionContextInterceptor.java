@@ -29,9 +29,7 @@ public class TransactionContextInterceptor extends AbstractCommandInterceptor {
 
     public TransactionContextInterceptor() {}
 
-    public TransactionContextInterceptor(
-        TransactionContextFactory transactionContextFactory
-    ) {
+    public TransactionContextInterceptor(TransactionContextFactory transactionContextFactory) {
         this.transactionContextFactory = transactionContextFactory;
     }
 
@@ -46,11 +44,7 @@ public class TransactionContextInterceptor extends AbstractCommandInterceptor {
                     commandContext
                 );
                 Context.setTransactionContext(transactionContext);
-                commandContext.addCloseListener(
-                    new TransactionCommandContextCloseListener(
-                        transactionContext
-                    )
-                );
+                commandContext.addCloseListener(new TransactionCommandContextCloseListener(transactionContext));
             }
 
             return next.execute(config, command);
@@ -65,9 +59,7 @@ public class TransactionContextInterceptor extends AbstractCommandInterceptor {
         return transactionContextFactory;
     }
 
-    public void setTransactionContextFactory(
-        TransactionContextFactory transactionContextFactory
-    ) {
+    public void setTransactionContextFactory(TransactionContextFactory transactionContextFactory) {
         this.transactionContextFactory = transactionContextFactory;
     }
 }

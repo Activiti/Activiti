@@ -33,14 +33,8 @@ import org.apache.commons.lang3.StringUtils;
 public class ExclusiveGatewayValidator extends ProcessLevelValidator {
 
     @Override
-    protected void executeValidation(
-        BpmnModel bpmnModel,
-        Process process,
-        List<ValidationError> errors
-    ) {
-        List<ExclusiveGateway> gateways = process.findFlowElementsOfType(
-            ExclusiveGateway.class
-        );
+    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+        List<ExclusiveGateway> gateways = process.findFlowElementsOfType(ExclusiveGateway.class);
         for (ExclusiveGateway gateway : gateways) {
             validateExclusiveGateway(process, gateway, errors);
         }
@@ -60,9 +54,7 @@ public class ExclusiveGatewayValidator extends ProcessLevelValidator {
                 "Exclusive gateway has no outgoing sequence flow"
             );
         } else if (exclusiveGateway.getOutgoingFlows().size() == 1) {
-            SequenceFlow sequenceFlow = exclusiveGateway
-                .getOutgoingFlows()
-                .get(0);
+            SequenceFlow sequenceFlow = exclusiveGateway.getOutgoingFlows().get(0);
             if (StringUtils.isNotEmpty(sequenceFlow.getConditionExpression())) {
                 addError(
                     errors,
@@ -78,9 +70,7 @@ public class ExclusiveGatewayValidator extends ProcessLevelValidator {
             List<SequenceFlow> flowsWithoutCondition = new ArrayList<SequenceFlow>();
             for (SequenceFlow flow : exclusiveGateway.getOutgoingFlows()) {
                 String condition = flow.getConditionExpression();
-                boolean isDefaultFlow =
-                    flow.getId() != null &&
-                    flow.getId().equals(defaultSequenceFlow);
+                boolean isDefaultFlow = flow.getId() != null && flow.getId().equals(defaultSequenceFlow);
                 boolean hasConditon = StringUtils.isNotEmpty(condition);
 
                 if (!hasConditon && !isDefaultFlow) {

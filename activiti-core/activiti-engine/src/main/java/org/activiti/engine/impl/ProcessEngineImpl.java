@@ -37,9 +37,7 @@ import org.slf4j.LoggerFactory;
 
 public class ProcessEngineImpl implements ProcessEngine {
 
-    private static Logger log = LoggerFactory.getLogger(
-        ProcessEngineImpl.class
-    );
+    private static Logger log = LoggerFactory.getLogger(ProcessEngineImpl.class);
 
     protected String name;
     protected RepositoryService repositoryService;
@@ -54,27 +52,19 @@ public class ProcessEngineImpl implements ProcessEngine {
     protected TransactionContextFactory transactionContextFactory;
     protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
-    public ProcessEngineImpl(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public ProcessEngineImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
         this.processEngineConfiguration = processEngineConfiguration;
         this.name = processEngineConfiguration.getProcessEngineName();
-        this.repositoryService =
-            processEngineConfiguration.getRepositoryService();
+        this.repositoryService = processEngineConfiguration.getRepositoryService();
         this.runtimeService = processEngineConfiguration.getRuntimeService();
-        this.historicDataService =
-            processEngineConfiguration.getHistoryService();
+        this.historicDataService = processEngineConfiguration.getHistoryService();
         this.taskService = processEngineConfiguration.getTaskService();
-        this.managementService =
-            processEngineConfiguration.getManagementService();
-        this.dynamicBpmnService =
-            processEngineConfiguration.getDynamicBpmnService();
+        this.managementService = processEngineConfiguration.getManagementService();
+        this.dynamicBpmnService = processEngineConfiguration.getDynamicBpmnService();
         this.asyncExecutor = processEngineConfiguration.getAsyncExecutor();
         this.commandExecutor = processEngineConfiguration.getCommandExecutor();
-        this.sessionFactories =
-            processEngineConfiguration.getSessionFactories();
-        this.transactionContextFactory =
-            processEngineConfiguration.getTransactionContextFactory();
+        this.sessionFactories = processEngineConfiguration.getSessionFactories();
+        this.transactionContextFactory = processEngineConfiguration.getTransactionContextFactory();
 
         if (
             processEngineConfiguration.isUsingRelationalDatabase() &&
@@ -98,22 +88,13 @@ public class ProcessEngineImpl implements ProcessEngine {
             asyncExecutor.start();
         }
 
-        if (
-            processEngineConfiguration.getProcessEngineLifecycleListener() !=
-            null
-        ) {
-            processEngineConfiguration
-                .getProcessEngineLifecycleListener()
-                .onProcessEngineBuilt(this);
+        if (processEngineConfiguration.getProcessEngineLifecycleListener() != null) {
+            processEngineConfiguration.getProcessEngineLifecycleListener().onProcessEngineBuilt(this);
         }
 
         processEngineConfiguration
             .getEventDispatcher()
-            .dispatchEvent(
-                ActivitiEventBuilder.createGlobalEvent(
-                    ActivitiEventType.ENGINE_CREATED
-                )
-            );
+            .dispatchEvent(ActivitiEventBuilder.createGlobalEvent(ActivitiEventType.ENGINE_CREATED));
     }
 
     public void close() {
@@ -127,22 +108,13 @@ public class ProcessEngineImpl implements ProcessEngine {
             new SchemaOperationProcessEngineClose()
         );
 
-        if (
-            processEngineConfiguration.getProcessEngineLifecycleListener() !=
-            null
-        ) {
-            processEngineConfiguration
-                .getProcessEngineLifecycleListener()
-                .onProcessEngineClosed(this);
+        if (processEngineConfiguration.getProcessEngineLifecycleListener() != null) {
+            processEngineConfiguration.getProcessEngineLifecycleListener().onProcessEngineClosed(this);
         }
 
         processEngineConfiguration
             .getEventDispatcher()
-            .dispatchEvent(
-                ActivitiEventBuilder.createGlobalEvent(
-                    ActivitiEventType.ENGINE_CLOSED
-                )
-            );
+            .dispatchEvent(ActivitiEventBuilder.createGlobalEvent(ActivitiEventType.ENGINE_CLOSED));
     }
 
     // getters and setters

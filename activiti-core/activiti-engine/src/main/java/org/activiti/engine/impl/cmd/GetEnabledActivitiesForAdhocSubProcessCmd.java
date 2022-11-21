@@ -31,8 +31,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 /**
 
  */
-public class GetEnabledActivitiesForAdhocSubProcessCmd
-    implements Command<List<FlowNode>>, Serializable {
+public class GetEnabledActivitiesForAdhocSubProcessCmd implements Command<List<FlowNode>>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String executionId;
@@ -42,9 +41,7 @@ public class GetEnabledActivitiesForAdhocSubProcessCmd
     }
 
     public List<FlowNode> execute(CommandContext commandContext) {
-        ExecutionEntity execution = commandContext
-            .getExecutionEntityManager()
-            .findById(executionId);
+        ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
         if (execution == null) {
             throw new ActivitiObjectNotFoundException(
                 "No execution found for id '" + executionId + "'",

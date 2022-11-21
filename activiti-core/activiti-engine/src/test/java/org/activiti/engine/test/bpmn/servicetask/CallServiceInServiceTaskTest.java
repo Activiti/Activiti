@@ -36,9 +36,7 @@ public class CallServiceInServiceTaskTest extends PluggableActivitiTestCase {
 
         // Starting the process should lead to two processes being started,
         // The other one started from the java delegate in the service task
-        List<ProcessInstance> processInstances = runtimeService
-            .createProcessInstanceQuery()
-            .list();
+        List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
         assertThat(processInstances).hasSize(2);
 
         boolean startProcessFromDelegateFound = false;
@@ -61,14 +59,9 @@ public class CallServiceInServiceTaskTest extends PluggableActivitiTestCase {
     @Deployment
     public void testRollBackOnException() {
         assertThatExceptionOfType(Exception.class)
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByKey(
-                    "startProcessFromDelegate"
-                )
-            );
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("startProcessFromDelegate"));
 
         // Starting the process should cause a rollback of both processes
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
     }
 }

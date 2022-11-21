@@ -120,9 +120,7 @@ public interface TaskRuntime {
 
     void createVariable(CreateTaskVariablePayload createTaskVariablePayload);
     void updateVariable(UpdateTaskVariablePayload updateTaskVariablePayload);
-    List<VariableInstance> variables(
-        GetTaskVariablesPayload getTaskVariablesPayload
-    );
+    List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload);
 
     void addCandidateUsers(CandidateUsersPayload candidateUsersPayload);
     void deleteCandidateUsers(CandidateUsersPayload candidateUsersPayload);

@@ -22,8 +22,7 @@ import org.activiti.bpmn.model.FlowElement;
 /**
 
  */
-public interface TransactionDependentExecutionListener
-    extends BaseExecutionListener {
+public interface TransactionDependentExecutionListener extends BaseExecutionListener {
     String ON_TRANSACTION_BEFORE_COMMIT = "before-commit";
     String ON_TRANSACTION_COMMITTED = "committed";
     String ON_TRANSACTION_ROLLED_BACK = "rolled-back";

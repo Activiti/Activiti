@@ -56,12 +56,9 @@ import org.slf4j.LoggerFactory;
 /**
 
  */
-public class BpmnJsonConverterUtil
-    implements EditorJsonConstants, StencilConstants {
+public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConstants {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        BpmnJsonConverterUtil.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(BpmnJsonConverterUtil.class);
 
     private static DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTimeParser();
     private static ObjectMapper objectMapper = new ObjectMapper();
@@ -75,10 +72,7 @@ public class BpmnJsonConverterUtil
         double upperLeftY
     ) {
         ObjectNode shapeNode = objectMapper.createObjectNode();
-        shapeNode.set(
-            EDITOR_BOUNDS,
-            createBoundsNode(lowerRightX, lowerRightY, upperLeftX, upperLeftY)
-        );
+        shapeNode.set(EDITOR_BOUNDS, createBoundsNode(lowerRightX, lowerRightY, upperLeftX, upperLeftY));
         shapeNode.put(EDITOR_SHAPE_ID, id);
         ArrayNode shapesArrayNode = objectMapper.createArrayNode();
         shapeNode.set(EDITOR_CHILD_SHAPES, shapesArrayNode);
@@ -95,14 +89,8 @@ public class BpmnJsonConverterUtil
         double upperLeftY
     ) {
         ObjectNode boundsNode = objectMapper.createObjectNode();
-        boundsNode.set(
-            EDITOR_BOUNDS_LOWER_RIGHT,
-            createPositionNode(lowerRightX, lowerRightY)
-        );
-        boundsNode.set(
-            EDITOR_BOUNDS_UPPER_LEFT,
-            createPositionNode(upperLeftX, upperLeftY)
-        );
+        boundsNode.set(EDITOR_BOUNDS_LOWER_RIGHT, createPositionNode(lowerRightX, lowerRightY));
+        boundsNode.set(EDITOR_BOUNDS_UPPER_LEFT, createPositionNode(upperLeftX, upperLeftY));
         return boundsNode;
     }
 
@@ -130,14 +118,8 @@ public class BpmnJsonConverterUtil
 
     public static String getElementId(JsonNode objectNode) {
         String elementId = null;
-        if (
-            StringUtils.isNotEmpty(
-                getPropertyValueAsString(PROPERTY_OVERRIDE_ID, objectNode)
-            )
-        ) {
-            elementId =
-                getPropertyValueAsString(PROPERTY_OVERRIDE_ID, objectNode)
-                    .trim();
+        if (StringUtils.isNotEmpty(getPropertyValueAsString(PROPERTY_OVERRIDE_ID, objectNode))) {
+            elementId = getPropertyValueAsString(PROPERTY_OVERRIDE_ID, objectNode).trim();
         } else {
             elementId = objectNode.get(EDITOR_SHAPE_ID).asText();
         }
@@ -145,10 +127,7 @@ public class BpmnJsonConverterUtil
         return elementId;
     }
 
-    public static void convertMessagesToJson(
-        Collection<Message> messages,
-        ObjectNode propertiesNode
-    ) {
+    public static void convertMessagesToJson(Collection<Message> messages, ObjectNode propertiesNode) {
         String propertyName = "messages";
 
         ArrayNode messagesNode = objectMapper.createArrayNode();
@@ -157,10 +136,7 @@ public class BpmnJsonConverterUtil
 
             propertyItemNode.put(PROPERTY_MESSAGE_ID, message.getId());
             propertyItemNode.put(PROPERTY_MESSAGE_NAME, message.getName());
-            propertyItemNode.put(
-                PROPERTY_MESSAGE_ITEM_REF,
-                message.getItemRef()
-            );
+            propertyItemNode.put(PROPERTY_MESSAGE_ITEM_REF, message.getItemRef());
 
             messagesNode.add(propertyItemNode);
         }
@@ -190,58 +166,26 @@ public class BpmnJsonConverterUtil
 
             propertyItemNode.put(PROPERTY_LISTENER_EVENT, listener.getEvent());
 
-            if (
-                ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(
-                    listener.getImplementationType()
-                )
-            ) {
-                propertyItemNode.put(
-                    PROPERTY_LISTENER_CLASS_NAME,
-                    listener.getImplementation()
-                );
+            if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())) {
+                propertyItemNode.put(PROPERTY_LISTENER_CLASS_NAME, listener.getImplementation());
+            } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getImplementationType())) {
+                propertyItemNode.put(PROPERTY_LISTENER_EXPRESSION, listener.getImplementation());
             } else if (
-                ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(
-                    listener.getImplementationType()
-                )
+                ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType())
             ) {
-                propertyItemNode.put(
-                    PROPERTY_LISTENER_EXPRESSION,
-                    listener.getImplementation()
-                );
-            } else if (
-                ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(
-                    listener.getImplementationType()
-                )
-            ) {
-                propertyItemNode.put(
-                    PROPERTY_LISTENER_DELEGATE_EXPRESSION,
-                    listener.getImplementation()
-                );
+                propertyItemNode.put(PROPERTY_LISTENER_DELEGATE_EXPRESSION, listener.getImplementation());
             }
 
             if (CollectionUtils.isNotEmpty(listener.getFieldExtensions())) {
                 ArrayNode fieldsArray = objectMapper.createArrayNode();
                 for (FieldExtension fieldExtension : listener.getFieldExtensions()) {
                     ObjectNode fieldNode = objectMapper.createObjectNode();
-                    fieldNode.put(
-                        PROPERTY_FIELD_NAME,
-                        fieldExtension.getFieldName()
-                    );
-                    if (
-                        StringUtils.isNotEmpty(fieldExtension.getStringValue())
-                    ) {
-                        fieldNode.put(
-                            PROPERTY_FIELD_STRING_VALUE,
-                            fieldExtension.getStringValue()
-                        );
+                    fieldNode.put(PROPERTY_FIELD_NAME, fieldExtension.getFieldName());
+                    if (StringUtils.isNotEmpty(fieldExtension.getStringValue())) {
+                        fieldNode.put(PROPERTY_FIELD_STRING_VALUE, fieldExtension.getStringValue());
                     }
-                    if (
-                        StringUtils.isNotEmpty(fieldExtension.getExpression())
-                    ) {
-                        fieldNode.put(
-                            PROPERTY_FIELD_EXPRESSION,
-                            fieldExtension.getExpression()
-                        );
+                    if (StringUtils.isNotEmpty(fieldExtension.getExpression())) {
+                        fieldNode.put(PROPERTY_FIELD_EXPRESSION, fieldExtension.getExpression());
                     }
                     fieldsArray.add(fieldNode);
                 }
@@ -255,10 +199,7 @@ public class BpmnJsonConverterUtil
         propertiesNode.set(propertyName, listenersNode);
     }
 
-    public static void convertEventListenersToJson(
-        List<EventListener> listeners,
-        ObjectNode propertiesNode
-    ) {
+    public static void convertEventListenersToJson(List<EventListener> listeners, ObjectNode propertiesNode) {
         ObjectNode listenersNode = objectMapper.createObjectNode();
         ArrayNode itemsNode = objectMapper.createArrayNode();
         for (EventListener listener : listeners) {
@@ -270,134 +211,61 @@ public class BpmnJsonConverterUtil
                 for (String eventValue : eventArray) {
                     if (StringUtils.isNotEmpty(eventValue.trim())) {
                         ObjectNode eventNode = objectMapper.createObjectNode();
-                        eventNode.put(
-                            PROPERTY_EVENTLISTENER_EVENT,
-                            eventValue.trim()
-                        );
+                        eventNode.put(PROPERTY_EVENTLISTENER_EVENT, eventValue.trim());
                         eventArrayNode.add(eventNode);
                     }
                 }
-                propertyItemNode.put(
-                    PROPERTY_EVENTLISTENER_EVENT,
-                    listener.getEvents()
-                );
-                propertyItemNode.set(
-                    PROPERTY_EVENTLISTENER_EVENTS,
-                    eventArrayNode
-                );
+                propertyItemNode.put(PROPERTY_EVENTLISTENER_EVENT, listener.getEvents());
+                propertyItemNode.set(PROPERTY_EVENTLISTENER_EVENTS, eventArrayNode);
             }
 
             String implementationText = null;
-            if (
-                ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(
-                    listener.getImplementationType()
-                )
-            ) {
-                propertyItemNode.put(
-                    PROPERTY_EVENTLISTENER_CLASS_NAME,
-                    listener.getImplementation()
-                );
+            if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())) {
+                propertyItemNode.put(PROPERTY_EVENTLISTENER_CLASS_NAME, listener.getImplementation());
                 implementationText = listener.getImplementation();
             } else if (
-                ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(
-                    listener.getImplementationType()
-                )
+                ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType())
             ) {
-                propertyItemNode.put(
-                    PROPERTY_EVENTLISTENER_DELEGATE_EXPRESSION,
-                    listener.getImplementation()
-                );
+                propertyItemNode.put(PROPERTY_EVENTLISTENER_DELEGATE_EXPRESSION, listener.getImplementation());
                 implementationText = listener.getImplementation();
             } else if (
-                ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT.equals(
-                    listener.getImplementationType()
-                )
+                ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT.equals(listener.getImplementationType())
             ) {
-                propertyItemNode.put(
-                    PROPERTY_EVENTLISTENER_RETHROW_EVENT,
-                    true
-                );
-                propertyItemNode.put(
-                    PROPERTY_EVENTLISTENER_RETHROW_TYPE,
-                    "error"
-                );
-                propertyItemNode.put(
-                    PROPERTY_EVENTLISTENER_ERROR_CODE,
-                    listener.getImplementation()
-                );
-                implementationText =
-                    "Rethrow as error " + listener.getImplementation();
+                propertyItemNode.put(PROPERTY_EVENTLISTENER_RETHROW_EVENT, true);
+                propertyItemNode.put(PROPERTY_EVENTLISTENER_RETHROW_TYPE, "error");
+                propertyItemNode.put(PROPERTY_EVENTLISTENER_ERROR_CODE, listener.getImplementation());
+                implementationText = "Rethrow as error " + listener.getImplementation();
             } else if (
-                ImplementationType.IMPLEMENTATION_TYPE_THROW_MESSAGE_EVENT.equals(
-                    listener.getImplementationType()
-                )
+                ImplementationType.IMPLEMENTATION_TYPE_THROW_MESSAGE_EVENT.equals(listener.getImplementationType())
             ) {
-                propertyItemNode.put(
-                    PROPERTY_EVENTLISTENER_RETHROW_EVENT,
-                    true
-                );
-                propertyItemNode.put(
-                    PROPERTY_EVENTLISTENER_RETHROW_TYPE,
-                    "message"
-                );
-                propertyItemNode.put(
-                    PROPERTY_EVENTLISTENER_MESSAGE_NAME,
-                    listener.getImplementation()
-                );
-                implementationText =
-                    "Rethrow as message " + listener.getImplementation();
+                propertyItemNode.put(PROPERTY_EVENTLISTENER_RETHROW_EVENT, true);
+                propertyItemNode.put(PROPERTY_EVENTLISTENER_RETHROW_TYPE, "message");
+                propertyItemNode.put(PROPERTY_EVENTLISTENER_MESSAGE_NAME, listener.getImplementation());
+                implementationText = "Rethrow as message " + listener.getImplementation();
             } else if (
-                ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT.equals(
-                    listener.getImplementationType()
-                )
+                ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT.equals(listener.getImplementationType())
             ) {
-                propertyItemNode.put(
-                    PROPERTY_EVENTLISTENER_RETHROW_EVENT,
-                    true
-                );
-                propertyItemNode.put(
-                    PROPERTY_EVENTLISTENER_RETHROW_TYPE,
-                    "signal"
-                );
-                propertyItemNode.put(
-                    PROPERTY_EVENTLISTENER_SIGNAL_NAME,
-                    listener.getImplementation()
-                );
-                implementationText =
-                    "Rethrow as signal " + listener.getImplementation();
+                propertyItemNode.put(PROPERTY_EVENTLISTENER_RETHROW_EVENT, true);
+                propertyItemNode.put(PROPERTY_EVENTLISTENER_RETHROW_TYPE, "signal");
+                propertyItemNode.put(PROPERTY_EVENTLISTENER_SIGNAL_NAME, listener.getImplementation());
+                implementationText = "Rethrow as signal " + listener.getImplementation();
             } else if (
                 ImplementationType.IMPLEMENTATION_TYPE_THROW_GLOBAL_SIGNAL_EVENT.equals(
                     listener.getImplementationType()
                 )
             ) {
-                propertyItemNode.put(
-                    PROPERTY_EVENTLISTENER_RETHROW_EVENT,
-                    true
-                );
-                propertyItemNode.put(
-                    PROPERTY_EVENTLISTENER_RETHROW_TYPE,
-                    "globalSignal"
-                );
-                propertyItemNode.put(
-                    PROPERTY_EVENTLISTENER_SIGNAL_NAME,
-                    listener.getImplementation()
-                );
-                implementationText =
-                    "Rethrow as signal " + listener.getImplementation();
+                propertyItemNode.put(PROPERTY_EVENTLISTENER_RETHROW_EVENT, true);
+                propertyItemNode.put(PROPERTY_EVENTLISTENER_RETHROW_TYPE, "globalSignal");
+                propertyItemNode.put(PROPERTY_EVENTLISTENER_SIGNAL_NAME, listener.getImplementation());
+                implementationText = "Rethrow as signal " + listener.getImplementation();
             }
 
             if (StringUtils.isNotEmpty(implementationText)) {
-                propertyItemNode.put(
-                    PROPERTY_EVENTLISTENER_IMPLEMENTATION,
-                    implementationText
-                );
+                propertyItemNode.put(PROPERTY_EVENTLISTENER_IMPLEMENTATION, implementationText);
             }
 
             if (StringUtils.isNotEmpty(listener.getEntityType())) {
-                propertyItemNode.put(
-                    PROPERTY_EVENTLISTENER_ENTITY_TYPE,
-                    listener.getEntityType()
-                );
+                propertyItemNode.put(PROPERTY_EVENTLISTENER_ENTITY_TYPE, listener.getEntityType());
             }
 
             itemsNode.add(propertyItemNode);
@@ -407,74 +275,41 @@ public class BpmnJsonConverterUtil
         propertiesNode.set(PROPERTY_EVENT_LISTENERS, listenersNode);
     }
 
-    public static void convertSignalDefinitionsToJson(
-        BpmnModel bpmnModel,
-        ObjectNode propertiesNode
-    ) {
+    public static void convertSignalDefinitionsToJson(BpmnModel bpmnModel, ObjectNode propertiesNode) {
         if (bpmnModel.getSignals() != null) {
             ArrayNode signalDefinitions = objectMapper.createArrayNode();
             for (Signal signal : bpmnModel.getSignals()) {
                 ObjectNode signalNode = signalDefinitions.addObject();
                 signalNode.put(PROPERTY_SIGNAL_DEFINITION_ID, signal.getId());
-                signalNode.put(
-                    PROPERTY_SIGNAL_DEFINITION_NAME,
-                    signal.getName()
-                );
-                signalNode.put(
-                    PROPERTY_SIGNAL_DEFINITION_SCOPE,
-                    signal.getScope()
-                );
+                signalNode.put(PROPERTY_SIGNAL_DEFINITION_NAME, signal.getName());
+                signalNode.put(PROPERTY_SIGNAL_DEFINITION_SCOPE, signal.getScope());
             }
             propertiesNode.set(PROPERTY_SIGNAL_DEFINITIONS, signalDefinitions);
         }
     }
 
-    public static void convertMessagesToJson(
-        BpmnModel bpmnModel,
-        ObjectNode propertiesNode
-    ) {
+    public static void convertMessagesToJson(BpmnModel bpmnModel, ObjectNode propertiesNode) {
         if (bpmnModel.getMessages() != null) {
             ArrayNode messageDefinitions = objectMapper.createArrayNode();
             for (Message message : bpmnModel.getMessages()) {
                 ObjectNode messageNode = messageDefinitions.addObject();
-                messageNode.put(
-                    PROPERTY_MESSAGE_DEFINITION_ID,
-                    message.getId()
-                );
-                messageNode.put(
-                    PROPERTY_MESSAGE_DEFINITION_NAME,
-                    message.getName()
-                );
+                messageNode.put(PROPERTY_MESSAGE_DEFINITION_ID, message.getId());
+                messageNode.put(PROPERTY_MESSAGE_DEFINITION_NAME, message.getName());
             }
-            propertiesNode.set(
-                PROPERTY_MESSAGE_DEFINITIONS,
-                messageDefinitions
-            );
+            propertiesNode.set(PROPERTY_MESSAGE_DEFINITIONS, messageDefinitions);
         }
     }
 
-    public static void convertJsonToListeners(
-        JsonNode objectNode,
-        BaseElement element
-    ) {
-        JsonNode executionListenersNode = getProperty(
-            PROPERTY_EXECUTION_LISTENERS,
-            objectNode
-        );
+    public static void convertJsonToListeners(JsonNode objectNode, BaseElement element) {
+        JsonNode executionListenersNode = getProperty(PROPERTY_EXECUTION_LISTENERS, objectNode);
         if (executionListenersNode != null) {
-            executionListenersNode =
-                validateIfNodeIsTextual(executionListenersNode);
-            JsonNode listenersNode = executionListenersNode.get(
-                "executionListeners"
-            );
+            executionListenersNode = validateIfNodeIsTextual(executionListenersNode);
+            JsonNode listenersNode = executionListenersNode.get("executionListeners");
             parseListeners(listenersNode, element, false);
         }
 
         if (element instanceof UserTask) {
-            JsonNode taskListenersNode = getProperty(
-                PROPERTY_TASK_LISTENERS,
-                objectNode
-            );
+            JsonNode taskListenersNode = getProperty(PROPERTY_TASK_LISTENERS, objectNode);
             if (taskListenersNode != null) {
                 taskListenersNode = validateIfNodeIsTextual(taskListenersNode);
                 JsonNode listenersNode = taskListenersNode.get("taskListeners");
@@ -483,132 +318,49 @@ public class BpmnJsonConverterUtil
         }
     }
 
-    public static void convertJsonToMessages(
-        JsonNode objectNode,
-        BpmnModel element
-    ) {
-        JsonNode messagesNode = getProperty(
-            PROPERTY_MESSAGE_DEFINITIONS,
-            objectNode
-        );
+    public static void convertJsonToMessages(JsonNode objectNode, BpmnModel element) {
+        JsonNode messagesNode = getProperty(PROPERTY_MESSAGE_DEFINITIONS, objectNode);
         if (messagesNode != null) {
             messagesNode = validateIfNodeIsTextual(messagesNode);
             parseMessages(messagesNode, element);
         }
     }
 
-    protected static void parseListeners(
-        JsonNode listenersNode,
-        BaseElement element,
-        boolean isTaskListener
-    ) {
+    protected static void parseListeners(JsonNode listenersNode, BaseElement element, boolean isTaskListener) {
         if (listenersNode == null) return;
         listenersNode = validateIfNodeIsTextual(listenersNode);
         for (JsonNode listenerNode : listenersNode) {
             listenerNode = validateIfNodeIsTextual(listenerNode);
             JsonNode eventNode = listenerNode.get(PROPERTY_LISTENER_EVENT);
-            if (
-                eventNode != null &&
-                !eventNode.isNull() &&
-                StringUtils.isNotEmpty(eventNode.asText())
-            ) {
+            if (eventNode != null && !eventNode.isNull() && StringUtils.isNotEmpty(eventNode.asText())) {
                 ActivitiListener listener = new ActivitiListener();
                 listener.setEvent(eventNode.asText());
-                if (
-                    StringUtils.isNotEmpty(
-                        getValueAsString(
-                            PROPERTY_LISTENER_CLASS_NAME,
-                            listenerNode
-                        )
-                    )
-                ) {
-                    listener.setImplementationType(
-                        ImplementationType.IMPLEMENTATION_TYPE_CLASS
-                    );
-                    listener.setImplementation(
-                        getValueAsString(
-                            PROPERTY_LISTENER_CLASS_NAME,
-                            listenerNode
-                        )
-                    );
+                if (StringUtils.isNotEmpty(getValueAsString(PROPERTY_LISTENER_CLASS_NAME, listenerNode))) {
+                    listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
+                    listener.setImplementation(getValueAsString(PROPERTY_LISTENER_CLASS_NAME, listenerNode));
+                } else if (StringUtils.isNotEmpty(getValueAsString(PROPERTY_LISTENER_EXPRESSION, listenerNode))) {
+                    listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION);
+                    listener.setImplementation(getValueAsString(PROPERTY_LISTENER_EXPRESSION, listenerNode));
                 } else if (
-                    StringUtils.isNotEmpty(
-                        getValueAsString(
-                            PROPERTY_LISTENER_EXPRESSION,
-                            listenerNode
-                        )
-                    )
+                    StringUtils.isNotEmpty(getValueAsString(PROPERTY_LISTENER_DELEGATE_EXPRESSION, listenerNode))
                 ) {
-                    listener.setImplementationType(
-                        ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION
-                    );
-                    listener.setImplementation(
-                        getValueAsString(
-                            PROPERTY_LISTENER_EXPRESSION,
-                            listenerNode
-                        )
-                    );
-                } else if (
-                    StringUtils.isNotEmpty(
-                        getValueAsString(
-                            PROPERTY_LISTENER_DELEGATE_EXPRESSION,
-                            listenerNode
-                        )
-                    )
-                ) {
-                    listener.setImplementationType(
-                        ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION
-                    );
-                    listener.setImplementation(
-                        getValueAsString(
-                            PROPERTY_LISTENER_DELEGATE_EXPRESSION,
-                            listenerNode
-                        )
-                    );
+                    listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION);
+                    listener.setImplementation(getValueAsString(PROPERTY_LISTENER_DELEGATE_EXPRESSION, listenerNode));
                 }
 
-                JsonNode fieldsNode = listenerNode.get(
-                    PROPERTY_LISTENER_FIELDS
-                );
+                JsonNode fieldsNode = listenerNode.get(PROPERTY_LISTENER_FIELDS);
                 if (fieldsNode != null) {
                     for (JsonNode fieldNode : fieldsNode) {
                         JsonNode nameNode = fieldNode.get(PROPERTY_FIELD_NAME);
-                        if (
-                            nameNode != null &&
-                            !nameNode.isNull() &&
-                            StringUtils.isNotEmpty(nameNode.asText())
-                        ) {
+                        if (nameNode != null && !nameNode.isNull() && StringUtils.isNotEmpty(nameNode.asText())) {
                             FieldExtension fieldExtension = new FieldExtension();
                             fieldExtension.setFieldName(nameNode.asText());
-                            fieldExtension.setStringValue(
-                                getValueAsString(
-                                    PROPERTY_FIELD_STRING_VALUE,
-                                    fieldNode
-                                )
-                            );
-                            if (
-                                StringUtils.isEmpty(
-                                    fieldExtension.getStringValue()
-                                )
-                            ) {
-                                fieldExtension.setStringValue(
-                                    getValueAsString(
-                                        PROPERTY_FIELD_STRING,
-                                        fieldNode
-                                    )
-                                );
+                            fieldExtension.setStringValue(getValueAsString(PROPERTY_FIELD_STRING_VALUE, fieldNode));
+                            if (StringUtils.isEmpty(fieldExtension.getStringValue())) {
+                                fieldExtension.setStringValue(getValueAsString(PROPERTY_FIELD_STRING, fieldNode));
                             }
-                            if (
-                                StringUtils.isEmpty(
-                                    fieldExtension.getStringValue()
-                                )
-                            ) {
-                                fieldExtension.setExpression(
-                                    getValueAsString(
-                                        PROPERTY_FIELD_EXPRESSION,
-                                        fieldNode
-                                    )
-                                );
+                            if (StringUtils.isEmpty(fieldExtension.getStringValue())) {
+                                fieldExtension.setExpression(getValueAsString(PROPERTY_FIELD_EXPRESSION, fieldNode));
                             }
                             listener.getFieldExtensions().add(fieldExtension);
                         }
@@ -618,50 +370,35 @@ public class BpmnJsonConverterUtil
                 if (element instanceof Process) {
                     ((Process) element).getExecutionListeners().add(listener);
                 } else if (element instanceof SequenceFlow) {
-                    ((SequenceFlow) element).getExecutionListeners()
-                        .add(listener);
+                    ((SequenceFlow) element).getExecutionListeners().add(listener);
                 } else if (element instanceof UserTask) {
                     if (isTaskListener) {
                         ((UserTask) element).getTaskListeners().add(listener);
                     } else {
-                        ((UserTask) element).getExecutionListeners()
-                            .add(listener);
+                        ((UserTask) element).getExecutionListeners().add(listener);
                     }
                 } else if (element instanceof FlowElement) {
-                    ((FlowElement) element).getExecutionListeners()
-                        .add(listener);
+                    ((FlowElement) element).getExecutionListeners().add(listener);
                 }
             }
         }
     }
 
-    protected static void parseMessages(
-        JsonNode messagesNode,
-        BpmnModel element
-    ) {
+    protected static void parseMessages(JsonNode messagesNode, BpmnModel element) {
         if (messagesNode == null) return;
 
         for (JsonNode messageNode : messagesNode) {
             Message message = new Message();
 
-            String messageId = getValueAsString(
-                PROPERTY_MESSAGE_DEFINITION_ID,
-                messageNode
-            );
+            String messageId = getValueAsString(PROPERTY_MESSAGE_DEFINITION_ID, messageNode);
             if (StringUtils.isNotEmpty(messageId)) {
                 message.setId(messageId);
             }
-            String messageName = getValueAsString(
-                PROPERTY_MESSAGE_DEFINITION_NAME,
-                messageNode
-            );
+            String messageName = getValueAsString(PROPERTY_MESSAGE_DEFINITION_NAME, messageNode);
             if (StringUtils.isNotEmpty(messageName)) {
                 message.setName(messageName);
             }
-            String messageItemRef = getValueAsString(
-                PROPERTY_MESSAGE_DEFINITION_ITEM_REF,
-                messageNode
-            );
+            String messageItemRef = getValueAsString(PROPERTY_MESSAGE_DEFINITION_ITEM_REF, messageNode);
             if (StringUtils.isNotEmpty(messageItemRef)) {
                 message.setItemRef(messageItemRef);
             }
@@ -672,27 +409,16 @@ public class BpmnJsonConverterUtil
         }
     }
 
-    public static void parseEventListeners(
-        JsonNode listenersNode,
-        Process process
-    ) {
+    public static void parseEventListeners(JsonNode listenersNode, Process process) {
         if (listenersNode == null) return;
         listenersNode = validateIfNodeIsTextual(listenersNode);
         for (JsonNode listenerNode : listenersNode) {
-            JsonNode eventsNode = listenerNode.get(
-                PROPERTY_EVENTLISTENER_EVENTS
-            );
-            if (
-                eventsNode != null &&
-                eventsNode.isArray() &&
-                eventsNode.size() > 0
-            ) {
+            JsonNode eventsNode = listenerNode.get(PROPERTY_EVENTLISTENER_EVENTS);
+            if (eventsNode != null && eventsNode.isArray() && eventsNode.size() > 0) {
                 EventListener listener = new EventListener();
                 StringBuilder eventsBuilder = new StringBuilder();
                 for (JsonNode eventNode : eventsNode) {
-                    JsonNode eventValueNode = eventNode.get(
-                        PROPERTY_EVENTLISTENER_EVENT
-                    );
+                    JsonNode eventValueNode = eventNode.get(PROPERTY_EVENTLISTENER_EVENT);
                     if (
                         eventValueNode != null &&
                         !eventValueNode.isNull() &&
@@ -713,54 +439,32 @@ public class BpmnJsonConverterUtil
                 if (rethrowEventNode != null && rethrowEventNode.asBoolean()) {
                     JsonNode rethrowTypeNode = listenerNode.get("rethrowType");
                     if (rethrowTypeNode != null) {
-                        if (
-                            "error".equalsIgnoreCase(rethrowTypeNode.asText())
-                        ) {
-                            String errorCode = getValueAsString(
-                                "errorcode",
-                                listenerNode
-                            );
+                        if ("error".equalsIgnoreCase(rethrowTypeNode.asText())) {
+                            String errorCode = getValueAsString("errorcode", listenerNode);
                             if (StringUtils.isNotEmpty(errorCode)) {
                                 listener.setImplementationType(
                                     ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT
                                 );
                                 listener.setImplementation(errorCode);
                             }
-                        } else if (
-                            "message".equalsIgnoreCase(rethrowTypeNode.asText())
-                        ) {
-                            String messageName = getValueAsString(
-                                "messagename",
-                                listenerNode
-                            );
+                        } else if ("message".equalsIgnoreCase(rethrowTypeNode.asText())) {
+                            String messageName = getValueAsString("messagename", listenerNode);
                             if (StringUtils.isNotEmpty(messageName)) {
                                 listener.setImplementationType(
                                     ImplementationType.IMPLEMENTATION_TYPE_THROW_MESSAGE_EVENT
                                 );
                                 listener.setImplementation(messageName);
                             }
-                        } else if (
-                            "signal".equalsIgnoreCase(rethrowTypeNode.asText())
-                        ) {
-                            String signalName = getValueAsString(
-                                "signalname",
-                                listenerNode
-                            );
+                        } else if ("signal".equalsIgnoreCase(rethrowTypeNode.asText())) {
+                            String signalName = getValueAsString("signalname", listenerNode);
                             if (StringUtils.isNotEmpty(signalName)) {
                                 listener.setImplementationType(
                                     ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT
                                 );
                                 listener.setImplementation(signalName);
                             }
-                        } else if (
-                            "globalSignal".equalsIgnoreCase(
-                                    rethrowTypeNode.asText()
-                                )
-                        ) {
-                            String signalName = getValueAsString(
-                                "signalname",
-                                listenerNode
-                            );
+                        } else if ("globalSignal".equalsIgnoreCase(rethrowTypeNode.asText())) {
+                            String signalName = getValueAsString("signalname", listenerNode);
                             if (StringUtils.isNotEmpty(signalName)) {
                                 listener.setImplementationType(
                                     ImplementationType.IMPLEMENTATION_TYPE_THROW_GLOBAL_SIGNAL_EVENT
@@ -774,56 +478,22 @@ public class BpmnJsonConverterUtil
                         continue;
                     }
                 } else {
-                    if (
-                        StringUtils.isNotEmpty(
-                            getValueAsString(
-                                PROPERTY_EVENTLISTENER_CLASS_NAME,
-                                listenerNode
-                            )
-                        )
-                    ) {
-                        listener.setImplementationType(
-                            ImplementationType.IMPLEMENTATION_TYPE_CLASS
-                        );
-                        listener.setImplementation(
-                            getValueAsString(
-                                PROPERTY_EVENTLISTENER_CLASS_NAME,
-                                listenerNode
-                            )
-                        );
+                    if (StringUtils.isNotEmpty(getValueAsString(PROPERTY_EVENTLISTENER_CLASS_NAME, listenerNode))) {
+                        listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
+                        listener.setImplementation(getValueAsString(PROPERTY_EVENTLISTENER_CLASS_NAME, listenerNode));
                     } else if (
                         StringUtils.isNotEmpty(
-                            getValueAsString(
-                                PROPERTY_EVENTLISTENER_DELEGATE_EXPRESSION,
-                                listenerNode
-                            )
+                            getValueAsString(PROPERTY_EVENTLISTENER_DELEGATE_EXPRESSION, listenerNode)
                         )
                     ) {
-                        listener.setImplementationType(
-                            ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION
-                        );
+                        listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION);
                         listener.setImplementation(
-                            getValueAsString(
-                                PROPERTY_EVENTLISTENER_DELEGATE_EXPRESSION,
-                                listenerNode
-                            )
+                            getValueAsString(PROPERTY_EVENTLISTENER_DELEGATE_EXPRESSION, listenerNode)
                         );
                     }
 
-                    if (
-                        StringUtils.isNotEmpty(
-                            getValueAsString(
-                                PROPERTY_EVENTLISTENER_ENTITY_TYPE,
-                                listenerNode
-                            )
-                        )
-                    ) {
-                        listener.setEntityType(
-                            getValueAsString(
-                                PROPERTY_EVENTLISTENER_ENTITY_TYPE,
-                                listenerNode
-                            )
-                        );
+                    if (StringUtils.isNotEmpty(getValueAsString(PROPERTY_EVENTLISTENER_ENTITY_TYPE, listenerNode))) {
+                        listener.setEntityType(getValueAsString(PROPERTY_EVENTLISTENER_ENTITY_TYPE, listenerNode));
                     }
 
                     if (StringUtils.isEmpty(listener.getImplementation())) {
@@ -836,10 +506,7 @@ public class BpmnJsonConverterUtil
         }
     }
 
-    public static String lookForSourceRef(
-        String flowId,
-        JsonNode childShapesNode
-    ) {
+    public static String lookForSourceRef(String flowId, JsonNode childShapesNode) {
         String sourceRef = null;
 
         if (childShapesNode != null) {
@@ -847,15 +514,9 @@ public class BpmnJsonConverterUtil
                 JsonNode outgoingNode = childNode.get("outgoing");
                 if (outgoingNode != null && outgoingNode.size() > 0) {
                     for (JsonNode outgoingChildNode : outgoingNode) {
-                        JsonNode resourceNode = outgoingChildNode.get(
-                            EDITOR_SHAPE_ID
-                        );
-                        if (
-                            resourceNode != null &&
-                            flowId.equals(resourceNode.asText())
-                        ) {
-                            sourceRef =
-                                BpmnJsonConverterUtil.getElementId(childNode);
+                        JsonNode resourceNode = outgoingChildNode.get(EDITOR_SHAPE_ID);
+                        if (resourceNode != null && flowId.equals(resourceNode.asText())) {
+                            sourceRef = BpmnJsonConverterUtil.getElementId(childNode);
                             break;
                         }
                     }
@@ -864,11 +525,7 @@ public class BpmnJsonConverterUtil
                         break;
                     }
                 }
-                sourceRef =
-                    lookForSourceRef(
-                        flowId,
-                        childNode.get(EDITOR_CHILD_SHAPES)
-                    );
+                sourceRef = lookForSourceRef(flowId, childNode.get(EDITOR_CHILD_SHAPES));
 
                 if (sourceRef != null) {
                     break;
@@ -878,17 +535,11 @@ public class BpmnJsonConverterUtil
         return sourceRef;
     }
 
-    public static List<ValuedDataObject> convertJsonToDataProperties(
-        JsonNode objectNode,
-        BaseElement element
-    ) {
+    public static List<ValuedDataObject> convertJsonToDataProperties(JsonNode objectNode, BaseElement element) {
         List<ValuedDataObject> dataObjects = new ArrayList<ValuedDataObject>();
 
         if (objectNode != null) {
-            if (
-                objectNode.isValueNode() &&
-                StringUtils.isNotEmpty(objectNode.asText())
-            ) {
+            if (objectNode.isValueNode() && StringUtils.isNotEmpty(objectNode.asText())) {
                 try {
                     objectNode = objectMapper.readTree(objectNode.asText());
                 } catch (Exception e) {
@@ -896,21 +547,14 @@ public class BpmnJsonConverterUtil
                 }
             }
 
-            JsonNode itemsArrayNode = objectNode.get(
-                EDITOR_PROPERTIES_GENERAL_ITEMS
-            );
+            JsonNode itemsArrayNode = objectNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
             if (itemsArrayNode != null) {
                 for (JsonNode dataNode : itemsArrayNode) {
                     JsonNode dataIdNode = dataNode.get(PROPERTY_DATA_ID);
-                    if (
-                        dataIdNode != null &&
-                        StringUtils.isNotEmpty(dataIdNode.asText())
-                    ) {
+                    if (dataIdNode != null && StringUtils.isNotEmpty(dataIdNode.asText())) {
                         ValuedDataObject dataObject = null;
                         ItemDefinition itemSubjectRef = new ItemDefinition();
-                        String dataType = dataNode
-                            .get(PROPERTY_DATA_TYPE)
-                            .asText();
+                        String dataType = dataNode.get(PROPERTY_DATA_TYPE).asText();
 
                         if (dataType.equals("string")) {
                             dataObject = new StringDataObject();
@@ -925,17 +569,12 @@ public class BpmnJsonConverterUtil
                         } else if (dataType.equals("datetime")) {
                             dataObject = new DateDataObject();
                         } else {
-                            logger.error(
-                                "Error converting {}",
-                                dataIdNode.asText()
-                            );
+                            logger.error("Error converting {}", dataIdNode.asText());
                         }
 
                         if (null != dataObject) {
                             dataObject.setId(dataIdNode.asText());
-                            dataObject.setName(
-                                dataNode.get(PROPERTY_DATA_NAME).asText()
-                            );
+                            dataObject.setName(dataNode.get(PROPERTY_DATA_NAME).asText());
 
                             itemSubjectRef.setStructureRef("xsd:" + dataType);
                             dataObject.setItemSubjectRef(itemSubjectRef);
@@ -944,24 +583,14 @@ public class BpmnJsonConverterUtil
                                 try {
                                     dataObject.setValue(
                                         dateTimeFormatter
-                                            .parseDateTime(
-                                                dataNode
-                                                    .get(PROPERTY_DATA_VALUE)
-                                                    .asText()
-                                            )
+                                            .parseDateTime(dataNode.get(PROPERTY_DATA_VALUE).asText())
                                             .toDate()
                                     );
                                 } catch (Exception e) {
-                                    logger.error(
-                                        "Error converting {}",
-                                        dataObject.getName(),
-                                        e
-                                    );
+                                    logger.error("Error converting {}", dataObject.getName(), e);
                                 }
                             } else {
-                                dataObject.setValue(
-                                    dataNode.get(PROPERTY_DATA_VALUE).asText()
-                                );
+                                dataObject.setValue(dataNode.get(PROPERTY_DATA_VALUE).asText());
                             }
 
                             dataObjects.add(dataObject);
@@ -973,10 +602,7 @@ public class BpmnJsonConverterUtil
         return dataObjects;
     }
 
-    public static void convertDataPropertiesToJson(
-        List<ValuedDataObject> dataObjects,
-        ObjectNode propertiesNode
-    ) {
+    public static void convertDataPropertiesToJson(List<ValuedDataObject> dataObjects, ObjectNode propertiesNode) {
         ObjectNode dataPropertiesNode = objectMapper.createObjectNode();
         ArrayNode itemsNode = objectMapper.createArrayNode();
 
@@ -985,13 +611,9 @@ public class BpmnJsonConverterUtil
             propertyItemNode.put(PROPERTY_DATA_ID, dObj.getId());
             propertyItemNode.put(PROPERTY_DATA_NAME, dObj.getName());
 
-            String itemSubjectRefQName = dObj
-                .getItemSubjectRef()
-                .getStructureRef();
+            String itemSubjectRefQName = dObj.getItemSubjectRef().getStructureRef();
             // remove namespace prefix
-            String dataType = itemSubjectRefQName.substring(
-                itemSubjectRefQName.indexOf(':') + 1
-            );
+            String dataType = itemSubjectRefQName.substring(itemSubjectRefQName.indexOf(':') + 1);
             propertyItemNode.put(PROPERTY_DATA_TYPE, dataType);
 
             Object dObjValue = dObj.getValue();
@@ -1000,9 +622,7 @@ public class BpmnJsonConverterUtil
                 propertyItemNode.put(PROPERTY_DATA_VALUE, "");
             } else {
                 if ("datetime".equals(dataType)) {
-                    value =
-                        new DateTime(dObjValue)
-                            .toString("yyyy-MM-dd'T'hh:mm:ss");
+                    value = new DateTime(dObjValue).toString("yyyy-MM-dd'T'hh:mm:ss");
                 } else {
                     value = new String(dObjValue.toString());
                 }
@@ -1017,17 +637,9 @@ public class BpmnJsonConverterUtil
     }
 
     public static JsonNode validateIfNodeIsTextual(JsonNode node) {
-        if (
-            node != null &&
-            !node.isNull() &&
-            node.isTextual() &&
-            StringUtils.isNotEmpty(node.asText())
-        ) {
+        if (node != null && !node.isNull() && node.isTextual() && StringUtils.isNotEmpty(node.asText())) {
             try {
-                node =
-                    validateIfNodeIsTextual(
-                        objectMapper.readTree(node.asText())
-                    );
+                node = validateIfNodeIsTextual(objectMapper.readTree(node.asText()));
             } catch (Exception e) {
                 logger.error("Error converting textual node", e);
             }
@@ -1044,10 +656,7 @@ public class BpmnJsonConverterUtil
         return propertyValue;
     }
 
-    public static String getPropertyValueAsString(
-        String name,
-        JsonNode objectNode
-    ) {
+    public static String getPropertyValueAsString(String name, JsonNode objectNode) {
         String propertyValue = null;
         JsonNode propertyNode = getProperty(name, objectNode);
         if (propertyNode != null && propertyNode.isNull() == false) {

@@ -39,13 +39,7 @@ public class TaskBaseRuntime {
 
     public List<Task> getTasksByProcessInstanceId(String processInstanceId) {
         List<Task> taskList = taskRuntime
-            .tasks(
-                Pageable.of(0, 50),
-                TaskPayloadBuilder
-                    .tasks()
-                    .withProcessInstanceId(processInstanceId)
-                    .build()
-            )
+            .tasks(Pageable.of(0, 50), TaskPayloadBuilder.tasks().withProcessInstanceId(processInstanceId).build())
             .getContent();
         return taskList;
     }
@@ -55,9 +49,7 @@ public class TaskBaseRuntime {
     }
 
     public List<VariableInstance> getTasksVariablesByTaskId(String taskId) {
-        return taskRuntime.variables(
-            TaskPayloadBuilder.variables().withTaskId(taskId).build()
-        );
+        return taskRuntime.variables(TaskPayloadBuilder.variables().withTaskId(taskId).build());
     }
 
     public void completeTask(String taskId) {
@@ -74,11 +66,7 @@ public class TaskBaseRuntime {
 
     public void completeTask(String taskId, Map<String, Object> variables) {
         Task completeTask = taskRuntime.complete(
-            TaskPayloadBuilder
-                .complete()
-                .withTaskId(taskId)
-                .withVariables(variables)
-                .build()
+            TaskPayloadBuilder.complete().withTaskId(taskId).withVariables(variables).build()
         );
         assertThat(completeTask).isNotNull();
         assertThat(completeTask.getStatus()).isEqualTo(TaskStatus.COMPLETED);
@@ -86,10 +74,7 @@ public class TaskBaseRuntime {
 
     public void assignTask(String taskId, String assignee) {
         Task task = taskRuntime.assign(
-            new AssignTaskPayloadBuilder()
-                .withTaskId(taskId)
-                .withAssignee(assignee)
-                .build()
+            new AssignTaskPayloadBuilder().withTaskId(taskId).withAssignee(assignee).build()
         );
         assertThat(task).isNotNull();
         assertThat(task.getAssignee()).isEqualTo(assignee);

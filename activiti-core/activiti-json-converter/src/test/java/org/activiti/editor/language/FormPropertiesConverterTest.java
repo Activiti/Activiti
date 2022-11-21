@@ -51,15 +51,11 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
     }
 
     private void validateModel(BpmnModel model) {
-        assertThat(model.getMainProcess().getId())
-            .isEqualTo("formPropertiesProcess");
-        assertThat(model.getMainProcess().getName())
-            .isEqualTo("User registration");
+        assertThat(model.getMainProcess().getId()).isEqualTo("formPropertiesProcess");
+        assertThat(model.getMainProcess().getName()).isEqualTo("User registration");
         assertThat(model.getMainProcess().isExecutable()).isEqualTo(true);
 
-        FlowElement startFlowElement = model
-            .getMainProcess()
-            .getFlowElement("startNode", true);
+        FlowElement startFlowElement = model.getMainProcess().getFlowElement("startNode", true);
         assertThat(startFlowElement).isNotNull();
         assertThat(startFlowElement).isInstanceOf(StartEvent.class);
         StartEvent startEvent = (StartEvent) startFlowElement;
@@ -67,9 +63,7 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
         List<FormProperty> formProperties = startEvent.getFormProperties();
 
         assertThat(formProperties).isNotNull();
-        assertThat(formProperties)
-            .as("Invalid form properties list: ")
-            .hasSize(8);
+        assertThat(formProperties).as("Invalid form properties list: ").hasSize(8);
 
         for (FormProperty formProperty : formProperties) {
             if (formProperty.getId().equals("new_property_1")) {
@@ -102,9 +96,7 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
             }
         }
 
-        FlowElement userFlowElement = model
-            .getMainProcess()
-            .getFlowElement("userTask", true);
+        FlowElement userFlowElement = model.getMainProcess().getFlowElement("userTask", true);
         assertThat(userFlowElement).isNotNull();
         assertThat(userFlowElement).isInstanceOf(UserTask.class);
         UserTask userTask = (UserTask) userFlowElement;
@@ -112,9 +104,7 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
         formProperties = userTask.getFormProperties();
 
         assertThat(formProperties).isNotNull();
-        assertThat(formProperties)
-            .as("Invalid form properties list: ")
-            .hasSize(8);
+        assertThat(formProperties).as("Invalid form properties list: ").hasSize(8);
 
         for (FormProperty formProperty : formProperties) {
             if (formProperty.getId().equals("new_property_1")) {
@@ -161,9 +151,7 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
         assertThat(formProperty.isWriteable()).isEqualTo(shouldBeWritable);
     }
 
-    private void checkFormPropertyFormValues(
-        List<Map<String, Object>> formValues
-    ) {
+    private void checkFormPropertyFormValues(List<Map<String, Object>> formValues) {
         List<Map<String, Object>> expectedFormValues = new ArrayList<Map<String, Object>>();
         Map<String, Object> formValue1 = new HashMap<String, Object>();
         formValue1.put("id", "value1");

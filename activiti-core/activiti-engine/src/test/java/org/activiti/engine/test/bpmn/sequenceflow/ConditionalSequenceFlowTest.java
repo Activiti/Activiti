@@ -34,15 +34,9 @@ public class ConditionalSequenceFlowTest extends PluggableActivitiTestCase {
     @Deployment
     public void testUelExpression() {
         Map<String, Object> variables = singletonMap("input", "right");
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "condSeqFlowUelExpr",
-            variables
-        );
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("condSeqFlowUelExpr", variables);
 
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(pi.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
 
         assertThat(task.getName()).isEqualTo("task right");
     }
@@ -54,15 +48,9 @@ public class ConditionalSequenceFlowTest extends PluggableActivitiTestCase {
         variables.put("_ACTIVITI_SKIP_EXPRESSION_ENABLED", true);
         variables.put("skipLeft", true);
         variables.put("skipRight", false);
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "testSkipExpression",
-            variables
-        );
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("testSkipExpression", variables);
 
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(pi.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
 
         assertThat(task.getName()).isEqualTo("task left");
     }
@@ -70,60 +58,28 @@ public class ConditionalSequenceFlowTest extends PluggableActivitiTestCase {
     @Deployment
     public void testDynamicExpression() {
         Map<String, Object> variables = singletonMap("input", "right");
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "condSeqFlowUelExpr",
-            variables
-        );
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("condSeqFlowUelExpr", variables);
 
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(pi.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
 
         assertThat(task.getName()).isEqualTo("task not left");
         taskService.complete(task.getId());
 
-        ObjectNode infoNode = dynamicBpmnService.changeSequenceFlowCondition(
-            "flow1",
-            "${input == 'right'}"
-        );
-        dynamicBpmnService.changeSequenceFlowCondition(
-            "flow2",
-            "${input != 'right'}",
-            infoNode
-        );
-        dynamicBpmnService.saveProcessDefinitionInfo(
-            pi.getProcessDefinitionId(),
-            infoNode
-        );
+        ObjectNode infoNode = dynamicBpmnService.changeSequenceFlowCondition("flow1", "${input == 'right'}");
+        dynamicBpmnService.changeSequenceFlowCondition("flow2", "${input != 'right'}", infoNode);
+        dynamicBpmnService.saveProcessDefinitionInfo(pi.getProcessDefinitionId(), infoNode);
 
-        pi =
-            runtimeService.startProcessInstanceByKey(
-                "condSeqFlowUelExpr",
-                variables
-            );
+        pi = runtimeService.startProcessInstanceByKey("condSeqFlowUelExpr", variables);
 
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(pi.getId())
-                .singleResult();
+        task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
 
         assertThat(task.getName()).isEqualTo("task left");
         taskService.complete(task.getId());
 
         variables = singletonMap("input", "right2");
-        pi =
-            runtimeService.startProcessInstanceByKey(
-                "condSeqFlowUelExpr",
-                variables
-            );
+        pi = runtimeService.startProcessInstanceByKey("condSeqFlowUelExpr", variables);
 
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(pi.getId())
-                .singleResult();
+        task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
 
         assertThat(task.getName()).isEqualTo("task not left");
         taskService.complete(task.getId());

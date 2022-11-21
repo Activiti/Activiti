@@ -33,24 +33,15 @@ public class ProcessInstanceIdentityLinkTest extends PluggableActivitiTestCase {
     // IDENTITY_LINK)
     @Deployment
     public void testSetAuthenticatedUserAndCompleteLastTask() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "identityLinktest"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("identityLinktest");
 
         // There are two tasks
 
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         taskService.complete(task.getId());
 
         Authentication.setAuthenticatedUserId("kermit");
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         taskService.complete(task.getId());
         Authentication.setAuthenticatedUserId(null);
 
@@ -65,9 +56,7 @@ public class ProcessInstanceIdentityLinkTest extends PluggableActivitiTestCase {
     public void testSetAuthenticatedUserWithNoWaitStates() {
         Authentication.setAuthenticatedUserId("kermit");
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "identityLinktest"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("identityLinktest");
         assertProcessEnded(processInstance.getId());
 
         Authentication.setAuthenticatedUserId(null);

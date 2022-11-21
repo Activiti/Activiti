@@ -26,8 +26,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 
 
  */
-public class SuspendProcessDefinitionCmd
-    extends AbstractSetProcessDefinitionStateCmd {
+public class SuspendProcessDefinitionCmd extends AbstractSetProcessDefinitionStateCmd {
 
     public SuspendProcessDefinitionCmd(
         ProcessDefinitionEntity processDefinitionEntity,
@@ -35,12 +34,7 @@ public class SuspendProcessDefinitionCmd
         Date executionDate,
         String tenantId
     ) {
-        super(
-            processDefinitionEntity,
-            includeProcessInstances,
-            executionDate,
-            tenantId
-        );
+        super(processDefinitionEntity, includeProcessInstances, executionDate, tenantId);
     }
 
     public SuspendProcessDefinitionCmd(
@@ -50,13 +44,7 @@ public class SuspendProcessDefinitionCmd
         Date suspensionDate,
         String tenantId
     ) {
-        super(
-            processDefinitionId,
-            processDefinitionKey,
-            suspendProcessInstances,
-            suspensionDate,
-            tenantId
-        );
+        super(processDefinitionId, processDefinitionKey, suspendProcessInstances, suspensionDate, tenantId);
     }
 
     protected SuspensionState getProcessDefinitionSuspensionState() {
@@ -67,9 +55,7 @@ public class SuspendProcessDefinitionCmd
         return TimerSuspendProcessDefinitionHandler.TYPE;
     }
 
-    protected AbstractSetProcessInstanceStateCmd getProcessInstanceChangeStateCmd(
-        ProcessInstance processInstance
-    ) {
+    protected AbstractSetProcessInstanceStateCmd getProcessInstanceChangeStateCmd(ProcessInstance processInstance) {
         return new SuspendProcessInstanceCmd(processInstance.getId());
     }
 }

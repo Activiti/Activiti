@@ -39,42 +39,25 @@ public class FlowElementValidator extends ProcessLevelValidator {
     protected static final int ID_MAX_LENGTH = 255;
 
     @Override
-    protected void executeValidation(
-        BpmnModel bpmnModel,
-        Process process,
-        List<ValidationError> errors
-    ) {
+    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
         for (FlowElement flowElement : process.getFlowElements()) {
             if (flowElement instanceof Activity) {
                 Activity activity = (Activity) flowElement;
                 handleConstraints(process, activity, errors);
-                handleMultiInstanceLoopCharacteristics(
-                    process,
-                    activity,
-                    errors
-                );
+                handleMultiInstanceLoopCharacteristics(process, activity, errors);
                 handleDataAssociations(process, activity, errors);
             }
         }
     }
 
-    protected void handleConstraints(
-        Process process,
-        Activity activity,
-        List<ValidationError> errors
-    ) {
-        if (
-            activity.getId() != null &&
-            activity.getId().length() > ID_MAX_LENGTH
-        ) {
+    protected void handleConstraints(Process process, Activity activity, List<ValidationError> errors) {
+        if (activity.getId() != null && activity.getId().length() > ID_MAX_LENGTH) {
             addError(
                 errors,
                 Problems.FLOW_ELEMENT_ID_TOO_LONG,
                 process,
                 activity,
-                "The id of a flow element must not contain more than " +
-                ID_MAX_LENGTH +
-                " characters"
+                "The id of a flow element must not contain more than " + ID_MAX_LENGTH + " characters"
             );
         }
     }
@@ -87,12 +70,8 @@ public class FlowElementValidator extends ProcessLevelValidator {
         MultiInstanceLoopCharacteristics multiInstanceLoopCharacteristics = activity.getLoopCharacteristics();
         if (multiInstanceLoopCharacteristics != null) {
             if (
-                StringUtils.isEmpty(
-                    multiInstanceLoopCharacteristics.getLoopCardinality()
-                ) &&
-                StringUtils.isEmpty(
-                    multiInstanceLoopCharacteristics.getInputDataItem()
-                )
+                StringUtils.isEmpty(multiInstanceLoopCharacteristics.getLoopCardinality()) &&
+                StringUtils.isEmpty(multiInstanceLoopCharacteristics.getInputDataItem())
             ) {
                 addError(
                     errors,
@@ -105,11 +84,7 @@ public class FlowElementValidator extends ProcessLevelValidator {
         }
     }
 
-    protected void handleDataAssociations(
-        Process process,
-        Activity activity,
-        List<ValidationError> errors
-    ) {
+    protected void handleDataAssociations(Process process, Activity activity, List<ValidationError> errors) {
         if (activity.getDataInputAssociations() != null) {
             for (DataAssociation dataAssociation : activity.getDataInputAssociations()) {
                 if (StringUtils.isEmpty(dataAssociation.getTargetRef())) {

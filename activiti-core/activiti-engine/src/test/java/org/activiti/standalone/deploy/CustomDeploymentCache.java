@@ -25,8 +25,7 @@ import org.activiti.engine.repository.ProcessDefinition;
  *
 
  */
-public class CustomDeploymentCache
-    implements DeploymentCache<ProcessDefinitionCacheEntry> {
+public class CustomDeploymentCache implements DeploymentCache<ProcessDefinitionCacheEntry> {
 
     protected String id;
     protected ProcessDefinitionCacheEntry entry;

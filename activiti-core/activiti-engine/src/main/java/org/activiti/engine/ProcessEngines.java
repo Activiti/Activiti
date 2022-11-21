@@ -95,15 +95,9 @@ public abstract class ProcessEngines {
             while (resources.hasMoreElements()) {
                 configUrls.add(resources.nextElement());
             }
-            for (
-                Iterator<URL> iterator = configUrls.iterator();
-                iterator.hasNext();
-            ) {
+            for (Iterator<URL> iterator = configUrls.iterator(); iterator.hasNext();) {
                 URL resource = iterator.next();
-                log.info(
-                    "Initializing process engine using configuration '{}'",
-                    resource.toString()
-                );
+                log.info("Initializing process engine using configuration '{}'", resource.toString());
                 initProcessEngineFromResource(resource);
             }
 
@@ -118,10 +112,7 @@ public abstract class ProcessEngines {
             }
             while (resources.hasMoreElements()) {
                 URL resource = resources.nextElement();
-                log.info(
-                    "Initializing process engine using Spring configuration '{}'",
-                    resource.toString()
-                );
+                log.info("Initializing process engine using Spring configuration '{}'", resource.toString());
                 initProcessEngineFromSpringResource(resource);
             }
 
@@ -140,10 +131,7 @@ public abstract class ProcessEngines {
                 "buildProcessEngine",
                 new Class<?>[] { URL.class }
             );
-            ProcessEngine processEngine = (ProcessEngine) method.invoke(
-                null,
-                new Object[] { resource }
-            );
+            ProcessEngine processEngine = (ProcessEngine) method.invoke(null, new Object[] { resource });
 
             String processEngineName = processEngine.getName();
             ProcessEngineInfo processEngineInfo = new ProcessEngineInfoImpl(
@@ -152,10 +140,7 @@ public abstract class ProcessEngines {
                 null
             );
             processEngineInfosByName.put(processEngineName, processEngineInfo);
-            processEngineInfosByResourceUrl.put(
-                resource.toString(),
-                processEngineInfo
-            );
+            processEngineInfosByResourceUrl.put(resource.toString(), processEngineInfo);
         } catch (Exception e) {
             throw new ActivitiException(
                 "couldn't initialize process engine from spring configuration resource " +
@@ -182,12 +167,8 @@ public abstract class ProcessEngines {
         processEngines.remove(processEngine.getName());
     }
 
-    private static ProcessEngineInfo initProcessEngineFromResource(
-        URL resourceUrl
-    ) {
-        ProcessEngineInfo processEngineInfo = processEngineInfosByResourceUrl.get(
-            resourceUrl.toString()
-        );
+    private static ProcessEngineInfo initProcessEngineFromResource(URL resourceUrl) {
+        ProcessEngineInfo processEngineInfo = processEngineInfosByResourceUrl.get(resourceUrl.toString());
         // if there is an existing process engine info
         if (processEngineInfo != null) {
             // remove that process engine from the member fields
@@ -197,45 +178,23 @@ public abstract class ProcessEngines {
                 processEngines.remove(processEngineName);
                 processEngineInfosByName.remove(processEngineName);
             }
-            processEngineInfosByResourceUrl.remove(
-                processEngineInfo.getResourceUrl()
-            );
+            processEngineInfosByResourceUrl.remove(processEngineInfo.getResourceUrl());
         }
 
         String resourceUrlString = resourceUrl.toString();
         try {
-            log.info(
-                "initializing process engine for resource {}",
-                resourceUrl
-            );
+            log.info("initializing process engine for resource {}", resourceUrl);
             ProcessEngine processEngine = buildProcessEngine(resourceUrl);
             String processEngineName = processEngine.getName();
             log.info("initialised process engine {}", processEngineName);
-            processEngineInfo =
-                new ProcessEngineInfoImpl(
-                    processEngineName,
-                    resourceUrlString,
-                    null
-                );
+            processEngineInfo = new ProcessEngineInfoImpl(processEngineName, resourceUrlString, null);
             processEngines.put(processEngineName, processEngine);
             processEngineInfosByName.put(processEngineName, processEngineInfo);
         } catch (Throwable e) {
-            log.error(
-                "Exception while initializing process engine: {}",
-                e.getMessage(),
-                e
-            );
-            processEngineInfo =
-                new ProcessEngineInfoImpl(
-                    null,
-                    resourceUrlString,
-                    getExceptionString(e)
-                );
+            log.error("Exception while initializing process engine: {}", e.getMessage(), e);
+            processEngineInfo = new ProcessEngineInfoImpl(null, resourceUrlString, getExceptionString(e));
         }
-        processEngineInfosByResourceUrl.put(
-            resourceUrlString,
-            processEngineInfo
-        );
+        processEngineInfosByResourceUrl.put(resourceUrlString, processEngineInfo);
         processEngineInfos.add(processEngineInfo);
         return processEngineInfo;
     }
@@ -256,10 +215,7 @@ public abstract class ProcessEngines {
             );
             return processEngineConfiguration.buildProcessEngine();
         } catch (IOException e) {
-            throw new ActivitiIllegalArgumentException(
-                "couldn't open resource stream: " + e.getMessage(),
-                e
-            );
+            throw new ActivitiIllegalArgumentException("couldn't open resource stream: " + e.getMessage(), e);
         } finally {
             IoUtil.closeSilently(inputStream);
         }
@@ -274,9 +230,7 @@ public abstract class ProcessEngines {
      * Get initialization results. Only info will we available for process engines which were added in the {@link ProcessEngines#init()}. No {@link ProcessEngineInfo} is available for engines which were
      * registered programatically.
      */
-    public static ProcessEngineInfo getProcessEngineInfo(
-        String processEngineName
-    ) {
+    public static ProcessEngineInfo getProcessEngineInfo(String processEngineName) {
         return processEngineInfosByName.get(processEngineName);
     }
 
@@ -305,10 +259,7 @@ public abstract class ProcessEngines {
         try {
             return initProcessEngineFromResource(new URL(resourceUrl));
         } catch (MalformedURLException e) {
-            throw new ActivitiIllegalArgumentException(
-                "invalid url: " + resourceUrl,
-                e
-            );
+            throw new ActivitiIllegalArgumentException("invalid url: " + resourceUrl, e);
         }
     }
 
@@ -324,9 +275,7 @@ public abstract class ProcessEngines {
      */
     public static synchronized void destroy() {
         if (isInitialized()) {
-            Map<String, ProcessEngine> engines = new HashMap<String, ProcessEngine>(
-                processEngines
-            );
+            Map<String, ProcessEngine> engines = new HashMap<String, ProcessEngine>(processEngines);
             processEngines = new HashMap<String, ProcessEngine>();
 
             for (String processEngineName : engines.keySet()) {

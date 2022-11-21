@@ -37,8 +37,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessInstanceOperationsTest {
 
-    private final String processKey =
-        "usertaskwi-4d5c4312-e8fc-4766-a727-b55a4d3255e9";
+    private final String processKey = "usertaskwi-4d5c4312-e8fc-4766-a727-b55a4d3255e9";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -68,12 +67,9 @@ public class ProcessInstanceOperationsTest {
 
         //then
         assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getStatus())
-            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
-        assertThat(processInstance.getBusinessKey())
-            .isEqualTo("my-business-key");
-        assertThat(processInstance.getName())
-            .isEqualTo("my-process-instance-name");
+        assertThat(processInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(processInstance.getBusinessKey()).isEqualTo("my-business-key");
+        assertThat(processInstance.getName()).isEqualTo("my-process-instance-name");
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
             .extracting(RuntimeEvent::getEventType)
@@ -92,8 +88,7 @@ public class ProcessInstanceOperationsTest {
         ProcessInstance deletedProcessInstance = processRuntime.delete(
             ProcessPayloadBuilder.delete(processInstance.getId())
         );
-        assertThat(deletedProcessInstance.getStatus())
-            .isEqualTo(ProcessInstance.ProcessInstanceStatus.CANCELLED);
+        assertThat(deletedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.CANCELLED);
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
             .extracting(RuntimeEvent::getEventType)
@@ -104,9 +99,7 @@ public class ProcessInstanceOperationsTest {
             );
 
         // No Process Instance should be found
-        Throwable throwable = catchThrowable(() ->
-            processRuntime.processInstance(deletedProcessInstance.getId())
-        );
+        Throwable throwable = catchThrowable(() -> processRuntime.processInstance(deletedProcessInstance.getId()));
 
         assertThat(throwable).isInstanceOf(NotFoundException.class);
     }
@@ -128,12 +121,9 @@ public class ProcessInstanceOperationsTest {
 
         //then
         assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getStatus())
-            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
-        assertThat(processInstance.getBusinessKey())
-            .isEqualTo("my-business-key");
-        assertThat(processInstance.getName())
-            .isEqualTo("my-process-instance-name");
+        assertThat(processInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(processInstance.getBusinessKey()).isEqualTo("my-business-key");
+        assertThat(processInstance.getName()).isEqualTo("my-process-instance-name");
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
             .extracting(RuntimeEvent::getEventType)
@@ -152,8 +142,7 @@ public class ProcessInstanceOperationsTest {
         ProcessInstance suspendedProcessInstance = processRuntime.suspend(
             ProcessPayloadBuilder.suspend(processInstance.getId())
         );
-        assertThat(suspendedProcessInstance.getStatus())
-            .isEqualTo(ProcessInstance.ProcessInstanceStatus.SUSPENDED);
+        assertThat(suspendedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.SUSPENDED);
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
             .extracting(RuntimeEvent::getEventType)
@@ -167,8 +156,7 @@ public class ProcessInstanceOperationsTest {
         ProcessInstance resumedProcessInstance = processRuntime.resume(
             ProcessPayloadBuilder.resume(suspendedProcessInstance.getId())
         );
-        assertThat(resumedProcessInstance.getStatus())
-            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(resumedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
             .extracting(RuntimeEvent::getEventType)

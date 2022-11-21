@@ -22,5 +22,4 @@ import org.activiti.engine.api.internal.Internal;
 
  */
 @Internal
-public interface HistoricDetailTransitionInstanceEntity
-    extends HistoricDetailEntity {}
+public interface HistoricDetailTransitionInstanceEntity extends HistoricDetailEntity {}

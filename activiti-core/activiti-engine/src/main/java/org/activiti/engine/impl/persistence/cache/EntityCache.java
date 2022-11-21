@@ -62,9 +62,7 @@ public interface EntityCache extends Session {
      * The difference with {@link #findInCache(Class)} is that here the whole {@link CachedEntity}
      * is returned, which gives access to the persistent state at the moment of putting it in the cache.
      */
-    <T> Collection<CachedEntity> findInCacheAsCachedObjects(
-        Class<T> entityClass
-    );
+    <T> Collection<CachedEntity> findInCacheAsCachedObjects(Class<T> entityClass);
 
     /**
      * Removes the {@link Entity} of the given type with the given id from the cache.

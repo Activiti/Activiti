@@ -22,17 +22,12 @@ import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 /**
 
  */
-public interface IdentityLinkDataManager
-    extends DataManager<IdentityLinkEntity> {
+public interface IdentityLinkDataManager extends DataManager<IdentityLinkEntity> {
     List<IdentityLinkEntity> findIdentityLinksByTaskId(String taskId);
 
-    List<IdentityLinkEntity> findIdentityLinksByProcessInstanceId(
-        String processInstanceId
-    );
+    List<IdentityLinkEntity> findIdentityLinksByProcessInstanceId(String processInstanceId);
 
-    List<IdentityLinkEntity> findIdentityLinksByProcessDefinitionId(
-        String processDefinitionId
-    );
+    List<IdentityLinkEntity> findIdentityLinksByProcessDefinitionId(String processDefinitionId);
 
     List<IdentityLinkEntity> findIdentityLinkByTaskUserGroupAndType(
         String taskId,

@@ -35,10 +35,7 @@ public class LocalTaskSource implements TaskSource {
     public List<Task> getTasks(String processInstanceId) {
         Page<Task> taskPage = taskRuntime.tasks(
             Pageable.of(0, MAX_ITEMS),
-            TaskPayloadBuilder
-                .tasks()
-                .withProcessInstanceId(processInstanceId)
-                .build()
+            TaskPayloadBuilder.tasks().withProcessInstanceId(processInstanceId).build()
         );
         return taskPage.getContent();
     }

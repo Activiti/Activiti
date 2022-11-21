@@ -26,14 +26,11 @@ import org.activiti.engine.impl.el.NoExecutionVariableScope;
 /**
 
  */
-public class DelegateExpressionTransactionDependentExecutionListener
-    implements TransactionDependentExecutionListener {
+public class DelegateExpressionTransactionDependentExecutionListener implements TransactionDependentExecutionListener {
 
     protected Expression expression;
 
-    public DelegateExpressionTransactionDependentExecutionListener(
-        Expression expression
-    ) {
+    public DelegateExpressionTransactionDependentExecutionListener(Expression expression) {
         this.expression = expression;
     }
 

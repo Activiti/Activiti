@@ -29,13 +29,10 @@ import org.activiti.engine.test.api.event.TestActivitiEventListener;
  *
 
  */
-public class TypedEventListenersConfigurationTest
-    extends ResourceActivitiTestCase {
+public class TypedEventListenersConfigurationTest extends ResourceActivitiTestCase {
 
     public TypedEventListenersConfigurationTest() {
-        super(
-            "org/activiti/standalone/event/activiti-typed-eventlistener.cfg.xml"
-        );
+        super("org/activiti/standalone/event/activiti-typed-eventlistener.cfg.xml");
     }
 
     public void testEventListenerConfiguration() {
@@ -63,10 +60,8 @@ public class TypedEventListenersConfigurationTest
         processEngineConfiguration.getEventDispatcher().dispatchEvent(event);
 
         assertThat(listener.getEventsReceived()).hasSize(2);
-        assertThat(listener.getEventsReceived().get(0).getType())
-            .isEqualTo(ActivitiEventType.ENTITY_DELETED);
-        assertThat(listener.getEventsReceived().get(1).getType())
-            .isEqualTo(ActivitiEventType.ENTITY_UPDATED);
+        assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
+        assertThat(listener.getEventsReceived().get(1).getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);
         listener.clearEventsReceived();
 
         // Dispatch an event that is NOT part of the types configured

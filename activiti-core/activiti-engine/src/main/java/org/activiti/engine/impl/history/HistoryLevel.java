@@ -49,9 +49,7 @@ public enum HistoryLevel {
                 return level;
             }
         }
-        throw new ActivitiIllegalArgumentException(
-            "Illegal value for history-level: " + key
-        );
+        throw new ActivitiIllegalArgumentException("Illegal value for history-level: " + key);
     }
 
     /**

@@ -29,33 +29,15 @@ public class AttachmentQueryProperty implements QueryProperty {
 
     private static final Map<String, AttachmentQueryProperty> properties = new HashMap<String, AttachmentQueryProperty>();
 
-    public static final AttachmentQueryProperty ATTACHMENT_ID = new AttachmentQueryProperty(
-        "RES.ID_"
-    );
-    public static final AttachmentQueryProperty NAME = new AttachmentQueryProperty(
-        "RES.NAME_"
-    );
-    public static final AttachmentQueryProperty DESCRIPTION = new AttachmentQueryProperty(
-        "RES.DESCRIPTION_"
-    );
-    public static final AttachmentQueryProperty USER = new AttachmentQueryProperty(
-        "RES.USER_ID_"
-    );
-    public static final AttachmentQueryProperty CREATE_TIME = new AttachmentQueryProperty(
-        "RES.TIME_"
-    );
-    public static final AttachmentQueryProperty PROCESS_INSTANCE_ID = new AttachmentQueryProperty(
-        "RES.PROC_INST_ID_"
-    );
-    public static final AttachmentQueryProperty TASK_ID = new AttachmentQueryProperty(
-        "RES.TASK_ID_"
-    );
-    public static final AttachmentQueryProperty TYPE = new AttachmentQueryProperty(
-        "RES.TYPE_"
-    );
-    public static final AttachmentQueryProperty URL = new AttachmentQueryProperty(
-        "RES.URL_"
-    );
+    public static final AttachmentQueryProperty ATTACHMENT_ID = new AttachmentQueryProperty("RES.ID_");
+    public static final AttachmentQueryProperty NAME = new AttachmentQueryProperty("RES.NAME_");
+    public static final AttachmentQueryProperty DESCRIPTION = new AttachmentQueryProperty("RES.DESCRIPTION_");
+    public static final AttachmentQueryProperty USER = new AttachmentQueryProperty("RES.USER_ID_");
+    public static final AttachmentQueryProperty CREATE_TIME = new AttachmentQueryProperty("RES.TIME_");
+    public static final AttachmentQueryProperty PROCESS_INSTANCE_ID = new AttachmentQueryProperty("RES.PROC_INST_ID_");
+    public static final AttachmentQueryProperty TASK_ID = new AttachmentQueryProperty("RES.TASK_ID_");
+    public static final AttachmentQueryProperty TYPE = new AttachmentQueryProperty("RES.TYPE_");
+    public static final AttachmentQueryProperty URL = new AttachmentQueryProperty("RES.URL_");
 
     private String name;
 

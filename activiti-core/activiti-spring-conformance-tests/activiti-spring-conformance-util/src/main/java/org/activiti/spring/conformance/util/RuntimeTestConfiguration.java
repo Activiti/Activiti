@@ -59,18 +59,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 @TestConfiguration
 public class RuntimeTestConfiguration {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(
-        RuntimeTestConfiguration.class
-    );
+    private static final Logger LOGGER = LoggerFactory.getLogger(RuntimeTestConfiguration.class);
 
     public static List<RuntimeEvent> collectedEvents = new ArrayList<>();
 
     @Bean
     @ConditionalOnMissingBean
-    public SecurityUtil securityUtil(
-        UserDetailsService userDetailsService,
-        SecurityManager securityManager
-    ) {
+    public SecurityUtil securityUtil(UserDetailsService userDetailsService, SecurityManager securityManager) {
         return new SecurityUtil(userDetailsService, securityManager);
     }
 
@@ -83,66 +78,52 @@ public class RuntimeTestConfiguration {
         user1.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
         user1.add(new SimpleGrantedAuthority("GROUP_group1"));
 
-        extendedInMemoryUserDetailsManager.createUser(
-            new User("user1", "password", user1)
-        );
+        extendedInMemoryUserDetailsManager.createUser(new User("user1", "password", user1));
 
         List<GrantedAuthority> user2 = new ArrayList<>();
         user2.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
         user2.add(new SimpleGrantedAuthority("GROUP_group2"));
 
-        extendedInMemoryUserDetailsManager.createUser(
-            new User("user2", "password", user2)
-        );
+        extendedInMemoryUserDetailsManager.createUser(new User("user2", "password", user2));
 
         List<GrantedAuthority> user3 = new ArrayList<>();
         user3.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
         user3.add(new SimpleGrantedAuthority("GROUP_group1"));
         user3.add(new SimpleGrantedAuthority("GROUP_group2"));
 
-        extendedInMemoryUserDetailsManager.createUser(
-            new User("user3", "password", user3)
-        );
+        extendedInMemoryUserDetailsManager.createUser(new User("user3", "password", user3));
 
         List<GrantedAuthority> user4 = new ArrayList<>();
         user4.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
 
-        extendedInMemoryUserDetailsManager.createUser(
-            new User("user4", "password", user4)
-        );
+        extendedInMemoryUserDetailsManager.createUser(new User("user4", "password", user4));
 
         List<GrantedAuthority> adminAuthorities = new ArrayList<>();
         adminAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_ADMIN"));
 
-        extendedInMemoryUserDetailsManager.createUser(
-            new User("admin", "password", adminAuthorities)
-        );
+        extendedInMemoryUserDetailsManager.createUser(new User("admin", "password", adminAuthorities));
 
         return extendedInMemoryUserDetailsManager;
     }
 
     @Bean
     public BPMNElementEventListener<BPMNActivityStartedEvent> bpmnActivityStartedListener() {
-        return bpmnActivityStartedEvent ->
-            collectedEvents.add(bpmnActivityStartedEvent);
+        return bpmnActivityStartedEvent -> collectedEvents.add(bpmnActivityStartedEvent);
     }
 
     @Bean
     public BPMNElementEventListener<BPMNActivityCompletedEvent> bpmnActivityCompletedListener() {
-        return bpmnActivityCompletedEvent ->
-            collectedEvents.add(bpmnActivityCompletedEvent);
+        return bpmnActivityCompletedEvent -> collectedEvents.add(bpmnActivityCompletedEvent);
     }
 
     @Bean
     public BPMNElementEventListener<BPMNActivityCancelledEvent> bpmnActivityCancelledListener() {
-        return bpmnActivityCancelledEvent ->
-            collectedEvents.add(bpmnActivityCancelledEvent);
+        return bpmnActivityCancelledEvent -> collectedEvents.add(bpmnActivityCancelledEvent);
     }
 
     @Bean
     public BPMNElementEventListener<BPMNSequenceFlowTakenEvent> bpmnSequenceFlowTakenListener() {
-        return bpmnSequenceFlowTakenEvent ->
-            collectedEvents.add(bpmnSequenceFlowTakenEvent);
+        return bpmnSequenceFlowTakenEvent -> collectedEvents.add(bpmnSequenceFlowTakenEvent);
     }
 
     @Bean
@@ -157,8 +138,7 @@ public class RuntimeTestConfiguration {
 
     @Bean
     public ProcessRuntimeEventListener<ProcessCompletedEvent> processCompletedListener() {
-        return processCompletedEvent ->
-            collectedEvents.add(processCompletedEvent);
+        return processCompletedEvent -> collectedEvents.add(processCompletedEvent);
     }
 
     @Bean
@@ -168,33 +148,28 @@ public class RuntimeTestConfiguration {
 
     @Bean
     public ProcessRuntimeEventListener<ProcessSuspendedEvent> processSuspendedListener() {
-        return processSuspendedEvent ->
-            collectedEvents.add(processSuspendedEvent);
+        return processSuspendedEvent -> collectedEvents.add(processSuspendedEvent);
     }
 
     @Bean
     public ProcessRuntimeEventListener<ProcessCancelledEvent> processCancelledListener() {
-        return processCancelledEvent ->
-            collectedEvents.add(processCancelledEvent);
+        return processCancelledEvent -> collectedEvents.add(processCancelledEvent);
     }
 
     @Bean
     public VariableEventListener<VariableCreatedEvent> variableCreatedEventListener() {
-        return variableCreatedEvent ->
-            collectedEvents.add(variableCreatedEvent);
+        return variableCreatedEvent -> collectedEvents.add(variableCreatedEvent);
     }
 
     @Bean
     @Primary
     public VariableEventListener<VariableDeletedEvent> variableDeletedEventListener() {
-        return variableDeletedEvent ->
-            collectedEvents.add(variableDeletedEvent);
+        return variableDeletedEvent -> collectedEvents.add(variableDeletedEvent);
     }
 
     @Bean
     public VariableEventListener<VariableUpdatedEvent> variableUpdatedEventListener() {
-        return variableUpdatedEvent ->
-            collectedEvents.add(variableUpdatedEvent);
+        return variableUpdatedEvent -> collectedEvents.add(variableUpdatedEvent);
     }
 
     @Bean
@@ -229,7 +204,6 @@ public class RuntimeTestConfiguration {
 
     @Bean
     public BPMNElementEventListener<BPMNSignalReceivedEvent> bpmnSignalReceivedListener() {
-        return bpmnSignalReceivedEvent ->
-            collectedEvents.add(bpmnSignalReceivedEvent);
+        return bpmnSignalReceivedEvent -> collectedEvents.add(bpmnSignalReceivedEvent);
     }
 }

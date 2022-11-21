@@ -45,9 +45,7 @@ public class TemplatesDefinition {
         this.defaultTemplate = defaultTemplate;
     }
 
-    public Optional<TemplateDefinition> findAssigneeTemplateForTask(
-        String taskUUID
-    ) {
+    public Optional<TemplateDefinition> findAssigneeTemplateForTask(String taskUUID) {
         TaskTemplateDefinition taskTemplateDefinition = tasks.get(taskUUID);
         if (taskTemplateDefinition == null) {
             return Optional.empty();
@@ -55,9 +53,7 @@ public class TemplatesDefinition {
         return Optional.ofNullable(taskTemplateDefinition.getAssignee());
     }
 
-    public Optional<TemplateDefinition> findCandidateTemplateForTask(
-        String taskUUID
-    ) {
+    public Optional<TemplateDefinition> findCandidateTemplateForTask(String taskUUID) {
         TaskTemplateDefinition taskTemplateDefinition = tasks.get(taskUUID);
         if (taskTemplateDefinition == null) {
             return Optional.empty();
@@ -74,10 +70,7 @@ public class TemplatesDefinition {
             return false;
         }
         TemplatesDefinition that = (TemplatesDefinition) o;
-        return (
-            Objects.equals(tasks, that.tasks) &&
-            Objects.equals(defaultTemplate, that.defaultTemplate)
-        );
+        return (Objects.equals(tasks, that.tasks) && Objects.equals(defaultTemplate, that.defaultTemplate));
     }
 
     @Override

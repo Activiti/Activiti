@@ -35,15 +35,11 @@ import org.activiti.engine.runtime.Job;
 
 
  */
-public class MybatisJobDataManager
-    extends AbstractDataManager<JobEntity>
-    implements JobDataManager {
+public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implements JobDataManager {
 
     protected CachedEntityMatcher<JobEntity> jobsByExecutionIdMatcher = new JobsByExecutionIdMatcher();
 
-    public MybatisJobDataManager(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public MybatisJobDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);
     }
 
@@ -65,22 +61,14 @@ public class MybatisJobDataManager
 
     @Override
     public List<JobEntity> findJobsByExecutionId(final String executionId) {
-        return getList(
-            "selectJobsByExecutionId",
-            executionId,
-            jobsByExecutionIdMatcher,
-            true
-        );
+        return getList("selectJobsByExecutionId", executionId, jobsByExecutionIdMatcher, true);
     }
 
     @Override
-    public List<JobEntity> findJobsByProcessDefinitionId(
-        final String processDefinitionId
-    ) {
+    public List<JobEntity> findJobsByProcessDefinitionId(final String processDefinitionId) {
         Map<String, String> params = new HashMap<String, String>(1);
         params.put("processDefinitionId", processDefinitionId);
-        return getDbSqlSession()
-            .selectList("selectJobByProcessDefinitionId", params);
+        return getDbSqlSession().selectList("selectJobByProcessDefinitionId", params);
     }
 
     @Override
@@ -91,17 +79,13 @@ public class MybatisJobDataManager
         Map<String, String> params = new HashMap<String, String>(2);
         params.put("handlerType", jobHandlerType);
         params.put("processDefinitionId", processDefinitionId);
-        return getDbSqlSession()
-            .selectList("selectJobByTypeAndProcessDefinitionId", params);
+        return getDbSqlSession().selectList("selectJobByTypeAndProcessDefinitionId", params);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<JobEntity> findJobsByProcessInstanceId(
-        final String processInstanceId
-    ) {
-        return getDbSqlSession()
-            .selectList("selectJobsByProcessInstanceId", processInstanceId);
+    public List<JobEntity> findJobsByProcessInstanceId(final String processInstanceId) {
+        return getDbSqlSession().selectList("selectJobsByProcessInstanceId", processInstanceId);
     }
 
     @Override
@@ -120,15 +104,11 @@ public class MybatisJobDataManager
 
     @Override
     public long findJobCountByQueryCriteria(JobQueryImpl jobQuery) {
-        return (Long) getDbSqlSession()
-            .selectOne("selectJobCountByQueryCriteria", jobQuery);
+        return (Long) getDbSqlSession().selectOne("selectJobCountByQueryCriteria", jobQuery);
     }
 
     @Override
-    public void updateJobTenantIdForDeployment(
-        String deploymentId,
-        String newTenantId
-    ) {
+    public void updateJobTenantIdForDeployment(String deploymentId, String newTenantId) {
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("deploymentId", deploymentId);
         params.put("tenantId", newTenantId);

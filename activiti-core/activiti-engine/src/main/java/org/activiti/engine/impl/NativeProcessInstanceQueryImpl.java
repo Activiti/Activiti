@@ -46,17 +46,10 @@ public class NativeProcessInstanceQueryImpl
     ) {
         return commandContext
             .getExecutionEntityManager()
-            .findProcessInstanceByNativeQuery(
-                parameterMap,
-                firstResult,
-                maxResults
-            );
+            .findProcessInstanceByNativeQuery(parameterMap, firstResult, maxResults);
     }
 
-    public long executeCount(
-        CommandContext commandContext,
-        Map<String, Object> parameterMap
-    ) {
+    public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
         return commandContext
             .getExecutionEntityManager()
             // can use execution count, since the result type doesn't matter

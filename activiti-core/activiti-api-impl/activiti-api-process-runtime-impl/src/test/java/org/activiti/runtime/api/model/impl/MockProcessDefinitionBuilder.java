@@ -27,9 +27,7 @@ public class MockProcessDefinitionBuilder {
 
     private ProcessDefinition processDefinition;
 
-    private MockProcessDefinitionBuilder(
-        Class<? extends ProcessDefinition> processDefinitionClass
-    ) {
+    private MockProcessDefinitionBuilder(Class<? extends ProcessDefinition> processDefinitionClass) {
         processDefinition = mock(processDefinitionClass);
     }
 

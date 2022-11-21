@@ -25,10 +25,5 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
  */
 @Internal
 public interface ServiceInvoker {
-    void invoke(
-        String serviceType,
-        Map<String, Object> parameters,
-        ExecutionEntity execution,
-        TaskEntity task
-    );
+    void invoke(String serviceType, Map<String, Object> parameters, ExecutionEntity execution, TaskEntity task);
 }

@@ -27,8 +27,7 @@ import org.activiti.engine.impl.delegate.ThrowMessageDelegate;
 import org.activiti.engine.impl.delegate.invocation.DelegateInvocation;
 import org.activiti.engine.impl.delegate.invocation.ThrowMessageDelegateInvocation;
 
-public abstract class AbstractThrowMessageEventActivityBehavior
-    extends FlowNodeActivityBehavior {
+public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNodeActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 
@@ -47,16 +46,9 @@ public abstract class AbstractThrowMessageEventActivityBehavior
     }
 
     protected boolean send(DelegateExecution execution, ThrowMessage message) {
-        DelegateInvocation invocation = new ThrowMessageDelegateInvocation(
-            delegate,
-            execution,
-            message
-        );
+        DelegateInvocation invocation = new ThrowMessageDelegateInvocation(delegate, execution, message);
 
-        Context
-            .getProcessEngineConfiguration()
-            .getDelegateInterceptor()
-            .handleInvocation(invocation);
+        Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(invocation);
 
         return (boolean) invocation.getInvocationResult();
     }
@@ -82,35 +74,20 @@ public abstract class AbstractThrowMessageEventActivityBehavior
         return messageExecutionContext.createThrowMessage(execution);
     }
 
-    protected void dispatchEvent(
-        DelegateExecution execution,
-        ThrowMessage throwMessage
-    ) {
+    protected void dispatchEvent(DelegateExecution execution, ThrowMessage throwMessage) {
         Optional
             .ofNullable(Context.getCommandContext())
-            .filter(commandContext ->
-                commandContext
-                    .getProcessEngineConfiguration()
-                    .getEventDispatcher()
-                    .isEnabled()
-            )
+            .filter(commandContext -> commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled())
             .ifPresent(commandContext -> {
                 String messageName = throwMessage.getName();
-                String correlationKey = throwMessage
-                    .getCorrelationKey()
-                    .orElse(null);
+                String correlationKey = throwMessage.getCorrelationKey().orElse(null);
                 Object payload = throwMessage.getPayload().orElse(null);
 
                 commandContext
                     .getProcessEngineConfiguration()
                     .getEventDispatcher()
                     .dispatchEvent(
-                        ActivitiEventBuilder.createMessageSentEvent(
-                            execution,
-                            messageName,
-                            correlationKey,
-                            payload
-                        )
+                        ActivitiEventBuilder.createMessageSentEvent(execution, messageName, correlationKey, payload)
                     );
             });
     }

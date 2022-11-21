@@ -45,15 +45,13 @@ public class MessageConverterTest extends AbstractConverterTest {
 
         Message message2 = model.getMessage("writeReport2");
         assertThat(message2).isNotNull();
-        assertThat(message2.getItemRef())
-            .isEqualTo("http://foo.bar.com/Examples:writeReportItem2");
+        assertThat(message2.getItemRef()).isEqualTo("http://foo.bar.com/Examples:writeReportItem2");
         assertThat(message2.getName()).isEqualTo("newWriteReport2");
         assertThat(message2.getId()).isEqualTo("writeReport2");
 
         Message message3 = model.getMessage("writeReport3");
         assertThat(message3).isNotNull();
-        assertThat(message3.getItemRef())
-            .isEqualTo("Examples:writeReportItem3");
+        assertThat(message3.getItemRef()).isEqualTo("Examples:writeReportItem3");
         assertThat(message3.getName()).isEqualTo("newWriteReport3");
         assertThat(message3.getId()).isEqualTo("writeReport3");
     }

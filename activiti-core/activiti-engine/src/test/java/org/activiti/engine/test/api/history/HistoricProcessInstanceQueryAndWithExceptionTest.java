@@ -26,15 +26,11 @@ import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.TimerJobQuery;
 
-public class HistoricProcessInstanceQueryAndWithExceptionTest
-    extends PluggableActivitiTestCase {
+public class HistoricProcessInstanceQueryAndWithExceptionTest extends PluggableActivitiTestCase {
 
-    private static final String PROCESS_DEFINITION_KEY_NO_EXCEPTION =
-        "oneTaskProcess";
-    private static final String PROCESS_DEFINITION_KEY_WITH_EXCEPTION_1 =
-        "JobErrorCheck";
-    private static final String PROCESS_DEFINITION_KEY_WITH_EXCEPTION_2 =
-        "JobErrorDoubleCheck";
+    private static final String PROCESS_DEFINITION_KEY_NO_EXCEPTION = "oneTaskProcess";
+    private static final String PROCESS_DEFINITION_KEY_WITH_EXCEPTION_1 = "JobErrorCheck";
+    private static final String PROCESS_DEFINITION_KEY_WITH_EXCEPTION_2 = "JobErrorDoubleCheck";
 
     private org.activiti.engine.repository.Deployment deployment;
 
@@ -43,15 +39,9 @@ public class HistoricProcessInstanceQueryAndWithExceptionTest
         deployment =
             repositoryService
                 .createDeployment()
-                .addClasspathResource(
-                    "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"
-                )
-                .addClasspathResource(
-                    "org/activiti/engine/test/api/runtime/JobErrorCheck.bpmn20.xml"
-                )
-                .addClasspathResource(
-                    "org/activiti/engine/test/api/runtime/JobErrorDoubleCheck.bpmn20.xml"
-                )
+                .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml")
+                .addClasspathResource("org/activiti/engine/test/api/runtime/JobErrorCheck.bpmn20.xml")
+                .addClasspathResource("org/activiti/engine/test/api/runtime/JobErrorDoubleCheck.bpmn20.xml")
                 .deploy();
     }
 
@@ -61,11 +51,7 @@ public class HistoricProcessInstanceQueryAndWithExceptionTest
     }
 
     public void testQueryWithException() throws InterruptedException {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             ProcessInstance processNoException = runtimeService.startProcessInstanceByKey(
                 PROCESS_DEFINITION_KEY_NO_EXCEPTION
             );
@@ -73,12 +59,10 @@ public class HistoricProcessInstanceQueryAndWithExceptionTest
             HistoricProcessInstanceQuery queryNoException = historyService.createHistoricProcessInstanceQuery();
             assertThat(queryNoException.count()).isEqualTo(1);
             assertThat(queryNoException.list()).hasSize(1);
-            assertThat(queryNoException.list().get(0).getId())
-                .isEqualTo(processNoException.getId());
+            assertThat(queryNoException.list().get(0).getId()).isEqualTo(processNoException.getId());
 
             HistoricProcessInstanceQuery queryWithException = historyService.createHistoricProcessInstanceQuery();
-            assertThat(queryWithException.withJobException().count())
-                .isEqualTo(0);
+            assertThat(queryWithException.withJobException().count()).isEqualTo(0);
             assertThat(queryWithException.withJobException().list()).hasSize(0);
 
             ProcessInstance processWithException1 = startProcessInstanceWithFailingJob(
@@ -89,12 +73,9 @@ public class HistoricProcessInstanceQueryAndWithExceptionTest
                 .processInstanceId(processWithException1.getId());
             assertThat(jobQuery1.withException().count()).isEqualTo(1);
             assertThat(jobQuery1.withException().list()).hasSize(1);
-            assertThat(queryWithException.withJobException().count())
-                .isEqualTo(1);
+            assertThat(queryWithException.withJobException().count()).isEqualTo(1);
             assertThat(queryWithException.withJobException().list()).hasSize(1);
-            assertThat(
-                queryWithException.withJobException().list().get(0).getId()
-            )
+            assertThat(queryWithException.withJobException().list().get(0).getId())
                 .isEqualTo(processWithException1.getId());
 
             ProcessInstance processWithException2 = startProcessInstanceWithFailingJob(
@@ -106,15 +87,12 @@ public class HistoricProcessInstanceQueryAndWithExceptionTest
             assertThat(jobQuery2.withException().count()).isEqualTo(2);
             assertThat(jobQuery2.withException().list()).hasSize(2);
 
-            assertThat(queryWithException.withJobException().count())
-                .isEqualTo(2);
+            assertThat(queryWithException.withJobException().count()).isEqualTo(2);
             assertThat(queryWithException.withJobException().list()).hasSize(2);
             assertThat(
                 queryWithException
                     .withJobException()
-                    .processDefinitionKey(
-                        PROCESS_DEFINITION_KEY_WITH_EXCEPTION_1
-                    )
+                    .processDefinitionKey(PROCESS_DEFINITION_KEY_WITH_EXCEPTION_1)
                     .list()
                     .get(0)
                     .getId()
@@ -123,9 +101,7 @@ public class HistoricProcessInstanceQueryAndWithExceptionTest
             assertThat(
                 queryWithException
                     .withJobException()
-                    .processDefinitionKey(
-                        PROCESS_DEFINITION_KEY_WITH_EXCEPTION_2
-                    )
+                    .processDefinitionKey(PROCESS_DEFINITION_KEY_WITH_EXCEPTION_2)
                     .list()
                     .get(0)
                     .getId()
@@ -134,17 +110,10 @@ public class HistoricProcessInstanceQueryAndWithExceptionTest
         }
     }
 
-    private ProcessInstance startProcessInstanceWithFailingJob(
-        String processInstanceByKey
-    ) {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            processInstanceByKey
-        );
+    private ProcessInstance startProcessInstanceWithFailingJob(String processInstanceByKey) {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processInstanceByKey);
 
-        List<Job> jobList = managementService
-            .createJobQuery()
-            .processInstanceId(processInstance.getId())
-            .list();
+        List<Job> jobList = managementService.createJobQuery().processInstanceId(processInstance.getId()).list();
 
         for (Job job : jobList) {
             assertThatExceptionOfType(RuntimeException.class)

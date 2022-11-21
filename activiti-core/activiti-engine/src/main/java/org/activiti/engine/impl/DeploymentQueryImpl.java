@@ -69,9 +69,7 @@ public class DeploymentQueryImpl
 
     public DeploymentQueryImpl deploymentName(String deploymentName) {
         if (deploymentName == null) {
-            throw new ActivitiIllegalArgumentException(
-                "deploymentName is null"
-            );
+            throw new ActivitiIllegalArgumentException("deploymentName is null");
         }
         this.name = deploymentName;
         return this;
@@ -79,9 +77,7 @@ public class DeploymentQueryImpl
 
     public DeploymentQueryImpl deploymentNameLike(String nameLike) {
         if (nameLike == null) {
-            throw new ActivitiIllegalArgumentException(
-                "deploymentNameLike is null"
-            );
+            throw new ActivitiIllegalArgumentException("deploymentNameLike is null");
         }
         this.nameLike = nameLike;
         return this;
@@ -89,9 +85,7 @@ public class DeploymentQueryImpl
 
     public DeploymentQueryImpl deploymentCategory(String deploymentCategory) {
         if (deploymentCategory == null) {
-            throw new ActivitiIllegalArgumentException(
-                "deploymentCategory is null"
-            );
+            throw new ActivitiIllegalArgumentException("deploymentCategory is null");
         }
         this.category = deploymentCategory;
         return this;
@@ -99,21 +93,15 @@ public class DeploymentQueryImpl
 
     public DeploymentQueryImpl deploymentCategoryLike(String categoryLike) {
         if (categoryLike == null) {
-            throw new ActivitiIllegalArgumentException(
-                "deploymentCategoryLike is null"
-            );
+            throw new ActivitiIllegalArgumentException("deploymentCategoryLike is null");
         }
         this.categoryLike = categoryLike;
         return this;
     }
 
-    public DeploymentQueryImpl deploymentCategoryNotEquals(
-        String deploymentCategoryNotEquals
-    ) {
+    public DeploymentQueryImpl deploymentCategoryNotEquals(String deploymentCategoryNotEquals) {
         if (deploymentCategoryNotEquals == null) {
-            throw new ActivitiIllegalArgumentException(
-                "deploymentCategoryExclude is null"
-            );
+            throw new ActivitiIllegalArgumentException("deploymentCategoryExclude is null");
         }
         this.categoryNotEquals = deploymentCategoryNotEquals;
         return this;
@@ -129,9 +117,7 @@ public class DeploymentQueryImpl
 
     public DeploymentQueryImpl deploymentKeyLike(String deploymentKeyLike) {
         if (deploymentKeyLike == null) {
-            throw new ActivitiIllegalArgumentException(
-                "deploymentKeyLike is null"
-            );
+            throw new ActivitiIllegalArgumentException("deploymentKeyLike is null");
         }
         this.keyLike = deploymentKeyLike;
         return this;
@@ -139,9 +125,7 @@ public class DeploymentQueryImpl
 
     public DeploymentQueryImpl deploymentTenantId(String tenantId) {
         if (tenantId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "deploymentTenantId is null"
-            );
+            throw new ActivitiIllegalArgumentException("deploymentTenantId is null");
         }
         this.tenantId = tenantId;
         return this;
@@ -149,9 +133,7 @@ public class DeploymentQueryImpl
 
     public DeploymentQueryImpl deploymentTenantIdLike(String tenantIdLike) {
         if (tenantIdLike == null) {
-            throw new ActivitiIllegalArgumentException(
-                "deploymentTenantIdLike is null"
-            );
+            throw new ActivitiIllegalArgumentException("deploymentTenantIdLike is null");
         }
         this.tenantIdLike = tenantIdLike;
         return this;
@@ -180,9 +162,7 @@ public class DeploymentQueryImpl
 
     public DeploymentQueryImpl latest() {
         if (key == null) {
-            throw new ActivitiIllegalArgumentException(
-                "latest can only be used together with a deployment key"
-            );
+            throw new ActivitiIllegalArgumentException("latest can only be used together with a deployment key");
         }
 
         this.latest = true;
@@ -219,20 +199,13 @@ public class DeploymentQueryImpl
     @Override
     public long executeCount(CommandContext commandContext) {
         checkQueryOk();
-        return commandContext
-            .getDeploymentEntityManager()
-            .findDeploymentCountByQueryCriteria(this);
+        return commandContext.getDeploymentEntityManager().findDeploymentCountByQueryCriteria(this);
     }
 
     @Override
-    public List<Deployment> executeList(
-        CommandContext commandContext,
-        Page page
-    ) {
+    public List<Deployment> executeList(CommandContext commandContext, Page page) {
         checkQueryOk();
-        return commandContext
-            .getDeploymentEntityManager()
-            .findDeploymentsByQueryCriteria(this, page);
+        return commandContext.getDeploymentEntityManager().findDeploymentsByQueryCriteria(this, page);
     }
 
     // getters ////////////////////////////////////////////////////////

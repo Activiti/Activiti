@@ -31,9 +31,7 @@ public abstract class AbstractEntityManager<EntityImpl extends Entity>
     extends AbstractManager
     implements EntityManager<EntityImpl> {
 
-    public AbstractEntityManager(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public AbstractEntityManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);
     }
 
@@ -63,16 +61,10 @@ public abstract class AbstractEntityManager<EntityImpl extends Entity>
         ActivitiEventDispatcher eventDispatcher = getEventDispatcher();
         if (fireCreateEvent && eventDispatcher.isEnabled()) {
             eventDispatcher.dispatchEvent(
-                ActivitiEventBuilder.createEntityEvent(
-                    ActivitiEventType.ENTITY_CREATED,
-                    entity
-                )
+                ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, entity)
             );
             eventDispatcher.dispatchEvent(
-                ActivitiEventBuilder.createEntityEvent(
-                    ActivitiEventType.ENTITY_INITIALIZED,
-                    entity
-                )
+                ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, entity)
             );
         }
     }
@@ -88,12 +80,7 @@ public abstract class AbstractEntityManager<EntityImpl extends Entity>
 
         if (fireUpdateEvent && getEventDispatcher().isEnabled()) {
             getEventDispatcher()
-                .dispatchEvent(
-                    ActivitiEventBuilder.createEntityEvent(
-                        ActivitiEventType.ENTITY_UPDATED,
-                        entity
-                    )
-                );
+                .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, entity));
         }
 
         return updatedEntity;
@@ -116,12 +103,7 @@ public abstract class AbstractEntityManager<EntityImpl extends Entity>
 
         if (fireDeleteEvent && getEventDispatcher().isEnabled()) {
             getEventDispatcher()
-                .dispatchEvent(
-                    ActivitiEventBuilder.createEntityEvent(
-                        ActivitiEventType.ENTITY_DELETED,
-                        entity
-                    )
-                );
+                .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, entity));
         }
     }
 
@@ -130,25 +112,17 @@ public abstract class AbstractEntityManager<EntityImpl extends Entity>
     /* Execution related entity count methods */
 
     protected boolean isExecutionRelatedEntityCountEnabledGlobally() {
-        return processEngineConfiguration
-            .getPerformanceSettings()
-            .isEnableExecutionRelationshipCounts();
+        return processEngineConfiguration.getPerformanceSettings().isEnableExecutionRelationshipCounts();
     }
 
-    protected boolean isExecutionRelatedEntityCountEnabled(
-        ExecutionEntity executionEntity
-    ) {
+    protected boolean isExecutionRelatedEntityCountEnabled(ExecutionEntity executionEntity) {
         if (executionEntity instanceof CountingExecutionEntity) {
-            return isExecutionRelatedEntityCountEnabled(
-                (CountingExecutionEntity) executionEntity
-            );
+            return isExecutionRelatedEntityCountEnabled((CountingExecutionEntity) executionEntity);
         }
         return false;
     }
 
-    protected boolean isExecutionRelatedEntityCountEnabled(
-        CountingExecutionEntity executionEntity
-    ) {
+    protected boolean isExecutionRelatedEntityCountEnabled(CountingExecutionEntity executionEntity) {
         /*
          * There are two flags here: a global flag and a flag on the execution entity.
          * The global flag can be switched on and off between different reboots,
@@ -165,9 +139,6 @@ public abstract class AbstractEntityManager<EntityImpl extends Entity>
          * which is the regular AND rule for booleans.
          */
 
-        return (
-            isExecutionRelatedEntityCountEnabledGlobally() &&
-            executionEntity.isCountEnabled()
-        );
+        return (isExecutionRelatedEntityCountEnabledGlobally() && executionEntity.isCountEnabled());
     }
 }

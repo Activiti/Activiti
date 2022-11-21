@@ -24,46 +24,19 @@ import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 /**
 
  */
-public class ActivityCompensatedEventHandler
-    extends AbstractDatabaseEventLoggerEventHandler {
+public class ActivityCompensatedEventHandler extends AbstractDatabaseEventLoggerEventHandler {
 
     @Override
-    public EventLogEntryEntity generateEventLogEntry(
-        CommandContext commandContext
-    ) {
+    public EventLogEntryEntity generateEventLogEntry(CommandContext commandContext) {
         ActivitiActivityEvent activityEvent = (ActivitiActivityEvent) event;
 
         Map<String, Object> data = new HashMap<String, Object>();
-        putInMapIfNotNull(
-            data,
-            Fields.ACTIVITY_ID,
-            activityEvent.getActivityId()
-        );
-        putInMapIfNotNull(
-            data,
-            Fields.ACTIVITY_NAME,
-            activityEvent.getActivityName()
-        );
-        putInMapIfNotNull(
-            data,
-            Fields.PROCESS_DEFINITION_ID,
-            activityEvent.getProcessDefinitionId()
-        );
-        putInMapIfNotNull(
-            data,
-            Fields.PROCESS_INSTANCE_ID,
-            activityEvent.getProcessInstanceId()
-        );
-        putInMapIfNotNull(
-            data,
-            Fields.EXECUTION_ID,
-            activityEvent.getExecutionId()
-        );
-        putInMapIfNotNull(
-            data,
-            Fields.ACTIVITY_TYPE,
-            activityEvent.getActivityType()
-        );
+        putInMapIfNotNull(data, Fields.ACTIVITY_ID, activityEvent.getActivityId());
+        putInMapIfNotNull(data, Fields.ACTIVITY_NAME, activityEvent.getActivityName());
+        putInMapIfNotNull(data, Fields.PROCESS_DEFINITION_ID, activityEvent.getProcessDefinitionId());
+        putInMapIfNotNull(data, Fields.PROCESS_INSTANCE_ID, activityEvent.getProcessInstanceId());
+        putInMapIfNotNull(data, Fields.EXECUTION_ID, activityEvent.getExecutionId());
+        putInMapIfNotNull(data, Fields.ACTIVITY_TYPE, activityEvent.getActivityType());
 
         return createEventLogEntry(
             activityEvent.getProcessDefinitionId(),

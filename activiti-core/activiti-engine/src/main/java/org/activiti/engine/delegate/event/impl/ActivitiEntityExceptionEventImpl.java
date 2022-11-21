@@ -34,16 +34,10 @@ public class ActivitiEntityExceptionEventImpl
     protected Object entity;
     protected Throwable cause;
 
-    public ActivitiEntityExceptionEventImpl(
-        Object entity,
-        ActivitiEventType type,
-        Throwable cause
-    ) {
+    public ActivitiEntityExceptionEventImpl(Object entity, ActivitiEventType type, Throwable cause) {
         super(type);
         if (entity == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Entity cannot be null."
-            );
+            throw new ActivitiIllegalArgumentException("Entity cannot be null.");
         }
         this.entity = entity;
         this.cause = cause;

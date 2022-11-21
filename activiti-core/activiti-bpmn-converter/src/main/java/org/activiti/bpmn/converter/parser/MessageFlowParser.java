@@ -28,9 +28,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MessageFlowParser implements BpmnXMLConstants {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(
-        MessageFlowParser.class.getName()
-    );
+    protected static final Logger LOGGER = LoggerFactory.getLogger(MessageFlowParser.class.getName());
 
     public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
         String id = xtr.getAttributeValue(null, ATTRIBUTE_ID);
@@ -43,26 +41,17 @@ public class MessageFlowParser implements BpmnXMLConstants {
                 messageFlow.setName(name);
             }
 
-            String sourceRef = xtr.getAttributeValue(
-                null,
-                ATTRIBUTE_FLOW_SOURCE_REF
-            );
+            String sourceRef = xtr.getAttributeValue(null, ATTRIBUTE_FLOW_SOURCE_REF);
             if (StringUtils.isNotEmpty(sourceRef)) {
                 messageFlow.setSourceRef(sourceRef);
             }
 
-            String targetRef = xtr.getAttributeValue(
-                null,
-                ATTRIBUTE_FLOW_TARGET_REF
-            );
+            String targetRef = xtr.getAttributeValue(null, ATTRIBUTE_FLOW_TARGET_REF);
             if (StringUtils.isNotEmpty(targetRef)) {
                 messageFlow.setTargetRef(targetRef);
             }
 
-            String messageRef = xtr.getAttributeValue(
-                null,
-                ATTRIBUTE_MESSAGE_REF
-            );
+            String messageRef = xtr.getAttributeValue(null, ATTRIBUTE_MESSAGE_REF);
             if (StringUtils.isNotEmpty(messageRef)) {
                 messageFlow.setMessageRef(messageRef);
             }

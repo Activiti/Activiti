@@ -42,8 +42,7 @@ import org.springframework.context.annotation.Import;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessRuntimeBPMNSignalReceivedIT {
 
-    private static final String PROCESS_WITH_BOUNDARY_SIGNAL =
-        "ProcessWithBoundarySignal";
+    private static final String PROCESS_WITH_BOUNDARY_SIGNAL = "ProcessWithBoundarySignal";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -74,10 +73,7 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
         securityUtil.logInAs("user");
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
             Pageable.of(0, 10),
-            ProcessPayloadBuilder
-                .processDefinitions()
-                .withProcessDefinitionKey("processWithSignalStart1")
-                .build()
+            ProcessPayloadBuilder.processDefinitions().withProcessDefinitionKey("processWithSignalStart1").build()
         );
         assertThat(processDefinitionPage.getContent()).hasSize(1);
 
@@ -86,10 +82,7 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
         processRuntime.signal(signalPayload);
 
         //then
-        String processDefinitionId = processDefinitionPage
-            .getContent()
-            .get(0)
-            .getId();
+        String processDefinitionId = processDefinitionPage.getContent().get(0).getId();
         assertThat(listener.getSignalReceivedEvents())
             .extracting(
                 BPMNSignalReceivedEvent::getEventType,
@@ -115,25 +108,16 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
         securityUtil.logInAs("user");
 
         ProcessInstance boundarySignalProcInst1 = processRuntime.start(
-            ProcessPayloadBuilder
-                .start()
-                .withProcessDefinitionKey(PROCESS_WITH_BOUNDARY_SIGNAL)
-                .build()
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(PROCESS_WITH_BOUNDARY_SIGNAL).build()
         );
 
         ProcessInstance boundarySignalProcInst2 = processRuntime.start(
-            ProcessPayloadBuilder
-                .start()
-                .withProcessDefinitionKey(PROCESS_WITH_BOUNDARY_SIGNAL)
-                .build()
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(PROCESS_WITH_BOUNDARY_SIGNAL).build()
         );
 
         //when
         ProcessInstance process = processRuntime.start(
-            ProcessPayloadBuilder
-                .start()
-                .withProcessDefinitionKey("signalThrowEventProcess")
-                .build()
+            ProcessPayloadBuilder.start().withProcessDefinitionKey("signalThrowEventProcess").build()
         );
 
         //then
@@ -170,8 +154,7 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
                 )
             );
 
-        assertThat(process.getStatus())
-            .isEqualTo(ProcessInstanceStatus.COMPLETED);
+        assertThat(process.getStatus()).isEqualTo(ProcessInstanceStatus.COMPLETED);
     }
 
     @Test
@@ -198,25 +181,13 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
         //then
         assertThat(listener.getSignalReceivedEvents()).isNotEmpty().hasSize(1);
 
-        BPMNSignalReceivedEvent event = listener
-            .getSignalReceivedEvents()
-            .iterator()
-            .next();
+        BPMNSignalReceivedEvent event = listener.getSignalReceivedEvents().iterator().next();
 
         assertThat(event.getEntity()).isNotNull();
         assertThat(event.getProcessInstanceId()).isEqualTo(process.getId());
         assertThat(event.getEntity().getSignalPayload()).isNotNull();
-        assertThat(event.getEntity().getSignalPayload().getName())
-            .isEqualTo("go");
-        assertThat(event.getEntity().getSignalPayload().getVariables().size())
-            .isEqualTo(1);
-        assertThat(
-            event
-                .getEntity()
-                .getSignalPayload()
-                .getVariables()
-                .get("signal_variable")
-        )
-            .isEqualTo("test");
+        assertThat(event.getEntity().getSignalPayload().getName()).isEqualTo("go");
+        assertThat(event.getEntity().getSignalPayload().getVariables().size()).isEqualTo(1);
+        assertThat(event.getEntity().getSignalPayload().getVariables().get("signal_variable")).isEqualTo("test");
     }
 }

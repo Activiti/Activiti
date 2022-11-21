@@ -47,15 +47,9 @@ public class JobExecutorTest extends JobExecutorTestCase {
                     jobManager.execute(createTweetMessage("message-four"));
 
                     TimerJobEntityManager timerJobManager = commandContext.getTimerJobEntityManager();
-                    timerJobManager.insert(
-                        createTweetTimer("timer-one", new Date())
-                    );
-                    timerJobManager.insert(
-                        createTweetTimer("timer-one", new Date())
-                    );
-                    timerJobManager.insert(
-                        createTweetTimer("timer-two", new Date())
-                    );
+                    timerJobManager.insert(createTweetTimer("timer-one", new Date()));
+                    timerJobManager.insert(createTweetTimer("timer-one", new Date()));
+                    timerJobManager.insert(createTweetTimer("timer-two", new Date()));
                     return null;
                 }
             }
@@ -63,9 +57,7 @@ public class JobExecutorTest extends JobExecutorTestCase {
 
         GregorianCalendar currentCal = new GregorianCalendar();
         currentCal.add(Calendar.MINUTE, 1);
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(currentCal.getTime());
+        processEngineConfiguration.getClock().setCurrentTime(currentCal.getTime());
 
         waitForJobExecutorToProcessAllJobs(50000L, 200L);
 
@@ -78,7 +70,6 @@ public class JobExecutorTest extends JobExecutorTestCase {
         expectedMessages.add("timer-one");
         expectedMessages.add("timer-two");
 
-        assertThat(new TreeSet<String>(messages))
-            .isEqualTo(new TreeSet<String>(expectedMessages));
+        assertThat(new TreeSet<String>(messages)).isEqualTo(new TreeSet<String>(expectedMessages));
     }
 }

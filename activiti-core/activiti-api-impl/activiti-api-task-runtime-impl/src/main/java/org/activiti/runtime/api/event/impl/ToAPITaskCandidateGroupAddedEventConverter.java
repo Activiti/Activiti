@@ -22,34 +22,22 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.runtime.api.model.impl.APITaskCandidateGroupConverter;
 
 public class ToAPITaskCandidateGroupAddedEventConverter
-    implements
-        EventConverter<TaskCandidateGroupAddedEvent, ActivitiEntityEvent> {
+    implements EventConverter<TaskCandidateGroupAddedEvent, ActivitiEntityEvent> {
 
     private APITaskCandidateGroupConverter converter;
     private TaskCandidateEventConverterHelper taskCandidateEventConverterHelper = new TaskCandidateEventConverterHelper();
 
-    public ToAPITaskCandidateGroupAddedEventConverter(
-        APITaskCandidateGroupConverter converter
-    ) {
+    public ToAPITaskCandidateGroupAddedEventConverter(APITaskCandidateGroupConverter converter) {
         this.converter = converter;
     }
 
     @Override
-    public Optional<TaskCandidateGroupAddedEvent> from(
-        ActivitiEntityEvent internalEvent
-    ) {
+    public Optional<TaskCandidateGroupAddedEvent> from(ActivitiEntityEvent internalEvent) {
         TaskCandidateGroupAddedEventImpl event = null;
         if (internalEvent.getEntity() instanceof IdentityLink) {
             IdentityLink identityLink = (IdentityLink) internalEvent.getEntity();
-            if (
-                taskCandidateEventConverterHelper.isTaskCandidateGroupLink(
-                    identityLink
-                )
-            ) {
-                event =
-                    new TaskCandidateGroupAddedEventImpl(
-                        converter.from(identityLink)
-                    );
+            if (taskCandidateEventConverterHelper.isTaskCandidateGroupLink(identityLink)) {
+                event = new TaskCandidateGroupAddedEventImpl(converter.from(identityLink));
             }
         }
         return Optional.ofNullable(event);

@@ -30,10 +30,7 @@ public class MappingExecutionContext {
         this.execution = delegateExecution;
     }
 
-    public MappingExecutionContext(
-        String processDefinitionId,
-        String activityId
-    ) {
+    public MappingExecutionContext(String processDefinitionId, String activityId) {
         this.processDefinitionId = processDefinitionId;
         this.activityId = activityId;
     }
@@ -54,16 +51,11 @@ public class MappingExecutionContext {
         return execution;
     }
 
-    public static MappingExecutionContext buildMappingExecutionContext(
-        DelegateExecution delegateExecution
-    ) {
+    public static MappingExecutionContext buildMappingExecutionContext(DelegateExecution delegateExecution) {
         return new MappingExecutionContext(delegateExecution);
     }
 
-    public static MappingExecutionContext buildMappingExecutionContext(
-        String processDefinitionId,
-        String activityId
-    ) {
+    public static MappingExecutionContext buildMappingExecutionContext(String processDefinitionId, String activityId) {
         return new MappingExecutionContext(processDefinitionId, activityId);
     }
 
@@ -77,8 +69,7 @@ public class MappingExecutionContext {
         }
         MappingExecutionContext that = (MappingExecutionContext) o;
         return (
-            Objects.equals(processDefinitionId, that.processDefinitionId) &&
-            Objects.equals(activityId, that.activityId)
+            Objects.equals(processDefinitionId, that.processDefinitionId) && Objects.equals(activityId, that.activityId)
         );
     }
 

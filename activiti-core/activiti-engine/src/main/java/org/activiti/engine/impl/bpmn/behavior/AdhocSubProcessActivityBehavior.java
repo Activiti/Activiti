@@ -30,8 +30,7 @@ import org.activiti.engine.delegate.DelegateExecution;
  *
 
  */
-public class AdhocSubProcessActivityBehavior
-    extends AbstractBpmnActivityBehavior {
+public class AdhocSubProcessActivityBehavior extends AbstractBpmnActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 
@@ -40,17 +39,13 @@ public class AdhocSubProcessActivityBehavior
         execution.setScope(true);
 
         // initialize the template-defined data objects as variables
-        Map<String, Object> dataObjectVars = processDataObjects(
-            subProcess.getDataObjects()
-        );
+        Map<String, Object> dataObjectVars = processDataObjects(subProcess.getDataObjects());
         if (dataObjectVars != null) {
             execution.setVariablesLocal(dataObjectVars);
         }
     }
 
-    protected SubProcess getSubProcessFromExecution(
-        DelegateExecution execution
-    ) {
+    protected SubProcess getSubProcessFromExecution(DelegateExecution execution) {
         FlowElement flowElement = execution.getCurrentFlowElement();
         SubProcess subProcess = null;
         if (flowElement instanceof SubProcess) {
@@ -65,9 +60,7 @@ public class AdhocSubProcessActivityBehavior
         return subProcess;
     }
 
-    protected Map<String, Object> processDataObjects(
-        Collection<ValuedDataObject> dataObjects
-    ) {
+    protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
         Map<String, Object> variablesMap = new HashMap<String, Object>();
         // convert data objects to process variables
         if (dataObjects != null) {

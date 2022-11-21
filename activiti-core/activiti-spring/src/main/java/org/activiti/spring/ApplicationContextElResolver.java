@@ -53,12 +53,7 @@ public class ApplicationContextElResolver extends ELResolver {
         return true;
     }
 
-    public void setValue(
-        ELContext context,
-        Object base,
-        Object property,
-        Object value
-    ) {
+    public void setValue(ELContext context, Object base, Object property, Object value) {
         if (base == null) {
             String key = (String) property;
             if (applicationContext.containsBean(key)) {
@@ -75,10 +70,7 @@ public class ApplicationContextElResolver extends ELResolver {
         return Object.class;
     }
 
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(
-        ELContext context,
-        Object arg
-    ) {
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object arg) {
         return null;
     }
 

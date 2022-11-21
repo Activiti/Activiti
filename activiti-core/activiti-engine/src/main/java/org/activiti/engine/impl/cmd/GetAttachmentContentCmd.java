@@ -27,8 +27,7 @@ import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
 /**
 
  */
-public class GetAttachmentContentCmd
-    implements Command<InputStream>, Serializable {
+public class GetAttachmentContentCmd implements Command<InputStream>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String attachmentId;
@@ -38,18 +37,14 @@ public class GetAttachmentContentCmd
     }
 
     public InputStream execute(CommandContext commandContext) {
-        AttachmentEntity attachment = commandContext
-            .getAttachmentEntityManager()
-            .findById(attachmentId);
+        AttachmentEntity attachment = commandContext.getAttachmentEntityManager().findById(attachmentId);
 
         String contentId = attachment.getContentId();
         if (contentId == null) {
             return null;
         }
 
-        ByteArrayEntity byteArray = commandContext
-            .getByteArrayEntityManager()
-            .findById(contentId);
+        ByteArrayEntity byteArray = commandContext.getByteArrayEntityManager().findById(contentId);
         byte[] bytes = byteArray.getBytes();
 
         return new ByteArrayInputStream(bytes);

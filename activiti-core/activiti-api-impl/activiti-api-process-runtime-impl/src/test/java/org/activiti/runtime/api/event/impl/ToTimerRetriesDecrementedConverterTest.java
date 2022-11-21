@@ -46,15 +46,11 @@ public class ToTimerRetriesDecrementedConverterTest {
         given(internalEvent.getProcessInstanceId()).willReturn("procInstId");
 
         BPMNTimerImpl bpmnTimer = new BPMNTimerImpl("myTimer");
-        given(bpmnTimerConverter.convertToBPMNTimer(internalEvent))
-            .willReturn(bpmnTimer);
-        given(bpmnTimerConverter.isTimerRelatedEvent(internalEvent))
-            .willReturn(true);
+        given(bpmnTimerConverter.convertToBPMNTimer(internalEvent)).willReturn(bpmnTimer);
+        given(bpmnTimerConverter.isTimerRelatedEvent(internalEvent)).willReturn(true);
 
         //when
-        BPMNTimerRetriesDecrementedEvent timerEvent = toTimerConverter
-            .from(internalEvent)
-            .orElse(null);
+        BPMNTimerRetriesDecrementedEvent timerEvent = toTimerConverter.from(internalEvent).orElse(null);
 
         //then
         assertThat(timerEvent).isNotNull();
@@ -66,16 +62,11 @@ public class ToTimerRetriesDecrementedConverterTest {
     @Test
     public void shouldReturnEmptyOptionalWhenInternalEventIsNotRelatedToTimers() {
         //given
-        ActivitiEntityEvent mockActivitiEntityEvent = mock(
-            ActivitiEntityEvent.class
-        );
-        given(bpmnTimerConverter.isTimerRelatedEvent(mockActivitiEntityEvent))
-            .willReturn(false);
+        ActivitiEntityEvent mockActivitiEntityEvent = mock(ActivitiEntityEvent.class);
+        given(bpmnTimerConverter.isTimerRelatedEvent(mockActivitiEntityEvent)).willReturn(false);
 
         //when
-        Optional<BPMNTimerRetriesDecrementedEvent> optional = toTimerConverter.from(
-            mockActivitiEntityEvent
-        );
+        Optional<BPMNTimerRetriesDecrementedEvent> optional = toTimerConverter.from(mockActivitiEntityEvent);
 
         //then
         assertThat(optional).isEmpty();

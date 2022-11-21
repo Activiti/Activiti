@@ -52,9 +52,7 @@ public class CommonRuntimeAutoConfiguration {
     @Bean
     public InitializingBean registerVariableCreatedListenerDelegate(
         RuntimeService runtimeService,
-        @Autowired(
-            required = false
-        ) List<VariableEventListener<VariableCreatedEvent>> listeners,
+        @Autowired(required = false) List<VariableEventListener<VariableCreatedEvent>> listeners,
         VariableEventFilter variableEventFilter
     ) {
         return () ->
@@ -75,9 +73,7 @@ public class CommonRuntimeAutoConfiguration {
     @Bean
     public InitializingBean registerVariableUpdatedListenerDelegate(
         RuntimeService runtimeService,
-        @Autowired(
-            required = false
-        ) List<VariableEventListener<VariableUpdatedEvent>> listeners,
+        @Autowired(required = false) List<VariableEventListener<VariableUpdatedEvent>> listeners,
         VariableEventFilter variableEventFilter
     ) {
         return () ->

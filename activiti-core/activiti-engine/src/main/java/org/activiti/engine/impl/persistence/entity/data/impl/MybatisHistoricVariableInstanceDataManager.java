@@ -41,9 +41,7 @@ public class MybatisHistoricVariableInstanceDataManager
 
     protected CachedEntityMatcher<HistoricVariableInstanceEntity> historicVariableInstanceByProcInstMatcher = new HistoricVariableInstanceByProcInstMatcher();
 
-    public MybatisHistoricVariableInstanceDataManager(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public MybatisHistoricVariableInstanceDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);
     }
 
@@ -75,15 +73,8 @@ public class MybatisHistoricVariableInstanceDataManager
     }
 
     @Override
-    public List<HistoricVariableInstanceEntity> findHistoricVariableInstancesByTaskId(
-        final String taskId
-    ) {
-        return getList(
-            "selectHistoricVariableInstanceByTaskId",
-            taskId,
-            historicVariableInstanceByTaskIdMatcher,
-            true
-        );
+    public List<HistoricVariableInstanceEntity> findHistoricVariableInstancesByTaskId(final String taskId) {
+        return getList("selectHistoricVariableInstanceByTaskId", taskId, historicVariableInstanceByTaskIdMatcher, true);
     }
 
     @Override
@@ -91,10 +82,7 @@ public class MybatisHistoricVariableInstanceDataManager
         HistoricVariableInstanceQueryImpl historicProcessVariableQuery
     ) {
         return (Long) getDbSqlSession()
-            .selectOne(
-                "selectHistoricVariableInstanceCountByQueryCriteria",
-                historicProcessVariableQuery
-            );
+            .selectOne("selectHistoricVariableInstanceCountByQueryCriteria", historicProcessVariableQuery);
     }
 
     @Override
@@ -104,22 +92,13 @@ public class MybatisHistoricVariableInstanceDataManager
         Page page
     ) {
         return getDbSqlSession()
-            .selectList(
-                "selectHistoricVariableInstanceByQueryCriteria",
-                historicProcessVariableQuery,
-                page
-            );
+            .selectList("selectHistoricVariableInstanceByQueryCriteria", historicProcessVariableQuery, page);
     }
 
     @Override
-    public HistoricVariableInstanceEntity findHistoricVariableInstanceByVariableInstanceId(
-        String variableInstanceId
-    ) {
+    public HistoricVariableInstanceEntity findHistoricVariableInstanceByVariableInstanceId(String variableInstanceId) {
         return (HistoricVariableInstanceEntity) getDbSqlSession()
-            .selectOne(
-                "selectHistoricVariableInstanceByVariableInstanceId",
-                variableInstanceId
-            );
+            .selectOne("selectHistoricVariableInstanceByVariableInstanceId", variableInstanceId);
     }
 
     @Override
@@ -139,13 +118,7 @@ public class MybatisHistoricVariableInstanceDataManager
     }
 
     @Override
-    public long findHistoricVariableInstanceCountByNativeQuery(
-        Map<String, Object> parameterMap
-    ) {
-        return (Long) getDbSqlSession()
-            .selectOne(
-                "selectHistoricVariableInstanceCountByNativeQuery",
-                parameterMap
-            );
+    public long findHistoricVariableInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
+        return (Long) getDbSqlSession().selectOne("selectHistoricVariableInstanceCountByNativeQuery", parameterMap);
     }
 }

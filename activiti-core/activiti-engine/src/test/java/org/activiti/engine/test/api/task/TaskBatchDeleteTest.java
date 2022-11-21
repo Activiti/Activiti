@@ -30,9 +30,7 @@ public class TaskBatchDeleteTest extends PluggableActivitiTestCase {
      */
     @Deployment
     public void testDeleteTaskWithChildren() throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testBatchDeleteOfTask"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testBatchDeleteOfTask");
         assertThat(processInstance).isNotNull();
         assertThat(processInstance.isEnded()).isFalse();
 
@@ -52,18 +50,13 @@ public class TaskBatchDeleteTest extends PluggableActivitiTestCase {
 
         // Process should have ended fine
         processInstance =
-            runtimeService
-                .createProcessInstanceQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+            runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(processInstance).isNull();
     }
 
     @Deployment
     public void testDeleteCancelledMultiInstanceTasks() throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testBatchDeleteOfTask"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testBatchDeleteOfTask");
         assertThat(processInstance).isNotNull();
         assertThat(processInstance.isEnded()).isFalse();
 
@@ -88,10 +81,7 @@ public class TaskBatchDeleteTest extends PluggableActivitiTestCase {
 
         // Process should have ended fine
         processInstance =
-            runtimeService
-                .createProcessInstanceQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+            runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(processInstance).isNull();
     }
 }

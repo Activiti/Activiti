@@ -133,8 +133,7 @@ public class ProcessVariablesPayloadValidatorTest {
                 variableDefinitionDatetime
             )
         );
-        given(processExtensionService.getExtensionsForId(any()))
-            .willReturn(extension);
+        given(processExtensionService.getExtensionsForId(any())).willReturn(extension);
     }
 
     @Test
@@ -143,17 +142,13 @@ public class ProcessVariablesPayloadValidatorTest {
             processVariablesValidator.checkPayloadVariables(
                 ProcessPayloadBuilder
                     .setVariables()
-                    .withVariables(
-                        map("name", "Alice", "age", "24", "subscribe", "false")
-                    )
+                    .withVariables(map("name", "Alice", "age", "24", "subscribe", "false"))
                     .build(),
                 "10"
             )
         );
 
-        assertThat(throwable)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining("subscribe, age");
+        assertThat(throwable).isInstanceOf(IllegalStateException.class).hasMessageContaining("subscribe, age");
     }
 
     @Test
@@ -185,9 +180,7 @@ public class ProcessVariablesPayloadValidatorTest {
             )
         );
 
-        assertThat(throwable)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining(expectedTypeErrorMessage);
+        assertThat(throwable).isInstanceOf(IllegalStateException.class).hasMessageContaining(expectedTypeErrorMessage);
     }
 
     @Test
@@ -196,9 +189,7 @@ public class ProcessVariablesPayloadValidatorTest {
             processVariablesValidator.checkPayloadVariables(
                 ProcessPayloadBuilder
                     .setVariables()
-                    .withVariables(
-                        singletonMap("mydate", "2019-08-26TT10:20:30.000Z")
-                    )
+                    .withVariables(singletonMap("mydate", "2019-08-26TT10:20:30.000Z"))
                     .build(),
                 "10"
             )
@@ -213,9 +204,7 @@ public class ProcessVariablesPayloadValidatorTest {
             processVariablesValidator.checkPayloadVariables(
                 ProcessPayloadBuilder
                     .setVariables()
-                    .withVariables(
-                        singletonMap("mydatetime", "2019-08-26TT10:20:30.000Z")
-                    )
+                    .withVariables(singletonMap("mydatetime", "2019-08-26TT10:20:30.000Z"))
                     .build(),
                 "10"
             )
@@ -230,17 +219,12 @@ public class ProcessVariablesPayloadValidatorTest {
 
         Throwable throwable = catchThrowable(() ->
             processVariablesValidator.checkPayloadVariables(
-                ProcessPayloadBuilder
-                    .setVariables()
-                    .withVariables(map("name", "Alice", "gen-der", "female"))
-                    .build(),
+                ProcessPayloadBuilder.setVariables().withVariables(map("name", "Alice", "gen-der", "female")).build(),
                 "10"
             )
         );
 
-        assertThat(throwable)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining(expectedTypeErrorMessage);
+        assertThat(throwable).isInstanceOf(IllegalStateException.class).hasMessageContaining(expectedTypeErrorMessage);
     }
 
     @Test
@@ -249,22 +233,13 @@ public class ProcessVariablesPayloadValidatorTest {
             processVariablesValidator.checkPayloadVariables(
                 ProcessPayloadBuilder
                     .setVariables()
-                    .withVariables(
-                        map(
-                            "expression_string",
-                            "${variable}",
-                            "variable",
-                            "no-expression"
-                        )
-                    )
+                    .withVariables(map("expression_string", "${variable}", "variable", "no-expression"))
                     .build(),
                 "10"
             )
         );
 
-        assertThat(throwable)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining("expression");
+        assertThat(throwable).isInstanceOf(IllegalStateException.class).hasMessageContaining("expression");
     }
 
     @Test
@@ -277,10 +252,7 @@ public class ProcessVariablesPayloadValidatorTest {
                     .withVariables(
                         map(
                             "expression_object",
-                            objectMapper
-                                .createObjectNode()
-                                .put("attr1", "value1")
-                                .put("attr2", "${variable}"),
+                            objectMapper.createObjectNode().put("attr1", "value1").put("attr2", "${variable}"),
                             "variable",
                             "no-expression"
                         )
@@ -290,14 +262,11 @@ public class ProcessVariablesPayloadValidatorTest {
             )
         );
 
-        assertThat(throwable)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining("expression");
+        assertThat(throwable).isInstanceOf(IllegalStateException.class).hasMessageContaining("expression");
     }
 
     @Test
-    public void should_throwIllegalStateException_when_payloadVariableWithExpressionInList()
-        throws IOException {
+    public void should_throwIllegalStateException_when_payloadVariableWithExpressionInList() throws IOException {
         Throwable throwable = catchThrowable(() ->
             processVariablesValidator.checkPayloadVariables(
                 ProcessPayloadBuilder
@@ -308,14 +277,7 @@ public class ProcessVariablesPayloadValidatorTest {
                             objectMapper
                                 .createObjectNode()
                                 .put("attr1", "value1")
-                                .set(
-                                    "attr2",
-                                    objectMapper
-                                        .createArrayNode()
-                                        .add("1")
-                                        .add("${variable}")
-                                        .add("2")
-                                ),
+                                .set("attr2", objectMapper.createArrayNode().add("1").add("${variable}").add("2")),
                             "variable",
                             "no-expression"
                         )
@@ -325,9 +287,7 @@ public class ProcessVariablesPayloadValidatorTest {
             )
         );
 
-        assertThat(throwable)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining("expression");
+        assertThat(throwable).isInstanceOf(IllegalStateException.class).hasMessageContaining("expression");
     }
 
     @Test
@@ -336,20 +296,13 @@ public class ProcessVariablesPayloadValidatorTest {
             processVariablesValidator.checkPayloadVariables(
                 ProcessPayloadBuilder
                     .setVariables()
-                    .withVariables(
-                        singletonMap(
-                            "expression_map",
-                            singletonMap("expression_string", "${variable}")
-                        )
-                    )
+                    .withVariables(singletonMap("expression_map", singletonMap("expression_string", "${variable}")))
                     .build(),
                 "10"
             )
         );
 
-        assertThat(throwable)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining("expression");
+        assertThat(throwable).isInstanceOf(IllegalStateException.class).hasMessageContaining("expression");
     }
 
     @Test
@@ -358,9 +311,7 @@ public class ProcessVariablesPayloadValidatorTest {
             processVariablesValidator.checkPayloadVariables(
                 ProcessPayloadBuilder
                     .setVariables()
-                    .withVariables(
-                        map("name", null, "age", null, "subscribe", null)
-                    )
+                    .withVariables(map("name", null, "age", null, "subscribe", null))
                     .build(),
                 "10"
             )

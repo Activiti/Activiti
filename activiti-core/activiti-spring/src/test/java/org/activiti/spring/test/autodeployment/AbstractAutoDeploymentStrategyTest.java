@@ -100,12 +100,9 @@ public abstract class AbstractAutoDeploymentStrategyTest {
         when(resourceMock5.getFile()).thenReturn(fileMock5);
         when(fileMock5.getAbsolutePath()).thenReturn(resourceName5);
 
-        when(repositoryServiceMock.createDeployment())
-            .thenReturn(deploymentBuilderMock);
-        when(deploymentBuilderMock.enableDuplicateFiltering())
-            .thenReturn(deploymentBuilderMock);
-        when(deploymentBuilderMock.name(isA(String.class)))
-            .thenReturn(deploymentBuilderMock);
+        when(repositoryServiceMock.createDeployment()).thenReturn(deploymentBuilderMock);
+        when(deploymentBuilderMock.enableDuplicateFiltering()).thenReturn(deploymentBuilderMock);
+        when(deploymentBuilderMock.name(isA(String.class))).thenReturn(deploymentBuilderMock);
 
         when(deploymentBuilderMock.deploy()).thenReturn(deploymentMock);
     }

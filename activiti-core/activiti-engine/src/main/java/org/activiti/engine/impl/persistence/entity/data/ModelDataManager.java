@@ -31,11 +31,7 @@ public interface ModelDataManager extends DataManager<ModelEntity> {
 
     long findModelCountByQueryCriteria(ModelQueryImpl query);
 
-    List<Model> findModelsByNativeQuery(
-        Map<String, Object> parameterMap,
-        int firstResult,
-        int maxResults
-    );
+    List<Model> findModelsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
 
     long findModelCountByNativeQuery(Map<String, Object> parameterMap);
 }

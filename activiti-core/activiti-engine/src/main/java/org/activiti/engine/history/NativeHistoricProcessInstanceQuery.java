@@ -24,5 +24,4 @@ import org.activiti.engine.query.NativeQuery;
  */
 @Internal
 public interface NativeHistoricProcessInstanceQuery
-    extends
-        NativeQuery<NativeHistoricProcessInstanceQuery, HistoricProcessInstance> {}
+    extends NativeQuery<NativeHistoricProcessInstanceQuery, HistoricProcessInstance> {}

@@ -69,37 +69,19 @@ public class TimerUtil {
 
         if (StringUtils.isNotEmpty(timerEventDefinition.getTimeDate())) {
             businessCalendarRef = DueDateBusinessCalendar.NAME;
-            expression =
-                expressionManager.createExpression(
-                    timerEventDefinition.getTimeDate()
-                );
-        } else if (
-            StringUtils.isNotEmpty(timerEventDefinition.getTimeCycle())
-        ) {
+            expression = expressionManager.createExpression(timerEventDefinition.getTimeDate());
+        } else if (StringUtils.isNotEmpty(timerEventDefinition.getTimeCycle())) {
             businessCalendarRef = CycleBusinessCalendar.NAME;
-            expression =
-                expressionManager.createExpression(
-                    timerEventDefinition.getTimeCycle()
-                );
-        } else if (
-            StringUtils.isNotEmpty(timerEventDefinition.getTimeDuration())
-        ) {
+            expression = expressionManager.createExpression(timerEventDefinition.getTimeCycle());
+        } else if (StringUtils.isNotEmpty(timerEventDefinition.getTimeDuration())) {
             businessCalendarRef = DurationBusinessCalendar.NAME;
-            expression =
-                expressionManager.createExpression(
-                    timerEventDefinition.getTimeDuration()
-                );
+            expression = expressionManager.createExpression(timerEventDefinition.getTimeDuration());
         }
 
         if (StringUtils.isNotEmpty(timerEventDefinition.getCalendarName())) {
             businessCalendarRef = timerEventDefinition.getCalendarName();
-            Expression businessCalendarExpression = expressionManager.createExpression(
-                businessCalendarRef
-            );
-            businessCalendarRef =
-                businessCalendarExpression
-                    .getValue(scopeForExpression)
-                    .toString();
+            Expression businessCalendarExpression = expressionManager.createExpression(businessCalendarRef);
+            businessCalendarRef = businessCalendarExpression.getValue(scopeForExpression).toString();
         }
 
         if (expression == null) {
@@ -139,25 +121,18 @@ public class TimerUtil {
 
         TimerJobEntity timer = null;
         if (duedate != null) {
-            timer =
-                Context.getCommandContext().getTimerJobEntityManager().create();
+            timer = Context.getCommandContext().getTimerJobEntityManager().create();
             timer.setJobType(JobEntity.JOB_TYPE_TIMER);
             timer.setRevision(1);
             timer.setJobHandlerType(jobHandlerType);
             timer.setJobHandlerConfiguration(jobHandlerConfig);
             timer.setExclusive(true);
-            timer.setRetries(
-                processEngineConfiguration.getAsyncExecutorNumberOfRetries()
-            );
+            timer.setRetries(processEngineConfiguration.getAsyncExecutorNumberOfRetries());
             timer.setDuedate(duedate);
             if (executionEntity != null) {
                 timer.setExecution(executionEntity);
-                timer.setProcessDefinitionId(
-                    executionEntity.getProcessDefinitionId()
-                );
-                timer.setProcessInstanceId(
-                    executionEntity.getProcessInstanceId()
-                );
+                timer.setProcessDefinitionId(executionEntity.getProcessDefinitionId());
+                timer.setProcessInstanceId(executionEntity.getProcessInstanceId());
 
                 // Inherit tenant identifier (if applicable)
                 if (executionEntity.getTenantId() != null) {
@@ -186,9 +161,7 @@ public class TimerUtil {
 
         if (timer != null && executionEntity != null) {
             timer.setExecution(executionEntity);
-            timer.setProcessDefinitionId(
-                executionEntity.getProcessDefinitionId()
-            );
+            timer.setProcessDefinitionId(executionEntity.getProcessDefinitionId());
 
             // Inherit tenant identifier (if applicable)
             if (executionEntity.getTenantId() != null) {
@@ -201,19 +174,10 @@ public class TimerUtil {
 
     public static String prepareRepeat(String dueDate) {
         if (dueDate.startsWith("R") && dueDate.split("/").length == 2) {
-            SimpleDateFormat sdf = new SimpleDateFormat(
-                "yyyy-MM-dd'T'HH:mm:ss"
-            );
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             return dueDate.replace(
                 "/",
-                "/" +
-                sdf.format(
-                    Context
-                        .getProcessEngineConfiguration()
-                        .getClock()
-                        .getCurrentTime()
-                ) +
-                "/"
+                "/" + sdf.format(Context.getProcessEngineConfiguration().getClock().getCurrentTime()) + "/"
             );
         }
         return dueDate;

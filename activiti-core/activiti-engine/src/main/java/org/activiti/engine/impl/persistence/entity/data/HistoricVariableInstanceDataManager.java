@@ -26,15 +26,10 @@ import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntit
 /**
 
  */
-public interface HistoricVariableInstanceDataManager
-    extends DataManager<HistoricVariableInstanceEntity> {
-    List<HistoricVariableInstanceEntity> findHistoricVariableInstancesByProcessInstanceId(
-        String processInstanceId
-    );
+public interface HistoricVariableInstanceDataManager extends DataManager<HistoricVariableInstanceEntity> {
+    List<HistoricVariableInstanceEntity> findHistoricVariableInstancesByProcessInstanceId(String processInstanceId);
 
-    List<HistoricVariableInstanceEntity> findHistoricVariableInstancesByTaskId(
-        String taskId
-    );
+    List<HistoricVariableInstanceEntity> findHistoricVariableInstancesByTaskId(String taskId);
 
     long findHistoricVariableInstanceCountByQueryCriteria(
         HistoricVariableInstanceQueryImpl historicProcessVariableQuery
@@ -45,9 +40,7 @@ public interface HistoricVariableInstanceDataManager
         Page page
     );
 
-    HistoricVariableInstanceEntity findHistoricVariableInstanceByVariableInstanceId(
-        String variableInstanceId
-    );
+    HistoricVariableInstanceEntity findHistoricVariableInstanceByVariableInstanceId(String variableInstanceId);
 
     List<HistoricVariableInstance> findHistoricVariableInstancesByNativeQuery(
         Map<String, Object> parameterMap,
@@ -55,7 +48,5 @@ public interface HistoricVariableInstanceDataManager
         int maxResults
     );
 
-    long findHistoricVariableInstanceCountByNativeQuery(
-        Map<String, Object> parameterMap
-    );
+    long findHistoricVariableInstanceCountByNativeQuery(Map<String, Object> parameterMap);
 }

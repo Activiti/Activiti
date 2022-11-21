@@ -38,26 +38,17 @@ public class SaveAttachmentCmd implements Command<Object>, Serializable {
     }
 
     public Object execute(CommandContext commandContext) {
-        AttachmentEntity updateAttachment = commandContext
-            .getAttachmentEntityManager()
-            .findById(attachment.getId());
+        AttachmentEntity updateAttachment = commandContext.getAttachmentEntityManager().findById(attachment.getId());
 
         String processInstanceId = updateAttachment.getProcessInstanceId();
         String processDefinitionId = null;
         if (updateAttachment.getProcessInstanceId() != null) {
-            ExecutionEntity process = commandContext
-                .getExecutionEntityManager()
-                .findById(processInstanceId);
+            ExecutionEntity process = commandContext.getExecutionEntityManager().findById(processInstanceId);
             if (process != null) {
                 processDefinitionId = process.getProcessDefinitionId();
             }
         }
-        executeInternal(
-            commandContext,
-            updateAttachment,
-            processInstanceId,
-            processDefinitionId
-        );
+        executeInternal(commandContext, updateAttachment, processInstanceId, processDefinitionId);
         return null;
     }
 
@@ -70,12 +61,7 @@ public class SaveAttachmentCmd implements Command<Object>, Serializable {
         updateAttachment.setName(attachment.getName());
         updateAttachment.setDescription(attachment.getDescription());
 
-        if (
-            commandContext
-                .getProcessEngineConfiguration()
-                .getEventDispatcher()
-                .isEnabled()
-        ) {
+        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
             commandContext
                 .getProcessEngineConfiguration()
                 .getEventDispatcher()

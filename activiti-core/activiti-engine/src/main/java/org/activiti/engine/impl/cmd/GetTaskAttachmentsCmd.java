@@ -25,8 +25,7 @@ import org.activiti.engine.task.Attachment;
 /**
 
  */
-public class GetTaskAttachmentsCmd
-    implements Command<List<? extends Attachment>>, Serializable {
+public class GetTaskAttachmentsCmd implements Command<List<? extends Attachment>>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String taskId;
@@ -36,8 +35,6 @@ public class GetTaskAttachmentsCmd
     }
 
     public List<? extends Attachment> execute(CommandContext commandContext) {
-        return commandContext
-            .getAttachmentEntityManager()
-            .findAttachmentsByTaskId(taskId);
+        return commandContext.getAttachmentEntityManager().findAttachmentsByTaskId(taskId);
     }
 }

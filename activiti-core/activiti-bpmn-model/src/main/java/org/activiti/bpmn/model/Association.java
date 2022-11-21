@@ -17,8 +17,7 @@ package org.activiti.bpmn.model;
 
 public class Association extends Artifact {
 
-    protected AssociationDirection associationDirection =
-        AssociationDirection.NONE;
+    protected AssociationDirection associationDirection = AssociationDirection.NONE;
     protected String sourceRef;
     protected String targetRef;
 
@@ -26,9 +25,7 @@ public class Association extends Artifact {
         return associationDirection;
     }
 
-    public void setAssociationDirection(
-        AssociationDirection associationDirection
-    ) {
+    public void setAssociationDirection(AssociationDirection associationDirection) {
         this.associationDirection = associationDirection;
     }
 

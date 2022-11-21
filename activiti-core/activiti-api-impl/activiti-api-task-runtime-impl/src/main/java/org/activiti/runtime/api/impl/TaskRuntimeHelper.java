@@ -49,10 +49,7 @@ public class TaskRuntimeHelper {
         this.taskVariablesValidator = taskVariablesValidator;
     }
 
-    public Task applyUpdateTaskPayload(
-        boolean isAdmin,
-        UpdateTaskPayload updateTaskPayload
-    ) {
+    public Task applyUpdateTaskPayload(boolean isAdmin, UpdateTaskPayload updateTaskPayload) {
         org.activiti.engine.task.Task internalTask;
 
         if (isAdmin) {
@@ -73,28 +70,20 @@ public class TaskRuntimeHelper {
             taskService.saveTask(internalTask);
         }
 
-        return taskConverter.from(
-            getInternalTask(updateTaskPayload.getTaskId())
-        );
+        return taskConverter.from(getInternalTask(updateTaskPayload.getTaskId()));
     }
 
     private org.activiti.engine.task.Task getTaskToUpdate(String taskId) {
-        org.activiti.engine.task.Task internalTask = getInternalTaskWithChecks(
-            taskId
-        );
+        org.activiti.engine.task.Task internalTask = getInternalTaskWithChecks(taskId);
         assertCanModifyTask(internalTask);
         return internalTask;
     }
 
-    private void assertCanModifyTask(
-        org.activiti.engine.task.Task internalTask
-    ) {
+    private void assertCanModifyTask(org.activiti.engine.task.Task internalTask) {
         String authenticatedUserId = getAuthenticatedUser();
         // validate that you are trying to update task where you are the assignee
         if (!Objects.equals(internalTask.getAssignee(), authenticatedUserId)) {
-            throw new IllegalStateException(
-                "You cannot update a task where you are not the assignee"
-            );
+            throw new IllegalStateException("You cannot update a task where you are not the assignee");
         }
     }
 
@@ -139,10 +128,7 @@ public class TaskRuntimeHelper {
     ) {
         if (
             updateTaskPayload.getDueDate() != null &&
-            !Objects.equals(
-                internalTask.getDueDate(),
-                updateTaskPayload.getDueDate()
-            )
+            !Objects.equals(internalTask.getDueDate(), updateTaskPayload.getDueDate())
         ) {
             updates++;
             internalTask.setDueDate(updateTaskPayload.getDueDate());
@@ -155,10 +141,7 @@ public class TaskRuntimeHelper {
         org.activiti.engine.task.Task internalTask,
         int updates
     ) {
-        if (
-            updateTaskPayload.getPriority() != null &&
-            internalTask.getPriority() != updateTaskPayload.getPriority()
-        ) {
+        if (updateTaskPayload.getPriority() != null && internalTask.getPriority() != updateTaskPayload.getPriority()) {
             updates++;
             internalTask.setPriority(updateTaskPayload.getPriority());
         }
@@ -198,16 +181,10 @@ public class TaskRuntimeHelper {
         return updates;
     }
 
-    public org.activiti.engine.task.Task getInternalTaskWithChecks(
-        String taskId
-    ) {
+    public org.activiti.engine.task.Task getInternalTaskWithChecks(String taskId) {
         String authenticatedUserId = getAuthenticatedUser();
 
-        if (
-            authenticatedUserId != null &&
-            !authenticatedUserId.isEmpty() &&
-            securityManager != null
-        ) {
+        if (authenticatedUserId != null && !authenticatedUserId.isEmpty() && securityManager != null) {
             List<String> userRoles = securityManager.getAuthenticatedUserRoles();
             List<String> userGroups = securityManager.getAuthenticatedUserGroups();
             org.activiti.engine.task.Task task = taskService
@@ -234,9 +211,7 @@ public class TaskRuntimeHelper {
 
             return task;
         }
-        throw new IllegalStateException(
-            "There is no authenticated user, we need a user authenticated to find tasks"
-        );
+        throw new IllegalStateException("There is no authenticated user, we need a user authenticated to find tasks");
     }
 
     public void assertHasAccessToTask(String taskId) {
@@ -244,20 +219,13 @@ public class TaskRuntimeHelper {
     }
 
     private String getAuthenticatedUser() {
-        return securityManager != null
-            ? securityManager.getAuthenticatedUserId()
-            : null;
+        return securityManager != null ? securityManager.getAuthenticatedUserId() : null;
     }
 
     public org.activiti.engine.task.Task getInternalTask(String taskId) {
-        org.activiti.engine.task.Task internalTask = taskService
-            .createTaskQuery()
-            .taskId(taskId)
-            .singleResult();
+        org.activiti.engine.task.Task internalTask = taskService.createTaskQuery().taskId(taskId).singleResult();
         if (internalTask == null) {
-            throw new NotFoundException(
-                "Unable to find task for the given id: " + taskId
-            );
+            throw new NotFoundException("Unable to find task for the given id: " + taskId);
         }
         return internalTask;
     }
@@ -268,19 +236,12 @@ public class TaskRuntimeHelper {
         return taskService.getVariableInstancesLocal(taskId);
     }
 
-    public void createVariable(
-        boolean isAdmin,
-        CreateTaskVariablePayload createTaskVariablePayload
-    ) {
+    public void createVariable(boolean isAdmin, CreateTaskVariablePayload createTaskVariablePayload) {
         if (!isAdmin) {
-            assertCanModifyTask(
-                getInternalTask(createTaskVariablePayload.getTaskId())
-            );
+            assertCanModifyTask(getInternalTask(createTaskVariablePayload.getTaskId()));
         }
 
-        taskVariablesValidator.handleCreateTaskVariablePayload(
-            createTaskVariablePayload
-        );
+        taskVariablesValidator.handleCreateTaskVariablePayload(createTaskVariablePayload);
 
         assertVariableDoesNotExist(createTaskVariablePayload);
 
@@ -291,34 +252,22 @@ public class TaskRuntimeHelper {
         );
     }
 
-    private void assertVariableDoesNotExist(
-        CreateTaskVariablePayload createTaskVariablePayload
-    ) {
+    private void assertVariableDoesNotExist(CreateTaskVariablePayload createTaskVariablePayload) {
         Map<String, VariableInstance> variables = taskService.getVariableInstancesLocal(
             createTaskVariablePayload.getTaskId()
         );
 
-        if (
-            variables != null &&
-            variables.containsKey(createTaskVariablePayload.getName())
-        ) {
+        if (variables != null && variables.containsKey(createTaskVariablePayload.getName())) {
             throw new IllegalStateException("Variable already exists");
         }
     }
 
-    public void updateVariable(
-        boolean isAdmin,
-        UpdateTaskVariablePayload updateTaskVariablePayload
-    ) {
+    public void updateVariable(boolean isAdmin, UpdateTaskVariablePayload updateTaskVariablePayload) {
         if (!isAdmin) {
-            assertCanModifyTask(
-                getInternalTask(updateTaskVariablePayload.getTaskId())
-            );
+            assertCanModifyTask(getInternalTask(updateTaskVariablePayload.getTaskId()));
         }
 
-        taskVariablesValidator.handleUpdateTaskVariablePayload(
-            updateTaskVariablePayload
-        );
+        taskVariablesValidator.handleUpdateTaskVariablePayload(updateTaskVariablePayload);
 
         assertVariableExists(updateTaskVariablePayload);
 
@@ -329,9 +278,7 @@ public class TaskRuntimeHelper {
         );
     }
 
-    private void assertVariableExists(
-        UpdateTaskVariablePayload updateTaskVariablePayload
-    ) {
+    private void assertVariableExists(UpdateTaskVariablePayload updateTaskVariablePayload) {
         Map<String, VariableInstance> variables = taskService.getVariableInstancesLocal(
             updateTaskVariablePayload.getTaskId()
         );
@@ -345,21 +292,13 @@ public class TaskRuntimeHelper {
         }
     }
 
-    public void handleCompleteTaskPayload(
-        CompleteTaskPayload completeTaskPayload
-    ) {
+    public void handleCompleteTaskPayload(CompleteTaskPayload completeTaskPayload) {
         completeTaskPayload.setVariables(
-            taskVariablesValidator.handlePayloadVariables(
-                completeTaskPayload.getVariables()
-            )
+            taskVariablesValidator.handlePayloadVariables(completeTaskPayload.getVariables())
         );
     }
 
     public void handleSaveTaskPayload(SaveTaskPayload saveTaskPayload) {
-        saveTaskPayload.setVariables(
-            taskVariablesValidator.handlePayloadVariables(
-                saveTaskPayload.getVariables()
-            )
-        );
+        saveTaskPayload.setVariables(taskVariablesValidator.handlePayloadVariables(saveTaskPayload.getVariables()));
     }
 }

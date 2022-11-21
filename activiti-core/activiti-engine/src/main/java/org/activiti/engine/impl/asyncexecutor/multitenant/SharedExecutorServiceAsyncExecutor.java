@@ -37,13 +37,9 @@ import org.slf4j.LoggerFactory;
  *
 
  */
-public class SharedExecutorServiceAsyncExecutor
-    extends DefaultAsyncJobExecutor
-    implements TenantAwareAsyncExecutor {
+public class SharedExecutorServiceAsyncExecutor extends DefaultAsyncJobExecutor implements TenantAwareAsyncExecutor {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        SharedExecutorServiceAsyncExecutor.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(SharedExecutorServiceAsyncExecutor.class);
 
     protected TenantInfoHolder tenantInfoHolder;
 
@@ -56,9 +52,7 @@ public class SharedExecutorServiceAsyncExecutor
     protected Map<String, Thread> resetExpiredJobsThreads = new HashMap<String, Thread>();
     protected Map<String, TenantAwareResetExpiredJobsRunnable> resetExpiredJobsRunnables = new HashMap<String, TenantAwareResetExpiredJobsRunnable>();
 
-    public SharedExecutorServiceAsyncExecutor(
-        TenantInfoHolder tenantInfoHolder
-    ) {
+    public SharedExecutorServiceAsyncExecutor(TenantInfoHolder tenantInfoHolder) {
         this.tenantInfoHolder = tenantInfoHolder;
 
         setExecuteAsyncRunnableFactory(
@@ -110,10 +104,7 @@ public class SharedExecutorServiceAsyncExecutor
             tenantId
         );
         resetExpiredJobsRunnables.put(tenantId, resetExpiredJobsRunnable);
-        resetExpiredJobsThreads.put(
-            tenantId,
-            new Thread(resetExpiredJobsRunnable)
-        );
+        resetExpiredJobsThreads.put(tenantId, new Thread(resetExpiredJobsRunnable));
 
         if (startExecutor) {
             startThreadsForTenant(tenantId);
@@ -173,28 +164,19 @@ public class SharedExecutorServiceAsyncExecutor
         try {
             timerJobAcquisitionThreads.get(tenantId).join();
         } catch (InterruptedException e) {
-            logger.warn(
-                "Interrupted while waiting for the timer job acquisition thread to terminate",
-                e
-            );
+            logger.warn("Interrupted while waiting for the timer job acquisition thread to terminate", e);
         }
 
         try {
             asyncJobAcquisitionThreads.get(tenantId).join();
         } catch (InterruptedException e) {
-            logger.warn(
-                "Interrupted while waiting for the timer job acquisition thread to terminate",
-                e
-            );
+            logger.warn("Interrupted while waiting for the timer job acquisition thread to terminate", e);
         }
 
         try {
             resetExpiredJobsThreads.get(tenantId).join();
         } catch (InterruptedException e) {
-            logger.warn(
-                "Interrupted while waiting for the reset expired jobs thread to terminate",
-                e
-            );
+            logger.warn("Interrupted while waiting for the reset expired jobs thread to terminate", e);
         }
     }
 }

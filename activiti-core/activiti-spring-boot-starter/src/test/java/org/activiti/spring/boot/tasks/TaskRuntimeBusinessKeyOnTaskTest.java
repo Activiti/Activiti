@@ -59,19 +59,12 @@ public class TaskRuntimeBusinessKeyOnTaskTest {
         //when
         String businesskey = "businesskey";
         processRuntime.start(
-            ProcessPayloadBuilder
-                .start()
-                .withProcessDefinitionKey(TWOTASK_PROCESS)
-                .withBusinessKey(businesskey)
-                .build()
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(TWOTASK_PROCESS).withBusinessKey(businesskey).build()
         );
 
         securityUtil.logInAs("dean");
 
-        Task task = taskRuntime
-            .tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build())
-            .getContent()
-            .get(0);
+        Task task = taskRuntime.tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build()).getContent().get(0);
 
         assertThat(task).isNotNull();
         assertThat(task.getBusinessKey()).isNotBlank();

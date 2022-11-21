@@ -29,8 +29,7 @@ import org.activiti.engine.task.Attachment;
 
  *
  */
-public class AttachmentQuery
-    extends AbstractQuery<AttachmentQuery, Attachment> {
+public class AttachmentQuery extends AbstractQuery<AttachmentQuery, Attachment> {
 
     private static final long serialVersionUID = 1L;
     protected String attachmentId;
@@ -88,19 +87,12 @@ public class AttachmentQuery
 
     @Override
     public long executeCount(CommandContext commandContext) {
-        return (Long) commandContext
-            .getDbSqlSession()
-            .selectOne("selectAttachmentCountByQueryCriteria", this);
+        return (Long) commandContext.getDbSqlSession().selectOne("selectAttachmentCountByQueryCriteria", this);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Attachment> executeList(
-        CommandContext commandContext,
-        Page page
-    ) {
-        return commandContext
-            .getDbSqlSession()
-            .selectList("selectAttachmentByQueryCriteria", this);
+    public List<Attachment> executeList(CommandContext commandContext, Page page) {
+        return commandContext.getDbSqlSession().selectList("selectAttachmentByQueryCriteria", this);
     }
 }

@@ -37,9 +37,5 @@ public interface AdvancedSchedulerResolver {
      *          The time zone to use in the calculations
      * @return The due date
      */
-    Date resolve(
-        String duedateDescription,
-        ClockReader clockReader,
-        TimeZone timeZone
-    );
+    Date resolve(String duedateDescription, ClockReader clockReader, TimeZone timeZone);
 }

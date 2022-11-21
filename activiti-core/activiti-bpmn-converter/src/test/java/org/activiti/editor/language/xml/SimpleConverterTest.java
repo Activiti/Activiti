@@ -49,31 +49,16 @@ public class SimpleConverterTest extends AbstractConverterTest {
 
     private void validateModel(BpmnModel model) {
         assertThat(model.getDefinitionsAttributes()).hasSize(2);
-        assertThat(
-            model.getDefinitionsAttributeValue(
-                "http://activiti.com/modeler",
-                "version"
-            )
-        )
-            .isEqualTo("2.2A");
-        assertThat(
-            model.getDefinitionsAttributeValue(
-                "http://activiti.com/modeler",
-                "exportDate"
-            )
-        )
+        assertThat(model.getDefinitionsAttributeValue("http://activiti.com/modeler", "version")).isEqualTo("2.2A");
+        assertThat(model.getDefinitionsAttributeValue("http://activiti.com/modeler", "exportDate"))
             .isEqualTo("20140312T10:45:23");
 
         assertThat(model.getMainProcess().getId()).isEqualTo("simpleProcess");
-        assertThat(model.getMainProcess().getName())
-            .isEqualTo("Simple process");
-        assertThat(model.getMainProcess().getDocumentation())
-            .isEqualTo("simple doc");
+        assertThat(model.getMainProcess().getName()).isEqualTo("Simple process");
+        assertThat(model.getMainProcess().getDocumentation()).isEqualTo("simple doc");
         assertThat(model.getMainProcess().isExecutable()).isEqualTo(true);
 
-        FlowElement flowElement = model
-            .getMainProcess()
-            .getFlowElement("flow1");
+        FlowElement flowElement = model.getMainProcess().getFlowElement("flow1");
         assertThat(flowElement).isNotNull();
         assertThat(flowElement).isInstanceOf(SequenceFlow.class);
         assertThat(flowElement.getId()).isEqualTo("flow1");
@@ -84,9 +69,7 @@ public class SimpleConverterTest extends AbstractConverterTest {
         assertThat(flowElement.getId()).isEqualTo("catchEvent");
         IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) flowElement;
         assertThat(catchEvent.getEventDefinitions().size() == 1).isTrue();
-        EventDefinition eventDefinition = catchEvent
-            .getEventDefinitions()
-            .get(0);
+        EventDefinition eventDefinition = catchEvent.getEventDefinitions().get(0);
         assertThat(eventDefinition).isInstanceOf(TimerEventDefinition.class);
         TimerEventDefinition timerDefinition = (TimerEventDefinition) eventDefinition;
         assertThat(timerDefinition.getTimeDuration()).isEqualTo("PT5M");

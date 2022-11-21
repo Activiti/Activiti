@@ -24,8 +24,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 /**
 
  */
-public class GetTableCountCmd
-    implements Command<Map<String, Long>>, Serializable {
+public class GetTableCountCmd implements Command<Map<String, Long>>, Serializable {
 
     private static final long serialVersionUID = 1L;
 

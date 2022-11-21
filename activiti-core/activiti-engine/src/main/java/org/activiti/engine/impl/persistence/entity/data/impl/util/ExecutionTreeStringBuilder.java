@@ -53,12 +53,7 @@ public class ExecutionTreeStringBuilder {
         return strb.toString();
     }
 
-    protected void internalToString(
-        ExecutionEntity execution,
-        StringBuilder strb,
-        String prefix,
-        boolean isTail
-    ) {
+    protected void internalToString(ExecutionEntity execution, StringBuilder strb, String prefix, boolean isTail) {
         strb
             .append(prefix)
             .append(isTail ? "└── " : "├── ")
@@ -68,28 +63,16 @@ public class ExecutionTreeStringBuilder {
             .append(", parent id ")
             .append(execution.getParentId())
             .append(execution.isScope() ? " (scope)" : "")
-            .append(
-                execution.isMultiInstanceRoot() ? " (multi instance root)" : ""
-            )
+            .append(execution.isMultiInstanceRoot() ? " (multi instance root)" : "")
             .append("\r\n");
 
         List<? extends ExecutionEntity> children = executionEntity.getExecutions();
         if (children != null) {
             for (int i = 0; i < children.size() - 1; i++) {
-                internalToString(
-                    children.get(i),
-                    strb,
-                    prefix + (isTail ? "    " : "│   "),
-                    false
-                );
+                internalToString(children.get(i), strb, prefix + (isTail ? "    " : "│   "), false);
             }
             if (children.size() > 0) {
-                internalToString(
-                    children.get(children.size() - 1),
-                    strb,
-                    prefix + (isTail ? "    " : "│   "),
-                    true
-                );
+                internalToString(children.get(children.size() - 1), strb, prefix + (isTail ? "    " : "│   "), true);
             }
         }
     }

@@ -60,10 +60,7 @@ public class SendTask extends TaskWithFieldExtensions {
         setOperationRef(otherElement.getOperationRef());
 
         fieldExtensions = new ArrayList<FieldExtension>();
-        if (
-            otherElement.getFieldExtensions() != null &&
-            !otherElement.getFieldExtensions().isEmpty()
-        ) {
+        if (otherElement.getFieldExtensions() != null && !otherElement.getFieldExtensions().isEmpty()) {
             for (FieldExtension extension : otherElement.getFieldExtensions()) {
                 fieldExtensions.add(extension.clone());
             }

@@ -47,8 +47,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class TaskVariablesTest {
 
-    private final String processKey =
-        "usertaskas-b5300a4b-8950-4486-ba20-a8d775a3d75d";
+    private final String processKey = "usertaskas-b5300a4b-8950-4486-ba20-a8d775a3d75d";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -107,8 +106,7 @@ public class TaskVariablesTest {
 
         VariableInstance variableOneRuntime = variableInstanceList.get(0);
         assertThat(variableOneRuntime.getTaskId()).isEqualTo(taskId);
-        assertThat(variableOneRuntime.getProcessInstanceId())
-            .isEqualTo(processInstanceId);
+        assertThat(variableOneRuntime.getProcessInstanceId()).isEqualTo(processInstanceId);
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
             .extracting("eventType", "entity.name", "entity.value")
@@ -185,13 +183,9 @@ public class TaskVariablesTest {
     @AfterEach
     public void cleanup() {
         securityUtil.logInAs("admin");
-        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(
-            Pageable.of(0, 50)
-        );
+        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0, 50));
         for (ProcessInstance pi : processInstancePage.getContent()) {
-            processAdminRuntime.delete(
-                ProcessPayloadBuilder.delete(pi.getId())
-            );
+            processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
 
         clearEvents();
@@ -232,22 +226,13 @@ public class TaskVariablesTest {
 
     private void createVariables() {
         taskRuntime.createVariable(
-            new CreateTaskVariablePayloadBuilder()
-                .withVariable("one", "variableOne")
-                .withTaskId(taskId)
-                .build()
+            new CreateTaskVariablePayloadBuilder().withVariable("one", "variableOne").withTaskId(taskId).build()
         );
         taskRuntime.createVariable(
-            new CreateTaskVariablePayloadBuilder()
-                .withVariable("two", 2)
-                .withTaskId(taskId)
-                .build()
+            new CreateTaskVariablePayloadBuilder().withVariable("two", 2).withTaskId(taskId).build()
         );
 
-        variableInstanceList =
-            taskRuntime.variables(
-                new GetTaskVariablesPayloadBuilder().withTaskId(taskId).build()
-            );
+        variableInstanceList = taskRuntime.variables(new GetTaskVariablesPayloadBuilder().withTaskId(taskId).build());
     }
 
     public void clearEvents() {

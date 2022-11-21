@@ -36,10 +36,7 @@ import org.springframework.core.io.Resource;
  */
 @Internal
 public interface DeploymentBuilder {
-    DeploymentBuilder addInputStream(
-        String resourceName,
-        InputStream inputStream
-    );
+    DeploymentBuilder addInputStream(String resourceName, InputStream inputStream);
 
     DeploymentBuilder addInputStream(String resourceName, Resource resource);
 
@@ -105,10 +102,7 @@ public interface DeploymentBuilder {
     /**
      * Allows to add a property to this {@link DeploymentBuilder} that influences the deployment.
      */
-    DeploymentBuilder deploymentProperty(
-        String propertyKey,
-        Object propertyValue
-    );
+    DeploymentBuilder deploymentProperty(String propertyKey, Object propertyValue);
 
     /**
      * Deploys all provided sources to the Activiti engine.

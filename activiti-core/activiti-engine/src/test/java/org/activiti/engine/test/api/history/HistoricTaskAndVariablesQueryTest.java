@@ -40,16 +40,12 @@ import org.mockito.Mockito;
 /**
 
  */
-public class HistoricTaskAndVariablesQueryTest
-    extends PluggableActivitiTestCase {
+public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase {
 
     private List<String> taskIds;
 
     private static final String KERMIT = "kermit";
-    private static final List<String> KERMITSGROUPS = asList(
-        "management",
-        "accountancy"
-    );
+    private static final List<String> KERMITSGROUPS = asList("management", "accountancy");
 
     private static final String GONZO = "gonzo";
     private static final List<String> GONZOSGROUPS = asList();
@@ -57,9 +53,7 @@ public class HistoricTaskAndVariablesQueryTest
     private static final String FOZZIE = "fozzie";
     private static final List<String> FOZZIESGROUPS = asList("management");
 
-    private UserGroupManager userGroupManager = Mockito.mock(
-        UserGroupManager.class
-    );
+    private UserGroupManager userGroupManager = Mockito.mock(UserGroupManager.class);
 
     public void setUp() throws Exception {
         ProcessEngineConfigurationImpl engineConfiguration = (ProcessEngineConfigurationImpl) cachedProcessEngine.getProcessEngineConfiguration();
@@ -73,11 +67,7 @@ public class HistoricTaskAndVariablesQueryTest
 
     @Deployment
     public void testQuery() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             HistoricTaskInstance task = historyService
                 .createHistoricTaskInstanceQuery()
                 .includeTaskLocalVariables()
@@ -91,9 +81,7 @@ public class HistoricTaskAndVariablesQueryTest
             assertThat(variableMap.get("testVar2")).isNotNull();
             assertThat(variableMap.get("testVar2")).isEqualTo(123);
 
-            List<HistoricTaskInstance> tasks = historyService
-                .createHistoricTaskInstanceQuery()
-                .list();
+            List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery().list();
             assertThat(tasks).hasSize(3);
 
             task =
@@ -105,10 +93,7 @@ public class HistoricTaskAndVariablesQueryTest
             assertThat(task.getProcessVariables()).hasSize(0);
             assertThat(task.getTaskLocalVariables()).hasSize(0);
 
-            runtimeService.startProcessInstanceByKey(
-                "oneTaskProcess",
-                singletonMap("processVar", true)
-            );
+            runtimeService.startProcessInstanceByKey("oneTaskProcess", singletonMap("processVar", true));
 
             task =
                 historyService
@@ -118,8 +103,7 @@ public class HistoricTaskAndVariablesQueryTest
                     .singleResult();
             assertThat(task.getProcessVariables()).hasSize(1);
             assertThat(task.getTaskLocalVariables()).hasSize(0);
-            assertThat((Boolean) task.getProcessVariables().get("processVar"))
-                .isTrue();
+            assertThat((Boolean) task.getProcessVariables().get("processVar")).isTrue();
 
             taskService.setVariable(task.getId(), "anotherProcessVar", 123);
             taskService.setVariableLocal(task.getId(), "localVar", "test");
@@ -132,8 +116,7 @@ public class HistoricTaskAndVariablesQueryTest
                     .singleResult();
             assertThat(task.getProcessVariables()).hasSize(0);
             assertThat(task.getTaskLocalVariables()).hasSize(1);
-            assertThat(task.getTaskLocalVariables().get("localVar"))
-                .isEqualTo("test");
+            assertThat(task.getTaskLocalVariables().get("localVar")).isEqualTo("test");
 
             task =
                 historyService
@@ -143,10 +126,8 @@ public class HistoricTaskAndVariablesQueryTest
                     .singleResult();
             assertThat(task.getProcessVariables()).hasSize(2);
             assertThat(task.getTaskLocalVariables()).hasSize(0);
-            assertThat(task.getProcessVariables().get("processVar"))
-                .isEqualTo(true);
-            assertThat(task.getProcessVariables().get("anotherProcessVar"))
-                .isEqualTo(123);
+            assertThat(task.getProcessVariables().get("processVar")).isEqualTo(true);
+            assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
 
             task =
                 historyService
@@ -181,8 +162,7 @@ public class HistoricTaskAndVariablesQueryTest
                     .list();
             assertThat(tasks).hasSize(3);
             assertThat(tasks.get(0).getTaskLocalVariables()).hasSize(1);
-            assertThat(tasks.get(0).getTaskLocalVariables().get("test"))
-                .isEqualTo("test");
+            assertThat(tasks.get(0).getTaskLocalVariables().get("test")).isEqualTo("test");
             assertThat(tasks.get(0).getProcessVariables()).hasSize(0);
 
             tasks =
@@ -206,8 +186,7 @@ public class HistoricTaskAndVariablesQueryTest
                     .singleResult();
             assertThat(task.getProcessVariables()).hasSize(0);
             assertThat(task.getTaskLocalVariables()).hasSize(1);
-            assertThat(task.getTaskLocalVariables().get("localVar"))
-                .isEqualTo("test");
+            assertThat(task.getTaskLocalVariables().get("localVar")).isEqualTo("test");
 
             task =
                 historyService
@@ -218,10 +197,8 @@ public class HistoricTaskAndVariablesQueryTest
                     .singleResult();
             assertThat(task.getProcessVariables()).hasSize(2);
             assertThat(task.getTaskLocalVariables()).hasSize(0);
-            assertThat(task.getProcessVariables().get("processVar"))
-                .isEqualTo(true);
-            assertThat(task.getProcessVariables().get("anotherProcessVar"))
-                .isEqualTo(123);
+            assertThat(task.getProcessVariables().get("processVar")).isEqualTo(true);
+            assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
 
             task =
                 historyService
@@ -232,25 +209,14 @@ public class HistoricTaskAndVariablesQueryTest
                     .singleResult();
             assertThat(task.getProcessVariables()).hasSize(2);
             assertThat(task.getTaskLocalVariables()).hasSize(1);
-            assertThat(task.getTaskLocalVariables().get("localVar"))
-                .isEqualTo("test");
-            assertThat(task.getProcessVariables().get("processVar"))
-                .isEqualTo(true);
-            assertThat(task.getProcessVariables().get("anotherProcessVar"))
-                .isEqualTo(123);
+            assertThat(task.getTaskLocalVariables().get("localVar")).isEqualTo("test");
+            assertThat(task.getProcessVariables().get("processVar")).isEqualTo(true);
+            assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
 
-            task =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .taskAssignee(GONZO)
-                    .singleResult();
+            task = historyService.createHistoricTaskInstanceQuery().taskAssignee(GONZO).singleResult();
             taskService.complete(task.getId());
             task =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .includeTaskLocalVariables()
-                    .finished()
-                    .singleResult();
+                historyService.createHistoricTaskInstanceQuery().includeTaskLocalVariables().finished().singleResult();
             variableMap = task.getTaskLocalVariables();
             assertThat(variableMap).hasSize(2);
             assertThat(task.getProcessVariables()).hasSize(0);
@@ -263,11 +229,7 @@ public class HistoricTaskAndVariablesQueryTest
 
     @Deployment
     public void testOrQuery() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             HistoricTaskInstance task = historyService
                 .createHistoricTaskInstanceQuery()
                 .includeTaskLocalVariables()
@@ -284,9 +246,7 @@ public class HistoricTaskAndVariablesQueryTest
             assertThat(variableMap.get("testVar2")).isNotNull();
             assertThat(variableMap.get("testVar2")).isEqualTo(123);
 
-            List<HistoricTaskInstance> tasks = historyService
-                .createHistoricTaskInstanceQuery()
-                .list();
+            List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery().list();
             assertThat(tasks).hasSize(3);
 
             task =
@@ -301,10 +261,7 @@ public class HistoricTaskAndVariablesQueryTest
             assertThat(task.getProcessVariables()).hasSize(0);
             assertThat(task.getTaskLocalVariables()).hasSize(0);
 
-            runtimeService.startProcessInstanceByKey(
-                "oneTaskProcess",
-                singletonMap("processVar", true)
-            );
+            runtimeService.startProcessInstanceByKey("oneTaskProcess", singletonMap("processVar", true));
 
             task =
                 historyService
@@ -317,8 +274,7 @@ public class HistoricTaskAndVariablesQueryTest
                     .singleResult();
             assertThat(task.getProcessVariables()).hasSize(1);
             assertThat(task.getTaskLocalVariables()).hasSize(0);
-            assertThat((Boolean) task.getProcessVariables().get("processVar"))
-                .isTrue();
+            assertThat((Boolean) task.getProcessVariables().get("processVar")).isTrue();
 
             task =
                 historyService
@@ -337,8 +293,7 @@ public class HistoricTaskAndVariablesQueryTest
             assertThat(task).isNotNull();
             assertThat(task.getProcessVariables()).hasSize(1);
             assertThat(task.getTaskLocalVariables()).hasSize(0);
-            assertThat((Boolean) task.getProcessVariables().get("processVar"))
-                .isTrue();
+            assertThat((Boolean) task.getProcessVariables().get("processVar")).isTrue();
 
             taskService.setVariable(task.getId(), "anotherProcessVar", 123);
             taskService.setVariableLocal(task.getId(), "localVar", "test");
@@ -354,8 +309,7 @@ public class HistoricTaskAndVariablesQueryTest
                     .singleResult();
             assertThat(task.getProcessVariables()).hasSize(0);
             assertThat(task.getTaskLocalVariables()).hasSize(1);
-            assertThat(task.getTaskLocalVariables().get("localVar"))
-                .isEqualTo("test");
+            assertThat(task.getTaskLocalVariables().get("localVar")).isEqualTo("test");
 
             task =
                 historyService
@@ -368,10 +322,8 @@ public class HistoricTaskAndVariablesQueryTest
                     .singleResult();
             assertThat(task.getProcessVariables()).hasSize(2);
             assertThat(task.getTaskLocalVariables()).hasSize(0);
-            assertThat(task.getProcessVariables().get("processVar"))
-                .isEqualTo(true);
-            assertThat(task.getProcessVariables().get("anotherProcessVar"))
-                .isEqualTo(123);
+            assertThat(task.getProcessVariables().get("processVar")).isEqualTo(true);
+            assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
 
             task =
                 historyService
@@ -384,10 +336,8 @@ public class HistoricTaskAndVariablesQueryTest
                     .singleResult();
             assertThat(task.getTaskLocalVariables()).hasSize(2);
             assertThat(task.getProcessVariables()).hasSize(0);
-            assertThat(task.getTaskLocalVariables().get("testVar"))
-                .isEqualTo("someVariable");
-            assertThat(task.getTaskLocalVariables().get("testVar2"))
-                .isEqualTo(123);
+            assertThat(task.getTaskLocalVariables().get("testVar")).isEqualTo("someVariable");
+            assertThat(task.getTaskLocalVariables().get("testVar2")).isEqualTo(123);
 
             task =
                 historyService
@@ -400,10 +350,8 @@ public class HistoricTaskAndVariablesQueryTest
                     .singleResult();
             assertThat(task.getTaskLocalVariables()).hasSize(2);
             assertThat(task.getProcessVariables()).hasSize(0);
-            assertThat(task.getTaskLocalVariables().get("testVar"))
-                .isEqualTo("someVariable");
-            assertThat(task.getTaskLocalVariables().get("testVar2"))
-                .isEqualTo(123);
+            assertThat(task.getTaskLocalVariables().get("testVar")).isEqualTo("someVariable");
+            assertThat(task.getTaskLocalVariables().get("testVar2")).isEqualTo(123);
 
             task =
                 historyService
@@ -429,8 +377,7 @@ public class HistoricTaskAndVariablesQueryTest
                     .list();
             assertThat(tasks).hasSize(3);
             assertThat(tasks.get(0).getTaskLocalVariables()).hasSize(1);
-            assertThat(tasks.get(0).getTaskLocalVariables().get("test"))
-                .isEqualTo("test");
+            assertThat(tasks.get(0).getTaskLocalVariables().get("test")).isEqualTo("test");
             assertThat(tasks.get(0).getProcessVariables()).hasSize(0);
 
             tasks =
@@ -460,8 +407,7 @@ public class HistoricTaskAndVariablesQueryTest
                     .singleResult();
             assertThat(task.getProcessVariables()).hasSize(0);
             assertThat(task.getTaskLocalVariables()).hasSize(1);
-            assertThat(task.getTaskLocalVariables().get("localVar"))
-                .isEqualTo("test");
+            assertThat(task.getTaskLocalVariables().get("localVar")).isEqualTo("test");
 
             task =
                 historyService
@@ -475,10 +421,8 @@ public class HistoricTaskAndVariablesQueryTest
                     .singleResult();
             assertThat(task.getProcessVariables()).hasSize(2);
             assertThat(task.getTaskLocalVariables()).hasSize(0);
-            assertThat(task.getProcessVariables().get("processVar"))
-                .isEqualTo(true);
-            assertThat(task.getProcessVariables().get("anotherProcessVar"))
-                .isEqualTo(123);
+            assertThat(task.getProcessVariables().get("processVar")).isEqualTo(true);
+            assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
 
             task =
                 historyService
@@ -492,18 +436,11 @@ public class HistoricTaskAndVariablesQueryTest
                     .singleResult();
             assertThat(task.getProcessVariables()).hasSize(2);
             assertThat(task.getTaskLocalVariables()).hasSize(1);
-            assertThat(task.getTaskLocalVariables().get("localVar"))
-                .isEqualTo("test");
-            assertThat(task.getProcessVariables().get("processVar"))
-                .isEqualTo(true);
-            assertThat(task.getProcessVariables().get("anotherProcessVar"))
-                .isEqualTo(123);
+            assertThat(task.getTaskLocalVariables().get("localVar")).isEqualTo("test");
+            assertThat(task.getProcessVariables().get("processVar")).isEqualTo(true);
+            assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
 
-            task =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .taskAssignee(GONZO)
-                    .singleResult();
+            task = historyService.createHistoricTaskInstanceQuery().taskAssignee(GONZO).singleResult();
             taskService.complete(task.getId());
             task =
                 historyService
@@ -526,32 +463,21 @@ public class HistoricTaskAndVariablesQueryTest
 
     @Deployment
     public void testOrQueryMultipleVariableValues() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             Map<String, Object> startMap = new HashMap<String, Object>();
             startMap.put("processVar", true);
             startMap.put("anotherProcessVar", 123);
-            runtimeService.startProcessInstanceByKey(
-                "oneTaskProcess",
-                startMap
-            );
+            runtimeService.startProcessInstanceByKey("oneTaskProcess", startMap);
 
             startMap.put("anotherProcessVar", 999);
-            runtimeService.startProcessInstanceByKey(
-                "oneTaskProcess",
-                startMap
-            );
+            runtimeService.startProcessInstanceByKey("oneTaskProcess", startMap);
 
             HistoricTaskInstanceQuery query0 = historyService
                 .createHistoricTaskInstanceQuery()
                 .includeProcessVariables()
                 .or();
             for (int i = 0; i < 20; i++) {
-                query0 =
-                    query0.processVariableValueEquals("anotherProcessVar", i);
+                query0 = query0.processVariableValueEquals("anotherProcessVar", i);
             }
             query0 = query0.endOr();
             assertThat(query0.singleResult()).isNull();
@@ -562,63 +488,38 @@ public class HistoricTaskAndVariablesQueryTest
                 .or()
                 .processVariableValueEquals("anotherProcessVar", 123);
             for (int i = 0; i < 20; i++) {
-                query1 =
-                    query1.processVariableValueEquals("anotherProcessVar", i);
+                query1 = query1.processVariableValueEquals("anotherProcessVar", i);
             }
             query1 = query1.endOr();
             HistoricTaskInstance task = query1.singleResult();
             assertThat(task.getProcessVariables()).hasSize(2);
-            assertThat(task.getProcessVariables().get("processVar"))
-                .isEqualTo(true);
-            assertThat(task.getProcessVariables().get("anotherProcessVar"))
-                .isEqualTo(123);
+            assertThat(task.getProcessVariables().get("processVar")).isEqualTo(true);
+            assertThat(task.getProcessVariables().get("anotherProcessVar")).isEqualTo(123);
         }
     }
 
     @Deployment
     public void testCandidate() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
-            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-                "oneTaskProcess"
-            );
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
             List<HistoricTaskInstance> tasks = historyService
                 .createHistoricTaskInstanceQuery()
                 .taskCandidateUser(KERMIT, KERMITSGROUPS)
                 .list();
             assertThat(tasks).hasSize(3);
 
-            tasks =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .taskCandidateUser(GONZO, GONZOSGROUPS)
-                    .list();
+            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(GONZO, GONZOSGROUPS).list();
             assertThat(tasks).hasSize(0);
 
-            tasks =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .taskCandidateUser(FOZZIE, FOZZIESGROUPS)
-                    .list();
+            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(FOZZIE, FOZZIESGROUPS).list();
             assertThat(tasks).hasSize(1);
 
-            tasks =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .taskCandidateGroup("management")
-                    .list();
+            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroup("management").list();
             assertThat(tasks).hasSize(1);
             List<String> groups = new ArrayList<String>();
             groups.add("management");
             groups.add("accountancy");
-            tasks =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .taskCandidateGroupIn(groups)
-                    .list();
+            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroupIn(groups).list();
             assertThat(tasks).hasSize(1);
 
             tasks =
@@ -637,46 +538,21 @@ public class HistoricTaskAndVariablesQueryTest
                     .list();
             assertThat(tasks).hasSize(1);
 
-            Task task = taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+            Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
             taskService.complete(task.getId());
 
-            assertThat(
-                taskService
-                    .createTaskQuery()
-                    .processInstanceId(processInstance.getId())
-                    .count()
-            )
-                .isEqualTo(0);
+            assertThat(taskService.createTaskQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
 
-            tasks =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .taskCandidateUser(KERMIT, KERMITSGROUPS)
-                    .list();
+            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(KERMIT, KERMITSGROUPS).list();
             assertThat(tasks).hasSize(3);
 
-            tasks =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .taskCandidateUser(GONZO, GONZOSGROUPS)
-                    .list();
+            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(GONZO, GONZOSGROUPS).list();
             assertThat(tasks).hasSize(0);
 
-            tasks =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .taskCandidateUser(FOZZIE, FOZZIESGROUPS)
-                    .list();
+            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(FOZZIE, FOZZIESGROUPS).list();
             assertThat(tasks).hasSize(1);
 
-            tasks =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .taskCandidateGroup("management")
-                    .list();
+            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroup("management").list();
             assertThat(tasks).hasSize(1);
 
             tasks =
@@ -703,11 +579,7 @@ public class HistoricTaskAndVariablesQueryTest
                     .list();
             assertThat(tasks).hasSize(0);
 
-            tasks =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .taskCandidateGroupIn(groups)
-                    .list();
+            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroupIn(groups).list();
             assertThat(tasks).hasSize(1);
         }
     }
@@ -716,21 +588,11 @@ public class HistoricTaskAndVariablesQueryTest
     public void testCandidateWithUserGroupProxy() {
         //don't specify groups in query calls, instead get them through UserGroupLookupProxy (which could be remote service)
 
-        Mockito
-            .when(userGroupManager.getUserGroups(KERMIT))
-            .thenReturn(KERMITSGROUPS);
-        Mockito
-            .when(userGroupManager.getUserGroups(GONZO))
-            .thenReturn(GONZOSGROUPS);
-        Mockito
-            .when(userGroupManager.getUserGroups(FOZZIE))
-            .thenReturn(FOZZIESGROUPS);
+        Mockito.when(userGroupManager.getUserGroups(KERMIT)).thenReturn(KERMITSGROUPS);
+        Mockito.when(userGroupManager.getUserGroups(GONZO)).thenReturn(GONZOSGROUPS);
+        Mockito.when(userGroupManager.getUserGroups(FOZZIE)).thenReturn(FOZZIESGROUPS);
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             runtimeService.startProcessInstanceByKey("oneTaskProcess");
             List<HistoricTaskInstance> tasks = historyService
                 .createHistoricTaskInstanceQuery()
@@ -738,18 +600,10 @@ public class HistoricTaskAndVariablesQueryTest
                 .list();
             assertThat(tasks).hasSize(3);
 
-            tasks =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .taskCandidateUser(GONZO)
-                    .list();
+            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(GONZO).list();
             assertThat(tasks).hasSize(0);
 
-            tasks =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .taskCandidateUser(FOZZIE)
-                    .list();
+            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(FOZZIE).list();
             assertThat(tasks).hasSize(1);
 
             List<String> groups = new ArrayList<String>();
@@ -772,25 +626,13 @@ public class HistoricTaskAndVariablesQueryTest
                     .list();
             assertThat(tasks).hasSize(1);
 
-            tasks =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .taskCandidateUser(KERMIT)
-                    .list();
+            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(KERMIT).list();
             assertThat(tasks).hasSize(3);
 
-            tasks =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .taskCandidateUser(GONZO)
-                    .list();
+            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(GONZO).list();
             assertThat(tasks).hasSize(0);
 
-            tasks =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .taskCandidateUser(FOZZIE)
-                    .list();
+            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(FOZZIE).list();
             assertThat(tasks).hasSize(1);
 
             tasks =
@@ -820,11 +662,7 @@ public class HistoricTaskAndVariablesQueryTest
     }
 
     public void testQueryWithPagingAndVariables() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.AUDIT)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             List<HistoricTaskInstance> tasks = historyService
                 .createHistoricTaskInstanceQuery()
                 .includeProcessVariables()
@@ -881,20 +719,10 @@ public class HistoricTaskAndVariablesQueryTest
         }
     }
 
-    @Deployment(
-        resources = {
-            "org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml",
-        }
-    )
+    @Deployment(resources = { "org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml" })
     public void testWithoutDueDateQuery() throws Exception {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.AUDIT)
-        ) {
-            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-                "oneTaskProcess"
-            );
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
             HistoricTaskInstance historicTask = historyService
                 .createHistoricTaskInstanceQuery()
                 .processInstanceId(processInstance.getId())
@@ -904,12 +732,8 @@ public class HistoricTaskAndVariablesQueryTest
             assertThat(historicTask.getDueDate()).isNull();
 
             // Set due-date on task
-            Task task = taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
-            Date dueDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss")
-                .parse("01/02/2003 01:12:13");
+            Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+            Date dueDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("01/02/2003 01:12:13");
             task.setDueDate(dueDate);
             taskService.saveTask(task);
 
@@ -922,11 +746,7 @@ public class HistoricTaskAndVariablesQueryTest
             )
                 .isEqualTo(0);
 
-            task =
-                taskService
-                    .createTaskQuery()
-                    .processInstanceId(processInstance.getId())
-                    .singleResult();
+            task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 
             // Clear due-date on task
             task.setDueDate(null);
@@ -945,32 +765,19 @@ public class HistoricTaskAndVariablesQueryTest
 
     // Unit test for https://activiti.atlassian.net/browse/ACT-4152
     public void testQueryWithIncludeTaskVariableAndTaskCategory() {
-        List<HistoricTaskInstance> tasks = historyService
-            .createHistoricTaskInstanceQuery()
-            .taskAssignee(GONZO)
-            .list();
+        List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(GONZO).list();
         for (HistoricTaskInstance task : tasks) {
             assertThat(task.getCategory()).isNotNull();
             assertThat(task.getCategory()).isEqualTo("testCategory");
         }
 
-        tasks =
-            historyService
-                .createHistoricTaskInstanceQuery()
-                .taskAssignee(GONZO)
-                .includeTaskLocalVariables()
-                .list();
+        tasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(GONZO).includeTaskLocalVariables().list();
         for (HistoricTaskInstance task : tasks) {
             assertThat(task.getCategory()).isNotNull();
             assertThat(task.getCategory()).isEqualTo("testCategory");
         }
 
-        tasks =
-            historyService
-                .createHistoricTaskInstanceQuery()
-                .taskAssignee(GONZO)
-                .includeProcessVariables()
-                .list();
+        tasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(GONZO).includeProcessVariables().list();
         for (HistoricTaskInstance task : tasks) {
             assertThat(task.getCategory()).isNotNull();
             assertThat(task.getCategory()).isEqualTo("testCategory");
@@ -985,9 +792,7 @@ public class HistoricTaskAndVariablesQueryTest
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
         // 2 tasks for kermit
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(sdf.parse("01/01/2001 01:01:01.000"));
+        processEngineConfiguration.getClock().setCurrentTime(sdf.parse("01/01/2001 01:01:01.000"));
         for (int i = 0; i < 2; i++) {
             Task task = taskService.newTask();
             task.setName("testTask");
@@ -999,9 +804,7 @@ public class HistoricTaskAndVariablesQueryTest
             taskService.addCandidateUser(task.getId(), KERMIT);
         }
 
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(sdf.parse("02/02/2002 02:02:02.000"));
+        processEngineConfiguration.getClock().setCurrentTime(sdf.parse("02/02/2002 02:02:02.000"));
         // 1 task for gonzo
         Task task = taskService.newTask();
         task.setName("gonzoTask");

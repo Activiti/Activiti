@@ -23,8 +23,7 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToAPIProcessCandidateStarterUserRemovedEventConverter;
 
-public class ProcessCandidateStarterUserRemovedListenerDelegate
-    implements ActivitiEventListener {
+public class ProcessCandidateStarterUserRemovedListenerDelegate implements ActivitiEventListener {
 
     private List<ProcessRuntimeEventListener<ProcessCandidateStarterUserRemovedEvent>> listeners;
 
@@ -35,8 +34,7 @@ public class ProcessCandidateStarterUserRemovedListenerDelegate
         ToAPIProcessCandidateStarterUserRemovedEventConverter processCandidateStarterUserRemovedEventConverter
     ) {
         this.listeners = listeners;
-        this.processCandidateStarterUserRemovedEventConverter =
-            processCandidateStarterUserRemovedEventConverter;
+        this.processCandidateStarterUserRemovedEventConverter = processCandidateStarterUserRemovedEventConverter;
     }
 
     @Override

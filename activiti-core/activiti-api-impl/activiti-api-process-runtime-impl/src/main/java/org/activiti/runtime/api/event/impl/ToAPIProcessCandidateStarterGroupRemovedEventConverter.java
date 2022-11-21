@@ -23,34 +23,22 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.runtime.api.model.impl.APIProcessCandidateStarterGroupConverter;
 
 public class ToAPIProcessCandidateStarterGroupRemovedEventConverter
-    implements
-        EventConverter<ProcessCandidateStarterGroupRemovedEvent, ActivitiEntityEvent> {
+    implements EventConverter<ProcessCandidateStarterGroupRemovedEvent, ActivitiEntityEvent> {
 
     private APIProcessCandidateStarterGroupConverter converter;
     private ProcessCandidateStarterEventConverterHelper processCandidateStarterEventConverterHelper = new ProcessCandidateStarterEventConverterHelper();
 
-    public ToAPIProcessCandidateStarterGroupRemovedEventConverter(
-        APIProcessCandidateStarterGroupConverter converter
-    ) {
+    public ToAPIProcessCandidateStarterGroupRemovedEventConverter(APIProcessCandidateStarterGroupConverter converter) {
         this.converter = converter;
     }
 
     @Override
-    public Optional<ProcessCandidateStarterGroupRemovedEvent> from(
-        ActivitiEntityEvent internalEvent
-    ) {
+    public Optional<ProcessCandidateStarterGroupRemovedEvent> from(ActivitiEntityEvent internalEvent) {
         ProcessCandidateStarterGroupRemovedEventImpl event = null;
         if (internalEvent.getEntity() instanceof IdentityLink) {
             IdentityLink identityLink = (IdentityLink) internalEvent.getEntity();
-            if (
-                processCandidateStarterEventConverterHelper.isProcessCandidateStarterGroupLink(
-                    identityLink
-                )
-            ) {
-                event =
-                    new ProcessCandidateStarterGroupRemovedEventImpl(
-                        converter.from(identityLink)
-                    );
+            if (processCandidateStarterEventConverterHelper.isProcessCandidateStarterGroupLink(identityLink)) {
+                event = new ProcessCandidateStarterGroupRemovedEventImpl(converter.from(identityLink));
             }
         }
         return Optional.ofNullable(event);

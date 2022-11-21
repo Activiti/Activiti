@@ -30,22 +30,13 @@ public class ELResolverReflectionBlockerDecoratorTest {
     @Test
     public void should_resolveExpressionCorrectly_when_noReflectionOrNativeMethodsAreUsed() {
         //given
-        Map<String, Object> availableVariables = Collections.singletonMap(
-            "name",
-            "jon doe"
-        );
+        Map<String, Object> availableVariables = Collections.singletonMap("name", "jon doe");
         String expressionString = "${name.toString()}";
         ExpressionManager expressionManager = new ExpressionManager();
 
         //when
-        Expression expression = expressionManager.createExpression(
-            expressionString
-        );
-        Object value = expression.getValue(
-            expressionManager,
-            new DefaultDelegateInterceptor(),
-            availableVariables
-        );
+        Expression expression = expressionManager.createExpression(expressionString);
+        Object value = expression.getValue(expressionManager, new DefaultDelegateInterceptor(), availableVariables);
 
         //then
         assertThat(value).isEqualTo("jon doe");
@@ -54,27 +45,18 @@ public class ELResolverReflectionBlockerDecoratorTest {
     @Test
     public void should_throwException_when_nativeMethodIsUsed() {
         //given
-        Map<String, Object> availableVariables = Collections.singletonMap(
-            "name",
-            "jon doe"
-        );
+        Map<String, Object> availableVariables = Collections.singletonMap("name", "jon doe");
         String expressionString = "${name.getClass().getName()}";
         ExpressionManager expressionManager = new ExpressionManager();
 
         //when
-        Expression expression = expressionManager.createExpression(
-            expressionString
-        );
+        Expression expression = expressionManager.createExpression(expressionString);
 
         //then
         assertThatExceptionOfType(ActivitiException.class)
             .as("Using Native Method: getClass in an expression")
             .isThrownBy(() ->
-                expression.getValue(
-                    expressionManager,
-                    new DefaultDelegateInterceptor(),
-                    availableVariables
-                )
+                expression.getValue(expressionManager, new DefaultDelegateInterceptor(), availableVariables)
             )
             .withCauseInstanceOf(IllegalArgumentException.class);
     }
@@ -82,28 +64,18 @@ public class ELResolverReflectionBlockerDecoratorTest {
     @Test
     public void should_throwException_when_reflectionIsUsed() {
         //given
-        Map<String, Object> availableVariables = Collections.singletonMap(
-            "class",
-            String.class
-        );
-        String expressionString =
-            "${class.forName(\"java.lang.Runtime\").getMethods()[6].invoke()}";
+        Map<String, Object> availableVariables = Collections.singletonMap("class", String.class);
+        String expressionString = "${class.forName(\"java.lang.Runtime\").getMethods()[6].invoke()}";
         ExpressionManager expressionManager = new ExpressionManager();
 
         //when
-        Expression expression = expressionManager.createExpression(
-            expressionString
-        );
+        Expression expression = expressionManager.createExpression(expressionString);
 
         //then
         assertThatExceptionOfType(ActivitiException.class)
             .as("Using Reflection in an expression")
             .isThrownBy(() ->
-                expression.getValue(
-                    expressionManager,
-                    new DefaultDelegateInterceptor(),
-                    availableVariables
-                )
+                expression.getValue(expressionManager, new DefaultDelegateInterceptor(), availableVariables)
             )
             .withCauseInstanceOf(IllegalArgumentException.class);
     }

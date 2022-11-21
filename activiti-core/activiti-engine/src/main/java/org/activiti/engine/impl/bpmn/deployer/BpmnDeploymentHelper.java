@@ -50,9 +50,7 @@ public class BpmnDeploymentHelper {
      *
      * @throws ActivitiException if any two processes have the same key
      */
-    public void verifyProcessDefinitionsDoNotShareKeys(
-        Collection<ProcessDefinitionEntity> processDefinitions
-    ) {
+    public void verifyProcessDefinitionsDoNotShareKeys(Collection<ProcessDefinitionEntity> processDefinitions) {
         Set<String> keySet = new LinkedHashSet<String>();
         for (ProcessDefinitionEntity processDefinition : processDefinitions) {
             if (keySet.contains(processDefinition.getKey())) {
@@ -94,13 +92,9 @@ public class BpmnDeploymentHelper {
     /**
      * Updates all the process definition entities to have the correct resource names.
      */
-    public void setResourceNamesOnProcessDefinitions(
-        ParsedDeployment parsedDeployment
-    ) {
+    public void setResourceNamesOnProcessDefinitions(ParsedDeployment parsedDeployment) {
         for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
-            String resourceName = parsedDeployment
-                .getResourceForProcessDefinition(processDefinition)
-                .getName();
+            String resourceName = parsedDeployment.getResourceForProcessDefinition(processDefinition).getName();
             processDefinition.setResourceName(resourceName);
         }
     }
@@ -110,9 +104,7 @@ public class BpmnDeploymentHelper {
      * If none is found, returns null.  This method assumes that the tenant and key are properly
      * set on the process definition entity.
      */
-    public ProcessDefinitionEntity getMostRecentVersionOfProcessDefinition(
-        ProcessDefinitionEntity processDefinition
-    ) {
+    public ProcessDefinitionEntity getMostRecentVersionOfProcessDefinition(ProcessDefinitionEntity processDefinition) {
         String key = processDefinition.getKey();
         String tenantId = processDefinition.getTenantId();
         ProcessDefinitionEntityManager processDefinitionManager = Context
@@ -122,18 +114,10 @@ public class BpmnDeploymentHelper {
 
         ProcessDefinitionEntity existingDefinition = null;
 
-        if (
-            tenantId != null &&
-            !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)
-        ) {
-            existingDefinition =
-                processDefinitionManager.findLatestProcessDefinitionByKeyAndTenantId(
-                    key,
-                    tenantId
-                );
+        if (tenantId != null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)) {
+            existingDefinition = processDefinitionManager.findLatestProcessDefinitionByKeyAndTenantId(key, tenantId);
         } else {
-            existingDefinition =
-                processDefinitionManager.findLatestProcessDefinitionByKey(key);
+            existingDefinition = processDefinitionManager.findLatestProcessDefinitionByKey(key);
         }
 
         return existingDefinition;
@@ -145,14 +129,10 @@ public class BpmnDeploymentHelper {
      * a process definition that is already persisted and attached to a particular deployment,
      * rather than the latest version across all deployments.
      */
-    public ProcessDefinitionEntity getPersistedInstanceOfProcessDefinition(
-        ProcessDefinitionEntity processDefinition
-    ) {
+    public ProcessDefinitionEntity getPersistedInstanceOfProcessDefinition(ProcessDefinitionEntity processDefinition) {
         String deploymentId = processDefinition.getDeploymentId();
         if (StringUtils.isEmpty(processDefinition.getDeploymentId())) {
-            throw new IllegalStateException(
-                "Provided process definition must have a deployment id."
-            );
+            throw new IllegalStateException("Provided process definition must have a deployment id.");
         }
 
         ProcessDefinitionEntityManager processDefinitionManager = Context
@@ -162,9 +142,7 @@ public class BpmnDeploymentHelper {
         ProcessDefinitionEntity persistedProcessDefinition = null;
         if (
             processDefinition.getTenantId() == null ||
-            ProcessEngineConfiguration.NO_TENANT_ID.equals(
-                processDefinition.getTenantId()
-            )
+            ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())
         ) {
             persistedProcessDefinition =
                 processDefinitionManager.findProcessDefinitionByDeploymentAndKey(
@@ -192,25 +170,13 @@ public class BpmnDeploymentHelper {
         ProcessDefinitionEntity previousProcessDefinition,
         ParsedDeployment parsedDeployment
     ) {
-        Process process = parsedDeployment.getProcessModelForProcessDefinition(
-            processDefinition
-        );
-        BpmnModel bpmnModel = parsedDeployment.getBpmnModelForProcessDefinition(
-            processDefinition
-        );
+        Process process = parsedDeployment.getProcessModelForProcessDefinition(processDefinition);
+        BpmnModel bpmnModel = parsedDeployment.getBpmnModelForProcessDefinition(processDefinition);
 
-        eventSubscriptionManager.removeObsoleteMessageEventSubscriptions(
-            previousProcessDefinition
-        );
-        eventSubscriptionManager.addMessageEventSubscriptions(
-            processDefinition,
-            process,
-            bpmnModel
-        );
+        eventSubscriptionManager.removeObsoleteMessageEventSubscriptions(previousProcessDefinition);
+        eventSubscriptionManager.addMessageEventSubscriptions(processDefinition, process, bpmnModel);
 
-        eventSubscriptionManager.removeObsoleteSignalEventSubScription(
-            previousProcessDefinition
-        );
+        eventSubscriptionManager.removeObsoleteSignalEventSubScription(previousProcessDefinition);
         eventSubscriptionManager.addSignalEventSubscriptions(
             Context.getCommandContext(),
             processDefinition,
@@ -230,10 +196,7 @@ public class BpmnDeploymentHelper {
     /**
      * @param processDefinition
      */
-    public void addAuthorizationsForNewProcessDefinition(
-        Process process,
-        ProcessDefinitionEntity processDefinition
-    ) {
+    public void addAuthorizationsForNewProcessDefinition(Process process, ProcessDefinitionEntity processDefinition) {
         CommandContext commandContext = Context.getCommandContext();
 
         if (process != null) {
@@ -263,9 +226,7 @@ public class BpmnDeploymentHelper {
             while (iterator.hasNext()) {
                 @SuppressWarnings("cast")
                 String expression = iterator.next();
-                IdentityLinkEntity identityLink = commandContext
-                    .getIdentityLinkEntityManager()
-                    .create();
+                IdentityLinkEntity identityLink = commandContext.getIdentityLinkEntityManager().create();
                 identityLink.setProcessDef(processDefinition);
                 if (expressionType.equals(ExpressionType.USER)) {
                     identityLink.setUserId(expression);
@@ -273,9 +234,7 @@ public class BpmnDeploymentHelper {
                     identityLink.setGroupId(expression);
                 }
                 identityLink.setType(IdentityLinkType.CANDIDATE);
-                commandContext
-                    .getIdentityLinkEntityManager()
-                    .insert(identityLink);
+                commandContext.getIdentityLinkEntityManager().insert(identityLink);
             }
         }
     }
@@ -292,9 +251,7 @@ public class BpmnDeploymentHelper {
         return eventSubscriptionManager;
     }
 
-    public void setEventSubscriptionManager(
-        EventSubscriptionManager eventSubscriptionManager
-    ) {
+    public void setEventSubscriptionManager(EventSubscriptionManager eventSubscriptionManager) {
         this.eventSubscriptionManager = eventSubscriptionManager;
     }
 }

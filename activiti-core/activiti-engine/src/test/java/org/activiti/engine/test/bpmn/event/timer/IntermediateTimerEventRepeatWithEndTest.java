@@ -35,8 +35,7 @@ import org.joda.time.format.ISODateTimeFormat;
 /**
 
  */
-public class IntermediateTimerEventRepeatWithEndTest
-    extends PluggableActivitiTestCase {
+public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testRepeatWithEnd() throws Throwable {
@@ -64,24 +63,12 @@ public class IntermediateTimerEventRepeatWithEndTest
         // reset the timer
         Calendar nextTimeCal = Calendar.getInstance();
         nextTimeCal.setTime(baseTime);
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(nextTimeCal.getTime());
+        processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "repeatWithEnd"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("repeatWithEnd");
 
-        runtimeService.setVariable(
-            processInstance.getId(),
-            "EndDateForCatch1",
-            dateStr1
-        );
-        runtimeService.setVariable(
-            processInstance.getId(),
-            "EndDateForCatch2",
-            dateStr2
-        );
+        runtimeService.setVariable(processInstance.getId(), "EndDateForCatch1", dateStr1);
+        runtimeService.setVariable(processInstance.getId(), "EndDateForCatch2", dateStr2);
 
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
@@ -111,9 +98,7 @@ public class IntermediateTimerEventRepeatWithEndTest
 
         nextTimeCal.add(Calendar.HOUR, 1); // after 1 hour and 5 minutes the timer event should be executed.
         nextTimeCal.add(Calendar.MINUTE, 5);
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(nextTimeCal.getTime());
+        processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
         waitForJobExecutorToProcessAllJobs(2000, 200);
         // expect to execute because the time is reached.
@@ -130,18 +115,12 @@ public class IntermediateTimerEventRepeatWithEndTest
         taskService.complete(task.getId());
         nextTimeCal.add(Calendar.HOUR, 1); // after 1 hour and 5 minutes the timer event should be executed.
         nextTimeCal.add(Calendar.MINUTE, 5);
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(nextTimeCal.getTime());
+        processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
         waitForJobExecutorToProcessAllJobs(2000, 500);
         // expect to execute because the end time is reached.
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             HistoricProcessInstance historicInstance = historyService
                 .createHistoricProcessInstanceQuery()
                 .processInstanceId(processInstance.getId())
@@ -150,9 +129,7 @@ public class IntermediateTimerEventRepeatWithEndTest
         }
 
         // now all the process instances should be completed
-        List<ProcessInstance> processInstances = runtimeService
-            .createProcessInstanceQuery()
-            .list();
+        List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
         assertThat(processInstances).hasSize(0);
 
         // no jobs

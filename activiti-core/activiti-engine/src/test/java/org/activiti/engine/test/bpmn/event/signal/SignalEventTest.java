@@ -49,14 +49,12 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("catchSignal");
 
         assertThat(createEventSubscriptionQuery().count()).isEqualTo(1);
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(1);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
 
         runtimeService.startProcessInstanceByKey("throwSignal");
 
         assertThat(createEventSubscriptionQuery().count()).isEqualTo(0);
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
     }
 
     @Deployment(
@@ -71,14 +69,12 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("catchSignal", variableMap);
 
         assertThat(createEventSubscriptionQuery().count()).isEqualTo(1);
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(1);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
 
         runtimeService.startProcessInstanceByKey("throwSignal", variableMap);
 
         assertThat(createEventSubscriptionQuery().count()).isEqualTo(0);
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
     }
 
     @Deployment(
@@ -91,14 +87,12 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("catchSignal");
 
         assertThat(createEventSubscriptionQuery().count()).isEqualTo(1);
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(1);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
 
         runtimeService.startProcessInstanceByKey("throwSignal");
 
         assertThat(createEventSubscriptionQuery().count()).isEqualTo(0);
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
     }
 
     @Deployment(
@@ -110,17 +104,13 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     public void testSignalCatchBoundaryWithVariables() {
         HashMap<String, Object> variables1 = new HashMap<String, Object>();
         variables1.put("processName", "catchSignal");
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "catchSignal",
-            variables1
-        );
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("catchSignal", variables1);
 
         HashMap<String, Object> variables2 = new HashMap<String, Object>();
         variables2.put("processName", "throwSignal");
         runtimeService.startProcessInstanceByKey("throwSignal", variables2);
 
-        assertThat(runtimeService.getVariable(pi.getId(), "processName"))
-            .isEqualTo("throwSignal");
+        assertThat(runtimeService.getVariable(pi.getId(), "processName")).isEqualTo("throwSignal");
     }
 
     @Deployment(
@@ -133,27 +123,22 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("catchSignal");
 
         assertThat(createEventSubscriptionQuery().count()).isEqualTo(1);
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(1);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
 
         runtimeService.startProcessInstanceByKey("throwSignal");
 
         assertThat(createEventSubscriptionQuery().count()).isEqualTo(1);
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(1);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
 
         // there is a job:
         assertThat(managementService.createJobQuery().count()).isEqualTo(1);
 
         try {
-            processEngineConfiguration
-                .getClock()
-                .setCurrentTime(new Date(System.currentTimeMillis() + 1000));
+            processEngineConfiguration.getClock().setCurrentTime(new Date(System.currentTimeMillis() + 1000));
             waitForJobExecutorToProcessAllJobs(10000, 100l);
 
             assertThat(createEventSubscriptionQuery().count()).isEqualTo(0);
-            assertThat(runtimeService.createProcessInstanceQuery().count())
-                .isEqualTo(0);
+            assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
             assertThat(managementService.createJobQuery().count()).isEqualTo(0);
         } finally {
             processEngineConfiguration.getClock().setCurrentTime(new Date());
@@ -171,27 +156,21 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("catchSignal");
 
         assertThat(createEventSubscriptionQuery().count()).isEqualTo(2);
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(1);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
 
         runtimeService.startProcessInstanceByKey("throwAbort");
 
         assertThat(createEventSubscriptionQuery().count()).isEqualTo(1);
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(1);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
 
-        Task taskAfterAbort = taskService
-            .createTaskQuery()
-            .taskAssignee("gonzo")
-            .singleResult();
+        Task taskAfterAbort = taskService.createTaskQuery().taskAssignee("gonzo").singleResult();
         assertThat(taskAfterAbort).isNotNull();
         taskService.complete(taskAfterAbort.getId());
 
         runtimeService.startProcessInstanceByKey("throwSignal");
 
         assertThat(createEventSubscriptionQuery().count()).isEqualTo(0);
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
     }
 
     /**
@@ -199,9 +178,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
      */
     @Deployment
     public void testSignalBoundaryOnSubProcess() {
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "signalEventOnSubprocess"
-        );
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("signalEventOnSubprocess");
         runtimeService.signalEventReceived("stopSignal");
         assertProcessEnded(pi.getProcessInstanceId());
     }
@@ -259,9 +236,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     }
 
     private EventSubscriptionQueryImpl createEventSubscriptionQuery() {
-        return new EventSubscriptionQueryImpl(
-            processEngineConfiguration.getCommandExecutor()
-        );
+        return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor());
     }
 
     /**
@@ -269,45 +244,25 @@ public class SignalEventTest extends PluggableActivitiTestCase {
      */
     @Deployment
     public void testNonInterruptingSignal() {
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "nonInterruptingSignalEvent"
-        );
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("nonInterruptingSignalEvent");
 
-        List<Task> tasks = taskService
-            .createTaskQuery()
-            .processInstanceId(pi.getProcessInstanceId())
-            .list();
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
         assertThat(tasks).hasSize(1);
         Task currentTask = tasks.get(0);
         assertThat(currentTask.getName()).isEqualTo("My User Task");
 
         runtimeService.signalEventReceived("alert");
 
-        tasks =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(pi.getProcessInstanceId())
-                .list();
+        tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
         assertThat(tasks).hasSize(2);
 
         for (Task task : tasks) {
-            assertThat(task.getName())
-                .isIn("My User Task", "My Second User Task");
+            assertThat(task.getName()).isIn("My User Task", "My Second User Task");
         }
 
-        taskService.complete(
-            taskService
-                .createTaskQuery()
-                .taskName("My User Task")
-                .singleResult()
-                .getId()
-        );
+        taskService.complete(taskService.createTaskQuery().taskName("My User Task").singleResult().getId());
 
-        tasks =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(pi.getProcessInstanceId())
-                .list();
+        tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
         assertThat(tasks).hasSize(1);
         currentTask = tasks.get(0);
         assertThat(currentTask.getName()).isEqualTo("My Second User Task");
@@ -318,13 +273,8 @@ public class SignalEventTest extends PluggableActivitiTestCase {
      */
     @Deployment
     public void testNonInterruptingSignalWithSubProcess() {
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "nonInterruptingSignalWithSubProcess"
-        );
-        List<Task> tasks = taskService
-            .createTaskQuery()
-            .processInstanceId(pi.getProcessInstanceId())
-            .list();
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("nonInterruptingSignalWithSubProcess");
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
         assertThat(tasks).hasSize(1);
 
         Task currentTask = tasks.get(0);
@@ -332,48 +282,24 @@ public class SignalEventTest extends PluggableActivitiTestCase {
 
         runtimeService.signalEventReceived("alert");
 
-        tasks =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(pi.getProcessInstanceId())
-                .list();
+        tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
         assertThat(tasks).hasSize(2);
 
         for (Task task : tasks) {
             assertThat(task.getName()).isIn("Approve", "Review");
         }
 
-        taskService.complete(
-            taskService
-                .createTaskQuery()
-                .taskName("Approve")
-                .singleResult()
-                .getId()
-        );
+        taskService.complete(taskService.createTaskQuery().taskName("Approve").singleResult().getId());
 
-        tasks =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(pi.getProcessInstanceId())
-                .list();
+        tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
         assertThat(tasks).hasSize(1);
 
         currentTask = tasks.get(0);
         assertThat(currentTask.getName()).isEqualTo("Review");
 
-        taskService.complete(
-            taskService
-                .createTaskQuery()
-                .taskName("Review")
-                .singleResult()
-                .getId()
-        );
+        taskService.complete(taskService.createTaskQuery().taskName("Review").singleResult().getId());
 
-        tasks =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(pi.getProcessInstanceId())
-                .list();
+        tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
         assertThat(tasks).hasSize(1);
     }
 
@@ -386,49 +312,24 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         assertThat(task.getName()).isEqualTo("Enter developers");
         taskService.complete(
             task.getId(),
-            singletonMap(
-                "developers",
-                asList("developerOne", "developerTwo", "developerThree")
-            )
+            singletonMap("developers", asList("developerOne", "developerTwo", "developerThree"))
         );
 
         // Should be three distinct tasks for each developer
-        assertThat(
-            taskService
-                .createTaskQuery()
-                .taskAssignee("developerOne")
-                .singleResult()
-                .getName()
-        )
+        assertThat(taskService.createTaskQuery().taskAssignee("developerOne").singleResult().getName())
             .isEqualTo("Develop specifications");
-        assertThat(
-            taskService
-                .createTaskQuery()
-                .taskAssignee("developerTwo")
-                .singleResult()
-                .getName()
-        )
+        assertThat(taskService.createTaskQuery().taskAssignee("developerTwo").singleResult().getName())
             .isEqualTo("Develop specifications");
-        assertThat(
-            taskService
-                .createTaskQuery()
-                .taskAssignee("developerThree")
-                .singleResult()
-                .getName()
-        )
+        assertThat(taskService.createTaskQuery().taskAssignee("developerThree").singleResult().getName())
             .isEqualTo("Develop specifications");
 
         // Negotiate with client is a task for kermit
-        task =
-            taskService.createTaskQuery().taskAssignee("kermit").singleResult();
+        task = taskService.createTaskQuery().taskAssignee("kermit").singleResult();
         assertThat(task.getName()).isEqualTo("Negotiate with client");
 
         // When the kermit task is completed, it throws a signal which should
         // cancel the multi instance
-        taskService.complete(
-            task.getId(),
-            singletonMap("negotationFailed", true)
-        );
+        taskService.complete(task.getId(), singletonMap("negotationFailed", true));
 
         // No tasks should be open then and process should have ended
         assertThat(taskService.createTaskQuery().count()).isEqualTo(0);
@@ -438,15 +339,9 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     @Deployment
     public void testSignalWithProcessInstanceScope() {
         // Start the process that catches the signal
-        ProcessInstance processInstanceCatch = runtimeService.startProcessInstanceByKey(
-            "processWithSignalCatch"
-        );
+        ProcessInstance processInstanceCatch = runtimeService.startProcessInstanceByKey("processWithSignalCatch");
         assertThat(
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstanceCatch.getId())
-                .singleResult()
-                .getName()
+            taskService.createTaskQuery().processInstanceId(processInstanceCatch.getId()).singleResult().getName()
         )
             .isEqualTo("userTaskWithSignalCatch");
 
@@ -456,22 +351,14 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         // Since the signal is process instance scoped, the second process
         // shouldn't have proceeded in any way
         assertThat(
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstanceCatch.getId())
-                .singleResult()
-                .getName()
+            taskService.createTaskQuery().processInstanceId(processInstanceCatch.getId()).singleResult().getName()
         )
             .isEqualTo("userTaskWithSignalCatch");
 
         // Let's try to trigger the catch using the API, that should also fail
         runtimeService.signalEventReceived("The Signal");
         assertThat(
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstanceCatch.getId())
-                .singleResult()
-                .getName()
+            taskService.createTaskQuery().processInstanceId(processInstanceCatch.getId()).singleResult().getName()
         )
             .isEqualTo("userTaskWithSignalCatch");
     }
@@ -479,15 +366,9 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     @Deployment
     public void testSignalWithGlobalScope() {
         // Start the process that catches the signal
-        ProcessInstance processInstanceCatch = runtimeService.startProcessInstanceByKey(
-            "processWithSignalCatch"
-        );
+        ProcessInstance processInstanceCatch = runtimeService.startProcessInstanceByKey("processWithSignalCatch");
         assertThat(
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstanceCatch.getId())
-                .singleResult()
-                .getName()
+            taskService.createTaskQuery().processInstanceId(processInstanceCatch.getId()).singleResult().getName()
         )
             .isEqualTo("userTaskWithSignalCatch");
 
@@ -497,20 +378,14 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         // Since the signal is process instance scoped, the second process
         // shouldn't have proceeded in any way
         assertThat(
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstanceCatch.getId())
-                .singleResult()
-                .getName()
+            taskService.createTaskQuery().processInstanceId(processInstanceCatch.getId()).singleResult().getName()
         )
             .isEqualTo("userTaskAfterSignalCatch");
     }
 
     @Deployment
     public void testAsyncTriggeredSignalEvent() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "processWithSignalCatch"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("processWithSignalCatch");
 
         assertThat(processInstance).isNotNull();
         Execution execution = runtimeService
@@ -522,18 +397,13 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         assertThat(createEventSubscriptionQuery().count()).isEqualTo(1);
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(2);
 
-        runtimeService.signalEventReceivedAsync(
-            "The Signal",
-            execution.getId()
-        );
+        runtimeService.signalEventReceivedAsync("The Signal", execution.getId());
 
-        assertThat(managementService.createJobQuery().messages().count())
-            .isEqualTo(1);
+        assertThat(managementService.createJobQuery().messages().count()).isEqualTo(1);
 
         waitForJobExecutorToProcessAllJobs(8000L, 200L);
         assertThat(createEventSubscriptionQuery().count()).isEqualTo(0);
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
         assertThat(managementService.createJobQuery().count()).isEqualTo(0);
     }
 
@@ -548,8 +418,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
 
         assertThat(execution).isNotNull();
 
-        assertThatExceptionOfType(ActivitiException.class)
-            .isThrownBy(() -> runtimeService.trigger(execution.getId()));
+        assertThatExceptionOfType(ActivitiException.class).isThrownBy(() -> runtimeService.trigger(execution.getId()));
     }
 
     public void testSignalStartEventFromProcess() {
@@ -565,46 +434,30 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("processWithSignalThrow");
 
         // Verify
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(3);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(3);
         assertThat(taskService.createTaskQuery().count()).isEqualTo(3);
 
-        List<Task> tasks = taskService
-            .createTaskQuery()
-            .orderByTaskName()
-            .asc()
-            .list();
+        List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         List<String> names = asList("A", "B", "C");
         for (int i = 0; i < tasks.size(); i++) {
-            assertThat(tasks.get(i).getName())
-                .isEqualTo("Task in process " + names.get(i));
+            assertThat(tasks.get(i).getName()).isEqualTo("Task in process " + names.get(i));
         }
 
         // Start a process with a signal boundary event
         runtimeService.startProcessInstanceByKey("processWithSignalCatch");
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(4);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(4);
         assertThat(taskService.createTaskQuery().count()).isEqualTo(4);
-        assertThat(
-            taskService.createTaskQuery().taskName("Task in process D").count()
-        )
-            .isEqualTo(1);
+        assertThat(taskService.createTaskQuery().taskName("Task in process D").count()).isEqualTo(1);
 
         // Firing the signal should now trigger the one with the boundary event
         // too
         runtimeService.startProcessInstanceByKey("processWithSignalThrow");
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(7);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(7);
         assertThat(taskService.createTaskQuery().count()).isEqualTo(7);
-        assertThat(
-            taskService.createTaskQuery().taskName("Task after signal").count()
-        )
-            .isEqualTo(1);
+        assertThat(taskService.createTaskQuery().taskName("Task after signal").count()).isEqualTo(1);
 
         // Cleanup
-        for (org.activiti.engine.repository.Deployment deployment : repositoryService
-            .createDeploymentQuery()
-            .list()) {
+        for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
             repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
@@ -623,38 +476,27 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("processWithSignalThrow");
 
         // Verify
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
         assertThat(taskService.createTaskQuery().count()).isEqualTo(0);
 
         assertThat(managementService.createJobQuery().count()).isEqualTo(3);
         for (Job job : managementService.createJobQuery().list()) {
             managementService.executeJob(job.getId());
         }
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(3);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(3);
         assertThat(taskService.createTaskQuery().count()).isEqualTo(3);
 
-        List<Task> tasks = taskService
-            .createTaskQuery()
-            .orderByTaskName()
-            .asc()
-            .list();
+        List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         List<String> names = asList("A", "B", "C");
         for (int i = 0; i < tasks.size(); i++) {
-            assertThat(tasks.get(i).getName())
-                .isEqualTo("Task in process " + names.get(i));
+            assertThat(tasks.get(i).getName()).isEqualTo("Task in process " + names.get(i));
         }
 
         // Start a process with a signal boundary event
         runtimeService.startProcessInstanceByKey("processWithSignalCatch");
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(4);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(4);
         assertThat(taskService.createTaskQuery().count()).isEqualTo(4);
-        assertThat(
-            taskService.createTaskQuery().taskName("Task in process D").count()
-        )
-            .isEqualTo(1);
+        assertThat(taskService.createTaskQuery().taskName("Task in process D").count()).isEqualTo(1);
 
         // Firing again
         runtimeService.startProcessInstanceByKey("processWithSignalThrow");
@@ -663,18 +505,12 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         for (Job job : managementService.createJobQuery().list()) {
             managementService.executeJob(job.getId());
         }
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(7);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(7);
         assertThat(taskService.createTaskQuery().count()).isEqualTo(7);
-        assertThat(
-            taskService.createTaskQuery().taskName("Task after signal").count()
-        )
-            .isEqualTo(1);
+        assertThat(taskService.createTaskQuery().taskName("Task after signal").count()).isEqualTo(1);
 
         // Cleanup
-        for (org.activiti.engine.repository.Deployment deployment : repositoryService
-            .createDeploymentQuery()
-            .list()) {
+        for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
             repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
@@ -691,46 +527,30 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         runtimeService.signalEventReceived("The Signal");
 
         // Verify
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(3);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(3);
         assertThat(taskService.createTaskQuery().count()).isEqualTo(3);
 
-        List<Task> tasks = taskService
-            .createTaskQuery()
-            .orderByTaskName()
-            .asc()
-            .list();
+        List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         List<String> names = asList("A", "B", "C");
         for (int i = 0; i < tasks.size(); i++) {
-            assertThat(tasks.get(i).getName())
-                .isEqualTo("Task in process " + names.get(i));
+            assertThat(tasks.get(i).getName()).isEqualTo("Task in process " + names.get(i));
         }
 
         // Start a process with a signal boundary event
         runtimeService.startProcessInstanceByKey("processWithSignalCatch");
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(4);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(4);
         assertThat(taskService.createTaskQuery().count()).isEqualTo(4);
-        assertThat(
-            taskService.createTaskQuery().taskName("Task in process D").count()
-        )
-            .isEqualTo(1);
+        assertThat(taskService.createTaskQuery().taskName("Task in process D").count()).isEqualTo(1);
 
         // Firing the signal should now trigger the one with the boundary event
         // too
         runtimeService.signalEventReceived("The Signal");
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(7);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(7);
         assertThat(taskService.createTaskQuery().count()).isEqualTo(7);
-        assertThat(
-            taskService.createTaskQuery().taskName("Task after signal").count()
-        )
-            .isEqualTo(1);
+        assertThat(taskService.createTaskQuery().taskName("Task after signal").count()).isEqualTo(1);
 
         // Cleanup
-        for (org.activiti.engine.repository.Deployment deployment : repositoryService
-            .createDeploymentQuery()
-            .list()) {
+        for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
             repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
@@ -750,30 +570,20 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         for (Job job : managementService.createJobQuery().list()) {
             managementService.executeJob(job.getId());
         }
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(3);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(3);
         assertThat(taskService.createTaskQuery().count()).isEqualTo(3);
 
-        List<Task> tasks = taskService
-            .createTaskQuery()
-            .orderByTaskName()
-            .asc()
-            .list();
+        List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         List<String> names = asList("A", "B", "C");
         for (int i = 0; i < tasks.size(); i++) {
-            assertThat(tasks.get(i).getName())
-                .isEqualTo("Task in process " + names.get(i));
+            assertThat(tasks.get(i).getName()).isEqualTo("Task in process " + names.get(i));
         }
 
         // Start a process with a signal boundary event
         runtimeService.startProcessInstanceByKey("processWithSignalCatch");
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(4);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(4);
         assertThat(taskService.createTaskQuery().count()).isEqualTo(4);
-        assertThat(
-            taskService.createTaskQuery().taskName("Task in process D").count()
-        )
-            .isEqualTo(1);
+        assertThat(taskService.createTaskQuery().taskName("Task in process D").count()).isEqualTo(1);
 
         // Firing again
         runtimeService.signalEventReceivedAsync("The Signal");
@@ -782,18 +592,12 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         for (Job job : managementService.createJobQuery().list()) {
             managementService.executeJob(job.getId());
         }
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(7);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(7);
         assertThat(taskService.createTaskQuery().count()).isEqualTo(7);
-        assertThat(
-            taskService.createTaskQuery().taskName("Task after signal").count()
-        )
-            .isEqualTo(1);
+        assertThat(taskService.createTaskQuery().taskName("Task after signal").count()).isEqualTo(1);
 
         // Cleanup
-        for (org.activiti.engine.repository.Deployment deployment : repositoryService
-            .createDeploymentQuery()
-            .list()) {
+        for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
             repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
@@ -807,41 +611,30 @@ public class SignalEventTest extends PluggableActivitiTestCase {
             )
             .deploy();
 
-        repositoryService.suspendProcessDefinitionByKey(
-            "processWithSignalStart1"
-        );
+        repositoryService.suspendProcessDefinitionByKey("processWithSignalStart1");
 
         assertThatExceptionOfType(ActivitiException.class)
             .as("ActivitiException expected. Process definition is suspended")
             .isThrownBy(() -> runtimeService.signalEventReceived("The Signal"));
 
         // Cleanup
-        for (org.activiti.engine.repository.Deployment deployment : repositoryService
-            .createDeploymentQuery()
-            .list()) {
+        for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
             repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
 
     @Deployment
     public void testEarlyFinishedProcess() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "callerProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("callerProcess");
         assertThat(processInstance.getId()).isNotNull();
     }
 
     @Deployment
     public void testNoneEndEventAfterSignalInConcurrentProcess() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "my-process"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("my-process");
         assertThat(processInstance).isNotNull();
 
-        Task task = taskService
-            .createTaskQuery()
-            .taskDefinitionKey("usertask1")
-            .singleResult();
+        Task task = taskService.createTaskQuery().taskDefinitionKey("usertask1").singleResult();
         taskService.claim(task.getId(), "user");
         taskService.complete(task.getId());
 
@@ -879,22 +672,17 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         // Firing a signal start event should only start ONE process instance
         // This used to be two, due to subscriptions not being cleaned up
         runtimeService.signalEventReceived("The Signal");
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(3);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(3);
 
         // Cleanup
-        for (org.activiti.engine.repository.Deployment deployment : repositoryService
-            .createDeploymentQuery()
-            .list()) {
+        for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
             repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
 
     @Deployment
     public void testSignalWaitOnUserTaskBoundaryEvent() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "signal-wait"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("signal-wait");
         Execution execution = runtimeService
             .createExecutionQuery()
             .processInstanceId(processInstance.getId())
@@ -909,10 +697,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
                 .signalEventSubscriptionName("waitsig")
                 .singleResult();
         assertThat(execution).isNull();
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task).isNotNull();
         assertThat(task.getName()).isEqualTo("Wait2");
     }
@@ -928,25 +713,19 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         FileExistsMock.getInstance().removeFile();
 
         // create first instance
-        ProcessInstance firstProcessInstance = runtimeService.startProcessInstanceByKey(
-            "signalBoundaryProcess"
-        );
+        ProcessInstance firstProcessInstance = runtimeService.startProcessInstanceByKey("signalBoundaryProcess");
         assertThat(firstProcessInstance).isNotNull();
 
         // task should be "add a file"
         Task firstTask = taskService.createTaskQuery().singleResult();
         assertThat(firstTask.getName()).isEqualTo("Add a file");
 
-        Map<String, Object> vars = runtimeService.getVariables(
-            firstTask.getExecutionId()
-        );
+        Map<String, Object> vars = runtimeService.getVariables(firstTask.getExecutionId());
         // file does not exists
         assertThat(vars.get(fileExistsVar)).isEqualTo(false);
 
         // create second instance
-        ProcessInstance secondProcessInstance = runtimeService.startProcessInstanceByKey(
-            "signalBoundaryProcess"
-        );
+        ProcessInstance secondProcessInstance = runtimeService.startProcessInstanceByKey("signalBoundaryProcess");
         assertThat(secondProcessInstance).isNotNull();
 
         // there should be two open tasks
@@ -974,10 +753,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         // FIXME: this causes the exception:
         taskService.complete(firstTask.getId());
 
-        List<Task> usingTask = taskService
-            .createTaskQuery()
-            .taskName("Use the file")
-            .list();
+        List<Task> usingTask = taskService.createTaskQuery().taskName("Use the file").list();
         assertThat(usingTask).hasSize(1);
     }
 
@@ -1002,16 +778,9 @@ public class SignalEventTest extends PluggableActivitiTestCase {
         validateTaskCounts(3, 1, 2);
     }
 
-    private void validateTaskCounts(
-        long taskACount,
-        long taskBCount,
-        long taskCCount
-    ) {
-        assertThat(taskService.createTaskQuery().taskName("Task A").count())
-            .isEqualTo(taskACount);
-        assertThat(taskService.createTaskQuery().taskName("Task B").count())
-            .isEqualTo(taskBCount);
-        assertThat(taskService.createTaskQuery().taskName("Task C").count())
-            .isEqualTo(taskCCount);
+    private void validateTaskCounts(long taskACount, long taskBCount, long taskCCount) {
+        assertThat(taskService.createTaskQuery().taskName("Task A").count()).isEqualTo(taskACount);
+        assertThat(taskService.createTaskQuery().taskName("Task B").count()).isEqualTo(taskBCount);
+        assertThat(taskService.createTaskQuery().taskName("Task C").count()).isEqualTo(taskCCount);
     }
 }

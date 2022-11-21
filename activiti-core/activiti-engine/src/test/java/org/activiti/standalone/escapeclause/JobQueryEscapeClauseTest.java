@@ -32,9 +32,7 @@ public class JobQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
         deploymentId =
             repositoryService
                 .createDeployment()
-                .addClasspathResource(
-                    "org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml"
-                )
+                .addClasspathResource("org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml")
                 .tenantId("tenant%")
                 .deploy()
                 .getId();
@@ -42,9 +40,7 @@ public class JobQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
         deploymentTwoId =
             repositoryService
                 .createDeployment()
-                .addClasspathResource(
-                    "org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml"
-                )
+                .addClasspathResource("org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml")
                 .tenantId("tenant_")
                 .deploy()
                 .getId();
@@ -52,24 +48,16 @@ public class JobQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
         deploymentThreeId =
             repositoryService
                 .createDeployment()
-                .addClasspathResource(
-                    "org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml"
-                )
+                .addClasspathResource("org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml")
                 .tenantId("test")
                 .deploy()
                 .getId();
 
-        runtimeService
-            .startProcessInstanceByKeyAndTenantId("timerOnTask", "tenant%")
-            .getId();
+        runtimeService.startProcessInstanceByKeyAndTenantId("timerOnTask", "tenant%").getId();
 
-        runtimeService
-            .startProcessInstanceByKeyAndTenantId("timerOnTask", "tenant_")
-            .getId();
+        runtimeService.startProcessInstanceByKeyAndTenantId("timerOnTask", "tenant_").getId();
 
-        runtimeService
-            .startProcessInstanceByKeyAndTenantId("timerOnTask", "test")
-            .getId();
+        runtimeService.startProcessInstanceByKeyAndTenantId("timerOnTask", "test").getId();
     }
 
     @Override
@@ -81,21 +69,17 @@ public class JobQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
     }
 
     public void testQueryByTenantIdLike() {
-        TimerJobQuery query = managementService
-            .createTimerJobQuery()
-            .jobTenantIdLike("%\\%%");
+        TimerJobQuery query = managementService.createTimerJobQuery().jobTenantIdLike("%\\%%");
         assertThat(query.singleResult().getTenantId()).isEqualTo("tenant%");
         assertThat(query.list()).hasSize(1);
         assertThat(query.count()).isEqualTo(1);
 
-        query =
-            managementService.createTimerJobQuery().jobTenantIdLike("%\\_%");
+        query = managementService.createTimerJobQuery().jobTenantIdLike("%\\_%");
         assertThat(query.singleResult().getTenantId()).isEqualTo("tenant_");
         assertThat(query.list()).hasSize(1);
         assertThat(query.count()).isEqualTo(1);
 
-        query =
-            managementService.createTimerJobQuery().jobTenantIdLike("%test%");
+        query = managementService.createTimerJobQuery().jobTenantIdLike("%test%");
         assertThat(query.singleResult().getTenantId()).isEqualTo("test");
         assertThat(query.list()).hasSize(1);
         assertThat(query.count()).isEqualTo(1);

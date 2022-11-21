@@ -39,12 +39,9 @@ import org.slf4j.LoggerFactory;
 
 
  */
-public abstract class PluggableActivitiTestCase
-    extends AbstractActivitiTestCase {
+public abstract class PluggableActivitiTestCase extends AbstractActivitiTestCase {
 
-    private static Logger pluggableActivitiTestCaseLogger = LoggerFactory.getLogger(
-        PluggableActivitiTestCase.class
-    );
+    private static Logger pluggableActivitiTestCaseLogger = LoggerFactory.getLogger(PluggableActivitiTestCase.class);
 
     protected static ProcessEngine cachedProcessEngine;
 
@@ -57,21 +54,15 @@ public abstract class PluggableActivitiTestCase
 
             cachedProcessEngine = ProcessEngines.getDefaultProcessEngine();
             if (cachedProcessEngine == null) {
-                throw new ActivitiException(
-                    "no default process engine available"
-                );
+                throw new ActivitiException("no default process engine available");
             }
         }
 
         processEngine = cachedProcessEngine;
-        processEngineConfiguration =
-            ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
+        processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
 
         // Enable verbose execution tree debugging if needed
-        if (
-            this.getClass()
-                .isAnnotationPresent(EnableVerboseExecutionTreeLogging.class)
-        ) {
+        if (this.getClass().isAnnotationPresent(EnableVerboseExecutionTreeLogging.class)) {
             swapCommandInvoker(true);
         }
     }
@@ -81,10 +72,7 @@ public abstract class PluggableActivitiTestCase
         super.closeDownProcessEngine();
 
         // Reset command invoker
-        if (
-            this.getClass()
-                .isAnnotationPresent(EnableVerboseExecutionTreeLogging.class)
-        ) {
+        if (this.getClass().isAnnotationPresent(EnableVerboseExecutionTreeLogging.class)) {
             swapCommandInvoker(false);
         }
     }
@@ -102,15 +90,11 @@ public abstract class PluggableActivitiTestCase
                     ? (commandInterceptor instanceof CommandInvoker)
                     : (commandInterceptor instanceof DebugCommandInvoker);
                 if (matches) {
-                    CommandInterceptor commandInvoker = debug
-                        ? new DebugCommandInvoker()
-                        : new CommandInvoker();
+                    CommandInterceptor commandInvoker = debug ? new DebugCommandInvoker() : new CommandInvoker();
                     if (previousCommandInterceptor != null) {
                         previousCommandInterceptor.setNext(commandInvoker);
                     } else {
-                        commandExecutorImpl.setFirst(
-                            previousCommandInterceptor
-                        );
+                        commandExecutorImpl.setFirst(previousCommandInterceptor);
                     }
                     break;
                 } else {

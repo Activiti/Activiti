@@ -38,14 +38,8 @@ import org.apache.commons.lang3.StringUtils;
 public class SequenceflowValidator extends ProcessLevelValidator {
 
     @Override
-    protected void executeValidation(
-        BpmnModel bpmnModel,
-        Process process,
-        List<ValidationError> errors
-    ) {
-        List<SequenceFlow> sequenceFlows = process.findFlowElementsOfType(
-            SequenceFlow.class
-        );
+    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+        List<SequenceFlow> sequenceFlows = process.findFlowElementsOfType(SequenceFlow.class);
         for (SequenceFlow sequenceFlow : sequenceFlows) {
             String sourceRef = sequenceFlow.getSourceRef();
             String targetRef = sequenceFlow.getTargetRef();
@@ -96,12 +90,8 @@ public class SequenceflowValidator extends ProcessLevelValidator {
             }
 
             if (source != null && target != null) {
-                FlowElementsContainer sourceContainer = process.getFlowElementsContainer(
-                    source.getId()
-                );
-                FlowElementsContainer targetContainer = process.getFlowElementsContainer(
-                    target.getId()
-                );
+                FlowElementsContainer sourceContainer = process.getFlowElementsContainer(source.getId());
+                FlowElementsContainer targetContainer = process.getFlowElementsContainer(target.getId());
 
                 if (sourceContainer == null) {
                     addError(
@@ -121,11 +111,7 @@ public class SequenceflowValidator extends ProcessLevelValidator {
                         "Invalid target for sequenceflow"
                     );
                 }
-                if (
-                    sourceContainer != null &&
-                    targetContainer != null &&
-                    !sourceContainer.equals(targetContainer)
-                ) {
+                if (sourceContainer != null && targetContainer != null && !sourceContainer.equals(targetContainer)) {
                     addError(
                         errors,
                         Problems.SEQ_FLOW_INVALID_TARGET,
@@ -141,11 +127,7 @@ public class SequenceflowValidator extends ProcessLevelValidator {
             if (conditionExpression != null) {
                 try {
                     new ExpressionFactoryImpl()
-                        .createValueExpression(
-                            new SimpleContext(),
-                            conditionExpression.trim(),
-                            Object.class
-                        );
+                        .createValueExpression(new SimpleContext(), conditionExpression.trim(), Object.class);
                 } catch (Exception e) {
                     addError(
                         errors,

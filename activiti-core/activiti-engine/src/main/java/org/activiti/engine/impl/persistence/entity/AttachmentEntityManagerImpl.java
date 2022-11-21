@@ -53,13 +53,9 @@ public class AttachmentEntityManagerImpl
     }
 
     @Override
-    public List<AttachmentEntity> findAttachmentsByProcessInstanceId(
-        String processInstanceId
-    ) {
+    public List<AttachmentEntity> findAttachmentsByProcessInstanceId(String processInstanceId) {
         checkHistoryEnabled();
-        return attachmentDataManager.findAttachmentsByProcessInstanceId(
-            processInstanceId
-        );
+        return attachmentDataManager.findAttachmentsByProcessInstanceId(processInstanceId);
     }
 
     @Override
@@ -114,9 +110,7 @@ public class AttachmentEntityManagerImpl
 
     protected void checkHistoryEnabled() {
         if (!getHistoryManager().isHistoryEnabled()) {
-            throw new ActivitiException(
-                "In order to use attachments, history should be enabled"
-            );
+            throw new ActivitiException("In order to use attachments, history should be enabled");
         }
     }
 
@@ -124,9 +118,7 @@ public class AttachmentEntityManagerImpl
         return attachmentDataManager;
     }
 
-    public void setAttachmentDataManager(
-        AttachmentDataManager attachmentDataManager
-    ) {
+    public void setAttachmentDataManager(AttachmentDataManager attachmentDataManager) {
         this.attachmentDataManager = attachmentDataManager;
     }
 }

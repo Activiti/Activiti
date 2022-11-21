@@ -32,18 +32,10 @@ public class DeploymentQueryProperty implements QueryProperty {
 
     private static final Map<String, DeploymentQueryProperty> properties = new HashMap<String, DeploymentQueryProperty>();
 
-    public static final DeploymentQueryProperty DEPLOYMENT_ID = new DeploymentQueryProperty(
-        "RES.ID_"
-    );
-    public static final DeploymentQueryProperty DEPLOYMENT_NAME = new DeploymentQueryProperty(
-        "RES.NAME_"
-    );
-    public static final DeploymentQueryProperty DEPLOYMENT_TENANT_ID = new DeploymentQueryProperty(
-        "RES.TENANT_ID_"
-    );
-    public static final DeploymentQueryProperty DEPLOY_TIME = new DeploymentQueryProperty(
-        "RES.DEPLOY_TIME_"
-    );
+    public static final DeploymentQueryProperty DEPLOYMENT_ID = new DeploymentQueryProperty("RES.ID_");
+    public static final DeploymentQueryProperty DEPLOYMENT_NAME = new DeploymentQueryProperty("RES.NAME_");
+    public static final DeploymentQueryProperty DEPLOYMENT_TENANT_ID = new DeploymentQueryProperty("RES.TENANT_ID_");
+    public static final DeploymentQueryProperty DEPLOY_TIME = new DeploymentQueryProperty("RES.DEPLOY_TIME_");
 
     private String name;
 

@@ -34,15 +34,11 @@ import org.activiti.engine.task.Task;
 /**
 
  */
-public class MybatisTaskDataManager
-    extends AbstractDataManager<TaskEntity>
-    implements TaskDataManager {
+public class MybatisTaskDataManager extends AbstractDataManager<TaskEntity> implements TaskDataManager {
 
     protected CachedEntityMatcher<TaskEntity> tasksByExecutionIdMatcher = new TasksByExecutionIdMatcher();
 
-    public MybatisTaskDataManager(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public MybatisTaskDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);
     }
 
@@ -58,21 +54,13 @@ public class MybatisTaskDataManager
 
     @Override
     public List<TaskEntity> findTasksByExecutionId(final String executionId) {
-        return getList(
-            "selectTasksByExecutionId",
-            executionId,
-            tasksByExecutionIdMatcher,
-            true
-        );
+        return getList("selectTasksByExecutionId", executionId, tasksByExecutionIdMatcher, true);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<TaskEntity> findTasksByProcessInstanceId(
-        String processInstanceId
-    ) {
-        return getDbSqlSession()
-            .selectList("selectTasksByProcessInstanceId", processInstanceId);
+    public List<TaskEntity> findTasksByProcessInstanceId(String processInstanceId) {
+        return getDbSqlSession().selectList("selectTasksByProcessInstanceId", processInstanceId);
     }
 
     @Override
@@ -84,9 +72,7 @@ public class MybatisTaskDataManager
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Task> findTasksAndVariablesByQueryCriteria(
-        TaskQueryImpl taskQuery
-    ) {
+    public List<Task> findTasksAndVariablesByQueryCriteria(TaskQueryImpl taskQuery) {
         final String query = "selectTaskWithVariablesByQueryCriteria";
         // paging doesn't work for combining task instances and variables due to
         // an outer join, so doing it in-memory
@@ -101,9 +87,7 @@ public class MybatisTaskDataManager
         if (taskQuery.getTaskVariablesLimit() != null) {
             taskQuery.setMaxResults(taskQuery.getTaskVariablesLimit());
         } else {
-            taskQuery.setMaxResults(
-                getProcessEngineConfiguration().getTaskQueryLimit()
-            );
+            taskQuery.setMaxResults(getProcessEngineConfiguration().getTaskQueryLimit());
         }
         taskQuery.setFirstResult(0);
 
@@ -118,9 +102,7 @@ public class MybatisTaskDataManager
         if (instanceList != null && !instanceList.isEmpty()) {
             if (firstResult > 0) {
                 if (firstResult <= instanceList.size()) {
-                    int toIndex =
-                        firstResult +
-                        Math.min(maxResults, instanceList.size() - firstResult);
+                    int toIndex = firstResult + Math.min(maxResults, instanceList.size() - firstResult);
                     return instanceList.subList(firstResult, toIndex);
                 } else {
                     return emptyList();
@@ -135,44 +117,29 @@ public class MybatisTaskDataManager
 
     @Override
     public long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery) {
-        return (Long) getDbSqlSession()
-            .selectOne("selectTaskCountByQueryCriteria", taskQuery);
+        return (Long) getDbSqlSession().selectOne("selectTaskCountByQueryCriteria", taskQuery);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Task> findTasksByNativeQuery(
-        Map<String, Object> parameterMap,
-        int firstResult,
-        int maxResults
-    ) {
+    public List<Task> findTasksByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
         return getDbSqlSession()
-            .selectListWithRawParameter(
-                "selectTaskByNativeQuery",
-                parameterMap,
-                firstResult,
-                maxResults
-            );
+            .selectListWithRawParameter("selectTaskByNativeQuery", parameterMap, firstResult, maxResults);
     }
 
     @Override
     public long findTaskCountByNativeQuery(Map<String, Object> parameterMap) {
-        return (Long) getDbSqlSession()
-            .selectOne("selectTaskCountByNativeQuery", parameterMap);
+        return (Long) getDbSqlSession().selectOne("selectTaskCountByNativeQuery", parameterMap);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<Task> findTasksByParentTaskId(String parentTaskId) {
-        return getDbSqlSession()
-            .selectList("selectTasksByParentTaskId", parentTaskId);
+        return getDbSqlSession().selectList("selectTasksByParentTaskId", parentTaskId);
     }
 
     @Override
-    public void updateTaskTenantIdForDeployment(
-        String deploymentId,
-        String newTenantId
-    ) {
+    public void updateTaskTenantIdForDeployment(String deploymentId, String newTenantId) {
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("deploymentId", deploymentId);
         params.put("tenantId", newTenantId);

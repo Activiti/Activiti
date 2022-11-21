@@ -32,11 +32,7 @@ import org.activiti.editor.language.json.model.ModelInfo;
  */
 public class EventSubProcessJsonConverter
     extends BaseBpmnJsonConverter
-    implements
-        FormAwareConverter,
-        FormKeyAwareConverter,
-        DecisionTableAwareConverter,
-        DecisionTableKeyAwareConverter {
+    implements FormAwareConverter, FormKeyAwareConverter, DecisionTableAwareConverter, DecisionTableKeyAwareConverter {
 
     protected Map<String, String> formMap;
     protected Map<String, ModelInfo> formKeyMap;
@@ -51,32 +47,21 @@ public class EventSubProcessJsonConverter
         fillBpmnTypes(convertersToJsonMap);
     }
 
-    public static void fillJsonTypes(
-        Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap
-    ) {
-        convertersToBpmnMap.put(
-            STENCIL_EVENT_SUB_PROCESS,
-            EventSubProcessJsonConverter.class
-        );
+    public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
+        convertersToBpmnMap.put(STENCIL_EVENT_SUB_PROCESS, EventSubProcessJsonConverter.class);
     }
 
     public static void fillBpmnTypes(
         Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap
     ) {
-        convertersToJsonMap.put(
-            EventSubProcess.class,
-            EventSubProcessJsonConverter.class
-        );
+        convertersToJsonMap.put(EventSubProcess.class, EventSubProcessJsonConverter.class);
     }
 
     protected String getStencilId(BaseElement baseElement) {
         return STENCIL_EVENT_SUB_PROCESS;
     }
 
-    protected void convertElementToJson(
-        ObjectNode propertiesNode,
-        BaseElement baseElement
-    ) {
+    protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
         SubProcess subProcess = (SubProcess) baseElement;
         propertiesNode.put("activitytype", "Event-Sub-Process");
         propertiesNode.put("subprocesstype", "Embedded");
@@ -129,9 +114,7 @@ public class EventSubProcessJsonConverter
     }
 
     @Override
-    public void setDecisionTableKeyMap(
-        Map<String, ModelInfo> decisionTableKeyMap
-    ) {
+    public void setDecisionTableKeyMap(Map<String, ModelInfo> decisionTableKeyMap) {
         this.decisionTableKeyMap = decisionTableKeyMap;
     }
 }

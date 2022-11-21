@@ -25,9 +25,6 @@ public class APITaskCandidateUserConverter
 
     @Override
     public TaskCandidateUser from(IdentityLink identityLink) {
-        return new TaskCandidateUserImpl(
-            identityLink.getUserId(),
-            identityLink.getTaskId()
-        );
+        return new TaskCandidateUserImpl(identityLink.getUserId(), identityLink.getTaskId());
     }
 }

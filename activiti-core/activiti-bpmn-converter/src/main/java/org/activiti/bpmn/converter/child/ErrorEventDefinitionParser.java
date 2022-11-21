@@ -28,27 +28,16 @@ public class ErrorEventDefinitionParser extends BaseChildElementParser {
         return ELEMENT_EVENT_ERRORDEFINITION;
     }
 
-    public void parseChildElement(
-        XMLStreamReader xtr,
-        BaseElement parentElement,
-        BpmnModel model
-    ) throws Exception {
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
         if (!(parentElement instanceof Event)) {
             return;
         }
 
         ErrorEventDefinition eventDefinition = new ErrorEventDefinition();
         BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
-        eventDefinition.setErrorRef(
-            xtr.getAttributeValue(null, ATTRIBUTE_ERROR_REF)
-        );
+        eventDefinition.setErrorRef(xtr.getAttributeValue(null, ATTRIBUTE_ERROR_REF));
 
-        BpmnXMLUtil.parseChildElements(
-            ELEMENT_EVENT_ERRORDEFINITION,
-            eventDefinition,
-            xtr,
-            model
-        );
+        BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_ERRORDEFINITION, eventDefinition, xtr, model);
 
         ((Event) parentElement).getEventDefinitions().add(eventDefinition);
     }

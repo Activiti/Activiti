@@ -28,11 +28,7 @@ public class ListQueryParameterObject {
 
     public ListQueryParameterObject() {}
 
-    public ListQueryParameterObject(
-        Object parameter,
-        int firstResult,
-        int maxResults
-    ) {
+    public ListQueryParameterObject(Object parameter, int firstResult, int maxResults) {
         this.parameter = parameter;
         this.firstResult = firstResult;
         this.maxResults = maxResults;

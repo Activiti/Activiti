@@ -80,25 +80,15 @@ public class CommandContext {
     protected boolean reused;
 
     protected ActivitiEngineAgenda agenda;
-    protected Map<String, ExecutionEntity> involvedExecutions = new HashMap<>(
-        1
-    ); // The executions involved with the command
+    protected Map<String, ExecutionEntity> involvedExecutions = new HashMap<>(1); // The executions involved with the command
     protected LinkedList<Object> resultStack = new LinkedList<>(); // needs to be a stack, as JavaDelegates can do api calls again
 
-    public CommandContext(
-        Command<?> command,
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public CommandContext(Command<?> command, ProcessEngineConfigurationImpl processEngineConfiguration) {
         this.command = command;
         this.processEngineConfiguration = processEngineConfiguration;
-        this.failedJobCommandFactory =
-            processEngineConfiguration.getFailedJobCommandFactory();
-        this.sessionFactories =
-            processEngineConfiguration.getSessionFactories();
-        this.agenda =
-            processEngineConfiguration
-                .getEngineAgendaFactory()
-                .createAgenda(this);
+        this.failedJobCommandFactory = processEngineConfiguration.getFailedJobCommandFactory();
+        this.sessionFactories = processEngineConfiguration.getSessionFactories();
+        this.agenda = processEngineConfiguration.getEngineAgendaFactory().createAgenda(this);
     }
 
     public void close() {
@@ -148,10 +138,7 @@ public class CommandContext {
     }
 
     protected void logException() {
-        if (
-            exception instanceof JobNotFoundException ||
-            exception instanceof ActivitiTaskAlreadyClaimedException
-        ) {
+        if (exception instanceof JobNotFoundException || exception instanceof ActivitiTaskAlreadyClaimedException) {
             // reduce log level, because this may have been caused because of job deletion due to cancelActiviti="true"
             log.info("Error while closing command context", exception);
         } else if (exception instanceof ActivitiOptimisticLockingException) {
@@ -168,16 +155,11 @@ public class CommandContext {
         } else if (exception instanceof RuntimeException) {
             throw (RuntimeException) exception;
         } else {
-            throw new ActivitiException(
-                "exception while executing command " + command,
-                exception
-            );
+            throw new ActivitiException("exception while executing command " + command, exception);
         }
     }
 
-    public void addCloseListener(
-        CommandContextCloseListener commandContextCloseListener
-    ) {
+    public void addCloseListener(CommandContextCloseListener commandContextCloseListener) {
         if (closeListeners == null) {
             closeListeners = new ArrayList<>(1);
         }
@@ -309,10 +291,7 @@ public class CommandContext {
         if (session == null) {
             SessionFactory sessionFactory = sessionFactories.get(sessionClass);
             if (sessionFactory == null) {
-                throw new ActivitiException(
-                    "no session factory configured for " +
-                    sessionClass.getName()
-                );
+                throw new ActivitiException("no session factory configured for " + sessionClass.getName());
             }
             session = sessionFactory.openSession(this);
             sessions.put(sessionClass, session);

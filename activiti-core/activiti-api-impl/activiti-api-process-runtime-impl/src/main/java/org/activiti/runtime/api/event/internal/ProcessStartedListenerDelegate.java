@@ -34,8 +34,7 @@ public class ProcessStartedListenerDelegate implements ActivitiEventListener {
         ToAPIProcessStartedEventConverter processInstanceStartedEventConverter
     ) {
         this.listeners = listeners;
-        this.processInstanceStartedEventConverter =
-            processInstanceStartedEventConverter;
+        this.processInstanceStartedEventConverter = processInstanceStartedEventConverter;
     }
 
     @Override

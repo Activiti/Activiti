@@ -46,19 +46,10 @@ public class NativeDeploymentQueryImpl
     ) {
         return commandContext
             .getDeploymentEntityManager()
-            .findDeploymentsByNativeQuery(
-                parameterMap,
-                firstResult,
-                maxResults
-            );
+            .findDeploymentsByNativeQuery(parameterMap, firstResult, maxResults);
     }
 
-    public long executeCount(
-        CommandContext commandContext,
-        Map<String, Object> parameterMap
-    ) {
-        return commandContext
-            .getDeploymentEntityManager()
-            .findDeploymentCountByNativeQuery(parameterMap);
+    public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
+        return commandContext.getDeploymentEntityManager().findDeploymentCountByNativeQuery(parameterMap);
     }
 }

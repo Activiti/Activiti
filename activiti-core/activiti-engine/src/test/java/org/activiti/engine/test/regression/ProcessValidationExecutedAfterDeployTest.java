@@ -30,8 +30,7 @@ import org.activiti.validation.ProcessValidator;
  * originally (don't do this at home, kids. Disabling the validator on deploy is BAD).
  *
  */
-public class ProcessValidationExecutedAfterDeployTest
-    extends PluggableActivitiTestCase {
+public class ProcessValidationExecutedAfterDeployTest extends PluggableActivitiTestCase {
 
     protected ProcessValidator processValidator;
 
@@ -53,9 +52,7 @@ public class ProcessValidationExecutedAfterDeployTest
         super.tearDown();
     }
 
-    private ProcessDefinition getLatestProcessDefinitionVersionByKey(
-        String processDefinitionKey
-    ) {
+    private ProcessDefinition getLatestProcessDefinitionVersionByKey(String processDefinitionKey) {
         List<ProcessDefinition> definitions = null;
         try {
             definitions =
@@ -86,20 +83,14 @@ public class ProcessValidationExecutedAfterDeployTest
         enableValidation();
         clearDeploymentCache();
 
-        ProcessDefinition definition = getLatestProcessDefinitionVersionByKey(
-            "testProcess1"
-        );
-        assertThat(definition)
-            .as("Error occurred in fetching process model.")
-            .isNotNull();
+        ProcessDefinition definition = getLatestProcessDefinitionVersionByKey("testProcess1");
+        assertThat(definition).as("Error occurred in fetching process model.").isNotNull();
         try {
             repositoryService.getProcessModel(definition.getId());
         } catch (ActivitiException e) {
             fail("Error occurred in fetching process model.");
         }
-        for (org.activiti.engine.repository.Deployment deployment : repositoryService
-            .createDeploymentQuery()
-            .list()) {
+        for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
             repositoryService.deleteDeployment(deployment.getId());
         }
     }

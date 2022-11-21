@@ -40,27 +40,17 @@ public class DiagramInterchangeInfoValidator extends ValidatorImpl {
                     // DI
                     if (bpmnModel.getArtifact(bpmnReference) == null) {
                         // check if it's a Pool or Lane, then DI is ok
-                        if (
-                            bpmnModel.getPool(bpmnReference) == null &&
-                            bpmnModel.getLane(bpmnReference) == null
-                        ) {
+                        if (bpmnModel.getPool(bpmnReference) == null && bpmnModel.getLane(bpmnReference) == null) {
                             addWarning(
                                 errors,
                                 Problems.DI_INVALID_REFERENCE,
                                 null,
                                 bpmnModel.getFlowElement(bpmnReference),
-                                "Invalid reference in diagram interchange definition: could not find " +
-                                bpmnReference
+                                "Invalid reference in diagram interchange definition: could not find " + bpmnReference
                             );
                         }
                     }
-                } else if (
-                    !(
-                        bpmnModel.getFlowElement(
-                            bpmnReference
-                        ) instanceof FlowNode
-                    )
-                ) {
+                } else if (!(bpmnModel.getFlowElement(bpmnReference) instanceof FlowNode)) {
                     addWarning(
                         errors,
                         Problems.DI_DOES_NOT_REFERENCE_FLOWNODE,
@@ -76,12 +66,9 @@ public class DiagramInterchangeInfoValidator extends ValidatorImpl {
 
         if (!bpmnModel.getFlowLocationMap().isEmpty()) {
             // flowlocation map
-            for (String bpmnReference : bpmnModel
-                .getFlowLocationMap()
-                .keySet()) {
+            for (String bpmnReference : bpmnModel.getFlowLocationMap().keySet()) {
                 if (
-                    bpmnModel.getFlowElement(bpmnReference) == null &&
-                    bpmnModel.getMessageFlow(bpmnReference) == null
+                    bpmnModel.getFlowElement(bpmnReference) == null && bpmnModel.getMessageFlow(bpmnReference) == null
                 ) {
                     // ACT-1625: don't warn when artifacts are referenced from
                     // DI
@@ -91,19 +78,14 @@ public class DiagramInterchangeInfoValidator extends ValidatorImpl {
                             Problems.DI_INVALID_REFERENCE,
                             null,
                             bpmnModel.getFlowElement(bpmnReference),
-                            "Invalid reference in diagram interchange definition: could not find " +
-                            bpmnReference
+                            "Invalid reference in diagram interchange definition: could not find " + bpmnReference
                         );
                     }
                 }
 
                 if (
                     bpmnModel.getFlowElement(bpmnReference) != null &&
-                    !(
-                        bpmnModel.getFlowElement(
-                            bpmnReference
-                        ) instanceof SequenceFlow
-                    )
+                    !(bpmnModel.getFlowElement(bpmnReference) instanceof SequenceFlow)
                 ) {
                     addWarning(
                         errors,

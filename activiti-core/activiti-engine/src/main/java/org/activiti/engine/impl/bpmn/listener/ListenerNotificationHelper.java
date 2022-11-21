@@ -54,9 +54,7 @@ public class ListenerNotificationHelper {
     ) {
         List<ActivitiListener> listeners = elementWithExecutionListeners.getExecutionListeners();
         if (listeners != null && listeners.size() > 0) {
-            ListenerFactory listenerFactory = Context
-                .getProcessEngineConfiguration()
-                .getListenerFactory();
+            ListenerFactory listenerFactory = Context.getProcessEngineConfiguration().getListenerFactory();
             for (ActivitiListener activitiListener : listeners) {
                 if (eventType.equals(activitiListener.getEvent())) {
                     BaseExecutionListener executionListener = null;
@@ -66,19 +64,13 @@ public class ListenerNotificationHelper {
                             activitiListener.getImplementationType()
                         )
                     ) {
-                        executionListener =
-                            listenerFactory.createClassDelegateExecutionListener(
-                                activitiListener
-                            );
+                        executionListener = listenerFactory.createClassDelegateExecutionListener(activitiListener);
                     } else if (
                         ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(
                             activitiListener.getImplementationType()
                         )
                     ) {
-                        executionListener =
-                            listenerFactory.createExpressionExecutionListener(
-                                activitiListener
-                            );
+                        executionListener = listenerFactory.createExpressionExecutionListener(activitiListener);
                     } else if (
                         ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(
                             activitiListener.getImplementationType()
@@ -91,17 +83,14 @@ public class ListenerNotificationHelper {
                                 );
                         } else {
                             executionListener =
-                                listenerFactory.createDelegateExpressionExecutionListener(
-                                    activitiListener
-                                );
+                                listenerFactory.createDelegateExpressionExecutionListener(activitiListener);
                         }
                     } else if (
                         ImplementationType.IMPLEMENTATION_TYPE_INSTANCE.equalsIgnoreCase(
                             activitiListener.getImplementationType()
                         )
                     ) {
-                        executionListener =
-                            (ExecutionListener) activitiListener.getInstance();
+                        executionListener = (ExecutionListener) activitiListener.getInstance();
                     }
 
                     if (executionListener != null) {
@@ -114,12 +103,8 @@ public class ListenerNotificationHelper {
                             );
                         } else {
                             execution.setEventName(eventType); // eventName is used to differentiate the event when reusing an execution listener for various events
-                            execution.setCurrentActivitiListener(
-                                activitiListener
-                            );
-                            ((ExecutionListener) executionListener).notify(
-                                    execution
-                                );
+                            execution.setCurrentActivitiListener(activitiListener);
+                            ((ExecutionListener) executionListener).notify(execution);
                             execution.setEventName(null);
                             execution.setCurrentActivitiListener(null);
                         }
@@ -136,9 +121,7 @@ public class ListenerNotificationHelper {
         ActivitiListener activitiListener
     ) {
         Map<String, Object> executionVariablesToUse = execution.getVariables();
-        CustomPropertiesResolver customPropertiesResolver = createCustomPropertiesResolver(
-            activitiListener
-        );
+        CustomPropertiesResolver customPropertiesResolver = createCustomPropertiesResolver(activitiListener);
         Map<String, Object> customPropertiesMapToUse = invokeCustomPropertiesResolver(
             execution,
             customPropertiesResolver
@@ -154,10 +137,7 @@ public class ListenerNotificationHelper {
 
         addTransactionListener(
             activitiListener,
-            new ExecuteExecutionListenerTransactionListener(
-                executionListener,
-                scope
-            )
+            new ExecuteExecutionListenerTransactionListener(executionListener, scope)
         );
     }
 
@@ -166,10 +146,7 @@ public class ListenerNotificationHelper {
             org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(
                 taskEntity.getProcessDefinitionId()
             );
-            FlowElement flowElement = process.getFlowElement(
-                taskEntity.getTaskDefinitionKey(),
-                true
-            );
+            FlowElement flowElement = process.getFlowElement(taskEntity.getTaskDefinitionKey(), true);
             if (flowElement instanceof UserTask) {
                 UserTask userTask = (UserTask) flowElement;
                 executeTaskListeners(userTask, taskEntity, eventType);
@@ -177,20 +154,11 @@ public class ListenerNotificationHelper {
         }
     }
 
-    public void executeTaskListeners(
-        UserTask userTask,
-        TaskEntity taskEntity,
-        String eventType
-    ) {
+    public void executeTaskListeners(UserTask userTask, TaskEntity taskEntity, String eventType) {
         for (ActivitiListener activitiListener : userTask.getTaskListeners()) {
             String event = activitiListener.getEvent();
-            if (
-                event.equals(eventType) ||
-                event.equals(TaskListener.EVENTNAME_ALL_EVENTS)
-            ) {
-                BaseTaskListener taskListener = createTaskListener(
-                    activitiListener
-                );
+            if (event.equals(eventType) || event.equals(TaskListener.EVENTNAME_ALL_EVENTS)) {
+                BaseTaskListener taskListener = createTaskListener(activitiListener);
 
                 if (activitiListener.getOnTransaction() != null) {
                     planTransactionDependentTaskListener(
@@ -205,18 +173,9 @@ public class ListenerNotificationHelper {
                         Context
                             .getProcessEngineConfiguration()
                             .getDelegateInterceptor()
-                            .handleInvocation(
-                                new TaskListenerInvocation(
-                                    (TaskListener) taskListener,
-                                    taskEntity
-                                )
-                            );
+                            .handleInvocation(new TaskListenerInvocation((TaskListener) taskListener, taskEntity));
                     } catch (Exception e) {
-                        throw new ActivitiException(
-                            "Exception while invoking TaskListener: " +
-                            e.getMessage(),
-                            e
-                        );
+                        throw new ActivitiException("Exception while invoking TaskListener: " + e.getMessage(), e);
                     } finally {
                         taskEntity.setEventName(null);
                         taskEntity.setCurrentActivitiListener(null);
@@ -226,30 +185,16 @@ public class ListenerNotificationHelper {
         }
     }
 
-    protected BaseTaskListener createTaskListener(
-        ActivitiListener activitiListener
-    ) {
+    protected BaseTaskListener createTaskListener(ActivitiListener activitiListener) {
         BaseTaskListener taskListener = null;
 
-        ListenerFactory listenerFactory = Context
-            .getProcessEngineConfiguration()
-            .getListenerFactory();
-        if (
-            ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(
-                activitiListener.getImplementationType()
-            )
-        ) {
-            taskListener =
-                listenerFactory.createClassDelegateTaskListener(
-                    activitiListener
-                );
+        ListenerFactory listenerFactory = Context.getProcessEngineConfiguration().getListenerFactory();
+        if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
+            taskListener = listenerFactory.createClassDelegateTaskListener(activitiListener);
         } else if (
-            ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(
-                activitiListener.getImplementationType()
-            )
+            ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())
         ) {
-            taskListener =
-                listenerFactory.createExpressionTaskListener(activitiListener);
+            taskListener = listenerFactory.createExpressionTaskListener(activitiListener);
         } else if (
             ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(
                 activitiListener.getImplementationType()
@@ -257,19 +202,12 @@ public class ListenerNotificationHelper {
         ) {
             if (activitiListener.getOnTransaction() != null) {
                 taskListener =
-                    listenerFactory.createTransactionDependentDelegateExpressionTaskListener(
-                        activitiListener
-                    );
+                    listenerFactory.createTransactionDependentDelegateExpressionTaskListener(activitiListener);
             } else {
-                taskListener =
-                    listenerFactory.createDelegateExpressionTaskListener(
-                        activitiListener
-                    );
+                taskListener = listenerFactory.createDelegateExpressionTaskListener(activitiListener);
             }
         } else if (
-            ImplementationType.IMPLEMENTATION_TYPE_INSTANCE.equalsIgnoreCase(
-                activitiListener.getImplementationType()
-            )
+            ImplementationType.IMPLEMENTATION_TYPE_INSTANCE.equalsIgnoreCase(activitiListener.getImplementationType())
         ) {
             taskListener = (TaskListener) activitiListener.getInstance();
         }
@@ -282,9 +220,7 @@ public class ListenerNotificationHelper {
         ActivitiListener activitiListener
     ) {
         Map<String, Object> executionVariablesToUse = execution.getVariables();
-        CustomPropertiesResolver customPropertiesResolver = createCustomPropertiesResolver(
-            activitiListener
-        );
+        CustomPropertiesResolver customPropertiesResolver = createCustomPropertiesResolver(activitiListener);
         Map<String, Object> customPropertiesMapToUse = invokeCustomPropertiesResolver(
             execution,
             customPropertiesResolver
@@ -297,46 +233,31 @@ public class ListenerNotificationHelper {
             executionVariablesToUse,
             customPropertiesMapToUse
         );
-        addTransactionListener(
-            activitiListener,
-            new ExecuteTaskListenerTransactionListener(taskListener, scope)
-        );
+        addTransactionListener(activitiListener, new ExecuteTaskListenerTransactionListener(taskListener, scope));
     }
 
-    protected CustomPropertiesResolver createCustomPropertiesResolver(
-        ActivitiListener activitiListener
-    ) {
+    protected CustomPropertiesResolver createCustomPropertiesResolver(ActivitiListener activitiListener) {
         CustomPropertiesResolver customPropertiesResolver = null;
-        ListenerFactory listenerFactory = Context
-            .getProcessEngineConfiguration()
-            .getListenerFactory();
+        ListenerFactory listenerFactory = Context.getProcessEngineConfiguration().getListenerFactory();
         if (
             ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(
                 activitiListener.getCustomPropertiesResolverImplementationType()
             )
         ) {
-            customPropertiesResolver =
-                listenerFactory.createClassDelegateCustomPropertiesResolver(
-                    activitiListener
-                );
+            customPropertiesResolver = listenerFactory.createClassDelegateCustomPropertiesResolver(activitiListener);
         } else if (
             ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(
                 activitiListener.getCustomPropertiesResolverImplementationType()
             )
         ) {
-            customPropertiesResolver =
-                listenerFactory.createExpressionCustomPropertiesResolver(
-                    activitiListener
-                );
+            customPropertiesResolver = listenerFactory.createExpressionCustomPropertiesResolver(activitiListener);
         } else if (
             ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(
                 activitiListener.getCustomPropertiesResolverImplementationType()
             )
         ) {
             customPropertiesResolver =
-                listenerFactory.createDelegateExpressionCustomPropertiesResolver(
-                    activitiListener
-                );
+                listenerFactory.createDelegateExpressionCustomPropertiesResolver(activitiListener);
         }
         return customPropertiesResolver;
     }
@@ -347,44 +268,27 @@ public class ListenerNotificationHelper {
     ) {
         Map<String, Object> customPropertiesMapToUse = null;
         if (customPropertiesResolver != null) {
-            customPropertiesMapToUse =
-                customPropertiesResolver.getCustomPropertiesMap(execution);
+            customPropertiesMapToUse = customPropertiesResolver.getCustomPropertiesMap(execution);
         }
         return customPropertiesMapToUse;
     }
 
-    protected void addTransactionListener(
-        ActivitiListener activitiListener,
-        TransactionListener transactionListener
-    ) {
+    protected void addTransactionListener(ActivitiListener activitiListener, TransactionListener transactionListener) {
         TransactionContext transactionContext = Context.getTransactionContext();
         if (
             TransactionDependentExecutionListener.ON_TRANSACTION_BEFORE_COMMIT.equals(
                 activitiListener.getOnTransaction()
             )
         ) {
-            transactionContext.addTransactionListener(
-                TransactionState.COMMITTING,
-                transactionListener
-            );
+            transactionContext.addTransactionListener(TransactionState.COMMITTING, transactionListener);
         } else if (
-            TransactionDependentExecutionListener.ON_TRANSACTION_COMMITTED.equals(
-                activitiListener.getOnTransaction()
-            )
+            TransactionDependentExecutionListener.ON_TRANSACTION_COMMITTED.equals(activitiListener.getOnTransaction())
         ) {
-            transactionContext.addTransactionListener(
-                TransactionState.COMMITTED,
-                transactionListener
-            );
+            transactionContext.addTransactionListener(TransactionState.COMMITTED, transactionListener);
         } else if (
-            TransactionDependentExecutionListener.ON_TRANSACTION_ROLLED_BACK.equals(
-                activitiListener.getOnTransaction()
-            )
+            TransactionDependentExecutionListener.ON_TRANSACTION_ROLLED_BACK.equals(activitiListener.getOnTransaction())
         ) {
-            transactionContext.addTransactionListener(
-                TransactionState.ROLLED_BACK,
-                transactionListener
-            );
+            transactionContext.addTransactionListener(TransactionState.ROLLED_BACK, transactionListener);
         }
     }
 }

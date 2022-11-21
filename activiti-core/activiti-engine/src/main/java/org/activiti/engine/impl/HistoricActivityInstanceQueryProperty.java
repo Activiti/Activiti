@@ -77,9 +77,7 @@ public class HistoricActivityInstanceQueryProperty implements QueryProperty {
         return name;
     }
 
-    public static HistoricActivityInstanceQueryProperty findByName(
-        String propertyName
-    ) {
+    public static HistoricActivityInstanceQueryProperty findByName(String propertyName) {
         return properties.get(propertyName);
     }
 }

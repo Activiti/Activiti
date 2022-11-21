@@ -40,13 +40,10 @@ public class CallActivityTest extends PluggableActivitiTestCase {
     public void testOrderProcessWithCallActivity() {
         // After the process has started, the 'verify credit history' task
         // should be active
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "orderProcess"
-        );
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("orderProcess");
         TaskQuery taskQuery = taskService.createTaskQuery();
         Task verifyCreditTask = taskQuery.singleResult();
-        assertThat(verifyCreditTask.getName())
-            .isEqualTo("Verify credit history");
+        assertThat(verifyCreditTask.getName()).isEqualTo("Verify credit history");
 
         // Verify with Query API
         ProcessInstance subProcessInstance = runtimeService
@@ -65,10 +62,7 @@ public class CallActivityTest extends PluggableActivitiTestCase {
 
         // Completing the task with approval, will end the subprocess and
         // continue the original process
-        taskService.complete(
-            verifyCreditTask.getId(),
-            singletonMap("creditApproved", true)
-        );
+        taskService.complete(verifyCreditTask.getId(), singletonMap("creditApproved", true));
         Task prepareAndShipTask = taskQuery.singleResult();
         assertThat(prepareAndShipTask.getName()).isEqualTo("Prepare and Ship");
     }
@@ -81,9 +75,7 @@ public class CallActivityTest extends PluggableActivitiTestCase {
     )
     public void testCallActivityWithModeledDataObjectsInSubProcess() {
         // After the process has started, the 'verify credit history' task should be active
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "mainProcess"
-        );
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("mainProcess");
         TaskQuery taskQuery = taskService.createTaskQuery();
         Task verifyCreditTask = taskQuery.singleResult();
         assertThat(verifyCreditTask.getName()).isEqualTo("User Task 1");
@@ -103,10 +95,7 @@ public class CallActivityTest extends PluggableActivitiTestCase {
         )
             .isEqualTo(pi.getId());
 
-        assertThat(
-            runtimeService.getVariable(subProcessInstance.getId(), "Name")
-        )
-            .isEqualTo("Batman");
+        assertThat(runtimeService.getVariable(subProcessInstance.getId(), "Name")).isEqualTo("Batman");
     }
 
     @Deployment(
@@ -119,9 +108,7 @@ public class CallActivityTest extends PluggableActivitiTestCase {
     )
     public void testCallActivityWithBusinessKey() {
         // No use of business key attributes
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "mainProcess"
-        );
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("mainProcess");
         ProcessInstance subProcessInstance = runtimeService
             .createProcessInstanceQuery()
             .superProcessInstanceId(pi.getId())
@@ -131,29 +118,15 @@ public class CallActivityTest extends PluggableActivitiTestCase {
         // Modeled using expression: businessKey="${busKey}"
         Map<String, Object> variables = new HashMap<>();
         variables.put("busKey", "123");
-        pi =
-            runtimeService.startProcessInstanceByKey(
-                "mainProcessBusinessKey",
-                variables
-            );
+        pi = runtimeService.startProcessInstanceByKey("mainProcessBusinessKey", variables);
         subProcessInstance =
-            runtimeService
-                .createProcessInstanceQuery()
-                .superProcessInstanceId(pi.getId())
-                .singleResult();
+            runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
         assertThat(subProcessInstance.getBusinessKey()).isEqualTo("123");
 
         // Inherit business key
-        pi =
-            runtimeService.startProcessInstanceByKey(
-                "mainProcessInheritBusinessKey",
-                "123"
-            );
+        pi = runtimeService.startProcessInstanceByKey("mainProcessInheritBusinessKey", "123");
         subProcessInstance =
-            runtimeService
-                .createProcessInstanceQuery()
-                .superProcessInstanceId(pi.getId())
-                .singleResult();
+            runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
         assertThat(subProcessInstance.getBusinessKey()).isEqualTo("123");
     }
 }

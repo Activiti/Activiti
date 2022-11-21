@@ -32,12 +32,7 @@ public class MessageEventPayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public MessageEventPayload(
-        String name,
-        String correlationKey,
-        String businessKey,
-        Map<String, Object> variables
-    ) {
+    public MessageEventPayload(String name, String correlationKey, String businessKey, Map<String, Object> variables) {
         this();
         this.name = name;
         this.businessKey = businessKey;

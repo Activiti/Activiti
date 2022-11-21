@@ -30,20 +30,13 @@ public class RemoveExecutionVariablesCmd extends NeedsActiveExecutionCmd<Void> {
     private Collection<String> variableNames;
     private boolean isLocal;
 
-    public RemoveExecutionVariablesCmd(
-        String executionId,
-        Collection<String> variableNames,
-        boolean isLocal
-    ) {
+    public RemoveExecutionVariablesCmd(String executionId, Collection<String> variableNames, boolean isLocal) {
         super(executionId);
         this.variableNames = variableNames;
         this.isLocal = isLocal;
     }
 
-    protected Void execute(
-        CommandContext commandContext,
-        ExecutionEntity execution
-    ) {
+    protected Void execute(CommandContext commandContext, ExecutionEntity execution) {
         if (isLocal) {
             execution.removeVariablesLocal(variableNames);
         } else {
@@ -55,10 +48,6 @@ public class RemoveExecutionVariablesCmd extends NeedsActiveExecutionCmd<Void> {
 
     @Override
     protected String getSuspendedExceptionMessage() {
-        return (
-            "Cannot remove variables because execution '" +
-            executionId +
-            "' is suspended"
-        );
+        return ("Cannot remove variables because execution '" + executionId + "' is suspended");
     }
 }

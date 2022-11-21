@@ -22,8 +22,7 @@ import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
 
-public class ProcessRuntimeConfigurationImpl
-    implements ProcessRuntimeConfiguration {
+public class ProcessRuntimeConfigurationImpl implements ProcessRuntimeConfiguration {
 
     private List<ProcessRuntimeEventListener<?>> processRuntimeEventListeners;
     private final List<VariableEventListener<?>> variableEventListeners;

@@ -37,10 +37,7 @@ public class SpringExpressionManager extends ExpressionManager {
      * @param beans
      *          a map of custom beans to expose. If null, all beans in the application-context will be exposed.
      */
-    public SpringExpressionManager(
-        ApplicationContext applicationContext,
-        Map<Object, Object> beans
-    ) {
+    public SpringExpressionManager(ApplicationContext applicationContext, Map<Object, Object> beans) {
         super(beans);
         this.applicationContext = applicationContext;
     }
@@ -52,9 +49,7 @@ public class SpringExpressionManager extends ExpressionManager {
             elResolver.add(new ReadOnlyMapELResolver(beans));
         } else {
             // Expose full application-context in expressions
-            elResolver.add(
-                new ApplicationContextElResolver(applicationContext)
-            );
+            elResolver.add(new ApplicationContextElResolver(applicationContext));
         }
     }
 }

@@ -30,13 +30,9 @@ import org.activiti.engine.repository.Model;
 /**
 
  */
-public class MybatisModelDataManager
-    extends AbstractDataManager<ModelEntity>
-    implements ModelDataManager {
+public class MybatisModelDataManager extends AbstractDataManager<ModelEntity> implements ModelDataManager {
 
-    public MybatisModelDataManager(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public MybatisModelDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);
     }
 
@@ -52,39 +48,24 @@ public class MybatisModelDataManager
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Model> findModelsByQueryCriteria(
-        ModelQueryImpl query,
-        Page page
-    ) {
-        return getDbSqlSession()
-            .selectList("selectModelsByQueryCriteria", query, page);
+    public List<Model> findModelsByQueryCriteria(ModelQueryImpl query, Page page) {
+        return getDbSqlSession().selectList("selectModelsByQueryCriteria", query, page);
     }
 
     @Override
     public long findModelCountByQueryCriteria(ModelQueryImpl query) {
-        return (Long) getDbSqlSession()
-            .selectOne("selectModelCountByQueryCriteria", query);
+        return (Long) getDbSqlSession().selectOne("selectModelCountByQueryCriteria", query);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Model> findModelsByNativeQuery(
-        Map<String, Object> parameterMap,
-        int firstResult,
-        int maxResults
-    ) {
+    public List<Model> findModelsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
         return getDbSqlSession()
-            .selectListWithRawParameter(
-                "selectModelByNativeQuery",
-                parameterMap,
-                firstResult,
-                maxResults
-            );
+            .selectListWithRawParameter("selectModelByNativeQuery", parameterMap, firstResult, maxResults);
     }
 
     @Override
     public long findModelCountByNativeQuery(Map<String, Object> parameterMap) {
-        return (Long) getDbSqlSession()
-            .selectOne("selectModelCountByNativeQuery", parameterMap);
+        return (Long) getDbSqlSession().selectOne("selectModelCountByNativeQuery", parameterMap);
     }
 }

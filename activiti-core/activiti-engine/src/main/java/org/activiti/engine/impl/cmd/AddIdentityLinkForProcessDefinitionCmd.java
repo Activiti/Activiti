@@ -27,8 +27,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 /**
 
  */
-public class AddIdentityLinkForProcessDefinitionCmd
-    implements Command<Void>, Serializable {
+public class AddIdentityLinkForProcessDefinitionCmd implements Command<Void>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -38,32 +37,20 @@ public class AddIdentityLinkForProcessDefinitionCmd
 
     protected String groupId;
 
-    public AddIdentityLinkForProcessDefinitionCmd(
-        String processDefinitionId,
-        String userId,
-        String groupId
-    ) {
+    public AddIdentityLinkForProcessDefinitionCmd(String processDefinitionId, String userId, String groupId) {
         validateParams(userId, groupId, processDefinitionId);
         this.processDefinitionId = processDefinitionId;
         this.userId = userId;
         this.groupId = groupId;
     }
 
-    protected void validateParams(
-        String userId,
-        String groupId,
-        String processDefinitionId
-    ) {
+    protected void validateParams(String userId, String groupId, String processDefinitionId) {
         if (processDefinitionId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "processDefinitionId is null"
-            );
+            throw new ActivitiIllegalArgumentException("processDefinitionId is null");
         }
 
         if (userId == null && groupId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "userId and groupId cannot both be null"
-            );
+            throw new ActivitiIllegalArgumentException("userId and groupId cannot both be null");
         }
     }
 
@@ -84,12 +71,7 @@ public class AddIdentityLinkForProcessDefinitionCmd
         return null;
     }
 
-    protected void executeInternal(
-        CommandContext commandContext,
-        ProcessDefinitionEntity processDefinition
-    ) {
-        commandContext
-            .getIdentityLinkEntityManager()
-            .addIdentityLink(processDefinition, userId, groupId);
+    protected void executeInternal(CommandContext commandContext, ProcessDefinitionEntity processDefinition) {
+        commandContext.getIdentityLinkEntityManager().addIdentityLink(processDefinition, userId, groupId);
     }
 }

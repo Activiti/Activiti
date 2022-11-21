@@ -34,9 +34,7 @@ public class EntityCacheImpl implements EntityCache {
 
     @Override
     public CachedEntity put(Entity entity, boolean storeState) {
-        Map<String, CachedEntity> classCache = cachedObjects.get(
-            entity.getClass()
-        );
+        Map<String, CachedEntity> classCache = cachedObjects.get(entity.getClass());
         if (classCache == null) {
             classCache = new HashMap<String, CachedEntity>();
             cachedObjects.put(entity.getClass(), classCache);
@@ -67,9 +65,7 @@ public class EntityCacheImpl implements EntityCache {
         return null;
     }
 
-    protected Map<String, CachedEntity> findClassCacheByCheckingSubclasses(
-        Class<?> entityClass
-    ) {
+    protected Map<String, CachedEntity> findClassCacheByCheckingSubclasses(Class<?> entityClass) {
         for (Class<?> clazz : cachedObjects.keySet()) {
             if (entityClass.isAssignableFrom(clazz)) {
                 return cachedObjects.get(clazz);
@@ -88,9 +84,7 @@ public class EntityCacheImpl implements EntityCache {
     }
 
     @Override
-    public <T> Collection<CachedEntity> findInCacheAsCachedObjects(
-        Class<T> entityClass
-    ) {
+    public <T> Collection<CachedEntity> findInCacheAsCachedObjects(Class<T> entityClass) {
         Map<String, CachedEntity> classCache = cachedObjects.get(entityClass);
         if (classCache != null) {
             return classCache.values();

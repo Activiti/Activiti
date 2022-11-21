@@ -24,5 +24,4 @@ import org.activiti.engine.query.NativeQuery;
  */
 @Internal
 public interface NativeHistoricActivityInstanceQuery
-    extends
-        NativeQuery<NativeHistoricActivityInstanceQuery, HistoricActivityInstance> {}
+    extends NativeQuery<NativeHistoricActivityInstanceQuery, HistoricActivityInstance> {}

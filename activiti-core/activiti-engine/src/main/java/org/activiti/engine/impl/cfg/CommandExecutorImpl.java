@@ -31,10 +31,7 @@ public class CommandExecutorImpl implements CommandExecutor {
     protected CommandConfig defaultConfig;
     protected CommandInterceptor first;
 
-    public CommandExecutorImpl(
-        CommandConfig defaultConfig,
-        CommandInterceptor first
-    ) {
+    public CommandExecutorImpl(CommandConfig defaultConfig, CommandInterceptor first) {
         this.defaultConfig = defaultConfig;
         this.first = first;
     }

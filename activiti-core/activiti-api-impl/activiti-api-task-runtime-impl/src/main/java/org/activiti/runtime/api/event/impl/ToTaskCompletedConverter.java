@@ -22,25 +22,19 @@ import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.task.Task;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 
-public class ToTaskCompletedConverter
-    implements EventConverter<TaskCompletedEvent, ActivitiEntityEvent> {
+public class ToTaskCompletedConverter implements EventConverter<TaskCompletedEvent, ActivitiEntityEvent> {
 
     private APITaskConverter converter;
 
     private final SecurityManager securityManager;
 
-    public ToTaskCompletedConverter(
-        APITaskConverter converter,
-        SecurityManager securityManager
-    ) {
+    public ToTaskCompletedConverter(APITaskConverter converter, SecurityManager securityManager) {
         this.converter = converter;
         this.securityManager = securityManager;
     }
 
     @Override
-    public Optional<TaskCompletedEvent> from(
-        ActivitiEntityEvent internalEvent
-    ) {
+    public Optional<TaskCompletedEvent> from(ActivitiEntityEvent internalEvent) {
         String completedBy = securityManager.getAuthenticatedUserId();
         return Optional.of(
             new TaskCompletedImpl(

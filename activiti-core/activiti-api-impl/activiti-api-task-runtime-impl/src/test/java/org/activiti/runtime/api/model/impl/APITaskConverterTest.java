@@ -114,20 +114,13 @@ public class APITaskConverterTest {
 
     @Test
     public void should_convertTask_when_appVersionNull() {
-        Task convertedTask = taskConverter.from(
-            taskBuilder().withAppVersion(null).build()
-        );
-        assertThat(convertedTask)
-            .isNotNull()
-            .extracting(Task::getAppVersion)
-            .isNull();
+        Task convertedTask = taskConverter.from(taskBuilder().withAppVersion(null).build());
+        assertThat(convertedTask).isNotNull().extracting(Task::getAppVersion).isNull();
     }
 
     @Test
     public void calculateStatusForACancelledTaskShouldReturnCancelled() {
-        assertThat(
-            taskConverter.from(taskEntityBuilder().withCancelled(true).build())
-        )
+        assertThat(taskConverter.from(taskEntityBuilder().withCancelled(true).build()))
             .isNotNull()
             .extracting(Task::getStatus)
             .isEqualTo(CANCELLED);
@@ -135,9 +128,7 @@ public class APITaskConverterTest {
 
     @Test
     public void calculateStatusForASuspendedTaskShouldReturnSuspended() {
-        assertThat(
-            taskConverter.from(taskEntityBuilder().withSuspended(true).build())
-        )
+        assertThat(taskConverter.from(taskEntityBuilder().withSuspended(true).build()))
             .isNotNull()
             .extracting(Task::getStatus)
             .isEqualTo(SUSPENDED);
@@ -145,9 +136,7 @@ public class APITaskConverterTest {
 
     @Test
     public void calculateStatusForAnAssignedTaskShouldReturnAssigned() {
-        assertThat(
-            taskConverter.from(taskBuilder().withAssignee("testUser").build())
-        )
+        assertThat(taskConverter.from(taskBuilder().withAssignee("testUser").build()))
             .isNotNull()
             .extracting(Task::getStatus)
             .isEqualTo(ASSIGNED);
@@ -166,47 +155,27 @@ public class APITaskConverterTest {
         given(taskService.getIdentityLinksForTask(any()))
             .willReturn(
                 asList(
-                    buildIdentityLink(
-                        null,
-                        "group1",
-                        IdentityLinkType.CANDIDATE
-                    ),
-                    buildIdentityLink(
-                        "user1",
-                        null,
-                        IdentityLinkType.CANDIDATE
-                    ),
-                    buildIdentityLink(
-                        null,
-                        "participant",
-                        IdentityLinkType.PARTICIPANT
-                    ),
+                    buildIdentityLink(null, "group1", IdentityLinkType.CANDIDATE),
+                    buildIdentityLink("user1", null, IdentityLinkType.CANDIDATE),
+                    buildIdentityLink(null, "participant", IdentityLinkType.PARTICIPANT),
                     buildIdentityLink("user2", null, IdentityLinkType.CANDIDATE)
                 )
             );
 
-        org.activiti.engine.task.Task source = taskBuilder()
-            .withId("1111")
-            .build();
+        org.activiti.engine.task.Task source = taskBuilder().withId("1111").build();
         Task convertedTask = taskConverter.fromWithCandidates(source);
 
         assertThat(convertedTask).isNotNull();
 
         assertThat(convertedTask.getCandidateGroups()).hasSize(1);
-        assertThat(convertedTask.getCandidateGroups())
-            .containsExactlyInAnyOrder("group1");
+        assertThat(convertedTask.getCandidateGroups()).containsExactlyInAnyOrder("group1");
         assertThat(convertedTask.getCandidateUsers()).hasSize(2);
-        assertThat(convertedTask.getCandidateUsers())
-            .containsExactlyInAnyOrder("user1", "user2");
+        assertThat(convertedTask.getCandidateUsers()).containsExactlyInAnyOrder("user1", "user2");
 
         verify(taskService).getIdentityLinksForTask(eq("1111"));
     }
 
-    private IdentityLink buildIdentityLink(
-        String userId,
-        String groupId,
-        String type
-    ) {
+    private IdentityLink buildIdentityLink(String userId, String groupId, String type) {
         IdentityLinkEntityImpl identityLink = new IdentityLinkEntityImpl();
         if (groupId != null) {
             identityLink.setGroupId(groupId);

@@ -156,9 +156,7 @@ public class MessageSubscriptionImpl implements MessageSubscription {
      * @param messageEventSubscriptionImpl to initialize the builder with
      * @return created builder
      */
-    public static Builder builderFrom(
-        MessageSubscriptionImpl messageEventSubscriptionImpl
-    ) {
+    public static Builder builderFrom(MessageSubscriptionImpl messageEventSubscriptionImpl) {
         return new Builder(messageEventSubscriptionImpl);
     }
 
@@ -183,10 +181,8 @@ public class MessageSubscriptionImpl implements MessageSubscription {
             this.id = messageEventSubscriptionImpl.id;
             this.eventName = messageEventSubscriptionImpl.eventName;
             this.executionId = messageEventSubscriptionImpl.executionId;
-            this.processInstanceId =
-                messageEventSubscriptionImpl.processInstanceId;
-            this.processDefinitionId =
-                messageEventSubscriptionImpl.processDefinitionId;
+            this.processInstanceId = messageEventSubscriptionImpl.processInstanceId;
+            this.processDefinitionId = messageEventSubscriptionImpl.processDefinitionId;
             this.businessKey = messageEventSubscriptionImpl.businessKey;
             this.configuration = messageEventSubscriptionImpl.configuration;
             this.activityId = messageEventSubscriptionImpl.activityId;

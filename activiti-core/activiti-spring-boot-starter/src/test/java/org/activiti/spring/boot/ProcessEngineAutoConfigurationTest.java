@@ -48,10 +48,7 @@ public class ProcessEngineAutoConfigurationTest {
         );
 
         //when
-        processEngineAutoConfiguration.addAsyncPropertyValidator(
-            activitiProperties,
-            conf
-        );
+        processEngineAutoConfiguration.addAsyncPropertyValidator(activitiProperties, conf);
 
         //then
         ProcessValidator processValidator = conf.getProcessValidator();
@@ -77,10 +74,7 @@ public class ProcessEngineAutoConfigurationTest {
         );
 
         //when
-        processEngineAutoConfiguration.addAsyncPropertyValidator(
-            activitiProperties,
-            conf
-        );
+        processEngineAutoConfiguration.addAsyncPropertyValidator(activitiProperties, conf);
 
         //then
         ProcessValidator processValidator = conf.getProcessValidator();

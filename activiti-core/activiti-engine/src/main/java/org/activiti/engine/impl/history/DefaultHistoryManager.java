@@ -48,20 +48,13 @@ import org.slf4j.LoggerFactory;
  * Manager class that centralises recording of all history-related operations that are originated from inside the engine.
  *
  */
-public class DefaultHistoryManager
-    extends AbstractManager
-    implements HistoryManager {
+public class DefaultHistoryManager extends AbstractManager implements HistoryManager {
 
-    private static Logger log = LoggerFactory.getLogger(
-        DefaultHistoryManager.class.getName()
-    );
+    private static Logger log = LoggerFactory.getLogger(DefaultHistoryManager.class.getName());
 
     private HistoryLevel historyLevel;
 
-    public DefaultHistoryManager(
-        ProcessEngineConfigurationImpl processEngineConfiguration,
-        HistoryLevel historyLevel
-    ) {
+    public DefaultHistoryManager(ProcessEngineConfigurationImpl processEngineConfiguration, HistoryLevel historyLevel) {
         super(processEngineConfiguration);
         this.historyLevel = historyLevel;
     }
@@ -74,11 +67,7 @@ public class DefaultHistoryManager
     @Override
     public boolean isHistoryLevelAtLeast(HistoryLevel level) {
         if (log.isDebugEnabled()) {
-            log.debug(
-                "Current history level: {}, level required: {}",
-                historyLevel,
-                level
-            );
+            log.debug("Current history level: {}, level required: {}", historyLevel, level);
         }
         // Comparing enums actually compares the location of values declared in
         // the enum
@@ -106,11 +95,7 @@ public class DefaultHistoryManager
      * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordProcessInstanceEnd(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public void recordProcessInstanceEnd(
-        String processInstanceId,
-        String deleteReason,
-        String activityId
-    ) {
+    public void recordProcessInstanceEnd(String processInstanceId, String deleteReason, String activityId) {
         if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
             HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceEntityManager()
                 .findById(processInstanceId);
@@ -121,10 +106,7 @@ public class DefaultHistoryManager
 
                 // Fire event
                 ActivitiEventDispatcher activitiEventDispatcher = getEventDispatcher();
-                if (
-                    activitiEventDispatcher != null &&
-                    activitiEventDispatcher.isEnabled()
-                ) {
+                if (activitiEventDispatcher != null && activitiEventDispatcher.isEnabled()) {
                     activitiEventDispatcher.dispatchEvent(
                         ActivitiEventBuilder.createEntityEvent(
                             ActivitiEventType.HISTORIC_PROCESS_INSTANCE_ENDED,
@@ -137,10 +119,7 @@ public class DefaultHistoryManager
     }
 
     @Override
-    public void recordProcessInstanceNameChange(
-        String processInstanceId,
-        String newName
-    ) {
+    public void recordProcessInstanceNameChange(String processInstanceId, String newName) {
         if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
             HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceEntityManager()
                 .findById(processInstanceId);
@@ -157,25 +136,18 @@ public class DefaultHistoryManager
      * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordProcessInstanceStart (org.activiti.engine.impl.persistence.entity.ExecutionEntity)
      */
     @Override
-    public void recordProcessInstanceStart(
-        ExecutionEntity processInstance,
-        FlowElement startElement
-    ) {
+    public void recordProcessInstanceStart(ExecutionEntity processInstance, FlowElement startElement) {
         if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
             HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceEntityManager()
                 .create(processInstance);
             historicProcessInstance.setStartActivityId(startElement.getId());
 
             // Insert historic process-instance
-            getHistoricProcessInstanceEntityManager()
-                .insert(historicProcessInstance, false);
+            getHistoricProcessInstanceEntityManager().insert(historicProcessInstance, false);
 
             // Fire event
             ActivitiEventDispatcher activitiEventDispatcher = getEventDispatcher();
-            if (
-                activitiEventDispatcher != null &&
-                activitiEventDispatcher.isEnabled()
-            ) {
+            if (activitiEventDispatcher != null && activitiEventDispatcher.isEnabled()) {
                 activitiEventDispatcher.dispatchEvent(
                     ActivitiEventBuilder.createEntityEvent(
                         ActivitiEventType.HISTORIC_PROCESS_INSTANCE_CREATED,
@@ -204,19 +176,13 @@ public class DefaultHistoryManager
 
             // Fix for ACT-1728: startActivityId not initialized with subprocess instance
             if (historicProcessInstance.getStartActivityId() == null) {
-                historicProcessInstance.setStartActivityId(
-                    initialElement.getId()
-                );
+                historicProcessInstance.setStartActivityId(initialElement.getId());
             }
-            getHistoricProcessInstanceEntityManager()
-                .insert(historicProcessInstance, false);
+            getHistoricProcessInstanceEntityManager().insert(historicProcessInstance, false);
 
             // Fire event
             ActivitiEventDispatcher activitiEventDispatcher = getEventDispatcher();
-            if (
-                activitiEventDispatcher != null &&
-                activitiEventDispatcher.isEnabled()
-            ) {
+            if (activitiEventDispatcher != null && activitiEventDispatcher.isEnabled()) {
                 activitiEventDispatcher.dispatchEvent(
                     ActivitiEventBuilder.createEntityEvent(
                         ActivitiEventType.HISTORIC_PROCESS_INSTANCE_CREATED,
@@ -225,15 +191,9 @@ public class DefaultHistoryManager
                 );
             }
 
-            HistoricActivityInstanceEntity activitiyInstance = findActivityInstance(
-                parentExecution,
-                false,
-                true
-            );
+            HistoricActivityInstanceEntity activitiyInstance = findActivityInstance(parentExecution, false, true);
             if (activitiyInstance != null) {
-                activitiyInstance.setCalledProcessInstanceId(
-                    subProcessInstance.getProcessInstanceId()
-                );
+                activitiyInstance.setCalledProcessInstanceId(subProcessInstance.getProcessInstanceId());
             }
         }
     }
@@ -248,12 +208,8 @@ public class DefaultHistoryManager
     @Override
     public void recordActivityStart(ExecutionEntity executionEntity) {
         if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-            if (
-                executionEntity.getActivityId() != null &&
-                executionEntity.getCurrentFlowElement() != null
-            ) {
-                HistoricActivityInstanceEntity historicActivityInstanceEntity =
-                    null;
+            if (executionEntity.getActivityId() != null && executionEntity.getCurrentFlowElement() != null) {
+                HistoricActivityInstanceEntity historicActivityInstanceEntity = null;
 
                 // Historic activity instance could have been created (but only in cache, never persisted)
                 // for example when submitting form properties
@@ -263,19 +219,14 @@ public class DefaultHistoryManager
                     true
                 );
                 if (historicActivityInstanceEntityFromCache != null) {
-                    historicActivityInstanceEntity =
-                        historicActivityInstanceEntityFromCache;
+                    historicActivityInstanceEntity = historicActivityInstanceEntityFromCache;
                 } else {
-                    historicActivityInstanceEntity =
-                        createHistoricActivityInstanceEntity(executionEntity);
+                    historicActivityInstanceEntity = createHistoricActivityInstanceEntity(executionEntity);
                 }
 
                 // Fire event
                 ActivitiEventDispatcher activitiEventDispatcher = getEventDispatcher();
-                if (
-                    activitiEventDispatcher != null &&
-                    activitiEventDispatcher.isEnabled()
-                ) {
+                if (activitiEventDispatcher != null && activitiEventDispatcher.isEnabled()) {
                     activitiEventDispatcher.dispatchEvent(
                         ActivitiEventBuilder.createEntityEvent(
                             ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_CREATED,
@@ -293,10 +244,7 @@ public class DefaultHistoryManager
      * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordActivityEnd (org.activiti.engine.impl.persistence.entity.ExecutionEntity)
      */
     @Override
-    public void recordActivityEnd(
-        ExecutionEntity executionEntity,
-        String deleteReason
-    ) {
+    public void recordActivityEnd(ExecutionEntity executionEntity, String deleteReason) {
         if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
             HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(
                 executionEntity,
@@ -308,10 +256,7 @@ public class DefaultHistoryManager
 
                 // Fire event
                 ActivitiEventDispatcher activitiEventDispatcher = getEventDispatcher();
-                if (
-                    activitiEventDispatcher != null &&
-                    activitiEventDispatcher.isEnabled()
-                ) {
+                if (activitiEventDispatcher != null && activitiEventDispatcher.isEnabled()) {
                     activitiEventDispatcher.dispatchEvent(
                         ActivitiEventBuilder.createEntityEvent(
                             ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED,
@@ -333,23 +278,13 @@ public class DefaultHistoryManager
         if (execution.getCurrentFlowElement() instanceof FlowNode) {
             activityId = execution.getCurrentFlowElement().getId();
         } else if (
-            execution.getCurrentFlowElement() instanceof SequenceFlow &&
-            execution.getCurrentActivitiListener() == null
+            execution.getCurrentFlowElement() instanceof SequenceFlow && execution.getCurrentActivitiListener() == null
         ) { // while executing sequence flow listeners, we don't want historic activities
-            activityId =
-                (
-                    (SequenceFlow) (execution.getCurrentFlowElement())
-                ).getSourceFlowElement()
-                    .getId();
+            activityId = ((SequenceFlow) (execution.getCurrentFlowElement())).getSourceFlowElement().getId();
         }
 
         if (activityId != null) {
-            return findActivityInstance(
-                execution,
-                activityId,
-                createOnNotFound,
-                endTimeMustBeNull
-            );
+            return findActivityInstance(execution, activityId, createOnNotFound, endTimeMustBeNull);
         }
 
         return null;
@@ -383,10 +318,7 @@ public class DefaultHistoryManager
         if (!execution.isInserted() && !execution.isProcessInstanceType()) {
             // Check the database
             List<HistoricActivityInstanceEntity> historicActivityInstances = getHistoricActivityInstanceEntityManager()
-                .findUnfinishedHistoricActivityInstancesByExecutionAndActivityId(
-                    executionId,
-                    activityId
-                );
+                .findUnfinishedHistoricActivityInstancesByExecutionAndActivityId(executionId, activityId);
 
             if (historicActivityInstances.size() > 0) {
                 return historicActivityInstances.get(0);
@@ -409,10 +341,7 @@ public class DefaultHistoryManager
             createOnNotFound &&
             activityId != null &&
             (
-                (
-                    execution.getCurrentFlowElement() != null &&
-                    execution.getCurrentFlowElement() instanceof FlowNode
-                ) ||
+                (execution.getCurrentFlowElement() != null && execution.getCurrentFlowElement() instanceof FlowNode) ||
                 execution.getCurrentFlowElement() == null
             )
         ) {
@@ -432,19 +361,10 @@ public class DefaultHistoryManager
         for (HistoricActivityInstanceEntity cachedHistoricActivityInstance : cachedHistoricActivityInstances) {
             if (
                 activityId != null &&
-                activityId.equals(
-                    cachedHistoricActivityInstance.getActivityId()
-                ) &&
-                (
-                    !endTimeMustBeNull ||
-                    cachedHistoricActivityInstance.getEndTime() == null
-                )
+                activityId.equals(cachedHistoricActivityInstance.getActivityId()) &&
+                (!endTimeMustBeNull || cachedHistoricActivityInstance.getEndTime() == null)
             ) {
-                if (
-                    executionId.equals(
-                        cachedHistoricActivityInstance.getExecutionId()
-                    )
-                ) {
+                if (executionId.equals(cachedHistoricActivityInstance.getExecutionId())) {
                     return cachedHistoricActivityInstance;
                 }
             }
@@ -453,29 +373,21 @@ public class DefaultHistoryManager
         return null;
     }
 
-    protected HistoricActivityInstanceEntity createHistoricActivityInstanceEntity(
-        ExecutionEntity execution
-    ) {
-        IdGenerator idGenerator = getProcessEngineConfiguration()
-            .getIdGenerator();
+    protected HistoricActivityInstanceEntity createHistoricActivityInstanceEntity(ExecutionEntity execution) {
+        IdGenerator idGenerator = getProcessEngineConfiguration().getIdGenerator();
 
         String processDefinitionId = execution.getProcessDefinitionId();
         String processInstanceId = execution.getProcessInstanceId();
 
-        HistoricActivityInstanceEntity historicActivityInstance = getHistoricActivityInstanceEntityManager()
-            .create();
+        HistoricActivityInstanceEntity historicActivityInstance = getHistoricActivityInstanceEntityManager().create();
         historicActivityInstance.setId(idGenerator.getNextId());
         historicActivityInstance.setProcessDefinitionId(processDefinitionId);
         historicActivityInstance.setProcessInstanceId(processInstanceId);
         historicActivityInstance.setExecutionId(execution.getId());
         historicActivityInstance.setActivityId(execution.getActivityId());
         if (execution.getCurrentFlowElement() != null) {
-            historicActivityInstance.setActivityName(
-                execution.getCurrentFlowElement().getName()
-            );
-            historicActivityInstance.setActivityType(
-                parseActivityType(execution.getCurrentFlowElement())
-            );
+            historicActivityInstance.setActivityName(execution.getCurrentFlowElement().getName());
+            historicActivityInstance.setActivityType(parseActivityType(execution.getCurrentFlowElement()));
         }
         Date now = getClock().getCurrentTime();
         historicActivityInstance.setStartTime(now);
@@ -485,8 +397,7 @@ public class DefaultHistoryManager
             historicActivityInstance.setTenantId(execution.getTenantId());
         }
 
-        getHistoricActivityInstanceEntityManager()
-            .insert(historicActivityInstance);
+        getHistoricActivityInstanceEntityManager().insert(historicActivityInstance);
         return historicActivityInstance;
     }
 
@@ -496,17 +407,12 @@ public class DefaultHistoryManager
      * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordProcessDefinitionChange(java.lang.String, java.lang.String)
      */
     @Override
-    public void recordProcessDefinitionChange(
-        String processInstanceId,
-        String processDefinitionId
-    ) {
+    public void recordProcessDefinitionChange(String processInstanceId, String processDefinitionId) {
         if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
             HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceEntityManager()
                 .findById(processInstanceId);
             if (historicProcessInstance != null) {
-                historicProcessInstance.setProcessDefinitionId(
-                    processDefinitionId
-                );
+                historicProcessInstance.setProcessDefinitionId(processDefinitionId);
             }
         }
     }
@@ -524,8 +430,7 @@ public class DefaultHistoryManager
         if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
             HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager()
                 .create(task, execution);
-            getHistoricTaskInstanceEntityManager()
-                .insert(historicTaskInstance, false);
+            getHistoricTaskInstanceEntityManager().insert(historicTaskInstance, false);
         }
 
         recordTaskId(task);
@@ -580,11 +485,7 @@ public class DefaultHistoryManager
         if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
             ExecutionEntity execution = task.getExecution();
             if (execution != null) {
-                HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(
-                    execution,
-                    false,
-                    true
-                );
+                HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(execution, false, true);
                 if (historicActivityInstance != null) {
                     historicActivityInstance.setTaskId(task.getId());
                 }
@@ -600,8 +501,7 @@ public class DefaultHistoryManager
     @Override
     public void recordTaskEnd(String taskId, String deleteReason) {
         if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager()
-                .findById(taskId);
+            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager().findById(taskId);
             if (historicTaskInstance != null) {
                 historicTaskInstance.markEnded(deleteReason);
             }
@@ -616,8 +516,7 @@ public class DefaultHistoryManager
     @Override
     public void recordTaskAssigneeChange(String taskId, String assignee) {
         if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager()
-                .findById(taskId);
+            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager().findById(taskId);
             if (historicTaskInstance != null) {
                 historicTaskInstance.setAssignee(assignee);
             }
@@ -632,8 +531,7 @@ public class DefaultHistoryManager
     @Override
     public void recordTaskOwnerChange(String taskId, String owner) {
         if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager()
-                .findById(taskId);
+            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager().findById(taskId);
             if (historicTaskInstance != null) {
                 historicTaskInstance.setOwner(owner);
             }
@@ -648,8 +546,7 @@ public class DefaultHistoryManager
     @Override
     public void recordTaskNameChange(String taskId, String taskName) {
         if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager()
-                .findById(taskId);
+            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager().findById(taskId);
             if (historicTaskInstance != null) {
                 historicTaskInstance.setName(taskName);
             }
@@ -664,8 +561,7 @@ public class DefaultHistoryManager
     @Override
     public void recordTaskDescriptionChange(String taskId, String description) {
         if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager()
-                .findById(taskId);
+            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager().findById(taskId);
             if (historicTaskInstance != null) {
                 historicTaskInstance.setDescription(description);
             }
@@ -680,8 +576,7 @@ public class DefaultHistoryManager
     @Override
     public void recordTaskDueDateChange(String taskId, Date dueDate) {
         if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager()
-                .findById(taskId);
+            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager().findById(taskId);
             if (historicTaskInstance != null) {
                 historicTaskInstance.setDueDate(dueDate);
             }
@@ -696,8 +591,7 @@ public class DefaultHistoryManager
     @Override
     public void recordTaskPriorityChange(String taskId, int priority) {
         if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager()
-                .findById(taskId);
+            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager().findById(taskId);
             if (historicTaskInstance != null) {
                 historicTaskInstance.setPriority(priority);
             }
@@ -712,8 +606,7 @@ public class DefaultHistoryManager
     @Override
     public void recordTaskCategoryChange(String taskId, String category) {
         if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager()
-                .findById(taskId);
+            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager().findById(taskId);
             if (historicTaskInstance != null) {
                 historicTaskInstance.setCategory(category);
             }
@@ -723,8 +616,7 @@ public class DefaultHistoryManager
     @Override
     public void recordTaskFormKeyChange(String taskId, String formKey) {
         if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager()
-                .findById(taskId);
+            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager().findById(taskId);
             if (historicTaskInstance != null) {
                 historicTaskInstance.setFormKey(formKey);
             }
@@ -737,13 +629,9 @@ public class DefaultHistoryManager
      * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordTaskParentTaskIdChange(java.lang.String, java.lang.String)
      */
     @Override
-    public void recordTaskParentTaskIdChange(
-        String taskId,
-        String parentTaskId
-    ) {
+    public void recordTaskParentTaskIdChange(String taskId, String parentTaskId) {
         if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager()
-                .findById(taskId);
+            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager().findById(taskId);
             if (historicTaskInstance != null) {
                 historicTaskInstance.setParentTaskId(parentTaskId);
             }
@@ -758,8 +646,7 @@ public class DefaultHistoryManager
     @Override
     public void recordTaskExecutionIdChange(String taskId, String executionId) {
         if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager()
-                .findById(taskId);
+            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager().findById(taskId);
             if (historicTaskInstance != null) {
                 historicTaskInstance.setExecutionId(executionId);
             }
@@ -772,13 +659,9 @@ public class DefaultHistoryManager
      * @see org.activiti.engine.impl.history.HistoryManagerInterface# recordTaskDefinitionKeyChange (org.activiti.engine.impl.persistence.entity.TaskEntity, java.lang.String)
      */
     @Override
-    public void recordTaskDefinitionKeyChange(
-        String taskId,
-        String taskDefinitionKey
-    ) {
+    public void recordTaskDefinitionKeyChange(String taskId, String taskDefinitionKey) {
         if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager()
-                .findById(taskId);
+            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager().findById(taskId);
             if (historicTaskInstance != null) {
                 historicTaskInstance.setTaskDefinitionKey(taskDefinitionKey);
             }
@@ -789,17 +672,11 @@ public class DefaultHistoryManager
      * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskProcessDefinitionChange(java.lang.String, java.lang.String)
      */
     @Override
-    public void recordTaskProcessDefinitionChange(
-        String taskId,
-        String processDefinitionId
-    ) {
+    public void recordTaskProcessDefinitionChange(String taskId, String processDefinitionId) {
         if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager()
-                .findById(taskId);
+            HistoricTaskInstanceEntity historicTaskInstance = getHistoricTaskInstanceEntityManager().findById(taskId);
             if (historicTaskInstance != null) {
-                historicTaskInstance.setProcessDefinitionId(
-                    processDefinitionId
-                );
+                historicTaskInstance.setProcessDefinitionId(processDefinitionId);
             }
         }
     }
@@ -833,9 +710,7 @@ public class DefaultHistoryManager
     ) {
         if (isHistoryLevelAtLeast(HistoryLevel.FULL)) {
             HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = getHistoricDetailEntityManager()
-                .copyAndInsertHistoricDetailVariableInstanceUpdateEntity(
-                    variable
-                );
+                .copyAndInsertHistoricDetailVariableInstanceUpdateEntity(variable);
 
             if (useActivityId && sourceActivityExecution != null) {
                 HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(
@@ -844,9 +719,7 @@ public class DefaultHistoryManager
                     false
                 );
                 if (historicActivityInstance != null) {
-                    historicVariableUpdate.setActivityInstanceId(
-                        historicActivityInstance.getId()
-                    );
+                    historicVariableUpdate.setActivityInstanceId(historicActivityInstance.getId());
                 }
             }
         }
@@ -861,24 +734,17 @@ public class DefaultHistoryManager
     public void recordVariableUpdate(VariableInstanceEntity variable) {
         if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
             HistoricVariableInstanceEntity historicProcessVariable = getEntityCache()
-                .findInCache(
-                    HistoricVariableInstanceEntity.class,
-                    variable.getId()
-                );
+                .findInCache(HistoricVariableInstanceEntity.class, variable.getId());
             if (historicProcessVariable == null) {
                 historicProcessVariable =
                     getHistoricVariableInstanceEntityManager()
-                        .findHistoricVariableInstanceByVariableInstanceId(
-                            variable.getId()
-                        );
+                        .findHistoricVariableInstanceByVariableInstanceId(variable.getId());
             }
 
             if (historicProcessVariable != null) {
-                getHistoricVariableInstanceEntityManager()
-                    .copyVariableValue(historicProcessVariable, variable);
+                getHistoricVariableInstanceEntityManager().copyVariableValue(historicProcessVariable, variable);
             } else {
-                getHistoricVariableInstanceEntityManager()
-                    .copyAndInsert(variable);
+                getHistoricVariableInstanceEntityManager().copyAndInsert(variable);
             }
         }
     }
@@ -891,33 +757,17 @@ public class DefaultHistoryManager
      * @see org.activiti.engine.impl.history.HistoryManagerInterface# createIdentityLinkComment(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean)
      */
     @Override
-    public void createIdentityLinkComment(
-        String taskId,
-        String userId,
-        String groupId,
-        String type,
-        boolean create
-    ) {
+    public void createIdentityLinkComment(String taskId, String userId, String groupId, String type, boolean create) {
         createIdentityLinkComment(taskId, userId, groupId, type, create, false);
     }
 
     @Override
-    public void createUserIdentityLinkComment(
-        String taskId,
-        String userId,
-        String type,
-        boolean create
-    ) {
+    public void createUserIdentityLinkComment(String taskId, String userId, String type, boolean create) {
         createIdentityLinkComment(taskId, userId, null, type, create, false);
     }
 
     @Override
-    public void createGroupIdentityLinkComment(
-        String taskId,
-        String groupId,
-        String type,
-        boolean create
-    ) {
+    public void createGroupIdentityLinkComment(String taskId, String groupId, String type, boolean create) {
         createIdentityLinkComment(taskId, null, groupId, type, create, false);
     }
 
@@ -929,14 +779,7 @@ public class DefaultHistoryManager
         boolean create,
         boolean forceNullUserId
     ) {
-        createIdentityLinkComment(
-            taskId,
-            userId,
-            null,
-            type,
-            create,
-            forceNullUserId
-        );
+        createIdentityLinkComment(taskId, userId, null, type, create, forceNullUserId);
     }
 
     /*
@@ -988,14 +831,7 @@ public class DefaultHistoryManager
         String type,
         boolean create
     ) {
-        createProcessInstanceIdentityLinkComment(
-            processInstanceId,
-            userId,
-            groupId,
-            type,
-            create,
-            false
-        );
+        createProcessInstanceIdentityLinkComment(processInstanceId, userId, groupId, type, create, false);
     }
 
     @Override
@@ -1076,23 +912,16 @@ public class DefaultHistoryManager
         // to a process-definition only as this is never kept in history
         if (
             isHistoryLevelAtLeast(HistoryLevel.AUDIT) &&
-            (
-                identityLink.getProcessInstanceId() != null ||
-                identityLink.getTaskId() != null
-            )
+            (identityLink.getProcessInstanceId() != null || identityLink.getTaskId() != null)
         ) {
-            HistoricIdentityLinkEntity historicIdentityLinkEntity = getHistoricIdentityLinkEntityManager()
-                .create();
+            HistoricIdentityLinkEntity historicIdentityLinkEntity = getHistoricIdentityLinkEntityManager().create();
             historicIdentityLinkEntity.setId(identityLink.getId());
             historicIdentityLinkEntity.setGroupId(identityLink.getGroupId());
-            historicIdentityLinkEntity.setProcessInstanceId(
-                identityLink.getProcessInstanceId()
-            );
+            historicIdentityLinkEntity.setProcessInstanceId(identityLink.getProcessInstanceId());
             historicIdentityLinkEntity.setTaskId(identityLink.getTaskId());
             historicIdentityLinkEntity.setType(identityLink.getType());
             historicIdentityLinkEntity.setUserId(identityLink.getUserId());
-            getHistoricIdentityLinkEntityManager()
-                .insert(historicIdentityLinkEntity, false);
+            getHistoricIdentityLinkEntityManager().insert(historicIdentityLinkEntity, false);
         }
     }
 
@@ -1114,25 +943,17 @@ public class DefaultHistoryManager
      * @see org.activiti.engine.impl.history.HistoryManagerInterface# updateProcessBusinessKeyInHistory (org.activiti.engine.impl.persistence.entity.ExecutionEntity)
      */
     @Override
-    public void updateProcessBusinessKeyInHistory(
-        ExecutionEntity processInstance
-    ) {
+    public void updateProcessBusinessKeyInHistory(ExecutionEntity processInstance) {
         if (isHistoryEnabled()) {
             if (log.isDebugEnabled()) {
-                log.debug(
-                    "updateProcessBusinessKeyInHistory : {}",
-                    processInstance.getId()
-                );
+                log.debug("updateProcessBusinessKeyInHistory : {}", processInstance.getId());
             }
             if (processInstance != null) {
                 HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceEntityManager()
                     .findById(processInstance.getId());
                 if (historicProcessInstance != null) {
-                    historicProcessInstance.setBusinessKey(
-                        processInstance.getProcessInstanceBusinessKey()
-                    );
-                    getHistoricProcessInstanceEntityManager()
-                        .update(historicProcessInstance, false);
+                    historicProcessInstance.setBusinessKey(processInstance.getProcessInstanceBusinessKey());
+                    getHistoricProcessInstanceEntityManager().update(historicProcessInstance, false);
                 }
             }
         }
@@ -1142,30 +963,22 @@ public class DefaultHistoryManager
     public void recordVariableRemoved(VariableInstanceEntity variable) {
         if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
             HistoricVariableInstanceEntity historicProcessVariable = getEntityCache()
-                .findInCache(
-                    HistoricVariableInstanceEntity.class,
-                    variable.getId()
-                );
+                .findInCache(HistoricVariableInstanceEntity.class, variable.getId());
             if (historicProcessVariable == null) {
                 historicProcessVariable =
                     getHistoricVariableInstanceEntityManager()
-                        .findHistoricVariableInstanceByVariableInstanceId(
-                            variable.getId()
-                        );
+                        .findHistoricVariableInstanceByVariableInstanceId(variable.getId());
             }
 
             if (historicProcessVariable != null) {
-                getHistoricVariableInstanceEntityManager()
-                    .delete(historicProcessVariable);
+                getHistoricVariableInstanceEntityManager().delete(historicProcessVariable);
             }
         }
     }
 
     protected String parseActivityType(FlowElement element) {
         String elementType = element.getClass().getSimpleName();
-        elementType =
-            elementType.substring(0, 1).toLowerCase() +
-            elementType.substring(1);
+        elementType = elementType.substring(0, 1).toLowerCase() + elementType.substring(1);
         return elementType;
     }
 

@@ -32,16 +32,10 @@ public class TaskActivityBehavior extends AbstractBpmnActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 
-    protected String getActiveValue(
-        String originalValue,
-        String propertyName,
-        ObjectNode taskElementProperties
-    ) {
+    protected String getActiveValue(String originalValue, String propertyName, ObjectNode taskElementProperties) {
         String activeValue = originalValue;
         if (taskElementProperties != null) {
-            JsonNode overrideValueNode = taskElementProperties.get(
-                propertyName
-            );
+            JsonNode overrideValueNode = taskElementProperties.get(propertyName);
             if (overrideValueNode != null) {
                 if (overrideValueNode.isNull()) {
                     activeValue = null;
@@ -60,15 +54,9 @@ public class TaskActivityBehavior extends AbstractBpmnActivityBehavior {
     ) {
         List<String> activeValues = originalValues;
         if (taskElementProperties != null) {
-            JsonNode overrideValuesNode = taskElementProperties.get(
-                propertyName
-            );
+            JsonNode overrideValuesNode = taskElementProperties.get(propertyName);
             if (overrideValuesNode != null) {
-                if (
-                    overrideValuesNode.isNull() ||
-                    !overrideValuesNode.isArray() ||
-                    overrideValuesNode.size() == 0
-                ) {
+                if (overrideValuesNode.isNull() || !overrideValuesNode.isArray() || overrideValuesNode.size() == 0) {
                     activeValues = null;
                 } else {
                     activeValues = new ArrayList<String>();

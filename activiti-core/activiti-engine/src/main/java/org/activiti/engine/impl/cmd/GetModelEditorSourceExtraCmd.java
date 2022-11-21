@@ -24,8 +24,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 /**
 
  */
-public class GetModelEditorSourceExtraCmd
-    implements Command<byte[]>, Serializable {
+public class GetModelEditorSourceExtraCmd implements Command<byte[]>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String modelId;
@@ -39,9 +38,7 @@ public class GetModelEditorSourceExtraCmd
             throw new ActivitiIllegalArgumentException("modelId is null");
         }
 
-        byte[] bytes = commandContext
-            .getModelEntityManager()
-            .findEditorSourceExtraByModelId(modelId);
+        byte[] bytes = commandContext.getModelEntityManager().findEditorSourceExtraByModelId(modelId);
 
         return bytes;
     }

@@ -34,9 +34,7 @@ class ToVariableDeletedConverterTest {
 
     @Test
     void should_convertToVariableDeletedEvent() {
-        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(
-            ActivitiEventType.VARIABLE_DELETED
-        );
+        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_DELETED);
         internalEvent.setVariableName("variableName");
         internalEvent.setProcessInstanceId("processInstanceId");
         internalEvent.setTaskId("taskId");
@@ -49,12 +47,10 @@ class ToVariableDeletedConverterTest {
 
         assertThat(result).isPresent();
         VariableDeletedEvent actualEvent = result.get();
-        assertThat(actualEvent.getEventType())
-            .isEqualTo(VariableEvents.VARIABLE_DELETED);
+        assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_DELETED);
         VariableInstance actualEntity = actualEvent.getEntity();
         assertThat(actualEntity.getName()).isEqualTo("variableName");
-        assertThat(actualEntity.getProcessInstanceId())
-            .isEqualTo("processInstanceId");
+        assertThat(actualEntity.getProcessInstanceId()).isEqualTo("processInstanceId");
         assertThat(actualEntity.getTaskId()).isEqualTo("taskId");
         assertThat(actualEntity.getType()).isEqualTo("boolean");
         Object actualValue = actualEntity.getValue();

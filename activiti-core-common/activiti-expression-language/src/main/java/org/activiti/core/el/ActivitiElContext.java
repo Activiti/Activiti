@@ -65,10 +65,7 @@ public class ActivitiElContext extends ELContext {
         functions.setFunction(prefix, localName, method);
     }
 
-    public ValueExpression setVariable(
-        String name,
-        ValueExpression expression
-    ) {
+    public ValueExpression setVariable(String name, ValueExpression expression) {
         if (variables == null) {
             variables = new ActivitiVariablesMapper();
         }

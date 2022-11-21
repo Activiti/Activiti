@@ -33,11 +33,7 @@ import org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener.Re
  */
 public class ExecutionListenerTest extends PluggableActivitiTestCase {
 
-    @Deployment(
-        resources = {
-            "org/activiti/examples/bpmn/executionlistener/ExecutionListenersProcess.bpmn20.xml",
-        }
-    )
+    @Deployment(resources = { "org/activiti/examples/bpmn/executionlistener/ExecutionListenersProcess.bpmn20.xml" })
     public void testExecutionListenersOnAllPossibleElements() {
         RecorderExecutionListener.clear();
 
@@ -56,26 +52,17 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
         assertThat(varSetInExecutionListener).isEqualTo("firstValue");
 
         // Check if business key was available in execution listener
-        String businessKey = (String) runtimeService.getVariable(
-            processInstance.getId(),
-            "businessKeyInExecution"
-        );
+        String businessKey = (String) runtimeService.getVariable(processInstance.getId(), "businessKeyInExecution");
         assertThat(businessKey).isNotNull();
         assertThat(businessKey).isEqualTo("businessKey123");
 
         // Transition take executionListener will set 2 variables
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task).isNotNull();
         taskService.complete(task.getId());
 
         varSetInExecutionListener =
-            (String) runtimeService.getVariable(
-                processInstance.getId(),
-                "variableSetInExecutionListener"
-            );
+            (String) runtimeService.getVariable(processInstance.getId(), "variableSetInExecutionListener");
 
         assertThat(varSetInExecutionListener).isNotNull();
         assertThat(varSetInExecutionListener).isEqualTo("secondValue");
@@ -83,11 +70,7 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
         ExampleExecutionListenerPojo myPojo = new ExampleExecutionListenerPojo();
         runtimeService.setVariable(processInstance.getId(), "myPojo", myPojo);
 
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task).isNotNull();
         taskService.complete(task.getId());
 
@@ -100,11 +83,7 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
         assertThat(pojoVariable.getReceivedEventName()).isNotNull();
         assertThat(pojoVariable.getReceivedEventName()).isEqualTo("end");
 
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task).isNotNull();
         taskService.complete(task.getId());
 
@@ -117,49 +96,35 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
     }
 
     @Deployment(
-        resources = {
-            "org/activiti/examples/bpmn/executionlistener/ExecutionListenersStartEndEvent.bpmn20.xml",
-        }
+        resources = { "org/activiti/examples/bpmn/executionlistener/ExecutionListenersStartEndEvent.bpmn20.xml" }
     )
     public void testExecutionListenersOnStartEndEvents() {
         RecorderExecutionListener.clear();
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "executionListenersProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess");
         assertProcessEnded(processInstance.getId());
 
         List<RecordedEvent> recordedEvents = RecorderExecutionListener.getRecordedEvents();
         assertThat(recordedEvents).hasSize(4);
 
         assertThat(recordedEvents.get(0).getActivityId()).isEqualTo("theStart");
-        assertThat(recordedEvents.get(0).getActivityName())
-            .isEqualTo("Start Event");
-        assertThat(recordedEvents.get(0).getParameter())
-            .isEqualTo("Start Event Listener");
+        assertThat(recordedEvents.get(0).getActivityName()).isEqualTo("Start Event");
+        assertThat(recordedEvents.get(0).getParameter()).isEqualTo("Start Event Listener");
         assertThat(recordedEvents.get(0).getEventName()).isEqualTo("end");
 
-        assertThat(recordedEvents.get(1).getActivityId())
-            .isEqualTo("noneEvent");
-        assertThat(recordedEvents.get(1).getActivityName())
-            .isEqualTo("None Event");
-        assertThat(recordedEvents.get(1).getParameter())
-            .isEqualTo("Intermediate Catch Event Listener");
+        assertThat(recordedEvents.get(1).getActivityId()).isEqualTo("noneEvent");
+        assertThat(recordedEvents.get(1).getActivityName()).isEqualTo("None Event");
+        assertThat(recordedEvents.get(1).getParameter()).isEqualTo("Intermediate Catch Event Listener");
         assertThat(recordedEvents.get(1).getEventName()).isEqualTo("end");
 
-        assertThat(recordedEvents.get(2).getActivityId())
-            .isEqualTo("signalEvent");
-        assertThat(recordedEvents.get(2).getActivityName())
-            .isEqualTo("Signal Event");
-        assertThat(recordedEvents.get(2).getParameter())
-            .isEqualTo("Intermediate Throw Event Listener");
+        assertThat(recordedEvents.get(2).getActivityId()).isEqualTo("signalEvent");
+        assertThat(recordedEvents.get(2).getActivityName()).isEqualTo("Signal Event");
+        assertThat(recordedEvents.get(2).getParameter()).isEqualTo("Intermediate Throw Event Listener");
         assertThat(recordedEvents.get(2).getEventName()).isEqualTo("start");
 
         assertThat(recordedEvents.get(3).getActivityId()).isEqualTo("theEnd");
-        assertThat(recordedEvents.get(3).getActivityName())
-            .isEqualTo("End Event");
-        assertThat(recordedEvents.get(3).getParameter())
-            .isEqualTo("End Event Listener");
+        assertThat(recordedEvents.get(3).getActivityName()).isEqualTo("End Event");
+        assertThat(recordedEvents.get(3).getParameter()).isEqualTo("End Event Listener");
         assertThat(recordedEvents.get(3).getEventName()).isEqualTo("start");
     }
 
@@ -177,10 +142,7 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
             variables
         );
 
-        Object varSetByListener = runtimeService.getVariable(
-            processInstance.getId(),
-            "var"
-        );
+        Object varSetByListener = runtimeService.getVariable(processInstance.getId(), "var");
         assertThat(varSetByListener).isNotNull();
         assertThat(varSetByListener).isInstanceOf(String.class);
 
@@ -189,35 +151,25 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
     }
 
     @Deployment(
-        resources = {
-            "org/activiti/examples/bpmn/executionlistener/ExecutionListenersCurrentActivity.bpmn20.xml",
-        }
+        resources = { "org/activiti/examples/bpmn/executionlistener/ExecutionListenersCurrentActivity.bpmn20.xml" }
     )
     public void testExecutionListenerCurrentActivity() {
         CurrentActivityExecutionListener.clear();
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "executionListenersProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess");
         assertProcessEnded(processInstance.getId());
 
         List<CurrentActivity> currentActivities = CurrentActivityExecutionListener.getCurrentActivities();
         assertThat(currentActivities).hasSize(3);
 
-        assertThat(currentActivities.get(0).getActivityId())
-            .isEqualTo("theStart");
-        assertThat(currentActivities.get(0).getActivityName())
-            .isEqualTo("Start Event");
+        assertThat(currentActivities.get(0).getActivityId()).isEqualTo("theStart");
+        assertThat(currentActivities.get(0).getActivityName()).isEqualTo("Start Event");
 
-        assertThat(currentActivities.get(1).getActivityId())
-            .isEqualTo("noneEvent");
-        assertThat(currentActivities.get(1).getActivityName())
-            .isEqualTo("None Event");
+        assertThat(currentActivities.get(1).getActivityId()).isEqualTo("noneEvent");
+        assertThat(currentActivities.get(1).getActivityName()).isEqualTo("None Event");
 
-        assertThat(currentActivities.get(2).getActivityId())
-            .isEqualTo("theEnd");
-        assertThat(currentActivities.get(2).getActivityName())
-            .isEqualTo("End Event");
+        assertThat(currentActivities.get(2).getActivityId()).isEqualTo("theEnd");
+        assertThat(currentActivities.get(2).getActivityName()).isEqualTo("End Event");
     }
 
     @Deployment(
@@ -228,14 +180,11 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
     public void testExecutionListenersForSubprocessStartEndEvents() {
         RecorderExecutionListener.clear();
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "executionListenersProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess");
 
         List<RecordedEvent> recordedEvents = RecorderExecutionListener.getRecordedEvents();
         assertThat(recordedEvents).hasSize(1);
-        assertThat(recordedEvents.get(0).getParameter())
-            .isEqualTo("Process Start");
+        assertThat(recordedEvents.get(0).getParameter()).isEqualTo("Process Start");
 
         RecorderExecutionListener.clear();
 
@@ -247,11 +196,8 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
         recordedEvents = RecorderExecutionListener.getRecordedEvents();
 
         assertThat(recordedEvents).hasSize(3);
-        assertThat(recordedEvents.get(0).getParameter())
-            .isEqualTo("Subprocess Start");
-        assertThat(recordedEvents.get(1).getParameter())
-            .isEqualTo("Subprocess End");
-        assertThat(recordedEvents.get(2).getParameter())
-            .isEqualTo("Process End");
+        assertThat(recordedEvents.get(0).getParameter()).isEqualTo("Subprocess Start");
+        assertThat(recordedEvents.get(1).getParameter()).isEqualTo("Subprocess End");
+        assertThat(recordedEvents.get(2).getParameter()).isEqualTo("Process End");
     }
 }

@@ -30,16 +30,12 @@ import org.activiti.engine.impl.el.NoExecutionVariableScope;
  *
 
  */
-public class DelegateExpressionActivitiEventListener
-    extends BaseDelegateEventListener {
+public class DelegateExpressionActivitiEventListener extends BaseDelegateEventListener {
 
     protected Expression expression;
     protected boolean failOnException = false;
 
-    public DelegateExpressionActivitiEventListener(
-        Expression expression,
-        Class<?> entityClass
-    ) {
+    public DelegateExpressionActivitiEventListener(Expression expression, Class<?> entityClass) {
         this.expression = expression;
         setEntityClass(entityClass);
     }
@@ -55,8 +51,7 @@ public class DelegateExpressionActivitiEventListener
                 // Cache result of isFailOnException() from delegate-instance
                 // until next event is received. This prevents us from having to resolve
                 // the expression twice when an error occurs.
-                failOnException =
-                    ((ActivitiEventListener) delegate).isFailOnException();
+                failOnException = ((ActivitiEventListener) delegate).isFailOnException();
 
                 // Call the delegate
                 ((ActivitiEventListener) delegate).onEvent(event);

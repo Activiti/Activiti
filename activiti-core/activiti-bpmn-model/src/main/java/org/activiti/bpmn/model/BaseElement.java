@@ -65,21 +65,13 @@ public abstract class BaseElement implements HasExtensionAttributes {
     }
 
     public void addExtensionElement(ExtensionElement extensionElement) {
-        if (
-            extensionElement != null && isNotEmpty(extensionElement.getName())
-        ) {
-            extensionElements.computeIfAbsent(
-                extensionElement.getName(),
-                k -> new ArrayList<>()
-            );
-            this.extensionElements.get(extensionElement.getName())
-                .add(extensionElement);
+        if (extensionElement != null && isNotEmpty(extensionElement.getName())) {
+            extensionElements.computeIfAbsent(extensionElement.getName(), k -> new ArrayList<>());
+            this.extensionElements.get(extensionElement.getName()).add(extensionElement);
         }
     }
 
-    public void setExtensionElements(
-        Map<String, List<ExtensionElement>> extensionElements
-    ) {
+    public void setExtensionElements(Map<String, List<ExtensionElement>> extensionElements) {
         this.extensionElements = extensionElements;
     }
 
@@ -101,10 +93,7 @@ public abstract class BaseElement implements HasExtensionAttributes {
             .orElse(null);
     }
 
-    private boolean isNamespaceMatching(
-        String namespace,
-        ExtensionAttribute attribute
-    ) {
+    private boolean isNamespaceMatching(String namespace, ExtensionAttribute attribute) {
         return (
             (namespace == null && attribute.getNamespace() == null) ||
             (namespace != null && namespace.equals(attribute.getNamespace()))
@@ -114,51 +103,36 @@ public abstract class BaseElement implements HasExtensionAttributes {
     @Override
     public void addAttribute(ExtensionAttribute attribute) {
         if (attribute != null && isNotEmpty(attribute.getName())) {
-            attributes.computeIfAbsent(
-                attribute.getName(),
-                key -> new ArrayList<>()
-            );
+            attributes.computeIfAbsent(attribute.getName(), key -> new ArrayList<>());
             attributes.get(attribute.getName()).add(attribute);
         }
     }
 
     @Override
-    public void setAttributes(
-        Map<String, List<ExtensionAttribute>> attributes
-    ) {
+    public void setAttributes(Map<String, List<ExtensionAttribute>> attributes) {
         this.attributes = attributes;
     }
 
     public void setValues(BaseElement otherElement) {
         setId(otherElement.getId());
 
-        if (
-            otherElement.getExtensionElements() != null &&
-            !otherElement.getExtensionElements().isEmpty()
-        ) {
+        if (otherElement.getExtensionElements() != null && !otherElement.getExtensionElements().isEmpty()) {
             Map<String, List<ExtensionElement>> validExtensionElements = otherElement
                 .getExtensionElements()
                 .entrySet()
                 .stream()
                 .filter(e -> hasElements(e.getValue()))
-                .collect(
-                    Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)
-                );
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             extensionElements.putAll(validExtensionElements);
         }
 
-        if (
-            otherElement.getAttributes() != null &&
-            !otherElement.getAttributes().isEmpty()
-        ) {
+        if (otherElement.getAttributes() != null && !otherElement.getAttributes().isEmpty()) {
             Map<String, List<ExtensionAttribute>> validAttributes = otherElement
                 .getAttributes()
                 .entrySet()
                 .stream()
                 .filter(e -> hasElements(e.getValue()))
-                .collect(
-                    Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)
-                );
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             attributes.putAll(validAttributes);
         }
     }

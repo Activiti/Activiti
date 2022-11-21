@@ -22,18 +22,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 
-public class NeverFailAutoDeploymentStrategy
-    extends AbstractAutoDeploymentStrategy {
+public class NeverFailAutoDeploymentStrategy extends AbstractAutoDeploymentStrategy {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(
-        NeverFailAutoDeploymentStrategy.class
-    );
+    protected static final Logger LOGGER = LoggerFactory.getLogger(NeverFailAutoDeploymentStrategy.class);
 
     public static final String DEPLOYMENT_MODE = "never-fail";
 
-    public NeverFailAutoDeploymentStrategy(
-        ApplicationUpgradeContextService applicationUpgradeContextService
-    ) {
+    public NeverFailAutoDeploymentStrategy(ApplicationUpgradeContextService applicationUpgradeContextService) {
         super(applicationUpgradeContextService);
     }
 
@@ -43,11 +38,7 @@ public class NeverFailAutoDeploymentStrategy
     }
 
     @Override
-    public void deployResources(
-        String deploymentNameHint,
-        Resource[] resources,
-        RepositoryService repositoryService
-    ) {
+    public void deployResources(String deploymentNameHint, Resource[] resources, RepositoryService repositoryService) {
         DeploymentBuilder deploymentBuilder = repositoryService
             .createDeployment()
             .enableDuplicateFiltering()

@@ -36,12 +36,8 @@ public class ExecutionGraphUtil {
     /**
      * Takes in a collection of executions belonging to the same process instance. Orders the executions in a list, first elements are the leaf, last element is the root elements.
      */
-    public static List<ExecutionEntity> orderFromRootToLeaf(
-        Collection<ExecutionEntity> executions
-    ) {
-        List<ExecutionEntity> orderedList = new ArrayList<ExecutionEntity>(
-            executions.size()
-        );
+    public static List<ExecutionEntity> orderFromRootToLeaf(Collection<ExecutionEntity> executions) {
+        List<ExecutionEntity> orderedList = new ArrayList<ExecutionEntity>(executions.size());
 
         // Root elements
         HashSet<String> previousIds = new HashSet<String>();
@@ -55,10 +51,7 @@ public class ExecutionGraphUtil {
         // Non-root elements
         while (orderedList.size() < executions.size()) {
             for (ExecutionEntity execution : executions) {
-                if (
-                    !previousIds.contains(execution.getId()) &&
-                    previousIds.contains(execution.getParentId())
-                ) {
+                if (!previousIds.contains(execution.getId()) && previousIds.contains(execution.getParentId())) {
                     orderedList.add(execution);
                     previousIds.add(execution.getId());
                 }
@@ -68,9 +61,7 @@ public class ExecutionGraphUtil {
         return orderedList;
     }
 
-    public static List<ExecutionEntity> orderFromLeafToRoot(
-        Collection<ExecutionEntity> executions
-    ) {
+    public static List<ExecutionEntity> orderFromLeafToRoot(Collection<ExecutionEntity> executions) {
         List<ExecutionEntity> orderedList = orderFromRootToLeaf(executions);
         Collections.reverse(orderedList);
         return orderedList;
@@ -79,40 +70,24 @@ public class ExecutionGraphUtil {
     /**
      * Verifies if the element with the given source identifier can reach the element with the target identifier through following sequence flow.
      */
-    public static boolean isReachable(
-        String processDefinitionId,
-        String sourceElementId,
-        String targetElementId
-    ) {
+    public static boolean isReachable(String processDefinitionId, String sourceElementId, String targetElementId) {
         // Fetch source and target elements
         Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
 
-        FlowElement sourceFlowElement = process.getFlowElement(
-            sourceElementId,
-            true
-        );
+        FlowElement sourceFlowElement = process.getFlowElement(sourceElementId, true);
         FlowNode sourceElement = null;
         if (sourceFlowElement instanceof FlowNode) {
             sourceElement = (FlowNode) sourceFlowElement;
         } else if (sourceFlowElement instanceof SequenceFlow) {
-            sourceElement =
-                (FlowNode) (
-                    (SequenceFlow) sourceFlowElement
-                ).getTargetFlowElement();
+            sourceElement = (FlowNode) ((SequenceFlow) sourceFlowElement).getTargetFlowElement();
         }
 
-        FlowElement targetFlowElement = process.getFlowElement(
-            targetElementId,
-            true
-        );
+        FlowElement targetFlowElement = process.getFlowElement(targetElementId, true);
         FlowNode targetElement = null;
         if (targetFlowElement instanceof FlowNode) {
             targetElement = (FlowNode) targetFlowElement;
         } else if (targetFlowElement instanceof SequenceFlow) {
-            targetElement =
-                (FlowNode) (
-                    (SequenceFlow) targetFlowElement
-                ).getTargetFlowElement();
+            targetElement = (FlowNode) ((SequenceFlow) targetFlowElement).getTargetFlowElement();
         }
 
         if (sourceElement == null) {
@@ -135,12 +110,7 @@ public class ExecutionGraphUtil {
         }
 
         Set<String> visitedElements = new HashSet<String>();
-        return isReachable(
-            process,
-            sourceElement,
-            targetElement,
-            visitedElements
-        );
+        return isReachable(process, sourceElement, targetElement, visitedElements);
     }
 
     public static boolean isReachable(
@@ -153,9 +123,7 @@ public class ExecutionGraphUtil {
         if (sourceElement.getOutgoingFlows().size() == 0) {
             visitedElements.add(sourceElement.getId());
 
-            FlowElementsContainer parentElement = process.findParent(
-                sourceElement
-            );
+            FlowElementsContainer parentElement = process.findParent(sourceElement);
             if (parentElement instanceof SubProcess) {
                 sourceElement = (SubProcess) parentElement;
             } else {
@@ -176,20 +144,9 @@ public class ExecutionGraphUtil {
         if (sequenceFlows != null && sequenceFlows.size() > 0) {
             for (SequenceFlow sequenceFlow : sequenceFlows) {
                 String targetRef = sequenceFlow.getTargetRef();
-                FlowNode sequenceFlowTarget = (FlowNode) process.getFlowElement(
-                    targetRef,
-                    true
-                );
-                if (
-                    sequenceFlowTarget != null &&
-                    !visitedElements.contains(sequenceFlowTarget.getId())
-                ) {
-                    boolean reachable = isReachable(
-                        process,
-                        sequenceFlowTarget,
-                        targetElement,
-                        visitedElements
-                    );
+                FlowNode sequenceFlowTarget = (FlowNode) process.getFlowElement(targetRef, true);
+                if (sequenceFlowTarget != null && !visitedElements.contains(sequenceFlowTarget.getId())) {
+                    boolean reachable = isReachable(process, sequenceFlowTarget, targetElement, visitedElements);
 
                     if (reachable) {
                         return true;

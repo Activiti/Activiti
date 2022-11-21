@@ -35,8 +35,6 @@ public class GetTaskEventsCmd implements Command<List<Event>>, Serializable {
     }
 
     public List<Event> execute(CommandContext commandContext) {
-        return commandContext
-            .getCommentEntityManager()
-            .findEventsByTaskId(taskId);
+        return commandContext.getCommentEntityManager().findEventsByTaskId(taskId);
     }
 }

@@ -47,11 +47,7 @@ public class TimerRetriesDecrementedListenerDelegateTest {
 
     @BeforeEach
     public void setUp() {
-        listenerDelegate =
-            new TimerRetriesDecrementedListenerDelegate(
-                singletonList(listener),
-                converter
-            );
+        listenerDelegate = new TimerRetriesDecrementedListenerDelegate(singletonList(listener), converter);
     }
 
     @Test
@@ -59,8 +55,7 @@ public class TimerRetriesDecrementedListenerDelegateTest {
         //given
         ActivitiEntityEvent internalEvent = mock(ActivitiEntityEvent.class);
         BPMNTimerRetriesDecrementedEventImpl convertedEvent = new BPMNTimerRetriesDecrementedEventImpl();
-        given(converter.from(internalEvent))
-            .willReturn(Optional.of(convertedEvent));
+        given(converter.from(internalEvent)).willReturn(Optional.of(convertedEvent));
 
         //when
         listenerDelegate.onEvent(internalEvent);

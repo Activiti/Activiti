@@ -51,12 +51,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
     protected Deployment executeDeploy(CommandContext commandContext) {
         DeploymentEntity deployment = deploymentBuilder.getDeployment();
 
-        deployment.setDeploymentTime(
-            commandContext
-                .getProcessEngineConfiguration()
-                .getClock()
-                .getCurrentTime()
-        );
+        deployment.setDeploymentTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
 
         setProjectReleaseVersion(deployment);
         deployment.setVersion(1);
@@ -65,9 +60,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
             List<Deployment> existingDeployments = new ArrayList<Deployment>();
             if (
                 deployment.getTenantId() == null ||
-                ProcessEngineConfiguration.NO_TENANT_ID.equals(
-                    deployment.getTenantId()
-                )
+                ProcessEngineConfiguration.NO_TENANT_ID.equals(deployment.getTenantId())
             ) {
                 DeploymentEntity existingDeployment = commandContext
                     .getDeploymentEntityManager()
@@ -93,8 +86,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
 
             DeploymentEntity existingDeployment = null;
             if (!existingDeployments.isEmpty()) {
-                existingDeployment =
-                    (DeploymentEntity) existingDeployments.get(0);
+                existingDeployment = (DeploymentEntity) existingDeployments.get(0);
             }
 
             if (existingDeployment != null) {
@@ -111,21 +103,11 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
         // Save the data
         commandContext.getDeploymentEntityManager().insert(deployment);
 
-        if (
+        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
             commandContext
                 .getProcessEngineConfiguration()
                 .getEventDispatcher()
-                .isEnabled()
-        ) {
-            commandContext
-                .getProcessEngineConfiguration()
-                .getEventDispatcher()
-                .dispatchEvent(
-                    ActivitiEventBuilder.createEntityEvent(
-                        ActivitiEventType.ENTITY_CREATED,
-                        deployment
-                    )
-                );
+                .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, deployment));
         }
 
         // Deployment settings
@@ -140,29 +122,18 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
         );
 
         // Actually deploy
-        commandContext
-            .getProcessEngineConfiguration()
-            .getDeploymentManager()
-            .deploy(deployment, deploymentSettings);
+        commandContext.getProcessEngineConfiguration().getDeploymentManager().deploy(deployment, deploymentSettings);
 
         if (deploymentBuilder.getProcessDefinitionsActivationDate() != null) {
             scheduleProcessDefinitionActivation(commandContext, deployment);
         }
 
-        if (
-            commandContext
-                .getProcessEngineConfiguration()
-                .getEventDispatcher()
-                .isEnabled()
-        ) {
+        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
             commandContext
                 .getProcessEngineConfiguration()
                 .getEventDispatcher()
                 .dispatchEvent(
-                    ActivitiEventBuilder.createEntityEvent(
-                        ActivitiEventType.ENTITY_INITIALIZED,
-                        deployment
-                    )
+                    ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, deployment)
                 );
         }
 
@@ -171,16 +142,11 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
 
     private void setProjectReleaseVersion(DeploymentEntity deployment) {
         if (deploymentBuilder.hasProjectManifestSet()) {
-            deployment.setProjectReleaseVersion(
-                deploymentBuilder.getProjectManifest().getVersion()
-            );
+            deployment.setProjectReleaseVersion(deploymentBuilder.getProjectManifest().getVersion());
         }
     }
 
-    private void applyUpgradeLogic(
-        DeploymentEntity deployment,
-        DeploymentEntity existingDeployment
-    ) {
+    private void applyUpgradeLogic(DeploymentEntity deployment, DeploymentEntity existingDeployment) {
         if (deploymentBuilder.hasEnforcedAppVersion()) {
             deployment.setVersion(deploymentBuilder.getEnforcedAppVersion());
         } else if (deploymentBuilder.hasProjectManifestSet()) {
@@ -188,10 +154,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
         }
     }
 
-    protected boolean deploymentsDiffer(
-        DeploymentEntity deployment,
-        DeploymentEntity saved
-    ) {
+    protected boolean deploymentsDiffer(DeploymentEntity deployment, DeploymentEntity saved) {
         if (deploymentBuilder.hasEnforcedAppVersion()) {
             return deploymentsDifferWhenEnforcedAppVersionIsSet(saved);
         } else if (deploymentBuilder.hasProjectManifestSet()) {
@@ -201,27 +164,15 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
         }
     }
 
-    private boolean deploymentsDifferWhenEnforcedAppVersionIsSet(
-        DeploymentEntity saved
-    ) {
-        return !deploymentBuilder
-            .getEnforcedAppVersion()
-            .equals(saved.getVersion());
+    private boolean deploymentsDifferWhenEnforcedAppVersionIsSet(DeploymentEntity saved) {
+        return !deploymentBuilder.getEnforcedAppVersion().equals(saved.getVersion());
     }
 
-    private boolean deploymentsDifferWhenProjectManifestIsSet(
-        DeploymentEntity deployment,
-        DeploymentEntity saved
-    ) {
-        return !deployment
-            .getProjectReleaseVersion()
-            .equals(saved.getProjectReleaseVersion());
+    private boolean deploymentsDifferWhenProjectManifestIsSet(DeploymentEntity deployment, DeploymentEntity saved) {
+        return !deployment.getProjectReleaseVersion().equals(saved.getProjectReleaseVersion());
     }
 
-    private boolean deploymentsDifferDefault(
-        DeploymentEntity deployment,
-        DeploymentEntity saved
-    ) {
+    private boolean deploymentsDifferDefault(DeploymentEntity deployment, DeploymentEntity saved) {
         if (deployment.getResources() == null || saved.getResources() == null) {
             return true;
         }
@@ -249,10 +200,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
         return false;
     }
 
-    protected void scheduleProcessDefinitionActivation(
-        CommandContext commandContext,
-        DeploymentEntity deployment
-    ) {
+    protected void scheduleProcessDefinitionActivation(CommandContext commandContext, DeploymentEntity deployment) {
         for (ProcessDefinitionEntity processDefinitionEntity : deployment.getDeployedArtifacts(
             ProcessDefinitionEntity.class
         )) {

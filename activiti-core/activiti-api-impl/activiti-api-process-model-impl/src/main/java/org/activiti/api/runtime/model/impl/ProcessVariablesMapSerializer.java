@@ -28,8 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.core.convert.ConversionService;
 
-public class ProcessVariablesMapSerializer
-    extends StdSerializer<ProcessVariablesMap<String, Object>> {
+public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariablesMap<String, Object>> {
 
     private static final long serialVersionUID = 1L;
     private final ConversionService conversionService;
@@ -80,8 +79,7 @@ public class ProcessVariablesMapSerializer
         if (isScalarType(clazz)) {
             entryType = clazz;
         } else {
-            entryType =
-                getContainerType(clazz, value).orElse(ObjectValue.class);
+            entryType = getContainerType(clazz, value).orElse(ObjectValue.class);
         }
 
         return forClass(entryType);

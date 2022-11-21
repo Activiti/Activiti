@@ -38,24 +38,14 @@ public abstract class ActivityMatchers {
         return (operationScope, events) -> {
             List<BPMNActivityStartedEvent> startedEvents = events
                 .stream()
-                .filter(event ->
-                    BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED.equals(
-                        event.getEventType()
-                    )
-                )
+                .filter(event -> BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED.equals(event.getEventType()))
                 .map(BPMNActivityStartedEvent.class::cast)
                 .collect(Collectors.toList());
             assertThat(startedEvents)
                 .filteredOn(event ->
-                    event
-                        .getEntity()
-                        .getProcessInstanceId()
-                        .equals(operationScope.getProcessInstanceId())
+                    event.getEntity().getProcessInstanceId().equals(operationScope.getProcessInstanceId())
                 )
-                .extracting(
-                    event -> event.getEntity().getActivityType(),
-                    event -> event.getEntity().getElementId()
-                )
+                .extracting(event -> event.getEntity().getActivityType(), event -> event.getEntity().getElementId())
                 .contains(tuple(getActivityType(), definitionKey));
         };
     }
@@ -65,25 +55,15 @@ public abstract class ActivityMatchers {
             hasBeenStarted().match(operationScope, events);
             List<BPMNActivityCompletedEvent> completedEvents = events
                 .stream()
-                .filter(event ->
-                    BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED.equals(
-                        event.getEventType()
-                    )
-                )
+                .filter(event -> BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED.equals(event.getEventType()))
                 .map(BPMNActivityCompletedEvent.class::cast)
                 .collect(Collectors.toList());
 
             assertThat(completedEvents)
                 .filteredOn(event ->
-                    event
-                        .getEntity()
-                        .getProcessInstanceId()
-                        .equals(operationScope.getProcessInstanceId())
+                    event.getEntity().getProcessInstanceId().equals(operationScope.getProcessInstanceId())
                 )
-                .extracting(
-                    event -> event.getEntity().getActivityType(),
-                    event -> event.getEntity().getElementId()
-                )
+                .extracting(event -> event.getEntity().getActivityType(), event -> event.getEntity().getElementId())
                 .as(
                     "Unable to find event " +
                     BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED +

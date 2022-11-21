@@ -37,9 +37,7 @@ public class MappingAwareUserTaskBehavior extends UserTaskActivityBehavior {
     }
 
     @Override
-    protected Map<String, Object> calculateInputVariables(
-        DelegateExecution execution
-    ) {
+    protected Map<String, Object> calculateInputVariables(DelegateExecution execution) {
         return variablesCalculator.calculateInputVariables(execution);
     }
 }

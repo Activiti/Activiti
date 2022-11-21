@@ -59,11 +59,7 @@ public class DbSchemaExport {
         String jdbcPassword = properties.getProperty("jdbc.password");
 
         Class.forName(jdbcDriver);
-        Connection connection = DriverManager.getConnection(
-            jdbcUrl,
-            jdbcUsername,
-            jdbcPassword
-        );
+        Connection connection = DriverManager.getConnection(jdbcUrl, jdbcUsername, jdbcPassword);
         try {
             DatabaseMetaData meta = connection.getMetaData();
 
@@ -77,40 +73,21 @@ public class DbSchemaExport {
             System.out.println("TABLES");
             for (String tableName : tableNames) {
                 Map<String, String> columnDescriptions = new HashMap<String, String>();
-                ResultSet columns = meta.getColumns(
-                    null,
-                    null,
-                    tableName,
-                    null
-                );
+                ResultSet columns = meta.getColumns(null, null, tableName, null);
                 while (columns.next()) {
                     String columnName = columns.getString(4);
-                    String columnTypeAndSize =
-                        columns.getString(6) + " " + columns.getInt(7);
+                    String columnTypeAndSize = columns.getString(6) + " " + columns.getInt(7);
                     columnDescriptions.put(columnName, columnTypeAndSize);
                 }
 
                 System.out.println(tableName);
-                for (String columnName : new TreeSet<String>(
-                    columnDescriptions.keySet()
-                )) {
-                    System.out.println(
-                        "  " +
-                        columnName +
-                        " " +
-                        columnDescriptions.get(columnName)
-                    );
+                for (String columnName : new TreeSet<String>(columnDescriptions.keySet())) {
+                    System.out.println("  " + columnName + " " + columnDescriptions.get(columnName));
                 }
 
                 System.out.println("INDEXES");
                 SortedSet<String> indexNames = new TreeSet<String>();
-                ResultSet indexes = meta.getIndexInfo(
-                    null,
-                    null,
-                    tableName,
-                    false,
-                    true
-                );
+                ResultSet indexes = meta.getIndexInfo(null, null, tableName, false, true);
                 while (indexes.next()) {
                     String indexName = indexes.getString(6);
                     indexNames.add(indexName);

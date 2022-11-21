@@ -29,8 +29,7 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 /**
 
  */
-public class GetTasksLocalVariablesCmd
-    implements Command<List<VariableInstance>>, Serializable {
+public class GetTasksLocalVariablesCmd implements Command<List<VariableInstance>>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected Set<String> taskIds;
@@ -45,9 +44,7 @@ public class GetTasksLocalVariablesCmd
             throw new ActivitiIllegalArgumentException("taskIds is null");
         }
         if (taskIds.isEmpty()) {
-            throw new ActivitiIllegalArgumentException(
-                "Set of taskIds is empty"
-            );
+            throw new ActivitiIllegalArgumentException("Set of taskIds is empty");
         }
 
         List<VariableInstance> instances = new ArrayList<VariableInstance>();

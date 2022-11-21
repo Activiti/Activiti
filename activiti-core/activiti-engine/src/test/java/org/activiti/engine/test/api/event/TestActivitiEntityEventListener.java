@@ -45,9 +45,7 @@ public class TestActivitiEntityEventListener implements ActivitiEventListener {
     public void onEvent(ActivitiEvent event) {
         if (
             event instanceof ActivitiEntityEvent &&
-            entityClass.isAssignableFrom(
-                ((ActivitiEntityEvent) event).getEntity().getClass()
-            )
+            entityClass.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass())
         ) {
             eventsReceived.add(event);
         }

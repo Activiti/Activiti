@@ -22,8 +22,7 @@ import org.activiti.bpmn.model.Pool;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CollaborationExtensionElementsConverterTest
-    extends AbstractConverterTest {
+public class CollaborationExtensionElementsConverterTest extends AbstractConverterTest {
 
     @Test
     public void convertXMLToModel() throws Exception {

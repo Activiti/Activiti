@@ -32,9 +32,7 @@ import org.slf4j.LoggerFactory;
  */
 public class AcquireTimerJobsRunnable implements Runnable {
 
-    private static Logger log = LoggerFactory.getLogger(
-        AcquireTimerJobsRunnable.class
-    );
+    private static Logger log = LoggerFactory.getLogger(AcquireTimerJobsRunnable.class);
 
     protected final AsyncExecutor asyncExecutor;
     protected final JobManager jobManager;
@@ -45,10 +43,7 @@ public class AcquireTimerJobsRunnable implements Runnable {
 
     protected long millisToWait;
 
-    public AcquireTimerJobsRunnable(
-        AsyncExecutor asyncExecutor,
-        JobManager jobManager
-    ) {
+    public AcquireTimerJobsRunnable(AsyncExecutor asyncExecutor, JobManager jobManager) {
         this.asyncExecutor = asyncExecutor;
         this.jobManager = jobManager;
     }
@@ -57,9 +52,7 @@ public class AcquireTimerJobsRunnable implements Runnable {
         log.info("{} starting to acquire async jobs due");
         Thread.currentThread().setName("activiti-acquire-timer-jobs");
 
-        final CommandExecutor commandExecutor = asyncExecutor
-            .getProcessEngineConfiguration()
-            .getCommandExecutor();
+        final CommandExecutor commandExecutor = asyncExecutor.getProcessEngineConfiguration().getCommandExecutor();
 
         while (!isInterrupted) {
             try {
@@ -80,18 +73,12 @@ public class AcquireTimerJobsRunnable implements Runnable {
                 );
 
                 // if all jobs were executed
-                millisToWait =
-                    asyncExecutor.getDefaultTimerJobAcquireWaitTimeInMillis();
+                millisToWait = asyncExecutor.getDefaultTimerJobAcquireWaitTimeInMillis();
                 int jobsAcquired = acquiredJobs.size();
-                if (
-                    jobsAcquired >=
-                    asyncExecutor.getMaxTimerJobsPerAcquisition()
-                ) {
+                if (jobsAcquired >= asyncExecutor.getMaxTimerJobsPerAcquisition()) {
                     millisToWait = 0;
                 }
-            } catch (
-                ActivitiOptimisticLockingException optimisticLockingException
-            ) {
+            } catch (ActivitiOptimisticLockingException optimisticLockingException) {
                 if (log.isDebugEnabled()) {
                     log.debug(
                         "Optimistic locking exception during timer job acquisition. If you have multiple timer executors running against the same database, " +
@@ -103,22 +90,14 @@ public class AcquireTimerJobsRunnable implements Runnable {
                     );
                 }
             } catch (Throwable e) {
-                log.error(
-                    "exception during timer job acquisition: {}",
-                    e.getMessage(),
-                    e
-                );
-                millisToWait =
-                    asyncExecutor.getDefaultTimerJobAcquireWaitTimeInMillis();
+                log.error("exception during timer job acquisition: {}", e.getMessage(), e);
+                millisToWait = asyncExecutor.getDefaultTimerJobAcquireWaitTimeInMillis();
             }
 
             if (millisToWait > 0) {
                 try {
                     if (log.isDebugEnabled()) {
-                        log.debug(
-                            "timer job acquisition thread sleeping for {} millis",
-                            millisToWait
-                        );
+                        log.debug("timer job acquisition thread sleeping for {} millis", millisToWait);
                     }
                     synchronized (MONITOR) {
                         if (!isInterrupted) {

@@ -31,11 +31,7 @@ public class DocumentationParser extends BaseChildElementParser {
         return "documentation";
     }
 
-    public void parseChildElement(
-        XMLStreamReader xtr,
-        BaseElement parentElement,
-        BpmnModel model
-    ) throws Exception {
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
         String docText = xtr.getElementText();
         if (StringUtils.isNotEmpty(docText)) {
             if (parentElement instanceof FlowElement) {

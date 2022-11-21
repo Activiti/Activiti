@@ -39,26 +39,18 @@ import org.slf4j.LoggerFactory;
  */
 public class ExecuteAsyncRunnable implements Runnable {
 
-    private static Logger log = LoggerFactory.getLogger(
-        ExecuteAsyncRunnable.class
-    );
+    private static Logger log = LoggerFactory.getLogger(ExecuteAsyncRunnable.class);
 
     protected String jobId;
     protected Job job;
     protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
-    public ExecuteAsyncRunnable(
-        String jobId,
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public ExecuteAsyncRunnable(String jobId, ProcessEngineConfigurationImpl processEngineConfiguration) {
         this.jobId = jobId;
         this.processEngineConfiguration = processEngineConfiguration;
     }
 
-    public ExecuteAsyncRunnable(
-        Job job,
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public ExecuteAsyncRunnable(Job job, ProcessEngineConfigurationImpl processEngineConfiguration) {
         this.job = job;
         this.jobId = job.getId();
         this.processEngineConfiguration = processEngineConfiguration;
@@ -72,12 +64,8 @@ public class ExecuteAsyncRunnable implements Runnable {
                     .execute(
                         new Command<JobEntity>() {
                             @Override
-                            public JobEntity execute(
-                                CommandContext commandContext
-                            ) {
-                                return commandContext
-                                    .getJobEntityManager()
-                                    .findById(jobId);
+                            public JobEntity execute(CommandContext commandContext) {
+                                return commandContext.getJobEntityManager().findById(jobId);
                             }
                         }
                     );
@@ -96,9 +84,7 @@ public class ExecuteAsyncRunnable implements Runnable {
 
     protected void executeJob() {
         try {
-            processEngineConfiguration
-                .getCommandExecutor()
-                .execute(new ExecuteAsyncJobCmd(jobId));
+            processEngineConfiguration.getCommandExecutor().execute(new ExecuteAsyncJobCmd(jobId));
         } catch (final ActivitiOptimisticLockingException e) {
             handleFailedJob(e);
 
@@ -124,13 +110,9 @@ public class ExecuteAsyncRunnable implements Runnable {
     protected void unlockJobIfNeeded() {
         try {
             if (job.isExclusive()) {
-                processEngineConfiguration
-                    .getCommandExecutor()
-                    .execute(new UnlockExclusiveJobCmd(job));
+                processEngineConfiguration.getCommandExecutor().execute(new UnlockExclusiveJobCmd(job));
             }
-        } catch (
-            ActivitiOptimisticLockingException optimisticLockingException
-        ) {
+        } catch (ActivitiOptimisticLockingException optimisticLockingException) {
             if (log.isDebugEnabled()) {
                 log.debug(
                     "Optimistic locking exception while unlocking the job. If you have multiple async executors running against the same database, " +
@@ -153,9 +135,7 @@ public class ExecuteAsyncRunnable implements Runnable {
     protected boolean lockJobIfNeeded() {
         try {
             if (job.isExclusive()) {
-                processEngineConfiguration
-                    .getCommandExecutor()
-                    .execute(new LockExclusiveJobCmd(job));
+                processEngineConfiguration.getCommandExecutor().execute(new LockExclusiveJobCmd(job));
             }
         } catch (Throwable lockException) {
             if (log.isDebugEnabled()) {
@@ -204,10 +184,7 @@ public class ExecuteAsyncRunnable implements Runnable {
                             .getDefaultConfig()
                             .transactionRequiresNew();
                         FailedJobCommandFactory failedJobCommandFactory = commandContext.getFailedJobCommandFactory();
-                        Command<Object> cmd = failedJobCommandFactory.getCommand(
-                            job.getId(),
-                            exception
-                        );
+                        Command<Object> cmd = failedJobCommandFactory.getCommand(job.getId(), exception);
 
                         log.trace(
                             "Using FailedJobCommandFactory '" +
@@ -216,9 +193,7 @@ public class ExecuteAsyncRunnable implements Runnable {
                             cmd.getClass() +
                             "'"
                         );
-                        processEngineConfiguration
-                            .getCommandExecutor()
-                            .execute(commandConfig, cmd);
+                        processEngineConfiguration.getCommandExecutor().execute(commandConfig, cmd);
 
                         // Dispatch an event, indicating job execution failed in a
                         // try-catch block, to prevent the original exception to be swallowed
@@ -234,10 +209,7 @@ public class ExecuteAsyncRunnable implements Runnable {
                                         )
                                     );
                             } catch (Throwable ignore) {
-                                log.warn(
-                                    "Exception occurred while dispatching job failure event, ignoring.",
-                                    ignore
-                                );
+                                log.warn("Exception occurred while dispatching job failure event, ignoring.", ignore);
                             }
                         }
 

@@ -25,8 +25,7 @@ import org.activiti.engine.delegate.Expression;
 /**
 
  */
-public class DelegateExpressionCustomPropertiesResolver
-    implements CustomPropertiesResolver {
+public class DelegateExpressionCustomPropertiesResolver implements CustomPropertiesResolver {
 
     protected Expression expression;
 
@@ -35,18 +34,14 @@ public class DelegateExpressionCustomPropertiesResolver
     }
 
     @Override
-    public Map<String, Object> getCustomPropertiesMap(
-        DelegateExecution execution
-    ) {
+    public Map<String, Object> getCustomPropertiesMap(DelegateExecution execution) {
         // Note: we can't cache the result of the expression, because the
         // execution can change: eg.
         // delegateExpression='${mySpringBeanFactory.randomSpringBean()}'
         Object delegate = expression.getValue(execution);
 
         if (delegate instanceof CustomPropertiesResolver) {
-            return ((CustomPropertiesResolver) delegate).getCustomPropertiesMap(
-                    execution
-                );
+            return ((CustomPropertiesResolver) delegate).getCustomPropertiesMap(execution);
         } else {
             throw new ActivitiIllegalArgumentException(
                 "Custom properties resolver delegate expression " +

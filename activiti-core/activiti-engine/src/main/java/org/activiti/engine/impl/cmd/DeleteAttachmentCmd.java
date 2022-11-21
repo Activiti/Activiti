@@ -38,26 +38,17 @@ public class DeleteAttachmentCmd implements Command<Object>, Serializable {
     }
 
     public Object execute(CommandContext commandContext) {
-        AttachmentEntity attachment = commandContext
-            .getAttachmentEntityManager()
-            .findById(attachmentId);
+        AttachmentEntity attachment = commandContext.getAttachmentEntityManager().findById(attachmentId);
 
         String processInstanceId = attachment.getProcessInstanceId();
         String processDefinitionId = null;
         if (attachment.getProcessInstanceId() != null) {
-            ExecutionEntity process = commandContext
-                .getExecutionEntityManager()
-                .findById(processInstanceId);
+            ExecutionEntity process = commandContext.getExecutionEntityManager().findById(processInstanceId);
             if (process != null) {
                 processDefinitionId = process.getProcessDefinitionId();
             }
         }
-        executeInternal(
-            commandContext,
-            attachment,
-            processInstanceId,
-            processDefinitionId
-        );
+        executeInternal(commandContext, attachment, processInstanceId, processDefinitionId);
 
         return null;
     }
@@ -71,9 +62,7 @@ public class DeleteAttachmentCmd implements Command<Object>, Serializable {
         commandContext.getAttachmentEntityManager().delete(attachment, false);
 
         if (attachment.getContentId() != null) {
-            commandContext
-                .getByteArrayEntityManager()
-                .deleteByteArrayById(attachment.getContentId());
+            commandContext.getByteArrayEntityManager().deleteByteArrayById(attachment.getContentId());
         }
 
         if (attachment.getTaskId() != null) {
@@ -87,12 +76,7 @@ public class DeleteAttachmentCmd implements Command<Object>, Serializable {
                 );
         }
 
-        if (
-            commandContext
-                .getProcessEngineConfiguration()
-                .getEventDispatcher()
-                .isEnabled()
-        ) {
+        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
             commandContext
                 .getProcessEngineConfiguration()
                 .getEventDispatcher()

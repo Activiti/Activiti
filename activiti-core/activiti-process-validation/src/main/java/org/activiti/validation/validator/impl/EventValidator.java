@@ -38,52 +38,19 @@ import org.apache.commons.lang3.StringUtils;
 public class EventValidator extends ProcessLevelValidator {
 
     @Override
-    protected void executeValidation(
-        BpmnModel bpmnModel,
-        Process process,
-        List<ValidationError> errors
-    ) {
+    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
         List<Event> events = process.findFlowElementsOfType(Event.class);
         for (Event event : events) {
             if (event.getEventDefinitions() != null) {
                 for (EventDefinition eventDefinition : event.getEventDefinitions()) {
                     if (eventDefinition instanceof MessageEventDefinition) {
-                        handleMessageEventDefinition(
-                            bpmnModel,
-                            process,
-                            event,
-                            eventDefinition,
-                            errors
-                        );
-                    } else if (
-                        eventDefinition instanceof SignalEventDefinition
-                    ) {
-                        handleSignalEventDefinition(
-                            bpmnModel,
-                            process,
-                            event,
-                            eventDefinition,
-                            errors
-                        );
-                    } else if (
-                        eventDefinition instanceof TimerEventDefinition
-                    ) {
-                        handleTimerEventDefinition(
-                            process,
-                            event,
-                            eventDefinition,
-                            errors
-                        );
-                    } else if (
-                        eventDefinition instanceof CompensateEventDefinition
-                    ) {
-                        handleCompensationEventDefinition(
-                            bpmnModel,
-                            process,
-                            event,
-                            eventDefinition,
-                            errors
-                        );
+                        handleMessageEventDefinition(bpmnModel, process, event, eventDefinition, errors);
+                    } else if (eventDefinition instanceof SignalEventDefinition) {
+                        handleSignalEventDefinition(bpmnModel, process, event, eventDefinition, errors);
+                    } else if (eventDefinition instanceof TimerEventDefinition) {
+                        handleTimerEventDefinition(process, event, eventDefinition, errors);
+                    } else if (eventDefinition instanceof CompensateEventDefinition) {
+                        handleCompensationEventDefinition(bpmnModel, process, event, eventDefinition, errors);
                     }
                 }
             }
@@ -100,11 +67,7 @@ public class EventValidator extends ProcessLevelValidator {
         MessageEventDefinition messageEventDefinition = (MessageEventDefinition) eventDefinition;
 
         if (StringUtils.isEmpty(messageEventDefinition.getMessageRef())) {
-            if (
-                StringUtils.isEmpty(
-                    messageEventDefinition.getMessageExpression()
-                )
-            ) {
+            if (StringUtils.isEmpty(messageEventDefinition.getMessageExpression())) {
                 // message ref should be filled in
                 addError(
                     errors,
@@ -114,9 +77,7 @@ public class EventValidator extends ProcessLevelValidator {
                     "attribute 'messageRef' is required"
                 );
             }
-        } else if (
-            !bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())
-        ) {
+        } else if (!bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
             // message ref should exist
             addError(
                 errors,
@@ -138,9 +99,7 @@ public class EventValidator extends ProcessLevelValidator {
         SignalEventDefinition signalEventDefinition = (SignalEventDefinition) eventDefinition;
 
         if (StringUtils.isEmpty(signalEventDefinition.getSignalRef())) {
-            if (
-                StringUtils.isEmpty(signalEventDefinition.getSignalExpression())
-            ) {
+            if (StringUtils.isEmpty(signalEventDefinition.getSignalExpression())) {
                 addError(
                     errors,
                     Problems.SIGNAL_EVENT_MISSING_SIGNAL_REF,
@@ -149,9 +108,7 @@ public class EventValidator extends ProcessLevelValidator {
                     "signalEventDefinition does not have mandatory property 'signalRef'"
                 );
             }
-        } else if (
-            !bpmnModel.containsSignalId(signalEventDefinition.getSignalRef())
-        ) {
+        } else if (!bpmnModel.containsSignalId(signalEventDefinition.getSignalRef())) {
             addError(
                 errors,
                 Problems.SIGNAL_EVENT_INVALID_SIGNAL_REF,
@@ -197,14 +154,8 @@ public class EventValidator extends ProcessLevelValidator {
         // Check activityRef
         if (
             (
-                StringUtils.isNotEmpty(
-                    compensateEventDefinition.getActivityRef()
-                ) &&
-                process.getFlowElement(
-                    compensateEventDefinition.getActivityRef(),
-                    true
-                ) ==
-                null
+                StringUtils.isNotEmpty(compensateEventDefinition.getActivityRef()) &&
+                process.getFlowElement(compensateEventDefinition.getActivityRef(), true) == null
             )
         ) {
             addError(

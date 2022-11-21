@@ -38,9 +38,7 @@ public class GetModelEditorSourceCmd implements Command<byte[]>, Serializable {
             throw new ActivitiIllegalArgumentException("modelId is null");
         }
 
-        byte[] bytes = commandContext
-            .getModelEntityManager()
-            .findEditorSourceByModelId(modelId);
+        byte[] bytes = commandContext.getModelEntityManager().findEditorSourceByModelId(modelId);
 
         return bytes;
     }

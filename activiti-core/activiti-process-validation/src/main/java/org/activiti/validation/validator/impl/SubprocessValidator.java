@@ -32,14 +32,8 @@ import org.activiti.validation.validator.ProcessLevelValidator;
 public class SubprocessValidator extends ProcessLevelValidator {
 
     @Override
-    protected void executeValidation(
-        BpmnModel bpmnModel,
-        Process process,
-        List<ValidationError> errors
-    ) {
-        List<SubProcess> subProcesses = process.findFlowElementsOfType(
-            SubProcess.class
-        );
+    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+        List<SubProcess> subProcesses = process.findFlowElementsOfType(SubProcess.class);
         for (SubProcess subProcess : subProcesses) {
             if (!(subProcess instanceof EventSubProcess)) {
                 // Verify start events

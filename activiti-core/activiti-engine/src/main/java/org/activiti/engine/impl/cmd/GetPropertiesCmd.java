@@ -27,16 +27,13 @@ import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 /**
 
  */
-public class GetPropertiesCmd
-    implements Command<Map<String, String>>, Serializable {
+public class GetPropertiesCmd implements Command<Map<String, String>>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @SuppressWarnings("unchecked")
     public Map<String, String> execute(CommandContext commandContext) {
-        List<PropertyEntity> propertyEntities = commandContext
-            .getPropertyEntityManager()
-            .findAll();
+        List<PropertyEntity> propertyEntities = commandContext.getPropertyEntityManager().findAll();
 
         Map<String, String> properties = new HashMap<String, String>();
         for (PropertyEntity propertyEntity : propertyEntities) {

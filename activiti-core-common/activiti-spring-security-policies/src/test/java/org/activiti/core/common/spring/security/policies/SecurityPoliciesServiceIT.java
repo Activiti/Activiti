@@ -50,20 +50,17 @@ public class SecurityPoliciesServiceIT {
 
         assertThat(policies.get(0).getName()).isEqualTo("My Policy");
 
-        assertThat(policies.get(0).getServiceName())
-            .isEqualTo("runtime-bundle");
+        assertThat(policies.get(0).getServiceName()).isEqualTo("runtime-bundle");
 
         assertThat(policies.get(0).getUsers()).hasSize(3);
 
         assertThat(policies.get(0).getGroups()).hasSize(2);
 
-        assertThat(policies.get(0).getAccess())
-            .isEqualTo(SecurityPolicyAccess.WRITE);
+        assertThat(policies.get(0).getAccess()).isEqualTo(SecurityPolicyAccess.WRITE);
 
         assertThat(policies.get(0).getKeys()).hasSize(2);
 
-        assertThat(policies.get(0).getKeys())
-            .contains("SampleProcess1", "SampleProcess2");
+        assertThat(policies.get(0).getKeys()).contains("SampleProcess1", "SampleProcess2");
 
         assertThat(policies.get(1).getName()).isEqualTo("Other Policy");
 
@@ -73,13 +70,11 @@ public class SecurityPoliciesServiceIT {
 
         assertThat(policies.get(1).getGroups()).hasSize(2);
 
-        assertThat(policies.get(1).getAccess())
-            .isEqualTo(SecurityPolicyAccess.READ);
+        assertThat(policies.get(1).getAccess()).isEqualTo(SecurityPolicyAccess.READ);
 
         assertThat(policies.get(1).getKeys()).hasSize(2);
 
-        assertThat(policies.get(1).getKeys())
-            .contains("SampleProcess2", "SampleProcess3");
+        assertThat(policies.get(1).getKeys()).contains("SampleProcess2", "SampleProcess3");
 
         assertThat(policies.get(2).getName()).isEqualTo("Policy with Wildcard");
 
@@ -89,29 +84,22 @@ public class SecurityPoliciesServiceIT {
 
         assertThat(policies.get(2).getGroups()).hasSize(1);
 
-        assertThat(policies.get(2).getAccess())
-            .isEqualTo(SecurityPolicyAccess.WRITE);
+        assertThat(policies.get(2).getAccess()).isEqualTo(SecurityPolicyAccess.WRITE);
 
         assertThat(policies.get(2).getKeys()).hasSize(1);
 
-        assertThat(policies.get(2).getKeys())
-            .contains(securityPoliciesProperties.getWildcard());
+        assertThat(policies.get(2).getKeys()).contains(securityPoliciesProperties.getWildcard());
     }
 
     @Test
     public void shouldBePoliciesDefined() {
-        assertThat(processSecurityPoliciesManager.arePoliciesDefined())
-            .isTrue();
-        assertThat(!securityPoliciesProperties.getPolicies().isEmpty())
-            .isTrue();
+        assertThat(processSecurityPoliciesManager.arePoliciesDefined()).isTrue();
+        assertThat(!securityPoliciesProperties.getPolicies().isEmpty()).isTrue();
         assertThat(securityPoliciesProperties.getPolicies()).hasSize(3);
     }
 
     @Test
-    @WithUserDetails(
-        value = "bob",
-        userDetailsServiceBeanName = "myUserDetailsService"
-    )
+    @WithUserDetails(value = "bob", userDetailsServiceBeanName = "myUserDetailsService")
     public void shouldGetPoliciesForUser() {
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         assertThat(authenticatedUserId).isEqualTo("bob");
@@ -127,19 +115,14 @@ public class SecurityPoliciesServiceIT {
         assertThat(keys.keySet()).hasSize(3);
 
         assertThat(keys.get("runtime-bundle")).hasSize(2);
-        assertThat(keys.get("runtime-bundle"))
-            .contains("SampleProcess1", "SampleProcess2");
+        assertThat(keys.get("runtime-bundle")).contains("SampleProcess1", "SampleProcess2");
         assertThat(keys.get("application")).hasSize(0);
         assertThat(keys.get("default")).hasSize(1);
-        assertThat(keys.get("default"))
-            .contains(securityPoliciesProperties.getWildcard());
+        assertThat(keys.get("default")).contains(securityPoliciesProperties.getWildcard());
     }
 
     @Test
-    @WithUserDetails(
-        value = "garth",
-        userDetailsServiceBeanName = "myUserDetailsService"
-    )
+    @WithUserDetails(value = "garth", userDetailsServiceBeanName = "myUserDetailsService")
     public void shouldNotGetKeysForWrite() {
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         assertThat(authenticatedUserId).isEqualTo("garth");
@@ -148,9 +131,7 @@ public class SecurityPoliciesServiceIT {
         assertThat(userGroups).hasSize(1);
         assertThat(userGroups).contains("doctor");
 
-        Map<String, Set<String>> keys = processSecurityPoliciesManager.getAllowedKeys(
-            SecurityPolicyAccess.WRITE
-        );
+        Map<String, Set<String>> keys = processSecurityPoliciesManager.getAllowedKeys(SecurityPolicyAccess.WRITE);
         assertThat(keys.keySet()).hasSize(3);
         assertThat(keys.get("application")).hasSize(0);
         assertThat(keys.get("runtime-bundle")).hasSize(0);
@@ -158,10 +139,7 @@ public class SecurityPoliciesServiceIT {
     }
 
     @Test
-    @WithUserDetails(
-        value = "garth",
-        userDetailsServiceBeanName = "myUserDetailsService"
-    )
+    @WithUserDetails(value = "garth", userDetailsServiceBeanName = "myUserDetailsService")
     public void shouldGetKeysForRead() {
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         assertThat(authenticatedUserId).isEqualTo("garth");
@@ -170,23 +148,17 @@ public class SecurityPoliciesServiceIT {
         assertThat(userGroups).hasSize(1);
         assertThat(userGroups).contains("doctor");
 
-        Map<String, Set<String>> keys = processSecurityPoliciesManager.getAllowedKeys(
-            SecurityPolicyAccess.READ
-        );
+        Map<String, Set<String>> keys = processSecurityPoliciesManager.getAllowedKeys(SecurityPolicyAccess.READ);
 
         assertThat(keys.keySet()).hasSize(3);
         assertThat(keys.get("application")).hasSize(2);
-        assertThat(keys.get("application"))
-            .contains("SampleProcess2", "SampleProcess3");
+        assertThat(keys.get("application")).contains("SampleProcess2", "SampleProcess3");
         assertThat(keys.get("runtime-bundle")).hasSize(0);
         assertThat(keys.get("default")).hasSize(0);
     }
 
     @Test
-    @WithUserDetails(
-        value = "garth",
-        userDetailsServiceBeanName = "myUserDetailsService"
-    )
+    @WithUserDetails(value = "garth", userDetailsServiceBeanName = "myUserDetailsService")
     public void shouldNotGetAnyKey() {
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         assertThat(authenticatedUserId).isEqualTo("garth");

@@ -26,9 +26,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 final class SchemaOperationProcessEngineClose implements Command<Object> {
 
     public Object execute(CommandContext commandContext) {
-        commandContext
-            .getDbSqlSession()
-            .performSchemaOperationsProcessEngineClose();
+        commandContext.getDbSqlSession().performSchemaOperationsProcessEngineClose();
         return null;
     }
 }

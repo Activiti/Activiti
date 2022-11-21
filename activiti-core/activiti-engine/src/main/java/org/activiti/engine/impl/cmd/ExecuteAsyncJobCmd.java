@@ -34,9 +34,7 @@ public class ExecuteAsyncJobCmd implements Command<Object>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static Logger log = LoggerFactory.getLogger(
-        ExecuteAsyncJobCmd.class
-    );
+    private static Logger log = LoggerFactory.getLogger(ExecuteAsyncJobCmd.class);
 
     protected String jobId;
 
@@ -78,12 +76,7 @@ public class ExecuteAsyncJobCmd implements Command<Object>, Serializable {
         if (commandContext.getEventDispatcher().isEnabled()) {
             commandContext
                 .getEventDispatcher()
-                .dispatchEvent(
-                    ActivitiEventBuilder.createEntityEvent(
-                        ActivitiEventType.JOB_EXECUTION_SUCCESS,
-                        job
-                    )
-                );
+                .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_EXECUTION_SUCCESS, job));
         }
     }
 }

@@ -27,9 +27,7 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 @Deprecated
-public class AttachmentEntityImpl
-    extends AbstractEntity
-    implements AttachmentEntity, Serializable {
+public class AttachmentEntityImpl extends AbstractEntity implements AttachmentEntity, Serializable {
 
     private static final long serialVersionUID = 1L;
 

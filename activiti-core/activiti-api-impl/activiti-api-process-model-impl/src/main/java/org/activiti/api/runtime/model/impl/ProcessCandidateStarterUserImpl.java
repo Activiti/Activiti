@@ -26,10 +26,7 @@ public class ProcessCandidateStarterUserImpl
 
     public ProcessCandidateStarterUserImpl() {}
 
-    public ProcessCandidateStarterUserImpl(
-        String processDefinitionId,
-        String userId
-    ) {
+    public ProcessCandidateStarterUserImpl(String processDefinitionId, String userId) {
         super(processDefinitionId);
         this.userId = userId;
     }
@@ -41,10 +38,7 @@ public class ProcessCandidateStarterUserImpl
         ProcessCandidateStarterUserImpl that = (ProcessCandidateStarterUserImpl) o;
         return (
             Objects.equals(userId, that.userId) &&
-            Objects.equals(
-                getProcessDefinitionId(),
-                that.getProcessDefinitionId()
-            )
+            Objects.equals(getProcessDefinitionId(), that.getProcessDefinitionId())
         );
     }
 

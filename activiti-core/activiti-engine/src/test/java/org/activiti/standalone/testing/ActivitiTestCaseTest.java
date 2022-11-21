@@ -35,7 +35,6 @@ public class ActivitiTestCaseTest extends ActivitiTestCase {
         assertThat(task.getName()).isEqualTo("My Task");
 
         taskService.complete(task.getId());
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
     }
 }

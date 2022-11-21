@@ -21,8 +21,7 @@ import java.util.Optional;
 import org.activiti.api.runtime.shared.security.PrincipalRolesProvider;
 import org.springframework.lang.NonNull;
 
-public class AuthenticationPrincipalRolesProvider
-    implements PrincipalRolesProvider {
+public class AuthenticationPrincipalRolesProvider implements PrincipalRolesProvider {
 
     private final GrantedAuthoritiesResolver grantedAuthoritiesResolver;
     private final GrantedAuthoritiesRolesMapper grantedAuthoritiesRolesMapper;

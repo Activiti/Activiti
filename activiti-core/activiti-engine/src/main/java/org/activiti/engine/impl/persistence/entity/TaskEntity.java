@@ -29,8 +29,7 @@ import org.activiti.engine.task.Task;
 /**
  */
 @Internal
-public interface TaskEntity
-    extends VariableScope, Task, DelegateTask, Entity, HasRevision {
+public interface TaskEntity extends VariableScope, Task, DelegateTask, Entity, HasRevision {
     ExecutionEntity getExecution();
 
     void setExecutionId(String executionId);

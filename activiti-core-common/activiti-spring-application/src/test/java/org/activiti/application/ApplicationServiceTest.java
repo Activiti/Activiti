@@ -47,15 +47,12 @@ public class ApplicationServiceTest {
     public void shouldLoadApplications() throws Exception {
         //given
         Resource applicationResource = mock(Resource.class);
-        given(applicationResource.getInputStream())
-            .willReturn(mock(InputStream.class));
+        given(applicationResource.getInputStream()).willReturn(mock(InputStream.class));
 
-        given(applicationDiscovery.discoverApplications())
-            .willReturn(singletonList(applicationResource));
+        given(applicationDiscovery.discoverApplications()).willReturn(singletonList(applicationResource));
 
         ApplicationContent applicationContent = new ApplicationContent();
-        given(applicationReader.read(applicationResource.getInputStream()))
-            .willReturn(applicationContent);
+        given(applicationReader.read(applicationResource.getInputStream())).willReturn(applicationContent);
 
         //when
         List<ApplicationContent> applicationContents = applicationService.loadApplications();
@@ -65,24 +62,18 @@ public class ApplicationServiceTest {
     }
 
     @Test
-    public void shouldThrowApplicationLoadExceptionWhenIOExceptionOccurs()
-        throws Exception {
+    public void shouldThrowApplicationLoadExceptionWhenIOExceptionOccurs() throws Exception {
         //given
         Resource applicationResource = mock(Resource.class);
         IOException ioException = new IOException();
         given(applicationResource.getInputStream()).willThrow(ioException);
 
-        given(applicationDiscovery.discoverApplications())
-            .willReturn(singletonList(applicationResource));
+        given(applicationDiscovery.discoverApplications()).willReturn(singletonList(applicationResource));
 
         //when
-        Throwable thrown = catchThrowable(() ->
-            applicationService.loadApplications()
-        );
+        Throwable thrown = catchThrowable(() -> applicationService.loadApplications());
 
         //then
-        assertThat(thrown)
-            .isInstanceOf(ApplicationLoadException.class)
-            .hasCause(ioException);
+        assertThat(thrown).isInstanceOf(ApplicationLoadException.class).hasCause(ioException);
     }
 }

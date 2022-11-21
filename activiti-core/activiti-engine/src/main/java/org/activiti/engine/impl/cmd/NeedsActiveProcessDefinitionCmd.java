@@ -28,8 +28,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 /**
 
  */
-public abstract class NeedsActiveProcessDefinitionCmd<T>
-    implements Command<T>, Serializable {
+public abstract class NeedsActiveProcessDefinitionCmd<T> implements Command<T>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -46,9 +45,7 @@ public abstract class NeedsActiveProcessDefinitionCmd<T>
 
         if (processDefinition == null) {
             throw new ActivitiObjectNotFoundException(
-                "No process definition found for id = '" +
-                processDefinitionId +
-                "'",
+                "No process definition found for id = '" + processDefinitionId + "'",
                 ProcessDefinition.class
             );
         }
@@ -69,8 +66,5 @@ public abstract class NeedsActiveProcessDefinitionCmd<T>
     /**
      * Subclasses should implement this. The provided {@link ProcessDefinition} is guaranteed to be an active process definition (ie. not suspended).
      */
-    protected abstract T execute(
-        CommandContext commandContext,
-        ProcessDefinitionEntity processDefinition
-    );
+    protected abstract T execute(CommandContext commandContext, ProcessDefinitionEntity processDefinition);
 }

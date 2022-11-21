@@ -38,59 +38,35 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testCompensateSubprocess() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "compensateProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
 
-        assertThat(
-            runtimeService.getVariable(processInstance.getId(), "undoBookHotel")
-        )
-            .isEqualTo(5);
+        assertThat(runtimeService.getVariable(processInstance.getId(), "undoBookHotel")).isEqualTo(5);
 
-        Execution execution = runtimeService
-            .createExecutionQuery()
-            .activityId("beforeEnd")
-            .singleResult();
+        Execution execution = runtimeService.createExecutionQuery().activityId("beforeEnd").singleResult();
         runtimeService.trigger(execution.getId());
         assertProcessEnded(processInstance.getId());
     }
 
     @Deployment
     public void testCompensateSubprocessWithoutActivityRef() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "compensateProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
 
-        assertThat(
-            runtimeService.getVariable(processInstance.getId(), "undoBookHotel")
-        )
-            .isEqualTo(5);
+        assertThat(runtimeService.getVariable(processInstance.getId(), "undoBookHotel")).isEqualTo(5);
 
-        Execution execution = runtimeService
-            .createExecutionQuery()
-            .activityId("beforeEnd")
-            .singleResult();
+        Execution execution = runtimeService.createExecutionQuery().activityId("beforeEnd").singleResult();
         runtimeService.trigger(execution.getId());
         assertProcessEnded(processInstance.getId());
     }
 
     @Deployment
     public void testCompensateSubprocessWithUserTask() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "compensateProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
 
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task.getName()).isEqualTo("Manually undo book hotel");
         taskService.complete(task.getId());
 
-        Execution execution = runtimeService
-            .createExecutionQuery()
-            .activityId("beforeEnd")
-            .singleResult();
+        Execution execution = runtimeService.createExecutionQuery().activityId("beforeEnd").singleResult();
         runtimeService.trigger(execution.getId());
         assertProcessEnded(processInstance.getId());
     }
@@ -100,19 +76,11 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
         // Same process as testCompensateSubprocessWithUserTask, but now the end event is reached first
         // (giving an exception before)
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "compensateProcess"
-        );
-        Execution execution = runtimeService
-            .createExecutionQuery()
-            .activityId("beforeEnd")
-            .singleResult();
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
+        Execution execution = runtimeService.createExecutionQuery().activityId("beforeEnd").singleResult();
         runtimeService.trigger(execution.getId());
 
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task.getName()).isEqualTo("Manually undo book hotel");
         taskService.complete(task.getId());
 
@@ -121,45 +89,23 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testCompensateMiSubprocess() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "compensateProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
 
-        assertThat(
-            runtimeService.getVariable(processInstance.getId(), "undoBookHotel")
-        )
-            .isEqualTo(5);
+        assertThat(runtimeService.getVariable(processInstance.getId(), "undoBookHotel")).isEqualTo(5);
 
-        Execution execution = runtimeService
-            .createExecutionQuery()
-            .activityId("beforeEnd")
-            .singleResult();
+        Execution execution = runtimeService.createExecutionQuery().activityId("beforeEnd").singleResult();
         runtimeService.trigger(execution.getId());
         assertProcessEnded(processInstance.getId());
     }
 
     @Deployment
     public void testCompensateScope() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "compensateProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
 
-        assertThat(
-            runtimeService.getVariable(processInstance.getId(), "undoBookHotel")
-        )
-            .isEqualTo(5);
-        assertThat(
-            runtimeService.getVariable(
-                processInstance.getId(),
-                "undoBookFlight"
-            )
-        )
-            .isEqualTo(5);
+        assertThat(runtimeService.getVariable(processInstance.getId(), "undoBookHotel")).isEqualTo(5);
+        assertThat(runtimeService.getVariable(processInstance.getId(), "undoBookFlight")).isEqualTo(5);
 
-        Execution execution = runtimeService
-            .createExecutionQuery()
-            .activityId("beforeEnd")
-            .singleResult();
+        Execution execution = runtimeService.createExecutionQuery().activityId("beforeEnd").singleResult();
         runtimeService.trigger(execution.getId());
         assertProcessEnded(processInstance.getId());
     }
@@ -171,43 +117,21 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
         }
     )
     public void testCallActivityCompensationHandler() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "compensateProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
-            assertThat(
-                historyService
-                    .createHistoricActivityInstanceQuery()
-                    .activityId("undoBookHotel")
-                    .count()
-            )
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+            assertThat(historyService.createHistoricActivityInstanceQuery().activityId("undoBookHotel").count())
                 .isEqualTo(5);
         }
 
-        Execution execution = runtimeService
-            .createExecutionQuery()
-            .activityId("beforeEnd")
-            .singleResult();
+        Execution execution = runtimeService.createExecutionQuery().activityId("beforeEnd").singleResult();
         runtimeService.trigger(execution.getId());
         assertProcessEnded(processInstance.getId());
 
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
-            assertThat(
-                historyService.createHistoricProcessInstanceQuery().count()
-            )
-                .isEqualTo(6);
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+            assertThat(historyService.createHistoricProcessInstanceQuery().count()).isEqualTo(6);
         }
     }
 
@@ -217,21 +141,10 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
 
         SetVariablesDelegate.variablesMap.clear();
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "compensateProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
-            assertThat(
-                historyService
-                    .createHistoricActivityInstanceQuery()
-                    .activityId("undoBookHotel")
-                    .count()
-            )
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+            assertThat(historyService.createHistoricActivityInstanceQuery().activityId("undoBookHotel").count())
                 .isEqualTo(5);
         }
 
@@ -260,9 +173,7 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
                     )
                     .deploy()
             )
-            .withMessageContaining(
-                "Invalid attribute value for 'activityRef':"
-            );
+            .withMessageContaining("Invalid attribute value for 'activityRef':");
     }
 
     @Deployment(
@@ -275,14 +186,9 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
             "compensationStepEndRecordedProcess"
         );
         assertProcessEnded(processInstance.getId());
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             final HistoricActivityInstanceQuery query = historyService
                 .createHistoricActivityInstanceQuery()
                 .activityId("compensationScriptTask");
@@ -290,22 +196,15 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
             final HistoricActivityInstance compensationScriptTask = query.singleResult();
             assertThat(compensationScriptTask).isNotNull();
             assertThat(compensationScriptTask.getEndTime()).isNotNull();
-            assertThat(compensationScriptTask.getDurationInMillis())
-                .isNotNull();
+            assertThat(compensationScriptTask.getDurationInMillis()).isNotNull();
         }
     }
 
     @Deployment
     public void testCompensateWithSubprocess() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "compensateProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.AUDIT)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             HistoricActivityInstance historicActivityInstance = historyService
                 .createHistoricActivityInstanceQuery()
                 .processInstanceId(processInstance.getId())
@@ -376,9 +275,7 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testCompensateNestedSubprocess() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "compensateProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess");
 
         // Completing should trigger the compensations
         Task task = taskService

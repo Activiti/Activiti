@@ -34,9 +34,7 @@ import org.slf4j.LoggerFactory;
 
 public class DeleteDeadLetterJobCmd implements Command<Object>, Serializable {
 
-    private static final Logger log = LoggerFactory.getLogger(
-        DeleteDeadLetterJobCmd.class
-    );
+    private static final Logger log = LoggerFactory.getLogger(DeleteDeadLetterJobCmd.class);
     private static final long serialVersionUID = 1L;
 
     protected String timerJobId;
@@ -55,27 +53,15 @@ public class DeleteDeadLetterJobCmd implements Command<Object>, Serializable {
     }
 
     protected void sendCancelEvent(DeadLetterJobEntity jobToDelete) {
-        if (
+        if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
             Context
                 .getProcessEngineConfiguration()
                 .getEventDispatcher()
-                .isEnabled()
-        ) {
-            Context
-                .getProcessEngineConfiguration()
-                .getEventDispatcher()
-                .dispatchEvent(
-                    ActivitiEventBuilder.createEntityEvent(
-                        ActivitiEventType.JOB_CANCELED,
-                        jobToDelete
-                    )
-                );
+                .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, jobToDelete));
         }
     }
 
-    protected DeadLetterJobEntity getJobToDelete(
-        CommandContext commandContext
-    ) {
+    protected DeadLetterJobEntity getJobToDelete(CommandContext commandContext) {
         if (timerJobId == null) {
             throw new ActivitiIllegalArgumentException("jobId is null");
         }
@@ -83,9 +69,7 @@ public class DeleteDeadLetterJobCmd implements Command<Object>, Serializable {
             log.debug("Deleting job {}", timerJobId);
         }
 
-        DeadLetterJobEntity job = commandContext
-            .getDeadLetterJobEntityManager()
-            .findById(timerJobId);
+        DeadLetterJobEntity job = commandContext.getDeadLetterJobEntityManager().findById(timerJobId);
         if (job == null) {
             throw new ActivitiObjectNotFoundException(
                 "No dead letter job found with id '" + timerJobId + "'",

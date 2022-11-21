@@ -36,40 +36,23 @@ public class DelegateExpressionExecutionListener implements ExecutionListener {
     protected Expression expression;
     private final List<FieldDeclaration> fieldDeclarations;
 
-    public DelegateExpressionExecutionListener(
-        Expression expression,
-        List<FieldDeclaration> fieldDeclarations
-    ) {
+    public DelegateExpressionExecutionListener(Expression expression, List<FieldDeclaration> fieldDeclarations) {
         this.expression = expression;
         this.fieldDeclarations = fieldDeclarations;
     }
 
     public void notify(DelegateExecution execution) {
-        Object delegate = DelegateExpressionUtil.resolveDelegateExpression(
-            expression,
-            execution,
-            fieldDeclarations
-        );
+        Object delegate = DelegateExpressionUtil.resolveDelegateExpression(expression, execution, fieldDeclarations);
         if (delegate instanceof ExecutionListener) {
             Context
                 .getProcessEngineConfiguration()
                 .getDelegateInterceptor()
-                .handleInvocation(
-                    new ExecutionListenerInvocation(
-                        (ExecutionListener) delegate,
-                        execution
-                    )
-                );
+                .handleInvocation(new ExecutionListenerInvocation((ExecutionListener) delegate, execution));
         } else if (delegate instanceof JavaDelegate) {
             Context
                 .getProcessEngineConfiguration()
                 .getDelegateInterceptor()
-                .handleInvocation(
-                    new JavaDelegateInvocation(
-                        (JavaDelegate) delegate,
-                        execution
-                    )
-                );
+                .handleInvocation(new JavaDelegateInvocation((JavaDelegate) delegate, execution));
         } else {
             throw new ActivitiIllegalArgumentException(
                 "Delegate expression " +

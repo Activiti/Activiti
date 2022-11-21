@@ -29,15 +29,11 @@ public class NativeHistoricProcessInstanceQueryImpl
 
     private static final long serialVersionUID = 1L;
 
-    public NativeHistoricProcessInstanceQueryImpl(
-        CommandContext commandContext
-    ) {
+    public NativeHistoricProcessInstanceQueryImpl(CommandContext commandContext) {
         super(commandContext);
     }
 
-    public NativeHistoricProcessInstanceQueryImpl(
-        CommandExecutor commandExecutor
-    ) {
+    public NativeHistoricProcessInstanceQueryImpl(CommandExecutor commandExecutor) {
         super(commandExecutor);
     }
 
@@ -51,17 +47,10 @@ public class NativeHistoricProcessInstanceQueryImpl
     ) {
         return commandContext
             .getHistoricProcessInstanceEntityManager()
-            .findHistoricProcessInstancesByNativeQuery(
-                parameterMap,
-                firstResult,
-                maxResults
-            );
+            .findHistoricProcessInstancesByNativeQuery(parameterMap, firstResult, maxResults);
     }
 
-    public long executeCount(
-        CommandContext commandContext,
-        Map<String, Object> parameterMap
-    ) {
+    public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
         return commandContext
             .getHistoricProcessInstanceEntityManager()
             .findHistoricProcessInstanceCountByNativeQuery(parameterMap);

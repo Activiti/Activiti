@@ -55,8 +55,7 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
                 .buildProcessEngine();
 
         cachedProcessEngine = processEngine;
-        processEngineConfiguration =
-            ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
+        processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
     }
 
     @Deployment
@@ -71,29 +70,17 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
         for (Task task : tasks) {
             taskService.complete(task.getId());
         }
-        Task task = taskService
-            .createTaskQuery()
-            .taskDefinitionKey("usertask4")
-            .singleResult();
+        Task task = taskService.createTaskQuery().taskDefinitionKey("usertask4").singleResult();
         taskService.complete(task.getId());
 
-        List<String> activityIds = runtimeService.getActiveActivityIds(
-            task.getProcessInstanceId()
-        );
+        List<String> activityIds = runtimeService.getActiveActivityIds(task.getProcessInstanceId());
         InputStream diagram = imageGenerator.generateDiagram(
             repositoryService.getBpmnModel(task.getProcessDefinitionId()),
             activityIds
         );
         assertThat(diagram).isNotNull();
 
-        List<String> highLightedFlows = asList(
-            "flow1",
-            "flow2",
-            "flow3",
-            "flow4",
-            "flow5",
-            "flow6"
-        );
+        List<String> highLightedFlows = asList("flow1", "flow2", "flow3", "flow4", "flow5", "flow6");
         diagram =
             imageGenerator.generateDiagram(
                 repositoryService.getBpmnModel(task.getProcessDefinitionId()),
@@ -234,11 +221,7 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
                 "usertask19"
             );
             checkDiagramElements(userTaskIdList, svg);
-            List<String> scriptTaskIdList = asList(
-                "scripttask1",
-                "scripttask2",
-                "scripttask3"
-            );
+            List<String> scriptTaskIdList = asList("scripttask1", "scripttask2", "scripttask3");
             checkDiagramElements(scriptTaskIdList, svg);
             List<String> otherTaskIdList = asList(
                 "servicetask1",
@@ -339,18 +322,14 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
 
             try (
                 InputStream imageStream = getClass()
-                    .getResourceAsStream(
-                        imageGenerator.getDefaultDiagramImageFileName()
-                    )
+                    .getResourceAsStream(imageGenerator.getDefaultDiagramImageFileName())
             ) {
                 assertThat(diagram).isEqualTo(IOUtils.toByteArray(imageStream));
             }
         }
 
         //THEN
-        assertThatExceptionOfType(
-            ActivitiInterchangeInfoNotFoundException.class
-        )
+        assertThatExceptionOfType(ActivitiInterchangeInfoNotFoundException.class)
             .isThrownBy(() -> //WHEN
                 imageGenerator.generateDiagram(
                     bpmnModel,
@@ -380,22 +359,16 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
                     "invalid-file-name"
                 )
             )
-            .withMessage(
-                "Error occurred while getting default diagram image from file: invalid-file-name"
-            );
+            .withMessage("Error occurred while getting default diagram image from file: invalid-file-name");
     }
 
-    private void checkDiagramElements(
-        List<String> elementIdList,
-        SVGOMDocument svg
-    ) {
+    private void checkDiagramElements(List<String> elementIdList, SVGOMDocument svg) {
         for (String elementId : elementIdList) {
             assertThat(svg.getElementById(elementId)).isNotNull();
         }
     }
 
-    private SVGOMDocument parseXml(InputStream resourceStream)
-        throws Exception {
+    private SVGOMDocument parseXml(InputStream resourceStream) throws Exception {
         String parser = XMLResourceDescriptor.getXMLParserClassName();
         SAXSVGDocumentFactory factory = new SAXSVGDocumentFactory(parser);
         return (SVGOMDocument) factory.createDocument(null, resourceStream);

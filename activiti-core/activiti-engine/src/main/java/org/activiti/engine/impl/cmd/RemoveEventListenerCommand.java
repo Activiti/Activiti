@@ -41,10 +41,7 @@ public class RemoveEventListenerCommand implements Command<Void> {
             throw new ActivitiIllegalArgumentException("listener is null.");
         }
 
-        commandContext
-            .getProcessEngineConfiguration()
-            .getEventDispatcher()
-            .removeEventListener(listener);
+        commandContext.getProcessEngineConfiguration().getEventDispatcher().removeEventListener(listener);
 
         return null;
     }

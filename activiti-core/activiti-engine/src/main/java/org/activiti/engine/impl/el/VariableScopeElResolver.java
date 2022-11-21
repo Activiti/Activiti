@@ -56,20 +56,12 @@ public class VariableScopeElResolver extends ELResolver {
             // only be a String
 
             for (VariableScopeItemELResolver variableScopeItemELResolver : getVariableScopeItemELResolvers()) {
-                if (
-                    variableScopeItemELResolver.canResolve(
-                        variable,
-                        variableScope
-                    )
-                ) {
+                if (variableScopeItemELResolver.canResolve(variable, variableScope)) {
                     // if not set, the next elResolver in the CompositeElResolver
                     // will be called
                     context.setPropertyResolved(true);
 
-                    return variableScopeItemELResolver.resolve(
-                        variable,
-                        variableScope
-                    );
+                    return variableScopeItemELResolver.resolve(variable, variableScope);
                 }
             }
         }
@@ -89,11 +81,7 @@ public class VariableScopeElResolver extends ELResolver {
                     new TaskElResolver(),
                     new AuthenticatedUserELResolver(),
                     new ProcessInitiatorELResolver(),
-                    new VariableElResolver(
-                        Context
-                            .getProcessEngineConfiguration()
-                            .getObjectMapper()
-                    )
+                    new VariableElResolver(Context.getProcessEngineConfiguration().getObjectMapper())
                 );
         }
         return variableScopeItemELResolvers;
@@ -109,12 +97,7 @@ public class VariableScopeElResolver extends ELResolver {
     }
 
     @Override
-    public void setValue(
-        ELContext context,
-        Object base,
-        Object property,
-        Object value
-    ) {
+    public void setValue(ELContext context, Object base, Object property, Object value) {
         if (base == null) {
             String variable = (String) property;
             if (variableScope.hasVariable(variable)) {
@@ -129,10 +112,7 @@ public class VariableScopeElResolver extends ELResolver {
     }
 
     @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(
-        ELContext arg0,
-        Object arg1
-    ) {
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext arg0, Object arg1) {
         return null;
     }
 

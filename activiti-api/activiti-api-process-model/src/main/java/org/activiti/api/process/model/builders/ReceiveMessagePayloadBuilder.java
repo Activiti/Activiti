@@ -26,13 +26,8 @@ public class ReceiveMessagePayloadBuilder {
     private String correlationKey;
     private Map<String, Object> variables;
 
-    public static ReceiveMessagePayloadBuilder from(
-        ReceiveMessagePayload messagePayload
-    ) {
-        Objects.requireNonNull(
-            messagePayload,
-            "messagePayload must not be null"
-        );
+    public static ReceiveMessagePayloadBuilder from(ReceiveMessagePayload messagePayload) {
+        Objects.requireNonNull(messagePayload, "messagePayload must not be null");
 
         return new ReceiveMessagePayloadBuilder()
             .withName(messagePayload.getName())
@@ -52,18 +47,13 @@ public class ReceiveMessagePayloadBuilder {
         return this;
     }
 
-    public ReceiveMessagePayloadBuilder withVariables(
-        Map<String, Object> variables
-    ) {
+    public ReceiveMessagePayloadBuilder withVariables(Map<String, Object> variables) {
         this.variables = variables;
 
         return this;
     }
 
-    public ReceiveMessagePayloadBuilder withVariable(
-        String name,
-        Object value
-    ) {
+    public ReceiveMessagePayloadBuilder withVariable(String name, Object value) {
         if (this.variables == null) {
             this.variables = new LinkedHashMap<>();
         }
@@ -71,9 +61,7 @@ public class ReceiveMessagePayloadBuilder {
         return this;
     }
 
-    public ReceiveMessagePayloadBuilder withCorrelationKey(
-        String correlationKey
-    ) {
+    public ReceiveMessagePayloadBuilder withCorrelationKey(String correlationKey) {
         this.correlationKey = correlationKey;
 
         return this;

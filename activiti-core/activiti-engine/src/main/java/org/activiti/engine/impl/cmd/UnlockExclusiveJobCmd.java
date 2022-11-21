@@ -33,9 +33,7 @@ public class UnlockExclusiveJobCmd implements Command<Object>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static Logger log = LoggerFactory.getLogger(
-        UnlockExclusiveJobCmd.class
-    );
+    private static Logger log = LoggerFactory.getLogger(UnlockExclusiveJobCmd.class);
 
     protected Job job;
 
@@ -58,9 +56,7 @@ public class UnlockExclusiveJobCmd implements Command<Object>, Serializable {
                     .getExecutionEntityManager()
                     .findById(job.getProcessInstanceId());
                 if (execution != null) {
-                    commandContext
-                        .getExecutionEntityManager()
-                        .clearProcessInstanceLockTime(execution.getId());
+                    commandContext.getExecutionEntityManager().clearProcessInstanceLockTime(execution.getId());
                 }
             }
         }

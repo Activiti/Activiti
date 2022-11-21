@@ -30,10 +30,6 @@ public class TaskParseHandler extends AbstractActivityBpmnParseHandler<Task> {
     }
 
     protected void executeParse(BpmnParse bpmnParse, Task task) {
-        task.setBehavior(
-            bpmnParse
-                .getActivityBehaviorFactory()
-                .createTaskActivityBehavior(task)
-        );
+        task.setBehavior(bpmnParse.getActivityBehaviorFactory().createTaskActivityBehavior(task));
     }
 }

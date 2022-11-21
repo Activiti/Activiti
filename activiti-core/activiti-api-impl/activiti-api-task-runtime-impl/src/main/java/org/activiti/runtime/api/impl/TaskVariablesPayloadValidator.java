@@ -46,29 +46,20 @@ public class TaskVariablesPayloadValidator {
         }
     }
 
-    private void checkNotValidCharactersInVariableName(
-        String name,
-        String errorMsg
-    ) {
+    private void checkNotValidCharactersInVariableName(String name, String errorMsg) {
         if (!variableNameValidator.validate(name)) {
-            throw new IllegalStateException(
-                errorMsg + (name != null ? name : "null")
-            );
+            throw new IllegalStateException(errorMsg + (name != null ? name : "null"));
         }
     }
 
     public CreateTaskVariablePayload handleCreateTaskVariablePayload(
         CreateTaskVariablePayload createTaskVariablePayload
     ) {
-        checkNotValidCharactersInVariableName(
-            createTaskVariablePayload.getName(),
-            "Variable has not a valid name: "
-        );
+        checkNotValidCharactersInVariableName(createTaskVariablePayload.getName(), "Variable has not a valid name: ");
 
         Object value = createTaskVariablePayload.getValue();
         if (value instanceof String) {
-            handleAsDate((String) value)
-                .ifPresent(createTaskVariablePayload::setValue);
+            handleAsDate((String) value).ifPresent(createTaskVariablePayload::setValue);
         }
         return createTaskVariablePayload;
     }
@@ -84,25 +75,17 @@ public class TaskVariablesPayloadValidator {
         Object value = updateTaskVariablePayload.getValue();
 
         if (value instanceof String) {
-            handleAsDate((String) value)
-                .ifPresent(updateTaskVariablePayload::setValue);
+            handleAsDate((String) value).ifPresent(updateTaskVariablePayload::setValue);
         }
         return updateTaskVariablePayload;
     }
 
-    public Map<String, Object> handlePayloadVariables(
-        Map<String, Object> variables
-    ) {
+    public Map<String, Object> handlePayloadVariables(Map<String, Object> variables) {
         if (variables != null) {
-            Set<String> mismatchedVars = variableNameValidator.validateVariables(
-                variables
-            );
+            Set<String> mismatchedVars = variableNameValidator.validateVariables(variables);
 
             if (!mismatchedVars.isEmpty()) {
-                throw new IllegalStateException(
-                    "Variables have not valid names: " +
-                    String.join(", ", mismatchedVars)
-                );
+                throw new IllegalStateException("Variables have not valid names: " + String.join(", ", mismatchedVars));
             }
             handleStringVariablesAsDates(variables);
         }
@@ -115,12 +98,9 @@ public class TaskVariablesPayloadValidator {
             variables
                 .entrySet()
                 .stream()
-                .filter(stringObjectEntry ->
-                    stringObjectEntry.getValue() instanceof String
-                )
+                .filter(stringObjectEntry -> stringObjectEntry.getValue() instanceof String)
                 .forEach(stringObjectEntry ->
-                    handleAsDate((String) stringObjectEntry.getValue())
-                        .ifPresent(stringObjectEntry::setValue)
+                    handleAsDate((String) stringObjectEntry.getValue()).ifPresent(stringObjectEntry::setValue)
                 );
         }
     }

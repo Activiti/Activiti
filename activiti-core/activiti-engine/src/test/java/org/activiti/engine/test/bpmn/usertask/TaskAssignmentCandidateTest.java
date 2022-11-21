@@ -33,22 +33,14 @@ public class TaskAssignmentCandidateTest extends PluggableActivitiTestCase {
     @Deployment
     public void testCandidateGroups() {
         runtimeService.startProcessInstanceByKey("taskCandidateExample");
-        List<Task> tasks = taskService
-            .createTaskQuery()
-            .taskCandidateGroup("management")
-            .list();
+        List<Task> tasks = taskService.createTaskQuery().taskCandidateGroup("management").list();
         assertThat(tasks).hasSize(1);
         assertThat(tasks.get(0).getTaskDefinitionKey()).isEqualTo("theTask");
         taskService.complete(tasks.get(0).getId());
 
-        tasks =
-            taskService
-                .createTaskQuery()
-                .taskCandidateGroup("accounting")
-                .list();
+        tasks = taskService.createTaskQuery().taskCandidateGroup("accounting").list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getTaskDefinitionKey())
-            .isEqualTo("theOtherTask");
+        assertThat(tasks.get(0).getTaskDefinitionKey()).isEqualTo("theOtherTask");
         taskService.complete(tasks.get(0).getId());
     }
 }

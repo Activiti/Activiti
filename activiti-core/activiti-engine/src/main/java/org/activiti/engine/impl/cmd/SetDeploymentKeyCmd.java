@@ -43,9 +43,7 @@ public class SetDeploymentKeyCmd implements Command<Void> {
             throw new ActivitiIllegalArgumentException("Deployment id is null");
         }
 
-        DeploymentEntity deployment = commandContext
-            .getDeploymentEntityManager()
-            .findById(deploymentId);
+        DeploymentEntity deployment = commandContext.getDeploymentEntityManager().findById(deploymentId);
 
         if (deployment == null) {
             throw new ActivitiObjectNotFoundException(
@@ -58,28 +56,15 @@ public class SetDeploymentKeyCmd implements Command<Void> {
         return null;
     }
 
-    protected void executeInternal(
-        CommandContext commandContext,
-        DeploymentEntity deployment
-    ) {
+    protected void executeInternal(CommandContext commandContext, DeploymentEntity deployment) {
         // Update category
         deployment.setKey(key);
 
-        if (
+        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
             commandContext
                 .getProcessEngineConfiguration()
                 .getEventDispatcher()
-                .isEnabled()
-        ) {
-            commandContext
-                .getProcessEngineConfiguration()
-                .getEventDispatcher()
-                .dispatchEvent(
-                    ActivitiEventBuilder.createEntityEvent(
-                        ActivitiEventType.ENTITY_UPDATED,
-                        deployment
-                    )
-                );
+                .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, deployment));
         }
     }
 

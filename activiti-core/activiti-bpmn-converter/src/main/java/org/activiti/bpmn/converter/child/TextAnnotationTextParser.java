@@ -29,11 +29,7 @@ public class TextAnnotationTextParser extends BaseChildElementParser {
         return ELEMENT_TEXT_ANNOTATION_TEXT;
     }
 
-    public void parseChildElement(
-        XMLStreamReader xtr,
-        BaseElement parentElement,
-        BpmnModel model
-    ) throws Exception {
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
         if (!(parentElement instanceof TextAnnotation)) return;
 
         ((TextAnnotation) parentElement).setText(xtr.getElementText());

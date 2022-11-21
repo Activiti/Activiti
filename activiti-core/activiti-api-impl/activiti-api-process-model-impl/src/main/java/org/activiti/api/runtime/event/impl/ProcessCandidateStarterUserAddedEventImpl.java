@@ -25,9 +25,7 @@ public class ProcessCandidateStarterUserAddedEventImpl
 
     public ProcessCandidateStarterUserAddedEventImpl() {}
 
-    public ProcessCandidateStarterUserAddedEventImpl(
-        ProcessCandidateStarterUser entity
-    ) {
+    public ProcessCandidateStarterUserAddedEventImpl(ProcessCandidateStarterUser entity) {
         super(entity);
     }
 

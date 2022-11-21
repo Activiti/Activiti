@@ -23,9 +23,7 @@ import org.activiti.engine.ActivitiException;
 
 
  */
-public class PropertyEntityImpl
-    extends AbstractEntity
-    implements PropertyEntity, Serializable {
+public class PropertyEntityImpl extends AbstractEntity implements PropertyEntity, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -59,9 +57,7 @@ public class PropertyEntityImpl
     }
 
     public void setId(String id) {
-        throw new ActivitiException(
-            "only provided id generation allowed for properties"
-        );
+        throw new ActivitiException("only provided id generation allowed for properties");
     }
 
     // common methods //////////////////////////////////////////////////////////

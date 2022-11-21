@@ -45,9 +45,7 @@ public interface AsyncExecutor {
 
     /* Getters and Setters */
 
-    void setProcessEngineConfiguration(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    );
+    void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration);
 
     ProcessEngineConfigurationImpl getProcessEngineConfiguration();
 
@@ -77,9 +75,7 @@ public interface AsyncExecutor {
 
     public int getDefaultQueueSizeFullWaitTimeInMillis();
 
-    public void setDefaultQueueSizeFullWaitTimeInMillis(
-        int defaultQueueSizeFullWaitTimeInMillis
-    );
+    public void setDefaultQueueSizeFullWaitTimeInMillis(int defaultQueueSizeFullWaitTimeInMillis);
 
     int getMaxAsyncJobsDuePerAcquisition();
 

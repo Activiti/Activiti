@@ -62,17 +62,12 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution> {
      * Note that only process instances have a business key and as such, child executions will NOT be returned. If you want to return child executions of the process instance with the given business key
      * too, use the {@link #processInstanceBusinessKey(String, boolean)} method with a boolean value of <i>true</i> instead.
      */
-    ExecutionQuery processInstanceBusinessKey(
-        String processInstanceBusinessKey
-    );
+    ExecutionQuery processInstanceBusinessKey(String processInstanceBusinessKey);
 
     /**
      * Only executions with the given business key. Similar to {@link #processInstanceBusinessKey(String)}, but allows to choose whether child executions are returned or not.
      */
-    ExecutionQuery processInstanceBusinessKey(
-        String processInstanceBusinessKey,
-        boolean includeChildExecutions
-    );
+    ExecutionQuery processInstanceBusinessKey(String processInstanceBusinessKey, boolean includeChildExecutions);
 
     /** Only select executions with the given id. **/
     ExecutionQuery executionId(String executionId);
@@ -235,10 +230,7 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution> {
      * Only select executions which are part of a process that have a variable with the given name set to the given value. Byte-arrays and {@link Serializable} objects (which are not primitive type
      * wrappers) are not supported.
      */
-    ExecutionQuery processVariableValueEquals(
-        String variableName,
-        Object variableValue
-    );
+    ExecutionQuery processVariableValueEquals(String variableName, Object variableValue);
 
     /**
      * Only select executions which are part of a process that have at least one variable with the given value. Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers) are
@@ -250,10 +242,7 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution> {
      * Only select executions which are part of a process that have a variable with the given name, but with a different value than the passed value. Byte-arrays and {@link Serializable} objects (which
      * are not primitive type wrappers) are not supported.
      */
-    ExecutionQuery processVariableValueNotEquals(
-        String variableName,
-        Object variableValue
-    );
+    ExecutionQuery processVariableValueNotEquals(String variableName, Object variableValue);
 
     /**
      * Only select executions which are part of a process that have a local string variable with the given value, case insensitive.
@@ -267,10 +256,7 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution> {
      * @param value
      *          value of the variable, cannot be null.
      */
-    ExecutionQuery processVariableValueEqualsIgnoreCase(
-        String name,
-        String value
-    );
+    ExecutionQuery processVariableValueEqualsIgnoreCase(String name, String value);
 
     /**
      * Only select executions which are part of a process that have a local string variable which is not the given value, case insensitive.
@@ -284,10 +270,7 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution> {
      * @param value
      *          value of the variable, cannot be null.
      */
-    ExecutionQuery processVariableValueNotEqualsIgnoreCase(
-        String name,
-        String value
-    );
+    ExecutionQuery processVariableValueNotEqualsIgnoreCase(String name, String value);
 
     /**
      * Only select executions which are part of a process that have at least one variable like the given value.
@@ -299,10 +282,7 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution> {
      * Only select executions which are part of a process that have at least one variable like the given value (case insensitive).
      * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers) are not supported.
      */
-    ExecutionQuery processVariableValueLikeIgnoreCase(
-        String name,
-        String value
-    );
+    ExecutionQuery processVariableValueLikeIgnoreCase(String name, String value);
 
     // event subscriptions //////////////////////////////////////////////////
 

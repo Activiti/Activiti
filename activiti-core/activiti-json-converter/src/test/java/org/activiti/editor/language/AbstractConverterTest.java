@@ -32,17 +32,14 @@ import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 public abstract class AbstractConverterTest {
 
     protected BpmnModel readJsonFile() throws Exception {
-        InputStream jsonStream =
-            this.getClass().getClassLoader().getResourceAsStream(getResource());
+        InputStream jsonStream = this.getClass().getClassLoader().getResourceAsStream(getResource());
         JsonNode modelNode = new ObjectMapper().readTree(jsonStream);
-        BpmnModel bpmnModel = new BpmnJsonConverter()
-            .convertToBpmnModel(modelNode);
+        BpmnModel bpmnModel = new BpmnJsonConverter().convertToBpmnModel(modelNode);
         return bpmnModel;
     }
 
     protected BpmnModel readXmlFile() throws Exception {
-        final InputStream jsonStream =
-            this.getClass().getClassLoader().getResourceAsStream(getResource());
+        final InputStream jsonStream = this.getClass().getClassLoader().getResourceAsStream(getResource());
         return new BpmnXMLConverter()
             .convertToBpmnModel(
                 new InputStreamProvider() {

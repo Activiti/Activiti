@@ -35,10 +35,7 @@ public class DurationBusinessCalendar extends BusinessCalendarImpl {
             DurationHelper dh = new DurationHelper(duedate, clockReader);
             return dh.getDateAfter();
         } catch (Exception e) {
-            throw new ActivitiException(
-                "couldn't resolve duedate: " + e.getMessage(),
-                e
-            );
+            throw new ActivitiException("couldn't resolve duedate: " + e.getMessage(), e);
         }
     }
 }

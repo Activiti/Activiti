@@ -33,11 +33,6 @@ public abstract class AbstractSimpleGrantedAuthoritiesMapper {
             .map(GrantedAuthority::getAuthority)
             .filter(a -> a.startsWith(prefix))
             .map(a -> a.substring(prefix.length()))
-            .collect(
-                Collectors.collectingAndThen(
-                    Collectors.toList(),
-                    Collections::unmodifiableList
-                )
-            );
+            .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
     }
 }

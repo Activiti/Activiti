@@ -36,8 +36,7 @@ import org.springframework.test.context.TestPropertySource;
 @TestPropertySource(locations = { "classpath:application.properties" })
 public class ProcessRuntimeConnectorIT {
 
-    private static final String CATEGORIZE_IMAGE_CONNECTORS_PROCESS =
-        "categorizeProcessConnectors";
+    private static final String CATEGORIZE_IMAGE_CONNECTORS_PROCESS = "categorizeProcessConnectors";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -80,20 +79,12 @@ public class ProcessRuntimeConnectorIT {
     public void shouldSupportStaticValuesForConnectorInputsEvenWhenThereIsNoConnectorDefinition() {
         //given
         ProcessInstance processInstance = processRuntime.start(
-            ProcessPayloadBuilder
-                .start()
-                .withProcessDefinitionKey(
-                    "processWithExtensionsButNoConnectorDef"
-                )
-                .build()
+            ProcessPayloadBuilder.start().withProcessDefinitionKey("processWithExtensionsButNoConnectorDef").build()
         );
 
         //when
         List<VariableInstance> variables = processRuntime.variables(
-            ProcessPayloadBuilder
-                .variables()
-                .withProcessInstance(processInstance)
-                .build()
+            ProcessPayloadBuilder.variables().withProcessInstance(processInstance).build()
         );
 
         //then

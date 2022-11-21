@@ -23,8 +23,7 @@ import org.activiti.engine.RepositoryService;
 
 public class APIProcessDefinitionConverter
     extends ListConverter<org.activiti.engine.repository.ProcessDefinition, ProcessDefinition>
-    implements
-        ModelConverter<org.activiti.engine.repository.ProcessDefinition, ProcessDefinition> {
+    implements ModelConverter<org.activiti.engine.repository.ProcessDefinition, ProcessDefinition> {
 
     private RepositoryService repositoryService;
 
@@ -33,27 +32,17 @@ public class APIProcessDefinitionConverter
     }
 
     @Override
-    public ProcessDefinition from(
-        org.activiti.engine.repository.ProcessDefinition internalProcessDefinition
-    ) {
+    public ProcessDefinition from(org.activiti.engine.repository.ProcessDefinition internalProcessDefinition) {
         ProcessDefinitionImpl processDefinition = new ProcessDefinitionImpl();
         processDefinition.setId(internalProcessDefinition.getId());
         processDefinition.setName(internalProcessDefinition.getName());
-        processDefinition.setDescription(
-            internalProcessDefinition.getDescription()
-        );
+        processDefinition.setDescription(internalProcessDefinition.getDescription());
         processDefinition.setVersion(internalProcessDefinition.getVersion());
         processDefinition.setKey(internalProcessDefinition.getKey());
-        processDefinition.setAppVersion(
-            Objects.toString(internalProcessDefinition.getAppVersion(), null)
-        );
+        processDefinition.setAppVersion(Objects.toString(internalProcessDefinition.getAppVersion(), null));
         processDefinition.setCategory(internalProcessDefinition.getCategory());
-        BpmnModel model = repositoryService.getBpmnModel(
-            internalProcessDefinition.getId()
-        );
-        processDefinition.setFormKey(
-            model.getStartFormKey(internalProcessDefinition.getKey())
-        );
+        BpmnModel model = repositoryService.getBpmnModel(internalProcessDefinition.getId());
+        processDefinition.setFormKey(model.getStartFormKey(internalProcessDefinition.getKey()));
         return processDefinition;
     }
 }

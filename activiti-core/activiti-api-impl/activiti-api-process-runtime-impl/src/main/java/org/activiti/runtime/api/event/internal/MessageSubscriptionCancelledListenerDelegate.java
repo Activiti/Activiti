@@ -25,8 +25,7 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti.runtime.api.event.impl.ToMessageSubscriptionCancelledConverter;
 
-public class MessageSubscriptionCancelledListenerDelegate
-    implements ActivitiEventListener {
+public class MessageSubscriptionCancelledListenerDelegate implements ActivitiEventListener {
 
     private List<ProcessRuntimeEventListener<MessageSubscriptionCancelledEvent>> processRuntimeEventListeners;
 
@@ -46,9 +45,7 @@ public class MessageSubscriptionCancelledListenerDelegate
             converter
                 .from((ActivitiEntityEvent) event)
                 .ifPresent(convertedEvent -> {
-                    processRuntimeEventListeners.forEach(listener ->
-                        listener.onEvent(convertedEvent)
-                    );
+                    processRuntimeEventListeners.forEach(listener -> listener.onEvent(convertedEvent));
                 });
         }
     }
@@ -62,11 +59,7 @@ public class MessageSubscriptionCancelledListenerDelegate
         return Optional
             .ofNullable(event)
             .filter(ActivitiEntityEvent.class::isInstance)
-            .map(e ->
-                (
-                    (ActivitiEntityEvent) event
-                ).getEntity() instanceof MessageEventSubscriptionEntity
-            )
+            .map(e -> ((ActivitiEntityEvent) event).getEntity() instanceof MessageEventSubscriptionEntity)
             .orElse(false);
     }
 }

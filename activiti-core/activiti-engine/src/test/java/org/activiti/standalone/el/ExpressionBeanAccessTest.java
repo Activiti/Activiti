@@ -38,11 +38,8 @@ public class ExpressionBeanAccessTest extends ResourceActivitiTestCase {
     public void testConfigurationBeanAccess() {
         // Exposed bean returns 'I'm exposed' when to-string is called in first
         // service-task
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "expressionBeanAccess"
-        );
-        assertThat(runtimeService.getVariable(pi.getId(), "exposedBeanResult"))
-            .isEqualTo("I'm exposed");
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("expressionBeanAccess");
+        assertThat(runtimeService.getVariable(pi.getId(), "exposedBeanResult")).isEqualTo("I'm exposed");
 
         // After signaling, an expression tries to use a bean that is present in
         // the configuration but is not added to the beans-list

@@ -19,8 +19,7 @@ import java.util.List;
 
 public abstract class AbstractSecurityManager implements SecurityManager {
 
-    private static final String INVALID_AUTHENTICATED_PRINCIPAL =
-        "Invalid authenticated principal";
+    private static final String INVALID_AUTHENTICATED_PRINCIPAL = "Invalid authenticated principal";
 
     private final SecurityContextPrincipalProvider securityContextPrincipalProvider;
     private final PrincipalIdentityProvider principalIdentityProvider;
@@ -33,8 +32,7 @@ public abstract class AbstractSecurityManager implements SecurityManager {
         PrincipalGroupsProvider principalGroupsProvider,
         PrincipalRolesProvider principalRolesProvider
     ) {
-        this.securityContextPrincipalProvider =
-            securityContextPrincipalProvider;
+        this.securityContextPrincipalProvider = securityContextPrincipalProvider;
         this.principalIdentityProvider = principalIdentityProvider;
         this.principalGroupsProvider = principalGroupsProvider;
         this.principalRolesProvider = principalRolesProvider;

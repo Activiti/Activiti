@@ -21,8 +21,7 @@ import org.activiti.engine.impl.interceptor.CommandInterceptor;
 /**
 
  */
-public class StandaloneProcessEngineConfiguration
-    extends ProcessEngineConfigurationImpl {
+public class StandaloneProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
 
     @Override
     public CommandInterceptor createTransactionInterceptor() {

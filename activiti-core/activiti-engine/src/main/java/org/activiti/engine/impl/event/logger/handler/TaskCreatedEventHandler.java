@@ -27,12 +27,8 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 public class TaskCreatedEventHandler extends AbstractTaskEventHandler {
 
     @Override
-    public EventLogEntryEntity generateEventLogEntry(
-        CommandContext commandContext
-    ) {
-        TaskEntity task = (TaskEntity) (
-            (ActivitiEntityEvent) event
-        ).getEntity();
+    public EventLogEntryEntity generateEventLogEntry(CommandContext commandContext) {
+        TaskEntity task = (TaskEntity) ((ActivitiEntityEvent) event).getEntity();
         Map<String, Object> data = handleCommonTaskFields(task);
         return createEventLogEntry(
             task.getProcessDefinitionId(),

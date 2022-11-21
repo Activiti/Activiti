@@ -30,11 +30,7 @@ public class AsyncExclusiveJobsTest extends PluggableActivitiTestCase {
      */
     @Deployment
     public void testExclusiveJobs() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.AUDIT)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             // The process has two script tasks in parallel, both exclusive.
             // They should be executed with at least 6 seconds in between (as they both sleep for 6 seconds)
             runtimeService.startProcessInstanceByKey("testExclusiveJobs");

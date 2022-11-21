@@ -26,13 +26,9 @@ import org.slf4j.LoggerFactory;
 
 public class VariableValidationService {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        VariableValidationService.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(VariableValidationService.class);
 
-    public VariableValidationService(
-        Map<String, VariableType> variableTypeMap
-    ) {
+    public VariableValidationService(Map<String, VariableType> variableTypeMap) {
         this.variableTypeMap = variableTypeMap;
     }
 
@@ -42,16 +38,11 @@ public class VariableValidationService {
         return validateWithErrors(var, variableDefinition).isEmpty();
     }
 
-    public List<ActivitiException> validateWithErrors(
-        Object var,
-        VariableDefinition variableDefinition
-    ) {
+    public List<ActivitiException> validateWithErrors(Object var, VariableDefinition variableDefinition) {
         List<ActivitiException> errors = new ArrayList<>();
 
         if (variableDefinition.getType() != null) {
-            VariableType type = variableTypeMap.get(
-                variableDefinition.getType()
-            );
+            VariableType type = variableTypeMap.get(variableDefinition.getType());
 
             //if type is not in the map then assume to be json
             if (type == null) {
@@ -60,11 +51,7 @@ public class VariableValidationService {
 
             type.validate(var, errors);
         } else {
-            errors.add(
-                new ActivitiException(
-                    variableDefinition.getName() + " has no type"
-                )
-            );
+            errors.add(new ActivitiException(variableDefinition.getName() + " has no type"));
             logger.error(variableDefinition.getName() + " has no type");
         }
 

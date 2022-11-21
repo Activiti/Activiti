@@ -66,22 +66,14 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
         Date startTime = new Date();
 
         // After process start, there should be 3 timers created
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "multipleTimersOnUserTask"
-        );
-        TimerJobQuery jobQuery = managementService
-            .createTimerJobQuery()
-            .processInstanceId(pi.getId());
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("multipleTimersOnUserTask");
+        TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
         List<Job> jobs = jobQuery.list();
         assertThat(jobs).hasSize(3);
 
         // After setting the clock to time '1 hour and 5 seconds', the second
         // timer should fire
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(
-                new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000))
-            );
+        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
         waitForJobExecutorToProcessAllJobs(5000L, 25L);
         assertThat(jobQuery.count()).isEqualTo(0L);
 
@@ -92,16 +84,10 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testTimerOnNestingOfSubprocesses() {
-        Date testStartTime = processEngineConfiguration
-            .getClock()
-            .getCurrentTime();
+        Date testStartTime = processEngineConfiguration.getClock().getCurrentTime();
 
         runtimeService.startProcessInstanceByKey("timerOnNestedSubprocesses");
-        List<Task> tasks = taskService
-            .createTaskQuery()
-            .orderByTaskName()
-            .asc()
-            .list();
+        List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(2);
         assertThat(tasks.get(0).getName()).isEqualTo("Inner subprocess task 1");
         assertThat(tasks.get(1).getName()).isEqualTo("Inner subprocess task 2");
@@ -109,11 +95,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
         // Timer will fire in 2 hours
         processEngineConfiguration
             .getClock()
-            .setCurrentTime(
-                new Date(
-                    testStartTime.getTime() + ((2 * 60 * 60 * 1000) + 5000)
-                )
-            );
+            .setCurrentTime(new Date(testStartTime.getTime() + ((2 * 60 * 60 * 1000) + 5000)));
         Job timer = managementService.createTimerJobQuery().singleResult();
         managementService.moveTimerToExecutableJob(timer.getId());
         managementService.executeJob(timer.getId());
@@ -131,24 +113,15 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
         variables.put("duration", "PT1H");
 
         // After process start, there should be a timer created
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "testExpressionOnTimer",
-            variables
-        );
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("testExpressionOnTimer", variables);
 
-        TimerJobQuery jobQuery = managementService
-            .createTimerJobQuery()
-            .processInstanceId(pi.getId());
+        TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
         List<Job> jobs = jobQuery.list();
         assertThat(jobs).hasSize(1);
 
         // After setting the clock to time '1 hour and 5 seconds', the second
         // timer should fire
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(
-                new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000))
-            );
+        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
         waitForJobExecutorToProcessAllJobs(5000L, 25L);
         assertThat(jobQuery.count()).isEqualTo(0L);
 
@@ -166,15 +139,10 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
         variables.put("duration", null);
 
         // After process start, there should be a timer created
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "testNullExpressionOnTimer",
-            variables
-        );
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("testNullExpressionOnTimer", variables);
 
         //NO job scheduled as null expression set
-        TimerJobQuery jobQuery = managementService
-            .createTimerJobQuery()
-            .processInstanceId(pi.getId());
+        TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
         List<Job> jobs = jobQuery.list();
         assertThat(jobs).hasSize(0);
 
@@ -198,11 +166,8 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testRepeatingTimerWithCancelActivity() {
-        runtimeService.startProcessInstanceByKey(
-            "repeatingTimerAndCallActivity"
-        );
-        assertThat(managementService.createTimerJobQuery().count())
-            .isEqualTo(1);
+        runtimeService.startProcessInstanceByKey("repeatingTimerAndCallActivity");
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
         assertThat(taskService.createTaskQuery().count()).isEqualTo(1);
 
         // Firing job should cancel the user task, destroy the scope,
@@ -213,16 +178,13 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
         Job job = managementService.createTimerJobQuery().singleResult();
         managementService.moveTimerToExecutableJob(job.getId());
         managementService.executeJob(job.getId());
-        assertThat(managementService.createTimerJobQuery().count())
-            .isEqualTo(1);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
         assertThat(taskService.createTaskQuery().count()).isEqualTo(1);
     }
 
     @Deployment
     public void testInfiniteRepeatingTimer() throws Exception {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-            "yyyyy.MM.dd hh:mm"
-        );
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyy.MM.dd hh:mm");
         Date currentTime = simpleDateFormat.parse("2015.10.01 11:01");
         processEngineConfiguration.getClock().setCurrentTime(currentTime);
 
@@ -240,22 +202,13 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
             // Verify due date
             if (previousDueDate != null) {
-                assertThat(
-                    job.getDuedate().getTime() -
-                    previousDueDate.getTime() >=
-                    twentyFourHours
-                )
-                    .isTrue();
+                assertThat(job.getDuedate().getTime() - previousDueDate.getTime() >= twentyFourHours).isTrue();
             }
             previousDueDate = job.getDuedate();
 
-            currentTime =
-                new Date(currentTime.getTime() + twentyFourHours + (60 * 1000));
+            currentTime = new Date(currentTime.getTime() + twentyFourHours + (60 * 1000));
             processEngineConfiguration.getClock().setCurrentTime(currentTime);
-            String jobId = managementService
-                .createTimerJobQuery()
-                .singleResult()
-                .getId();
+            String jobId = managementService.createTimerJobQuery().singleResult().getId();
             managementService.moveTimerToExecutableJob(jobId);
             managementService.executeJob(jobId);
         }
@@ -263,9 +216,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testRepeatTimerDuration() throws Exception {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-            "yyyyy.MM.dd hh:mm"
-        );
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyy.MM.dd hh:mm");
         Date currentTime = simpleDateFormat.parse("2015.10.01 11:01");
         processEngineConfiguration.getClock().setCurrentTime(currentTime);
 
@@ -281,17 +232,11 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
             // Verify due date
             if (previousDueDate != null) {
-                assertThat(
-                    job.getDuedate().getTime() -
-                    previousDueDate.getTime() >=
-                    twentyFourHours
-                )
-                    .isTrue();
+                assertThat(job.getDuedate().getTime() - previousDueDate.getTime() >= twentyFourHours).isTrue();
             }
             previousDueDate = job.getDuedate();
 
-            currentTime =
-                new Date(currentTime.getTime() + twentyFourHours + (60 * 1000));
+            currentTime = new Date(currentTime.getTime() + twentyFourHours + (60 * 1000));
             processEngineConfiguration.getClock().setCurrentTime(currentTime);
             managementService.moveTimerToExecutableJob(job.getId());
             managementService.executeJob(job.getId());
@@ -300,9 +245,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testBoundaryTimerEvent() throws Exception {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-            "yyyyy.MM.dd hh:mm"
-        );
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyy.MM.dd hh:mm");
         Date currentTime = simpleDateFormat.parse("2015.10.01 11:01");
         processEngineConfiguration.getClock().setCurrentTime(currentTime);
 
@@ -368,9 +311,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testBoundaryTimerEvent2() throws Exception {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-            "yyyyy.MM.dd hh:mm"
-        );
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyy.MM.dd hh:mm");
         Date currentTime = simpleDateFormat.parse("2015.10.01 11:01");
         processEngineConfiguration.getClock().setCurrentTime(currentTime);
 

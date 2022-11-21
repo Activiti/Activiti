@@ -30,11 +30,7 @@ public class ProcessEngineInfoImpl implements Serializable, ProcessEngineInfo {
     String resourceUrl;
     String exception;
 
-    public ProcessEngineInfoImpl(
-        String name,
-        String resourceUrl,
-        String exception
-    ) {
+    public ProcessEngineInfoImpl(String name, String resourceUrl, String exception) {
         this.name = name;
         this.resourceUrl = resourceUrl;
         this.exception = exception;

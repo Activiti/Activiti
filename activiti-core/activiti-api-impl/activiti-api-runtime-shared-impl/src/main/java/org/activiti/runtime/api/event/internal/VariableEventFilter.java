@@ -21,9 +21,6 @@ import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 public class VariableEventFilter {
 
     public boolean shouldEmmitEvent(ActivitiVariableEvent event) {
-        return (
-            event.getTaskId() != null ||
-            event.getExecutionId().equals(event.getProcessInstanceId())
-        );
+        return (event.getTaskId() != null || event.getExecutionId().equals(event.getProcessInstanceId()));
     }
 }

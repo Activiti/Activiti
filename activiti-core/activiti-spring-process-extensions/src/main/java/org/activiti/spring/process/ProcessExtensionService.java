@@ -42,12 +42,8 @@ public class ProcessExtensionService {
         this.processExtensionReader = processExtensionReader;
     }
 
-    private Map<String, Extension> getProcessExtensionsForDeploymentId(
-        String deploymentId
-    ) {
-        Map<String, Extension> processExtensionModelMap = processExtensionModelDeploymentMap.get(
-            deploymentId
-        );
+    private Map<String, Extension> getProcessExtensionsForDeploymentId(String deploymentId) {
+        Map<String, Extension> processExtensionModelMap = processExtensionModelDeploymentMap.get(deploymentId);
         if (processExtensionModelMap != null) {
             return processExtensionModelMap;
         }
@@ -57,12 +53,8 @@ public class ProcessExtensionService {
             processExtensionReader
         );
 
-        processExtensionModelMap =
-            buildProcessDefinitionAndExtensionMap(processExtensionModels);
-        processExtensionModelDeploymentMap.put(
-            deploymentId,
-            processExtensionModelMap
-        );
+        processExtensionModelMap = buildProcessDefinitionAndExtensionMap(processExtensionModels);
+        processExtensionModelDeploymentMap.put(deploymentId, processExtensionModelMap);
         return processExtensionModelMap;
     }
 
@@ -71,9 +63,7 @@ public class ProcessExtensionService {
     ) {
         Map<String, Extension> buildProcessExtensionMap = new HashMap<>();
         for (ProcessExtensionModel processExtensionModel : processExtensionModels) {
-            buildProcessExtensionMap.putAll(
-                processExtensionModel.getAllExtensions()
-            );
+            buildProcessExtensionMap.putAll(processExtensionModel.getAllExtensions());
         }
 
         return buildProcessExtensionMap;
@@ -84,9 +74,7 @@ public class ProcessExtensionService {
     }
 
     public boolean hasExtensionsFor(String processDefinitionId) {
-        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(
-            processDefinitionId
-        );
+        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
         return hasExtensionsFor(processDefinition);
     }
 
@@ -94,17 +82,13 @@ public class ProcessExtensionService {
         Map<String, Extension> processExtensionModelMap = getProcessExtensionsForDeploymentId(
             processDefinition.getDeploymentId()
         );
-        Extension extension = processExtensionModelMap.get(
-            processDefinition.getKey()
-        );
+        Extension extension = processExtensionModelMap.get(processDefinition.getKey());
 
         return extension != null ? extension : EMPTY_EXTENSIONS;
     }
 
     public Extension getExtensionsForId(String processDefinitionId) {
-        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(
-            processDefinitionId
-        );
+        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
 
         Extension processExtension = getExtensionsFor(processDefinition);
         return processExtension != null ? processExtension : EMPTY_EXTENSIONS;

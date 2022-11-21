@@ -26,9 +26,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DatabaseEventFlusher extends AbstractEventFlusher {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        DatabaseEventFlusher.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseEventFlusher.class);
 
     @Override
     public void closing(CommandContext commandContext) {
@@ -39,10 +37,7 @@ public class DatabaseEventFlusher extends AbstractEventFlusher {
         EventLogEntryEntityManager eventLogEntryEntityManager = commandContext.getEventLogEntryEntityManager();
         for (EventLoggerEventHandler eventHandler : eventHandlers) {
             try {
-                eventLogEntryEntityManager.insert(
-                    eventHandler.generateEventLogEntry(commandContext),
-                    false
-                );
+                eventLogEntryEntityManager.insert(eventHandler.generateEventLogEntry(commandContext), false);
             } catch (Exception e) {
                 logger.warn("Could not create event log", e);
             }

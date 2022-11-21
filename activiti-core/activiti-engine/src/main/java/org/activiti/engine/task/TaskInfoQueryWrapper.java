@@ -32,9 +32,7 @@ public class TaskInfoQueryWrapper {
 
     protected TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery;
 
-    public TaskInfoQueryWrapper(
-        TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery
-    ) {
+    public TaskInfoQueryWrapper(TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery) {
         this.taskInfoQuery = taskInfoQuery;
     }
 
@@ -42,9 +40,7 @@ public class TaskInfoQueryWrapper {
         return taskInfoQuery;
     }
 
-    public void setTaskInfoQuery(
-        TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery
-    ) {
+    public void setTaskInfoQuery(TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery) {
         this.taskInfoQuery = taskInfoQuery;
     }
 }

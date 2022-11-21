@@ -78,14 +78,8 @@ public interface SuspensionState {
 
     public static class SuspensionStateUtil {
 
-        public static void setSuspensionState(
-            ProcessDefinitionEntity processDefinitionEntity,
-            SuspensionState state
-        ) {
-            if (
-                processDefinitionEntity.getSuspensionState() ==
-                state.getStateCode()
-            ) {
+        public static void setSuspensionState(ProcessDefinitionEntity processDefinitionEntity, SuspensionState state) {
+            if (processDefinitionEntity.getSuspensionState() == state.getStateCode()) {
                 throw new ActivitiException(
                     "Cannot set suspension state '" +
                     state +
@@ -100,10 +94,7 @@ public interface SuspensionState {
             dispatchStateChangeEvent(processDefinitionEntity, state);
         }
 
-        public static void setSuspensionState(
-            ExecutionEntity executionEntity,
-            SuspensionState state
-        ) {
+        public static void setSuspensionState(ExecutionEntity executionEntity, SuspensionState state) {
             if (executionEntity.getSuspensionState() == state.getStateCode()) {
                 throw new ActivitiException(
                     "Cannot set suspension state '" +
@@ -119,10 +110,7 @@ public interface SuspensionState {
             dispatchStateChangeEvent(executionEntity, state);
         }
 
-        public static void setSuspensionState(
-            TaskEntity taskEntity,
-            SuspensionState state
-        ) {
+        public static void setSuspensionState(TaskEntity taskEntity, SuspensionState state) {
             if (taskEntity.getSuspensionState() == state.getStateCode()) {
                 throw new ActivitiException(
                     "Cannot set suspension state '" +
@@ -138,14 +126,8 @@ public interface SuspensionState {
             dispatchStateChangeEvent(taskEntity, state);
         }
 
-        protected static void dispatchStateChangeEvent(
-            Object entity,
-            SuspensionState state
-        ) {
-            if (
-                Context.getCommandContext() != null &&
-                Context.getCommandContext().getEventDispatcher().isEnabled()
-            ) {
+        protected static void dispatchStateChangeEvent(Object entity, SuspensionState state) {
+            if (Context.getCommandContext() != null && Context.getCommandContext().getEventDispatcher().isEnabled()) {
                 ActivitiEventType eventType = null;
                 if (state == SuspensionState.ACTIVE) {
                     eventType = ActivitiEventType.ENTITY_ACTIVATED;
@@ -155,12 +137,7 @@ public interface SuspensionState {
                 Context
                     .getCommandContext()
                     .getEventDispatcher()
-                    .dispatchEvent(
-                        ActivitiEventBuilder.createEntityEvent(
-                            eventType,
-                            entity
-                        )
-                    );
+                    .dispatchEvent(ActivitiEventBuilder.createEntityEvent(eventType, entity));
             }
         }
     }

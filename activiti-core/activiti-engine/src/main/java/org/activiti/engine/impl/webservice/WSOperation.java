@@ -75,15 +75,11 @@ public class WSOperation implements OperationImplementation {
         return message.getStructureInstance().toArray();
     }
 
-    private Object[] safeSend(
-        Object[] arguments,
-        ConcurrentMap<QName, URL> overridenEndpointAddresses
-    ) throws Exception {
+    private Object[] safeSend(Object[] arguments, ConcurrentMap<QName, URL> overridenEndpointAddresses)
+        throws Exception {
         Object[] results = null;
 
-        results =
-            this.service.getClient()
-                .send(this.name, arguments, overridenEndpointAddresses);
+        results = this.service.getClient().send(this.name, arguments, overridenEndpointAddresses);
 
         if (results == null) {
             results = new Object[] {};
@@ -91,10 +87,7 @@ public class WSOperation implements OperationImplementation {
         return results;
     }
 
-    private MessageInstance createResponseMessage(
-        Object[] results,
-        Operation operation
-    ) {
+    private MessageInstance createResponseMessage(Object[] results, Operation operation) {
         MessageInstance message = null;
         MessageDefinition outMessage = operation.getOutMessage();
         if (outMessage != null) {

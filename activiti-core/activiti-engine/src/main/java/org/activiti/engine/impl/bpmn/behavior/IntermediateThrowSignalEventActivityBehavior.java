@@ -30,8 +30,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.apache.commons.lang3.StringUtils;
 
-public class IntermediateThrowSignalEventActivityBehavior
-    extends AbstractBpmnActivityBehavior {
+public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 
@@ -40,18 +39,13 @@ public class IntermediateThrowSignalEventActivityBehavior
     protected String signalExpression;
     protected boolean processInstanceScope;
 
-    public IntermediateThrowSignalEventActivityBehavior(
-        SignalEventDefinition signalEventDefinition,
-        Signal signal
-    ) {
+    public IntermediateThrowSignalEventActivityBehavior(SignalEventDefinition signalEventDefinition, Signal signal) {
         if (signal != null) {
             signalEventName = signal.getName();
             if (Signal.SCOPE_PROCESS_INSTANCE.equals(signal.getScope())) {
                 this.processInstanceScope = true;
             }
-        } else if (
-            StringUtils.isNotEmpty(signalEventDefinition.getSignalRef())
-        ) {
+        } else if (StringUtils.isNotEmpty(signalEventDefinition.getSignalRef())) {
             signalEventName = signalEventDefinition.getSignalRef();
         } else {
             signalExpression = signalEventDefinition.getSignalExpression();
@@ -71,8 +65,7 @@ public class IntermediateThrowSignalEventActivityBehavior
                 .getProcessEngineConfiguration()
                 .getExpressionManager()
                 .createExpression(signalExpression);
-            eventSubscriptionName =
-                expressionObject.getValue(execution).toString();
+            eventSubscriptionName = expressionObject.getValue(execution).toString();
         }
 
         EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
@@ -104,11 +97,6 @@ public class IntermediateThrowSignalEventActivityBehavior
             );
         }
 
-        Context
-            .getAgenda()
-            .planTakeOutgoingSequenceFlowsOperation(
-                (ExecutionEntity) execution,
-                true
-            );
+        Context.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) execution, true);
     }
 }

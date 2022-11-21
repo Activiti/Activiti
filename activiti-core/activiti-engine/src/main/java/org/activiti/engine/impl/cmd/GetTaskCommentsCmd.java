@@ -25,8 +25,7 @@ import org.activiti.engine.task.Comment;
 /**
 
  */
-public class GetTaskCommentsCmd
-    implements Command<List<Comment>>, Serializable {
+public class GetTaskCommentsCmd implements Command<List<Comment>>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String taskId;
@@ -36,8 +35,6 @@ public class GetTaskCommentsCmd
     }
 
     public List<Comment> execute(CommandContext commandContext) {
-        return commandContext
-            .getCommentEntityManager()
-            .findCommentsByTaskId(taskId);
+        return commandContext.getCommentEntityManager().findCommentsByTaskId(taskId);
     }
 }

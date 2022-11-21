@@ -35,9 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JtaTransactionInterceptor extends AbstractCommandInterceptor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(
-        JtaTransactionInterceptor.class
-    );
+    private static final Logger LOGGER = LoggerFactory.getLogger(JtaTransactionInterceptor.class);
 
     private final TransactionManager transactionManager;
 
@@ -46,21 +44,13 @@ public class JtaTransactionInterceptor extends AbstractCommandInterceptor {
     }
 
     public <T> T execute(CommandConfig config, Command<T> command) {
-        LOGGER.debug(
-            "Running command with propagation {}",
-            config.getTransactionPropagation()
-        );
+        LOGGER.debug("Running command with propagation {}", config.getTransactionPropagation());
 
-        if (
-            config.getTransactionPropagation() ==
-            TransactionPropagation.NOT_SUPPORTED
-        ) {
+        if (config.getTransactionPropagation() == TransactionPropagation.NOT_SUPPORTED) {
             return next.execute(config, command);
         }
 
-        boolean requiresNew =
-            config.getTransactionPropagation() ==
-            TransactionPropagation.REQUIRES_NEW;
+        boolean requiresNew = config.getTransactionPropagation() == TransactionPropagation.REQUIRES_NEW;
         Transaction oldTx = null;
         try {
             boolean existing = isExisting();
@@ -82,10 +72,7 @@ public class JtaTransactionInterceptor extends AbstractCommandInterceptor {
                 throw err;
             } catch (Exception ex) {
                 doRollback(isNew, ex);
-                throw new UndeclaredThrowableException(
-                    ex,
-                    "TransactionCallback threw undeclared checked exception"
-                );
+                throw new UndeclaredThrowableException(ex, "TransactionCallback threw undeclared checked exception");
             }
             if (isNew) {
                 doCommit();
@@ -108,14 +95,9 @@ public class JtaTransactionInterceptor extends AbstractCommandInterceptor {
 
     private boolean isExisting() {
         try {
-            return (
-                transactionManager.getStatus() != Status.STATUS_NO_TRANSACTION
-            );
+            return (transactionManager.getStatus() != Status.STATUS_NO_TRANSACTION);
         } catch (SystemException e) {
-            throw new TransactionException(
-                "Unable to retrieve transaction status",
-                e
-            );
+            throw new TransactionException("Unable to retrieve transaction status", e);
         }
     }
 
@@ -132,15 +114,9 @@ public class JtaTransactionInterceptor extends AbstractCommandInterceptor {
             try {
                 transactionManager.resume(tx);
             } catch (SystemException e) {
-                throw new TransactionException(
-                    "Unable to resume transaction",
-                    e
-                );
+                throw new TransactionException("Unable to resume transaction", e);
             } catch (InvalidTransactionException e) {
-                throw new TransactionException(
-                    "Unable to resume transaction",
-                    e
-                );
+                throw new TransactionException("Unable to resume transaction", e);
             }
         }
     }
@@ -183,10 +159,7 @@ public class JtaTransactionInterceptor extends AbstractCommandInterceptor {
             throw e;
         } finally {
             if (rollbackEx != null && originalException != null) {
-                LOGGER.error(
-                    "Error when rolling back transaction, original exception was:",
-                    originalException
-                );
+                LOGGER.error("Error when rolling back transaction, original exception was:", originalException);
             }
         }
     }

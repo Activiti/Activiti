@@ -54,9 +54,7 @@ public class ProcessEngineInitializationTest extends AbstractTestCase {
             .createProcessEngineConfigurationFromResource(
                 "org/activiti/standalone/initialization/notables.activiti.cfg.xml"
             )
-            .setDatabaseSchemaUpdate(
-                ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP
-            )
+            .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP)
             .buildProcessEngine();
 
         // then update the version to something that is different to the library
@@ -95,16 +93,13 @@ public class ProcessEngineInitializationTest extends AbstractTestCase {
                     .createProcessEngineConfigurationFromResource(
                         "org/activiti/standalone/initialization/notables.activiti.cfg.xml"
                     )
-                    .setDatabaseSchemaUpdate(
-                        ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE
-                    )
+                    .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE)
                     .buildProcessEngine()
             )
             .withMessageContaining("version mismatch")
             .satisfies(e -> {
                 assertThat(e.getDbVersion()).isEqualTo("25.7");
-                assertThat(e.getLibraryVersion())
-                    .isEqualTo(ProcessEngine.VERSION);
+                assertThat(e.getLibraryVersion()).isEqualTo(ProcessEngine.VERSION);
             });
 
         // closing the original process engine to drop the db tables

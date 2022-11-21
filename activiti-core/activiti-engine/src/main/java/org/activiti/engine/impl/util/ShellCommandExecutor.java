@@ -79,9 +79,9 @@ public class ShellCommandExecutor implements CommandExecutor {
                 Map<String, String> env = processBuilder.environment();
                 env.clear();
             }
-            if (
-                getDirectoryStr() != null && getDirectoryStr().length() > 0
-            ) processBuilder.directory(new File(getDirectoryStr()));
+            if (getDirectoryStr() != null && getDirectoryStr().length() > 0) processBuilder.directory(
+                new File(getDirectoryStr())
+            );
 
             Process process = processBuilder.start();
 
@@ -89,17 +89,12 @@ public class ShellCommandExecutor implements CommandExecutor {
                 int errorCode = process.waitFor();
 
                 if (getResultVariableStr() != null) {
-                    String result = convertStreamToStr(
-                        process.getInputStream()
-                    );
+                    String result = convertStreamToStr(process.getInputStream());
                     execution.setVariable(getResultVariableStr(), result);
                 }
 
                 if (getErrorCodeVariableStr() != null) {
-                    execution.setVariable(
-                        getErrorCodeVariableStr(),
-                        Integer.toString(errorCode)
-                    );
+                    execution.setVariable(getErrorCodeVariableStr(), Integer.toString(errorCode));
                 }
             }
         }
@@ -111,9 +106,7 @@ public class ShellCommandExecutor implements CommandExecutor {
 
             char[] buffer = new char[1024];
             try {
-                Reader reader = new BufferedReader(
-                    new InputStreamReader(is, "UTF-8")
-                );
+                Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
                 int n;
                 while ((n = reader.read(buffer)) != -1) {
                     writer.write(buffer, 0, n);

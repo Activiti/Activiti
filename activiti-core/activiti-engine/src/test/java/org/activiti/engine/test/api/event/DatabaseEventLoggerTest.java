@@ -51,10 +51,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 
         // Database event logger setup
         databaseEventLogger =
-            new EventLogger(
-                processEngineConfiguration.getClock(),
-                processEngineConfiguration.getObjectMapper()
-            );
+            new EventLogger(processEngineConfiguration.getClock(), processEngineConfiguration.getObjectMapper());
         runtimeService.addEventListener(databaseEventLogger);
     }
 
@@ -66,19 +63,13 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
         super.tearDown();
     }
 
-    @Deployment(
-        resources = {
-            "org/activiti/engine/test/api/event/DatabaseEventLoggerProcess.bpmn20.xml",
-        }
-    )
+    @Deployment(resources = { "org/activiti/engine/test/api/event/DatabaseEventLoggerProcess.bpmn20.xml" })
     public void testDatabaseEvents() throws IOException {
         String testTenant = "testTenant";
 
         String deploymentId = repositoryService
             .createDeployment()
-            .addClasspathResource(
-                "org/activiti/engine/test/api/event/DatabaseEventLoggerProcess.bpmn20.xml"
-            )
+            .addClasspathResource("org/activiti/engine/test/api/event/DatabaseEventLoggerProcess.bpmn20.xml")
             .tenantId(testTenant)
             .deploy()
             .getId();
@@ -91,19 +82,13 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
         );
 
         // Verify event log entries
-        List<EventLogEntry> eventLogEntries = managementService.getEventLogEntries(
-            null,
-            null
-        );
+        List<EventLogEntry> eventLogEntries = managementService.getEventLogEntries(null, null);
 
         String processDefinitionId = processInstance.getProcessDefinitionId();
         Iterator<EventLogEntry> iterator = eventLogEntries.iterator();
         while (iterator.hasNext()) {
             EventLogEntry entry = iterator.next();
-            if (
-                entry.getProcessDefinitionId() != null &&
-                !entry.getProcessDefinitionId().equals(processDefinitionId)
-            ) {
+            if (entry.getProcessDefinitionId() != null && !entry.getProcessDefinitionId().equals(processDefinitionId)) {
                 iterator.remove();
             }
         }
@@ -116,8 +101,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 
             if (i == 0) {
                 assertThat(entry.getType()).isNotNull();
-                assertThat(entry.getType())
-                    .isEqualTo(ActivitiEventType.VARIABLE_CREATED.name());
+                assertThat(entry.getType()).isEqualTo(ActivitiEventType.VARIABLE_CREATED.name());
                 assertThat(entry.getProcessDefinitionId()).isNotNull();
                 assertThat(entry.getProcessInstanceId()).isNotNull();
                 assertThat(entry.getTimeStamp()).isNotNull();
@@ -152,9 +136,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
                 assertThat(data.get(Fields.TENANT_ID)).isNotNull();
                 assertThat(data.get(Fields.TENANT_ID)).isEqualTo(testTenant);
 
-                Map<String, Object> variableMap = (Map<String, Object>) data.get(
-                    Fields.VARIABLES
-                );
+                Map<String, Object> variableMap = (Map<String, Object>) data.get(Fields.VARIABLES);
                 assertThat(variableMap).hasSize(1);
                 assertThat(variableMap.get("testVar")).isEqualTo("helloWorld");
 
@@ -165,8 +147,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
             // Activity started
             if (i == 2 || i == 5 || i == 9 || i == 12) {
                 assertThat(entry.getType()).isNotNull();
-                assertThat(entry.getType())
-                    .isEqualTo(ActivitiEventType.ACTIVITY_STARTED.name());
+                assertThat(entry.getType()).isEqualTo(ActivitiEventType.ACTIVITY_STARTED.name());
                 assertThat(entry.getProcessDefinitionId()).isNotNull();
                 assertThat(entry.getProcessInstanceId()).isNotNull();
                 assertThat(entry.getTimeStamp()).isNotNull();
@@ -188,8 +169,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
             // Leaving start
             if (i == 3) {
                 assertThat(entry.getType()).isNotNull();
-                assertThat(entry.getType())
-                    .isEqualTo(ActivitiEventType.ACTIVITY_COMPLETED.name());
+                assertThat(entry.getType()).isEqualTo(ActivitiEventType.ACTIVITY_COMPLETED.name());
                 assertThat(entry.getProcessDefinitionId()).isNotNull();
                 assertThat(entry.getProcessInstanceId()).isNotNull();
                 assertThat(entry.getTimeStamp()).isNotNull();
@@ -201,8 +181,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
                     new TypeReference<HashMap<String, Object>>() {}
                 );
                 assertThat(data.get(Fields.ACTIVITY_ID)).isNotNull();
-                assertThat(data.get(Fields.ACTIVITY_ID))
-                    .isEqualTo("startEvent1");
+                assertThat(data.get(Fields.ACTIVITY_ID)).isEqualTo("startEvent1");
                 assertThat(data.get(Fields.PROCESS_DEFINITION_ID)).isNotNull();
                 assertThat(data.get(Fields.PROCESS_INSTANCE_ID)).isNotNull();
                 assertThat(data.get(Fields.EXECUTION_ID)).isNotNull();
@@ -213,8 +192,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
             // Sequence flow taken
             if (i == 4 || i == 7 || i == 8) {
                 assertThat(entry.getType()).isNotNull();
-                assertThat(entry.getType())
-                    .isEqualTo(ActivitiEventType.SEQUENCEFLOW_TAKEN.name());
+                assertThat(entry.getType()).isEqualTo(ActivitiEventType.SEQUENCEFLOW_TAKEN.name());
                 assertThat(entry.getProcessDefinitionId()).isNotNull();
                 assertThat(entry.getProcessInstanceId()).isNotNull();
                 assertThat(entry.getTimeStamp()).isNotNull();
@@ -235,8 +213,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
             // Leaving parallel gateway
             if (i == 6) {
                 assertThat(entry.getType()).isNotNull();
-                assertThat(entry.getType())
-                    .isEqualTo(ActivitiEventType.ACTIVITY_COMPLETED.name());
+                assertThat(entry.getType()).isEqualTo(ActivitiEventType.ACTIVITY_COMPLETED.name());
                 assertThat(entry.getProcessDefinitionId()).isNotNull();
                 assertThat(entry.getProcessInstanceId()).isNotNull();
                 assertThat(entry.getTimeStamp()).isNotNull();
@@ -258,8 +235,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
             // Tasks
             if (i == 11 || i == 14) {
                 assertThat(entry.getType()).isNotNull();
-                assertThat(entry.getType())
-                    .isEqualTo(ActivitiEventType.TASK_ASSIGNED.name());
+                assertThat(entry.getType()).isEqualTo(ActivitiEventType.TASK_ASSIGNED.name());
                 assertThat(entry.getTimeStamp()).isNotNull();
                 assertThat(entry.getProcessDefinitionId()).isNotNull();
                 assertThat(entry.getProcessInstanceId()).isNotNull();
@@ -291,8 +267,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 
             if (i == 10 || i == 13) {
                 assertThat(entry.getType()).isNotNull();
-                assertThat(entry.getType())
-                    .isEqualTo(ActivitiEventType.TASK_CREATED.name());
+                assertThat(entry.getType()).isEqualTo(ActivitiEventType.TASK_CREATED.name());
                 assertThat(entry.getTimeStamp()).isNotNull();
                 assertThat(entry.getProcessDefinitionId()).isNotNull();
                 assertThat(entry.getProcessInstanceId()).isNotNull();
@@ -342,8 +317,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
             // Task completion
             if (i == 1 || i == 6) {
                 assertThat(entry.getType()).isNotNull();
-                assertThat(entry.getType())
-                    .isEqualTo(ActivitiEventType.TASK_COMPLETED.name());
+                assertThat(entry.getType()).isEqualTo(ActivitiEventType.TASK_COMPLETED.name());
                 assertThat(entry.getProcessDefinitionId()).isNotNull();
                 assertThat(entry.getProcessInstanceId()).isNotNull();
                 assertThat(entry.getExecutionId()).isNotNull();
@@ -363,9 +337,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
                 assertThat(data.get(Fields.TENANT_ID)).isNotNull();
                 assertThat(data.get(Fields.USER_ID)).isNotNull();
 
-                Map<String, Object> variableMap = (Map<String, Object>) data.get(
-                    Fields.VARIABLES
-                );
+                Map<String, Object> variableMap = (Map<String, Object>) data.get(Fields.VARIABLES);
                 assertThat(variableMap).hasSize(1);
                 assertThat(variableMap.get("test")).isEqualTo("test");
 
@@ -381,8 +353,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
             // Activity Completed
             if (i == 2 || i == 7 || i == 10 || i == 13) {
                 assertThat(entry.getType()).isNotNull();
-                assertThat(entry.getType())
-                    .isEqualTo(ActivitiEventType.ACTIVITY_COMPLETED.name());
+                assertThat(entry.getType()).isEqualTo(ActivitiEventType.ACTIVITY_COMPLETED.name());
                 assertThat(entry.getProcessDefinitionId()).isNotNull();
                 assertThat(entry.getProcessInstanceId()).isNotNull();
                 assertThat(entry.getTimeStamp()).isNotNull();
@@ -403,25 +374,20 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
                 assertThat(data.get(Fields.TENANT_ID)).isEqualTo(testTenant);
 
                 if (i == 2) {
-                    assertThat(data.get(Fields.ACTIVITY_TYPE))
-                        .isEqualTo("userTask");
+                    assertThat(data.get(Fields.ACTIVITY_TYPE)).isEqualTo("userTask");
                 } else if (i == 7) {
-                    assertThat(data.get(Fields.ACTIVITY_TYPE))
-                        .isEqualTo("userTask");
+                    assertThat(data.get(Fields.ACTIVITY_TYPE)).isEqualTo("userTask");
                 } else if (i == 10) {
-                    assertThat(data.get(Fields.ACTIVITY_TYPE))
-                        .isEqualTo("parallelGateway");
+                    assertThat(data.get(Fields.ACTIVITY_TYPE)).isEqualTo("parallelGateway");
                 } else if (i == 13) {
-                    assertThat(data.get(Fields.ACTIVITY_TYPE))
-                        .isEqualTo("endEvent");
+                    assertThat(data.get(Fields.ACTIVITY_TYPE)).isEqualTo("endEvent");
                 }
             }
 
             // Sequence flow taken
             if (i == 3 || i == 8 || i == 11) {
                 assertThat(entry.getType()).isNotNull();
-                assertThat(ActivitiEventType.SEQUENCEFLOW_TAKEN.name())
-                    .isEqualTo(entry.getType());
+                assertThat(ActivitiEventType.SEQUENCEFLOW_TAKEN.name()).isEqualTo(entry.getType());
                 assertThat(entry.getProcessDefinitionId()).isNotNull();
                 assertThat(entry.getProcessInstanceId()).isNotNull();
                 assertThat(entry.getTimeStamp()).isNotNull();
@@ -435,12 +401,10 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
                 assertThat(data.get(Fields.ID)).isNotNull();
                 assertThat(data.get(Fields.SOURCE_ACTIVITY_ID)).isNotNull();
                 assertThat(data.get(Fields.SOURCE_ACTIVITY_TYPE)).isNotNull();
-                assertThat(data.get(Fields.SOURCE_ACTIVITY_BEHAVIOR_CLASS))
-                    .isNotNull();
+                assertThat(data.get(Fields.SOURCE_ACTIVITY_BEHAVIOR_CLASS)).isNotNull();
                 assertThat(data.get(Fields.TARGET_ACTIVITY_ID)).isNotNull();
                 assertThat(data.get(Fields.TARGET_ACTIVITY_TYPE)).isNotNull();
-                assertThat(data.get(Fields.TARGET_ACTIVITY_BEHAVIOR_CLASS))
-                    .isNotNull();
+                assertThat(data.get(Fields.TARGET_ACTIVITY_BEHAVIOR_CLASS)).isNotNull();
 
                 assertThat(data.get(Fields.TENANT_ID)).isEqualTo(testTenant);
             }
@@ -480,10 +444,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
         }
 
         // Cleanup
-        for (EventLogEntry eventLogEntry : managementService.getEventLogEntries(
-            null,
-            null
-        )) {
+        for (EventLogEntry eventLogEntry : managementService.getEventLogEntries(null, null)) {
             managementService.deleteEventLogEntry(eventLogEntry.getLogNumber());
         }
 
@@ -493,9 +454,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
     public void testDatabaseEventsNoTenant() throws IOException {
         String deploymentId = repositoryService
             .createDeployment()
-            .addClasspathResource(
-                "org/activiti/engine/test/api/event/DatabaseEventLoggerProcess.bpmn20.xml"
-            )
+            .addClasspathResource("org/activiti/engine/test/api/event/DatabaseEventLoggerProcess.bpmn20.xml")
             .deploy()
             .getId();
 
@@ -506,19 +465,13 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
         );
 
         // Verify event log entries
-        List<EventLogEntry> eventLogEntries = managementService.getEventLogEntries(
-            null,
-            null
-        );
+        List<EventLogEntry> eventLogEntries = managementService.getEventLogEntries(null, null);
 
         String processDefinitionId = processInstance.getProcessDefinitionId();
         Iterator<EventLogEntry> iterator = eventLogEntries.iterator();
         while (iterator.hasNext()) {
             EventLogEntry entry = iterator.next();
-            if (
-                entry.getProcessDefinitionId() != null &&
-                !entry.getProcessDefinitionId().equals(processDefinitionId)
-            ) {
+            if (entry.getProcessDefinitionId() != null && !entry.getProcessDefinitionId().equals(processDefinitionId)) {
                 iterator.remove();
             }
         }
@@ -529,8 +482,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
             EventLogEntry entry = eventLogEntries.get(i);
 
             if (i == 0) {
-                assertThat(ActivitiEventType.VARIABLE_CREATED.name())
-                    .isEqualTo(entry.getType());
+                assertThat(ActivitiEventType.VARIABLE_CREATED.name()).isEqualTo(entry.getType());
                 Map<String, Object> data = objectMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
@@ -550,8 +502,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 
             // Activity started
             if (i == 2 || i == 5 || i == 9 || i == 12) {
-                assertThat(ActivitiEventType.ACTIVITY_STARTED.name())
-                    .isEqualTo(entry.getType());
+                assertThat(ActivitiEventType.ACTIVITY_STARTED.name()).isEqualTo(entry.getType());
                 Map<String, Object> data = objectMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
@@ -561,8 +512,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 
             // Leaving start
             if (i == 3) {
-                assertThat(ActivitiEventType.ACTIVITY_COMPLETED.name())
-                    .isEqualTo(entry.getType());
+                assertThat(ActivitiEventType.ACTIVITY_COMPLETED.name()).isEqualTo(entry.getType());
                 Map<String, Object> data = objectMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
@@ -572,8 +522,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 
             // Sequence flow taken
             if (i == 4 || i == 7 || i == 8) {
-                assertThat(ActivitiEventType.SEQUENCEFLOW_TAKEN.name())
-                    .isEqualTo(entry.getType());
+                assertThat(ActivitiEventType.SEQUENCEFLOW_TAKEN.name()).isEqualTo(entry.getType());
                 Map<String, Object> data = objectMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
@@ -583,8 +532,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 
             // Leaving parallel gateway
             if (i == 6) {
-                assertThat(ActivitiEventType.ACTIVITY_COMPLETED.name())
-                    .isEqualTo(entry.getType());
+                assertThat(ActivitiEventType.ACTIVITY_COMPLETED.name()).isEqualTo(entry.getType());
                 Map<String, Object> data = objectMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
@@ -594,8 +542,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 
             // Tasks
             if (i == 11 || i == 14) {
-                assertThat(ActivitiEventType.TASK_ASSIGNED.name())
-                    .isEqualTo(entry.getType());
+                assertThat(ActivitiEventType.TASK_ASSIGNED.name()).isEqualTo(entry.getType());
                 Map<String, Object> data = objectMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
@@ -604,8 +551,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
             }
 
             if (i == 10 || i == 13) {
-                assertThat(ActivitiEventType.TASK_CREATED.name())
-                    .isEqualTo(entry.getType());
+                assertThat(ActivitiEventType.TASK_CREATED.name()).isEqualTo(entry.getType());
                 Map<String, Object> data = objectMapper.readValue(
                     entry.getData(),
                     new TypeReference<HashMap<String, Object>>() {}
@@ -617,16 +563,12 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
         repositoryService.deleteDeployment(deploymentId, true);
 
         // Cleanup
-        for (EventLogEntry eventLogEntry : managementService.getEventLogEntries(
-            null,
-            null
-        )) {
+        for (EventLogEntry eventLogEntry : managementService.getEventLogEntries(null, null)) {
             managementService.deleteEventLogEntry(eventLogEntry.getLogNumber());
         }
     }
 
-    public void testStandaloneTaskEvents()
-        throws JsonParseException, JsonMappingException, IOException {
+    public void testStandaloneTaskEvents() throws JsonParseException, JsonMappingException, IOException {
         Task task = taskService.newTask();
         task.setAssignee("kermit");
         task.setTenantId("myTenant");
@@ -634,15 +576,11 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 
         taskService.setAssignee(task.getId(), "gonzo");
 
-        task =
-            taskService.createTaskQuery().taskId(task.getId()).singleResult();
+        task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
         task.setAssignee("kermit");
         taskService.saveTask(task);
 
-        List<EventLogEntry> events = managementService.getEventLogEntries(
-            null,
-            null
-        );
+        List<EventLogEntry> events = managementService.getEventLogEntries(null, null);
         assertThat(events).hasSize(4);
         assertThat(events.get(0).getType()).isEqualTo("TASK_CREATED");
         assertThat(events.get(1).getType()).isEqualTo("TASK_ASSIGNED");
@@ -659,10 +597,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 
         // Cleanup
         taskService.deleteTask(task.getId(), true);
-        for (EventLogEntry eventLogEntry : managementService.getEventLogEntries(
-            null,
-            null
-        )) {
+        for (EventLogEntry eventLogEntry : managementService.getEventLogEntries(null, null)) {
             managementService.deleteEventLogEntry(eventLogEntry.getLogNumber());
         }
     }

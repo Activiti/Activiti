@@ -34,9 +34,7 @@ public class ConnectorAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnMissingClass(
-        value = "org.springframework.http.converter.json.Jackson2ObjectMapperBuilder"
-    )
+    @ConditionalOnMissingClass(value = "org.springframework.http.converter.json.Jackson2ObjectMapperBuilder")
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
     }
@@ -44,27 +42,18 @@ public class ConnectorAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public ConnectorDefinitionService connectorDefinitionService(
-        @Value(
-            "${activiti.connectors.dir:classpath:/connectors/}"
-        ) String connectorRoot,
+        @Value("${activiti.connectors.dir:classpath:/connectors/}") String connectorRoot,
         ObjectMapper objectMapper,
         ResourcePatternResolver resourceLoader
     ) {
-        return new ConnectorDefinitionService(
-            connectorRoot,
-            objectMapper,
-            resourceLoader
-        );
+        return new ConnectorDefinitionService(connectorRoot, objectMapper, resourceLoader);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public List<ConnectorDefinition> connectorDefinitions(
-        ConnectorDefinitionService connectorDefinitionService
-    ) throws IOException {
+    public List<ConnectorDefinition> connectorDefinitions(ConnectorDefinitionService connectorDefinitionService)
+        throws IOException {
         List<ConnectorDefinition> connectorDefinitions = connectorDefinitionService.get();
-        return connectorDefinitions == null
-            ? emptyList()
-            : connectorDefinitions;
+        return connectorDefinitions == null ? emptyList() : connectorDefinitions;
     }
 }

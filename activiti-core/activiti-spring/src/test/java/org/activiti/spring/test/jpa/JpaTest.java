@@ -40,10 +40,7 @@ public class JpaTest extends SpringActivitiTestCase {
         );
 
         // Variable should be present containing the loanRequest created by the spring bean
-        Object value = runtimeService.getVariable(
-            processInstance.getId(),
-            "loanRequest"
-        );
+        Object value = runtimeService.getVariable(processInstance.getId(), "loanRequest");
         assertThat(value).isNotNull();
         assertThat(value).isInstanceOf(LoanRequest.class);
         LoanRequest request = (LoanRequest) value;
@@ -52,23 +49,12 @@ public class JpaTest extends SpringActivitiTestCase {
         assertThat(request.isApproved()).isFalse();
 
         // We will approve the request, which will update the entity
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task).isNotNull();
-        taskService.complete(
-            task.getId(),
-            singletonMap("approvedByManager", Boolean.TRUE)
-        );
+        taskService.complete(task.getId(), singletonMap("approvedByManager", Boolean.TRUE));
 
         // If approved, the processsInstance should be finished, gateway based on loanRequest.approved value
-        assertThat(
-            runtimeService
-                .createProcessInstanceQuery()
-                .processInstanceId(processInstance.getId())
-                .count()
-        )
+        assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count())
             .isEqualTo(0);
 
         // Cleanup
@@ -84,10 +70,7 @@ public class JpaTest extends SpringActivitiTestCase {
         );
 
         // Variable should be present containing the loanRequest created by the spring bean
-        Object value = runtimeService.getVariable(
-            processInstance.getId(),
-            "loanRequest"
-        );
+        Object value = runtimeService.getVariable(processInstance.getId(), "loanRequest");
         assertThat(value).isNotNull();
         assertThat(value).isInstanceOf(LoanRequest.class);
         LoanRequest request = (LoanRequest) value;
@@ -96,26 +79,16 @@ public class JpaTest extends SpringActivitiTestCase {
         assertThat(request.isApproved()).isFalse();
 
         // We will disapprove the request, which will update the entity
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task).isNotNull();
-        taskService.complete(
-            task.getId(),
-            singletonMap("approvedByManager", Boolean.FALSE)
-        );
+        taskService.complete(task.getId(), singletonMap("approvedByManager", Boolean.FALSE));
 
         runtimeService.getVariable(processInstance.getId(), "loanRequest");
         request = (LoanRequest) value;
         assertThat(request.isApproved()).isFalse();
 
         // If disapproved, an extra task will be available instead of the process ending
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task).isNotNull();
         assertThat(task.getName()).isEqualTo("Send rejection letter");
 
@@ -124,19 +97,12 @@ public class JpaTest extends SpringActivitiTestCase {
     }
 
     protected void before() {
-        String[] defs = {
-            "org/activiti/spring/test/jpa/JPASpringTest.bpmn20.xml",
-        };
-        for (String pd : defs) repositoryService
-            .createDeployment()
-            .addClasspathResource(pd)
-            .deploy();
+        String[] defs = { "org/activiti/spring/test/jpa/JPASpringTest.bpmn20.xml" };
+        for (String pd : defs) repositoryService.createDeployment().addClasspathResource(pd).deploy();
     }
 
     protected void deleteDeployments() {
-        for (Deployment deployment : repositoryService
-            .createDeploymentQuery()
-            .list()) {
+        for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
             repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }

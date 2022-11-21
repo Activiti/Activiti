@@ -57,12 +57,7 @@ public class SignalEventReceivedCmd implements Command<Void> {
         this.tenantId = tenantId;
     }
 
-    public SignalEventReceivedCmd(
-        String eventName,
-        String executionId,
-        boolean async,
-        String tenantId
-    ) {
+    public SignalEventReceivedCmd(String eventName, String executionId, boolean async, String tenantId) {
         this.eventName = eventName;
         this.executionId = executionId;
         this.async = async;
@@ -75,15 +70,9 @@ public class SignalEventReceivedCmd implements Command<Void> {
 
         EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
         if (executionId == null) {
-            signalEvents =
-                eventSubscriptionEntityManager.findSignalEventSubscriptionsByEventName(
-                    eventName,
-                    tenantId
-                );
+            signalEvents = eventSubscriptionEntityManager.findSignalEventSubscriptionsByEventName(eventName, tenantId);
         } else {
-            ExecutionEntity execution = commandContext
-                .getExecutionEntityManager()
-                .findById(executionId);
+            ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
 
             if (execution == null) {
                 throw new ActivitiObjectNotFoundException(
@@ -94,19 +83,12 @@ public class SignalEventReceivedCmd implements Command<Void> {
 
             if (execution.isSuspended()) {
                 throw new ActivitiException(
-                    "Cannot throw signal event '" +
-                    eventName +
-                    "' because execution '" +
-                    executionId +
-                    "' is suspended"
+                    "Cannot throw signal event '" + eventName + "' because execution '" + executionId + "' is suspended"
                 );
             }
 
             signalEvents =
-                eventSubscriptionEntityManager.findSignalEventSubscriptionsByNameAndExecution(
-                    eventName,
-                    executionId
-                );
+                eventSubscriptionEntityManager.findSignalEventSubscriptionsByNameAndExecution(eventName, executionId);
 
             if (signalEvents.isEmpty()) {
                 throw new ActivitiException(
@@ -123,11 +105,7 @@ public class SignalEventReceivedCmd implements Command<Void> {
             // We only throw the event to globally scoped signals.
             // Process instance scoped signals must be thrown within the process itself
             if (signalEventSubscriptionEntity.isGlobalScoped()) {
-                eventSubscriptionEntityManager.eventReceived(
-                    signalEventSubscriptionEntity,
-                    payload,
-                    async
-                );
+                eventSubscriptionEntityManager.eventReceived(signalEventSubscriptionEntity, payload, async);
             }
         }
 

@@ -32,11 +32,7 @@ public class StartMessagePayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public StartMessagePayload(
-        String name,
-        String businessKey,
-        Map<String, Object> variables
-    ) {
+    public StartMessagePayload(String name, String businessKey, Map<String, Object> variables) {
         this();
         Objects.requireNonNull(name, "name must not be null");
 

@@ -18,9 +18,7 @@ package org.activiti.api.runtime.model.impl;
 import java.util.Objects;
 import org.activiti.api.process.model.ProcessDefinition;
 
-public class ProcessDefinitionImpl
-    extends ApplicationElementImpl
-    implements ProcessDefinition {
+public class ProcessDefinitionImpl extends ApplicationElementImpl implements ProcessDefinition {
 
     private String id;
     private String name;
@@ -117,15 +115,7 @@ public class ProcessDefinitionImpl
 
     @Override
     public int hashCode() {
-        return Objects.hash(
-            super.hashCode(),
-            id,
-            name,
-            description,
-            version,
-            key,
-            formKey
-        );
+        return Objects.hash(super.hashCode(), id, name, description, version, key, formKey);
     }
 
     @Override

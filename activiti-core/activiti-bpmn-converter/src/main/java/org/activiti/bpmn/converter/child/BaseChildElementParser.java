@@ -32,17 +32,12 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class BaseChildElementParser implements BpmnXMLConstants {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(
-        BaseChildElementParser.class
-    );
+    protected static final Logger LOGGER = LoggerFactory.getLogger(BaseChildElementParser.class);
 
     public abstract String getElementName();
 
-    public abstract void parseChildElement(
-        XMLStreamReader xtr,
-        BaseElement parentElement,
-        BpmnModel model
-    ) throws Exception;
+    public abstract void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model)
+        throws Exception;
 
     protected void parseChildElements(
         XMLStreamReader xtr,
@@ -57,10 +52,7 @@ public abstract class BaseChildElementParser implements BpmnXMLConstants {
                 if (parser.getElementName().equals(xtr.getLocalName())) {
                     parser.parseChildElement(xtr, parentElement, model);
                 }
-            } else if (
-                xtr.isEndElement() &&
-                getElementName().equalsIgnoreCase(xtr.getLocalName())
-            ) {
+            } else if (xtr.isEndElement() && getElementName().equalsIgnoreCase(xtr.getLocalName())) {
                 readyWithChildElements = true;
             }
         }
@@ -78,11 +70,7 @@ public abstract class BaseChildElementParser implements BpmnXMLConstants {
         List<ExtensionAttribute> attributes = new LinkedList<>();
 
         for (int i = 0; i < xtr.getAttributeCount(); i++) {
-            if (
-                ACTIVITI_EXTENSIONS_NAMESPACE.equals(
-                    xtr.getAttributeNamespace(i)
-                )
-            ) {
+            if (ACTIVITI_EXTENSIONS_NAMESPACE.equals(xtr.getAttributeNamespace(i))) {
                 ExtensionAttribute attr = new ExtensionAttribute(
                     ACTIVITI_EXTENSIONS_NAMESPACE,
                     xtr.getAttributeLocalName(i)

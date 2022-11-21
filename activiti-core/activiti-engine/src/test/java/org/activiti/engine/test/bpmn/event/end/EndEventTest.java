@@ -32,9 +32,7 @@ public class EndEventTest extends PluggableActivitiTestCase {
     // Test case for ACT-1259
     @Deployment
     public void testConcurrentEndOfSameProcess() throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "oneTaskWithDelay"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskWithDelay");
         Task task = taskService.createTaskQuery().singleResult();
         assertThat(task).isNotNull();
 
@@ -63,9 +61,7 @@ public class EndEventTest extends PluggableActivitiTestCase {
         }
 
         assertThat(successCount)
-            .as(
-                "(Only) one thread should have been able to successfully end the process"
-            )
+            .as("(Only) one thread should have been able to successfully end the process")
             .isEqualTo(1);
         assertProcessEnded(processInstance.getId());
     }

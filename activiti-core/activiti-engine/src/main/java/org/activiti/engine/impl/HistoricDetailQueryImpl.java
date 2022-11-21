@@ -75,9 +75,7 @@ public class HistoricDetailQueryImpl
         return this;
     }
 
-    public HistoricDetailQueryImpl activityInstanceId(
-        String activityInstanceId
-    ) {
+    public HistoricDetailQueryImpl activityInstanceId(String activityInstanceId) {
         this.activityInstanceId = activityInstanceId;
         return this;
     }
@@ -104,15 +102,10 @@ public class HistoricDetailQueryImpl
 
     public long executeCount(CommandContext commandContext) {
         checkQueryOk();
-        return commandContext
-            .getHistoricDetailEntityManager()
-            .findHistoricDetailCountByQueryCriteria(this);
+        return commandContext.getHistoricDetailEntityManager().findHistoricDetailCountByQueryCriteria(this);
     }
 
-    public List<HistoricDetail> executeList(
-        CommandContext commandContext,
-        Page page
-    ) {
+    public List<HistoricDetail> executeList(CommandContext commandContext, Page page) {
         checkQueryOk();
         List<HistoricDetail> historicDetails = commandContext
             .getHistoricDetailEntityManager()
@@ -121,11 +114,8 @@ public class HistoricDetailQueryImpl
         HistoricDetailVariableInstanceUpdateEntity varUpdate = null;
         if (historicDetails != null) {
             for (HistoricDetail historicDetail : historicDetails) {
-                if (
-                    historicDetail instanceof HistoricDetailVariableInstanceUpdateEntity
-                ) {
-                    varUpdate =
-                        (HistoricDetailVariableInstanceUpdateEntity) historicDetail;
+                if (historicDetail instanceof HistoricDetailVariableInstanceUpdateEntity) {
+                    varUpdate = (HistoricDetailVariableInstanceUpdateEntity) historicDetail;
 
                     // Touch byte-array to ensure initialized inside context
                     // TODO there should be a generic way to initialize variable
@@ -135,23 +125,15 @@ public class HistoricDetailQueryImpl
                     // ACT-863: EntityManagerFactorySession instance needed for
                     // fetching value, touch while inside context to store
                     // cached value
-                    if (
-                        varUpdate.getVariableType() instanceof JPAEntityVariableType
-                    ) {
+                    if (varUpdate.getVariableType() instanceof JPAEntityVariableType) {
                         // Use HistoricJPAEntityVariableType to force caching of
                         // value to return from query
-                        varUpdate.setVariableType(
-                            HistoricJPAEntityVariableType.getSharedInstance()
-                        );
+                        varUpdate.setVariableType(HistoricJPAEntityVariableType.getSharedInstance());
                         varUpdate.getValue();
-                    } else if (
-                        varUpdate.getVariableType() instanceof JPAEntityListVariableType
-                    ) {
+                    } else if (varUpdate.getVariableType() instanceof JPAEntityListVariableType) {
                         // Use HistoricJPAEntityListVariableType to force
                         // caching of list to return from query
-                        varUpdate.setVariableType(
-                            HistoricJPAEntityListVariableType.getSharedInstance()
-                        );
+                        varUpdate.setVariableType(HistoricJPAEntityListVariableType.getSharedInstance());
                         varUpdate.getValue();
                     }
                 }

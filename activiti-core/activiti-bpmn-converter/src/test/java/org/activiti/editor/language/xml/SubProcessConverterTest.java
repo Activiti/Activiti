@@ -49,9 +49,7 @@ public class SubProcessConverterTest extends AbstractConverterTest {
     }
 
     private void validateModel(BpmnModel model) {
-        FlowElement flowElement = model
-            .getMainProcess()
-            .getFlowElement("start1");
+        FlowElement flowElement = model.getMainProcess().getFlowElement("start1");
         assertThat(flowElement).isNotNull();
         assertThat(flowElement).isInstanceOf(StartEvent.class);
         assertThat(flowElement.getId()).isEqualTo("start1");
@@ -71,20 +69,14 @@ public class SubProcessConverterTest extends AbstractConverterTest {
         assertThat(flowElement.getId()).isEqualTo("subprocess1");
         SubProcess subProcess = (SubProcess) flowElement;
         assertThat(subProcess.getLoopCharacteristics().isSequential()).isTrue();
-        assertThat(subProcess.getLoopCharacteristics().getLoopCardinality())
-            .isEqualTo("10");
-        assertThat(subProcess.getLoopCharacteristics().getCompletionCondition())
-            .isEqualTo("${assignee == \"\"}");
+        assertThat(subProcess.getLoopCharacteristics().getLoopCardinality()).isEqualTo("10");
+        assertThat(subProcess.getLoopCharacteristics().getCompletionCondition()).isEqualTo("${assignee == \"\"}");
         assertThat(subProcess.getFlowElements().size() == 5).isTrue();
 
         assertThat(subProcess.getExecutionListeners()).hasSize(1);
-        ActivitiListener listenerSubProcess = subProcess
-            .getExecutionListeners()
-            .get(0);
-        assertThat(listenerSubProcess.getImplementation())
-            .isEqualTo("SubProcessTestClass");
-        assertThat(listenerSubProcess.getImplementationType())
-            .isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
+        ActivitiListener listenerSubProcess = subProcess.getExecutionListeners().get(0);
+        assertThat(listenerSubProcess.getImplementation()).isEqualTo("SubProcessTestClass");
+        assertThat(listenerSubProcess.getImplementationType()).isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
         assertThat(listenerSubProcess.getEvent()).isEqualTo("start");
 
         flowElement = model.getMainProcess().getFlowElement("boundaryEvent1");
@@ -93,21 +85,14 @@ public class SubProcessConverterTest extends AbstractConverterTest {
         assertThat(flowElement.getId()).isEqualTo("boundaryEvent1");
         BoundaryEvent boundaryEvent = (BoundaryEvent) flowElement;
         assertThat(boundaryEvent.getAttachedToRef()).isNotNull();
-        assertThat(boundaryEvent.getAttachedToRef().getId())
-            .isEqualTo("subprocess1");
+        assertThat(boundaryEvent.getAttachedToRef().getId()).isEqualTo("subprocess1");
         assertThat(boundaryEvent.getEventDefinitions()).hasSize(1);
-        assertThat(boundaryEvent.getEventDefinitions().get(0))
-            .isInstanceOf(TimerEventDefinition.class);
+        assertThat(boundaryEvent.getEventDefinitions().get(0)).isInstanceOf(TimerEventDefinition.class);
 
         assertThat(model.getMainProcess().getExecutionListeners()).hasSize(1);
-        ActivitiListener listenerMainProcess = model
-            .getMainProcess()
-            .getExecutionListeners()
-            .get(0);
-        assertThat(listenerMainProcess.getImplementation())
-            .isEqualTo("TestClass");
-        assertThat(listenerMainProcess.getImplementationType())
-            .isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
+        ActivitiListener listenerMainProcess = model.getMainProcess().getExecutionListeners().get(0);
+        assertThat(listenerMainProcess.getImplementation()).isEqualTo("TestClass");
+        assertThat(listenerMainProcess.getImplementationType()).isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
         assertThat(listenerMainProcess.getEvent()).isEqualTo("start");
     }
 }

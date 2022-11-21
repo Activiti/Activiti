@@ -25,12 +25,9 @@ import org.slf4j.LoggerFactory;
 
 
  */
-public abstract class ResourceActivitiTestCase
-    extends AbstractActivitiTestCase {
+public abstract class ResourceActivitiTestCase extends AbstractActivitiTestCase {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        ResourceActivitiTestCase.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(ResourceActivitiTestCase.class);
 
     protected String activitiConfigurationResource;
     protected String processEngineName;
@@ -39,10 +36,7 @@ public abstract class ResourceActivitiTestCase
         this(activitiConfigurationResource, null);
     }
 
-    public ResourceActivitiTestCase(
-        String activitiConfigurationResource,
-        String processEngineName
-    ) {
+    public ResourceActivitiTestCase(String activitiConfigurationResource, String processEngineName) {
         this.activitiConfigurationResource = activitiConfigurationResource;
         this.processEngineName = processEngineName;
     }
@@ -60,18 +54,12 @@ public abstract class ResourceActivitiTestCase
             activitiConfigurationResource
         );
         if (processEngineName != null) {
-            logger.info(
-                "Initializing process engine with name '" +
-                processEngineName +
-                "'"
-            );
+            logger.info("Initializing process engine with name '" + processEngineName + "'");
             config.setProcessEngineName(processEngineName);
         }
         additionalConfiguration(config);
         processEngine = config.buildProcessEngine();
     }
 
-    protected void additionalConfiguration(
-        ProcessEngineConfiguration processEngineConfiguration
-    ) {}
+    protected void additionalConfiguration(ProcessEngineConfiguration processEngineConfiguration) {}
 }

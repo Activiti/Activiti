@@ -30,26 +30,17 @@ public class ErrorEventSubProcessTest extends PluggableActivitiTestCase {
     @Deployment
     // an event subprocesses takes precedence over a boundary event
     public void testEventSubprocessTakesPrecedence() {
-        String procId = runtimeService
-            .startProcessInstanceByKey("CatchErrorInEmbeddedSubProcess")
-            .getId();
+        String procId = runtimeService.startProcessInstanceByKey("CatchErrorInEmbeddedSubProcess").getId();
         assertThatErrorHasBeenCaught(procId);
     }
 
     @Deployment
     // an event subprocess with errorCode takes precedence over a catch-all handler
     public void testErrorCodeTakesPrecedence() {
-        String procId = runtimeService
-            .startProcessInstanceByKey("CatchErrorInEmbeddedSubProcess")
-            .getId();
+        String procId = runtimeService.startProcessInstanceByKey("CatchErrorInEmbeddedSubProcess").getId();
 
         // The process will throw an error event, which is caught and escalated by a User Task
-        assertThat(
-            taskService
-                .createTaskQuery()
-                .taskDefinitionKey("taskAfterErrorCatch2")
-                .count()
-        )
+        assertThat(taskService.createTaskQuery().taskDefinitionKey("taskAfterErrorCatch2").count())
             .as("No tasks found in task list.")
             .isEqualTo(1);
         Task task = taskService.createTaskQuery().singleResult();
@@ -62,18 +53,14 @@ public class ErrorEventSubProcessTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testCatchErrorInEmbeddedSubProcess() {
-        String procId = runtimeService
-            .startProcessInstanceByKey("CatchErrorInEmbeddedSubProcess")
-            .getId();
+        String procId = runtimeService.startProcessInstanceByKey("CatchErrorInEmbeddedSubProcess").getId();
         assertThatErrorHasBeenCaught(procId);
     }
 
     @Deployment
     public void testCatchErrorThrownByScriptTaskInEmbeddedSubProcess() {
         String procId = runtimeService
-            .startProcessInstanceByKey(
-                "CatchErrorThrownByScriptTaskInEmbeddedSubProcess"
-            )
+            .startProcessInstanceByKey("CatchErrorThrownByScriptTaskInEmbeddedSubProcess")
             .getId();
         assertThatErrorHasBeenCaught(procId);
     }
@@ -81,9 +68,7 @@ public class ErrorEventSubProcessTest extends PluggableActivitiTestCase {
     @Deployment
     public void testCatchErrorThrownByScriptTaskInEmbeddedSubProcessWithErrorCode() {
         String procId = runtimeService
-            .startProcessInstanceByKey(
-                "CatchErrorThrownByScriptTaskInEmbeddedSubProcessWithErrorCode"
-            )
+            .startProcessInstanceByKey("CatchErrorThrownByScriptTaskInEmbeddedSubProcessWithErrorCode")
             .getId();
         assertThatErrorHasBeenCaught(procId);
     }
@@ -91,9 +76,7 @@ public class ErrorEventSubProcessTest extends PluggableActivitiTestCase {
     @Deployment
     public void testCatchErrorThrownByScriptTaskInTopLevelProcess() {
         String procId = runtimeService
-            .startProcessInstanceByKey(
-                "CatchErrorThrownByScriptTaskInTopLevelProcess"
-            )
+            .startProcessInstanceByKey("CatchErrorThrownByScriptTaskInTopLevelProcess")
             .getId();
         assertThatErrorHasBeenCaught(procId);
     }
@@ -101,9 +84,7 @@ public class ErrorEventSubProcessTest extends PluggableActivitiTestCase {
     @Deployment
     public void testCatchErrorThrownByScriptTaskInsideSubProcessInTopLevelProcess() {
         String procId = runtimeService
-            .startProcessInstanceByKey(
-                "CatchErrorThrownByScriptTaskInsideSubProcessInTopLevelProcess"
-            )
+            .startProcessInstanceByKey("CatchErrorThrownByScriptTaskInsideSubProcessInTopLevelProcess")
             .getId();
         assertThatErrorHasBeenCaught(procId);
     }
@@ -116,9 +97,7 @@ public class ErrorEventSubProcessTest extends PluggableActivitiTestCase {
     )
     public void testThrowErrorInScriptTaskInsideCallActivitiCatchInTopLevelProcess() {
         String procId = runtimeService
-            .startProcessInstanceByKey(
-                "testThrowErrorInScriptTaskInsideCallActivitiCatchInTopLevelProcess"
-            )
+            .startProcessInstanceByKey("testThrowErrorInScriptTaskInsideCallActivitiCatchInTopLevelProcess")
             .getId();
         assertThatErrorHasBeenCaught(procId);
     }
@@ -126,9 +105,7 @@ public class ErrorEventSubProcessTest extends PluggableActivitiTestCase {
     private void assertThatErrorHasBeenCaught(String procId) {
         // The process will throw an error event,
         // which is caught and escalated by a User Task
-        assertThat(taskService.createTaskQuery().count())
-            .as("No tasks found in task list.")
-            .isEqualTo(1);
+        assertThat(taskService.createTaskQuery().count()).as("No tasks found in task list.").isEqualTo(1);
         Task task = taskService.createTaskQuery().singleResult();
         assertThat(task.getName()).isEqualTo("Escalated Task");
 

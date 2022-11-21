@@ -29,14 +29,11 @@ import org.slf4j.LoggerFactory;
 /**
 
  */
-public class MoveDeadLetterJobToExecutableJobCmd
-    implements Command<JobEntity>, Serializable {
+public class MoveDeadLetterJobToExecutableJobCmd implements Command<JobEntity>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static Logger log = LoggerFactory.getLogger(
-        MoveDeadLetterJobToExecutableJobCmd.class
-    );
+    private static Logger log = LoggerFactory.getLogger(MoveDeadLetterJobToExecutableJobCmd.class);
 
     protected String jobId;
     protected int retries;
@@ -51,23 +48,16 @@ public class MoveDeadLetterJobToExecutableJobCmd
             throw new ActivitiIllegalArgumentException("jobId and job is null");
         }
 
-        DeadLetterJobEntity job = commandContext
-            .getDeadLetterJobEntityManager()
-            .findById(jobId);
+        DeadLetterJobEntity job = commandContext.getDeadLetterJobEntityManager().findById(jobId);
         if (job == null) {
             throw new JobNotFoundException(jobId);
         }
 
         if (log.isDebugEnabled()) {
-            log.debug(
-                "Moving deadletter job to executable job table {}",
-                job.getId()
-            );
+            log.debug("Moving deadletter job to executable job table {}", job.getId());
         }
 
-        return commandContext
-            .getJobManager()
-            .moveDeadLetterJobToExecutableJob(job, retries);
+        return commandContext.getJobManager().moveDeadLetterJobToExecutableJob(job, retries);
     }
 
     public String getJobId() {

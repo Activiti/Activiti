@@ -22,8 +22,7 @@ import org.activiti.bpmn.model.Error;
 
 public class ErrorExport implements BpmnXMLConstants {
 
-    public static void writeError(BpmnModel model, XMLStreamWriter xtw)
-        throws Exception {
+    public static void writeError(BpmnModel model, XMLStreamWriter xtw) throws Exception {
         for (Error error : model.getErrors().values()) {
             xtw.writeStartElement(ELEMENT_ERROR);
             xtw.writeAttribute(ATTRIBUTE_ID, error.getId());

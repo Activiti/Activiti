@@ -30,8 +30,7 @@ import org.activiti.engine.task.Task;
  *
 
  */
-public abstract class NeedsActiveTaskCmd<T>
-    implements Command<T>, Serializable {
+public abstract class NeedsActiveTaskCmd<T> implements Command<T>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -46,15 +45,10 @@ public abstract class NeedsActiveTaskCmd<T>
             throw new ActivitiIllegalArgumentException("taskId is null");
         }
 
-        TaskEntity task = commandContext
-            .getTaskEntityManager()
-            .findById(taskId);
+        TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);
 
         if (task == null) {
-            throw new ActivitiObjectNotFoundException(
-                "Cannot find task with id " + taskId,
-                Task.class
-            );
+            throw new ActivitiObjectNotFoundException("Cannot find task with id " + taskId, Task.class);
         }
 
         if (task.isSuspended()) {
@@ -67,10 +61,7 @@ public abstract class NeedsActiveTaskCmd<T>
     /**
      * Subclasses must implement in this method their normal command logic. The provided task is ensured to be active.
      */
-    protected abstract T execute(
-        CommandContext commandContext,
-        TaskEntity task
-    );
+    protected abstract T execute(CommandContext commandContext, TaskEntity task);
 
     /**
      * Subclasses can override this method to provide a customized exception message that will be thrown when the task is suspended.

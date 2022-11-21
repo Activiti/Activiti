@@ -46,25 +46,19 @@ public class CatchEventConverterTest extends AbstractConverterTest {
     }
 
     private void validateModel(BpmnModel model) {
-        FlowElement timerElement = model
-            .getMainProcess()
-            .getFlowElement("timer_evt", true);
+        FlowElement timerElement = model.getMainProcess().getFlowElement("timer_evt", true);
         EventDefinition timerEvent = extractEventDefinition(timerElement);
         assertThat(timerEvent).isInstanceOf(TimerEventDefinition.class);
         TimerEventDefinition ted = (TimerEventDefinition) timerEvent;
         assertThat(ted.getTimeDuration()).isEqualTo("PT5M");
 
-        FlowElement signalElement = model
-            .getMainProcess()
-            .getFlowElement("signal_evt", true);
+        FlowElement signalElement = model.getMainProcess().getFlowElement("signal_evt", true);
         EventDefinition signalEvent = extractEventDefinition(signalElement);
         assertThat(signalEvent).isInstanceOf(SignalEventDefinition.class);
         SignalEventDefinition sed = (SignalEventDefinition) signalEvent;
         assertThat(sed.getSignalRef()).isEqualTo("signal_ref");
 
-        FlowElement messageElement = model
-            .getMainProcess()
-            .getFlowElement("message_evt", true);
+        FlowElement messageElement = model.getMainProcess().getFlowElement("message_evt", true);
         EventDefinition messageEvent = extractEventDefinition(messageElement);
         assertThat(messageEvent).isInstanceOf(MessageEventDefinition.class);
         MessageEventDefinition med = (MessageEventDefinition) messageEvent;

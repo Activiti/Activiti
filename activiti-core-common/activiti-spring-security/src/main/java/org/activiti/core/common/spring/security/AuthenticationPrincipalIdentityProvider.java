@@ -20,8 +20,7 @@ import java.util.Optional;
 import org.activiti.api.runtime.shared.security.PrincipalIdentityProvider;
 import org.springframework.security.core.Authentication;
 
-public class AuthenticationPrincipalIdentityProvider
-    implements PrincipalIdentityProvider {
+public class AuthenticationPrincipalIdentityProvider implements PrincipalIdentityProvider {
 
     private static final String EMPTY_ANONYMOUS_USER_ID = "";
 
@@ -36,9 +35,7 @@ public class AuthenticationPrincipalIdentityProvider
     }
 
     protected String getUserId(Authentication authentication) {
-        return Optional
-            .ofNullable(authentication.getName())
-            .orElseGet(this::getAnonymousUserId);
+        return Optional.ofNullable(authentication.getName()).orElseGet(this::getAnonymousUserId);
     }
 
     protected String getAnonymousUserId() {
@@ -46,8 +43,6 @@ public class AuthenticationPrincipalIdentityProvider
     }
 
     protected SecurityException securityException() {
-        return new SecurityException(
-            "Invalid principal authentication object instance"
-        );
+        return new SecurityException("Invalid principal authentication object instance");
     }
 }

@@ -35,9 +35,7 @@ public class AsyncPropertyValidatorTest {
         BpmnXMLConverter converter = new BpmnXMLConverter();
         BpmnModel bpmnModel = converter.convertToBpmnModel(
             new InputStreamSource(
-                ClassLoader.getSystemResourceAsStream(
-                    "processes-validation/async-property-process.bpmn"
-                )
+                ClassLoader.getSystemResourceAsStream("processes-validation/async-property-process.bpmn")
             ),
             true,
             false
@@ -55,41 +53,21 @@ public class AsyncPropertyValidatorTest {
                 ValidationError::getActivityId
             )
             .contains(
-                tuple(
-                    "activiti-flow-element-async-not-available",
-                    "async-property-root-process",
-                    "usertask1"
-                ),
-                tuple(
-                    "activiti-flow-element-async-not-available",
-                    "async-property-root-process",
-                    "usertask2"
-                ),
-                tuple(
-                    "activiti-flow-element-async-not-available",
-                    "async-property-root-process",
-                    "usertask3"
-                ),
+                tuple("activiti-flow-element-async-not-available", "async-property-root-process", "usertask1"),
+                tuple("activiti-flow-element-async-not-available", "async-property-root-process", "usertask2"),
+                tuple("activiti-flow-element-async-not-available", "async-property-root-process", "usertask3"),
                 tuple(
                     "activiti-signal-async-not-available",
                     "async-property-root-process",
                     "signalintermediatethrowevent1"
                 ),
-                tuple(
-                    "activiti-event-timer-async-not-available",
-                    "async-property-root-process",
-                    "boundarytimer1"
-                ),
+                tuple("activiti-event-timer-async-not-available", "async-property-root-process", "boundarytimer1"),
                 tuple(
                     "activiti-event-timer-async-not-available",
                     "async-property-root-process",
                     "timerintermediatecatchevent1"
                 ),
-                tuple(
-                    "activiti-event-timer-async-not-available",
-                    "async-property-pool-process",
-                    "timerstartevent1"
-                )
+                tuple("activiti-event-timer-async-not-available", "async-property-pool-process", "timerstartevent1")
             );
     }
 }

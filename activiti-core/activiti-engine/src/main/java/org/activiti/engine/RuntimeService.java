@@ -59,10 +59,7 @@ public interface RuntimeService {
      * @throws NotFoundException
      *          when no process instance with the given id is found
      */
-    ProcessInstance startCreatedProcessInstance(
-        ProcessInstance createdProcessInstance,
-        Map<String, Object> variables
-    );
+    ProcessInstance startCreatedProcessInstance(ProcessInstance createdProcessInstance, Map<String, Object> variables);
 
     /**
      * Starts a new process instance in the latest version of the process definition with the given key.
@@ -88,10 +85,7 @@ public interface RuntimeService {
      * @throws ActivitiObjectNotFoundException
      *           when no process definition is deployed with the given key.
      */
-    ProcessInstance startProcessInstanceByKey(
-        String processDefinitionKey,
-        String businessKey
-    );
+    ProcessInstance startProcessInstanceByKey(String processDefinitionKey, String businessKey);
 
     /**
      * Starts a new process instance in the latest version of the process definition with the given key
@@ -103,10 +97,7 @@ public interface RuntimeService {
      * @throws ActivitiObjectNotFoundException
      *           when no process definition is deployed with the given key.
      */
-    ProcessInstance startProcessInstanceByKey(
-        String processDefinitionKey,
-        Map<String, Object> variables
-    );
+    ProcessInstance startProcessInstanceByKey(String processDefinitionKey, Map<String, Object> variables);
 
     /**
      * Starts a new process instance in the latest version of the process definition with the given key.
@@ -135,10 +126,7 @@ public interface RuntimeService {
     /**
      * Similar to {@link #startProcessInstanceByKey(String)}, but using a specific tenant identifier.
      */
-    ProcessInstance startProcessInstanceByKeyAndTenantId(
-        String processDefinitionKey,
-        String tenantId
-    );
+    ProcessInstance startProcessInstanceByKeyAndTenantId(String processDefinitionKey, String tenantId);
 
     /**
      * Similar to {@link #startProcessInstanceByKey(String, String)}, but using a specific tenant identifier.
@@ -192,10 +180,7 @@ public interface RuntimeService {
      * @throws ActivitiObjectNotFoundException
      *           when no process definition is deployed with the given key.
      */
-    ProcessInstance startProcessInstanceById(
-        String processDefinitionId,
-        String businessKey
-    );
+    ProcessInstance startProcessInstanceById(String processDefinitionId, String businessKey);
 
     /**
      * Starts a new process instance in the exactly specified version of the process definition with the given id.
@@ -207,10 +192,7 @@ public interface RuntimeService {
      * @throws ActivitiObjectNotFoundException
      *           when no process definition is deployed with the given key.
      */
-    ProcessInstance startProcessInstanceById(
-        String processDefinitionId,
-        Map<String, Object> variables
-    );
+    ProcessInstance startProcessInstanceById(String processDefinitionId, Map<String, Object> variables);
 
     /**
      * Starts a new process instance in the exactly specified version of the process definition with the given id.
@@ -260,10 +242,7 @@ public interface RuntimeService {
     /**
      * Similar to {@link RuntimeService#startProcessInstanceByMessage(String)}, but with tenant context.
      */
-    ProcessInstance startProcessInstanceByMessageAndTenantId(
-        String messageName,
-        String tenantId
-    );
+    ProcessInstance startProcessInstanceByMessageAndTenantId(String messageName, String tenantId);
 
     /**
      * <p>
@@ -282,19 +261,12 @@ public interface RuntimeService {
      *
      * @since 5.10
      */
-    ProcessInstance startProcessInstanceByMessage(
-        String messageName,
-        String businessKey
-    );
+    ProcessInstance startProcessInstanceByMessage(String messageName, String businessKey);
 
     /**
      * Similar to {@link RuntimeService#startProcessInstanceByMessage(String, String)}, but with tenant context.
      */
-    ProcessInstance startProcessInstanceByMessageAndTenantId(
-        String messageName,
-        String businessKey,
-        String tenantId
-    );
+    ProcessInstance startProcessInstanceByMessageAndTenantId(String messageName, String businessKey, String tenantId);
 
     /**
      * <p>
@@ -314,10 +286,7 @@ public interface RuntimeService {
      *
      * @since 5.9
      */
-    ProcessInstance startProcessInstanceByMessage(
-        String messageName,
-        Map<String, Object> processVariables
-    );
+    ProcessInstance startProcessInstanceByMessage(String messageName, Map<String, Object> processVariables);
 
     /**
      * Similar to {@link RuntimeService#startProcessInstanceByMessage(String, Map<String, Object>)}, but with tenant context.
@@ -412,11 +381,7 @@ public interface RuntimeService {
      * Similar to {@link #trigger(String, Map)}, but with an extra parameter that allows to pass
      * transient variables.
      */
-    void trigger(
-        String executionId,
-        Map<String, Object> processVariables,
-        Map<String, Object> transientVariables
-    );
+    void trigger(String executionId, Map<String, Object> processVariables, Map<String, Object> transientVariables);
 
     /**
      * Updates the business key for the provided process instance
@@ -443,11 +408,7 @@ public interface RuntimeService {
      * @throws ActivitiObjectNotFoundException
      *           when the process instance doesn't exist.
      */
-    void addUserIdentityLink(
-        String processInstanceId,
-        String userId,
-        String identityLinkType
-    );
+    void addUserIdentityLink(String processInstanceId, String userId, String identityLinkType);
 
     /**
      * Involves a group with a process instance. The type of identityLink is defined by the given identityLink.
@@ -461,11 +422,7 @@ public interface RuntimeService {
      * @throws ActivitiObjectNotFoundException
      *           when the process instance or group doesn't exist.
      */
-    void addGroupIdentityLink(
-        String processInstanceId,
-        String groupId,
-        String identityLinkType
-    );
+    void addGroupIdentityLink(String processInstanceId, String groupId, String identityLinkType);
 
     /**
      * Convenience shorthand for {@link #addUserIdentityLink(String, String, String)}; with type {@link IdentityLinkType#CANDIDATE}
@@ -527,11 +484,7 @@ public interface RuntimeService {
      * @throws ActivitiObjectNotFoundException
      *           when the task or user doesn't exist.
      */
-    void deleteUserIdentityLink(
-        String processInstanceId,
-        String userId,
-        String identityLinkType
-    );
+    void deleteUserIdentityLink(String processInstanceId, String userId, String identityLinkType);
 
     /**
      * Removes the association between a group and a process instance for the given identityLinkType.
@@ -545,11 +498,7 @@ public interface RuntimeService {
      * @throws ActivitiObjectNotFoundException
      *           when the task or group doesn't exist.
      */
-    void deleteGroupIdentityLink(
-        String processInstanceId,
-        String groupId,
-        String identityLinkType
-    );
+    void deleteGroupIdentityLink(String processInstanceId, String groupId, String identityLinkType);
 
     /**
      * Retrieves the {@link IdentityLink}s associated with the given process instance. Such an {@link IdentityLink} informs how a certain user is involved with a process instance.
@@ -589,9 +538,7 @@ public interface RuntimeService {
      *          ids of execution, cannot be null.
      * @return the variables.
      */
-    List<VariableInstance> getVariableInstancesByExecutionIds(
-        Set<String> executionIds
-    );
+    List<VariableInstance> getVariableInstancesByExecutionIds(Set<String> executionIds);
 
     /**
      * All variable values that are defined in the execution scope, without taking outer scopes into account. If you have many task local variables and you only need a few, consider using
@@ -628,10 +575,7 @@ public interface RuntimeService {
      * @throws ActivitiObjectNotFoundException
      *           when no execution is found for the given executionId.
      */
-    Map<String, Object> getVariables(
-        String executionId,
-        Collection<String> variableNames
-    );
+    Map<String, Object> getVariables(String executionId, Collection<String> variableNames);
 
     /**
      * The variable values for all given variableNames, takes all variables into account which are visible from the given execution scope (including parent scopes).
@@ -644,10 +588,7 @@ public interface RuntimeService {
      * @throws ActivitiObjectNotFoundException
      *           when no execution is found for the given executionId.
      */
-    Map<String, VariableInstance> getVariableInstances(
-        String executionId,
-        Collection<String> variableNames
-    );
+    Map<String, VariableInstance> getVariableInstances(String executionId, Collection<String> variableNames);
 
     /**
      * The variable values for the given variableNames only taking the given execution scope into account, not looking in outer scopes.
@@ -660,10 +601,7 @@ public interface RuntimeService {
      * @throws ActivitiObjectNotFoundException
      *           when no execution is found for the given executionId.
      */
-    Map<String, Object> getVariablesLocal(
-        String executionId,
-        Collection<String> variableNames
-    );
+    Map<String, Object> getVariablesLocal(String executionId, Collection<String> variableNames);
 
     /**
      * The variable values for the given variableNames only taking the given execution scope into account, not looking in outer scopes.
@@ -676,10 +614,7 @@ public interface RuntimeService {
      * @throws ActivitiObjectNotFoundException
      *           when no execution is found for the given executionId.
      */
-    Map<String, VariableInstance> getVariableInstancesLocal(
-        String executionId,
-        Collection<String> variableNames
-    );
+    Map<String, VariableInstance> getVariableInstancesLocal(String executionId, Collection<String> variableNames);
 
     /**
      * The variable value. Searching for the variable is done in all scopes that are visible to the given execution (including parent scopes). Returns null when no variable value is found with the given
@@ -707,10 +642,7 @@ public interface RuntimeService {
      * @throws ActivitiObjectNotFoundException
      *           when no execution is found for the given executionId.
      */
-    VariableInstance getVariableInstance(
-        String executionId,
-        String variableName
-    );
+    VariableInstance getVariableInstance(String executionId, String variableName);
 
     /**
      * The variable value. Searching for the variable is done in all scopes that are visible to the given execution (including parent scopes). Returns null when no variable value is found with the given
@@ -726,11 +658,7 @@ public interface RuntimeService {
      * @throws ActivitiObjectNotFoundException
      *           when no execution is found for the given executionId.
      */
-    <T> T getVariable(
-        String executionId,
-        String variableName,
-        Class<T> variableClass
-    );
+    <T> T getVariable(String executionId, String variableName, Class<T> variableClass);
 
     /**
      * Check whether or not this execution has variable set with the given name, Searching for the variable is done in all scopes that are visible to the given execution (including parent scopes).
@@ -755,20 +683,13 @@ public interface RuntimeService {
      * @throws ActivitiObjectNotFoundException
      *           when no execution is found for the given executionId.
      */
-    VariableInstance getVariableInstanceLocal(
-        String executionId,
-        String variableName
-    );
+    VariableInstance getVariableInstanceLocal(String executionId, String variableName);
 
     /**
      * The variable value for an execution. Returns the value casted to given class when the variable is set for the execution (and not searching parent scopes). Returns null when no variable value is
      * found with the given name or when the value is set to null.
      */
-    <T> T getVariableLocal(
-        String executionId,
-        String variableName,
-        Class<T> variableClass
-    );
+    <T> T getVariableLocal(String executionId, String variableName, Class<T> variableClass);
 
     /**
      * Check whether or not this execution has a local variable set with the given name.
@@ -806,11 +727,7 @@ public interface RuntimeService {
      * @throws ActivitiObjectNotFoundException
      *           when no execution is found for the given executionId.
      */
-    void setVariableLocal(
-        String executionId,
-        String variableName,
-        Object value
-    );
+    void setVariableLocal(String executionId, String variableName, Object value);
 
     /**
      * Update or create given variables for an execution (including parent scopes).
@@ -826,10 +743,7 @@ public interface RuntimeService {
      * @throws ActivitiObjectNotFoundException
      *           when no execution is found for the given executionId.
      */
-    void setVariables(
-        String executionId,
-        Map<String, ? extends Object> variables
-    );
+    void setVariables(String executionId, Map<String, ? extends Object> variables);
 
     /**
      * Update or create given variables for an execution (not considering parent scopes). If the variables are not already existing, it will be created in the given execution.
@@ -841,10 +755,7 @@ public interface RuntimeService {
      * @throws ActivitiObjectNotFoundException
      *           when no execution is found for the given executionId.
      */
-    void setVariablesLocal(
-        String executionId,
-        Map<String, ? extends Object> variables
-    );
+    void setVariablesLocal(String executionId, Map<String, ? extends Object> variables);
 
     /**
      * Removes a variable for an execution.
@@ -884,10 +795,7 @@ public interface RuntimeService {
      * @param variableNames
      *          collection containing name of variables to remove.
      */
-    void removeVariablesLocal(
-        String executionId,
-        Collection<String> variableNames
-    );
+    void removeVariablesLocal(String executionId, Collection<String> variableNames);
 
     /**
      * All DataObjects visible from the given execution scope (including parent scopes).
@@ -913,11 +821,7 @@ public interface RuntimeService {
      * @throws ActivitiObjectNotFoundException
      *           when no execution is found for the given executionId.
      */
-    Map<String, DataObject> getDataObjects(
-        String executionId,
-        String locale,
-        boolean withLocalizationFallback
-    );
+    Map<String, DataObject> getDataObjects(String executionId, String locale, boolean withLocalizationFallback);
 
     /**
      * All DataObject values that are defined in the execution scope, without taking outer scopes into account. If you have many local DataObjects and you only need a few, consider using
@@ -945,11 +849,7 @@ public interface RuntimeService {
      * @throws ActivitiObjectNotFoundException
      *           when no execution is found for the given executionId.
      */
-    Map<String, DataObject> getDataObjectsLocal(
-        String executionId,
-        String locale,
-        boolean withLocalizationFallback
-    );
+    Map<String, DataObject> getDataObjectsLocal(String executionId, String locale, boolean withLocalizationFallback);
 
     /**
      * The DataObjects for all given dataObjectNames, takes all dataObjects into account which are visible from the given execution scope (including parent scopes).
@@ -962,10 +862,7 @@ public interface RuntimeService {
      * @throws ActivitiObjectNotFoundException
      *           when no execution is found for the given executionId.
      */
-    Map<String, DataObject> getDataObjects(
-        String executionId,
-        Collection<String> dataObjectNames
-    );
+    Map<String, DataObject> getDataObjects(String executionId, Collection<String> dataObjectNames);
 
     /**
      * The DataObjects for all given dataObjectNames, takes all dataObjects into account which are visible from the given execution scope (including parent scopes).
@@ -1000,10 +897,7 @@ public interface RuntimeService {
      * @throws ActivitiObjectNotFoundException
      *           when no execution is found for the given executionId.
      */
-    Map<String, DataObject> getDataObjectsLocal(
-        String executionId,
-        Collection<String> dataObjects
-    );
+    Map<String, DataObject> getDataObjectsLocal(String executionId, Collection<String> dataObjects);
 
     /**
      * The DataObjects for the given dataObjectNames only taking the given execution scope into account, not looking in outer scopes.
@@ -1182,10 +1076,7 @@ public interface RuntimeService {
     /**
      * Similar to {@link #signalEventReceivedAsync(String)}, but within the context of one tenant.
      */
-    void signalEventReceivedAsyncWithTenantId(
-        String signalName,
-        String tenantId
-    );
+    void signalEventReceivedAsyncWithTenantId(String signalName, String tenantId);
 
     /**
      * Notifies the process engine that a signal event of name 'signalName' has been received. This method delivers the signal to all executions waiting on the signal.
@@ -1198,19 +1089,12 @@ public interface RuntimeService {
      * @param processVariables
      *          a map of variables added to the execution(s)
      */
-    void signalEventReceived(
-        String signalName,
-        Map<String, Object> processVariables
-    );
+    void signalEventReceived(String signalName, Map<String, Object> processVariables);
 
     /**
      * Similar to {@link #signalEventReceived(String, Map<String, Object>)}, but within the context of one tenant.
      */
-    void signalEventReceivedWithTenantId(
-        String signalName,
-        Map<String, Object> processVariables,
-        String tenantId
-    );
+    void signalEventReceivedWithTenantId(String signalName, Map<String, Object> processVariables, String tenantId);
 
     /**
      * Notifies the process engine that a signal event of name 'signalName' has been received. This method delivers the signal to a single execution, being the execution referenced by 'executionId'. The
@@ -1242,11 +1126,7 @@ public interface RuntimeService {
      * @throws ActivitiException
      *           if the execution has not subscribed to the signal
      */
-    void signalEventReceived(
-        String signalName,
-        String executionId,
-        Map<String, Object> processVariables
-    );
+    void signalEventReceived(String signalName, String executionId, Map<String, Object> processVariables);
 
     /**
      * Notifies the process engine that a signal event of name 'signalName' has been received. This method delivers the signal to a single execution, being the execution referenced by 'executionId'. The
@@ -1306,11 +1186,7 @@ public interface RuntimeService {
      * @throws ActivitiException
      *           if the execution has not subscribed to the signal
      */
-    void messageEventReceived(
-        String messageName,
-        String executionId,
-        Map<String, Object> processVariables
-    );
+    void messageEventReceived(String messageName, String executionId, Map<String, Object> processVariables);
 
     /**
      * Notifies the process engine that a message event with the name 'messageName' has been received and has been correlated to an execution with id 'executionId'.
@@ -1344,10 +1220,7 @@ public interface RuntimeService {
      * @param types
      *          types of events the listener should be notified for
      */
-    void addEventListener(
-        ActivitiEventListener listenerToAdd,
-        ActivitiEventType... types
-    );
+    void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... types);
 
     /**
      * Removes the given listener from this dispatcher. The listener will no longer be notified, regardless of the type(s) it was registered for in the first place.
@@ -1400,10 +1273,7 @@ public interface RuntimeService {
      *          id of the activity id to enable
      * @return the newly created execution of the enabled activity
      */
-    Execution executeActivityInAdhocSubProcess(
-        String executionId,
-        String activityId
-    );
+    Execution executeActivityInAdhocSubProcess(String executionId, String activityId);
 
     /**
      * Completes the ad-hoc sub process

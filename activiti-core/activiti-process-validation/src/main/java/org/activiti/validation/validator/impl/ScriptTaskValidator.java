@@ -31,14 +31,8 @@ import org.apache.commons.lang3.StringUtils;
 public class ScriptTaskValidator extends ProcessLevelValidator {
 
     @Override
-    protected void executeValidation(
-        BpmnModel bpmnModel,
-        Process process,
-        List<ValidationError> errors
-    ) {
-        List<ScriptTask> scriptTasks = process.findFlowElementsOfType(
-            ScriptTask.class
-        );
+    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+        List<ScriptTask> scriptTasks = process.findFlowElementsOfType(ScriptTask.class);
         for (ScriptTask scriptTask : scriptTasks) {
             if (StringUtils.isEmpty(scriptTask.getScript())) {
                 addError(

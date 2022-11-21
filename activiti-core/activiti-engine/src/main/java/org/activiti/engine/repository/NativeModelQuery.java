@@ -23,5 +23,4 @@ import org.activiti.engine.query.NativeQuery;
  *
  */
 @Internal
-public interface NativeModelQuery
-    extends NativeQuery<NativeModelQuery, Model> {}
+public interface NativeModelQuery extends NativeQuery<NativeModelQuery, Model> {}

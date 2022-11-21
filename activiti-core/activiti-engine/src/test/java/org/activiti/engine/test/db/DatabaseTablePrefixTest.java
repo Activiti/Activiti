@@ -54,9 +54,7 @@ public class DatabaseTablePrefixTest extends TestCase {
             .setDataSource(pooledDataSource)
             .setDatabaseSchemaUpdate("NO_CHECK"); // disable auto create/drop schema
         config1.setDatabaseTablePrefix("SCHEMA1.");
-        config1
-            .getPerformanceSettings()
-            .setValidateExecutionRelationshipCountConfigOnBoot(false);
+        config1.getPerformanceSettings().setValidateExecutionRelationshipCountConfigOnBoot(false);
         ProcessEngine engine1 = config1.buildProcessEngine();
 
         ProcessEngineConfigurationImpl config2 = (ProcessEngineConfigurationImpl) ProcessEngineConfigurationImpl
@@ -64,25 +62,19 @@ public class DatabaseTablePrefixTest extends TestCase {
             .setDataSource(pooledDataSource)
             .setDatabaseSchemaUpdate("NO_CHECK"); // disable auto create/drop schema
         config2.setDatabaseTablePrefix("SCHEMA2.");
-        config2
-            .getPerformanceSettings()
-            .setValidateExecutionRelationshipCountConfigOnBoot(false);
+        config2.getPerformanceSettings().setValidateExecutionRelationshipCountConfigOnBoot(false);
         ProcessEngine engine2 = config2.buildProcessEngine();
 
         // create the tables in SCHEMA1
         connection = pooledDataSource.getConnection();
         connection.createStatement().execute("set schema SCHEMA1");
-        engine1
-            .getManagementService()
-            .databaseSchemaUpgrade(connection, "", "SCHEMA1");
+        engine1.getManagementService().databaseSchemaUpgrade(connection, "", "SCHEMA1");
         connection.close();
 
         // create the tables in SCHEMA2
         connection = pooledDataSource.getConnection();
         connection.createStatement().execute("set schema SCHEMA2");
-        engine2
-            .getManagementService()
-            .databaseSchemaUpgrade(connection, "", "SCHEMA2");
+        engine2.getManagementService().databaseSchemaUpgrade(connection, "", "SCHEMA2");
         connection.close();
 
         // if I deploy a process to one engine, it is not visible to the other
@@ -91,19 +83,11 @@ public class DatabaseTablePrefixTest extends TestCase {
             engine1
                 .getRepositoryService()
                 .createDeployment()
-                .addClasspathResource(
-                    "org/activiti/engine/test/db/oneJobProcess.bpmn20.xml"
-                )
+                .addClasspathResource("org/activiti/engine/test/db/oneJobProcess.bpmn20.xml")
                 .deploy();
 
-            assertThat(
-                engine1.getRepositoryService().createDeploymentQuery().count()
-            )
-                .isEqualTo(1);
-            assertThat(
-                engine2.getRepositoryService().createDeploymentQuery().count()
-            )
-                .isEqualTo(0);
+            assertThat(engine1.getRepositoryService().createDeploymentQuery().count()).isEqualTo(1);
+            assertThat(engine2.getRepositoryService().createDeploymentQuery().count()).isEqualTo(0);
         } finally {
             engine1.close();
             engine2.close();

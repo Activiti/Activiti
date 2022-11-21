@@ -34,8 +34,6 @@ public class GetTaskCommentsByTypeCmd extends GetTaskCommentsCmd {
     }
 
     public List<Comment> execute(CommandContext commandContext) {
-        return commandContext
-            .getCommentEntityManager()
-            .findCommentsByTaskIdAndType(taskId, type);
+        return commandContext.getCommentEntityManager().findCommentsByTaskIdAndType(taskId, type);
     }
 }

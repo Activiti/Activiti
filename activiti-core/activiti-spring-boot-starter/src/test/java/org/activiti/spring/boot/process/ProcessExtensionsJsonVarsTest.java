@@ -64,8 +64,7 @@ public class ProcessExtensionsJsonVarsTest {
     }
 
     @Test
-    public void processInstanceHasValidInitialVariables()
-        throws ParseException, IOException {
+    public void processInstanceHasValidInitialVariables() throws ParseException, IOException {
         securityUtil.logInAs("user");
 
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
@@ -85,22 +84,13 @@ public class ProcessExtensionsJsonVarsTest {
                 .withProcessDefinitionKey(JSON_VARS_PROCESS)
                 .withVariable(
                     "var2",
-                    new ObjectMapper()
-                        .readValue(
-                            "{ \"testvar2element\":\"testvar2element\"}",
-                            JsonNode.class
-                        )
+                    new ObjectMapper().readValue("{ \"testvar2element\":\"testvar2element\"}", JsonNode.class)
                 )
                 .withVariable("var4", customType)
                 .withVariable(
                     "var5",
                     new ObjectMapper()
-                        .readValue(
-                            "{ \"verylongjson\":\"" +
-                            StringUtils.repeat("a", 4000) +
-                            "\"}",
-                            JsonNode.class
-                        )
+                        .readValue("{ \"verylongjson\":\"" + StringUtils.repeat("a", 4000) + "\"}", JsonNode.class)
                 )
                 .withVariable("var6", bigObject)
                 .withBusinessKey("my business key")
@@ -108,14 +98,10 @@ public class ProcessExtensionsJsonVarsTest {
         );
 
         assertThat(initialVarsProcess).isNotNull();
-        assertThat(initialVarsProcess.getStatus())
-            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(initialVarsProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
 
         List<VariableInstance> variableInstances = processRuntime.variables(
-            ProcessPayloadBuilder
-                .variables()
-                .withProcessInstance(initialVarsProcess)
-                .build()
+            ProcessPayloadBuilder.variables().withProcessInstance(initialVarsProcess).build()
         );
 
         assertThat(variableInstances).isNotNull();
@@ -186,10 +172,7 @@ public class ProcessExtensionsJsonVarsTest {
                         .start()
                         .withProcessDefinitionKey(JSON_VARS_PROCESS)
                         .withVariable("var2", new EmptyBean())
-                        .withVariable(
-                            "var5",
-                            "this one is ok as doesn't have to be json"
-                        )
+                        .withVariable("var5", "this one is ok as doesn't have to be json")
                         .build()
                 );
             })
@@ -217,19 +200,13 @@ public class ProcessExtensionsJsonVarsTest {
                         .withProcessDefinitionKey(JSON_VARS_PROCESS)
                         .withVariable(
                             "var2",
-                            new ObjectMapper()
-                                .readValue(
-                                    "{ \"testvar2element\":\"testvar2element\"}",
-                                    JsonNode.class
-                                )
+                            new ObjectMapper().readValue("{ \"testvar2element\":\"testvar2element\"}", JsonNode.class)
                         )
                         .withVariable("var5", new EmptyBean())
                         .build()
                 );
             })
-            .withMessageStartingWith(
-                "couldn't find a variable type that is able to serialize"
-            );
+            .withMessageStartingWith("couldn't find a variable type that is able to serialize");
     }
 
     //is serializable but not as json by default and java ser disabled at spring level by default

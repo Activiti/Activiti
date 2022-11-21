@@ -29,8 +29,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 
  *
  */
-public class CustomTaskQuery
-    extends AbstractQuery<CustomTaskQuery, CustomTask> {
+public class CustomTaskQuery extends AbstractQuery<CustomTaskQuery, CustomTask> {
 
     private static final long serialVersionUID = 1L;
 
@@ -66,18 +65,11 @@ public class CustomTaskQuery
     }
 
     @SuppressWarnings("unchecked")
-    public List<CustomTask> executeList(
-        CommandContext commandContext,
-        Page page
-    ) {
-        return commandContext
-            .getDbSqlSession()
-            .selectList("selectCustomTaskByQueryCriteria", this);
+    public List<CustomTask> executeList(CommandContext commandContext, Page page) {
+        return commandContext.getDbSqlSession().selectList("selectCustomTaskByQueryCriteria", this);
     }
 
     public long executeCount(CommandContext commandContext) {
-        return (Long) commandContext
-            .getDbSqlSession()
-            .selectOne("selectCustomTaskCountByQueryCriteria", this);
+        return (Long) commandContext.getDbSqlSession().selectOne("selectCustomTaskCountByQueryCriteria", this);
     }
 }

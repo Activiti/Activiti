@@ -23,9 +23,7 @@ public class DeleteProcessPayloadBuilder {
     private String processInstanceId;
     private String reason;
 
-    public DeleteProcessPayloadBuilder withProcessInstanceId(
-        String processDefinitionId
-    ) {
+    public DeleteProcessPayloadBuilder withProcessInstanceId(String processDefinitionId) {
         this.processInstanceId = processDefinitionId;
         return this;
     }
@@ -35,9 +33,7 @@ public class DeleteProcessPayloadBuilder {
         return this;
     }
 
-    public DeleteProcessPayloadBuilder withProcessInstance(
-        ProcessInstance processInstance
-    ) {
+    public DeleteProcessPayloadBuilder withProcessInstance(ProcessInstance processInstance) {
         this.processInstanceId = processInstance.getId();
         return this;
     }

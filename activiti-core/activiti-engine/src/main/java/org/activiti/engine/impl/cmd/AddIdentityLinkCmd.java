@@ -37,12 +37,7 @@ public class AddIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
 
     protected String identityType;
 
-    public AddIdentityLinkCmd(
-        String taskId,
-        String identityId,
-        int identityIdType,
-        String identityType
-    ) {
+    public AddIdentityLinkCmd(String taskId, String identityId, int identityIdType, String identityType) {
         super(taskId);
         validateParams(taskId, identityId, identityIdType, identityType);
         this.taskId = taskId;
@@ -51,55 +46,37 @@ public class AddIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
         this.identityType = identityType;
     }
 
-    protected void validateParams(
-        String taskId,
-        String identityId,
-        int identityIdType,
-        String identityType
-    ) {
+    protected void validateParams(String taskId, String identityId, int identityIdType, String identityType) {
         if (taskId == null) {
             throw new ActivitiIllegalArgumentException("taskId is null");
         }
 
         if (identityType == null) {
-            throw new ActivitiIllegalArgumentException(
-                "type is required when adding a new task identity link"
-            );
+            throw new ActivitiIllegalArgumentException("type is required when adding a new task identity link");
         }
 
         if (
             identityId == null &&
             (
                 identityIdType == IDENTITY_GROUP ||
-                (
-                    !IdentityLinkType.ASSIGNEE.equals(identityType) &&
-                    !IdentityLinkType.OWNER.equals(identityType)
-                )
+                (!IdentityLinkType.ASSIGNEE.equals(identityType) && !IdentityLinkType.OWNER.equals(identityType))
             )
         ) {
             throw new ActivitiIllegalArgumentException("identityId is null");
         }
 
-        if (
-            identityIdType != IDENTITY_USER && identityIdType != IDENTITY_GROUP
-        ) {
-            throw new ActivitiIllegalArgumentException(
-                "identityIdType allowed values are 1 and 2"
-            );
+        if (identityIdType != IDENTITY_USER && identityIdType != IDENTITY_GROUP) {
+            throw new ActivitiIllegalArgumentException("identityIdType allowed values are 1 and 2");
         }
     }
 
     protected Void execute(CommandContext commandContext, TaskEntity task) {
         boolean assignedToNoOne = false;
         if (IdentityLinkType.ASSIGNEE.equals(identityType)) {
-            commandContext
-                .getTaskEntityManager()
-                .changeTaskAssignee(task, identityId);
+            commandContext.getTaskEntityManager().changeTaskAssignee(task, identityId);
             assignedToNoOne = identityId == null;
         } else if (IdentityLinkType.OWNER.equals(identityType)) {
-            commandContext
-                .getTaskEntityManager()
-                .changeTaskOwner(task, identityId);
+            commandContext.getTaskEntityManager().changeTaskOwner(task, identityId);
         } else if (IDENTITY_USER == identityIdType) {
             task.addUserIdentityLink(identityId, identityType);
         } else if (IDENTITY_GROUP == identityIdType) {
@@ -116,22 +93,9 @@ public class AddIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
         if (IDENTITY_USER == identityIdType) {
             commandContext
                 .getHistoryManager()
-                .createUserIdentityLinkComment(
-                    taskId,
-                    identityId,
-                    identityType,
-                    true,
-                    forceNullUserId
-                );
+                .createUserIdentityLinkComment(taskId, identityId, identityType, true, forceNullUserId);
         } else {
-            commandContext
-                .getHistoryManager()
-                .createGroupIdentityLinkComment(
-                    taskId,
-                    identityId,
-                    identityType,
-                    true
-                );
+            commandContext.getHistoryManager().createGroupIdentityLinkComment(taskId, identityId, identityType, true);
         }
 
         return null;

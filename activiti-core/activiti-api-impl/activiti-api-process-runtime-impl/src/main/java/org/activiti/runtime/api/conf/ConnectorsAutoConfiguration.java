@@ -39,9 +39,7 @@ public class ConnectorsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ExpressionManager expressionManager(
-        List<CustomFunctionProvider> customFunctionProviders
-    ) {
+    public ExpressionManager expressionManager(List<CustomFunctionProvider> customFunctionProviders) {
         ExpressionManager expressionManager = new ExpressionManager();
         expressionManager.setCustomFunctionProviders(customFunctionProviders);
         return expressionManager;
@@ -49,15 +47,8 @@ public class ConnectorsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ExpressionResolver expressionResolver(
-        ExpressionManager expressionManager,
-        ObjectMapper objectMapper
-    ) {
-        return new ExpressionResolver(
-            expressionManager,
-            objectMapper,
-            new DefaultDelegateInterceptor()
-        );
+    public ExpressionResolver expressionResolver(ExpressionManager expressionManager, ObjectMapper objectMapper) {
+        return new ExpressionResolver(expressionManager, objectMapper, new DefaultDelegateInterceptor());
     }
 
     @Bean
@@ -66,26 +57,17 @@ public class ConnectorsAutoConfiguration {
         ExtensionsVariablesMappingProvider variablesMappingProvider,
         ExpressionManager expressionManager
     ) {
-        return new IntegrationContextBuilder(
-            variablesMappingProvider,
-            expressionManager
-        );
+        return new IntegrationContextBuilder(variablesMappingProvider, expressionManager);
     }
 
     @Bean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
-    @ConditionalOnMissingBean(
-        name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME
-    )
+    @ConditionalOnMissingBean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
     public DefaultServiceTaskBehavior defaultServiceTaskBehavior(
         ApplicationContext applicationContext,
         IntegrationContextBuilder integrationContextBuilder,
         VariablesPropagator variablesPropagator
     ) {
-        return new DefaultServiceTaskBehavior(
-            applicationContext,
-            integrationContextBuilder,
-            variablesPropagator
-        );
+        return new DefaultServiceTaskBehavior(applicationContext, integrationContextBuilder, variablesPropagator);
     }
 
     @Bean
@@ -94,17 +76,12 @@ public class ConnectorsAutoConfiguration {
         ProcessExtensionService processExtensionService,
         ExpressionResolver expressionResolver
     ) {
-        return new ExtensionsVariablesMappingProvider(
-            processExtensionService,
-            expressionResolver
-        );
+        return new ExtensionsVariablesMappingProvider(processExtensionService, expressionResolver);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public VariablesPropagator variablesPropagator(
-        VariablesCalculator variablesCalculator
-    ) {
+    public VariablesPropagator variablesPropagator(VariablesCalculator variablesCalculator) {
         return new VariablesPropagator(variablesCalculator);
     }
 }

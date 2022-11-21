@@ -75,9 +75,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
                     )
                     .deploy()
             )
-            .withMessageContaining(
-                "there already is a message event subscription for the message with name"
-            );
+            .withMessageContaining("there already is a message event subscription for the message with name");
 
         // clean db:
         repositoryService.deleteDeployment(deploymentId);
@@ -111,9 +109,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
             processEngineConfiguration.getCommandExecutor()
         )
             .list();
-        List<ProcessDefinition> processDefinitions = repositoryService
-            .createProcessDefinitionQuery()
-            .list();
+        List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
 
         assertThat(eventSubscriptions).hasSize(1);
         assertThat(processDefinitions).hasSize(1);
@@ -130,30 +126,18 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
             processEngineConfiguration.getCommandExecutor()
         )
             .list();
-        List<ProcessDefinition> newProcessDefinitions = repositoryService
-            .createProcessDefinitionQuery()
-            .list();
+        List<ProcessDefinition> newProcessDefinitions = repositoryService.createProcessDefinitionQuery().list();
 
         assertThat(newEventSubscriptions).hasSize(1);
         assertThat(newProcessDefinitions).hasSize(2);
         for (ProcessDefinition processDefinition : newProcessDefinitions) {
             if (processDefinition.getVersion() == 1) {
                 for (EventSubscriptionEntity subscription : newEventSubscriptions) {
-                    assertThat(
-                        subscription
-                            .getConfiguration()
-                            .equals(processDefinition.getId())
-                    )
-                        .isFalse();
+                    assertThat(subscription.getConfiguration().equals(processDefinition.getId())).isFalse();
                 }
             } else {
                 for (EventSubscriptionEntity subscription : newEventSubscriptions) {
-                    assertThat(
-                        subscription
-                            .getConfiguration()
-                            .equals(processDefinition.getId())
-                    )
-                        .isTrue();
+                    assertThat(subscription.getConfiguration().equals(processDefinition.getId())).isTrue();
                 }
             }
         }
@@ -167,9 +151,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
     public void testSingleMessageStartEvent() {
         // using startProcessInstanceByMessage triggers the message start event
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByMessage(
-            "newInvoiceMessage"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByMessage("newInvoiceMessage");
 
         assertThat(processInstance.isEnded()).isFalse();
 
@@ -183,8 +165,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
         // using startProcessInstanceByKey also triggers the message event, if
         // there is a single start event
 
-        processInstance =
-            runtimeService.startProcessInstanceByKey("singleMessageStartEvent");
+        processInstance = runtimeService.startProcessInstanceByKey("singleMessageStartEvent");
 
         assertThat(processInstance.isEnded()).isFalse();
 
@@ -200,16 +181,11 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
     public void testMessageStartEventAndNoneStartEvent() {
         // using startProcessInstanceByKey triggers the none start event
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testProcess");
 
         assertThat(processInstance.isEnded()).isFalse();
 
-        Task task = taskService
-            .createTaskQuery()
-            .taskDefinitionKey("taskAfterNoneStart")
-            .singleResult();
+        Task task = taskService.createTaskQuery().taskDefinitionKey("taskAfterNoneStart").singleResult();
         assertThat(task).isNotNull();
 
         taskService.complete(task.getId());
@@ -218,16 +194,11 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
 
         // using startProcessInstanceByMessage triggers the message start event
 
-        processInstance =
-            runtimeService.startProcessInstanceByMessage("newInvoiceMessage");
+        processInstance = runtimeService.startProcessInstanceByMessage("newInvoiceMessage");
 
         assertThat(processInstance.isEnded()).isFalse();
 
-        task =
-            taskService
-                .createTaskQuery()
-                .taskDefinitionKey("taskAfterMessageStart")
-                .singleResult();
+        task = taskService.createTaskQuery().taskDefinitionKey("taskAfterMessageStart").singleResult();
         assertThat(task).isNotNull();
 
         taskService.complete(task.getId());
@@ -239,16 +210,11 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
     public void testMultipleMessageStartEvents() {
         // sending newInvoiceMessage
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByMessage(
-            "newInvoiceMessage"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByMessage("newInvoiceMessage");
 
         assertThat(processInstance.isEnded()).isFalse();
 
-        Task task = taskService
-            .createTaskQuery()
-            .taskDefinitionKey("taskAfterMessageStart")
-            .singleResult();
+        Task task = taskService.createTaskQuery().taskDefinitionKey("taskAfterMessageStart").singleResult();
         assertThat(task).isNotNull();
 
         taskService.complete(task.getId());
@@ -257,16 +223,11 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
 
         // sending newInvoiceMessage2
 
-        processInstance =
-            runtimeService.startProcessInstanceByMessage("newInvoiceMessage2");
+        processInstance = runtimeService.startProcessInstanceByMessage("newInvoiceMessage2");
 
         assertThat(processInstance.isEnded()).isFalse();
 
-        task =
-            taskService
-                .createTaskQuery()
-                .taskDefinitionKey("taskAfterMessageStart2")
-                .singleResult();
+        task = taskService.createTaskQuery().taskDefinitionKey("taskAfterMessageStart2").singleResult();
         assertThat(task).isNotNull();
 
         taskService.complete(task.getId());
@@ -275,14 +236,9 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
 
         // starting the process using startProcessInstanceByKey is possible, the
         // first message start event will be the default:
-        processInstance =
-            runtimeService.startProcessInstanceByKey("testProcess");
+        processInstance = runtimeService.startProcessInstanceByKey("testProcess");
         assertThat(processInstance.isEnded()).isFalse();
-        task =
-            taskService
-                .createTaskQuery()
-                .taskDefinitionKey("taskAfterMessageStart")
-                .singleResult();
+        task = taskService.createTaskQuery().taskDefinitionKey("taskAfterMessageStart").singleResult();
         assertThat(task).isNotNull();
         taskService.complete(task.getId());
         assertProcessEnded(processInstance.getId());
@@ -310,9 +266,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
         );
 
         // when
-        ProcessInstance process = runtimeService.startProcessInstanceByMessage(
-            "newInvoiceMessage"
-        );
+        ProcessInstance process = runtimeService.startProcessInstanceByMessage("newInvoiceMessage");
 
         String executionId = runtimeService
             .createExecutionQuery()
@@ -324,16 +278,10 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
         // then ACTIVITY_MESSAGE_RECEIVED should be fired before PROCESS_STARTED
         assertThat(events)
             .filteredOn(event ->
-                event.getType() ==
-                ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED ||
+                event.getType() == ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED ||
                 event.getType() == ActivitiEventType.PROCESS_STARTED
             )
-            .extracting(
-                "type",
-                "processDefinitionId",
-                "processInstanceId",
-                "executionId"
-            )
+            .extracting("type", "processDefinitionId", "processInstanceId", "executionId")
             .containsExactly(
                 tuple(
                     ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
@@ -341,12 +289,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
                     process.getId(),
                     executionId
                 ),
-                tuple(
-                    ActivitiEventType.PROCESS_STARTED,
-                    process.getProcessDefinitionId(),
-                    process.getId(),
-                    executionId
-                )
+                tuple(ActivitiEventType.PROCESS_STARTED, process.getProcessDefinitionId(), process.getId(), executionId)
             );
     }
 }

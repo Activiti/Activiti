@@ -36,8 +36,7 @@ import org.activiti.engine.task.Task;
  *
 
  */
-public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest
-    extends PluggableActivitiTestCase {
+public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest extends PluggableActivitiTestCase {
 
     private static final String TEST_PROCESS_GLOBAL_BOUNDARY_MESSAGE =
         "org/activiti/engine/test/bpmn/deployment/MessageEventsAndNewVersionDeploymentsTest.testGlobalMessageBoundaryEvent.bpmn20.xml";
@@ -62,17 +61,11 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest
 
     public void testMessageBoundaryEvent() {
         String deploymentId1 = deployBoundaryMessageTestProcess();
-        runtimeService.startProcessInstanceByKeyAndTenantId(
-            "messageTest",
-            TENANT_ID
-        );
+        runtimeService.startProcessInstanceByKeyAndTenantId("messageTest", TENANT_ID);
         assertThat(getAllEventSubscriptions()).hasSize(1);
 
         String deploymentId2 = deployBoundaryMessageTestProcess();
-        runtimeService.startProcessInstanceByKeyAndTenantId(
-            "messageTest",
-            TENANT_ID
-        );
+        runtimeService.startProcessInstanceByKeyAndTenantId("messageTest", TENANT_ID);
         assertThat(getAllEventSubscriptions()).hasSize(2);
 
         assertReceiveMessage("myMessage", 2);
@@ -92,24 +85,16 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest
      */
     public void testBoundaryEventSubscriptionDeletedOnDeploymentDelete() {
         String deploymentId = deployBoundaryMessageTestProcess();
-        runtimeService.startProcessInstanceByKeyAndTenantId(
-            "messageTest",
-            TENANT_ID
-        );
-        assertThat(taskService.createTaskQuery().singleResult().getName())
-            .isEqualTo("My Task");
+        runtimeService.startProcessInstanceByKeyAndTenantId("messageTest", TENANT_ID);
+        assertThat(taskService.createTaskQuery().singleResult().getName()).isEqualTo("My Task");
 
         String deploymentId2 = deployBoundaryMessageTestProcess();
-        runtimeService.startProcessInstanceByKeyAndTenantId(
-            "messageTest",
-            TENANT_ID
-        );
+        runtimeService.startProcessInstanceByKeyAndTenantId("messageTest", TENANT_ID);
         assertThat(taskService.createTaskQuery().count()).isEqualTo(2);
         assertThat(getAllEventSubscriptions()).hasSize(2);
 
         repositoryService.deleteDeployment(deploymentId, true);
-        assertThat(taskService.createTaskQuery().singleResult().getName())
-            .isEqualTo("My Task");
+        assertThat(taskService.createTaskQuery().singleResult().getName()).isEqualTo("My Task");
         assertThat(getAllEventSubscriptions()).hasSize(1);
 
         repositoryService.deleteDeployment(deploymentId2, true);
@@ -121,12 +106,8 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest
      */
     public void testBoundaryEventSubscrptionsDeletedOnProcessInstanceDelete() {
         String deploymentId1 = deployBoundaryMessageTestProcess();
-        runtimeService.startProcessInstanceByKeyAndTenantId(
-            "messageTest",
-            TENANT_ID
-        );
-        assertThat(taskService.createTaskQuery().singleResult().getName())
-            .isEqualTo("My Task");
+        runtimeService.startProcessInstanceByKeyAndTenantId("messageTest", TENANT_ID);
+        assertThat(taskService.createTaskQuery().singleResult().getName()).isEqualTo("My Task");
 
         String deploymentId2 = deployBoundaryMessageTestProcess();
         ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKeyAndTenantId(
@@ -137,12 +118,8 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest
         assertThat(getAllEventSubscriptions()).hasSize(2);
 
         // Deleting PI of second deployment
-        runtimeService.deleteProcessInstance(
-            processInstance2.getId(),
-            "testing"
-        );
-        assertThat(taskService.createTaskQuery().singleResult().getName())
-            .isEqualTo("My Task");
+        runtimeService.deleteProcessInstance(processInstance2.getId(), "testing");
+        assertThat(taskService.createTaskQuery().singleResult().getName()).isEqualTo("My Task");
         assertThat(getAllEventSubscriptions()).hasSize(1);
 
         runtimeService.messageEventReceived(
@@ -150,8 +127,7 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest
             getExecutionIdsForMessageEventSubscription("myMessage").get(0)
         );
         assertThat(getAllEventSubscriptions()).hasSize(0);
-        assertThat(taskService.createTaskQuery().singleResult().getName())
-            .isEqualTo("Task after message");
+        assertThat(taskService.createTaskQuery().singleResult().getName()).isEqualTo("Task after message");
 
         cleanup(deploymentId1, deploymentId2);
     }
@@ -164,24 +140,15 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest
         String deploymentId1 = deployStartMessageTestProcess();
         assertThat(getAllEventSubscriptions()).hasSize(1);
         assertEventSubscriptionsCount(1);
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(0);
-        runtimeService.startProcessInstanceByMessageAndTenantId(
-            "myStartMessage",
-            TENANT_ID
-        );
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(1);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
+        runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
 
         String deploymentId2 = deployStartMessageTestProcess();
         assertEventSubscriptionsCount(1);
 
-        runtimeService.startProcessInstanceByMessageAndTenantId(
-            "myStartMessage",
-            TENANT_ID
-        );
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(2);
+        runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(2);
         assertEventSubscriptionsCount(1);
 
         cleanup(deploymentId1, deploymentId2);
@@ -214,11 +181,7 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest
         assertThat(eventSubscriptions).hasSize(1);
         assertThat(eventSubscriptions.get(0).getProcessDefinitionId())
             .isEqualTo(
-                repositoryService
-                    .createProcessDefinitionQuery()
-                    .deploymentId(deploymentId2)
-                    .singleResult()
-                    .getId()
+                repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId2).singleResult().getId()
             );
 
         cleanup(deploymentId2);
@@ -233,51 +196,30 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest
     public void testDeployIntermediateVersionWithoutMessageStartEvent() {
         String deploymentId1 = deployStartMessageTestProcess();
         assertThat(getAllEventSubscriptions()).hasSize(1);
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(0);
-        runtimeService.startProcessInstanceByMessageAndTenantId(
-            "myStartMessage",
-            TENANT_ID
-        );
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(1);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
+        runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
         assertEventSubscriptionsCount(1);
 
         String deploymentId2 = deployProcessWithoutEvents();
         assertThat(getAllEventSubscriptions()).hasSize(0);
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(1);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
         assertThatExceptionOfType(Exception.class)
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByMessageAndTenantId(
-                    "myStartMessage",
-                    TENANT_ID
-                )
-            );
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(1);
+            .isThrownBy(() -> runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID));
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
         assertEventSubscriptionsCount(0);
 
         String deploymentId3 = deployStartMessageTestProcess();
         assertThat(getAllEventSubscriptions()).hasSize(1);
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(1);
-        runtimeService.startProcessInstanceByMessageAndTenantId(
-            "myStartMessage",
-            TENANT_ID
-        );
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(2);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
+        runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(2);
         assertEventSubscriptionsCount(1);
 
         List<EventSubscriptionEntity> eventSubscriptions = getAllEventSubscriptions();
         assertThat(eventSubscriptions.get(0).getProcessDefinitionId())
             .isEqualTo(
-                repositoryService
-                    .createProcessDefinitionQuery()
-                    .deploymentId(deploymentId3)
-                    .singleResult()
-                    .getId()
+                repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId3).singleResult().getId()
             );
 
         cleanup(deploymentId1, deploymentId2, deploymentId3);
@@ -299,22 +241,10 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest
         String deploymentId3 = deployStartMessageTestProcess();
         repositoryService.deleteDeployment(deploymentId2, true);
         assertEventSubscriptionsCount(1); // the latest is now the one with the message
-        runtimeService.startProcessInstanceByMessageAndTenantId(
-            "myStartMessage",
-            TENANT_ID
-        );
-        assertThat(
-            runtimeService
-                .createProcessInstanceQuery()
-                .singleResult()
-                .getProcessDefinitionId()
-        )
+        runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID);
+        assertThat(runtimeService.createProcessInstanceQuery().singleResult().getProcessDefinitionId())
             .isEqualTo(
-                repositoryService
-                    .createProcessDefinitionQuery()
-                    .deploymentId(deploymentId3)
-                    .singleResult()
-                    .getId()
+                repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId3).singleResult().getId()
             );
         cleanup(deploymentId1, deploymentId3);
     }
@@ -325,22 +255,10 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest
         String deploymentId3 = deployStartMessageTestProcess();
         repositoryService.deleteDeployment(deploymentId1, true);
         assertEventSubscriptionsCount(1); // the latest is now the one with the message
-        runtimeService.startProcessInstanceByMessageAndTenantId(
-            "myStartMessage",
-            TENANT_ID
-        );
-        assertThat(
-            runtimeService
-                .createProcessInstanceQuery()
-                .singleResult()
-                .getProcessDefinitionId()
-        )
+        runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID);
+        assertThat(runtimeService.createProcessInstanceQuery().singleResult().getProcessDefinitionId())
             .isEqualTo(
-                repositoryService
-                    .createProcessDefinitionQuery()
-                    .deploymentId(deploymentId3)
-                    .singleResult()
-                    .getId()
+                repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId3).singleResult().getId()
             );
         cleanup(deploymentId2, deploymentId3);
     }
@@ -352,22 +270,10 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest
         repositoryService.deleteDeployment(deploymentId2, true);
         repositoryService.deleteDeployment(deploymentId3, true);
         assertEventSubscriptionsCount(1); // the latest is now the one with the message start
-        runtimeService.startProcessInstanceByMessageAndTenantId(
-            "myStartMessage",
-            TENANT_ID
-        );
-        assertThat(
-            runtimeService
-                .createProcessInstanceQuery()
-                .singleResult()
-                .getProcessDefinitionId()
-        )
+        runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID);
+        assertThat(runtimeService.createProcessInstanceQuery().singleResult().getProcessDefinitionId())
             .isEqualTo(
-                repositoryService
-                    .createProcessDefinitionQuery()
-                    .deploymentId(deploymentId1)
-                    .singleResult()
-                    .getId()
+                repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId1).singleResult().getId()
             );
         cleanup(deploymentId1);
     }
@@ -377,31 +283,14 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest
         String deploymentId2 = deployProcessWithoutEvents();
         assertEventSubscriptionsCount(0);
         assertThatExceptionOfType(Exception.class)
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByMessageAndTenantId(
-                    "myStartMessage",
-                    TENANT_ID
-                )
-            );
+            .isThrownBy(() -> runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID));
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
         repositoryService.deleteDeployment(deploymentId2, true);
         assertEventSubscriptionsCount(1); // the first is now the one with the signal
-        runtimeService.startProcessInstanceByMessageAndTenantId(
-            "myStartMessage",
-            TENANT_ID
-        );
-        assertThat(
-            runtimeService
-                .createProcessInstanceQuery()
-                .singleResult()
-                .getProcessDefinitionId()
-        )
+        runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID);
+        assertThat(runtimeService.createProcessInstanceQuery().singleResult().getProcessDefinitionId())
             .isEqualTo(
-                repositoryService
-                    .createProcessDefinitionQuery()
-                    .deploymentId(deploymentId1)
-                    .singleResult()
-                    .getId()
+                repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId1).singleResult().getId()
             );
         cleanup(deploymentId1);
     }
@@ -412,33 +301,18 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest
         String deploymentId3 = deployStartMessageTestProcess();
         String deploymentId4 = deployProcessWithoutEvents();
         assertThatExceptionOfType(Exception.class)
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByMessageAndTenantId(
-                    "myStartMessage",
-                    TENANT_ID
-                )
-            );
+            .isThrownBy(() -> runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID));
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
 
         repositoryService.deleteDeployment(deploymentId2, true);
         repositoryService.deleteDeployment(deploymentId3, true);
         assertThatExceptionOfType(Exception.class)
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByMessageAndTenantId(
-                    "myStartMessage",
-                    TENANT_ID
-                )
-            );
+            .isThrownBy(() -> runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID));
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
 
         repositoryService.deleteDeployment(deploymentId1, true);
         assertThatExceptionOfType(Exception.class)
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByMessageAndTenantId(
-                    "myStartMessage",
-                    TENANT_ID
-                )
-            );
+            .isThrownBy(() -> runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID));
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
         cleanup(deploymentId4);
     }
@@ -449,32 +323,18 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest
         String deploymentId3 = deployStartMessageTestProcess();
         String deploymentId4 = deployProcessWithoutEvents();
         assertThatExceptionOfType(Exception.class)
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByMessageAndTenantId(
-                    "myStartMessage",
-                    TENANT_ID
-                )
-            );
+            .isThrownBy(() -> runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID));
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
 
         repositoryService.deleteDeployment(deploymentId2, true);
         repositoryService.deleteDeployment(deploymentId3, true);
         assertThatExceptionOfType(Exception.class)
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByMessageAndTenantId(
-                    "myStartMessage",
-                    TENANT_ID
-                )
-            );
+            .isThrownBy(() -> runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID));
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
 
         repositoryService.deleteDeployment(deploymentId4, true);
-        runtimeService.startProcessInstanceByMessageAndTenantId(
-            "myStartMessage",
-            TENANT_ID
-        );
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(1);
+        runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(1);
         cleanup(deploymentId1);
     }
 
@@ -489,72 +349,39 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest
         assertEventSubscriptionsCount(1);
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
 
-        runtimeService.startProcessInstanceByMessageAndTenantId(
-            "myStartMessage",
-            TENANT_ID
-        );
-        runtimeService.startProcessInstanceByMessageAndTenantId(
-            "myStartMessage",
-            TENANT_ID
-        );
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(2);
+        runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID);
+        runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(2);
         assertThat(getAllEventSubscriptions()).hasSize(3); // 1 for the start, 2 for the boundary
 
         // Deploy version with only a boundary signal
         String deploymentId2 = deployBoundaryMessageTestProcess();
         assertThatExceptionOfType(Exception.class)
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByMessageAndTenantId(
-                    "myStartMessage",
-                    TENANT_ID
-                )
-            );
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(2);
+            .isThrownBy(() -> runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID));
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(2);
         assertEventSubscriptionsCount(2); // 2 boundary events remain
 
         // Deploy version with signal start
         String deploymentId3 = deployStartMessageTestProcess();
-        runtimeService.startProcessInstanceByMessageAndTenantId(
-            "myStartMessage",
-            TENANT_ID
-        );
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(3);
+        runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(3);
         assertEventSubscriptionsCount(3);
 
         // Delete last version again, making the one with the boundary the latest
         repositoryService.deleteDeployment(deploymentId3, true);
         assertThatExceptionOfType(Exception.class)
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByMessageAndTenantId(
-                    "myStartMessage",
-                    TENANT_ID
-                )
-            );
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(2); // -1, cause process instance of deploymentId3 is gone too
+            .isThrownBy(() -> runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID));
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(2); // -1, cause process instance of deploymentId3 is gone too
         assertEventSubscriptionsCount(2); // The 2 boundary remains
 
         // Test the boundary signal
         assertReceiveMessage("myBoundaryMessage", 2);
-        assertThat(
-            taskService
-                .createTaskQuery()
-                .taskName("Task after boundary message")
-                .list()
-        )
-            .hasSize(2);
+        assertThat(taskService.createTaskQuery().taskName("Task after boundary message").list()).hasSize(2);
 
         // Delete second version
         repositoryService.deleteDeployment(deploymentId2, true);
-        runtimeService.startProcessInstanceByMessageAndTenantId(
-            "myStartMessage",
-            TENANT_ID
-        );
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(3); // -1, cause process instance of deploymentId3 is gone too
+        runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(3); // -1, cause process instance of deploymentId3 is gone too
         assertEventSubscriptionsCount(2); // 2 boundaries
 
         cleanup(deploymentId1);
@@ -570,41 +397,22 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest
 
         for (int i = 0; i < 9; i++) {
             // Every iteration will signal the boundary event of the previous iteration!
-            runtimeService.startProcessInstanceByMessageAndTenantId(
-                "myMessage",
-                TENANT_ID
-            );
+            runtimeService.startProcessInstanceByMessageAndTenantId("myMessage", TENANT_ID);
         }
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
-            assertThat(
-                historyService.createHistoricProcessInstanceQuery().count()
-            )
-                .isEqualTo(9);
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+            assertThat(historyService.createHistoricProcessInstanceQuery().count()).isEqualTo(9);
         }
         assertThat(getAllEventSubscriptions()).hasSize(10); // 1 for the start, 9 for boundary
 
         // Deploy version with only a start signal. The boundary events should still react though!
         String deploymentId2 = deployStartMessageTestProcess();
-        runtimeService.startProcessInstanceByMessageAndTenantId(
-            "myStartMessage",
-            TENANT_ID
-        );
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(10);
+        runtimeService.startProcessInstanceByMessageAndTenantId("myStartMessage", TENANT_ID);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(10);
         assertEventSubscriptionsCount(10); // Remains 10: 1 one was removed, but one added for the new message
 
         assertThatExceptionOfType(Exception.class)
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByMessageAndTenantId(
-                    "myMessage",
-                    TENANT_ID
-                )
-            );
+            .isThrownBy(() -> runtimeService.startProcessInstanceByMessageAndTenantId("myMessage", TENANT_ID));
 
         cleanup(deploymentId1, deploymentId2);
     }
@@ -630,9 +438,7 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest
     }
 
     private String deployProcessWithBothStartAndBoundarySameMessage() {
-        return deploy(
-            TEST_PROCESS_BOTH_START_AND_BOUNDARY_MESSAGE_SAME_MESSAGE
-        );
+        return deploy(TEST_PROCESS_BOTH_START_AND_BOUNDARY_MESSAGE_SAME_MESSAGE);
     }
 
     private String deploy(String path) {
@@ -651,15 +457,11 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest
         }
     }
 
-    private List<String> getExecutionIdsForMessageEventSubscription(
-        final String messageName
-    ) {
+    private List<String> getExecutionIdsForMessageEventSubscription(final String messageName) {
         return managementService.executeCommand(
             new Command<List<String>>() {
                 public List<String> execute(CommandContext commandContext) {
-                    EventSubscriptionQueryImpl query = new EventSubscriptionQueryImpl(
-                        commandContext
-                    );
+                    EventSubscriptionQueryImpl query = new EventSubscriptionQueryImpl(commandContext);
                     query.eventType("message");
                     query.eventName(messageName);
                     query.tenantId(TENANT_ID);
@@ -679,12 +481,8 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest
     private List<EventSubscriptionEntity> getAllEventSubscriptions() {
         return managementService.executeCommand(
             new Command<List<EventSubscriptionEntity>>() {
-                public List<EventSubscriptionEntity> execute(
-                    CommandContext commandContext
-                ) {
-                    EventSubscriptionQueryImpl query = new EventSubscriptionQueryImpl(
-                        commandContext
-                    );
+                public List<EventSubscriptionEntity> execute(CommandContext commandContext) {
+                    EventSubscriptionQueryImpl query = new EventSubscriptionQueryImpl(commandContext);
                     query.tenantId(TENANT_ID);
                     query.orderByCreated().desc();
 
@@ -699,13 +497,8 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest
         );
     }
 
-    private void assertReceiveMessage(
-        String messageName,
-        int executionIdsCount
-    ) {
-        List<String> executionIds = getExecutionIdsForMessageEventSubscription(
-            messageName
-        );
+    private void assertReceiveMessage(String messageName, int executionIdsCount) {
+        List<String> executionIds = getExecutionIdsForMessageEventSubscription(messageName);
         assertThat(executionIds).hasSize(executionIdsCount);
         for (String executionId : executionIds) {
             runtimeService.messageEventReceived(messageName, executionId);

@@ -55,11 +55,7 @@ public class VariableInstanceEntityManagerImpl
     }
 
     @Override
-    public VariableInstanceEntity create(
-        String name,
-        VariableType type,
-        Object value
-    ) {
+    public VariableInstanceEntity create(String name, VariableType type, Object value) {
         VariableInstanceEntity variableInstance = create();
         variableInstance.setName(name);
         variableInstance.setType(type);
@@ -72,65 +68,38 @@ public class VariableInstanceEntityManagerImpl
     public void insert(VariableInstanceEntity entity, boolean fireCreateEvent) {
         super.insert(entity, fireCreateEvent);
 
-        if (
-            entity.getExecutionId() != null &&
-            isExecutionRelatedEntityCountEnabledGlobally()
-        ) {
+        if (entity.getExecutionId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
             CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager()
                 .findById(entity.getExecutionId());
             if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
-                executionEntity.setVariableCount(
-                    executionEntity.getVariableCount() + 1
-                );
+                executionEntity.setVariableCount(executionEntity.getVariableCount() + 1);
             }
         }
     }
 
     @Override
-    public List<VariableInstanceEntity> findVariableInstancesByTaskId(
-        String taskId
-    ) {
-        return variableInstanceDataManager.findVariableInstancesByTaskId(
-            taskId
-        );
+    public List<VariableInstanceEntity> findVariableInstancesByTaskId(String taskId) {
+        return variableInstanceDataManager.findVariableInstancesByTaskId(taskId);
     }
 
     @Override
-    public List<VariableInstanceEntity> findVariableInstancesByTaskIds(
-        Set<String> taskIds
-    ) {
-        return variableInstanceDataManager.findVariableInstancesByTaskIds(
-            taskIds
-        );
+    public List<VariableInstanceEntity> findVariableInstancesByTaskIds(Set<String> taskIds) {
+        return variableInstanceDataManager.findVariableInstancesByTaskIds(taskIds);
     }
 
     @Override
-    public List<VariableInstanceEntity> findVariableInstancesByExecutionId(
-        final String executionId
-    ) {
-        return variableInstanceDataManager.findVariableInstancesByExecutionId(
-            executionId
-        );
+    public List<VariableInstanceEntity> findVariableInstancesByExecutionId(final String executionId) {
+        return variableInstanceDataManager.findVariableInstancesByExecutionId(executionId);
     }
 
     @Override
-    public List<VariableInstanceEntity> findVariableInstancesByExecutionIds(
-        Set<String> executionIds
-    ) {
-        return variableInstanceDataManager.findVariableInstancesByExecutionIds(
-            executionIds
-        );
+    public List<VariableInstanceEntity> findVariableInstancesByExecutionIds(Set<String> executionIds) {
+        return variableInstanceDataManager.findVariableInstancesByExecutionIds(executionIds);
     }
 
     @Override
-    public VariableInstanceEntity findVariableInstanceByExecutionAndName(
-        String executionId,
-        String variableName
-    ) {
-        return variableInstanceDataManager.findVariableInstanceByExecutionAndName(
-            executionId,
-            variableName
-        );
+    public VariableInstanceEntity findVariableInstanceByExecutionAndName(String executionId, String variableName) {
+        return variableInstanceDataManager.findVariableInstanceByExecutionAndName(executionId, variableName);
     }
 
     @Override
@@ -138,32 +107,17 @@ public class VariableInstanceEntityManagerImpl
         String executionId,
         Collection<String> names
     ) {
-        return variableInstanceDataManager.findVariableInstancesByExecutionAndNames(
-            executionId,
-            names
-        );
+        return variableInstanceDataManager.findVariableInstancesByExecutionAndNames(executionId, names);
     }
 
     @Override
-    public VariableInstanceEntity findVariableInstanceByTaskAndName(
-        String taskId,
-        String variableName
-    ) {
-        return variableInstanceDataManager.findVariableInstanceByTaskAndName(
-            taskId,
-            variableName
-        );
+    public VariableInstanceEntity findVariableInstanceByTaskAndName(String taskId, String variableName) {
+        return variableInstanceDataManager.findVariableInstanceByTaskAndName(taskId, variableName);
     }
 
     @Override
-    public List<VariableInstanceEntity> findVariableInstancesByTaskAndNames(
-        String taskId,
-        Collection<String> names
-    ) {
-        return variableInstanceDataManager.findVariableInstancesByTaskAndNames(
-            taskId,
-            names
-        );
+    public List<VariableInstanceEntity> findVariableInstancesByTaskAndNames(String taskId, Collection<String> names) {
+        return variableInstanceDataManager.findVariableInstancesByTaskAndNames(taskId, names);
     }
 
     @Override
@@ -175,35 +129,25 @@ public class VariableInstanceEntityManagerImpl
         }
         entity.setDeleted(true);
 
-        if (
-            entity.getExecutionId() != null &&
-            isExecutionRelatedEntityCountEnabledGlobally()
-        ) {
+        if (entity.getExecutionId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
             CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager()
                 .findById(entity.getExecutionId());
             if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
-                executionEntity.setVariableCount(
-                    executionEntity.getVariableCount() - 1
-                );
+                executionEntity.setVariableCount(executionEntity.getVariableCount() - 1);
             }
         }
 
         ActivitiEventDispatcher eventDispatcher = getEventDispatcher();
         if (fireDeleteEvent && eventDispatcher.isEnabled()) {
             eventDispatcher.dispatchEvent(
-                ActivitiEventBuilder.createEntityEvent(
-                    ActivitiEventType.ENTITY_DELETED,
-                    entity
-                )
+                ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, entity)
             );
 
             eventDispatcher.dispatchEvent(createVariableDeleteEvent(entity));
         }
     }
 
-    protected ActivitiVariableEvent createVariableDeleteEvent(
-        VariableInstanceEntity variableInstance
-    ) {
+    protected ActivitiVariableEvent createVariableDeleteEvent(VariableInstanceEntity variableInstance) {
         String processDefinitionId = null;
         if (variableInstance.getProcessInstanceId() != null) {
             ExecutionEntity executionEntity = getExecutionEntityManager()
@@ -248,9 +192,7 @@ public class VariableInstanceEntityManagerImpl
         return variableInstanceDataManager;
     }
 
-    public void setVariableInstanceDataManager(
-        VariableInstanceDataManager variableInstanceDataManager
-    ) {
+    public void setVariableInstanceDataManager(VariableInstanceDataManager variableInstanceDataManager) {
         this.variableInstanceDataManager = variableInstanceDataManager;
     }
 }

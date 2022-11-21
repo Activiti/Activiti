@@ -33,8 +33,6 @@ public class MessageSubscriptionCancelledEventImpl
 
     @Override
     public String toString() {
-        return (
-            "MessageSubscriptionCancelledEventImpl {" + super.toString() + "}"
-        );
+        return ("MessageSubscriptionCancelledEventImpl {" + super.toString() + "}");
     }
 }

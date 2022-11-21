@@ -58,11 +58,7 @@ public class ActivitiListenerExport implements BpmnXMLConstants {
         // In case of a process-element, write the event-listeners
         if (element instanceof Process) {
             didWriteExtensionStartElement =
-                writeEventListeners(
-                    ((Process) element).getEventListeners(),
-                    didWriteExtensionStartElement,
-                    xtw
-                );
+                writeEventListeners(((Process) element).getEventListeners(), didWriteExtensionStartElement, xtw);
         }
 
         return didWriteExtensionStartElement;
@@ -85,27 +81,11 @@ public class ActivitiListenerExport implements BpmnXMLConstants {
                     ELEMENT_EVENT_LISTENER,
                     ACTIVITI_EXTENSIONS_NAMESPACE
                 );
-                BpmnXMLUtil.writeDefaultAttribute(
-                    ATTRIBUTE_LISTENER_EVENTS,
-                    eventListener.getEvents(),
-                    xtw
-                );
-                BpmnXMLUtil.writeDefaultAttribute(
-                    ATTRIBUTE_LISTENER_ENTITY_TYPE,
-                    eventListener.getEntityType(),
-                    xtw
-                );
+                BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_EVENTS, eventListener.getEvents(), xtw);
+                BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_ENTITY_TYPE, eventListener.getEntityType(), xtw);
 
-                if (
-                    ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(
-                        eventListener.getImplementationType()
-                    )
-                ) {
-                    BpmnXMLUtil.writeDefaultAttribute(
-                        ATTRIBUTE_LISTENER_CLASS,
-                        eventListener.getImplementation(),
-                        xtw
-                    );
+                if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(eventListener.getImplementationType())) {
+                    BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_CLASS, eventListener.getImplementation(), xtw);
                 } else if (
                     ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(
                         eventListener.getImplementationType()
@@ -199,31 +179,13 @@ public class ActivitiListenerExport implements BpmnXMLConstants {
                         didWriteExtensionStartElement = true;
                     }
 
-                    xtw.writeStartElement(
-                        ACTIVITI_EXTENSIONS_PREFIX,
-                        xmlElementName,
-                        ACTIVITI_EXTENSIONS_NAMESPACE
-                    );
-                    BpmnXMLUtil.writeDefaultAttribute(
-                        ATTRIBUTE_LISTENER_EVENT,
-                        listener.getEvent(),
-                        xtw
-                    );
+                    xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, xmlElementName, ACTIVITI_EXTENSIONS_NAMESPACE);
+                    BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_EVENT, listener.getEvent(), xtw);
 
-                    if (
-                        ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(
-                            listener.getImplementationType()
-                        )
-                    ) {
-                        BpmnXMLUtil.writeDefaultAttribute(
-                            ATTRIBUTE_LISTENER_CLASS,
-                            listener.getImplementation(),
-                            xtw
-                        );
+                    if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())) {
+                        BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_CLASS, listener.getImplementation(), xtw);
                     } else if (
-                        ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(
-                            listener.getImplementationType()
-                        )
+                        ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getImplementationType())
                     ) {
                         BpmnXMLUtil.writeDefaultAttribute(
                             ATTRIBUTE_LISTENER_EXPRESSION,
@@ -280,11 +242,7 @@ public class ActivitiListenerExport implements BpmnXMLConstants {
                         );
                     }
 
-                    FieldExtensionExport.writeFieldExtensions(
-                        listener.getFieldExtensions(),
-                        true,
-                        xtw
-                    );
+                    FieldExtensionExport.writeFieldExtensions(listener.getFieldExtensions(), true, xtw);
 
                     xtw.writeEndElement();
                 }

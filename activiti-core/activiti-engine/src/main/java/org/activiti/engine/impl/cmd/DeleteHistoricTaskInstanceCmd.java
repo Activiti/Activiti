@@ -24,8 +24,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 /**
 
  */
-public class DeleteHistoricTaskInstanceCmd
-    implements Command<Object>, Serializable {
+public class DeleteHistoricTaskInstanceCmd implements Command<Object>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String taskId;

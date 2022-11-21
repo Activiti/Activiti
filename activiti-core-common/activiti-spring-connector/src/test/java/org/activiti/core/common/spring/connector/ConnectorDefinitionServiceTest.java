@@ -42,12 +42,7 @@ public class ConnectorDefinitionServiceTest {
 
     @BeforeEach
     public void setUp() {
-        connectorDefinitionService =
-            new ConnectorDefinitionService(
-                "/connectors",
-                objectMapper,
-                resourceLoader
-            );
+        connectorDefinitionService = new ConnectorDefinitionService("/connectors", objectMapper, resourceLoader);
     }
 
     @Test
@@ -58,9 +53,7 @@ public class ConnectorDefinitionServiceTest {
 
         //when
         Throwable throwable = catchThrowable(() ->
-            connectorDefinitionService.validate(
-                singletonList(connectorDefinition)
-            )
+            connectorDefinitionService.validate(singletonList(connectorDefinition))
         );
 
         //then
@@ -77,9 +70,7 @@ public class ConnectorDefinitionServiceTest {
 
         //when
         Throwable throwable = catchThrowable(() ->
-            connectorDefinitionService.validate(
-                singletonList(connectorDefinition)
-            )
+            connectorDefinitionService.validate(singletonList(connectorDefinition))
         );
 
         //then
@@ -96,9 +87,7 @@ public class ConnectorDefinitionServiceTest {
 
         //when
         Throwable throwable = catchThrowable(() ->
-            connectorDefinitionService.validate(
-                singletonList(connectorDefinition)
-            )
+            connectorDefinitionService.validate(singletonList(connectorDefinition))
         );
 
         //then
@@ -118,9 +107,7 @@ public class ConnectorDefinitionServiceTest {
 
         //when
         Throwable throwable = catchThrowable(() ->
-            connectorDefinitionService.validate(
-                asList(connectorDefinition, connectorDefinitionWithSameName)
-            )
+            connectorDefinitionService.validate(asList(connectorDefinition, connectorDefinitionWithSameName))
         );
 
         //then

@@ -37,10 +37,7 @@ public class ActivitiVariablesMapper extends VariableMapper {
     }
 
     @Override
-    public ValueExpression setVariable(
-        String variable,
-        ValueExpression expression
-    ) {
+    public ValueExpression setVariable(String variable, ValueExpression expression) {
         if (map.isEmpty()) {
             map = new HashMap<>();
         }

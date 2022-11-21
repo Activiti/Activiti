@@ -25,8 +25,7 @@ import org.activiti.engine.impl.cfg.multitenant.TenantInfoHolder;
  *
 
  */
-public class TenantAwareAcquireAsyncJobsDueRunnable
-    extends AcquireAsyncJobsDueRunnable {
+public class TenantAwareAcquireAsyncJobsDueRunnable extends AcquireAsyncJobsDueRunnable {
 
     protected TenantInfoHolder tenantInfoHolder;
     protected String tenantId;

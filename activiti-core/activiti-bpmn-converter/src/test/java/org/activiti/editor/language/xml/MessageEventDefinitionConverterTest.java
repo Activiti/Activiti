@@ -51,17 +51,13 @@ public class MessageEventDefinitionConverterTest extends AbstractConverterTest {
             .extracting(Message::getId, Message::getName)
             .contains("Message_1", "catchMessage");
 
-        assertThat(
-            model.getProcessById("intermediateCatchProcess").getFlowElements()
-        )
+        assertThat(model.getProcessById("intermediateCatchProcess").getFlowElements())
             .filteredOn(IntermediateCatchEvent.class::isInstance)
             .flatExtracting("eventDefinitions")
             .extracting("messageRef", "correlationKey")
             .contains(tuple("Message_1", "${correlationId}"));
 
-        assertThat(
-            model.getProcessById("intermediateThrowProcess").getFlowElements()
-        )
+        assertThat(model.getProcessById("intermediateThrowProcess").getFlowElements())
             .filteredOn(ThrowEvent.class::isInstance)
             .flatExtracting("eventDefinitions")
             .extracting("messageRef", "correlationKey")
@@ -73,19 +69,13 @@ public class MessageEventDefinitionConverterTest extends AbstractConverterTest {
             .extracting("messageRef", "correlationKey")
             .contains(tuple("Message_1", "${correlationId}"));
 
-        assertThat(
-            model.getProcessById("boundaryCatchProcess").getFlowElements()
-        )
+        assertThat(model.getProcessById("boundaryCatchProcess").getFlowElements())
             .filteredOn(BoundaryEvent.class::isInstance)
             .flatExtracting("eventDefinitions")
             .extracting("messageRef", "correlationKey")
             .contains(tuple("Message_1", "${correlationId}"));
 
-        assertThat(
-            model
-                .getProcessById("startMessageEventSubprocess")
-                .getFlowElements()
-        )
+        assertThat(model.getProcessById("startMessageEventSubprocess").getFlowElements())
             .filteredOn(EventSubProcess.class::isInstance)
             .flatExtracting("flowElements")
             .filteredOn(StartEvent.class::isInstance)
@@ -93,27 +83,19 @@ public class MessageEventDefinitionConverterTest extends AbstractConverterTest {
             .extracting("messageRef", "correlationKey")
             .contains(tuple("Message_1", "${correlationId}"));
 
-        assertThat(
-            model.getProcessById("startMessageProcess").getFlowElements()
-        )
+        assertThat(model.getProcessById("startMessageProcess").getFlowElements())
             .filteredOn(StartEvent.class::isInstance)
             .flatExtracting("eventDefinitions")
             .extracting("messageRef", "correlationKey")
             .contains(tuple("Message_1", null));
 
-        assertThat(
-            model.getProcessById("boundaryCatchSubrocess").getFlowElements()
-        )
+        assertThat(model.getProcessById("boundaryCatchSubrocess").getFlowElements())
             .filteredOn(BoundaryEvent.class::isInstance)
             .flatExtracting("eventDefinitions")
             .extracting("messageRef", "correlationKey")
             .contains(tuple("Message_1", "${correlationId}"));
 
-        assertThat(
-            model
-                .getProcessById("intermediateCatchMessageExpressionProcess")
-                .getFlowElements()
-        )
+        assertThat(model.getProcessById("intermediateCatchMessageExpressionProcess").getFlowElements())
             .filteredOn(IntermediateCatchEvent.class::isInstance)
             .flatExtracting("eventDefinitions")
             .extracting("messageRef", "messageExpression", "correlationKey")

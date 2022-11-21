@@ -22,7 +22,6 @@ import org.activiti.engine.api.internal.Internal;
 
  */
 @Internal
-public interface MessageEventSubscriptionEntity
-    extends EventSubscriptionEntity {
+public interface MessageEventSubscriptionEntity extends EventSubscriptionEntity {
     String EVENT_TYPE = "message";
 }

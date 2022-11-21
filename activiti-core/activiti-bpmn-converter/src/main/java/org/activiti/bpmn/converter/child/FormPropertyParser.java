@@ -32,16 +32,10 @@ public class FormPropertyParser extends BaseChildElementParser {
     }
 
     public boolean accepts(BaseElement element) {
-        return (
-            (element instanceof UserTask) || (element instanceof StartEvent)
-        );
+        return ((element instanceof UserTask) || (element instanceof StartEvent));
     }
 
-    public void parseChildElement(
-        XMLStreamReader xtr,
-        BaseElement parentElement,
-        BpmnModel model
-    ) throws Exception {
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
         if (!accepts(parentElement)) {
             return;
         }
@@ -50,69 +44,31 @@ public class FormPropertyParser extends BaseChildElementParser {
         property.setId(xtr.getAttributeValue(null, ATTRIBUTE_FORM_ID));
         property.setName(xtr.getAttributeValue(null, ATTRIBUTE_FORM_NAME));
         property.setType(xtr.getAttributeValue(null, ATTRIBUTE_FORM_TYPE));
-        property.setVariable(
-            xtr.getAttributeValue(null, ATTRIBUTE_FORM_VARIABLE)
-        );
-        property.setExpression(
-            xtr.getAttributeValue(null, ATTRIBUTE_FORM_EXPRESSION)
-        );
-        property.setDefaultExpression(
-            xtr.getAttributeValue(null, ATTRIBUTE_FORM_DEFAULT)
-        );
-        property.setDatePattern(
-            xtr.getAttributeValue(null, ATTRIBUTE_FORM_DATEPATTERN)
-        );
-        if (
-            StringUtils.isNotEmpty(
-                xtr.getAttributeValue(null, ATTRIBUTE_FORM_REQUIRED)
-            )
-        ) {
-            property.setRequired(
-                Boolean.valueOf(
-                    xtr.getAttributeValue(null, ATTRIBUTE_FORM_REQUIRED)
-                )
-            );
+        property.setVariable(xtr.getAttributeValue(null, ATTRIBUTE_FORM_VARIABLE));
+        property.setExpression(xtr.getAttributeValue(null, ATTRIBUTE_FORM_EXPRESSION));
+        property.setDefaultExpression(xtr.getAttributeValue(null, ATTRIBUTE_FORM_DEFAULT));
+        property.setDatePattern(xtr.getAttributeValue(null, ATTRIBUTE_FORM_DATEPATTERN));
+        if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_FORM_REQUIRED))) {
+            property.setRequired(Boolean.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_FORM_REQUIRED)));
         }
-        if (
-            StringUtils.isNotEmpty(
-                xtr.getAttributeValue(null, ATTRIBUTE_FORM_READABLE)
-            )
-        ) {
-            property.setReadable(
-                Boolean.valueOf(
-                    xtr.getAttributeValue(null, ATTRIBUTE_FORM_READABLE)
-                )
-            );
+        if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_FORM_READABLE))) {
+            property.setReadable(Boolean.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_FORM_READABLE)));
         }
-        if (
-            StringUtils.isNotEmpty(
-                xtr.getAttributeValue(null, ATTRIBUTE_FORM_WRITABLE)
-            )
-        ) {
-            property.setWriteable(
-                Boolean.valueOf(
-                    xtr.getAttributeValue(null, ATTRIBUTE_FORM_WRITABLE)
-                )
-            );
+        if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_FORM_WRITABLE))) {
+            property.setWriteable(Boolean.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_FORM_WRITABLE)));
         }
 
         boolean readyWithFormProperty = false;
         try {
             while (!readyWithFormProperty && xtr.hasNext()) {
                 xtr.next();
-                if (
-                    xtr.isStartElement() &&
-                    ELEMENT_VALUE.equalsIgnoreCase(xtr.getLocalName())
-                ) {
+                if (xtr.isStartElement() && ELEMENT_VALUE.equalsIgnoreCase(xtr.getLocalName())) {
                     FormValue value = new FormValue();
                     BpmnXMLUtil.addXMLLocation(value, xtr);
                     value.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
                     value.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
                     property.getFormValues().add(value);
-                } else if (
-                    xtr.isEndElement() &&
-                    getElementName().equalsIgnoreCase(xtr.getLocalName())
-                ) {
+                } else if (xtr.isEndElement() && getElementName().equalsIgnoreCase(xtr.getLocalName())) {
                     readyWithFormProperty = true;
                 }
             }

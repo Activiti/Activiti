@@ -35,18 +35,10 @@ public class HistoricDetailQueryProperty implements QueryProperty {
     public static final HistoricDetailQueryProperty PROCESS_INSTANCE_ID = new HistoricDetailQueryProperty(
         "PROC_INST_ID_"
     );
-    public static final HistoricDetailQueryProperty VARIABLE_NAME = new HistoricDetailQueryProperty(
-        "NAME_"
-    );
-    public static final HistoricDetailQueryProperty VARIABLE_TYPE = new HistoricDetailQueryProperty(
-        "TYPE_"
-    );
-    public static final HistoricDetailQueryProperty VARIABLE_REVISION = new HistoricDetailQueryProperty(
-        "REV_"
-    );
-    public static final HistoricDetailQueryProperty TIME = new HistoricDetailQueryProperty(
-        "TIME_"
-    );
+    public static final HistoricDetailQueryProperty VARIABLE_NAME = new HistoricDetailQueryProperty("NAME_");
+    public static final HistoricDetailQueryProperty VARIABLE_TYPE = new HistoricDetailQueryProperty("TYPE_");
+    public static final HistoricDetailQueryProperty VARIABLE_REVISION = new HistoricDetailQueryProperty("REV_");
+    public static final HistoricDetailQueryProperty TIME = new HistoricDetailQueryProperty("TIME_");
 
     private String name;
 

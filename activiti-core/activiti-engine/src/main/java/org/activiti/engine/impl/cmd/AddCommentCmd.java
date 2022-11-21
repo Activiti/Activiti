@@ -39,22 +39,13 @@ public class AddCommentCmd implements Command<Comment> {
     protected String type;
     protected String message;
 
-    public AddCommentCmd(
-        String taskId,
-        String processInstanceId,
-        String message
-    ) {
+    public AddCommentCmd(String taskId, String processInstanceId, String message) {
         this.taskId = taskId;
         this.processInstanceId = processInstanceId;
         this.message = message;
     }
 
-    public AddCommentCmd(
-        String taskId,
-        String processInstanceId,
-        String type,
-        String message
-    ) {
+    public AddCommentCmd(String taskId, String processInstanceId, String type, String message) {
         this.taskId = taskId;
         this.processInstanceId = processInstanceId;
         this.type = type;
@@ -68,10 +59,7 @@ public class AddCommentCmd implements Command<Comment> {
             task = commandContext.getTaskEntityManager().findById(taskId);
 
             if (task == null) {
-                throw new ActivitiObjectNotFoundException(
-                    "Cannot find task with id " + taskId,
-                    Task.class
-                );
+                throw new ActivitiObjectNotFoundException("Cannot find task with id " + taskId, Task.class);
             }
 
             if (task.isSuspended()) {
@@ -81,10 +69,7 @@ public class AddCommentCmd implements Command<Comment> {
 
         ExecutionEntity execution = null;
         if (processInstanceId != null) {
-            execution =
-                commandContext
-                    .getExecutionEntityManager()
-                    .findById(processInstanceId);
+            execution = commandContext.getExecutionEntityManager().findById(processInstanceId);
 
             if (execution == null) {
                 throw new ActivitiObjectNotFoundException(
@@ -108,22 +93,12 @@ public class AddCommentCmd implements Command<Comment> {
         return executeInternal(commandContext, processDefinitionId);
     }
 
-    protected Comment executeInternal(
-        CommandContext commandContext,
-        String processDefinitionId
-    ) {
+    protected Comment executeInternal(CommandContext commandContext, String processDefinitionId) {
         String userId = Authentication.getAuthenticatedUserId();
-        CommentEntity comment = commandContext
-            .getCommentEntityManager()
-            .create();
+        CommentEntity comment = commandContext.getCommentEntityManager().create();
         comment.setUserId(userId);
         comment.setType((type == null) ? CommentEntity.TYPE_COMMENT : type);
-        comment.setTime(
-            commandContext
-                .getProcessEngineConfiguration()
-                .getClock()
-                .getCurrentTime()
-        );
+        comment.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
         comment.setTaskId(taskId);
         comment.setProcessInstanceId(processInstanceId);
         comment.setAction(Event.ACTION_ADD_COMMENT);

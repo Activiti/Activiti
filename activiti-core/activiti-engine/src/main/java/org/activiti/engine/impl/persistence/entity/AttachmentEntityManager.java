@@ -24,11 +24,8 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 @Deprecated
-public interface AttachmentEntityManager
-    extends EntityManager<AttachmentEntity> {
-    List<AttachmentEntity> findAttachmentsByProcessInstanceId(
-        String processInstanceId
-    );
+public interface AttachmentEntityManager extends EntityManager<AttachmentEntity> {
+    List<AttachmentEntity> findAttachmentsByProcessInstanceId(String processInstanceId);
 
     List<AttachmentEntity> findAttachmentsByTaskId(String taskId);
 

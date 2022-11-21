@@ -18,8 +18,7 @@ package org.activiti.api.process.model.events;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.BPMNMessage;
 
-public interface BPMNMessageEvent
-    extends RuntimeEvent<BPMNMessage, BPMNMessageEvent.MessageEvents> {
+public interface BPMNMessageEvent extends RuntimeEvent<BPMNMessage, BPMNMessageEvent.MessageEvents> {
     enum MessageEvents {
         MESSAGE_WAITING,
         MESSAGE_RECEIVED,

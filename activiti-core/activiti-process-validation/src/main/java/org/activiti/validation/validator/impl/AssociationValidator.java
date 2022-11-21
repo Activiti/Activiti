@@ -55,11 +55,7 @@ public class AssociationValidator extends ValidatorImpl {
         }
     }
 
-    protected void validate(
-        Process process,
-        Association association,
-        List<ValidationError> errors
-    ) {
+    protected void validate(Process process, Association association, List<ValidationError> errors) {
         if (StringUtils.isEmpty(association.getSourceRef())) {
             addError(
                 errors,

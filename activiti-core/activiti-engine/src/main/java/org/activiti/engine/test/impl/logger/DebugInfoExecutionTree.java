@@ -55,20 +55,12 @@ public class DebugInfoExecutionTree {
         }
 
         protected void print(Logger logger, String prefix, boolean isTail) {
-            logger.info(
-                prefix +
-                (isTail ? "└── " : "├── ") +
-                getCurrentFlowElementInfo()
-            );
+            logger.info(prefix + (isTail ? "└── " : "├── ") + getCurrentFlowElementInfo());
             for (int i = 0; i < childNodes.size() - 1; i++) {
-                childNodes
-                    .get(i)
-                    .print(logger, prefix + (isTail ? "    " : "│   "), false);
+                childNodes.get(i).print(logger, prefix + (isTail ? "    " : "│   "), false);
             }
             if (childNodes.size() > 0) {
-                childNodes
-                    .get(childNodes.size() - 1)
-                    .print(logger, prefix + (isTail ? "    " : "│   "), true);
+                childNodes.get(childNodes.size() - 1).print(logger, prefix + (isTail ? "    " : "│   "), true);
             }
         }
 

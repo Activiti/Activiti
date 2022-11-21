@@ -45,8 +45,7 @@ public class TerminateEventDefinition extends EventDefinition {
     public void setValues(TerminateEventDefinition otherDefinition) {
         super.setValues(otherDefinition);
         this.terminateAll = otherDefinition.isTerminateAll();
-        this.terminateMultiInstance =
-            otherDefinition.isTerminateMultiInstance();
+        this.terminateMultiInstance = otherDefinition.isTerminateMultiInstance();
     }
 
     public boolean isTerminateAll() {

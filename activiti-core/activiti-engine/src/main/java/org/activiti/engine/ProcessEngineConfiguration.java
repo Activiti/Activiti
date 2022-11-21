@@ -212,48 +212,29 @@ public abstract class ProcessEngineConfiguration {
     public abstract ProcessEngine buildProcessEngine();
 
     public static ProcessEngineConfiguration createProcessEngineConfigurationFromResourceDefault() {
-        return createProcessEngineConfigurationFromResource(
-            "activiti.cfg.xml",
-            "processEngineConfiguration"
-        );
+        return createProcessEngineConfigurationFromResource("activiti.cfg.xml", "processEngineConfiguration");
     }
 
-    public static ProcessEngineConfiguration createProcessEngineConfigurationFromResource(
-        String resource
-    ) {
-        return createProcessEngineConfigurationFromResource(
-            resource,
-            "processEngineConfiguration"
-        );
+    public static ProcessEngineConfiguration createProcessEngineConfigurationFromResource(String resource) {
+        return createProcessEngineConfigurationFromResource(resource, "processEngineConfiguration");
     }
 
     public static ProcessEngineConfiguration createProcessEngineConfigurationFromResource(
         String resource,
         String beanName
     ) {
-        return BeansConfigurationHelper.parseProcessEngineConfigurationFromResource(
-            resource,
-            beanName
-        );
+        return BeansConfigurationHelper.parseProcessEngineConfigurationFromResource(resource, beanName);
     }
 
-    public static ProcessEngineConfiguration createProcessEngineConfigurationFromInputStream(
-        InputStream inputStream
-    ) {
-        return createProcessEngineConfigurationFromInputStream(
-            inputStream,
-            "processEngineConfiguration"
-        );
+    public static ProcessEngineConfiguration createProcessEngineConfigurationFromInputStream(InputStream inputStream) {
+        return createProcessEngineConfigurationFromInputStream(inputStream, "processEngineConfiguration");
     }
 
     public static ProcessEngineConfiguration createProcessEngineConfigurationFromInputStream(
         InputStream inputStream,
         String beanName
     ) {
-        return BeansConfigurationHelper.parseProcessEngineConfigurationFromInputStream(
-            inputStream,
-            beanName
-        );
+        return BeansConfigurationHelper.parseProcessEngineConfigurationFromInputStream(inputStream, beanName);
     }
 
     public static ProcessEngineConfiguration createStandaloneProcessEngineConfiguration() {
@@ -289,9 +270,7 @@ public abstract class ProcessEngineConfiguration {
         return processEngineName;
     }
 
-    public ProcessEngineConfiguration setProcessEngineName(
-        String processEngineName
-    ) {
+    public ProcessEngineConfiguration setProcessEngineName(String processEngineName) {
         this.processEngineName = processEngineName;
         return this;
     }
@@ -327,9 +306,7 @@ public abstract class ProcessEngineConfiguration {
         return mailServerUsername;
     }
 
-    public ProcessEngineConfiguration setMailServerUsername(
-        String mailServerUsername
-    ) {
+    public ProcessEngineConfiguration setMailServerUsername(String mailServerUsername) {
         this.mailServerUsername = mailServerUsername;
         return this;
     }
@@ -338,9 +315,7 @@ public abstract class ProcessEngineConfiguration {
         return mailServerPassword;
     }
 
-    public ProcessEngineConfiguration setMailServerPassword(
-        String mailServerPassword
-    ) {
+    public ProcessEngineConfiguration setMailServerPassword(String mailServerPassword) {
         this.mailServerPassword = mailServerPassword;
         return this;
     }
@@ -349,9 +324,7 @@ public abstract class ProcessEngineConfiguration {
         return mailSessionJndi;
     }
 
-    public ProcessEngineConfiguration setMailSessionJndi(
-        String mailSessionJndi
-    ) {
+    public ProcessEngineConfiguration setMailSessionJndi(String mailSessionJndi) {
         this.mailSessionJndi = mailSessionJndi;
         return this;
     }
@@ -387,9 +360,7 @@ public abstract class ProcessEngineConfiguration {
         return mailServerDefaultFrom;
     }
 
-    public ProcessEngineConfiguration setMailServerDefaultFrom(
-        String mailServerDefaultFrom
-    ) {
+    public ProcessEngineConfiguration setMailServerDefaultFrom(String mailServerDefaultFrom) {
         this.mailServerDefaultFrom = mailServerDefaultFrom;
         return this;
     }
@@ -402,9 +373,7 @@ public abstract class ProcessEngineConfiguration {
         return mailServers;
     }
 
-    public ProcessEngineConfiguration setMailServers(
-        Map<String, MailServerInfo> mailServers
-    ) {
+    public ProcessEngineConfiguration setMailServers(Map<String, MailServerInfo> mailServers) {
         this.mailServers.putAll(mailServers);
         return this;
     }
@@ -417,9 +386,7 @@ public abstract class ProcessEngineConfiguration {
         return mailSessionsJndi;
     }
 
-    public ProcessEngineConfiguration setMailSessionsJndi(
-        Map<String, String> mailSessionsJndi
-    ) {
+    public ProcessEngineConfiguration setMailSessionsJndi(Map<String, String> mailSessionsJndi) {
         this.mailSessionsJndi.putAll(mailSessionsJndi);
         return this;
     }
@@ -437,9 +404,7 @@ public abstract class ProcessEngineConfiguration {
         return databaseSchemaUpdate;
     }
 
-    public ProcessEngineConfiguration setDatabaseSchemaUpdate(
-        String databaseSchemaUpdate
-    ) {
+    public ProcessEngineConfiguration setDatabaseSchemaUpdate(String databaseSchemaUpdate) {
         this.databaseSchemaUpdate = databaseSchemaUpdate;
         return this;
     }
@@ -493,9 +458,7 @@ public abstract class ProcessEngineConfiguration {
         return transactionsExternallyManaged;
     }
 
-    public ProcessEngineConfiguration setTransactionsExternallyManaged(
-        boolean transactionsExternallyManaged
-    ) {
+    public ProcessEngineConfiguration setTransactionsExternallyManaged(boolean transactionsExternallyManaged) {
         this.transactionsExternallyManaged = transactionsExternallyManaged;
         return this;
     }
@@ -504,9 +467,7 @@ public abstract class ProcessEngineConfiguration {
         return historyLevel;
     }
 
-    public ProcessEngineConfiguration setHistoryLevel(
-        HistoryLevel historyLevel
-    ) {
+    public ProcessEngineConfiguration setHistoryLevel(HistoryLevel historyLevel) {
         this.historyLevel = historyLevel;
         return this;
     }
@@ -515,9 +476,7 @@ public abstract class ProcessEngineConfiguration {
         return isDbHistoryUsed;
     }
 
-    public ProcessEngineConfiguration setDbHistoryUsed(
-        boolean isDbHistoryUsed
-    ) {
+    public ProcessEngineConfiguration setDbHistoryUsed(boolean isDbHistoryUsed) {
         this.isDbHistoryUsed = isDbHistoryUsed;
         return this;
     }
@@ -526,9 +485,7 @@ public abstract class ProcessEngineConfiguration {
         return jdbcMaxActiveConnections;
     }
 
-    public ProcessEngineConfiguration setJdbcMaxActiveConnections(
-        int jdbcMaxActiveConnections
-    ) {
+    public ProcessEngineConfiguration setJdbcMaxActiveConnections(int jdbcMaxActiveConnections) {
         this.jdbcMaxActiveConnections = jdbcMaxActiveConnections;
         return this;
     }
@@ -537,9 +494,7 @@ public abstract class ProcessEngineConfiguration {
         return jdbcMaxIdleConnections;
     }
 
-    public ProcessEngineConfiguration setJdbcMaxIdleConnections(
-        int jdbcMaxIdleConnections
-    ) {
+    public ProcessEngineConfiguration setJdbcMaxIdleConnections(int jdbcMaxIdleConnections) {
         this.jdbcMaxIdleConnections = jdbcMaxIdleConnections;
         return this;
     }
@@ -548,9 +503,7 @@ public abstract class ProcessEngineConfiguration {
         return jdbcMaxCheckoutTime;
     }
 
-    public ProcessEngineConfiguration setJdbcMaxCheckoutTime(
-        int jdbcMaxCheckoutTime
-    ) {
+    public ProcessEngineConfiguration setJdbcMaxCheckoutTime(int jdbcMaxCheckoutTime) {
         this.jdbcMaxCheckoutTime = jdbcMaxCheckoutTime;
         return this;
     }
@@ -568,9 +521,7 @@ public abstract class ProcessEngineConfiguration {
         return jdbcPingEnabled;
     }
 
-    public ProcessEngineConfiguration setJdbcPingEnabled(
-        boolean jdbcPingEnabled
-    ) {
+    public ProcessEngineConfiguration setJdbcPingEnabled(boolean jdbcPingEnabled) {
         this.jdbcPingEnabled = jdbcPingEnabled;
         return this;
     }
@@ -588,9 +539,7 @@ public abstract class ProcessEngineConfiguration {
         return jdbcPingConnectionNotUsedFor;
     }
 
-    public ProcessEngineConfiguration setJdbcPingConnectionNotUsedFor(
-        int jdbcPingNotUsedFor
-    ) {
+    public ProcessEngineConfiguration setJdbcPingConnectionNotUsedFor(int jdbcPingNotUsedFor) {
         this.jdbcPingConnectionNotUsedFor = jdbcPingNotUsedFor;
         return this;
     }
@@ -602,8 +551,7 @@ public abstract class ProcessEngineConfiguration {
     public ProcessEngineConfiguration setJdbcDefaultTransactionIsolationLevel(
         int jdbcDefaultTransactionIsolationLevel
     ) {
-        this.jdbcDefaultTransactionIsolationLevel =
-            jdbcDefaultTransactionIsolationLevel;
+        this.jdbcDefaultTransactionIsolationLevel = jdbcDefaultTransactionIsolationLevel;
         return this;
     }
 
@@ -611,9 +559,7 @@ public abstract class ProcessEngineConfiguration {
         return asyncExecutorActivate;
     }
 
-    public ProcessEngineConfiguration setAsyncExecutorActivate(
-        boolean asyncExecutorActivate
-    ) {
+    public ProcessEngineConfiguration setAsyncExecutorActivate(boolean asyncExecutorActivate) {
         this.asyncExecutorActivate = asyncExecutorActivate;
         return this;
     }
@@ -631,9 +577,7 @@ public abstract class ProcessEngineConfiguration {
         return useClassForNameClassLoading;
     }
 
-    public ProcessEngineConfiguration setUseClassForNameClassLoading(
-        boolean useClassForNameClassLoading
-    ) {
+    public ProcessEngineConfiguration setUseClassForNameClassLoading(boolean useClassForNameClassLoading) {
         this.useClassForNameClassLoading = useClassForNameClassLoading;
         return this;
     }
@@ -642,9 +586,7 @@ public abstract class ProcessEngineConfiguration {
         return jpaEntityManagerFactory;
     }
 
-    public ProcessEngineConfiguration setJpaEntityManagerFactory(
-        Object jpaEntityManagerFactory
-    ) {
+    public ProcessEngineConfiguration setJpaEntityManagerFactory(Object jpaEntityManagerFactory) {
         this.jpaEntityManagerFactory = jpaEntityManagerFactory;
         return this;
     }
@@ -653,9 +595,7 @@ public abstract class ProcessEngineConfiguration {
         return jpaHandleTransaction;
     }
 
-    public ProcessEngineConfiguration setJpaHandleTransaction(
-        boolean jpaHandleTransaction
-    ) {
+    public ProcessEngineConfiguration setJpaHandleTransaction(boolean jpaHandleTransaction) {
         this.jpaHandleTransaction = jpaHandleTransaction;
         return this;
     }
@@ -664,9 +604,7 @@ public abstract class ProcessEngineConfiguration {
         return jpaCloseEntityManager;
     }
 
-    public ProcessEngineConfiguration setJpaCloseEntityManager(
-        boolean jpaCloseEntityManager
-    ) {
+    public ProcessEngineConfiguration setJpaCloseEntityManager(boolean jpaCloseEntityManager) {
         this.jpaCloseEntityManager = jpaCloseEntityManager;
         return this;
     }
@@ -675,9 +613,7 @@ public abstract class ProcessEngineConfiguration {
         return jpaPersistenceUnitName;
     }
 
-    public ProcessEngineConfiguration setJpaPersistenceUnitName(
-        String jpaPersistenceUnitName
-    ) {
+    public ProcessEngineConfiguration setJpaPersistenceUnitName(String jpaPersistenceUnitName) {
         this.jpaPersistenceUnitName = jpaPersistenceUnitName;
         return this;
     }
@@ -686,9 +622,7 @@ public abstract class ProcessEngineConfiguration {
         return dataSourceJndiName;
     }
 
-    public ProcessEngineConfiguration setDataSourceJndiName(
-        String dataSourceJndiName
-    ) {
+    public ProcessEngineConfiguration setDataSourceJndiName(String dataSourceJndiName) {
         this.dataSourceJndiName = dataSourceJndiName;
         return this;
     }
@@ -697,9 +631,7 @@ public abstract class ProcessEngineConfiguration {
         return defaultCamelContext;
     }
 
-    public ProcessEngineConfiguration setDefaultCamelContext(
-        String defaultCamelContext
-    ) {
+    public ProcessEngineConfiguration setDefaultCamelContext(String defaultCamelContext) {
         this.defaultCamelContext = defaultCamelContext;
         return this;
     }
@@ -719,16 +651,12 @@ public abstract class ProcessEngineConfiguration {
         return databaseTablePrefix;
     }
 
-    public ProcessEngineConfiguration setDatabaseTablePrefix(
-        String databaseTablePrefix
-    ) {
+    public ProcessEngineConfiguration setDatabaseTablePrefix(String databaseTablePrefix) {
         this.databaseTablePrefix = databaseTablePrefix;
         return this;
     }
 
-    public ProcessEngineConfiguration setTablePrefixIsSchema(
-        boolean tablePrefixIsSchema
-    ) {
+    public ProcessEngineConfiguration setTablePrefixIsSchema(boolean tablePrefixIsSchema) {
         this.tablePrefixIsSchema = tablePrefixIsSchema;
         return this;
     }
@@ -741,9 +669,7 @@ public abstract class ProcessEngineConfiguration {
         return databaseWildcardEscapeCharacter;
     }
 
-    public ProcessEngineConfiguration setDatabaseWildcardEscapeCharacter(
-        String databaseWildcardEscapeCharacter
-    ) {
+    public ProcessEngineConfiguration setDatabaseWildcardEscapeCharacter(String databaseWildcardEscapeCharacter) {
         this.databaseWildcardEscapeCharacter = databaseWildcardEscapeCharacter;
         return this;
     }
@@ -752,9 +678,7 @@ public abstract class ProcessEngineConfiguration {
         return databaseCatalog;
     }
 
-    public ProcessEngineConfiguration setDatabaseCatalog(
-        String databaseCatalog
-    ) {
+    public ProcessEngineConfiguration setDatabaseCatalog(String databaseCatalog) {
         this.databaseCatalog = databaseCatalog;
         return this;
     }
@@ -790,9 +714,7 @@ public abstract class ProcessEngineConfiguration {
         return asyncExecutor;
     }
 
-    public ProcessEngineConfiguration setAsyncExecutor(
-        AsyncExecutor asyncExecutor
-    ) {
+    public ProcessEngineConfiguration setAsyncExecutor(AsyncExecutor asyncExecutor) {
         this.asyncExecutor = asyncExecutor;
         return this;
     }
@@ -801,9 +723,7 @@ public abstract class ProcessEngineConfiguration {
         return lockTimeAsyncJobWaitTime;
     }
 
-    public ProcessEngineConfiguration setLockTimeAsyncJobWaitTime(
-        int lockTimeAsyncJobWaitTime
-    ) {
+    public ProcessEngineConfiguration setLockTimeAsyncJobWaitTime(int lockTimeAsyncJobWaitTime) {
         this.lockTimeAsyncJobWaitTime = lockTimeAsyncJobWaitTime;
         return this;
     }
@@ -812,9 +732,7 @@ public abstract class ProcessEngineConfiguration {
         return defaultFailedJobWaitTime;
     }
 
-    public ProcessEngineConfiguration setDefaultFailedJobWaitTime(
-        int defaultFailedJobWaitTime
-    ) {
+    public ProcessEngineConfiguration setDefaultFailedJobWaitTime(int defaultFailedJobWaitTime) {
         this.defaultFailedJobWaitTime = defaultFailedJobWaitTime;
         return this;
     }
@@ -823,9 +741,7 @@ public abstract class ProcessEngineConfiguration {
         return asyncFailedJobWaitTime;
     }
 
-    public ProcessEngineConfiguration setAsyncFailedJobWaitTime(
-        int asyncFailedJobWaitTime
-    ) {
+    public ProcessEngineConfiguration setAsyncFailedJobWaitTime(int asyncFailedJobWaitTime) {
         this.asyncFailedJobWaitTime = asyncFailedJobWaitTime;
         return this;
     }
@@ -834,17 +750,12 @@ public abstract class ProcessEngineConfiguration {
         return enableProcessDefinitionInfoCache;
     }
 
-    public ProcessEngineConfiguration setEnableProcessDefinitionInfoCache(
-        boolean enableProcessDefinitionInfoCache
-    ) {
-        this.enableProcessDefinitionInfoCache =
-            enableProcessDefinitionInfoCache;
+    public ProcessEngineConfiguration setEnableProcessDefinitionInfoCache(boolean enableProcessDefinitionInfoCache) {
+        this.enableProcessDefinitionInfoCache = enableProcessDefinitionInfoCache;
         return this;
     }
 
-    public ProcessEngineConfiguration setCopyVariablesToLocalForTasks(
-        boolean copyVariablesToLocalForTasks
-    ) {
+    public ProcessEngineConfiguration setCopyVariablesToLocalForTasks(boolean copyVariablesToLocalForTasks) {
         this.copyVariablesToLocalForTasks = copyVariablesToLocalForTasks;
         return this;
     }
@@ -853,9 +764,7 @@ public abstract class ProcessEngineConfiguration {
         return copyVariablesToLocalForTasks;
     }
 
-    public void setEngineAgendaFactory(
-        ActivitiEngineAgendaFactory engineAgendaFactory
-    ) {
+    public void setEngineAgendaFactory(ActivitiEngineAgendaFactory engineAgendaFactory) {
         this.engineAgendaFactory = engineAgendaFactory;
     }
 

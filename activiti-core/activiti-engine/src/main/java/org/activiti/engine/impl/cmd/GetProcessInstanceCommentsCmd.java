@@ -26,8 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
 
  */
-public class GetProcessInstanceCommentsCmd
-    implements Command<List<Comment>>, Serializable {
+public class GetProcessInstanceCommentsCmd implements Command<List<Comment>>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String processInstanceId;
@@ -37,10 +36,7 @@ public class GetProcessInstanceCommentsCmd
         this.processInstanceId = processInstanceId;
     }
 
-    public GetProcessInstanceCommentsCmd(
-        String processInstanceId,
-        String type
-    ) {
+    public GetProcessInstanceCommentsCmd(String processInstanceId, String type) {
         this.processInstanceId = processInstanceId;
         this.type = type;
     }
@@ -53,9 +49,7 @@ public class GetProcessInstanceCommentsCmd
                 .findCommentsByProcessInstanceId(processInstanceId, type);
             return commentsByProcessInstanceId;
         } else {
-            return commandContext
-                .getCommentEntityManager()
-                .findCommentsByProcessInstanceId(processInstanceId);
+            return commandContext.getCommentEntityManager().findCommentsByProcessInstanceId(processInstanceId);
         }
     }
 }

@@ -29,21 +29,13 @@ public class ConnectorsConfiguration {
     public Connector connectorWithoutDefinition() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
-            assertThat(inBoundVariables)
-                .containsKeys("age", "name", "nameAsStaticValue");
+            assertThat(inBoundVariables).containsKeys("age", "name", "nameAsStaticValue");
             assertThat(inBoundVariables.get("age")).isEqualTo(20);
             assertThat(inBoundVariables.get("name")).isEqualTo("inName");
-            assertThat(inBoundVariables.get("nameAsStaticValue"))
-                .isEqualTo("Paul");
+            assertThat(inBoundVariables.get("nameAsStaticValue")).isEqualTo("Paul");
 
-            integrationContext.addOutBoundVariable(
-                "age",
-                (Integer) inBoundVariables.get("age") + 1
-            );
-            integrationContext.addOutBoundVariable(
-                "name",
-                inBoundVariables.get("nameAsStaticValue")
-            );
+            integrationContext.addOutBoundVariable("age", (Integer) inBoundVariables.get("age") + 1);
+            integrationContext.addOutBoundVariable("name", inBoundVariables.get("nameAsStaticValue"));
             return integrationContext;
         };
     }

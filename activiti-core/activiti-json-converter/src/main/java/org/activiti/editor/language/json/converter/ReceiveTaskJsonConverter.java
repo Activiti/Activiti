@@ -36,32 +36,21 @@ public class ReceiveTaskJsonConverter extends BaseBpmnJsonConverter {
         fillBpmnTypes(convertersToJsonMap);
     }
 
-    public static void fillJsonTypes(
-        Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap
-    ) {
-        convertersToBpmnMap.put(
-            STENCIL_TASK_RECEIVE,
-            ReceiveTaskJsonConverter.class
-        );
+    public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
+        convertersToBpmnMap.put(STENCIL_TASK_RECEIVE, ReceiveTaskJsonConverter.class);
     }
 
     public static void fillBpmnTypes(
         Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap
     ) {
-        convertersToJsonMap.put(
-            ReceiveTask.class,
-            ReceiveTaskJsonConverter.class
-        );
+        convertersToJsonMap.put(ReceiveTask.class, ReceiveTaskJsonConverter.class);
     }
 
     protected String getStencilId(BaseElement baseElement) {
         return STENCIL_TASK_RECEIVE;
     }
 
-    protected void convertElementToJson(
-        ObjectNode propertiesNode,
-        BaseElement baseElement
-    ) {}
+    protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {}
 
     protected FlowElement convertJsonToElement(
         JsonNode elementNode,

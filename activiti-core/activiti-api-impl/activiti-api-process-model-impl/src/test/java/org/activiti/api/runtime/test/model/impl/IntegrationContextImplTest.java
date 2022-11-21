@@ -64,10 +64,7 @@ class IntegrationContextImplTest {
         Arguments.of(Long.valueOf(100000000000L), Long.valueOf(100000000000L)),
         Arguments.of(Integer.valueOf(123), Integer.valueOf(123)),
         Arguments.of(String.valueOf("string"), String.valueOf("string")),
-        Arguments.of(
-            String.valueOf("item1,item2"),
-            String.valueOf("item1,item2")
-        ),
+        Arguments.of(String.valueOf("item1,item2"), String.valueOf("item1,item2")),
         Arguments.of(Boolean.valueOf(true), Boolean.valueOf(true)),
         Arguments.of('A', 'A'),
         Arguments.of(Character.valueOf('A'), Character.valueOf('A')),
@@ -84,35 +81,19 @@ class IntegrationContextImplTest {
         Arguments.of(null, null),
         Arguments.of(Currency.getInstance("USD"), "USD"),
         Arguments.of(Date.from(instant), Date.from(instant)),
-        Arguments.of(
-            LocalDate.ofInstant(instant, ZoneOffset.UTC),
-            LocalDate.ofInstant(instant, ZoneOffset.UTC)
-        ),
+        Arguments.of(LocalDate.ofInstant(instant, ZoneOffset.UTC), LocalDate.ofInstant(instant, ZoneOffset.UTC)),
         Arguments.of(
             LocalDateTime.ofInstant(instant, ZoneOffset.UTC),
             LocalDateTime.ofInstant(instant, ZoneOffset.UTC)
         ),
         Arguments.of(singletonList("item"), singletonList("item")),
-        Arguments.of(
-            singletonList(singletonMap("key", "value")),
-            singletonList(singletonMap("key", "value"))
-        ),
-        Arguments.of(
-            singleton(singletonMap("key", "value")),
-            singleton(singletonMap("key", "value"))
-        ),
+        Arguments.of(singletonList(singletonMap("key", "value")), singletonList(singletonMap("key", "value"))),
+        Arguments.of(singleton(singletonMap("key", "value")), singleton(singletonMap("key", "value"))),
         Arguments.of(singleton("item"), singleton("item")),
+        Arguments.of(singletonMap("key", "value"), singletonMap("key", "value")),
         Arguments.of(
-            singletonMap("key", "value"),
-            singletonMap("key", "value")
-        ),
-        Arguments.of(
-            JsonNodeFactory.instance
-                .objectNode()
-                .set("key", TextNode.valueOf("value")),
-            JsonNodeFactory.instance
-                .objectNode()
-                .set("key", TextNode.valueOf("value"))
+            JsonNodeFactory.instance.objectNode().set("key", TextNode.valueOf("value")),
+            JsonNodeFactory.instance.objectNode().set("key", TextNode.valueOf("value"))
         ),
         Arguments.of(
             new CustomPojo("field1", "field2"),
@@ -127,10 +108,7 @@ class IntegrationContextImplTest {
             new CustomPojoAnnotated("field1", "field2"),
             new LinkedHashMap<String, String>() {
                 {
-                    put(
-                        "@class",
-                        "org.activiti.api.runtime.test.model.impl.CustomPojoAnnotated"
-                    );
+                    put("@class", "org.activiti.api.runtime.test.model.impl.CustomPojoAnnotated");
                     put("field1", "field1");
                     put("field2", "field2");
                 }
@@ -142,11 +120,8 @@ class IntegrationContextImplTest {
     static class Application {
 
         @Bean
-        public ObjectMapper objectMapper(
-            Module customizeProcessModelObjectMapper
-        ) {
-            return new ObjectMapper()
-                .registerModule(customizeProcessModelObjectMapper);
+        public ObjectMapper objectMapper(Module customizeProcessModelObjectMapper) {
+            return new ObjectMapper().registerModule(customizeProcessModelObjectMapper);
         }
     }
 
@@ -156,10 +131,7 @@ class IntegrationContextImplTest {
 
     @ParameterizedTest
     @MethodSource("testIntegrationContextInBoundVariables")
-    public void testIntegrationContextInBoundVariables(
-        Object input,
-        Object output
-    ) throws IOException {
+    public void testIntegrationContextInBoundVariables(Object input, Object output) throws IOException {
         // given
         IntegrationContextImpl source = new IntegrationContextImpl();
 
@@ -168,8 +140,7 @@ class IntegrationContextImplTest {
         IntegrationContext target = exchangeIntegrationContext(source);
 
         // then
-        assertThat(target.getInBoundVariables())
-            .containsEntry("variable", output);
+        assertThat(target.getInBoundVariables()).containsEntry("variable", output);
     }
 
     private static Stream<Arguments> testIntegrationContextOutBoundVariables() {
@@ -178,10 +149,7 @@ class IntegrationContextImplTest {
 
     @ParameterizedTest
     @MethodSource("testIntegrationContextOutBoundVariables")
-    public void testIntegrationContextOutBoundVariables(
-        Object input,
-        Object output
-    ) throws IOException {
+    public void testIntegrationContextOutBoundVariables(Object input, Object output) throws IOException {
         // given
         IntegrationContextImpl source = new IntegrationContextImpl();
 
@@ -191,13 +159,11 @@ class IntegrationContextImplTest {
         IntegrationContext target = exchangeIntegrationContext(source);
 
         // then
-        assertThat(target.getOutBoundVariables())
-            .containsEntry("variable", output);
+        assertThat(target.getOutBoundVariables()).containsEntry("variable", output);
     }
 
     @Test
-    public void testProcessVariablesMapDeserializerShouldFallbackToKeyValueMap()
-        throws JsonProcessingException {
+    public void testProcessVariablesMapDeserializerShouldFallbackToKeyValueMap() throws JsonProcessingException {
         // given
         Map<String, Object> map = new LinkedHashMap<>();
 
@@ -238,12 +204,7 @@ class IntegrationContextImplTest {
             );
     }
 
-    private IntegrationContext exchangeIntegrationContext(
-        IntegrationContext source
-    ) throws IOException {
-        return objectMapper.readValue(
-            objectMapper.writeValueAsString(source),
-            IntegrationContext.class
-        );
+    private IntegrationContext exchangeIntegrationContext(IntegrationContext source) throws IOException {
+        return objectMapper.readValue(objectMapper.writeValueAsString(source), IntegrationContext.class);
     }
 }

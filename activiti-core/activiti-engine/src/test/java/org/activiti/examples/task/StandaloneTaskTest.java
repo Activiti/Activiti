@@ -46,10 +46,7 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
         taskService.addCandidateUser(taskId, "gonzo");
 
         // Retrieve task list for kermit
-        List<Task> tasks = taskService
-            .createTaskQuery()
-            .taskCandidateUser("kermit")
-            .list();
+        List<Task> tasks = taskService.createTaskQuery().taskCandidateUser("kermit").list();
         assertThat(tasks).hasSize(1);
         assertThat(tasks.get(0).getName()).isEqualTo("testTask");
 
@@ -60,8 +57,7 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
 
         task.setName("Update name");
         taskService.saveTask(task);
-        tasks =
-            taskService.createTaskQuery().taskCandidateUser("kermit").list();
+        tasks = taskService.createTaskQuery().taskCandidateUser("kermit").list();
         assertThat(tasks).hasSize(1);
         assertThat(tasks.get(0).getName()).isEqualTo("Update name");
 
@@ -69,30 +65,15 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
         taskService.claim(taskId, "kermit");
 
         // Tasks shouldn't appear in the candidate tasklists anymore
-        assertThat(
-            taskService
-                .createTaskQuery()
-                .taskCandidateUser("kermit")
-                .list()
-                .isEmpty()
-        )
-            .isTrue();
-        assertThat(
-            taskService
-                .createTaskQuery()
-                .taskCandidateUser("gonzo")
-                .list()
-                .isEmpty()
-        )
-            .isTrue();
+        assertThat(taskService.createTaskQuery().taskCandidateUser("kermit").list().isEmpty()).isTrue();
+        assertThat(taskService.createTaskQuery().taskCandidateUser("gonzo").list().isEmpty()).isTrue();
 
         // Complete task
         taskService.deleteTask(taskId, true);
 
         // Task should be removed from runtime data
         // TODO: check for historic data when implemented!
-        assertThat(taskService.createTaskQuery().taskId(taskId).singleResult())
-            .isNull();
+        assertThat(taskService.createTaskQuery().taskId(taskId).singleResult()).isNull();
     }
 
     public void testOptimisticLockingThrownOnMultipleUpdates() {
@@ -101,14 +82,8 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
         String taskId = task.getId();
 
         // first modification
-        Task task1 = taskService
-            .createTaskQuery()
-            .taskId(taskId)
-            .singleResult();
-        Task task2 = taskService
-            .createTaskQuery()
-            .taskId(taskId)
-            .singleResult();
+        Task task1 = taskService.createTaskQuery().taskId(taskId).singleResult();
+        Task task2 = taskService.createTaskQuery().taskId(taskId).singleResult();
 
         task1.setDescription("first modification");
         taskService.saveTask(task1);
@@ -116,9 +91,7 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
         // second modification on the initial instance
         task2.setDescription("second modification");
         assertThatExceptionOfType(ActivitiOptimisticLockingException.class)
-            .as(
-                "should get an exception here as the task was modified by someone else."
-            )
+            .as("should get an exception here as the task was modified by someone else.")
             .isThrownBy(() -> taskService.saveTask(task2));
 
         taskService.deleteTask(taskId, true);
@@ -163,11 +136,7 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
     }
 
     public void testHistoricVariableOkOnUpdate() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.AUDIT)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             // 1. create a task
             Task task = taskService.newTask();
             task.setName("test execution");

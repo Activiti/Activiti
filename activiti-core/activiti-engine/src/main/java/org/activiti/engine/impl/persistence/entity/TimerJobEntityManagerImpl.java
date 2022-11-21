@@ -35,9 +35,7 @@ import org.activiti.engine.impl.persistence.entity.data.TimerJobDataManager;
 import org.activiti.engine.runtime.Job;
 import org.apache.commons.lang3.StringUtils;
 
-public class TimerJobEntityManagerImpl
-    extends AbstractEntityManager<TimerJobEntity>
-    implements TimerJobEntityManager {
+public class TimerJobEntityManagerImpl extends AbstractEntityManager<TimerJobEntity> implements TimerJobEntityManager {
 
     protected TimerJobDataManager jobDataManager;
 
@@ -50,20 +48,14 @@ public class TimerJobEntityManagerImpl
     }
 
     @Override
-    public TimerJobEntity createAndCalculateNextTimer(
-        JobEntity timerEntity,
-        VariableScope variableScope
-    ) {
+    public TimerJobEntity createAndCalculateNextTimer(JobEntity timerEntity, VariableScope variableScope) {
         int repeatValue = calculateRepeatValue(timerEntity);
         if (repeatValue != 0) {
             if (repeatValue > 0) {
                 setNewRepeat(timerEntity, repeatValue);
             }
             Date newTimer = calculateNextTimer(timerEntity, variableScope);
-            if (
-                newTimer != null &&
-                isValidTime(timerEntity, newTimer, variableScope)
-            ) {
+            if (newTimer != null && isValidTime(timerEntity, newTimer, variableScope)) {
                 TimerJobEntity te = createTimer(timerEntity);
                 te.setDuedate(newTimer);
                 return te;
@@ -82,10 +74,7 @@ public class TimerJobEntityManagerImpl
         String jobHandlerType,
         String processDefinitionId
     ) {
-        return jobDataManager.findJobsByTypeAndProcessDefinitionId(
-            jobHandlerType,
-            processDefinitionId
-        );
+        return jobDataManager.findJobsByTypeAndProcessDefinitionId(jobHandlerType, processDefinitionId);
     }
 
     @Override
@@ -93,10 +82,7 @@ public class TimerJobEntityManagerImpl
         String jobHandlerType,
         String processDefinitionKey
     ) {
-        return jobDataManager.findJobsByTypeAndProcessDefinitionKeyNoTenantId(
-            jobHandlerType,
-            processDefinitionKey
-        );
+        return jobDataManager.findJobsByTypeAndProcessDefinitionKeyNoTenantId(jobHandlerType, processDefinitionKey);
     }
 
     @Override
@@ -123,10 +109,7 @@ public class TimerJobEntityManagerImpl
     }
 
     @Override
-    public List<Job> findJobsByQueryCriteria(
-        TimerJobQueryImpl jobQuery,
-        Page page
-    ) {
+    public List<Job> findJobsByQueryCriteria(TimerJobQueryImpl jobQuery, Page page) {
         return jobDataManager.findJobsByQueryCriteria(jobQuery, page);
     }
 
@@ -136,14 +119,8 @@ public class TimerJobEntityManagerImpl
     }
 
     @Override
-    public void updateJobTenantIdForDeployment(
-        String deploymentId,
-        String newTenantId
-    ) {
-        jobDataManager.updateJobTenantIdForDeployment(
-            deploymentId,
-            newTenantId
-        );
+    public void updateJobTenantIdForDeployment(String deploymentId, String newTenantId) {
+        jobDataManager.updateJobTenantIdForDeployment(deploymentId, newTenantId);
     }
 
     @Override
@@ -161,14 +138,10 @@ public class TimerJobEntityManagerImpl
         doInsert(jobEntity, fireCreateEvent);
     }
 
-    protected boolean doInsert(
-        TimerJobEntity jobEntity,
-        boolean fireCreateEvent
-    ) {
+    protected boolean doInsert(TimerJobEntity jobEntity, boolean fireCreateEvent) {
         // add link to execution
         if (jobEntity.getExecutionId() != null) {
-            ExecutionEntity execution = getExecutionEntityManager()
-                .findById(jobEntity.getExecutionId());
+            ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
             if (execution != null) {
                 execution.getTimerJobs().add(jobEntity);
 
@@ -179,9 +152,7 @@ public class TimerJobEntityManagerImpl
 
                 if (isExecutionRelatedEntityCountEnabled(execution)) {
                     CountingExecutionEntity countingExecutionEntity = (CountingExecutionEntity) execution;
-                    countingExecutionEntity.setTimerJobCount(
-                        countingExecutionEntity.getTimerJobCount() + 1
-                    );
+                    countingExecutionEntity.setTimerJobCount(countingExecutionEntity.getTimerJobCount() + 1);
                 }
             } else {
                 // In case the job has an executionId, but the Execution is not found,
@@ -202,28 +173,18 @@ public class TimerJobEntityManagerImpl
         deleteExceptionByteArrayRef(jobEntity);
         removeExecutionLink(jobEntity);
 
-        if (
-            jobEntity.getExecutionId() != null &&
-            isExecutionRelatedEntityCountEnabledGlobally()
-        ) {
+        if (jobEntity.getExecutionId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
             CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager()
                 .findById(jobEntity.getExecutionId());
             if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
-                executionEntity.setTimerJobCount(
-                    executionEntity.getTimerJobCount() - 1
-                );
+                executionEntity.setTimerJobCount(executionEntity.getTimerJobCount() - 1);
             }
         }
 
         // Send event
         if (getEventDispatcher().isEnabled()) {
             getEventDispatcher()
-                .dispatchEvent(
-                    ActivitiEventBuilder.createEntityEvent(
-                        ActivitiEventType.ENTITY_DELETED,
-                        this
-                    )
-                );
+                .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, this));
         }
     }
 
@@ -233,8 +194,7 @@ public class TimerJobEntityManagerImpl
      */
     protected void removeExecutionLink(TimerJobEntity jobEntity) {
         if (jobEntity.getExecutionId() != null) {
-            ExecutionEntity execution = getExecutionEntityManager()
-                .findById(jobEntity.getExecutionId());
+            ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
             if (execution != null) {
                 execution.getTimerJobs().remove(jobEntity);
             }
@@ -254,9 +214,7 @@ public class TimerJobEntityManagerImpl
 
     protected TimerJobEntity createTimer(JobEntity te) {
         TimerJobEntity newTimerEntity = create();
-        newTimerEntity.setJobHandlerConfiguration(
-            te.getJobHandlerConfiguration()
-        );
+        newTimerEntity.setJobHandlerConfiguration(te.getJobHandlerConfiguration());
         newTimerEntity.setJobHandlerType(te.getJobHandlerType());
         newTimerEntity.setExclusive(te.isExclusive());
         newTimerEntity.setRepeat(te.getRepeat());
@@ -284,18 +242,12 @@ public class TimerJobEntityManagerImpl
         timerEntity.setRepeat(repeatBuilder.toString());
     }
 
-    protected boolean isValidTime(
-        JobEntity timerEntity,
-        Date newTimerDate,
-        VariableScope variableScope
-    ) {
+    protected boolean isValidTime(JobEntity timerEntity, Date newTimerDate, VariableScope variableScope) {
         BusinessCalendar businessCalendar = getProcessEngineConfiguration()
             .getBusinessCalendarManager()
             .getBusinessCalendar(
                 getBusinessCalendarName(
-                    TimerEventHandler.geCalendarNameFromConfiguration(
-                        timerEntity.getJobHandlerConfiguration()
-                    ),
+                    TimerEventHandler.geCalendarNameFromConfiguration(timerEntity.getJobHandlerConfiguration()),
                     variableScope
                 )
             );
@@ -307,34 +259,22 @@ public class TimerJobEntityManagerImpl
         );
     }
 
-    protected Date calculateNextTimer(
-        JobEntity timerEntity,
-        VariableScope variableScope
-    ) {
+    protected Date calculateNextTimer(JobEntity timerEntity, VariableScope variableScope) {
         BusinessCalendar businessCalendar = getProcessEngineConfiguration()
             .getBusinessCalendarManager()
             .getBusinessCalendar(
                 getBusinessCalendarName(
-                    TimerEventHandler.geCalendarNameFromConfiguration(
-                        timerEntity.getJobHandlerConfiguration()
-                    ),
+                    TimerEventHandler.geCalendarNameFromConfiguration(timerEntity.getJobHandlerConfiguration()),
                     variableScope
                 )
             );
-        return businessCalendar.resolveDuedate(
-            timerEntity.getRepeat(),
-            timerEntity.getMaxIterations()
-        );
+        return businessCalendar.resolveDuedate(timerEntity.getRepeat(), timerEntity.getMaxIterations());
     }
 
     protected int calculateRepeatValue(JobEntity timerEntity) {
         int times = -1;
         List<String> expression = asList(timerEntity.getRepeat().split("/"));
-        if (
-            expression.size() > 1 &&
-            expression.get(0).startsWith("R") &&
-            expression.get(0).length() > 1
-        ) {
+        if (expression.size() > 1 && expression.get(0).startsWith("R") && expression.get(0).length() > 1) {
             times = Integer.parseInt(expression.get(0).substring(1));
             if (times > 0) {
                 times--;
@@ -343,10 +283,7 @@ public class TimerJobEntityManagerImpl
         return times;
     }
 
-    protected String getBusinessCalendarName(
-        String calendarName,
-        VariableScope variableScope
-    ) {
+    protected String getBusinessCalendarName(String calendarName, VariableScope variableScope) {
         String businessCalendarName = CycleBusinessCalendar.NAME;
         if (StringUtils.isNotEmpty(calendarName)) {
             businessCalendarName =

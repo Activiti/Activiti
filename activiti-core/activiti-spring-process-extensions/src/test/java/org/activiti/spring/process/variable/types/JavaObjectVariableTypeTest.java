@@ -42,11 +42,7 @@ class JavaObjectVariableTypeTest {
             exceptionList
                 .stream()
                 .anyMatch(error ->
-                    error
-                        .getMessage()
-                        .equals(
-                            "class java.lang.Integer is not assignable from class java.lang.Boolean"
-                        )
+                    error.getMessage().equals("class java.lang.Integer is not assignable from class java.lang.Boolean")
                 )
         );
     }
@@ -73,11 +69,7 @@ class JavaObjectVariableTypeTest {
             exceptionList
                 .stream()
                 .anyMatch(error ->
-                    error
-                        .getMessage()
-                        .equals(
-                            "class java.lang.String is not assignable from class java.lang.Boolean"
-                        )
+                    error.getMessage().equals("class java.lang.String is not assignable from class java.lang.Boolean")
                 )
         );
     }

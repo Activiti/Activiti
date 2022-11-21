@@ -33,9 +33,5 @@ public abstract class ProcessLevelValidator extends ValidatorImpl {
         }
     }
 
-    protected abstract void executeValidation(
-        BpmnModel bpmnModel,
-        Process process,
-        List<ValidationError> errors
-    );
+    protected abstract void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors);
 }

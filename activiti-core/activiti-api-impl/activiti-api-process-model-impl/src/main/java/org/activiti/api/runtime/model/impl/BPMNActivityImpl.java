@@ -26,11 +26,7 @@ public class BPMNActivityImpl extends BPMNElementImpl implements BPMNActivity {
 
     public BPMNActivityImpl() {}
 
-    public BPMNActivityImpl(
-        String elementId,
-        String activityName,
-        String activityType
-    ) {
+    public BPMNActivityImpl(String elementId, String activityName, String activityType) {
         this.setElementId(elementId);
         this.activityName = activityName;
         this.activityType = activityType;
@@ -86,10 +82,7 @@ public class BPMNActivityImpl extends BPMNElementImpl implements BPMNActivity {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result =
-            prime *
-            result +
-            Objects.hash(activityName, activityType, executionId);
+        result = prime * result + Objects.hash(activityName, activityType, executionId);
         return result;
     }
 

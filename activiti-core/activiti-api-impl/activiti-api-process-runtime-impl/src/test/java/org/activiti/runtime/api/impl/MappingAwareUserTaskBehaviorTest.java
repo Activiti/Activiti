@@ -42,13 +42,10 @@ public class MappingAwareUserTaskBehaviorTest {
         //given
         DelegateExecution execution = buildExecution();
         Map<String, Object> providerVariables = singletonMap("var", "value");
-        given(mappingProvider.calculateInputVariables(execution))
-            .willReturn(providerVariables);
+        given(mappingProvider.calculateInputVariables(execution)).willReturn(providerVariables);
 
         //when
-        Map<String, Object> inputVariables = behavior.calculateInputVariables(
-            execution
-        );
+        Map<String, Object> inputVariables = behavior.calculateInputVariables(execution);
 
         //then
         assertThat(inputVariables).isEqualTo(providerVariables);

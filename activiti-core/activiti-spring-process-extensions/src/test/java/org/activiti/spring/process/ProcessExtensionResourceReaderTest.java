@@ -30,21 +30,12 @@ public class ProcessExtensionResourceReaderTest {
 
     @Test
     public void shouldSelectFileWithSuffixHyphenExtensionsDotJson() {
-        assertThat(
-            reader
-                .getResourceNameSelector()
-                .test("any-path/to/my-extension/my-process-extensions.json")
-        )
+        assertThat(reader.getResourceNameSelector().test("any-path/to/my-extension/my-process-extensions.json"))
             .isTrue();
     }
 
     @Test
     public void shouldNotSelectSelectJsonFileWithoutSuffixHyphenExtensionsDotJson() {
-        assertThat(
-            reader
-                .getResourceNameSelector()
-                .test("any-path/to/my-extension/my-process-other.json")
-        )
-            .isFalse();
+        assertThat(reader.getResourceNameSelector().test("any-path/to/my-extension/my-process-other.json")).isFalse();
     }
 }

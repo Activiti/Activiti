@@ -40,8 +40,7 @@ public class ExtensionElementsParser implements BpmnXMLConstants {
     ) throws Exception {
         BaseElement parentElement = null;
         if (!activeSubProcessList.isEmpty()) {
-            parentElement =
-                activeSubProcessList.get(activeSubProcessList.size() - 1);
+            parentElement = activeSubProcessList.get(activeSubProcessList.size() - 1);
         } else {
             parentElement = activeProcess;
         }
@@ -51,19 +50,13 @@ public class ExtensionElementsParser implements BpmnXMLConstants {
             xtr.next();
             if (xtr.isStartElement()) {
                 if (ELEMENT_EXECUTION_LISTENER.equals(xtr.getLocalName())) {
-                    new ExecutionListenerParser()
-                        .parseChildElement(xtr, parentElement, model);
+                    new ExecutionListenerParser().parseChildElement(xtr, parentElement, model);
                 } else if (ELEMENT_EVENT_LISTENER.equals(xtr.getLocalName())) {
-                    new ActivitiEventListenerParser()
-                        .parseChildElement(xtr, parentElement, model);
-                } else if (
-                    ELEMENT_POTENTIAL_STARTER.equals(xtr.getLocalName())
-                ) {
+                    new ActivitiEventListenerParser().parseChildElement(xtr, parentElement, model);
+                } else if (ELEMENT_POTENTIAL_STARTER.equals(xtr.getLocalName())) {
                     new PotentialStarterParser().parse(xtr, activeProcess);
                 } else {
-                    ExtensionElement extensionElement = BpmnXMLUtil.parseExtensionElement(
-                        xtr
-                    );
+                    ExtensionElement extensionElement = BpmnXMLUtil.parseExtensionElement(xtr);
                     if (parentElement != null) {
                         parentElement.addExtensionElement(extensionElement);
                     }

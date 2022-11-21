@@ -38,10 +38,7 @@ public class SignalAssertionsImpl implements SignalAssertions {
     ) {
         List<RuntimeEvent<?, ?>> events = eventSource.getEvents();
         for (OperationScopeMatcher matcher : matchers) {
-            matcher.match(
-                processInstanceScope(processInstance.getId()),
-                events
-            );
+            matcher.match(processInstanceScope(processInstance.getId()), events);
         }
         return this;
     }

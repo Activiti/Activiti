@@ -41,12 +41,8 @@ public class ActivitiProperties {
     private String databaseSchema;
     private boolean dbHistoryUsed = false;
     private HistoryLevel historyLevel = HistoryLevel.NONE;
-    private String processDefinitionLocationPrefix =
-        ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "**/processes/";
-    private List<String> processDefinitionLocationSuffixes = asList(
-        "**.bpmn20.xml",
-        "**.bpmn"
-    );
+    private String processDefinitionLocationPrefix = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "**/processes/";
+    private List<String> processDefinitionLocationSuffixes = asList("**.bpmn20.xml", "**.bpmn");
     private List<String> customMybatisMappers;
     private List<String> customMybatisXMLMappers;
     private boolean useStrongUuids = true;
@@ -115,9 +111,7 @@ public class ActivitiProperties {
         return processDefinitionLocationPrefix;
     }
 
-    public void setProcessDefinitionLocationPrefix(
-        String processDefinitionLocationPrefix
-    ) {
+    public void setProcessDefinitionLocationPrefix(String processDefinitionLocationPrefix) {
         this.processDefinitionLocationPrefix = processDefinitionLocationPrefix;
     }
 
@@ -125,11 +119,8 @@ public class ActivitiProperties {
         return processDefinitionLocationSuffixes;
     }
 
-    public void setProcessDefinitionLocationSuffixes(
-        List<String> processDefinitionLocationSuffixes
-    ) {
-        this.processDefinitionLocationSuffixes =
-            processDefinitionLocationSuffixes;
+    public void setProcessDefinitionLocationSuffixes(List<String> processDefinitionLocationSuffixes) {
+        this.processDefinitionLocationSuffixes = processDefinitionLocationSuffixes;
     }
 
     public String getMailServerHost() {
@@ -200,9 +191,7 @@ public class ActivitiProperties {
         return customMybatisXMLMappers;
     }
 
-    public void setCustomMybatisXMLMappers(
-        List<String> customMybatisXMLMappers
-    ) {
+    public void setCustomMybatisXMLMappers(List<String> customMybatisXMLMappers) {
         this.customMybatisXMLMappers = customMybatisXMLMappers;
     }
 
@@ -218,9 +207,7 @@ public class ActivitiProperties {
         return copyVariablesToLocalForTasks;
     }
 
-    public void setCopyVariablesToLocalForTasks(
-        boolean copyVariablesToLocalForTasks
-    ) {
+    public void setCopyVariablesToLocalForTasks(boolean copyVariablesToLocalForTasks) {
         this.copyVariablesToLocalForTasks = copyVariablesToLocalForTasks;
     }
 
@@ -236,9 +223,7 @@ public class ActivitiProperties {
         return serializePOJOsInVariablesToJson;
     }
 
-    public void setSerializePOJOsInVariablesToJson(
-        boolean serializePOJOsInVariablesToJson
-    ) {
+    public void setSerializePOJOsInVariablesToJson(boolean serializePOJOsInVariablesToJson) {
         this.serializePOJOsInVariablesToJson = serializePOJOsInVariablesToJson;
     }
 

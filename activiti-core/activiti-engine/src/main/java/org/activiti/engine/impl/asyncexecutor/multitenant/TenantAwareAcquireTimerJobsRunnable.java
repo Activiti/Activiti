@@ -25,8 +25,7 @@ import org.activiti.engine.impl.cfg.multitenant.TenantInfoHolder;
  *
 
  */
-public class TenantAwareAcquireTimerJobsRunnable
-    extends AcquireTimerJobsRunnable {
+public class TenantAwareAcquireTimerJobsRunnable extends AcquireTimerJobsRunnable {
 
     protected TenantInfoHolder tenantInfoHolder;
     protected String tenantId;
@@ -36,10 +35,7 @@ public class TenantAwareAcquireTimerJobsRunnable
         TenantInfoHolder tenantInfoHolder,
         String tenantId
     ) {
-        super(
-            asyncExecutor,
-            asyncExecutor.getProcessEngineConfiguration().getJobManager()
-        );
+        super(asyncExecutor, asyncExecutor.getProcessEngineConfiguration().getJobManager());
         this.tenantInfoHolder = tenantInfoHolder;
         this.tenantId = tenantId;
     }

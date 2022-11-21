@@ -62,9 +62,7 @@ public class DemoApplication implements CommandLineRunner {
 
     @GetMapping("/process-definitions")
     public List<ProcessDefinition> getProcessDefinition() {
-        return processRuntime
-            .processDefinitions(Pageable.of(0, 100))
-            .getContent();
+        return processRuntime.processDefinitions(Pageable.of(0, 100)).getContent();
     }
 
     @Override
@@ -74,9 +72,7 @@ public class DemoApplication implements CommandLineRunner {
     public Connector processTextConnector() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
-            String contentToProcess = (String) inBoundVariables.get(
-                "fileContent"
-            );
+            String contentToProcess = (String) inBoundVariables.get("fileContent");
             // Logic Here to decide if content is approved or not
             if (contentToProcess.contains("activiti")) {
                 integrationContext.addOutBoundVariable("approved", true);
@@ -90,9 +86,7 @@ public class DemoApplication implements CommandLineRunner {
     @Bean
     public Connector tagTextConnector() {
         return integrationContext -> {
-            String contentToTag = (String) integrationContext
-                .getInBoundVariables()
-                .get("fileContent");
+            String contentToTag = (String) integrationContext.getInBoundVariables().get("fileContent");
             contentToTag += " :) ";
             integrationContext.addOutBoundVariable("fileContent", contentToTag);
             System.out.println("Final Content: " + contentToTag);
@@ -103,14 +97,9 @@ public class DemoApplication implements CommandLineRunner {
     @Bean
     public Connector discardTextConnector() {
         return integrationContext -> {
-            String contentToDiscard = (String) integrationContext
-                .getInBoundVariables()
-                .get("fileContent");
+            String contentToDiscard = (String) integrationContext.getInBoundVariables().get("fileContent");
             contentToDiscard += " :( ";
-            integrationContext.addOutBoundVariable(
-                "fileContent",
-                contentToDiscard
-            );
+            integrationContext.addOutBoundVariable("fileContent", contentToDiscard);
             System.out.println("Final Content: " + contentToDiscard);
             return integrationContext;
         };

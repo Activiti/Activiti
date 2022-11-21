@@ -28,8 +28,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.junit.Test;
 
-public class HistoricTaskQueryEscapeClauseTest
-    extends AbstractEscapeClauseTestCase {
+public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
     private String deploymentOneId;
 
@@ -53,9 +52,7 @@ public class HistoricTaskQueryEscapeClauseTest
             repositoryService
                 .createDeployment()
                 .tenantId("One%")
-                .addClasspathResource(
-                    "org/activiti/standalone/escapeclause/oneTaskProcessEscapeClauseTest.bpmn20.xml"
-                )
+                .addClasspathResource("org/activiti/standalone/escapeclause/oneTaskProcessEscapeClauseTest.bpmn20.xml")
                 .deploy()
                 .getId();
 
@@ -63,26 +60,14 @@ public class HistoricTaskQueryEscapeClauseTest
             repositoryService
                 .createDeployment()
                 .tenantId("Two_")
-                .addClasspathResource(
-                    "org/activiti/standalone/escapeclause/oneTaskProcessEscapeClauseTest.bpmn20.xml"
-                )
+                .addClasspathResource("org/activiti/standalone/escapeclause/oneTaskProcessEscapeClauseTest.bpmn20.xml")
                 .deploy()
                 .getId();
 
-        processInstance1 =
-            runtimeService.startProcessInstanceByKeyAndTenantId(
-                "oneTaskProcess",
-                "One%",
-                "One%"
-            );
+        processInstance1 = runtimeService.startProcessInstanceByKeyAndTenantId("oneTaskProcess", "One%", "One%");
         runtimeService.setProcessInstanceName(processInstance1.getId(), "One%");
 
-        processInstance2 =
-            runtimeService.startProcessInstanceByKeyAndTenantId(
-                "oneTaskProcess",
-                "Two_",
-                "Two_"
-            );
+        processInstance2 = runtimeService.startProcessInstanceByKeyAndTenantId("oneTaskProcess", "Two_", "Two_");
         runtimeService.setProcessInstanceName(processInstance2.getId(), "Two_");
 
         Map<String, Object> vars1 = new HashMap<String, Object>();
@@ -90,38 +75,22 @@ public class HistoricTaskQueryEscapeClauseTest
         Map<String, Object> vars2 = new HashMap<String, Object>();
         vars2.put("var1", "Two_");
 
-        task1 =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance1.getId())
-                .singleResult();
+        task1 = taskService.createTaskQuery().processInstanceId(processInstance1.getId()).singleResult();
         taskService.setAssignee(task1.getId(), "assignee%");
         taskService.setOwner(task1.getId(), "owner%");
         taskService.complete(task1.getId(), vars1, true);
 
-        task2 =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance1.getId())
-                .singleResult();
+        task2 = taskService.createTaskQuery().processInstanceId(processInstance1.getId()).singleResult();
         taskService.setAssignee(task2.getId(), "assignee_");
         taskService.setOwner(task2.getId(), "owner_");
         taskService.complete(task2.getId(), vars2, true);
 
-        task3 =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance2.getId())
-                .singleResult();
+        task3 = taskService.createTaskQuery().processInstanceId(processInstance2.getId()).singleResult();
         taskService.setAssignee(task3.getId(), "assignee%");
         taskService.setOwner(task3.getId(), "owner%");
         taskService.complete(task3.getId(), vars1, true);
 
-        task4 =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance2.getId())
-                .singleResult();
+        task4 = taskService.createTaskQuery().processInstanceId(processInstance2.getId()).singleResult();
         taskService.setAssignee(task4.getId(), "assignee_");
         taskService.setOwner(task4.getId(), "owner_");
         taskService.complete(task4.getId(), vars2, true);
@@ -138,11 +107,7 @@ public class HistoricTaskQueryEscapeClauseTest
 
     @Test
     public void testQueryByProcessDefinitionKeyLike() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // processDefinitionKeyLike
             List<HistoricTaskInstance> list = historyService
                 .createHistoricTaskInstanceQuery()
@@ -150,11 +115,7 @@ public class HistoricTaskQueryEscapeClauseTest
                 .list();
             assertThat(list).hasSize(0);
 
-            list =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .processDefinitionKeyLike("%\\_%")
-                    .list();
+            list = historyService.createHistoricTaskInstanceQuery().processDefinitionKeyLike("%\\_%").list();
             assertThat(list).hasSize(0);
 
             // orQuery
@@ -180,11 +141,7 @@ public class HistoricTaskQueryEscapeClauseTest
 
     @Test
     public void testQueryByProcessDefinitionKeyLikeIgnoreCase() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // processDefinitionKeyLikeIgnoreCase
             List<HistoricTaskInstance> list = historyService
                 .createHistoricTaskInstanceQuery()
@@ -192,11 +149,7 @@ public class HistoricTaskQueryEscapeClauseTest
                 .list();
             assertThat(list).hasSize(0);
 
-            list =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .processDefinitionKeyLikeIgnoreCase("%\\_%")
-                    .list();
+            list = historyService.createHistoricTaskInstanceQuery().processDefinitionKeyLikeIgnoreCase("%\\_%").list();
             assertThat(list).hasSize(0);
 
             // orQuery
@@ -222,11 +175,7 @@ public class HistoricTaskQueryEscapeClauseTest
 
     @Test
     public void testQueryByProcessDefinitionNameLike() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // processDefinitionNameLike
             List<HistoricTaskInstance> list = historyService
                 .createHistoricTaskInstanceQuery()
@@ -270,11 +219,7 @@ public class HistoricTaskQueryEscapeClauseTest
 
     @Test
     public void testQueryByProcessInstanceBusinessKeyLike() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // processInstanceBusinessKeyLike
             List<HistoricTaskInstance> list = historyService
                 .createHistoricTaskInstanceQuery()
@@ -340,11 +285,7 @@ public class HistoricTaskQueryEscapeClauseTest
 
     @Test
     public void testQueryByProcessInstanceBusinessKeyLikeIgnoreCase() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // processInstanceBusinessKeyLikeIgnoreCase
             List<HistoricTaskInstance> list = historyService
                 .createHistoricTaskInstanceQuery()
@@ -410,11 +351,7 @@ public class HistoricTaskQueryEscapeClauseTest
 
     @Test
     public void testQueryByTaskDefinitionKeyLike() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // taskDefinitionKeyLike
             List<HistoricTaskInstance> list = historyService
                 .createHistoricTaskInstanceQuery()
@@ -422,11 +359,7 @@ public class HistoricTaskQueryEscapeClauseTest
                 .list();
             assertThat(list).hasSize(0);
 
-            list =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .taskDefinitionKeyLike("%\\_%")
-                    .list();
+            list = historyService.createHistoricTaskInstanceQuery().taskDefinitionKeyLike("%\\_%").list();
             assertThat(list).hasSize(0);
 
             // orQuery
@@ -452,11 +385,7 @@ public class HistoricTaskQueryEscapeClauseTest
 
     @Test
     public void testQueryByTaskNameLike() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // taskNameLike
             List<HistoricTaskInstance> list = historyService
                 .createHistoricTaskInstanceQuery()
@@ -522,11 +451,7 @@ public class HistoricTaskQueryEscapeClauseTest
 
     @Test
     public void testQueryByTaskNameLikeIgnoreCase() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // taskNameLikeIgnoreCase
             List<HistoricTaskInstance> list = historyService
                 .createHistoricTaskInstanceQuery()
@@ -592,11 +517,7 @@ public class HistoricTaskQueryEscapeClauseTest
 
     @Test
     public void testQueryByTaskDescriptionLike() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // taskDescriptionLike
             List<HistoricTaskInstance> list = historyService
                 .createHistoricTaskInstanceQuery()
@@ -662,11 +583,7 @@ public class HistoricTaskQueryEscapeClauseTest
 
     @Test
     public void testQueryByTaskDescriptionLikeIgnoreCase() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // taskDescriptionLikeIgnoreCase
             List<HistoricTaskInstance> list = historyService
                 .createHistoricTaskInstanceQuery()
@@ -732,11 +649,7 @@ public class HistoricTaskQueryEscapeClauseTest
 
     @Test
     public void testQueryByTaskDeleteReasonLike() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // make test data
             Task task5 = taskService.newTask("task5");
             taskService.saveTask(task5);
@@ -754,10 +667,7 @@ public class HistoricTaskQueryEscapeClauseTest
             assertThat(historicTask.getId()).isEqualTo(task5.getId());
 
             historicTask =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .taskDeleteReasonLike("%\\_%")
-                    .singleResult();
+                historyService.createHistoricTaskInstanceQuery().taskDeleteReasonLike("%\\_%").singleResult();
             assertThat(historicTask).isNotNull();
             assertThat(historicTask.getId()).isEqualTo(task6.getId());
 
@@ -790,11 +700,7 @@ public class HistoricTaskQueryEscapeClauseTest
 
     @Test
     public void testQueryByTaskOwnerLike() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // taskOwnerLike
             List<HistoricTaskInstance> list = historyService
                 .createHistoricTaskInstanceQuery()
@@ -860,11 +766,7 @@ public class HistoricTaskQueryEscapeClauseTest
 
     @Test
     public void testQueryByTaskOwnerLikeIgnoreCase() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // taskOwnerLikeIgnoreCase
             List<HistoricTaskInstance> list = historyService
                 .createHistoricTaskInstanceQuery()
@@ -930,11 +832,7 @@ public class HistoricTaskQueryEscapeClauseTest
 
     @Test
     public void testQueryByTaskAssigneeLike() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // taskAssigneeLike
             List<HistoricTaskInstance> list = historyService
                 .createHistoricTaskInstanceQuery()
@@ -1000,11 +898,7 @@ public class HistoricTaskQueryEscapeClauseTest
 
     @Test
     public void testQueryByTaskAssigneeLikeIgnoreCase() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // taskAssigneeLikeIgnoreCase
             List<HistoricTaskInstance> list = historyService
                 .createHistoricTaskInstanceQuery()
@@ -1070,11 +964,7 @@ public class HistoricTaskQueryEscapeClauseTest
 
     @Test
     public void testQueryByTenantIdLike() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // tenantIdLike
             List<HistoricTaskInstance> list = historyService
                 .createHistoricTaskInstanceQuery()
@@ -1140,11 +1030,7 @@ public class HistoricTaskQueryEscapeClauseTest
 
     @Test
     public void testQueryLikeByQueryVariableValue() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // variableValueLike
             List<HistoricTaskInstance> list = historyService
                 .createHistoricTaskInstanceQuery()
@@ -1209,11 +1095,7 @@ public class HistoricTaskQueryEscapeClauseTest
     }
 
     public void testQueryLikeIgnoreCaseByQueryVariableValue() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // variableValueLikeIgnoreCase
             List<HistoricTaskInstance> list = historyService
                 .createHistoricTaskInstanceQuery()

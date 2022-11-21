@@ -28,19 +28,14 @@ public class SignalEventSubscriptionByNameAndExecutionMatcher
     extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
 
     @Override
-    public boolean isRetained(
-        EventSubscriptionEntity eventSubscriptionEntity,
-        Object parameter
-    ) {
+    public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity, Object parameter) {
         Map<String, String> params = (Map<String, String>) parameter;
         String executionId = params.get("executionId");
         String name = params.get("eventName");
 
         return (
             eventSubscriptionEntity.getEventType() != null &&
-            eventSubscriptionEntity
-                .getEventType()
-                .equals(SignalEventSubscriptionEntity.EVENT_TYPE) &&
+            eventSubscriptionEntity.getEventType().equals(SignalEventSubscriptionEntity.EVENT_TYPE) &&
             eventSubscriptionEntity.getExecutionId() != null &&
             eventSubscriptionEntity.getExecutionId().equals(executionId) &&
             eventSubscriptionEntity.getEventName() != null &&

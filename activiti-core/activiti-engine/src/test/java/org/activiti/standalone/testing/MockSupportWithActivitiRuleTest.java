@@ -40,10 +40,7 @@ public class MockSupportWithActivitiRuleTest {
 
             activitiRule
                 .mockSupport()
-                .mockServiceTaskWithClassDelegate(
-                    "com.yourcompany.delegate",
-                    ServiceTaskTestMock.class
-                );
+                .mockServiceTaskWithClassDelegate("com.yourcompany.delegate", ServiceTaskTestMock.class);
             activitiRule
                 .mockSupport()
                 .mockServiceTaskWithClassDelegate(
@@ -57,9 +54,7 @@ public class MockSupportWithActivitiRuleTest {
     @Deployment
     public void testClassDelegateMockSupport() {
         assertThat(ServiceTaskTestMock.CALL_COUNT.get()).isEqualTo(0);
-        activitiRule
-            .getRuntimeService()
-            .startProcessInstanceByKey("mockSupportTest");
+        activitiRule.getRuntimeService().startProcessInstanceByKey("mockSupportTest");
         assertThat(ServiceTaskTestMock.CALL_COUNT.get()).isEqualTo(1);
     }
 
@@ -67,9 +62,7 @@ public class MockSupportWithActivitiRuleTest {
     @Deployment
     public void testClassDelegateStringMockSupport() {
         assertThat(ServiceTaskTestMock.CALL_COUNT.get()).isEqualTo(0);
-        activitiRule
-            .getRuntimeService()
-            .startProcessInstanceByKey("mockSupportTest");
+        activitiRule.getRuntimeService().startProcessInstanceByKey("mockSupportTest");
         assertThat(ServiceTaskTestMock.CALL_COUNT.get()).isEqualTo(1);
     }
 
@@ -81,9 +74,7 @@ public class MockSupportWithActivitiRuleTest {
     )
     public void testMockedServiceTaskAnnotation() {
         assertThat(ServiceTaskTestMock.CALL_COUNT.get()).isEqualTo(0);
-        activitiRule
-            .getRuntimeService()
-            .startProcessInstanceByKey("mockSupportTest");
+        activitiRule.getRuntimeService().startProcessInstanceByKey("mockSupportTest");
         assertThat(ServiceTaskTestMock.CALL_COUNT.get()).isEqualTo(1);
     }
 
@@ -99,9 +90,7 @@ public class MockSupportWithActivitiRuleTest {
     )
     public void testMockedServiceTaskByIdAnnotation() {
         assertThat(ServiceTaskTestMock.CALL_COUNT.get()).isEqualTo(0);
-        activitiRule
-            .getRuntimeService()
-            .startProcessInstanceByKey("mockSupportTest");
+        activitiRule.getRuntimeService().startProcessInstanceByKey("mockSupportTest");
         assertThat(ServiceTaskTestMock.CALL_COUNT.get()).isEqualTo(1);
     }
 
@@ -121,9 +110,7 @@ public class MockSupportWithActivitiRuleTest {
     )
     public void testMockedServiceTasksAnnotation() {
         assertThat(ServiceTaskTestMock.CALL_COUNT.get()).isEqualTo(0);
-        activitiRule
-            .getRuntimeService()
-            .startProcessInstanceByKey("mockSupportTest");
+        activitiRule.getRuntimeService().startProcessInstanceByKey("mockSupportTest");
         assertThat(ServiceTaskTestMock.CALL_COUNT.get()).isEqualTo(2);
     }
 
@@ -131,25 +118,12 @@ public class MockSupportWithActivitiRuleTest {
     @Deployment
     @NoOpServiceTasks
     public void testNoOpServiceTasksAnnotation() {
-        assertThat(
-            activitiRule.mockSupport().getNrOfNoOpServiceTaskExecutions()
-        )
-            .isEqualTo(0);
-        activitiRule
-            .getRuntimeService()
-            .startProcessInstanceByKey("mockSupportTest");
-        assertThat(
-            activitiRule.mockSupport().getNrOfNoOpServiceTaskExecutions()
-        )
-            .isEqualTo(5);
+        assertThat(activitiRule.mockSupport().getNrOfNoOpServiceTaskExecutions()).isEqualTo(0);
+        activitiRule.getRuntimeService().startProcessInstanceByKey("mockSupportTest");
+        assertThat(activitiRule.mockSupport().getNrOfNoOpServiceTaskExecutions()).isEqualTo(5);
 
         for (int i = 1; i <= 5; i++) {
-            assertThat(
-                activitiRule
-                    .mockSupport()
-                    .getExecutedNoOpServiceTaskDelegateClassNames()
-                    .get(i - 1)
-            )
+            assertThat(activitiRule.mockSupport().getExecutedNoOpServiceTaskDelegateClassNames().get(i - 1))
                 .isEqualTo("com.yourcompany.delegate" + i);
         }
     }
@@ -162,24 +136,16 @@ public class MockSupportWithActivitiRuleTest {
     )
     @NoOpServiceTasks(
         ids = { "serviceTask1", "serviceTask3", "serviceTask5" },
-        classNames = {
-            "com.yourcompany.delegate2", "com.yourcompany.delegate4",
-        }
+        classNames = { "com.yourcompany.delegate2", "com.yourcompany.delegate4" }
     )
     public void testNoOpServiceTasksWithIdsAnnotation() {
         ActivitiMockSupport mockSupport = activitiRule.getMockSupport();
         assertThat(mockSupport.getNrOfNoOpServiceTaskExecutions()).isEqualTo(0);
-        activitiRule
-            .getRuntimeService()
-            .startProcessInstanceByKey("mockSupportTest");
+        activitiRule.getRuntimeService().startProcessInstanceByKey("mockSupportTest");
         assertThat(mockSupport.getNrOfNoOpServiceTaskExecutions()).isEqualTo(5);
 
         for (int i = 1; i <= 5; i++) {
-            assertThat(
-                mockSupport
-                    .getExecutedNoOpServiceTaskDelegateClassNames()
-                    .get(i - 1)
-            )
+            assertThat(mockSupport.getExecutedNoOpServiceTaskDelegateClassNames().get(i - 1))
                 .isEqualTo("com.yourcompany.delegate" + i);
         }
     }

@@ -27,8 +27,7 @@ import org.activiti.engine.task.Task;
 /**
  * Records a copy of the tasks involved in the events
  */
-public class TestActivitiEntityEventTaskListener
-    extends TestActivitiEntityEventListener {
+public class TestActivitiEntityEventTaskListener extends TestActivitiEntityEventListener {
 
     private List<Task> tasks;
 
@@ -48,19 +47,14 @@ public class TestActivitiEntityEventTaskListener
         super.onEvent(event);
         if (
             event instanceof ActivitiEntityEvent &&
-            Task.class.isAssignableFrom(
-                    ((ActivitiEntityEvent) event).getEntity().getClass()
-                )
+            Task.class.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass())
         ) {
             tasks.add(copy((Task) ((ActivitiEntityEvent) event).getEntity()));
         }
     }
 
     protected Task copy(Task aTask) {
-        TaskEntity ent = Context
-            .getCommandContext()
-            .getTaskEntityManager()
-            .create();
+        TaskEntity ent = Context.getCommandContext().getTaskEntityManager().create();
         ent.setId(aTask.getId());
         ent.setName(aTask.getName());
         ent.setDescription(aTask.getDescription());

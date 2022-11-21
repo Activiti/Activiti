@@ -50,8 +50,7 @@ public class ParsedDeployment {
         this.deploymentEntity = entity;
         this.processDefinitions = processDefinitions;
         this.mapProcessDefinitionsToParses = mapProcessDefinitionsToParses;
-        this.mapProcessDefinitionsToResources =
-            mapProcessDefinitionsToResources;
+        this.mapProcessDefinitionsToResources = mapProcessDefinitionsToResources;
     }
 
     public DeploymentEntity getDeployment() {
@@ -62,35 +61,23 @@ public class ParsedDeployment {
         return processDefinitions;
     }
 
-    public ResourceEntity getResourceForProcessDefinition(
-        ProcessDefinitionEntity processDefinition
-    ) {
+    public ResourceEntity getResourceForProcessDefinition(ProcessDefinitionEntity processDefinition) {
         return mapProcessDefinitionsToResources.get(processDefinition);
     }
 
-    public BpmnParse getBpmnParseForProcessDefinition(
-        ProcessDefinitionEntity processDefinition
-    ) {
+    public BpmnParse getBpmnParseForProcessDefinition(ProcessDefinitionEntity processDefinition) {
         return mapProcessDefinitionsToParses.get(processDefinition);
     }
 
-    public BpmnModel getBpmnModelForProcessDefinition(
-        ProcessDefinitionEntity processDefinition
-    ) {
+    public BpmnModel getBpmnModelForProcessDefinition(ProcessDefinitionEntity processDefinition) {
         BpmnParse parse = getBpmnParseForProcessDefinition(processDefinition);
 
         return (parse == null ? null : parse.getBpmnModel());
     }
 
-    public Process getProcessModelForProcessDefinition(
-        ProcessDefinitionEntity processDefinition
-    ) {
+    public Process getProcessModelForProcessDefinition(ProcessDefinitionEntity processDefinition) {
         BpmnModel model = getBpmnModelForProcessDefinition(processDefinition);
 
-        return (
-            model == null
-                ? null
-                : model.getProcessById(processDefinition.getKey())
-        );
+        return (model == null ? null : model.getProcessById(processDefinition.getKey()));
     }
 }

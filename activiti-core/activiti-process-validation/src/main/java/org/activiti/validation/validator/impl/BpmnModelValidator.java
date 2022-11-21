@@ -35,9 +35,7 @@ public class BpmnModelValidator extends ValidatorImpl {
 
     @Override
     public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
-        List<Process> processesDuplicated = getProcessesWithSameId(
-            bpmnModel.getProcesses()
-        );
+        List<Process> processesDuplicated = getProcessesWithSameId(bpmnModel.getProcesses());
         if (!processesDuplicated.isEmpty()) {
             addError(
                 errors,
@@ -48,10 +46,7 @@ public class BpmnModelValidator extends ValidatorImpl {
         }
 
         // If all process definitions of this bpmnModel are not executable, raise an error
-        boolean isAtLeastOneExecutable = validateAtLeastOneExecutable(
-            bpmnModel,
-            errors
-        );
+        boolean isAtLeastOneExecutable = validateAtLeastOneExecutable(bpmnModel, errors);
 
         // If at least one process definition is executable, show a warning for each of the none-executables
         if (isAtLeastOneExecutable) {
@@ -71,16 +66,8 @@ public class BpmnModelValidator extends ValidatorImpl {
         handleBPMNModelConstraints(bpmnModel, errors);
     }
 
-    protected void handleProcessConstraints(
-        BpmnModel bpmnModel,
-        Process process,
-        List<ValidationError> errors
-    ) {
-        if (
-            process.getId() != null &&
-            process.getId().length() >
-            Constraints.PROCESS_DEFINITION_ID_MAX_LENGTH
-        ) {
+    protected void handleProcessConstraints(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+        if (process.getId() != null && process.getId().length() > Constraints.PROCESS_DEFINITION_ID_MAX_LENGTH) {
             addError(
                 errors,
                 Problems.PROCESS_DEFINITION_ID_TOO_LONG,
@@ -90,11 +77,7 @@ public class BpmnModelValidator extends ValidatorImpl {
                 " characters"
             );
         }
-        if (
-            process.getName() != null &&
-            process.getName().length() >
-            Constraints.PROCESS_DEFINITION_NAME_MAX_LENGTH
-        ) {
+        if (process.getName() != null && process.getName().length() > Constraints.PROCESS_DEFINITION_NAME_MAX_LENGTH) {
             addError(
                 errors,
                 Problems.PROCESS_DEFINITION_NAME_TOO_LONG,
@@ -106,8 +89,7 @@ public class BpmnModelValidator extends ValidatorImpl {
         }
         if (
             process.getDocumentation() != null &&
-            process.getDocumentation().length() >
-            Constraints.PROCESS_DEFINITION_DOCUMENTATION_MAX_LENGTH
+            process.getDocumentation().length() > Constraints.PROCESS_DEFINITION_DOCUMENTATION_MAX_LENGTH
         ) {
             addError(
                 errors,
@@ -120,14 +102,10 @@ public class BpmnModelValidator extends ValidatorImpl {
         }
     }
 
-    protected void handleBPMNModelConstraints(
-        BpmnModel bpmnModel,
-        List<ValidationError> errors
-    ) {
+    protected void handleBPMNModelConstraints(BpmnModel bpmnModel, List<ValidationError> errors) {
         if (
             bpmnModel.getTargetNamespace() != null &&
-            bpmnModel.getTargetNamespace().length() >
-            Constraints.BPMN_MODEL_TARGET_NAMESPACE_MAX_LENGTH
+            bpmnModel.getTargetNamespace().length() > Constraints.BPMN_MODEL_TARGET_NAMESPACE_MAX_LENGTH
         ) {
             addError(
                 errors,
@@ -142,10 +120,7 @@ public class BpmnModelValidator extends ValidatorImpl {
     /**
      * Returns 'true' if at least one process definition in the {@link BpmnModel} is executable.
      */
-    protected boolean validateAtLeastOneExecutable(
-        BpmnModel bpmnModel,
-        List<ValidationError> errors
-    ) {
+    protected boolean validateAtLeastOneExecutable(BpmnModel bpmnModel, List<ValidationError> errors) {
         int nrOfExecutableDefinitions = 0;
         for (Process process : bpmnModel.getProcesses()) {
             if (process.isExecutable()) {
@@ -164,9 +139,7 @@ public class BpmnModelValidator extends ValidatorImpl {
         return nrOfExecutableDefinitions > 0;
     }
 
-    protected List<Process> getProcessesWithSameId(
-        final List<Process> processes
-    ) {
+    protected List<Process> getProcessesWithSameId(final List<Process> processes) {
         List<Process> filteredProcesses = processes
             .stream()
             .filter(process -> process.getName() != null)
@@ -179,11 +152,7 @@ public class BpmnModelValidator extends ValidatorImpl {
             .collect(Collectors.toList());
     }
 
-    private static Map<String, List<Process>> getDuplicatesMap(
-        List<Process> processes
-    ) {
-        return processes
-            .stream()
-            .collect(Collectors.groupingBy(Process::getId));
+    private static Map<String, List<Process>> getDuplicatesMap(List<Process> processes) {
+        return processes.stream().collect(Collectors.groupingBy(Process::getId));
     }
 }

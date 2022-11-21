@@ -34,31 +34,18 @@ import org.activiti.validation.validator.ProcessLevelValidator;
 public class EventSubprocessValidator extends ProcessLevelValidator {
 
     @Override
-    protected void executeValidation(
-        BpmnModel bpmnModel,
-        Process process,
-        List<ValidationError> errors
-    ) {
-        List<EventSubProcess> eventSubprocesses = process.findFlowElementsOfType(
-            EventSubProcess.class
-        );
+    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+        List<EventSubProcess> eventSubprocesses = process.findFlowElementsOfType(EventSubProcess.class);
         for (EventSubProcess eventSubprocess : eventSubprocesses) {
             List<StartEvent> startEvents = process.findFlowElementsInSubProcessOfType(
                 eventSubprocess,
                 StartEvent.class
             );
             for (StartEvent startEvent : startEvents) {
-                if (
-                    startEvent.getEventDefinitions() != null &&
-                    !startEvent.getEventDefinitions().isEmpty()
-                ) {
-                    EventDefinition eventDefinition = startEvent
-                        .getEventDefinitions()
-                        .get(0);
+                if (startEvent.getEventDefinitions() != null && !startEvent.getEventDefinitions().isEmpty()) {
+                    EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
                     if (
-                        !(
-                            eventDefinition instanceof org.activiti.bpmn.model.ErrorEventDefinition
-                        ) &&
+                        !(eventDefinition instanceof org.activiti.bpmn.model.ErrorEventDefinition) &&
                         !(eventDefinition instanceof MessageEventDefinition) &&
                         !(eventDefinition instanceof SignalEventDefinition)
                     ) {

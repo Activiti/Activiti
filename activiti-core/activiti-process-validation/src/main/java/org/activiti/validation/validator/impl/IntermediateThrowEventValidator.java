@@ -34,14 +34,8 @@ import org.activiti.validation.validator.ProcessLevelValidator;
 public class IntermediateThrowEventValidator extends ProcessLevelValidator {
 
     @Override
-    protected void executeValidation(
-        BpmnModel bpmnModel,
-        Process process,
-        List<ValidationError> errors
-    ) {
-        List<ThrowEvent> throwEvents = process.findFlowElementsOfType(
-            ThrowEvent.class
-        );
+    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+        List<ThrowEvent> throwEvents = process.findFlowElementsOfType(ThrowEvent.class);
         for (ThrowEvent throwEvent : throwEvents) {
             EventDefinition eventDefinition = null;
             if (!throwEvent.getEventDefinitions().isEmpty()) {

@@ -29,14 +29,11 @@ import org.slf4j.LoggerFactory;
 /**
 
  */
-public class MoveTimerToExecutableJobCmd
-    implements Command<JobEntity>, Serializable {
+public class MoveTimerToExecutableJobCmd implements Command<JobEntity>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static Logger log = LoggerFactory.getLogger(
-        MoveTimerToExecutableJobCmd.class
-    );
+    private static Logger log = LoggerFactory.getLogger(MoveTimerToExecutableJobCmd.class);
 
     protected String jobId;
 
@@ -49,9 +46,7 @@ public class MoveTimerToExecutableJobCmd
             throw new ActivitiIllegalArgumentException("jobId and job is null");
         }
 
-        TimerJobEntity timerJob = commandContext
-            .getTimerJobEntityManager()
-            .findById(jobId);
+        TimerJobEntity timerJob = commandContext.getTimerJobEntityManager().findById(jobId);
 
         if (timerJob == null) {
             throw new JobNotFoundException(jobId);
@@ -61,9 +56,7 @@ public class MoveTimerToExecutableJobCmd
             log.debug("Executing timer job {}", timerJob.getId());
         }
 
-        return commandContext
-            .getJobManager()
-            .moveTimerJobToExecutableJob(timerJob);
+        return commandContext.getJobManager().moveTimerJobToExecutableJob(timerJob);
     }
 
     public String getJobId() {

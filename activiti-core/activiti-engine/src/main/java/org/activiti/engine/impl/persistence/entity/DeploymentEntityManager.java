@@ -27,28 +27,18 @@ import org.activiti.engine.repository.Deployment;
 
  */
 @Internal
-public interface DeploymentEntityManager
-    extends EntityManager<DeploymentEntity> {
+public interface DeploymentEntityManager extends EntityManager<DeploymentEntity> {
     DeploymentEntity findLatestDeploymentByName(String deploymentName);
 
-    List<Deployment> findDeploymentsByQueryCriteria(
-        DeploymentQueryImpl deploymentQuery,
-        Page page
-    );
+    List<Deployment> findDeploymentsByQueryCriteria(DeploymentQueryImpl deploymentQuery, Page page);
 
     List<String> getDeploymentResourceNames(String deploymentId);
 
-    List<Deployment> findDeploymentsByNativeQuery(
-        Map<String, Object> parameterMap,
-        int firstResult,
-        int maxResults
-    );
+    List<Deployment> findDeploymentsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
 
     long findDeploymentCountByNativeQuery(Map<String, Object> parameterMap);
 
-    long findDeploymentCountByQueryCriteria(
-        DeploymentQueryImpl deploymentQuery
-    );
+    long findDeploymentCountByQueryCriteria(DeploymentQueryImpl deploymentQuery);
 
     void deleteDeployment(String deploymentId, boolean cascade);
 

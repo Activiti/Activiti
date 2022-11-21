@@ -38,9 +38,7 @@ public class IntermediateNoneEventTest extends PluggableActivitiTestCase {
     @Deployment
     public void testIntermediateNoneTimerEvent() throws Exception {
         assertThat(listenerExecuted).isFalse();
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "intermediateNoneEventExample"
-        );
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("intermediateNoneEventExample");
         assertProcessEnded(pi.getProcessInstanceId());
         assertThat(listenerExecuted).isTrue();
     }

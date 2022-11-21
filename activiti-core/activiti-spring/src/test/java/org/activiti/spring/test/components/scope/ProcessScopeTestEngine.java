@@ -31,10 +31,7 @@ class ProcessScopeTestEngine {
 
     private int customerId = 43;
 
-    private String keyForObjectType(
-        Map<String, Object> runtimeVars,
-        Class<?> clazz
-    ) {
+    private String keyForObjectType(Map<String, Object> runtimeVars, Class<?> clazz) {
         for (Map.Entry<String, Object> e : runtimeVars.entrySet()) {
             Object value = e.getValue();
             if (value.getClass().isAssignableFrom(clazz)) {
@@ -48,19 +45,11 @@ class ProcessScopeTestEngine {
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("customerId", customerId);
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "component-waiter",
-            vars
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("component-waiter", vars);
 
-        Map<String, Object> runtimeVars = runtimeService.getVariables(
-            processInstance.getId()
-        );
+        Map<String, Object> runtimeVars = runtimeService.getVariables(processInstance.getId());
 
-        String statefulObjectVariableKey = keyForObjectType(
-            runtimeVars,
-            StatefulObject.class
-        );
+        String statefulObjectVariableKey = keyForObjectType(runtimeVars, StatefulObject.class);
 
         assertThat(!runtimeVars.isEmpty()).isTrue();
         assertThat(StringUtils.hasText(statefulObjectVariableKey)).isTrue();
@@ -76,21 +65,14 @@ class ProcessScopeTestEngine {
         // the process has paused
         String procId = processInstance.getProcessInstanceId();
 
-        List<Task> tasks = taskService
-            .createTaskQuery()
-            .executionId(procId)
-            .list();
+        List<Task> tasks = taskService.createTaskQuery().executionId(procId).list();
         assertThat(tasks.size()).isEqualTo(1);
 
         Task t = tasks.iterator().next();
         this.taskService.claim(t.getId(), "me");
         this.taskService.complete(t.getId());
 
-        scopedObject =
-            (StatefulObject) runtimeService.getVariable(
-                processInstance.getId(),
-                statefulObjectVariableKey
-            );
+        scopedObject = (StatefulObject) runtimeService.getVariable(processInstance.getId(), statefulObjectVariableKey);
         assertThat(scopedObject.getVisitedCount()).isEqualTo(3);
 
         assertThat(scopedObject.getCustomerId()).isEqualTo(customerId);

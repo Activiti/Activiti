@@ -22,45 +22,26 @@ import org.activiti.api.runtime.model.impl.BPMNSequenceFlowImpl;
 import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
 
 public class ToSequenceFlowTakenConverter
-    implements
-        EventConverter<BPMNSequenceFlowTakenEvent, ActivitiSequenceFlowTakenEvent> {
+    implements EventConverter<BPMNSequenceFlowTakenEvent, ActivitiSequenceFlowTakenEvent> {
 
     @Override
-    public Optional<BPMNSequenceFlowTakenEvent> from(
-        ActivitiSequenceFlowTakenEvent internalEvent
-    ) {
+    public Optional<BPMNSequenceFlowTakenEvent> from(ActivitiSequenceFlowTakenEvent internalEvent) {
         BPMNSequenceFlowImpl sequenceFlow = new BPMNSequenceFlowImpl(
             internalEvent.getId(),
             internalEvent.getSourceActivityId(),
             internalEvent.getTargetActivityId()
         );
 
-        sequenceFlow.setProcessDefinitionId(
-            internalEvent.getProcessDefinitionId()
-        );
+        sequenceFlow.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         sequenceFlow.setProcessInstanceId(internalEvent.getProcessInstanceId());
-        sequenceFlow.setSourceActivityName(
-            internalEvent.getSourceActivityName()
-        );
-        sequenceFlow.setSourceActivityType(
-            internalEvent.getSourceActivityType()
-        );
-        sequenceFlow.setTargetActivityName(
-            internalEvent.getTargetActivityName()
-        );
-        sequenceFlow.setTargetActivityType(
-            internalEvent.getTargetActivityType()
-        );
+        sequenceFlow.setSourceActivityName(internalEvent.getSourceActivityName());
+        sequenceFlow.setSourceActivityType(internalEvent.getSourceActivityType());
+        sequenceFlow.setTargetActivityName(internalEvent.getTargetActivityName());
+        sequenceFlow.setTargetActivityType(internalEvent.getTargetActivityType());
 
-        BPMNSequenceFlowTakenImpl sequenceFlowTaken = new BPMNSequenceFlowTakenImpl(
-            sequenceFlow
-        );
-        sequenceFlowTaken.setProcessInstanceId(
-            internalEvent.getProcessInstanceId()
-        );
-        sequenceFlowTaken.setProcessDefinitionId(
-            internalEvent.getProcessDefinitionId()
-        );
+        BPMNSequenceFlowTakenImpl sequenceFlowTaken = new BPMNSequenceFlowTakenImpl(sequenceFlow);
+        sequenceFlowTaken.setProcessInstanceId(internalEvent.getProcessInstanceId());
+        sequenceFlowTaken.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
 
         return Optional.of(sequenceFlowTaken);
     }

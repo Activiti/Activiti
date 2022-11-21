@@ -34,21 +34,12 @@ public class SimpleGrantedAuthoritiesResolverTest {
     public void testGetAuthorities() {
         // given
         // given
-        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(
-            "GROUP_users",
-            "ROLE_admin"
-        );
+        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("GROUP_users", "ROLE_admin");
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(
-            "user",
-            "password",
-            authorities
-        );
+        Authentication authentication = new UsernamePasswordAuthenticationToken("user", "password", authorities);
 
         // when
-        Collection<? extends GrantedAuthority> result = subject.getAuthorities(
-            authentication
-        );
+        Collection<? extends GrantedAuthority> result = subject.getAuthorities(authentication);
 
         // then
         assertThat(result).isNotEmpty().asList().containsAll(authorities);

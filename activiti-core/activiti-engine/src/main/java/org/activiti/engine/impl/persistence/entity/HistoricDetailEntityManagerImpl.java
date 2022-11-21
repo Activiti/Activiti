@@ -50,12 +50,8 @@ public class HistoricDetailEntityManagerImpl
         VariableInstanceEntity variableInstance
     ) {
         HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = historicDetailDataManager.createHistoricDetailVariableInstanceUpdate();
-        historicVariableUpdate.setProcessInstanceId(
-            variableInstance.getProcessInstanceId()
-        );
-        historicVariableUpdate.setExecutionId(
-            variableInstance.getExecutionId()
-        );
+        historicVariableUpdate.setProcessInstanceId(variableInstance.getProcessInstanceId());
+        historicVariableUpdate.setExecutionId(variableInstance.getExecutionId());
         historicVariableUpdate.setTaskId(variableInstance.getTaskId());
         historicVariableUpdate.setTime(getClock().getCurrentTime());
         historicVariableUpdate.setRevision(variableInstance.getRevision());
@@ -63,9 +59,7 @@ public class HistoricDetailEntityManagerImpl
         historicVariableUpdate.setVariableType(variableInstance.getType());
         historicVariableUpdate.setTextValue(variableInstance.getTextValue());
         historicVariableUpdate.setTextValue2(variableInstance.getTextValue2());
-        historicVariableUpdate.setDoubleValue(
-            variableInstance.getDoubleValue()
-        );
+        historicVariableUpdate.setDoubleValue(variableInstance.getDoubleValue());
         historicVariableUpdate.setLongValue(variableInstance.getLongValue());
 
         if (variableInstance.getBytes() != null) {
@@ -83,21 +77,14 @@ public class HistoricDetailEntityManagerImpl
         if (entity instanceof HistoricDetailVariableInstanceUpdateEntity) {
             HistoricDetailVariableInstanceUpdateEntity historicDetailVariableInstanceUpdateEntity =
                 ((HistoricDetailVariableInstanceUpdateEntity) entity);
-            if (
-                historicDetailVariableInstanceUpdateEntity.getByteArrayRef() !=
-                null
-            ) {
-                historicDetailVariableInstanceUpdateEntity
-                    .getByteArrayRef()
-                    .delete();
+            if (historicDetailVariableInstanceUpdateEntity.getByteArrayRef() != null) {
+                historicDetailVariableInstanceUpdateEntity.getByteArrayRef().delete();
             }
         }
     }
 
     @Override
-    public void deleteHistoricDetailsByProcessInstanceId(
-        String historicProcessInstanceId
-    ) {
+    public void deleteHistoricDetailsByProcessInstanceId(String historicProcessInstanceId) {
         if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
             List<HistoricDetailEntity> historicDetails = historicDetailDataManager.findHistoricDetailsByProcessInstanceId(
                 historicProcessInstanceId
@@ -110,12 +97,8 @@ public class HistoricDetailEntityManagerImpl
     }
 
     @Override
-    public long findHistoricDetailCountByQueryCriteria(
-        HistoricDetailQueryImpl historicVariableUpdateQuery
-    ) {
-        return historicDetailDataManager.findHistoricDetailCountByQueryCriteria(
-            historicVariableUpdateQuery
-        );
+    public long findHistoricDetailCountByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery) {
+        return historicDetailDataManager.findHistoricDetailCountByQueryCriteria(historicVariableUpdateQuery);
     }
 
     @Override
@@ -123,18 +106,13 @@ public class HistoricDetailEntityManagerImpl
         HistoricDetailQueryImpl historicVariableUpdateQuery,
         Page page
     ) {
-        return historicDetailDataManager.findHistoricDetailsByQueryCriteria(
-            historicVariableUpdateQuery,
-            page
-        );
+        return historicDetailDataManager.findHistoricDetailsByQueryCriteria(historicVariableUpdateQuery, page);
     }
 
     @Override
     public void deleteHistoricDetailsByTaskId(String taskId) {
         if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.FULL)) {
-            List<HistoricDetailEntity> details = historicDetailDataManager.findHistoricDetailsByTaskId(
-                taskId
-            );
+            List<HistoricDetailEntity> details = historicDetailDataManager.findHistoricDetailsByTaskId(taskId);
             for (HistoricDetail detail : details) {
                 delete((HistoricDetailEntity) detail);
             }
@@ -147,29 +125,19 @@ public class HistoricDetailEntityManagerImpl
         int firstResult,
         int maxResults
     ) {
-        return historicDetailDataManager.findHistoricDetailsByNativeQuery(
-            parameterMap,
-            firstResult,
-            maxResults
-        );
+        return historicDetailDataManager.findHistoricDetailsByNativeQuery(parameterMap, firstResult, maxResults);
     }
 
     @Override
-    public long findHistoricDetailCountByNativeQuery(
-        Map<String, Object> parameterMap
-    ) {
-        return historicDetailDataManager.findHistoricDetailCountByNativeQuery(
-            parameterMap
-        );
+    public long findHistoricDetailCountByNativeQuery(Map<String, Object> parameterMap) {
+        return historicDetailDataManager.findHistoricDetailCountByNativeQuery(parameterMap);
     }
 
     public HistoricDetailDataManager getHistoricDetailDataManager() {
         return historicDetailDataManager;
     }
 
-    public void setHistoricDetailDataManager(
-        HistoricDetailDataManager historicDetailDataManager
-    ) {
+    public void setHistoricDetailDataManager(HistoricDetailDataManager historicDetailDataManager) {
         this.historicDetailDataManager = historicDetailDataManager;
     }
 }

@@ -97,10 +97,7 @@ public class JsonNodeELResolver extends ELResolver {
      *         object is null.
      */
     @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(
-        ELContext context,
-        Object base
-    ) {
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
         if (isResolvable(base)) {
             JsonNode node = (JsonNode) base;
             final Iterator<String> keys = node.fieldNames();
@@ -114,18 +111,13 @@ public class JsonNodeELResolver extends ELResolver {
                 public FeatureDescriptor next() {
                     Object key = keys.next();
                     FeatureDescriptor feature = new FeatureDescriptor();
-                    feature.setDisplayName(
-                        key == null ? "null" : key.toString()
-                    );
+                    feature.setDisplayName(key == null ? "null" : key.toString());
                     feature.setName(feature.getDisplayName());
                     feature.setShortDescription("");
                     feature.setExpert(true);
                     feature.setHidden(false);
                     feature.setPreferred(true);
-                    feature.setValue(
-                        TYPE,
-                        key == null ? "null" : key.getClass()
-                    );
+                    feature.setValue(TYPE, key == null ? "null" : key.getClass());
                     feature.setValue(RESOLVABLE_AT_DESIGN_TIME, true);
                     return feature;
                 }
@@ -234,8 +226,7 @@ public class JsonNodeELResolver extends ELResolver {
                 }
             } else {
                 if (resultNode.isArray()) {
-                    result =
-                        getObjectMapper().convertValue(resultNode, List.class);
+                    result = getObjectMapper().convertValue(resultNode, List.class);
                 } else {
                     result = resultNode;
                 }
@@ -339,12 +330,7 @@ public class JsonNodeELResolver extends ELResolver {
      *             the cause property of this exception, if available.
      */
     @Override
-    public void setValue(
-        ELContext context,
-        Object base,
-        Object property,
-        Object value
-    ) {
+    public void setValue(ELContext context, Object base, Object property, Object value) {
         if (context == null) {
             throw new NullPointerException("context is null");
         }

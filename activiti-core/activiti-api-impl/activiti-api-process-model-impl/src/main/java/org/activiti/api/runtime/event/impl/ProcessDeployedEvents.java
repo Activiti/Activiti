@@ -22,9 +22,7 @@ public class ProcessDeployedEvents {
 
     private List<ProcessDeployedEvent> processDeployedEvents;
 
-    public ProcessDeployedEvents(
-        List<ProcessDeployedEvent> processDeployedEvents
-    ) {
+    public ProcessDeployedEvents(List<ProcessDeployedEvent> processDeployedEvents) {
         this.processDeployedEvents = processDeployedEvents;
     }
 

@@ -40,11 +40,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
     /**
      * Check identity links on process definitions.
      */
-    @Deployment(
-        resources = {
-            "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml",
-        }
-    )
+    @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
     public void testProcessDefinitionIdentityLinkEvents() throws Exception {
         ProcessDefinition processDefinition = repositoryService
             .createProcessDefinitionQuery()
@@ -54,65 +50,45 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
         assertThat(processDefinition).isNotNull();
 
         // Add candidate user and group
-        repositoryService.addCandidateStarterUser(
-            processDefinition.getId(),
-            "kermit"
-        );
-        repositoryService.addCandidateStarterGroup(
-            processDefinition.getId(),
-            "sales"
-        );
+        repositoryService.addCandidateStarterUser(processDefinition.getId(), "kermit");
+        repositoryService.addCandidateStarterGroup(processDefinition.getId(), "sales");
         assertThat(listener.getEventsReceived()).hasSize(4);
 
-        ActivitiEntityEvent event = (ActivitiEntityEvent) listener
-            .getEventsReceived()
-            .get(0);
+        ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
         assertThat(event.getEntity()).isInstanceOf(IdentityLink.class);
-        assertThat(event.getProcessDefinitionId())
-            .isEqualTo(processDefinition.getId());
+        assertThat(event.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
         assertThat(event.getProcessInstanceId()).isNull();
         assertThat(event.getExecutionId()).isNull();
 
         event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-        assertThat(event.getType())
-            .isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
 
         event = (ActivitiEntityEvent) listener.getEventsReceived().get(2);
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
         assertThat(event.getEntity()).isInstanceOf(IdentityLink.class);
-        assertThat(event.getProcessDefinitionId())
-            .isEqualTo(processDefinition.getId());
+        assertThat(event.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
         assertThat(event.getProcessInstanceId()).isNull();
         assertThat(event.getExecutionId()).isNull();
 
         event = (ActivitiEntityEvent) listener.getEventsReceived().get(3);
-        assertThat(event.getType())
-            .isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
         listener.clearEventsReceived();
 
         // Delete identity links
-        repositoryService.deleteCandidateStarterUser(
-            processDefinition.getId(),
-            "kermit"
-        );
-        repositoryService.deleteCandidateStarterGroup(
-            processDefinition.getId(),
-            "sales"
-        );
+        repositoryService.deleteCandidateStarterUser(processDefinition.getId(), "kermit");
+        repositoryService.deleteCandidateStarterGroup(processDefinition.getId(), "sales");
         assertThat(listener.getEventsReceived()).hasSize(2);
         event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
         assertThat(event.getEntity()).isInstanceOf(IdentityLink.class);
-        assertThat(event.getProcessDefinitionId())
-            .isEqualTo(processDefinition.getId());
+        assertThat(event.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
         assertThat(event.getProcessInstanceId()).isNull();
         assertThat(event.getExecutionId()).isNull();
         event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
         assertThat(event.getEntity()).isInstanceOf(IdentityLink.class);
-        assertThat(event.getProcessDefinitionId())
-            .isEqualTo(processDefinition.getId());
+        assertThat(event.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
         assertThat(event.getProcessInstanceId()).isNull();
         assertThat(event.getExecutionId()).isNull();
     }
@@ -120,41 +96,26 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
     /**
      * Check identity links on process instances.
      */
-    @Deployment(
-        resources = {
-            "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml",
-        }
-    )
+    @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
     public void testProcessInstanceIdentityLinkEvents() throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "oneTaskProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
         // Add identity link
-        runtimeService.addUserIdentityLink(
-            processInstance.getId(),
-            "kermit",
-            "test"
-        );
+        runtimeService.addUserIdentityLink(processInstance.getId(), "kermit", "test");
         assertThat(listener.getEventsReceived()).hasSize(2);
 
-        ActivitiEntityEvent event = (ActivitiEntityEvent) listener
-            .getEventsReceived()
-            .get(0);
+        ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
         assertThat(event.getEntity()).isInstanceOf(IdentityLink.class);
-        assertThat(event.getProcessInstanceId())
-            .isEqualTo(processInstance.getId());
+        assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
         assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
-        assertThat(event.getProcessDefinitionId())
-            .isEqualTo(processInstance.getProcessDefinitionId());
+        assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
         IdentityLink link = (IdentityLink) event.getEntity();
         assertThat(link.getUserId()).isEqualTo("kermit");
         assertThat(link.getType()).isEqualTo("test");
 
         event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-        assertThat(event.getType())
-            .isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
 
         listener.clearEventsReceived();
 
@@ -173,20 +134,11 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
     /**
      * Check identity links on process instances.
      */
-    @Deployment(
-        resources = {
-            "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml",
-        }
-    )
+    @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
     public void testTaskIdentityLinks() throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "oneTaskProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task).isNotNull();
 
         // Add identity link
@@ -197,9 +149,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
         // creates an involvement in the process
         assertThat(listener.getEventsReceived()).hasSize(6);
 
-        ActivitiEntityEvent event = (ActivitiEntityEvent) listener
-            .getEventsReceived()
-            .get(0);
+        ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
         assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
         assertThat(event.getEntity()).isInstanceOf(IdentityLink.class);
         IdentityLink link = (IdentityLink) event.getEntity();
@@ -207,14 +157,11 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
         assertThat(link.getType()).isEqualTo("candidate");
         assertThat(link.getTaskId()).isEqualTo(task.getId());
         assertThat(event.getExecutionId()).isEqualTo(task.getExecutionId());
-        assertThat(event.getProcessDefinitionId())
-            .isEqualTo(task.getProcessDefinitionId());
-        assertThat(event.getProcessInstanceId())
-            .isEqualTo(task.getProcessInstanceId());
+        assertThat(event.getProcessDefinitionId()).isEqualTo(task.getProcessDefinitionId());
+        assertThat(event.getProcessInstanceId()).isEqualTo(task.getProcessInstanceId());
 
         event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-        assertThat(event.getType())
-            .isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
         assertThat(link.getUserId()).isEqualTo("kermit");
         assertThat(link.getType()).isEqualTo("candidate");
 
@@ -226,13 +173,10 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
         assertThat(link.getType()).isEqualTo("candidate");
         assertThat(link.getTaskId()).isEqualTo(task.getId());
         assertThat(event.getExecutionId()).isEqualTo(task.getExecutionId());
-        assertThat(event.getProcessDefinitionId())
-            .isEqualTo(task.getProcessDefinitionId());
-        assertThat(event.getProcessInstanceId())
-            .isEqualTo(task.getProcessInstanceId());
+        assertThat(event.getProcessDefinitionId()).isEqualTo(task.getProcessDefinitionId());
+        assertThat(event.getProcessInstanceId()).isEqualTo(task.getProcessInstanceId());
         event = (ActivitiEntityEvent) listener.getEventsReceived().get(5);
-        assertThat(event.getType())
-            .isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+        assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
         assertThat(link.getGroupId()).isEqualTo("sales");
         assertThat(link.getType()).isEqualTo("candidate");
 
@@ -253,21 +197,11 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
     /**
      * Check deletion of links on process instances.
      */
-    @Deployment(
-        resources = {
-            "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml",
-        }
-    )
-    public void testProcessInstanceIdentityDeleteCandidateGroupEvents()
-        throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "oneTaskProcess"
-        );
+    @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
+    public void testProcessInstanceIdentityDeleteCandidateGroupEvents() throws Exception {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task).isNotNull();
 
         // Add identity link
@@ -291,9 +225,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
         super.initializeServices();
 
         listener = new TestActivitiEntityEventListener(IdentityLink.class);
-        processEngineConfiguration
-            .getEventDispatcher()
-            .addEventListener(listener);
+        processEngineConfiguration.getEventDispatcher().addEventListener(listener);
     }
 
     @Override
@@ -302,9 +234,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
 
         if (listener != null) {
             listener.clearEventsReceived();
-            processEngineConfiguration
-                .getEventDispatcher()
-                .removeEventListener(listener);
+            processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
         }
     }
 }

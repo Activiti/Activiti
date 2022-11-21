@@ -63,9 +63,7 @@ public abstract class AbstractNativeQuery<T extends NativeQuery<?, ?>, U>
         this.commandContext = commandContext;
     }
 
-    public AbstractNativeQuery<T, U> setCommandExecutor(
-        CommandExecutor commandExecutor
-    ) {
+    public AbstractNativeQuery<T, U> setCommandExecutor(CommandExecutor commandExecutor) {
         this.commandExecutor = commandExecutor;
         return this;
     }
@@ -97,12 +95,7 @@ public abstract class AbstractNativeQuery<T extends NativeQuery<?, ?>, U>
         if (commandExecutor != null) {
             return (List<U>) commandExecutor.execute(this);
         }
-        return executeList(
-            Context.getCommandContext(),
-            getParameterMap(),
-            0,
-            Integer.MAX_VALUE
-        );
+        return executeList(Context.getCommandContext(), getParameterMap(), 0, Integer.MAX_VALUE);
     }
 
     @SuppressWarnings("unchecked")
@@ -113,12 +106,7 @@ public abstract class AbstractNativeQuery<T extends NativeQuery<?, ?>, U>
         if (commandExecutor != null) {
             return (List<U>) commandExecutor.execute(this);
         }
-        return executeList(
-            Context.getCommandContext(),
-            getParameterMap(),
-            firstResult,
-            maxResults
-        );
+        return executeList(Context.getCommandContext(), getParameterMap(), firstResult, maxResults);
     }
 
     public long count() {
@@ -131,26 +119,14 @@ public abstract class AbstractNativeQuery<T extends NativeQuery<?, ?>, U>
 
     public Object execute(CommandContext commandContext) {
         if (resultType == ResultType.LIST) {
-            return executeList(
-                commandContext,
-                getParameterMap(),
-                0,
-                Integer.MAX_VALUE
-            );
+            return executeList(commandContext, getParameterMap(), 0, Integer.MAX_VALUE);
         } else if (resultType == ResultType.LIST_PAGE) {
             Map<String, Object> parameterMap = getParameterMap();
             parameterMap.put("resultType", "LIST_PAGE");
             parameterMap.put("firstResult", firstResult);
             parameterMap.put("maxResults", maxResults);
-            if (
-                StringUtils.isNotBlank(
-                    Objects.toString(parameterMap.get("orderBy"))
-                )
-            ) {
-                parameterMap.put(
-                    "orderByColumns",
-                    "RES." + parameterMap.get("orderBy")
-                );
+            if (StringUtils.isNotBlank(Objects.toString(parameterMap.get("orderBy")))) {
+                parameterMap.put("orderByColumns", "RES." + parameterMap.get("orderBy"));
             } else {
                 parameterMap.put("orderByColumns", "RES.ID_ asc");
             }
@@ -164,12 +140,7 @@ public abstract class AbstractNativeQuery<T extends NativeQuery<?, ?>, U>
                 lastRow = firstResult + maxResults + 1;
             }
             parameterMap.put("lastRow", lastRow);
-            return executeList(
-                commandContext,
-                parameterMap,
-                firstResult,
-                maxResults
-            );
+            return executeList(commandContext, parameterMap, firstResult, maxResults);
         } else if (resultType == ResultType.SINGLE_RESULT) {
             return executeSingleResult(commandContext);
         } else {
@@ -177,10 +148,7 @@ public abstract class AbstractNativeQuery<T extends NativeQuery<?, ?>, U>
         }
     }
 
-    public abstract long executeCount(
-        CommandContext commandContext,
-        Map<String, Object> parameterMap
-    );
+    public abstract long executeCount(CommandContext commandContext, Map<String, Object> parameterMap);
 
     /**
      * Executes the actual query to retrieve the list of results.
@@ -199,18 +167,11 @@ public abstract class AbstractNativeQuery<T extends NativeQuery<?, ?>, U>
     );
 
     public U executeSingleResult(CommandContext commandContext) {
-        List<U> results = executeList(
-            commandContext,
-            getParameterMap(),
-            0,
-            Integer.MAX_VALUE
-        );
+        List<U> results = executeList(commandContext, getParameterMap(), 0, Integer.MAX_VALUE);
         if (results.size() == 1) {
             return results.get(0);
         } else if (results.size() > 1) {
-            throw new ActivitiException(
-                "Query return " + results.size() + " results instead of max 1"
-            );
+            throw new ActivitiException("Query return " + results.size() + " results instead of max 1");
         }
         return null;
     }

@@ -28,9 +28,7 @@ import org.activiti.engine.repository.Deployment;
 public class CustomDeploymentCacheTest extends ResourceActivitiTestCase {
 
     public CustomDeploymentCacheTest() {
-        super(
-            "org/activiti/standalone/deploy/custom.deployment.cache.test.activiti.cfg.xml"
-        );
+        super("org/activiti/standalone/deploy/custom.deployment.cache.test.activiti.cfg.xml");
     }
 
     public void testCustomDeploymentCacheUsed() {
@@ -43,18 +41,13 @@ public class CustomDeploymentCacheTest extends ResourceActivitiTestCase {
         for (int i = 1; i <= 5; i++) {
             repositoryService
                 .createDeployment()
-                .addString(
-                    "Process " + i + ".bpmn20.xml",
-                    MessageFormat.format(processDefinitionTemplate, i)
-                )
+                .addString("Process " + i + ".bpmn20.xml", MessageFormat.format(processDefinitionTemplate, i))
                 .deploy();
             assertThat(customCache.getCachedProcessDefinition()).isNotNull();
         }
 
         // Cleanup
-        for (Deployment deployment : repositoryService
-            .createDeploymentQuery()
-            .list()) {
+        for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
             repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }

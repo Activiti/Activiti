@@ -32,63 +32,30 @@ public class CycleBusinessCalendar extends BusinessCalendarImpl {
 
     public Date resolveDuedate(String duedateDescription, int maxIterations) {
         try {
-            if (
-                duedateDescription != null && duedateDescription.startsWith("R")
-            ) {
-                return new DurationHelper(
-                    duedateDescription,
-                    maxIterations,
-                    clockReader
-                )
-                    .getDateAfter();
+            if (duedateDescription != null && duedateDescription.startsWith("R")) {
+                return new DurationHelper(duedateDescription, maxIterations, clockReader).getDateAfter();
             } else {
-                CronExpression ce = new CronExpression(
-                    duedateDescription,
-                    clockReader
-                );
+                CronExpression ce = new CronExpression(duedateDescription, clockReader);
                 return ce.getTimeAfter(clockReader.getCurrentTime());
             }
         } catch (Exception e) {
-            throw new ActivitiException(
-                "Failed to parse cron expression: " + duedateDescription,
-                e
-            );
+            throw new ActivitiException("Failed to parse cron expression: " + duedateDescription, e);
         }
     }
 
-    public Boolean validateDuedate(
-        String duedateDescription,
-        int maxIterations,
-        Date endDate,
-        Date newTimer
-    ) {
+    public Boolean validateDuedate(String duedateDescription, int maxIterations, Date endDate, Date newTimer) {
         if (endDate != null) {
-            return super.validateDuedate(
-                duedateDescription,
-                maxIterations,
-                endDate,
-                newTimer
-            );
+            return super.validateDuedate(duedateDescription, maxIterations, endDate, newTimer);
         }
         // end date could be part of the chron expression
         try {
-            if (
-                duedateDescription != null && duedateDescription.startsWith("R")
-            ) {
-                return new DurationHelper(
-                    duedateDescription,
-                    maxIterations,
-                    clockReader
-                )
-                    .isValidDate(newTimer);
+            if (duedateDescription != null && duedateDescription.startsWith("R")) {
+                return new DurationHelper(duedateDescription, maxIterations, clockReader).isValidDate(newTimer);
             } else {
                 return true;
             }
         } catch (Exception e) {
-            throw new ActivitiException(
-                "Failed to parse cron expression: " + duedateDescription,
-                e
-            );
+            throw new ActivitiException("Failed to parse cron expression: " + duedateDescription, e);
         }
     }
 }

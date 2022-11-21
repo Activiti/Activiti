@@ -25,8 +25,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 /**
 
  */
-public class TestHistoricActivityEventListener
-    implements ActivitiEventListener {
+public class TestHistoricActivityEventListener implements ActivitiEventListener {
 
     private List<ActivitiEvent> eventsReceived;
 
@@ -45,18 +44,10 @@ public class TestHistoricActivityEventListener
     @Override
     public void onEvent(ActivitiEvent event) {
         if (
-            event
-                .getType()
-                .equals(ActivitiEventType.HISTORIC_PROCESS_INSTANCE_CREATED) ||
-            event
-                .getType()
-                .equals(ActivitiEventType.HISTORIC_PROCESS_INSTANCE_ENDED) ||
-            event
-                .getType()
-                .equals(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_CREATED) ||
-            event
-                .getType()
-                .equals(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED)
+            event.getType().equals(ActivitiEventType.HISTORIC_PROCESS_INSTANCE_CREATED) ||
+            event.getType().equals(ActivitiEventType.HISTORIC_PROCESS_INSTANCE_ENDED) ||
+            event.getType().equals(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_CREATED) ||
+            event.getType().equals(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED)
         ) {
             eventsReceived.add(event);
         }

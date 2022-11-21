@@ -30,9 +30,7 @@ import org.activiti.engine.task.Task;
 public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
 
     public CustomMybatisMapperTest() {
-        super(
-            "org/activiti/standalone/cfg/custom-mybatis-mappers-activiti.cfg.xml"
-        );
+        super("org/activiti/standalone/cfg/custom-mybatis-mappers-activiti.cfg.xml");
     }
 
     public void testSelectTaskColumns() {
@@ -47,17 +45,13 @@ public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
         CustomSqlExecution<MyTestMapper, List<Map<String, Object>>> customSqlExecution = new AbstractCustomSqlExecution<MyTestMapper, List<Map<String, Object>>>(
             MyTestMapper.class
         ) {
-            public List<Map<String, Object>> execute(
-                MyTestMapper customMapper
-            ) {
+            public List<Map<String, Object>> execute(MyTestMapper customMapper) {
                 return customMapper.selectTasks();
             }
         };
 
         // Verify
-        List<Map<String, Object>> tasks = managementService.executeCustomSql(
-            customSqlExecution
-        );
+        List<Map<String, Object>> tasks = managementService.executeCustomSql(customSqlExecution);
         assertThat(tasks).hasSize(5);
         for (int i = 0; i < 5; i++) {
             Map<String, Object> task = tasks.get(i);
@@ -80,11 +74,7 @@ public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
             task.setName(i + "");
             taskService.saveTask(task);
 
-            taskService.setVariable(
-                task.getId(),
-                "myVar",
-                Long.valueOf(task.getId()) * 2
-            );
+            taskService.setVariable(task.getId(), "myVar", Long.valueOf(task.getId()) * 2);
             taskService.setVariable(task.getId(), "myVar2", "SomeOtherValue");
         }
 
@@ -92,17 +82,13 @@ public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
         CustomSqlExecution<MyTestMapper, List<Map<String, Object>>> customSqlExecution = new AbstractCustomSqlExecution<MyTestMapper, List<Map<String, Object>>>(
             MyTestMapper.class
         ) {
-            public List<Map<String, Object>> execute(
-                MyTestMapper customMapper
-            ) {
+            public List<Map<String, Object>> execute(MyTestMapper customMapper) {
                 return customMapper.selectTaskWithSpecificVariable("myVar");
             }
         };
 
         // Verify
-        List<Map<String, Object>> results = managementService.executeCustomSql(
-            customSqlExecution
-        );
+        List<Map<String, Object>> results = managementService.executeCustomSql(customSqlExecution);
         assertThat(results).hasSize(5);
         for (int i = 0; i < 5; i++) {
             Map<String, Object> result = results.get(i);

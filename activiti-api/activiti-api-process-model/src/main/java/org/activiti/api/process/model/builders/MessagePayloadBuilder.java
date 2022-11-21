@@ -25,9 +25,7 @@ public class MessagePayloadBuilder {
         return new StartMessagePayloadBuilder().withName(name);
     }
 
-    public static StartMessagePayloadBuilder from(
-        StartMessagePayload startMessagePayload
-    ) {
+    public static StartMessagePayloadBuilder from(StartMessagePayload startMessagePayload) {
         return StartMessagePayloadBuilder.from(startMessagePayload);
     }
 
@@ -35,9 +33,7 @@ public class MessagePayloadBuilder {
         return new ReceiveMessagePayloadBuilder().withName(name);
     }
 
-    public static ReceiveMessagePayloadBuilder from(
-        ReceiveMessagePayload receiveMessagePayload
-    ) {
+    public static ReceiveMessagePayloadBuilder from(ReceiveMessagePayload receiveMessagePayload) {
         return ReceiveMessagePayloadBuilder.from(receiveMessagePayload);
     }
 
@@ -45,9 +41,7 @@ public class MessagePayloadBuilder {
         return new MessageEventPayloadBuilder().withName(name);
     }
 
-    public static MessageEventPayloadBuilder from(
-        MessageEventPayload messageEventPayload
-    ) {
+    public static MessageEventPayloadBuilder from(MessageEventPayload messageEventPayload) {
         return MessageEventPayloadBuilder.from(messageEventPayload);
     }
 }

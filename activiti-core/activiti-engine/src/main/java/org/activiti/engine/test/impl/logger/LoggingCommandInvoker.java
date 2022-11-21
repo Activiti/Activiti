@@ -26,9 +26,7 @@ public class LoggingCommandInvoker extends CommandInvoker {
 
     protected ProcessExecutionLogger processExecutionLogger;
 
-    public LoggingCommandInvoker(
-        ProcessExecutionLogger processExecutionLogger
-    ) {
+    public LoggingCommandInvoker(ProcessExecutionLogger processExecutionLogger) {
         this.processExecutionLogger = processExecutionLogger;
     }
 
@@ -36,8 +34,7 @@ public class LoggingCommandInvoker extends CommandInvoker {
     public void executeOperation(Runnable runnable) {
         DebugInfoOperationExecuted debugInfo = null;
         if (runnable instanceof AbstractOperation) {
-            debugInfo =
-                new DebugInfoOperationExecuted((AbstractOperation) runnable);
+            debugInfo = new DebugInfoOperationExecuted((AbstractOperation) runnable);
             debugInfo.setPreExecutionTime(System.currentTimeMillis());
 
             processExecutionLogger.addDebugInfo(debugInfo, true);

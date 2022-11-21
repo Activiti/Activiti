@@ -42,8 +42,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class BasicParallelGatewayTest {
 
-    private final String processKey =
-        "basicparal-b1db86dd-4a15-4c0e-9168-25d9c42d53ee";
+    private final String processKey = "basicparal-b1db86dd-4a15-4c0e-9168-25d9c42d53ee";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -77,17 +76,12 @@ public class BasicParallelGatewayTest {
 
         //then
         assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getStatus())
-            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
-        assertThat(processInstance.getBusinessKey())
-            .isEqualTo("my-business-key");
-        assertThat(processInstance.getName())
-            .isEqualTo("my-process-instance-name");
+        assertThat(processInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(processInstance.getBusinessKey()).isEqualTo("my-business-key");
+        assertThat(processInstance.getName()).isEqualTo("my-process-instance-name");
 
         // I should be able to get the process instance from the Runtime because it is still running
-        ProcessInstance processInstanceById = processRuntime.processInstance(
-            processInstance.getId()
-        );
+        ProcessInstance processInstanceById = processRuntime.processInstance(processInstance.getId());
 
         assertThat(processInstanceById).isEqualTo(processInstance);
 
@@ -121,9 +115,7 @@ public class BasicParallelGatewayTest {
 
         clearEvents();
 
-        taskRuntime.complete(
-            TaskPayloadBuilder.complete().withTaskId(task.getId()).build()
-        );
+        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
             .extracting(RuntimeEvent::getEventType)
@@ -183,13 +175,9 @@ public class BasicParallelGatewayTest {
     @AfterEach
     public void cleanup() {
         securityUtil.logInAs("admin");
-        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(
-            Pageable.of(0, 50)
-        );
+        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0, 50));
         for (ProcessInstance pi : processInstancePage.getContent()) {
-            processAdminRuntime.delete(
-                ProcessPayloadBuilder.delete(pi.getId())
-            );
+            processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
 
         clearEvents();

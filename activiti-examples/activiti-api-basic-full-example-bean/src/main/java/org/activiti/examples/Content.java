@@ -21,11 +21,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-@JsonTypeInfo(
-    use = JsonTypeInfo.Id.CLASS,
-    include = JsonTypeInfo.As.PROPERTY,
-    property = "@class"
-)
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 public class Content {
 
     private String body;
@@ -72,16 +68,6 @@ public class Content {
 
     @Override
     public String toString() {
-        return (
-            "Content{" +
-            "body='" +
-            body +
-            '\'' +
-            ", approved=" +
-            approved +
-            ", tags=" +
-            tags +
-            '}'
-        );
+        return ("Content{" + "body='" + body + '\'' + ", approved=" + approved + ", tags=" + tags + '}');
     }
 }

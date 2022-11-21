@@ -46,22 +46,10 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
         Date now = processEngineConfiguration.getClock().getCurrentTime();
 
         // 4 tasks with a due date
-        createTask(
-            "task0",
-            new Date(now.getTime() + (4L * 7L * 24L * 60L * 60L * 1000L))
-        ); // 4 weeks in future
-        createTask(
-            "task1",
-            new Date(now.getTime() + (2 * 24L * 60L * 60L * 1000L))
-        ); // 2 days in future
-        createTask(
-            "task2",
-            new Date(now.getTime() + (7L * 24L * 60L * 60L * 1000L))
-        ); // 1 week in future
-        createTask(
-            "task3",
-            new Date(now.getTime() + (24L * 60L * 60L * 1000L))
-        ); // 1 day in future
+        createTask("task0", new Date(now.getTime() + (4L * 7L * 24L * 60L * 60L * 1000L))); // 4 weeks in future
+        createTask("task1", new Date(now.getTime() + (2 * 24L * 60L * 60L * 1000L))); // 2 days in future
+        createTask("task2", new Date(now.getTime() + (7L * 24L * 60L * 60L * 1000L))); // 1 week in future
+        createTask("task3", new Date(now.getTime() + (24L * 60L * 60L * 1000L))); // 1 day in future
 
         // 2 tasks without a due date
         createTask("task4", null);
@@ -70,11 +58,7 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
         assertThat(taskService.createTaskQuery().count()).isEqualTo(6);
 
         // Sorting on due date asc should put the nulls at the end
-        List<Task> tasks = taskService
-            .createTaskQuery()
-            .orderByDueDateNullsLast()
-            .asc()
-            .list();
+        List<Task> tasks = taskService.createTaskQuery().orderByDueDateNullsLast().asc().list();
 
         for (int i = 0; i < 4; i++) {
             assertThat(tasks.get(i).getDueDate()).isNotNull();
@@ -88,12 +72,7 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
         assertThat(tasks.get(5).getDueDate()).isNull();
 
         // The same, but now desc
-        tasks =
-            taskService
-                .createTaskQuery()
-                .orderByDueDateNullsLast()
-                .desc()
-                .list();
+        tasks = taskService.createTaskQuery().orderByDueDateNullsLast().desc().list();
 
         for (int i = 0; i < 4; i++) {
             assertThat(tasks.get(i).getDueDate()).isNotNull();
@@ -107,12 +86,7 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
         assertThat(tasks.get(5).getDueDate()).isNull();
 
         // The same but now nulls first
-        tasks =
-            taskService
-                .createTaskQuery()
-                .orderByDueDateNullsFirst()
-                .asc()
-                .list();
+        tasks = taskService.createTaskQuery().orderByDueDateNullsFirst().asc().list();
 
         assertThat(tasks.get(0).getDueDate()).isNull();
         assertThat(tasks.get(1).getDueDate()).isNull();
@@ -122,12 +96,7 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
         assertThat(tasks.get(5).getName()).isEqualTo("task0");
 
         // And now desc
-        tasks =
-            taskService
-                .createTaskQuery()
-                .orderByDueDateNullsFirst()
-                .desc()
-                .list();
+        tasks = taskService.createTaskQuery().orderByDueDateNullsFirst().desc().list();
 
         assertThat(tasks.get(0).getDueDate()).isNull();
         assertThat(tasks.get(1).getDueDate()).isNull();
@@ -136,11 +105,7 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
         assertThat(tasks.get(4).getName()).isEqualTo("task1");
         assertThat(tasks.get(5).getName()).isEqualTo("task3");
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.AUDIT)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             // And now the same, but for history!
             List<HistoricTaskInstance> historicTasks = historyService
                 .createHistoricTaskInstanceQuery()
@@ -160,12 +125,7 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
             assertThat(historicTasks.get(5).getDueDate()).isNull();
 
             // The same, but now desc
-            historicTasks =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .orderByDueDateNullsLast()
-                    .desc()
-                    .list();
+            historicTasks = historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsLast().desc().list();
 
             for (int i = 0; i < 4; i++) {
                 assertThat(historicTasks.get(i).getDueDate()).isNotNull();
@@ -179,12 +139,7 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
             assertThat(historicTasks.get(5).getDueDate()).isNull();
 
             // The same but now nulls first
-            historicTasks =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .orderByDueDateNullsFirst()
-                    .asc()
-                    .list();
+            historicTasks = historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsFirst().asc().list();
 
             assertThat(historicTasks.get(0).getDueDate()).isNull();
             assertThat(historicTasks.get(1).getDueDate()).isNull();
@@ -194,12 +149,7 @@ public class TaskDueDateTest extends PluggableActivitiTestCase {
             assertThat(historicTasks.get(5).getName()).isEqualTo("task0");
 
             // And now desc
-            historicTasks =
-                historyService
-                    .createHistoricTaskInstanceQuery()
-                    .orderByDueDateNullsFirst()
-                    .desc()
-                    .list();
+            historicTasks = historyService.createHistoricTaskInstanceQuery().orderByDueDateNullsFirst().desc().list();
 
             assertThat(historicTasks.get(0).getDueDate()).isNull();
             assertThat(historicTasks.get(1).getDueDate()).isNull();

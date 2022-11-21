@@ -29,17 +29,11 @@ import org.apache.ibatis.type.TypeReference;
  *
 
  */
-public class ByteArrayRefTypeHandler
-    extends TypeReference<ByteArrayRef>
-    implements TypeHandler<ByteArrayRef> {
+public class ByteArrayRefTypeHandler extends TypeReference<ByteArrayRef> implements TypeHandler<ByteArrayRef> {
 
     @Override
-    public void setParameter(
-        PreparedStatement ps,
-        int i,
-        ByteArrayRef parameter,
-        JdbcType jdbcType
-    ) throws SQLException {
+    public void setParameter(PreparedStatement ps, int i, ByteArrayRef parameter, JdbcType jdbcType)
+        throws SQLException {
         ps.setString(i, getValueToSet(parameter));
     }
 
@@ -52,22 +46,19 @@ public class ByteArrayRefTypeHandler
     }
 
     @Override
-    public ByteArrayRef getResult(ResultSet rs, String columnName)
-        throws SQLException {
+    public ByteArrayRef getResult(ResultSet rs, String columnName) throws SQLException {
         String id = rs.getString(columnName);
         return new ByteArrayRef(id);
     }
 
     @Override
-    public ByteArrayRef getResult(ResultSet rs, int columnIndex)
-        throws SQLException {
+    public ByteArrayRef getResult(ResultSet rs, int columnIndex) throws SQLException {
         String id = rs.getString(columnIndex);
         return new ByteArrayRef(id);
     }
 
     @Override
-    public ByteArrayRef getResult(CallableStatement cs, int columnIndex)
-        throws SQLException {
+    public ByteArrayRef getResult(CallableStatement cs, int columnIndex) throws SQLException {
         String id = cs.getString(columnIndex);
         return new ByteArrayRef(id);
     }

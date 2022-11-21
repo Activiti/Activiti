@@ -21,9 +21,7 @@ import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
 /**
 
  */
-public class ActivitiSequenceFlowTakenEventImpl
-    extends ActivitiEventImpl
-    implements ActivitiSequenceFlowTakenEvent {
+public class ActivitiSequenceFlowTakenEventImpl extends ActivitiEventImpl implements ActivitiSequenceFlowTakenEvent {
 
     protected String id;
     protected String sourceActivityId;
@@ -99,9 +97,7 @@ public class ActivitiSequenceFlowTakenEventImpl
         return sourceActivityBehaviorClass;
     }
 
-    public void setSourceActivityBehaviorClass(
-        String sourceActivityBehaviorClass
-    ) {
+    public void setSourceActivityBehaviorClass(String sourceActivityBehaviorClass) {
         this.sourceActivityBehaviorClass = sourceActivityBehaviorClass;
     }
 
@@ -109,9 +105,7 @@ public class ActivitiSequenceFlowTakenEventImpl
         return targetActivityBehaviorClass;
     }
 
-    public void setTargetActivityBehaviorClass(
-        String targetActivityBehaviorClass
-    ) {
+    public void setTargetActivityBehaviorClass(String targetActivityBehaviorClass) {
         this.targetActivityBehaviorClass = targetActivityBehaviorClass;
     }
 }

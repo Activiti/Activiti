@@ -41,9 +41,7 @@ public class ScriptTaskListener implements TaskListener {
     public void notify(DelegateTask delegateTask) {
         validateParameters();
 
-        ScriptingEngines scriptingEngines = Context
-            .getProcessEngineConfiguration()
-            .getScriptingEngines();
+        ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
         Object result = scriptingEngines.evaluate(
             script.getExpressionText(),
             language.getExpressionText(),
@@ -52,24 +50,17 @@ public class ScriptTaskListener implements TaskListener {
         );
 
         if (resultVariable != null) {
-            delegateTask.setVariable(
-                resultVariable.getExpressionText(),
-                result
-            );
+            delegateTask.setVariable(resultVariable.getExpressionText(), result);
         }
     }
 
     protected void validateParameters() {
         if (script == null) {
-            throw new IllegalArgumentException(
-                "The field 'script' should be set on the TaskListener"
-            );
+            throw new IllegalArgumentException("The field 'script' should be set on the TaskListener");
         }
 
         if (language == null) {
-            throw new IllegalArgumentException(
-                "The field 'language' should be set on the TaskListener"
-            );
+            throw new IllegalArgumentException("The field 'language' should be set on the TaskListener");
         }
     }
 

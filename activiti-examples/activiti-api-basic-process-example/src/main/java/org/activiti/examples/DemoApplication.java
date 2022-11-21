@@ -58,13 +58,8 @@ public class DemoApplication implements CommandLineRunner {
     public void run(String... args) {
         securityUtil.logInAs("system");
 
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
-            Pageable.of(0, 10)
-        );
-        logger.info(
-            "> Available Process definitions: " +
-            processDefinitionPage.getTotalItems()
-        );
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0, 10));
+        logger.info("> Available Process definitions: " + processDefinitionPage.getTotalItems());
         for (ProcessDefinition pd : processDefinitionPage.getContent()) {
             logger.info("\t > Process definition: " + pd);
         }
@@ -78,12 +73,7 @@ public class DemoApplication implements CommandLineRunner {
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
 
-        logger.info(
-            "> Processing content: " +
-            content +
-            " at " +
-            formatter.format(new Date())
-        );
+        logger.info("> Processing content: " + content + " at " + formatter.format(new Date()));
 
         ProcessInstance processInstance = processRuntime.start(
             ProcessPayloadBuilder
@@ -116,9 +106,7 @@ public class DemoApplication implements CommandLineRunner {
     @Bean
     public Connector tagTextConnector() {
         return integrationContext -> {
-            String contentToTag = (String) integrationContext
-                .getInBoundVariables()
-                .get("content");
+            String contentToTag = (String) integrationContext.getInBoundVariables().get("content");
             contentToTag += " :) ";
             integrationContext.addOutBoundVariable("content", contentToTag);
             logger.info("Final Content: " + contentToTag);
@@ -129,9 +117,7 @@ public class DemoApplication implements CommandLineRunner {
     @Bean
     public Connector discardTextConnector() {
         return integrationContext -> {
-            String contentToDiscard = (String) integrationContext
-                .getInBoundVariables()
-                .get("content");
+            String contentToDiscard = (String) integrationContext.getInBoundVariables().get("content");
             contentToDiscard += " :( ";
             integrationContext.addOutBoundVariable("content", contentToDiscard);
             logger.info("Final Content: " + contentToDiscard);

@@ -24,8 +24,7 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.junit.Test;
 
-public class ExecutionQueryEscapeClauseTest
-    extends AbstractEscapeClauseTestCase {
+public class ExecutionQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
     private String deploymentOneId;
 
@@ -41,9 +40,7 @@ public class ExecutionQueryEscapeClauseTest
             repositoryService
                 .createDeployment()
                 .tenantId("One%")
-                .addClasspathResource(
-                    "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"
-                )
+                .addClasspathResource("org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml")
                 .deploy()
                 .getId();
 
@@ -51,29 +48,17 @@ public class ExecutionQueryEscapeClauseTest
             repositoryService
                 .createDeployment()
                 .tenantId("Two_")
-                .addClasspathResource(
-                    "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"
-                )
+                .addClasspathResource("org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml")
                 .deploy()
                 .getId();
 
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("var1", "One%");
-        processInstance1 =
-            runtimeService.startProcessInstanceByKeyAndTenantId(
-                "oneTaskProcess",
-                vars,
-                "One%"
-            );
+        processInstance1 = runtimeService.startProcessInstanceByKeyAndTenantId("oneTaskProcess", vars, "One%");
 
         vars = new HashMap<String, Object>();
         vars.put("var1", "Two_");
-        processInstance2 =
-            runtimeService.startProcessInstanceByKeyAndTenantId(
-                "oneTaskProcess",
-                vars,
-                "Two_"
-            );
+        processInstance2 = runtimeService.startProcessInstanceByKeyAndTenantId("oneTaskProcess", vars, "Two_");
 
         super.setUp();
     }
@@ -94,28 +79,17 @@ public class ExecutionQueryEscapeClauseTest
         assertThat(execution).isNotNull();
 
         execution =
-            runtimeService
-                .createExecutionQuery()
-                .onlyChildExecutions()
-                .executionTenantIdLike("%\\_%")
-                .singleResult();
+            runtimeService.createExecutionQuery().onlyChildExecutions().executionTenantIdLike("%\\_%").singleResult();
         assertThat(execution).isNotNull();
     }
 
     @Test
     public void testQueryLikeByQueryVariableValue() {
-        Execution execution = runtimeService
-            .createExecutionQuery()
-            .variableValueLike("var1", "%\\%%")
-            .singleResult();
+        Execution execution = runtimeService.createExecutionQuery().variableValueLike("var1", "%\\%%").singleResult();
         assertThat(execution).isNotNull();
         assertThat(execution.getId()).isEqualTo(processInstance1.getId());
 
-        execution =
-            runtimeService
-                .createExecutionQuery()
-                .variableValueLike("var1", "%\\_%")
-                .singleResult();
+        execution = runtimeService.createExecutionQuery().variableValueLike("var1", "%\\_%").singleResult();
         assertThat(execution).isNotNull();
         assertThat(execution.getId()).isEqualTo(processInstance2.getId());
     }
@@ -129,11 +103,7 @@ public class ExecutionQueryEscapeClauseTest
         assertThat(execution).isNotNull();
         assertThat(execution.getId()).isEqualTo(processInstance1.getId());
 
-        execution =
-            runtimeService
-                .createExecutionQuery()
-                .variableValueLikeIgnoreCase("var1", "%\\_%")
-                .singleResult();
+        execution = runtimeService.createExecutionQuery().variableValueLikeIgnoreCase("var1", "%\\_%").singleResult();
         assertThat(execution).isNotNull();
         assertThat(execution.getId()).isEqualTo(processInstance2.getId());
     }

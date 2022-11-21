@@ -30,9 +30,7 @@ public class MybatisAttachmentDataManager
     extends AbstractDataManager<AttachmentEntity>
     implements AttachmentDataManager {
 
-    public MybatisAttachmentDataManager(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public MybatisAttachmentDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);
     }
 
@@ -48,20 +46,13 @@ public class MybatisAttachmentDataManager
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<AttachmentEntity> findAttachmentsByProcessInstanceId(
-        String processInstanceId
-    ) {
-        return getDbSqlSession()
-            .selectList(
-                "selectAttachmentsByProcessInstanceId",
-                processInstanceId
-            );
+    public List<AttachmentEntity> findAttachmentsByProcessInstanceId(String processInstanceId) {
+        return getDbSqlSession().selectList("selectAttachmentsByProcessInstanceId", processInstanceId);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<AttachmentEntity> findAttachmentsByTaskId(String taskId) {
-        return getDbSqlSession()
-            .selectList("selectAttachmentsByTaskId", taskId);
+        return getDbSqlSession().selectList("selectAttachmentsByTaskId", taskId);
     }
 }

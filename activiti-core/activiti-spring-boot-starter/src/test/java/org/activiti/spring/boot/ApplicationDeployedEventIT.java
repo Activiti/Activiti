@@ -36,8 +36,6 @@ public class ApplicationDeployedEventIT {
     public void shouldTriggerApplicationDeployedEvents() {
         List<Deployment> deployedApplications = listener.getDeployedApplication();
 
-        assertThat(deployedApplications)
-            .extracting(Deployment::getName)
-            .containsExactly(DEPLOYMENT_TYPE_NAME);
+        assertThat(deployedApplications).extracting(Deployment::getName).containsExactly(DEPLOYMENT_TYPE_NAME);
     }
 }

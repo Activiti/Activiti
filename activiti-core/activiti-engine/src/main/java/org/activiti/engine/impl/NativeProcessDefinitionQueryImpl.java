@@ -46,19 +46,10 @@ public class NativeProcessDefinitionQueryImpl
     ) {
         return commandContext
             .getProcessDefinitionEntityManager()
-            .findProcessDefinitionsByNativeQuery(
-                parameterMap,
-                firstResult,
-                maxResults
-            );
+            .findProcessDefinitionsByNativeQuery(parameterMap, firstResult, maxResults);
     }
 
-    public long executeCount(
-        CommandContext commandContext,
-        Map<String, Object> parameterMap
-    ) {
-        return commandContext
-            .getProcessDefinitionEntityManager()
-            .findProcessDefinitionCountByNativeQuery(parameterMap);
+    public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
+        return commandContext.getProcessDefinitionEntityManager().findProcessDefinitionCountByNativeQuery(parameterMap);
     }
 }

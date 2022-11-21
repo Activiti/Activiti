@@ -25,9 +25,7 @@ public class ProcessCandidateStarterGroupRemovedEventImpl
 
     public ProcessCandidateStarterGroupRemovedEventImpl() {}
 
-    public ProcessCandidateStarterGroupRemovedEventImpl(
-        ProcessCandidateStarterGroup entity
-    ) {
+    public ProcessCandidateStarterGroupRemovedEventImpl(ProcessCandidateStarterGroup entity) {
         super(entity);
     }
 

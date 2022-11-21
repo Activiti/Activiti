@@ -25,13 +25,10 @@ import org.activiti.engine.test.Deployment;
 /**
 
  */
-public class CustomActivityBehaviorFactoryTest
-    extends ResourceActivitiTestCase {
+public class CustomActivityBehaviorFactoryTest extends ResourceActivitiTestCase {
 
     public CustomActivityBehaviorFactoryTest() {
-        super(
-            "org/activiti/standalone/parsing/custom.activitybehaviorfactory.activiti.cfg.xml"
-        );
+        super("org/activiti/standalone/parsing/custom.activitybehaviorfactory.activiti.cfg.xml");
     }
 
     // The custom activity factory will change this value

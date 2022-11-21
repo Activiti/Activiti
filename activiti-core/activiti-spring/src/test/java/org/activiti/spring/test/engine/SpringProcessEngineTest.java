@@ -29,9 +29,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(
-    "classpath:org/activiti/spring/test/engine/springProcessEngine-context.xml"
-)
+@ContextConfiguration("classpath:org/activiti/spring/test/engine/springProcessEngine-context.xml")
 public class SpringProcessEngineTest {
 
     @Test

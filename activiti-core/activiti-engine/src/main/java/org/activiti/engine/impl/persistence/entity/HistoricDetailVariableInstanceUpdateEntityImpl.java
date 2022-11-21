@@ -167,9 +167,7 @@ public class HistoricDetailVariableInstanceUpdateEntityImpl
         sb.append("HistoricDetailVariableInstanceUpdateEntity[");
         sb.append("id=").append(id);
         sb.append(", name=").append(name);
-        sb
-            .append(", type=")
-            .append(variableType != null ? variableType.getTypeName() : "null");
+        sb.append(", type=").append(variableType != null ? variableType.getTypeName() : "null");
         if (longValue != null) {
             sb.append(", longValue=").append(longValue);
         }
@@ -177,14 +175,10 @@ public class HistoricDetailVariableInstanceUpdateEntityImpl
             sb.append(", doubleValue=").append(doubleValue);
         }
         if (textValue != null) {
-            sb
-                .append(", textValue=")
-                .append(StringUtils.abbreviate(textValue, 40));
+            sb.append(", textValue=").append(StringUtils.abbreviate(textValue, 40));
         }
         if (textValue2 != null) {
-            sb
-                .append(", textValue2=")
-                .append(StringUtils.abbreviate(textValue2, 40));
+            sb.append(", textValue2=").append(StringUtils.abbreviate(textValue2, 40));
         }
         if (byteArrayRef != null && byteArrayRef.getId() != null) {
             sb.append(", byteArrayValueId=").append(byteArrayRef.getId());

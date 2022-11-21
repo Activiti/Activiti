@@ -78,11 +78,7 @@ public class ActivitiAssertionsAutoConfiguration {
         EventSource eventSource,
         List<TaskSource> taskSources
     ) {
-        return new ProcessRuntimeOperations(
-            processRuntime,
-            eventSource,
-            taskSources
-        );
+        return new ProcessRuntimeOperations(processRuntime, eventSource, taskSources);
     }
 
     @Bean

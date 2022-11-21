@@ -43,21 +43,15 @@ public class DeleteIntegrationContextCmdTest {
 
     @Before
     public void setUp() throws Exception {
-        given(commandContext.getProcessEngineConfiguration())
-            .willReturn(processEngineConfiguration);
-        given(processEngineConfiguration.getIntegrationContextManager())
-            .willReturn(integrationContextManager);
+        given(commandContext.getProcessEngineConfiguration()).willReturn(processEngineConfiguration);
+        given(processEngineConfiguration.getIntegrationContextManager()).willReturn(integrationContextManager);
     }
 
     @Test
     public void executeShouldDeleteIntegrationContext() throws Exception {
         //given
-        IntegrationContextEntity integrationContextEntity = mock(
-            IntegrationContextEntity.class
-        );
-        DeleteIntegrationContextCmd command = new DeleteIntegrationContextCmd(
-            integrationContextEntity
-        );
+        IntegrationContextEntity integrationContextEntity = mock(IntegrationContextEntity.class);
+        DeleteIntegrationContextCmd command = new DeleteIntegrationContextCmd(integrationContextEntity);
 
         //when
         command.execute(commandContext);

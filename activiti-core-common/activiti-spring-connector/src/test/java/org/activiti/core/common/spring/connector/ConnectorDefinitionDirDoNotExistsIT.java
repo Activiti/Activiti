@@ -26,13 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
-@SpringBootTest(
-    classes = ConnectorAutoConfiguration.class,
-    webEnvironment = SpringBootTest.WebEnvironment.NONE
-)
-@TestPropertySource(
-    locations = "classpath:application-not-exists-test.properties"
-)
+@SpringBootTest(classes = ConnectorAutoConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@TestPropertySource(locations = "classpath:application-not-exists-test.properties")
 public class ConnectorDefinitionDirDoNotExistsIT {
 
     @Autowired

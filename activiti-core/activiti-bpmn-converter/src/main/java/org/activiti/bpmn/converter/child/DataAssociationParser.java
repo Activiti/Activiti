@@ -26,15 +26,9 @@ import org.slf4j.LoggerFactory;
 
 public class DataAssociationParser implements BpmnXMLConstants {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(
-        DataAssociationParser.class.getName()
-    );
+    protected static final Logger LOGGER = LoggerFactory.getLogger(DataAssociationParser.class.getName());
 
-    public static void parseDataAssociation(
-        DataAssociation dataAssociation,
-        String elementName,
-        XMLStreamReader xtr
-    ) {
+    public static void parseDataAssociation(DataAssociation dataAssociation, String elementName, XMLStreamReader xtr) {
         boolean readyWithDataAssociation = false;
         Assignment assignment = null;
         try {
@@ -42,67 +36,39 @@ public class DataAssociationParser implements BpmnXMLConstants {
 
             while (!readyWithDataAssociation && xtr.hasNext()) {
                 xtr.next();
-                if (
-                    xtr.isStartElement() &&
-                    ELEMENT_SOURCE_REF.equals(xtr.getLocalName())
-                ) {
+                if (xtr.isStartElement() && ELEMENT_SOURCE_REF.equals(xtr.getLocalName())) {
                     String sourceRef = xtr.getElementText();
                     if (StringUtils.isNotEmpty(sourceRef)) {
                         dataAssociation.setSourceRef(sourceRef.trim());
                     }
-                } else if (
-                    xtr.isStartElement() &&
-                    ELEMENT_TARGET_REF.equals(xtr.getLocalName())
-                ) {
+                } else if (xtr.isStartElement() && ELEMENT_TARGET_REF.equals(xtr.getLocalName())) {
                     String targetRef = xtr.getElementText();
                     if (StringUtils.isNotEmpty(targetRef)) {
                         dataAssociation.setTargetRef(targetRef.trim());
                     }
-                } else if (
-                    xtr.isStartElement() &&
-                    ELEMENT_TRANSFORMATION.equals(xtr.getLocalName())
-                ) {
+                } else if (xtr.isStartElement() && ELEMENT_TRANSFORMATION.equals(xtr.getLocalName())) {
                     String transformation = xtr.getElementText();
                     if (StringUtils.isNotEmpty(transformation)) {
-                        dataAssociation.setTransformation(
-                            transformation.trim()
-                        );
+                        dataAssociation.setTransformation(transformation.trim());
                     }
-                } else if (
-                    xtr.isStartElement() &&
-                    ELEMENT_ASSIGNMENT.equals(xtr.getLocalName())
-                ) {
+                } else if (xtr.isStartElement() && ELEMENT_ASSIGNMENT.equals(xtr.getLocalName())) {
                     assignment = new Assignment();
                     BpmnXMLUtil.addXMLLocation(assignment, xtr);
-                } else if (
-                    xtr.isStartElement() &&
-                    ELEMENT_FROM.equals(xtr.getLocalName())
-                ) {
+                } else if (xtr.isStartElement() && ELEMENT_FROM.equals(xtr.getLocalName())) {
                     String from = xtr.getElementText();
                     if (assignment != null && StringUtils.isNotEmpty(from)) {
                         assignment.setFrom(from.trim());
                     }
-                } else if (
-                    xtr.isStartElement() &&
-                    ELEMENT_TO.equals(xtr.getLocalName())
-                ) {
+                } else if (xtr.isStartElement() && ELEMENT_TO.equals(xtr.getLocalName())) {
                     String to = xtr.getElementText();
                     if (assignment != null && StringUtils.isNotEmpty(to)) {
                         assignment.setTo(to.trim());
                     }
-                } else if (
-                    xtr.isEndElement() &&
-                    ELEMENT_ASSIGNMENT.equals(xtr.getLocalName())
-                ) {
-                    if (
-                        StringUtils.isNotEmpty(assignment.getFrom()) &&
-                        StringUtils.isNotEmpty(assignment.getTo())
-                    ) {
+                } else if (xtr.isEndElement() && ELEMENT_ASSIGNMENT.equals(xtr.getLocalName())) {
+                    if (StringUtils.isNotEmpty(assignment.getFrom()) && StringUtils.isNotEmpty(assignment.getTo())) {
                         dataAssociation.getAssignments().add(assignment);
                     }
-                } else if (
-                    xtr.isEndElement() && elementName.equals(xtr.getLocalName())
-                ) {
+                } else if (xtr.isEndElement() && elementName.equals(xtr.getLocalName())) {
                     readyWithDataAssociation = true;
                 }
             }

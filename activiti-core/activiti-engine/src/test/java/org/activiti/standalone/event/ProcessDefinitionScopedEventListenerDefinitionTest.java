@@ -35,8 +35,7 @@ import org.activiti.engine.test.api.event.TestActivitiEventListener;
  * Test for event-listeners that are registered on a process-definition scope, rather than on the global engine-wide scope, declared in the BPMN XML.
  *
  */
-public class ProcessDefinitionScopedEventListenerDefinitionTest
-    extends ResourceActivitiTestCase {
+public class ProcessDefinitionScopedEventListenerDefinitionTest extends ResourceActivitiTestCase {
 
     public ProcessDefinitionScopedEventListenerDefinitionTest() {
         super("org/activiti/standalone/event/activiti-eventlistener.cfg.xml");
@@ -49,33 +48,23 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest
      */
     @Deployment
     public void testProcessDefinitionListenerDefinition() throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testEventListeners"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testEventListeners");
         assertThat(testListenerBean).isNotNull();
 
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         taskService.complete(task.getId());
 
         // Check if the listener (defined as bean) received events (only creation, not other events)
         assertThat(testListenerBean.getEventsReceived().isEmpty()).isFalse();
         for (ActivitiEvent event : testListenerBean.getEventsReceived()) {
-            assertThat(event.getType())
-                .isEqualTo(ActivitiEventType.ENTITY_CREATED);
+            assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
         }
 
         // First event received should be creation of Process-instance
-        assertThat(testListenerBean.getEventsReceived().get(0))
-            .isInstanceOf(ActivitiEntityEvent.class);
-        ActivitiEntityEvent event = (ActivitiEntityEvent) testListenerBean
-            .getEventsReceived()
-            .get(0);
+        assertThat(testListenerBean.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
+        ActivitiEntityEvent event = (ActivitiEntityEvent) testListenerBean.getEventsReceived().get(0);
         assertThat(event.getEntity()).isInstanceOf(ProcessInstance.class);
-        assertThat(((ProcessInstance) event.getEntity()).getId())
-            .isEqualTo(processInstance.getId());
+        assertThat(((ProcessInstance) event.getEntity()).getId()).isEqualTo(processInstance.getId());
 
         // Check if listener, defined by classname, received all events
         List<ActivitiEvent> events = StaticTestActivitiEventListener.getEventsReceived();
@@ -98,18 +87,13 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest
     /**
      * Test to verify listeners defined in the BPMN xml with invalid class/delegateExpression values cause an exception when process is started.
      */
-    public void testProcessDefinitionListenerDefinitionError()
-        throws Exception {
+    public void testProcessDefinitionListenerDefinitionError() throws Exception {
         // Deploy process with expression which references an unexisting bean
         org.activiti.engine.repository.Deployment deployment = repositoryService
             .createDeployment()
-            .addClasspathResource(
-                "org/activiti/standalone/event/invalidEventListenerExpression.bpmn20.xml"
-            )
+            .addClasspathResource("org/activiti/standalone/event/invalidEventListenerExpression.bpmn20.xml")
             .deploy();
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testInvalidEventExpression"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testInvalidEventExpression");
         assertThat(processInstance).isNotNull();
         repositoryService.deleteDeployment(deployment.getId(), true);
 
@@ -117,27 +101,21 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest
         deployment =
             repositoryService
                 .createDeployment()
-                .addClasspathResource(
-                    "org/activiti/standalone/event/invalidEventListenerClass.bpmn20.xml"
-                )
+                .addClasspathResource("org/activiti/standalone/event/invalidEventListenerClass.bpmn20.xml")
                 .deploy();
-        processInstance =
-            runtimeService.startProcessInstanceByKey("testInvalidEventClass");
+        processInstance = runtimeService.startProcessInstanceByKey("testInvalidEventClass");
         repositoryService.deleteDeployment(deployment.getId(), true);
     }
 
     /**
      * Test to verify if event listeners defined in the BPMN XML which have illegal event-types cause an exception on deploy.
      */
-    public void testProcessDefinitionListenerDefinitionIllegalType()
-        throws Exception {
+    public void testProcessDefinitionListenerDefinitionIllegalType() throws Exception {
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
             .isThrownBy(() ->
                 repositoryService
                     .createDeployment()
-                    .addClasspathResource(
-                        "org/activiti/standalone/event/invalidEventListenerType.bpmn20.xml"
-                    )
+                    .addClasspathResource("org/activiti/standalone/event/invalidEventListenerType.bpmn20.xml")
                     .deploy()
             )
             .withMessageContaining("Invalid event-type: invalid");
@@ -147,16 +125,10 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest
      * Test to verify listeners defined in the BPMN xml are added to the process definition and are active, for all entity types
      */
     @Deployment
-    public void testProcessDefinitionListenerDefinitionEntities()
-        throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testEventListeners"
-        );
+    public void testProcessDefinitionListenerDefinitionEntities() throws Exception {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testEventListeners");
         assertThat(processInstance).isNotNull();
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task).isNotNull();
 
         // Attachment entity
@@ -166,27 +138,15 @@ public class ProcessDefinitionScopedEventListenerDefinitionTest
         assertThat(theListener).isNotNull();
         assertThat(theListener.getEventsReceived()).hasSize(0);
 
-        taskService.createAttachment(
-            "test",
-            task.getId(),
-            processInstance.getId(),
-            "test",
-            "test",
-            "url"
-        );
+        taskService.createAttachment("test", task.getId(), processInstance.getId(), "test", "test", "url");
         assertThat(theListener.getEventsReceived()).hasSize(2);
-        assertThat(theListener.getEventsReceived().get(0).getType())
-            .isEqualTo(ActivitiEventType.ENTITY_CREATED);
-        assertThat(theListener.getEventsReceived().get(1).getType())
-            .isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+        assertThat(theListener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
+        assertThat(theListener.getEventsReceived().get(1).getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
     }
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        testListenerBean =
-            (TestActivitiEventListener) processEngineConfiguration
-                .getBeans()
-                .get("testEventListener");
+        testListenerBean = (TestActivitiEventListener) processEngineConfiguration.getBeans().get("testEventListener");
     }
 }

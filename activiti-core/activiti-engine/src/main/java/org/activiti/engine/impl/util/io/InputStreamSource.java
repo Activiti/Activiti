@@ -46,10 +46,7 @@ public class InputStreamSource implements StreamSource {
             try {
                 bytes = getBytesFromInputStream(inputStream);
             } catch (IOException e) {
-                throw new ActivitiException(
-                    "Could not read from inputstream",
-                    e
-                );
+                throw new ActivitiException("Could not read from inputstream", e);
             }
         }
         return new BufferedInputStream(new ByteArrayInputStream(bytes));
@@ -59,24 +56,18 @@ public class InputStreamSource implements StreamSource {
         return "InputStream";
     }
 
-    public byte[] getBytesFromInputStream(InputStream inStream)
-        throws IOException {
+    public byte[] getBytesFromInputStream(InputStream inStream) throws IOException {
         long length = inStream.available();
         byte[] bytes = new byte[(int) length];
 
         int offset = 0;
         int numRead = 0;
-        while (
-            offset < bytes.length &&
-            (numRead = inStream.read(bytes, offset, bytes.length - offset)) >= 0
-        ) {
+        while (offset < bytes.length && (numRead = inStream.read(bytes, offset, bytes.length - offset)) >= 0) {
             offset += numRead;
         }
 
         if (offset < bytes.length) {
-            throw new ActivitiException(
-                "Could not completely read inputstream "
-            );
+            throw new ActivitiException("Could not completely read inputstream ");
         }
 
         // Close the input stream and return bytes

@@ -43,10 +43,7 @@ public class SerializableVariableTest extends PluggableActivitiTestCase {
 
         // There is a task here, such the VariableInstanceEntityImpl is inserter first, and updated later
         // (instead of being inserted/updated in the same Tx)
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         taskService.complete(task.getId());
 
         TestSerializableVariable testSerializableVariable = (TestSerializableVariable) runtimeService.getVariable(
@@ -56,13 +53,10 @@ public class SerializableVariableTest extends PluggableActivitiTestCase {
         assertThat(testSerializableVariable.getNumber()).isEqualTo(2);
     }
 
-    public static class TestUpdateSerializableVariableDelegate
-        implements JavaDelegate {
+    public static class TestUpdateSerializableVariableDelegate implements JavaDelegate {
 
         public void execute(DelegateExecution execution) {
-            TestSerializableVariable var = (TestSerializableVariable) execution.getVariable(
-                "myVar"
-            );
+            TestSerializableVariable var = (TestSerializableVariable) execution.getVariable("myVar");
             var.setNumber(2);
         }
     }

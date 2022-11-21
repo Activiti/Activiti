@@ -23,8 +23,7 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToProcessResumedConverter;
 
-public class ProcessResumedEventListenerDelegate
-    implements ActivitiEventListener {
+public class ProcessResumedEventListenerDelegate implements ActivitiEventListener {
 
     private List<ProcessRuntimeEventListener<ProcessResumedEvent>> processRuntimeEventListeners;
 

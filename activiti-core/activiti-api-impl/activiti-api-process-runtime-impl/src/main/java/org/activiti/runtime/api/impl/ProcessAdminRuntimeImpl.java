@@ -101,9 +101,7 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
             .findFirst()
             .orElseThrow(() ->
                 new ActivitiObjectNotFoundException(
-                    "Unable to find process definition for the given id or key:'" +
-                    processDefinitionId +
-                    "'"
+                    "Unable to find process definition for the given id or key:'" + processDefinitionId + "'"
                 )
             );
 
@@ -122,10 +120,7 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
 
     @Override
     public Page<ProcessDefinition> processDefinitions(Pageable pageable) {
-        return processDefinitions(
-            pageable,
-            ProcessPayloadBuilder.processDefinitions().build()
-        );
+        return processDefinitions(pageable, ProcessPayloadBuilder.processDefinitions().build());
     }
 
     @Override
@@ -138,9 +133,7 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
         }
         ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
         if (getProcessDefinitionsPayload.hasDefinitionKeys()) {
-            processDefinitionQuery.processDefinitionKeys(
-                getProcessDefinitionsPayload.getProcessDefinitionKeys()
-            );
+            processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());
         }
         return new PageImpl<>(
             processDefinitionConverter.from(processDefinitionQuery.list()),
@@ -152,17 +145,10 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     public ProcessInstance start(StartProcessPayload startProcessPayload) {
         ProcessDefinition processDefinition = null;
         if (startProcessPayload.getProcessDefinitionId() != null) {
-            processDefinition =
-                processDefinition(startProcessPayload.getProcessDefinitionId());
+            processDefinition = processDefinition(startProcessPayload.getProcessDefinitionId());
         }
-        if (
-            processDefinition == null &&
-            startProcessPayload.getProcessDefinitionKey() != null
-        ) {
-            processDefinition =
-                processDefinition(
-                    startProcessPayload.getProcessDefinitionKey()
-                );
+        if (processDefinition == null && startProcessPayload.getProcessDefinitionKey() != null) {
+            processDefinition = processDefinition(startProcessPayload.getProcessDefinitionKey());
         }
         if (processDefinition == null) {
             throw new IllegalStateException(
@@ -170,10 +156,7 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
             );
         }
 
-        processVariablesValidator.checkStartProcessPayloadVariables(
-            startProcessPayload,
-            processDefinition.getId()
-        );
+        processVariablesValidator.checkStartProcessPayloadVariables(startProcessPayload, processDefinition.getId());
 
         return processInstanceConverter.from(
             runtimeService
@@ -199,11 +182,7 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
             .processInstanceId(processInstanceId)
             .singleResult();
         if (internalProcessInstance == null) {
-            throw new NotFoundException(
-                "Unable to find process instance for the given id:'" +
-                processInstanceId +
-                "'"
-            );
+            throw new NotFoundException("Unable to find process instance for the given id:'" + processInstanceId + "'");
         }
         return processInstanceConverter.from(internalProcessInstance);
     }
@@ -220,17 +199,13 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
                 getProcessInstancesPayload.getProcessDefinitionKeys() != null &&
                 !getProcessInstancesPayload.getProcessDefinitionKeys().isEmpty()
             ) {
-                internalQuery.processDefinitionKeys(
-                    getProcessInstancesPayload.getProcessDefinitionKeys()
-                );
+                internalQuery.processDefinitionKeys(getProcessInstancesPayload.getProcessDefinitionKeys());
             }
             if (
                 getProcessInstancesPayload.getBusinessKey() != null &&
                 !getProcessInstancesPayload.getBusinessKey().isEmpty()
             ) {
-                internalQuery.processInstanceBusinessKey(
-                    getProcessInstancesPayload.getBusinessKey()
-                );
+                internalQuery.processInstanceBusinessKey(getProcessInstancesPayload.getBusinessKey());
             }
 
             if (getProcessInstancesPayload.isSuspendedOnly()) {
@@ -240,21 +215,12 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
             if (getProcessInstancesPayload.isActiveOnly()) {
                 internalQuery.active();
             }
-            if (
-                getProcessInstancesPayload.getParentProcessInstanceId() != null
-            ) {
-                internalQuery.superProcessInstanceId(
-                    getProcessInstancesPayload.getParentProcessInstanceId()
-                );
+            if (getProcessInstancesPayload.getParentProcessInstanceId() != null) {
+                internalQuery.superProcessInstanceId(getProcessInstancesPayload.getParentProcessInstanceId());
             }
         }
         return new PageImpl<>(
-            processInstanceConverter.from(
-                internalQuery.listPage(
-                    pageable.getStartIndex(),
-                    pageable.getMaxItems()
-                )
-            ),
+            processInstanceConverter.from(internalQuery.listPage(pageable.getStartIndex(), pageable.getMaxItems())),
             Math.toIntExact(internalQuery.count())
         );
     }
@@ -269,9 +235,7 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
             deleteProcessPayload.getReason()
         );
         if (processInstance != null) {
-            processInstance.setStatus(
-                ProcessInstance.ProcessInstanceStatus.CANCELLED
-            );
+            processInstance.setStatus(ProcessInstance.ProcessInstanceStatus.CANCELLED);
             return processInstance;
         }
         return null;
@@ -280,21 +244,14 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     @Override
     @Transactional
     public void signal(SignalPayload signalPayload) {
-        processVariablesValidator.checkSignalPayloadVariables(
-            signalPayload,
-            null
-        );
+        processVariablesValidator.checkSignalPayloadVariables(signalPayload, null);
 
         eventPublisher.publishEvent(signalPayload);
     }
 
     @Override
-    public ProcessInstance suspend(
-        SuspendProcessPayload suspendProcessPayload
-    ) {
-        runtimeService.suspendProcessInstanceById(
-            suspendProcessPayload.getProcessInstanceId()
-        );
+    public ProcessInstance suspend(SuspendProcessPayload suspendProcessPayload) {
+        runtimeService.suspendProcessInstanceById(suspendProcessPayload.getProcessInstanceId());
         return processInstanceConverter.from(
             runtimeService
                 .createProcessInstanceQuery()
@@ -305,9 +262,7 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
 
     @Override
     public ProcessInstance resume(ResumeProcessPayload resumeProcessPayload) {
-        runtimeService.activateProcessInstanceById(
-            resumeProcessPayload.getProcessInstanceId()
-        );
+        runtimeService.activateProcessInstanceById(resumeProcessPayload.getProcessInstanceId());
         return processInstanceConverter.from(
             runtimeService
                 .createProcessInstanceQuery()
@@ -339,9 +294,7 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     }
 
     @Override
-    public void setVariables(
-        SetProcessVariablesPayload setProcessVariablesPayload
-    ) {
+    public void setVariables(SetProcessVariablesPayload setProcessVariablesPayload) {
         ProcessInstanceImpl processInstance = (ProcessInstanceImpl) processInstance(
             setProcessVariablesPayload.getProcessInstanceId()
         );
@@ -358,24 +311,17 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     }
 
     @Override
-    public List<VariableInstance> variables(
-        GetVariablesPayload getVariablesPayload
-    ) {
+    public List<VariableInstance> variables(GetVariablesPayload getVariablesPayload) {
         processInstance(getVariablesPayload.getProcessInstanceId());
 
         Map<String, org.activiti.engine.impl.persistence.entity.VariableInstance> variables;
-        variables =
-            runtimeService.getVariableInstances(
-                getVariablesPayload.getProcessInstanceId()
-            );
+        variables = runtimeService.getVariableInstances(getVariablesPayload.getProcessInstanceId());
 
         return variableInstanceConverter.from(variables.values());
     }
 
     @Override
-    public void removeVariables(
-        RemoveProcessVariablesPayload removeProcessVariablesPayload
-    ) {
+    public void removeVariables(RemoveProcessVariablesPayload removeProcessVariablesPayload) {
         runtimeService.removeVariables(
             removeProcessVariablesPayload.getProcessInstanceId(),
             removeProcessVariablesPayload.getVariableNames()
@@ -385,10 +331,7 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     @Override
     @Transactional
     public void receive(ReceiveMessagePayload messagePayload) {
-        processVariablesValidator.checkReceiveMessagePayloadVariables(
-            messagePayload,
-            null
-        );
+        processVariablesValidator.checkReceiveMessagePayloadVariables(messagePayload, null);
         eventPublisher.publishEvent(messagePayload);
     }
 
@@ -398,17 +341,10 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
         String businessKey = messagePayload.getBusinessKey();
         Map<String, Object> variables = messagePayload.getVariables();
 
-        processVariablesValidator.checkStartMessagePayloadVariables(
-            messagePayload,
-            null
-        );
+        processVariablesValidator.checkStartMessagePayloadVariables(messagePayload, null);
 
         ProcessInstance processInstance = processInstanceConverter.from(
-            runtimeService.startProcessInstanceByMessage(
-                messageName,
-                businessKey,
-                variables
-            )
+            runtimeService.startProcessInstanceByMessage(messageName, businessKey, variables)
         );
         return processInstance;
     }

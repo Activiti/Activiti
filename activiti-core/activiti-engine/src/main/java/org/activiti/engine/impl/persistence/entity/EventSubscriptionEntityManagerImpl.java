@@ -85,9 +85,7 @@ public class EventSubscriptionEntityManagerImpl
         }
 
         subscriptionEntity.setActivityId(execution.getCurrentActivityId());
-        subscriptionEntity.setProcessDefinitionId(
-            execution.getProcessDefinitionId()
-        );
+        subscriptionEntity.setProcessDefinitionId(execution.getProcessDefinitionId());
         if (execution.getTenantId() != null) {
             subscriptionEntity.setTenantId(execution.getTenantId());
         }
@@ -97,18 +95,13 @@ public class EventSubscriptionEntityManagerImpl
     }
 
     @Override
-    public MessageEventSubscriptionEntity insertMessageEvent(
-        String messageName,
-        ExecutionEntity execution
-    ) {
+    public MessageEventSubscriptionEntity insertMessageEvent(String messageName, ExecutionEntity execution) {
         MessageEventSubscriptionEntity subscriptionEntity = createMessageEventSubscription();
         subscriptionEntity.setExecution(execution);
         subscriptionEntity.setEventName(messageName);
 
         subscriptionEntity.setActivityId(execution.getCurrentActivityId());
-        subscriptionEntity.setProcessDefinitionId(
-            execution.getProcessDefinitionId()
-        );
+        subscriptionEntity.setProcessDefinitionId(execution.getProcessDefinitionId());
         if (execution.getTenantId() != null) {
             subscriptionEntity.setTenantId(execution.getTenantId());
         }
@@ -118,10 +111,7 @@ public class EventSubscriptionEntityManagerImpl
     }
 
     @Override
-    public CompensateEventSubscriptionEntity insertCompensationEvent(
-        ExecutionEntity execution,
-        String activityId
-    ) {
+    public CompensateEventSubscriptionEntity insertCompensationEvent(ExecutionEntity execution, String activityId) {
         CompensateEventSubscriptionEntity eventSubscription = createCompensateEventSubscription();
         eventSubscription.setExecution(execution);
         eventSubscription.setActivityId(activityId);
@@ -133,52 +123,31 @@ public class EventSubscriptionEntityManagerImpl
     }
 
     @Override
-    public void insert(
-        EventSubscriptionEntity entity,
-        boolean fireCreateEvent
-    ) {
+    public void insert(EventSubscriptionEntity entity, boolean fireCreateEvent) {
         super.insert(entity, fireCreateEvent);
 
-        if (
-            entity.getExecutionId() != null &&
-            isExecutionRelatedEntityCountEnabledGlobally()
-        ) {
+        if (entity.getExecutionId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
             CountingExecutionEntity executionEntity = (CountingExecutionEntity) entity.getExecution();
             if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
-                executionEntity.setEventSubscriptionCount(
-                    executionEntity.getEventSubscriptionCount() + 1
-                );
+                executionEntity.setEventSubscriptionCount(executionEntity.getEventSubscriptionCount() + 1);
             }
         }
     }
 
     @Override
-    public void delete(
-        EventSubscriptionEntity entity,
-        boolean fireDeleteEvent
-    ) {
-        if (
-            entity.getExecutionId() != null &&
-            isExecutionRelatedEntityCountEnabledGlobally()
-        ) {
+    public void delete(EventSubscriptionEntity entity, boolean fireDeleteEvent) {
+        if (entity.getExecutionId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
             CountingExecutionEntity executionEntity = (CountingExecutionEntity) entity.getExecution();
             if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
-                executionEntity.setEventSubscriptionCount(
-                    executionEntity.getEventSubscriptionCount() - 1
-                );
+                executionEntity.setEventSubscriptionCount(executionEntity.getEventSubscriptionCount() - 1);
             }
         }
         super.delete(entity, fireDeleteEvent);
     }
 
     @Override
-    public List<CompensateEventSubscriptionEntity> findCompensateEventSubscriptionsByExecutionId(
-        String executionId
-    ) {
-        return findCompensateEventSubscriptionsByExecutionIdAndActivityId(
-            executionId,
-            null
-        );
+    public List<CompensateEventSubscriptionEntity> findCompensateEventSubscriptionsByExecutionId(String executionId) {
+        return findCompensateEventSubscriptionsByExecutionIdAndActivityId(executionId, null);
     }
 
     @Override
@@ -192,16 +161,9 @@ public class EventSubscriptionEntityManagerImpl
         );
         List<CompensateEventSubscriptionEntity> result = new ArrayList<CompensateEventSubscriptionEntity>();
         for (EventSubscriptionEntity eventSubscriptionEntity : eventSubscriptions) {
-            if (
-                eventSubscriptionEntity instanceof CompensateEventSubscriptionEntity
-            ) {
-                if (
-                    activityId == null ||
-                    activityId.equals(eventSubscriptionEntity.getActivityId())
-                ) {
-                    result.add(
-                        (CompensateEventSubscriptionEntity) eventSubscriptionEntity
-                    );
+            if (eventSubscriptionEntity instanceof CompensateEventSubscriptionEntity) {
+                if (activityId == null || activityId.equals(eventSubscriptionEntity.getActivityId())) {
+                    result.add((CompensateEventSubscriptionEntity) eventSubscriptionEntity);
                 }
             }
         }
@@ -220,16 +182,12 @@ public class EventSubscriptionEntityManagerImpl
         );
         List<CompensateEventSubscriptionEntity> result = new ArrayList<CompensateEventSubscriptionEntity>();
         for (EventSubscriptionEntity eventSubscriptionEntity : eventSubscriptions) {
-            result.add(
-                (CompensateEventSubscriptionEntity) eventSubscriptionEntity
-            );
+            result.add((CompensateEventSubscriptionEntity) eventSubscriptionEntity);
         }
         return result;
     }
 
-    protected void addToExecution(
-        EventSubscriptionEntity eventSubscriptionEntity
-    ) {
+    protected void addToExecution(EventSubscriptionEntity eventSubscriptionEntity) {
         // add reference in execution
         ExecutionEntity execution = eventSubscriptionEntity.getExecution();
         if (execution != null) {
@@ -238,12 +196,8 @@ public class EventSubscriptionEntityManagerImpl
     }
 
     @Override
-    public long findEventSubscriptionCountByQueryCriteria(
-        EventSubscriptionQueryImpl eventSubscriptionQueryImpl
-    ) {
-        return eventSubscriptionDataManager.findEventSubscriptionCountByQueryCriteria(
-            eventSubscriptionQueryImpl
-        );
+    public long findEventSubscriptionCountByQueryCriteria(EventSubscriptionQueryImpl eventSubscriptionQueryImpl) {
+        return eventSubscriptionDataManager.findEventSubscriptionCountByQueryCriteria(eventSubscriptionQueryImpl);
     }
 
     @Override
@@ -251,10 +205,7 @@ public class EventSubscriptionEntityManagerImpl
         EventSubscriptionQueryImpl eventSubscriptionQueryImpl,
         Page page
     ) {
-        return eventSubscriptionDataManager.findEventSubscriptionsByQueryCriteria(
-            eventSubscriptionQueryImpl,
-            page
-        );
+        return eventSubscriptionDataManager.findEventSubscriptionsByQueryCriteria(eventSubscriptionQueryImpl, page);
     }
 
     @Override
@@ -273,10 +224,7 @@ public class EventSubscriptionEntityManagerImpl
         String eventName,
         String tenantId
     ) {
-        return eventSubscriptionDataManager.findSignalEventSubscriptionsByEventName(
-            eventName,
-            tenantId
-        );
+        return eventSubscriptionDataManager.findSignalEventSubscriptionsByEventName(eventName, tenantId);
     }
 
     @Override
@@ -295,10 +243,7 @@ public class EventSubscriptionEntityManagerImpl
         String name,
         String executionId
     ) {
-        return eventSubscriptionDataManager.findSignalEventSubscriptionsByNameAndExecution(
-            name,
-            executionId
-        );
+        return eventSubscriptionDataManager.findSignalEventSubscriptionsByNameAndExecution(name, executionId);
     }
 
     @Override
@@ -306,10 +251,7 @@ public class EventSubscriptionEntityManagerImpl
         final String executionId,
         final String type
     ) {
-        return eventSubscriptionDataManager.findEventSubscriptionsByExecutionAndType(
-            executionId,
-            type
-        );
+        return eventSubscriptionDataManager.findEventSubscriptionsByExecutionAndType(executionId, type);
     }
 
     @Override
@@ -326,12 +268,8 @@ public class EventSubscriptionEntityManagerImpl
     }
 
     @Override
-    public List<EventSubscriptionEntity> findEventSubscriptionsByExecution(
-        final String executionId
-    ) {
-        return eventSubscriptionDataManager.findEventSubscriptionsByExecution(
-            executionId
-        );
+    public List<EventSubscriptionEntity> findEventSubscriptionsByExecution(final String executionId) {
+        return eventSubscriptionDataManager.findEventSubscriptionsByExecution(executionId);
     }
 
     @Override
@@ -348,16 +286,8 @@ public class EventSubscriptionEntityManagerImpl
     }
 
     @Override
-    public List<EventSubscriptionEntity> findEventSubscriptionsByName(
-        String type,
-        String eventName,
-        String tenantId
-    ) {
-        return eventSubscriptionDataManager.findEventSubscriptionsByName(
-            type,
-            eventName,
-            tenantId
-        );
+    public List<EventSubscriptionEntity> findEventSubscriptionsByName(String type, String eventName, String tenantId) {
+        return eventSubscriptionDataManager.findEventSubscriptionsByName(type, eventName, tenantId);
     }
 
     @Override
@@ -366,52 +296,28 @@ public class EventSubscriptionEntityManagerImpl
         String eventName,
         String executionId
     ) {
-        return eventSubscriptionDataManager.findEventSubscriptionsByNameAndExecution(
-            type,
-            eventName,
-            executionId
-        );
+        return eventSubscriptionDataManager.findEventSubscriptionsByNameAndExecution(type, eventName, executionId);
     }
 
     @Override
-    public MessageEventSubscriptionEntity findMessageStartEventSubscriptionByName(
-        String messageName,
-        String tenantId
-    ) {
-        return eventSubscriptionDataManager.findMessageStartEventSubscriptionByName(
-            messageName,
-            tenantId
-        );
+    public MessageEventSubscriptionEntity findMessageStartEventSubscriptionByName(String messageName, String tenantId) {
+        return eventSubscriptionDataManager.findMessageStartEventSubscriptionByName(messageName, tenantId);
     }
 
     @Override
-    public void updateEventSubscriptionTenantId(
-        String oldTenantId,
-        String newTenantId
-    ) {
-        eventSubscriptionDataManager.updateEventSubscriptionTenantId(
-            oldTenantId,
-            newTenantId
-        );
+    public void updateEventSubscriptionTenantId(String oldTenantId, String newTenantId) {
+        eventSubscriptionDataManager.updateEventSubscriptionTenantId(oldTenantId, newTenantId);
     }
 
     @Override
-    public void deleteEventSubscriptionsForProcessDefinition(
-        String processDefinitionId
-    ) {
-        eventSubscriptionDataManager.deleteEventSubscriptionsForProcessDefinition(
-            processDefinitionId
-        );
+    public void deleteEventSubscriptionsForProcessDefinition(String processDefinitionId) {
+        eventSubscriptionDataManager.deleteEventSubscriptionsForProcessDefinition(processDefinitionId);
     }
 
     // Processing /////////////////////////////////////////////////////////////
 
     @Override
-    public void eventReceived(
-        EventSubscriptionEntity eventSubscriptionEntity,
-        Object payload,
-        boolean processASync
-    ) {
+    public void eventReceived(EventSubscriptionEntity eventSubscriptionEntity, Object payload, boolean processASync) {
         if (processASync) {
             scheduleEventAsync(eventSubscriptionEntity, payload);
         } else {
@@ -419,14 +325,9 @@ public class EventSubscriptionEntityManagerImpl
         }
     }
 
-    protected void processEventSync(
-        EventSubscriptionEntity eventSubscriptionEntity,
-        Object payload
-    ) {
+    protected void processEventSync(EventSubscriptionEntity eventSubscriptionEntity, Object payload) {
         // A compensate event needs to be deleted before the handlers are called
-        if (
-            eventSubscriptionEntity instanceof CompensateEventSubscriptionEntity
-        ) {
+        if (eventSubscriptionEntity instanceof CompensateEventSubscriptionEntity) {
             delete(eventSubscriptionEntity);
         }
 
@@ -434,22 +335,13 @@ public class EventSubscriptionEntityManagerImpl
             .getEventHandler(eventSubscriptionEntity.getEventType());
         if (eventHandler == null) {
             throw new ActivitiException(
-                "Could not find eventhandler for event of type '" +
-                eventSubscriptionEntity.getEventType() +
-                "'."
+                "Could not find eventhandler for event of type '" + eventSubscriptionEntity.getEventType() + "'."
             );
         }
-        eventHandler.handleEvent(
-            eventSubscriptionEntity,
-            payload,
-            getCommandContext()
-        );
+        eventHandler.handleEvent(eventSubscriptionEntity, payload, getCommandContext());
     }
 
-    protected void scheduleEventAsync(
-        EventSubscriptionEntity eventSubscriptionEntity,
-        Object payload
-    ) {
+    protected void scheduleEventAsync(EventSubscriptionEntity eventSubscriptionEntity, Object payload) {
         JobEntity message = getJobEntityManager().create();
         message.setJobType(JobEntity.JOB_TYPE_MESSAGE);
         message.setJobHandlerType(ProcessEventJobHandler.TYPE);
@@ -471,9 +363,7 @@ public class EventSubscriptionEntityManagerImpl
             result.size()
         );
         for (EventSubscriptionEntity eventSubscriptionEntity : result) {
-            signalEventSubscriptionEntities.add(
-                (SignalEventSubscriptionEntity) eventSubscriptionEntity
-            );
+            signalEventSubscriptionEntities.add((SignalEventSubscriptionEntity) eventSubscriptionEntity);
         }
         return signalEventSubscriptionEntities;
     }
@@ -485,9 +375,7 @@ public class EventSubscriptionEntityManagerImpl
             result.size()
         );
         for (EventSubscriptionEntity eventSubscriptionEntity : result) {
-            messageEventSubscriptionEntities.add(
-                (MessageEventSubscriptionEntity) eventSubscriptionEntity
-            );
+            messageEventSubscriptionEntities.add((MessageEventSubscriptionEntity) eventSubscriptionEntity);
         }
         return messageEventSubscriptionEntities;
     }
@@ -496,9 +384,7 @@ public class EventSubscriptionEntityManagerImpl
         return eventSubscriptionDataManager;
     }
 
-    public void setEventSubscriptionDataManager(
-        EventSubscriptionDataManager eventSubscriptionDataManager
-    ) {
+    public void setEventSubscriptionDataManager(EventSubscriptionDataManager eventSubscriptionDataManager) {
         this.eventSubscriptionDataManager = eventSubscriptionDataManager;
     }
 }

@@ -24,18 +24,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 
-@SpringBootTest(
-    classes = ResourceFinderAutoConfiguration.class,
-    webEnvironment = SpringBootTest.WebEnvironment.NONE
-)
+@SpringBootTest(classes = ResourceFinderAutoConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ResourceFinderIT {
 
     @Autowired
     private ResourceFinder resourceFinder;
 
     @Test
-    public void shouldReturnEmptyListWhenLocationDoesNotExist()
-        throws Exception {
+    public void shouldReturnEmptyListWhenLocationDoesNotExist() throws Exception {
         //given
         DummyResourceFinderDescriptor finderDescriptor = new DummyResourceFinderDescriptor(
             "classpath:**/not-exists/",
@@ -43,17 +39,14 @@ public class ResourceFinderIT {
         );
 
         //when
-        List<Resource> foundResources = resourceFinder.discoverResources(
-            finderDescriptor
-        );
+        List<Resource> foundResources = resourceFinder.discoverResources(finderDescriptor);
 
         //then
         assertThat(foundResources).isEmpty();
     }
 
     @Test
-    public void shouldReturnEmptyListWhenLocationExitsButNoFileMatches()
-        throws Exception {
+    public void shouldReturnEmptyListWhenLocationExitsButNoFileMatches() throws Exception {
         //given
         DummyResourceFinderDescriptor finderDescriptor = new DummyResourceFinderDescriptor(
             "classpath:/no-matching-resources",
@@ -61,9 +54,7 @@ public class ResourceFinderIT {
         );
 
         //when
-        List<Resource> foundResources = resourceFinder.discoverResources(
-            finderDescriptor
-        );
+        List<Resource> foundResources = resourceFinder.discoverResources(finderDescriptor);
 
         //then
         assertThat(foundResources).isEmpty();
@@ -79,9 +70,7 @@ public class ResourceFinderIT {
         );
 
         //when
-        List<Resource> foundResources = resourceFinder.discoverResources(
-            finderDescriptor
-        );
+        List<Resource> foundResources = resourceFinder.discoverResources(finderDescriptor);
 
         //then
         assertThat(foundResources)

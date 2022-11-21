@@ -38,9 +38,7 @@ public class Delegate2 implements JavaDelegate {
     public void execute(DelegateExecution execution) {
         this.statefulObject.increment();
 
-        assertThat(this.statefulObject)
-            .as("the 'scopedCustomer' reference can't be null")
-            .isNotNull();
+        assertThat(this.statefulObject).as("the 'scopedCustomer' reference can't be null").isNotNull();
         assertThat(this.statefulObject.getName())
             .as(
                 "the 'scopedCustomer.name' property should be non-null, since it was set in a previous delegate bound to this very thread"

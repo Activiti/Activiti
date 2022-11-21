@@ -23,8 +23,7 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
 import org.activiti.runtime.api.event.impl.ToSequenceFlowTakenConverter;
 
-public class SequenceFlowTakenListenerDelegate
-    implements ActivitiEventListener {
+public class SequenceFlowTakenListenerDelegate implements ActivitiEventListener {
 
     private List<BPMNElementEventListener<BPMNSequenceFlowTakenEvent>> listeners;
 

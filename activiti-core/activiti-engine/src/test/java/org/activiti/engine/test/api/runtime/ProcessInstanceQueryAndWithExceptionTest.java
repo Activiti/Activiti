@@ -27,15 +27,11 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.runtime.TimerJobQuery;
 
-public class ProcessInstanceQueryAndWithExceptionTest
-    extends PluggableActivitiTestCase {
+public class ProcessInstanceQueryAndWithExceptionTest extends PluggableActivitiTestCase {
 
-    private static final String PROCESS_DEFINITION_KEY_NO_EXCEPTION =
-        "oneTaskProcess";
-    private static final String PROCESS_DEFINITION_KEY_WITH_EXCEPTION_1 =
-        "JobErrorCheck";
-    private static final String PROCESS_DEFINITION_KEY_WITH_EXCEPTION_2 =
-        "JobErrorDoubleCheck";
+    private static final String PROCESS_DEFINITION_KEY_NO_EXCEPTION = "oneTaskProcess";
+    private static final String PROCESS_DEFINITION_KEY_WITH_EXCEPTION_1 = "JobErrorCheck";
+    private static final String PROCESS_DEFINITION_KEY_WITH_EXCEPTION_2 = "JobErrorDoubleCheck";
 
     private org.activiti.engine.repository.Deployment deployment;
 
@@ -44,15 +40,9 @@ public class ProcessInstanceQueryAndWithExceptionTest
         deployment =
             repositoryService
                 .createDeployment()
-                .addClasspathResource(
-                    "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"
-                )
-                .addClasspathResource(
-                    "org/activiti/engine/test/api/runtime/JobErrorCheck.bpmn20.xml"
-                )
-                .addClasspathResource(
-                    "org/activiti/engine/test/api/runtime/JobErrorDoubleCheck.bpmn20.xml"
-                )
+                .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml")
+                .addClasspathResource("org/activiti/engine/test/api/runtime/JobErrorCheck.bpmn20.xml")
+                .addClasspathResource("org/activiti/engine/test/api/runtime/JobErrorDoubleCheck.bpmn20.xml")
                 .deploy();
     }
 
@@ -69,8 +59,7 @@ public class ProcessInstanceQueryAndWithExceptionTest
         ProcessInstanceQuery queryNoException = runtimeService.createProcessInstanceQuery();
         assertThat(queryNoException.count()).isEqualTo(1);
         assertThat(queryNoException.list()).hasSize(1);
-        assertThat(queryNoException.list().get(0).getId())
-            .isEqualTo(processNoException.getId());
+        assertThat(queryNoException.list().get(0).getId()).isEqualTo(processNoException.getId());
 
         ProcessInstanceQuery queryWithException = runtimeService.createProcessInstanceQuery();
         assertThat(queryWithException.withJobException().count()).isEqualTo(0);
@@ -120,17 +109,10 @@ public class ProcessInstanceQueryAndWithExceptionTest
             .isEqualTo(processWithException2.getId());
     }
 
-    private ProcessInstance startProcessInstanceWithFailingJob(
-        String processInstanceByKey
-    ) {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            processInstanceByKey
-        );
+    private ProcessInstance startProcessInstanceWithFailingJob(String processInstanceByKey) {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processInstanceByKey);
 
-        List<Job> jobList = managementService
-            .createJobQuery()
-            .processInstanceId(processInstance.getId())
-            .list();
+        List<Job> jobList = managementService.createJobQuery().processInstanceId(processInstance.getId()).list();
 
         for (Job job : jobList) {
             assertThatExceptionOfType(RuntimeException.class)

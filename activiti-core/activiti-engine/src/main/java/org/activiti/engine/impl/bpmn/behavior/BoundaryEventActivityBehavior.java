@@ -48,11 +48,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     }
 
     @Override
-    public void trigger(
-        DelegateExecution execution,
-        String triggerName,
-        Object triggerData
-    ) {
+    public void trigger(DelegateExecution execution, String triggerName, Object triggerData) {
         ExecutionEntity executionEntity = (ExecutionEntity) execution;
 
         CommandContext commandContext = Context.getCommandContext();
@@ -64,10 +60,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
         }
     }
 
-    protected void executeInterruptingBehavior(
-        ExecutionEntity executionEntity,
-        CommandContext commandContext
-    ) {
+    protected void executeInterruptingBehavior(ExecutionEntity executionEntity, CommandContext commandContext) {
         // The destroy scope operation will look for the parent execution and
         // destroy the whole scope, and leave the boundary event using this parent execution.
         //
@@ -76,51 +69,33 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
         // Which is what we need here.
 
         ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-        ExecutionEntity attachedRefScopeExecution = executionEntityManager.findById(
-            executionEntity.getParentId()
-        );
+        ExecutionEntity attachedRefScopeExecution = executionEntityManager.findById(executionEntity.getParentId());
 
         ExecutionEntity parentScopeExecution = null;
         ExecutionEntity currentlyExaminedExecution = executionEntityManager.findById(
             attachedRefScopeExecution.getParentId()
         );
-        while (
-            currentlyExaminedExecution != null && parentScopeExecution == null
-        ) {
+        while (currentlyExaminedExecution != null && parentScopeExecution == null) {
             if (currentlyExaminedExecution.isScope()) {
                 parentScopeExecution = currentlyExaminedExecution;
             } else {
-                currentlyExaminedExecution =
-                    executionEntityManager.findById(
-                        currentlyExaminedExecution.getParentId()
-                    );
+                currentlyExaminedExecution = executionEntityManager.findById(currentlyExaminedExecution.getParentId());
             }
         }
 
         if (parentScopeExecution == null) {
-            throw new ActivitiException(
-                "Programmatic error: no parent scope execution found for boundary event"
-            );
+            throw new ActivitiException("Programmatic error: no parent scope execution found for boundary event");
         }
 
-        deleteChildExecutions(
-            attachedRefScopeExecution,
-            executionEntity,
-            commandContext
-        );
+        deleteChildExecutions(attachedRefScopeExecution, executionEntity, commandContext);
 
         // set new parent for boundary event execution
         executionEntity.setParent(parentScopeExecution);
 
-        Context
-            .getAgenda()
-            .planTakeOutgoingSequenceFlowsOperation(executionEntity, true);
+        Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(executionEntity, true);
     }
 
-    protected void executeNonInterruptingBehavior(
-        ExecutionEntity executionEntity,
-        CommandContext commandContext
-    ) {
+    protected void executeNonInterruptingBehavior(ExecutionEntity executionEntity, CommandContext commandContext) {
         // Non-interrupting: the current execution is given the first parent
         // scope (which isn't its direct parent)
         //
@@ -132,9 +107,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
 
         ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
 
-        ExecutionEntity parentExecutionEntity = executionEntityManager.findById(
-            executionEntity.getParentId()
-        );
+        ExecutionEntity parentExecutionEntity = executionEntityManager.findById(executionEntity.getParentId());
 
         ExecutionEntity scopeExecution = null;
         ExecutionEntity currentlyExaminedExecution = executionEntityManager.findById(
@@ -144,32 +117,18 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
             if (currentlyExaminedExecution.isScope()) {
                 scopeExecution = currentlyExaminedExecution;
             } else {
-                currentlyExaminedExecution =
-                    executionEntityManager.findById(
-                        currentlyExaminedExecution.getParentId()
-                    );
+                currentlyExaminedExecution = executionEntityManager.findById(currentlyExaminedExecution.getParentId());
             }
         }
 
         if (scopeExecution == null) {
-            throw new ActivitiException(
-                "Programmatic error: no parent scope execution found for boundary event"
-            );
+            throw new ActivitiException("Programmatic error: no parent scope execution found for boundary event");
         }
 
-        ExecutionEntity nonInterruptingExecution = executionEntityManager.createChildExecution(
-            scopeExecution
-        );
-        nonInterruptingExecution.setCurrentFlowElement(
-            executionEntity.getCurrentFlowElement()
-        );
+        ExecutionEntity nonInterruptingExecution = executionEntityManager.createChildExecution(scopeExecution);
+        nonInterruptingExecution.setCurrentFlowElement(executionEntity.getCurrentFlowElement());
 
-        Context
-            .getAgenda()
-            .planTakeOutgoingSequenceFlowsOperation(
-                nonInterruptingExecution,
-                true
-            );
+        Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(nonInterruptingExecution, true);
     }
 
     protected void deleteChildExecutions(
@@ -188,26 +147,14 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
         );
         if (CollectionUtil.isNotEmpty(childExecutions)) {
             for (ExecutionEntity childExecution : childExecutions) {
-                if (
-                    childExecution
-                        .getId()
-                        .equals(notToDeleteExecution.getId()) ==
-                    false
-                ) {
-                    deleteChildExecutions(
-                        childExecution,
-                        notToDeleteExecution,
-                        commandContext
-                    );
+                if (childExecution.getId().equals(notToDeleteExecution.getId()) == false) {
+                    deleteChildExecutions(childExecution, notToDeleteExecution, commandContext);
                 }
             }
         }
 
         String deleteReason =
-            DeleteReason.BOUNDARY_EVENT_INTERRUPTING +
-            " (" +
-            notToDeleteExecution.getCurrentActivityId() +
-            ")";
+            DeleteReason.BOUNDARY_EVENT_INTERRUPTING + " (" + notToDeleteExecution.getCurrentActivityId() + ")";
         if (parentExecution.getCurrentFlowElement() instanceof CallActivity) {
             ExecutionEntity subProcessExecution = executionEntityManager.findSubProcessInstanceBySuperExecutionId(
                 parentExecution.getId()
@@ -223,10 +170,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
             }
         }
 
-        executionEntityManager.cancelExecutionAndRelatedData(
-            parentExecution,
-            deleteReason
-        );
+        executionEntityManager.cancelExecutionAndRelatedData(parentExecution, deleteReason);
     }
 
     public boolean isInterrupting() {

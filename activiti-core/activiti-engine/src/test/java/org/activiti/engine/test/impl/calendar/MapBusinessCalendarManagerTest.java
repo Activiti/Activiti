@@ -33,32 +33,19 @@ import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
 public class MapBusinessCalendarManagerTest extends TestCase {
 
     public void testMapConstructor() {
-        Map<String, BusinessCalendar> calendars = new HashMap<String, BusinessCalendar>(
-            1
-        );
+        Map<String, BusinessCalendar> calendars = new HashMap<String, BusinessCalendar>(1);
         CycleBusinessCalendar calendar = new CycleBusinessCalendar(null);
         calendars.put("someKey", calendar);
-        MapBusinessCalendarManager businessCalendarManager = new MapBusinessCalendarManager(
-            calendars
-        );
+        MapBusinessCalendarManager businessCalendarManager = new MapBusinessCalendarManager(calendars);
 
-        assertThat(
-            businessCalendarManager
-                .getBusinessCalendar("someKey")
-                .equals(calendar)
-        )
-            .isTrue();
+        assertThat(businessCalendarManager.getBusinessCalendar("someKey").equals(calendar)).isTrue();
     }
 
     public void testInvalidCalendarNameRequest() {
-        MapBusinessCalendarManager businessCalendarManager = new MapBusinessCalendarManager(
-            emptyMap()
-        );
+        MapBusinessCalendarManager businessCalendarManager = new MapBusinessCalendarManager(emptyMap());
 
         assertThatExceptionOfType(ActivitiException.class)
-            .isThrownBy(() ->
-                businessCalendarManager.getBusinessCalendar("INVALID")
-            )
+            .isThrownBy(() -> businessCalendarManager.getBusinessCalendar("INVALID"))
             .withMessageContaining("INVALID does not exist");
     }
 

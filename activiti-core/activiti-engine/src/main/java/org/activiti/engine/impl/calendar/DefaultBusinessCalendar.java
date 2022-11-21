@@ -54,10 +54,7 @@ public class DefaultBusinessCalendar implements BusinessCalendar {
     }
 
     public Date resolveDuedate(String duedate) {
-        Date resolvedDuedate = Context
-            .getProcessEngineConfiguration()
-            .getClock()
-            .getCurrentTime();
+        Date resolvedDuedate = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
 
         String[] tokens = duedate.split(" and ");
         for (String token : tokens) {
@@ -68,12 +65,7 @@ public class DefaultBusinessCalendar implements BusinessCalendar {
     }
 
     @Override
-    public Boolean validateDuedate(
-        String duedateDescription,
-        int maxIterations,
-        Date endDate,
-        Date newTimer
-    ) {
+    public Boolean validateDuedate(String duedateDescription, int maxIterations, Date endDate, Date newTimer) {
         return true;
     }
 
@@ -82,24 +74,16 @@ public class DefaultBusinessCalendar implements BusinessCalendar {
         return null;
     }
 
-    protected Date addSingleUnitQuantity(
-        Date startDate,
-        String singleUnitQuantity
-    ) {
+    protected Date addSingleUnitQuantity(Date startDate, String singleUnitQuantity) {
         int spaceIndex = singleUnitQuantity.indexOf(" ");
         if (spaceIndex == -1 || singleUnitQuantity.length() < spaceIndex + 1) {
-            throw new ActivitiIllegalArgumentException(
-                "invalid duedate format: " + singleUnitQuantity
-            );
+            throw new ActivitiIllegalArgumentException("invalid duedate format: " + singleUnitQuantity);
         }
 
         String quantityText = singleUnitQuantity.substring(0, spaceIndex);
         Integer quantity = Integer.valueOf(quantityText);
 
-        String unitText = singleUnitQuantity
-            .substring(spaceIndex + 1)
-            .trim()
-            .toLowerCase();
+        String unitText = singleUnitQuantity.substring(spaceIndex + 1).trim().toLowerCase();
 
         int unit = units.get(unitText);
 

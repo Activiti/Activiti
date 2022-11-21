@@ -16,8 +16,7 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
-public class EventBasedGatewayActivityBehavior
-    extends FlowNodeActivityBehavior {
+public class EventBasedGatewayActivityBehavior extends FlowNodeActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 }

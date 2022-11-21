@@ -26,9 +26,7 @@ import org.slf4j.LoggerFactory;
 
 public class LongJsonType extends SerializableType {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        LongJsonType.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(LongJsonType.class);
     public static final String LONG_JSON = "longJson";
 
     private final int minLength;
@@ -59,20 +57,12 @@ public class LongJsonType extends SerializableType {
 
         if (
             JsonNode.class.isAssignableFrom(value.getClass()) ||
-            (
-                objectMapper.canSerialize(value.getClass()) &&
-                serializePOJOsInVariablesToJson
-            )
+            (objectMapper.canSerialize(value.getClass()) && serializePOJOsInVariablesToJson)
         ) {
             try {
-                return (
-                    objectMapper.writeValueAsString(value).length() >= minLength
-                );
+                return (objectMapper.writeValueAsString(value).length() >= minLength);
             } catch (JsonProcessingException e) {
-                logger.error(
-                    "Error writing json variable of type " + value.getClass(),
-                    e
-                );
+                logger.error("Error writing json variable of type " + value.getClass(), e);
             }
         }
 
@@ -87,35 +77,22 @@ public class LongJsonType extends SerializableType {
         try {
             json = objectMapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {
-            logger.error(
-                "Error writing long json variable " + valueFields.getName(),
-                e
-            );
+            logger.error("Error writing long json variable " + valueFields.getName(), e);
         }
         try {
             valueFields.setTextValue2(value.getClass().getName());
             return json.getBytes(StandardCharsets.UTF_8);
         } catch (Exception e) {
-            throw new ActivitiException(
-                "Error getting bytes from json variable",
-                e
-            );
+            throw new ActivitiException("Error getting bytes from json variable", e);
         }
     }
 
     public Object deserialize(byte[] bytes, ValueFields valueFields) {
         Object jsonValue = null;
         try {
-            jsonValue =
-                jsonTypeConverter.convertToValue(
-                    objectMapper.readTree(bytes),
-                    valueFields
-                );
+            jsonValue = jsonTypeConverter.convertToValue(objectMapper.readTree(bytes), valueFields);
         } catch (Exception e) {
-            logger.error(
-                "Error reading json variable " + valueFields.getName(),
-                e
-            );
+            logger.error("Error reading json variable " + valueFields.getName(), e);
         }
         return jsonValue;
     }

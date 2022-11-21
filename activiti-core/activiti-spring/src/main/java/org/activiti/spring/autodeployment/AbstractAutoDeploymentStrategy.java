@@ -35,20 +35,14 @@ import org.springframework.core.io.Resource;
 /**
  * Abstract base class for implementations of {@link AutoDeploymentStrategy}.
  */
-public abstract class AbstractAutoDeploymentStrategy
-    implements AutoDeploymentStrategy {
+public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentStrategy {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(
-        AbstractAutoDeploymentStrategy.class
-    );
+    protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractAutoDeploymentStrategy.class);
 
     private ApplicationUpgradeContextService applicationUpgradeContextService;
 
-    public AbstractAutoDeploymentStrategy(
-        ApplicationUpgradeContextService applicationUpgradeContextService
-    ) {
-        this.applicationUpgradeContextService =
-            applicationUpgradeContextService;
+    public AbstractAutoDeploymentStrategy(ApplicationUpgradeContextService applicationUpgradeContextService) {
+        this.applicationUpgradeContextService = applicationUpgradeContextService;
     }
 
     /**
@@ -86,10 +80,7 @@ public abstract class AbstractAutoDeploymentStrategy
         return resourceName;
     }
 
-    protected boolean validateModel(
-        Resource resource,
-        final RepositoryService repositoryService
-    ) {
+    protected boolean validateModel(Resource resource, final RepositoryService repositoryService) {
         String resourceName = determineResourceName(resource);
 
         if (isProcessDefinitionResource(resourceName)) {
@@ -100,9 +91,7 @@ public abstract class AbstractAutoDeploymentStrategy
                     true,
                     false
                 );
-                List<ValidationError> validationErrors = repositoryService.validateProcess(
-                    bpmnModel
-                );
+                List<ValidationError> validationErrors = repositoryService.validateProcess(bpmnModel);
                 if (validationErrors != null && !validationErrors.isEmpty()) {
                     StringBuilder warningBuilder = new StringBuilder();
                     StringBuilder errorBuilder = new StringBuilder();
@@ -119,16 +108,12 @@ public abstract class AbstractAutoDeploymentStrategy
                         // Write out warnings (if any)
                         if (warningBuilder.length() > 0) {
                             LOGGER.warn(
-                                "Following warnings encountered during process validation: " +
-                                warningBuilder.toString()
+                                "Following warnings encountered during process validation: " + warningBuilder.toString()
                             );
                         }
 
                         if (errorBuilder.length() > 0) {
-                            LOGGER.error(
-                                "Errors while parsing:\n" +
-                                errorBuilder.toString()
-                            );
+                            LOGGER.error("Errors while parsing:\n" + errorBuilder.toString());
                             return false;
                         }
                     }
@@ -145,9 +130,7 @@ public abstract class AbstractAutoDeploymentStrategy
         return resource.endsWith(".bpmn20.xml") || resource.endsWith(".bpmn");
     }
 
-    protected DeploymentBuilder loadApplicationUpgradeContext(
-        DeploymentBuilder deploymentBuilder
-    ) {
+    protected DeploymentBuilder loadApplicationUpgradeContext(DeploymentBuilder deploymentBuilder) {
         if (applicationUpgradeContextService != null) {
             loadProjectManifest(deploymentBuilder);
             loadEnforcedAppVersion(deploymentBuilder);
@@ -158,9 +141,7 @@ public abstract class AbstractAutoDeploymentStrategy
     private void loadProjectManifest(DeploymentBuilder deploymentBuilder) {
         if (applicationUpgradeContextService.hasProjectManifest()) {
             try {
-                deploymentBuilder.setProjectManifest(
-                    applicationUpgradeContextService.loadProjectManifest()
-                );
+                deploymentBuilder.setProjectManifest(applicationUpgradeContextService.loadProjectManifest());
             } catch (IOException e) {
                 LOGGER.warn(
                     "Manifest of application not found. Project release version will not be set for deployment."
@@ -171,14 +152,10 @@ public abstract class AbstractAutoDeploymentStrategy
 
     private void loadEnforcedAppVersion(DeploymentBuilder deploymentBuilder) {
         if (applicationUpgradeContextService.hasEnforcedAppVersion()) {
-            deploymentBuilder.setEnforcedAppVersion(
-                applicationUpgradeContextService.getEnforcedAppVersion()
-            );
+            deploymentBuilder.setEnforcedAppVersion(applicationUpgradeContextService.getEnforcedAppVersion());
             LOGGER.warn(
                 "Enforced application version set to" +
-                applicationUpgradeContextService
-                    .getEnforcedAppVersion()
-                    .toString()
+                applicationUpgradeContextService.getEnforcedAppVersion().toString()
             );
         } else {
             LOGGER.warn("Enforced application version not set.");

@@ -30,8 +30,7 @@ public class TaskRuntimeEventListeners {
 
     @Bean
     public TaskRuntimeEventListener<TaskCancelledEvent> taskCancelledListener() {
-        return taskCancelledEvent ->
-            cancelledTasks.add(taskCancelledEvent.getEntity());
+        return taskCancelledEvent -> cancelledTasks.add(taskCancelledEvent.getEntity());
     }
 
     public List<Task> getCancelledTasks() {

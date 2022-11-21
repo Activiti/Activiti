@@ -58,10 +58,7 @@ public class LocalSpringSecurityContextPrincipalProviderTest {
     @Test
     public void testGetCurrentPrincipalNotAuthenticated() {
         // given
-        Authentication authentication = new UsernamePasswordAuthenticationToken(
-            "user",
-            "password"
-        );
+        Authentication authentication = new UsernamePasswordAuthenticationToken("user", "password");
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 

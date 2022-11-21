@@ -67,9 +67,7 @@ public class CreateTaskPayloadBuilder {
         return this;
     }
 
-    public CreateTaskPayloadBuilder withCandidateGroups(
-        List<String> candidateGroups
-    ) {
+    public CreateTaskPayloadBuilder withCandidateGroups(List<String> candidateGroups) {
         if (candidateGroups == null) {
             candidateGroups = new ArrayList<>();
         }
@@ -82,9 +80,7 @@ public class CreateTaskPayloadBuilder {
         return this;
     }
 
-    public CreateTaskPayloadBuilder withCandidateUsers(
-        List<String> candidateUsers
-    ) {
+    public CreateTaskPayloadBuilder withCandidateUsers(List<String> candidateUsers) {
         if (candidateUsers == null) {
             candidateUsers = new ArrayList<>();
         }

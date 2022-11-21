@@ -20,8 +20,7 @@ import org.activiti.engine.ActivitiEngineAgenda;
 import org.activiti.engine.ActivitiEngineAgendaFactory;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-public class DefaultActivitiEngineAgendaFactory
-    implements ActivitiEngineAgendaFactory {
+public class DefaultActivitiEngineAgendaFactory implements ActivitiEngineAgendaFactory {
 
     @Override
     public ActivitiEngineAgenda createAgenda(CommandContext commandContext) {

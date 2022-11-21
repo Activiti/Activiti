@@ -38,32 +38,18 @@ public abstract class BusinessCalendarImpl implements BusinessCalendar {
         return resolveDuedate(duedateDescription, -1);
     }
 
-    public abstract Date resolveDuedate(
-        String duedateDescription,
-        int maxIterations
-    );
+    public abstract Date resolveDuedate(String duedateDescription, int maxIterations);
 
     @Override
-    public Boolean validateDuedate(
-        String duedateDescription,
-        int maxIterations,
-        Date endDate,
-        Date newTimer
-    ) {
-        return (
-            endDate == null ||
-            endDate.after(newTimer) ||
-            endDate.equals(newTimer)
-        );
+    public Boolean validateDuedate(String duedateDescription, int maxIterations, Date endDate, Date newTimer) {
+        return (endDate == null || endDate.after(newTimer) || endDate.equals(newTimer));
     }
 
     @Override
     public Date resolveEndDate(String endDateString) {
         return ISODateTimeFormat
             .dateTimeParser()
-            .withZone(
-                DateTimeZone.forTimeZone(clockReader.getCurrentTimeZone())
-            )
+            .withZone(DateTimeZone.forTimeZone(clockReader.getCurrentTimeZone()))
             .parseDateTime(endDateString)
             .toCalendar(null)
             .getTime();

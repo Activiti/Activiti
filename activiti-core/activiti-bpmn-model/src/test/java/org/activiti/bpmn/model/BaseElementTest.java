@@ -65,46 +65,21 @@ public class BaseElementTest {
     @Test
     public void testGetAttributeValue() {
         //Given
-        ExtensionAttribute extensionAttributeOne = createExtensionAttribute(
-            "attrOne",
-            "attrValueOne"
-        );
+        ExtensionAttribute extensionAttributeOne = createExtensionAttribute("attrOne", "attrValueOne");
 
-        ExtensionAttribute extensionAttributeTwo = createExtensionAttribute(
-            "attrTwo",
-            "attrValueTwo"
-        );
+        ExtensionAttribute extensionAttributeTwo = createExtensionAttribute("attrTwo", "attrValueTwo");
         extensionAttributeTwo.setNamespace(null);
 
-        ExtensionAttribute extensionAttributeThree = createExtensionAttribute(
-            "attrThree",
-            "attrValueTwo"
-        );
+        ExtensionAttribute extensionAttributeThree = createExtensionAttribute("attrThree", "attrValueTwo");
 
         baseElement
             .getAttributes()
-            .put(
-                "attributeOne",
-                asList(
-                    extensionAttributeOne,
-                    extensionAttributeTwo,
-                    extensionAttributeThree
-                )
-            );
+            .put("attributeOne", asList(extensionAttributeOne, extensionAttributeTwo, extensionAttributeThree));
 
         //When
-        String successValue = baseElement.getAttributeValue(
-            "namespace",
-            "attributeOne"
-        );
-        String nonNamespace = baseElement.getAttributeValue(
-            null,
-            "attributeOne"
-        );
-        String nonAttribute = baseElement.getAttributeValue(
-            "namespace",
-            "other"
-        );
+        String successValue = baseElement.getAttributeValue("namespace", "attributeOne");
+        String nonNamespace = baseElement.getAttributeValue(null, "attributeOne");
+        String nonAttribute = baseElement.getAttributeValue("namespace", "other");
 
         //Then
         assertThat(successValue).isEqualTo("attrValueOne");
@@ -115,28 +90,18 @@ public class BaseElementTest {
     @Test
     public void testAddAttribute() {
         //Given
-        ExtensionAttribute attributeOne = createExtensionAttribute(
-            "attr",
-            "valueOne"
-        );
+        ExtensionAttribute attributeOne = createExtensionAttribute("attr", "valueOne");
 
-        ExtensionAttribute attributeTwo = createExtensionAttribute(
-            "attr",
-            "valueTwo"
-        );
+        ExtensionAttribute attributeTwo = createExtensionAttribute("attr", "valueTwo");
 
         //When and Then
         baseElement.addAttribute(attributeOne);
         assertThat(baseElement.getAttributes()).hasSize(1);
-        assertThat(baseElement.getAttributes().get("attr"))
-            .hasSize(1)
-            .containsExactly(attributeOne);
+        assertThat(baseElement.getAttributes().get("attr")).hasSize(1).containsExactly(attributeOne);
 
         //When and Then
         baseElement.addAttribute(attributeTwo);
-        assertThat(baseElement.getAttributes().get("attr"))
-            .hasSize(2)
-            .containsExactly(attributeOne, attributeTwo);
+        assertThat(baseElement.getAttributes().get("attr")).hasSize(2).containsExactly(attributeOne, attributeTwo);
         assertThat(baseElement.getAttributes()).hasSize(1);
     }
 
@@ -152,9 +117,7 @@ public class BaseElementTest {
         assertThat(baseElement.getId()).isEqualTo("otherBaseElementId");
         assertThat(baseElement.getExtensionElements()).hasSize(1);
 
-        List<ExtensionElement> extensionElements = baseElement
-            .getExtensionElements()
-            .get("elementOne");
+        List<ExtensionElement> extensionElements = baseElement.getExtensionElements().get("elementOne");
         assertThat(extensionElements).hasSize(1);
 
         ExtensionElement extensionElementOne = extensionElements.get(0);
@@ -165,14 +128,11 @@ public class BaseElementTest {
             .getAttributes()
             .get("attrOneElementOne");
         assertThat(nestedAttributesInElementOne).hasSize(1);
-        assertThat(nestedAttributesInElementOne.get(0).getName())
-            .isEqualTo("attrOneElementOne");
-        assertThat(nestedAttributesInElementOne.get(0).getValue())
-            .isEqualTo("attrOneElementOneValue");
+        assertThat(nestedAttributesInElementOne.get(0).getName()).isEqualTo("attrOneElementOne");
+        assertThat(nestedAttributesInElementOne.get(0).getValue()).isEqualTo("attrOneElementOneValue");
 
         assertThat(baseElement.getAttributes()).hasSize(1);
-        assertThat(baseElement.getAttributeValue("namespace", "attrOne"))
-            .isEqualTo("attrValueOne");
+        assertThat(baseElement.getAttributeValue("namespace", "attrOne")).isEqualTo("attrValueOne");
     }
 
     private BaseElement createOtherBaseElement() {
@@ -195,21 +155,14 @@ public class BaseElementTest {
             singletonList(extensionAttributeElementOne)
         );
 
-        ExtensionAttribute extensionAttributeOne = createExtensionAttribute(
-            "attrOne",
-            "prefix",
-            "attrValueOne"
-        );
+        ExtensionAttribute extensionAttributeOne = createExtensionAttribute("attrOne", "prefix", "attrValueOne");
 
         baseElement.addExtensionElement(extensionElementOne);
         baseElement.addAttribute(extensionAttributeOne);
         return baseElement;
     }
 
-    private ExtensionElement createExtensionElement(
-        String name,
-        List<ExtensionAttribute> extensionAttributes
-    ) {
+    private ExtensionElement createExtensionElement(String name, List<ExtensionAttribute> extensionAttributes) {
         ExtensionElement extensionElement = new ExtensionElement();
         extensionElement.setName(name);
         extensionElement.setNamespace("namespace");
@@ -220,18 +173,11 @@ public class BaseElementTest {
         return extensionElement;
     }
 
-    private ExtensionAttribute createExtensionAttribute(
-        String name,
-        String value
-    ) {
+    private ExtensionAttribute createExtensionAttribute(String name, String value) {
         return createExtensionAttribute(name, null, value);
     }
 
-    private ExtensionAttribute createExtensionAttribute(
-        String name,
-        String prefix,
-        String value
-    ) {
+    private ExtensionAttribute createExtensionAttribute(String name, String prefix, String value) {
         ExtensionAttribute extensionAttributeOne = new ExtensionAttribute();
         extensionAttributeOne.setName(name);
         extensionAttributeOne.setNamespacePrefix(prefix);

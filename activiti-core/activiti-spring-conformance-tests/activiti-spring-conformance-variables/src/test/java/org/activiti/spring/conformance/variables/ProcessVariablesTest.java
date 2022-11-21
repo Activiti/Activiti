@@ -47,8 +47,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessVariablesTest {
 
-    private final String processKey =
-        "usertaskas-b5300a4b-8950-4486-ba20-a8d775a3d75d";
+    private final String processKey = "usertaskas-b5300a4b-8950-4486-ba20-a8d775a3d75d";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -101,8 +100,7 @@ public class ProcessVariablesTest {
         setVariables();
 
         VariableInstance variableOneRuntime = variableInstanceList.get(0);
-        assertThat(variableOneRuntime.getProcessInstanceId())
-            .isEqualTo(processInstanceId);
+        assertThat(variableOneRuntime.getProcessInstanceId()).isEqualTo(processInstanceId);
         assertThat(variableOneRuntime.getTaskId()).isNull();
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
@@ -180,13 +178,9 @@ public class ProcessVariablesTest {
     @AfterEach
     public void cleanup() {
         securityUtil.logInAs("admin");
-        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(
-            Pageable.of(0, 50)
-        );
+        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0, 50));
         for (ProcessInstance pi : processInstancePage.getContent()) {
-            processAdminRuntime.delete(
-                ProcessPayloadBuilder.delete(pi.getId())
-            );
+            processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
 
         clearEvents();
@@ -234,11 +228,7 @@ public class ProcessVariablesTest {
         );
 
         variableInstanceList =
-            processRuntime.variables(
-                new GetVariablesPayloadBuilder()
-                    .withProcessInstanceId(processInstanceId)
-                    .build()
-            );
+            processRuntime.variables(new GetVariablesPayloadBuilder().withProcessInstanceId(processInstanceId).build());
     }
 
     public void clearEvents() {

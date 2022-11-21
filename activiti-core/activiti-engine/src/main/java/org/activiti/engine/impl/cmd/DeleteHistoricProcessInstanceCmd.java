@@ -27,8 +27,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 /**
 
  */
-public class DeleteHistoricProcessInstanceCmd
-    implements Command<Object>, Serializable {
+public class DeleteHistoricProcessInstanceCmd implements Command<Object>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String processInstanceId;
@@ -39,9 +38,7 @@ public class DeleteHistoricProcessInstanceCmd
 
     public Object execute(CommandContext commandContext) {
         if (processInstanceId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "processInstanceId is null"
-            );
+            throw new ActivitiIllegalArgumentException("processInstanceId is null");
         }
         // Check if process instance is still running
         HistoricProcessInstance instance = commandContext
@@ -50,15 +47,13 @@ public class DeleteHistoricProcessInstanceCmd
 
         if (instance == null) {
             throw new ActivitiObjectNotFoundException(
-                "No historic process instance found with id: " +
-                processInstanceId,
+                "No historic process instance found with id: " + processInstanceId,
                 HistoricProcessInstance.class
             );
         }
         if (instance.getEndTime() == null) {
             throw new ActivitiException(
-                "Process instance is still running, cannot delete historic process instance: " +
-                processInstanceId
+                "Process instance is still running, cannot delete historic process instance: " + processInstanceId
             );
         }
 
@@ -66,12 +61,7 @@ public class DeleteHistoricProcessInstanceCmd
         return null;
     }
 
-    protected void executeInternal(
-        CommandContext commandContext,
-        HistoricProcessInstance instance
-    ) {
-        commandContext
-            .getHistoricProcessInstanceEntityManager()
-            .delete(processInstanceId);
+    protected void executeInternal(CommandContext commandContext, HistoricProcessInstance instance) {
+        commandContext.getHistoricProcessInstanceEntityManager().delete(processInstanceId);
     }
 }

@@ -106,8 +106,7 @@ public class ShellActivityBehavior extends AbstractBpmnActivityBehavior {
         if (shellCommandExecutorFactory != null) {
             // if there is a ShellExecutorFactoryProvided
             // then it will be used to create a desired shell command executor.
-            commandExecutor =
-                shellCommandExecutorFactory.createExecutor(executorContext);
+            commandExecutor = shellCommandExecutorFactory.createExecutor(executorContext);
         } else {
             // default Shell executor (if the shell security is OFF)
             commandExecutor = new ShellCommandExecutor(executorContext);
@@ -122,10 +121,7 @@ public class ShellActivityBehavior extends AbstractBpmnActivityBehavior {
         leave(execution);
     }
 
-    protected String getStringFromField(
-        Expression expression,
-        DelegateExecution execution
-    ) {
+    protected String getStringFromField(Expression expression, DelegateExecution execution) {
         if (expression != null) {
             Object value = expression.getValue(execution);
             if (value != null) {

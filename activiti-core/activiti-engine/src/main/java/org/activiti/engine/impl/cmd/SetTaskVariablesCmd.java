@@ -31,11 +31,7 @@ public class SetTaskVariablesCmd extends NeedsActiveTaskCmd<Object> {
     protected Map<String, ? extends Object> variables;
     protected boolean isLocal;
 
-    public SetTaskVariablesCmd(
-        String taskId,
-        Map<String, ? extends Object> variables,
-        boolean isLocal
-    ) {
+    public SetTaskVariablesCmd(String taskId, Map<String, ? extends Object> variables, boolean isLocal) {
         super(taskId);
         this.taskId = taskId;
         this.variables = variables;
@@ -46,21 +42,13 @@ public class SetTaskVariablesCmd extends NeedsActiveTaskCmd<Object> {
         if (isLocal) {
             if (variables != null) {
                 for (String variableName : variables.keySet()) {
-                    task.setVariableLocal(
-                        variableName,
-                        variables.get(variableName),
-                        false
-                    );
+                    task.setVariableLocal(variableName, variables.get(variableName), false);
                 }
             }
         } else {
             if (variables != null) {
                 for (String variableName : variables.keySet()) {
-                    task.setVariable(
-                        variableName,
-                        variables.get(variableName),
-                        false
-                    );
+                    task.setVariable(variableName, variables.get(variableName), false);
                 }
             }
         }

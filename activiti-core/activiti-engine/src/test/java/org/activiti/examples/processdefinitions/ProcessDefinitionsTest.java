@@ -32,11 +32,9 @@ import org.activiti.engine.repository.ProcessDefinition;
  */
 public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
 
-    private static final String NAMESPACE =
-        "xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL'";
+    private static final String NAMESPACE = "xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL'";
 
-    private static final String TARGET_NAMESPACE =
-        "targetNamespace='http://activiti.org/BPMN20'";
+    private static final String TARGET_NAMESPACE = "targetNamespace='http://activiti.org/BPMN20'";
 
     public void testGetProcessDefinitions() {
         List<String> deploymentIds = new ArrayList<String>();
@@ -132,22 +130,19 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
 
         processDefinition = processDefinitions.get(2);
         assertThat(processDefinition.getKey()).isEqualTo("IDR");
-        assertThat(processDefinition.getName())
-            .isEqualTo("Insurance Damage Report 3");
+        assertThat(processDefinition.getName()).isEqualTo("Insurance Damage Report 3");
         assertThat(processDefinition.getId().startsWith("IDR:3")).isTrue();
         assertThat(processDefinition.getVersion()).isEqualTo(3);
 
         processDefinition = processDefinitions.get(3);
         assertThat(processDefinition.getKey()).isEqualTo("IDR");
-        assertThat(processDefinition.getName())
-            .isEqualTo("Insurance Damage Report 2");
+        assertThat(processDefinition.getName()).isEqualTo("Insurance Damage Report 2");
         assertThat(processDefinition.getId().startsWith("IDR:2")).isTrue();
         assertThat(processDefinition.getVersion()).isEqualTo(2);
 
         processDefinition = processDefinitions.get(4);
         assertThat(processDefinition.getKey()).isEqualTo("IDR");
-        assertThat(processDefinition.getName())
-            .isEqualTo("Insurance Damage Report 1");
+        assertThat(processDefinition.getName()).isEqualTo("Insurance Damage Report 1");
         assertThat(processDefinition.getId().startsWith("IDR:1")).isTrue();
         assertThat(processDefinition.getVersion()).isEqualTo(1);
 
@@ -177,10 +172,7 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
         queryDeploymentIds.add(processDefinitions.get(3).getDeploymentId());
         queryDeploymentIds.add(processDefinitions.get(4).getDeploymentId());
         queryProcessDefinitions =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .deploymentIds(queryDeploymentIds)
-                .list();
+            repositoryService.createProcessDefinitionQuery().deploymentIds(queryDeploymentIds).list();
         assertThat(queryProcessDefinitions).hasSize(3);
 
         processDefinition = queryProcessDefinitions.get(0);
@@ -189,13 +181,11 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
 
         processDefinition = processDefinitions.get(3);
         assertThat(processDefinition.getKey()).isEqualTo("IDR");
-        assertThat(processDefinition.getName())
-            .isEqualTo("Insurance Damage Report 2");
+        assertThat(processDefinition.getName()).isEqualTo("Insurance Damage Report 2");
 
         processDefinition = processDefinitions.get(4);
         assertThat(processDefinition.getKey()).isEqualTo("IDR");
-        assertThat(processDefinition.getName())
-            .isEqualTo("Insurance Damage Report 1");
+        assertThat(processDefinition.getName()).isEqualTo("Insurance Damage Report 1");
 
         deleteDeployments(deploymentIds);
     }
@@ -242,15 +232,13 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
 
         ProcessDefinition processDefinition = processDefinitions.get(0);
         assertThat(processDefinition.getKey()).isEqualTo("IDR");
-        assertThat(processDefinition.getName())
-            .isEqualTo("Insurance Damage Report");
+        assertThat(processDefinition.getName()).isEqualTo("Insurance Damage Report");
         assertThat(processDefinition.getId().startsWith("IDR:2")).isTrue();
         assertThat(processDefinition.getVersion()).isEqualTo(2);
 
         processDefinition = processDefinitions.get(1);
         assertThat(processDefinition.getKey()).isEqualTo("IDR");
-        assertThat(processDefinition.getName())
-            .isEqualTo("Insurance Damage Report");
+        assertThat(processDefinition.getName()).isEqualTo("Insurance Damage Report");
         assertThat(processDefinition.getId().startsWith("IDR:1")).isTrue();
         assertThat(processDefinition.getVersion()).isEqualTo(1);
 
@@ -272,20 +260,14 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
             .createProcessDefinitionQuery()
             .deploymentId(deploymentId)
             .singleResult();
-        assertThat(processDefinition.getDescription())
-            .isEqualTo("This is a test");
+        assertThat(processDefinition.getDescription()).isEqualTo("This is a test");
 
         deleteDeployments(singletonList(deploymentId));
     }
 
     private String deployProcessString(String processString) {
-        String resourceName =
-            "xmlString." + ResourceNameUtil.BPMN_RESOURCE_SUFFIXES[0];
-        return repositoryService
-            .createDeployment()
-            .addString(resourceName, processString)
-            .deploy()
-            .getId();
+        String resourceName = "xmlString." + ResourceNameUtil.BPMN_RESOURCE_SUFFIXES[0];
+        return repositoryService.createDeployment().addString(resourceName, processString).deploy().getId();
     }
 
     private void deleteDeployments(Collection<String> deploymentIds) {

@@ -26,23 +26,16 @@ import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity
 /**
 
  */
-public interface HistoricProcessInstanceDataManager
-    extends DataManager<HistoricProcessInstanceEntity> {
-    HistoricProcessInstanceEntity create(
-        ExecutionEntity processInstanceExecutionEntity
-    );
+public interface HistoricProcessInstanceDataManager extends DataManager<HistoricProcessInstanceEntity> {
+    HistoricProcessInstanceEntity create(ExecutionEntity processInstanceExecutionEntity);
 
-    List<String> findHistoricProcessInstanceIdsByProcessDefinitionId(
-        String processDefinitionId
-    );
+    List<String> findHistoricProcessInstanceIdsByProcessDefinitionId(String processDefinitionId);
 
     List<HistoricProcessInstanceEntity> findHistoricProcessInstancesBySuperProcessInstanceId(
         String superProcessInstanceId
     );
 
-    long findHistoricProcessInstanceCountByQueryCriteria(
-        HistoricProcessInstanceQueryImpl historicProcessInstanceQuery
-    );
+    long findHistoricProcessInstanceCountByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery);
 
     List<HistoricProcessInstance> findHistoricProcessInstancesByQueryCriteria(
         HistoricProcessInstanceQueryImpl historicProcessInstanceQuery
@@ -58,7 +51,5 @@ public interface HistoricProcessInstanceDataManager
         int maxResults
     );
 
-    long findHistoricProcessInstanceCountByNativeQuery(
-        Map<String, Object> parameterMap
-    );
+    long findHistoricProcessInstanceCountByNativeQuery(Map<String, Object> parameterMap);
 }

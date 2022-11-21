@@ -34,11 +34,7 @@ import org.activiti.editor.language.json.model.ModelInfo;
  */
 public class SubProcessJsonConverter
     extends BaseBpmnJsonConverter
-    implements
-        FormAwareConverter,
-        FormKeyAwareConverter,
-        DecisionTableAwareConverter,
-        DecisionTableKeyAwareConverter {
+    implements FormAwareConverter, FormKeyAwareConverter, DecisionTableAwareConverter, DecisionTableKeyAwareConverter {
 
     protected Map<String, String> formMap;
     protected Map<String, ModelInfo> formKeyMap;
@@ -53,36 +49,22 @@ public class SubProcessJsonConverter
         fillBpmnTypes(convertersToJsonMap);
     }
 
-    public static void fillJsonTypes(
-        Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap
-    ) {
-        convertersToBpmnMap.put(
-            STENCIL_SUB_PROCESS,
-            SubProcessJsonConverter.class
-        );
+    public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
+        convertersToBpmnMap.put(STENCIL_SUB_PROCESS, SubProcessJsonConverter.class);
     }
 
     public static void fillBpmnTypes(
         Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap
     ) {
-        convertersToJsonMap.put(
-            SubProcess.class,
-            SubProcessJsonConverter.class
-        );
-        convertersToJsonMap.put(
-            Transaction.class,
-            SubProcessJsonConverter.class
-        );
+        convertersToJsonMap.put(SubProcess.class, SubProcessJsonConverter.class);
+        convertersToJsonMap.put(Transaction.class, SubProcessJsonConverter.class);
     }
 
     protected String getStencilId(BaseElement baseElement) {
         return STENCIL_SUB_PROCESS;
     }
 
-    protected void convertElementToJson(
-        ObjectNode propertiesNode,
-        BaseElement baseElement
-    ) {
+    protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
         SubProcess subProcess = (SubProcess) baseElement;
 
         propertiesNode.put("activitytype", "Sub-Process");
@@ -104,10 +86,7 @@ public class SubProcessJsonConverter
             propertiesNode.put("istransaction", true);
         }
 
-        BpmnJsonConverterUtil.convertDataPropertiesToJson(
-            subProcess.getDataObjects(),
-            propertiesNode
-        );
+        BpmnJsonConverterUtil.convertDataPropertiesToJson(subProcess.getDataObjects(), propertiesNode);
     }
 
     protected FlowElement convertJsonToElement(
@@ -133,9 +112,7 @@ public class SubProcessJsonConverter
             model
         );
 
-        JsonNode processDataPropertiesNode = elementNode
-            .get(EDITOR_SHAPE_PROPERTIES)
-            .get(PROPERTY_DATA_PROPERTIES);
+        JsonNode processDataPropertiesNode = elementNode.get(EDITOR_SHAPE_PROPERTIES).get(PROPERTY_DATA_PROPERTIES);
         if (processDataPropertiesNode != null) {
             List<ValuedDataObject> dataObjects = BpmnJsonConverterUtil.convertJsonToDataProperties(
                 processDataPropertiesNode,
@@ -164,9 +141,7 @@ public class SubProcessJsonConverter
     }
 
     @Override
-    public void setDecisionTableKeyMap(
-        Map<String, ModelInfo> decisionTableKeyMap
-    ) {
+    public void setDecisionTableKeyMap(Map<String, ModelInfo> decisionTableKeyMap) {
         this.decisionTableKeyMap = decisionTableKeyMap;
     }
 }

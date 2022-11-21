@@ -24,8 +24,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 /**
 
  */
-public class GetDeploymentProcessDefinitionCmd
-    implements Command<ProcessDefinition>, Serializable {
+public class GetDeploymentProcessDefinitionCmd implements Command<ProcessDefinition>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String processDefinitionId;

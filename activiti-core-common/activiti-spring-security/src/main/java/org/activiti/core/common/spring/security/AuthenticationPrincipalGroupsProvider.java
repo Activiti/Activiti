@@ -21,8 +21,7 @@ import java.util.Optional;
 import org.activiti.api.runtime.shared.security.PrincipalGroupsProvider;
 import org.springframework.lang.NonNull;
 
-public class AuthenticationPrincipalGroupsProvider
-    implements PrincipalGroupsProvider {
+public class AuthenticationPrincipalGroupsProvider implements PrincipalGroupsProvider {
 
     private final GrantedAuthoritiesResolver grantedAuthoritiesResolver;
     private final GrantedAuthoritiesGroupsMapper grantedAuthoritiesGroupsMapper;

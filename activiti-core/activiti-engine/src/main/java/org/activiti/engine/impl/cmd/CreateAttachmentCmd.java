@@ -79,9 +79,7 @@ public class CreateAttachmentCmd implements Command<Attachment> {
     }
 
     protected Attachment executeInternal(CommandContext commandContext) {
-        AttachmentEntity attachment = commandContext
-            .getAttachmentEntityManager()
-            .create();
+        AttachmentEntity attachment = commandContext.getAttachmentEntityManager().create();
         attachment.setName(attachmentName);
         attachment.setProcessInstanceId(processInstanceId);
         attachment.setTaskId(taskId);
@@ -89,48 +87,27 @@ public class CreateAttachmentCmd implements Command<Attachment> {
         attachment.setType(attachmentType);
         attachment.setUrl(url);
         attachment.setUserId(Authentication.getAuthenticatedUserId());
-        attachment.setTime(
-            commandContext
-                .getProcessEngineConfiguration()
-                .getClock()
-                .getCurrentTime()
-        );
+        attachment.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
 
         commandContext.getAttachmentEntityManager().insert(attachment, false);
 
         if (content != null) {
             byte[] bytes = IoUtil.readInputStream(content, attachmentName);
-            ByteArrayEntity byteArray = commandContext
-                .getByteArrayEntityManager()
-                .create();
+            ByteArrayEntity byteArray = commandContext.getByteArrayEntityManager().create();
             byteArray.setBytes(bytes);
             commandContext.getByteArrayEntityManager().insert(byteArray);
             attachment.setContentId(byteArray.getId());
             attachment.setContent(byteArray);
         }
 
-        commandContext
-            .getHistoryManager()
-            .createAttachmentComment(
-                taskId,
-                processInstanceId,
-                attachmentName,
-                true
-            );
+        commandContext.getHistoryManager().createAttachmentComment(taskId, processInstanceId, attachmentName, true);
 
-        if (
-            commandContext
-                .getProcessEngineConfiguration()
-                .getEventDispatcher()
-                .isEnabled()
-        ) {
+        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
             // Forced to fetch the process-instance to associate the right
             // process definition
             String processDefinitionId = null;
             if (attachment.getProcessInstanceId() != null) {
-                ExecutionEntity process = commandContext
-                    .getExecutionEntityManager()
-                    .findById(processInstanceId);
+                ExecutionEntity process = commandContext.getExecutionEntityManager().findById(processInstanceId);
                 if (process != null) {
                     processDefinitionId = process.getProcessDefinitionId();
                 }
@@ -165,32 +142,21 @@ public class CreateAttachmentCmd implements Command<Attachment> {
     }
 
     protected TaskEntity verifyTaskParameters(CommandContext commandContext) {
-        TaskEntity task = commandContext
-            .getTaskEntityManager()
-            .findById(taskId);
+        TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);
 
         if (task == null) {
-            throw new ActivitiObjectNotFoundException(
-                "Cannot find task with id " + taskId,
-                Task.class
-            );
+            throw new ActivitiObjectNotFoundException("Cannot find task with id " + taskId, Task.class);
         }
 
         if (task.isSuspended()) {
-            throw new ActivitiException(
-                "It is not allowed to add an attachment to a suspended task"
-            );
+            throw new ActivitiException("It is not allowed to add an attachment to a suspended task");
         }
 
         return task;
     }
 
-    protected ExecutionEntity verifyExecutionParameters(
-        CommandContext commandContext
-    ) {
-        ExecutionEntity execution = commandContext
-            .getExecutionEntityManager()
-            .findById(processInstanceId);
+    protected ExecutionEntity verifyExecutionParameters(CommandContext commandContext) {
+        ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(processInstanceId);
 
         if (execution == null) {
             throw new ActivitiObjectNotFoundException(
@@ -200,9 +166,7 @@ public class CreateAttachmentCmd implements Command<Attachment> {
         }
 
         if (execution.isSuspended()) {
-            throw new ActivitiException(
-                "It is not allowed to add an attachment to a suspended process instance"
-            );
+            throw new ActivitiException("It is not allowed to add an attachment to a suspended process instance");
         }
 
         return execution;

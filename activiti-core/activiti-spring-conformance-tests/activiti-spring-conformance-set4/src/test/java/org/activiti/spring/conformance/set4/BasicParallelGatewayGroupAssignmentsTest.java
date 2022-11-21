@@ -42,8 +42,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class BasicParallelGatewayGroupAssignmentsTest {
 
-    private final String processKey =
-        "basicparal-41c130f7-0b06-4bbb-aee4-73667298e369";
+    private final String processKey = "basicparal-41c130f7-0b06-4bbb-aee4-73667298e369";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -77,17 +76,12 @@ public class BasicParallelGatewayGroupAssignmentsTest {
 
         //then
         assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getStatus())
-            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
-        assertThat(processInstance.getBusinessKey())
-            .isEqualTo("my-business-key");
-        assertThat(processInstance.getName())
-            .isEqualTo("my-process-instance-name");
+        assertThat(processInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(processInstance.getBusinessKey()).isEqualTo("my-business-key");
+        assertThat(processInstance.getName()).isEqualTo("my-process-instance-name");
 
         // I should be able to get the process instance from the Runtime because it is still running
-        ProcessInstance processInstanceById = processRuntime.processInstance(
-            processInstance.getId()
-        );
+        ProcessInstance processInstanceById = processRuntime.processInstance(processInstance.getId());
 
         assertThat(processInstanceById).isEqualTo(processInstance);
 
@@ -121,9 +115,7 @@ public class BasicParallelGatewayGroupAssignmentsTest {
 
         clearEvents();
 
-        taskRuntime.complete(
-            TaskPayloadBuilder.complete().withTaskId(task.getId()).build()
-        );
+        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
             .extracting(RuntimeEvent::getEventType)
@@ -188,13 +180,9 @@ public class BasicParallelGatewayGroupAssignmentsTest {
     @AfterEach
     public void cleanup() {
         securityUtil.logInAs("admin");
-        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(
-            Pageable.of(0, 50)
-        );
+        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0, 50));
         for (ProcessInstance pi : processInstancePage.getContent()) {
-            processAdminRuntime.delete(
-                ProcessPayloadBuilder.delete(pi.getId())
-            );
+            processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
 
         clearEvents();

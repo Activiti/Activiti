@@ -25,10 +25,7 @@ public class ApplicationDeployer {
 
     private List<ApplicationEntryDeployer> deployers;
 
-    public ApplicationDeployer(
-        ApplicationService applicationLoader,
-        List<ApplicationEntryDeployer> deployers
-    ) {
+    public ApplicationDeployer(ApplicationService applicationLoader, List<ApplicationEntryDeployer> deployers) {
         this.applicationLoader = applicationLoader;
         this.deployers = deployers;
     }

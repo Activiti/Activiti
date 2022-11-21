@@ -33,10 +33,7 @@ public abstract class AbstractTransformer implements Transformer {
             return this.primTransform(anObject);
         } catch (Exception e) {
             throw new ActivitiException(
-                "Error while executing transformation from object: " +
-                anObject +
-                " using transformer " +
-                this
+                "Error while executing transformation from object: " + anObject + " using transformer " + this
             );
         }
     }

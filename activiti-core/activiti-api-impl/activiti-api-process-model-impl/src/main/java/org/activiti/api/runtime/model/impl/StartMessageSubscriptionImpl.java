@@ -65,14 +65,7 @@ public class StartMessageSubscriptionImpl implements StartMessageSubscription {
 
     @Override
     public int hashCode() {
-        return Objects.hash(
-            activityId,
-            configuration,
-            created,
-            eventName,
-            id,
-            processDefinitionId
-        );
+        return Objects.hash(activityId, configuration, created, eventName, id, processDefinitionId);
     }
 
     @Override
@@ -130,9 +123,7 @@ public class StartMessageSubscriptionImpl implements StartMessageSubscription {
      * @param startMessageSubscriptionImpl to initialize the builder with
      * @return created builder
      */
-    public static Builder builderFrom(
-        StartMessageSubscriptionImpl startMessageSubscriptionImpl
-    ) {
+    public static Builder builderFrom(StartMessageSubscriptionImpl startMessageSubscriptionImpl) {
         return new Builder(startMessageSubscriptionImpl);
     }
 
@@ -150,13 +141,10 @@ public class StartMessageSubscriptionImpl implements StartMessageSubscription {
 
         public Builder() {}
 
-        private Builder(
-            StartMessageSubscriptionImpl startMessageSubscriptionImpl
-        ) {
+        private Builder(StartMessageSubscriptionImpl startMessageSubscriptionImpl) {
             this.id = startMessageSubscriptionImpl.id;
             this.eventName = startMessageSubscriptionImpl.eventName;
-            this.processDefinitionId =
-                startMessageSubscriptionImpl.processDefinitionId;
+            this.processDefinitionId = startMessageSubscriptionImpl.processDefinitionId;
             this.configuration = startMessageSubscriptionImpl.configuration;
             this.activityId = startMessageSubscriptionImpl.activityId;
             this.created = startMessageSubscriptionImpl.created;

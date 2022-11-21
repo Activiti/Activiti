@@ -25,8 +25,7 @@ import org.activiti.engine.impl.util.json.JSONObject;
 /**
 
  */
-public class TimerSuspendProcessDefinitionHandler
-    extends TimerChangeProcessDefinitionSuspensionStateJobHandler {
+public class TimerSuspendProcessDefinitionHandler extends TimerChangeProcessDefinitionSuspensionStateJobHandler {
 
     public static final String TYPE = "suspend-processdefinition";
 
@@ -34,12 +33,7 @@ public class TimerSuspendProcessDefinitionHandler
         return TYPE;
     }
 
-    public void execute(
-        JobEntity job,
-        String configuration,
-        ExecutionEntity execution,
-        CommandContext commandContext
-    ) {
+    public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
         JSONObject cfgJson = new JSONObject(configuration);
         String processDefinitionId = job.getProcessDefinitionId();
         boolean suspendProcessInstances = getIncludeProcessInstances(cfgJson);

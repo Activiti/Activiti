@@ -59,8 +59,7 @@ public class BpmnAutoLayout {
     private static final String STYLE_EVENT = "styleEvent";
     private static final String STYLE_GATEWAY = "styleGateway";
     private static final String STYLE_SEQUENCEFLOW = "styleSequenceFlow";
-    private static final String STYLE_BOUNDARY_SEQUENCEFLOW =
-        "styleBoundarySequenceFlow";
+    private static final String STYLE_BOUNDARY_SEQUENCEFLOW = "styleBoundarySequenceFlow";
 
     protected BpmnModel bpmnModel;
 
@@ -131,10 +130,7 @@ public class BpmnAutoLayout {
                 handleEvent(flowElement);
             } else if (flowElement instanceof Gateway) {
                 createGatewayVertex(flowElement);
-            } else if (
-                flowElement instanceof Task ||
-                flowElement instanceof CallActivity
-            ) {
+            } else if (flowElement instanceof Task || flowElement instanceof CallActivity) {
                 handleActivity(flowElement);
             } else if (flowElement instanceof SubProcess) {
                 handleSubProcess(flowElement);
@@ -218,15 +214,7 @@ public class BpmnAutoLayout {
     }
 
     protected void handleActivity(FlowElement flowElement) {
-        Object activityVertex = graph.insertVertex(
-            cellParent,
-            flowElement.getId(),
-            "",
-            0,
-            0,
-            taskWidth,
-            taskHeight
-        );
+        Object activityVertex = graph.insertVertex(cellParent, flowElement.getId(), "", 0, 0, taskWidth, taskHeight);
         generatedVertices.put(flowElement.getId(), activityVertex);
     }
 
@@ -234,16 +222,8 @@ public class BpmnAutoLayout {
         BpmnAutoLayout bpmnAutoLayout = new BpmnAutoLayout(bpmnModel);
         bpmnAutoLayout.layout((SubProcess) flowElement);
 
-        double subProcessWidth = bpmnAutoLayout
-            .getGraph()
-            .getView()
-            .getGraphBounds()
-            .getWidth();
-        double subProcessHeight = bpmnAutoLayout
-            .getGraph()
-            .getView()
-            .getGraphBounds()
-            .getHeight();
+        double subProcessWidth = bpmnAutoLayout.getGraph().getView().getGraphBounds().getWidth();
+        double subProcessHeight = bpmnAutoLayout.getGraph().getView().getGraphBounds().getHeight();
         Object subProcessVertex = graph.insertVertex(
             cellParent,
             flowElement.getId(),
@@ -258,36 +238,21 @@ public class BpmnAutoLayout {
 
     protected void handleBoundaryEvents() {
         for (BoundaryEvent boundaryEvent : boundaryEvents) {
-            mxGeometry geometry = new mxGeometry(
-                0.8,
-                1.0,
-                eventSize,
-                eventSize
-            );
+            mxGeometry geometry = new mxGeometry(0.8, 1.0, eventSize, eventSize);
             geometry.setOffset(new mxPoint(-(eventSize / 2), -(eventSize / 2)));
             geometry.setRelative(true);
-            mxCell boundaryPort = new mxCell(
-                null,
-                geometry,
-                "shape=ellipse;perimter=ellipsePerimeter"
-            );
+            mxCell boundaryPort = new mxCell(null, geometry, "shape=ellipse;perimter=ellipsePerimeter");
             boundaryPort.setId("boundary-event-" + boundaryEvent.getId());
             boundaryPort.setVertex(true);
 
             Object portParent = null;
             if (boundaryEvent.getAttachedToRefId() != null) {
-                portParent =
-                    generatedVertices.get(boundaryEvent.getAttachedToRefId());
+                portParent = generatedVertices.get(boundaryEvent.getAttachedToRefId());
             } else if (boundaryEvent.getAttachedToRef() != null) {
-                portParent =
-                    generatedVertices.get(
-                        boundaryEvent.getAttachedToRef().getId()
-                    );
+                portParent = generatedVertices.get(boundaryEvent.getAttachedToRef().getId());
             } else {
                 throw new RuntimeException(
-                    "Could not generate DI: boundaryEvent '" +
-                    boundaryEvent.getId() +
-                    "' has no attachedToRef"
+                    "Could not generate DI: boundaryEvent '" + boundaryEvent.getId() + "' has no attachedToRef"
                 );
             }
 
@@ -309,29 +274,16 @@ public class BpmnAutoLayout {
         boundaryEdgeStyle.put(mxConstants.STYLE_EXIT_Y, 1.0);
         boundaryEdgeStyle.put(mxConstants.STYLE_ENTRY_X, 0.5);
         boundaryEdgeStyle.put(mxConstants.STYLE_ENTRY_Y, 1.0);
-        boundaryEdgeStyle.put(
-            mxConstants.STYLE_EDGE,
-            mxEdgeStyle.OrthConnector
-        );
-        graph
-            .getStylesheet()
-            .putCellStyle(STYLE_BOUNDARY_SEQUENCEFLOW, boundaryEdgeStyle);
+        boundaryEdgeStyle.put(mxConstants.STYLE_EDGE, mxEdgeStyle.OrthConnector);
+        graph.getStylesheet().putCellStyle(STYLE_BOUNDARY_SEQUENCEFLOW, boundaryEdgeStyle);
 
         for (SequenceFlow sequenceFlow : sequenceFlows.values()) {
-            Object sourceVertex = generatedVertices.get(
-                sequenceFlow.getSourceRef()
-            );
-            Object targetVertex = generatedVertices.get(
-                sequenceFlow.getTargetRef()
-            );
+            Object sourceVertex = generatedVertices.get(sequenceFlow.getSourceRef());
+            Object targetVertex = generatedVertices.get(sequenceFlow.getTargetRef());
 
             String style = null;
 
-            if (
-                handledFlowElements.get(
-                    sequenceFlow.getSourceRef()
-                ) instanceof BoundaryEvent
-            ) {
+            if (handledFlowElements.get(sequenceFlow.getSourceRef()) instanceof BoundaryEvent) {
                 // Sequence flow out of boundary events are handled in a
                 // different way,
                 // to make them visually appealing for the eye of the dear end
@@ -349,10 +301,7 @@ public class BpmnAutoLayout {
                 targetVertex,
                 style
             );
-            generatedSequenceFlowEdges.put(
-                sequenceFlow.getId(),
-                sequenceFlowEdge
-            );
+            generatedSequenceFlowEdges.put(sequenceFlow.getId(), sequenceFlowEdge);
         }
     }
 
@@ -369,29 +318,16 @@ public class BpmnAutoLayout {
         boundaryEdgeStyle.put(mxConstants.STYLE_EXIT_Y, 1.0);
         boundaryEdgeStyle.put(mxConstants.STYLE_ENTRY_X, 0.5);
         boundaryEdgeStyle.put(mxConstants.STYLE_ENTRY_Y, 1.0);
-        boundaryEdgeStyle.put(
-            mxConstants.STYLE_EDGE,
-            mxEdgeStyle.OrthConnector
-        );
-        graph
-            .getStylesheet()
-            .putCellStyle(STYLE_BOUNDARY_SEQUENCEFLOW, boundaryEdgeStyle);
+        boundaryEdgeStyle.put(mxConstants.STYLE_EDGE, mxEdgeStyle.OrthConnector);
+        graph.getStylesheet().putCellStyle(STYLE_BOUNDARY_SEQUENCEFLOW, boundaryEdgeStyle);
 
         for (Association association : associations.values()) {
-            Object sourceVertex = generatedVertices.get(
-                association.getSourceRef()
-            );
-            Object targetVertex = generatedVertices.get(
-                association.getTargetRef()
-            );
+            Object sourceVertex = generatedVertices.get(association.getSourceRef());
+            Object targetVertex = generatedVertices.get(association.getTargetRef());
 
             String style = null;
 
-            if (
-                handledFlowElements.get(
-                    association.getSourceRef()
-                ) instanceof BoundaryEvent
-            ) {
+            if (handledFlowElements.get(association.getSourceRef()) instanceof BoundaryEvent) {
                 // Sequence flow out of boundary events are handled in a different way,
                 // to make them visually appealing for the eye of the dear end user.
                 style = STYLE_BOUNDARY_SEQUENCEFLOW;
@@ -491,10 +427,7 @@ public class BpmnAutoLayout {
     protected void generateSequenceFlowDiagramInterchangeElements() {
         for (String sequenceFlowId : generatedSequenceFlowEdges.keySet()) {
             Object edge = generatedSequenceFlowEdges.get(sequenceFlowId);
-            List<mxPoint> points = graph
-                .getView()
-                .getState(edge)
-                .getAbsolutePoints();
+            List<mxPoint> points = graph.getView().getState(edge).getAbsolutePoints();
 
             // JGraphX has this funny way of generating the outgoing sequence
             // flow of a gateway
@@ -502,20 +435,11 @@ public class BpmnAutoLayout {
             // the rhombus,
             // hence we force the starting point of the sequence flow to the
             // closest rhombus corner point.
-            FlowElement sourceElement = handledFlowElements.get(
-                sequenceFlows.get(sequenceFlowId).getSourceRef()
-            );
-            if (
-                sourceElement instanceof Gateway &&
-                ((Gateway) sourceElement).getOutgoingFlows().size() > 1
-            ) {
+            FlowElement sourceElement = handledFlowElements.get(sequenceFlows.get(sequenceFlowId).getSourceRef());
+            if (sourceElement instanceof Gateway && ((Gateway) sourceElement).getOutgoingFlows().size() > 1) {
                 mxPoint startPoint = points.get(0);
-                Object gatewayVertex = generatedVertices.get(
-                    sourceElement.getId()
-                );
-                mxCellState gatewayState = graph
-                    .getView()
-                    .getState(gatewayVertex);
+                Object gatewayVertex = generatedVertices.get(sourceElement.getId());
+                mxCellState gatewayState = graph.getView().getState(gatewayVertex);
 
                 mxPoint northPoint = new mxPoint(
                     gatewayState.getX() + (gatewayState.getWidth()) / 2,
@@ -536,16 +460,8 @@ public class BpmnAutoLayout {
 
                 double closestDistance = Double.MAX_VALUE;
                 mxPoint closestPoint = null;
-                for (mxPoint rhombusPoint : asList(
-                    northPoint,
-                    southPoint,
-                    eastPoint,
-                    westPoint
-                )) {
-                    double distance = euclidianDistance(
-                        startPoint,
-                        rhombusPoint
-                    );
+                for (mxPoint rhombusPoint : asList(northPoint, southPoint, eastPoint, westPoint)) {
+                    double distance = euclidianDistance(startPoint, rhombusPoint);
                     if (distance < closestDistance) {
                         closestDistance = distance;
                         closestPoint = rhombusPoint;
@@ -563,25 +479,16 @@ public class BpmnAutoLayout {
                 }
             }
 
-            createDiagramInterchangeInformation(
-                handledFlowElements.get(sequenceFlowId),
-                optimizeEdgePoints(points)
-            );
+            createDiagramInterchangeInformation(handledFlowElements.get(sequenceFlowId), optimizeEdgePoints(points));
         }
     }
 
     protected void generateAssociationDiagramInterchangeElements() {
         for (String associationId : generatedAssociationEdges.keySet()) {
             Object edge = generatedAssociationEdges.get(associationId);
-            List<mxPoint> points = graph
-                .getView()
-                .getState(edge)
-                .getAbsolutePoints();
+            List<mxPoint> points = graph.getView().getState(edge).getAbsolutePoints();
 
-            createDiagramInterchangeInformation(
-                handledArtifacts.get(associationId),
-                optimizeEdgePoints(points)
-            );
+            createDiagramInterchangeInformation(handledArtifacts.get(associationId), optimizeEdgePoints(points));
         }
     }
 
@@ -598,9 +505,7 @@ public class BpmnAutoLayout {
 
     // JGraphX sometime generates points that visually are not really necessary.
     // This method will remove any such points.
-    protected List<mxPoint> optimizeEdgePoints(
-        List<mxPoint> unoptimizedPointsList
-    ) {
+    protected List<mxPoint> optimizeEdgePoints(List<mxPoint> unoptimizedPointsList) {
         List<mxPoint> optimizedPointsList = new ArrayList<mxPoint>();
         for (int i = 0; i < unoptimizedPointsList.size(); i++) {
             boolean keepPoint = true;
@@ -655,10 +560,7 @@ public class BpmnAutoLayout {
         return graphicInfo;
     }
 
-    protected void createDiagramInterchangeInformation(
-        BaseElement element,
-        List<mxPoint> waypoints
-    ) {
+    protected void createDiagramInterchangeInformation(BaseElement element, List<mxPoint> waypoints) {
         List<GraphicInfo> graphicInfoForWaypoints = new ArrayList<GraphicInfo>();
         for (mxPoint waypoint : waypoints) {
             GraphicInfo graphicInfo = new GraphicInfo();
@@ -667,10 +569,7 @@ public class BpmnAutoLayout {
             graphicInfo.setY(waypoint.getY());
             graphicInfoForWaypoints.add(graphicInfo);
         }
-        bpmnModel.addFlowGraphicInfoList(
-            element.getId(),
-            graphicInfoForWaypoints
-        );
+        bpmnModel.addFlowGraphicInfoList(element.getId(), graphicInfoForWaypoints);
     }
 
     /**
@@ -688,37 +587,23 @@ public class BpmnAutoLayout {
     }
 
     protected void translateNestedSubprocessElements(SubProcess subProcess) {
-        GraphicInfo subProcessGraphicInfo = bpmnModel
-            .getLocationMap()
-            .get(subProcess.getId());
+        GraphicInfo subProcessGraphicInfo = bpmnModel.getLocationMap().get(subProcess.getId());
         double subProcessX = subProcessGraphicInfo.getX();
         double subProcessY = subProcessGraphicInfo.getY();
 
         List<SubProcess> nestedSubProcesses = new ArrayList<SubProcess>();
         for (FlowElement flowElement : subProcess.getFlowElements()) {
             if (flowElement instanceof SequenceFlow) {
-                List<GraphicInfo> graphicInfos = bpmnModel
-                    .getFlowLocationMap()
-                    .get(flowElement.getId());
+                List<GraphicInfo> graphicInfos = bpmnModel.getFlowLocationMap().get(flowElement.getId());
                 for (GraphicInfo graphicInfo : graphicInfos) {
-                    graphicInfo.setX(
-                        graphicInfo.getX() + subProcessX + subProcessMargin
-                    );
-                    graphicInfo.setY(
-                        graphicInfo.getY() + subProcessY + subProcessMargin
-                    );
+                    graphicInfo.setX(graphicInfo.getX() + subProcessX + subProcessMargin);
+                    graphicInfo.setY(graphicInfo.getY() + subProcessY + subProcessMargin);
                 }
             } else if (flowElement instanceof DataObject == false) {
                 // Regular element
-                GraphicInfo graphicInfo = bpmnModel
-                    .getLocationMap()
-                    .get(flowElement.getId());
-                graphicInfo.setX(
-                    graphicInfo.getX() + subProcessX + subProcessMargin
-                );
-                graphicInfo.setY(
-                    graphicInfo.getY() + subProcessY + subProcessMargin
-                );
+                GraphicInfo graphicInfo = bpmnModel.getLocationMap().get(flowElement.getId());
+                graphicInfo.setX(graphicInfo.getX() + subProcessX + subProcessMargin);
+                graphicInfo.setY(graphicInfo.getY() + subProcessY + subProcessMargin);
             }
 
             if (flowElement instanceof SubProcess) {

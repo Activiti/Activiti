@@ -97,15 +97,9 @@ public class APIProcessDefinitionConverterTest {
     @Test
     public void should_convertProcessDefinition_when_appVersionNull() {
         ProcessDefinition convertedProcessDefinition = processDefinitionConverter.from(
-            processDefinitionBuilderBuilder()
-                .withKey("processKey")
-                .withAppVersion(null)
-                .build()
+            processDefinitionBuilderBuilder().withKey("processKey").withAppVersion(null).build()
         );
 
-        assertThat(convertedProcessDefinition)
-            .isNotNull()
-            .extracting(ProcessDefinition::getAppVersion)
-            .isNull();
+        assertThat(convertedProcessDefinition).isNotNull().extracting(ProcessDefinition::getAppVersion).isNull();
     }
 }

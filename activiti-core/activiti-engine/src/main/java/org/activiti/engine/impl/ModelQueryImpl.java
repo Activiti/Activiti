@@ -27,9 +27,7 @@ import org.activiti.engine.repository.ModelQuery;
 
 
  */
-public class ModelQueryImpl
-    extends AbstractQuery<ModelQuery, Model>
-    implements ModelQuery {
+public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements ModelQuery {
 
     private static final long serialVersionUID = 1L;
     protected String id;
@@ -81,9 +79,7 @@ public class ModelQueryImpl
 
     public ModelQueryImpl modelCategoryNotEquals(String categoryNotEquals) {
         if (categoryNotEquals == null) {
-            throw new ActivitiIllegalArgumentException(
-                "categoryNotEquals is null"
-            );
+            throw new ActivitiIllegalArgumentException("categoryNotEquals is null");
         }
         this.categoryNotEquals = categoryNotEquals;
         return this;
@@ -117,9 +113,7 @@ public class ModelQueryImpl
         if (version == null) {
             throw new ActivitiIllegalArgumentException("version is null");
         } else if (version <= 0) {
-            throw new ActivitiIllegalArgumentException(
-                "version must be positive"
-            );
+            throw new ActivitiIllegalArgumentException("version must be positive");
         }
         this.version = version;
         return this;
@@ -160,9 +154,7 @@ public class ModelQueryImpl
 
     public ModelQuery modelTenantId(String tenantId) {
         if (tenantId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Model tenant id is null"
-            );
+            throw new ActivitiIllegalArgumentException("Model tenant id is null");
         }
         this.tenantId = tenantId;
         return this;
@@ -170,9 +162,7 @@ public class ModelQueryImpl
 
     public ModelQuery modelTenantIdLike(String tenantIdLike) {
         if (tenantIdLike == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Model tenant id is null"
-            );
+            throw new ActivitiIllegalArgumentException("Model tenant id is null");
         }
         this.tenantIdLike = tenantIdLike;
         return this;
@@ -221,16 +211,12 @@ public class ModelQueryImpl
 
     public long executeCount(CommandContext commandContext) {
         checkQueryOk();
-        return commandContext
-            .getModelEntityManager()
-            .findModelCountByQueryCriteria(this);
+        return commandContext.getModelEntityManager().findModelCountByQueryCriteria(this);
     }
 
     public List<Model> executeList(CommandContext commandContext, Page page) {
         checkQueryOk();
-        return commandContext
-            .getModelEntityManager()
-            .findModelsByQueryCriteria(this, page);
+        return commandContext.getModelEntityManager().findModelsByQueryCriteria(this, page);
     }
 
     // getters ////////////////////////////////////////////

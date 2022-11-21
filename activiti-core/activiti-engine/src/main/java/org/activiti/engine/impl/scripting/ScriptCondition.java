@@ -34,31 +34,16 @@ public class ScriptCondition implements Condition {
         this.language = language;
     }
 
-    public boolean evaluate(
-        String sequenceFlowId,
-        DelegateExecution execution
-    ) {
-        ScriptingEngines scriptingEngines = Context
-            .getProcessEngineConfiguration()
-            .getScriptingEngines();
+    public boolean evaluate(String sequenceFlowId, DelegateExecution execution) {
+        ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
 
-        Object result = scriptingEngines.evaluate(
-            expression,
-            language,
-            execution
-        );
+        Object result = scriptingEngines.evaluate(expression, language, execution);
         if (result == null) {
-            throw new ActivitiException(
-                "condition script returns null: " + expression
-            );
+            throw new ActivitiException("condition script returns null: " + expression);
         }
         if (!(result instanceof Boolean)) {
             throw new ActivitiException(
-                "condition script returns non-Boolean: " +
-                result +
-                " (" +
-                result.getClass().getName() +
-                ")"
+                "condition script returns non-Boolean: " + result + " (" + result.getClass().getName() + ")"
             );
         }
         return (Boolean) result;

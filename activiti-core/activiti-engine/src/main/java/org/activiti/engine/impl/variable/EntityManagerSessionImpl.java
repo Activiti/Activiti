@@ -59,27 +59,15 @@ public class EntityManagerSessionImpl implements EntityManagerSession {
     }
 
     public void flush() {
-        if (
-            entityManager != null &&
-            (!handleTransactions || isTransactionActive())
-        ) {
+        if (entityManager != null && (!handleTransactions || isTransactionActive())) {
             try {
                 entityManager.flush();
             } catch (IllegalStateException ise) {
-                throw new ActivitiException(
-                    "Error while flushing EntityManager, illegal state",
-                    ise
-                );
+                throw new ActivitiException("Error while flushing EntityManager, illegal state", ise);
             } catch (TransactionRequiredException tre) {
-                throw new ActivitiException(
-                    "Cannot flush EntityManager, an active transaction is required",
-                    tre
-                );
+                throw new ActivitiException("Cannot flush EntityManager, an active transaction is required", tre);
             } catch (PersistenceException pe) {
-                throw new ActivitiException(
-                    "Error while flushing EntityManager: " + pe.getMessage(),
-                    pe
-                );
+                throw new ActivitiException("Error while flushing EntityManager: " + pe.getMessage(), pe);
             }
         }
     }
@@ -92,11 +80,7 @@ public class EntityManagerSessionImpl implements EntityManagerSession {
     }
 
     public void close() {
-        if (
-            closeEntityManager &&
-            entityManager != null &&
-            !entityManager.isOpen()
-        ) {
+        if (closeEntityManager && entityManager != null && !entityManager.isOpen()) {
             try {
                 entityManager.close();
             } catch (IllegalStateException ise) {
@@ -131,14 +115,8 @@ public class EntityManagerSessionImpl implements EntityManagerSession {
                 };
 
                 TransactionContext transactionContext = Context.getTransactionContext();
-                transactionContext.addTransactionListener(
-                    TransactionState.COMMITTED,
-                    jpaTransactionCommitListener
-                );
-                transactionContext.addTransactionListener(
-                    TransactionState.ROLLED_BACK,
-                    jpaTransactionRollbackListener
-                );
+                transactionContext.addTransactionListener(TransactionState.COMMITTED, jpaTransactionCommitListener);
+                transactionContext.addTransactionListener(TransactionState.ROLLED_BACK, jpaTransactionRollbackListener);
 
                 // Also, start a transaction, if one isn't started already
                 if (!isTransactionActive()) {

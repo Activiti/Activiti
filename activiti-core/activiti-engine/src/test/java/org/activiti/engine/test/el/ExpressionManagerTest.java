@@ -44,17 +44,9 @@ public class ExpressionManagerTest extends PluggableActivitiTestCase {
         // test passed.
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("aString", "abcdefgh");
-        runtimeService.startProcessInstanceByKey(
-            "methodExpressionProcess",
-            vars
-        );
+        runtimeService.startProcessInstanceByKey("methodExpressionProcess", vars);
 
-        assertThat(
-            runtimeService
-                .createProcessInstanceQuery()
-                .processDefinitionKey("methodExpressionProcess")
-                .count()
-        )
+        assertThat(runtimeService.createProcessInstanceQuery().processDefinitionKey("methodExpressionProcess").count())
             .isEqualTo(0);
     }
 
@@ -69,10 +61,7 @@ public class ExpressionManagerTest extends PluggableActivitiTestCase {
         );
 
         // Check of the testMethod has been called with the current execution
-        String value = (String) runtimeService.getVariable(
-            processInstance.getId(),
-            "testVar"
-        );
+        String value = (String) runtimeService.getVariable(processInstance.getId(), "testVar");
         assertThat(value).isNotNull();
         assertThat(value).isEqualTo("myValue");
     }
@@ -88,10 +77,7 @@ public class ExpressionManagerTest extends PluggableActivitiTestCase {
 
             // Check if the variable that has been set in service-task is the
             // authenticated user
-            String value = (String) runtimeService.getVariable(
-                processInstance.getId(),
-                "theUser"
-            );
+            String value = (String) runtimeService.getVariable(processInstance.getId(), "theUser");
             assertThat(value).isNotNull();
             assertThat(value).isEqualTo("frederik");
         } finally {

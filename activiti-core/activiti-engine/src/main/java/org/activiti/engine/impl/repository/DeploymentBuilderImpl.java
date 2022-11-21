@@ -65,10 +65,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
     public DeploymentBuilderImpl(RepositoryServiceImpl repositoryService) {
         this(
             repositoryService,
-            Context
-                .getProcessEngineConfiguration()
-                .getDeploymentEntityManager()
-                .create(),
+            Context.getProcessEngineConfiguration().getDeploymentEntityManager().create(),
             Context.getProcessEngineConfiguration().getResourceEntityManager()
         );
     }
@@ -83,14 +80,9 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
         this.resourceEntityManager = resourceEntityManager;
     }
 
-    public DeploymentBuilder addInputStream(
-        String resourceName,
-        InputStream inputStream
-    ) {
+    public DeploymentBuilder addInputStream(String resourceName, InputStream inputStream) {
         if (inputStream == null) {
-            throw new ActivitiIllegalArgumentException(
-                "inputStream for resource '" + resourceName + "' is null"
-            );
+            throw new ActivitiIllegalArgumentException("inputStream for resource '" + resourceName + "' is null");
         }
         byte[] bytes = IoUtil.readInputStream(inputStream, resourceName);
         ResourceEntity resource = resourceEntityManager.create();
@@ -100,9 +92,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
         return this;
     }
 
-    public DeploymentBuilder setProjectManifest(
-        ProjectManifest projectManifest
-    ) {
+    public DeploymentBuilder setProjectManifest(ProjectManifest projectManifest) {
         this.projectManifest = projectManifest;
         return this;
     }
@@ -129,21 +119,10 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
     }
 
     @Override
-    public DeploymentBuilder addInputStream(
-        String resourceName,
-        Resource resource
-    ) {
+    public DeploymentBuilder addInputStream(String resourceName, Resource resource) {
         try {
-            if (
-                resourceName.endsWith(".bar") ||
-                resourceName.endsWith(".zip") ||
-                resourceName.endsWith(".jar")
-            ) {
-                try (
-                    ZipInputStream inputStream = new ZipInputStream(
-                        resource.getInputStream()
-                    )
-                ) {
+            if (resourceName.endsWith(".bar") || resourceName.endsWith(".zip") || resourceName.endsWith(".jar")) {
+                try (ZipInputStream inputStream = new ZipInputStream(resource.getInputStream())) {
                     addZipInputStream(inputStream);
                 }
             } else {
@@ -152,13 +131,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
                 }
             }
         } catch (IOException e) {
-            throw new ActivitiException(
-                "Couldn't auto deploy resource '" +
-                resource +
-                "': " +
-                e.getMessage(),
-                e
-            );
+            throw new ActivitiException("Couldn't auto deploy resource '" + resource + "': " + e.getMessage(), e);
         }
         return this;
     }
@@ -166,9 +139,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
     public DeploymentBuilder addClasspathResource(String resource) {
         InputStream inputStream = ReflectUtil.getResourceAsStream(resource);
         if (inputStream == null) {
-            throw new ActivitiIllegalArgumentException(
-                "resource '" + resource + "' not found"
-            );
+            throw new ActivitiIllegalArgumentException("resource '" + resource + "' not found");
         }
         return addInputStream(resource, inputStream);
     }
@@ -206,10 +177,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
             while (entry != null) {
                 if (!entry.isDirectory()) {
                     String entryName = entry.getName();
-                    byte[] bytes = IoUtil.readInputStream(
-                        zipInputStream,
-                        entryName
-                    );
+                    byte[] bytes = IoUtil.readInputStream(zipInputStream, entryName);
                     ResourceEntity resource = resourceEntityManager.create();
                     resource.setName(entryName);
                     resource.setBytes(bytes);
@@ -223,22 +191,13 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
         return this;
     }
 
-    public DeploymentBuilder addBpmnModel(
-        String resourceName,
-        BpmnModel bpmnModel
-    ) {
+    public DeploymentBuilder addBpmnModel(String resourceName, BpmnModel bpmnModel) {
         BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
         try {
-            String bpmn20Xml = new String(
-                bpmnXMLConverter.convertToXML(bpmnModel),
-                "UTF-8"
-            );
+            String bpmn20Xml = new String(bpmnXMLConverter.convertToXML(bpmnModel), "UTF-8");
             addString(resourceName, bpmn20Xml);
         } catch (UnsupportedEncodingException e) {
-            throw new ActivitiException(
-                "Error while transforming BPMN model to xml: not UTF-8 encoded",
-                e
-            );
+            throw new ActivitiException("Error while transforming BPMN model to xml: not UTF-8 encoded", e);
         }
         return this;
     }
@@ -284,10 +243,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
     }
 
     @Override
-    public DeploymentBuilder deploymentProperty(
-        String propertyKey,
-        Object propertyValue
-    ) {
+    public DeploymentBuilder deploymentProperty(String propertyKey, Object propertyValue) {
         deploymentProperties.put(propertyKey, propertyValue);
         return this;
     }

@@ -46,38 +46,27 @@ public class ToTimerCancelledConverterTest {
         given(internalEvent.getProcessInstanceId()).willReturn("procInstId");
 
         BPMNTimerImpl bpmnTimer = new BPMNTimerImpl("myTimer");
-        given(bpmnTimerConverter.convertToBPMNTimer(internalEvent))
-            .willReturn(bpmnTimer);
-        given(bpmnTimerConverter.isTimerRelatedEvent(internalEvent))
-            .willReturn(true);
+        given(bpmnTimerConverter.convertToBPMNTimer(internalEvent)).willReturn(bpmnTimer);
+        given(bpmnTimerConverter.isTimerRelatedEvent(internalEvent)).willReturn(true);
 
         //when
-        BPMNTimerCancelledEvent timerCancelledEvent = toTimerCancelledConverter
-            .from(internalEvent)
-            .orElse(null);
+        BPMNTimerCancelledEvent timerCancelledEvent = toTimerCancelledConverter.from(internalEvent).orElse(null);
 
         //then
         assertThat(timerCancelledEvent).isNotNull();
-        assertThat(timerCancelledEvent.getProcessInstanceId())
-            .isEqualTo("procInstId");
-        assertThat(timerCancelledEvent.getProcessDefinitionId())
-            .isEqualTo("procDefId");
+        assertThat(timerCancelledEvent.getProcessInstanceId()).isEqualTo("procInstId");
+        assertThat(timerCancelledEvent.getProcessDefinitionId()).isEqualTo("procDefId");
         assertThat(timerCancelledEvent.getEntity()).isEqualTo(bpmnTimer);
     }
 
     @Test
     public void shouldReturnEmptyOptionalWhenInternalEventIsNotRelatedToTimers() {
         //given
-        ActivitiEntityEvent mockActivitiEntityEvent = mock(
-            ActivitiEntityEvent.class
-        );
-        given(bpmnTimerConverter.isTimerRelatedEvent(mockActivitiEntityEvent))
-            .willReturn(false);
+        ActivitiEntityEvent mockActivitiEntityEvent = mock(ActivitiEntityEvent.class);
+        given(bpmnTimerConverter.isTimerRelatedEvent(mockActivitiEntityEvent)).willReturn(false);
 
         //when
-        Optional<BPMNTimerCancelledEvent> optional = toTimerCancelledConverter.from(
-            mockActivitiEntityEvent
-        );
+        Optional<BPMNTimerCancelledEvent> optional = toTimerCancelledConverter.from(mockActivitiEntityEvent);
 
         //then
         assertThat(optional).isEmpty();

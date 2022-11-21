@@ -28,23 +28,14 @@ public class DataInputAssociationParser extends BaseChildElementParser {
         return ELEMENT_INPUT_ASSOCIATION;
     }
 
-    public void parseChildElement(
-        XMLStreamReader xtr,
-        BaseElement parentElement,
-        BpmnModel model
-    ) throws Exception {
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
         if (!(parentElement instanceof Activity)) {
             return;
         }
         DataAssociation dataAssociation = new DataAssociation();
         BpmnXMLUtil.addXMLLocation(dataAssociation, xtr);
-        DataAssociationParser.parseDataAssociation(
-            dataAssociation,
-            getElementName(),
-            xtr
-        );
+        DataAssociationParser.parseDataAssociation(dataAssociation, getElementName(), xtr);
 
-        ((Activity) parentElement).getDataInputAssociations()
-            .add(dataAssociation);
+        ((Activity) parentElement).getDataInputAssociations().add(dataAssociation);
     }
 }

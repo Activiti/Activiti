@@ -47,23 +47,15 @@ public class TaskPriorityExtensionsTest extends PluggableActivitiTestCase {
             variables
         );
 
-        final Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        final Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 
         assertThat(task.getPriority()).isEqualTo(priority);
     }
 
     @Deployment
     public void testPriorityExtensionString() throws Exception {
-        final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "taskPriorityExtensionString"
-        );
-        final Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskPriorityExtensionString");
+        final Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task.getPriority()).isEqualTo(42);
     }
 }

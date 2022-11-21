@@ -33,9 +33,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(
-    "classpath:org/activiti/spring/test/components/ScopingTests-context.xml"
-)
+@ContextConfiguration("classpath:org/activiti/spring/test/components/ScopingTests-context.xml")
 @Ignore
 // Ignored for the moment. Josh is working on this.
 public class XmlNamespaceProcessScopeTest {
@@ -49,9 +47,7 @@ public class XmlNamespaceProcessScopeTest {
     public void before() throws Throwable {
         this.processEngine.getRepositoryService()
             .createDeployment()
-            .addClasspathResource(
-                "org/activiti/spring/test/components/spring-component-waiter.bpmn20.xml"
-            )
+            .addClasspathResource("org/activiti/spring/test/components/spring-component-waiter.bpmn20.xml")
             .deploy();
 
         processScopeTestEngine = new ProcessScopeTestEngine(this.processEngine);
@@ -59,11 +55,8 @@ public class XmlNamespaceProcessScopeTest {
 
     @After
     public void after() {
-        RepositoryService repositoryService =
-            this.processEngine.getRepositoryService();
-        for (Deployment deployment : repositoryService
-            .createDeploymentQuery()
-            .list()) {
+        RepositoryService repositoryService = this.processEngine.getRepositoryService();
+        for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
             repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }

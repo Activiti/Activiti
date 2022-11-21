@@ -57,9 +57,7 @@ public class DefaultClockImpl implements org.activiti.engine.runtime.Clock {
 
     @Override
     public Calendar getCurrentCalendar() {
-        return CURRENT_TIME == null
-            ? new GregorianCalendar()
-            : (Calendar) CURRENT_TIME.clone();
+        return CURRENT_TIME == null ? new GregorianCalendar() : (Calendar) CURRENT_TIME.clone();
     }
 
     @Override

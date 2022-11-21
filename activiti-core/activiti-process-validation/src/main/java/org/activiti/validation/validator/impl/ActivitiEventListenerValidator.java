@@ -31,11 +31,7 @@ import org.activiti.validation.validator.ProcessLevelValidator;
 public class ActivitiEventListenerValidator extends ProcessLevelValidator {
 
     @Override
-    protected void executeValidation(
-        BpmnModel bpmnModel,
-        Process process,
-        List<ValidationError> errors
-    ) {
+    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
         List<EventListener> eventListeners = process.getEventListeners();
         if (eventListeners != null) {
             for (EventListener eventListener : eventListeners) {
@@ -43,9 +39,7 @@ public class ActivitiEventListenerValidator extends ProcessLevelValidator {
                     eventListener.getImplementationType() != null &&
                     eventListener
                         .getImplementationType()
-                        .equals(
-                            ImplementationType.IMPLEMENTATION_TYPE_INVALID_THROW_EVENT
-                        )
+                        .equals(ImplementationType.IMPLEMENTATION_TYPE_INVALID_THROW_EVENT)
                 ) {
                     addError(
                         errors,
@@ -55,8 +49,7 @@ public class ActivitiEventListenerValidator extends ProcessLevelValidator {
                         "Invalid or unsupported throw event type on event listener"
                     );
                 } else if (
-                    eventListener.getImplementationType() == null ||
-                    eventListener.getImplementationType().length() == 0
+                    eventListener.getImplementationType() == null || eventListener.getImplementationType().length() == 0
                 ) {
                     addError(
                         errors,
@@ -67,9 +60,7 @@ public class ActivitiEventListenerValidator extends ProcessLevelValidator {
                     );
                 } else if (eventListener.getImplementationType() != null) {
                     if (
-                        !ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(
-                            eventListener.getImplementationType()
-                        ) &&
+                        !ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(eventListener.getImplementationType()) &&
                         !ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(
                             eventListener.getImplementationType()
                         ) &&

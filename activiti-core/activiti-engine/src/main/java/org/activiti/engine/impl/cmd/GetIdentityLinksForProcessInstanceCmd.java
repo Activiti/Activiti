@@ -27,8 +27,7 @@ import org.activiti.engine.task.IdentityLink;
 /**
 
  */
-public class GetIdentityLinksForProcessInstanceCmd
-    implements Command<List<IdentityLink>>, Serializable {
+public class GetIdentityLinksForProcessInstanceCmd implements Command<List<IdentityLink>>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -40,9 +39,7 @@ public class GetIdentityLinksForProcessInstanceCmd
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<IdentityLink> execute(CommandContext commandContext) {
-        ExecutionEntity processInstance = commandContext
-            .getExecutionEntityManager()
-            .findById(processInstanceId);
+        ExecutionEntity processInstance = commandContext.getExecutionEntityManager().findById(processInstanceId);
 
         if (processInstance == null) {
             throw new ActivitiObjectNotFoundException(

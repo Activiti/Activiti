@@ -32,10 +32,7 @@ public class ToUpperCaseSetterInjected implements JavaDelegate {
         if (!setterInvoked) {
             throw new RuntimeException("Setter was not invoked");
         }
-        execution.setVariable(
-            "setterVar",
-            ((String) text.getValue(execution)).toUpperCase()
-        );
+        execution.setVariable("setterVar", ((String) text.getValue(execution)).toUpperCase());
     }
 
     public void setText(Expression text) {

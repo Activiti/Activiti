@@ -50,12 +50,7 @@ public class NativeExecutionQueryImpl
             .findExecutionsByNativeQuery(parameterMap, firstResult, maxResults);
     }
 
-    public long executeCount(
-        CommandContext commandContext,
-        Map<String, Object> parameterMap
-    ) {
-        return commandContext
-            .getExecutionEntityManager()
-            .findExecutionCountByNativeQuery(parameterMap);
+    public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
+        return commandContext.getExecutionEntityManager().findExecutionCountByNativeQuery(parameterMap);
     }
 }

@@ -33,12 +33,9 @@ public class SetVariablesDelegate implements JavaDelegate {
     protected int lastInt;
 
     public void execute(DelegateExecution execution) {
-        Object nrOfCompletedInstances = execution.getVariable(
-            "nrOfCompletedInstances"
-        );
+        Object nrOfCompletedInstances = execution.getVariable("nrOfCompletedInstances");
         variablesMap.put(nrOfCompletedInstances, lastInt);
-        ((ExecutionEntity) execution).getParent()
-            .setVariableLocal("variable", lastInt);
+        ((ExecutionEntity) execution).getParent().setVariableLocal("variable", lastInt);
         lastInt++;
     }
 }

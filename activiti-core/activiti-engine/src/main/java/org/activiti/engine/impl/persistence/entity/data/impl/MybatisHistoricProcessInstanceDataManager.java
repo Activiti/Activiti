@@ -36,9 +36,7 @@ public class MybatisHistoricProcessInstanceDataManager
     extends AbstractDataManager<HistoricProcessInstanceEntity>
     implements HistoricProcessInstanceDataManager {
 
-    public MybatisHistoricProcessInstanceDataManager(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public MybatisHistoricProcessInstanceDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);
     }
 
@@ -53,24 +51,15 @@ public class MybatisHistoricProcessInstanceDataManager
     }
 
     @Override
-    public HistoricProcessInstanceEntity create(
-        ExecutionEntity processInstanceExecutionEntity
-    ) {
-        return new HistoricProcessInstanceEntityImpl(
-            processInstanceExecutionEntity
-        );
+    public HistoricProcessInstanceEntity create(ExecutionEntity processInstanceExecutionEntity) {
+        return new HistoricProcessInstanceEntityImpl(processInstanceExecutionEntity);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<String> findHistoricProcessInstanceIdsByProcessDefinitionId(
-        String processDefinitionId
-    ) {
+    public List<String> findHistoricProcessInstanceIdsByProcessDefinitionId(String processDefinitionId) {
         return getDbSqlSession()
-            .selectList(
-                "selectHistoricProcessInstanceIdsByProcessDefinitionId",
-                processDefinitionId
-            );
+            .selectList("selectHistoricProcessInstanceIdsByProcessDefinitionId", processDefinitionId);
     }
 
     @Override
@@ -79,10 +68,7 @@ public class MybatisHistoricProcessInstanceDataManager
         String superProcessInstanceId
     ) {
         return getDbSqlSession()
-            .selectList(
-                "selectHistoricProcessInstanceIdsBySuperProcessInstanceId",
-                superProcessInstanceId
-            );
+            .selectList("selectHistoricProcessInstanceIdsBySuperProcessInstanceId", superProcessInstanceId);
     }
 
     @Override
@@ -90,10 +76,7 @@ public class MybatisHistoricProcessInstanceDataManager
         HistoricProcessInstanceQueryImpl historicProcessInstanceQuery
     ) {
         return (Long) getDbSqlSession()
-            .selectOne(
-                "selectHistoricProcessInstanceCountByQueryCriteria",
-                historicProcessInstanceQuery
-            );
+            .selectOne("selectHistoricProcessInstanceCountByQueryCriteria", historicProcessInstanceQuery);
     }
 
     @Override
@@ -102,10 +85,7 @@ public class MybatisHistoricProcessInstanceDataManager
         HistoricProcessInstanceQueryImpl historicProcessInstanceQuery
     ) {
         return getDbSqlSession()
-            .selectList(
-                "selectHistoricProcessInstancesByQueryCriteria",
-                historicProcessInstanceQuery
-            );
+            .selectList("selectHistoricProcessInstancesByQueryCriteria", historicProcessInstanceQuery);
     }
 
     @Override
@@ -114,10 +94,7 @@ public class MybatisHistoricProcessInstanceDataManager
     ) {
         // paging doesn't work for combining process instances and variables
         // due to an outer join, so doing it in-memory
-        if (
-            historicProcessInstanceQuery.getFirstResult() < 0 ||
-            historicProcessInstanceQuery.getMaxResults() <= 0
-        ) {
+        if (historicProcessInstanceQuery.getFirstResult() < 0 || historicProcessInstanceQuery.getMaxResults() <= 0) {
             return emptyList();
         }
 
@@ -125,17 +102,11 @@ public class MybatisHistoricProcessInstanceDataManager
         int maxResults = historicProcessInstanceQuery.getMaxResults();
 
         // setting max results, limit to 20000 results for performance reasons
-        if (
-            historicProcessInstanceQuery.getProcessInstanceVariablesLimit() !=
-            null
-        ) {
-            historicProcessInstanceQuery.setMaxResults(
-                historicProcessInstanceQuery.getProcessInstanceVariablesLimit()
-            );
+        if (historicProcessInstanceQuery.getProcessInstanceVariablesLimit() != null) {
+            historicProcessInstanceQuery.setMaxResults(historicProcessInstanceQuery.getProcessInstanceVariablesLimit());
         } else {
             historicProcessInstanceQuery.setMaxResults(
-                getProcessEngineConfiguration()
-                    .getHistoricProcessInstancesQueryLimit()
+                getProcessEngineConfiguration().getHistoricProcessInstancesQueryLimit()
             );
         }
         historicProcessInstanceQuery.setFirstResult(0);
@@ -151,9 +122,7 @@ public class MybatisHistoricProcessInstanceDataManager
         if (instanceList != null && !instanceList.isEmpty()) {
             if (firstResult > 0) {
                 if (firstResult <= instanceList.size()) {
-                    int toIndex =
-                        firstResult +
-                        Math.min(maxResults, instanceList.size() - firstResult);
+                    int toIndex = firstResult + Math.min(maxResults, instanceList.size() - firstResult);
                     return instanceList.subList(firstResult, toIndex);
                 } else {
                     return emptyList();
@@ -184,13 +153,7 @@ public class MybatisHistoricProcessInstanceDataManager
     }
 
     @Override
-    public long findHistoricProcessInstanceCountByNativeQuery(
-        Map<String, Object> parameterMap
-    ) {
-        return (Long) getDbSqlSession()
-            .selectOne(
-                "selectHistoricProcessInstanceCountByNativeQuery",
-                parameterMap
-            );
+    public long findHistoricProcessInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
+        return (Long) getDbSqlSession().selectOne("selectHistoricProcessInstanceCountByNativeQuery", parameterMap);
     }
 }

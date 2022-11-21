@@ -124,8 +124,7 @@ public class IndentingXMLStreamWriter extends DelegatingXMLStreamWriter {
         super.writeCharacters("\n");
     }
 
-    public void writeStartDocument(String encoding, String version)
-        throws XMLStreamException {
+    public void writeStartDocument(String encoding, String version) throws XMLStreamException {
         super.writeStartDocument(encoding, version);
         super.writeCharacters("\n");
     }
@@ -135,32 +134,22 @@ public class IndentingXMLStreamWriter extends DelegatingXMLStreamWriter {
         super.writeStartElement(localName);
     }
 
-    public void writeStartElement(String namespaceURI, String localName)
-        throws XMLStreamException {
+    public void writeStartElement(String namespaceURI, String localName) throws XMLStreamException {
         onStartElement();
         super.writeStartElement(namespaceURI, localName);
     }
 
-    public void writeStartElement(
-        String prefix,
-        String localName,
-        String namespaceURI
-    ) throws XMLStreamException {
+    public void writeStartElement(String prefix, String localName, String namespaceURI) throws XMLStreamException {
         onStartElement();
         super.writeStartElement(prefix, localName, namespaceURI);
     }
 
-    public void writeEmptyElement(String namespaceURI, String localName)
-        throws XMLStreamException {
+    public void writeEmptyElement(String namespaceURI, String localName) throws XMLStreamException {
         onEmptyElement();
         super.writeEmptyElement(namespaceURI, localName);
     }
 
-    public void writeEmptyElement(
-        String prefix,
-        String localName,
-        String namespaceURI
-    ) throws XMLStreamException {
+    public void writeEmptyElement(String prefix, String localName, String namespaceURI) throws XMLStreamException {
         onEmptyElement();
         super.writeEmptyElement(prefix, localName, namespaceURI);
     }
@@ -180,8 +169,7 @@ public class IndentingXMLStreamWriter extends DelegatingXMLStreamWriter {
         super.writeCharacters(text);
     }
 
-    public void writeCharacters(char[] text, int start, int len)
-        throws XMLStreamException {
+    public void writeCharacters(char[] text, int start, int len) throws XMLStreamException {
         state = SEEN_DATA;
         super.writeCharacters(text, start, len);
     }

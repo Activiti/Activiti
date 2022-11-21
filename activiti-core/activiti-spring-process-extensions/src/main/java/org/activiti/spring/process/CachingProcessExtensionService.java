@@ -23,9 +23,7 @@ public class CachingProcessExtensionService {
 
     private final ProcessExtensionService processExtensionService;
 
-    public CachingProcessExtensionService(
-        ProcessExtensionService processExtensionService
-    ) {
+    public CachingProcessExtensionService(ProcessExtensionService processExtensionService) {
         this.processExtensionService = processExtensionService;
     }
 

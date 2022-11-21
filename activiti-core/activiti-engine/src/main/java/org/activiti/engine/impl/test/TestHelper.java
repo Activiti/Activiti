@@ -55,18 +55,13 @@ public abstract class TestHelper {
 
     public static final String EMPTY_LINE = "\n";
 
-    public static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = singletonList(
-        "ACT_GE_PROPERTY"
-    );
+    public static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = singletonList("ACT_GE_PROPERTY");
 
     static Map<String, ProcessEngine> processEngines = new HashMap<String, ProcessEngine>();
 
     // Assertion methods ///////////////////////////////////////////////////
 
-    public static void assertProcessEnded(
-        ProcessEngine processEngine,
-        String processInstanceId
-    ) {
+    public static void assertProcessEnded(ProcessEngine processEngine, String processInstanceId) {
         ProcessInstance processInstance = processEngine
             .getRuntimeService()
             .createProcessInstanceQuery()
@@ -75,20 +70,14 @@ public abstract class TestHelper {
 
         if (processInstance != null) {
             throw new AssertionFailedError(
-                "expected finished process instance '" +
-                processInstanceId +
-                "' but it was still in the db"
+                "expected finished process instance '" + processInstanceId + "' but it was still in the db"
             );
         }
     }
 
     // Test annotation support /////////////////////////////////////////////
 
-    public static String annotationDeploymentSetUp(
-        ProcessEngine processEngine,
-        Class<?> testClass,
-        String methodName
-    ) {
+    public static String annotationDeploymentSetUp(ProcessEngine processEngine, Class<?> testClass, String methodName) {
         String deploymentId = null;
         Method method = null;
         try {
@@ -100,22 +89,13 @@ public abstract class TestHelper {
             );
             return null;
         }
-        Deployment deploymentAnnotation = method.getAnnotation(
-            Deployment.class
-        );
+        Deployment deploymentAnnotation = method.getAnnotation(Deployment.class);
         if (deploymentAnnotation != null) {
-            log.debug(
-                "annotation @Deployment creates deployment for {}.{}",
-                testClass.getSimpleName(),
-                methodName
-            );
+            log.debug("annotation @Deployment creates deployment for {}.{}", testClass.getSimpleName(), methodName);
             String[] resources = deploymentAnnotation.resources();
             if (resources.length == 0) {
                 String name = method.getName();
-                String resource = getBpmnProcessDefinitionResource(
-                    testClass,
-                    name
-                );
+                String resource = getBpmnProcessDefinitionResource(testClass, name);
                 resources = new String[] { resource };
             }
 
@@ -128,10 +108,7 @@ public abstract class TestHelper {
                 deploymentBuilder.addClasspathResource(resource);
             }
 
-            if (
-                deploymentAnnotation.tenantId() != null &&
-                deploymentAnnotation.tenantId().length() > 0
-            ) {
+            if (deploymentAnnotation.tenantId() != null && deploymentAnnotation.tenantId().length() > 0) {
                 deploymentBuilder.tenantId(deploymentAnnotation.tenantId());
             }
             deploymentId = deploymentBuilder.deploy().getId();
@@ -146,16 +123,10 @@ public abstract class TestHelper {
         Class<?> testClass,
         String methodName
     ) {
-        log.debug(
-            "annotation @Deployment deletes deployment for {}.{}",
-            testClass.getSimpleName(),
-            methodName
-        );
+        log.debug("annotation @Deployment deletes deployment for {}.{}", testClass.getSimpleName(), methodName);
         if (deploymentId != null) {
             try {
-                processEngine
-                    .getRepositoryService()
-                    .deleteDeployment(deploymentId, true);
+                processEngine.getRepositoryService().deleteDeployment(deploymentId, true);
             } catch (ActivitiObjectNotFoundException e) {
                 // Deployment was already deleted by the test case. Ignore.
             }
@@ -184,13 +155,8 @@ public abstract class TestHelper {
         handleNoOpServiceTasksAnnotation(mockSupport, method);
     }
 
-    protected static void handleMockServiceTaskAnnotation(
-        ActivitiMockSupport mockSupport,
-        Method method
-    ) {
-        MockServiceTask mockedServiceTask = method.getAnnotation(
-            MockServiceTask.class
-        );
+    protected static void handleMockServiceTaskAnnotation(ActivitiMockSupport mockSupport, Method method) {
+        MockServiceTask mockedServiceTask = method.getAnnotation(MockServiceTask.class);
         if (mockedServiceTask != null) {
             handleMockServiceTaskAnnotation(mockSupport, mockedServiceTask);
         }
@@ -206,13 +172,8 @@ public abstract class TestHelper {
         );
     }
 
-    protected static void handleMockServiceTasksAnnotation(
-        ActivitiMockSupport mockSupport,
-        Method method
-    ) {
-        MockServiceTasks mockedServiceTasks = method.getAnnotation(
-            MockServiceTasks.class
-        );
+    protected static void handleMockServiceTasksAnnotation(ActivitiMockSupport mockSupport, Method method) {
+        MockServiceTasks mockedServiceTasks = method.getAnnotation(MockServiceTasks.class);
         if (mockedServiceTasks != null) {
             for (MockServiceTask mockedServiceTask : mockedServiceTasks.value()) {
                 handleMockServiceTaskAnnotation(mockSupport, mockedServiceTask);
@@ -220,13 +181,8 @@ public abstract class TestHelper {
         }
     }
 
-    protected static void handleNoOpServiceTasksAnnotation(
-        ActivitiMockSupport mockSupport,
-        Method method
-    ) {
-        NoOpServiceTasks noOpServiceTasks = method.getAnnotation(
-            NoOpServiceTasks.class
-        );
+    protected static void handleNoOpServiceTasksAnnotation(ActivitiMockSupport mockSupport, Method method) {
+        NoOpServiceTasks noOpServiceTasks = method.getAnnotation(NoOpServiceTasks.class);
         if (noOpServiceTasks != null) {
             String[] ids = noOpServiceTasks.ids();
             Class<?>[] classes = noOpServiceTasks.classes();
@@ -247,9 +203,7 @@ public abstract class TestHelper {
 
                 if (classes != null && classes.length > 0) {
                     for (Class<?> clazz : classes) {
-                        mockSupport.addNoOpServiceTaskByClassName(
-                            clazz.getName()
-                        );
+                        mockSupport.addNoOpServiceTaskByClassName(clazz.getName());
                     }
                 }
 
@@ -262,9 +216,7 @@ public abstract class TestHelper {
         }
     }
 
-    public static void annotationMockSupportTeardown(
-        ActivitiMockSupport mockSupport
-    ) {
+    public static void annotationMockSupportTeardown(ActivitiMockSupport mockSupport) {
         mockSupport.reset();
     }
 
@@ -272,13 +224,9 @@ public abstract class TestHelper {
      * get a resource location by convention based on a class (type) and a relative resource name. The return value will be the full classpath location of the type, plus a suffix built from the name
      * parameter: <code>BpmnDeployer.BPMN_RESOURCE_SUFFIXES</code>. The first resource matching a suffix will be returned.
      */
-    public static String getBpmnProcessDefinitionResource(
-        Class<?> type,
-        String name
-    ) {
+    public static String getBpmnProcessDefinitionResource(Class<?> type, String name) {
         for (String suffix : ResourceNameUtil.BPMN_RESOURCE_SUFFIXES) {
-            String resource =
-                type.getName().replace('.', '/') + "." + name + "." + suffix;
+            String resource = type.getName().replace('.', '/') + "." + name + "." + suffix;
             InputStream inputStream = ReflectUtil.getResourceAsStream(resource);
             if (inputStream == null) {
                 continue;
@@ -286,13 +234,7 @@ public abstract class TestHelper {
                 return resource;
             }
         }
-        return (
-            type.getName().replace('.', '/') +
-            "." +
-            name +
-            "." +
-            ResourceNameUtil.BPMN_RESOURCE_SUFFIXES[0]
-        );
+        return (type.getName().replace('.', '/') + "." + name + "." + ResourceNameUtil.BPMN_RESOURCE_SUFFIXES[0]);
     }
 
     // Engine startup and shutdown helpers
@@ -306,9 +248,7 @@ public abstract class TestHelper {
             );
             processEngine =
                 ProcessEngineConfiguration
-                    .createProcessEngineConfigurationFromResource(
-                        configurationResource
-                    )
+                    .createProcessEngineConfigurationFromResource(configurationResource)
                     .buildProcessEngine();
             log.debug(
                 "==== PROCESS ENGINE CREATED ========================================================================="
@@ -331,20 +271,13 @@ public abstract class TestHelper {
      */
     public static void assertAndEnsureCleanDb(ProcessEngine processEngine) {
         log.debug("verifying that db is clean after test");
-        Map<String, Long> tableCounts = processEngine
-            .getManagementService()
-            .getTableCount();
+        Map<String, Long> tableCounts = processEngine.getManagementService().getTableCount();
         StringBuilder outputMessage = new StringBuilder();
         for (String tableName : tableCounts.keySet()) {
             if (!TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK.contains(tableName)) {
                 Long count = tableCounts.get(tableName);
                 if (count != 0L) {
-                    outputMessage
-                        .append("  ")
-                        .append(tableName)
-                        .append(": ")
-                        .append(count)
-                        .append(" record(s) ");
+                    outputMessage.append("  ").append(tableName).append(": ").append(count).append(" record(s) ");
                 }
             }
         }

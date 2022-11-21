@@ -66,33 +66,14 @@ public class SpringProcessEngineConfiguration
         this(null);
     }
 
-    public SpringProcessEngineConfiguration(
-        ApplicationUpgradeContextService applicationUpgradeContextService
-    ) {
+    public SpringProcessEngineConfiguration(ApplicationUpgradeContextService applicationUpgradeContextService) {
         this.transactionsExternallyManaged = true;
-        defaultAutoDeploymentStrategy =
-            new DefaultAutoDeploymentStrategy(applicationUpgradeContextService);
+        defaultAutoDeploymentStrategy = new DefaultAutoDeploymentStrategy(applicationUpgradeContextService);
         deploymentStrategies.add(defaultAutoDeploymentStrategy);
-        deploymentStrategies.add(
-            new SingleResourceAutoDeploymentStrategy(
-                applicationUpgradeContextService
-            )
-        );
-        deploymentStrategies.add(
-            new ResourceParentFolderAutoDeploymentStrategy(
-                applicationUpgradeContextService
-            )
-        );
-        deploymentStrategies.add(
-            new FailOnNoProcessAutoDeploymentStrategy(
-                applicationUpgradeContextService
-            )
-        );
-        deploymentStrategies.add(
-            new NeverFailAutoDeploymentStrategy(
-                applicationUpgradeContextService
-            )
-        );
+        deploymentStrategies.add(new SingleResourceAutoDeploymentStrategy(applicationUpgradeContextService));
+        deploymentStrategies.add(new ResourceParentFolderAutoDeploymentStrategy(applicationUpgradeContextService));
+        deploymentStrategies.add(new FailOnNoProcessAutoDeploymentStrategy(applicationUpgradeContextService));
+        deploymentStrategies.add(new NeverFailAutoDeploymentStrategy(applicationUpgradeContextService));
     }
 
     @Override
@@ -108,18 +89,14 @@ public class SpringProcessEngineConfiguration
         return userGroupManager;
     }
 
-    public void setTransactionSynchronizationAdapterOrder(
-        Integer transactionSynchronizationAdapterOrder
-    ) {
-        this.transactionSynchronizationAdapterOrder =
-            transactionSynchronizationAdapterOrder;
+    public void setTransactionSynchronizationAdapterOrder(Integer transactionSynchronizationAdapterOrder) {
+        this.transactionSynchronizationAdapterOrder = transactionSynchronizationAdapterOrder;
     }
 
     @Override
     public void initDefaultCommandConfig() {
         if (defaultCommandConfig == null) {
-            defaultCommandConfig =
-                new CommandConfig().setContextReusePossible(true);
+            defaultCommandConfig = new CommandConfig().setContextReusePossible(true);
         }
     }
 
@@ -140,10 +117,7 @@ public class SpringProcessEngineConfiguration
     public void initTransactionContextFactory() {
         if (transactionContextFactory == null && transactionManager != null) {
             transactionContextFactory =
-                new SpringTransactionContextFactory(
-                    transactionManager,
-                    transactionSynchronizationAdapterOrder
-                );
+                new SpringTransactionContextFactory(transactionManager, transactionSynchronizationAdapterOrder);
         }
     }
 
@@ -163,14 +137,8 @@ public class SpringProcessEngineConfiguration
     }
 
     protected void autoDeployResources(ProcessEngine processEngine) {
-        final AutoDeploymentStrategy strategy = getAutoDeploymentStrategy(
-            deploymentMode
-        );
-        strategy.deployResources(
-            deploymentName,
-            deploymentResources,
-            processEngine.getRepositoryService()
-        );
+        final AutoDeploymentStrategy strategy = getAutoDeploymentStrategy(deploymentMode);
+        strategy.deployResources(deploymentName, deploymentResources, processEngine.getRepositoryService());
     }
 
     @Override
@@ -179,9 +147,7 @@ public class SpringProcessEngineConfiguration
             return super.setDataSource(dataSource);
         } else {
             // Wrap datasource in Transaction-aware proxy
-            DataSource proxiedDataSource = new TransactionAwareDataSourceProxy(
-                dataSource
-            );
+            DataSource proxiedDataSource = new TransactionAwareDataSourceProxy(dataSource);
             return super.setDataSource(proxiedDataSource);
         }
     }
@@ -190,9 +156,7 @@ public class SpringProcessEngineConfiguration
         return transactionManager;
     }
 
-    public void setTransactionManager(
-        PlatformTransactionManager transactionManager
-    ) {
+    public void setTransactionManager(PlatformTransactionManager transactionManager) {
         this.transactionManager = transactionManager;
     }
 
@@ -217,8 +181,7 @@ public class SpringProcessEngineConfiguration
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext)
-        throws BeansException {
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
 
@@ -238,9 +201,7 @@ public class SpringProcessEngineConfiguration
      *          the mode to get the strategy for
      * @return the deployment strategy to use for the mode. Never <code>null</code>
      */
-    protected AutoDeploymentStrategy getAutoDeploymentStrategy(
-        final String mode
-    ) {
+    protected AutoDeploymentStrategy getAutoDeploymentStrategy(final String mode) {
         AutoDeploymentStrategy result = defaultAutoDeploymentStrategy;
         for (final AutoDeploymentStrategy strategy : deploymentStrategies) {
             if (strategy.handlesMode(mode)) {

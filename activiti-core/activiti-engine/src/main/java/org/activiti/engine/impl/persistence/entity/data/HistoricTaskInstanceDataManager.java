@@ -27,24 +27,14 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 /**
 
  */
-public interface HistoricTaskInstanceDataManager
-    extends DataManager<HistoricTaskInstanceEntity> {
-    HistoricTaskInstanceEntity create(
-        TaskEntity task,
-        ExecutionEntity execution
-    );
+public interface HistoricTaskInstanceDataManager extends DataManager<HistoricTaskInstanceEntity> {
+    HistoricTaskInstanceEntity create(TaskEntity task, ExecutionEntity execution);
 
-    List<HistoricTaskInstanceEntity> findHistoricTasksByParentTaskId(
-        String parentTaskId
-    );
+    List<HistoricTaskInstanceEntity> findHistoricTasksByParentTaskId(String parentTaskId);
 
-    List<HistoricTaskInstanceEntity> findHistoricTaskInstanceByProcessInstanceId(
-        String processInstanceId
-    );
+    List<HistoricTaskInstanceEntity> findHistoricTaskInstanceByProcessInstanceId(String processInstanceId);
 
-    long findHistoricTaskInstanceCountByQueryCriteria(
-        HistoricTaskInstanceQueryImpl historicTaskInstanceQuery
-    );
+    long findHistoricTaskInstanceCountByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery);
 
     List<HistoricTaskInstance> findHistoricTaskInstancesByQueryCriteria(
         HistoricTaskInstanceQueryImpl historicTaskInstanceQuery
@@ -60,7 +50,5 @@ public interface HistoricTaskInstanceDataManager
         int maxResults
     );
 
-    long findHistoricTaskInstanceCountByNativeQuery(
-        Map<String, Object> parameterMap
-    );
+    long findHistoricTaskInstanceCountByNativeQuery(Map<String, Object> parameterMap);
 }

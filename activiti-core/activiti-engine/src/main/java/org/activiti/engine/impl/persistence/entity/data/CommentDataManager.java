@@ -41,10 +41,7 @@ public interface CommentDataManager extends DataManager<CommentEntity> {
 
     List<Comment> findCommentsByProcessInstanceId(String processInstanceId);
 
-    List<Comment> findCommentsByProcessInstanceId(
-        String processInstanceId,
-        String type
-    );
+    List<Comment> findCommentsByProcessInstanceId(String processInstanceId, String type);
 
     Comment findComment(String commentId);
 

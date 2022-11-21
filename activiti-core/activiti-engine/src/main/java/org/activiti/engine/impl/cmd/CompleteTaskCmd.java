@@ -36,20 +36,12 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
         this.variables = variables;
     }
 
-    public CompleteTaskCmd(
-        String taskId,
-        Map<String, Object> variables,
-        boolean localScope
-    ) {
+    public CompleteTaskCmd(String taskId, Map<String, Object> variables, boolean localScope) {
         this(taskId, variables);
         this.localScope = localScope;
     }
 
-    public CompleteTaskCmd(
-        String taskId,
-        Map<String, Object> variables,
-        Map<String, Object> transientVariables
-    ) {
+    public CompleteTaskCmd(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables) {
         this(taskId, variables);
         this.transientVariables = transientVariables;
     }
@@ -73,9 +65,7 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
             }
         }
 
-        Map<String, Object> taskLocalVariables = new HashMap<>(
-            task.getVariablesLocal()
-        );
+        Map<String, Object> taskLocalVariables = new HashMap<>(task.getVariablesLocal());
         taskLocalVariables.put(ASSIGNEE_VARIABLE_NAME, task.getAssignee());
 
         setTaskVariables(taskLocalVariables);

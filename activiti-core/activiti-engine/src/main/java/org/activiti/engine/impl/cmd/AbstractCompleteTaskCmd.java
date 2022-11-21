@@ -50,22 +50,16 @@ public abstract class AbstractCompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
         // Task complete logic
 
         if (
-            taskEntity.getDelegationState() != null &&
-            taskEntity.getDelegationState().equals(DelegationState.PENDING)
+            taskEntity.getDelegationState() != null && taskEntity.getDelegationState().equals(DelegationState.PENDING)
         ) {
-            throw new ActivitiException(
-                "A delegated task cannot be completed, but should be resolved instead."
-            );
+            throw new ActivitiException("A delegated task cannot be completed, but should be resolved instead.");
         }
 
         commandContext
             .getProcessEngineConfiguration()
             .getListenerNotificationHelper()
             .executeTaskListeners(taskEntity, TaskListener.EVENTNAME_COMPLETE);
-        if (
-            Authentication.getAuthenticatedUserId() != null &&
-            taskEntity.getProcessInstanceId() != null
-        ) {
+        if (Authentication.getAuthenticatedUserId() != null && taskEntity.getProcessInstanceId() != null) {
             ExecutionEntity processInstanceEntity = commandContext
                 .getExecutionEntityManager()
                 .findById(taskEntity.getProcessInstanceId());
@@ -78,9 +72,7 @@ public abstract class AbstractCompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
                 );
         }
 
-        ActivitiEventDispatcher eventDispatcher = Context
-            .getProcessEngineConfiguration()
-            .getEventDispatcher();
+        ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();
         if (eventDispatcher.isEnabled()) {
             if (variables != null) {
                 eventDispatcher.dispatchEvent(
@@ -93,17 +85,12 @@ public abstract class AbstractCompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
                 );
             } else {
                 eventDispatcher.dispatchEvent(
-                    ActivitiEventBuilder.createEntityEvent(
-                        ActivitiEventType.TASK_COMPLETED,
-                        taskEntity
-                    )
+                    ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_COMPLETED, taskEntity)
                 );
             }
         }
 
-        commandContext
-            .getTaskEntityManager()
-            .deleteTask(taskEntity, null, false, false);
+        commandContext.getTaskEntityManager().deleteTask(taskEntity, null, false, false);
 
         // Continue process (if not a standalone task)
         if (taskEntity.getExecutionId() != null) {

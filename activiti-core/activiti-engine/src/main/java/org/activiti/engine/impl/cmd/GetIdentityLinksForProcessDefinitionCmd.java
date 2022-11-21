@@ -28,8 +28,7 @@ import org.activiti.engine.task.IdentityLink;
 /**
 
  */
-public class GetIdentityLinksForProcessDefinitionCmd
-    implements Command<List<IdentityLink>>, Serializable {
+public class GetIdentityLinksForProcessDefinitionCmd implements Command<List<IdentityLink>>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String processDefinitionId;

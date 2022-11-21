@@ -36,46 +36,29 @@ public class BusinessRuleTaskJsonConverter extends BaseBpmnJsonConverter {
         fillBpmnTypes(convertersToJsonMap);
     }
 
-    public static void fillJsonTypes(
-        Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap
-    ) {
-        convertersToBpmnMap.put(
-            STENCIL_TASK_BUSINESS_RULE,
-            BusinessRuleTaskJsonConverter.class
-        );
+    public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
+        convertersToBpmnMap.put(STENCIL_TASK_BUSINESS_RULE, BusinessRuleTaskJsonConverter.class);
     }
 
     public static void fillBpmnTypes(
         Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap
     ) {
-        convertersToJsonMap.put(
-            BusinessRuleTask.class,
-            BusinessRuleTaskJsonConverter.class
-        );
+        convertersToJsonMap.put(BusinessRuleTask.class, BusinessRuleTaskJsonConverter.class);
     }
 
     protected String getStencilId(BaseElement baseElement) {
         return STENCIL_TASK_BUSINESS_RULE;
     }
 
-    protected void convertElementToJson(
-        ObjectNode propertiesNode,
-        BaseElement baseElement
-    ) {
+    protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
         BusinessRuleTask ruleTask = (BusinessRuleTask) baseElement;
         propertiesNode.put(PROPERTY_RULETASK_CLASS, ruleTask.getClassName());
         propertiesNode.put(
             PROPERTY_RULETASK_VARIABLES_INPUT,
             convertListToCommaSeparatedString(ruleTask.getInputVariables())
         );
-        propertiesNode.put(
-            PROPERTY_RULETASK_RESULT,
-            ruleTask.getResultVariableName()
-        );
-        propertiesNode.put(
-            PROPERTY_RULETASK_RULES,
-            convertListToCommaSeparatedString(ruleTask.getRuleNames())
-        );
+        propertiesNode.put(PROPERTY_RULETASK_RESULT, ruleTask.getResultVariableName());
+        propertiesNode.put(PROPERTY_RULETASK_RULES, convertListToCommaSeparatedString(ruleTask.getRuleNames()));
         if (ruleTask.isExclude()) {
             propertiesNode.put(PROPERTY_RULETASK_EXCLUDE, PROPERTY_VALUE_YES);
         }
@@ -87,24 +70,11 @@ public class BusinessRuleTaskJsonConverter extends BaseBpmnJsonConverter {
         Map<String, JsonNode> shapeMap
     ) {
         BusinessRuleTask task = new BusinessRuleTask();
-        task.setClassName(
-            getPropertyValueAsString(PROPERTY_RULETASK_CLASS, elementNode)
-        );
-        task.setInputVariables(
-            getPropertyValueAsList(
-                PROPERTY_RULETASK_VARIABLES_INPUT,
-                elementNode
-            )
-        );
-        task.setResultVariableName(
-            getPropertyValueAsString(PROPERTY_RULETASK_RESULT, elementNode)
-        );
-        task.setRuleNames(
-            getPropertyValueAsList(PROPERTY_RULETASK_RULES, elementNode)
-        );
-        task.setExclude(
-            getPropertyValueAsBoolean(PROPERTY_RULETASK_EXCLUDE, elementNode)
-        );
+        task.setClassName(getPropertyValueAsString(PROPERTY_RULETASK_CLASS, elementNode));
+        task.setInputVariables(getPropertyValueAsList(PROPERTY_RULETASK_VARIABLES_INPUT, elementNode));
+        task.setResultVariableName(getPropertyValueAsString(PROPERTY_RULETASK_RESULT, elementNode));
+        task.setRuleNames(getPropertyValueAsList(PROPERTY_RULETASK_RULES, elementNode));
+        task.setExclude(getPropertyValueAsBoolean(PROPERTY_RULETASK_EXCLUDE, elementNode));
         return task;
     }
 }

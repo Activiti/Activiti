@@ -38,9 +38,7 @@ import org.slf4j.LoggerFactory;
  */
 public class StandaloneMybatisTransactionContext implements TransactionContext {
 
-    private static Logger log = LoggerFactory.getLogger(
-        StandaloneMybatisTransactionContext.class
-    );
+    private static Logger log = LoggerFactory.getLogger(StandaloneMybatisTransactionContext.class);
 
     protected CommandContext commandContext;
     protected Map<TransactionState, List<TransactionListener>> stateTransactionListeners;
@@ -49,23 +47,14 @@ public class StandaloneMybatisTransactionContext implements TransactionContext {
         this.commandContext = commandContext;
     }
 
-    public void addTransactionListener(
-        TransactionState transactionState,
-        TransactionListener transactionListener
-    ) {
+    public void addTransactionListener(TransactionState transactionState, TransactionListener transactionListener) {
         if (stateTransactionListeners == null) {
-            stateTransactionListeners =
-                new HashMap<TransactionState, List<TransactionListener>>();
+            stateTransactionListeners = new HashMap<TransactionState, List<TransactionListener>>();
         }
-        List<TransactionListener> transactionListeners = stateTransactionListeners.get(
-            transactionState
-        );
+        List<TransactionListener> transactionListeners = stateTransactionListeners.get(transactionState);
         if (transactionListeners == null) {
             transactionListeners = new ArrayList<TransactionListener>();
-            stateTransactionListeners.put(
-                transactionState,
-                transactionListeners
-            );
+            stateTransactionListeners.put(transactionState, transactionListeners);
         }
         transactionListeners.add(transactionListener);
     }
@@ -91,36 +80,23 @@ public class StandaloneMybatisTransactionContext implements TransactionContext {
      *                            would actually roll back the update (as the MyBatis context is already committed
      *                            and the internal flags have not been correctly set).
      */
-    protected void fireTransactionEvent(
-        TransactionState transactionState,
-        boolean executeInNewContext
-    ) {
+    protected void fireTransactionEvent(TransactionState transactionState, boolean executeInNewContext) {
         if (stateTransactionListeners == null) {
             return;
         }
-        final List<TransactionListener> transactionListeners = stateTransactionListeners.get(
-            transactionState
-        );
+        final List<TransactionListener> transactionListeners = stateTransactionListeners.get(transactionState);
         if (transactionListeners == null) {
             return;
         }
 
         if (executeInNewContext) {
-            CommandExecutor commandExecutor = commandContext
-                .getProcessEngineConfiguration()
-                .getCommandExecutor();
-            CommandConfig commandConfig = new CommandConfig(
-                false,
-                TransactionPropagation.REQUIRES_NEW
-            );
+            CommandExecutor commandExecutor = commandContext.getProcessEngineConfiguration().getCommandExecutor();
+            CommandConfig commandConfig = new CommandConfig(false, TransactionPropagation.REQUIRES_NEW);
             commandExecutor.execute(
                 commandConfig,
                 new Command<Void>() {
                     public Void execute(CommandContext commandContext) {
-                        executeTransactionListeners(
-                            transactionListeners,
-                            commandContext
-                        );
+                        executeTransactionListeners(transactionListeners, commandContext);
                         return null;
                     }
                 }
@@ -149,20 +125,14 @@ public class StandaloneMybatisTransactionContext implements TransactionContext {
                 log.debug("firing event rolling back...");
                 fireTransactionEvent(TransactionState.ROLLINGBACK, false);
             } catch (Throwable exception) {
-                log.info(
-                    "Exception during transaction: {}",
-                    exception.getMessage()
-                );
+                log.info("Exception during transaction: {}", exception.getMessage());
                 commandContext.exception(exception);
             } finally {
                 log.debug("rolling back ibatis sql session...");
                 getDbSqlSession().rollback();
             }
         } catch (Throwable exception) {
-            log.info(
-                "Exception during transaction: {}",
-                exception.getMessage()
-            );
+            log.info("Exception during transaction: {}", exception.getMessage());
             commandContext.exception(exception);
         } finally {
             log.debug("firing event rolled back...");

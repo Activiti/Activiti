@@ -35,9 +35,7 @@ public class ActivitiUserGroupManagerImpl implements UserGroupManager {
             .loadUserByUsername(username)
             .getAuthorities()
             .stream()
-            .filter((GrantedAuthority a) ->
-                a.getAuthority().startsWith("GROUP_")
-            )
+            .filter((GrantedAuthority a) -> a.getAuthority().startsWith("GROUP_"))
             .map((GrantedAuthority a) -> a.getAuthority().substring(6))
             .collect(Collectors.toList());
     }
@@ -48,23 +46,18 @@ public class ActivitiUserGroupManagerImpl implements UserGroupManager {
             .loadUserByUsername(username)
             .getAuthorities()
             .stream()
-            .filter((GrantedAuthority a) -> a.getAuthority().startsWith("ROLE_")
-            )
+            .filter((GrantedAuthority a) -> a.getAuthority().startsWith("ROLE_"))
             .map((GrantedAuthority a) -> a.getAuthority().substring(5))
             .collect(Collectors.toList());
     }
 
     @Override
     public List<String> getGroups() {
-        return (
-            (ExtendedInMemoryUserDetailsManager) userDetailsService
-        ).getGroups();
+        return ((ExtendedInMemoryUserDetailsManager) userDetailsService).getGroups();
     }
 
     @Override
     public List<String> getUsers() {
-        return (
-            (ExtendedInMemoryUserDetailsManager) userDetailsService
-        ).getUsers();
+        return ((ExtendedInMemoryUserDetailsManager) userDetailsService).getUsers();
     }
 }

@@ -47,12 +47,9 @@ import org.slf4j.LoggerFactory;
  */
 public class AbstractActviti6Test {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        AbstractActviti6Test.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(AbstractActviti6Test.class);
 
-    public static String H2_TEST_JDBC_URL =
-        "jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000";
+    public static String H2_TEST_JDBC_URL = "jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000";
 
     @Rule
     public ActivitiRule activitiRule = new ActivitiRule();
@@ -73,9 +70,7 @@ public class AbstractActviti6Test {
             // Boot up H2 webapp
             if (cachedProcessEngine instanceof ProcessEngineImpl) {
                 if (
-                    (
-                        (ProcessEngineImpl) cachedProcessEngine
-                    ).getProcessEngineConfiguration()
+                    ((ProcessEngineImpl) cachedProcessEngine).getProcessEngineConfiguration()
                         .getJdbcUrl()
                         .equals(H2_TEST_JDBC_URL)
                 ) {
@@ -95,36 +90,24 @@ public class AbstractActviti6Test {
 
     @After
     public void resetClock() {
-        activitiRule
-            .getProcessEngine()
-            .getProcessEngineConfiguration()
-            .getClock()
-            .reset();
+        activitiRule.getProcessEngine().getProcessEngineConfiguration().getClock().reset();
     }
 
     @After
     public void logCommandInvokerDebugInfo() {
         ProcessExecutionLoggerConfigurator loggerConfigurator = null;
         List<ProcessEngineConfigurator> configurators =
-            (
-                (ProcessEngineImpl) cachedProcessEngine
-            ).getProcessEngineConfiguration()
-                .getConfigurators();
+            ((ProcessEngineImpl) cachedProcessEngine).getProcessEngineConfiguration().getConfigurators();
         if (configurators != null && configurators.size() > 0) {
             for (ProcessEngineConfigurator configurator : configurators) {
-                if (
-                    configurator instanceof ProcessExecutionLoggerConfigurator
-                ) {
-                    loggerConfigurator =
-                        (ProcessExecutionLoggerConfigurator) configurator;
+                if (configurator instanceof ProcessExecutionLoggerConfigurator) {
+                    loggerConfigurator = (ProcessExecutionLoggerConfigurator) configurator;
                     break;
                 }
             }
 
             if (loggerConfigurator != null) {
-                loggerConfigurator
-                    .getProcessExecutionLogger()
-                    .logDebugInfo(true);
+                loggerConfigurator.getProcessExecutionLogger().logDebugInfo(true);
             }
         }
     }
@@ -135,29 +118,19 @@ public class AbstractActviti6Test {
 
             // Shutdown hook
             final ProcessEngineConfiguration processEngineConfiguration =
-                (
-                    (ProcessEngineImpl) processEngine
-                ).getProcessEngineConfiguration();
+                ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
             final ProcessEngineLifecycleListener originalLifecycleListener = processEngineConfiguration.getProcessEngineLifecycleListener();
             processEngineConfiguration.setProcessEngineLifecycleListener(
                 new ProcessEngineLifecycleListener() {
                     @Override
-                    public void onProcessEngineClosed(
-                        ProcessEngine processEngine
-                    ) {
+                    public void onProcessEngineClosed(ProcessEngine processEngine) {
                         server.stop();
-                        originalLifecycleListener.onProcessEngineClosed(
-                            processEngine
-                        );
+                        originalLifecycleListener.onProcessEngineClosed(processEngine);
                     }
 
                     @Override
-                    public void onProcessEngineBuilt(
-                        ProcessEngine processEngine
-                    ) {
-                        originalLifecycleListener.onProcessEngineBuilt(
-                            processEngine
-                        );
+                    public void onProcessEngineBuilt(ProcessEngine processEngine) {
+                        originalLifecycleListener.onProcessEngineBuilt(processEngine);
                     }
                 }
             );

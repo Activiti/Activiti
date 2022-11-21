@@ -25,9 +25,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JavaObjectVariableType extends VariableType {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        JavaObjectVariableType.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(JavaObjectVariableType.class);
 
     public Class clazz;
 
@@ -45,13 +43,8 @@ public class JavaObjectVariableType extends VariableType {
 
     @Override
     public void validate(Object var, List<ActivitiException> errors) {
-        if (
-            var != null &&
-            !(var).getClass().isAssignableFrom(clazz) &&
-            !isExpression(var)
-        ) {
-            String message =
-                var.getClass() + " is not assignable from " + clazz;
+        if (var != null && !(var).getClass().isAssignableFrom(clazz) && !isExpression(var)) {
+            String message = var.getClass() + " is not assignable from " + clazz;
             errors.add(new ActivitiException(message));
             logger.error(message);
         }

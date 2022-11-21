@@ -45,37 +45,25 @@ public class HistoricIdentityLinkEntityManagerImpl
     }
 
     @Override
-    public List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByTaskId(
-        String taskId
-    ) {
-        return historicIdentityLinkDataManager.findHistoricIdentityLinksByTaskId(
-            taskId
-        );
+    public List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByTaskId(String taskId) {
+        return historicIdentityLinkDataManager.findHistoricIdentityLinksByTaskId(taskId);
     }
 
     @Override
-    public List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByProcessInstanceId(
-        String processInstanceId
-    ) {
-        return historicIdentityLinkDataManager.findHistoricIdentityLinksByProcessInstanceId(
-            processInstanceId
-        );
+    public List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByProcessInstanceId(String processInstanceId) {
+        return historicIdentityLinkDataManager.findHistoricIdentityLinksByProcessInstanceId(processInstanceId);
     }
 
     @Override
     public void deleteHistoricIdentityLinksByTaskId(String taskId) {
-        List<HistoricIdentityLinkEntity> identityLinks = findHistoricIdentityLinksByTaskId(
-            taskId
-        );
+        List<HistoricIdentityLinkEntity> identityLinks = findHistoricIdentityLinksByTaskId(taskId);
         for (HistoricIdentityLinkEntity identityLink : identityLinks) {
             delete(identityLink);
         }
     }
 
     @Override
-    public void deleteHistoricIdentityLinksByProcInstance(
-        final String processInstanceId
-    ) {
+    public void deleteHistoricIdentityLinksByProcInstance(final String processInstanceId) {
         List<HistoricIdentityLinkEntity> identityLinks = historicIdentityLinkDataManager.findHistoricIdentityLinksByProcessInstanceId(
             processInstanceId
         );
@@ -89,9 +77,7 @@ public class HistoricIdentityLinkEntityManagerImpl
         return historicIdentityLinkDataManager;
     }
 
-    public void setHistoricIdentityLinkDataManager(
-        HistoricIdentityLinkDataManager historicIdentityLinkDataManager
-    ) {
+    public void setHistoricIdentityLinkDataManager(HistoricIdentityLinkDataManager historicIdentityLinkDataManager) {
         this.historicIdentityLinkDataManager = historicIdentityLinkDataManager;
     }
 }

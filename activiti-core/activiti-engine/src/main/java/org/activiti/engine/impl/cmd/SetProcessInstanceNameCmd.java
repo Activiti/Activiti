@@ -42,14 +42,10 @@ public class SetProcessInstanceNameCmd implements Command<Void>, Serializable {
     @Override
     public Void execute(CommandContext commandContext) {
         if (processInstanceId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "processInstanceId is null"
-            );
+            throw new ActivitiIllegalArgumentException("processInstanceId is null");
         }
 
-        ExecutionEntity execution = commandContext
-            .getExecutionEntityManager()
-            .findById(processInstanceId);
+        ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(processInstanceId);
 
         if (execution == null) {
             throw new ActivitiObjectNotFoundException(
@@ -68,11 +64,7 @@ public class SetProcessInstanceNameCmd implements Command<Void>, Serializable {
         }
 
         if (execution.isSuspended()) {
-            throw new ActivitiException(
-                "process instance " +
-                processInstanceId +
-                " is suspended, cannot set name"
-            );
+            throw new ActivitiException("process instance " + processInstanceId + " is suspended, cannot set name");
         }
 
         // Actually set the name
@@ -81,18 +73,11 @@ public class SetProcessInstanceNameCmd implements Command<Void>, Serializable {
         if (commandContext.getEventDispatcher().isEnabled()) {
             commandContext
                 .getEventDispatcher()
-                .dispatchEvent(
-                    ActivitiEventBuilder.createEntityEvent(
-                        ActivitiEventType.ENTITY_UPDATED,
-                        execution
-                    )
-                );
+                .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, execution));
         }
 
         // Record the change in history
-        commandContext
-            .getHistoryManager()
-            .recordProcessInstanceNameChange(processInstanceId, name);
+        commandContext.getHistoryManager().recordProcessInstanceNameChange(processInstanceId, name);
 
         return null;
     }

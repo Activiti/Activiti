@@ -27,9 +27,7 @@ public class DbSchemaCreate {
     public static void main(String[] args) {
         ProcessEngineConfiguration
             .createProcessEngineConfigurationFromResourceDefault()
-            .setDatabaseSchemaUpdate(
-                ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_CREATE
-            )
+            .setDatabaseSchemaUpdate(ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_CREATE)
             .buildProcessEngine();
     }
 }

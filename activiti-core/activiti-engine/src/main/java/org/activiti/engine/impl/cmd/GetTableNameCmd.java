@@ -34,8 +34,6 @@ public class GetTableNameCmd implements Command<String>, Serializable {
         if (entityClass == null) {
             throw new ActivitiIllegalArgumentException("entityClass is null");
         }
-        return commandContext
-            .getTableDataManager()
-            .getTableName(entityClass, true);
+        return commandContext.getTableDataManager().getTableName(entityClass, true);
     }
 }

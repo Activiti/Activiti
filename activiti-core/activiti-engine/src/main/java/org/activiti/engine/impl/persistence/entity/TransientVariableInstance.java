@@ -34,10 +34,7 @@ public class TransientVariableInstance implements VariableInstance {
     protected String variableName;
     protected Object variableValue;
 
-    public TransientVariableInstance(
-        String variableName,
-        Object variableValue
-    ) {
+    public TransientVariableInstance(String variableName, Object variableValue) {
         this.variableName = variableName;
         this.variableValue = variableValue;
     }

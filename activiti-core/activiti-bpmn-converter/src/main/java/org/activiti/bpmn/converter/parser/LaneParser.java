@@ -27,11 +27,7 @@ import org.activiti.bpmn.model.Process;
  */
 public class LaneParser implements BpmnXMLConstants {
 
-    public void parse(
-        XMLStreamReader xtr,
-        Process activeProcess,
-        BpmnModel model
-    ) throws Exception {
+    public void parse(XMLStreamReader xtr, Process activeProcess, BpmnModel model) throws Exception {
         Lane lane = new Lane();
         BpmnXMLUtil.addXMLLocation(lane, xtr);
         lane.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));

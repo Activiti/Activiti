@@ -38,19 +38,12 @@ public class SequenceFlowMatchers {
         return (operationScope, events) -> {
             List<BPMNSequenceFlowTakenEvent> flowTakenEvents = events
                 .stream()
-                .filter(event ->
-                    SequenceFlowEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN.equals(
-                        event.getEventType()
-                    )
-                )
+                .filter(event -> SequenceFlowEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN.equals(event.getEventType()))
                 .map(BPMNSequenceFlowTakenEvent.class::cast)
                 .collect(Collectors.toList());
             assertThat(flowTakenEvents)
                 .filteredOn(event ->
-                    event
-                        .getEntity()
-                        .getProcessInstanceId()
-                        .equals(operationScope.getProcessInstanceId())
+                    event.getEntity().getProcessInstanceId().equals(operationScope.getProcessInstanceId())
                 )
                 .extracting(event -> event.getEntity().getElementId())
                 .contains(definitionKey);

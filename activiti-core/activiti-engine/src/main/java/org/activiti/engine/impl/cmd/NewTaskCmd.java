@@ -39,21 +39,12 @@ public class NewTaskCmd implements Command<Task>, Serializable {
         TaskEntity task = commandContext.getTaskEntityManager().create();
         task.setId(taskId);
         task.setRevision(0);
-        findAppVersionFromDeployment(
-            commandContext.getDeploymentEntityManager()
-        )
-            .ifPresent(task::setAppVersion);
+        findAppVersionFromDeployment(commandContext.getDeploymentEntityManager()).ifPresent(task::setAppVersion);
         return task;
     }
 
-    private Optional<Integer> findAppVersionFromDeployment(
-        DeploymentEntityManager deploymentEntityManager
-    ) {
-        DeploymentEntity deployment = deploymentEntityManager.findLatestDeploymentByName(
-            "SpringAutoDeployment"
-        );
-        return Optional
-            .ofNullable(deployment)
-            .map(DeploymentEntity::getVersion);
+    private Optional<Integer> findAppVersionFromDeployment(DeploymentEntityManager deploymentEntityManager) {
+        DeploymentEntity deployment = deploymentEntityManager.findLatestDeploymentByName("SpringAutoDeployment");
+        return Optional.ofNullable(deployment).map(DeploymentEntity::getVersion);
     }
 }

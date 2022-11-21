@@ -45,9 +45,7 @@ public class SubProcess extends Activity implements FlowElementsContainer {
         flowElementList.add(element);
         element.setParentContainer(this);
         if (element instanceof FlowElementsContainer) {
-            flowElementMap.putAll(
-                ((FlowElementsContainer) element).getFlowElementMap()
-            );
+            flowElementMap.putAll(((FlowElementsContainer) element).getFlowElementMap());
         }
         if (StringUtils.isNotEmpty(element.getId())) {
             flowElementMap.put(element.getId(), element);
@@ -72,9 +70,7 @@ public class SubProcess extends Activity implements FlowElementsContainer {
             flowElementList.remove(element);
             flowElementMap.remove(elementId);
             if (element.getParentContainer() != null) {
-                element
-                    .getParentContainer()
-                    .removeFlowElementFromMap(elementId);
+                element.getParentContainer().removeFlowElementFromMap(elementId);
             }
         }
     }
@@ -151,10 +147,7 @@ public class SubProcess extends Activity implements FlowElementsContainer {
         }
 
         dataObjects = new ArrayList<ValuedDataObject>();
-        if (
-            otherElement.getDataObjects() != null &&
-            !otherElement.getDataObjects().isEmpty()
-        ) {
+        if (otherElement.getDataObjects() != null && !otherElement.getDataObjects().isEmpty()) {
             for (ValuedDataObject dataObject : otherElement.getDataObjects()) {
                 ValuedDataObject clone = dataObject.clone();
                 dataObjects.add(clone);
@@ -187,7 +180,6 @@ public class SubProcess extends Activity implements FlowElementsContainer {
 
     @Override
     public void accept(ReferenceOverrider referenceOverrider) {
-        getFlowElements()
-            .forEach(flowElement -> flowElement.accept(referenceOverrider));
+        getFlowElements().forEach(flowElement -> flowElement.accept(referenceOverrider));
     }
 }

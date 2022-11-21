@@ -32,11 +32,7 @@ public class ProcessDefinitionCacheEntry implements Serializable {
     protected BpmnModel bpmnModel;
     protected Process process;
 
-    public ProcessDefinitionCacheEntry(
-        ProcessDefinition processDefinition,
-        BpmnModel bpmnModel,
-        Process process
-    ) {
+    public ProcessDefinitionCacheEntry(ProcessDefinition processDefinition, BpmnModel bpmnModel, Process process) {
         this.processDefinition = processDefinition;
         this.bpmnModel = bpmnModel;
         this.process = process;

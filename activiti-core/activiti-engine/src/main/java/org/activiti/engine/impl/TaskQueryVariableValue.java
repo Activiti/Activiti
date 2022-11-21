@@ -25,12 +25,7 @@ public class TaskQueryVariableValue extends QueryVariableValue {
 
     private static final long serialVersionUID = 1L;
 
-    public TaskQueryVariableValue(
-        String name,
-        Object value,
-        QueryOperator operator,
-        boolean isTaskVariable
-    ) {
+    public TaskQueryVariableValue(String name, Object value, QueryOperator operator, boolean isTaskVariable) {
         super(name, value, operator, isTaskVariable);
     }
 }

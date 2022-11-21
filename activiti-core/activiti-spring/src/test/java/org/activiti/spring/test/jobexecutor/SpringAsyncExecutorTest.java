@@ -36,9 +36,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners(CleanTestExecutionListener.class)
-@ContextConfiguration(
-    "classpath:org/activiti/spring/test/components/SpringjobExecutorTest-context.xml"
-)
+@ContextConfiguration("classpath:org/activiti/spring/test/components/SpringjobExecutorTest-context.xml")
 public class SpringAsyncExecutorTest extends SpringActivitiTestCase {
 
     @Autowired
@@ -52,31 +50,21 @@ public class SpringAsyncExecutorTest extends SpringActivitiTestCase {
 
     @Test
     public void testHappyJobExecutorPath() throws Exception {
-        ProcessInstance instance = runtimeService.startProcessInstanceByKey(
-            "process1"
-        );
+        ProcessInstance instance = runtimeService.startProcessInstanceByKey("process1");
         assertThat(instance).isNotNull();
         waitForTasksToExpire();
 
-        List<Task> activeTasks = taskService
-            .createTaskQuery()
-            .processInstanceId(instance.getId())
-            .list();
+        List<Task> activeTasks = taskService.createTaskQuery().processInstanceId(instance.getId()).list();
         assertThat(activeTasks.isEmpty()).isTrue();
     }
 
     @Test
     public void testRollbackJobExecutorPath() throws Exception {
-        ProcessInstance instance = runtimeService.startProcessInstanceByKey(
-            "errorProcess1"
-        );
+        ProcessInstance instance = runtimeService.startProcessInstanceByKey("errorProcess1");
         assertThat(instance).isNotNull();
         waitForTasksToExpire();
 
-        List<Task> activeTasks = taskService
-            .createTaskQuery()
-            .processInstanceId(instance.getId())
-            .list();
+        List<Task> activeTasks = taskService.createTaskQuery().processInstanceId(instance.getId()).list();
         assertThat(activeTasks.size() == 1).isTrue();
     }
 

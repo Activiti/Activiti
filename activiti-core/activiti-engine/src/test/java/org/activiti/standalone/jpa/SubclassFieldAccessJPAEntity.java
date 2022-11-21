@@ -23,8 +23,7 @@ import javax.persistence.Entity;
 
  */
 @Entity(name = "JPA_SUBCLASS_FIELD")
-public class SubclassFieldAccessJPAEntity
-    extends MappedSuperClassFieldAccessJPAEntity {
+public class SubclassFieldAccessJPAEntity extends MappedSuperClassFieldAccessJPAEntity {
 
     @Column(name = "VALUE_")
     private String value;

@@ -23,8 +23,7 @@ import org.activiti.engine.history.HistoricIdentityLink;
 
  */
 @Internal
-public interface HistoricIdentityLinkEntity
-    extends HistoricIdentityLink, Entity {
+public interface HistoricIdentityLinkEntity extends HistoricIdentityLink, Entity {
     boolean isUser();
 
     boolean isGroup();

@@ -92,10 +92,7 @@ public class TimerPayload implements Payload {
         int result = 1;
         result = prime * result + ((dueDate == null) ? 0 : dueDate.hashCode());
         result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
-        result =
-            prime *
-            result +
-            ((exceptionMessage == null) ? 0 : exceptionMessage.hashCode());
+        result = prime * result + ((exceptionMessage == null) ? 0 : exceptionMessage.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + maxIterations;
         result = prime * result + ((repeat == null) ? 0 : repeat.hashCode());
@@ -117,9 +114,7 @@ public class TimerPayload implements Payload {
         } else if (!endDate.equals(other.endDate)) return false;
         if (exceptionMessage == null) {
             if (other.exceptionMessage != null) return false;
-        } else if (
-            !exceptionMessage.equals(other.exceptionMessage)
-        ) return false;
+        } else if (!exceptionMessage.equals(other.exceptionMessage)) return false;
         if (id == null) {
             if (other.id != null) return false;
         } else if (!id.equals(other.id)) return false;

@@ -34,8 +34,6 @@ public class GetAttachmentCmd implements Command<Attachment>, Serializable {
     }
 
     public Attachment execute(CommandContext commandContext) {
-        return commandContext
-            .getAttachmentEntityManager()
-            .findById(attachmentId);
+        return commandContext.getAttachmentEntityManager().findById(attachmentId);
     }
 }

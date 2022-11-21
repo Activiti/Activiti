@@ -30,9 +30,7 @@ import org.activiti.engine.runtime.TimerJobQuery;
 
 
  */
-public class TimerJobQueryImpl
-    extends AbstractQuery<TimerJobQuery, Job>
-    implements TimerJobQuery, Serializable {
+public class TimerJobQueryImpl extends AbstractQuery<TimerJobQuery, Job> implements TimerJobQuery, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String id;
@@ -66,9 +64,7 @@ public class TimerJobQueryImpl
 
     public TimerJobQueryImpl jobId(String jobId) {
         if (jobId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Provided job id is null"
-            );
+            throw new ActivitiIllegalArgumentException("Provided job id is null");
         }
         this.id = jobId;
         return this;
@@ -76,9 +72,7 @@ public class TimerJobQueryImpl
 
     public TimerJobQueryImpl processInstanceId(String processInstanceId) {
         if (processInstanceId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Provided process instance id is null"
-            );
+            throw new ActivitiIllegalArgumentException("Provided process instance id is null");
         }
         this.processInstanceId = processInstanceId;
         return this;
@@ -86,9 +80,7 @@ public class TimerJobQueryImpl
 
     public TimerJobQueryImpl processDefinitionId(String processDefinitionId) {
         if (processDefinitionId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Provided process definition id is null"
-            );
+            throw new ActivitiIllegalArgumentException("Provided process definition id is null");
         }
         this.processDefinitionId = processDefinitionId;
         return this;
@@ -96,9 +88,7 @@ public class TimerJobQueryImpl
 
     public TimerJobQueryImpl executionId(String executionId) {
         if (executionId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Provided execution id is null"
-            );
+            throw new ActivitiIllegalArgumentException("Provided execution id is null");
         }
         this.executionId = executionId;
         return this;
@@ -186,9 +176,7 @@ public class TimerJobQueryImpl
 
     public TimerJobQueryImpl exceptionMessage(String exceptionMessage) {
         if (exceptionMessage == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Provided exception message is null"
-            );
+            throw new ActivitiIllegalArgumentException("Provided exception message is null");
         }
         this.exceptionMessage = exceptionMessage;
         return this;
@@ -245,16 +233,12 @@ public class TimerJobQueryImpl
 
     public long executeCount(CommandContext commandContext) {
         checkQueryOk();
-        return commandContext
-            .getTimerJobEntityManager()
-            .findJobCountByQueryCriteria(this);
+        return commandContext.getTimerJobEntityManager().findJobCountByQueryCriteria(this);
     }
 
     public List<Job> executeList(CommandContext commandContext, Page page) {
         checkQueryOk();
-        return commandContext
-            .getTimerJobEntityManager()
-            .findJobsByQueryCriteria(this, page);
+        return commandContext.getTimerJobEntityManager().findJobsByQueryCriteria(this, page);
     }
 
     // getters //////////////////////////////////////////
@@ -276,10 +260,7 @@ public class TimerJobQueryImpl
     }
 
     public Date getNow() {
-        return Context
-            .getProcessEngineConfiguration()
-            .getClock()
-            .getCurrentTime();
+        return Context.getProcessEngineConfiguration().getClock().getCurrentTime();
     }
 
     public boolean isWithException() {

@@ -38,9 +38,7 @@ public abstract class AbstractBehaviorFactory {
     private MessagePayloadMappingProviderFactory messagePayloadMappingProviderFactory = new BpmnMessagePayloadMappingProviderFactory();
     private MessageExecutionContextFactory messageExecutionContextFactory = new DefaultMessageExecutionContextFactory();
 
-    public List<FieldDeclaration> createFieldDeclarations(
-        List<FieldExtension> fieldList
-    ) {
+    public List<FieldDeclaration> createFieldDeclarations(List<FieldExtension> fieldList) {
         List<FieldDeclaration> fieldDeclarations = new ArrayList<FieldDeclaration>();
 
         for (FieldExtension fieldExtension : fieldList) {
@@ -50,9 +48,7 @@ public abstract class AbstractBehaviorFactory {
                     new FieldDeclaration(
                         fieldExtension.getFieldName(),
                         Expression.class.getName(),
-                        expressionManager.createExpression(
-                            fieldExtension.getExpression()
-                        )
+                        expressionManager.createExpression(fieldExtension.getExpression())
                     );
             } else {
                 fieldDeclaration =
@@ -80,9 +76,7 @@ public abstract class AbstractBehaviorFactory {
         return throwMessageDelegateFactory;
     }
 
-    public void setThrowMessageDelegateFactory(
-        ThrowMessageDelegateFactory throwMessageDelegateFactory
-    ) {
+    public void setThrowMessageDelegateFactory(ThrowMessageDelegateFactory throwMessageDelegateFactory) {
         this.throwMessageDelegateFactory = throwMessageDelegateFactory;
     }
 
@@ -93,17 +87,14 @@ public abstract class AbstractBehaviorFactory {
     public void setMessagePayloadMappingProviderFactory(
         MessagePayloadMappingProviderFactory messagePayloadMappingProviderFactory
     ) {
-        this.messagePayloadMappingProviderFactory =
-            messagePayloadMappingProviderFactory;
+        this.messagePayloadMappingProviderFactory = messagePayloadMappingProviderFactory;
     }
 
     public MessageExecutionContextFactory getMessageExecutionContextFactory() {
         return messageExecutionContextFactory;
     }
 
-    public void setMessageExecutionContextFactory(
-        MessageExecutionContextFactory messageExecutionContextFactory
-    ) {
+    public void setMessageExecutionContextFactory(MessageExecutionContextFactory messageExecutionContextFactory) {
         this.messageExecutionContextFactory = messageExecutionContextFactory;
     }
 }

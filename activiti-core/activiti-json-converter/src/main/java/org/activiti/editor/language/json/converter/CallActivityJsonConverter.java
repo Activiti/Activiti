@@ -41,52 +41,28 @@ public class CallActivityJsonConverter extends BaseBpmnJsonConverter {
         fillBpmnTypes(convertersToJsonMap);
     }
 
-    public static void fillJsonTypes(
-        Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap
-    ) {
-        convertersToBpmnMap.put(
-            STENCIL_CALL_ACTIVITY,
-            CallActivityJsonConverter.class
-        );
+    public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
+        convertersToBpmnMap.put(STENCIL_CALL_ACTIVITY, CallActivityJsonConverter.class);
     }
 
     public static void fillBpmnTypes(
         Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap
     ) {
-        convertersToJsonMap.put(
-            CallActivity.class,
-            CallActivityJsonConverter.class
-        );
+        convertersToJsonMap.put(CallActivity.class, CallActivityJsonConverter.class);
     }
 
     protected String getStencilId(BaseElement baseElement) {
         return STENCIL_CALL_ACTIVITY;
     }
 
-    protected void convertElementToJson(
-        ObjectNode propertiesNode,
-        BaseElement baseElement
-    ) {
+    protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
         CallActivity callActivity = (CallActivity) baseElement;
         if (StringUtils.isNotEmpty(callActivity.getCalledElement())) {
-            propertiesNode.put(
-                PROPERTY_CALLACTIVITY_CALLEDELEMENT,
-                callActivity.getCalledElement()
-            );
+            propertiesNode.put(PROPERTY_CALLACTIVITY_CALLEDELEMENT, callActivity.getCalledElement());
         }
 
-        addJsonParameters(
-            PROPERTY_CALLACTIVITY_IN,
-            "inParameters",
-            callActivity.getInParameters(),
-            propertiesNode
-        );
-        addJsonParameters(
-            PROPERTY_CALLACTIVITY_OUT,
-            "outParameters",
-            callActivity.getOutParameters(),
-            propertiesNode
-        );
+        addJsonParameters(PROPERTY_CALLACTIVITY_IN, "inParameters", callActivity.getInParameters(), propertiesNode);
+        addJsonParameters(PROPERTY_CALLACTIVITY_OUT, "outParameters", callActivity.getOutParameters(), propertiesNode);
     }
 
     private void addJsonParameters(
@@ -100,30 +76,19 @@ public class CallActivityJsonConverter extends BaseBpmnJsonConverter {
         for (IOParameter parameter : parameterList) {
             ObjectNode parameterItemNode = objectMapper.createObjectNode();
             if (StringUtils.isNotEmpty(parameter.getSource())) {
-                parameterItemNode.put(
-                    PROPERTY_IOPARAMETER_SOURCE,
-                    parameter.getSource()
-                );
+                parameterItemNode.put(PROPERTY_IOPARAMETER_SOURCE, parameter.getSource());
             } else {
                 parameterItemNode.putNull(PROPERTY_IOPARAMETER_SOURCE);
             }
             if (StringUtils.isNotEmpty(parameter.getTarget())) {
-                parameterItemNode.put(
-                    PROPERTY_IOPARAMETER_TARGET,
-                    parameter.getTarget()
-                );
+                parameterItemNode.put(PROPERTY_IOPARAMETER_TARGET, parameter.getTarget());
             } else {
                 parameterItemNode.putNull(PROPERTY_IOPARAMETER_TARGET);
             }
             if (StringUtils.isNotEmpty(parameter.getSourceExpression())) {
-                parameterItemNode.put(
-                    PROPERTY_IOPARAMETER_SOURCE_EXPRESSION,
-                    parameter.getSourceExpression()
-                );
+                parameterItemNode.put(PROPERTY_IOPARAMETER_SOURCE_EXPRESSION, parameter.getSourceExpression());
             } else {
-                parameterItemNode.putNull(
-                    PROPERTY_IOPARAMETER_SOURCE_EXPRESSION
-                );
+                parameterItemNode.putNull(PROPERTY_IOPARAMETER_SOURCE_EXPRESSION);
             }
 
             itemsNode.add(parameterItemNode);
@@ -139,119 +104,46 @@ public class CallActivityJsonConverter extends BaseBpmnJsonConverter {
         Map<String, JsonNode> shapeMap
     ) {
         CallActivity callActivity = new CallActivity();
-        if (
-            StringUtils.isNotEmpty(
-                getPropertyValueAsString(
-                    PROPERTY_CALLACTIVITY_CALLEDELEMENT,
-                    elementNode
-                )
-            )
-        ) {
-            callActivity.setCalledElement(
-                getPropertyValueAsString(
-                    PROPERTY_CALLACTIVITY_CALLEDELEMENT,
-                    elementNode
-                )
-            );
+        if (StringUtils.isNotEmpty(getPropertyValueAsString(PROPERTY_CALLACTIVITY_CALLEDELEMENT, elementNode))) {
+            callActivity.setCalledElement(getPropertyValueAsString(PROPERTY_CALLACTIVITY_CALLEDELEMENT, elementNode));
         }
 
         callActivity
             .getInParameters()
-            .addAll(
-                convertToIOParameters(
-                    PROPERTY_CALLACTIVITY_IN,
-                    "inParameters",
-                    elementNode
-                )
-            );
+            .addAll(convertToIOParameters(PROPERTY_CALLACTIVITY_IN, "inParameters", elementNode));
         callActivity
             .getOutParameters()
-            .addAll(
-                convertToIOParameters(
-                    PROPERTY_CALLACTIVITY_OUT,
-                    "outParameters",
-                    elementNode
-                )
-            );
+            .addAll(convertToIOParameters(PROPERTY_CALLACTIVITY_OUT, "outParameters", elementNode));
 
         return callActivity;
     }
 
-    private List<IOParameter> convertToIOParameters(
-        String propertyName,
-        String valueName,
-        JsonNode elementNode
-    ) {
+    private List<IOParameter> convertToIOParameters(String propertyName, String valueName, JsonNode elementNode) {
         List<IOParameter> ioParameters = new ArrayList<IOParameter>();
         JsonNode parametersNode = getProperty(propertyName, elementNode);
         if (parametersNode != null) {
-            parametersNode =
-                BpmnJsonConverterUtil.validateIfNodeIsTextual(parametersNode);
+            parametersNode = BpmnJsonConverterUtil.validateIfNodeIsTextual(parametersNode);
             JsonNode itemsArrayNode = parametersNode.get(valueName);
             if (itemsArrayNode != null) {
                 for (JsonNode itemNode : itemsArrayNode) {
-                    JsonNode sourceNode = itemNode.get(
-                        PROPERTY_IOPARAMETER_SOURCE
-                    );
-                    JsonNode sourceExpressionNode = itemNode.get(
-                        PROPERTY_IOPARAMETER_SOURCE_EXPRESSION
-                    );
+                    JsonNode sourceNode = itemNode.get(PROPERTY_IOPARAMETER_SOURCE);
+                    JsonNode sourceExpressionNode = itemNode.get(PROPERTY_IOPARAMETER_SOURCE_EXPRESSION);
                     if (
-                        (
-                            sourceNode != null &&
-                            StringUtils.isNotEmpty(sourceNode.asText())
-                        ) ||
-                        (
-                            sourceExpressionNode != null &&
-                            StringUtils.isNotEmpty(
-                                sourceExpressionNode.asText()
-                            )
-                        )
+                        (sourceNode != null && StringUtils.isNotEmpty(sourceNode.asText())) ||
+                        (sourceExpressionNode != null && StringUtils.isNotEmpty(sourceExpressionNode.asText()))
                     ) {
                         IOParameter parameter = new IOParameter();
-                        if (
-                            StringUtils.isNotEmpty(
-                                getValueAsString(
-                                    PROPERTY_IOPARAMETER_SOURCE,
-                                    itemNode
-                                )
-                            )
-                        ) {
-                            parameter.setSource(
-                                getValueAsString(
-                                    PROPERTY_IOPARAMETER_SOURCE,
-                                    itemNode
-                                )
-                            );
+                        if (StringUtils.isNotEmpty(getValueAsString(PROPERTY_IOPARAMETER_SOURCE, itemNode))) {
+                            parameter.setSource(getValueAsString(PROPERTY_IOPARAMETER_SOURCE, itemNode));
                         } else if (
-                            StringUtils.isNotEmpty(
-                                getValueAsString(
-                                    PROPERTY_IOPARAMETER_SOURCE_EXPRESSION,
-                                    itemNode
-                                )
-                            )
+                            StringUtils.isNotEmpty(getValueAsString(PROPERTY_IOPARAMETER_SOURCE_EXPRESSION, itemNode))
                         ) {
                             parameter.setSourceExpression(
-                                getValueAsString(
-                                    PROPERTY_IOPARAMETER_SOURCE_EXPRESSION,
-                                    itemNode
-                                )
+                                getValueAsString(PROPERTY_IOPARAMETER_SOURCE_EXPRESSION, itemNode)
                             );
                         }
-                        if (
-                            StringUtils.isNotEmpty(
-                                getValueAsString(
-                                    PROPERTY_IOPARAMETER_TARGET,
-                                    itemNode
-                                )
-                            )
-                        ) {
-                            parameter.setTarget(
-                                getValueAsString(
-                                    PROPERTY_IOPARAMETER_TARGET,
-                                    itemNode
-                                )
-                            );
+                        if (StringUtils.isNotEmpty(getValueAsString(PROPERTY_IOPARAMETER_TARGET, itemNode))) {
+                            parameter.setTarget(getValueAsString(PROPERTY_IOPARAMETER_TARGET, itemNode));
                         }
                         ioParameters.add(parameter);
                     }

@@ -42,8 +42,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class BasicCallActivityTest {
 
-    private final String processKey =
-        "basiccalla-feb36a19-3821-40a8-a72a-fbe9ba7cb4d8";
+    private final String processKey = "basiccalla-feb36a19-3821-40a8-a72a-fbe9ba7cb4d8";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -77,17 +76,12 @@ public class BasicCallActivityTest {
 
         //then
         assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getStatus())
-            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
-        assertThat(processInstance.getBusinessKey())
-            .isEqualTo("my-business-key");
-        assertThat(processInstance.getName())
-            .isEqualTo("my-process-instance-name");
+        assertThat(processInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(processInstance.getBusinessKey()).isEqualTo("my-business-key");
+        assertThat(processInstance.getName()).isEqualTo("my-process-instance-name");
 
         // I should be able to get the process instance from the Runtime because it is still running
-        ProcessInstance processInstanceById = processRuntime.processInstance(
-            processInstance.getId()
-        );
+        ProcessInstance processInstanceById = processRuntime.processInstance(processInstance.getId());
 
         assertThat(processInstanceById).isEqualTo(processInstance);
 
@@ -128,9 +122,7 @@ public class BasicCallActivityTest {
         assertThat(task.getAssignee()).isEqualTo("user1");
 
         // Completing the task should complete the sub process
-        taskRuntime.complete(
-            TaskPayloadBuilder.complete().withTaskId(task.getId()).build()
-        );
+        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
             .extracting(RuntimeEvent::getEventType)
@@ -154,15 +146,11 @@ public class BasicCallActivityTest {
     @AfterEach
     public void cleanup() {
         securityUtil.logInAs("admin");
-        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(
-            Pageable.of(0, 50)
-        );
+        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0, 50));
         for (ProcessInstance pi : processInstancePage.getContent()) {
             // We want to delete root processes instances because sub processes will be deleted automatically when the root ones are deleted
             if (pi.getParentId() == null) {
-                processAdminRuntime.delete(
-                    ProcessPayloadBuilder.delete(pi.getId())
-                );
+                processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
             }
         }
 

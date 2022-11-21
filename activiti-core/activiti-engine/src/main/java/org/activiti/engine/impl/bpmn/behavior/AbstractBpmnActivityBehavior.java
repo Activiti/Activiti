@@ -71,12 +71,7 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
                 continue;
             }
 
-            if (
-                boundaryEvent
-                    .getEventDefinitions()
-                    .get(0) instanceof CompensateEventDefinition ==
-                false
-            ) {
+            if (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition == false) {
                 continue;
             }
 
@@ -88,8 +83,7 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
             childExecutionEntity.setCurrentFlowElement(boundaryEvent);
             childExecutionEntity.setScope(false);
 
-            ActivityBehavior boundaryEventBehavior =
-                ((ActivityBehavior) boundaryEvent.getBehavior());
+            ActivityBehavior boundaryEventBehavior = ((ActivityBehavior) boundaryEvent.getBehavior());
             boundaryEventBehavior.execute(childExecutionEntity);
         }
     }
@@ -102,10 +96,7 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
 
         // This could be cached or could be done at parsing time
         List<BoundaryEvent> results = new ArrayList<BoundaryEvent>(1);
-        Collection<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(
-            BoundaryEvent.class,
-            true
-        );
+        Collection<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class, true);
         for (BoundaryEvent boundaryEvent : boundaryEvents) {
             if (
                 boundaryEvent.getAttachedToRefId() != null &&
@@ -134,9 +125,7 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
         return multiInstanceActivityBehavior;
     }
 
-    public void setMultiInstanceActivityBehavior(
-        MultiInstanceActivityBehavior multiInstanceActivityBehavior
-    ) {
+    public void setMultiInstanceActivityBehavior(MultiInstanceActivityBehavior multiInstanceActivityBehavior) {
         this.multiInstanceActivityBehavior = multiInstanceActivityBehavior;
     }
 }

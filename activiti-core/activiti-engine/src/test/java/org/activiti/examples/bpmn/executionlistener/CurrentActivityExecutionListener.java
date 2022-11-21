@@ -52,20 +52,10 @@ public class CurrentActivityExecutionListener implements ExecutionListener {
     }
 
     public void notify(DelegateExecution execution) {
-        org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(
-            execution.getProcessDefinitionId()
-        );
+        org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
         String activityId = execution.getCurrentActivityId();
-        FlowElement currentFlowElement = process.getFlowElement(
-            activityId,
-            true
-        );
-        currentActivities.add(
-            new CurrentActivity(
-                execution.getCurrentActivityId(),
-                currentFlowElement.getName()
-            )
-        );
+        FlowElement currentFlowElement = process.getFlowElement(activityId, true);
+        currentActivities.add(new CurrentActivity(execution.getCurrentActivityId(), currentFlowElement.getName()));
     }
 
     public static List<CurrentActivity> getCurrentActivities() {

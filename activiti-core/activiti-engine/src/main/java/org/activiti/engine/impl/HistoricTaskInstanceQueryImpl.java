@@ -41,9 +41,7 @@ public class HistoricTaskInstanceQueryImpl
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger log = LoggerFactory.getLogger(
-        HistoricTaskInstanceQueryImpl.class
-    );
+    private static final Logger log = LoggerFactory.getLogger(HistoricTaskInstanceQueryImpl.class);
 
     protected String processDefinitionId;
     protected String processDefinitionKey;
@@ -124,10 +122,7 @@ public class HistoricTaskInstanceQueryImpl
         super(commandExecutor);
     }
 
-    public HistoricTaskInstanceQueryImpl(
-        CommandExecutor commandExecutor,
-        String databaseType
-    ) {
+    public HistoricTaskInstanceQueryImpl(CommandExecutor commandExecutor, String databaseType) {
         super(commandExecutor);
         this.databaseType = databaseType;
     }
@@ -136,16 +131,11 @@ public class HistoricTaskInstanceQueryImpl
     public long executeCount(CommandContext commandContext) {
         ensureVariablesInitialized();
         checkQueryOk();
-        return commandContext
-            .getHistoricTaskInstanceEntityManager()
-            .findHistoricTaskInstanceCountByQueryCriteria(this);
+        return commandContext.getHistoricTaskInstanceEntityManager().findHistoricTaskInstanceCountByQueryCriteria(this);
     }
 
     @Override
-    public List<HistoricTaskInstance> executeList(
-        CommandContext commandContext,
-        Page page
-    ) {
+    public List<HistoricTaskInstance> executeList(CommandContext commandContext, Page page) {
         ensureVariablesInitialized();
         checkQueryOk();
         List<HistoricTaskInstance> tasks = null;
@@ -156,18 +146,10 @@ public class HistoricTaskInstanceQueryImpl
                     .findHistoricTaskInstancesAndVariablesByQueryCriteria(this);
         } else {
             tasks =
-                commandContext
-                    .getHistoricTaskInstanceEntityManager()
-                    .findHistoricTaskInstancesByQueryCriteria(this);
+                commandContext.getHistoricTaskInstanceEntityManager().findHistoricTaskInstancesByQueryCriteria(this);
         }
 
-        if (
-            tasks != null &&
-            Context
-                .getProcessEngineConfiguration()
-                .getPerformanceSettings()
-                .isEnableLocalization()
-        ) {
+        if (tasks != null && Context.getProcessEngineConfiguration().getPerformanceSettings().isEnableLocalization()) {
             for (HistoricTaskInstance task : tasks) {
                 localize(task);
             }
@@ -176,9 +158,7 @@ public class HistoricTaskInstanceQueryImpl
         return tasks;
     }
 
-    public HistoricTaskInstanceQueryImpl processInstanceId(
-        String processInstanceId
-    ) {
+    public HistoricTaskInstanceQueryImpl processInstanceId(String processInstanceId) {
         if (inOrStatement) {
             this.currentOrQueryObject.processInstanceId = processInstanceId;
         } else {
@@ -188,24 +168,16 @@ public class HistoricTaskInstanceQueryImpl
     }
 
     @Override
-    public HistoricTaskInstanceQueryImpl processInstanceIdIn(
-        List<String> processInstanceIds
-    ) {
+    public HistoricTaskInstanceQueryImpl processInstanceIdIn(List<String> processInstanceIds) {
         if (processInstanceIds == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Process instance id list is null"
-            );
+            throw new ActivitiIllegalArgumentException("Process instance id list is null");
         }
         if (processInstanceIds.isEmpty()) {
-            throw new ActivitiIllegalArgumentException(
-                "Process instance id list is empty"
-            );
+            throw new ActivitiIllegalArgumentException("Process instance id list is empty");
         }
         for (String processInstanceId : processInstanceIds) {
             if (processInstanceId == null) {
-                throw new ActivitiIllegalArgumentException(
-                    "None of the given process instance ids can be null"
-                );
+                throw new ActivitiIllegalArgumentException("None of the given process instance ids can be null");
             }
         }
 
@@ -217,27 +189,20 @@ public class HistoricTaskInstanceQueryImpl
         return this;
     }
 
-    public HistoricTaskInstanceQueryImpl processInstanceBusinessKey(
-        String processInstanceBusinessKey
-    ) {
+    public HistoricTaskInstanceQueryImpl processInstanceBusinessKey(String processInstanceBusinessKey) {
         if (inOrStatement) {
-            this.currentOrQueryObject.processInstanceBusinessKey =
-                processInstanceBusinessKey;
+            this.currentOrQueryObject.processInstanceBusinessKey = processInstanceBusinessKey;
         } else {
             this.processInstanceBusinessKey = processInstanceBusinessKey;
         }
         return this;
     }
 
-    public HistoricTaskInstanceQueryImpl processInstanceBusinessKeyLike(
-        String processInstanceBusinessKeyLike
-    ) {
+    public HistoricTaskInstanceQueryImpl processInstanceBusinessKeyLike(String processInstanceBusinessKeyLike) {
         if (inOrStatement) {
-            this.currentOrQueryObject.processInstanceBusinessKeyLike =
-                processInstanceBusinessKeyLike;
+            this.currentOrQueryObject.processInstanceBusinessKeyLike = processInstanceBusinessKeyLike;
         } else {
-            this.processInstanceBusinessKeyLike =
-                processInstanceBusinessKeyLike;
+            this.processInstanceBusinessKeyLike = processInstanceBusinessKeyLike;
         }
         return this;
     }
@@ -249,8 +214,7 @@ public class HistoricTaskInstanceQueryImpl
             this.currentOrQueryObject.processInstanceBusinessKeyLikeIgnoreCase =
                 processInstanceBusinessKeyLikeIgnoreCase.toLowerCase();
         } else {
-            this.processInstanceBusinessKeyLikeIgnoreCase =
-                processInstanceBusinessKeyLikeIgnoreCase.toLowerCase();
+            this.processInstanceBusinessKeyLikeIgnoreCase = processInstanceBusinessKeyLikeIgnoreCase.toLowerCase();
         }
         return this;
     }
@@ -264,9 +228,7 @@ public class HistoricTaskInstanceQueryImpl
         return this;
     }
 
-    public HistoricTaskInstanceQueryImpl processDefinitionId(
-        String processDefinitionId
-    ) {
+    public HistoricTaskInstanceQueryImpl processDefinitionId(String processDefinitionId) {
         if (inOrStatement) {
             this.currentOrQueryObject.processDefinitionId = processDefinitionId;
         } else {
@@ -275,73 +237,55 @@ public class HistoricTaskInstanceQueryImpl
         return this;
     }
 
-    public HistoricTaskInstanceQuery processDefinitionKey(
-        String processDefinitionKey
-    ) {
+    public HistoricTaskInstanceQuery processDefinitionKey(String processDefinitionKey) {
         if (inOrStatement) {
-            this.currentOrQueryObject.processDefinitionKey =
-                processDefinitionKey;
+            this.currentOrQueryObject.processDefinitionKey = processDefinitionKey;
         } else {
             this.processDefinitionKey = processDefinitionKey;
         }
         return this;
     }
 
-    public HistoricTaskInstanceQuery processDefinitionKeyLike(
-        String processDefinitionKeyLike
-    ) {
+    public HistoricTaskInstanceQuery processDefinitionKeyLike(String processDefinitionKeyLike) {
         if (inOrStatement) {
-            this.currentOrQueryObject.processDefinitionKeyLike =
-                processDefinitionKeyLike;
+            this.currentOrQueryObject.processDefinitionKeyLike = processDefinitionKeyLike;
         } else {
             this.processDefinitionKeyLike = processDefinitionKeyLike;
         }
         return this;
     }
 
-    public HistoricTaskInstanceQuery processDefinitionKeyLikeIgnoreCase(
-        String processDefinitionKeyLikeIgnoreCase
-    ) {
+    public HistoricTaskInstanceQuery processDefinitionKeyLikeIgnoreCase(String processDefinitionKeyLikeIgnoreCase) {
         if (inOrStatement) {
             this.currentOrQueryObject.processDefinitionKeyLikeIgnoreCase =
                 processDefinitionKeyLikeIgnoreCase.toLowerCase();
         } else {
-            this.processDefinitionKeyLikeIgnoreCase =
-                processDefinitionKeyLikeIgnoreCase.toLowerCase();
+            this.processDefinitionKeyLikeIgnoreCase = processDefinitionKeyLikeIgnoreCase.toLowerCase();
         }
         return this;
     }
 
-    public HistoricTaskInstanceQuery processDefinitionKeyIn(
-        List<String> processDefinitionKeys
-    ) {
+    public HistoricTaskInstanceQuery processDefinitionKeyIn(List<String> processDefinitionKeys) {
         if (inOrStatement) {
-            this.currentOrQueryObject.processDefinitionKeys =
-                processDefinitionKeys;
+            this.currentOrQueryObject.processDefinitionKeys = processDefinitionKeys;
         } else {
             this.processDefinitionKeys = processDefinitionKeys;
         }
         return this;
     }
 
-    public HistoricTaskInstanceQuery processDefinitionName(
-        String processDefinitionName
-    ) {
+    public HistoricTaskInstanceQuery processDefinitionName(String processDefinitionName) {
         if (inOrStatement) {
-            this.currentOrQueryObject.processDefinitionName =
-                processDefinitionName;
+            this.currentOrQueryObject.processDefinitionName = processDefinitionName;
         } else {
             this.processDefinitionName = processDefinitionName;
         }
         return this;
     }
 
-    public HistoricTaskInstanceQuery processDefinitionNameLike(
-        String processDefinitionNameLike
-    ) {
+    public HistoricTaskInstanceQuery processDefinitionNameLike(String processDefinitionNameLike) {
         if (inOrStatement) {
-            this.currentOrQueryObject.processDefinitionNameLike =
-                processDefinitionNameLike;
+            this.currentOrQueryObject.processDefinitionNameLike = processDefinitionNameLike;
         } else {
             this.processDefinitionNameLike = processDefinitionNameLike;
         }
@@ -349,24 +293,16 @@ public class HistoricTaskInstanceQueryImpl
     }
 
     @Override
-    public HistoricTaskInstanceQuery processCategoryIn(
-        List<String> processCategoryInList
-    ) {
+    public HistoricTaskInstanceQuery processCategoryIn(List<String> processCategoryInList) {
         if (processCategoryInList == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Process category list is null"
-            );
+            throw new ActivitiIllegalArgumentException("Process category list is null");
         }
         if (processCategoryInList.isEmpty()) {
-            throw new ActivitiIllegalArgumentException(
-                "Process category list is empty"
-            );
+            throw new ActivitiIllegalArgumentException("Process category list is empty");
         }
         for (String processCategory : processCategoryInList) {
             if (processCategory == null) {
-                throw new ActivitiIllegalArgumentException(
-                    "None of the given process categories can be null"
-                );
+                throw new ActivitiIllegalArgumentException("None of the given process categories can be null");
             }
         }
 
@@ -379,30 +315,21 @@ public class HistoricTaskInstanceQueryImpl
     }
 
     @Override
-    public HistoricTaskInstanceQuery processCategoryNotIn(
-        List<String> processCategoryNotInList
-    ) {
+    public HistoricTaskInstanceQuery processCategoryNotIn(List<String> processCategoryNotInList) {
         if (processCategoryNotInList == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Process category list is null"
-            );
+            throw new ActivitiIllegalArgumentException("Process category list is null");
         }
         if (processCategoryNotInList.isEmpty()) {
-            throw new ActivitiIllegalArgumentException(
-                "Process category list is empty"
-            );
+            throw new ActivitiIllegalArgumentException("Process category list is empty");
         }
         for (String processCategory : processCategoryNotInList) {
             if (processCategory == null) {
-                throw new ActivitiIllegalArgumentException(
-                    "None of the given process categories can be null"
-                );
+                throw new ActivitiIllegalArgumentException("None of the given process categories can be null");
             }
         }
 
         if (inOrStatement) {
-            currentOrQueryObject.processCategoryNotInList =
-                processCategoryNotInList;
+            currentOrQueryObject.processCategoryNotInList = processCategoryNotInList;
         } else {
             this.processCategoryNotInList = processCategoryNotInList;
         }
@@ -418,9 +345,7 @@ public class HistoricTaskInstanceQueryImpl
         return this;
     }
 
-    public HistoricTaskInstanceQuery deploymentIdIn(
-        List<String> deploymentIds
-    ) {
+    public HistoricTaskInstanceQuery deploymentIdIn(List<String> deploymentIds) {
         if (inOrStatement) {
             currentOrQueryObject.deploymentIds = deploymentIds;
         } else {
@@ -449,20 +374,14 @@ public class HistoricTaskInstanceQueryImpl
 
     public HistoricTaskInstanceQuery taskNameIn(List<String> taskNameList) {
         if (taskNameList == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Task name list is null"
-            );
+            throw new ActivitiIllegalArgumentException("Task name list is null");
         }
         if (taskNameList.isEmpty()) {
-            throw new ActivitiIllegalArgumentException(
-                "Task name list is empty"
-            );
+            throw new ActivitiIllegalArgumentException("Task name list is empty");
         }
 
         if (taskName != null) {
-            throw new ActivitiIllegalArgumentException(
-                "Invalid query usage: cannot set both taskNameIn and taskName"
-            );
+            throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameIn and taskName");
         }
         if (taskNameLike != null) {
             throw new ActivitiIllegalArgumentException(
@@ -484,24 +403,16 @@ public class HistoricTaskInstanceQueryImpl
     }
 
     @Override
-    public HistoricTaskInstanceQuery taskNameInIgnoreCase(
-        List<String> taskNameList
-    ) {
+    public HistoricTaskInstanceQuery taskNameInIgnoreCase(List<String> taskNameList) {
         if (taskNameList == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Task name list is null"
-            );
+            throw new ActivitiIllegalArgumentException("Task name list is null");
         }
         if (taskNameList.isEmpty()) {
-            throw new ActivitiIllegalArgumentException(
-                "Task name list is empty"
-            );
+            throw new ActivitiIllegalArgumentException("Task name list is empty");
         }
         for (String taskName : taskNameList) {
             if (taskName == null) {
-                throw new ActivitiIllegalArgumentException(
-                    "None of the given task names can be null"
-                );
+                throw new ActivitiIllegalArgumentException("None of the given task names can be null");
             }
         }
 
@@ -522,16 +433,13 @@ public class HistoricTaskInstanceQueryImpl
         }
 
         final int nameListSize = taskNameList.size();
-        final List<String> caseIgnoredTaskNameList = new ArrayList<String>(
-            nameListSize
-        );
+        final List<String> caseIgnoredTaskNameList = new ArrayList<String>(nameListSize);
         for (String taskName : taskNameList) {
             caseIgnoredTaskNameList.add(taskName.toLowerCase());
         }
 
         if (inOrStatement) {
-            this.currentOrQueryObject.taskNameListIgnoreCase =
-                caseIgnoredTaskNameList;
+            this.currentOrQueryObject.taskNameListIgnoreCase = caseIgnoredTaskNameList;
         } else {
             this.taskNameListIgnoreCase = caseIgnoredTaskNameList;
         }
@@ -547,12 +455,9 @@ public class HistoricTaskInstanceQueryImpl
         return this;
     }
 
-    public HistoricTaskInstanceQuery taskNameLikeIgnoreCase(
-        String taskNameLikeIgnoreCase
-    ) {
+    public HistoricTaskInstanceQuery taskNameLikeIgnoreCase(String taskNameLikeIgnoreCase) {
         if (inOrStatement) {
-            this.currentOrQueryObject.taskNameLikeIgnoreCase =
-                taskNameLikeIgnoreCase.toLowerCase();
+            this.currentOrQueryObject.taskNameLikeIgnoreCase = taskNameLikeIgnoreCase.toLowerCase();
         } else {
             this.taskNameLikeIgnoreCase = taskNameLikeIgnoreCase.toLowerCase();
         }
@@ -577,9 +482,7 @@ public class HistoricTaskInstanceQueryImpl
         return this;
     }
 
-    public HistoricTaskInstanceQuery taskDescriptionLike(
-        String taskDescriptionLike
-    ) {
+    public HistoricTaskInstanceQuery taskDescriptionLike(String taskDescriptionLike) {
         if (inOrStatement) {
             this.currentOrQueryObject.taskDescriptionLike = taskDescriptionLike;
         } else {
@@ -588,15 +491,11 @@ public class HistoricTaskInstanceQueryImpl
         return this;
     }
 
-    public HistoricTaskInstanceQuery taskDescriptionLikeIgnoreCase(
-        String taskDescriptionLikeIgnoreCase
-    ) {
+    public HistoricTaskInstanceQuery taskDescriptionLikeIgnoreCase(String taskDescriptionLikeIgnoreCase) {
         if (inOrStatement) {
-            this.currentOrQueryObject.taskDescriptionLikeIgnoreCase =
-                taskDescriptionLikeIgnoreCase.toLowerCase();
+            this.currentOrQueryObject.taskDescriptionLikeIgnoreCase = taskDescriptionLikeIgnoreCase.toLowerCase();
         } else {
-            this.taskDescriptionLikeIgnoreCase =
-                taskDescriptionLikeIgnoreCase.toLowerCase();
+            this.taskDescriptionLikeIgnoreCase = taskDescriptionLikeIgnoreCase.toLowerCase();
         }
         return this;
     }
@@ -610,12 +509,9 @@ public class HistoricTaskInstanceQueryImpl
         return this;
     }
 
-    public HistoricTaskInstanceQuery taskDeleteReasonLike(
-        String taskDeleteReasonLike
-    ) {
+    public HistoricTaskInstanceQuery taskDeleteReasonLike(String taskDeleteReasonLike) {
         if (inOrStatement) {
-            this.currentOrQueryObject.taskDeleteReasonLike =
-                taskDeleteReasonLike;
+            this.currentOrQueryObject.taskDeleteReasonLike = taskDeleteReasonLike;
         } else {
             this.taskDeleteReasonLike = taskDeleteReasonLike;
         }
@@ -640,15 +536,11 @@ public class HistoricTaskInstanceQueryImpl
         return this;
     }
 
-    public HistoricTaskInstanceQuery taskAssigneeLikeIgnoreCase(
-        String taskAssigneeLikeIgnoreCase
-    ) {
+    public HistoricTaskInstanceQuery taskAssigneeLikeIgnoreCase(String taskAssigneeLikeIgnoreCase) {
         if (inOrStatement) {
-            this.currentOrQueryObject.taskAssigneeLikeIgnoreCase =
-                taskAssigneeLikeIgnoreCase.toLowerCase();
+            this.currentOrQueryObject.taskAssigneeLikeIgnoreCase = taskAssigneeLikeIgnoreCase.toLowerCase();
         } else {
-            this.taskAssigneeLikeIgnoreCase =
-                taskAssigneeLikeIgnoreCase.toLowerCase();
+            this.taskAssigneeLikeIgnoreCase = taskAssigneeLikeIgnoreCase.toLowerCase();
         }
         return this;
     }
@@ -656,20 +548,14 @@ public class HistoricTaskInstanceQueryImpl
     @Override
     public HistoricTaskInstanceQuery taskAssigneeIds(List<String> assigneeIds) {
         if (assigneeIds == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Task assignee list is null"
-            );
+            throw new ActivitiIllegalArgumentException("Task assignee list is null");
         }
         if (assigneeIds.isEmpty()) {
-            throw new ActivitiIllegalArgumentException(
-                "Task assignee list is empty"
-            );
+            throw new ActivitiIllegalArgumentException("Task assignee list is empty");
         }
         for (String assignee : assigneeIds) {
             if (assignee == null) {
-                throw new ActivitiIllegalArgumentException(
-                    "None of the given task assignees can be null"
-                );
+                throw new ActivitiIllegalArgumentException("None of the given task assignees can be null");
             }
         }
 
@@ -715,15 +601,11 @@ public class HistoricTaskInstanceQueryImpl
         return this;
     }
 
-    public HistoricTaskInstanceQuery taskOwnerLikeIgnoreCase(
-        String taskOwnerLikeIgnoreCase
-    ) {
+    public HistoricTaskInstanceQuery taskOwnerLikeIgnoreCase(String taskOwnerLikeIgnoreCase) {
         if (inOrStatement) {
-            this.currentOrQueryObject.taskOwnerLikeIgnoreCase =
-                taskOwnerLikeIgnoreCase.toLowerCase();
+            this.currentOrQueryObject.taskOwnerLikeIgnoreCase = taskOwnerLikeIgnoreCase.toLowerCase();
         } else {
-            this.taskOwnerLikeIgnoreCase =
-                taskOwnerLikeIgnoreCase.toLowerCase();
+            this.taskOwnerLikeIgnoreCase = taskOwnerLikeIgnoreCase.toLowerCase();
         }
         return this;
     }
@@ -746,24 +628,16 @@ public class HistoricTaskInstanceQueryImpl
         return this;
     }
 
-    public HistoricTaskInstanceQuery taskVariableValueEquals(
-        String variableName,
-        Object variableValue
-    ) {
+    public HistoricTaskInstanceQuery taskVariableValueEquals(String variableName, Object variableValue) {
         if (inOrStatement) {
-            currentOrQueryObject.variableValueEquals(
-                variableName,
-                variableValue
-            );
+            currentOrQueryObject.variableValueEquals(variableName, variableValue);
             return this;
         } else {
             return variableValueEquals(variableName, variableValue);
         }
     }
 
-    public HistoricTaskInstanceQuery taskVariableValueEquals(
-        Object variableValue
-    ) {
+    public HistoricTaskInstanceQuery taskVariableValueEquals(Object variableValue) {
         if (inOrStatement) {
             currentOrQueryObject.variableValueEquals(variableValue);
             return this;
@@ -772,10 +646,7 @@ public class HistoricTaskInstanceQueryImpl
         }
     }
 
-    public HistoricTaskInstanceQuery taskVariableValueEqualsIgnoreCase(
-        String name,
-        String value
-    ) {
+    public HistoricTaskInstanceQuery taskVariableValueEqualsIgnoreCase(String name, String value) {
         if (inOrStatement) {
             currentOrQueryObject.variableValueEqualsIgnoreCase(name, value);
             return this;
@@ -784,10 +655,7 @@ public class HistoricTaskInstanceQueryImpl
         }
     }
 
-    public HistoricTaskInstanceQuery taskVariableValueNotEqualsIgnoreCase(
-        String name,
-        String value
-    ) {
+    public HistoricTaskInstanceQuery taskVariableValueNotEqualsIgnoreCase(String name, String value) {
         if (inOrStatement) {
             currentOrQueryObject.variableValueNotEqualsIgnoreCase(name, value);
             return this;
@@ -796,25 +664,16 @@ public class HistoricTaskInstanceQueryImpl
         }
     }
 
-    public HistoricTaskInstanceQuery taskVariableValueNotEquals(
-        String variableName,
-        Object variableValue
-    ) {
+    public HistoricTaskInstanceQuery taskVariableValueNotEquals(String variableName, Object variableValue) {
         if (inOrStatement) {
-            currentOrQueryObject.variableValueNotEquals(
-                variableName,
-                variableValue
-            );
+            currentOrQueryObject.variableValueNotEquals(variableName, variableValue);
             return this;
         } else {
             return variableValueNotEquals(variableName, variableValue);
         }
     }
 
-    public HistoricTaskInstanceQuery taskVariableValueGreaterThan(
-        String name,
-        Object value
-    ) {
+    public HistoricTaskInstanceQuery taskVariableValueGreaterThan(String name, Object value) {
         if (inOrStatement) {
             currentOrQueryObject.variableValueGreaterThan(name, value);
             return this;
@@ -823,10 +682,7 @@ public class HistoricTaskInstanceQueryImpl
         }
     }
 
-    public HistoricTaskInstanceQuery taskVariableValueGreaterThanOrEqual(
-        String name,
-        Object value
-    ) {
+    public HistoricTaskInstanceQuery taskVariableValueGreaterThanOrEqual(String name, Object value) {
         if (inOrStatement) {
             currentOrQueryObject.variableValueGreaterThanOrEqual(name, value);
             return this;
@@ -835,10 +691,7 @@ public class HistoricTaskInstanceQueryImpl
         }
     }
 
-    public HistoricTaskInstanceQuery taskVariableValueLessThan(
-        String name,
-        Object value
-    ) {
+    public HistoricTaskInstanceQuery taskVariableValueLessThan(String name, Object value) {
         if (inOrStatement) {
             currentOrQueryObject.variableValueLessThan(name, value);
             return this;
@@ -847,10 +700,7 @@ public class HistoricTaskInstanceQueryImpl
         }
     }
 
-    public HistoricTaskInstanceQuery taskVariableValueLessThanOrEqual(
-        String name,
-        Object value
-    ) {
+    public HistoricTaskInstanceQuery taskVariableValueLessThanOrEqual(String name, Object value) {
         if (inOrStatement) {
             currentOrQueryObject.variableValueLessThanOrEqual(name, value);
             return this;
@@ -859,10 +709,7 @@ public class HistoricTaskInstanceQueryImpl
         }
     }
 
-    public HistoricTaskInstanceQuery taskVariableValueLike(
-        String name,
-        String value
-    ) {
+    public HistoricTaskInstanceQuery taskVariableValueLike(String name, String value) {
         if (inOrStatement) {
             currentOrQueryObject.variableValueLike(name, value);
             return this;
@@ -871,10 +718,7 @@ public class HistoricTaskInstanceQueryImpl
         }
     }
 
-    public HistoricTaskInstanceQuery taskVariableValueLikeIgnoreCase(
-        String name,
-        String value
-    ) {
+    public HistoricTaskInstanceQuery taskVariableValueLikeIgnoreCase(String name, String value) {
         if (inOrStatement) {
             currentOrQueryObject.variableValueLikeIgnoreCase(name, value, true);
             return this;
@@ -883,41 +727,25 @@ public class HistoricTaskInstanceQueryImpl
         }
     }
 
-    public HistoricTaskInstanceQuery processVariableValueEquals(
-        String variableName,
-        Object variableValue
-    ) {
+    public HistoricTaskInstanceQuery processVariableValueEquals(String variableName, Object variableValue) {
         if (inOrStatement) {
-            currentOrQueryObject.variableValueEquals(
-                variableName,
-                variableValue,
-                false
-            );
+            currentOrQueryObject.variableValueEquals(variableName, variableValue, false);
             return this;
         } else {
             return variableValueEquals(variableName, variableValue, false);
         }
     }
 
-    public HistoricTaskInstanceQuery processVariableValueNotEquals(
-        String variableName,
-        Object variableValue
-    ) {
+    public HistoricTaskInstanceQuery processVariableValueNotEquals(String variableName, Object variableValue) {
         if (inOrStatement) {
-            currentOrQueryObject.variableValueNotEquals(
-                variableName,
-                variableValue,
-                false
-            );
+            currentOrQueryObject.variableValueNotEquals(variableName, variableValue, false);
             return this;
         } else {
             return variableValueNotEquals(variableName, variableValue, false);
         }
     }
 
-    public HistoricTaskInstanceQuery processVariableValueEquals(
-        Object variableValue
-    ) {
+    public HistoricTaskInstanceQuery processVariableValueEquals(Object variableValue) {
         if (inOrStatement) {
             currentOrQueryObject.variableValueEquals(variableValue, false);
             return this;
@@ -926,42 +754,25 @@ public class HistoricTaskInstanceQueryImpl
         }
     }
 
-    public HistoricTaskInstanceQuery processVariableValueEqualsIgnoreCase(
-        String name,
-        String value
-    ) {
+    public HistoricTaskInstanceQuery processVariableValueEqualsIgnoreCase(String name, String value) {
         if (inOrStatement) {
-            currentOrQueryObject.variableValueEqualsIgnoreCase(
-                name,
-                value,
-                false
-            );
+            currentOrQueryObject.variableValueEqualsIgnoreCase(name, value, false);
             return this;
         } else {
             return variableValueEqualsIgnoreCase(name, value, false);
         }
     }
 
-    public HistoricTaskInstanceQuery processVariableValueNotEqualsIgnoreCase(
-        String name,
-        String value
-    ) {
+    public HistoricTaskInstanceQuery processVariableValueNotEqualsIgnoreCase(String name, String value) {
         if (inOrStatement) {
-            currentOrQueryObject.variableValueNotEqualsIgnoreCase(
-                name,
-                value,
-                false
-            );
+            currentOrQueryObject.variableValueNotEqualsIgnoreCase(name, value, false);
             return this;
         } else {
             return variableValueNotEqualsIgnoreCase(name, value, false);
         }
     }
 
-    public HistoricTaskInstanceQuery processVariableValueGreaterThan(
-        String name,
-        Object value
-    ) {
+    public HistoricTaskInstanceQuery processVariableValueGreaterThan(String name, Object value) {
         if (inOrStatement) {
             currentOrQueryObject.variableValueGreaterThan(name, value, false);
             return this;
@@ -970,26 +781,16 @@ public class HistoricTaskInstanceQueryImpl
         }
     }
 
-    public HistoricTaskInstanceQuery processVariableValueGreaterThanOrEqual(
-        String name,
-        Object value
-    ) {
+    public HistoricTaskInstanceQuery processVariableValueGreaterThanOrEqual(String name, Object value) {
         if (inOrStatement) {
-            currentOrQueryObject.variableValueGreaterThanOrEqual(
-                name,
-                value,
-                false
-            );
+            currentOrQueryObject.variableValueGreaterThanOrEqual(name, value, false);
             return this;
         } else {
             return variableValueGreaterThanOrEqual(name, value, false);
         }
     }
 
-    public HistoricTaskInstanceQuery processVariableValueLessThan(
-        String name,
-        Object value
-    ) {
+    public HistoricTaskInstanceQuery processVariableValueLessThan(String name, Object value) {
         if (inOrStatement) {
             currentOrQueryObject.variableValueLessThan(name, value, false);
             return this;
@@ -998,26 +799,16 @@ public class HistoricTaskInstanceQueryImpl
         }
     }
 
-    public HistoricTaskInstanceQuery processVariableValueLessThanOrEqual(
-        String name,
-        Object value
-    ) {
+    public HistoricTaskInstanceQuery processVariableValueLessThanOrEqual(String name, Object value) {
         if (inOrStatement) {
-            currentOrQueryObject.variableValueLessThanOrEqual(
-                name,
-                value,
-                false
-            );
+            currentOrQueryObject.variableValueLessThanOrEqual(name, value, false);
             return this;
         } else {
             return variableValueLessThanOrEqual(name, value, false);
         }
     }
 
-    public HistoricTaskInstanceQuery processVariableValueLike(
-        String name,
-        String value
-    ) {
+    public HistoricTaskInstanceQuery processVariableValueLike(String name, String value) {
         if (inOrStatement) {
             currentOrQueryObject.variableValueLike(name, value, false);
             return this;
@@ -1026,25 +817,16 @@ public class HistoricTaskInstanceQueryImpl
         }
     }
 
-    public HistoricTaskInstanceQuery processVariableValueLikeIgnoreCase(
-        String name,
-        String value
-    ) {
+    public HistoricTaskInstanceQuery processVariableValueLikeIgnoreCase(String name, String value) {
         if (inOrStatement) {
-            currentOrQueryObject.variableValueLikeIgnoreCase(
-                name,
-                value,
-                false
-            );
+            currentOrQueryObject.variableValueLikeIgnoreCase(name, value, false);
             return this;
         } else {
             return variableValueLikeIgnoreCase(name, value, false);
         }
     }
 
-    public HistoricTaskInstanceQuery taskDefinitionKey(
-        String taskDefinitionKey
-    ) {
+    public HistoricTaskInstanceQuery taskDefinitionKey(String taskDefinitionKey) {
         if (inOrStatement) {
             this.currentOrQueryObject.taskDefinitionKey = taskDefinitionKey;
         } else {
@@ -1053,12 +835,9 @@ public class HistoricTaskInstanceQueryImpl
         return this;
     }
 
-    public HistoricTaskInstanceQuery taskDefinitionKeyLike(
-        String taskDefinitionKeyLike
-    ) {
+    public HistoricTaskInstanceQuery taskDefinitionKeyLike(String taskDefinitionKeyLike) {
         if (inOrStatement) {
-            this.currentOrQueryObject.taskDefinitionKeyLike =
-                taskDefinitionKeyLike;
+            this.currentOrQueryObject.taskDefinitionKeyLike = taskDefinitionKeyLike;
         } else {
             this.taskDefinitionKeyLike = taskDefinitionKeyLike;
         }
@@ -1111,9 +890,7 @@ public class HistoricTaskInstanceQueryImpl
     }
 
     protected void ensureVariablesInitialized() {
-        VariableTypes types = Context
-            .getProcessEngineConfiguration()
-            .getVariableTypes();
+        VariableTypes types = Context.getProcessEngineConfiguration().getVariableTypes();
         for (QueryVariableValue var : queryVariableValues) {
             var.initialize(types);
         }
@@ -1159,9 +936,7 @@ public class HistoricTaskInstanceQueryImpl
         return this;
     }
 
-    public HistoricTaskInstanceQuery taskCreatedBefore(
-        Date creationBeforeDate
-    ) {
+    public HistoricTaskInstanceQuery taskCreatedBefore(Date creationBeforeDate) {
         if (inOrStatement) {
             this.currentOrQueryObject.creationBeforeDate = creationBeforeDate;
         } else {
@@ -1188,9 +963,7 @@ public class HistoricTaskInstanceQueryImpl
         return this;
     }
 
-    public HistoricTaskInstanceQuery taskCompletedBefore(
-        Date completedBeforeDate
-    ) {
+    public HistoricTaskInstanceQuery taskCompletedBefore(Date completedBeforeDate) {
         if (inOrStatement) {
             this.currentOrQueryObject.completedBeforeDate = completedBeforeDate;
         } else {
@@ -1199,9 +972,7 @@ public class HistoricTaskInstanceQueryImpl
         return this;
     }
 
-    public HistoricTaskInstanceQuery taskCompletedAfter(
-        Date completedAfterDate
-    ) {
+    public HistoricTaskInstanceQuery taskCompletedAfter(Date completedAfterDate) {
         if (inOrStatement) {
             this.currentOrQueryObject.completedAfterDate = completedAfterDate;
         } else {
@@ -1230,9 +1001,7 @@ public class HistoricTaskInstanceQueryImpl
 
     public HistoricTaskInstanceQuery taskCandidateUser(String candidateUser) {
         if (candidateUser == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Candidate user is null"
-            );
+            throw new ActivitiIllegalArgumentException("Candidate user is null");
         }
 
         if (inOrStatement) {
@@ -1243,14 +1012,9 @@ public class HistoricTaskInstanceQueryImpl
         return this;
     }
 
-    public HistoricTaskInstanceQuery taskCandidateUser(
-        String candidateUser,
-        List<String> usersGroups
-    ) {
+    public HistoricTaskInstanceQuery taskCandidateUser(String candidateUser, List<String> usersGroups) {
         if (candidateUser == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Candidate user is null"
-            );
+            throw new ActivitiIllegalArgumentException("Candidate user is null");
         }
 
         if (inOrStatement) {
@@ -1265,9 +1029,7 @@ public class HistoricTaskInstanceQueryImpl
 
     public HistoricTaskInstanceQuery taskCandidateGroup(String candidateGroup) {
         if (candidateGroup == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Candidate group is null"
-            );
+            throw new ActivitiIllegalArgumentException("Candidate group is null");
         }
 
         if (candidateGroups != null) {
@@ -1284,19 +1046,13 @@ public class HistoricTaskInstanceQueryImpl
         return this;
     }
 
-    public HistoricTaskInstanceQuery taskCandidateGroupIn(
-        List<String> candidateGroups
-    ) {
+    public HistoricTaskInstanceQuery taskCandidateGroupIn(List<String> candidateGroups) {
         if (candidateGroups == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Candidate group list is null"
-            );
+            throw new ActivitiIllegalArgumentException("Candidate group list is null");
         }
 
         if (candidateGroups.isEmpty()) {
-            throw new ActivitiIllegalArgumentException(
-                "Candidate group list is empty"
-            );
+            throw new ActivitiIllegalArgumentException("Candidate group list is empty");
         }
 
         if (candidateGroup != null) {
@@ -1324,13 +1080,9 @@ public class HistoricTaskInstanceQueryImpl
     }
 
     @Override
-    public HistoricTaskInstanceQuery taskInvolvedGroupsIn(
-        List<String> involvedGroups
-    ) {
+    public HistoricTaskInstanceQuery taskInvolvedGroupsIn(List<String> involvedGroups) {
         if (involvedGroups == null || involvedGroups.isEmpty()) {
-            throw new ActivitiIllegalArgumentException(
-                "Involved groups list is null or empty."
-            );
+            throw new ActivitiIllegalArgumentException("Involved groups list is null or empty.");
         }
 
         if (inOrStatement) {
@@ -1343,9 +1095,7 @@ public class HistoricTaskInstanceQueryImpl
 
     public HistoricTaskInstanceQuery taskTenantId(String tenantId) {
         if (tenantId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "task tenant id is null"
-            );
+            throw new ActivitiIllegalArgumentException("task tenant id is null");
         }
         if (inOrStatement) {
             this.currentOrQueryObject.tenantId = tenantId;
@@ -1357,9 +1107,7 @@ public class HistoricTaskInstanceQueryImpl
 
     public HistoricTaskInstanceQuery taskTenantIdLike(String tenantIdLike) {
         if (tenantIdLike == null) {
-            throw new ActivitiIllegalArgumentException(
-                "task tenant id is null"
-            );
+            throw new ActivitiIllegalArgumentException("task tenant id is null");
         }
         if (inOrStatement) {
             this.currentOrQueryObject.tenantIdLike = tenantIdLike;
@@ -1398,9 +1146,7 @@ public class HistoricTaskInstanceQueryImpl
         return this;
     }
 
-    public HistoricTaskInstanceQuery limitTaskVariables(
-        Integer taskVariablesLimit
-    ) {
+    public HistoricTaskInstanceQuery limitTaskVariables(Integer taskVariablesLimit) {
         this.taskVariablesLimit = taskVariablesLimit;
         return this;
     }
@@ -1411,9 +1157,7 @@ public class HistoricTaskInstanceQueryImpl
 
     public HistoricTaskInstanceQuery or() {
         if (inOrStatement) {
-            throw new ActivitiException(
-                "the query is already in an or statement"
-            );
+            throw new ActivitiException("the query is already in an or statement");
         }
 
         inOrStatement = true;
@@ -1424,9 +1168,7 @@ public class HistoricTaskInstanceQueryImpl
 
     public HistoricTaskInstanceQuery endOr() {
         if (!inOrStatement) {
-            throw new ActivitiException(
-                "endOr() can only be called after calling or()"
-            );
+            throw new ActivitiException("endOr() can only be called after calling or()");
         }
 
         inOrStatement = false;
@@ -1449,25 +1191,14 @@ public class HistoricTaskInstanceQueryImpl
                     withLocalizationFallback
                 );
                 if (languageNode != null) {
-                    JsonNode languageNameNode = languageNode.get(
-                        DynamicBpmnConstants.LOCALIZATION_NAME
-                    );
-                    if (
-                        languageNameNode != null && !languageNameNode.isNull()
-                    ) {
+                    JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
+                    if (languageNameNode != null && !languageNameNode.isNull()) {
                         taskEntity.setLocalizedName(languageNameNode.asText());
                     }
 
-                    JsonNode languageDescriptionNode = languageNode.get(
-                        DynamicBpmnConstants.LOCALIZATION_DESCRIPTION
-                    );
-                    if (
-                        languageDescriptionNode != null &&
-                        !languageDescriptionNode.isNull()
-                    ) {
-                        taskEntity.setLocalizedDescription(
-                            languageDescriptionNode.asText()
-                        );
+                    JsonNode languageDescriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
+                    if (languageDescriptionNode != null && !languageDescriptionNode.isNull()) {
+                        taskEntity.setLocalizedDescription(languageDescriptionNode.asText());
                     }
                 }
             }
@@ -1552,17 +1283,11 @@ public class HistoricTaskInstanceQueryImpl
     }
 
     public HistoricTaskInstanceQuery orderByDueDateNullsFirst() {
-        return orderBy(
-            HistoricTaskInstanceQueryProperty.TASK_DUE_DATE,
-            NullHandlingOnOrder.NULLS_FIRST
-        );
+        return orderBy(HistoricTaskInstanceQueryProperty.TASK_DUE_DATE, NullHandlingOnOrder.NULLS_FIRST);
     }
 
     public HistoricTaskInstanceQuery orderByDueDateNullsLast() {
-        return orderBy(
-            HistoricTaskInstanceQueryProperty.TASK_DUE_DATE,
-            NullHandlingOnOrder.NULLS_LAST
-        );
+        return orderBy(HistoricTaskInstanceQueryProperty.TASK_DUE_DATE, NullHandlingOnOrder.NULLS_LAST);
     }
 
     public HistoricTaskInstanceQueryImpl orderByDeleteReason() {
@@ -1592,10 +1317,7 @@ public class HistoricTaskInstanceQueryImpl
         // clause should be added
         // to ensure the last value of a variable is used
         if (includeProcessVariables || includeTaskLocalVariables) {
-            this.orderBy(
-                    HistoricTaskInstanceQueryProperty.INCLUDED_VARIABLE_TIME
-                )
-                .asc();
+            this.orderBy(HistoricTaskInstanceQueryProperty.INCLUDED_VARIABLE_TIME).asc();
         }
     }
 
@@ -1622,9 +1344,7 @@ public class HistoricTaskInstanceQueryImpl
     }
 
     protected List<String> getGroupsForCandidateUser(String candidateUser) {
-        UserGroupManager userGroupManager = Context
-            .getProcessEngineConfiguration()
-            .getUserGroupManager();
+        UserGroupManager userGroupManager = Context.getProcessEngineConfiguration().getUserGroupManager();
         if (userGroupManager != null) {
             return userGroupManager.getUserGroups(candidateUser);
         } else {

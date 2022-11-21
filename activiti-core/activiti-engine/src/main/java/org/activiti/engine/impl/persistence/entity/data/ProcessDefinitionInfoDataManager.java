@@ -21,9 +21,6 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntity;
 /**
 
  */
-public interface ProcessDefinitionInfoDataManager
-    extends DataManager<ProcessDefinitionInfoEntity> {
-    ProcessDefinitionInfoEntity findProcessDefinitionInfoByProcessDefinitionId(
-        String processDefinitionId
-    );
+public interface ProcessDefinitionInfoDataManager extends DataManager<ProcessDefinitionInfoEntity> {
+    ProcessDefinitionInfoEntity findProcessDefinitionInfoByProcessDefinitionId(String processDefinitionId);
 }

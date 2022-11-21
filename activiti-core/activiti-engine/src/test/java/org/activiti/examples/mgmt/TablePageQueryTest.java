@@ -44,11 +44,7 @@ public class TablePageQueryTest extends PluggableActivitiTestCase {
         assertThat(tablePage.getRows()).hasSize(5);
         assertThat(tablePage.getTotal()).isEqualTo(20);
 
-        tablePage =
-            managementService
-                .createTablePageQuery()
-                .tableName(tablePrefix + "ACT_RU_TASK")
-                .listPage(14, 10);
+        tablePage = managementService.createTablePageQuery().tableName(tablePrefix + "ACT_RU_TASK").listPage(14, 10);
 
         assertThat(tablePage.getFirstResult()).isEqualTo(14);
         assertThat(tablePage.getSize()).isEqualTo(6);
@@ -68,15 +64,7 @@ public class TablePageQueryTest extends PluggableActivitiTestCase {
             .tableName(tablePrefix + "ACT_RU_TASK")
             .orderAsc("NAME_")
             .listPage(1, 7);
-        String[] expectedTaskNames = new String[] {
-            "B",
-            "C",
-            "D",
-            "E",
-            "F",
-            "G",
-            "H",
-        };
+        String[] expectedTaskNames = new String[] { "B", "C", "D", "E", "F", "G", "H" };
         verifyTaskNames(expectedTaskNames, tablePage.getRows());
 
         // With a descending sort
@@ -86,17 +74,13 @@ public class TablePageQueryTest extends PluggableActivitiTestCase {
                 .tableName(tablePrefix + "ACT_RU_TASK")
                 .orderDesc("NAME_")
                 .listPage(6, 8);
-        expectedTaskNames =
-            new String[] { "I", "H", "G", "F", "E", "D", "C", "B" };
+        expectedTaskNames = new String[] { "I", "H", "G", "F", "E", "D", "C", "B" };
         verifyTaskNames(expectedTaskNames, tablePage.getRows());
 
         taskService.deleteTasks(taskIds, true);
     }
 
-    private void verifyTaskNames(
-        String[] expectedTaskNames,
-        List<Map<String, Object>> rowData
-    ) {
+    private void verifyTaskNames(String[] expectedTaskNames, List<Map<String, Object>> rowData) {
         assertThat(rowData).hasSize(expectedTaskNames.length);
         String columnKey = "NAME_";
 
@@ -107,8 +91,7 @@ public class TablePageQueryTest extends PluggableActivitiTestCase {
         }
 
         for (int i = 0; i < expectedTaskNames.length; i++) {
-            assertThat(rowData.get(i).get(columnKey))
-                .isEqualTo(expectedTaskNames[i]);
+            assertThat(rowData.get(i).get(columnKey)).isEqualTo(expectedTaskNames[i]);
         }
     }
 

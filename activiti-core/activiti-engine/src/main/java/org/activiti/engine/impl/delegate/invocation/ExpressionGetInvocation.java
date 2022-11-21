@@ -28,10 +28,7 @@ public class ExpressionGetInvocation extends ExpressionInvocation {
 
     protected final ELContext elContext;
 
-    public ExpressionGetInvocation(
-        ValueExpression valueExpression,
-        ELContext elContext
-    ) {
+    public ExpressionGetInvocation(ValueExpression valueExpression, ELContext elContext) {
         super(valueExpression);
         this.elContext = elContext;
     }

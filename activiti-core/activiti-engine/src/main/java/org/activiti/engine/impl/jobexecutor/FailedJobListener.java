@@ -34,9 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FailedJobListener implements CommandContextCloseListener {
 
-    private static final Logger log = LoggerFactory.getLogger(
-        FailedJobListener.class
-    );
+    private static final Logger log = LoggerFactory.getLogger(FailedJobListener.class);
 
     protected CommandExecutor commandExecutor;
     protected Job job;
@@ -57,12 +55,7 @@ public class FailedJobListener implements CommandContextCloseListener {
         if (context.getEventDispatcher().isEnabled()) {
             context
                 .getEventDispatcher()
-                .dispatchEvent(
-                    ActivitiEventBuilder.createEntityEvent(
-                        ActivitiEventType.JOB_EXECUTION_SUCCESS,
-                        job
-                    )
-                );
+                .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_EXECUTION_SUCCESS, job));
         }
     }
 
@@ -80,14 +73,9 @@ public class FailedJobListener implements CommandContextCloseListener {
                 );
         }
 
-        CommandConfig commandConfig = commandExecutor
-            .getDefaultConfig()
-            .transactionRequiresNew();
+        CommandConfig commandConfig = commandExecutor.getDefaultConfig().transactionRequiresNew();
         FailedJobCommandFactory failedJobCommandFactory = commandContext.getFailedJobCommandFactory();
-        Command<Object> cmd = failedJobCommandFactory.getCommand(
-            job.getId(),
-            commandContext.getException()
-        );
+        Command<Object> cmd = failedJobCommandFactory.getCommand(job.getId(), commandContext.getException());
 
         log.trace(
             "Using FailedJobCommandFactory '" +

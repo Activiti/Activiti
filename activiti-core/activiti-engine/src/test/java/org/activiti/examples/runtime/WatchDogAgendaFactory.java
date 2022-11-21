@@ -30,9 +30,7 @@ public class WatchDogAgendaFactory implements ActivitiEngineAgendaFactory {
 
     @Override
     public ActivitiEngineAgenda createAgenda(CommandContext commandContext) {
-        return new WatchDogAgenda(
-            new DefaultActivitiEngineAgenda(commandContext)
-        );
+        return new WatchDogAgenda(new DefaultActivitiEngineAgenda(commandContext));
     }
 
     private static class WatchDogAgenda implements ActivitiEngineAgenda {
@@ -71,35 +69,23 @@ public class WatchDogAgendaFactory implements ActivitiEngineAgendaFactory {
         }
 
         @Override
-        public void planContinueProcessSynchronousOperation(
-            ExecutionEntity execution
-        ) {
+        public void planContinueProcessSynchronousOperation(ExecutionEntity execution) {
             agenda.planContinueProcessSynchronousOperation(execution);
         }
 
         @Override
-        public void planContinueProcessInCompensation(
-            ExecutionEntity execution
-        ) {
+        public void planContinueProcessInCompensation(ExecutionEntity execution) {
             agenda.planContinueProcessInCompensation(execution);
         }
 
         @Override
-        public void planContinueMultiInstanceOperation(
-            ExecutionEntity execution
-        ) {
+        public void planContinueMultiInstanceOperation(ExecutionEntity execution) {
             agenda.planContinueMultiInstanceOperation(execution);
         }
 
         @Override
-        public void planTakeOutgoingSequenceFlowsOperation(
-            ExecutionEntity execution,
-            boolean evaluateConditions
-        ) {
-            agenda.planTakeOutgoingSequenceFlowsOperation(
-                execution,
-                evaluateConditions
-            );
+        public void planTakeOutgoingSequenceFlowsOperation(ExecutionEntity execution, boolean evaluateConditions) {
+            agenda.planTakeOutgoingSequenceFlowsOperation(execution, evaluateConditions);
         }
 
         @Override

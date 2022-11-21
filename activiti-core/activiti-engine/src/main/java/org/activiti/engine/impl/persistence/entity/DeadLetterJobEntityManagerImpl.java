@@ -48,10 +48,7 @@ public class DeadLetterJobEntityManagerImpl
     }
 
     @Override
-    public List<Job> findJobsByQueryCriteria(
-        DeadLetterJobQueryImpl jobQuery,
-        Page page
-    ) {
+    public List<Job> findJobsByQueryCriteria(DeadLetterJobQueryImpl jobQuery, Page page) {
         return jobDataManager.findJobsByQueryCriteria(jobQuery, page);
     }
 
@@ -61,22 +58,15 @@ public class DeadLetterJobEntityManagerImpl
     }
 
     @Override
-    public void updateJobTenantIdForDeployment(
-        String deploymentId,
-        String newTenantId
-    ) {
-        jobDataManager.updateJobTenantIdForDeployment(
-            deploymentId,
-            newTenantId
-        );
+    public void updateJobTenantIdForDeployment(String deploymentId, String newTenantId) {
+        jobDataManager.updateJobTenantIdForDeployment(deploymentId, newTenantId);
     }
 
     @Override
     public void insert(DeadLetterJobEntity jobEntity, boolean fireCreateEvent) {
         // add link to execution
         if (jobEntity.getExecutionId() != null) {
-            ExecutionEntity execution = getExecutionEntityManager()
-                .findById(jobEntity.getExecutionId());
+            ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
 
             // Inherit tenant if (if applicable)
             if (execution.getTenantId() != null) {
@@ -85,14 +75,8 @@ public class DeadLetterJobEntityManagerImpl
 
             if (isExecutionRelatedEntityCountEnabledGlobally()) {
                 CountingExecutionEntity countingExecutionEntity = (CountingExecutionEntity) execution;
-                if (
-                    isExecutionRelatedEntityCountEnabled(
-                        countingExecutionEntity
-                    )
-                ) {
-                    countingExecutionEntity.setDeadLetterJobCount(
-                        countingExecutionEntity.getDeadLetterJobCount() + 1
-                    );
+                if (isExecutionRelatedEntityCountEnabled(countingExecutionEntity)) {
+                    countingExecutionEntity.setDeadLetterJobCount(countingExecutionEntity.getDeadLetterJobCount() + 1);
                 }
             }
         }
@@ -111,28 +95,18 @@ public class DeadLetterJobEntityManagerImpl
 
         deleteExceptionByteArrayRef(jobEntity);
 
-        if (
-            jobEntity.getExecutionId() != null &&
-            isExecutionRelatedEntityCountEnabledGlobally()
-        ) {
+        if (jobEntity.getExecutionId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
             CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager()
                 .findById(jobEntity.getExecutionId());
             if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
-                executionEntity.setDeadLetterJobCount(
-                    executionEntity.getDeadLetterJobCount() - 1
-                );
+                executionEntity.setDeadLetterJobCount(executionEntity.getDeadLetterJobCount() - 1);
             }
         }
 
         // Send event
         if (getEventDispatcher().isEnabled()) {
             getEventDispatcher()
-                .dispatchEvent(
-                    ActivitiEventBuilder.createEntityEvent(
-                        ActivitiEventType.ENTITY_DELETED,
-                        this
-                    )
-                );
+                .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, this));
         }
     }
 
@@ -149,9 +123,7 @@ public class DeadLetterJobEntityManagerImpl
 
     protected DeadLetterJobEntity createDeadLetterJob(AbstractJobEntity job) {
         DeadLetterJobEntity newJobEntity = create();
-        newJobEntity.setJobHandlerConfiguration(
-            job.getJobHandlerConfiguration()
-        );
+        newJobEntity.setJobHandlerConfiguration(job.getJobHandlerConfiguration());
         newJobEntity.setJobHandlerType(job.getJobHandlerType());
         newJobEntity.setExclusive(job.isExclusive());
         newJobEntity.setRepeat(job.getRepeat());

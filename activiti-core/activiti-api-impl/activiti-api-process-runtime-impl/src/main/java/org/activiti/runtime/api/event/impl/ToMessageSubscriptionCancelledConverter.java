@@ -22,21 +22,16 @@ import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 
 public class ToMessageSubscriptionCancelledConverter
-    implements
-        EventConverter<MessageSubscriptionCancelledEvent, ActivitiEntityEvent> {
+    implements EventConverter<MessageSubscriptionCancelledEvent, ActivitiEntityEvent> {
 
     private MessageSubscriptionConverter converter;
 
-    public ToMessageSubscriptionCancelledConverter(
-        MessageSubscriptionConverter converter
-    ) {
+    public ToMessageSubscriptionCancelledConverter(MessageSubscriptionConverter converter) {
         this.converter = converter;
     }
 
     @Override
-    public Optional<MessageSubscriptionCancelledEvent> from(
-        ActivitiEntityEvent internalEvent
-    ) {
+    public Optional<MessageSubscriptionCancelledEvent> from(ActivitiEntityEvent internalEvent) {
         return Optional
             .of(internalEvent)
             .map(ActivitiEntityEvent::getEntity)

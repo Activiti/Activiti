@@ -35,12 +35,9 @@ import org.slf4j.LoggerFactory;
 
 
  */
-public class EndEventParseHandler
-    extends AbstractActivityBpmnParseHandler<EndEvent> {
+public class EndEventParseHandler extends AbstractActivityBpmnParseHandler<EndEvent> {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        EndEventParseHandler.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(EndEventParseHandler.class);
 
     public Class<? extends BaseElement> getHandledType() {
         return EndEvent.class;
@@ -54,90 +51,52 @@ public class EndEventParseHandler
 
             if (eventDefinition instanceof ErrorEventDefinition) {
                 ErrorEventDefinition errorDefinition = (ErrorEventDefinition) eventDefinition;
-                if (
-                    bpmnParse
-                        .getBpmnModel()
-                        .containsErrorRef(errorDefinition.getErrorRef())
-                ) {
-                    for (Error error : bpmnParse
-                        .getBpmnModel()
-                        .getErrors()
-                        .values()) {
+                if (bpmnParse.getBpmnModel().containsErrorRef(errorDefinition.getErrorRef())) {
+                    for (Error error : bpmnParse.getBpmnModel().getErrors().values()) {
                         String errorCode = null;
-                        if (
-                            error.getId().equals(errorDefinition.getErrorRef())
-                        ) {
+                        if (error.getId().equals(errorDefinition.getErrorRef())) {
                             errorCode = error.getErrorCode();
                         }
                         if (StringUtils.isEmpty(errorCode)) {
-                            logger.warn(
-                                "errorCode is required for an error event " +
-                                endEvent.getId()
-                            );
+                            logger.warn("errorCode is required for an error event " + endEvent.getId());
                         }
                     }
                 }
                 endEvent.setBehavior(
                     bpmnParse
                         .getActivityBehaviorFactory()
-                        .createErrorEndEventActivityBehavior(
-                            endEvent,
-                            errorDefinition
-                        )
+                        .createErrorEndEventActivityBehavior(endEvent, errorDefinition)
                 );
             } else if (eventDefinition instanceof TerminateEventDefinition) {
                 endEvent.setBehavior(
-                    bpmnParse
-                        .getActivityBehaviorFactory()
-                        .createTerminateEndEventActivityBehavior(endEvent)
+                    bpmnParse.getActivityBehaviorFactory().createTerminateEndEventActivityBehavior(endEvent)
                 );
             } else if (eventDefinition instanceof CancelEventDefinition) {
                 endEvent.setBehavior(
-                    bpmnParse
-                        .getActivityBehaviorFactory()
-                        .createCancelEndEventActivityBehavior(endEvent)
+                    bpmnParse.getActivityBehaviorFactory().createCancelEndEventActivityBehavior(endEvent)
                 );
             } else if (eventDefinition instanceof MessageEventDefinition) {
-                MessageEventDefinition messageEventDefinition =
-                    MessageEventDefinition.class.cast(eventDefinition);
-                Message message = bpmnParse
-                    .getBpmnModel()
-                    .getMessage(messageEventDefinition.getMessageRef());
+                MessageEventDefinition messageEventDefinition = MessageEventDefinition.class.cast(eventDefinition);
+                Message message = bpmnParse.getBpmnModel().getMessage(messageEventDefinition.getMessageRef());
 
                 BpmnModel bpmnModel = bpmnParse.getBpmnModel();
-                if (
-                    bpmnModel.containsMessageId(
-                        messageEventDefinition.getMessageRef()
-                    )
-                ) {
+                if (bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
                     messageEventDefinition.setMessageRef(message.getName());
-                    messageEventDefinition.setExtensionElements(
-                        message.getExtensionElements()
-                    );
+                    messageEventDefinition.setExtensionElements(message.getExtensionElements());
                 }
 
                 endEvent.setBehavior(
                     bpmnParse
                         .getActivityBehaviorFactory()
-                        .createThrowMessageEndEventActivityBehavior(
-                            endEvent,
-                            messageEventDefinition,
-                            message
-                        )
+                        .createThrowMessageEndEventActivityBehavior(endEvent, messageEventDefinition, message)
                 );
             } else {
                 endEvent.setBehavior(
-                    bpmnParse
-                        .getActivityBehaviorFactory()
-                        .createNoneEndEventActivityBehavior(endEvent)
+                    bpmnParse.getActivityBehaviorFactory().createNoneEndEventActivityBehavior(endEvent)
                 );
             }
         } else {
-            endEvent.setBehavior(
-                bpmnParse
-                    .getActivityBehaviorFactory()
-                    .createNoneEndEventActivityBehavior(endEvent)
-            );
+            endEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createNoneEndEventActivityBehavior(endEvent));
         }
     }
 }

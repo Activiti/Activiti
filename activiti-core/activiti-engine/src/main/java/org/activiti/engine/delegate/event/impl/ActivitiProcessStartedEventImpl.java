@@ -34,11 +34,7 @@ public class ActivitiProcessStartedEventImpl
 
     protected final String nestedProcessDefinitionId;
 
-    public ActivitiProcessStartedEventImpl(
-        final Object entity,
-        final Map variables,
-        final boolean localScope
-    ) {
+    public ActivitiProcessStartedEventImpl(final Object entity, final Map variables, final boolean localScope) {
         super(entity, variables, localScope, ActivitiEventType.PROCESS_STARTED);
         if (entity instanceof ExecutionEntity) {
             ExecutionEntity executionEntity = (ExecutionEntity) entity;
@@ -48,10 +44,8 @@ public class ActivitiProcessStartedEventImpl
 
             final ExecutionEntity superExecution = executionEntity.getSuperExecution();
             if (superExecution != null) {
-                this.nestedProcessDefinitionId =
-                    superExecution.getProcessDefinitionId();
-                this.nestedProcessInstanceId =
-                    superExecution.getProcessInstanceId();
+                this.nestedProcessDefinitionId = superExecution.getProcessDefinitionId();
+                this.nestedProcessInstanceId = superExecution.getProcessInstanceId();
             } else {
                 this.nestedProcessDefinitionId = null;
                 this.nestedProcessInstanceId = null;

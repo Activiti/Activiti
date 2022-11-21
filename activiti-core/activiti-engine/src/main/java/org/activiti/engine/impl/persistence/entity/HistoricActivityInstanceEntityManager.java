@@ -27,8 +27,7 @@ import org.activiti.engine.impl.Page;
 
  */
 @Internal
-public interface HistoricActivityInstanceEntityManager
-    extends EntityManager<HistoricActivityInstanceEntity> {
+public interface HistoricActivityInstanceEntityManager extends EntityManager<HistoricActivityInstanceEntity> {
     List<HistoricActivityInstanceEntity> findUnfinishedHistoricActivityInstancesByExecutionAndActivityId(
         String executionId,
         String activityId
@@ -53,11 +52,7 @@ public interface HistoricActivityInstanceEntityManager
         int maxResults
     );
 
-    long findHistoricActivityInstanceCountByNativeQuery(
-        Map<String, Object> parameterMap
-    );
+    long findHistoricActivityInstanceCountByNativeQuery(Map<String, Object> parameterMap);
 
-    void deleteHistoricActivityInstancesByProcessInstanceId(
-        String historicProcessInstanceId
-    );
+    void deleteHistoricActivityInstancesByProcessInstanceId(String historicProcessInstanceId);
 }

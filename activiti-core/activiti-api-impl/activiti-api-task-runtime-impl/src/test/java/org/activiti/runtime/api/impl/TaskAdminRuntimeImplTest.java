@@ -63,10 +63,7 @@ class TaskAdminRuntimeImplTest {
     void should_assignOneTask() {
         final String taskId = "taskId";
         final String assignee = "hruser";
-        AssignTasksPayload assignTasksPayload = new AssignTasksPayload(
-            List.of(taskId),
-            assignee
-        );
+        AssignTasksPayload assignTasksPayload = new AssignTasksPayload(List.of(taskId), assignee);
 
         TaskEntityImpl task = new TaskEntityImpl();
         task.setId(taskId);
@@ -78,10 +75,7 @@ class TaskAdminRuntimeImplTest {
         verify(taskService).unclaim(eq(taskId));
         verify(taskService).claim(eq(taskId), eq(assignee));
         Assertions.assertThat(tasks.getContent()).hasSize(1);
-        Assertions
-            .assertThat(tasks.getContent())
-            .extracting(Task::getAssignee)
-            .containsExactly(assignee);
+        Assertions.assertThat(tasks.getContent()).extracting(Task::getAssignee).containsExactly(assignee);
     }
 
     @Test
@@ -89,10 +83,7 @@ class TaskAdminRuntimeImplTest {
         final String taskId1 = "taskId1";
         final String taskId2 = "taskId2";
         final String assignee = "hruser";
-        AssignTasksPayload assignTasksPayload = new AssignTasksPayload(
-            List.of(taskId1, taskId2),
-            assignee
-        );
+        AssignTasksPayload assignTasksPayload = new AssignTasksPayload(List.of(taskId1, taskId2), assignee);
 
         TaskEntityImpl task1 = new TaskEntityImpl();
         task1.setId(taskId1);
@@ -111,19 +102,13 @@ class TaskAdminRuntimeImplTest {
         verify(taskService).unclaim(eq(taskId2));
         verify(taskService).claim(eq(taskId2), eq(assignee));
         Assertions.assertThat(tasks.getContent()).hasSize(2);
-        Assertions
-            .assertThat(tasks.getContent())
-            .extracting(Task::getAssignee)
-            .containsOnly(assignee);
+        Assertions.assertThat(tasks.getContent()).extracting(Task::getAssignee).containsOnly(assignee);
     }
 
     @Test
     void should_notAssign_when_listIsEmpty() {
         final String assignee = "hruser";
-        AssignTasksPayload assignTasksPayload = new AssignTasksPayload(
-            List.of(),
-            assignee
-        );
+        AssignTasksPayload assignTasksPayload = new AssignTasksPayload(List.of(), assignee);
 
         Page<Task> tasks = taskAdminRuntime.assignMultiple(assignTasksPayload);
 

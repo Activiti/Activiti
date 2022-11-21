@@ -63,8 +63,7 @@ public class BigDecimalTypeTest {
 
     @Test
     public void isAbleToStore_should_returnTrue_when_itsBigDecimal() {
-        assertThat(bigDecimalType.isAbleToStore(BigDecimal.valueOf(1)))
-            .isTrue();
+        assertThat(bigDecimalType.isAbleToStore(BigDecimal.valueOf(1))).isTrue();
     }
 
     @Test
@@ -74,10 +73,7 @@ public class BigDecimalTypeTest {
 
     @Test
     public void isAbleToStore_should_returnFalse_when_itsNotBigDecimal() {
-        assertThat(
-            bigDecimalType.isAbleToStore("Anything that's not bigDecimal")
-        )
-            .isFalse();
+        assertThat(bigDecimalType.isAbleToStore("Anything that's not bigDecimal")).isFalse();
     }
 
     @Test

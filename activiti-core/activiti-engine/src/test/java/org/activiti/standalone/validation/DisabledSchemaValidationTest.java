@@ -43,18 +43,14 @@ public class DisabledSchemaValidationTest {
         this.processEngine =
             new StandaloneInMemProcessEngineConfiguration()
                 .setProcessEngineName(this.getClass().getName())
-                .setJdbcUrl(
-                    "jdbc:h2:mem:activiti-process-validation;DB_CLOSE_DELAY=1000"
-                )
+                .setJdbcUrl("jdbc:h2:mem:activiti-process-validation;DB_CLOSE_DELAY=1000")
                 .buildProcessEngine();
         this.repositoryService = processEngine.getRepositoryService();
     }
 
     @After
     public void tearDown() {
-        for (Deployment deployment : repositoryService
-            .createDeploymentQuery()
-            .list()) {
+        for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
             repositoryService.deleteDeployment(deployment.getId());
         }
 
@@ -71,9 +67,7 @@ public class DisabledSchemaValidationTest {
             .isThrownBy(() ->
                 repositoryService
                     .createDeployment()
-                    .addClasspathResource(
-                        "org/activiti/standalone/validation/invalid_process_xsd_error.bpmn20.xml"
-                    )
+                    .addClasspathResource("org/activiti/standalone/validation/invalid_process_xsd_error.bpmn20.xml")
                     .deploy()
             );
 
@@ -82,9 +76,7 @@ public class DisabledSchemaValidationTest {
             .isThrownBy(() ->
                 repositoryService
                     .createDeployment()
-                    .addClasspathResource(
-                        "org/activiti/standalone/validation/invalid_process_xsd_error.bpmn20.xml"
-                    )
+                    .addClasspathResource("org/activiti/standalone/validation/invalid_process_xsd_error.bpmn20.xml")
                     .disableSchemaValidation()
                     .deploy()
             );

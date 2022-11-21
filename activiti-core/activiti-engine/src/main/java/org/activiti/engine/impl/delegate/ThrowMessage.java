@@ -110,8 +110,7 @@ public class ThrowMessage {
     /**
      * Builder to build {@link ThrowMessage}.
      */
-    public static final class ThrowMessagBuilder
-        implements INameStage, IBuildStage {
+    public static final class ThrowMessagBuilder implements INameStage, IBuildStage {
 
         private String name;
         private Optional<Map<String, Object>> payload = Optional.empty();

@@ -38,9 +38,7 @@ public class TestProcessUtil {
         return model;
     }
 
-    public static org.activiti.bpmn.model.Process createOneTaskProcessWithId(
-        String id
-    ) {
+    public static org.activiti.bpmn.model.Process createOneTaskProcessWithId(String id) {
         org.activiti.bpmn.model.Process process = new org.activiti.bpmn.model.Process();
 
         process.setId(id);

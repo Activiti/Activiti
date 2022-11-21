@@ -65,11 +65,8 @@ public class VariableCreatedListenerDelegateTest {
     @Test
     public void onEvent_should_callListenersWhenItsVariableEventAndItsNotFiltered() {
         //given
-        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(
-            ActivitiEventType.VARIABLE_CREATED
-        );
-        given(variableEventFilter.shouldEmmitEvent(internalEvent))
-            .willReturn(true);
+        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_CREATED);
+        given(variableEventFilter.shouldEmmitEvent(internalEvent)).willReturn(true);
         VariableCreatedEvent apiEvent = mock(VariableCreatedEvent.class);
         given(converter.from(internalEvent)).willReturn(Optional.of(apiEvent));
 
@@ -97,11 +94,8 @@ public class VariableCreatedListenerDelegateTest {
     @Test
     public void onEvent_shouldNot_callListenersWhenItsFiltered() {
         //given
-        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(
-            ActivitiEventType.VARIABLE_CREATED
-        );
-        given(variableEventFilter.shouldEmmitEvent(internalEvent))
-            .willReturn(false);
+        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_CREATED);
+        given(variableEventFilter.shouldEmmitEvent(internalEvent)).willReturn(false);
 
         //when
         variableCreatedListenerDelegate.onEvent(internalEvent);

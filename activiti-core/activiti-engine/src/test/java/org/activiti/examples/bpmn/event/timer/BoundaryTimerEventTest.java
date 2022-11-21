@@ -32,15 +32,10 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     @Deployment
     public void testInterruptingTimerDuration() throws Exception {
         // Start process instance
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "escalationExample"
-        );
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("escalationExample");
 
         // There should be one task, with a timer : first line support
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(pi.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
         assertThat(task.getName()).isEqualTo("First line support");
 
         Thread.sleep(2000);
@@ -51,11 +46,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
         managementService.executeJob(timer.getId());
 
         // The timer has fired, and the second task (second line support) now exists
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(pi.getId())
-                .singleResult();
+        task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
         assertThat(task.getName()).isEqualTo("Handle escalated issue");
     }
 }

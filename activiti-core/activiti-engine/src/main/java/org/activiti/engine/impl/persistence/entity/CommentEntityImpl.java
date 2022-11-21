@@ -28,9 +28,7 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 @Deprecated
-public class CommentEntityImpl
-    extends AbstractEntityNoRevision
-    implements CommentEntity, Serializable {
+public class CommentEntityImpl extends AbstractEntityNoRevision implements CommentEntity, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -56,8 +54,7 @@ public class CommentEntityImpl
     }
 
     public void setFullMessageBytes(byte[] fullMessageBytes) {
-        fullMessage =
-            (fullMessageBytes != null ? new String(fullMessageBytes) : null);
+        fullMessage = (fullMessageBytes != null ? new String(fullMessageBytes) : null);
     }
 
     public static String MESSAGE_PARTS_MARKER = "_|_";

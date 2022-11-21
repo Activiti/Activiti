@@ -38,9 +38,7 @@ public class MybatisDeadLetterJobDataManager
 
     protected CachedEntityMatcher<DeadLetterJobEntity> deadLetterByExecutionIdMatcher = new DeadLetterJobsByExecutionIdMatcher();
 
-    public MybatisDeadLetterJobDataManager(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public MybatisDeadLetterJobDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);
     }
 
@@ -61,39 +59,26 @@ public class MybatisDeadLetterJobDataManager
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Job> findJobsByQueryCriteria(
-        DeadLetterJobQueryImpl jobQuery,
-        Page page
-    ) {
+    public List<Job> findJobsByQueryCriteria(DeadLetterJobQueryImpl jobQuery, Page page) {
         String query = "selectDeadLetterJobByQueryCriteria";
         return getDbSqlSession().selectList(query, jobQuery, page);
     }
 
     @Override
     public long findJobCountByQueryCriteria(DeadLetterJobQueryImpl jobQuery) {
-        return (Long) getDbSqlSession()
-            .selectOne("selectDeadLetterJobCountByQueryCriteria", jobQuery);
+        return (Long) getDbSqlSession().selectOne("selectDeadLetterJobCountByQueryCriteria", jobQuery);
     }
 
     @Override
     public List<DeadLetterJobEntity> findJobsByExecutionId(String executionId) {
-        return getList(
-            "selectDeadLetterJobsByExecutionId",
-            executionId,
-            deadLetterByExecutionIdMatcher,
-            true
-        );
+        return getList("selectDeadLetterJobsByExecutionId", executionId, deadLetterByExecutionIdMatcher, true);
     }
 
     @Override
-    public void updateJobTenantIdForDeployment(
-        String deploymentId,
-        String newTenantId
-    ) {
+    public void updateJobTenantIdForDeployment(String deploymentId, String newTenantId) {
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("deploymentId", deploymentId);
         params.put("tenantId", newTenantId);
-        getDbSqlSession()
-            .update("updateDeadLetterJobTenantIdForDeployment", params);
+        getDbSqlSession().update("updateDeadLetterJobTenantIdForDeployment", params);
     }
 }

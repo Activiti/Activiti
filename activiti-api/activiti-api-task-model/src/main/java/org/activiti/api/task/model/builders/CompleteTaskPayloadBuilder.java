@@ -29,9 +29,7 @@ public class CompleteTaskPayloadBuilder {
         return this;
     }
 
-    public CompleteTaskPayloadBuilder withVariables(
-        Map<String, Object> variables
-    ) {
+    public CompleteTaskPayloadBuilder withVariables(Map<String, Object> variables) {
         this.variables = variables;
         return this;
     }

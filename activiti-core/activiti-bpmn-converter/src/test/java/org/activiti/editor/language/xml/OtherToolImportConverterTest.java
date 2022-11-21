@@ -41,9 +41,7 @@ public class OtherToolImportConverterTest extends AbstractConverterTest {
     }
 
     private void validateModel(BpmnModel model) {
-        org.activiti.bpmn.model.Process process = model.getProcess(
-            "_GQ4P0PUQEeK4teimjV5_yg"
-        );
+        org.activiti.bpmn.model.Process process = model.getProcess("_GQ4P0PUQEeK4teimjV5_yg");
         assertThat(process).isNotNull();
         assertThat(process.getId()).isEqualTo("Carpet_Plus");
         assertThat(process.getName()).isEqualTo("Carpet-Plus");

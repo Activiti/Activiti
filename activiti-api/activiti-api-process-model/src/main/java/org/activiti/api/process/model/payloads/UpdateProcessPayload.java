@@ -30,12 +30,7 @@ public class UpdateProcessPayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public UpdateProcessPayload(
-        String processInstanceId,
-        String name,
-        String description,
-        String businessKey
-    ) {
+    public UpdateProcessPayload(String processInstanceId, String name, String description, String businessKey) {
         this();
         this.processInstanceId = processInstanceId;
         this.name = name;

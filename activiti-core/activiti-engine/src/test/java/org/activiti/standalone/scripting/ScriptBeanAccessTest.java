@@ -33,10 +33,7 @@ public class ScriptBeanAccessTest extends ResourceActivitiTestCase {
 
     @Deployment
     public void testConfigurationBeanAccess() {
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "ScriptBeanAccess"
-        );
-        assertThat(runtimeService.getVariable(pi.getId(), "myVariable"))
-            .isEqualTo("myValue");
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("ScriptBeanAccess");
+        assertThat(runtimeService.getVariable(pi.getId(), "myVariable")).isEqualTo("myValue");
     }
 }

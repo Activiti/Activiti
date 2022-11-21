@@ -36,32 +36,21 @@ public class InclusiveGatewayJsonConverter extends BaseBpmnJsonConverter {
         fillBpmnTypes(convertersToJsonMap);
     }
 
-    public static void fillJsonTypes(
-        Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap
-    ) {
-        convertersToBpmnMap.put(
-            STENCIL_GATEWAY_INCLUSIVE,
-            InclusiveGatewayJsonConverter.class
-        );
+    public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
+        convertersToBpmnMap.put(STENCIL_GATEWAY_INCLUSIVE, InclusiveGatewayJsonConverter.class);
     }
 
     public static void fillBpmnTypes(
         Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap
     ) {
-        convertersToJsonMap.put(
-            InclusiveGateway.class,
-            InclusiveGatewayJsonConverter.class
-        );
+        convertersToJsonMap.put(InclusiveGateway.class, InclusiveGatewayJsonConverter.class);
     }
 
     protected String getStencilId(BaseElement baseElement) {
         return STENCIL_GATEWAY_INCLUSIVE;
     }
 
-    protected void convertElementToJson(
-        ObjectNode propertiesNode,
-        BaseElement baseElement
-    ) {}
+    protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {}
 
     protected FlowElement convertJsonToElement(
         JsonNode elementNode,

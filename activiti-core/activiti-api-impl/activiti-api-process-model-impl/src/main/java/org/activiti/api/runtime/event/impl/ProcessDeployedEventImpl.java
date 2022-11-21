@@ -33,10 +33,7 @@ public class ProcessDeployedEventImpl
         setProcessDefinitionKey(entity.getKey());
     }
 
-    public ProcessDeployedEventImpl(
-        ProcessDefinition entity,
-        String processModelContent
-    ) {
+    public ProcessDeployedEventImpl(ProcessDefinition entity, String processModelContent) {
         this(entity);
         this.processModelContent = processModelContent;
     }

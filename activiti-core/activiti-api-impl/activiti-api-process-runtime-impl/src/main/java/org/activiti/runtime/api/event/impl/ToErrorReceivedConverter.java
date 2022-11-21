@@ -20,8 +20,7 @@ import org.activiti.api.process.model.events.BPMNErrorReceivedEvent;
 import org.activiti.api.runtime.event.impl.BPMNErrorReceivedEventImpl;
 import org.activiti.engine.delegate.event.ActivitiErrorEvent;
 
-public class ToErrorReceivedConverter
-    implements EventConverter<BPMNErrorReceivedEvent, ActivitiErrorEvent> {
+public class ToErrorReceivedConverter implements EventConverter<BPMNErrorReceivedEvent, ActivitiErrorEvent> {
 
     private BPMNErrorConverter bpmnErrorConverter;
 
@@ -30,9 +29,7 @@ public class ToErrorReceivedConverter
     }
 
     @Override
-    public Optional<BPMNErrorReceivedEvent> from(
-        ActivitiErrorEvent internalEvent
-    ) {
+    public Optional<BPMNErrorReceivedEvent> from(ActivitiErrorEvent internalEvent) {
         BPMNErrorReceivedEventImpl event = new BPMNErrorReceivedEventImpl(
             bpmnErrorConverter.convertToBPMNError(internalEvent)
         );

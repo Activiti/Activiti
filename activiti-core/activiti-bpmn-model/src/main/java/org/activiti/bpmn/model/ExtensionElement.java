@@ -66,10 +66,7 @@ public class ExtensionElement extends BaseElement {
     }
 
     public void addChildElement(ExtensionElement childElement) {
-        if (
-            childElement != null &&
-            StringUtils.isNotEmpty(childElement.getName())
-        ) {
+        if (childElement != null && StringUtils.isNotEmpty(childElement.getName())) {
             List<ExtensionElement> elementList = null;
             if (!this.childElements.containsKey(childElement.getName())) {
                 elementList = new ArrayList<ExtensionElement>();
@@ -79,9 +76,7 @@ public class ExtensionElement extends BaseElement {
         }
     }
 
-    public void setChildElements(
-        Map<String, List<ExtensionElement>> childElements
-    ) {
+    public void setChildElements(Map<String, List<ExtensionElement>> childElements) {
         this.childElements = childElements;
     }
 
@@ -99,14 +94,9 @@ public class ExtensionElement extends BaseElement {
         setAttributes(otherElement.getAttributes());
 
         childElements = new LinkedHashMap<String, List<ExtensionElement>>();
-        if (
-            otherElement.getChildElements() != null &&
-            !otherElement.getChildElements().isEmpty()
-        ) {
+        if (otherElement.getChildElements() != null && !otherElement.getChildElements().isEmpty()) {
             for (String key : otherElement.getChildElements().keySet()) {
-                List<ExtensionElement> otherElementList = otherElement
-                    .getChildElements()
-                    .get(key);
+                List<ExtensionElement> otherElementList = otherElement.getChildElements().get(key);
                 if (otherElementList != null && !otherElementList.isEmpty()) {
                     List<ExtensionElement> elementList = new ArrayList<ExtensionElement>();
                     for (ExtensionElement extensionElement : otherElementList) {

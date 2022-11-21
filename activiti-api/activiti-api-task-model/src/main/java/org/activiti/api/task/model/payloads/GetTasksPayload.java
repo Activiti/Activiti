@@ -31,12 +31,7 @@ public class GetTasksPayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public GetTasksPayload(
-        String assigneeId,
-        List<String> groups,
-        String processInstanceId,
-        String parentTaskId
-    ) {
+    public GetTasksPayload(String assigneeId, List<String> groups, String processInstanceId, String parentTaskId) {
         this();
         this.assigneeId = assigneeId;
         this.groups = groups;

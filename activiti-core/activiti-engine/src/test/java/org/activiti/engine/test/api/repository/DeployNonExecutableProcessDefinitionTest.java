@@ -25,8 +25,7 @@ import org.activiti.engine.test.Deployment;
 /**
 
  */
-public class DeployNonExecutableProcessDefinitionTest
-    extends PluggableActivitiTestCase {
+public class DeployNonExecutableProcessDefinitionTest extends PluggableActivitiTestCase {
 
     /**
      * Test for https://jira.codehaus.org/browse/ACT-2071
@@ -36,13 +35,7 @@ public class DeployNonExecutableProcessDefinitionTest
     @Deployment
     public void testDeployNonExecutableProcessDefinition() {
         assertThatExceptionOfType(ActivitiException.class)
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByKey(
-                    "oneTaskProcessNonExecutable"
-                )
-            )
-            .withMessageContaining(
-                "no processes deployed with key 'oneTaskProcessNonExecutable'"
-            );
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("oneTaskProcessNonExecutable"))
+            .withMessageContaining("no processes deployed with key 'oneTaskProcessNonExecutable'");
     }
 }

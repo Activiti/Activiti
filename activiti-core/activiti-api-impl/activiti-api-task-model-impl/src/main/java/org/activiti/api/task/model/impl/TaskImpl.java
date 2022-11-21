@@ -286,10 +286,7 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
             Objects.equals(formKey, task.formKey) &&
             Objects.equals(completedDate, task.completedDate) &&
             Objects.equals(duration, task.duration) &&
-            Objects.equals(
-                processDefinitionVersion,
-                task.processDefinitionVersion
-            ) &&
+            Objects.equals(processDefinitionVersion, task.processDefinitionVersion) &&
             Objects.equals(businessKey, task.businessKey) &&
             Objects.equals(taskDefinitionKey, task.taskDefinitionKey) &&
             Objects.equals(completedBy, task.completedBy)

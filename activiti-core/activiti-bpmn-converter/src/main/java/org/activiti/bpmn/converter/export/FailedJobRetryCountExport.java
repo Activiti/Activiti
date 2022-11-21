@@ -22,10 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class FailedJobRetryCountExport implements BpmnXMLConstants {
 
-    public static void writeFailedJobRetryCount(
-        Activity activity,
-        XMLStreamWriter xtw
-    ) throws Exception {
+    public static void writeFailedJobRetryCount(Activity activity, XMLStreamWriter xtw) throws Exception {
         String failedJobRetryCycle = activity.getFailedJobRetryTimeCycleValue();
         if (failedJobRetryCycle != null) {
             if (StringUtils.isNotEmpty(failedJobRetryCycle)) {

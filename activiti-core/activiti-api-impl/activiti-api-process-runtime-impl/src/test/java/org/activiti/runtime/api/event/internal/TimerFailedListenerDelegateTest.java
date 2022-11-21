@@ -47,8 +47,7 @@ public class TimerFailedListenerDelegateTest {
 
     @BeforeEach
     public void setUp() {
-        listenerDelegate =
-            new TimerFailedListenerDelegate(singletonList(listener), converter);
+        listenerDelegate = new TimerFailedListenerDelegate(singletonList(listener), converter);
     }
 
     @Test
@@ -56,8 +55,7 @@ public class TimerFailedListenerDelegateTest {
         //given
         ActivitiEntityEvent internalEvent = mock(ActivitiEntityEvent.class);
         BPMNTimerFailedEventImpl convertedEvent = new BPMNTimerFailedEventImpl();
-        given(converter.from(internalEvent))
-            .willReturn(Optional.of(convertedEvent));
+        given(converter.from(internalEvent)).willReturn(Optional.of(convertedEvent));
 
         //when
         listenerDelegate.onEvent(internalEvent);

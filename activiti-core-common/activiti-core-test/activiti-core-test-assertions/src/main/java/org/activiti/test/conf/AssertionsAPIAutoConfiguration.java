@@ -29,22 +29,15 @@ public class AssertionsAPIAutoConfiguration {
     @Bean
     public ProcessOperations processOperations(
         ProcessOperations processRuntimeOperations,
-        @Value(
-            "${activiti.assertions.await.enabled:false}"
-        ) boolean awaitEnabled
+        @Value("${activiti.assertions.await.enabled:false}") boolean awaitEnabled
     ) {
-        return new AwaitableProcessOperations(
-            processRuntimeOperations,
-            awaitEnabled
-        );
+        return new AwaitableProcessOperations(processRuntimeOperations, awaitEnabled);
     }
 
     @Bean
     public TaskOperations taskOperations(
         TaskOperations taskRuntimeOperations,
-        @Value(
-            "${activiti.assertions.await.enabled:false}"
-        ) boolean awaitEnabled
+        @Value("${activiti.assertions.await.enabled:false}") boolean awaitEnabled
     ) {
         return new AwaitableTaskOperations(taskRuntimeOperations, awaitEnabled);
     }

@@ -31,10 +31,7 @@ public class ActivitiTaskAlreadyClaimedException extends ActivitiException {
     /** the assignee of the task that is already claimed */
     private String taskAssignee;
 
-    public ActivitiTaskAlreadyClaimedException(
-        String taskId,
-        String taskAssignee
-    ) {
+    public ActivitiTaskAlreadyClaimedException(String taskId, String taskAssignee) {
         super("Task '" + taskId + "' is already claimed by someone else.");
         this.taskId = taskId;
         this.taskAssignee = taskAssignee;

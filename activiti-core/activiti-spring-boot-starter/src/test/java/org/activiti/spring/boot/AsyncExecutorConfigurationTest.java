@@ -39,29 +39,19 @@ public class AsyncExecutorConfigurationTest {
             .isEqualTo(properties.getDefaultAsyncJobAcquireWaitTimeInMillis());
         assertThat(asyncExecutor.getDefaultTimerJobAcquireWaitTimeInMillis())
             .isEqualTo(properties.getDefaultTimerJobAcquireWaitTimeInMillis());
-        assertThat(asyncExecutor.isMessageQueueMode())
-            .isEqualTo(properties.isMessageQueueMode());
-        assertThat(asyncExecutor.getAsyncJobLockTimeInMillis())
-            .isEqualTo(properties.getAsyncJobLockTimeInMillis());
-        assertThat(asyncExecutor.getCorePoolSize())
-            .isEqualTo(properties.getCorePoolSize());
+        assertThat(asyncExecutor.isMessageQueueMode()).isEqualTo(properties.isMessageQueueMode());
+        assertThat(asyncExecutor.getAsyncJobLockTimeInMillis()).isEqualTo(properties.getAsyncJobLockTimeInMillis());
+        assertThat(asyncExecutor.getCorePoolSize()).isEqualTo(properties.getCorePoolSize());
         assertThat(asyncExecutor.getDefaultQueueSizeFullWaitTimeInMillis())
             .isEqualTo(properties.getDefaultQueueSizeFullWaitTime());
-        assertThat(asyncExecutor.getKeepAliveTime())
-            .isEqualTo(properties.getKeepAliveTime());
+        assertThat(asyncExecutor.getKeepAliveTime()).isEqualTo(properties.getKeepAliveTime());
         assertThat(asyncExecutor.getMaxAsyncJobsDuePerAcquisition())
             .isEqualTo(properties.getMaxAsyncJobsDuePerAcquisition());
-        assertThat(asyncExecutor.getRetryWaitTimeInMillis())
-            .isEqualTo(properties.getRetryWaitTimeInMillis());
-        assertThat(asyncExecutor.getQueueSize())
-            .isEqualTo(properties.getQueueSize());
-        assertThat(asyncExecutor.getResetExpiredJobsInterval())
-            .isEqualTo(properties.getResetExpiredJobsInterval());
-        assertThat(asyncExecutor.getResetExpiredJobsPageSize())
-            .isEqualTo(properties.getResetExpiredJobsPageSize());
-        assertThat(asyncExecutor.getSecondsToWaitOnShutdown())
-            .isEqualTo(properties.getSecondsToWaitOnShutdown());
-        assertThat(asyncExecutor.getTimerLockTimeInMillis())
-            .isEqualTo(properties.getTimerLockTimeInMillis());
+        assertThat(asyncExecutor.getRetryWaitTimeInMillis()).isEqualTo(properties.getRetryWaitTimeInMillis());
+        assertThat(asyncExecutor.getQueueSize()).isEqualTo(properties.getQueueSize());
+        assertThat(asyncExecutor.getResetExpiredJobsInterval()).isEqualTo(properties.getResetExpiredJobsInterval());
+        assertThat(asyncExecutor.getResetExpiredJobsPageSize()).isEqualTo(properties.getResetExpiredJobsPageSize());
+        assertThat(asyncExecutor.getSecondsToWaitOnShutdown()).isEqualTo(properties.getSecondsToWaitOnShutdown());
+        assertThat(asyncExecutor.getTimerLockTimeInMillis()).isEqualTo(properties.getTimerLockTimeInMillis());
     }
 }

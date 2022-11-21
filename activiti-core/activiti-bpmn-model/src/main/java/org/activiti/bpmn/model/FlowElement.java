@@ -19,9 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class FlowElement
-    extends BaseElement
-    implements HasExecutionListeners, AcceptUpdates {
+public abstract class FlowElement extends BaseElement implements HasExecutionListeners, AcceptUpdates {
 
     protected String name;
     protected String documentation;
@@ -48,9 +46,7 @@ public abstract class FlowElement
         return executionListeners;
     }
 
-    public void setExecutionListeners(
-        List<ActivitiListener> executionListeners
-    ) {
+    public void setExecutionListeners(List<ActivitiListener> executionListeners) {
         this.executionListeners = executionListeners;
     }
 
@@ -81,10 +77,7 @@ public abstract class FlowElement
         setDocumentation(otherElement.getDocumentation());
 
         executionListeners = new ArrayList<ActivitiListener>();
-        if (
-            otherElement.getExecutionListeners() != null &&
-            !otherElement.getExecutionListeners().isEmpty()
-        ) {
+        if (otherElement.getExecutionListeners() != null && !otherElement.getExecutionListeners().isEmpty()) {
             for (ActivitiListener listener : otherElement.getExecutionListeners()) {
                 executionListeners.add(listener.clone());
             }

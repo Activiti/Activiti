@@ -21,9 +21,7 @@ package org.activiti.engine.impl.persistence.entity;
  *
 
  */
-public class SuspendedJobEntityImpl
-    extends AbstractJobEntityImpl
-    implements SuspendedJobEntity {
+public class SuspendedJobEntityImpl extends AbstractJobEntityImpl implements SuspendedJobEntity {
 
     private static final long serialVersionUID = 1L;
 

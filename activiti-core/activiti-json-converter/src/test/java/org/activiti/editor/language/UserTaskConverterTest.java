@@ -51,9 +51,7 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     }
 
     private void validateModel(BpmnModel model) {
-        FlowElement flowElement = model
-            .getMainProcess()
-            .getFlowElement("usertask", true);
+        FlowElement flowElement = model.getMainProcess().getFlowElement("usertask", true);
         assertThat(flowElement).isNotNull();
         assertThat(flowElement).isInstanceOf(UserTask.class);
         assertThat(flowElement.getId()).isEqualTo("usertask");
@@ -70,8 +68,7 @@ public class UserTaskConverterTest extends AbstractConverterTest {
         assertThat(userTask.getCandidateUsers().contains("kermit")).isTrue();
         assertThat(userTask.getCandidateUsers().contains("fozzie")).isTrue();
         assertThat(userTask.getCandidateGroups()).hasSize(2);
-        assertThat(userTask.getCandidateGroups().contains("management"))
-            .isTrue();
+        assertThat(userTask.getCandidateGroups().contains("management")).isTrue();
         assertThat(userTask.getCandidateGroups().contains("sales")).isTrue();
 
         List<FormProperty> formProperties = userTask.getFormProperties();
@@ -92,38 +89,20 @@ public class UserTaskConverterTest extends AbstractConverterTest {
         List<ActivitiListener> listeners = userTask.getTaskListeners();
         assertThat(listeners).hasSize(3);
         ActivitiListener listener = (ActivitiListener) listeners.get(0);
-        assertThat(
-            ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(
-                listener.getImplementationType()
-            )
-        )
-            .isTrue();
-        assertThat(listener.getImplementation())
-            .isEqualTo("org.test.TestClass");
+        assertThat(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())).isTrue();
+        assertThat(listener.getImplementation()).isEqualTo("org.test.TestClass");
         assertThat(listener.getEvent()).isEqualTo("create");
         assertThat(listener.getFieldExtensions()).hasSize(2);
-        assertThat(listener.getFieldExtensions().get(0).getFieldName())
-            .isEqualTo("testField");
-        assertThat(listener.getFieldExtensions().get(0).getStringValue())
-            .isEqualTo("test");
+        assertThat(listener.getFieldExtensions().get(0).getFieldName()).isEqualTo("testField");
+        assertThat(listener.getFieldExtensions().get(0).getStringValue()).isEqualTo("test");
         listener = (ActivitiListener) listeners.get(1);
-        assertThat(
-            ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(
-                listener.getImplementationType()
-            )
-        )
-            .isTrue();
+        assertThat(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getImplementationType())).isTrue();
         assertThat(listener.getImplementation()).isEqualTo("${someExpression}");
         assertThat(listener.getEvent()).isEqualTo("assignment");
         listener = (ActivitiListener) listeners.get(2);
-        assertThat(
-            ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(
-                listener.getImplementationType()
-            )
-        )
+        assertThat(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType()))
             .isTrue();
-        assertThat(listener.getImplementation())
-            .isEqualTo("${someDelegateExpression}");
+        assertThat(listener.getImplementation()).isEqualTo("${someDelegateExpression}");
         assertThat(listener.getEvent()).isEqualTo("complete");
 
         flowElement = model.getMainProcess().getFlowElement("start", true);

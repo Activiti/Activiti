@@ -33,22 +33,15 @@ public class TaskAssigneeTest extends PluggableActivitiTestCase {
     @Deployment
     public void testTaskAssignee() {
         // Start process instance
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "taskAssigneeExampleProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeExampleProcess");
 
         // Get task list
-        List<Task> tasks = taskService
-            .createTaskQuery()
-            .taskAssignee("kermit")
-            .list();
+        List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
         assertThat(tasks).hasSize(1);
         Task myTask = tasks.get(0);
         assertThat(myTask.getName()).isEqualTo("Schedule meeting");
         assertThat(myTask.getDescription())
-            .isEqualTo(
-                "Schedule an engineering meeting for next week with the new hire."
-            );
+            .isEqualTo("Schedule an engineering meeting for next week with the new hire.");
 
         // Complete task. Process is now finished
         taskService.complete(myTask.getId());

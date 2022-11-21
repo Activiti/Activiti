@@ -44,9 +44,7 @@ public class MetaDataTest extends PluggableActivitiTestCase {
                         // INFRASTRUCTURE TO SEE IF METADATA
                         // CAN BE USED INSTEAD OF PERFORMING A QUERY THAT MIGHT FAIL
                         try {
-                            SqlSession sqlSession = commandContext
-                                .getDbSqlSession()
-                                .getSqlSession();
+                            SqlSession sqlSession = commandContext.getDbSqlSession().getSqlSession();
                             ResultSet tables = sqlSession
                                 .getConnection()
                                 .getMetaData()
@@ -63,9 +61,7 @@ public class MetaDataTest extends PluggableActivitiTestCase {
                                         tables.getString(i)
                                     );
                                 }
-                                log.info(
-                                    "-------------------------------------------------------"
-                                );
+                                log.info("-------------------------------------------------------");
                             }
                         } catch (Exception e) {
                             e.printStackTrace();

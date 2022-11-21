@@ -42,8 +42,7 @@ public class DisabledDefinitionInfoCacheTest extends AbstractActivitiTestCase {
                 "org/activiti/engine/test/bpmn/usertask/activiti.cfg.xml"
             );
 
-            cachedProcessEngine =
-                processEngineConfiguration.buildProcessEngine();
+            cachedProcessEngine = processEngineConfiguration.buildProcessEngine();
         }
         processEngine = cachedProcessEngine;
     }
@@ -51,38 +50,22 @@ public class DisabledDefinitionInfoCacheTest extends AbstractActivitiTestCase {
     @Deployment
     public void testChangeFormKey() {
         // first test without changing the form key
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "dynamicUserTask"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("dynamicUserTask");
         String processDefinitionId = processInstance.getProcessDefinitionId();
 
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task.getFormKey()).isEqualTo("test");
         taskService.complete(task.getId());
 
         assertProcessEnded(processInstance.getId());
 
         // now test with changing the form key
-        ObjectNode infoNode = dynamicBpmnService.changeUserTaskFormKey(
-            "task1",
-            "test2"
-        );
-        dynamicBpmnService.saveProcessDefinitionInfo(
-            processDefinitionId,
-            infoNode
-        );
+        ObjectNode infoNode = dynamicBpmnService.changeUserTaskFormKey("task1", "test2");
+        dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
 
-        processInstance =
-            runtimeService.startProcessInstanceByKey("dynamicUserTask");
+        processInstance = runtimeService.startProcessInstanceByKey("dynamicUserTask");
 
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task.getFormKey()).isEqualTo("test");
         taskService.complete(task.getId());
 
@@ -95,29 +78,15 @@ public class DisabledDefinitionInfoCacheTest extends AbstractActivitiTestCase {
         Map<String, Object> varMap = new HashMap<String, Object>();
         varMap.put("count", 0);
         varMap.put("count2", 0);
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "dynamicServiceTask",
-            varMap
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("dynamicServiceTask", varMap);
 
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         taskService.complete(task.getId());
 
-        assertThat(runtimeService.getVariable(processInstance.getId(), "count"))
-            .isEqualTo(1);
-        assertThat(
-            runtimeService.getVariable(processInstance.getId(), "count2")
-        )
-            .isEqualTo(0);
+        assertThat(runtimeService.getVariable(processInstance.getId(), "count")).isEqualTo(1);
+        assertThat(runtimeService.getVariable(processInstance.getId(), "count2")).isEqualTo(0);
 
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         taskService.complete(task.getId());
 
         assertProcessEnded(processInstance.getId());
@@ -126,41 +95,22 @@ public class DisabledDefinitionInfoCacheTest extends AbstractActivitiTestCase {
         varMap = new HashMap<String, Object>();
         varMap.put("count", 0);
         varMap.put("count2", 0);
-        processInstance =
-            runtimeService.startProcessInstanceByKey(
-                "dynamicServiceTask",
-                varMap
-            );
+        processInstance = runtimeService.startProcessInstanceByKey("dynamicServiceTask", varMap);
 
         String processDefinitionId = processInstance.getProcessDefinitionId();
         ObjectNode infoNode = dynamicBpmnService.changeServiceTaskClassName(
             "service",
             "org.activiti.engine.test.bpmn.servicetask.DummyServiceTask2"
         );
-        dynamicBpmnService.saveProcessDefinitionInfo(
-            processDefinitionId,
-            infoNode
-        );
+        dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
 
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         taskService.complete(task.getId());
 
-        assertThat(runtimeService.getVariable(processInstance.getId(), "count"))
-            .isEqualTo(1);
-        assertThat(
-            runtimeService.getVariable(processInstance.getId(), "count2")
-        )
-            .isEqualTo(0);
+        assertThat(runtimeService.getVariable(processInstance.getId(), "count")).isEqualTo(1);
+        assertThat(runtimeService.getVariable(processInstance.getId(), "count2")).isEqualTo(0);
 
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         taskService.complete(task.getId());
 
         assertProcessEnded(processInstance.getId());

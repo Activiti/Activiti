@@ -22,9 +22,7 @@ public class ApplicationDeployedEvents {
 
     private List<ApplicationDeployedEvent> applicationDeployedEvents;
 
-    public ApplicationDeployedEvents(
-        List<ApplicationDeployedEvent> applicationDeployedEvents
-    ) {
+    public ApplicationDeployedEvents(List<ApplicationDeployedEvent> applicationDeployedEvents) {
         this.applicationDeployedEvents = applicationDeployedEvents;
     }
 

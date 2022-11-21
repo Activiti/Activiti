@@ -23,8 +23,6 @@ public interface PrincipalIdentityProvider {
         return Optional
             .of(principal)
             .map(Principal::getName)
-            .orElseThrow(() ->
-                new SecurityException("Invalid security principal name")
-            );
+            .orElseThrow(() -> new SecurityException("Invalid security principal name"));
     }
 }

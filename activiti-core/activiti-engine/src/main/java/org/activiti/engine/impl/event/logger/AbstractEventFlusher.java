@@ -40,9 +40,7 @@ public abstract class AbstractEventFlusher implements EventFlusher {
         this.eventHandlers = eventHandlers;
     }
 
-    public void addEventHandler(
-        EventLoggerEventHandler databaseEventLoggerEventHandler
-    ) {
+    public void addEventHandler(EventLoggerEventHandler databaseEventLoggerEventHandler) {
         eventHandlers.add(databaseEventLoggerEventHandler);
     }
 }

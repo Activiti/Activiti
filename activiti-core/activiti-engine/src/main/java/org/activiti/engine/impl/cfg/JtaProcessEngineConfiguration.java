@@ -25,8 +25,7 @@ import org.activiti.engine.impl.interceptor.JtaTransactionInterceptor;
 /**
 
  */
-public class JtaProcessEngineConfiguration
-    extends ProcessEngineConfigurationImpl {
+public class JtaProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
 
     protected TransactionManager transactionManager;
 
@@ -50,8 +49,7 @@ public class JtaProcessEngineConfiguration
     @Override
     public void initTransactionContextFactory() {
         if (transactionContextFactory == null) {
-            transactionContextFactory =
-                new JtaTransactionContextFactory(transactionManager);
+            transactionContextFactory = new JtaTransactionContextFactory(transactionManager);
         }
     }
 

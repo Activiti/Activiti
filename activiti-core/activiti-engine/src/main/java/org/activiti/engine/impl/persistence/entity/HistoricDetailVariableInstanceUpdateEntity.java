@@ -28,12 +28,7 @@ import org.activiti.engine.impl.variable.VariableType;
  */
 @Internal
 public interface HistoricDetailVariableInstanceUpdateEntity
-    extends
-        HistoricDetailEntity,
-        ValueFields,
-        HistoricVariableUpdate,
-        Entity,
-        HasRevision {
+    extends HistoricDetailEntity, ValueFields, HistoricVariableUpdate, Entity, HasRevision {
     void setName(String name);
 
     ByteArrayRef getByteArrayRef();

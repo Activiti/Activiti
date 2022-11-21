@@ -59,8 +59,7 @@ public class TenantAwareDataSource implements DataSource {
         return getCurrentDataSource().getConnection();
     }
 
-    public Connection getConnection(String username, String password)
-        throws SQLException {
+    public Connection getConnection(String username, String password) throws SQLException {
         return getCurrentDataSource().getConnection(username, password);
     }
 
@@ -68,9 +67,7 @@ public class TenantAwareDataSource implements DataSource {
         String tenantId = tenantInfoHolder.getCurrentTenantId();
         DataSource dataSource = dataSources.get(tenantId);
         if (dataSource == null) {
-            throw new ActivitiException(
-                "Could not find a dataSource for tenant " + tenantId
-            );
+            throw new ActivitiException("Could not find a dataSource for tenant " + tenantId);
         }
         return dataSource;
     }
@@ -88,12 +85,7 @@ public class TenantAwareDataSource implements DataSource {
         if (iface.isInstance(this)) {
             return (T) this;
         }
-        throw new SQLException(
-            "Cannot unwrap " +
-            getClass().getName() +
-            " as an instance of " +
-            iface.getName()
-        );
+        throw new SQLException("Cannot unwrap " + getClass().getName() + " as an instance of " + iface.getName());
     }
 
     public boolean isWrapperFor(Class<?> iface) throws SQLException {

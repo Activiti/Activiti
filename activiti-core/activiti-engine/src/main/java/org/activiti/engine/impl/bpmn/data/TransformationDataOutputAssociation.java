@@ -24,18 +24,13 @@ import org.activiti.engine.delegate.Expression;
  *
 
  */
-public class TransformationDataOutputAssociation
-    extends AbstractDataAssociation {
+public class TransformationDataOutputAssociation extends AbstractDataAssociation {
 
     private static final long serialVersionUID = 1L;
 
     protected Expression transformation;
 
-    public TransformationDataOutputAssociation(
-        String sourceRef,
-        String targetRef,
-        Expression transformation
-    ) {
+    public TransformationDataOutputAssociation(String sourceRef, String targetRef, Expression transformation) {
         super(sourceRef, targetRef);
         this.transformation = transformation;
     }

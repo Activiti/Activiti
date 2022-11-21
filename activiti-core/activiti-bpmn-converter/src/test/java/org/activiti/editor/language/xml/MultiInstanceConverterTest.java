@@ -39,12 +39,9 @@ public class MultiInstanceConverterTest extends AbstractConverterTest {
     }
 
     private void validateModel(BpmnModel bpmnModel) {
-        FlowElement flowElement = bpmnModel
-            .getMainProcess()
-            .getFlowElement("miTasks");
+        FlowElement flowElement = bpmnModel.getMainProcess().getFlowElement("miTasks");
         assertThat(flowElement).isNotNull().isInstanceOf(UserTask.class);
-        MultiInstanceLoopCharacteristics loopCharacteristics =
-            ((UserTask) flowElement).getLoopCharacteristics();
+        MultiInstanceLoopCharacteristics loopCharacteristics = ((UserTask) flowElement).getLoopCharacteristics();
         assertThat(loopCharacteristics)
             .extracting(
                 MultiInstanceLoopCharacteristics::getLoopDataOutputRef,

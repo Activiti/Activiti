@@ -21,14 +21,11 @@ import org.activiti.engine.impl.cfg.TransactionContext;
 /**
 
  */
-public class TransactionCommandContextCloseListener
-    implements CommandContextCloseListener {
+public class TransactionCommandContextCloseListener implements CommandContextCloseListener {
 
     protected TransactionContext transactionContext;
 
-    public TransactionCommandContextCloseListener(
-        TransactionContext transactionContext
-    ) {
+    public TransactionCommandContextCloseListener(TransactionContext transactionContext) {
         this.transactionContext = transactionContext;
     }
 

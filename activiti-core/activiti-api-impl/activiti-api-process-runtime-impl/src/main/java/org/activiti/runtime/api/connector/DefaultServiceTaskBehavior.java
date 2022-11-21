@@ -47,21 +47,14 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
     @Override
     public void execute(DelegateExecution execution) {
         Connector connector = getConnector(getImplementation(execution));
-        IntegrationContext integrationContext = connector.apply(
-            integrationContextBuilder.from(execution)
-        );
+        IntegrationContext integrationContext = connector.apply(integrationContextBuilder.from(execution));
 
-        variablesPropagator.propagate(
-            execution,
-            integrationContext.getOutBoundVariables()
-        );
+        variablesPropagator.propagate(execution, integrationContext.getOutBoundVariables());
         leave(execution);
     }
 
     private String getImplementation(DelegateExecution execution) {
-        return (
-            (ServiceTask) execution.getCurrentFlowElement()
-        ).getImplementation();
+        return ((ServiceTask) execution.getCurrentFlowElement()).getImplementation();
     }
 
     private Connector getConnector(String implementation) {
@@ -69,9 +62,7 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
     }
 
     private String getServiceTaskImplementation(DelegateExecution execution) {
-        return (
-            (ServiceTask) execution.getCurrentFlowElement()
-        ).getImplementation();
+        return ((ServiceTask) execution.getCurrentFlowElement()).getImplementation();
     }
 
     public boolean hasConnectorBean(DelegateExecution execution) {

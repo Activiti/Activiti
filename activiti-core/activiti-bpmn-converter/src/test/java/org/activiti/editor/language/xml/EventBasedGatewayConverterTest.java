@@ -43,9 +43,7 @@ public class EventBasedGatewayConverterTest extends AbstractConverterTest {
     }
 
     private void validateModel(BpmnModel model) {
-        FlowElement flowElement = model
-            .getMainProcess()
-            .getFlowElement("eventBasedGateway");
+        FlowElement flowElement = model.getMainProcess().getFlowElement("eventBasedGateway");
         assertThat(flowElement).isNotNull();
         assertThat(flowElement).isInstanceOf(EventGateway.class);
 
@@ -53,14 +51,8 @@ public class EventBasedGatewayConverterTest extends AbstractConverterTest {
         List<ActivitiListener> listeners = gateway.getExecutionListeners();
         assertThat(listeners).hasSize(1);
         ActivitiListener listener = listeners.get(0);
-        assertThat(
-            ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(
-                listener.getImplementationType()
-            )
-        )
-            .isTrue();
-        assertThat(listener.getImplementation())
-            .isEqualTo("org.test.TestClass");
+        assertThat(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())).isTrue();
+        assertThat(listener.getImplementation()).isEqualTo("org.test.TestClass");
         assertThat(listener.getEvent()).isEqualTo("start");
     }
 }

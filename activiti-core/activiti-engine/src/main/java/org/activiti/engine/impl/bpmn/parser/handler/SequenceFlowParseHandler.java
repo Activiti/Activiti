@@ -23,8 +23,7 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 /**
 
  */
-public class SequenceFlowParseHandler
-    extends AbstractBpmnParseHandler<SequenceFlow> {
+public class SequenceFlowParseHandler extends AbstractBpmnParseHandler<SequenceFlow> {
 
     public static final String PROPERTYNAME_CONDITION = "condition";
     public static final String PROPERTYNAME_CONDITION_TEXT = "conditionText";
@@ -33,16 +32,9 @@ public class SequenceFlowParseHandler
         return SequenceFlow.class;
     }
 
-    protected void executeParse(
-        BpmnParse bpmnParse,
-        SequenceFlow sequenceFlow
-    ) {
+    protected void executeParse(BpmnParse bpmnParse, SequenceFlow sequenceFlow) {
         org.activiti.bpmn.model.Process process = bpmnParse.getCurrentProcess();
-        sequenceFlow.setSourceFlowElement(
-            process.getFlowElement(sequenceFlow.getSourceRef(), true)
-        );
-        sequenceFlow.setTargetFlowElement(
-            process.getFlowElement(sequenceFlow.getTargetRef(), true)
-        );
+        sequenceFlow.setSourceFlowElement(process.getFlowElement(sequenceFlow.getSourceRef(), true));
+        sequenceFlow.setTargetFlowElement(process.getFlowElement(sequenceFlow.getTargetRef(), true));
     }
 }

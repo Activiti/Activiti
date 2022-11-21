@@ -22,8 +22,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 /**
 
  */
-public class ProcessInstancesByProcessDefinitionMatcher
-    extends CachedEntityMatcherAdapter<ExecutionEntity> {
+public class ProcessInstancesByProcessDefinitionMatcher extends CachedEntityMatcherAdapter<ExecutionEntity> {
 
     @Override
     public boolean isRetained(ExecutionEntity entity, Object parameter) {

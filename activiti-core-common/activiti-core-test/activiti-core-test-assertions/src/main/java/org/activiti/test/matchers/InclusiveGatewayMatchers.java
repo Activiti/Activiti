@@ -28,9 +28,7 @@ public class InclusiveGatewayMatchers extends ActivityMatchers {
         return INCLUSIVE_GATEWAY;
     }
 
-    public static InclusiveGatewayMatchers inclusiveGateway(
-        String definitionKey
-    ) {
+    public static InclusiveGatewayMatchers inclusiveGateway(String definitionKey) {
         return new InclusiveGatewayMatchers(definitionKey);
     }
 }

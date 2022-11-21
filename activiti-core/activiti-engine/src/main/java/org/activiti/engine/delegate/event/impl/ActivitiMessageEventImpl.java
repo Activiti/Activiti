@@ -25,9 +25,7 @@ import org.activiti.engine.delegate.event.ActivitiSignalEvent;
  *
 
  */
-public class ActivitiMessageEventImpl
-    extends ActivitiActivityEventImpl
-    implements ActivitiMessageEvent {
+public class ActivitiMessageEventImpl extends ActivitiActivityEventImpl implements ActivitiMessageEvent {
 
     protected String messageName;
     protected String correlationKey;

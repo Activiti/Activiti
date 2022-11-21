@@ -73,10 +73,7 @@ public class TaskRuntimeImplTest {
             .build();
 
         TaskImpl updatedTask = new TaskImpl();
-        given(
-            taskRuntimeHelper.applyUpdateTaskPayload(false, updateTaskPayload)
-        )
-            .willReturn(updatedTask);
+        given(taskRuntimeHelper.applyUpdateTaskPayload(false, updateTaskPayload)).willReturn(updatedTask);
 
         //when
         Task retrievedTask = taskRuntime.update(updateTaskPayload);
@@ -97,25 +94,20 @@ public class TaskRuntimeImplTest {
         doReturn(userCandidates).when(taskRuntime).userCandidates("taskId");
 
         //when
-        Throwable thrown = catchThrowable(() ->
-            taskRuntime.assign(assignTaskPayload)
-        );
+        Throwable thrown = catchThrowable(() -> taskRuntime.assign(assignTaskPayload));
 
         //then
         assertThat(thrown)
             .isInstanceOf(IllegalStateException.class)
             .hasMessageStartingWith(
-                "You cannot assign a task to " +
-                assignTaskPayload.getAssignee() +
-                " due it is not a candidate for it"
+                "You cannot assign a task to " + assignTaskPayload.getAssignee() + " due it is not a candidate for it"
             );
     }
 
     @Test
     public void assign_should_updateTaskAssignee_whenAssigneeIsACandidateUser() {
         //given
-        when(securityManager.getAuthenticatedUserId())
-            .thenReturn(AUTHENTICATED_USER);
+        when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
 
         String taskId = "taskId";
         String newAssignee = "newAssignee";

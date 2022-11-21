@@ -42,15 +42,11 @@ import org.slf4j.LoggerFactory;
 
 
  */
-public class TaskQueryImpl
-    extends AbstractVariableQueryImpl<TaskQuery, Task>
-    implements TaskQuery {
+public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> implements TaskQuery {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger log = LoggerFactory.getLogger(
-        TaskQueryImpl.class
-    );
+    private static final Logger log = LoggerFactory.getLogger(TaskQueryImpl.class);
 
     protected String taskId;
     protected String name;
@@ -167,32 +163,22 @@ public class TaskQueryImpl
     @Override
     public TaskQuery taskNameIn(List<String> nameList) {
         if (nameList == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Task name list is null"
-            );
+            throw new ActivitiIllegalArgumentException("Task name list is null");
         }
         if (nameList.isEmpty()) {
-            throw new ActivitiIllegalArgumentException(
-                "Task name list is empty"
-            );
+            throw new ActivitiIllegalArgumentException("Task name list is empty");
         }
         for (String name : nameList) {
             if (name == null) {
-                throw new ActivitiIllegalArgumentException(
-                    "None of the given task names can be null"
-                );
+                throw new ActivitiIllegalArgumentException("None of the given task names can be null");
             }
         }
 
         if (name != null) {
-            throw new ActivitiIllegalArgumentException(
-                "Invalid query usage: cannot set both taskNameIn and name"
-            );
+            throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameIn and name");
         }
         if (nameLike != null) {
-            throw new ActivitiIllegalArgumentException(
-                "Invalid query usage: cannot set both taskNameIn and nameLike"
-            );
+            throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both taskNameIn and nameLike");
         }
         if (nameLikeIgnoreCase != null) {
             throw new ActivitiIllegalArgumentException(
@@ -211,20 +197,14 @@ public class TaskQueryImpl
     @Override
     public TaskQuery taskNameInIgnoreCase(List<String> nameList) {
         if (nameList == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Task name list is null"
-            );
+            throw new ActivitiIllegalArgumentException("Task name list is null");
         }
         if (nameList.isEmpty()) {
-            throw new ActivitiIllegalArgumentException(
-                "Task name list is empty"
-            );
+            throw new ActivitiIllegalArgumentException("Task name list is empty");
         }
         for (String name : nameList) {
             if (name == null) {
-                throw new ActivitiIllegalArgumentException(
-                    "None of the given task names can be null"
-                );
+                throw new ActivitiIllegalArgumentException("None of the given task names can be null");
             }
         }
 
@@ -245,9 +225,7 @@ public class TaskQueryImpl
         }
 
         final int nameListSize = nameList.size();
-        final List<String> caseIgnoredNameList = new ArrayList<String>(
-            nameListSize
-        );
+        final List<String> caseIgnoredNameList = new ArrayList<String>(nameListSize);
         for (String name : nameList) {
             caseIgnoredNameList.add(name.toLowerCase());
         }
@@ -275,14 +253,11 @@ public class TaskQueryImpl
 
     public TaskQuery taskNameLikeIgnoreCase(String nameLikeIgnoreCase) {
         if (nameLikeIgnoreCase == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Task nameLikeIgnoreCase is null"
-            );
+            throw new ActivitiIllegalArgumentException("Task nameLikeIgnoreCase is null");
         }
 
         if (orActive) {
-            currentOrQueryObject.nameLikeIgnoreCase =
-                nameLikeIgnoreCase.toLowerCase();
+            currentOrQueryObject.nameLikeIgnoreCase = nameLikeIgnoreCase.toLowerCase();
         } else {
             this.nameLikeIgnoreCase = nameLikeIgnoreCase.toLowerCase();
         }
@@ -304,9 +279,7 @@ public class TaskQueryImpl
 
     public TaskQuery taskDescriptionLike(String descriptionLike) {
         if (descriptionLike == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Task descriptionlike is null"
-            );
+            throw new ActivitiIllegalArgumentException("Task descriptionlike is null");
         }
         if (orActive) {
             currentOrQueryObject.descriptionLike = descriptionLike;
@@ -316,20 +289,14 @@ public class TaskQueryImpl
         return this;
     }
 
-    public TaskQuery taskDescriptionLikeIgnoreCase(
-        String descriptionLikeIgnoreCase
-    ) {
+    public TaskQuery taskDescriptionLikeIgnoreCase(String descriptionLikeIgnoreCase) {
         if (descriptionLikeIgnoreCase == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Task descriptionLikeIgnoreCase is null"
-            );
+            throw new ActivitiIllegalArgumentException("Task descriptionLikeIgnoreCase is null");
         }
         if (orActive) {
-            currentOrQueryObject.descriptionLikeIgnoreCase =
-                descriptionLikeIgnoreCase.toLowerCase();
+            currentOrQueryObject.descriptionLikeIgnoreCase = descriptionLikeIgnoreCase.toLowerCase();
         } else {
-            this.descriptionLikeIgnoreCase =
-                descriptionLikeIgnoreCase.toLowerCase();
+            this.descriptionLikeIgnoreCase = descriptionLikeIgnoreCase.toLowerCase();
         }
         return this;
     }
@@ -396,13 +363,10 @@ public class TaskQueryImpl
 
     public TaskQuery taskAssigneeLikeIgnoreCase(String assigneeLikeIgnoreCase) {
         if (assigneeLikeIgnoreCase == null) {
-            throw new ActivitiIllegalArgumentException(
-                "assigneeLikeIgnoreCase is null"
-            );
+            throw new ActivitiIllegalArgumentException("assigneeLikeIgnoreCase is null");
         }
         if (orActive) {
-            currentOrQueryObject.assigneeLikeIgnoreCase =
-                assigneeLikeIgnoreCase.toLowerCase();
+            currentOrQueryObject.assigneeLikeIgnoreCase = assigneeLikeIgnoreCase.toLowerCase();
         } else {
             this.assigneeLikeIgnoreCase = assigneeLikeIgnoreCase.toLowerCase();
         }
@@ -412,20 +376,14 @@ public class TaskQueryImpl
     @Override
     public TaskQuery taskAssigneeIds(List<String> assigneeIds) {
         if (assigneeIds == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Task assignee list is null"
-            );
+            throw new ActivitiIllegalArgumentException("Task assignee list is null");
         }
         if (assigneeIds.isEmpty()) {
-            throw new ActivitiIllegalArgumentException(
-                "Task assignee list is empty"
-            );
+            throw new ActivitiIllegalArgumentException("Task assignee list is empty");
         }
         for (String assignee : assigneeIds) {
             if (assignee == null) {
-                throw new ActivitiIllegalArgumentException(
-                    "None of the given task assignees can be null"
-                );
+                throw new ActivitiIllegalArgumentException("None of the given task assignees can be null");
             }
         }
 
@@ -482,8 +440,7 @@ public class TaskQueryImpl
             throw new ActivitiIllegalArgumentException("OwnerLikeIgnoreCase");
         }
         if (orActive) {
-            currentOrQueryObject.ownerLikeIgnoreCase =
-                ownerLikeIgnoreCase.toLowerCase();
+            currentOrQueryObject.ownerLikeIgnoreCase = ownerLikeIgnoreCase.toLowerCase();
         } else {
             this.ownerLikeIgnoreCase = ownerLikeIgnoreCase.toLowerCase();
         }
@@ -518,9 +475,7 @@ public class TaskQueryImpl
 
     public TaskQueryImpl taskCandidateUser(String candidateUser) {
         if (candidateUser == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Candidate user is null"
-            );
+            throw new ActivitiIllegalArgumentException("Candidate user is null");
         }
 
         if (orActive) {
@@ -532,14 +487,9 @@ public class TaskQueryImpl
         return this;
     }
 
-    public TaskQueryImpl taskCandidateUser(
-        String candidateUser,
-        List<String> usersGroups
-    ) {
+    public TaskQueryImpl taskCandidateUser(String candidateUser, List<String> usersGroups) {
         if (candidateUser == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Candidate user is null"
-            );
+            throw new ActivitiIllegalArgumentException("Candidate user is null");
         }
 
         if (orActive) {
@@ -567,9 +517,7 @@ public class TaskQueryImpl
 
     public TaskQueryImpl taskInvolvedGroupsIn(List<String> involvedGroups) {
         if (involvedGroups == null || involvedGroups.isEmpty()) {
-            throw new ActivitiIllegalArgumentException(
-                "Involved groups list is null or empty."
-            );
+            throw new ActivitiIllegalArgumentException("Involved groups list is null or empty.");
         }
 
         if (orActive) {
@@ -583,9 +531,7 @@ public class TaskQueryImpl
 
     public TaskQueryImpl taskCandidateGroup(String candidateGroup) {
         if (candidateGroup == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Candidate group is null"
-            );
+            throw new ActivitiIllegalArgumentException("Candidate group is null");
         }
 
         if (candidateGroups != null) {
@@ -603,13 +549,9 @@ public class TaskQueryImpl
     }
 
     @Override
-    public TaskQuery taskCandidateOrAssigned(
-        String userIdForCandidateAndAssignee
-    ) {
+    public TaskQuery taskCandidateOrAssigned(String userIdForCandidateAndAssignee) {
         if (candidateGroup != null) {
-            throw new ActivitiIllegalArgumentException(
-                "Invalid query usage: cannot set candidateGroup"
-            );
+            throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set candidateGroup");
         }
         if (candidateUser != null) {
             throw new ActivitiIllegalArgumentException(
@@ -619,8 +561,7 @@ public class TaskQueryImpl
 
         if (orActive) {
             currentOrQueryObject.bothCandidateAndAssigned = true;
-            currentOrQueryObject.userIdForCandidateAndAssignee =
-                userIdForCandidateAndAssignee;
+            currentOrQueryObject.userIdForCandidateAndAssignee = userIdForCandidateAndAssignee;
         } else {
             this.bothCandidateAndAssigned = true;
             this.userIdForCandidateAndAssignee = userIdForCandidateAndAssignee;
@@ -630,14 +571,9 @@ public class TaskQueryImpl
     }
 
     @Override
-    public TaskQuery taskCandidateOrAssigned(
-        String userIdForCandidateAndAssignee,
-        List<String> usersGroups
-    ) {
+    public TaskQuery taskCandidateOrAssigned(String userIdForCandidateAndAssignee, List<String> usersGroups) {
         if (candidateGroup != null) {
-            throw new ActivitiIllegalArgumentException(
-                "Invalid query usage: cannot set candidateGroup"
-            );
+            throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set candidateGroup");
         }
         if (candidateUser != null) {
             throw new ActivitiIllegalArgumentException(
@@ -647,8 +583,7 @@ public class TaskQueryImpl
 
         if (orActive) {
             currentOrQueryObject.bothCandidateAndAssigned = true;
-            currentOrQueryObject.userIdForCandidateAndAssignee =
-                userIdForCandidateAndAssignee;
+            currentOrQueryObject.userIdForCandidateAndAssignee = userIdForCandidateAndAssignee;
             currentOrQueryObject.candidateGroups = usersGroups;
         } else {
             this.bothCandidateAndAssigned = true;
@@ -661,15 +596,11 @@ public class TaskQueryImpl
 
     public TaskQuery taskCandidateGroupIn(List<String> candidateGroups) {
         if (candidateGroups == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Candidate group list is null"
-            );
+            throw new ActivitiIllegalArgumentException("Candidate group list is null");
         }
 
         if (candidateGroups.isEmpty()) {
-            throw new ActivitiIllegalArgumentException(
-                "Candidate group list is empty"
-            );
+            throw new ActivitiIllegalArgumentException("Candidate group list is empty");
         }
 
         if (candidateGroup != null) {
@@ -688,9 +619,7 @@ public class TaskQueryImpl
 
     public TaskQuery taskTenantId(String tenantId) {
         if (tenantId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "task tenant id is null"
-            );
+            throw new ActivitiIllegalArgumentException("task tenant id is null");
         }
         if (orActive) {
             currentOrQueryObject.tenantId = tenantId;
@@ -702,9 +631,7 @@ public class TaskQueryImpl
 
     public TaskQuery taskTenantIdLike(String tenantIdLike) {
         if (tenantIdLike == null) {
-            throw new ActivitiIllegalArgumentException(
-                "task tenant id is null"
-            );
+            throw new ActivitiIllegalArgumentException("task tenant id is null");
         }
         if (orActive) {
             currentOrQueryObject.tenantIdLike = tenantIdLike;
@@ -744,20 +671,14 @@ public class TaskQueryImpl
     @Override
     public TaskQuery processInstanceIdIn(List<String> processInstanceIds) {
         if (processInstanceIds == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Process instance id list is null"
-            );
+            throw new ActivitiIllegalArgumentException("Process instance id list is null");
         }
         if (processInstanceIds.isEmpty()) {
-            throw new ActivitiIllegalArgumentException(
-                "Process instance id list is empty"
-            );
+            throw new ActivitiIllegalArgumentException("Process instance id list is empty");
         }
         for (String processInstanceId : processInstanceIds) {
             if (processInstanceId == null) {
-                throw new ActivitiIllegalArgumentException(
-                    "None of the given process instance ids can be null"
-                );
+                throw new ActivitiIllegalArgumentException("None of the given process instance ids can be null");
             }
         }
 
@@ -769,40 +690,30 @@ public class TaskQueryImpl
         return this;
     }
 
-    public TaskQueryImpl processInstanceBusinessKey(
-        String processInstanceBusinessKey
-    ) {
+    public TaskQueryImpl processInstanceBusinessKey(String processInstanceBusinessKey) {
         if (orActive) {
-            currentOrQueryObject.processInstanceBusinessKey =
-                processInstanceBusinessKey;
+            currentOrQueryObject.processInstanceBusinessKey = processInstanceBusinessKey;
         } else {
             this.processInstanceBusinessKey = processInstanceBusinessKey;
         }
         return this;
     }
 
-    public TaskQueryImpl processInstanceBusinessKeyLike(
-        String processInstanceBusinessKeyLike
-    ) {
+    public TaskQueryImpl processInstanceBusinessKeyLike(String processInstanceBusinessKeyLike) {
         if (orActive) {
-            currentOrQueryObject.processInstanceBusinessKeyLike =
-                processInstanceBusinessKeyLike;
+            currentOrQueryObject.processInstanceBusinessKeyLike = processInstanceBusinessKeyLike;
         } else {
-            this.processInstanceBusinessKeyLike =
-                processInstanceBusinessKeyLike;
+            this.processInstanceBusinessKeyLike = processInstanceBusinessKeyLike;
         }
         return this;
     }
 
-    public TaskQuery processInstanceBusinessKeyLikeIgnoreCase(
-        String processInstanceBusinessKeyLikeIgnoreCase
-    ) {
+    public TaskQuery processInstanceBusinessKeyLikeIgnoreCase(String processInstanceBusinessKeyLikeIgnoreCase) {
         if (orActive) {
             currentOrQueryObject.processInstanceBusinessKeyLikeIgnoreCase =
                 processInstanceBusinessKeyLikeIgnoreCase.toLowerCase();
         } else {
-            this.processInstanceBusinessKeyLikeIgnoreCase =
-                processInstanceBusinessKeyLikeIgnoreCase.toLowerCase();
+            this.processInstanceBusinessKeyLikeIgnoreCase = processInstanceBusinessKeyLikeIgnoreCase.toLowerCase();
         }
         return this;
     }
@@ -870,15 +781,9 @@ public class TaskQueryImpl
         return this;
     }
 
-    public TaskQuery taskVariableValueEquals(
-        String variableName,
-        Object variableValue
-    ) {
+    public TaskQuery taskVariableValueEquals(String variableName, Object variableValue) {
         if (orActive) {
-            currentOrQueryObject.variableValueEquals(
-                variableName,
-                variableValue
-            );
+            currentOrQueryObject.variableValueEquals(variableName, variableValue);
         } else {
             this.variableValueEquals(variableName, variableValue);
         }
@@ -894,10 +799,7 @@ public class TaskQueryImpl
         return this;
     }
 
-    public TaskQuery taskVariableValueEqualsIgnoreCase(
-        String name,
-        String value
-    ) {
+    public TaskQuery taskVariableValueEqualsIgnoreCase(String name, String value) {
         if (orActive) {
             currentOrQueryObject.variableValueEqualsIgnoreCase(name, value);
         } else {
@@ -906,10 +808,7 @@ public class TaskQueryImpl
         return this;
     }
 
-    public TaskQuery taskVariableValueNotEqualsIgnoreCase(
-        String name,
-        String value
-    ) {
+    public TaskQuery taskVariableValueNotEqualsIgnoreCase(String name, String value) {
         if (orActive) {
             currentOrQueryObject.variableValueNotEqualsIgnoreCase(name, value);
         } else {
@@ -918,15 +817,9 @@ public class TaskQueryImpl
         return this;
     }
 
-    public TaskQuery taskVariableValueNotEquals(
-        String variableName,
-        Object variableValue
-    ) {
+    public TaskQuery taskVariableValueNotEquals(String variableName, Object variableValue) {
         if (orActive) {
-            currentOrQueryObject.variableValueNotEquals(
-                variableName,
-                variableValue
-            );
+            currentOrQueryObject.variableValueNotEquals(variableName, variableValue);
         } else {
             this.variableValueNotEquals(variableName, variableValue);
         }
@@ -942,10 +835,7 @@ public class TaskQueryImpl
         return this;
     }
 
-    public TaskQuery taskVariableValueGreaterThanOrEqual(
-        String name,
-        Object value
-    ) {
+    public TaskQuery taskVariableValueGreaterThanOrEqual(String name, Object value) {
         if (orActive) {
             currentOrQueryObject.variableValueGreaterThanOrEqual(name, value);
         } else {
@@ -963,10 +853,7 @@ public class TaskQueryImpl
         return this;
     }
 
-    public TaskQuery taskVariableValueLessThanOrEqual(
-        String name,
-        Object value
-    ) {
+    public TaskQuery taskVariableValueLessThanOrEqual(String name, Object value) {
         if (orActive) {
             currentOrQueryObject.variableValueLessThanOrEqual(name, value);
         } else {
@@ -984,10 +871,7 @@ public class TaskQueryImpl
         return this;
     }
 
-    public TaskQuery taskVariableValueLikeIgnoreCase(
-        String name,
-        String value
-    ) {
+    public TaskQuery taskVariableValueLikeIgnoreCase(String name, String value) {
         if (orActive) {
             currentOrQueryObject.variableValueLikeIgnoreCase(name, value);
         } else {
@@ -996,32 +880,18 @@ public class TaskQueryImpl
         return this;
     }
 
-    public TaskQuery processVariableValueEquals(
-        String variableName,
-        Object variableValue
-    ) {
+    public TaskQuery processVariableValueEquals(String variableName, Object variableValue) {
         if (orActive) {
-            currentOrQueryObject.variableValueEquals(
-                variableName,
-                variableValue,
-                false
-            );
+            currentOrQueryObject.variableValueEquals(variableName, variableValue, false);
         } else {
             this.variableValueEquals(variableName, variableValue, false);
         }
         return this;
     }
 
-    public TaskQuery processVariableValueNotEquals(
-        String variableName,
-        Object variableValue
-    ) {
+    public TaskQuery processVariableValueNotEquals(String variableName, Object variableValue) {
         if (orActive) {
-            currentOrQueryObject.variableValueNotEquals(
-                variableName,
-                variableValue,
-                false
-            );
+            currentOrQueryObject.variableValueNotEquals(variableName, variableValue, false);
         } else {
             this.variableValueNotEquals(variableName, variableValue, false);
         }
@@ -1037,42 +907,25 @@ public class TaskQueryImpl
         return this;
     }
 
-    public TaskQuery processVariableValueEqualsIgnoreCase(
-        String name,
-        String value
-    ) {
+    public TaskQuery processVariableValueEqualsIgnoreCase(String name, String value) {
         if (orActive) {
-            currentOrQueryObject.variableValueEqualsIgnoreCase(
-                name,
-                value,
-                false
-            );
+            currentOrQueryObject.variableValueEqualsIgnoreCase(name, value, false);
         } else {
             this.variableValueEqualsIgnoreCase(name, value, false);
         }
         return this;
     }
 
-    public TaskQuery processVariableValueNotEqualsIgnoreCase(
-        String name,
-        String value
-    ) {
+    public TaskQuery processVariableValueNotEqualsIgnoreCase(String name, String value) {
         if (orActive) {
-            currentOrQueryObject.variableValueNotEqualsIgnoreCase(
-                name,
-                value,
-                false
-            );
+            currentOrQueryObject.variableValueNotEqualsIgnoreCase(name, value, false);
         } else {
             this.variableValueNotEqualsIgnoreCase(name, value, false);
         }
         return this;
     }
 
-    public TaskQuery processVariableValueGreaterThan(
-        String name,
-        Object value
-    ) {
+    public TaskQuery processVariableValueGreaterThan(String name, Object value) {
         if (orActive) {
             currentOrQueryObject.variableValueGreaterThan(name, value, false);
         } else {
@@ -1081,16 +934,9 @@ public class TaskQueryImpl
         return this;
     }
 
-    public TaskQuery processVariableValueGreaterThanOrEqual(
-        String name,
-        Object value
-    ) {
+    public TaskQuery processVariableValueGreaterThanOrEqual(String name, Object value) {
         if (orActive) {
-            currentOrQueryObject.variableValueGreaterThanOrEqual(
-                name,
-                value,
-                false
-            );
+            currentOrQueryObject.variableValueGreaterThanOrEqual(name, value, false);
         } else {
             this.variableValueGreaterThanOrEqual(name, value, false);
         }
@@ -1106,16 +952,9 @@ public class TaskQueryImpl
         return this;
     }
 
-    public TaskQuery processVariableValueLessThanOrEqual(
-        String name,
-        Object value
-    ) {
+    public TaskQuery processVariableValueLessThanOrEqual(String name, Object value) {
         if (orActive) {
-            currentOrQueryObject.variableValueLessThanOrEqual(
-                name,
-                value,
-                false
-            );
+            currentOrQueryObject.variableValueLessThanOrEqual(name, value, false);
         } else {
             this.variableValueLessThanOrEqual(name, value, false);
         }
@@ -1131,16 +970,9 @@ public class TaskQueryImpl
         return this;
     }
 
-    public TaskQuery processVariableValueLikeIgnoreCase(
-        String name,
-        String value
-    ) {
+    public TaskQuery processVariableValueLikeIgnoreCase(String name, String value) {
         if (orActive) {
-            currentOrQueryObject.variableValueLikeIgnoreCase(
-                name,
-                value,
-                false
-            );
+            currentOrQueryObject.variableValueLikeIgnoreCase(name, value, false);
         } else {
             this.variableValueLikeIgnoreCase(name, value, false);
         }
@@ -1158,33 +990,25 @@ public class TaskQueryImpl
 
     public TaskQuery processDefinitionKeyLike(String processDefinitionKeyLike) {
         if (orActive) {
-            currentOrQueryObject.processDefinitionKeyLike =
-                processDefinitionKeyLike;
+            currentOrQueryObject.processDefinitionKeyLike = processDefinitionKeyLike;
         } else {
             this.processDefinitionKeyLike = processDefinitionKeyLike;
         }
         return this;
     }
 
-    public TaskQuery processDefinitionKeyLikeIgnoreCase(
-        String processDefinitionKeyLikeIgnoreCase
-    ) {
+    public TaskQuery processDefinitionKeyLikeIgnoreCase(String processDefinitionKeyLikeIgnoreCase) {
         if (orActive) {
-            currentOrQueryObject.processDefinitionKeyLikeIgnoreCase =
-                processDefinitionKeyLikeIgnoreCase.toLowerCase();
+            currentOrQueryObject.processDefinitionKeyLikeIgnoreCase = processDefinitionKeyLikeIgnoreCase.toLowerCase();
         } else {
-            this.processDefinitionKeyLikeIgnoreCase =
-                processDefinitionKeyLikeIgnoreCase.toLowerCase();
+            this.processDefinitionKeyLikeIgnoreCase = processDefinitionKeyLikeIgnoreCase.toLowerCase();
         }
         return this;
     }
 
-    public TaskQuery processDefinitionKeyIn(
-        List<String> processDefinitionKeys
-    ) {
+    public TaskQuery processDefinitionKeyIn(List<String> processDefinitionKeys) {
         if (orActive) {
-            this.currentOrQueryObject.processDefinitionKeys =
-                processDefinitionKeys;
+            this.currentOrQueryObject.processDefinitionKeys = processDefinitionKeys;
         } else {
             this.processDefinitionKeys = processDefinitionKeys;
         }
@@ -1209,12 +1033,9 @@ public class TaskQueryImpl
         return this;
     }
 
-    public TaskQuery processDefinitionNameLike(
-        String processDefinitionNameLike
-    ) {
+    public TaskQuery processDefinitionNameLike(String processDefinitionNameLike) {
         if (orActive) {
-            currentOrQueryObject.processDefinitionNameLike =
-                processDefinitionNameLike;
+            currentOrQueryObject.processDefinitionNameLike = processDefinitionNameLike;
         } else {
             this.processDefinitionNameLike = processDefinitionNameLike;
         }
@@ -1224,20 +1045,14 @@ public class TaskQueryImpl
     @Override
     public TaskQuery processCategoryIn(List<String> processCategoryInList) {
         if (processCategoryInList == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Process category list is null"
-            );
+            throw new ActivitiIllegalArgumentException("Process category list is null");
         }
         if (processCategoryInList.isEmpty()) {
-            throw new ActivitiIllegalArgumentException(
-                "Process category list is empty"
-            );
+            throw new ActivitiIllegalArgumentException("Process category list is empty");
         }
         for (String processCategory : processCategoryInList) {
             if (processCategory == null) {
-                throw new ActivitiIllegalArgumentException(
-                    "None of the given process categories can be null"
-                );
+                throw new ActivitiIllegalArgumentException("None of the given process categories can be null");
             }
         }
 
@@ -1250,30 +1065,21 @@ public class TaskQueryImpl
     }
 
     @Override
-    public TaskQuery processCategoryNotIn(
-        List<String> processCategoryNotInList
-    ) {
+    public TaskQuery processCategoryNotIn(List<String> processCategoryNotInList) {
         if (processCategoryNotInList == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Process category list is null"
-            );
+            throw new ActivitiIllegalArgumentException("Process category list is null");
         }
         if (processCategoryNotInList.isEmpty()) {
-            throw new ActivitiIllegalArgumentException(
-                "Process category list is empty"
-            );
+            throw new ActivitiIllegalArgumentException("Process category list is empty");
         }
         for (String processCategory : processCategoryNotInList) {
             if (processCategory == null) {
-                throw new ActivitiIllegalArgumentException(
-                    "None of the given process categories can be null"
-                );
+                throw new ActivitiIllegalArgumentException("None of the given process categories can be null");
             }
         }
 
         if (orActive) {
-            currentOrQueryObject.processCategoryNotInList =
-                processCategoryNotInList;
+            currentOrQueryObject.processCategoryNotInList = processCategoryNotInList;
         } else {
             this.processCategoryNotInList = processCategoryNotInList;
         }
@@ -1431,9 +1237,7 @@ public class TaskQueryImpl
     }
 
     protected List<String> getGroupsForCandidateUser(String candidateUser) {
-        UserGroupManager userGroupManager = Context
-            .getProcessEngineConfiguration()
-            .getUserGroupManager();
+        UserGroupManager userGroupManager = Context.getProcessEngineConfiguration().getUserGroupManager();
         if (userGroupManager != null) {
             return userGroupManager.getUserGroups(candidateUser);
         } else {
@@ -1445,9 +1249,7 @@ public class TaskQueryImpl
     }
 
     protected void ensureVariablesInitialized() {
-        VariableTypes types = Context
-            .getProcessEngineConfiguration()
-            .getVariableTypes();
+        VariableTypes types = Context.getProcessEngineConfiguration().getVariableTypes();
         for (QueryVariableValue var : queryVariableValues) {
             var.initialize(types);
         }
@@ -1462,9 +1264,7 @@ public class TaskQueryImpl
     @Override
     public TaskQuery or() {
         if (orActive) {
-            throw new ActivitiException(
-                "the query is already in an or statement"
-            );
+            throw new ActivitiException("the query is already in an or statement");
         }
 
         // Create instance of the orQuery
@@ -1477,9 +1277,7 @@ public class TaskQueryImpl
     @Override
     public TaskQuery endOr() {
         if (!orActive) {
-            throw new ActivitiException(
-                "endOr() can only be called after calling or()"
-            );
+            throw new ActivitiException("endOr() can only be called after calling or()");
         }
 
         orActive = false;
@@ -1546,18 +1344,12 @@ public class TaskQueryImpl
     }
 
     public TaskQuery orderByDueDateNullsFirst() {
-        return orderBy(
-            TaskQueryProperty.DUE_DATE,
-            NullHandlingOnOrder.NULLS_FIRST
-        );
+        return orderBy(TaskQueryProperty.DUE_DATE, NullHandlingOnOrder.NULLS_FIRST);
     }
 
     @Override
     public TaskQuery orderByDueDateNullsLast() {
-        return orderBy(
-            TaskQueryProperty.DUE_DATE,
-            NullHandlingOnOrder.NULLS_LAST
-        );
+        return orderBy(TaskQueryProperty.DUE_DATE, NullHandlingOnOrder.NULLS_LAST);
     }
 
     @Override
@@ -1580,24 +1372,12 @@ public class TaskQueryImpl
         checkQueryOk();
         List<Task> tasks = null;
         if (includeTaskLocalVariables || includeProcessVariables) {
-            tasks =
-                commandContext
-                    .getTaskEntityManager()
-                    .findTasksAndVariablesByQueryCriteria(this);
+            tasks = commandContext.getTaskEntityManager().findTasksAndVariablesByQueryCriteria(this);
         } else {
-            tasks =
-                commandContext
-                    .getTaskEntityManager()
-                    .findTasksByQueryCriteria(this);
+            tasks = commandContext.getTaskEntityManager().findTasksByQueryCriteria(this);
         }
 
-        if (
-            tasks != null &&
-            Context
-                .getProcessEngineConfiguration()
-                .getPerformanceSettings()
-                .isEnableLocalization()
-        ) {
+        if (tasks != null && Context.getProcessEngineConfiguration().getPerformanceSettings().isEnableLocalization()) {
             for (Task task : tasks) {
                 localize(task);
             }
@@ -1609,9 +1389,7 @@ public class TaskQueryImpl
     public long executeCount(CommandContext commandContext) {
         ensureVariablesInitialized();
         checkQueryOk();
-        return commandContext
-            .getTaskEntityManager()
-            .findTaskCountByQueryCriteria(this);
+        return commandContext.getTaskEntityManager().findTaskCountByQueryCriteria(this);
     }
 
     protected void localize(Task task) {
@@ -1628,25 +1406,14 @@ public class TaskQueryImpl
                     withLocalizationFallback
                 );
                 if (languageNode != null) {
-                    JsonNode languageNameNode = languageNode.get(
-                        DynamicBpmnConstants.LOCALIZATION_NAME
-                    );
-                    if (
-                        languageNameNode != null && !languageNameNode.isNull()
-                    ) {
+                    JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
+                    if (languageNameNode != null && !languageNameNode.isNull()) {
                         task.setLocalizedName(languageNameNode.asText());
                     }
 
-                    JsonNode languageDescriptionNode = languageNode.get(
-                        DynamicBpmnConstants.LOCALIZATION_DESCRIPTION
-                    );
-                    if (
-                        languageDescriptionNode != null &&
-                        !languageDescriptionNode.isNull()
-                    ) {
-                        task.setLocalizedDescription(
-                            languageDescriptionNode.asText()
-                        );
+                    JsonNode languageDescriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
+                    if (languageDescriptionNode != null && !languageDescriptionNode.isNull()) {
+                        task.setLocalizedDescription(languageDescriptionNode.asText());
                     }
                 }
             }

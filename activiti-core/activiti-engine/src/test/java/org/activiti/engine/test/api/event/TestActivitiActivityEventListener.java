@@ -28,8 +28,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
  *
 
  */
-public class TestActivitiActivityEventListener
-    implements ActivitiEventListener {
+public class TestActivitiActivityEventListener implements ActivitiEventListener {
 
     private List<ActivitiEvent> eventsReceived;
     private boolean ignoreRawActivityEvents;

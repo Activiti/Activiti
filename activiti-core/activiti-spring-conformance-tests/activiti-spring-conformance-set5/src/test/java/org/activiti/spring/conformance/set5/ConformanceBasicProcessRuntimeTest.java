@@ -58,37 +58,23 @@ public class ConformanceBasicProcessRuntimeTest {
     public void shouldProcessDefinitions() {
         securityUtil.logInAs("user1");
 
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
-            Pageable.of(0, 50)
-        );
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0, 50));
 
         List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent();
         assertThat(processDefinitions)
             .extracting(ProcessDefinition::getName)
-            .contains(
-                "Basic Call Activity",
-                "Basic Call Activity With Service Task",
-                "Sub Process A",
-                "Sub Process B"
-            );
+            .contains("Basic Call Activity", "Basic Call Activity With Service Task", "Sub Process A", "Sub Process B");
     }
 
     @Test
     public void shouldProcessDefinitionsMetaData() {
         securityUtil.logInAs("user1");
 
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
-            Pageable.of(0, 50)
-        );
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0, 50));
 
         List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent();
         assertThat(processDefinitions)
             .extracting(ProcessDefinition::getName)
-            .contains(
-                "Basic Call Activity",
-                "Basic Call Activity With Service Task",
-                "Sub Process A",
-                "Sub Process B"
-            );
+            .contains("Basic Call Activity", "Basic Call Activity With Service Task", "Sub Process A", "Sub Process B");
     }
 }

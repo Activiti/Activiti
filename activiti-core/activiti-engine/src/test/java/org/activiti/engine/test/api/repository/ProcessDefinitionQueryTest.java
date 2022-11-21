@@ -41,12 +41,8 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
             repositoryService
                 .createDeployment()
                 .name("org/activiti/engine/test/repository/one.bpmn20.xml")
-                .addClasspathResource(
-                    "org/activiti/engine/test/repository/one.bpmn20.xml"
-                )
-                .addClasspathResource(
-                    "org/activiti/engine/test/repository/two.bpmn20.xml"
-                )
+                .addClasspathResource("org/activiti/engine/test/repository/one.bpmn20.xml")
+                .addClasspathResource("org/activiti/engine/test/repository/two.bpmn20.xml")
                 .deploy()
                 .getId();
 
@@ -54,9 +50,7 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
             repositoryService
                 .createDeployment()
                 .name("org/activiti/engine/test/repository/one.bpmn20.xml")
-                .addClasspathResource(
-                    "org/activiti/engine/test/repository/one.bpmn20.xml"
-                )
+                .addClasspathResource("org/activiti/engine/test/repository/one.bpmn20.xml")
                 .deploy()
                 .getId();
 
@@ -101,36 +95,23 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
     }
 
     public void testQueryByDeploymentId() {
-        ProcessDefinitionQuery query = repositoryService
-            .createProcessDefinitionQuery()
-            .deploymentId(deploymentOneId);
+        ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().deploymentId(deploymentOneId);
         verifyQueryResults(query, 2);
     }
 
     public void testQueryByInvalidDeploymentId() {
-        ProcessDefinitionQuery query = repositoryService
-            .createProcessDefinitionQuery()
-            .deploymentId("invalid");
+        ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().deploymentId("invalid");
         verifyQueryResults(query, 0);
 
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
-            .isThrownBy(() ->
-                repositoryService
-                    .createProcessDefinitionQuery()
-                    .deploymentId(null)
-            );
+            .isThrownBy(() -> repositoryService.createProcessDefinitionQuery().deploymentId(null));
     }
 
     public void testQueryByName() {
-        ProcessDefinitionQuery query = repositoryService
-            .createProcessDefinitionQuery()
-            .processDefinitionName("Two");
+        ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionName("Two");
         verifyQueryResults(query, 1);
 
-        query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .processDefinitionName("One");
+        query = repositoryService.createProcessDefinitionQuery().processDefinitionName("One");
         verifyQueryResults(query, 2);
     }
 
@@ -141,11 +122,7 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
         verifyQueryResults(query, 0);
 
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
-            .isThrownBy(() ->
-                repositoryService
-                    .createProcessDefinitionQuery()
-                    .processDefinitionName(null)
-            );
+            .isThrownBy(() -> repositoryService.createProcessDefinitionQuery().processDefinitionName(null));
     }
 
     public void testQueryByNameLike() {
@@ -164,23 +141,16 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
 
     public void testQueryByKey() {
         // process one
-        ProcessDefinitionQuery query = repositoryService
-            .createProcessDefinitionQuery()
-            .processDefinitionKey("one");
+        ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionKey("one");
         verifyQueryResults(query, 2);
 
         // process two
-        query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .processDefinitionKey("two");
+        query = repositoryService.createProcessDefinitionQuery().processDefinitionKey("two");
         verifyQueryResults(query, 1);
     }
 
     public void testQueryByIdOrKey() {
-        ProcessDefinitionQuery query = repositoryService
-            .createProcessDefinitionQuery()
-            .processDefinitionIdOrKey("one");
+        ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionIdOrKey("one");
         verifyQueryResults(query, 2);
 
         ProcessDefinition processDefinition = repositoryService
@@ -191,10 +161,7 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
             .findFirst()
             .get();
 
-        query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .processDefinitionIdOrKey(processDefinition.getId());
+        query = repositoryService.createProcessDefinitionQuery().processDefinitionIdOrKey(processDefinition.getId());
         verifyQueryResults(query, 1);
     }
 
@@ -208,43 +175,27 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
         oneAndTwo.addAll(two);
 
         // process one
-        ProcessDefinitionQuery query = repositoryService
-            .createProcessDefinitionQuery()
-            .processDefinitionKeys(one);
+        ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionKeys(one);
         verifyQueryResults(query, 2);
 
         // process two
-        query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .processDefinitionKeys(two);
+        query = repositoryService.createProcessDefinitionQuery().processDefinitionKeys(two);
         verifyQueryResults(query, 1);
 
-        query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .processDefinitionKeys(oneAndTwo);
+        query = repositoryService.createProcessDefinitionQuery().processDefinitionKeys(oneAndTwo);
         verifyQueryResults(query, 3);
     }
 
     public void testQueryByInvalidKey() {
-        ProcessDefinitionQuery query = repositoryService
-            .createProcessDefinitionQuery()
-            .processDefinitionKey("invalid");
+        ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionKey("invalid");
         verifyQueryResults(query, 0);
 
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
-            .isThrownBy(() ->
-                repositoryService
-                    .createProcessDefinitionQuery()
-                    .processDefinitionKey(null)
-            );
+            .isThrownBy(() -> repositoryService.createProcessDefinitionQuery().processDefinitionKey(null));
     }
 
     public void testQueryByKeyLike() {
-        ProcessDefinitionQuery query = repositoryService
-            .createProcessDefinitionQuery()
-            .processDefinitionKeyLike("%o%");
+        ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionKeyLike("%o%");
         verifyQueryResults(query, 3);
     }
 
@@ -255,11 +206,7 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
         verifyQueryResults(query, 0);
 
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
-            .isThrownBy(() ->
-                repositoryService
-                    .createProcessDefinitionQuery()
-                    .processDefinitionKeyLike(null)
-            );
+            .isThrownBy(() -> repositoryService.createProcessDefinitionQuery().processDefinitionKeyLike(null));
     }
 
     public void testQueryByCategory() {
@@ -275,47 +222,27 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
             .processDefinitionCategoryLike("%Example%");
         verifyQueryResults(query, 3);
 
-        query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .processDefinitionCategoryLike("%amples2");
+        query = repositoryService.createProcessDefinitionQuery().processDefinitionCategoryLike("%amples2");
         verifyQueryResults(query, 1);
     }
 
     public void testQueryByVersion() {
-        ProcessDefinitionQuery query = repositoryService
-            .createProcessDefinitionQuery()
-            .processDefinitionVersion(2);
+        ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionVersion(2);
         verifyQueryResults(query, 1);
 
-        query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .processDefinitionVersion(1);
+        query = repositoryService.createProcessDefinitionQuery().processDefinitionVersion(1);
         verifyQueryResults(query, 2);
     }
 
     public void testQueryByInvalidVersion() {
-        ProcessDefinitionQuery query = repositoryService
-            .createProcessDefinitionQuery()
-            .processDefinitionVersion(3);
+        ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionVersion(3);
         verifyQueryResults(query, 0);
 
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
-            .isThrownBy(() ->
-                repositoryService
-                    .createProcessDefinitionQuery()
-                    .processDefinitionVersion(-1)
-                    .list()
-            );
+            .isThrownBy(() -> repositoryService.createProcessDefinitionQuery().processDefinitionVersion(-1).list());
 
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
-            .isThrownBy(() ->
-                repositoryService
-                    .createProcessDefinitionQuery()
-                    .processDefinitionVersion(null)
-                    .list()
-            );
+            .isThrownBy(() -> repositoryService.createProcessDefinitionQuery().processDefinitionVersion(null).list());
     }
 
     public void testQueryByKeyAndVersion() {
@@ -326,38 +253,22 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
         verifyQueryResults(query, 1);
 
         query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .processDefinitionKey("one")
-                .processDefinitionVersion(2);
+            repositoryService.createProcessDefinitionQuery().processDefinitionKey("one").processDefinitionVersion(2);
         verifyQueryResults(query, 1);
 
         query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .processDefinitionKey("one")
-                .processDefinitionVersion(3);
+            repositoryService.createProcessDefinitionQuery().processDefinitionKey("one").processDefinitionVersion(3);
         verifyQueryResults(query, 0);
     }
 
     public void testQueryByLatest() {
-        ProcessDefinitionQuery query = repositoryService
-            .createProcessDefinitionQuery()
-            .latestVersion();
+        ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().latestVersion();
         verifyQueryResults(query, 2);
 
-        query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .processDefinitionKey("one")
-                .latestVersion();
+        query = repositoryService.createProcessDefinitionQuery().processDefinitionKey("one").latestVersion();
         verifyQueryResults(query, 1);
 
-        query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .processDefinitionKey("two")
-                .latestVersion();
+        query = repositoryService.createProcessDefinitionQuery().processDefinitionKey("two").latestVersion();
         verifyQueryResults(query, 1);
     }
 
@@ -370,55 +281,27 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
             .asc();
         verifyQueryResults(query, 3);
 
-        query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .orderByDeploymentId()
-                .asc();
+        query = repositoryService.createProcessDefinitionQuery().orderByDeploymentId().asc();
         verifyQueryResults(query, 3);
 
-        query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .orderByProcessDefinitionKey()
-                .asc();
+        query = repositoryService.createProcessDefinitionQuery().orderByProcessDefinitionKey().asc();
         verifyQueryResults(query, 3);
 
-        query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .orderByProcessDefinitionVersion()
-                .asc();
+        query = repositoryService.createProcessDefinitionQuery().orderByProcessDefinitionVersion().asc();
         verifyQueryResults(query, 3);
 
         // desc
 
-        query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .orderByProcessDefinitionId()
-                .desc();
+        query = repositoryService.createProcessDefinitionQuery().orderByProcessDefinitionId().desc();
         verifyQueryResults(query, 3);
 
-        query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .orderByDeploymentId()
-                .desc();
+        query = repositoryService.createProcessDefinitionQuery().orderByDeploymentId().desc();
         verifyQueryResults(query, 3);
 
-        query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .orderByProcessDefinitionKey()
-                .desc();
+        query = repositoryService.createProcessDefinitionQuery().orderByProcessDefinitionKey().desc();
         verifyQueryResults(query, 3);
 
-        query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .orderByProcessDefinitionVersion()
-                .desc();
+        query = repositoryService.createProcessDefinitionQuery().orderByProcessDefinitionVersion().desc();
         verifyQueryResults(query, 3);
 
         // Typical use case
@@ -440,10 +323,7 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
         assertThat(processDefinitions.get(2).getVersion()).isEqualTo(1);
     }
 
-    private void verifyQueryResults(
-        ProcessDefinitionQuery query,
-        int countExpected
-    ) {
+    private void verifyQueryResults(ProcessDefinitionQuery query, int countExpected) {
         assertThat(query.list()).hasSize(countExpected);
         assertThat(query.count()).isEqualTo(countExpected);
 
@@ -457,67 +337,39 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
     }
 
     private void verifySingleResultFails(ProcessDefinitionQuery query) {
-        assertThatExceptionOfType(ActivitiException.class)
-            .isThrownBy(() -> query.singleResult());
+        assertThatExceptionOfType(ActivitiException.class).isThrownBy(() -> query.singleResult());
     }
 
     public void testQueryByMessageSubscription() {
         Deployment deployment = repositoryService
             .createDeployment()
-            .addClasspathResource(
-                "org/activiti/engine/test/api/repository/processWithNewBookingMessage.bpmn20.xml"
-            )
-            .addClasspathResource(
-                "org/activiti/engine/test/api/repository/processWithNewInvoiceMessage.bpmn20.xml"
-            )
+            .addClasspathResource("org/activiti/engine/test/api/repository/processWithNewBookingMessage.bpmn20.xml")
+            .addClasspathResource("org/activiti/engine/test/api/repository/processWithNewInvoiceMessage.bpmn20.xml")
             .deploy();
 
         assertThat(
-            repositoryService
-                .createProcessDefinitionQuery()
-                .messageEventSubscriptionName("newInvoiceMessage")
-                .count()
+            repositoryService.createProcessDefinitionQuery().messageEventSubscriptionName("newInvoiceMessage").count()
         )
             .isEqualTo(1);
 
         assertThat(
-            repositoryService
-                .createProcessDefinitionQuery()
-                .messageEventSubscriptionName("newBookingMessage")
-                .count()
+            repositoryService.createProcessDefinitionQuery().messageEventSubscriptionName("newBookingMessage").count()
         )
             .isEqualTo(1);
 
-        assertThat(
-            repositoryService
-                .createProcessDefinitionQuery()
-                .messageEventSubscriptionName("bogus")
-                .count()
-        )
+        assertThat(repositoryService.createProcessDefinitionQuery().messageEventSubscriptionName("bogus").count())
             .isEqualTo(0);
 
         repositoryService.deleteDeployment(deployment.getId());
     }
 
     public void testNativeQuery() {
-        assertThat(managementService.getTableName(ProcessDefinition.class))
-            .isEqualTo("ACT_RE_PROCDEF");
-        assertThat(
-            managementService.getTableName(ProcessDefinitionEntity.class)
-        )
-            .isEqualTo("ACT_RE_PROCDEF");
-        String tableName = managementService.getTableName(
-            ProcessDefinition.class
-        );
+        assertThat(managementService.getTableName(ProcessDefinition.class)).isEqualTo("ACT_RE_PROCDEF");
+        assertThat(managementService.getTableName(ProcessDefinitionEntity.class)).isEqualTo("ACT_RE_PROCDEF");
+        String tableName = managementService.getTableName(ProcessDefinition.class);
         String baseQuerySql = "SELECT * FROM " + tableName;
 
-        assertThat(
-            repositoryService
-                .createNativeProcessDefinitionQuery()
-                .sql(baseQuerySql)
-                .list()
-        )
-            .hasSize(3);
+        assertThat(repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).list()).hasSize(3);
 
         assertThat(
             repositoryService
@@ -538,26 +390,12 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
             .hasSize(2);
 
         // paging
-        assertThat(
-            repositoryService
-                .createNativeProcessDefinitionQuery()
-                .sql(baseQuerySql)
-                .listPage(0, 2)
-        )
-            .hasSize(2);
-        assertThat(
-            repositoryService
-                .createNativeProcessDefinitionQuery()
-                .sql(baseQuerySql)
-                .listPage(1, 3)
-        )
-            .hasSize(2);
+        assertThat(repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).listPage(0, 2)).hasSize(2);
+        assertThat(repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).listPage(1, 3)).hasSize(2);
     }
 
     public void testQueryByProcessDefinitionIds() {
-        List<ProcessDefinition> processDefinitions = repositoryService
-            .createProcessDefinitionQuery()
-            .list();
+        List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
         Set<String> ids = new HashSet<String>();
         for (ProcessDefinition processDefinition : processDefinitions) {
             ids.add(processDefinition.getId());
@@ -575,11 +413,7 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
 
     public void testQueryWithNullArgs() {
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
-            .isThrownBy(() ->
-                repositoryService
-                    .createProcessDefinitionQuery()
-                    .processDefinitionKeys(null)
-            );
+            .isThrownBy(() -> repositoryService.createProcessDefinitionQuery().processDefinitionKeys(null));
     }
 
     public void testQueryWithEmptyIdSet() {

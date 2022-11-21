@@ -23,9 +23,7 @@ import java.util.Date;
  *
 
  */
-public class EventLogEntryEntityImpl
-    extends AbstractEntityNoRevision
-    implements EventLogEntryEntity {
+public class EventLogEntryEntityImpl extends AbstractEntityNoRevision implements EventLogEntryEntity {
 
     protected long logNumber; // cant use id here, it would clash with entity
     protected String type;

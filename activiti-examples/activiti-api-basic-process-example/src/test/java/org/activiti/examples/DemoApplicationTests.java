@@ -38,13 +38,10 @@ public class DemoApplicationTests {
     public void contextLoads() {
         securityUtil.logInAs("system");
 
-        ProcessDefinition processDefinition = processRuntime.processDefinition(
-            PROCESS_DEFINITION_KEY
-        );
+        ProcessDefinition processDefinition = processRuntime.processDefinition(PROCESS_DEFINITION_KEY);
 
         assertThat(processDefinition).isNotNull();
-        assertThat(processDefinition.getKey())
-            .isEqualTo(PROCESS_DEFINITION_KEY);
+        assertThat(processDefinition.getKey()).isEqualTo(PROCESS_DEFINITION_KEY);
         assertThat(processDefinition.getAppVersion()).isNull();
     }
 }

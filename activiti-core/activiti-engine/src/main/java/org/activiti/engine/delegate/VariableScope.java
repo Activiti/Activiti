@@ -59,9 +59,7 @@ public interface VariableScope {
     /**
      * Similar to {@link #getVariableInstances()}, but limited to only the variables with the provided names.
      */
-    Map<String, VariableInstance> getVariableInstances(
-        Collection<String> variableNames
-    );
+    Map<String, VariableInstance> getVariableInstances(Collection<String> variableNames);
 
     /**
      * Similar to {@link #getVariables(Collection))}, but with a flag that indicates that all
@@ -72,20 +70,14 @@ public interface VariableScope {
      * the other variables. However, if the other variables are needed further on, getting them in
      * one go is probably better (and the variables are cached during one {@link Command} execution).
      */
-    Map<String, Object> getVariables(
-        Collection<String> variableNames,
-        boolean fetchAllVariables
-    );
+    Map<String, Object> getVariables(Collection<String> variableNames, boolean fetchAllVariables);
 
     /**
      * Similar to {@link #getVariables(Collection, boolean)} but returns the variables
      * as instances of the {@link VariableInstance} interface,
      * which gives more information than only the value (type, execution id, etc.)
      */
-    Map<String, VariableInstance> getVariableInstances(
-        Collection<String> variableNames,
-        boolean fetchAllVariables
-    );
+    Map<String, VariableInstance> getVariableInstances(Collection<String> variableNames, boolean fetchAllVariables);
 
     /**
      * Returns the variable local to this scope only.
@@ -107,17 +99,12 @@ public interface VariableScope {
     /**
      * Similar to {@link #getVariableInstances(Collection)}, but only for variables local to this scope.
      */
-    Map<String, VariableInstance> getVariableInstancesLocal(
-        Collection<String> variableNames
-    );
+    Map<String, VariableInstance> getVariableInstancesLocal(Collection<String> variableNames);
 
     /**
      * Similar to {@link #getVariables(Collection, boolean)}, but only for variables local to this scope.
      */
-    Map<String, Object> getVariablesLocal(
-        Collection<String> variableNames,
-        boolean fetchAllVariables
-    );
+    Map<String, Object> getVariablesLocal(Collection<String> variableNames, boolean fetchAllVariables);
 
     /**
      * Similar to {@link #getVariableInstances(Collection, boolean)}, but only for variables local to this scope.
@@ -154,10 +141,7 @@ public interface VariableScope {
      * Similar to {@link #getVariable(String, boolean)}, but returns an instance of {@link VariableInstance},
      * which has some additional information beyond the value.
      */
-    VariableInstance getVariableInstance(
-        String variableName,
-        boolean fetchAllVariables
-    );
+    VariableInstance getVariableInstance(String variableName, boolean fetchAllVariables);
 
     /**
      * Returns the value for the specific variable and only checks this scope and not any parent scope.
@@ -185,10 +169,7 @@ public interface VariableScope {
      * Similar to {@link #getVariableLocal(String, boolean)}, but returns an instance of {@link VariableInstance},
      * which has some additional information beyond the value.
      */
-    VariableInstance getVariableInstanceLocal(
-        String variableName,
-        boolean fetchAllVariables
-    );
+    VariableInstance getVariableInstanceLocal(String variableName, boolean fetchAllVariables);
 
     /**
      * Typed version of the {@link #getVariable(String)} method.
@@ -250,11 +231,7 @@ public interface VariableScope {
      * compatibility reasons. However, in some use cases, it might make sense not to fetch any other variables
      * when setting one variable (for example when doing nothing more than just setting one variable).
      */
-    void setVariable(
-        String variableName,
-        Object value,
-        boolean fetchAllVariables
-    );
+    void setVariable(String variableName, Object value, boolean fetchAllVariables);
 
     /**
      * Similar to {@link #setVariable(String, Object)}, but the variable is set to this scope specifically.
@@ -264,11 +241,7 @@ public interface VariableScope {
     /**
      * Similar to {@link #setVariableLocal(String, Object, boolean)}, but the variable is set to this scope specifically.
      */
-    Object setVariableLocal(
-        String variableName,
-        Object value,
-        boolean fetchAllVariables
-    );
+    Object setVariableLocal(String variableName, Object value, boolean fetchAllVariables);
 
     /**
      * Sets the provided variables to the variable scope.

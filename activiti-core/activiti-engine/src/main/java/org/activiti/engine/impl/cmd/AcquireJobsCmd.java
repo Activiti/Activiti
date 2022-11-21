@@ -41,34 +41,19 @@ public class AcquireJobsCmd implements Command<AcquiredJobEntities> {
         AcquiredJobEntities acquiredJobs = new AcquiredJobEntities();
         List<JobEntity> jobs = commandContext
             .getJobEntityManager()
-            .findJobsToExecute(
-                new Page(0, asyncExecutor.getMaxAsyncJobsDuePerAcquisition())
-            );
+            .findJobsToExecute(new Page(0, asyncExecutor.getMaxAsyncJobsDuePerAcquisition()));
 
         for (JobEntity job : jobs) {
-            lockJob(
-                commandContext,
-                job,
-                asyncExecutor.getAsyncJobLockTimeInMillis()
-            );
+            lockJob(commandContext, job, asyncExecutor.getAsyncJobLockTimeInMillis());
             acquiredJobs.addJob(job);
         }
 
         return acquiredJobs;
     }
 
-    protected void lockJob(
-        CommandContext commandContext,
-        JobEntity job,
-        int lockTimeInMillis
-    ) {
+    protected void lockJob(CommandContext commandContext, JobEntity job, int lockTimeInMillis) {
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
-        gregorianCalendar.setTime(
-            commandContext
-                .getProcessEngineConfiguration()
-                .getClock()
-                .getCurrentTime()
-        );
+        gregorianCalendar.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
         gregorianCalendar.add(Calendar.MILLISECOND, lockTimeInMillis);
         job.setLockOwner(asyncExecutor.getLockOwner());
         job.setLockExpirationTime(gregorianCalendar.getTime());

@@ -32,9 +32,7 @@ public class LockExclusiveJobCmd implements Command<Object>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static Logger log = LoggerFactory.getLogger(
-        LockExclusiveJobCmd.class
-    );
+    private static Logger log = LoggerFactory.getLogger(LockExclusiveJobCmd.class);
 
     protected Job job;
 
@@ -48,24 +46,16 @@ public class LockExclusiveJobCmd implements Command<Object>, Serializable {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug(
-                "Executing lock exclusive job {} {}",
-                job.getId(),
-                job.getExecutionId()
-            );
+            log.debug("Executing lock exclusive job {} {}", job.getId(), job.getExecutionId());
         }
 
         if (job.isExclusive()) {
             if (job.getExecutionId() != null) {
-                ExecutionEntity execution = commandContext
-                    .getExecutionEntityManager()
-                    .findById(job.getExecutionId());
+                ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(job.getExecutionId());
                 if (execution != null) {
                     commandContext
                         .getExecutionEntityManager()
-                        .updateProcessInstanceLockTime(
-                            execution.getProcessInstanceId()
-                        );
+                        .updateProcessInstanceLockTime(execution.getProcessInstanceId());
                 }
             }
         }

@@ -55,10 +55,7 @@ public class ActivitiEventDispatcherImpl implements ActivitiEventDispatcher {
     }
 
     @Override
-    public void addEventListener(
-        ActivitiEventListener listenerToAdd,
-        ActivitiEventType... types
-    ) {
+    public void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... types) {
         eventSupport.addEventListener(listenerToAdd, types);
     }
 
@@ -73,10 +70,7 @@ public class ActivitiEventDispatcherImpl implements ActivitiEventDispatcher {
             eventSupport.dispatchEvent(event);
         }
 
-        if (
-            event.getType() == ActivitiEventType.ENTITY_DELETED &&
-            event instanceof ActivitiEntityEvent
-        ) {
+        if (event.getType() == ActivitiEventType.ENTITY_DELETED && event instanceof ActivitiEntityEvent) {
             ActivitiEntityEvent entityEvent = (ActivitiEntityEvent) event;
             if (entityEvent.getEntity() instanceof ProcessDefinition) {
                 // process definition deleted event doesn't need to be dispatched to event listeners
@@ -89,9 +83,7 @@ public class ActivitiEventDispatcherImpl implements ActivitiEventDispatcher {
         if (commandContext != null) {
             BpmnModel bpmnModel = extractBpmnModelFromEvent(event);
             if (bpmnModel != null) {
-                (
-                    (ActivitiEventSupport) bpmnModel.getEventSupport()
-                ).dispatchEvent(event);
+                ((ActivitiEventSupport) bpmnModel.getEventSupport()).dispatchEvent(event);
             }
         }
     }

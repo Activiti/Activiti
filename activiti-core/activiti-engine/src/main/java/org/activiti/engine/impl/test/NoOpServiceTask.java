@@ -30,9 +30,7 @@ import org.activiti.engine.delegate.JavaDelegate;
 public class NoOpServiceTask implements JavaDelegate {
 
     public static AtomicInteger CALL_COUNT = new AtomicInteger(0);
-    public static List<String> NAMES = synchronizedList(
-        new ArrayList<String>()
-    );
+    public static List<String> NAMES = synchronizedList(new ArrayList<String>());
 
     protected Expression name;
 

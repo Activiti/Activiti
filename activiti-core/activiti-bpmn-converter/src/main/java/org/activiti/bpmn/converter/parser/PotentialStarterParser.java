@@ -30,18 +30,11 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class PotentialStarterParser implements BpmnXMLConstants {
 
-    public void parse(XMLStreamReader xtr, Process activeProcess)
-        throws Exception {
+    public void parse(XMLStreamReader xtr, Process activeProcess) throws Exception {
         String resourceElement = XMLStreamReaderUtil.moveDown(xtr);
-        if (
-            StringUtils.isNotEmpty(resourceElement) &&
-            "resourceAssignmentExpression".equals(resourceElement)
-        ) {
+        if (StringUtils.isNotEmpty(resourceElement) && "resourceAssignmentExpression".equals(resourceElement)) {
             String expression = XMLStreamReaderUtil.moveDown(xtr);
-            if (
-                StringUtils.isNotEmpty(expression) &&
-                "formalExpression".equals(expression)
-            ) {
+            if (StringUtils.isNotEmpty(expression) && "formalExpression".equals(expression)) {
                 List<String> assignmentList = new ArrayList<String>();
                 String assignmentText = xtr.getElementText();
                 if (assignmentText.contains(",")) {
@@ -59,30 +52,14 @@ public class PotentialStarterParser implements BpmnXMLConstants {
                     String groupPrefix = "group(";
                     if (assignmentValue.startsWith(userPrefix)) {
                         assignmentValue =
-                            assignmentValue
-                                .substring(
-                                    userPrefix.length(),
-                                    assignmentValue.length() - 1
-                                )
-                                .trim();
-                        activeProcess
-                            .getCandidateStarterUsers()
-                            .add(assignmentValue);
+                            assignmentValue.substring(userPrefix.length(), assignmentValue.length() - 1).trim();
+                        activeProcess.getCandidateStarterUsers().add(assignmentValue);
                     } else if (assignmentValue.startsWith(groupPrefix)) {
                         assignmentValue =
-                            assignmentValue
-                                .substring(
-                                    groupPrefix.length(),
-                                    assignmentValue.length() - 1
-                                )
-                                .trim();
-                        activeProcess
-                            .getCandidateStarterGroups()
-                            .add(assignmentValue);
+                            assignmentValue.substring(groupPrefix.length(), assignmentValue.length() - 1).trim();
+                        activeProcess.getCandidateStarterGroups().add(assignmentValue);
                     } else {
-                        activeProcess
-                            .getCandidateStarterGroups()
-                            .add(assignmentValue);
+                        activeProcess.getCandidateStarterGroups().add(assignmentValue);
                     }
                 }
             }

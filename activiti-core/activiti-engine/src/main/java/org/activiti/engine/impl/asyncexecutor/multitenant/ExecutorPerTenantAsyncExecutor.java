@@ -34,12 +34,9 @@ import org.slf4j.LoggerFactory;
  *
 
  */
-public class ExecutorPerTenantAsyncExecutor
-    implements TenantAwareAsyncExecutor {
+public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        ExecutorPerTenantAsyncExecutor.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(ExecutorPerTenantAsyncExecutor.class);
 
     protected TenantInfoHolder tenantInfoHolder;
     protected TenantAwareAsyncExecutorFactory tenantAwareAyncExecutorFactory;
@@ -73,42 +70,24 @@ public class ExecutorPerTenantAsyncExecutor
         if (tenantAwareAyncExecutorFactory == null) {
             tenantExecutor = new DefaultAsyncJobExecutor();
         } else {
-            tenantExecutor =
-                tenantAwareAyncExecutorFactory.createAsyncExecutor(tenantId);
+            tenantExecutor = tenantAwareAyncExecutorFactory.createAsyncExecutor(tenantId);
         }
 
-        tenantExecutor.setProcessEngineConfiguration(
-            processEngineConfiguration
-        );
+        tenantExecutor.setProcessEngineConfiguration(processEngineConfiguration);
 
         if (tenantExecutor instanceof DefaultAsyncJobExecutor) {
             DefaultAsyncJobExecutor defaultAsyncJobExecutor = (DefaultAsyncJobExecutor) tenantExecutor;
             defaultAsyncJobExecutor.setAsyncJobsDueRunnable(
-                new TenantAwareAcquireAsyncJobsDueRunnable(
-                    defaultAsyncJobExecutor,
-                    tenantInfoHolder,
-                    tenantId
-                )
+                new TenantAwareAcquireAsyncJobsDueRunnable(defaultAsyncJobExecutor, tenantInfoHolder, tenantId)
             );
             defaultAsyncJobExecutor.setTimerJobRunnable(
-                new TenantAwareAcquireTimerJobsRunnable(
-                    defaultAsyncJobExecutor,
-                    tenantInfoHolder,
-                    tenantId
-                )
+                new TenantAwareAcquireTimerJobsRunnable(defaultAsyncJobExecutor, tenantInfoHolder, tenantId)
             );
             defaultAsyncJobExecutor.setExecuteAsyncRunnableFactory(
-                new TenantAwareExecuteAsyncRunnableFactory(
-                    tenantInfoHolder,
-                    tenantId
-                )
+                new TenantAwareExecuteAsyncRunnableFactory(tenantInfoHolder, tenantId)
             );
             defaultAsyncJobExecutor.setResetExpiredJobsRunnable(
-                new TenantAwareResetExpiredJobsRunnable(
-                    defaultAsyncJobExecutor,
-                    tenantInfoHolder,
-                    tenantId
-                )
+                new TenantAwareResetExpiredJobsRunnable(defaultAsyncJobExecutor, tenantInfoHolder, tenantId)
             );
         }
 
@@ -139,14 +118,10 @@ public class ExecutorPerTenantAsyncExecutor
     }
 
     @Override
-    public void setProcessEngineConfiguration(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
         this.processEngineConfiguration = processEngineConfiguration;
         for (AsyncExecutor asyncExecutor : tenantExecutors.values()) {
-            asyncExecutor.setProcessEngineConfiguration(
-                processEngineConfiguration
-            );
+            asyncExecutor.setProcessEngineConfiguration(processEngineConfiguration);
         }
     }
 
@@ -211,47 +186,32 @@ public class ExecutorPerTenantAsyncExecutor
     }
 
     public int getDefaultTimerJobAcquireWaitTimeInMillis() {
-        return determineAsyncExecutor()
-            .getDefaultTimerJobAcquireWaitTimeInMillis();
+        return determineAsyncExecutor().getDefaultTimerJobAcquireWaitTimeInMillis();
     }
 
-    public void setDefaultTimerJobAcquireWaitTimeInMillis(
-        int waitTimeInMillis
-    ) {
+    public void setDefaultTimerJobAcquireWaitTimeInMillis(int waitTimeInMillis) {
         for (AsyncExecutor asyncExecutor : tenantExecutors.values()) {
-            asyncExecutor.setDefaultTimerJobAcquireWaitTimeInMillis(
-                waitTimeInMillis
-            );
+            asyncExecutor.setDefaultTimerJobAcquireWaitTimeInMillis(waitTimeInMillis);
         }
     }
 
     public int getDefaultAsyncJobAcquireWaitTimeInMillis() {
-        return determineAsyncExecutor()
-            .getDefaultAsyncJobAcquireWaitTimeInMillis();
+        return determineAsyncExecutor().getDefaultAsyncJobAcquireWaitTimeInMillis();
     }
 
-    public void setDefaultAsyncJobAcquireWaitTimeInMillis(
-        int waitTimeInMillis
-    ) {
+    public void setDefaultAsyncJobAcquireWaitTimeInMillis(int waitTimeInMillis) {
         for (AsyncExecutor asyncExecutor : tenantExecutors.values()) {
-            asyncExecutor.setDefaultAsyncJobAcquireWaitTimeInMillis(
-                waitTimeInMillis
-            );
+            asyncExecutor.setDefaultAsyncJobAcquireWaitTimeInMillis(waitTimeInMillis);
         }
     }
 
     public int getDefaultQueueSizeFullWaitTimeInMillis() {
-        return determineAsyncExecutor()
-            .getDefaultQueueSizeFullWaitTimeInMillis();
+        return determineAsyncExecutor().getDefaultQueueSizeFullWaitTimeInMillis();
     }
 
-    public void setDefaultQueueSizeFullWaitTimeInMillis(
-        int defaultQueueSizeFullWaitTimeInMillis
-    ) {
+    public void setDefaultQueueSizeFullWaitTimeInMillis(int defaultQueueSizeFullWaitTimeInMillis) {
         for (AsyncExecutor asyncExecutor : tenantExecutors.values()) {
-            asyncExecutor.setDefaultQueueSizeFullWaitTimeInMillis(
-                defaultQueueSizeFullWaitTimeInMillis
-            );
+            asyncExecutor.setDefaultQueueSizeFullWaitTimeInMillis(defaultQueueSizeFullWaitTimeInMillis);
         }
     }
 

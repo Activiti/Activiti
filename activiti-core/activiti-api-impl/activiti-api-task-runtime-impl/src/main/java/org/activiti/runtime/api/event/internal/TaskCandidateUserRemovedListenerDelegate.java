@@ -23,8 +23,7 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToTaskCandidateUserRemovedConverter;
 
-public class TaskCandidateUserRemovedListenerDelegate
-    implements ActivitiEventListener {
+public class TaskCandidateUserRemovedListenerDelegate implements ActivitiEventListener {
 
     private final List<TaskRuntimeEventListener<TaskCandidateUserRemovedEvent>> listeners;
 

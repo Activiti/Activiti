@@ -39,9 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
 
-    private static Logger log = LoggerFactory.getLogger(
-        ConcurrentEngineUsageTest.class
-    );
+    private static Logger log = LoggerFactory.getLogger(ConcurrentEngineUsageTest.class);
     private static final int MAX_RETRIES = 5;
 
     @Deployment
@@ -52,8 +50,7 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
         ) {
             int numberOfThreads = 5;
             int numberOfProcessesPerThread = 5;
-            int totalNumberOfTasks =
-                2 * numberOfThreads * numberOfProcessesPerThread;
+            int totalNumberOfTasks = 2 * numberOfThreads * numberOfProcessesPerThread;
 
             ThreadPoolExecutor executor = new ThreadPoolExecutor(
                 10,
@@ -64,52 +61,27 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
             );
 
             for (int i = 0; i < numberOfThreads; i++) {
-                executor.execute(
-                    new ConcurrentProcessRunnerRunnable(
-                        numberOfProcessesPerThread,
-                        "kermit" + i
-                    )
-                );
+                executor.execute(new ConcurrentProcessRunnerRunnable(numberOfProcessesPerThread, "kermit" + i));
             }
 
             // Wait for termination or timeout and check if all tasks are
             // complete
             executor.shutdown();
-            boolean isEnded = executor.awaitTermination(
-                20000,
-                TimeUnit.MILLISECONDS
-            );
+            boolean isEnded = executor.awaitTermination(20000, TimeUnit.MILLISECONDS);
             if (!isEnded) {
-                log.error(
-                    "Executor was not shut down after timeout, not al tasks have been executed"
-                );
+                log.error("Executor was not shut down after timeout, not al tasks have been executed");
                 executor.shutdownNow();
             }
             assertThat(executor.getActiveCount()).isEqualTo(0);
 
             // Check there are no processes active anymore
-            assertThat(runtimeService.createProcessInstanceQuery().count())
-                .isEqualTo(0);
+            assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
 
-            if (
-                processEngineConfiguration
-                    .getHistoryLevel()
-                    .isAtLeast(HistoryLevel.ACTIVITY)
-            ) {
+            if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
                 // Check if all processes and tasks are complete
-                assertThat(
-                    historyService
-                        .createHistoricProcessInstanceQuery()
-                        .finished()
-                        .count()
-                )
+                assertThat(historyService.createHistoricProcessInstanceQuery().finished().count())
                     .isEqualTo(numberOfProcessesPerThread * numberOfThreads);
-                assertThat(
-                    historyService
-                        .createHistoricTaskInstanceQuery()
-                        .finished()
-                        .count()
-                )
+                assertThat(historyService.createHistoricTaskInstanceQuery().finished().count())
                     .isEqualTo(totalNumberOfTasks);
             }
         }
@@ -128,9 +100,7 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
                 success = true;
             } catch (PersistenceException pe) {
                 retries = retries - 1;
-                log.debug(
-                    "Retrying process start - " + (MAX_RETRIES - retries)
-                );
+                log.debug("Retrying process start - " + (MAX_RETRIES - retries));
                 try {
                     Thread.sleep(timeout);
                 } catch (InterruptedException ignore) {}
@@ -138,9 +108,7 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
             }
         }
         if (!success) {
-            log.debug(
-                "Retrying process start FAILED " + MAX_RETRIES + " times"
-            );
+            log.debug("Retrying process start FAILED " + MAX_RETRIES + " times");
         }
     }
 
@@ -154,9 +122,7 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
                 success = true;
             } catch (PersistenceException pe) {
                 retries = retries - 1;
-                log.debug(
-                    "Retrying task completion - " + (MAX_RETRIES - retries)
-                );
+                log.debug("Retrying task completion - " + (MAX_RETRIES - retries));
                 try {
                     Thread.sleep(timeout);
                 } catch (InterruptedException ignore) {}
@@ -165,9 +131,7 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
         }
 
         if (!success) {
-            log.debug(
-                "Retrying task completion FAILED " + MAX_RETRIES + " times"
-            );
+            log.debug("Retrying task completion FAILED " + MAX_RETRIES + " times");
         }
     }
 
@@ -176,10 +140,7 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
         private String drivingUser;
         private int numberOfProcesses;
 
-        public ConcurrentProcessRunnerRunnable(
-            int numberOfProcesses,
-            String drivingUser
-        ) {
+        public ConcurrentProcessRunnerRunnable(int numberOfProcesses, String drivingUser) {
             this.drivingUser = drivingUser;
             this.numberOfProcesses = numberOfProcesses;
         }
@@ -200,20 +161,12 @@ public class ConcurrentEngineUsageTest extends PluggableActivitiTestCase {
                     if (numberOfProcesses == 0) {
                         // Make sure while-loop doesn't stop when processes are
                         // all started
-                        tasksAvailable =
-                            taskService
-                                .createTaskQuery()
-                                .taskAssignee(drivingUser)
-                                .count() >
-                            0;
+                        tasksAvailable = taskService.createTaskQuery().taskAssignee(drivingUser).count() > 0;
                     }
                     numberOfProcesses = numberOfProcesses - 1;
                 } else {
                     // Finish a task
-                    List<Task> taskToComplete = taskService
-                        .createTaskQuery()
-                        .taskAssignee(drivingUser)
-                        .listPage(0, 1);
+                    List<Task> taskToComplete = taskService.createTaskQuery().taskAssignee(drivingUser).listPage(0, 1);
                     tasksAvailable = !taskToComplete.isEmpty();
                     if (tasksAvailable) {
                         retryFinishTask(taskToComplete.get(0).getId());

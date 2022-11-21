@@ -27,8 +27,7 @@ import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.FixedValue;
 import org.apache.commons.lang3.StringUtils;
 
-public class BpmnMessagePayloadMappingProviderFactory
-    implements MessagePayloadMappingProviderFactory {
+public class BpmnMessagePayloadMappingProviderFactory implements MessagePayloadMappingProviderFactory {
 
     @Override
     public MessagePayloadMappingProvider create(
@@ -57,9 +56,7 @@ public class BpmnMessagePayloadMappingProviderFactory
                     new FieldDeclaration(
                         fieldExtension.getFieldName(),
                         Expression.class.getName(),
-                        expressionManager.createExpression(
-                            fieldExtension.getExpression()
-                        )
+                        expressionManager.createExpression(fieldExtension.getExpression())
                     );
             } else {
                 fieldDeclaration =

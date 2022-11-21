@@ -20,8 +20,7 @@ import java.util.List;
 import org.activiti.spring.resources.ResourceFinderDescriptor;
 import org.springframework.core.io.Resource;
 
-public class ProcessExtensionResourceFinderDescriptor
-    implements ResourceFinderDescriptor {
+public class ProcessExtensionResourceFinderDescriptor implements ResourceFinderDescriptor {
 
     private boolean checkResources;
     private String locationPrefix;
@@ -55,19 +54,12 @@ public class ProcessExtensionResourceFinderDescriptor
 
     @Override
     public String getMsgForEmptyResources() {
-        return (
-            "No process extensions were found for auto-deployment in the location '" +
-            locationPrefix +
-            "'"
-        );
+        return ("No process extensions were found for auto-deployment in the location '" + locationPrefix + "'");
     }
 
     @Override
     public String getMsgForResourcesFound(List<String> processExtensionFiles) {
-        return (
-            "The following process extension files will be deployed: " +
-            processExtensionFiles
-        );
+        return ("The following process extension files will be deployed: " + processExtensionFiles);
     }
 
     @Override

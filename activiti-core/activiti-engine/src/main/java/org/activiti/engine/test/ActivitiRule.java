@@ -101,10 +101,7 @@ public class ActivitiRule implements TestRule {
      * Implementation based on {@link TestWatcher}.
      */
     @Override
-    public Statement apply(
-        final Statement base,
-        final Description description
-    ) {
+    public Statement apply(final Statement base, final Description description) {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
@@ -129,10 +126,7 @@ public class ActivitiRule implements TestRule {
         };
     }
 
-    private void succeededQuietly(
-        Description description,
-        List<Throwable> errors
-    ) {
+    private void succeededQuietly(Description description, List<Throwable> errors) {
         try {
             succeeded(description);
         } catch (Throwable t) {
@@ -140,11 +134,7 @@ public class ActivitiRule implements TestRule {
         }
     }
 
-    private void failedQuietly(
-        Throwable t,
-        Description description,
-        List<Throwable> errors
-    ) {
+    private void failedQuietly(Throwable t, Description description, List<Throwable> errors) {
         try {
             failed(t, description);
         } catch (Throwable t1) {
@@ -152,11 +142,7 @@ public class ActivitiRule implements TestRule {
         }
     }
 
-    private void skippedQuietly(
-        AssumptionViolatedException e,
-        Description description,
-        List<Throwable> errors
-    ) {
+    private void skippedQuietly(AssumptionViolatedException e, Description description, List<Throwable> errors) {
         try {
             skipped(e, description);
         } catch (Throwable t) {
@@ -164,10 +150,7 @@ public class ActivitiRule implements TestRule {
         }
     }
 
-    private void startingQuietly(
-        Description description,
-        List<Throwable> errors
-    ) {
+    private void startingQuietly(Description description, List<Throwable> errors) {
         try {
             starting(description);
         } catch (Throwable t) {
@@ -175,10 +158,7 @@ public class ActivitiRule implements TestRule {
         }
     }
 
-    private void finishedQuietly(
-        Description description,
-        List<Throwable> errors
-    ) {
+    private void finishedQuietly(Description description, List<Throwable> errors) {
         try {
             finished(description);
         } catch (Throwable t) {
@@ -199,10 +179,7 @@ public class ActivitiRule implements TestRule {
     /**
      * Invoked when a test is skipped due to a failed assumption.
      */
-    protected void skipped(
-        AssumptionViolatedException e,
-        Description description
-    ) {}
+    protected void skipped(AssumptionViolatedException e, Description description) {}
 
     protected void starting(Description description) {
         if (processEngine == null) {
@@ -228,11 +205,7 @@ public class ActivitiRule implements TestRule {
                 mockSupport
             );
         } catch (ClassNotFoundException e) {
-            throw new ActivitiException(
-                "Programmatic error: could not instantiate " +
-                description.getClassName(),
-                e
-            );
+            throw new ActivitiException("Programmatic error: could not instantiate " + description.getClassName(), e);
         }
 
         try {
@@ -243,11 +216,7 @@ public class ActivitiRule implements TestRule {
                     description.getMethodName()
                 );
         } catch (ClassNotFoundException e) {
-            throw new ActivitiException(
-                "Programmatic error: could not instantiate " +
-                description.getClassName(),
-                e
-            );
+            throw new ActivitiException("Programmatic error: could not instantiate " + description.getClassName(), e);
         }
     }
 
@@ -256,8 +225,7 @@ public class ActivitiRule implements TestRule {
     }
 
     protected void initializeServices() {
-        processEngineConfiguration =
-            processEngine.getProcessEngineConfiguration();
+        processEngineConfiguration = processEngine.getProcessEngineConfiguration();
         repositoryService = processEngine.getRepositoryService();
         runtimeService = processEngine.getRuntimeService();
         taskService = processEngine.getTaskService();
@@ -285,11 +253,7 @@ public class ActivitiRule implements TestRule {
                 description.getMethodName()
             );
         } catch (ClassNotFoundException e) {
-            throw new ActivitiException(
-                "Programmatic error: could not instantiate " +
-                description.getClassName(),
-                e
-            );
+            throw new ActivitiException("Programmatic error: could not instantiate " + description.getClassName(), e);
         }
 
         // Reset internal clock
@@ -362,9 +326,7 @@ public class ActivitiRule implements TestRule {
         this.managementService = managementService;
     }
 
-    public void setProcessEngineConfiguration(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
         this.processEngineConfiguration = processEngineConfiguration;
     }
 

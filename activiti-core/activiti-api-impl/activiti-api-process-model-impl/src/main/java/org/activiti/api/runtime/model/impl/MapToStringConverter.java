@@ -20,8 +20,7 @@ import java.util.Map;
 import org.springframework.core.convert.converter.Converter;
 
 @ProcessVariableTypeConverter
-public class MapToStringConverter
-    implements Converter<Map<String, Object>, String> {
+public class MapToStringConverter implements Converter<Map<String, Object>, String> {
 
     private final ObjectMapper objectMapper;
 

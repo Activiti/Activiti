@@ -32,50 +32,26 @@ public class ProcessInstanceCommentTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testAddCommentToProcessInstance() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
-            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-                "testProcessInstanceComment"
-            );
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testProcessInstanceComment");
 
-            taskService.addComment(
-                null,
-                processInstance.getId(),
-                "Hello World"
-            );
+            taskService.addComment(null, processInstance.getId(), "Hello World");
 
-            List<Comment> comments = taskService.getProcessInstanceComments(
-                processInstance.getId()
-            );
+            List<Comment> comments = taskService.getProcessInstanceComments(processInstance.getId());
             assertThat(comments).hasSize(1);
 
-            List<Comment> commentsByType = taskService.getProcessInstanceComments(
-                processInstance.getId(),
-                "comment"
-            );
+            List<Comment> commentsByType = taskService.getProcessInstanceComments(processInstance.getId(), "comment");
             assertThat(commentsByType).hasSize(1);
 
-            commentsByType =
-                taskService.getProcessInstanceComments(
-                    processInstance.getId(),
-                    "noThisType"
-                );
+            commentsByType = taskService.getProcessInstanceComments(processInstance.getId(), "noThisType");
             assertThat(commentsByType).hasSize(0);
 
             // Suspend process instance
             runtimeService.suspendProcessInstanceById(processInstance.getId());
             try {
-                taskService.addComment(
-                    null,
-                    processInstance.getId(),
-                    "Hello World 2"
-                );
+                taskService.addComment(null, processInstance.getId(), "Hello World 2");
             } catch (ActivitiException e) {
-                assertThat(e.getMessage())
-                    .contains("Cannot add a comment to a suspended execution");
+                assertThat(e.getMessage()).contains("Cannot add a comment to a suspended execution");
             }
 
             // Delete comments again

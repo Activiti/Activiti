@@ -94,9 +94,7 @@ public class IdentityLinkEntityImpl
 
     public void setUserId(String userId) {
         if (this.groupId != null && userId != null) {
-            throw new ActivitiException(
-                "Cannot assign a userId to a task assignment that already has a groupId"
-            );
+            throw new ActivitiException("Cannot assign a userId to a task assignment that already has a groupId");
         }
         this.userId = userId;
     }
@@ -107,9 +105,7 @@ public class IdentityLinkEntityImpl
 
     public void setGroupId(String groupId) {
         if (this.userId != null && groupId != null) {
-            throw new ActivitiException(
-                "Cannot assign a groupId to a task assignment that already has a userId"
-            );
+            throw new ActivitiException("Cannot assign a groupId to a task assignment that already has a userId");
         }
         this.groupId = groupId;
     }
@@ -140,11 +136,7 @@ public class IdentityLinkEntityImpl
 
     public TaskEntity getTask() {
         if ((task == null) && (taskId != null)) {
-            this.task =
-                Context
-                    .getCommandContext()
-                    .getTaskEntityManager()
-                    .findById(taskId);
+            this.task = Context.getCommandContext().getTaskEntityManager().findById(taskId);
         }
         return task;
     }
@@ -156,11 +148,7 @@ public class IdentityLinkEntityImpl
 
     public ExecutionEntity getProcessInstance() {
         if ((processInstance == null) && (processInstanceId != null)) {
-            this.processInstance =
-                Context
-                    .getCommandContext()
-                    .getExecutionEntityManager()
-                    .findById(processInstanceId);
+            this.processInstance = Context.getCommandContext().getExecutionEntityManager().findById(processInstanceId);
         }
         return processInstance;
     }
@@ -172,11 +160,7 @@ public class IdentityLinkEntityImpl
 
     public ProcessDefinitionEntity getProcessDef() {
         if ((processDef == null) && (processDefId != null)) {
-            this.processDef =
-                Context
-                    .getCommandContext()
-                    .getProcessDefinitionEntityManager()
-                    .findById(processDefId);
+            this.processDef = Context.getCommandContext().getProcessDefinitionEntityManager().findById(processDefId);
         }
         return processDef;
     }

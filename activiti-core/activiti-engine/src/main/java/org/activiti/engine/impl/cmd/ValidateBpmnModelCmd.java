@@ -36,9 +36,7 @@ public class ValidateBpmnModelCmd implements Command<List<ValidationError>> {
 
     @Override
     public List<ValidationError> execute(CommandContext commandContext) {
-        ProcessValidator processValidator = commandContext
-            .getProcessEngineConfiguration()
-            .getProcessValidator();
+        ProcessValidator processValidator = commandContext.getProcessEngineConfiguration().getProcessValidator();
         if (processValidator == null) {
             throw new ActivitiException("No process validator defined");
         }

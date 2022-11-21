@@ -33,9 +33,7 @@ public class DebugInfoOperationExecuted extends AbstractDebugInfo {
     protected String flowElementId;
     protected Class<?> flowElementClass;
 
-    protected SimpleDateFormat dateFormat = new SimpleDateFormat(
-        "yyyy/MM/dd HH:mm:ss:SSS"
-    );
+    protected SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss:SSS");
 
     public DebugInfoOperationExecuted(AbstractOperation operation) {
         this.operation = operation;
@@ -45,10 +43,8 @@ public class DebugInfoOperationExecuted extends AbstractDebugInfo {
             this.executionId = operation.getExecution().getId();
 
             if (operation.getExecution().getCurrentFlowElement() != null) {
-                this.flowElementId =
-                    operation.getExecution().getCurrentFlowElement().getId();
-                this.flowElementClass =
-                    operation.getExecution().getCurrentFlowElement().getClass();
+                this.flowElementId = operation.getExecution().getCurrentFlowElement().getId();
+                this.flowElementClass = operation.getExecution().getCurrentFlowElement().getClass();
             }
         }
     }
@@ -78,10 +74,7 @@ public class DebugInfoOperationExecuted extends AbstractDebugInfo {
             .append("ms)]");
 
         // Operation info
-        strb
-            .append(" ")
-            .append(getOperation().getClass().getSimpleName())
-            .append(" ");
+        strb.append(" ").append(getOperation().getClass().getSimpleName()).append(" ");
 
         // Execution info
         if (getExecutionId() != null) {

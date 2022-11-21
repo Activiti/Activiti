@@ -33,12 +33,7 @@ public class AsyncContinuationJobHandler implements JobHandler {
         return TYPE;
     }
 
-    public void execute(
-        JobEntity job,
-        String configuration,
-        ExecutionEntity execution,
-        CommandContext commandContext
-    ) {
+    public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
         Context.getAgenda().planContinueProcessSynchronousOperation(execution);
     }
 }

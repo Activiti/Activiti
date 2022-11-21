@@ -27,17 +27,13 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.runtime.ProcessInstance;
 
-public class StartCreatedProcessInstanceCmd<T>
-    implements Command<ProcessInstance>, Serializable {
+public class StartCreatedProcessInstanceCmd<T> implements Command<ProcessInstance>, Serializable {
 
     private static final long serialVersionUID = 1L;
     private ProcessInstance internalProcessInstance;
     private Map<String, Object> variables;
 
-    public StartCreatedProcessInstanceCmd(
-        ProcessInstance internalProcessInstance,
-        Map<String, Object> variables
-    ) {
+    public StartCreatedProcessInstanceCmd(ProcessInstance internalProcessInstance, Map<String, Object> variables) {
         this.internalProcessInstance = internalProcessInstance;
         this.variables = variables;
     }
@@ -46,9 +42,7 @@ public class StartCreatedProcessInstanceCmd<T>
     public ProcessInstance execute(CommandContext commandContext) {
         if (this.internalProcessInstance.getStartTime() != null) {
             throw new ActivitiIllegalArgumentException(
-                "Process instance " +
-                this.internalProcessInstance.getProcessInstanceId() +
-                " has already been started"
+                "Process instance " + this.internalProcessInstance.getProcessInstanceId() + " has already been started"
             );
         }
 
@@ -56,9 +50,7 @@ public class StartCreatedProcessInstanceCmd<T>
         ProcessInstanceHelper processInstanceHelper = commandContext
             .getProcessEngineConfiguration()
             .getProcessInstanceHelper();
-        Process process = ProcessDefinitionUtil.getProcess(
-            internalProcessInstance.getProcessDefinitionId()
-        );
+        Process process = ProcessDefinitionUtil.getProcess(internalProcessInstance.getProcessDefinitionId());
         processInstanceHelper.startProcessInstance(
             processExecution,
             commandContext,

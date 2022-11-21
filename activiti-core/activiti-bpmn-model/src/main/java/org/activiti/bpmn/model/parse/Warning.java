@@ -24,12 +24,7 @@ public class Warning {
     protected int line;
     protected int column;
 
-    public Warning(
-        String warningMessage,
-        String localName,
-        int lineNumber,
-        int columnNumber
-    ) {
+    public Warning(String warningMessage, String localName, int lineNumber, int columnNumber) {
         this.warningMessage = warningMessage;
         this.resource = localName;
         this.line = lineNumber;
@@ -45,12 +40,7 @@ public class Warning {
 
     public String toString() {
         return (
-            warningMessage +
-            (resource != null ? " | " + resource : "") +
-            " | line " +
-            line +
-            " | column " +
-            column
+            warningMessage + (resource != null ? " | " + resource : "") + " | line " + line + " | column " + column
         );
     }
 }

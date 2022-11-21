@@ -22,14 +22,11 @@ import org.activiti.engine.impl.delegate.MessagePayloadMappingProvider;
 import org.activiti.engine.impl.delegate.MessagePayloadMappingProviderFactory;
 import org.activiti.engine.impl.el.ExpressionManager;
 
-public class JsonMessagePayloadMappingProviderFactory
-    implements MessagePayloadMappingProviderFactory {
+public class JsonMessagePayloadMappingProviderFactory implements MessagePayloadMappingProviderFactory {
 
     private final VariablesCalculator variablesCalculator;
 
-    public JsonMessagePayloadMappingProviderFactory(
-        VariablesCalculator variablesCalculator
-    ) {
+    public JsonMessagePayloadMappingProviderFactory(VariablesCalculator variablesCalculator) {
         this.variablesCalculator = variablesCalculator;
     }
 

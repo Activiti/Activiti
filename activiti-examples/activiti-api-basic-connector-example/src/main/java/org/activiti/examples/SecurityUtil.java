@@ -38,11 +38,7 @@ public class SecurityUtil {
     public void logInAs(String username) {
         UserDetails user = userDetailsService.loadUserByUsername(username);
         if (user == null) {
-            throw new IllegalStateException(
-                "User " +
-                username +
-                " doesn't exist, please provide a valid user"
-            );
+            throw new IllegalStateException("User " + username + " doesn't exist, please provide a valid user");
         }
         logger.info("> Logged in as: " + username);
         SecurityContextHolder.setContext(
@@ -74,8 +70,7 @@ public class SecurityUtil {
                     }
 
                     @Override
-                    public void setAuthenticated(boolean isAuthenticated)
-                        throws IllegalArgumentException {}
+                    public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {}
 
                     @Override
                     public String getName() {
@@ -84,8 +79,6 @@ public class SecurityUtil {
                 }
             )
         );
-        org.activiti.engine.impl.identity.Authentication.setAuthenticatedUserId(
-            username
-        );
+        org.activiti.engine.impl.identity.Authentication.setAuthenticatedUserId(username);
     }
 }

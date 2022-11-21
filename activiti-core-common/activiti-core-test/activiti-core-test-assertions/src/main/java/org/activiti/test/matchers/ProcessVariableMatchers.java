@@ -33,10 +33,7 @@ public class ProcessVariableMatchers {
         this.value = value;
     }
 
-    public static ProcessVariableMatchers processVariable(
-        String variableName,
-        Object value
-    ) {
+    public static ProcessVariableMatchers processVariable(String variableName, Object value) {
         return new ProcessVariableMatchers(variableName, value);
     }
 
@@ -44,25 +41,13 @@ public class ProcessVariableMatchers {
         return (operationScope, events) -> {
             List<VariableCreatedEvent> variableCreatedEvents = events
                 .stream()
-                .filter(event ->
-                    VariableEvent.VariableEvents.VARIABLE_CREATED.equals(
-                        event.getEventType()
-                    )
-                )
+                .filter(event -> VariableEvent.VariableEvents.VARIABLE_CREATED.equals(event.getEventType()))
                 .map(VariableCreatedEvent.class::cast)
                 .filter(event -> !event.getEntity().isTaskVariable())
-                .filter(event ->
-                    event
-                        .getEntity()
-                        .getProcessInstanceId()
-                        .equals(operationScope.getProcessInstanceId())
-                )
+                .filter(event -> event.getEntity().getProcessInstanceId().equals(operationScope.getProcessInstanceId()))
                 .collect(Collectors.toList());
             assertThat(variableCreatedEvents)
-                .extracting(
-                    event -> event.getEntity().getName(),
-                    event -> event.getEntity().getValue()
-                )
+                .extracting(event -> event.getEntity().getName(), event -> event.getEntity().getValue())
                 .as(
                     "Unable to find event " +
                     VariableEvent.VariableEvents.VARIABLE_CREATED +

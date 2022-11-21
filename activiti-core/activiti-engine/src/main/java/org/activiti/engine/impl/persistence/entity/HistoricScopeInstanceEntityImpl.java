@@ -39,11 +39,7 @@ public abstract class HistoricScopeInstanceEntityImpl
     public void markEnded(String deleteReason) {
         if (this.endTime == null) {
             this.deleteReason = deleteReason;
-            this.endTime =
-                Context
-                    .getProcessEngineConfiguration()
-                    .getClock()
-                    .getCurrentTime();
+            this.endTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
             this.durationInMillis = endTime.getTime() - startTime.getTime();
         }
     }

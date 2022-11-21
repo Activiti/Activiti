@@ -23,9 +23,7 @@ import org.slf4j.LoggerFactory;
 
 public class JsonObjectVariableType extends VariableType {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        JsonObjectVariableType.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(JsonObjectVariableType.class);
 
     private ObjectMapper objectMapper;
 
@@ -54,11 +52,7 @@ public class JsonObjectVariableType extends VariableType {
             logger.error(message);
         }
 
-        if (
-            !objectMapper.canDeserialize(
-                objectMapper.constructType(var.getClass())
-            )
-        ) {
+        if (!objectMapper.canDeserialize(objectMapper.constructType(var.getClass()))) {
             String message = var.getClass() + " is not deserializable as json";
             errors.add(new ActivitiException(message));
             logger.error(message);

@@ -21,8 +21,7 @@ import org.activiti.api.runtime.event.impl.BPMNTimerCancelledEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 
-public class ToTimerCancelledConverter
-    implements EventConverter<BPMNTimerCancelledEvent, ActivitiEvent> {
+public class ToTimerCancelledConverter implements EventConverter<BPMNTimerCancelledEvent, ActivitiEvent> {
 
     private BPMNTimerConverter bpmnTimerConverter;
 
@@ -36,14 +35,10 @@ public class ToTimerCancelledConverter
         if (bpmnTimerConverter.isTimerRelatedEvent(internalEvent)) {
             event =
                 new BPMNTimerCancelledEventImpl(
-                    bpmnTimerConverter.convertToBPMNTimer(
-                        (ActivitiEntityEvent) internalEvent
-                    )
+                    bpmnTimerConverter.convertToBPMNTimer((ActivitiEntityEvent) internalEvent)
                 );
             event.setProcessInstanceId(internalEvent.getProcessInstanceId());
-            event.setProcessDefinitionId(
-                internalEvent.getProcessDefinitionId()
-            );
+            event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         }
         return Optional.ofNullable(event);
     }

@@ -30,9 +30,7 @@ public class StartMessageDeployedEventImpl
 
     StartMessageDeployedEventImpl() {}
 
-    public StartMessageDeployedEventImpl(
-        StartMessageDeploymentDefinition startMessageEventSubscription
-    ) {
+    public StartMessageDeployedEventImpl(StartMessageDeploymentDefinition startMessageEventSubscription) {
         super(startMessageEventSubscription);
         ProcessDefinition processDefinition = startMessageEventSubscription.getProcessDefinition();
 
@@ -50,9 +48,7 @@ public class StartMessageDeployedEventImpl
      * @param startMessageDeployedEventImpl to initialize the builder with
      * @return created builder
      */
-    public static Builder builderFrom(
-        StartMessageDeployedEventImpl startMessageDeployedEventImpl
-    ) {
+    public static Builder builderFrom(StartMessageDeployedEventImpl startMessageDeployedEventImpl) {
         return new Builder(startMessageDeployedEventImpl);
     }
 
@@ -65,9 +61,7 @@ public class StartMessageDeployedEventImpl
 
         public Builder() {}
 
-        private Builder(
-            StartMessageDeployedEventImpl startMessageDeployedEventImpl
-        ) {
+        private Builder(StartMessageDeployedEventImpl startMessageDeployedEventImpl) {
             this.entity = startMessageDeployedEventImpl.getEntity();
         }
 

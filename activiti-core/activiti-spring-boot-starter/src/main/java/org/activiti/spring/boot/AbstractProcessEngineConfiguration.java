@@ -33,9 +33,7 @@ import org.activiti.spring.SpringProcessEngineConfiguration;
  */
 public abstract class AbstractProcessEngineConfiguration {
 
-    public ProcessEngineFactoryBean springProcessEngineBean(
-        SpringProcessEngineConfiguration configuration
-    ) {
+    public ProcessEngineFactoryBean springProcessEngineBean(SpringProcessEngineConfiguration configuration) {
         ProcessEngineFactoryBean processEngineFactoryBean = new ProcessEngineFactoryBean();
         processEngineFactoryBean.setProcessEngineConfiguration(configuration);
         return processEngineFactoryBean;
@@ -45,9 +43,7 @@ public abstract class AbstractProcessEngineConfiguration {
         return processEngine.getRuntimeService();
     }
 
-    public RepositoryService repositoryServiceBean(
-        ProcessEngine processEngine
-    ) {
+    public RepositoryService repositoryServiceBean(ProcessEngine processEngine) {
         return processEngine.getRepositoryService();
     }
 
@@ -59,25 +55,15 @@ public abstract class AbstractProcessEngineConfiguration {
         return processEngine.getHistoryService();
     }
 
-    public ManagementService managementServiceBeanBean(
-        ProcessEngine processEngine
-    ) {
+    public ManagementService managementServiceBeanBean(ProcessEngine processEngine) {
         return processEngine.getManagementService();
     }
 
-    public IntegrationContextManager integrationContextManagerBean(
-        ProcessEngine processEngine
-    ) {
-        return processEngine
-            .getProcessEngineConfiguration()
-            .getIntegrationContextManager();
+    public IntegrationContextManager integrationContextManagerBean(ProcessEngine processEngine) {
+        return processEngine.getProcessEngineConfiguration().getIntegrationContextManager();
     }
 
-    public IntegrationContextService integrationContextServiceBean(
-        ProcessEngine processEngine
-    ) {
-        return processEngine
-            .getProcessEngineConfiguration()
-            .getIntegrationContextService();
+    public IntegrationContextService integrationContextServiceBean(ProcessEngine processEngine) {
+        return processEngine.getProcessEngineConfiguration().getIntegrationContextService();
     }
 }

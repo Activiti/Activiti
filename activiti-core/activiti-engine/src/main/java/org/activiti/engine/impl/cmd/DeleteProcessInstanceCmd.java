@@ -33,24 +33,17 @@ public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
     protected String processInstanceId;
     protected String deleteReason;
 
-    public DeleteProcessInstanceCmd(
-        String processInstanceId,
-        String deleteReason
-    ) {
+    public DeleteProcessInstanceCmd(String processInstanceId, String deleteReason) {
         this.processInstanceId = processInstanceId;
         this.deleteReason = deleteReason;
     }
 
     public Void execute(CommandContext commandContext) {
         if (processInstanceId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "processInstanceId is null"
-            );
+            throw new ActivitiIllegalArgumentException("processInstanceId is null");
         }
 
-        ExecutionEntity processInstanceEntity = commandContext
-            .getExecutionEntityManager()
-            .findById(processInstanceId);
+        ExecutionEntity processInstanceEntity = commandContext.getExecutionEntityManager().findById(processInstanceId);
 
         if (processInstanceEntity == null) {
             throw new ActivitiObjectNotFoundException(
@@ -63,16 +56,9 @@ public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
         return null;
     }
 
-    protected void executeInternal(
-        CommandContext commandContext,
-        ExecutionEntity processInstanceEntity
-    ) {
+    protected void executeInternal(CommandContext commandContext, ExecutionEntity processInstanceEntity) {
         commandContext
             .getExecutionEntityManager()
-            .deleteProcessInstance(
-                processInstanceEntity.getProcessInstanceId(),
-                deleteReason,
-                false
-            );
+            .deleteProcessInstance(processInstanceEntity.getProcessInstanceId(), deleteReason, false);
     }
 }

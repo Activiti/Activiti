@@ -25,19 +25,14 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.task.Task;
 
-public class GetTaskVariableInstanceCmd
-    implements Command<VariableInstance>, Serializable {
+public class GetTaskVariableInstanceCmd implements Command<VariableInstance>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String taskId;
     protected String variableName;
     protected boolean isLocal;
 
-    public GetTaskVariableInstanceCmd(
-        String taskId,
-        String variableName,
-        boolean isLocal
-    ) {
+    public GetTaskVariableInstanceCmd(String taskId, String variableName, boolean isLocal) {
         this.taskId = taskId;
         this.variableName = variableName;
         this.isLocal = isLocal;
@@ -52,15 +47,10 @@ public class GetTaskVariableInstanceCmd
             throw new ActivitiIllegalArgumentException("variableName is null");
         }
 
-        TaskEntity task = commandContext
-            .getTaskEntityManager()
-            .findById(taskId);
+        TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);
 
         if (task == null) {
-            throw new ActivitiObjectNotFoundException(
-                "task " + taskId + " doesn't exist",
-                Task.class
-            );
+            throw new ActivitiObjectNotFoundException("task " + taskId + " doesn't exist", Task.class);
         }
 
         VariableInstance variableEntity;

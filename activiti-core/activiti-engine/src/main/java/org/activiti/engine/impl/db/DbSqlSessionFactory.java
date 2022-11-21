@@ -74,34 +74,19 @@ public class DbSqlSessionFactory implements SessionFactory {
     }
 
     public Session openSession(CommandContext commandContext) {
-        DbSqlSession dbSqlSession = new DbSqlSession(
-            this,
-            commandContext.getEntityCache()
-        );
+        DbSqlSession dbSqlSession = new DbSqlSession(this, commandContext.getEntityCache());
         if (getDatabaseSchema() != null && getDatabaseSchema().length() > 0) {
             try {
-                dbSqlSession
-                    .getSqlSession()
-                    .getConnection()
-                    .setSchema(getDatabaseSchema());
+                dbSqlSession.getSqlSession().getConnection().setSchema(getDatabaseSchema());
             } catch (SQLException e) {
-                throw new ActivitiException(
-                    "Could not set database schema on connection",
-                    e
-                );
+                throw new ActivitiException("Could not set database schema on connection", e);
             }
         }
         if (getDatabaseCatalog() != null && getDatabaseCatalog().length() > 0) {
             try {
-                dbSqlSession
-                    .getSqlSession()
-                    .getConnection()
-                    .setCatalog(getDatabaseCatalog());
+                dbSqlSession.getSqlSession().getConnection().setCatalog(getDatabaseCatalog());
             } catch (SQLException e) {
-                throw new ActivitiException(
-                    "Could not set database catalog on connection",
-                    e
-                );
+                throw new ActivitiException("Could not set database catalog on connection", e);
             }
         }
         return dbSqlSession;
@@ -139,11 +124,7 @@ public class DbSqlSessionFactory implements SessionFactory {
         return getStatement(entityClass, selectStatements, "select");
     }
 
-    private String getStatement(
-        Class<?> entityClass,
-        Map<Class<?>, String> cachedStatements,
-        String prefix
-    ) {
+    private String getStatement(Class<?> entityClass, Map<Class<?>, String> cachedStatements, String prefix) {
         String statement = cachedStatements.get(entityClass);
         if (statement != null) {
             return statement;
@@ -166,9 +147,7 @@ public class DbSqlSessionFactory implements SessionFactory {
         String activitiStatement,
         String ibatisStatement
     ) {
-        Map<String, String> specificStatements = databaseSpecificStatements.get(
-            databaseType
-        );
+        Map<String, String> specificStatements = databaseSpecificStatements.get(databaseType);
         if (specificStatements == null) {
             specificStatements = new HashMap<String, String>();
             databaseSpecificStatements.put(databaseType, specificStatements);
@@ -192,10 +171,7 @@ public class DbSqlSessionFactory implements SessionFactory {
         this.statementMappings = databaseSpecificStatements.get(databaseType);
     }
 
-    public void setBulkInsertEnabled(
-        boolean isBulkInsertEnabled,
-        String databaseType
-    ) {
+    public void setBulkInsertEnabled(boolean isBulkInsertEnabled, String databaseType) {
         // If false, just keep don't initialize the map. Memory saved.
         if (isBulkInsertEnabled) {
             initBulkInsertEnabledMap(databaseType);
@@ -265,9 +241,7 @@ public class DbSqlSessionFactory implements SessionFactory {
         return bulkInsertStatements;
     }
 
-    public void setBulkInsertStatements(
-        Map<Class<?>, String> bulkInsertStatements
-    ) {
+    public void setBulkInsertStatements(Map<Class<?>, String> bulkInsertStatements) {
         this.bulkInsertStatements = bulkInsertStatements;
     }
 
@@ -291,9 +265,7 @@ public class DbSqlSessionFactory implements SessionFactory {
         return bulkDeleteStatements;
     }
 
-    public void setBulkDeleteStatements(
-        Map<Class<?>, String> bulkDeleteStatements
-    ) {
+    public void setBulkDeleteStatements(Map<Class<?>, String> bulkDeleteStatements) {
         this.bulkDeleteStatements = bulkDeleteStatements;
     }
 
@@ -349,9 +321,7 @@ public class DbSqlSessionFactory implements SessionFactory {
         return maxNrOfStatementsInBulkInsert;
     }
 
-    public void setMaxNrOfStatementsInBulkInsert(
-        int maxNrOfStatementsInBulkInsert
-    ) {
+    public void setMaxNrOfStatementsInBulkInsert(int maxNrOfStatementsInBulkInsert) {
         this.maxNrOfStatementsInBulkInsert = maxNrOfStatementsInBulkInsert;
     }
 }

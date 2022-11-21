@@ -36,9 +36,7 @@ public class MailTaskJsonConverter extends BaseBpmnJsonConverter {
         fillBpmnTypes(convertersToJsonMap);
     }
 
-    public static void fillJsonTypes(
-        Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap
-    ) {
+    public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
         convertersToBpmnMap.put(STENCIL_TASK_MAIL, MailTaskJsonConverter.class);
     }
 
@@ -52,10 +50,7 @@ public class MailTaskJsonConverter extends BaseBpmnJsonConverter {
         return STENCIL_TASK_MAIL;
     }
 
-    protected void convertElementToJson(
-        ObjectNode propertiesNode,
-        BaseElement baseElement
-    ) {
+    protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
         // will be handled by ServiceTaskJsonConverter
     }
 

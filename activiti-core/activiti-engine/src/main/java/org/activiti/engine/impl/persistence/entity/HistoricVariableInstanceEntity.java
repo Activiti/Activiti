@@ -28,8 +28,7 @@ import org.activiti.engine.impl.variable.VariableType;
 
  */
 @Internal
-public interface HistoricVariableInstanceEntity
-    extends ValueFields, HistoricVariableInstance, Entity, HasRevision {
+public interface HistoricVariableInstanceEntity extends ValueFields, HistoricVariableInstance, Entity, HasRevision {
     VariableType getVariableType();
 
     void setName(String name);

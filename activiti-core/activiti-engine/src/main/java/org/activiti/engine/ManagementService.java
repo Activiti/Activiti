@@ -233,11 +233,7 @@ public interface ManagementService {
     /**
      * programmatic schema update on a given connection returning feedback about what happened
      */
-    String databaseSchemaUpgrade(
-        Connection connection,
-        String catalog,
-        String schema
-    );
+    String databaseSchemaUpgrade(Connection connection, String catalog, String schema);
 
     /**
      * Executes a given command with the default {@link CommandConfig}.
@@ -262,9 +258,7 @@ public interface ManagementService {
     /**
      * Executes the sql contained in the {@link CustomSqlExecution} parameter.
      */
-    <MapperType, ResultType> ResultType executeCustomSql(
-        CustomSqlExecution<MapperType, ResultType> customSqlExecution
-    );
+    <MapperType, ResultType> ResultType executeCustomSql(CustomSqlExecution<MapperType, ResultType> customSqlExecution);
 
     /**
      * Returns a list of event log entries, describing everything the engine has processed. Note that the event logging must specifically must be enabled in the process engine configuration.
@@ -278,9 +272,7 @@ public interface ManagementService {
      *
      * Passing null as arguments will effectively fetch ALL event log entries. Be careful, as this list might be huge!
      */
-    List<EventLogEntry> getEventLogEntriesByProcessInstanceId(
-        String processInstanceId
-    );
+    List<EventLogEntry> getEventLogEntriesByProcessInstanceId(String processInstanceId);
 
     /**
      * Delete a EventLogEntry. Typically only used in testing, as deleting log entries defeats the whole purpose of keeping a log.

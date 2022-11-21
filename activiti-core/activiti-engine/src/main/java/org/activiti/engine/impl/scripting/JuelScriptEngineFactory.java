@@ -60,14 +60,8 @@ public class JuelScriptEngineFactory implements ScriptEngineFactory {
         return "2.1";
     }
 
-    public String getMethodCallSyntax(
-        String obj,
-        String method,
-        String... arguments
-    ) {
-        throw new UnsupportedOperationException(
-            "Method getMethodCallSyntax is not supported"
-        );
+    public String getMethodCallSyntax(String obj, String method, String... arguments) {
+        throw new UnsupportedOperationException("Method getMethodCallSyntax is not supported");
     }
 
     public List<String> getMimeTypes() {

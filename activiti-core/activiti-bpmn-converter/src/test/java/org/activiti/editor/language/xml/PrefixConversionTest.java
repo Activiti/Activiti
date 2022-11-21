@@ -27,16 +27,11 @@ import org.junit.jupiter.api.Test;
 public class PrefixConversionTest {
 
     @Test
-    public void shouldConvertWithoutDoublingTheBPMN2PrefixWhenAbpmnFileWithPrefixIsGiven()
-        throws IOException {
+    public void shouldConvertWithoutDoublingTheBPMN2PrefixWhenAbpmnFileWithPrefixIsGiven() throws IOException {
         final InputStream originalXMLStream =
-            this.getClass()
-                .getClassLoader()
-                .getResourceAsStream("checkConversionPrefix.bpmn");
+            this.getClass().getClassLoader().getResourceAsStream("checkConversionPrefix.bpmn");
         final InputStream copiedXMLStream =
-            this.getClass()
-                .getClassLoader()
-                .getResourceAsStream("checkConversionPrefix.bpmn");
+            this.getClass().getClassLoader().getResourceAsStream("checkConversionPrefix.bpmn");
         BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
 
         byte[] byteOriginalXMLStream = new byte[originalXMLStream.available()];
@@ -53,13 +48,10 @@ public class PrefixConversionTest {
             false
         );
 
-        byte[] bytesReconvertedXMLModel = bpmnXMLConverter.convertToXML(
-            bpmnModel
-        );
+        byte[] bytesReconvertedXMLModel = bpmnXMLConverter.convertToXML(bpmnModel);
         String stringifyOriginalXML = new String(byteOriginalXMLStream);
         String stringifyReconvertedModel = new String(bytesReconvertedXMLModel);
 
-        assertThat(stringifyReconvertedModel)
-            .isXmlEqualTo(stringifyOriginalXML);
+        assertThat(stringifyReconvertedModel).isXmlEqualTo(stringifyOriginalXML);
     }
 }

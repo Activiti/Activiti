@@ -38,8 +38,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ConformanceServiceTaskModifyVariableTest {
 
-    private final String processKey =
-        "serviceta2-820b2020-968d-4d34-bac4-5769192674f2";
+    private final String processKey = "serviceta2-820b2020-968d-4d34-bac4-5769192674f2";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -89,17 +88,12 @@ public class ConformanceServiceTaskModifyVariableTest {
 
         //then
         assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getStatus())
-            .isEqualTo(ProcessInstance.ProcessInstanceStatus.COMPLETED);
-        assertThat(processInstance.getBusinessKey())
-            .isEqualTo("my-business-key");
-        assertThat(processInstance.getName())
-            .isEqualTo("my-process-instance-name");
+        assertThat(processInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.COMPLETED);
+        assertThat(processInstance.getBusinessKey()).isEqualTo("my-business-key");
+        assertThat(processInstance.getName()).isEqualTo("my-process-instance-name");
 
         // No Process Instance should be found
-        Throwable throwable = catchThrowable(() ->
-            processRuntime.processInstance(processInstance.getId())
-        );
+        Throwable throwable = catchThrowable(() -> processRuntime.processInstance(processInstance.getId()));
 
         assertThat(throwable).isInstanceOf(NotFoundException.class);
 
@@ -107,16 +101,12 @@ public class ConformanceServiceTaskModifyVariableTest {
         throwable =
             catchThrowable(() ->
                 processRuntime.variables(
-                    ProcessPayloadBuilder
-                        .variables()
-                        .withProcessInstanceId(processInstance.getId())
-                        .build()
+                    ProcessPayloadBuilder.variables().withProcessInstanceId(processInstance.getId()).build()
                 )
             );
         assertThat(throwable).isInstanceOf(NotFoundException.class);
 
-        assertThat(Set1RuntimeTestConfiguration.isConnector2Executed())
-            .isTrue();
+        assertThat(Set1RuntimeTestConfiguration.isConnector2Executed()).isTrue();
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
             .extracting(RuntimeEvent::getEventType)
@@ -137,12 +127,7 @@ public class ConformanceServiceTaskModifyVariableTest {
             );
 
         assertThat(
-            (String) (
-                (VariableUpdatedEvent) RuntimeTestConfiguration.collectedEvents.get(
-                    7
-                )
-            ).getEntity()
-                .getValue()
+            (String) ((VariableUpdatedEvent) RuntimeTestConfiguration.collectedEvents.get(7)).getEntity().getValue()
         )
             .isEqualTo("value1-modified");
     }

@@ -64,10 +64,7 @@ public class ProcessVariableValue implements Serializable {
             return false;
         }
         ProcessVariableValue other = (ProcessVariableValue) obj;
-        return (
-            Objects.equals(type, other.type) &&
-            Objects.equals(value, other.value)
-        );
+        return (Objects.equals(type, other.type) && Objects.equals(value, other.value));
     }
 
     public Map<String, String> toMap() {
@@ -99,17 +96,11 @@ public class ProcessVariableValue implements Serializable {
         StringBuilder builder = new StringBuilder();
         builder.append("\"");
         for (char c : value.toCharArray()) {
-            if (c == '\'') builder.append("\\'"); else if (
-                c == '\"'
-            ) builder.append("\\\""); else if (c == '\r') builder.append(
-                "\\r"
-            ); else if (c == '\n') builder.append("\\n"); else if (
-                c == '\t'
-            ) builder.append("\\t"); else if (
-                c < 32 || c >= 127
-            ) builder.append(
-                String.format("\\u%04x", (int) c)
-            ); else builder.append(c);
+            if (c == '\'') builder.append("\\'"); else if (c == '\"') builder.append("\\\""); else if (
+                c == '\r'
+            ) builder.append("\\r"); else if (c == '\n') builder.append("\\n"); else if (c == '\t') builder.append(
+                "\\t"
+            ); else if (c < 32 || c >= 127) builder.append(String.format("\\u%04x", (int) c)); else builder.append(c);
         }
         builder.append("\"");
         return builder.toString();
@@ -161,8 +152,7 @@ public class ProcessVariableValue implements Serializable {
     /**
      * Builder to build {@link ProcessVariableValue}.
      */
-    public static final class Builder
-        implements ITypeStage, IValueStage, IBuildStage {
+    public static final class Builder implements ITypeStage, IValueStage, IBuildStage {
 
         private String type;
         private String value;

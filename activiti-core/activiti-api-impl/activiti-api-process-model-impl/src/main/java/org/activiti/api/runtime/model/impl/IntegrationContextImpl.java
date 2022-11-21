@@ -245,16 +245,10 @@ public class IntegrationContextImpl implements IntegrationContext {
             Objects.equals(id, other.id) &&
             Objects.equals(inBoundVariables, other.inBoundVariables) &&
             Objects.equals(outBoundVariables, other.outBoundVariables) &&
-            Objects.equals(
-                parentProcessInstanceId,
-                other.parentProcessInstanceId
-            ) &&
+            Objects.equals(parentProcessInstanceId, other.parentProcessInstanceId) &&
             Objects.equals(processDefinitionId, other.processDefinitionId) &&
             Objects.equals(processDefinitionKey, other.processDefinitionKey) &&
-            Objects.equals(
-                processDefinitionVersion,
-                other.processDefinitionVersion
-            ) &&
+            Objects.equals(processDefinitionVersion, other.processDefinitionVersion) &&
             Objects.equals(processInstanceId, other.processInstanceId) &&
             Objects.equals(rootProcessInstanceId, other.rootProcessInstanceId)
         );
@@ -268,17 +262,9 @@ public class IntegrationContextImpl implements IntegrationContext {
             .append("IntegrationContextImpl [id=")
             .append(id)
             .append(", inboundVariables=")
-            .append(
-                inBoundVariables != null
-                    ? toString(inBoundVariables.entrySet(), maxLen)
-                    : null
-            )
+            .append(inBoundVariables != null ? toString(inBoundVariables.entrySet(), maxLen) : null)
             .append(", outBoundVariables=")
-            .append(
-                outBoundVariables != null
-                    ? toString(outBoundVariables.entrySet(), maxLen)
-                    : null
-            )
+            .append(outBoundVariables != null ? toString(outBoundVariables.entrySet(), maxLen) : null)
             .append(", rootProcessInstanceId=")
             .append(rootProcessInstanceId)
             .append(", processInstanceId=")
@@ -313,11 +299,7 @@ public class IntegrationContextImpl implements IntegrationContext {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
         int i = 0;
-        for (
-            Iterator<?> iterator = collection.iterator();
-            iterator.hasNext() && i < maxLen;
-            i++
-        ) {
+        for (Iterator<?> iterator = collection.iterator(); iterator.hasNext() && i < maxLen; i++) {
             if (i > 0) {
                 builder.append(", ");
             }
@@ -330,36 +312,24 @@ public class IntegrationContextImpl implements IntegrationContext {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getInBoundVariable(String name) {
-        return Optional
-            .ofNullable(inBoundVariables)
-            .map(it -> (T) inBoundVariables.get(name))
-            .orElse(null);
+        return Optional.ofNullable(inBoundVariables).map(it -> (T) inBoundVariables.get(name)).orElse(null);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getInBoundVariable(String name, Class<T> type) {
-        return Optional
-            .ofNullable(inBoundVariables)
-            .map(it -> (T) inBoundVariables.get(name))
-            .orElse(null);
+        return Optional.ofNullable(inBoundVariables).map(it -> (T) inBoundVariables.get(name)).orElse(null);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getOutBoundVariable(String name) {
-        return Optional
-            .ofNullable(outBoundVariables)
-            .map(it -> (T) it.get(name))
-            .orElse(null);
+        return Optional.ofNullable(outBoundVariables).map(it -> (T) it.get(name)).orElse(null);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getOutBoundVariable(String name, Class<T> type) {
-        return Optional
-            .ofNullable(outBoundVariables)
-            .map(it -> (T) it.get(name))
-            .orElse(null);
+        return Optional.ofNullable(outBoundVariables).map(it -> (T) it.get(name)).orElse(null);
     }
 }

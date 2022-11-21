@@ -30,10 +30,7 @@ public class RemoveProcessVariablesPayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public RemoveProcessVariablesPayload(
-        String processInstanceId,
-        List<String> variableNames
-    ) {
+    public RemoveProcessVariablesPayload(String processInstanceId, List<String> variableNames) {
         this();
         this.processInstanceId = processInstanceId;
         this.variableNames = variableNames;

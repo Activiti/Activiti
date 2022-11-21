@@ -29,11 +29,7 @@ public class BPMNErrorImpl extends BPMNActivityImpl implements BPMNError {
         this.setElementId(elementId);
     }
 
-    public BPMNErrorImpl(
-        String elementId,
-        String activityName,
-        String activityType
-    ) {
+    public BPMNErrorImpl(String elementId, String activityName, String activityType) {
         this.setElementId(elementId);
         this.setActivityName(activityName);
         this.setActivityType(activityType);
@@ -57,13 +53,7 @@ public class BPMNErrorImpl extends BPMNActivityImpl implements BPMNError {
 
     @Override
     public int hashCode() {
-        return Objects.hash(
-            getElementId(),
-            getActivityName(),
-            getActivityType(),
-            getErrorId(),
-            getErrorCode()
-        );
+        return Objects.hash(getElementId(), getActivityName(), getActivityType(), getErrorId(), getErrorCode());
     }
 
     @Override

@@ -66,19 +66,14 @@ public class HistoricActivityInstanceQueryImpl
     }
 
     @Override
-    public List<HistoricActivityInstance> executeList(
-        CommandContext commandContext,
-        Page page
-    ) {
+    public List<HistoricActivityInstance> executeList(CommandContext commandContext, Page page) {
         checkQueryOk();
         return commandContext
             .getHistoricActivityInstanceEntityManager()
             .findHistoricActivityInstancesByQueryCriteria(this, page);
     }
 
-    public HistoricActivityInstanceQueryImpl processInstanceId(
-        String processInstanceId
-    ) {
+    public HistoricActivityInstanceQueryImpl processInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
         return this;
     }
@@ -88,9 +83,7 @@ public class HistoricActivityInstanceQueryImpl
         return this;
     }
 
-    public HistoricActivityInstanceQueryImpl processDefinitionId(
-        String processDefinitionId
-    ) {
+    public HistoricActivityInstanceQueryImpl processDefinitionId(String processDefinitionId) {
         this.processDefinitionId = processDefinitionId;
         return this;
     }
@@ -132,18 +125,14 @@ public class HistoricActivityInstanceQueryImpl
         return this;
     }
 
-    public HistoricActivityInstanceQuery deleteReasonLike(
-        String deleteReasonLike
-    ) {
+    public HistoricActivityInstanceQuery deleteReasonLike(String deleteReasonLike) {
         this.deleteReasonLike = deleteReasonLike;
         return this;
     }
 
     public HistoricActivityInstanceQueryImpl activityTenantId(String tenantId) {
         if (tenantId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "activity tenant id is null"
-            );
+            throw new ActivitiIllegalArgumentException("activity tenant id is null");
         }
         this.tenantId = tenantId;
         return this;
@@ -153,13 +142,9 @@ public class HistoricActivityInstanceQueryImpl
         return tenantId;
     }
 
-    public HistoricActivityInstanceQueryImpl activityTenantIdLike(
-        String tenantIdLike
-    ) {
+    public HistoricActivityInstanceQueryImpl activityTenantIdLike(String tenantIdLike) {
         if (tenantIdLike == null) {
-            throw new ActivitiIllegalArgumentException(
-                "activity tenant id is null"
-            );
+            throw new ActivitiIllegalArgumentException("activity tenant id is null");
         }
         this.tenantIdLike = tenantIdLike;
         return this;
@@ -197,9 +182,7 @@ public class HistoricActivityInstanceQueryImpl
     }
 
     public HistoricActivityInstanceQueryImpl orderByHistoricActivityInstanceId() {
-        orderBy(
-            HistoricActivityInstanceQueryProperty.HISTORIC_ACTIVITY_INSTANCE_ID
-        );
+        orderBy(HistoricActivityInstanceQueryProperty.HISTORIC_ACTIVITY_INSTANCE_ID);
         return this;
     }
 
@@ -238,9 +221,7 @@ public class HistoricActivityInstanceQueryImpl
         return this;
     }
 
-    public HistoricActivityInstanceQueryImpl activityInstanceId(
-        String activityInstanceId
-    ) {
+    public HistoricActivityInstanceQueryImpl activityInstanceId(String activityInstanceId) {
         this.activityInstanceId = activityInstanceId;
         return this;
     }

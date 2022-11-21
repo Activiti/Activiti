@@ -41,9 +41,7 @@ public class ScopeUtil {
         DelegateExecution execution,
         boolean async
     ) {
-        ExecutionEntityManager executionEntityManager = Context
-            .getCommandContext()
-            .getExecutionEntityManager();
+        ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
 
         // first spawn the compensating executions
         for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
@@ -52,22 +50,12 @@ public class ScopeUtil {
             // check whether compensating execution is already created (which is the case when compensating an embedded subprocess,
             // where the compensating execution is created when leaving the subprocess and holds snapshot data).
             if (eventSubscription.getConfiguration() != null) {
-                compensatingExecution =
-                    executionEntityManager.findById(
-                        eventSubscription.getConfiguration()
-                    );
-                compensatingExecution.setParent(
-                    compensatingExecution.getProcessInstance()
-                );
+                compensatingExecution = executionEntityManager.findById(eventSubscription.getConfiguration());
+                compensatingExecution.setParent(compensatingExecution.getProcessInstance());
                 compensatingExecution.setEventScope(false);
             } else {
-                compensatingExecution =
-                    executionEntityManager.createChildExecution(
-                        (ExecutionEntity) execution
-                    );
-                eventSubscription.setConfiguration(
-                    compensatingExecution.getId()
-                );
+                compensatingExecution = executionEntityManager.createChildExecution((ExecutionEntity) execution);
+                eventSubscription.setConfiguration(compensatingExecution.getId());
             }
         }
 
@@ -75,10 +63,7 @@ public class ScopeUtil {
         Collections.sort(
             eventSubscriptions,
             new Comparator<EventSubscriptionEntity>() {
-                public int compare(
-                    EventSubscriptionEntity o1,
-                    EventSubscriptionEntity o2
-                ) {
+                public int compare(EventSubscriptionEntity o1, EventSubscriptionEntity o2) {
                     return o2.getCreated().compareTo(o1.getCreated());
                 }
             }
@@ -95,9 +80,7 @@ public class ScopeUtil {
     /**
      * Creates a new event scope execution and moves existing event subscriptions to this new execution
      */
-    public static void createCopyOfSubProcessExecutionForCompensation(
-        ExecutionEntity subProcessExecution
-    ) {
+    public static void createCopyOfSubProcessExecutionForCompensation(ExecutionEntity subProcessExecution) {
         EventSubscriptionEntityManager eventSubscriptionEntityManager = Context
             .getCommandContext()
             .getEventSubscriptionEntityManager();
@@ -109,9 +92,7 @@ public class ScopeUtil {
         List<CompensateEventSubscriptionEntity> compensateEventSubscriptions = new ArrayList<CompensateEventSubscriptionEntity>();
         for (EventSubscriptionEntity event : eventSubscriptions) {
             if (event instanceof CompensateEventSubscriptionEntity) {
-                compensateEventSubscriptions.add(
-                    (CompensateEventSubscriptionEntity) event
-                );
+                compensateEventSubscriptions.add((CompensateEventSubscriptionEntity) event);
             }
         }
 
@@ -124,17 +105,11 @@ public class ScopeUtil {
                 .createChildExecution(processInstanceExecutionEntity);
             eventScopeExecution.setActive(false);
             eventScopeExecution.setEventScope(true);
-            eventScopeExecution.setCurrentFlowElement(
-                subProcessExecution.getCurrentFlowElement()
-            );
+            eventScopeExecution.setCurrentFlowElement(subProcessExecution.getCurrentFlowElement());
 
             // copy local variables to eventScopeExecution by value. This way,
             // the eventScopeExecution references a 'snapshot' of the local variables
-            new SubProcessVariableSnapshotter()
-                .setVariablesSnapshots(
-                    subProcessExecution,
-                    eventScopeExecution
-                );
+            new SubProcessVariableSnapshotter().setVariablesSnapshots(subProcessExecution, eventScopeExecution);
 
             // set event subscriptions to the event scope execution:
             for (CompensateEventSubscriptionEntity eventSubscriptionEntity : compensateEventSubscriptions) {
@@ -144,12 +119,8 @@ public class ScopeUtil {
                     eventScopeExecution,
                     eventSubscriptionEntity.getActivityId()
                 );
-                newSubscription.setConfiguration(
-                    eventSubscriptionEntity.getConfiguration()
-                );
-                newSubscription.setCreated(
-                    eventSubscriptionEntity.getCreated()
-                );
+                newSubscription.setConfiguration(eventSubscriptionEntity.getConfiguration());
+                newSubscription.setCreated(eventSubscriptionEntity.getCreated());
             }
 
             CompensateEventSubscriptionEntity eventSubscription = eventSubscriptionEntityManager.insertCompensationEvent(

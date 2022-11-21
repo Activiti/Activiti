@@ -31,10 +31,7 @@ public class ActivitiObjectNotFoundException extends ActivitiException {
         super(message);
     }
 
-    public ActivitiObjectNotFoundException(
-        String message,
-        Class<?> objectClass
-    ) {
+    public ActivitiObjectNotFoundException(String message, Class<?> objectClass) {
         this(message, objectClass, null);
     }
 
@@ -42,11 +39,7 @@ public class ActivitiObjectNotFoundException extends ActivitiException {
         this(null, objectClass, null);
     }
 
-    public ActivitiObjectNotFoundException(
-        String message,
-        Class<?> objectClass,
-        Throwable cause
-    ) {
+    public ActivitiObjectNotFoundException(String message, Class<?> objectClass, Throwable cause) {
         super(message, cause);
         this.objectClass = objectClass;
     }

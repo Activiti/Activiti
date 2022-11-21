@@ -19,8 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.convert.converter.Converter;
 
 @ProcessVariableTypeConverter
-public class StringToObjectValueConverter
-    implements Converter<String, ObjectValue> {
+public class StringToObjectValueConverter implements Converter<String, ObjectValue> {
 
     private final ObjectMapper objectMapper;
 

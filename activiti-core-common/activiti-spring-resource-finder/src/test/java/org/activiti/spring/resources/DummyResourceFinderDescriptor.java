@@ -27,10 +27,7 @@ public class DummyResourceFinderDescriptor implements ResourceFinderDescriptor {
 
     private String locationPrefix;
 
-    public DummyResourceFinderDescriptor(
-        String locationPrefix,
-        String... suffixes
-    ) {
+    public DummyResourceFinderDescriptor(String locationPrefix, String... suffixes) {
         this.suffixes = asList(suffixes);
         this.locationPrefix = locationPrefix;
     }

@@ -23,8 +23,7 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToAPITaskCandidateGroupAddedEventConverter;
 
-public class TaskCandidateGroupAddedListenerDelegate
-    implements ActivitiEventListener {
+public class TaskCandidateGroupAddedListenerDelegate implements ActivitiEventListener {
 
     private final List<TaskRuntimeEventListener<TaskCandidateGroupAddedEvent>> listeners;
 

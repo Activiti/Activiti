@@ -39,9 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultAsyncJobExecutor implements AsyncExecutor {
 
-    private static Logger log = LoggerFactory.getLogger(
-        DefaultAsyncJobExecutor.class
-    );
+    private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.class);
 
     /**
      * The minimal number of threads that are kept alive in the threadpool for job execution
@@ -139,12 +137,8 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
                         .getCommandExecutor()
                         .execute(
                             new Command<Void>() {
-                                public Void execute(
-                                    CommandContext commandContext
-                                ) {
-                                    commandContext
-                                        .getJobManager()
-                                        .unacquire(job);
+                                public Void execute(CommandContext commandContext) {
+                                    commandContext.getJobManager().unacquire(job);
                                     return null;
                                 }
                             }
@@ -165,10 +159,7 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
         if (executeAsyncRunnableFactory == null) {
             return new ExecuteAsyncRunnable(job, processEngineConfiguration);
         } else {
-            return executeAsyncRunnableFactory.createExecuteAsyncRunnable(
-                job,
-                processEngineConfiguration
-            );
+            return executeAsyncRunnableFactory.createExecuteAsyncRunnable(job, processEngineConfiguration);
         }
     }
 
@@ -178,17 +169,10 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
             return;
         }
 
-        log.info(
-            "Starting up the default async job executor [{}].",
-            getClass().getName()
-        );
+        log.info("Starting up the default async job executor [{}].", getClass().getName());
 
         if (timerJobRunnable == null) {
-            timerJobRunnable =
-                new AcquireTimerJobsRunnable(
-                    this,
-                    processEngineConfiguration.getJobManager()
-                );
+            timerJobRunnable = new AcquireTimerJobsRunnable(this, processEngineConfiguration.getJobManager());
         }
 
         if (resetExpiredJobsRunnable == null) {
@@ -224,10 +208,7 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
         if (!isActive) {
             return;
         }
-        log.info(
-            "Shutting down the default async job executor [{}].",
-            getClass().getName()
-        );
+        log.info("Shutting down the default async job executor [{}].", getClass().getName());
 
         if (timerJobRunnable != null) {
             timerJobRunnable.stop();
@@ -287,12 +268,7 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
 
             // Waits for 1 minute to finish all currently executing jobs
             try {
-                if (
-                    !executorService.awaitTermination(
-                        secondsToWaitOnShutdown,
-                        TimeUnit.SECONDS
-                    )
-                ) {
+                if (!executorService.awaitTermination(secondsToWaitOnShutdown, TimeUnit.SECONDS)) {
                     log.warn(
                         "Timeout during shutdown of async job executor. " +
                         "The current running jobs could not end within " +
@@ -301,10 +277,7 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
                     );
                 }
             } catch (InterruptedException e) {
-                log.warn(
-                    "Interrupted while shutting down the async job executor. ",
-                    e
-                );
+                log.warn("Interrupted while shutting down the async job executor. ", e);
             }
 
             executorService = null;
@@ -332,10 +305,7 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
             try {
                 asyncJobAcquisitionThread.join();
             } catch (InterruptedException e) {
-                log.warn(
-                    "Interrupted while waiting for the async job acquisition thread to terminate",
-                    e
-                );
+                log.warn("Interrupted while waiting for the async job acquisition thread to terminate", e);
             }
             asyncJobAcquisitionThread = null;
         }
@@ -346,10 +316,7 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
             try {
                 timerJobAcquisitionThread.join();
             } catch (InterruptedException e) {
-                log.warn(
-                    "Interrupted while waiting for the timer job acquisition thread to terminate",
-                    e
-                );
+                log.warn("Interrupted while waiting for the timer job acquisition thread to terminate", e);
             }
             timerJobAcquisitionThread = null;
         }
@@ -369,21 +336,15 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
             try {
                 resetExpiredJobThread.join();
             } catch (InterruptedException e) {
-                log.warn(
-                    "Interrupted while waiting for the reset expired jobs thread to terminate",
-                    e
-                );
+                log.warn("Interrupted while waiting for the reset expired jobs thread to terminate", e);
             }
 
             resetExpiredJobThread = null;
         }
     }
 
-    public void applyConfig(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
-        isMessageQueueMode =
-            processEngineConfiguration.isAsyncExecutorIsMessageQueueMode();
+    public void applyConfig(ProcessEngineConfigurationImpl processEngineConfiguration) {
+        isMessageQueueMode = processEngineConfiguration.isAsyncExecutorIsMessageQueueMode();
         applyThreadPoolConfig(processEngineConfiguration);
         applyQueueConfig(processEngineConfiguration);
 
@@ -394,58 +355,37 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
 
         applyLockConfig(processEngineConfiguration);
 
-        resetExpiredJobsInterval =
-            processEngineConfiguration.getAsyncExecutorResetExpiredJobsInterval();
-        resetExpiredJobsPageSize =
-            processEngineConfiguration.getAsyncExecutorResetExpiredJobsPageSize();
+        resetExpiredJobsInterval = processEngineConfiguration.getAsyncExecutorResetExpiredJobsInterval();
+        resetExpiredJobsPageSize = processEngineConfiguration.getAsyncExecutorResetExpiredJobsPageSize();
 
-        secondsToWaitOnShutdown =
-            processEngineConfiguration.getAsyncExecutorSecondsToWaitOnShutdown();
+        secondsToWaitOnShutdown = processEngineConfiguration.getAsyncExecutorSecondsToWaitOnShutdown();
 
-        maxAsyncJobsDuePerAcquisition =
-            processEngineConfiguration.getAsyncExecutorMaxAsyncJobsDuePerAcquisition();
-        maxTimerJobsPerAcquisition =
-            processEngineConfiguration.getAsyncExecutorMaxTimerJobsPerAcquisition();
+        maxAsyncJobsDuePerAcquisition = processEngineConfiguration.getAsyncExecutorMaxAsyncJobsDuePerAcquisition();
+        maxTimerJobsPerAcquisition = processEngineConfiguration.getAsyncExecutorMaxTimerJobsPerAcquisition();
 
-        retryWaitTimeInMillis =
-            processEngineConfiguration.getAsyncFailedJobWaitTime();
+        retryWaitTimeInMillis = processEngineConfiguration.getAsyncFailedJobWaitTime();
     }
 
-    private void applyLockConfig(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
-        timerLockTimeInMillis =
-            processEngineConfiguration.getAsyncExecutorTimerLockTimeInMillis();
-        asyncJobLockTimeInMillis =
-            processEngineConfiguration.getAsyncExecutorAsyncJobLockTimeInMillis();
+    private void applyLockConfig(ProcessEngineConfigurationImpl processEngineConfiguration) {
+        timerLockTimeInMillis = processEngineConfiguration.getAsyncExecutorTimerLockTimeInMillis();
+        asyncJobLockTimeInMillis = processEngineConfiguration.getAsyncExecutorAsyncJobLockTimeInMillis();
         if (processEngineConfiguration.getAsyncExecutorLockOwner() != null) {
             lockOwner = processEngineConfiguration.getAsyncExecutorLockOwner();
         }
     }
 
-    private void applyQueueConfig(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
-        if (
-            processEngineConfiguration.getAsyncExecutorThreadPoolQueue() != null
-        ) {
-            threadPoolQueue =
-                processEngineConfiguration.getAsyncExecutorThreadPoolQueue();
+    private void applyQueueConfig(ProcessEngineConfigurationImpl processEngineConfiguration) {
+        if (processEngineConfiguration.getAsyncExecutorThreadPoolQueue() != null) {
+            threadPoolQueue = processEngineConfiguration.getAsyncExecutorThreadPoolQueue();
         }
-        queueSize =
-            processEngineConfiguration.getAsyncExecutorThreadPoolQueueSize();
-        defaultQueueSizeFullWaitTime =
-            processEngineConfiguration.getAsyncExecutorDefaultQueueSizeFullWaitTime();
+        queueSize = processEngineConfiguration.getAsyncExecutorThreadPoolQueueSize();
+        defaultQueueSizeFullWaitTime = processEngineConfiguration.getAsyncExecutorDefaultQueueSizeFullWaitTime();
     }
 
-    private void applyThreadPoolConfig(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
-        corePoolSize =
-            processEngineConfiguration.getAsyncExecutorCorePoolSize();
+    private void applyThreadPoolConfig(ProcessEngineConfigurationImpl processEngineConfiguration) {
+        corePoolSize = processEngineConfiguration.getAsyncExecutorCorePoolSize();
         maxPoolSize = processEngineConfiguration.getAsyncExecutorMaxPoolSize();
-        keepAliveTime =
-            processEngineConfiguration.getAsyncExecutorThreadKeepAliveTime();
+        keepAliveTime = processEngineConfiguration.getAsyncExecutorThreadKeepAliveTime();
     }
 
     /* getters and setters */
@@ -454,9 +394,7 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
         return processEngineConfiguration;
     }
 
-    public void setProcessEngineConfiguration(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
         this.processEngineConfiguration = processEngineConfiguration;
     }
 
@@ -596,9 +534,7 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
         return maxAsyncJobsDuePerAcquisition;
     }
 
-    public void setMaxAsyncJobsDuePerAcquisition(
-        int maxAsyncJobsDuePerAcquisition
-    ) {
+    public void setMaxAsyncJobsDuePerAcquisition(int maxAsyncJobsDuePerAcquisition) {
         this.maxAsyncJobsDuePerAcquisition = maxAsyncJobsDuePerAcquisition;
     }
 
@@ -606,22 +542,16 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
         return defaultTimerJobAcquireWaitTimeInMillis;
     }
 
-    public void setDefaultTimerJobAcquireWaitTimeInMillis(
-        int defaultTimerJobAcquireWaitTimeInMillis
-    ) {
-        this.defaultTimerJobAcquireWaitTimeInMillis =
-            defaultTimerJobAcquireWaitTimeInMillis;
+    public void setDefaultTimerJobAcquireWaitTimeInMillis(int defaultTimerJobAcquireWaitTimeInMillis) {
+        this.defaultTimerJobAcquireWaitTimeInMillis = defaultTimerJobAcquireWaitTimeInMillis;
     }
 
     public int getDefaultAsyncJobAcquireWaitTimeInMillis() {
         return defaultAsyncJobAcquireWaitTimeInMillis;
     }
 
-    public void setDefaultAsyncJobAcquireWaitTimeInMillis(
-        int defaultAsyncJobAcquireWaitTimeInMillis
-    ) {
-        this.defaultAsyncJobAcquireWaitTimeInMillis =
-            defaultAsyncJobAcquireWaitTimeInMillis;
+    public void setDefaultAsyncJobAcquireWaitTimeInMillis(int defaultAsyncJobAcquireWaitTimeInMillis) {
+        this.defaultAsyncJobAcquireWaitTimeInMillis = defaultAsyncJobAcquireWaitTimeInMillis;
     }
 
     public void setTimerJobRunnable(AcquireTimerJobsRunnable timerJobRunnable) {
@@ -632,21 +562,15 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
         return defaultQueueSizeFullWaitTime;
     }
 
-    public void setDefaultQueueSizeFullWaitTimeInMillis(
-        int defaultQueueSizeFullWaitTime
-    ) {
+    public void setDefaultQueueSizeFullWaitTimeInMillis(int defaultQueueSizeFullWaitTime) {
         this.defaultQueueSizeFullWaitTime = defaultQueueSizeFullWaitTime;
     }
 
-    public void setAsyncJobsDueRunnable(
-        AcquireAsyncJobsDueRunnable asyncJobsDueRunnable
-    ) {
+    public void setAsyncJobsDueRunnable(AcquireAsyncJobsDueRunnable asyncJobsDueRunnable) {
         this.asyncJobsDueRunnable = asyncJobsDueRunnable;
     }
 
-    public void setResetExpiredJobsRunnable(
-        ResetExpiredJobsRunnable resetExpiredJobsRunnable
-    ) {
+    public void setResetExpiredJobsRunnable(ResetExpiredJobsRunnable resetExpiredJobsRunnable) {
         this.resetExpiredJobsRunnable = resetExpiredJobsRunnable;
     }
 
@@ -678,9 +602,7 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
         return executeAsyncRunnableFactory;
     }
 
-    public void setExecuteAsyncRunnableFactory(
-        ExecuteAsyncRunnableFactory executeAsyncRunnableFactory
-    ) {
+    public void setExecuteAsyncRunnableFactory(ExecuteAsyncRunnableFactory executeAsyncRunnableFactory) {
         this.executeAsyncRunnableFactory = executeAsyncRunnableFactory;
     }
 }

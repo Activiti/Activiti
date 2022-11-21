@@ -24,9 +24,7 @@ public class MybatisIntegrationContextDataManager
     extends AbstractDataManager<IntegrationContextEntity>
     implements IntegrationContextDataManager {
 
-    public MybatisIntegrationContextDataManager(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public MybatisIntegrationContextDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);
     }
 

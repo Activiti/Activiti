@@ -44,9 +44,7 @@ public class ServiceTaskJavaDelegateActivityBehavior
         Context
             .getProcessEngineConfiguration()
             .getDelegateInterceptor()
-            .handleInvocation(
-                new JavaDelegateInvocation(javaDelegate, execution)
-            );
+            .handleInvocation(new JavaDelegateInvocation(javaDelegate, execution));
         leave(execution);
     }
 

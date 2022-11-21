@@ -22,14 +22,10 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 /**
 
  */
-public class EventSubscriptionsByExecutionIdMatcher
-    extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
+public class EventSubscriptionsByExecutionIdMatcher extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
 
     @Override
-    public boolean isRetained(
-        EventSubscriptionEntity eventSubscriptionEntity,
-        Object parameter
-    ) {
+    public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity, Object parameter) {
         return (
             eventSubscriptionEntity.getExecutionId() != null &&
             eventSubscriptionEntity.getExecutionId().equals((String) parameter)

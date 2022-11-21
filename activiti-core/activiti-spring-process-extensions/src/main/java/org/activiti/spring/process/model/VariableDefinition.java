@@ -16,8 +16,7 @@
 
 package org.activiti.spring.process.model;
 
-public class VariableDefinition
-    extends org.activiti.core.common.model.connector.VariableDefinition {
+public class VariableDefinition extends org.activiti.core.common.model.connector.VariableDefinition {
 
     private Object value;
 

@@ -55,9 +55,6 @@ public class BooleanType implements VariableType {
         if (value == null) {
             return true;
         }
-        return (
-            Boolean.class.isAssignableFrom(value.getClass()) ||
-            boolean.class.isAssignableFrom(value.getClass())
-        );
+        return (Boolean.class.isAssignableFrom(value.getClass()) || boolean.class.isAssignableFrom(value.getClass()));
     }
 }

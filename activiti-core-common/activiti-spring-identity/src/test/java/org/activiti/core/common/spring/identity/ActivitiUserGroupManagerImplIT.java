@@ -30,9 +30,7 @@ public class ActivitiUserGroupManagerImplIT {
 
     @Test
     public void onlyAdminShouldHaveAdminRole() throws Exception {
-        assertThat(userGroupManager.getUserRoles("user"))
-            .doesNotContain("ACTIVITI_ADMIN");
-        assertThat(userGroupManager.getUserRoles("admin"))
-            .contains("ACTIVITI_ADMIN");
+        assertThat(userGroupManager.getUserRoles("user")).doesNotContain("ACTIVITI_ADMIN");
+        assertThat(userGroupManager.getUserRoles("admin")).contains("ACTIVITI_ADMIN");
     }
 }

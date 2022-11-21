@@ -25,8 +25,7 @@ import org.activiti.engine.query.Query;
  *
  */
 @Internal
-public interface HistoricVariableInstanceQuery
-    extends Query<HistoricVariableInstanceQuery, HistoricVariableInstance> {
+public interface HistoricVariableInstanceQuery extends Query<HistoricVariableInstanceQuery, HistoricVariableInstance> {
     /** Only select a historic variable with the given id. */
     HistoricVariableInstanceQuery id(String id);
 
@@ -58,34 +57,22 @@ public interface HistoricVariableInstanceQuery
     HistoricVariableInstanceQuery excludeVariableInitialization();
 
     /** only select historic process variables with the given name and value */
-    HistoricVariableInstanceQuery variableValueEquals(
-        String variableName,
-        Object variableValue
-    );
+    HistoricVariableInstanceQuery variableValueEquals(String variableName, Object variableValue);
 
     /**
      * only select historic process variables that don't have the given name and value
      */
-    HistoricVariableInstanceQuery variableValueNotEquals(
-        String variableName,
-        Object variableValue
-    );
+    HistoricVariableInstanceQuery variableValueNotEquals(String variableName, Object variableValue);
 
     /**
      * only select historic process variables like the given name and value
      */
-    HistoricVariableInstanceQuery variableValueLike(
-        String variableName,
-        String variableValue
-    );
+    HistoricVariableInstanceQuery variableValueLike(String variableName, String variableValue);
 
     /**
      * only select historic process variables like the given name and value (case insensitive)
      */
-    HistoricVariableInstanceQuery variableValueLikeIgnoreCase(
-        String variableName,
-        String variableValue
-    );
+    HistoricVariableInstanceQuery variableValueLikeIgnoreCase(String variableName, String variableValue);
 
     HistoricVariableInstanceQuery orderByProcessInstanceId();
 

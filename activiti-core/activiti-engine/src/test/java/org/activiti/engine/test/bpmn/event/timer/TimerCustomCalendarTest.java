@@ -36,9 +36,7 @@ import org.activiti.engine.test.Deployment;
 public class TimerCustomCalendarTest extends ResourceActivitiTestCase {
 
     public TimerCustomCalendarTest() {
-        super(
-            "org/activiti/engine/test/bpmn/event/timer/TimerCustomCalendarTest.activiti.cfg.xml"
-        );
+        super("org/activiti/engine/test/bpmn/event/timer/TimerCustomCalendarTest.activiti.cfg.xml");
     }
 
     @Deployment
@@ -55,9 +53,7 @@ public class TimerCustomCalendarTest extends ResourceActivitiTestCase {
 
         jobs = this.managementService.createTimerJobQuery().list();
 
-        assertThat(jobs)
-            .as("One job is scheduled (repetition is 2x)")
-            .hasSize(1);
+        assertThat(jobs).as("One job is scheduled (repetition is 2x)").hasSize(1);
         assertThat(jobs.get(0).getDuedate())
             .as("Job must be scheduled by custom business calendar to Date(0)")
             .isEqualTo(new Date(0));
@@ -71,10 +67,7 @@ public class TimerCustomCalendarTest extends ResourceActivitiTestCase {
 
     @Deployment
     public void testCustomDurationTimerCalendar() {
-        ProcessInstance processInstance =
-            this.runtimeService.startProcessInstanceByKey(
-                    "testCustomDurationCalendar"
-                );
+        ProcessInstance processInstance = this.runtimeService.startProcessInstanceByKey("testCustomDurationCalendar");
 
         List<Job> jobs = this.managementService.createTimerJobQuery().list();
 
@@ -99,11 +92,7 @@ public class TimerCustomCalendarTest extends ResourceActivitiTestCase {
     public void testInvalidDurationTimerCalendar() {
         assertThatExceptionOfType(ActivitiException.class)
             .as("Activiti exception expected - calendar not found")
-            .isThrownBy(() ->
-                this.runtimeService.startProcessInstanceByKey(
-                        "testCustomDurationCalendar"
-                    )
-            )
+            .isThrownBy(() -> this.runtimeService.startProcessInstanceByKey("testCustomDurationCalendar"))
             .withMessageContaining("INVALID does not exist");
     }
 
@@ -130,20 +119,12 @@ public class TimerCustomCalendarTest extends ResourceActivitiTestCase {
         }
 
         @Override
-        public Date resolveDuedate(
-            String duedateDescription,
-            int maxIterations
-        ) {
+        public Date resolveDuedate(String duedateDescription, int maxIterations) {
             return new Date(0);
         }
 
         @Override
-        public Boolean validateDuedate(
-            String duedateDescription,
-            int maxIterations,
-            Date endDate,
-            Date newTimer
-        ) {
+        public Boolean validateDuedate(String duedateDescription, int maxIterations, Date endDate, Date newTimer) {
             return true;
         }
 

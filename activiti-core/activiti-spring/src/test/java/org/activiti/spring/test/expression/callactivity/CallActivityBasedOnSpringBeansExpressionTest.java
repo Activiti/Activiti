@@ -32,13 +32,10 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration(
     "classpath:org/activiti/spring/test/expression/callactivity/testCallActivityByExpression-context.xml"
 )
-public class CallActivityBasedOnSpringBeansExpressionTest
-    extends SpringActivitiTestCase {
+public class CallActivityBasedOnSpringBeansExpressionTest extends SpringActivitiTestCase {
 
     private void cleanUp() {
-        List<org.activiti.engine.repository.Deployment> deployments = repositoryService
-            .createDeploymentQuery()
-            .list();
+        List<org.activiti.engine.repository.Deployment> deployments = repositoryService.createDeploymentQuery().list();
         for (org.activiti.engine.repository.Deployment deployment : deployments) {
             repositoryService.deleteDeployment(deployment.getId(), true);
         }
@@ -57,16 +54,13 @@ public class CallActivityBasedOnSpringBeansExpressionTest
     )
     public void testCallActivityByExpression() throws Exception {
         // Start process (main)
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testCallActivityByExpression"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testCallActivityByExpression");
 
         // one task in the subprocess should be active after starting the
         // process instance
         TaskQuery taskQuery = taskService.createTaskQuery();
         Task taskBeforeSubProcess = taskQuery.singleResult();
-        assertThat(taskBeforeSubProcess.getName())
-            .isEqualTo("Task before subprocess");
+        assertThat(taskBeforeSubProcess.getName()).isEqualTo("Task before subprocess");
 
         // Completing the task continues the process which leads to calling the
         // subprocess. The sub process we want to
@@ -78,8 +72,7 @@ public class CallActivityBasedOnSpringBeansExpressionTest
         // Completing the task in the subprocess, finishes the subprocess
         taskService.complete(taskInSubProcess.getId());
         Task taskAfterSubProcess = taskQuery.singleResult();
-        assertThat(taskAfterSubProcess.getName())
-            .isEqualTo("Task after subprocess");
+        assertThat(taskAfterSubProcess.getName()).isEqualTo("Task after subprocess");
 
         // Completing this task end the process instance
         taskService.complete(taskAfterSubProcess.getId());

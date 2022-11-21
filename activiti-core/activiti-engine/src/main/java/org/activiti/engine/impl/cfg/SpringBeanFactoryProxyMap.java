@@ -48,9 +48,7 @@ public class SpringBeanFactoryProxyMap implements Map<Object, Object> {
     }
 
     public Set<Object> keySet() {
-        throw new ActivitiException(
-            "unsupported operation on configuration beans"
-        );
+        throw new ActivitiException("unsupported operation on configuration beans");
         // List<String> beanNames =
         // asList(beanFactory.getBeanDefinitionNames());
         // return new HashSet<Object>(beanNames);
@@ -61,50 +59,34 @@ public class SpringBeanFactoryProxyMap implements Map<Object, Object> {
     }
 
     public boolean containsValue(Object value) {
-        throw new ActivitiException(
-            "can't search values in configuration beans"
-        );
+        throw new ActivitiException("can't search values in configuration beans");
     }
 
     public Set<Map.Entry<Object, Object>> entrySet() {
-        throw new ActivitiException(
-            "unsupported operation on configuration beans"
-        );
+        throw new ActivitiException("unsupported operation on configuration beans");
     }
 
     public boolean isEmpty() {
-        throw new ActivitiException(
-            "unsupported operation on configuration beans"
-        );
+        throw new ActivitiException("unsupported operation on configuration beans");
     }
 
     public Object put(Object key, Object value) {
-        throw new ActivitiException(
-            "unsupported operation on configuration beans"
-        );
+        throw new ActivitiException("unsupported operation on configuration beans");
     }
 
     public void putAll(Map<? extends Object, ? extends Object> m) {
-        throw new ActivitiException(
-            "unsupported operation on configuration beans"
-        );
+        throw new ActivitiException("unsupported operation on configuration beans");
     }
 
     public Object remove(Object key) {
-        throw new ActivitiException(
-            "unsupported operation on configuration beans"
-        );
+        throw new ActivitiException("unsupported operation on configuration beans");
     }
 
     public int size() {
-        throw new ActivitiException(
-            "unsupported operation on configuration beans"
-        );
+        throw new ActivitiException("unsupported operation on configuration beans");
     }
 
     public Collection<Object> values() {
-        throw new ActivitiException(
-            "unsupported operation on configuration beans"
-        );
+        throw new ActivitiException("unsupported operation on configuration beans");
     }
 }

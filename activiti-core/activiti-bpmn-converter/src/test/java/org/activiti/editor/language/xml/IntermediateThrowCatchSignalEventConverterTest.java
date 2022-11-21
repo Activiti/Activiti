@@ -26,8 +26,7 @@ import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.junit.jupiter.api.Test;
 
-public class IntermediateThrowCatchSignalEventConverterTest
-    extends AbstractConverterTest {
+public class IntermediateThrowCatchSignalEventConverterTest extends AbstractConverterTest {
 
     @Test
     public void convertXMLToModel() throws Exception {
@@ -50,16 +49,8 @@ public class IntermediateThrowCatchSignalEventConverterTest
     private void validateModel(BpmnModel model) throws Exception {
         assertThat(model.getDefinitionsAttributes()).hasSize(2);
 
-        checkThrowEvent(
-            model,
-            "IntermediateThrowEvent_1kdg748",
-            "Signal_1xjaioc"
-        );
-        checkCatchEvent(
-            model,
-            "IntermediateThrowEvent_1uj8tzz",
-            "Signal_1xjaioc"
-        );
+        checkThrowEvent(model, "IntermediateThrowEvent_1kdg748", "Signal_1xjaioc");
+        checkCatchEvent(model, "IntermediateThrowEvent_1uj8tzz", "Signal_1xjaioc");
 
         checkXml(model);
     }
@@ -76,9 +67,7 @@ public class IntermediateThrowCatchSignalEventConverterTest
         assertThat(throwEvent.getEventDefinitions()).hasSize(1);
 
         assertThat(throwEvent.getIncomingFlows().get(0).getXmlRowNumber())
-            .isLessThan(
-                throwEvent.getEventDefinitions().get(0).getXmlRowNumber()
-            );
+            .isLessThan(throwEvent.getEventDefinitions().get(0).getXmlRowNumber());
 
         checkSignalEventDefinition(throwEvent, signalRef);
     }
@@ -95,28 +84,20 @@ public class IntermediateThrowCatchSignalEventConverterTest
         assertThat(catchEvent.getEventDefinitions()).hasSize(1);
 
         assertThat(catchEvent.getIncomingFlows().get(0).getXmlRowNumber())
-            .isLessThan(
-                catchEvent.getEventDefinitions().get(0).getXmlRowNumber()
-            );
+            .isLessThan(catchEvent.getEventDefinitions().get(0).getXmlRowNumber());
 
         checkSignalEventDefinition(catchEvent, signalRef);
     }
 
     private void checkSignalEventDefinition(Event event, String signalRef) {
-        assertThat(event.getEventDefinitions().get(0))
-            .isInstanceOf(SignalEventDefinition.class);
-        SignalEventDefinition signalEventDefinition = (SignalEventDefinition) event
-            .getEventDefinitions()
-            .get(0);
+        assertThat(event.getEventDefinitions().get(0)).isInstanceOf(SignalEventDefinition.class);
+        SignalEventDefinition signalEventDefinition = (SignalEventDefinition) event.getEventDefinitions().get(0);
 
         assertThat(signalEventDefinition.getSignalRef()).isEqualTo(signalRef);
     }
 
     private void checkXml(BpmnModel model) throws Exception {
-        String xml = new String(
-            new BpmnXMLConverter().convertToXML(model),
-            "UTF-8"
-        );
+        String xml = new String(new BpmnXMLConverter().convertToXML(model), "UTF-8");
 
         assertThat(xml)
             .contains(

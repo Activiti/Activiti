@@ -29,16 +29,13 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntityManager;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 
-public class IntermediateCatchTimerEventActivityBehavior
-    extends IntermediateCatchEventActivityBehavior {
+public class IntermediateCatchTimerEventActivityBehavior extends IntermediateCatchEventActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 
     protected TimerEventDefinition timerEventDefinition;
 
-    public IntermediateCatchTimerEventActivityBehavior(
-        TimerEventDefinition timerEventDefinition
-    ) {
+    public IntermediateCatchTimerEventActivityBehavior(TimerEventDefinition timerEventDefinition) {
         this.timerEventDefinition = timerEventDefinition;
     }
 
@@ -65,12 +62,8 @@ public class IntermediateCatchTimerEventActivityBehavior
 
     @Override
     public void eventCancelledByEventGateway(DelegateExecution execution) {
-        JobEntityManager jobEntityManager = Context
-            .getCommandContext()
-            .getJobEntityManager();
-        List<JobEntity> jobEntities = jobEntityManager.findJobsByExecutionId(
-            execution.getId()
-        );
+        JobEntityManager jobEntityManager = Context.getCommandContext().getJobEntityManager();
+        List<JobEntity> jobEntities = jobEntityManager.findJobsByExecutionId(execution.getId());
 
         for (JobEntity jobEntity : jobEntities) { // Should be only one
             jobEntityManager.delete(jobEntity);
@@ -79,9 +72,6 @@ public class IntermediateCatchTimerEventActivityBehavior
         Context
             .getCommandContext()
             .getExecutionEntityManager()
-            .deleteExecutionAndRelatedData(
-                (ExecutionEntity) execution,
-                DeleteReason.EVENT_BASED_GATEWAY_CANCEL
-            );
+            .deleteExecutionAndRelatedData((ExecutionEntity) execution, DeleteReason.EVENT_BASED_GATEWAY_CANCEL);
     }
 }

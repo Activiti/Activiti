@@ -22,8 +22,7 @@ import org.activiti.engine.impl.interceptor.CommandConfig;
 /**
 
  */
-public class TotalExecutionTimeCommandInterceptor
-    extends AbstractCommandInterceptor {
+public class TotalExecutionTimeCommandInterceptor extends AbstractCommandInterceptor {
 
     protected ActivitiProfiler activitiProfiler;
 
@@ -37,9 +36,7 @@ public class TotalExecutionTimeCommandInterceptor
         if (currentProfileSession != null) {
             String className = command.getClass().getName();
             CommandExecutionResult commandExecutionResult = new CommandExecutionResult();
-            currentProfileSession.setCurrentCommandExecution(
-                commandExecutionResult
-            );
+            currentProfileSession.setCurrentCommandExecution(commandExecutionResult);
 
             commandExecutionResult.setCommandFqn(className);
 
@@ -49,10 +46,7 @@ public class TotalExecutionTimeCommandInterceptor
             long totalTime = end - start;
             commandExecutionResult.setTotalTimeInMs(totalTime);
 
-            currentProfileSession.addCommandExecution(
-                className,
-                commandExecutionResult
-            );
+            currentProfileSession.addCommandExecution(className, commandExecutionResult);
             currentProfileSession.clearCurrentCommandExecution();
 
             return result;

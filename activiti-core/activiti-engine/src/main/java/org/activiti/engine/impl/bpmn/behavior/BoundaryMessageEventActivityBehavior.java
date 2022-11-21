@@ -32,8 +32,7 @@ import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntit
 /**
 
  */
-public class BoundaryMessageEventActivityBehavior
-    extends BoundaryEventActivityBehavior {
+public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 
@@ -59,12 +58,7 @@ public class BoundaryMessageEventActivityBehavior
             commandContext,
             executionEntity
         );
-        if (
-            commandContext
-                .getProcessEngineConfiguration()
-                .getEventDispatcher()
-                .isEnabled()
-        ) {
+        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
             commandContext
                 .getProcessEngineConfiguration()
                 .getEventDispatcher()
@@ -79,11 +73,7 @@ public class BoundaryMessageEventActivityBehavior
     }
 
     @Override
-    public void trigger(
-        DelegateExecution execution,
-        String triggerName,
-        Object triggerData
-    ) {
+    public void trigger(DelegateExecution execution, String triggerName, Object triggerData) {
         ExecutionEntity executionEntity = (ExecutionEntity) execution;
         BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
         // Should we use triggerName and triggerData, because message name expression can change?

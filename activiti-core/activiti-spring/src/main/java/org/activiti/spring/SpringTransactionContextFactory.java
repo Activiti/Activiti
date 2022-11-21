@@ -24,15 +24,12 @@ import org.springframework.transaction.PlatformTransactionManager;
 /**
 
  */
-public class SpringTransactionContextFactory
-    implements TransactionContextFactory {
+public class SpringTransactionContextFactory implements TransactionContextFactory {
 
     protected PlatformTransactionManager transactionManager;
     protected Integer transactionSynchronizationAdapterOrder;
 
-    public SpringTransactionContextFactory(
-        PlatformTransactionManager transactionManager
-    ) {
+    public SpringTransactionContextFactory(PlatformTransactionManager transactionManager) {
         this(transactionManager, null);
     }
 
@@ -41,17 +38,10 @@ public class SpringTransactionContextFactory
         Integer transactionSynchronizationAdapterOrder
     ) {
         this.transactionManager = transactionManager;
-        this.transactionSynchronizationAdapterOrder =
-            transactionSynchronizationAdapterOrder;
+        this.transactionSynchronizationAdapterOrder = transactionSynchronizationAdapterOrder;
     }
 
-    public TransactionContext openTransactionContext(
-        CommandContext commandContext
-    ) {
-        return new SpringTransactionContext(
-            transactionManager,
-            commandContext,
-            transactionSynchronizationAdapterOrder
-        );
+    public TransactionContext openTransactionContext(CommandContext commandContext) {
+        return new SpringTransactionContext(transactionManager, commandContext, transactionSynchronizationAdapterOrder);
     }
 }

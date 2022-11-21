@@ -59,8 +59,7 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
 
         assertThat(currentTasks.get(0).getTaskId()).isEqualTo("usertask1");
         assertThat(currentTasks.get(0).getTaskName()).isEqualTo("User Task 1");
-        assertThat(currentTasks.get(0).getProcessInstanceId())
-            .isEqualTo(processInstance.getId());
+        assertThat(currentTasks.get(0).getProcessInstanceId()).isEqualTo(processInstance.getId());
         assertThat(currentTasks.get(0).getProcessInstanceId()).isNotNull();
     }
 
@@ -98,14 +97,12 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
 
         assertThat(currentTasks.get(0).getTaskId()).isEqualTo("usertask1");
         assertThat(currentTasks.get(0).getTaskName()).isEqualTo("User Task 1");
-        assertThat(currentTasks.get(0).getProcessInstanceId())
-            .isEqualTo(processInstance.getId());
+        assertThat(currentTasks.get(0).getProcessInstanceId()).isEqualTo(processInstance.getId());
         assertThat(currentTasks.get(0).getProcessInstanceId()).isNotNull();
 
         assertThat(currentTasks.get(1).getTaskId()).isEqualTo("usertask3");
         assertThat(currentTasks.get(1).getTaskName()).isEqualTo("User Task 3");
-        assertThat(currentTasks.get(1).getProcessInstanceId())
-            .isEqualTo(processInstance.getId());
+        assertThat(currentTasks.get(1).getProcessInstanceId()).isEqualTo(processInstance.getId());
         assertThat(currentTasks.get(1).getProcessInstanceId()).isNotNull();
     }
 
@@ -113,9 +110,7 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
     public void testOnCompleteExecutionVariables() {
         CurrentTaskTransactionDependentTaskListener.clear();
 
-        runtimeService.startProcessInstanceByKey(
-            "taskListenersOnCompleteExecutionVariables"
-        );
+        runtimeService.startProcessInstanceByKey("taskListenersOnCompleteExecutionVariables");
 
         // task 1 has committed listener
         Task task = taskService.createTaskQuery().singleResult();
@@ -131,24 +126,12 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
         assertThat(currentTasks.get(0).getTaskId()).isEqualTo("usertask1");
         assertThat(currentTasks.get(0).getTaskName()).isEqualTo("User Task 1");
         assertThat(currentTasks.get(1).getExecutionVariables()).hasSize(1);
-        assertThat(
-            currentTasks
-                .get(0)
-                .getExecutionVariables()
-                .get("injectedExecutionVariable")
-        )
-            .isEqualTo("test1");
+        assertThat(currentTasks.get(0).getExecutionVariables().get("injectedExecutionVariable")).isEqualTo("test1");
 
         assertThat(currentTasks.get(1).getTaskId()).isEqualTo("usertask2");
         assertThat(currentTasks.get(1).getTaskName()).isEqualTo("User Task 2");
         assertThat(currentTasks.get(1).getExecutionVariables()).hasSize(1);
-        assertThat(
-            currentTasks
-                .get(1)
-                .getExecutionVariables()
-                .get("injectedExecutionVariable")
-        )
-            .isEqualTo("test2");
+        assertThat(currentTasks.get(1).getExecutionVariables().get("injectedExecutionVariable")).isEqualTo("test2");
     }
 
     @Deployment
@@ -160,18 +143,12 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
         );
         assertProcessEnded(firstProcessInstance.getId());
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             List<HistoricProcessInstance> historicProcessInstances = historyService
                 .createHistoricProcessInstanceQuery()
                 .list();
             assertThat(historicProcessInstances).hasSize(1);
-            assertThat(
-                historicProcessInstances.get(0).getProcessDefinitionKey()
-            )
+            assertThat(historicProcessInstances.get(0).getProcessDefinitionKey())
                 .isEqualTo("transactionDependentTaskListenerProcess");
         }
 
@@ -184,19 +161,13 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
 
         assertProcessEnded(secondProcessInstance.getId());
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // first historic process instance was deleted by task listener
             List<HistoricProcessInstance> historicProcessInstances = historyService
                 .createHistoricProcessInstanceQuery()
                 .list();
             assertThat(historicProcessInstances).hasSize(1);
-            assertThat(
-                historicProcessInstances.get(0).getProcessDefinitionKey()
-            )
+            assertThat(historicProcessInstances.get(0).getProcessDefinitionKey())
                 .isEqualTo("secondTransactionDependentTaskListenerProcess");
         }
 
@@ -211,9 +182,7 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
     public void testOnCompleteCustomPropertiesResolver() {
         CurrentTaskTransactionDependentTaskListener.clear();
 
-        runtimeService.startProcessInstanceByKey(
-            "transactionDependentTaskListenerProcess"
-        );
+        runtimeService.startProcessInstanceByKey("transactionDependentTaskListenerProcess");
 
         Task task = taskService.createTaskQuery().singleResult();
         taskService.complete(task.getId());
@@ -224,9 +193,6 @@ public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
         assertThat(currentTasks.get(0).getTaskId()).isEqualTo("usertask1");
         assertThat(currentTasks.get(0).getTaskName()).isEqualTo("User Task 1");
         assertThat(currentTasks.get(0).getCustomPropertiesMap()).hasSize(1);
-        assertThat(
-            currentTasks.get(0).getCustomPropertiesMap().get("customProp1")
-        )
-            .isEqualTo("usertask1");
+        assertThat(currentTasks.get(0).getCustomPropertiesMap().get("customProp1")).isEqualTo("usertask1");
     }
 }

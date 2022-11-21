@@ -29,8 +29,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ProcessParser implements BpmnXMLConstants {
 
-    public Process parse(XMLStreamReader xtr, BpmnModel model)
-        throws Exception {
+    public Process parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
         Process process = null;
         if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_ID))) {
             String processId = xtr.getAttributeValue(null, ATTRIBUTE_ID);
@@ -38,28 +37,15 @@ public class ProcessParser implements BpmnXMLConstants {
             process.setId(processId);
             BpmnXMLUtil.addXMLLocation(process, xtr);
             process.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
-            if (
-                StringUtils.isNotEmpty(
-                    xtr.getAttributeValue(null, ATTRIBUTE_PROCESS_EXECUTABLE)
-                )
-            ) {
-                process.setExecutable(
-                    Boolean.parseBoolean(
-                        xtr.getAttributeValue(
-                            null,
-                            ATTRIBUTE_PROCESS_EXECUTABLE
-                        )
-                    )
-                );
+            if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_PROCESS_EXECUTABLE))) {
+                process.setExecutable(Boolean.parseBoolean(xtr.getAttributeValue(null, ATTRIBUTE_PROCESS_EXECUTABLE)));
             }
             String candidateUsersString = xtr.getAttributeValue(
                 ACTIVITI_EXTENSIONS_NAMESPACE,
                 ATTRIBUTE_PROCESS_CANDIDATE_USERS
             );
             if (StringUtils.isNotEmpty(candidateUsersString)) {
-                List<String> candidateUsers = BpmnXMLUtil.parseDelimitedList(
-                    candidateUsersString
-                );
+                List<String> candidateUsers = BpmnXMLUtil.parseDelimitedList(candidateUsersString);
                 process.setCandidateStarterUsers(candidateUsers);
             }
             String candidateGroupsString = xtr.getAttributeValue(
@@ -67,17 +53,11 @@ public class ProcessParser implements BpmnXMLConstants {
                 ATTRIBUTE_PROCESS_CANDIDATE_GROUPS
             );
             if (StringUtils.isNotEmpty(candidateGroupsString)) {
-                List<String> candidateGroups = BpmnXMLUtil.parseDelimitedList(
-                    candidateGroupsString
-                );
+                List<String> candidateGroups = BpmnXMLUtil.parseDelimitedList(candidateGroupsString);
                 process.setCandidateStarterGroups(candidateGroups);
             }
 
-            BpmnXMLUtil.addCustomAttributes(
-                xtr,
-                process,
-                ProcessExport.defaultProcessAttributes
-            );
+            BpmnXMLUtil.addCustomAttributes(xtr, process, ProcessExport.defaultProcessAttributes);
 
             model.getProcesses().add(process);
         }

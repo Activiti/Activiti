@@ -26,28 +26,20 @@ public class ToTimerRetriesDecrementedConverter
 
     private BPMNTimerConverter bpmnTimerConverter;
 
-    public ToTimerRetriesDecrementedConverter(
-        BPMNTimerConverter bpmnTimerConverter
-    ) {
+    public ToTimerRetriesDecrementedConverter(BPMNTimerConverter bpmnTimerConverter) {
         this.bpmnTimerConverter = bpmnTimerConverter;
     }
 
     @Override
-    public Optional<BPMNTimerRetriesDecrementedEvent> from(
-        ActivitiEvent internalEvent
-    ) {
+    public Optional<BPMNTimerRetriesDecrementedEvent> from(ActivitiEvent internalEvent) {
         BPMNTimerRetriesDecrementedEventImpl event = null;
         if (bpmnTimerConverter.isTimerRelatedEvent(internalEvent)) {
             event =
                 new BPMNTimerRetriesDecrementedEventImpl(
-                    bpmnTimerConverter.convertToBPMNTimer(
-                        (ActivitiEntityEvent) internalEvent
-                    )
+                    bpmnTimerConverter.convertToBPMNTimer((ActivitiEntityEvent) internalEvent)
                 );
             event.setProcessInstanceId(internalEvent.getProcessInstanceId());
-            event.setProcessDefinitionId(
-                internalEvent.getProcessDefinitionId()
-            );
+            event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         }
         return Optional.ofNullable(event);
     }

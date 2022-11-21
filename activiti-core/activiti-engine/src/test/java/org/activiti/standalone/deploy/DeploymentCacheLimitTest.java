@@ -30,9 +30,7 @@ import org.activiti.engine.repository.Deployment;
 public class DeploymentCacheLimitTest extends ResourceActivitiTestCase {
 
     public DeploymentCacheLimitTest() {
-        super(
-            "org/activiti/standalone/deploy/deployment.cache.limit.test.activiti.cfg.xml"
-        );
+        super("org/activiti/standalone/deploy/deployment.cache.limit.test.activiti.cfg.xml");
     }
 
     public void testDeploymentCacheLimit() {
@@ -48,24 +46,18 @@ public class DeploymentCacheLimitTest extends ResourceActivitiTestCase {
         for (int i = 1; i <= 5; i++) {
             repositoryService
                 .createDeployment()
-                .addString(
-                    "Process " + i + ".bpmn20.xml",
-                    MessageFormat.format(processDefinitionTemplate, i)
-                )
+                .addString("Process " + i + ".bpmn20.xml", MessageFormat.format(processDefinitionTemplate, i))
                 .deploy();
 
             if (i < processDefinitionCacheLimit) {
                 assertThat(processDefinitionCache.size()).isEqualTo(i);
             } else {
-                assertThat(processDefinitionCache.size())
-                    .isEqualTo(processDefinitionCacheLimit);
+                assertThat(processDefinitionCache.size()).isEqualTo(processDefinitionCacheLimit);
             }
         }
 
         // Cleanup
-        for (Deployment deployment : repositoryService
-            .createDeploymentQuery()
-            .list()) {
+        for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
             repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }

@@ -28,10 +28,7 @@ public class UpdateTaskVariablePayloadBuilder {
         return this;
     }
 
-    public UpdateTaskVariablePayloadBuilder withVariable(
-        String name,
-        Object value
-    ) {
+    public UpdateTaskVariablePayloadBuilder withVariable(String name, Object value) {
         this.name = name;
         this.value = value;
         return this;

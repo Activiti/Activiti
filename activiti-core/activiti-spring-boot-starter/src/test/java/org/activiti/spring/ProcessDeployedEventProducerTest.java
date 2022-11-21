@@ -74,11 +74,8 @@ public class ProcessDeployedEventProducerTest {
     @Test
     public void shouldCallRegisteredListenersWhenWebApplicationTypeIsServlet() {
         //given
-        ProcessDefinitionQuery definitionQuery = mock(
-            ProcessDefinitionQuery.class
-        );
-        given(repositoryService.createProcessDefinitionQuery().latestVersion())
-            .willReturn(definitionQuery);
+        ProcessDefinitionQuery definitionQuery = mock(ProcessDefinitionQuery.class);
+        given(repositoryService.createProcessDefinitionQuery().latestVersion()).willReturn(definitionQuery);
 
         List<ProcessDefinition> internalProcessDefinitions = asList(
             mock(ProcessDefinition.class),
@@ -91,29 +88,21 @@ public class ProcessDeployedEventProducerTest {
             buildAPIProcessDefinition("id1"),
             buildAPIProcessDefinition("id2")
         );
-        given(converter.from(internalProcessDefinitions))
-            .willReturn(apiProcessDefinitions);
-        given(repositoryService.getProcessModel("id1"))
-            .willReturn(new ByteArrayInputStream("content1".getBytes()));
-        given(repositoryService.getProcessModel("id2"))
-            .willReturn(new ByteArrayInputStream("content2".getBytes()));
+        given(converter.from(internalProcessDefinitions)).willReturn(apiProcessDefinitions);
+        given(repositoryService.getProcessModel("id1")).willReturn(new ByteArrayInputStream("content1".getBytes()));
+        given(repositoryService.getProcessModel("id2")).willReturn(new ByteArrayInputStream("content2".getBytes()));
 
         //when
         producer.start();
 
         //then
-        ArgumentCaptor<ProcessDeployedEvent> captor = ArgumentCaptor.forClass(
-            ProcessDeployedEvent.class
-        );
+        ArgumentCaptor<ProcessDeployedEvent> captor = ArgumentCaptor.forClass(ProcessDeployedEvent.class);
         verify(firstListener, times(2)).onEvent(captor.capture());
         verify(secondListener, times(2)).onEvent(captor.capture());
 
         List<ProcessDeployedEvent> allValues = captor.getAllValues();
         assertThat(allValues)
-            .extracting(
-                ProcessDeployedEvent::getEntity,
-                ProcessDeployedEvent::getProcessModelContent
-            )
+            .extracting(ProcessDeployedEvent::getEntity, ProcessDeployedEvent::getProcessModelContent)
             .containsExactly(
                 tuple(apiProcessDefinitions.get(0), "content1"), //firstListener
                 tuple(apiProcessDefinitions.get(1), "content2"), //firstListener
@@ -122,9 +111,7 @@ public class ProcessDeployedEventProducerTest {
             ); //secondListener
     }
 
-    private org.activiti.api.process.model.ProcessDefinition buildAPIProcessDefinition(
-        String processDefinitionId
-    ) {
+    private org.activiti.api.process.model.ProcessDefinition buildAPIProcessDefinition(String processDefinitionId) {
         org.activiti.api.process.model.ProcessDefinition processDefinition = mock(
             org.activiti.api.process.model.ProcessDefinition.class
         );

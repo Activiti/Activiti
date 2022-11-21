@@ -52,9 +52,6 @@ public class ShortType implements VariableType {
         if (value == null) {
             return true;
         }
-        return (
-            Short.class.isAssignableFrom(value.getClass()) ||
-            short.class.isAssignableFrom(value.getClass())
-        );
+        return (Short.class.isAssignableFrom(value.getClass()) || short.class.isAssignableFrom(value.getClass()));
     }
 }

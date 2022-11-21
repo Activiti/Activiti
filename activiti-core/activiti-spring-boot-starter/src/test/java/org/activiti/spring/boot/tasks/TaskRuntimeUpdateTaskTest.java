@@ -70,8 +70,7 @@ public class TaskRuntimeUpdateTaskTest {
                 .build()
         );
 
-        assertThat(RuntimeTestConfiguration.createdTasks)
-            .contains(standaloneTask.getId());
+        assertThat(RuntimeTestConfiguration.createdTasks).contains(standaloneTask.getId());
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
@@ -92,12 +91,9 @@ public class TaskRuntimeUpdateTaskTest {
         );
         tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
-        assertThat(RuntimeTestConfiguration.updatedTasks)
-            .contains(updatedTask.getId());
+        assertThat(RuntimeTestConfiguration.updatedTasks).contains(updatedTask.getId());
         assertThat(tasks.getTotalItems()).isEqualTo(1);
-        assertThat(tasks.getContent())
-            .filteredOn("status", Task.TaskStatus.ASSIGNED)
-            .containsOnly(updatedTask);
+        assertThat(tasks.getContent()).filteredOn("status", Task.TaskStatus.ASSIGNED).containsOnly(updatedTask);
     }
 
     @Test
@@ -115,8 +111,7 @@ public class TaskRuntimeUpdateTaskTest {
                 .build()
         );
 
-        assertThat(RuntimeTestConfiguration.createdTasks)
-            .contains(standaloneTask.getId());
+        assertThat(RuntimeTestConfiguration.createdTasks).contains(standaloneTask.getId());
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
@@ -135,29 +130,19 @@ public class TaskRuntimeUpdateTaskTest {
             .build();
 
         // try update
-        Throwable thrown = catchThrowable(() ->
-            taskRuntime.update(updateTaskPayload)
-        ); // task should be claimed before be updated
+        Throwable thrown = catchThrowable(() -> taskRuntime.update(updateTaskPayload)); // task should be claimed before be updated
         assertThat(thrown)
             .isInstanceOf(IllegalStateException.class)
-            .hasMessage(
-                "You cannot update a task where you are not the assignee"
-            );
+            .hasMessage("You cannot update a task where you are not the assignee");
 
         // claim
-        taskRuntime.claim(
-            TaskPayloadBuilder
-                .claim()
-                .withTaskId(standaloneTask.getId())
-                .build()
-        );
+        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(standaloneTask.getId()).build());
 
         // update
         final Task updatedTask = taskRuntime.update(updateTaskPayload);
         tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
-        assertThat(RuntimeTestConfiguration.updatedTasks)
-            .contains(updatedTask.getId());
+        assertThat(RuntimeTestConfiguration.updatedTasks).contains(updatedTask.getId());
         assertThat(tasks.getContent())
             .extracting("status", "id")
             .contains(tuple(Task.TaskStatus.ASSIGNED, standaloneTask.getId()));
@@ -177,8 +162,7 @@ public class TaskRuntimeUpdateTaskTest {
                 .build()
         );
 
-        assertThat(RuntimeTestConfiguration.createdTasks)
-            .contains(standaloneTask.getId());
+        assertThat(RuntimeTestConfiguration.createdTasks).contains(standaloneTask.getId());
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
@@ -201,8 +185,7 @@ public class TaskRuntimeUpdateTaskTest {
         final Task updatedTask = taskAdminRuntime.update(updateTaskPayload);
         tasks = taskAdminRuntime.tasks(Pageable.of(0, 50));
 
-        assertThat(RuntimeTestConfiguration.updatedTasks)
-            .contains(updatedTask.getId());
+        assertThat(RuntimeTestConfiguration.updatedTasks).contains(updatedTask.getId());
         assertThat(tasks.getContent())
             .extracting("id", "name", "description", "priority")
             .contains(

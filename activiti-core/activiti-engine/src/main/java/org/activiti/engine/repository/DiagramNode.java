@@ -38,13 +38,7 @@ public class DiagramNode extends DiagramElement {
         super(id);
     }
 
-    public DiagramNode(
-        String id,
-        Double x,
-        Double y,
-        Double width,
-        Double height
-    ) {
+    public DiagramNode(String id, Double x, Double y, Double width, Double height) {
         super(id);
         this.x = x;
         this.y = y;
@@ -87,15 +81,7 @@ public class DiagramNode extends DiagramElement {
     @Override
     public String toString() {
         return (
-            super.toString() +
-            ", x=" +
-            getX() +
-            ", y=" +
-            getY() +
-            ", width=" +
-            getWidth() +
-            ", height=" +
-            getHeight()
+            super.toString() + ", x=" + getX() + ", y=" + getY() + ", width=" + getWidth() + ", height=" + getHeight()
         );
     }
 

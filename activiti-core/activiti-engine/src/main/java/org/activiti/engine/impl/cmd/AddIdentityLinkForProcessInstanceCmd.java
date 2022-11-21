@@ -29,8 +29,7 @@ import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManager;
 
 
  */
-public class AddIdentityLinkForProcessInstanceCmd
-    implements Command<Void>, Serializable {
+public class AddIdentityLinkForProcessInstanceCmd implements Command<Void>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -42,12 +41,7 @@ public class AddIdentityLinkForProcessInstanceCmd
 
     protected String type;
 
-    public AddIdentityLinkForProcessInstanceCmd(
-        String processInstanceId,
-        String userId,
-        String groupId,
-        String type
-    ) {
+    public AddIdentityLinkForProcessInstanceCmd(String processInstanceId, String userId, String groupId, String type) {
         validateParams(processInstanceId, userId, groupId, type);
         this.processInstanceId = processInstanceId;
         this.userId = userId;
@@ -55,16 +49,9 @@ public class AddIdentityLinkForProcessInstanceCmd
         this.type = type;
     }
 
-    protected void validateParams(
-        String processInstanceId,
-        String userId,
-        String groupId,
-        String type
-    ) {
+    protected void validateParams(String processInstanceId, String userId, String groupId, String type) {
         if (processInstanceId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "processInstanceId is null"
-            );
+            throw new ActivitiIllegalArgumentException("processInstanceId is null");
         }
 
         if (type == null) {
@@ -74,17 +61,13 @@ public class AddIdentityLinkForProcessInstanceCmd
         }
 
         if (userId == null && groupId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "userId and groupId cannot both be null"
-            );
+            throw new ActivitiIllegalArgumentException("userId and groupId cannot both be null");
         }
     }
 
     public Void execute(CommandContext commandContext) {
         ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-        ExecutionEntity processInstance = executionEntityManager.findById(
-            processInstanceId
-        );
+        ExecutionEntity processInstance = executionEntityManager.findById(processInstanceId);
 
         if (processInstance == null) {
             throw new ActivitiObjectNotFoundException(
@@ -96,25 +79,11 @@ public class AddIdentityLinkForProcessInstanceCmd
         return null;
     }
 
-    protected void executeInternal(
-        CommandContext commandContext,
-        ExecutionEntity processInstance
-    ) {
+    protected void executeInternal(CommandContext commandContext, ExecutionEntity processInstance) {
         IdentityLinkEntityManager identityLinkEntityManager = commandContext.getIdentityLinkEntityManager();
-        identityLinkEntityManager.addIdentityLink(
-            processInstance,
-            userId,
-            groupId,
-            type
-        );
+        identityLinkEntityManager.addIdentityLink(processInstance, userId, groupId, type);
         commandContext
             .getHistoryManager()
-            .createProcessInstanceIdentityLinkComment(
-                processInstanceId,
-                userId,
-                groupId,
-                type,
-                true
-            );
+            .createProcessInstanceIdentityLinkComment(processInstanceId, userId, groupId, type, true);
     }
 }

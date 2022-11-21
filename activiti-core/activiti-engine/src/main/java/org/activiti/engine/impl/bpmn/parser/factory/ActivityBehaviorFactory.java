@@ -114,85 +114,51 @@ import org.activiti.engine.impl.delegate.ActivityBehavior;
  */
 @Internal
 public interface ActivityBehaviorFactory {
-    public abstract NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(
-        StartEvent startEvent
-    );
+    public abstract NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(StartEvent startEvent);
 
     public abstract TaskActivityBehavior createTaskActivityBehavior(Task task);
 
-    public abstract ManualTaskActivityBehavior createManualTaskActivityBehavior(
-        ManualTask manualTask
-    );
+    public abstract ManualTaskActivityBehavior createManualTaskActivityBehavior(ManualTask manualTask);
 
-    public abstract ReceiveTaskActivityBehavior createReceiveTaskActivityBehavior(
-        ReceiveTask receiveTask
-    );
+    public abstract ReceiveTaskActivityBehavior createReceiveTaskActivityBehavior(ReceiveTask receiveTask);
 
-    public abstract UserTaskActivityBehavior createUserTaskActivityBehavior(
-        UserTask userTask
-    );
+    public abstract UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask);
 
-    public abstract ClassDelegate createClassDelegateServiceTask(
-        ServiceTask serviceTask
-    );
+    public abstract ClassDelegate createClassDelegateServiceTask(ServiceTask serviceTask);
 
     public abstract ServiceTaskDelegateExpressionActivityBehavior createServiceTaskDelegateExpressionActivityBehavior(
         ServiceTask serviceTask
     );
 
-    public abstract ActivityBehavior createDefaultServiceTaskBehavior(
-        ServiceTask serviceTask
-    );
+    public abstract ActivityBehavior createDefaultServiceTaskBehavior(ServiceTask serviceTask);
 
     public abstract ServiceTaskExpressionActivityBehavior createServiceTaskExpressionActivityBehavior(
         ServiceTask serviceTask
     );
 
-    public abstract WebServiceActivityBehavior createWebServiceActivityBehavior(
-        ServiceTask serviceTask
-    );
+    public abstract WebServiceActivityBehavior createWebServiceActivityBehavior(ServiceTask serviceTask);
 
-    public abstract WebServiceActivityBehavior createWebServiceActivityBehavior(
-        SendTask sendTask
-    );
+    public abstract WebServiceActivityBehavior createWebServiceActivityBehavior(SendTask sendTask);
 
-    public abstract MailActivityBehavior createMailActivityBehavior(
-        ServiceTask serviceTask
-    );
+    public abstract MailActivityBehavior createMailActivityBehavior(ServiceTask serviceTask);
 
-    public abstract MailActivityBehavior createMailActivityBehavior(
-        SendTask sendTask
-    );
+    public abstract MailActivityBehavior createMailActivityBehavior(SendTask sendTask);
 
     // We do not want a hard dependency on the Mule module, hence we return
     // ActivityBehavior and instantiate the delegate instance using a string instead of the Class itself.
-    public abstract ActivityBehavior createMuleActivityBehavior(
-        ServiceTask serviceTask
-    );
+    public abstract ActivityBehavior createMuleActivityBehavior(ServiceTask serviceTask);
 
-    public abstract ActivityBehavior createMuleActivityBehavior(
-        SendTask sendTask
-    );
+    public abstract ActivityBehavior createMuleActivityBehavior(SendTask sendTask);
 
-    public abstract ActivityBehavior createCamelActivityBehavior(
-        ServiceTask serviceTask
-    );
+    public abstract ActivityBehavior createCamelActivityBehavior(ServiceTask serviceTask);
 
-    public abstract ActivityBehavior createCamelActivityBehavior(
-        SendTask sendTask
-    );
+    public abstract ActivityBehavior createCamelActivityBehavior(SendTask sendTask);
 
-    public abstract ShellActivityBehavior createShellActivityBehavior(
-        ServiceTask serviceTask
-    );
+    public abstract ShellActivityBehavior createShellActivityBehavior(ServiceTask serviceTask);
 
-    public abstract ActivityBehavior createBusinessRuleTaskActivityBehavior(
-        BusinessRuleTask businessRuleTask
-    );
+    public abstract ActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask);
 
-    public abstract ScriptTaskActivityBehavior createScriptTaskActivityBehavior(
-        ScriptTask scriptTask
-    );
+    public abstract ScriptTaskActivityBehavior createScriptTaskActivityBehavior(ScriptTask scriptTask);
 
     public abstract ExclusiveGatewayActivityBehavior createExclusiveGatewayActivityBehavior(
         ExclusiveGateway exclusiveGateway
@@ -220,9 +186,7 @@ public interface ActivityBehaviorFactory {
         AbstractBpmnActivityBehavior innerActivityBehavior
     );
 
-    public abstract SubProcessActivityBehavior createSubprocessActivityBehavior(
-        SubProcess subProcess
-    );
+    public abstract SubProcessActivityBehavior createSubprocessActivityBehavior(SubProcess subProcess);
 
     public abstract EventSubProcessErrorStartEventActivityBehavior createEventSubProcessErrorStartEventActivityBehavior(
         StartEvent startEvent
@@ -233,17 +197,11 @@ public interface ActivityBehaviorFactory {
         MessageEventDefinition messageEventDefinition
     );
 
-    public abstract AdhocSubProcessActivityBehavior createAdhocSubprocessActivityBehavior(
-        SubProcess subProcess
-    );
+    public abstract AdhocSubProcessActivityBehavior createAdhocSubprocessActivityBehavior(SubProcess subProcess);
 
-    public abstract CallActivityBehavior createCallActivityBehavior(
-        CallActivity callActivity
-    );
+    public abstract CallActivityBehavior createCallActivityBehavior(CallActivity callActivity);
 
-    public abstract TransactionActivityBehavior createTransactionActivityBehavior(
-        Transaction transaction
-    );
+    public abstract TransactionActivityBehavior createTransactionActivityBehavior(Transaction transaction);
 
     public abstract IntermediateCatchEventActivityBehavior createIntermediateCatchEventActivityBehavior(
         IntermediateCatchEvent intermediateCatchEvent
@@ -286,22 +244,16 @@ public interface ActivityBehaviorFactory {
         Message message
     );
 
-    public abstract NoneEndEventActivityBehavior createNoneEndEventActivityBehavior(
-        EndEvent endEvent
-    );
+    public abstract NoneEndEventActivityBehavior createNoneEndEventActivityBehavior(EndEvent endEvent);
 
     public abstract ErrorEndEventActivityBehavior createErrorEndEventActivityBehavior(
         EndEvent endEvent,
         ErrorEventDefinition errorEventDefinition
     );
 
-    public abstract CancelEndEventActivityBehavior createCancelEndEventActivityBehavior(
-        EndEvent endEvent
-    );
+    public abstract CancelEndEventActivityBehavior createCancelEndEventActivityBehavior(EndEvent endEvent);
 
-    public abstract TerminateEndEventActivityBehavior createTerminateEndEventActivityBehavior(
-        EndEvent endEvent
-    );
+    public abstract TerminateEndEventActivityBehavior createTerminateEndEventActivityBehavior(EndEvent endEvent);
 
     public abstract BoundaryEventActivityBehavior createBoundaryEventActivityBehavior(
         BoundaryEvent boundaryEvent,

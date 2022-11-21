@@ -31,18 +31,10 @@ public class MessageParser implements BpmnXMLConstants {
         if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_ID))) {
             String messageId = xtr.getAttributeValue(null, ATTRIBUTE_ID);
             String messageName = xtr.getAttributeValue(null, ATTRIBUTE_NAME);
-            String itemRef = parseItemRef(
-                xtr.getAttributeValue(null, ATTRIBUTE_ITEM_REF),
-                model
-            );
+            String itemRef = parseItemRef(xtr.getAttributeValue(null, ATTRIBUTE_ITEM_REF), model);
             Message message = new Message(messageId, messageName, itemRef);
             BpmnXMLUtil.addXMLLocation(message, xtr);
-            BpmnXMLUtil.parseChildElements(
-                ELEMENT_MESSAGE,
-                message,
-                xtr,
-                model
-            );
+            BpmnXMLUtil.parseChildElements(ELEMENT_MESSAGE, message, xtr, model);
             model.addMessage(message);
         }
     }
@@ -54,8 +46,7 @@ public class MessageParser implements BpmnXMLConstants {
             if (indexOfP != -1) {
                 String prefix = itemRef.substring(0, indexOfP);
                 String resolvedNamespace = model.getNamespace(prefix);
-                result =
-                    resolvedNamespace + ":" + itemRef.substring(indexOfP + 1);
+                result = resolvedNamespace + ":" + itemRef.substring(indexOfP + 1);
             } else {
                 String resolvedNamespace = model.getTargetNamespace();
                 result = resolvedNamespace + ":" + itemRef;

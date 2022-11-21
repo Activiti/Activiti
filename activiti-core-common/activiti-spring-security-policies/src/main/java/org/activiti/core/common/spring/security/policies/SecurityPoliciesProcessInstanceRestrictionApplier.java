@@ -25,10 +25,7 @@ public class SecurityPoliciesProcessInstanceRestrictionApplier
 
     @Override
     public GetProcessInstancesPayload restrictToKeys(Set<String> keys) {
-        return ProcessPayloadBuilder
-            .processInstances()
-            .withProcessDefinitionKeys(keys)
-            .build();
+        return ProcessPayloadBuilder.processInstances().withProcessDefinitionKeys(keys).build();
     }
 
     @Override

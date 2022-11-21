@@ -26,10 +26,7 @@ public class DateVariableType extends JavaObjectVariableType {
 
     private final DateFormatterProvider dateFormatterProvider;
 
-    public DateVariableType(
-        Class clazz,
-        DateFormatterProvider dateFormatterProvider
-    ) {
+    public DateVariableType(Class clazz, DateFormatterProvider dateFormatterProvider) {
         super(clazz);
         this.dateFormatterProvider = dateFormatterProvider;
     }

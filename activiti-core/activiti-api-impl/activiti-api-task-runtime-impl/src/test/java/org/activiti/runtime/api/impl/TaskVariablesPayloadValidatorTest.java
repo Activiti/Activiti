@@ -53,21 +53,15 @@ public class TaskVariablesPayloadValidatorTest {
 
         //calculate number of milliseconds after 1970-01-01T00:00:00.000Z
         long time =
-            Duration.ofHours(1).toMillis() +
-            Duration.ofMinutes(1).toMillis() +
-            Duration.ofSeconds(1).toMillis() +
-            1;
+            Duration.ofHours(1).toMillis() + Duration.ofMinutes(1).toMillis() + Duration.ofSeconds(1).toMillis() + 1;
 
         //when
-        Map<String, Object> handledDates = taskVariablesPayloadValidator.handlePayloadVariables(
-            payloadMap
-        );
+        Map<String, Object> handledDates = taskVariablesPayloadValidator.handlePayloadVariables(payloadMap);
 
         //then
         assertThat(handledDates).containsEntry("date", new Date(0));
         assertThat(handledDates).containsEntry("dateTime", new Date(time));
-        assertThat(handledDates)
-            .containsEntry("notADate", "this is not a date");
+        assertThat(handledDates).containsEntry("notADate", "this is not a date");
         assertThat(handledDates).containsEntry("int", 1);
         assertThat(handledDates).containsEntry("boolean", true);
     }
@@ -98,10 +92,7 @@ public class TaskVariablesPayloadValidatorTest {
             .build();
         //calculate number of milliseconds after 1970-01-01T00:00:00.000Z
         long time =
-            Duration.ofHours(1).toMillis() +
-            Duration.ofMinutes(1).toMillis() +
-            Duration.ofSeconds(1).toMillis() +
-            1;
+            Duration.ofHours(1).toMillis() + Duration.ofMinutes(1).toMillis() + Duration.ofSeconds(1).toMillis() + 1;
 
         //when
         CreateTaskVariablePayload handledVariablePayload = taskVariablesPayloadValidator.handleCreateTaskVariablePayload(
@@ -126,17 +117,13 @@ public class TaskVariablesPayloadValidatorTest {
         );
 
         //then
-        assertThat(handledVariablePayload.getValue())
-            .isEqualTo("this is not a date");
+        assertThat(handledVariablePayload.getValue()).isEqualTo("this is not a date");
     }
 
     @Test
     public void should_doNothing_when_itIsNotAStringInCreateTaskVariablePayload() {
         //given
-        CreateTaskVariablePayload payload = TaskPayloadBuilder
-            .createVariable()
-            .withVariable("notAString", 10)
-            .build();
+        CreateTaskVariablePayload payload = TaskPayloadBuilder.createVariable().withVariable("notAString", 10).build();
 
         //when
         CreateTaskVariablePayload handledVariablePayload = taskVariablesPayloadValidator.handleCreateTaskVariablePayload(
@@ -172,10 +159,7 @@ public class TaskVariablesPayloadValidatorTest {
             .build();
         //calculate number of milliseconds after 1970-01-01T00:00:00.000Z
         long time =
-            Duration.ofHours(1).toMillis() +
-            Duration.ofMinutes(1).toMillis() +
-            Duration.ofSeconds(1).toMillis() +
-            1;
+            Duration.ofHours(1).toMillis() + Duration.ofMinutes(1).toMillis() + Duration.ofSeconds(1).toMillis() + 1;
 
         //when
         UpdateTaskVariablePayload handledDatePayload = taskVariablesPayloadValidator.handleUpdateTaskVariablePayload(
@@ -200,8 +184,7 @@ public class TaskVariablesPayloadValidatorTest {
         );
 
         //then
-        assertThat(handledDatePayload.getValue())
-            .isEqualTo("this is not a date");
+        assertThat(handledDatePayload.getValue()).isEqualTo("this is not a date");
     }
 
     @Test
@@ -222,23 +205,15 @@ public class TaskVariablesPayloadValidatorTest {
     }
 
     @Test
-    public void should_returnErrorList_when_setVariableWithWrongCharactersInName()
-        throws Exception {
-        CreateTaskVariablePayload payload = TaskPayloadBuilder
-            .createVariable()
-            .withVariable("wrong-name", 10)
-            .build();
+    public void should_returnErrorList_when_setVariableWithWrongCharactersInName() throws Exception {
+        CreateTaskVariablePayload payload = TaskPayloadBuilder.createVariable().withVariable("wrong-name", 10).build();
 
         String expectedTypeErrorMessage = "wrong-name";
 
         Throwable throwable = catchThrowable(() ->
-            taskVariablesPayloadValidator.handleCreateTaskVariablePayload(
-                payload
-            )
+            taskVariablesPayloadValidator.handleCreateTaskVariablePayload(payload)
         );
 
-        assertThat(throwable)
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining(expectedTypeErrorMessage);
+        assertThat(throwable).isInstanceOf(IllegalStateException.class).hasMessageContaining(expectedTypeErrorMessage);
     }
 }

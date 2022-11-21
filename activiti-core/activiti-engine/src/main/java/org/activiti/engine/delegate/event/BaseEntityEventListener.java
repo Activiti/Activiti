@@ -46,10 +46,7 @@ public class BaseEntityEventListener implements ActivitiEventListener {
         this(failOnException, null);
     }
 
-    public BaseEntityEventListener(
-        boolean failOnException,
-        Class<?> entityClass
-    ) {
+    public BaseEntityEventListener(boolean failOnException, Class<?> entityClass) {
         this.failOnException = failOnException;
         this.entityClass = entityClass;
     }
@@ -60,9 +57,7 @@ public class BaseEntityEventListener implements ActivitiEventListener {
             // Check if this event
             if (event.getType() == ActivitiEventType.ENTITY_CREATED) {
                 onCreate(event);
-            } else if (
-                event.getType() == ActivitiEventType.ENTITY_INITIALIZED
-            ) {
+            } else if (event.getType() == ActivitiEventType.ENTITY_INITIALIZED) {
                 onInitialized(event);
             } else if (event.getType() == ActivitiEventType.ENTITY_DELETED) {
                 onDelete(event);
@@ -89,10 +84,7 @@ public class BaseEntityEventListener implements ActivitiEventListener {
             if (entityClass == null) {
                 valid = true;
             } else {
-                valid =
-                    entityClass.isAssignableFrom(
-                        ((ActivitiEntityEvent) event).getEntity().getClass()
-                    );
+                valid = entityClass.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass());
             }
         }
         return valid;

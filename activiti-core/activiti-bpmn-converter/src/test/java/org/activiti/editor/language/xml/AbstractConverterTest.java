@@ -27,33 +27,24 @@ import org.activiti.bpmn.model.BpmnModel;
 public abstract class AbstractConverterTest {
 
     protected BpmnModel readXMLFile() throws Exception {
-        InputStream xmlStream =
-            this.getClass().getClassLoader().getResourceAsStream(getResource());
+        InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream(getResource());
         XMLInputFactory xif = XMLInputFactory.newInstance();
-        InputStreamReader in = new InputStreamReader(
-            xmlStream,
-            StandardCharsets.UTF_8
-        );
+        InputStreamReader in = new InputStreamReader(xmlStream, StandardCharsets.UTF_8);
         XMLStreamReader xtr = xif.createXMLStreamReader(in);
         return new BpmnXMLConverter().convertToBpmnModel(xtr);
     }
 
     protected BpmnModel readXMLFileEncoding(String encoding) throws Exception {
-        InputStream xmlStream =
-            this.getClass().getClassLoader().getResourceAsStream(getResource());
+        InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream(getResource());
         XMLInputFactory xif = XMLInputFactory.newInstance();
         XMLStreamReader xtr = xif.createXMLStreamReader(xmlStream, encoding);
         return new BpmnXMLConverter().convertToBpmnModel(xtr);
     }
 
-    protected BpmnModel exportAndReadXMLFile(BpmnModel bpmnModel)
-        throws Exception {
+    protected BpmnModel exportAndReadXMLFile(BpmnModel bpmnModel) throws Exception {
         byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel);
         XMLInputFactory xif = XMLInputFactory.newInstance();
-        InputStreamReader in = new InputStreamReader(
-            new ByteArrayInputStream(xml),
-            StandardCharsets.UTF_8
-        );
+        InputStreamReader in = new InputStreamReader(new ByteArrayInputStream(xml), StandardCharsets.UTF_8);
         XMLStreamReader xtr = xif.createXMLStreamReader(in);
         return new BpmnXMLConverter().convertToBpmnModel(xtr);
     }

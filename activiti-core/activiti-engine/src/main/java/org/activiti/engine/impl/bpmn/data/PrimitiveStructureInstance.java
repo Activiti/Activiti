@@ -31,10 +31,7 @@ public class PrimitiveStructureInstance implements StructureInstance {
         this(definition, null);
     }
 
-    public PrimitiveStructureInstance(
-        PrimitiveStructureDefinition definition,
-        Object primitive
-    ) {
+    public PrimitiveStructureInstance(PrimitiveStructureDefinition definition, Object primitive) {
         this.definition = definition;
         this.primitive = primitive;
     }

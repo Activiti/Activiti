@@ -25,8 +25,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 
 public class InclusiveGatewayDefaultFlowTest extends PluggableActivitiTestCase {
 
-    private static final String PROCESS_DEFINITION_KEY =
-        "InclusiveGatewayDefaultFlowTest";
+    private static final String PROCESS_DEFINITION_KEY = "InclusiveGatewayDefaultFlowTest";
 
     private String deploymentId;
 
@@ -48,9 +47,7 @@ public class InclusiveGatewayDefaultFlowTest extends PluggableActivitiTestCase {
     }
 
     public void testDefaultFlowOnly() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            PROCESS_DEFINITION_KEY
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY);
         Execution execution = runtimeService
             .createExecutionQuery()
             .processInstanceId(processInstance.getId())
@@ -63,10 +60,7 @@ public class InclusiveGatewayDefaultFlowTest extends PluggableActivitiTestCase {
     public void testCompatibleConditionFlow() {
         Map<String, Object> variables = new HashMap<String, Object>();
         variables.put("var1", "true");
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            PROCESS_DEFINITION_KEY,
-            variables
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables);
 
         Execution execution = runtimeService
             .createExecutionQuery()

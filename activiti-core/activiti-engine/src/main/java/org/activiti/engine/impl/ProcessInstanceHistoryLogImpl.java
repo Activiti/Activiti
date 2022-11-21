@@ -28,16 +28,13 @@ import org.activiti.engine.history.ProcessInstanceHistoryLog;
 /**
 
  */
-public class ProcessInstanceHistoryLogImpl
-    implements ProcessInstanceHistoryLog {
+public class ProcessInstanceHistoryLogImpl implements ProcessInstanceHistoryLog {
 
     protected HistoricProcessInstance historicProcessInstance;
 
     protected List<HistoricData> historicData = new ArrayList<HistoricData>();
 
-    public ProcessInstanceHistoryLogImpl(
-        HistoricProcessInstance historicProcessInstance
-    ) {
+    public ProcessInstanceHistoryLogImpl(HistoricProcessInstance historicProcessInstance) {
         this.historicProcessInstance = historicProcessInstance;
     }
 
@@ -105,9 +102,7 @@ public class ProcessInstanceHistoryLogImpl
         historicData.add(historicEvent);
     }
 
-    public void addHistoricData(
-        Collection<? extends HistoricData> historicEvents
-    ) {
+    public void addHistoricData(Collection<? extends HistoricData> historicEvents) {
         historicData.addAll(historicEvents);
     }
 

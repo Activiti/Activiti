@@ -37,9 +37,7 @@ public class MockExpressionManager extends ExpressionManager {
         compositeElResolver.add(new ArrayELResolver());
         compositeElResolver.add(new ListELResolver());
         compositeElResolver.add(new MapELResolver());
-        compositeElResolver.add(
-            new ELResolverReflectionBlockerDecorator(new BeanELResolver())
-        );
+        compositeElResolver.add(new ELResolverReflectionBlockerDecorator(new BeanELResolver()));
         return compositeElResolver;
     }
 }

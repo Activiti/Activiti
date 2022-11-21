@@ -42,30 +42,13 @@ public abstract class ELResolverDecorator extends ELResolver {
     }
 
     @Override
-    public void setValue(
-        ELContext context,
-        Object base,
-        Object property,
-        Object value
-    ) {
+    public void setValue(ELContext context, Object base, Object property, Object value) {
         decoratedResolver.setValue(context, base, property, value);
     }
 
     @Override
-    public Object invoke(
-        ELContext context,
-        Object base,
-        Object method,
-        Class<?>[] paramTypes,
-        Object[] params
-    ) {
-        return decoratedResolver.invoke(
-            context,
-            base,
-            method,
-            paramTypes,
-            params
-        );
+    public Object invoke(ELContext context, Object base, Object method, Class<?>[] paramTypes, Object[] params) {
+        return decoratedResolver.invoke(context, base, method, paramTypes, params);
     }
 
     @Override
@@ -74,10 +57,7 @@ public abstract class ELResolverDecorator extends ELResolver {
     }
 
     @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(
-        ELContext context,
-        Object base
-    ) {
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
         return decoratedResolver.getFeatureDescriptors(context, base);
     }
 

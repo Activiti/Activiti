@@ -26,16 +26,10 @@ import org.activiti.engine.repository.ProcessDefinition;
 /**
 
  */
-public interface ProcessDefinitionDataManager
-    extends DataManager<ProcessDefinitionEntity> {
-    ProcessDefinitionEntity findLatestProcessDefinitionByKey(
-        String processDefinitionKey
-    );
+public interface ProcessDefinitionDataManager extends DataManager<ProcessDefinitionEntity> {
+    ProcessDefinitionEntity findLatestProcessDefinitionByKey(String processDefinitionKey);
 
-    ProcessDefinitionEntity findLatestProcessDefinitionByKeyAndTenantId(
-        String processDefinitionKey,
-        String tenantId
-    );
+    ProcessDefinitionEntity findLatestProcessDefinitionByKeyAndTenantId(String processDefinitionKey, String tenantId);
 
     void deleteProcessDefinitionsByDeploymentId(String deploymentId);
 
@@ -44,14 +38,9 @@ public interface ProcessDefinitionDataManager
         Page page
     );
 
-    long findProcessDefinitionCountByQueryCriteria(
-        ProcessDefinitionQueryImpl processDefinitionQuery
-    );
+    long findProcessDefinitionCountByQueryCriteria(ProcessDefinitionQueryImpl processDefinitionQuery);
 
-    ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKey(
-        String deploymentId,
-        String processDefinitionKey
-    );
+    ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey);
 
     ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKeyAndTenantId(
         String deploymentId,
@@ -76,12 +65,7 @@ public interface ProcessDefinitionDataManager
         int maxResults
     );
 
-    long findProcessDefinitionCountByNativeQuery(
-        Map<String, Object> parameterMap
-    );
+    long findProcessDefinitionCountByNativeQuery(Map<String, Object> parameterMap);
 
-    void updateProcessDefinitionTenantIdForDeployment(
-        String deploymentId,
-        String newTenantId
-    );
+    void updateProcessDefinitionTenantIdForDeployment(String deploymentId, String newTenantId);
 }

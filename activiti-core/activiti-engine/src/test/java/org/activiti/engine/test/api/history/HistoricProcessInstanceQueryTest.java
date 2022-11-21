@@ -27,26 +27,16 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-public class HistoricProcessInstanceQueryTest
-    extends PluggableActivitiTestCase {
+public class HistoricProcessInstanceQueryTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testLocalization() throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "historicProcessLocalization"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("historicProcessLocalization");
         String processInstanceId = processInstance.getId();
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstanceId)
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
         taskService.complete(task.getId());
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             List<HistoricProcessInstance> processes = historyService
                 .createHistoricProcessInstanceQuery()
                 .processInstanceId(processInstanceId)
@@ -66,10 +56,7 @@ public class HistoricProcessInstanceQueryTest
                 "Historic Process Description 'en-GB'",
                 infoNode
             );
-            dynamicBpmnService.saveProcessDefinitionInfo(
-                processInstance.getProcessDefinitionId(),
-                infoNode
-            );
+            dynamicBpmnService.saveProcessDefinitionInfo(processInstance.getProcessDefinitionId(), infoNode);
 
             dynamicBpmnService.changeLocalizationName(
                 "en",
@@ -83,16 +70,9 @@ public class HistoricProcessInstanceQueryTest
                 "Historic Process Description 'en'",
                 infoNode
             );
-            dynamicBpmnService.saveProcessDefinitionInfo(
-                processInstance.getProcessDefinitionId(),
-                infoNode
-            );
+            dynamicBpmnService.saveProcessDefinitionInfo(processInstance.getProcessDefinitionId(), infoNode);
 
-            processes =
-                historyService
-                    .createHistoricProcessInstanceQuery()
-                    .processInstanceId(processInstanceId)
-                    .list();
+            processes = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).list();
             assertThat(processes).hasSize(1);
             assertThat(processes.get(0).getName()).isNull();
             assertThat(processes.get(0).getDescription()).isNull();
@@ -104,10 +84,8 @@ public class HistoricProcessInstanceQueryTest
                     .locale("en-GB")
                     .list();
             assertThat(processes).hasSize(1);
-            assertThat(processes.get(0).getName())
-                .isEqualTo("Historic Process Name 'en-GB'");
-            assertThat(processes.get(0).getDescription())
-                .isEqualTo("Historic Process Description 'en-GB'");
+            assertThat(processes.get(0).getName()).isEqualTo("Historic Process Name 'en-GB'");
+            assertThat(processes.get(0).getDescription()).isEqualTo("Historic Process Description 'en-GB'");
 
             processes =
                 historyService
@@ -125,10 +103,8 @@ public class HistoricProcessInstanceQueryTest
                     .locale("en-GB")
                     .listPage(0, 10);
             assertThat(processes).hasSize(1);
-            assertThat(processes.get(0).getName())
-                .isEqualTo("Historic Process Name 'en-GB'");
-            assertThat(processes.get(0).getDescription())
-                .isEqualTo("Historic Process Description 'en-GB'");
+            assertThat(processes.get(0).getName()).isEqualTo("Historic Process Name 'en-GB'");
+            assertThat(processes.get(0).getDescription()).isEqualTo("Historic Process Description 'en-GB'");
 
             HistoricProcessInstance process = historyService
                 .createHistoricProcessInstanceQuery()
@@ -143,10 +119,8 @@ public class HistoricProcessInstanceQueryTest
                     .processInstanceId(processInstanceId)
                     .locale("en-GB")
                     .singleResult();
-            assertThat(process.getName())
-                .isEqualTo("Historic Process Name 'en-GB'");
-            assertThat(process.getDescription())
-                .isEqualTo("Historic Process Description 'en-GB'");
+            assertThat(process.getName()).isEqualTo("Historic Process Name 'en-GB'");
+            assertThat(process.getDescription()).isEqualTo("Historic Process Description 'en-GB'");
 
             process =
                 historyService
@@ -154,10 +128,8 @@ public class HistoricProcessInstanceQueryTest
                     .processInstanceId(processInstanceId)
                     .locale("en")
                     .singleResult();
-            assertThat(process.getName())
-                .isEqualTo("Historic Process Name 'en'");
-            assertThat(process.getDescription())
-                .isEqualTo("Historic Process Description 'en'");
+            assertThat(process.getName()).isEqualTo("Historic Process Name 'en'");
+            assertThat(process.getDescription()).isEqualTo("Historic Process Description 'en'");
 
             process =
                 historyService
@@ -166,10 +138,8 @@ public class HistoricProcessInstanceQueryTest
                     .locale("en-AU")
                     .withLocalizationFallback()
                     .singleResult();
-            assertThat(process.getName())
-                .isEqualTo("Historic Process Name 'en'");
-            assertThat(process.getDescription())
-                .isEqualTo("Historic Process Description 'en'");
+            assertThat(process.getName()).isEqualTo("Historic Process Name 'en'");
+            assertThat(process.getDescription()).isEqualTo("Historic Process Description 'en'");
         }
     }
 }

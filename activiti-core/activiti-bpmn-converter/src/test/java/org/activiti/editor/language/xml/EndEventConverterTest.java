@@ -45,9 +45,7 @@ public class EndEventConverterTest extends AbstractConverterTest {
     private void validateModel(BpmnModel model) {
         assertThat(model.getDefinitionsAttributes()).hasSize(2);
 
-        FlowElement flowElement = model
-            .getMainProcess()
-            .getFlowElement("EndEvent_0mdpjzn");
+        FlowElement flowElement = model.getMainProcess().getFlowElement("EndEvent_0mdpjzn");
         assertThat(flowElement).isNotNull();
         assertThat(flowElement).isInstanceOf(EndEvent.class);
 
@@ -58,17 +56,11 @@ public class EndEventConverterTest extends AbstractConverterTest {
 
         //Check that incoming xml element is coming before error event definition
         assertThat(endEvent.getIncomingFlows().get(0).getXmlRowNumber())
-            .isLessThan(
-                endEvent.getEventDefinitions().get(0).getXmlRowNumber()
-            );
+            .isLessThan(endEvent.getEventDefinitions().get(0).getXmlRowNumber());
 
-        assertThat(endEvent.getEventDefinitions().get(0))
-            .isInstanceOf(ErrorEventDefinition.class);
-        ErrorEventDefinition errorEventDefinition = (ErrorEventDefinition) endEvent
-            .getEventDefinitions()
-            .get(0);
+        assertThat(endEvent.getEventDefinitions().get(0)).isInstanceOf(ErrorEventDefinition.class);
+        ErrorEventDefinition errorEventDefinition = (ErrorEventDefinition) endEvent.getEventDefinitions().get(0);
 
-        assertThat(errorEventDefinition.getErrorRef())
-            .isEqualTo("Error_01agmko");
+        assertThat(errorEventDefinition.getErrorRef()).isEqualTo("Error_01agmko");
     }
 }

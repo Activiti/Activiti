@@ -41,19 +41,13 @@ public class VariableScopeExpressionEvaluatorTest {
     public void evaluate_should_returnResultOfGetValueWithVariableScope() {
         //given
         VariableScope variableScope = mock(VariableScope.class);
-        VariableScopeExpressionEvaluator evaluator = new VariableScopeExpressionEvaluator(
-            variableScope
-        );
+        VariableScopeExpressionEvaluator evaluator = new VariableScopeExpressionEvaluator(variableScope);
 
         Expression expression = mock(Expression.class);
         given(expression.getValue(variableScope)).willReturn("London");
 
         //when
-        Object value = evaluator.evaluate(
-            expression,
-            expressionManager,
-            delegateInterceptor
-        );
+        Object value = evaluator.evaluate(expression, expressionManager, delegateInterceptor);
 
         //then
         assertThat(value).isEqualTo("London");

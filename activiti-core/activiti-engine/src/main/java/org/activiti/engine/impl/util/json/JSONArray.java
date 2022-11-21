@@ -134,9 +134,7 @@ public class JSONArray {
                 case ']':
                 case ')':
                     if (q != c) {
-                        throw x.syntaxError(
-                            "Expected a '" + Character.valueOf(q) + "'"
-                        );
+                        throw x.syntaxError("Expected a '" + Character.valueOf(q) + "'");
                     }
                     return;
                 default:
@@ -189,9 +187,7 @@ public class JSONArray {
                 this.put(JSONObject.wrap(Array.get(array, i)));
             }
         } else {
-            throw new JSONException(
-                "JSONArray initial value should be a string or collection or array."
-            );
+            throw new JSONException("JSONArray initial value should be a string or collection or array.");
         }
     }
 
@@ -223,15 +219,9 @@ public class JSONArray {
      */
     public boolean getBoolean(int index) throws JSONException {
         Object o = get(index);
-        if (
-            o.equals(Boolean.FALSE) ||
-            (o instanceof String && ((String) o).equalsIgnoreCase("false"))
-        ) {
+        if (o.equals(Boolean.FALSE) || (o instanceof String && ((String) o).equalsIgnoreCase("false"))) {
             return false;
-        } else if (
-            o.equals(Boolean.TRUE) ||
-            (o instanceof String && ((String) o).equalsIgnoreCase("true"))
-        ) {
+        } else if (o.equals(Boolean.TRUE) || (o instanceof String && ((String) o).equalsIgnoreCase("true"))) {
             return true;
         }
         throw new JSONException("JSONArray[" + index + "] is not a Boolean.");
@@ -249,13 +239,9 @@ public class JSONArray {
     public double getDouble(int index) throws JSONException {
         Object o = get(index);
         try {
-            return o instanceof Number
-                ? ((Number) o).doubleValue()
-                : Double.valueOf((String) o).doubleValue();
+            return o instanceof Number ? ((Number) o).doubleValue() : Double.valueOf((String) o).doubleValue();
         } catch (Exception e) {
-            throw new JSONException(
-                "JSONArray[" + index + "] is not a number."
-            );
+            throw new JSONException("JSONArray[" + index + "] is not a number.");
         }
     }
 
@@ -270,9 +256,7 @@ public class JSONArray {
      */
     public int getInt(int index) throws JSONException {
         Object o = get(index);
-        return o instanceof Number
-            ? ((Number) o).intValue()
-            : (int) getDouble(index);
+        return o instanceof Number ? ((Number) o).intValue() : (int) getDouble(index);
     }
 
     /**
@@ -306,9 +290,7 @@ public class JSONArray {
         if (o instanceof JSONObject) {
             return (JSONObject) o;
         }
-        throw new JSONException(
-            "JSONArray[" + index + "] is not a JSONObject."
-        );
+        throw new JSONException("JSONArray[" + index + "] is not a JSONObject.");
     }
 
     /**
@@ -322,9 +304,7 @@ public class JSONArray {
      */
     public long getLong(int index) throws JSONException {
         Object o = get(index);
-        return o instanceof Number
-            ? ((Number) o).longValue()
-            : (long) getDouble(index);
+        return o instanceof Number ? ((Number) o).longValue() : (long) getDouble(index);
     }
 
     /**
@@ -390,9 +370,7 @@ public class JSONArray {
      * @return An object value, or null if there is no object at that index.
      */
     public Object opt(int index) {
-        return (index < 0 || index >= length())
-            ? null
-            : this.myArrayList.get(index);
+        return (index < 0 || index >= length()) ? null : this.myArrayList.get(index);
     }
 
     /**
@@ -849,13 +827,7 @@ public class JSONArray {
         int i;
         StringBuilder sb = new StringBuilder("[");
         if (len == 1) {
-            sb.append(
-                JSONObject.valueToString(
-                    this.myArrayList.get(0),
-                    indentFactor,
-                    indent
-                )
-            );
+            sb.append(JSONObject.valueToString(this.myArrayList.get(0), indentFactor, indent));
         } else {
             int newindent = indent + indentFactor;
             sb.append('\n');
@@ -866,13 +838,7 @@ public class JSONArray {
                 for (int j = 0; j < newindent; j += 1) {
                     sb.append(' ');
                 }
-                sb.append(
-                    JSONObject.valueToString(
-                        this.myArrayList.get(i),
-                        indentFactor,
-                        newindent
-                    )
-                );
+                sb.append(JSONObject.valueToString(this.myArrayList.get(i), indentFactor, newindent));
             }
             sb.append('\n');
             for (i = 0; i < indent; i += 1) {

@@ -25,8 +25,7 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 
 @Internal
-public interface ExecutionEntity
-    extends DelegateExecution, Execution, ProcessInstance, Entity, HasRevision {
+public interface ExecutionEntity extends DelegateExecution, Execution, ProcessInstance, Entity, HasRevision {
     void setBusinessKey(String businessKey);
 
     void setProcessDefinitionId(String processDefinitionId);

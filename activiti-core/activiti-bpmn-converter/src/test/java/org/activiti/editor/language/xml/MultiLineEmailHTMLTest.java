@@ -33,14 +33,8 @@ public class MultiLineEmailHTMLTest extends AbstractConverterTest {
 
     private void validateModel(BpmnModel model) {
         Map<String, List<ExtensionElement>> extensionElements = new HashMap<>();
-        extensionElements =
-            model
-                .getMainProcess()
-                .getFlowElement("userTask")
-                .getExtensionElements();
-        List<ExtensionElement> emailTemplateEmailList = extensionElements.get(
-            "email-template"
-        );
+        extensionElements = model.getMainProcess().getFlowElement("userTask").getExtensionElements();
+        List<ExtensionElement> emailTemplateEmailList = extensionElements.get("email-template");
         ExtensionElement extensionElement = emailTemplateEmailList.get(0);
         String elementText = extensionElement.getElementText();
         assertThat(elementText).isEqualTo(getEmailBody());

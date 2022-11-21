@@ -31,10 +31,7 @@ public class ProfilingDbSqlSession extends DbSqlSession {
 
     protected CommandExecutionResult commandExecutionResult;
 
-    public ProfilingDbSqlSession(
-        DbSqlSessionFactory dbSqlSessionFactory,
-        EntityCache entityCache
-    ) {
+    public ProfilingDbSqlSession(DbSqlSessionFactory dbSqlSessionFactory, EntityCache entityCache) {
         super(dbSqlSessionFactory, entityCache);
     }
 
@@ -92,14 +89,9 @@ public class ProfilingDbSqlSession extends DbSqlSession {
     }
 
     @Override
-    public <T extends Entity> T selectById(
-        Class<T> entityClass,
-        String id,
-        boolean useCache
-    ) {
+    public <T extends Entity> T selectById(Class<T> entityClass, String id, boolean useCache) {
         if (getCurrentCommandExecution() != null) {
-            getCurrentCommandExecution()
-                .addDbSelect("selectById " + entityClass.getName());
+            getCurrentCommandExecution().addDbSelect("selectById " + entityClass.getName());
         }
         return super.selectById(entityClass, id, useCache);
     }
@@ -117,13 +109,7 @@ public class ProfilingDbSqlSession extends DbSqlSession {
         if (getCurrentCommandExecution() != null) {
             getCurrentCommandExecution().addDbSelect(statement);
         }
-        return super.selectListWithRawParameter(
-            statement,
-            parameter,
-            firstResult,
-            maxResults,
-            useCache
-        );
+        return super.selectListWithRawParameter(statement, parameter, firstResult, maxResults, useCache);
     }
 
     @Override
@@ -136,21 +122,13 @@ public class ProfilingDbSqlSession extends DbSqlSession {
         if (getCurrentCommandExecution() != null) {
             getCurrentCommandExecution().addDbSelect(statement);
         }
-        return super.selectListWithRawParameterWithoutFilter(
-            statement,
-            parameter,
-            firstResult,
-            maxResults
-        );
+        return super.selectListWithRawParameterWithoutFilter(statement, parameter, firstResult, maxResults);
     }
 
     // INSERTS
 
     @Override
-    protected void flushRegularInsert(
-        Entity entity,
-        Class<? extends Entity> clazz
-    ) {
+    protected void flushRegularInsert(Entity entity, Class<? extends Entity> clazz) {
         super.flushRegularInsert(entity, clazz);
         if (getCurrentCommandExecution() != null) {
             getCurrentCommandExecution().addDbInsert(clazz.getName());
@@ -158,13 +136,9 @@ public class ProfilingDbSqlSession extends DbSqlSession {
     }
 
     @Override
-    protected void flushBulkInsert(
-        Collection<Entity> entities,
-        Class<? extends Entity> clazz
-    ) {
+    protected void flushBulkInsert(Collection<Entity> entities, Class<? extends Entity> clazz) {
         if (getCurrentCommandExecution() != null && entities.size() > 0) {
-            getCurrentCommandExecution()
-                .addDbInsert(clazz.getName() + "-bulk-with-" + entities.size());
+            getCurrentCommandExecution().addDbInsert(clazz.getName() + "-bulk-with-" + entities.size());
         }
         super.flushBulkInsert(entities, clazz);
     }
@@ -176,8 +150,7 @@ public class ProfilingDbSqlSession extends DbSqlSession {
         super.flushUpdates();
         if (getCurrentCommandExecution() != null) {
             for (Entity persistentObject : updatedObjects) {
-                getCurrentCommandExecution()
-                    .addDbUpdate(persistentObject.getClass().getName());
+                getCurrentCommandExecution().addDbUpdate(persistentObject.getClass().getName());
             }
         }
     }
@@ -185,15 +158,11 @@ public class ProfilingDbSqlSession extends DbSqlSession {
     // DELETES
 
     @Override
-    protected void flushDeleteEntities(
-        Class<? extends Entity> entityClass,
-        Collection<Entity> entitiesToDelete
-    ) {
+    protected void flushDeleteEntities(Class<? extends Entity> entityClass, Collection<Entity> entitiesToDelete) {
         super.flushDeleteEntities(entityClass, entitiesToDelete);
         if (getCurrentCommandExecution() != null) {
             for (Entity entity : entitiesToDelete) {
-                getCurrentCommandExecution()
-                    .addDbDelete(entity.getClass().getName());
+                getCurrentCommandExecution().addDbDelete(entity.getClass().getName());
             }
         }
     }
@@ -202,13 +171,8 @@ public class ProfilingDbSqlSession extends DbSqlSession {
     protected void flushBulkDeletes(Class<? extends Entity> entityClass) {
         if (getCurrentCommandExecution() != null) {
             if (bulkDeleteOperations.containsKey(entityClass)) {
-                for (BulkDeleteOperation bulkDeleteOperation : bulkDeleteOperations.get(
-                    entityClass
-                )) {
-                    getCurrentCommandExecution()
-                        .addDbDelete(
-                            "Bulk-delete-" + bulkDeleteOperation.getClass()
-                        );
+                for (BulkDeleteOperation bulkDeleteOperation : bulkDeleteOperations.get(entityClass)) {
+                    getCurrentCommandExecution().addDbDelete("Bulk-delete-" + bulkDeleteOperation.getClass());
                 }
             }
         }
@@ -217,12 +181,9 @@ public class ProfilingDbSqlSession extends DbSqlSession {
 
     public CommandExecutionResult getCurrentCommandExecution() {
         if (commandExecutionResult == null) {
-            ProfileSession profileSession = ActivitiProfiler
-                .getInstance()
-                .getCurrentProfileSession();
+            ProfileSession profileSession = ActivitiProfiler.getInstance().getCurrentProfileSession();
             if (profileSession != null) {
-                this.commandExecutionResult =
-                    profileSession.getCurrentCommandExecution();
+                this.commandExecutionResult = profileSession.getCurrentCommandExecution();
             }
         }
         return commandExecutionResult;

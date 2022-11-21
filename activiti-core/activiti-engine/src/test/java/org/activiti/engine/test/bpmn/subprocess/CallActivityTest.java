@@ -57,52 +57,34 @@ public class CallActivityTest extends ResourceActivitiTestCase {
     }
 
     public void testInstantiateProcessByMessage() throws Exception {
-        BpmnModel messageTriggeredBpmnModel = loadBPMNModel(
-            MESSAGE_TRIGGERED_PROCESS_RESOURCE
-        );
+        BpmnModel messageTriggeredBpmnModel = loadBPMNModel(MESSAGE_TRIGGERED_PROCESS_RESOURCE);
 
         processEngine
             .getRepositoryService()
             .createDeployment()
             .name("messageTriggeredProcessDeployment")
-            .addBpmnModel(
-                "messageTriggered.bpmn20.xml",
-                messageTriggeredBpmnModel
-            )
+            .addBpmnModel("messageTriggered.bpmn20.xml", messageTriggeredBpmnModel)
             .deploy();
 
-        ProcessInstance childProcessInstance = runtimeService.startProcessInstanceByMessage(
-            "TRIGGER_PROCESS_MESSAGE"
-        );
+        ProcessInstance childProcessInstance = runtimeService.startProcessInstanceByMessage("TRIGGER_PROCESS_MESSAGE");
         assertThat(childProcessInstance).isNotNull();
     }
 
     public void testInstantiateSuspendedProcessByMessage() throws Exception {
-        BpmnModel messageTriggeredBpmnModel = loadBPMNModel(
-            MESSAGE_TRIGGERED_PROCESS_RESOURCE
-        );
+        BpmnModel messageTriggeredBpmnModel = loadBPMNModel(MESSAGE_TRIGGERED_PROCESS_RESOURCE);
 
         Deployment messageTriggeredBpmnDeployment = processEngine
             .getRepositoryService()
             .createDeployment()
             .name("messageTriggeredProcessDeployment")
-            .addBpmnModel(
-                "messageTriggered.bpmn20.xml",
-                messageTriggeredBpmnModel
-            )
+            .addBpmnModel("messageTriggered.bpmn20.xml", messageTriggeredBpmnModel)
             .deploy();
 
         suspendProcessDefinitions(messageTriggeredBpmnDeployment);
 
         assertThatExceptionOfType(ActivitiException.class)
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByMessage(
-                    "TRIGGER_PROCESS_MESSAGE"
-                )
-            )
-            .withMessageContaining(
-                "Cannot start process instance. Process definition Message Triggered Process"
-            );
+            .isThrownBy(() -> runtimeService.startProcessInstanceByMessage("TRIGGER_PROCESS_MESSAGE"))
+            .withMessageContaining("Cannot start process instance. Process definition Message Triggered Process");
     }
 
     public void testInstantiateChildProcess() throws Exception {
@@ -115,9 +97,7 @@ public class CallActivityTest extends ResourceActivitiTestCase {
             .addBpmnModel("childProcess.bpmn20.xml", childBpmnModel)
             .deploy();
 
-        ProcessInstance childProcessInstance = runtimeService.startProcessInstanceByKey(
-            "childProcess"
-        );
+        ProcessInstance childProcessInstance = runtimeService.startProcessInstanceByKey("childProcess");
         assertThat(childProcessInstance).isNotNull();
     }
 
@@ -134,12 +114,8 @@ public class CallActivityTest extends ResourceActivitiTestCase {
         suspendProcessDefinitions(childDeployment);
 
         assertThatExceptionOfType(ActivitiException.class)
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByKey("childProcess")
-            )
-            .withMessageContaining(
-                "Cannot start process instance. Process definition Child Process"
-            );
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("childProcess"))
+            .withMessageContaining("Cannot start process instance. Process definition Child Process");
     }
 
     public void testInstantiateSubprocess() throws Exception {
@@ -163,21 +139,13 @@ public class CallActivityTest extends ResourceActivitiTestCase {
         suspendProcessDefinitions(childDeployment);
 
         assertThatExceptionOfType(ActivitiException.class)
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByKey("masterProcess")
-            )
-            .withMessageContaining(
-                "Cannot start process instance. Process definition Child Process"
-            );
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("masterProcess"))
+            .withMessageContaining("Cannot start process instance. Process definition Child Process");
     }
 
     public void testInheritVariablesSubprocess() throws Exception {
-        BpmnModel mainBpmnModel = loadBPMNModel(
-            INHERIT_VARIABLES_MAIN_PROCESS_RESOURCE
-        );
-        BpmnModel childBpmnModel = loadBPMNModel(
-            INHERIT_VARIABLES_CHILD_PROCESS_RESOURCE
-        );
+        BpmnModel mainBpmnModel = loadBPMNModel(INHERIT_VARIABLES_MAIN_PROCESS_RESOURCE);
+        BpmnModel childBpmnModel = loadBPMNModel(INHERIT_VARIABLES_CHILD_PROCESS_RESOURCE);
 
         processEngine
             .getRepositoryService()
@@ -199,10 +167,7 @@ public class CallActivityTest extends ResourceActivitiTestCase {
         variables.put("var3", 12345);
         variables.put("var4", 67890);
 
-        ProcessInstance mainProcessInstance = runtimeService.startProcessInstanceByKey(
-            "mainProcess",
-            variables
-        );
+        ProcessInstance mainProcessInstance = runtimeService.startProcessInstanceByKey("mainProcess", variables);
 
         HistoricActivityInstanceQuery activityInstanceQuery = historyService.createHistoricActivityInstanceQuery();
         activityInstanceQuery.processInstanceId(mainProcessInstance.getId());
@@ -217,18 +182,13 @@ public class CallActivityTest extends ResourceActivitiTestCase {
 
         assertThat(variableInstances).hasSize(4);
         for (HistoricVariableInstance variable : variableInstances) {
-            assertThat(variable.getValue())
-                .isEqualTo(variables.get(variable.getVariableName()));
+            assertThat(variable.getValue()).isEqualTo(variables.get(variable.getVariableName()));
         }
     }
 
     public void testNotInheritVariablesSubprocess() throws Exception {
-        BpmnModel mainBpmnModel = loadBPMNModel(
-            NOT_INHERIT_VARIABLES_MAIN_PROCESS_RESOURCE
-        );
-        BpmnModel childBpmnModel = loadBPMNModel(
-            INHERIT_VARIABLES_CHILD_PROCESS_RESOURCE
-        );
+        BpmnModel mainBpmnModel = loadBPMNModel(NOT_INHERIT_VARIABLES_MAIN_PROCESS_RESOURCE);
+        BpmnModel childBpmnModel = loadBPMNModel(INHERIT_VARIABLES_CHILD_PROCESS_RESOURCE);
 
         processEngine
             .getRepositoryService()
@@ -250,10 +210,7 @@ public class CallActivityTest extends ResourceActivitiTestCase {
         variables.put("var3", 12345);
         variables.put("var4", 67890);
 
-        ProcessInstance mainProcessInstance = runtimeService.startProcessInstanceByKey(
-            "mainProcess",
-            variables
-        );
+        ProcessInstance mainProcessInstance = runtimeService.startProcessInstanceByKey("mainProcess", variables);
 
         HistoricActivityInstanceQuery activityInstanceQuery = historyService.createHistoricActivityInstanceQuery();
         activityInstanceQuery.processInstanceId(mainProcessInstance.getId());
@@ -275,35 +232,22 @@ public class CallActivityTest extends ResourceActivitiTestCase {
             .list();
 
         for (ProcessDefinition processDefinition : childProcessDefinitionList) {
-            repositoryService.suspendProcessDefinitionById(
-                processDefinition.getId()
-            );
+            repositoryService.suspendProcessDefinitionById(processDefinition.getId());
         }
     }
 
     protected void tearDown() throws Exception {
-        for (Deployment deployment : repositoryService
-            .createDeploymentQuery()
-            .list()) {
+        for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
             repositoryService.deleteDeployment(deployment.getId(), true);
         }
         super.tearDown();
     }
 
-    protected BpmnModel loadBPMNModel(String bpmnModelFilePath)
-        throws Exception {
-        InputStream xmlStream =
-            this.getClass()
-                .getClassLoader()
-                .getResourceAsStream(bpmnModelFilePath);
+    protected BpmnModel loadBPMNModel(String bpmnModelFilePath) throws Exception {
+        InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream(bpmnModelFilePath);
         StreamSource xmlSource = new InputStreamSource(xmlStream);
         BpmnModel bpmnModel = new BpmnXMLConverter()
-            .convertToBpmnModel(
-                xmlSource,
-                false,
-                false,
-                processEngineConfiguration.getXmlEncoding()
-            );
+            .convertToBpmnModel(xmlSource, false, false, processEngineConfiguration.getXmlEncoding());
         return bpmnModel;
     }
 }

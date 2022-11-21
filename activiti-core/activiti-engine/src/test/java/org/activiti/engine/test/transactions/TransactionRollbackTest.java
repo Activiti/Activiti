@@ -54,9 +54,7 @@ public class TransactionRollbackTest extends PluggableActivitiTestCase {
     public void testRollback() {
         assertThatExceptionOfType(Exception.class)
             .as("Starting the process instance should throw an exception")
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByKey("RollbackProcess")
-            )
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("RollbackProcess"))
             .withMessage("Buzzz");
 
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
@@ -71,11 +69,7 @@ public class TransactionRollbackTest extends PluggableActivitiTestCase {
     public void testRollbackAfterSubProcess() {
         assertThatExceptionOfType(Exception.class)
             .as("Starting the process instance should throw an exception")
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByKey(
-                    "RollbackAfterSubProcess"
-                )
-            )
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("RollbackAfterSubProcess"))
             .withMessage("Buzzz");
 
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
@@ -85,9 +79,7 @@ public class TransactionRollbackTest extends PluggableActivitiTestCase {
     public void testRollbackAfterError() {
         assertThatExceptionOfType(Throwable.class)
             .as("Starting the process instance should throw an error")
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByKey("RollbackProcess")
-            )
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("RollbackProcess"))
             .withMessage("Fizz");
 
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);

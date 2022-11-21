@@ -30,8 +30,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 
-public class IntermediateCatchEventActivityBehavior
-    extends AbstractBpmnActivityBehavior {
+public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 
@@ -40,11 +39,7 @@ public class IntermediateCatchEventActivityBehavior
     }
 
     @Override
-    public void trigger(
-        DelegateExecution execution,
-        String signalName,
-        Object signalData
-    ) {
+    public void trigger(DelegateExecution execution, String signalName, Object signalData) {
         leaveIntermediateCatchEvent(execution);
     }
 
@@ -57,10 +52,7 @@ public class IntermediateCatchEventActivityBehavior
     public void leaveIntermediateCatchEvent(DelegateExecution execution) {
         EventGateway eventGateway = getPrecedingEventBasedGateway(execution);
         if (eventGateway != null) {
-            deleteOtherEventsRelatedToEventBasedGateway(
-                execution,
-                eventGateway
-            );
+            deleteOtherEventsRelatedToEventBasedGateway(execution, eventGateway);
         }
 
         leave(execution); // Normal leave
@@ -74,24 +66,17 @@ public class IntermediateCatchEventActivityBehavior
         Context
             .getCommandContext()
             .getExecutionEntityManager()
-            .deleteExecutionAndRelatedData(
-                (ExecutionEntity) execution,
-                DeleteReason.EVENT_BASED_GATEWAY_CANCEL
-            );
+            .deleteExecutionAndRelatedData((ExecutionEntity) execution, DeleteReason.EVENT_BASED_GATEWAY_CANCEL);
     }
 
-    protected EventGateway getPrecedingEventBasedGateway(
-        DelegateExecution execution
-    ) {
+    protected EventGateway getPrecedingEventBasedGateway(DelegateExecution execution) {
         FlowElement currentFlowElement = execution.getCurrentFlowElement();
         if (currentFlowElement instanceof IntermediateCatchEvent) {
             IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) currentFlowElement;
             List<SequenceFlow> incomingSequenceFlow = intermediateCatchEvent.getIncomingFlows();
 
             // If behind an event based gateway, there is only one incoming sequence flow that originates from said gateway
-            if (
-                incomingSequenceFlow != null && incomingSequenceFlow.size() == 1
-            ) {
+            if (incomingSequenceFlow != null && incomingSequenceFlow.size() == 1) {
                 SequenceFlow sequenceFlow = incomingSequenceFlow.get(0);
                 FlowElement sourceFlowElement = sequenceFlow.getSourceFlowElement();
                 if (sourceFlowElement instanceof EventGateway) {
@@ -102,10 +87,7 @@ public class IntermediateCatchEventActivityBehavior
         return null;
     }
 
-    protected void deleteOtherEventsRelatedToEventBasedGateway(
-        DelegateExecution execution,
-        EventGateway eventGateway
-    ) {
+    protected void deleteOtherEventsRelatedToEventBasedGateway(DelegateExecution execution, EventGateway eventGateway) {
         // To clean up the other events behind the event based gateway, we must gather the
         // activity ids of said events and check the _sibling_ executions of the incoming execution.
         // Note that it can happen that there are multiple such execution in those activity ids,
@@ -114,20 +96,13 @@ public class IntermediateCatchEventActivityBehavior
 
         // Gather all activity ids for the events after the event based gateway that need to be destroyed
         List<SequenceFlow> outgoingSequenceFlows = eventGateway.getOutgoingFlows();
-        Set<String> eventActivityIds = new HashSet<String>(
-            outgoingSequenceFlows.size() - 1
-        ); // -1, the event being triggered does not need to be deleted
+        Set<String> eventActivityIds = new HashSet<String>(outgoingSequenceFlows.size() - 1); // -1, the event being triggered does not need to be deleted
         for (SequenceFlow outgoingSequenceFlow : outgoingSequenceFlows) {
             if (
                 outgoingSequenceFlow.getTargetFlowElement() != null &&
-                !outgoingSequenceFlow
-                    .getTargetFlowElement()
-                    .getId()
-                    .equals(execution.getCurrentActivityId())
+                !outgoingSequenceFlow.getTargetFlowElement().getId().equals(execution.getCurrentActivityId())
             ) {
-                eventActivityIds.add(
-                    outgoingSequenceFlow.getTargetFlowElement().getId()
-                );
+                eventActivityIds.add(outgoingSequenceFlow.getTargetFlowElement().getId());
             }
         }
 
@@ -147,9 +122,7 @@ public class IntermediateCatchEventActivityBehavior
                 execution.getCurrentFlowElement() instanceof IntermediateCatchEvent
             ) {
                 IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) execution.getCurrentFlowElement();
-                if (
-                    intermediateCatchEvent.getBehavior() instanceof IntermediateCatchEventActivityBehavior
-                ) {
+                if (intermediateCatchEvent.getBehavior() instanceof IntermediateCatchEventActivityBehavior) {
                     (
                         (IntermediateCatchEventActivityBehavior) intermediateCatchEvent.getBehavior()
                     ).eventCancelledByEventGateway(executionEntity);

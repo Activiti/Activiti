@@ -28,8 +28,7 @@ import org.activiti.engine.runtime.Execution;
 /**
 
  */
-public abstract class NeedsActiveExecutionCmd<T>
-    implements Command<T>, Serializable {
+public abstract class NeedsActiveExecutionCmd<T> implements Command<T>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -44,15 +43,10 @@ public abstract class NeedsActiveExecutionCmd<T>
             throw new ActivitiIllegalArgumentException("executionId is null");
         }
 
-        ExecutionEntity execution = commandContext
-            .getExecutionEntityManager()
-            .findById(executionId);
+        ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
 
         if (execution == null) {
-            throw new ActivitiObjectNotFoundException(
-                "execution " + executionId + " doesn't exist",
-                Execution.class
-            );
+            throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
         }
 
         if (execution.isSuspended()) {
@@ -65,19 +59,12 @@ public abstract class NeedsActiveExecutionCmd<T>
     /**
      * Subclasses should implement this method. The provided {@link ExecutionEntity} is guaranteed to be active (ie. not suspended).
      */
-    protected abstract T execute(
-        CommandContext commandContext,
-        ExecutionEntity execution
-    );
+    protected abstract T execute(CommandContext commandContext, ExecutionEntity execution);
 
     /**
      * Subclasses can override this to provide a more detailed exception message that will be thrown when the execution is suspended.
      */
     protected String getSuspendedExceptionMessage() {
-        return (
-            "Cannot execution operation because execution '" +
-            executionId +
-            "' is suspended"
-        );
+        return ("Cannot execution operation because execution '" + executionId + "' is suspended");
     }
 }

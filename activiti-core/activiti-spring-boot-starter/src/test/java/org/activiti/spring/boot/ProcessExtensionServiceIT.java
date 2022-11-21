@@ -42,18 +42,13 @@ public class ProcessExtensionServiceIT {
             .processDefinitionKey("Process_initialVarsProcess")
             .singleResult();
 
-        boolean hasExtensionsFor = processExtensionService.hasExtensionsFor(
-            processDefinition
-        );
+        boolean hasExtensionsFor = processExtensionService.hasExtensionsFor(processDefinition);
 
         assertThat(hasExtensionsFor).isTrue();
 
-        Extension extensions = processExtensionService.getExtensionsFor(
-            processDefinition
-        );
+        Extension extensions = processExtensionService.getExtensionsFor(processDefinition);
 
         assertThat(extensions).isNotNull();
-        assertThat(extensions.getProperties())
-            .containsKey("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
+        assertThat(extensions.getProperties()).containsKey("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
     }
 }

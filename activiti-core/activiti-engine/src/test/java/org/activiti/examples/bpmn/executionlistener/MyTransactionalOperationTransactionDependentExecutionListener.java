@@ -35,13 +35,7 @@ public class MyTransactionalOperationTransactionDependentExecutionListener
         Map<String, Object> executionVariables,
         Map<String, Object> customPropertiesMap
     ) {
-        super.notify(
-            processInstanceId,
-            executionId,
-            currentFlowElement,
-            executionVariables,
-            customPropertiesMap
-        );
+        super.notify(processInstanceId, executionId, currentFlowElement, executionVariables, customPropertiesMap);
 
         if (
             Context
@@ -59,9 +53,7 @@ public class MyTransactionalOperationTransactionDependentExecutionListener
             List<HistoricProcessInstance> historicProcessInstances = historyService
                 .createHistoricProcessInstanceQuery()
                 .list();
-            historyService.deleteHistoricProcessInstance(
-                historicProcessInstances.get(0).getId()
-            );
+            historyService.deleteHistoricProcessInstance(historicProcessInstances.get(0).getId());
         }
     }
 }

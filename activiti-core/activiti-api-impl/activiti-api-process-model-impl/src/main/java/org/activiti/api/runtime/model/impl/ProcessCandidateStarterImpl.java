@@ -17,8 +17,7 @@ package org.activiti.api.runtime.model.impl;
 
 import org.activiti.api.process.model.ProcessCandidateStarter;
 
-public abstract class ProcessCandidateStarterImpl
-    implements ProcessCandidateStarter {
+public abstract class ProcessCandidateStarterImpl implements ProcessCandidateStarter {
 
     private String processDefinitionId;
 

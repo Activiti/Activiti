@@ -60,11 +60,7 @@ public class TaskRuntimeDeleteTaskTest {
         securityUtil.logInAs("garth");
 
         Task standAloneTask = taskRuntime.create(
-            TaskPayloadBuilder
-                .create()
-                .withName("simple task")
-                .withAssignee("garth")
-                .build()
+            TaskPayloadBuilder.create().withName("simple task").withAssignee("garth").build()
         );
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
@@ -75,11 +71,8 @@ public class TaskRuntimeDeleteTaskTest {
         assertThat(task.getAssignee()).isEqualTo("garth");
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
-        Task deletedTask = taskRuntime.delete(
-            TaskPayloadBuilder.delete().withTaskId(task.getId()).build()
-        );
-        assertThat(deletedTask.getStatus())
-            .isEqualTo(Task.TaskStatus.CANCELLED);
+        Task deletedTask = taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(task.getId()).build());
+        assertThat(deletedTask.getStatus()).isEqualTo(Task.TaskStatus.CANCELLED);
     }
 
     @Test
@@ -87,11 +80,7 @@ public class TaskRuntimeDeleteTaskTest {
         securityUtil.logInAs("garth");
 
         Task standAloneTask = taskRuntime.create(
-            TaskPayloadBuilder
-                .create()
-                .withName("simple task")
-                .withCandidateGroup("activitiTeam")
-                .build()
+            TaskPayloadBuilder.create().withName("simple task").withCandidateGroup("activitiTeam").build()
         );
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
@@ -109,9 +98,7 @@ public class TaskRuntimeDeleteTaskTest {
         // Claim a task created for a group
         securityUtil.logInAs("user");
 
-        Task claimedTask = taskRuntime.claim(
-            TaskPayloadBuilder.claim().withTaskId(task.getId()).build()
-        );
+        Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
         assertThat(claimedTask.getAssignee()).isEqualTo("user");
         assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
@@ -120,9 +107,7 @@ public class TaskRuntimeDeleteTaskTest {
 
         //when
         Throwable throwable = catchThrowable(() ->
-            taskRuntime.delete(
-                TaskPayloadBuilder.delete().withTaskId(task.getId()).build()
-            )
+            taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(task.getId()).build())
         );
 
         //then
@@ -140,11 +125,7 @@ public class TaskRuntimeDeleteTaskTest {
         securityUtil.logInAs("garth");
 
         Task standAloneTask = taskRuntime.create(
-            TaskPayloadBuilder
-                .create()
-                .withName("simple task")
-                .withCandidateGroup("activitiTeam")
-                .build()
+            TaskPayloadBuilder.create().withName("simple task").withCandidateGroup("activitiTeam").build()
         );
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
@@ -158,20 +139,13 @@ public class TaskRuntimeDeleteTaskTest {
         // Claim a task created for a group
         securityUtil.logInAs("user");
 
-        Task claimedTask = taskRuntime.claim(
-            TaskPayloadBuilder.claim().withTaskId(task.getId()).build()
-        );
+        Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
         assertThat(claimedTask.getAssignee()).isEqualTo("user");
         assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
         //Try to delete a task where the user is the owner
         securityUtil.logInAs("garth");
 
-        assertThat(
-            taskRuntime.delete(
-                TaskPayloadBuilder.delete().withTaskId(task.getId()).build()
-            )
-        )
-            .isNotNull();
+        assertThat(taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(task.getId()).build())).isNotNull();
     }
 }

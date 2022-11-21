@@ -51,8 +51,7 @@ public class ServiceTaskXMLConverterTest {
     private ServiceTask serviceTask;
 
     @Test
-    public void convertXMLToElementShouldSetTheImplementationFromXMLImplementationAttribute()
-        throws Exception {
+    public void convertXMLToElementShouldSetTheImplementationFromXMLImplementationAttribute() throws Exception {
         //given
         given(
             reader.getAttributeValue(
@@ -63,31 +62,21 @@ public class ServiceTaskXMLConverterTest {
             .willReturn("myConnector");
 
         //when
-        BaseElement element = converter.convertXMLToElement(
-            reader,
-            new BpmnModel()
-        );
+        BaseElement element = converter.convertXMLToElement(reader, new BpmnModel());
 
         //then
-        assertThat(((ServiceTask) element).getImplementation())
-            .isEqualTo("myConnector");
+        assertThat(((ServiceTask) element).getImplementation()).isEqualTo("myConnector");
     }
 
     @Test
-    public void convertServiceTaskElementToXMLShouldWriteTheImplementionAttribute()
-        throws Exception {
+    public void convertServiceTaskElementToXMLShouldWriteTheImplementionAttribute() throws Exception {
         //given
-        given(serviceTask.getImplementation())
-            .willReturn("myConnectorImplementation");
+        given(serviceTask.getImplementation()).willReturn("myConnectorImplementation");
 
         //when
         converter.writeAdditionalAttributes(serviceTask, bpmnModel, writer);
 
         //then
-        verify(writer)
-            .writeAttribute(
-                eq(ATTRIBUTE_TASK_IMPLEMENTATION),
-                eq("myConnectorImplementation")
-            );
+        verify(writer).writeAttribute(eq(ATTRIBUTE_TASK_IMPLEMENTATION), eq("myConnectorImplementation"));
     }
 }

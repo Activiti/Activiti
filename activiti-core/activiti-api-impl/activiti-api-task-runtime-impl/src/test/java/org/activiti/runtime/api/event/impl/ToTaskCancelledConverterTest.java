@@ -53,29 +53,17 @@ public class ToTaskCancelledConverterTest {
             ActivitiEventType.ENTITY_DELETED
         );
 
-        TaskImpl apiTask = new TaskImpl(
-            "id",
-            "myTask",
-            org.activiti.api.task.model.Task.TaskStatus.CANCELLED
-        );
-        given(
-            taskConverter.from(
-                internalTask,
-                org.activiti.api.task.model.Task.TaskStatus.CANCELLED
-            )
-        )
+        TaskImpl apiTask = new TaskImpl("id", "myTask", org.activiti.api.task.model.Task.TaskStatus.CANCELLED);
+        given(taskConverter.from(internalTask, org.activiti.api.task.model.Task.TaskStatus.CANCELLED))
             .willReturn(apiTask);
 
         //when
-        TaskCancelledEvent convertedTaskCancelledEvent = eventConverter
-            .from(internalEvent)
-            .orElse(null);
+        TaskCancelledEvent convertedTaskCancelledEvent = eventConverter.from(internalEvent).orElse(null);
 
         //then
         assertThat(convertedTaskCancelledEvent).isNotNull();
         assertThat(convertedTaskCancelledEvent.getEntity()).isEqualTo(apiTask);
-        assertThat(convertedTaskCancelledEvent.getEventType())
-            .isEqualTo(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED);
+        assertThat(convertedTaskCancelledEvent.getEventType()).isEqualTo(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED);
     }
 
     @Test
@@ -88,9 +76,7 @@ public class ToTaskCancelledConverterTest {
         );
 
         //when
-        Optional<TaskCancelledEvent> convertedTaskCancelledEvent = eventConverter.from(
-            internalEvent
-        );
+        Optional<TaskCancelledEvent> convertedTaskCancelledEvent = eventConverter.from(internalEvent);
 
         //then
         assertThat(convertedTaskCancelledEvent).isEmpty();
@@ -105,9 +91,7 @@ public class ToTaskCancelledConverterTest {
         );
 
         //when
-        Optional<TaskCancelledEvent> convertedTaskCancelledEvent = eventConverter.from(
-            internalEvent
-        );
+        Optional<TaskCancelledEvent> convertedTaskCancelledEvent = eventConverter.from(internalEvent);
 
         //then
         assertThat(convertedTaskCancelledEvent).isEmpty();

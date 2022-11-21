@@ -32,15 +32,12 @@ public class BPMNMessageConverterTest {
     public void convertShouldReturnBPMNMessage() {
         ActivitiMessageEvent internalEvent = mock(ActivitiMessageEvent.class);
         given(internalEvent.getMessageBusinessKey()).willReturn("businessKey");
-        given(internalEvent.getMessageCorrelationKey())
-            .willReturn("correlationKey");
+        given(internalEvent.getMessageCorrelationKey()).willReturn("correlationKey");
         given(internalEvent.getMessageName()).willReturn("messageName");
         given(internalEvent.getProcessDefinitionId()).willReturn("procDefId");
         given(internalEvent.getProcessInstanceId()).willReturn("procInstId");
 
-        BPMNMessageImpl bpmnMessage = bpmnMessageConverter.convertToBPMNMessage(
-            internalEvent
-        );
+        BPMNMessageImpl bpmnMessage = bpmnMessageConverter.convertToBPMNMessage(internalEvent);
 
         //then
         assertThat(bpmnMessage).isNotNull();

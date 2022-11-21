@@ -20,8 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
 
-public class HistoricActivityInstanceEscapeClauseTest
-    extends AbstractEscapeClauseTestCase {
+public class HistoricActivityInstanceEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
     private String deploymentOneId;
 
@@ -60,14 +59,8 @@ public class HistoricActivityInstanceEscapeClauseTest
     }
 
     public void testQueryByTenantIdLike() {
-        runtimeService.startProcessInstanceByKeyAndTenantId(
-            "noopProcess",
-            "One%"
-        );
-        runtimeService.startProcessInstanceByKeyAndTenantId(
-            "noopProcess",
-            "Two_"
-        );
+        runtimeService.startProcessInstanceByKeyAndTenantId("noopProcess", "One%");
+        runtimeService.startProcessInstanceByKeyAndTenantId("noopProcess", "Two_");
 
         HistoricActivityInstanceQuery query = historyService
             .createHistoricActivityInstanceQuery()
@@ -77,11 +70,7 @@ public class HistoricActivityInstanceEscapeClauseTest
         assertThat(query.list()).hasSize(1);
         assertThat(query.count()).isEqualTo(1);
 
-        query =
-            historyService
-                .createHistoricActivityInstanceQuery()
-                .activityId("noop")
-                .activityTenantIdLike("%\\_%");
+        query = historyService.createHistoricActivityInstanceQuery().activityId("noop").activityTenantIdLike("%\\_%");
         assertThat(query.singleResult().getTenantId()).isEqualTo("Two_");
         assertThat(query.list()).hasSize(1);
         assertThat(query.count()).isEqualTo(1);

@@ -30,19 +30,10 @@ public class DefaultClassDelegateFactory implements ClassDelegateFactory {
         Expression skipExpression,
         List<MapExceptionEntry> mapExceptions
     ) {
-        return new ClassDelegate(
-            id,
-            className,
-            fieldDeclarations,
-            skipExpression,
-            mapExceptions
-        );
+        return new ClassDelegate(id, className, fieldDeclarations, skipExpression, mapExceptions);
     }
 
-    public ClassDelegate create(
-        String className,
-        List<FieldDeclaration> fieldDeclarations
-    ) {
+    public ClassDelegate create(String className, List<FieldDeclaration> fieldDeclarations) {
         return new ClassDelegate(className, fieldDeclarations);
     }
 }

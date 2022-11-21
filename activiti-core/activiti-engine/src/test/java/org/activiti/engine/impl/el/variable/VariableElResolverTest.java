@@ -60,11 +60,7 @@ public class VariableElResolverTest {
     @Test
     public void resolve_should_returnVariableInstanceValueWhenItsNotJsonArray() {
         //given
-        VariableScope variableScope = buildVariableScope(
-            "myVar",
-            "myValue",
-            "string"
-        );
+        VariableScope variableScope = buildVariableScope("myVar", "myValue", "string");
 
         //when
         Object result = resolver.resolve("myVar", variableScope);
@@ -74,17 +70,10 @@ public class VariableElResolverTest {
     }
 
     @Test
-    public void resolve_should_returnVariableInstanceValueConvertedToListWhenItsJsonArray()
-        throws Exception {
+    public void resolve_should_returnVariableInstanceValueConvertedToListWhenItsJsonArray() throws Exception {
         //given
-        JsonNode jsonNode = objectMapper.readTree(
-            "[\"green\", \"blue\", \"red\"]"
-        );
-        VariableScope variableScope = buildVariableScope(
-            "colors",
-            jsonNode,
-            "json"
-        );
+        JsonNode jsonNode = objectMapper.readTree("[\"green\", \"blue\", \"red\"]");
+        VariableScope variableScope = buildVariableScope("colors", jsonNode, "json");
 
         //when
         Object result = resolver.resolve("colors", variableScope);
@@ -93,17 +82,12 @@ public class VariableElResolverTest {
         assertThat(result).isEqualTo(Arrays.asList("green", "blue", "red"));
     }
 
-    private VariableScope buildVariableScope(
-        String variableName,
-        Object variableValue,
-        String type
-    ) {
+    private VariableScope buildVariableScope(String variableName, Object variableValue, String type) {
         VariableScope variableScope = mock(VariableScope.class);
         VariableInstance variableInstance = mock(VariableInstance.class);
         given(variableInstance.getValue()).willReturn(variableValue);
         given(variableInstance.getTypeName()).willReturn(type);
-        given(variableScope.getVariableInstance(variableName))
-            .willReturn(variableInstance);
+        given(variableScope.getVariableInstance(variableName)).willReturn(variableInstance);
         return variableScope;
     }
 }

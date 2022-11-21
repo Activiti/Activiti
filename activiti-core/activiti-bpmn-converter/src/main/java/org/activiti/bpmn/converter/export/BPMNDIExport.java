@@ -27,14 +27,9 @@ import org.apache.commons.lang3.StringUtils;
 
 public class BPMNDIExport implements BpmnXMLConstants {
 
-    public static void writeBPMNDI(BpmnModel model, XMLStreamWriter xtw)
-        throws Exception {
+    public static void writeBPMNDI(BpmnModel model, XMLStreamWriter xtw) throws Exception {
         // BPMN DI information
-        xtw.writeStartElement(
-            BPMNDI_PREFIX,
-            ELEMENT_DI_DIAGRAM,
-            BPMNDI_NAMESPACE
-        );
+        xtw.writeStartElement(BPMNDI_PREFIX, ELEMENT_DI_DIAGRAM, BPMNDI_NAMESPACE);
 
         String processId = null;
         if (!model.getPools().isEmpty()) {
@@ -45,11 +40,7 @@ public class BPMNDIExport implements BpmnXMLConstants {
 
         xtw.writeAttribute(ATTRIBUTE_ID, "BPMNDiagram_" + processId);
 
-        xtw.writeStartElement(
-            BPMNDI_PREFIX,
-            ELEMENT_DI_PLANE,
-            BPMNDI_NAMESPACE
-        );
+        xtw.writeStartElement(BPMNDI_PREFIX, ELEMENT_DI_PLANE, BPMNDI_NAMESPACE);
         xtw.writeAttribute(ATTRIBUTE_DI_BPMNELEMENT, processId);
         xtw.writeAttribute(ATTRIBUTE_ID, "BPMNPlane_" + processId);
 
@@ -60,39 +51,19 @@ public class BPMNDIExport implements BpmnXMLConstants {
                 model.getPool(elementId) != null ||
                 model.getLane(elementId) != null
             ) {
-                xtw.writeStartElement(
-                    BPMNDI_PREFIX,
-                    ELEMENT_DI_SHAPE,
-                    BPMNDI_NAMESPACE
-                );
+                xtw.writeStartElement(BPMNDI_PREFIX, ELEMENT_DI_SHAPE, BPMNDI_NAMESPACE);
                 xtw.writeAttribute(ATTRIBUTE_DI_BPMNELEMENT, elementId);
                 xtw.writeAttribute(ATTRIBUTE_ID, "BPMNShape_" + elementId);
 
                 GraphicInfo graphicInfo = model.getGraphicInfo(elementId);
                 FlowElement flowElement = model.getFlowElement(elementId);
-                if (
-                    flowElement instanceof SubProcess &&
-                    graphicInfo.getExpanded() != null
-                ) {
-                    xtw.writeAttribute(
-                        ATTRIBUTE_DI_IS_EXPANDED,
-                        String.valueOf(graphicInfo.getExpanded())
-                    );
+                if (flowElement instanceof SubProcess && graphicInfo.getExpanded() != null) {
+                    xtw.writeAttribute(ATTRIBUTE_DI_IS_EXPANDED, String.valueOf(graphicInfo.getExpanded()));
                 }
 
-                xtw.writeStartElement(
-                    OMGDC_PREFIX,
-                    ELEMENT_DI_BOUNDS,
-                    OMGDC_NAMESPACE
-                );
-                xtw.writeAttribute(
-                    ATTRIBUTE_DI_HEIGHT,
-                    "" + graphicInfo.getHeight()
-                );
-                xtw.writeAttribute(
-                    ATTRIBUTE_DI_WIDTH,
-                    "" + graphicInfo.getWidth()
-                );
+                xtw.writeStartElement(OMGDC_PREFIX, ELEMENT_DI_BOUNDS, OMGDC_NAMESPACE);
+                xtw.writeAttribute(ATTRIBUTE_DI_HEIGHT, "" + graphicInfo.getHeight());
+                xtw.writeAttribute(ATTRIBUTE_DI_WIDTH, "" + graphicInfo.getWidth());
                 xtw.writeAttribute(ATTRIBUTE_DI_X, "" + graphicInfo.getX());
                 xtw.writeAttribute(ATTRIBUTE_DI_Y, "" + graphicInfo.getY());
                 xtw.writeEndElement();
@@ -107,31 +78,19 @@ public class BPMNDIExport implements BpmnXMLConstants {
                 model.getArtifact(elementId) != null ||
                 model.getMessageFlow(elementId) != null
             ) {
-                xtw.writeStartElement(
-                    BPMNDI_PREFIX,
-                    ELEMENT_DI_EDGE,
-                    BPMNDI_NAMESPACE
-                );
+                xtw.writeStartElement(BPMNDI_PREFIX, ELEMENT_DI_EDGE, BPMNDI_NAMESPACE);
                 xtw.writeAttribute(ATTRIBUTE_DI_BPMNELEMENT, elementId);
                 xtw.writeAttribute(ATTRIBUTE_ID, "BPMNEdge_" + elementId);
 
-                List<GraphicInfo> graphicInfoList = model.getFlowLocationGraphicInfo(
-                    elementId
-                );
+                List<GraphicInfo> graphicInfoList = model.getFlowLocationGraphicInfo(elementId);
                 for (GraphicInfo graphicInfo : graphicInfoList) {
-                    xtw.writeStartElement(
-                        OMGDI_PREFIX,
-                        ELEMENT_DI_WAYPOINT,
-                        OMGDI_NAMESPACE
-                    );
+                    xtw.writeStartElement(OMGDI_PREFIX, ELEMENT_DI_WAYPOINT, OMGDI_NAMESPACE);
                     xtw.writeAttribute(ATTRIBUTE_DI_X, "" + graphicInfo.getX());
                     xtw.writeAttribute(ATTRIBUTE_DI_Y, "" + graphicInfo.getY());
                     xtw.writeEndElement();
                 }
 
-                GraphicInfo labelGraphicInfo = model.getLabelGraphicInfo(
-                    elementId
-                );
+                GraphicInfo labelGraphicInfo = model.getLabelGraphicInfo(elementId);
                 FlowElement flowElement = model.getFlowElement(elementId);
                 MessageFlow messageFlow = null;
                 if (flowElement == null) {
@@ -139,45 +98,19 @@ public class BPMNDIExport implements BpmnXMLConstants {
                 }
 
                 boolean hasName = false;
-                if (
-                    flowElement != null &&
-                    StringUtils.isNotEmpty(flowElement.getName())
-                ) {
+                if (flowElement != null && StringUtils.isNotEmpty(flowElement.getName())) {
                     hasName = true;
-                } else if (
-                    messageFlow != null &&
-                    StringUtils.isNotEmpty(messageFlow.getName())
-                ) {
+                } else if (messageFlow != null && StringUtils.isNotEmpty(messageFlow.getName())) {
                     hasName = true;
                 }
 
                 if (labelGraphicInfo != null && hasName) {
-                    xtw.writeStartElement(
-                        BPMNDI_PREFIX,
-                        ELEMENT_DI_LABEL,
-                        BPMNDI_NAMESPACE
-                    );
-                    xtw.writeStartElement(
-                        OMGDC_PREFIX,
-                        ELEMENT_DI_BOUNDS,
-                        OMGDC_NAMESPACE
-                    );
-                    xtw.writeAttribute(
-                        ATTRIBUTE_DI_HEIGHT,
-                        "" + labelGraphicInfo.getHeight()
-                    );
-                    xtw.writeAttribute(
-                        ATTRIBUTE_DI_WIDTH,
-                        "" + labelGraphicInfo.getWidth()
-                    );
-                    xtw.writeAttribute(
-                        ATTRIBUTE_DI_X,
-                        "" + labelGraphicInfo.getX()
-                    );
-                    xtw.writeAttribute(
-                        ATTRIBUTE_DI_Y,
-                        "" + labelGraphicInfo.getY()
-                    );
+                    xtw.writeStartElement(BPMNDI_PREFIX, ELEMENT_DI_LABEL, BPMNDI_NAMESPACE);
+                    xtw.writeStartElement(OMGDC_PREFIX, ELEMENT_DI_BOUNDS, OMGDC_NAMESPACE);
+                    xtw.writeAttribute(ATTRIBUTE_DI_HEIGHT, "" + labelGraphicInfo.getHeight());
+                    xtw.writeAttribute(ATTRIBUTE_DI_WIDTH, "" + labelGraphicInfo.getWidth());
+                    xtw.writeAttribute(ATTRIBUTE_DI_X, "" + labelGraphicInfo.getX());
+                    xtw.writeAttribute(ATTRIBUTE_DI_Y, "" + labelGraphicInfo.getY());
                     xtw.writeEndElement();
                     xtw.writeEndElement();
                 }

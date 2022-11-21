@@ -22,8 +22,7 @@ import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.repository.ProcessDefinition;
 
 @Internal
-public interface ProcessDefinitionEntity
-    extends ProcessDefinition, Entity, HasRevision {
+public interface ProcessDefinitionEntity extends ProcessDefinition, Entity, HasRevision {
     List<IdentityLinkEntity> getIdentityLinks();
 
     void setKey(String key);

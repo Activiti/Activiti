@@ -34,9 +34,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @Configuration
 public class DemoApplicationConfiguration {
 
-    private Logger logger = LoggerFactory.getLogger(
-        DemoApplicationConfiguration.class
-    );
+    private Logger logger = LoggerFactory.getLogger(DemoApplicationConfiguration.class);
 
     @Bean
     public UserDetailsService myUserDetailsService() {
@@ -45,35 +43,21 @@ public class DemoApplicationConfiguration {
         String[][] usersGroupsAndRoles = {
             { "bob", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam" },
             { "john", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam" },
-            {
-                "hannah",
-                "password",
-                "ROLE_ACTIVITI_USER",
-                "GROUP_activitiTeam",
-            },
+            { "hannah", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam" },
             { "other", "password", "ROLE_ACTIVITI_USER", "GROUP_otherTeam" },
             { "admin", "password", "ROLE_ACTIVITI_ADMIN" },
         };
 
         for (String[] user : usersGroupsAndRoles) {
-            List<String> authoritiesStrings = asList(
-                Arrays.copyOfRange(user, 2, user.length)
-            );
+            List<String> authoritiesStrings = asList(Arrays.copyOfRange(user, 2, user.length));
             logger.info(
-                "> Registering new user: " +
-                user[0] +
-                " with the following Authorities[" +
-                authoritiesStrings +
-                "]"
+                "> Registering new user: " + user[0] + " with the following Authorities[" + authoritiesStrings + "]"
             );
             inMemoryUserDetailsManager.createUser(
                 new User(
                     user[0],
                     passwordEncoder().encode(user[1]),
-                    authoritiesStrings
-                        .stream()
-                        .map(s -> new SimpleGrantedAuthority(s))
-                        .collect(Collectors.toList())
+                    authoritiesStrings.stream().map(s -> new SimpleGrantedAuthority(s)).collect(Collectors.toList())
                 )
             );
         }

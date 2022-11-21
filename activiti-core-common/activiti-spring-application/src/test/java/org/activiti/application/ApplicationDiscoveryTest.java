@@ -41,22 +41,16 @@ public class ApplicationDiscoveryTest {
 
     @BeforeEach
     public void setUp() {
-        applicationDiscovery =
-            new ApplicationDiscovery(
-                resourceLoader,
-                "classpath:/applications/"
-            );
+        applicationDiscovery = new ApplicationDiscovery(resourceLoader, "classpath:/applications/");
     }
 
     @Test
-    public void discoverApplicationsShouldReturnResourcesFoundByResourceLoader()
-        throws Exception {
+    public void discoverApplicationsShouldReturnResourcesFoundByResourceLoader() throws Exception {
         //given
         givenExistingResourceFolder();
 
         Resource applicationResource = mock(Resource.class);
-        given(resourceLoader.getResources(anyString()))
-            .willReturn(new Resource[] { applicationResource });
+        given(resourceLoader.getResources(anyString())).willReturn(new Resource[] { applicationResource });
 
         //when
         List<Resource> resources = applicationDiscovery.discoverApplications();
@@ -66,8 +60,7 @@ public class ApplicationDiscoveryTest {
     }
 
     @Test
-    public void discoverApplicationsShouldThrowApplicationLoadExceptionWhenIOExceptionOccurs()
-        throws IOException {
+    public void discoverApplicationsShouldThrowApplicationLoadExceptionWhenIOExceptionOccurs() throws IOException {
         //given
         givenExistingResourceFolder();
 
@@ -75,20 +68,15 @@ public class ApplicationDiscoveryTest {
         given(resourceLoader.getResources(anyString())).willThrow(ioException);
 
         //when
-        Throwable thrown = catchThrowable(() ->
-            applicationDiscovery.discoverApplications()
-        );
+        Throwable thrown = catchThrowable(() -> applicationDiscovery.discoverApplications());
 
         //then
-        assertThat(thrown)
-            .isInstanceOf(ApplicationLoadException.class)
-            .hasCause(ioException);
+        assertThat(thrown).isInstanceOf(ApplicationLoadException.class).hasCause(ioException);
     }
 
     private void givenExistingResourceFolder() {
         Resource folderResource = mock(Resource.class);
         given(folderResource.exists()).willReturn(true);
-        given(resourceLoader.getResource(anyString()))
-            .willReturn(folderResource);
+        given(resourceLoader.getResource(anyString())).willReturn(folderResource);
     }
 }

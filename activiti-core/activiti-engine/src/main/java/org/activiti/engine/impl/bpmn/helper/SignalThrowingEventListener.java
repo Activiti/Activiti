@@ -61,24 +61,15 @@ public class SignalThrowingEventListener extends BaseDelegateEventListener {
                     ProcessDefinition processDefinition = commandContext
                         .getProcessEngineConfiguration()
                         .getDeploymentManager()
-                        .findDeployedProcessDefinitionById(
-                            event.getProcessDefinitionId()
-                        );
+                        .findDeployedProcessDefinitionById(event.getProcessDefinitionId());
                     tenantId = processDefinition.getTenantId();
                 }
                 subscriptionEntities =
-                    eventSubscriptionEntityManager.findSignalEventSubscriptionsByEventName(
-                        signalName,
-                        tenantId
-                    );
+                    eventSubscriptionEntityManager.findSignalEventSubscriptionsByEventName(signalName, tenantId);
             }
 
             for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
-                eventSubscriptionEntityManager.eventReceived(
-                    signalEventSubscriptionEntity,
-                    null,
-                    false
-                );
+                eventSubscriptionEntityManager.eventReceived(signalEventSubscriptionEntity, null, false);
             }
         }
     }

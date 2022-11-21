@@ -32,11 +32,7 @@ public interface TableDataManager {
 
     List<String> getTablesPresentInDatabase();
 
-    TablePage getTablePage(
-        TablePageQueryImpl tablePageQuery,
-        int firstResult,
-        int maxResults
-    );
+    TablePage getTablePage(TablePageQueryImpl tablePageQuery, int firstResult, int maxResults);
 
     String getTableName(Class<?> entityClass, boolean withPrefix);
 

@@ -38,27 +38,13 @@ public class SignalMatchers {
         return (operationScope, events) -> {
             List<BPMNSignalReceivedEvent> flowTakenEvents = events
                 .stream()
-                .filter(event ->
-                    BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED.equals(
-                        event.getEventType()
-                    )
-                )
+                .filter(event -> BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED.equals(event.getEventType()))
                 .map(BPMNSignalReceivedEvent.class::cast)
-                .filter(event ->
-                    event
-                        .getEntity()
-                        .getProcessInstanceId()
-                        .equals(operationScope.getProcessInstanceId())
-                )
+                .filter(event -> event.getEntity().getProcessInstanceId().equals(operationScope.getProcessInstanceId()))
                 .collect(Collectors.toList());
             assertThat(flowTakenEvents)
-                .extracting(event ->
-                    event.getEntity().getSignalPayload().getName()
-                )
-                .as(
-                    "Unable to find event " +
-                    BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED
-                )
+                .extracting(event -> event.getEntity().getSignalPayload().getName())
+                .as("Unable to find event " + BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED)
                 .contains(signalName);
         };
     }

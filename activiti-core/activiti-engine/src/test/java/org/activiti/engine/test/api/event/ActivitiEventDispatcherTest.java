@@ -35,8 +35,7 @@ import org.activiti.engine.task.Task;
 /**
  *
  */
-public abstract class ActivitiEventDispatcherTest
-    extends PluggableActivitiTestCase {
+public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestCase {
 
     protected ActivitiEventDispatcher dispatcher;
 
@@ -92,11 +91,7 @@ public abstract class ActivitiEventDispatcherTest
         TestActivitiEventListener newListener = new TestActivitiEventListener();
 
         // Add event-listener to dispatcher
-        dispatcher.addEventListener(
-            newListener,
-            ActivitiEventType.ENTITY_CREATED,
-            ActivitiEventType.ENTITY_DELETED
-        );
+        dispatcher.addEventListener(newListener, ActivitiEventType.ENTITY_CREATED, ActivitiEventType.ENTITY_DELETED);
 
         ActivitiEntityEventImpl event1 = new ActivitiEntityEventImpl(
             processEngineConfiguration.getTaskEntityManager().create(),
@@ -239,17 +234,13 @@ public abstract class ActivitiEventDispatcherTest
      */
     public void exceptionInListener() throws Exception {
         // Create listener that doesn't force the dispatching to fail
-        TestExceptionActivitiEventListener listener = new TestExceptionActivitiEventListener(
-            false
-        );
+        TestExceptionActivitiEventListener listener = new TestExceptionActivitiEventListener(false);
         TestActivitiEventListener secondListener = new TestActivitiEventListener();
 
         dispatcher.addEventListener(listener);
         dispatcher.addEventListener(secondListener);
 
-        ActivitiEventImpl event = new ActivitiEventImpl(
-            ActivitiEventType.ENTITY_CREATED
-        );
+        ActivitiEventImpl event = new ActivitiEventImpl(ActivitiEventType.ENTITY_CREATED);
         try {
             dispatcher.dispatchEvent(event);
             assertThat(secondListener.getEventsReceived()).hasSize(1);
@@ -270,9 +261,7 @@ public abstract class ActivitiEventDispatcherTest
         assertThatExceptionOfType(ActivitiException.class)
             .isThrownBy(() -> dispatcher.dispatchEvent(event))
             .withCauseInstanceOf(RuntimeException.class)
-            .satisfies(ae ->
-                assertThat(ae.getCause()).hasMessage("Test exception")
-            );
+            .satisfies(ae -> assertThat(ae.getCause()).hasMessage("Test exception"));
 
         // Second listener should NOT have been called
         assertThat(secondListener.getEventsReceived()).hasSize(0);
@@ -300,20 +289,14 @@ public abstract class ActivitiEventDispatcherTest
         assertThat(types[0]).isEqualTo(ActivitiEventType.ENTITY_CREATED);
 
         // Multiple value
-        types =
-            ActivitiEventType.getTypesFromString(
-                "ENTITY_CREATED,ENTITY_DELETED"
-            );
+        types = ActivitiEventType.getTypesFromString("ENTITY_CREATED,ENTITY_DELETED");
         assertThat(types).isNotNull();
         assertThat(types.length).isEqualTo(2);
         assertThat(types[0]).isEqualTo(ActivitiEventType.ENTITY_CREATED);
         assertThat(types[1]).isEqualTo(ActivitiEventType.ENTITY_DELETED);
 
         // Additional separators should be ignored
-        types =
-            ActivitiEventType.getTypesFromString(
-                ",ENTITY_CREATED,,ENTITY_DELETED,,,"
-            );
+        types = ActivitiEventType.getTypesFromString(",ENTITY_CREATED,,ENTITY_DELETED,,,");
         assertThat(types).isNotNull();
         assertThat(types.length).isEqualTo(2);
         assertThat(types[0]).isEqualTo(ActivitiEventType.ENTITY_CREATED);
@@ -321,9 +304,7 @@ public abstract class ActivitiEventDispatcherTest
 
         // Invalid type name
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
-            .isThrownBy(() ->
-                ActivitiEventType.getTypesFromString("WHOOPS,ENTITY_DELETED")
-            )
+            .isThrownBy(() -> ActivitiEventType.getTypesFromString("WHOOPS,ENTITY_DELETED"))
             .withMessage("Invalid event-type: WHOOPS");
     }
 }

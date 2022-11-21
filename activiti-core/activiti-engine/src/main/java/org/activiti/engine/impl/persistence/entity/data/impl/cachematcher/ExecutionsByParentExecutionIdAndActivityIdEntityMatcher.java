@@ -28,15 +28,10 @@ public class ExecutionsByParentExecutionIdAndActivityIdEntityMatcher
     extends CachedEntityMatcherAdapter<ExecutionEntity> {
 
     @Override
-    public boolean isRetained(
-        ExecutionEntity executionEntity,
-        Object parameter
-    ) {
+    public boolean isRetained(ExecutionEntity executionEntity, Object parameter) {
         Map<String, Object> paramMap = (Map<String, Object>) parameter;
         String parentExecutionId = (String) paramMap.get("parentExecutionId");
-        Collection<String> activityIds = (Collection<String>) paramMap.get(
-            "activityIds"
-        );
+        Collection<String> activityIds = (Collection<String>) paramMap.get("activityIds");
 
         return (
             executionEntity.getParentId() != null &&

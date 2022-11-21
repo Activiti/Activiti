@@ -44,22 +44,14 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
         fillBpmnTypes(convertersToJsonMap);
     }
 
-    public static void fillJsonTypes(
-        Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap
-    ) {
-        convertersToBpmnMap.put(
-            STENCIL_SEQUENCE_FLOW,
-            SequenceFlowJsonConverter.class
-        );
+    public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
+        convertersToBpmnMap.put(STENCIL_SEQUENCE_FLOW, SequenceFlowJsonConverter.class);
     }
 
     public static void fillBpmnTypes(
         Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap
     ) {
-        convertersToJsonMap.put(
-            SequenceFlow.class,
-            SequenceFlowJsonConverter.class
-        );
+        convertersToJsonMap.put(SequenceFlow.class, SequenceFlowJsonConverter.class);
     }
 
     @Override
@@ -88,27 +80,13 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
         );
         ArrayNode dockersArrayNode = objectMapper.createArrayNode();
         ObjectNode dockNode = objectMapper.createObjectNode();
-        dockNode.put(
-            EDITOR_BOUNDS_X,
-            model.getGraphicInfo(sequenceFlow.getSourceRef()).getWidth() / 2.0
-        );
-        dockNode.put(
-            EDITOR_BOUNDS_Y,
-            model.getGraphicInfo(sequenceFlow.getSourceRef()).getHeight() / 2.0
-        );
+        dockNode.put(EDITOR_BOUNDS_X, model.getGraphicInfo(sequenceFlow.getSourceRef()).getWidth() / 2.0);
+        dockNode.put(EDITOR_BOUNDS_Y, model.getGraphicInfo(sequenceFlow.getSourceRef()).getHeight() / 2.0);
         dockersArrayNode.add(dockNode);
 
         if (model.getFlowLocationGraphicInfo(sequenceFlow.getId()).size() > 2) {
-            for (
-                int i = 1;
-                i <
-                model.getFlowLocationGraphicInfo(sequenceFlow.getId()).size() -
-                1;
-                i++
-            ) {
-                GraphicInfo graphicInfo = model
-                    .getFlowLocationGraphicInfo(sequenceFlow.getId())
-                    .get(i);
+            for (int i = 1; i < model.getFlowLocationGraphicInfo(sequenceFlow.getId()).size() - 1; i++) {
+                GraphicInfo graphicInfo = model.getFlowLocationGraphicInfo(sequenceFlow.getId()).get(i);
                 dockNode = objectMapper.createObjectNode();
                 dockNode.put(EDITOR_BOUNDS_X, graphicInfo.getX());
                 dockNode.put(EDITOR_BOUNDS_Y, graphicInfo.getY());
@@ -117,29 +95,14 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
         }
 
         dockNode = objectMapper.createObjectNode();
-        dockNode.put(
-            EDITOR_BOUNDS_X,
-            model.getGraphicInfo(sequenceFlow.getTargetRef()).getWidth() / 2.0
-        );
-        dockNode.put(
-            EDITOR_BOUNDS_Y,
-            model.getGraphicInfo(sequenceFlow.getTargetRef()).getHeight() / 2.0
-        );
+        dockNode.put(EDITOR_BOUNDS_X, model.getGraphicInfo(sequenceFlow.getTargetRef()).getWidth() / 2.0);
+        dockNode.put(EDITOR_BOUNDS_Y, model.getGraphicInfo(sequenceFlow.getTargetRef()).getHeight() / 2.0);
         dockersArrayNode.add(dockNode);
         flowNode.set("dockers", dockersArrayNode);
         ArrayNode outgoingArrayNode = objectMapper.createArrayNode();
-        outgoingArrayNode.add(
-            BpmnJsonConverterUtil.createResourceNode(
-                sequenceFlow.getTargetRef()
-            )
-        );
+        outgoingArrayNode.add(BpmnJsonConverterUtil.createResourceNode(sequenceFlow.getTargetRef()));
         flowNode.set("outgoing", outgoingArrayNode);
-        flowNode.set(
-            "target",
-            BpmnJsonConverterUtil.createResourceNode(
-                sequenceFlow.getTargetRef()
-            )
-        );
+        flowNode.set("target", BpmnJsonConverterUtil.createResourceNode(sequenceFlow.getTargetRef()));
 
         ObjectNode propertiesNode = objectMapper.createObjectNode();
         propertiesNode.put(PROPERTY_OVERRIDE_ID, sequenceFlow.getId());
@@ -148,23 +111,15 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
         }
 
         if (StringUtils.isNotEmpty(sequenceFlow.getDocumentation())) {
-            propertiesNode.put(
-                PROPERTY_DOCUMENTATION,
-                sequenceFlow.getDocumentation()
-            );
+            propertiesNode.put(PROPERTY_DOCUMENTATION, sequenceFlow.getDocumentation());
         }
 
         if (StringUtils.isNotEmpty(sequenceFlow.getConditionExpression())) {
-            propertiesNode.put(
-                PROPERTY_SEQUENCEFLOW_CONDITION,
-                sequenceFlow.getConditionExpression()
-            );
+            propertiesNode.put(PROPERTY_SEQUENCEFLOW_CONDITION, sequenceFlow.getConditionExpression());
         }
 
         if (StringUtils.isNotEmpty(sequenceFlow.getSourceRef())) {
-            FlowElement sourceFlowElement = container.getFlowElement(
-                sequenceFlow.getSourceRef()
-            );
+            FlowElement sourceFlowElement = container.getFlowElement(sequenceFlow.getSourceRef());
             if (sourceFlowElement != null) {
                 String defaultFlowId = null;
                 if (sourceFlowElement instanceof ExclusiveGateway) {
@@ -175,21 +130,14 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
                     defaultFlowId = parentActivity.getDefaultFlow();
                 }
 
-                if (
-                    defaultFlowId != null &&
-                    defaultFlowId.equals(sequenceFlow.getId())
-                ) {
+                if (defaultFlowId != null && defaultFlowId.equals(sequenceFlow.getId())) {
                     propertiesNode.put(PROPERTY_SEQUENCEFLOW_DEFAULT, true);
                 }
             }
         }
 
         if (sequenceFlow.getExecutionListeners().size() > 0) {
-            BpmnJsonConverterUtil.convertListenersToJson(
-                sequenceFlow.getExecutionListeners(),
-                true,
-                propertiesNode
-            );
+            BpmnJsonConverterUtil.convertListenersToJson(sequenceFlow.getExecutionListeners(), true, propertiesNode);
         }
 
         flowNode.set(EDITOR_SHAPE_PROPERTIES, propertiesNode);
@@ -197,10 +145,7 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
     }
 
     @Override
-    protected void convertElementToJson(
-        ObjectNode propertiesNode,
-        BaseElement baseElement
-    ) {
+    protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
         // nothing to do
     }
 
@@ -222,19 +167,12 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
             if (targetNode != null && !targetNode.isNull()) {
                 String targetId = targetNode.get(EDITOR_SHAPE_ID).asText();
                 if (shapeMap.get(targetId) != null) {
-                    flow.setTargetRef(
-                        BpmnJsonConverterUtil.getElementId(
-                            shapeMap.get(targetId)
-                        )
-                    );
+                    flow.setTargetRef(BpmnJsonConverterUtil.getElementId(shapeMap.get(targetId)));
                 }
             }
         }
 
-        JsonNode conditionNode = getProperty(
-            PROPERTY_SEQUENCEFLOW_CONDITION,
-            elementNode
-        );
+        JsonNode conditionNode = getProperty(PROPERTY_SEQUENCEFLOW_CONDITION, elementNode);
         if (conditionNode != null) {
             if (conditionNode.isTextual() && !conditionNode.isNull()) {
                 flow.setConditionExpression(conditionNode.asText());
@@ -243,13 +181,8 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
                 if (expressionNode.get("type") != null) {
                     String expressionType = expressionNode.get("type").asText();
 
-                    if (
-                        "variables".equalsIgnoreCase(expressionType) &&
-                        expressionNode.get("fieldType") != null
-                    ) {
-                        String fieldType = expressionNode
-                            .get("fieldType")
-                            .asText();
+                    if ("variables".equalsIgnoreCase(expressionType) && expressionNode.get("fieldType") != null) {
+                        String fieldType = expressionNode.get("fieldType").asText();
 
                         if ("field".equalsIgnoreCase(fieldType)) {
                             setFieldConditionExpression(flow, expressionNode);
@@ -257,12 +190,9 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
                             setOutcomeConditionExpression(flow, expressionNode);
                         }
                     } else if (
-                        expressionNode.get("staticValue") != null &&
-                        !(expressionNode.get("staticValue").isNull())
+                        expressionNode.get("staticValue") != null && !(expressionNode.get("staticValue").isNull())
                     ) {
-                        flow.setConditionExpression(
-                            expressionNode.get("staticValue").asText()
-                        );
+                        flow.setConditionExpression(expressionNode.get("staticValue").asText());
                     }
                 }
             }
@@ -271,97 +201,55 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
         return flow;
     }
 
-    protected void setFieldConditionExpression(
-        SequenceFlow flow,
-        JsonNode expressionNode
-    ) {
+    protected void setFieldConditionExpression(SequenceFlow flow, JsonNode expressionNode) {
         String fieldId = null;
-        if (
-            expressionNode.get("fieldId") != null &&
-            !(expressionNode.get("fieldId").isNull())
-        ) {
+        if (expressionNode.get("fieldId") != null && !(expressionNode.get("fieldId").isNull())) {
             fieldId = expressionNode.get("fieldId").asText();
         }
 
         String operator = null;
-        if (
-            expressionNode.get("operator") != null &&
-            !(expressionNode.get("operator").isNull())
-        ) {
+        if (expressionNode.get("operator") != null && !(expressionNode.get("operator").isNull())) {
             operator = expressionNode.get("operator").asText();
         }
 
         String value = null;
-        if (
-            expressionNode.get("value") != null &&
-            !(expressionNode.get("value").isNull())
-        ) {
+        if (expressionNode.get("value") != null && !(expressionNode.get("value").isNull())) {
             value = expressionNode.get("value").asText();
         }
 
         if (fieldId != null && operator != null && value != null) {
-            flow.setConditionExpression(
-                "${" + fieldId + " " + operator + " " + value + "}"
-            );
+            flow.setConditionExpression("${" + fieldId + " " + operator + " " + value + "}");
             addExtensionElement("conditionFieldId", fieldId, flow);
             addExtensionElement("conditionOperator", operator, flow);
             addExtensionElement("conditionValue", value, flow);
         }
     }
 
-    protected void setOutcomeConditionExpression(
-        SequenceFlow flow,
-        JsonNode expressionNode
-    ) {
+    protected void setOutcomeConditionExpression(SequenceFlow flow, JsonNode expressionNode) {
         Long formId = null;
-        if (
-            expressionNode.get("outcomeFormId") != null &&
-            !(expressionNode.get("outcomeFormId").isNull())
-        ) {
+        if (expressionNode.get("outcomeFormId") != null && !(expressionNode.get("outcomeFormId").isNull())) {
             formId = expressionNode.get("outcomeFormId").asLong();
         }
 
         String operator = null;
-        if (
-            expressionNode.get("operator") != null &&
-            expressionNode.get("operator").isNull() == false
-        ) {
+        if (expressionNode.get("operator") != null && expressionNode.get("operator").isNull() == false) {
             operator = expressionNode.get("operator").asText();
         }
 
         String outcomeName = null;
-        if (
-            expressionNode.get("outcomeName") != null &&
-            !(expressionNode.get("outcomeName").isNull())
-        ) {
+        if (expressionNode.get("outcomeName") != null && !(expressionNode.get("outcomeName").isNull())) {
             outcomeName = expressionNode.get("outcomeName").asText();
         }
 
         if (formId != null && operator != null && outcomeName != null) {
-            flow.setConditionExpression(
-                "${form" +
-                formId +
-                "outcome " +
-                operator +
-                " " +
-                outcomeName +
-                "}"
-            );
-            addExtensionElement(
-                "conditionFormId",
-                String.valueOf(formId),
-                flow
-            );
+            flow.setConditionExpression("${form" + formId + "outcome " + operator + " " + outcomeName + "}");
+            addExtensionElement("conditionFormId", String.valueOf(formId), flow);
             addExtensionElement("conditionOperator", operator, flow);
             addExtensionElement("conditionOutcomeName", outcomeName, flow);
         }
     }
 
-    protected void addExtensionElement(
-        String name,
-        String value,
-        SequenceFlow flow
-    ) {
+    protected void addExtensionElement(String name, String value, SequenceFlow flow) {
         ExtensionElement extensionElement = new ExtensionElement();
         extensionElement.setNamespace(NAMESPACE);
         extensionElement.setNamespacePrefix("modeler");

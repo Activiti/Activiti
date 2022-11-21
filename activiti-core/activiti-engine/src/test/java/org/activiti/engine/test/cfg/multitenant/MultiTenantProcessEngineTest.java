@@ -75,53 +75,27 @@ public class MultiTenantProcessEngineTest {
     }
 
     private void setupProcessEngine(boolean sharedExecutor) {
-        config =
-            new MultiSchemaMultiTenantProcessEngineConfiguration(
-                tenantInfoHolder
-            );
+        config = new MultiSchemaMultiTenantProcessEngineConfiguration(tenantInfoHolder);
 
-        config.setDatabaseType(
-            MultiSchemaMultiTenantProcessEngineConfiguration.DATABASE_TYPE_H2
-        );
-        config.setDatabaseSchemaUpdate(
-            MultiSchemaMultiTenantProcessEngineConfiguration.DB_SCHEMA_UPDATE_DROP_CREATE
-        );
+        config.setDatabaseType(MultiSchemaMultiTenantProcessEngineConfiguration.DATABASE_TYPE_H2);
+        config.setDatabaseSchemaUpdate(MultiSchemaMultiTenantProcessEngineConfiguration.DB_SCHEMA_UPDATE_DROP_CREATE);
 
         config.setAsyncExecutorActivate(true);
 
         if (sharedExecutor) {
-            config.setAsyncExecutor(
-                new SharedExecutorServiceAsyncExecutor(tenantInfoHolder)
-            );
+            config.setAsyncExecutor(new SharedExecutorServiceAsyncExecutor(tenantInfoHolder));
         } else {
-            config.setAsyncExecutor(
-                new ExecutorPerTenantAsyncExecutor(tenantInfoHolder)
-            );
+            config.setAsyncExecutor(new ExecutorPerTenantAsyncExecutor(tenantInfoHolder));
         }
 
         config.registerTenant(
             "alfresco",
-            createDataSource(
-                "jdbc:h2:mem:activiti-mt-alfresco;DB_CLOSE_DELAY=1000",
-                "sa",
-                ""
-            )
+            createDataSource("jdbc:h2:mem:activiti-mt-alfresco;DB_CLOSE_DELAY=1000", "sa", "")
         );
-        config.registerTenant(
-            "acme",
-            createDataSource(
-                "jdbc:h2:mem:activiti-mt-acme;DB_CLOSE_DELAY=1000",
-                "sa",
-                ""
-            )
-        );
+        config.registerTenant("acme", createDataSource("jdbc:h2:mem:activiti-mt-acme;DB_CLOSE_DELAY=1000", "sa", ""));
         config.registerTenant(
             "starkindustries",
-            createDataSource(
-                "jdbc:h2:mem:activiti-mt-stark;DB_CLOSE_DELAY=1000",
-                "sa",
-                ""
-            )
+            createDataSource("jdbc:h2:mem:activiti-mt-stark;DB_CLOSE_DELAY=1000", "sa", "")
         );
 
         processEngine = config.buildProcessEngine();
@@ -134,8 +108,7 @@ public class MultiTenantProcessEngineTest {
     }
 
     @Test
-    public void testStartProcessInstancesWithExecutorPerTenantAsyncExecutor()
-        throws Exception {
+    public void testStartProcessInstancesWithExecutorPerTenantAsyncExecutor() throws Exception {
         setupProcessEngine(false);
         runProcessInstanceTest();
     }
@@ -167,11 +140,7 @@ public class MultiTenantProcessEngineTest {
 
         config.registerTenant(
             "dailyplanet",
-            createDataSource(
-                "jdbc:h2:mem:activiti-mt-daily;DB_CLOSE_DELAY=1000",
-                "sa",
-                ""
-            )
+            createDataSource("jdbc:h2:mem:activiti-mt-daily;DB_CLOSE_DELAY=1000", "sa", "")
         );
 
         deployProcesses("louis");
@@ -197,21 +166,12 @@ public class MultiTenantProcessEngineTest {
     private void assertExecutionReachesTaskAfterTimer() {
         await()
             .untilAsserted(() ->
-                assertThat(getTasks("raphael", "TimerJob_test"))
-                    .extracting(Task::getName)
-                    .containsOnly("second form")
+                assertThat(getTasks("raphael", "TimerJob_test")).extracting(Task::getName).containsOnly("second form")
             );
     }
 
     private void moveClockToGetTimerFired() {
-        config
-            .getClock()
-            .setCurrentTime(
-                new Date(
-                    config.getClock().getCurrentTime().getTime() +
-                    (2 * 60 * 60 * 1000)
-                )
-            );
+        config.getClock().setCurrentTime(new Date(config.getClock().getCurrentTime().getTime() + (2 * 60 * 60 * 1000)));
     }
 
     private void deployProcesses(String userId) {
@@ -220,51 +180,29 @@ public class MultiTenantProcessEngineTest {
         Deployment deployment = processEngine
             .getRepositoryService()
             .createDeployment()
-            .addClasspathResource(
-                "org/activiti/engine/test/cfg/multitenant/oneTaskProcess.bpmn20.xml"
-            )
-            .addClasspathResource(
-                "org/activiti/engine/test/cfg/multitenant/jobTest.bpmn20.xml"
-            )
-            .addClasspathResource(
-                "org/activiti/engine/test/cfg/multitenant/TimerJob_test.bpmn20.xml"
-            )
+            .addClasspathResource("org/activiti/engine/test/cfg/multitenant/oneTaskProcess.bpmn20.xml")
+            .addClasspathResource("org/activiti/engine/test/cfg/multitenant/jobTest.bpmn20.xml")
+            .addClasspathResource("org/activiti/engine/test/cfg/multitenant/TimerJob_test.bpmn20.xml")
             .deploy();
-        System.out.println(
-            "Process deployed! Deployment id is " + deployment.getId()
-        );
+        System.out.println("Process deployed! Deployment id is " + deployment.getId());
 
         tenantInfoHolder.clearCurrentUserId();
         tenantInfoHolder.clearCurrentTenantId();
     }
 
-    private void startProcessInstance(
-        String userId,
-        String processDefinitionKey,
-        Map<String, Object> vars
-    ) {
+    private void startProcessInstance(String userId, String processDefinitionKey, Map<String, Object> vars) {
         tenantInfoHolder.setCurrentUserId(userId);
 
-        processEngine
-            .getRuntimeService()
-            .startProcessInstanceByKey(processDefinitionKey, vars);
+        processEngine.getRuntimeService().startProcessInstanceByKey(processDefinitionKey, vars);
 
         tenantInfoHolder.clearCurrentUserId();
         tenantInfoHolder.clearCurrentTenantId();
     }
 
     private void startProcessInstances(String userId) {
-        startProcessInstance(
-            userId,
-            "oneTaskProcess",
-            Map.of("data", "Hello from " + userId)
-        );
+        startProcessInstance(userId, "oneTaskProcess", Map.of("data", "Hello from " + userId));
         startProcessInstance(userId, "jobTest", null);
-        startProcessInstance(
-            userId,
-            "TimerJob_test",
-            Map.of("name", "some test from " + userId, "time", "PT1M")
-        );
+        startProcessInstance(userId, "TimerJob_test", Map.of("name", "some test from " + userId, "time", "PT1M"));
     }
 
     private void completeTasks(String userId) {
@@ -293,33 +231,14 @@ public class MultiTenantProcessEngineTest {
         return tasks;
     }
 
-    private void assertData(
-        String userId,
-        long nrOfActiveProcessInstances,
-        long nrOfActiveJobs
-    ) {
+    private void assertData(String userId, long nrOfActiveProcessInstances, long nrOfActiveJobs) {
         tenantInfoHolder.setCurrentUserId(userId);
 
-        assertThat(
-            processEngine
-                .getRuntimeService()
-                .createExecutionQuery()
-                .onlyProcessInstanceExecutions()
-                .count()
-        )
+        assertThat(processEngine.getRuntimeService().createExecutionQuery().onlyProcessInstanceExecutions().count())
             .isEqualTo(nrOfActiveProcessInstances);
-        assertThat(
-            processEngine
-                .getHistoryService()
-                .createHistoricProcessInstanceQuery()
-                .unfinished()
-                .count()
-        )
+        assertThat(processEngine.getHistoryService().createHistoricProcessInstanceQuery().unfinished().count())
             .isEqualTo(nrOfActiveProcessInstances);
-        assertThat(
-            processEngine.getManagementService().createTimerJobQuery().count()
-        )
-            .isEqualTo(nrOfActiveJobs);
+        assertThat(processEngine.getManagementService().createTimerJobQuery().count()).isEqualTo(nrOfActiveJobs);
 
         tenantInfoHolder.clearCurrentUserId();
         tenantInfoHolder.clearCurrentTenantId();
@@ -327,11 +246,7 @@ public class MultiTenantProcessEngineTest {
 
     // Helper //////////////////////////////////////////
 
-    private DataSource createDataSource(
-        String jdbcUrl,
-        String jdbcUsername,
-        String jdbcPassword
-    ) {
+    private DataSource createDataSource(String jdbcUrl, String jdbcUsername, String jdbcPassword) {
         JdbcDataSource ds = new JdbcDataSource();
         ds.setURL(jdbcUrl);
         ds.setUser(jdbcUsername);

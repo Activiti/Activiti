@@ -61,12 +61,7 @@ public class MappingAwareCallActivityBehavior extends CallActivityBehavior {
         DelegateExecution execution,
         ProcessDefinition processDefinition
     ) {
-        Map<String, Object> inputVariables = variablesCalculator.calculateInputVariables(
-            execution
-        );
-        return processVariablesInitiator.calculateVariablesFromExtensionFile(
-            processDefinition,
-            inputVariables
-        );
+        Map<String, Object> inputVariables = variablesCalculator.calculateInputVariables(execution);
+        return processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition, inputVariables);
     }
 }

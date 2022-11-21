@@ -38,10 +38,7 @@ public interface ActivitiEventDispatcher {
      * @param types
      *          types of events the listener should be notified for
      */
-    void addEventListener(
-        ActivitiEventListener listenerToAdd,
-        ActivitiEventType... types
-    );
+    void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... types);
 
     /**
      * Removes the given listener from this dispatcher. The listener will no longer be notified, regardless of the type(s) it was registered for in the first place.

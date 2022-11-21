@@ -39,14 +39,10 @@ import org.springframework.test.context.TestPropertySource;
 @TestPropertySource(locations = { "classpath:application.properties" })
 public class ProcessRuntimeVariableMappingTest {
 
-    private static final String VARIABLE_MAPPING_PROCESS =
-        "connectorVarMapping";
-    private static final String VARIABLE_MAPPING_EXPRESSION_PROCESS =
-        "connectorVarMappingExpression";
-    private static final String OUTPUT_MAPPING_EXPRESSION_VARIABLE_PROCESS =
-        "outputMappingExpVar";
-    private static final String OUTPUT_MAPPING_EXPRESSION_VALUE_PROCESS =
-        "outputMappingExpValue";
+    private static final String VARIABLE_MAPPING_PROCESS = "connectorVarMapping";
+    private static final String VARIABLE_MAPPING_EXPRESSION_PROCESS = "connectorVarMappingExpression";
+    private static final String OUTPUT_MAPPING_EXPRESSION_VARIABLE_PROCESS = "outputMappingExpVar";
+    private static final String OUTPUT_MAPPING_EXPRESSION_VALUE_PROCESS = "outputMappingExpValue";
 
     @Autowired
     private ProcessBaseRuntime processBaseRuntime;
@@ -68,9 +64,7 @@ public class ProcessRuntimeVariableMappingTest {
             VARIABLE_MAPPING_PROCESS
         );
 
-        List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessId(
-            processInstance.getId()
-        );
+        List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
 
         assertThat(variables)
             .extracting(VariableInstance::getName, VariableInstance::getValue)
@@ -78,16 +72,10 @@ public class ProcessRuntimeVariableMappingTest {
                 tuple("name", "outName"),
                 tuple("age", 35),
                 tuple("input_unmapped_variable_with_matching_name", "inTest"),
-                tuple(
-                    "input_unmapped_variable_with_non_matching_connector_input_name",
-                    "inTest"
-                ),
+                tuple("input_unmapped_variable_with_non_matching_connector_input_name", "inTest"),
                 tuple("nickName", "testName"),
                 tuple("out_unmapped_variable_matching_name", "default"),
-                tuple(
-                    "output_unmapped_variable_with_non_matching_connector_output_name",
-                    "default"
-                )
+                tuple("output_unmapped_variable_with_non_matching_connector_output_name", "default")
             );
     }
 
@@ -97,9 +85,7 @@ public class ProcessRuntimeVariableMappingTest {
             VARIABLE_MAPPING_EXPRESSION_PROCESS
         );
 
-        List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessId(
-            processInstance.getId()
-        );
+        List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
 
         String[] array = { "first", "${name}", "${surname}", "last" };
         List<String> list = asList(array);
@@ -122,23 +108,11 @@ public class ProcessRuntimeVariableMappingTest {
                     "user-msg",
                     "Hello ${name.concat(' ').concat(surname)}, today is your ${age}th birthday! It means ${age * 365.25} days of life"
                 ),
-                tuple(
-                    "input-unmapped-variable-with-matching-name",
-                    "${surname}"
-                ),
-                tuple(
-                    "input-unmapped-variable-with-non-matching-connector-input-name",
-                    "inTestExpression"
-                ),
+                tuple("input-unmapped-variable-with-matching-name", "${surname}"),
+                tuple("input-unmapped-variable-with-non-matching-connector-input-name", "inTestExpression"),
                 tuple("variableToResolve", "${name}"),
-                tuple(
-                    "out-unmapped-variable-matching-name",
-                    "defaultExpression"
-                ),
-                tuple(
-                    "output-unmapped-variable-with-non-matching-connector-output-name",
-                    "defaultExpression"
-                ),
+                tuple("out-unmapped-variable-matching-name", "defaultExpression"),
+                tuple("output-unmapped-variable-with-non-matching-connector-output-name", "defaultExpression"),
                 tuple("resident", true)
             );
     }
@@ -146,16 +120,12 @@ public class ProcessRuntimeVariableMappingTest {
     @Test
     public void should_throwActivitiException_when_expressionIsInOutputMapping() {
         Throwable throwable = catchThrowable(() ->
-            processBaseRuntime.startProcessWithProcessDefinitionKey(
-                OUTPUT_MAPPING_EXPRESSION_VARIABLE_PROCESS
-            )
+            processBaseRuntime.startProcessWithProcessDefinitionKey(OUTPUT_MAPPING_EXPRESSION_VARIABLE_PROCESS)
         );
 
         assertThat(throwable)
             .isInstanceOf(ActivitiException.class)
-            .hasMessageContaining(
-                "Expressions are not allowed as variable values in the output mapping"
-            );
+            .hasMessageContaining("Expressions are not allowed as variable values in the output mapping");
     }
 
     @Test
@@ -164,9 +134,7 @@ public class ProcessRuntimeVariableMappingTest {
             OUTPUT_MAPPING_EXPRESSION_VALUE_PROCESS
         );
 
-        List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessId(
-            processInstance.getId()
-        );
+        List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
 
         assertThat(variables)
             .extracting(VariableInstance::getName, VariableInstance::getValue)

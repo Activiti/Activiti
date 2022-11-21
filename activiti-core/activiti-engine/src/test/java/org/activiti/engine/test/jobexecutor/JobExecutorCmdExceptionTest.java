@@ -38,16 +38,12 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
     private CommandExecutor commandExecutor;
 
     public void setUp() throws Exception {
-        processEngineConfiguration
-            .getJobHandlers()
-            .put(tweetExceptionHandler.getType(), tweetExceptionHandler);
+        processEngineConfiguration.getJobHandlers().put(tweetExceptionHandler.getType(), tweetExceptionHandler);
         this.commandExecutor = processEngineConfiguration.getCommandExecutor();
     }
 
     public void tearDown() throws Exception {
-        processEngineConfiguration
-            .getJobHandlers()
-            .remove(tweetExceptionHandler.getType());
+        processEngineConfiguration.getJobHandlers().remove(tweetExceptionHandler.getType());
     }
 
     public void testJobCommandsWith2Exceptions() {
@@ -70,9 +66,7 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
 
         assertThatExceptionOfType(Exception.class)
             .isThrownBy(() -> {
-                Job job = managementService
-                    .createTimerJobQuery()
-                    .singleResult();
+                Job job = managementService.createTimerJobQuery().singleResult();
                 assertThat(job.getRetries()).isEqualTo(2);
 
                 managementService.moveTimerToExecutableJob(job.getId());
@@ -108,9 +102,7 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
 
         assertThatExceptionOfType(Exception.class)
             .isThrownBy(() -> {
-                Job job = managementService
-                    .createTimerJobQuery()
-                    .singleResult();
+                Job job = managementService.createTimerJobQuery().singleResult();
                 assertThat(job.getRetries()).isEqualTo(2);
                 managementService.moveTimerToExecutableJob(job.getId());
                 managementService.executeJob(job.getId());
@@ -118,9 +110,7 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
 
         assertThatExceptionOfType(Exception.class)
             .isThrownBy(() -> {
-                Job job = managementService
-                    .createTimerJobQuery()
-                    .singleResult();
+                Job job = managementService.createTimerJobQuery().singleResult();
                 assertThat(job.getRetries()).isEqualTo(1);
                 managementService.moveTimerToExecutableJob(job.getId());
                 managementService.executeJob(job.getId());

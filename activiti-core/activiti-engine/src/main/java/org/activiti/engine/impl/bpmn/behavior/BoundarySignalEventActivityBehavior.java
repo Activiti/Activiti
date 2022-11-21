@@ -34,8 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 
 
  */
-public class BoundarySignalEventActivityBehavior
-    extends BoundaryEventActivityBehavior {
+public class BoundarySignalEventActivityBehavior extends BoundaryEventActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 
@@ -68,17 +67,11 @@ public class BoundarySignalEventActivityBehavior
             signalName = signalExpression.getValue(execution).toString();
         }
 
-        commandContext
-            .getEventSubscriptionEntityManager()
-            .insertSignalEvent(signalName, signal, executionEntity);
+        commandContext.getEventSubscriptionEntityManager().insertSignalEvent(signalName, signal, executionEntity);
     }
 
     @Override
-    public void trigger(
-        DelegateExecution execution,
-        String triggerName,
-        Object triggerData
-    ) {
+    public void trigger(DelegateExecution execution, String triggerName, Object triggerData) {
         ExecutionEntity executionEntity = (ExecutionEntity) execution;
         BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
 

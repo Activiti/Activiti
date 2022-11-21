@@ -40,10 +40,7 @@ public class RetryInterceptor extends AbstractCommandInterceptor {
 
         do {
             if (failedAttempts > 0) {
-                log.info(
-                    "Waiting for {}ms before retrying the command.",
-                    waitTime
-                );
+                log.info("Waiting for {}ms before retrying the command.", waitTime);
                 waitBeforeRetry(waitTime);
                 waitTime *= waitIncreaseFactor;
             }
@@ -59,8 +56,7 @@ public class RetryInterceptor extends AbstractCommandInterceptor {
         } while (failedAttempts <= numOfRetries);
 
         throw new ActivitiException(
-            numOfRetries +
-            " retries failed with ActivitiOptimisticLockingException. Giving up."
+            numOfRetries + " retries failed with ActivitiOptimisticLockingException. Giving up."
         );
     }
 

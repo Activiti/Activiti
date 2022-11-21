@@ -47,14 +47,8 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
 
         // Test with input == 1
         variables.put("input", 1);
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "inclusiveGateway",
-            variables
-        );
-        List<Task> tasks = taskService
-            .createTaskQuery()
-            .processInstanceId(pi.getId())
-            .list();
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveGateway", variables);
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
         assertThat(tasks).hasSize(3);
         Map<String, String> expectedMessages = new HashMap<String, String>();
         expectedMessages.put(TASK1_NAME, TASK1_NAME);
@@ -67,13 +61,8 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
 
         // Test with input == 2
         variables.put("input", 2);
-        pi =
-            runtimeService.startProcessInstanceByKey(
-                "inclusiveGateway",
-                variables
-            );
-        tasks =
-            taskService.createTaskQuery().processInstanceId(pi.getId()).list();
+        pi = runtimeService.startProcessInstanceByKey("inclusiveGateway", variables);
+        tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
         assertThat(tasks).hasSize(2);
         expectedMessages = new HashMap<String, String>();
         expectedMessages.put(TASK2_NAME, TASK2_NAME);
@@ -85,13 +74,8 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
 
         // Test with input == 3
         variables.put("input", 3);
-        pi =
-            runtimeService.startProcessInstanceByKey(
-                "inclusiveGateway",
-                variables
-            );
-        tasks =
-            taskService.createTaskQuery().processInstanceId(pi.getId()).list();
+        pi = runtimeService.startProcessInstanceByKey("inclusiveGateway", variables);
+        tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
         assertThat(tasks).hasSize(1);
         expectedMessages = new HashMap<String, String>();
         expectedMessages.put(TASK3_NAME, TASK3_NAME);
@@ -104,11 +88,6 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
         variables.put("input", 4);
         // Exception is expected since no outgoing sequence flow matches
         assertThatExceptionOfType(ActivitiException.class)
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByKey(
-                    "inclusiveGateway",
-                    variables
-                )
-            );
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("inclusiveGateway", variables));
     }
 }

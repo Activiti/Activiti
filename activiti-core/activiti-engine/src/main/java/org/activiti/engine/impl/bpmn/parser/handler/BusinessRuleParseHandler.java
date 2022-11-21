@@ -23,22 +23,16 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 /**
 
  */
-public class BusinessRuleParseHandler
-    extends AbstractActivityBpmnParseHandler<BusinessRuleTask> {
+public class BusinessRuleParseHandler extends AbstractActivityBpmnParseHandler<BusinessRuleTask> {
 
     public Class<? extends BaseElement> getHandledType() {
         return BusinessRuleTask.class;
     }
 
     @Override
-    protected void executeParse(
-        BpmnParse bpmnParse,
-        BusinessRuleTask businessRuleTask
-    ) {
+    protected void executeParse(BpmnParse bpmnParse, BusinessRuleTask businessRuleTask) {
         businessRuleTask.setBehavior(
-            bpmnParse
-                .getActivityBehaviorFactory()
-                .createBusinessRuleTaskActivityBehavior(businessRuleTask)
+            bpmnParse.getActivityBehaviorFactory().createBusinessRuleTaskActivityBehavior(businessRuleTask)
         );
     }
 }

@@ -24,9 +24,7 @@ import java.util.Map;
  *
 
  */
-public class TimerJobEntityImpl
-    extends AbstractJobEntityImpl
-    implements TimerJobEntity {
+public class TimerJobEntityImpl extends AbstractJobEntityImpl implements TimerJobEntity {
 
     private static final long serialVersionUID = 1L;
 

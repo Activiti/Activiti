@@ -29,11 +29,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  */
 public abstract class AbstractEventHandler implements EventHandler {
 
-    public void handleEvent(
-        EventSubscriptionEntity eventSubscription,
-        Object payload,
-        CommandContext commandContext
-    ) {
+    public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
         ExecutionEntity execution = eventSubscription.getExecution();
         FlowNode currentFlowElement = (FlowNode) execution.getCurrentFlowElement();
 

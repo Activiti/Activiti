@@ -30,8 +30,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  *
 
  */
-public class ExecuteTaskListenerTransactionListener
-    implements TransactionListener {
+public class ExecuteTaskListenerTransactionListener implements TransactionListener {
 
     protected TransactionDependentTaskListener listener;
     protected TransactionDependentTaskListenerExecutionScope scope;
@@ -46,13 +45,8 @@ public class ExecuteTaskListenerTransactionListener
 
     @Override
     public void execute(CommandContext commandContext) {
-        CommandExecutor commandExecutor = commandContext
-            .getProcessEngineConfiguration()
-            .getCommandExecutor();
-        CommandConfig commandConfig = new CommandConfig(
-            false,
-            TransactionPropagation.REQUIRES_NEW
-        );
+        CommandExecutor commandExecutor = commandContext.getProcessEngineConfiguration().getCommandExecutor();
+        CommandConfig commandConfig = new CommandConfig(false, TransactionPropagation.REQUIRES_NEW);
         commandExecutor.execute(
             commandConfig,
             new Command<Void>() {

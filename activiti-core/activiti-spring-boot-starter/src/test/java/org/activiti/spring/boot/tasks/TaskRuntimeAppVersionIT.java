@@ -50,9 +50,7 @@ public class TaskRuntimeAppVersionIT {
     public void should_standaloneTaskAlwaysHaveAppVersion() {
         securityUtil.logInAs("user");
 
-        taskRuntime.create(
-            TaskPayloadBuilder.create().withName("new task").build()
-        );
+        taskRuntime.create(TaskPayloadBuilder.create().withName("new task").build());
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 

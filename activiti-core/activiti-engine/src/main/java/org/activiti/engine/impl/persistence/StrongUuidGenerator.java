@@ -38,10 +38,7 @@ public class StrongUuidGenerator implements IdGenerator {
         if (timeBasedGenerator == null) {
             synchronized (StrongUuidGenerator.class) {
                 if (timeBasedGenerator == null) {
-                    timeBasedGenerator =
-                        Generators.timeBasedGenerator(
-                            EthernetAddress.fromInterface()
-                        );
+                    timeBasedGenerator = Generators.timeBasedGenerator(EthernetAddress.fromInterface());
                 }
             }
         }

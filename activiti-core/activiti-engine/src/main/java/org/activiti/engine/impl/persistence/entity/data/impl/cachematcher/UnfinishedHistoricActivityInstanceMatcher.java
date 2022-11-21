@@ -27,10 +27,7 @@ public class UnfinishedHistoricActivityInstanceMatcher
     extends CachedEntityMatcherAdapter<HistoricActivityInstanceEntity> {
 
     @Override
-    public boolean isRetained(
-        HistoricActivityInstanceEntity entity,
-        Object parameter
-    ) {
+    public boolean isRetained(HistoricActivityInstanceEntity entity, Object parameter) {
         Map<String, String> paramMap = (Map<String, String>) parameter;
         String executionId = paramMap.get("executionId");
         String activityId = paramMap.get("activityId");

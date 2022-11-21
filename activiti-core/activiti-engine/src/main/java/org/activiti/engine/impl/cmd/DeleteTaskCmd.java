@@ -38,32 +38,18 @@ public class DeleteTaskCmd implements Command<Void>, Serializable {
         this(taskId, deleteReason, cascade, false);
     }
 
-    public DeleteTaskCmd(
-        String taskId,
-        String deleteReason,
-        boolean cascade,
-        boolean cancel
-    ) {
+    public DeleteTaskCmd(String taskId, String deleteReason, boolean cascade, boolean cancel) {
         this.taskId = taskId;
         this.cascade = cascade;
         this.deleteReason = deleteReason;
         this.cancel = cancel;
     }
 
-    public DeleteTaskCmd(
-        Collection<String> taskIds,
-        String deleteReason,
-        boolean cascade
-    ) {
+    public DeleteTaskCmd(Collection<String> taskIds, String deleteReason, boolean cascade) {
         this(taskIds, deleteReason, cascade, false);
     }
 
-    public DeleteTaskCmd(
-        Collection<String> taskIds,
-        String deleteReason,
-        boolean cascade,
-        boolean cancel
-    ) {
+    public DeleteTaskCmd(Collection<String> taskIds, String deleteReason, boolean cascade, boolean cancel) {
         this.taskIds = taskIds;
         this.cascade = cascade;
         this.deleteReason = deleteReason;
@@ -78,17 +64,13 @@ public class DeleteTaskCmd implements Command<Void>, Serializable {
                 deleteTask(commandContext, taskId);
             }
         } else {
-            throw new ActivitiIllegalArgumentException(
-                "taskId and taskIds are null"
-            );
+            throw new ActivitiIllegalArgumentException("taskId and taskIds are null");
         }
 
         return null;
     }
 
     protected void deleteTask(CommandContext commandContext, String taskId) {
-        commandContext
-            .getTaskEntityManager()
-            .deleteTask(taskId, deleteReason, cascade, cancel);
+        commandContext.getTaskEntityManager().deleteTask(taskId, deleteReason, cascade, cancel);
     }
 }

@@ -169,9 +169,7 @@ public class UserTask extends Task {
         return customUserIdentityLinks;
     }
 
-    public void setCustomUserIdentityLinks(
-        Map<String, Set<String>> customUserIdentityLinks
-    ) {
+    public void setCustomUserIdentityLinks(Map<String, Set<String>> customUserIdentityLinks) {
         this.customUserIdentityLinks = customUserIdentityLinks;
     }
 
@@ -179,9 +177,7 @@ public class UserTask extends Task {
         return customGroupIdentityLinks;
     }
 
-    public void setCustomGroupIdentityLinks(
-        Map<String, Set<String>> customGroupIdentityLinks
-    ) {
+    public void setCustomGroupIdentityLinks(Map<String, Set<String>> customGroupIdentityLinks) {
         this.customGroupIdentityLinks = customGroupIdentityLinks;
     }
 
@@ -218,31 +214,21 @@ public class UserTask extends Task {
         setExtensionId(otherElement.getExtensionId());
         setSkipExpression(otherElement.getSkipExpression());
 
-        setCandidateGroups(
-            new ArrayList<String>(otherElement.getCandidateGroups())
-        );
-        setCandidateUsers(
-            new ArrayList<String>(otherElement.getCandidateUsers())
-        );
+        setCandidateGroups(new ArrayList<String>(otherElement.getCandidateGroups()));
+        setCandidateUsers(new ArrayList<String>(otherElement.getCandidateUsers()));
 
         setCustomGroupIdentityLinks(otherElement.customGroupIdentityLinks);
         setCustomUserIdentityLinks(otherElement.customUserIdentityLinks);
 
         formProperties = new ArrayList<FormProperty>();
-        if (
-            otherElement.getFormProperties() != null &&
-            !otherElement.getFormProperties().isEmpty()
-        ) {
+        if (otherElement.getFormProperties() != null && !otherElement.getFormProperties().isEmpty()) {
             for (FormProperty property : otherElement.getFormProperties()) {
                 formProperties.add(property.clone());
             }
         }
 
         taskListeners = new ArrayList<ActivitiListener>();
-        if (
-            otherElement.getTaskListeners() != null &&
-            !otherElement.getTaskListeners().isEmpty()
-        ) {
+        if (otherElement.getTaskListeners() != null && !otherElement.getTaskListeners().isEmpty()) {
             for (ActivitiListener listener : otherElement.getTaskListeners()) {
                 taskListeners.add(listener.clone());
             }

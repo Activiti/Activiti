@@ -34,8 +34,7 @@ public class SubProcessMultiDiagramConverterTest extends AbstractConverterTest {
 
     @Override
     protected BpmnModel readXMLFile() throws Exception {
-        InputStream xmlStream =
-            this.getClass().getClassLoader().getResourceAsStream(getResource());
+        InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream(getResource());
         XMLInputFactory xif = XMLInputFactory.newInstance();
         InputStreamReader in = new InputStreamReader(xmlStream, "UTF-8");
         XMLStreamReader xtr = xif.createXMLStreamReader(in);
@@ -43,15 +42,11 @@ public class SubProcessMultiDiagramConverterTest extends AbstractConverterTest {
     }
 
     @Override
-    protected BpmnModel exportAndReadXMLFile(BpmnModel bpmnModel)
-        throws Exception {
+    protected BpmnModel exportAndReadXMLFile(BpmnModel bpmnModel) throws Exception {
         byte[] xml = new SubprocessXMLConverter().convertToXML(bpmnModel);
         System.out.println("xml " + new String(xml, "UTF-8"));
         XMLInputFactory xif = XMLInputFactory.newInstance();
-        InputStreamReader in = new InputStreamReader(
-            new ByteArrayInputStream(xml),
-            "UTF-8"
-        );
+        InputStreamReader in = new InputStreamReader(new ByteArrayInputStream(xml), "UTF-8");
         XMLStreamReader xtr = xif.createXMLStreamReader(in);
         return new SubprocessXMLConverter().convertToBpmnModel(xtr);
     }
@@ -75,9 +70,7 @@ public class SubProcessMultiDiagramConverterTest extends AbstractConverterTest {
     }
 
     private void validateModel(BpmnModel model) {
-        FlowElement flowElement = model
-            .getMainProcess()
-            .getFlowElement("start1");
+        FlowElement flowElement = model.getMainProcess().getFlowElement("start1");
         assertThat(flowElement).isNotNull();
         assertThat(flowElement).isInstanceOf(StartEvent.class);
         assertThat(flowElement.getId()).isEqualTo("start1");

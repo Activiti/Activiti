@@ -88,20 +88,14 @@ public class CallActivity extends Activity {
         setInheritBusinessKey(otherElement.isInheritBusinessKey());
 
         inParameters = new ArrayList<IOParameter>();
-        if (
-            otherElement.getInParameters() != null &&
-            !otherElement.getInParameters().isEmpty()
-        ) {
+        if (otherElement.getInParameters() != null && !otherElement.getInParameters().isEmpty()) {
             for (IOParameter parameter : otherElement.getInParameters()) {
                 inParameters.add(parameter.clone());
             }
         }
 
         outParameters = new ArrayList<IOParameter>();
-        if (
-            otherElement.getOutParameters() != null &&
-            !otherElement.getOutParameters().isEmpty()
-        ) {
+        if (otherElement.getOutParameters() != null && !otherElement.getOutParameters().isEmpty()) {
             for (IOParameter parameter : otherElement.getOutParameters()) {
                 outParameters.add(parameter.clone());
             }

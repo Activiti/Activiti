@@ -29,9 +29,7 @@ public class ServiceImpl {
 
     public ServiceImpl() {}
 
-    public ServiceImpl(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public ServiceImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
         this.processEngineConfiguration = processEngineConfiguration;
     }
 

@@ -26,8 +26,7 @@ import org.activiti.engine.runtime.Job;
  * when deploying a new version of a process definition.
  *
  */
-public class TimerEventsAndNewVersionDeploymentsTest
-    extends PluggableActivitiTestCase {
+public class TimerEventsAndNewVersionDeploymentsTest extends PluggableActivitiTestCase {
 
     private static final String TEST_TIMER_PROCESS =
         "org/activiti/engine/test/bpmn/deployment/TimerEventsAndNewVersionDeploymentsTest.timerTest.bpmn20.xml";
@@ -64,11 +63,7 @@ public class TimerEventsAndNewVersionDeploymentsTest
         Job job = managementService.createTimerJobQuery().singleResult();
         assertThat(job.getProcessDefinitionId())
             .isEqualTo(
-                repositoryService
-                    .createProcessDefinitionQuery()
-                    .deploymentId(deploymentId3)
-                    .singleResult()
-                    .getId()
+                repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId3).singleResult().getId()
             );
 
         cleanup(deploymentId1, deploymentId2, deploymentId3);
@@ -91,11 +86,7 @@ public class TimerEventsAndNewVersionDeploymentsTest
         Job job = managementService.createTimerJobQuery().singleResult();
         assertThat(job.getProcessDefinitionId())
             .isEqualTo(
-                repositoryService
-                    .createProcessDefinitionQuery()
-                    .deploymentId(deploymentId1)
-                    .singleResult()
-                    .getId()
+                repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId1).singleResult().getId()
             );
 
         cleanup(deploymentId1);
@@ -114,17 +105,12 @@ public class TimerEventsAndNewVersionDeploymentsTest
     }
 
     private String deploy(String path) {
-        String deploymentId = repositoryService
-            .createDeployment()
-            .addClasspathResource(path)
-            .deploy()
-            .getId();
+        String deploymentId = repositoryService.createDeployment().addClasspathResource(path).deploy().getId();
         return deploymentId;
     }
 
     private void assertTimerJobs(long count) {
-        assertThat(managementService.createTimerJobQuery().timers().count())
-            .isEqualTo(count);
+        assertThat(managementService.createTimerJobQuery().timers().count()).isEqualTo(count);
     }
 
     private void cleanup(String... deploymentIds) {

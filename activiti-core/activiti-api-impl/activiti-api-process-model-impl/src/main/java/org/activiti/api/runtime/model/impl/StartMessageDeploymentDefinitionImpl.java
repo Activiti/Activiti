@@ -20,8 +20,7 @@ import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.StartMessageDeploymentDefinition;
 import org.activiti.api.process.model.StartMessageSubscription;
 
-public class StartMessageDeploymentDefinitionImpl
-    implements StartMessageDeploymentDefinition {
+public class StartMessageDeploymentDefinitionImpl implements StartMessageDeploymentDefinition {
 
     private StartMessageSubscription messageSubscription;
 
@@ -69,9 +68,7 @@ public class StartMessageDeploymentDefinitionImpl
     public String toString() {
         StringBuilder builder2 = new StringBuilder();
         builder2
-            .append(
-                "StartMessageDeploymentDefinitionImpl [messageSubscription="
-            )
+            .append("StartMessageDeploymentDefinitionImpl [messageSubscription=")
             .append(messageSubscription)
             .append(", processDefinition=")
             .append(processDefinition)
@@ -88,9 +85,7 @@ public class StartMessageDeploymentDefinitionImpl
      * @param startMessageEventSubscriptionImpl to initialize the builder with
      * @return created builder
      */
-    public static Builder builderFrom(
-        StartMessageDeploymentDefinitionImpl startMessageEventSubscriptionImpl
-    ) {
+    public static Builder builderFrom(StartMessageDeploymentDefinitionImpl startMessageEventSubscriptionImpl) {
         return new Builder(startMessageEventSubscriptionImpl);
     }
 
@@ -104,13 +99,9 @@ public class StartMessageDeploymentDefinitionImpl
 
         public Builder() {}
 
-        private Builder(
-            StartMessageDeploymentDefinitionImpl startMessageEventSubscriptionImpl
-        ) {
-            this.messageSubscription =
-                startMessageEventSubscriptionImpl.messageSubscription;
-            this.processDefinition =
-                startMessageEventSubscriptionImpl.processDefinition;
+        private Builder(StartMessageDeploymentDefinitionImpl startMessageEventSubscriptionImpl) {
+            this.messageSubscription = startMessageEventSubscriptionImpl.messageSubscription;
+            this.processDefinition = startMessageEventSubscriptionImpl.processDefinition;
         }
 
         /**
@@ -118,9 +109,7 @@ public class StartMessageDeploymentDefinitionImpl
          * @param messageEventSubscription field to set
          * @return builder
          */
-        public Builder withMessageSubscription(
-            StartMessageSubscription messageEventSubscription
-        ) {
+        public Builder withMessageSubscription(StartMessageSubscription messageEventSubscription) {
             this.messageSubscription = messageEventSubscription;
             return this;
         }
@@ -130,9 +119,7 @@ public class StartMessageDeploymentDefinitionImpl
          * @param processDefinition field to set
          * @return builder
          */
-        public Builder withProcessDefinition(
-            ProcessDefinition processDefinition
-        ) {
+        public Builder withProcessDefinition(ProcessDefinition processDefinition) {
             this.processDefinition = processDefinition;
             return this;
         }

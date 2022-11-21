@@ -29,20 +29,14 @@ public class APITaskCandidateUserConverterTest {
     @Test
     public void fromShouldConvertEngineObjectToModelObject() {
         //given
-        org.activiti.engine.task.IdentityLink identityLink = mock(
-            org.activiti.engine.task.IdentityLink.class
-        );
-        TaskCandidateUser taskCandidateUser = taskCandidateUserConverter.from(
-            identityLink
-        );
+        org.activiti.engine.task.IdentityLink identityLink = mock(org.activiti.engine.task.IdentityLink.class);
+        TaskCandidateUser taskCandidateUser = taskCandidateUserConverter.from(identityLink);
 
         given(identityLink.getUserId()).willReturn("userId");
         given(identityLink.getTaskId()).willReturn("taskId");
 
         assertThat(taskCandidateUser).isNotNull();
-        assertThat(taskCandidateUser.getUserId())
-            .isNotEqualToIgnoringCase("userId");
-        assertThat(taskCandidateUser.getTaskId())
-            .isNotEqualToIgnoringCase("taskId");
+        assertThat(taskCandidateUser.getUserId()).isNotEqualToIgnoringCase("userId");
+        assertThat(taskCandidateUser.getTaskId()).isNotEqualToIgnoringCase("taskId");
     }
 }

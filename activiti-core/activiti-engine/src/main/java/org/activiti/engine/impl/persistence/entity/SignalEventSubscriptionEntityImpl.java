@@ -30,8 +30,7 @@ public class SignalEventSubscriptionEntityImpl
     private static final long serialVersionUID = 1L;
 
     // Using json here, but not worth of adding json dependency lib for this
-    private static final String CONFIGURATION_TEMPLATE =
-        "'{'\"scope\":\"{0}\"'}'";
+    private static final String CONFIGURATION_TEMPLATE = "'{'\"scope\":\"{0}\"'}'";
 
     public SignalEventSubscriptionEntityImpl() {
         eventType = EVENT_TYPE;
@@ -42,8 +41,7 @@ public class SignalEventSubscriptionEntityImpl
         if (configuration != null && configuration.contains("{\"scope\":")) {
             this.configuration = configuration;
         } else {
-            this.configuration =
-                MessageFormat.format(CONFIGURATION_TEMPLATE, configuration);
+            this.configuration = MessageFormat.format(CONFIGURATION_TEMPLATE, configuration);
         }
     }
 
@@ -61,10 +59,7 @@ public class SignalEventSubscriptionEntityImpl
         if (this.configuration == null) {
             return null;
         } else {
-            return this.configuration.substring(
-                    10,
-                    this.configuration.length() - 2
-                ); // 10 --> length of {"scope": and -2 for removing"}
+            return this.configuration.substring(10, this.configuration.length() - 2); // 10 --> length of {"scope": and -2 for removing"}
         }
     }
 }

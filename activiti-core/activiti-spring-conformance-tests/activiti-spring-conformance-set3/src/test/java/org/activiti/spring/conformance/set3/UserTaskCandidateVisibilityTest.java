@@ -45,8 +45,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class UserTaskCandidateVisibilityTest {
 
-    private final String processKey =
-        "usertaskca-1e577517-7404-4645-b650-4fbde528f612";
+    private final String processKey = "usertaskca-1e577517-7404-4645-b650-4fbde528f612";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -80,17 +79,12 @@ public class UserTaskCandidateVisibilityTest {
 
         //then
         assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getStatus())
-            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
-        assertThat(processInstance.getBusinessKey())
-            .isEqualTo("my-business-key");
-        assertThat(processInstance.getName())
-            .isEqualTo("my-process-instance-name");
+        assertThat(processInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(processInstance.getBusinessKey()).isEqualTo("my-business-key");
+        assertThat(processInstance.getName()).isEqualTo("my-process-instance-name");
 
         // I should be able to get the process instance from the Runtime because it is still running
-        ProcessInstance processInstanceById = processRuntime.processInstance(
-            processInstance.getId()
-        );
+        ProcessInstance processInstanceById = processRuntime.processInstance(processInstance.getId());
 
         assertThat(processInstanceById).isEqualTo(processInstance);
 
@@ -130,9 +124,7 @@ public class UserTaskCandidateVisibilityTest {
 
         assertThat(tasks.getTotalItems()).isEqualTo(0);
 
-        Throwable throwable = catchThrowable(() ->
-            taskRuntime.task(task.getId())
-        );
+        Throwable throwable = catchThrowable(() -> taskRuntime.task(task.getId()));
 
         assertThat(throwable).isInstanceOf(NotFoundException.class);
 
@@ -144,36 +136,24 @@ public class UserTaskCandidateVisibilityTest {
         List<String> candidateUsers = taskRuntime.userCandidates(task.getId());
         assertThat(candidateUsers).isEmpty();
 
-        List<String> candidateGroups = taskRuntime.groupCandidates(
-            task.getId()
-        );
+        List<String> candidateGroups = taskRuntime.groupCandidates(task.getId());
         assertThat(candidateGroups).contains("group1");
 
         // This should fail because user1 is not the assignee
         throwable =
             catchThrowable(() ->
                 taskRuntime.addCandidateUsers(
-                    TaskPayloadBuilder
-                        .addCandidateUsers()
-                        .withTaskId(task.getId())
-                        .withCandidateUser("user2")
-                        .build()
+                    TaskPayloadBuilder.addCandidateUsers().withTaskId(task.getId()).withCandidateUser("user2").build()
                 )
             );
 
         assertThat(throwable).isInstanceOf(IllegalStateException.class);
 
-        taskRuntime.claim(
-            TaskPayloadBuilder.claim().withTaskId(task.getId()).build()
-        );
+        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
         // Now it should work
         taskRuntime.addCandidateUsers(
-            TaskPayloadBuilder
-                .addCandidateUsers()
-                .withTaskId(task.getId())
-                .withCandidateUser("user2")
-                .build()
+            TaskPayloadBuilder.addCandidateUsers().withTaskId(task.getId()).withCandidateUser("user2").build()
         );
 
         candidateUsers = taskRuntime.userCandidates(task.getId());
@@ -181,9 +161,7 @@ public class UserTaskCandidateVisibilityTest {
 
         // User 1 needs to release the task in order for User 2 see it as candidate
 
-        taskRuntime.release(
-            TaskPayloadBuilder.release().withTaskId(task.getId()).build()
-        );
+        taskRuntime.release(TaskPayloadBuilder.release().withTaskId(task.getId()).build());
 
         // Check with user2
         securityUtil.logInAs("user2");
@@ -208,17 +186,12 @@ public class UserTaskCandidateVisibilityTest {
 
         //then
         assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getStatus())
-            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
-        assertThat(processInstance.getBusinessKey())
-            .isEqualTo("my-business-key");
-        assertThat(processInstance.getName())
-            .isEqualTo("my-process-instance-name");
+        assertThat(processInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(processInstance.getBusinessKey()).isEqualTo("my-business-key");
+        assertThat(processInstance.getName()).isEqualTo("my-process-instance-name");
 
         // I should be able to get the process instance from the Runtime because it is still running
-        ProcessInstance processInstanceById = processRuntime.processInstance(
-            processInstance.getId()
-        );
+        ProcessInstance processInstanceById = processRuntime.processInstance(processInstance.getId());
 
         assertThat(processInstanceById).isEqualTo(processInstance);
 
@@ -258,9 +231,7 @@ public class UserTaskCandidateVisibilityTest {
 
         assertThat(tasks.getTotalItems()).isEqualTo(0);
 
-        Throwable throwable = catchThrowable(() ->
-            taskRuntime.task(task.getId())
-        );
+        Throwable throwable = catchThrowable(() -> taskRuntime.task(task.getId()));
 
         assertThat(throwable).isInstanceOf(NotFoundException.class);
 
@@ -272,52 +243,35 @@ public class UserTaskCandidateVisibilityTest {
         List<String> candidateUsers = taskRuntime.userCandidates(task.getId());
         assertThat(candidateUsers).isEmpty();
 
-        List<String> candidateGroups = taskRuntime.groupCandidates(
-            task.getId()
-        );
+        List<String> candidateGroups = taskRuntime.groupCandidates(task.getId());
         assertThat(candidateGroups).contains("group1");
 
         // This should fail because user1 is not the assignee
         throwable =
             catchThrowable(() ->
                 taskRuntime.addCandidateUsers(
-                    TaskPayloadBuilder
-                        .addCandidateUsers()
-                        .withTaskId(task.getId())
-                        .withCandidateUser("user2")
-                        .build()
+                    TaskPayloadBuilder.addCandidateUsers().withTaskId(task.getId()).withCandidateUser("user2").build()
                 )
             );
 
         assertThat(throwable).isInstanceOf(IllegalStateException.class);
 
-        taskRuntime.claim(
-            TaskPayloadBuilder.claim().withTaskId(task.getId()).build()
-        );
+        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
             .extracting(RuntimeEvent::getEventType)
-            .containsExactly(
-                TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
-                TaskRuntimeEvent.TaskEvents.TASK_UPDATED
-            );
+            .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
 
         clearEvents();
 
         // Now it should work
         taskRuntime.addCandidateGroups(
-            TaskPayloadBuilder
-                .addCandidateGroups()
-                .withTaskId(task.getId())
-                .withCandidateGroup("group2")
-                .build()
+            TaskPayloadBuilder.addCandidateGroups().withTaskId(task.getId()).withCandidateGroup("group2").build()
         );
 
         //@TODO: operations should cause events
         // https://github.com/Activiti/Activiti/issues/2330
-        assertThat(RuntimeTestConfiguration.collectedEvents)
-            .extracting(RuntimeEvent::getEventType)
-            .containsExactly();
+        assertThat(RuntimeTestConfiguration.collectedEvents).extracting(RuntimeEvent::getEventType).containsExactly();
 
         clearEvents();
 
@@ -326,16 +280,11 @@ public class UserTaskCandidateVisibilityTest {
 
         // User 1 needs to release the task in order for User 2 see it as candidate
 
-        taskRuntime.release(
-            TaskPayloadBuilder.release().withTaskId(task.getId()).build()
-        );
+        taskRuntime.release(TaskPayloadBuilder.release().withTaskId(task.getId()).build());
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
             .extracting(RuntimeEvent::getEventType)
-            .containsExactly(
-                TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
-                TaskRuntimeEvent.TaskEvents.TASK_UPDATED
-            );
+            .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
 
         clearEvents();
 
@@ -350,13 +299,9 @@ public class UserTaskCandidateVisibilityTest {
     @AfterEach
     public void cleanup() {
         securityUtil.logInAs("admin");
-        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(
-            Pageable.of(0, 50)
-        );
+        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0, 50));
         for (ProcessInstance pi : processInstancePage.getContent()) {
-            processAdminRuntime.delete(
-                ProcessPayloadBuilder.delete(pi.getId())
-            );
+            processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
         clearEvents();
     }

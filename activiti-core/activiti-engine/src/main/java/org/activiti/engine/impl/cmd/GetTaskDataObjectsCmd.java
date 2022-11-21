@@ -40,8 +40,7 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.DataObject;
 import org.activiti.engine.task.Task;
 
-public class GetTaskDataObjectsCmd
-    implements Command<Map<String, DataObject>>, Serializable {
+public class GetTaskDataObjectsCmd implements Command<Map<String, DataObject>>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String taskId;
@@ -49,10 +48,7 @@ public class GetTaskDataObjectsCmd
     protected String locale;
     protected boolean withLocalizationFallback;
 
-    public GetTaskDataObjectsCmd(
-        String taskId,
-        Collection<String> variableNames
-    ) {
+    public GetTaskDataObjectsCmd(String taskId, Collection<String> variableNames) {
         this.taskId = taskId;
         this.variableNames = variableNames;
     }
@@ -74,15 +70,10 @@ public class GetTaskDataObjectsCmd
             throw new ActivitiIllegalArgumentException("taskId is null");
         }
 
-        TaskEntity task = commandContext
-            .getTaskEntityManager()
-            .findById(taskId);
+        TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);
 
         if (task == null) {
-            throw new ActivitiObjectNotFoundException(
-                "task " + taskId + " doesn't exist",
-                Task.class
-            );
+            throw new ActivitiObjectNotFoundException("task " + taskId + " doesn't exist", Task.class);
         }
 
         Map<String, DataObject> dataObjects = null;
@@ -109,33 +100,19 @@ public class GetTaskDataObjectsCmd
                     executionEntity = executionEntity.getParent();
                 }
 
-                BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(
-                    executionEntity.getProcessDefinitionId()
-                );
+                BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(executionEntity.getProcessDefinitionId());
                 ValuedDataObject foundDataObject = null;
                 if (executionEntity.getParentId() == null) {
-                    for (ValuedDataObject dataObject : bpmnModel
-                        .getMainProcess()
-                        .getDataObjects()) {
-                        if (
-                            dataObject
-                                .getName()
-                                .equals(variableEntity.getName())
-                        ) {
+                    for (ValuedDataObject dataObject : bpmnModel.getMainProcess().getDataObjects()) {
+                        if (dataObject.getName().equals(variableEntity.getName())) {
                             foundDataObject = dataObject;
                             break;
                         }
                     }
                 } else {
-                    SubProcess subProcess = (SubProcess) bpmnModel.getFlowElement(
-                        executionEntity.getActivityId()
-                    );
+                    SubProcess subProcess = (SubProcess) bpmnModel.getFlowElement(executionEntity.getActivityId());
                     for (ValuedDataObject dataObject : subProcess.getDataObjects()) {
-                        if (
-                            dataObject
-                                .getName()
-                                .equals(variableEntity.getName())
-                        ) {
+                        if (dataObject.getName().equals(variableEntity.getName())) {
                             foundDataObject = dataObject;
                             break;
                         }
@@ -151,15 +128,11 @@ public class GetTaskDataObjectsCmd
                     );
 
                     if (languageNode != null) {
-                        JsonNode nameNode = languageNode.get(
-                            DynamicBpmnConstants.LOCALIZATION_NAME
-                        );
+                        JsonNode nameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
                         if (nameNode != null) {
                             localizedName = nameNode.asText();
                         }
-                        JsonNode descriptionNode = languageNode.get(
-                            DynamicBpmnConstants.LOCALIZATION_DESCRIPTION
-                        );
+                        JsonNode descriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
                         if (descriptionNode != null) {
                             localizedDescription = descriptionNode.asText();
                         }

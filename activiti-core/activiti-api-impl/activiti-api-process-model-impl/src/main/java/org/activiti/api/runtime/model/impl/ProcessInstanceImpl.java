@@ -19,9 +19,7 @@ import java.util.Date;
 import java.util.Objects;
 import org.activiti.api.process.model.ProcessInstance;
 
-public class ProcessInstanceImpl
-    extends ApplicationElementImpl
-    implements ProcessInstance {
+public class ProcessInstanceImpl extends ApplicationElementImpl implements ProcessInstance {
 
     private String id;
     private String name;
@@ -169,10 +167,7 @@ public class ProcessInstanceImpl
             Objects.equals(businessKey, that.businessKey) &&
             status == that.status &&
             Objects.equals(parentId, that.parentId) &&
-            Objects.equals(
-                processDefinitionVersion,
-                that.processDefinitionVersion
-            ) &&
+            Objects.equals(processDefinitionVersion, that.processDefinitionVersion) &&
             Objects.equals(processDefinitionName, that.processDefinitionName)
         );
     }

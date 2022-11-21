@@ -33,13 +33,7 @@ public class TestBPMNParseHandler extends AbstractBpmnParseHandler<Process> {
 
     protected void executeParse(BpmnParse bpmnParse, Process process) {
         // Change the key of all deployed process-definitions
-        process.setId(
-            bpmnParse.getCurrentProcessDefinition().getKey() + "-modified"
-        );
-        bpmnParse
-            .getCurrentProcessDefinition()
-            .setKey(
-                bpmnParse.getCurrentProcessDefinition().getKey() + "-modified"
-            );
+        process.setId(bpmnParse.getCurrentProcessDefinition().getKey() + "-modified");
+        bpmnParse.getCurrentProcessDefinition().setKey(bpmnParse.getCurrentProcessDefinition().getKey() + "-modified");
     }
 }

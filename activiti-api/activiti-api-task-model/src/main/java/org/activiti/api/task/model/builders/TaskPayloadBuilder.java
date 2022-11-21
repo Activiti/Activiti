@@ -23,11 +23,8 @@ public class TaskPayloadBuilder {
         return new GetTasksPayloadBuilder();
     }
 
-    public static GetTasksPayloadBuilder tasksForProcess(
-        ProcessInstance processInstance
-    ) {
-        return new GetTasksPayloadBuilder()
-            .withProcessInstanceId(processInstance.getId());
+    public static GetTasksPayloadBuilder tasksForProcess(ProcessInstance processInstance) {
+        return new GetTasksPayloadBuilder().withProcessInstanceId(processInstance.getId());
     }
 
     public static CompleteTaskPayloadBuilder complete() {

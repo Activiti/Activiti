@@ -27,17 +27,14 @@ import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity
 /**
 
  */
-public interface EventSubscriptionDataManager
-    extends DataManager<EventSubscriptionEntity> {
+public interface EventSubscriptionDataManager extends DataManager<EventSubscriptionEntity> {
     MessageEventSubscriptionEntity createMessageEventSubscription();
 
     SignalEventSubscriptionEntity createSignalEventSubscription();
 
     CompensateEventSubscriptionEntity createCompensateEventSubscription();
 
-    long findEventSubscriptionCountByQueryCriteria(
-        EventSubscriptionQueryImpl eventSubscriptionQueryImpl
-    );
+    long findEventSubscriptionCountByQueryCriteria(EventSubscriptionQueryImpl eventSubscriptionQueryImpl);
 
     List<EventSubscriptionEntity> findEventSubscriptionsByQueryCriteria(
         EventSubscriptionQueryImpl eventSubscriptionQueryImpl,
@@ -64,10 +61,7 @@ public interface EventSubscriptionDataManager
         final String executionId
     );
 
-    List<EventSubscriptionEntity> findEventSubscriptionsByExecutionAndType(
-        final String executionId,
-        final String type
-    );
+    List<EventSubscriptionEntity> findEventSubscriptionsByExecutionAndType(final String executionId, final String type);
 
     List<EventSubscriptionEntity> findEventSubscriptionsByProcessInstanceAndActivityId(
         final String processInstanceId,
@@ -75,9 +69,7 @@ public interface EventSubscriptionDataManager
         final String type
     );
 
-    List<EventSubscriptionEntity> findEventSubscriptionsByExecution(
-        final String executionId
-    );
+    List<EventSubscriptionEntity> findEventSubscriptionsByExecution(final String executionId);
 
     List<EventSubscriptionEntity> findEventSubscriptionsByTypeAndProcessDefinitionId(
         String type,
@@ -97,17 +89,9 @@ public interface EventSubscriptionDataManager
         String executionId
     );
 
-    MessageEventSubscriptionEntity findMessageStartEventSubscriptionByName(
-        String messageName,
-        String tenantId
-    );
+    MessageEventSubscriptionEntity findMessageStartEventSubscriptionByName(String messageName, String tenantId);
 
-    void updateEventSubscriptionTenantId(
-        String oldTenantId,
-        String newTenantId
-    );
+    void updateEventSubscriptionTenantId(String oldTenantId, String newTenantId);
 
-    void deleteEventSubscriptionsForProcessDefinition(
-        String processDefinitionId
-    );
+    void deleteEventSubscriptionsForProcessDefinition(String processDefinitionId);
 }

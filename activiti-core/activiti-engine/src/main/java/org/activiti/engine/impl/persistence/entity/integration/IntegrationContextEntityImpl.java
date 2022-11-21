@@ -19,9 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import org.activiti.engine.impl.persistence.entity.AbstractEntity;
 
-public class IntegrationContextEntityImpl
-    extends AbstractEntity
-    implements IntegrationContextEntity {
+public class IntegrationContextEntityImpl extends AbstractEntity implements IntegrationContextEntity {
 
     private String executionId;
 

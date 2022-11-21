@@ -57,10 +57,7 @@ public class BPMNMessageImpl extends BPMNElementImpl implements BPMNMessage {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result =
-            prime *
-            result +
-            ((messagePayload == null) ? 0 : messagePayload.hashCode());
+        result = prime * result + ((messagePayload == null) ? 0 : messagePayload.hashCode());
         return result;
     }
 

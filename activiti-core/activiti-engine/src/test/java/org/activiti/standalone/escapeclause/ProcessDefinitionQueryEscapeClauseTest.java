@@ -20,8 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 
-public class ProcessDefinitionQueryEscapeClauseTest
-    extends AbstractEscapeClauseTestCase {
+public class ProcessDefinitionQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
     private String deploymentOneId;
     private String deploymentTwoId;
@@ -34,9 +33,7 @@ public class ProcessDefinitionQueryEscapeClauseTest
                 .tenantId("One%")
                 .name("one%")
                 .category("testCategory")
-                .addClasspathResource(
-                    "org/activiti/engine/test/repository/one%.bpmn20.xml"
-                )
+                .addClasspathResource("org/activiti/engine/test/repository/one%.bpmn20.xml")
                 .deploy()
                 .getId();
 
@@ -45,9 +42,7 @@ public class ProcessDefinitionQueryEscapeClauseTest
                 .createDeployment()
                 .tenantId("Two_")
                 .name("two_")
-                .addClasspathResource(
-                    "org/activiti/engine/test/repository/two_.bpmn20.xml"
-                )
+                .addClasspathResource("org/activiti/engine/test/repository/two_.bpmn20.xml")
                 .deploy()
                 .getId();
 
@@ -69,10 +64,7 @@ public class ProcessDefinitionQueryEscapeClauseTest
         assertThat(query.list()).hasSize(1);
         assertThat(query.count()).isEqualTo(1);
 
-        query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .processDefinitionNameLike("%\\_%");
+        query = repositoryService.createProcessDefinitionQuery().processDefinitionNameLike("%\\_%");
         assertThat(query.singleResult().getName()).isEqualTo("Two_");
         assertThat(query.list()).hasSize(1);
         assertThat(query.count()).isEqualTo(1);
@@ -105,10 +97,7 @@ public class ProcessDefinitionQueryEscapeClauseTest
         assertThat(query.list()).hasSize(1);
         assertThat(query.count()).isEqualTo(1);
 
-        query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .processDefinitionResourceNameLike("%\\_%");
+        query = repositoryService.createProcessDefinitionQuery().processDefinitionResourceNameLike("%\\_%");
         assertThat(query.singleResult().getResourceName())
             .isEqualTo("org/activiti/engine/test/repository/two_.bpmn20.xml");
         assertThat(query.list()).hasSize(1);
@@ -123,28 +112,17 @@ public class ProcessDefinitionQueryEscapeClauseTest
         assertThat(query.list()).hasSize(1);
         assertThat(query.count()).isEqualTo(1);
 
-        query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .processDefinitionTenantIdLike("%\\_%");
+        query = repositoryService.createProcessDefinitionQuery().processDefinitionTenantIdLike("%\\_%");
         assertThat(query.singleResult().getTenantId()).isEqualTo("Two_");
         assertThat(query.list()).hasSize(1);
         assertThat(query.count()).isEqualTo(1);
 
-        query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .latestVersion()
-                .processDefinitionTenantIdLike("%\\%%");
+        query = repositoryService.createProcessDefinitionQuery().latestVersion().processDefinitionTenantIdLike("%\\%%");
         assertThat(query.singleResult().getTenantId()).isEqualTo("One%");
         assertThat(query.list()).hasSize(1);
         assertThat(query.count()).isEqualTo(1);
 
-        query =
-            repositoryService
-                .createProcessDefinitionQuery()
-                .latestVersion()
-                .processDefinitionTenantIdLike("%\\_%");
+        query = repositoryService.createProcessDefinitionQuery().latestVersion().processDefinitionTenantIdLike("%\\_%");
         assertThat(query.singleResult().getTenantId()).isEqualTo("Two_");
         assertThat(query.list()).hasSize(1);
         assertThat(query.count()).isEqualTo(1);

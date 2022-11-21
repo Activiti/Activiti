@@ -44,10 +44,7 @@ public class ExecutionTree implements Iterable<ExecutionTreeNode> {
         return getTreeNode(executionId, root);
     }
 
-    protected ExecutionTreeNode getTreeNode(
-        String executionId,
-        ExecutionTreeNode currentNode
-    ) {
+    protected ExecutionTreeNode getTreeNode(String executionId, ExecutionTreeNode currentNode) {
         if (currentNode.getExecutionEntity().getId().equals(executionId)) {
             return currentNode;
         }
@@ -56,10 +53,7 @@ public class ExecutionTree implements Iterable<ExecutionTreeNode> {
         if (currentNode.getChildren() != null && children.size() > 0) {
             int index = 0;
             while (index < children.size()) {
-                ExecutionTreeNode result = getTreeNode(
-                    executionId,
-                    children.get(index)
-                );
+                ExecutionTreeNode result = getTreeNode(executionId, children.get(index));
                 if (result != null) {
                     return result;
                 }

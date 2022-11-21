@@ -64,12 +64,7 @@ public class ExecuteJobCmd implements Command<Object>, Serializable {
 
     protected void executeInternal(CommandContext commandContext, Job job) {
         commandContext.addCloseListener(
-            new FailedJobListener(
-                commandContext
-                    .getProcessEngineConfiguration()
-                    .getCommandExecutor(),
-                job
-            )
+            new FailedJobListener(commandContext.getProcessEngineConfiguration().getCommandExecutor(), job)
         );
 
         try {

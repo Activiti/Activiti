@@ -34,82 +34,33 @@ public class BpmnEdgeParser implements BpmnXMLConstants {
         List<GraphicInfo> wayPointList = new ArrayList<GraphicInfo>();
         while (xtr.hasNext()) {
             xtr.next();
-            if (
-                xtr.isStartElement() &&
-                ELEMENT_DI_LABEL.equalsIgnoreCase(xtr.getLocalName())
-            ) {
+            if (xtr.isStartElement() && ELEMENT_DI_LABEL.equalsIgnoreCase(xtr.getLocalName())) {
                 while (xtr.hasNext()) {
                     xtr.next();
-                    if (
-                        xtr.isStartElement() &&
-                        ELEMENT_DI_BOUNDS.equalsIgnoreCase(xtr.getLocalName())
-                    ) {
+                    if (xtr.isStartElement() && ELEMENT_DI_BOUNDS.equalsIgnoreCase(xtr.getLocalName())) {
                         GraphicInfo graphicInfo = new GraphicInfo();
                         BpmnXMLUtil.addXMLLocation(graphicInfo, xtr);
-                        graphicInfo.setX(
-                            Double
-                                .valueOf(
-                                    xtr.getAttributeValue(null, ATTRIBUTE_DI_X)
-                                )
-                                .intValue()
-                        );
-                        graphicInfo.setY(
-                            Double
-                                .valueOf(
-                                    xtr.getAttributeValue(null, ATTRIBUTE_DI_Y)
-                                )
-                                .intValue()
-                        );
+                        graphicInfo.setX(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_X)).intValue());
+                        graphicInfo.setY(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_Y)).intValue());
                         graphicInfo.setWidth(
-                            Double
-                                .valueOf(
-                                    xtr.getAttributeValue(
-                                        null,
-                                        ATTRIBUTE_DI_WIDTH
-                                    )
-                                )
-                                .intValue()
+                            Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_WIDTH)).intValue()
                         );
                         graphicInfo.setHeight(
-                            Double
-                                .valueOf(
-                                    xtr.getAttributeValue(
-                                        null,
-                                        ATTRIBUTE_DI_HEIGHT
-                                    )
-                                )
-                                .intValue()
+                            Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_HEIGHT)).intValue()
                         );
                         model.addLabelGraphicInfo(id, graphicInfo);
                         break;
-                    } else if (
-                        xtr.isEndElement() &&
-                        ELEMENT_DI_LABEL.equalsIgnoreCase(xtr.getLocalName())
-                    ) {
+                    } else if (xtr.isEndElement() && ELEMENT_DI_LABEL.equalsIgnoreCase(xtr.getLocalName())) {
                         break;
                     }
                 }
-            } else if (
-                xtr.isStartElement() &&
-                ELEMENT_DI_WAYPOINT.equalsIgnoreCase(xtr.getLocalName())
-            ) {
+            } else if (xtr.isStartElement() && ELEMENT_DI_WAYPOINT.equalsIgnoreCase(xtr.getLocalName())) {
                 GraphicInfo graphicInfo = new GraphicInfo();
                 BpmnXMLUtil.addXMLLocation(graphicInfo, xtr);
-                graphicInfo.setX(
-                    Double
-                        .valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_X))
-                        .intValue()
-                );
-                graphicInfo.setY(
-                    Double
-                        .valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_Y))
-                        .intValue()
-                );
+                graphicInfo.setX(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_X)).intValue());
+                graphicInfo.setY(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_Y)).intValue());
                 wayPointList.add(graphicInfo);
-            } else if (
-                xtr.isEndElement() &&
-                ELEMENT_DI_EDGE.equalsIgnoreCase(xtr.getLocalName())
-            ) {
+            } else if (xtr.isEndElement() && ELEMENT_DI_EDGE.equalsIgnoreCase(xtr.getLocalName())) {
                 break;
             }
         }

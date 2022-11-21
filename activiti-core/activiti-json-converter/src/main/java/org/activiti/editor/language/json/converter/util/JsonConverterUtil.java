@@ -28,64 +28,38 @@ import org.activiti.editor.constants.EditorJsonConstants;
 import org.activiti.editor.constants.StencilConstants;
 import org.activiti.editor.language.json.converter.BpmnJsonConverterUtil;
 
-public class JsonConverterUtil
-    implements EditorJsonConstants, StencilConstants {
+public class JsonConverterUtil implements EditorJsonConstants, StencilConstants {
 
-    public static String getPropertyValueAsString(
-        String name,
-        JsonNode objectNode
-    ) {
+    public static String getPropertyValueAsString(String name, JsonNode objectNode) {
         String propertyValue = null;
         JsonNode propertyNode = getProperty(name, objectNode);
-        if (
-            propertyNode != null &&
-            "null".equalsIgnoreCase(propertyNode.asText()) == false
-        ) {
+        if (propertyNode != null && "null".equalsIgnoreCase(propertyNode.asText()) == false) {
             propertyValue = propertyNode.asText();
         }
         return propertyValue;
     }
 
-    public static boolean getPropertyValueAsBoolean(
-        String name,
-        JsonNode objectNode
-    ) {
+    public static boolean getPropertyValueAsBoolean(String name, JsonNode objectNode) {
         return getPropertyValueAsBoolean(name, objectNode, false);
     }
 
-    public static boolean getPropertyValueAsBoolean(
-        String name,
-        JsonNode objectNode,
-        boolean defaultValue
-    ) {
+    public static boolean getPropertyValueAsBoolean(String name, JsonNode objectNode, boolean defaultValue) {
         boolean result = defaultValue;
         String stringValue = getPropertyValueAsString(name, objectNode);
 
-        if (
-            PROPERTY_VALUE_YES.equalsIgnoreCase(stringValue) ||
-            "true".equalsIgnoreCase(stringValue)
-        ) {
+        if (PROPERTY_VALUE_YES.equalsIgnoreCase(stringValue) || "true".equalsIgnoreCase(stringValue)) {
             result = true;
-        } else if (
-            PROPERTY_VALUE_NO.equalsIgnoreCase(stringValue) ||
-            "false".equalsIgnoreCase(stringValue)
-        ) {
+        } else if (PROPERTY_VALUE_NO.equalsIgnoreCase(stringValue) || "false".equalsIgnoreCase(stringValue)) {
             result = false;
         }
 
         return result;
     }
 
-    public static List<String> getPropertyValueAsList(
-        String name,
-        JsonNode objectNode
-    ) {
+    public static List<String> getPropertyValueAsList(String name, JsonNode objectNode) {
         List<String> resultList = new ArrayList<String>();
         JsonNode propertyNode = getProperty(name, objectNode);
-        if (
-            propertyNode != null &&
-            !"null".equalsIgnoreCase(propertyNode.asText())
-        ) {
+        if (propertyNode != null && !"null".equalsIgnoreCase(propertyNode.asText())) {
             String propertyValue = propertyNode.asText();
             String[] valueList = propertyValue.split(",");
             for (String value : valueList) {
@@ -118,12 +92,7 @@ public class JsonConverterUtil
         List<String> allowedStencilTypes
     ) {
         List<JsonLookupResult> result = new ArrayList<JsonLookupResult>();
-        internalGetBpmnProcessChildShapePropertyValues(
-            editorJsonNode,
-            propertyName,
-            allowedStencilTypes,
-            result
-        );
+        internalGetBpmnProcessChildShapePropertyValues(editorJsonNode, propertyName, allowedStencilTypes, result);
         return result;
     }
 
@@ -140,12 +109,8 @@ public class JsonConverterUtil
             while (childShapeNodeIterator.hasNext()) {
                 JsonNode childShapeNode = childShapeNodeIterator.next();
 
-                String childShapeNodeStencilId = BpmnJsonConverterUtil.getStencilId(
-                    childShapeNode
-                );
-                boolean readPropertiesNode = allowedStencilTypes.contains(
-                    childShapeNodeStencilId
-                );
+                String childShapeNodeStencilId = BpmnJsonConverterUtil.getStencilId(childShapeNode);
+                boolean readPropertiesNode = allowedStencilTypes.contains(childShapeNodeStencilId);
 
                 if (readPropertiesNode) {
                     // Properties
@@ -155,9 +120,7 @@ public class JsonConverterUtil
                         JsonNode propertyNode = properties.get(propertyName);
                         result.add(
                             new JsonLookupResult(
-                                BpmnJsonConverterUtil.getElementId(
-                                    childShapeNode
-                                ),
+                                BpmnJsonConverterUtil.getElementId(childShapeNode),
                                 nameNode != null ? nameNode.asText() : null,
                                 propertyNode
                             )
@@ -178,22 +141,14 @@ public class JsonConverterUtil
         }
     }
 
-    public static List<JsonLookupResult> getBpmnProcessModelFormReferences(
-        JsonNode editorJsonNode
-    ) {
+    public static List<JsonLookupResult> getBpmnProcessModelFormReferences(JsonNode editorJsonNode) {
         List<String> allowedStencilTypes = new ArrayList<String>();
         allowedStencilTypes.add(STENCIL_TASK_USER);
         allowedStencilTypes.add(STENCIL_EVENT_START_NONE);
-        return getBpmnProcessModelChildShapesPropertyValues(
-            editorJsonNode,
-            "formreference",
-            allowedStencilTypes
-        );
+        return getBpmnProcessModelChildShapesPropertyValues(editorJsonNode, "formreference", allowedStencilTypes);
     }
 
-    public static List<JsonLookupResult> getBpmnProcessModelDecisionTableReferences(
-        JsonNode editorJsonNode
-    ) {
+    public static List<JsonLookupResult> getBpmnProcessModelDecisionTableReferences(JsonNode editorJsonNode) {
         List<String> allowedStencilTypes = new ArrayList<String>();
         allowedStencilTypes.add(STENCIL_TASK_DECISION);
         return getBpmnProcessModelChildShapesPropertyValues(
@@ -205,9 +160,7 @@ public class JsonConverterUtil
 
     // APP MODEL
 
-    public static List<JsonNode> getAppModelReferencedProcessModels(
-        JsonNode appModelJson
-    ) {
+    public static List<JsonNode> getAppModelReferencedProcessModels(JsonNode appModelJson) {
         List<JsonNode> result = new ArrayList<JsonNode>();
         if (appModelJson.has("models")) {
             ArrayNode modelsArrayNode = (ArrayNode) appModelJson.get("models");
@@ -219,14 +172,9 @@ public class JsonConverterUtil
         return result;
     }
 
-    public static Set<String> getAppModelReferencedModelIds(
-        JsonNode appModelJson
-    ) {
+    public static Set<String> getAppModelReferencedModelIds(JsonNode appModelJson) {
         if (appModelJson.has("models")) {
-            return JsonConverterUtil.gatherStringPropertyFromJsonNodes(
-                appModelJson.get("models"),
-                "id"
-            );
+            return JsonConverterUtil.gatherStringPropertyFromJsonNodes(appModelJson.get("models"), "id");
         }
         return Collections.emptySet();
     }
@@ -238,10 +186,7 @@ public class JsonConverterUtil
      *
      * In Java 8, this probably could be done a lot cooler.
      */
-    public static Set<Long> gatherLongPropertyFromJsonNodes(
-        Iterable<JsonNode> jsonNodes,
-        String propertyName
-    ) {
+    public static Set<Long> gatherLongPropertyFromJsonNodes(Iterable<JsonNode> jsonNodes, String propertyName) {
         Set<Long> result = new HashSet<Long>(); // Using a Set to filter out doubles
         for (JsonNode node : jsonNodes) {
             if (node.has(propertyName)) {
@@ -254,10 +199,7 @@ public class JsonConverterUtil
         return result;
     }
 
-    public static Set<String> gatherStringPropertyFromJsonNodes(
-        Iterable<JsonNode> jsonNodes,
-        String propertyName
-    ) {
+    public static Set<String> gatherStringPropertyFromJsonNodes(Iterable<JsonNode> jsonNodes, String propertyName) {
         Set<String> result = new HashSet<String>(); // Using a Set to filter out doubles
         for (JsonNode node : jsonNodes) {
             if (node.has(propertyName)) {
@@ -270,12 +212,8 @@ public class JsonConverterUtil
         return result;
     }
 
-    public static List<JsonNode> filterOutJsonNodes(
-        List<JsonLookupResult> lookupResults
-    ) {
-        List<JsonNode> jsonNodes = new ArrayList<JsonNode>(
-            lookupResults.size()
-        );
+    public static List<JsonNode> filterOutJsonNodes(List<JsonLookupResult> lookupResults) {
+        List<JsonNode> jsonNodes = new ArrayList<JsonNode>(lookupResults.size());
         for (JsonLookupResult lookupResult : lookupResults) {
             jsonNodes.add(lookupResult.getJsonNode());
         }

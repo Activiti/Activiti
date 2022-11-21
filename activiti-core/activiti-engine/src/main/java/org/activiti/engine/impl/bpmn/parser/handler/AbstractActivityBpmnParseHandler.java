@@ -30,28 +30,18 @@ import org.apache.commons.lang3.StringUtils;
 /**
 
  */
-public abstract class AbstractActivityBpmnParseHandler<T extends FlowNode>
-    extends AbstractFlowNodeBpmnParseHandler<T> {
+public abstract class AbstractActivityBpmnParseHandler<T extends FlowNode> extends AbstractFlowNodeBpmnParseHandler<T> {
 
     @Override
     public void parse(BpmnParse bpmnParse, BaseElement element) {
         super.parse(bpmnParse, element);
 
-        if (
-            element instanceof Activity &&
-            ((Activity) element).getLoopCharacteristics() != null
-        ) {
-            createMultiInstanceLoopCharacteristics(
-                bpmnParse,
-                (Activity) element
-            );
+        if (element instanceof Activity && ((Activity) element).getLoopCharacteristics() != null) {
+            createMultiInstanceLoopCharacteristics(bpmnParse, (Activity) element);
         }
     }
 
-    protected void createMultiInstanceLoopCharacteristics(
-        BpmnParse bpmnParse,
-        Activity modelActivity
-    ) {
+    protected void createMultiInstanceLoopCharacteristics(BpmnParse bpmnParse, Activity modelActivity) {
         MultiInstanceLoopCharacteristics loopCharacteristics = modelActivity.getLoopCharacteristics();
 
         MultiInstanceActivityBehavior miActivityBehavior = createMultiInstanceActivityBehavior(
@@ -62,27 +52,19 @@ public abstract class AbstractActivityBpmnParseHandler<T extends FlowNode>
 
         modelActivity.setBehavior(miActivityBehavior);
 
-        ExpressionManager expressionManager = Context
-            .getProcessEngineConfiguration()
-            .getExpressionManager();
+        ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
 
         // loop cardinality
         if (StringUtils.isNotEmpty(loopCharacteristics.getLoopCardinality())) {
             miActivityBehavior.setLoopCardinalityExpression(
-                expressionManager.createExpression(
-                    loopCharacteristics.getLoopCardinality()
-                )
+                expressionManager.createExpression(loopCharacteristics.getLoopCardinality())
             );
         }
 
         // completion condition
-        if (
-            StringUtils.isNotEmpty(loopCharacteristics.getCompletionCondition())
-        ) {
+        if (StringUtils.isNotEmpty(loopCharacteristics.getCompletionCondition())) {
             miActivityBehavior.setCompletionConditionExpression(
-                expressionManager.createExpression(
-                    loopCharacteristics.getCompletionCondition()
-                )
+                expressionManager.createExpression(loopCharacteristics.getCompletionCondition())
             );
         }
 
@@ -90,47 +72,29 @@ public abstract class AbstractActivityBpmnParseHandler<T extends FlowNode>
         if (StringUtils.isNotEmpty(loopCharacteristics.getInputDataItem())) {
             if (loopCharacteristics.getInputDataItem().contains("{")) {
                 miActivityBehavior.setCollectionExpression(
-                    expressionManager.createExpression(
-                        loopCharacteristics.getInputDataItem()
-                    )
+                    expressionManager.createExpression(loopCharacteristics.getInputDataItem())
                 );
             } else {
-                miActivityBehavior.setCollectionVariable(
-                    loopCharacteristics.getInputDataItem()
-                );
+                miActivityBehavior.setCollectionVariable(loopCharacteristics.getInputDataItem());
             }
         }
 
         // activiti:elementVariable
         if (StringUtils.isNotEmpty(loopCharacteristics.getElementVariable())) {
-            miActivityBehavior.setCollectionElementVariable(
-                loopCharacteristics.getElementVariable()
-            );
+            miActivityBehavior.setCollectionElementVariable(loopCharacteristics.getElementVariable());
         }
 
         // activiti:elementIndexVariable
-        if (
-            StringUtils.isNotEmpty(
-                loopCharacteristics.getElementIndexVariable()
-            )
-        ) {
-            miActivityBehavior.setCollectionElementIndexVariable(
-                loopCharacteristics.getElementIndexVariable()
-            );
+        if (StringUtils.isNotEmpty(loopCharacteristics.getElementIndexVariable())) {
+            miActivityBehavior.setCollectionElementIndexVariable(loopCharacteristics.getElementIndexVariable());
         }
 
-        if (
-            StringUtils.isNotEmpty(loopCharacteristics.getLoopDataOutputRef())
-        ) {
-            miActivityBehavior.setLoopDataOutputRef(
-                loopCharacteristics.getLoopDataOutputRef()
-            );
+        if (StringUtils.isNotEmpty(loopCharacteristics.getLoopDataOutputRef())) {
+            miActivityBehavior.setLoopDataOutputRef(loopCharacteristics.getLoopDataOutputRef());
         }
 
         if (StringUtils.isNotEmpty(loopCharacteristics.getOutputDataItem())) {
-            miActivityBehavior.setOutputDataItem(
-                loopCharacteristics.getOutputDataItem()
-            );
+            miActivityBehavior.setOutputDataItem(loopCharacteristics.getOutputDataItem());
         }
     }
 

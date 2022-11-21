@@ -23,9 +23,7 @@ public class StartMessageDeployedEvents extends ApplicationEvent {
 
     private static final long serialVersionUID = 1L;
 
-    public StartMessageDeployedEvents(
-        List<StartMessageDeployedEvent> processDeployedEvents
-    ) {
+    public StartMessageDeployedEvents(List<StartMessageDeployedEvent> processDeployedEvents) {
         super(processDeployedEvents);
     }
 

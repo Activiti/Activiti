@@ -28,8 +28,7 @@ import org.activiti.engine.runtime.Job;
 
 
  */
-public class GetJobExceptionStacktraceCmd
-    implements Command<String>, Serializable {
+public class GetJobExceptionStacktraceCmd implements Command<String>, Serializable {
 
     private static final long serialVersionUID = 1L;
     private String jobId;
@@ -54,24 +53,15 @@ public class GetJobExceptionStacktraceCmd
                 job = commandContext.getTimerJobEntityManager().findById(jobId);
                 break;
             case SUSPENDED:
-                job =
-                    commandContext
-                        .getSuspendedJobEntityManager()
-                        .findById(jobId);
+                job = commandContext.getSuspendedJobEntityManager().findById(jobId);
                 break;
             case DEADLETTER:
-                job =
-                    commandContext
-                        .getDeadLetterJobEntityManager()
-                        .findById(jobId);
+                job = commandContext.getDeadLetterJobEntityManager().findById(jobId);
                 break;
         }
 
         if (job == null) {
-            throw new ActivitiObjectNotFoundException(
-                "No job found with id " + jobId,
-                Job.class
-            );
+            throw new ActivitiObjectNotFoundException("No job found with id " + jobId, Job.class);
         }
 
         return job.getExceptionStacktrace();

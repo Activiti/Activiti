@@ -22,32 +22,20 @@ import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.runtime.api.model.impl.ToActivityConverter;
 
-public class ToActivityCancelledConverter
-    implements
-        EventConverter<BPMNActivityCancelledEvent, ActivitiActivityEvent> {
+public class ToActivityCancelledConverter implements EventConverter<BPMNActivityCancelledEvent, ActivitiActivityEvent> {
 
     private ToActivityConverter toActivityConverter;
 
-    public ToActivityCancelledConverter(
-        ToActivityConverter toActivityConverter
-    ) {
+    public ToActivityCancelledConverter(ToActivityConverter toActivityConverter) {
         this.toActivityConverter = toActivityConverter;
     }
 
     @Override
-    public Optional<BPMNActivityCancelledEvent> from(
-        ActivitiActivityEvent internalEvent
-    ) {
+    public Optional<BPMNActivityCancelledEvent> from(ActivitiActivityEvent internalEvent) {
         BPMNActivityCancelledEventImpl bpmnActivityCancelledEvent = null;
 
-        if (
-            internalEvent.getActivityId() != null &&
-            !internalEvent.getActivityId().isEmpty()
-        ) { // we are making sure that it is a BPMN Activity
-            bpmnActivityCancelledEvent =
-                new BPMNActivityCancelledEventImpl(
-                    toActivityConverter.from(internalEvent)
-                );
+        if (internalEvent.getActivityId() != null && !internalEvent.getActivityId().isEmpty()) { // we are making sure that it is a BPMN Activity
+            bpmnActivityCancelledEvent = new BPMNActivityCancelledEventImpl(toActivityConverter.from(internalEvent));
         }
 
         return Optional.ofNullable(bpmnActivityCancelledEvent);

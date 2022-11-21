@@ -34,22 +34,11 @@ import org.activiti.validation.validator.ProcessLevelValidator;
 public class EndEventValidator extends ProcessLevelValidator {
 
     @Override
-    protected void executeValidation(
-        BpmnModel bpmnModel,
-        Process process,
-        List<ValidationError> errors
-    ) {
-        List<EndEvent> endEvents = process.findFlowElementsOfType(
-            EndEvent.class
-        );
+    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+        List<EndEvent> endEvents = process.findFlowElementsOfType(EndEvent.class);
         for (EndEvent endEvent : endEvents) {
-            if (
-                endEvent.getEventDefinitions() != null &&
-                !endEvent.getEventDefinitions().isEmpty()
-            ) {
-                EventDefinition eventDefinition = endEvent
-                    .getEventDefinitions()
-                    .get(0);
+            if (endEvent.getEventDefinitions() != null && !endEvent.getEventDefinitions().isEmpty()) {
+                EventDefinition eventDefinition = endEvent.getEventDefinitions().get(0);
 
                 // Error end event
                 if (eventDefinition instanceof CancelEventDefinition) {

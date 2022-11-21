@@ -24,8 +24,7 @@ import org.activiti.engine.history.HistoricActivityInstance;
 
  */
 @Internal
-public interface HistoricActivityInstanceEntity
-    extends HistoricActivityInstance, HistoricScopeInstanceEntity {
+public interface HistoricActivityInstanceEntity extends HistoricActivityInstance, HistoricScopeInstanceEntity {
     void setActivityId(String activityId);
 
     void setActivityName(String activityName);

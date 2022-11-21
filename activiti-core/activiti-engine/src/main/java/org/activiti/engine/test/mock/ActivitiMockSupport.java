@@ -33,9 +33,7 @@ public class ActivitiMockSupport {
 
     protected TestActivityBehaviorFactory testActivityBehaviorFactory;
 
-    public ActivitiMockSupport(
-        TestActivityBehaviorFactory testActivityBehaviorFactory
-    ) {
+    public ActivitiMockSupport(TestActivityBehaviorFactory testActivityBehaviorFactory) {
         this.testActivityBehaviorFactory = testActivityBehaviorFactory;
     }
 
@@ -43,39 +41,22 @@ public class ActivitiMockSupport {
         ProcessEngineConfigurationImpl processEngineConfiguration =
             ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
         ActivityBehaviorFactory existingActivityBehaviorFactory = processEngineConfiguration.getActivityBehaviorFactory();
-        this.testActivityBehaviorFactory =
-            new TestActivityBehaviorFactory(existingActivityBehaviorFactory);
+        this.testActivityBehaviorFactory = new TestActivityBehaviorFactory(existingActivityBehaviorFactory);
 
-        processEngineConfiguration.setActivityBehaviorFactory(
-            testActivityBehaviorFactory
-        );
-        processEngineConfiguration
-            .getBpmnParser()
-            .setActivityBehaviorFactory(testActivityBehaviorFactory);
+        processEngineConfiguration.setActivityBehaviorFactory(testActivityBehaviorFactory);
+        processEngineConfiguration.getBpmnParser().setActivityBehaviorFactory(testActivityBehaviorFactory);
     }
 
     public static boolean isMockSupportPossible(ProcessEngine processEngine) {
         return processEngine instanceof ProcessEngineImpl;
     }
 
-    public void mockServiceTaskWithClassDelegate(
-        String originalClassFqn,
-        Class<?> mockedClass
-    ) {
-        testActivityBehaviorFactory.addClassDelegateMock(
-            originalClassFqn,
-            mockedClass
-        );
+    public void mockServiceTaskWithClassDelegate(String originalClassFqn, Class<?> mockedClass) {
+        testActivityBehaviorFactory.addClassDelegateMock(originalClassFqn, mockedClass);
     }
 
-    public void mockServiceTaskWithClassDelegate(
-        String originalClassFqn,
-        String mockedClassFqn
-    ) {
-        testActivityBehaviorFactory.addClassDelegateMock(
-            originalClassFqn,
-            mockedClassFqn
-        );
+    public void mockServiceTaskWithClassDelegate(String originalClassFqn, String mockedClassFqn) {
+        testActivityBehaviorFactory.addClassDelegateMock(originalClassFqn, mockedClassFqn);
     }
 
     public void setAllServiceTasksNoOp() {

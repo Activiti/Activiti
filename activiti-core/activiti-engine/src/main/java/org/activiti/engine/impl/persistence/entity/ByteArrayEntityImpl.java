@@ -22,9 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  */
-public class ByteArrayEntityImpl
-    extends AbstractEntity
-    implements ByteArrayEntity, Serializable {
+public class ByteArrayEntityImpl extends AbstractEntity implements ByteArrayEntity, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -66,15 +64,7 @@ public class ByteArrayEntityImpl
 
     @Override
     public String toString() {
-        return (
-            "ByteArrayEntity[id=" +
-            id +
-            ", name=" +
-            name +
-            ", size=" +
-            (bytes != null ? bytes.length : 0) +
-            "]"
-        );
+        return ("ByteArrayEntity[id=" + id + ", name=" + name + ", size=" + (bytes != null ? bytes.length : 0) + "]");
     }
 
     // Wrapper for a byte array, needed to do byte array comparisons
@@ -92,10 +82,7 @@ public class ByteArrayEntityImpl
         public boolean equals(Object obj) {
             if (obj instanceof PersistentState) {
                 PersistentState other = (PersistentState) obj;
-                return (
-                    StringUtils.equals(this.name, other.name) &&
-                    Arrays.equals(this.bytes, other.bytes)
-                );
+                return (StringUtils.equals(this.name, other.name) && Arrays.equals(this.bytes, other.bytes));
             }
             return false;
         }

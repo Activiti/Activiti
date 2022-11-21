@@ -41,10 +41,7 @@ public interface TaskQuery extends TaskInfoQuery<TaskQuery, Task> {
     /**
      * Select tasks that has been claimed or assigned to user or waiting to claim by user (candidate user or groups).
      */
-    TaskQuery taskCandidateOrAssigned(
-        String userIdForCandidateAndAssignee,
-        List<String> usersGroups
-    );
+    TaskQuery taskCandidateOrAssigned(String userIdForCandidateAndAssignee, List<String> usersGroups);
 
     /** Only select tasks that have no parent (i.e. do not select subtasks). */
     TaskQuery excludeSubtasks();

@@ -39,9 +39,7 @@ public class DelegateTaskTest extends PluggableActivitiTestCase {
      */
     @Deployment
     public void testGetCandidates() {
-        runtimeService.startProcessInstanceByKey(
-            "DelegateTaskTest.testGetCandidates"
-        );
+        runtimeService.startProcessInstanceByKey("DelegateTaskTest.testGetCandidates");
 
         Task task = taskService.createTaskQuery().singleResult();
         assertThat(task).isNotNull();
@@ -70,16 +68,10 @@ public class DelegateTaskTest extends PluggableActivitiTestCase {
         // Start process instance
         Map<String, Object> variables = new HashMap<String, Object>();
         variables.put("approvers", singletonList("kermit")); // , "gonzo", "mispiggy"));
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "delegateTaskTest",
-            variables
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("delegateTaskTest", variables);
 
         // Assert there are three tasks with the default category
-        List<Task> tasks = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .list();
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
         for (Task task : tasks) {
             assertThat(task.getCategory()).isEqualTo("approval");
             Map<String, Object> taskVariables = new HashMap<String, Object>();
@@ -89,18 +81,9 @@ public class DelegateTaskTest extends PluggableActivitiTestCase {
 
         // After completion, the task category should be changed in the script
         // listener working on the delegate task
-        assertThat(
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .count()
-        )
-            .isEqualTo(0);
-        for (HistoricTaskInstance historicTaskInstance : historyService
-            .createHistoricTaskInstanceQuery()
-            .list()) {
-            assertThat(historicTaskInstance.getCategory())
-                .isEqualTo("approved");
+        assertThat(taskService.createTaskQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
+        for (HistoricTaskInstance historicTaskInstance : historyService.createHistoricTaskInstanceQuery().list()) {
+            assertThat(historicTaskInstance.getCategory()).isEqualTo("approved");
         }
     }
 }

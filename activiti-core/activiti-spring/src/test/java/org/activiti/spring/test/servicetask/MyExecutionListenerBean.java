@@ -31,10 +31,7 @@ public class MyExecutionListenerBean implements ExecutionListener {
     public void notify(DelegateExecution execution) {
         execution.setVariable("executionListenerVar", "working");
         if (someField != null) {
-            execution.setVariable(
-                "executionListenerField",
-                someField.getValue(execution)
-            );
+            execution.setVariable("executionListenerField", someField.getValue(execution));
         }
     }
 

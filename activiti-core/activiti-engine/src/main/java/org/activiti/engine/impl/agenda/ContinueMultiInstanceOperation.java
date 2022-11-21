@@ -42,14 +42,9 @@ import org.slf4j.LoggerFactory;
  */
 public class ContinueMultiInstanceOperation extends AbstractOperation {
 
-    private static Logger logger = LoggerFactory.getLogger(
-        ContinueMultiInstanceOperation.class
-    );
+    private static Logger logger = LoggerFactory.getLogger(ContinueMultiInstanceOperation.class);
 
-    public ContinueMultiInstanceOperation(
-        CommandContext commandContext,
-        ExecutionEntity execution
-    ) {
+    public ContinueMultiInstanceOperation(CommandContext commandContext, ExecutionEntity execution) {
         super(commandContext, execution);
     }
 
@@ -60,9 +55,7 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
             continueThroughMultiInstanceFlowNode((FlowNode) currentFlowElement);
         } else {
             throw new RuntimeException(
-                "Programmatic error: no valid multi instance flow node, type: " +
-                currentFlowElement +
-                ". Halting."
+                "Programmatic error: no valid multi instance flow node, type: " + currentFlowElement + ". Halting."
             );
         }
     }
@@ -78,10 +71,7 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
     protected void executeSynchronous(FlowNode flowNode) {
         // Execution listener
         if (CollectionUtil.isNotEmpty(flowNode.getExecutionListeners())) {
-            executeExecutionListeners(
-                flowNode,
-                ExecutionListener.EVENTNAME_START
-            );
+            executeExecutionListeners(flowNode, ExecutionListener.EVENTNAME_START);
         }
 
         commandContext.getHistoryManager().recordActivityStart(execution);
@@ -98,10 +88,7 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
 
             if (
                 Context.getProcessEngineConfiguration() != null &&
-                Context
-                    .getProcessEngineConfiguration()
-                    .getEventDispatcher()
-                    .isEnabled()
+                Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()
             ) {
                 Context
                     .getProcessEngineConfiguration()
@@ -127,18 +114,12 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
                 throw e;
             }
         } else {
-            logger.debug(
-                "No activityBehavior on activity '{}' with execution {}",
-                flowNode.getId(),
-                execution.getId()
-            );
+            logger.debug("No activityBehavior on activity '{}' with execution {}", flowNode.getId(), execution.getId());
         }
     }
 
     protected void executeAsynchronous(FlowNode flowNode) {
-        JobEntity job = commandContext
-            .getJobManager()
-            .createAsyncJob(execution, flowNode.isExclusive());
+        JobEntity job = commandContext.getJobManager().createAsyncJob(execution, flowNode.isExclusive());
         commandContext.getJobManager().scheduleAsyncJob(job);
     }
 }

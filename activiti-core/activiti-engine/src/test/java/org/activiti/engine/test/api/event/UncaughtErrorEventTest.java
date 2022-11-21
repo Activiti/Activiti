@@ -38,9 +38,7 @@ public class UncaughtErrorEventTest extends PluggableActivitiTestCase {
     public void testUncaughtError() throws Exception {
         assertThatExceptionOfType(BpmnError.class)
             .as("Exception BPMN error excepted due to not caught exception")
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByKey("errorProcess")
-            );
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("errorProcess"));
     }
 
     @Override
@@ -48,9 +46,7 @@ public class UncaughtErrorEventTest extends PluggableActivitiTestCase {
         super.initializeServices();
 
         listener = new TestActivitiEventListener();
-        processEngineConfiguration
-            .getEventDispatcher()
-            .addEventListener(listener);
+        processEngineConfiguration.getEventDispatcher().addEventListener(listener);
     }
 
     @Override
@@ -59,9 +55,7 @@ public class UncaughtErrorEventTest extends PluggableActivitiTestCase {
 
         if (listener != null) {
             listener.clearEventsReceived();
-            processEngineConfiguration
-                .getEventDispatcher()
-                .removeEventListener(listener);
+            processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
         }
     }
 }

@@ -27,9 +27,7 @@ public class ActivityStartListener implements ExecutionListener {
     public void notify(DelegateExecution execution) {
         Integer loopCounter = (Integer) execution.getVariable("loopCounter");
         if (loopCounter != null) {
-            Integer counter = (Integer) execution.getVariable(
-                "executionListenerCounter"
-            );
+            Integer counter = (Integer) execution.getVariable("executionListenerCounter");
             if (counter == null) {
                 counter = 0;
             }

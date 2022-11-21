@@ -28,11 +28,8 @@ import org.springframework.test.context.ContextConfiguration;
 
 /**
  */
-@ContextConfiguration(
-    "classpath:org/activiti/spring/test/servicetask/servicetaskSpringTest-context.xml"
-)
-public class UseActivitiServiceInServiceTaskTest
-    extends SpringActivitiTestCase {
+@ContextConfiguration("classpath:org/activiti/spring/test/servicetask/servicetaskSpringTest-context.xml")
+public class UseActivitiServiceInServiceTaskTest extends SpringActivitiTestCase {
 
     /**
      * This test will use the regular mechanism (delegateExecution.getProcessEngine().getRuntimeService()) to obtain the {@link RuntimeService} to start a new process.
@@ -43,9 +40,7 @@ public class UseActivitiServiceInServiceTaskTest
 
         // Starting the process should lead to two processes being started,
         // The other one started from the java delegate in the service task
-        List<ProcessInstance> processInstances = runtimeService
-            .createProcessInstanceQuery()
-            .list();
+        List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
         assertThat(processInstances).hasSize(2);
 
         boolean startProcessFromDelegateFound = false;
@@ -74,9 +69,7 @@ public class UseActivitiServiceInServiceTaskTest
 
         // Starting the process should lead to two processes being started,
         // The other one started from the java delegate in the service task
-        List<ProcessInstance> processInstances = runtimeService
-            .createProcessInstanceQuery()
-            .list();
+        List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
         assertThat(processInstances).hasSize(2);
 
         boolean startProcessFromDelegateFound = false;
@@ -100,16 +93,13 @@ public class UseActivitiServiceInServiceTaskTest
     public void testRollBackOnException() {
         Exception expectedException = null;
         try {
-            runtimeService.startProcessInstanceByKey(
-                "startProcessFromDelegate"
-            );
+            runtimeService.startProcessInstanceByKey("startProcessFromDelegate");
         } catch (Exception e) {
             expectedException = e;
         }
         assertThat(expectedException).isNotNull();
 
         // Starting the process should cause a rollback of both processes
-        assertThat(runtimeService.createProcessInstanceQuery().count())
-            .isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
     }
 }

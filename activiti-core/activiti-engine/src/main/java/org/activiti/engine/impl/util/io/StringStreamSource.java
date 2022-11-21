@@ -41,9 +41,7 @@ public class StringStreamSource implements StreamSource {
     public InputStream getInputStream() {
         try {
             return new ByteArrayInputStream(
-                byteArrayEncoding == null
-                    ? string.getBytes()
-                    : string.getBytes(byteArrayEncoding)
+                byteArrayEncoding == null ? string.getBytes() : string.getBytes(byteArrayEncoding)
             );
         } catch (UnsupportedEncodingException e) {
             throw new ActivitiException("Unsupported enconding for string", e);

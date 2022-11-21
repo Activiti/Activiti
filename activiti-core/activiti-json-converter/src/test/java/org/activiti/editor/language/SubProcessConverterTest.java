@@ -48,9 +48,7 @@ public class SubProcessConverterTest extends AbstractConverterTest {
     }
 
     private void validateModel(BpmnModel model) {
-        FlowElement flowElement = model
-            .getMainProcess()
-            .getFlowElement("start1", true);
+        FlowElement flowElement = model.getMainProcess().getFlowElement("start1", true);
         assertThat(flowElement).isNotNull();
         assertThat(flowElement).isInstanceOf(StartEvent.class);
         assertThat(flowElement.getId()).isEqualTo("start1");
@@ -64,25 +62,21 @@ public class SubProcessConverterTest extends AbstractConverterTest {
         assertThat(userTask.getCandidateGroups().size() == 1).isTrue();
         assertThat(userTask.getFormProperties().size() == 2).isTrue();
 
-        flowElement =
-            model.getMainProcess().getFlowElement("subprocess1", true);
+        flowElement = model.getMainProcess().getFlowElement("subprocess1", true);
         assertThat(flowElement).isNotNull();
         assertThat(flowElement).isInstanceOf(SubProcess.class);
         assertThat(flowElement.getId()).isEqualTo("subprocess1");
         SubProcess subProcess = (SubProcess) flowElement;
         assertThat(subProcess.getFlowElements().size() == 5).isTrue();
 
-        flowElement =
-            model.getMainProcess().getFlowElement("boundaryEvent1", true);
+        flowElement = model.getMainProcess().getFlowElement("boundaryEvent1", true);
         assertThat(flowElement).isNotNull();
         assertThat(flowElement).isInstanceOf(BoundaryEvent.class);
         assertThat(flowElement.getId()).isEqualTo("boundaryEvent1");
         BoundaryEvent boundaryEvent = (BoundaryEvent) flowElement;
         assertThat(boundaryEvent.getAttachedToRef()).isNotNull();
-        assertThat(boundaryEvent.getAttachedToRef().getId())
-            .isEqualTo("subprocess1");
+        assertThat(boundaryEvent.getAttachedToRef().getId()).isEqualTo("subprocess1");
         assertThat(boundaryEvent.getEventDefinitions()).hasSize(1);
-        assertThat(boundaryEvent.getEventDefinitions().get(0))
-            .isInstanceOf(TimerEventDefinition.class);
+        assertThat(boundaryEvent.getEventDefinitions().get(0)).isInstanceOf(TimerEventDefinition.class);
     }
 }

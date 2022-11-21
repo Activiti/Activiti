@@ -101,13 +101,11 @@ public class CommaSplitterTest {
 
     @Test
     public void testOManyComaInExpression() {
-        String testString =
-            "${Everything,should,be,made,as,simple,as,possible},but,no,simpler";
+        String testString = "${Everything,should,be,made,as,simple,as,possible},but,no,simpler";
         List<String> result = CommaSplitter.splitCommas(testString);
         assertThat(result).isNotNull();
         assertThat(result).hasSize(4);
-        assertThat(result.get(0))
-            .isEqualTo("${Everything,should,be,made,as,simple,as,possible}");
+        assertThat(result.get(0)).isEqualTo("${Everything,should,be,made,as,simple,as,possible}");
         assertThat(result.get(1)).isEqualTo("but");
         assertThat(result.get(2)).isEqualTo("no");
         assertThat(result.get(3)).isEqualTo("simpler");

@@ -32,16 +32,8 @@ public class TaskCompleteListener implements TaskListener {
     public void notify(DelegateTask delegateTask) {
         delegateTask
             .getExecution()
-            .setVariable(
-                "greeting",
-                "Hello from " + greeter.getValue(delegateTask.getExecution())
-            );
-        delegateTask
-            .getExecution()
-            .setVariable(
-                "shortName",
-                shortName.getValue(delegateTask.getExecution())
-            );
+            .setVariable("greeting", "Hello from " + greeter.getValue(delegateTask.getExecution()));
+        delegateTask.getExecution().setVariable("shortName", shortName.getValue(delegateTask.getExecution()));
 
         delegateTask.setVariableLocal("myTaskVariable", "test");
     }

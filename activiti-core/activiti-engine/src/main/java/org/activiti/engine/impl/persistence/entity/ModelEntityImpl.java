@@ -26,9 +26,7 @@ import org.activiti.engine.ProcessEngineConfiguration;
 
 
  */
-public class ModelEntityImpl
-    extends AbstractEntity
-    implements ModelEntity, Serializable {
+public class ModelEntityImpl extends AbstractEntity implements ModelEntity, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -57,10 +55,7 @@ public class ModelEntityImpl
         persistentState.put("metaInfo", this.metaInfo);
         persistentState.put("deploymentId", deploymentId);
         persistentState.put("editorSourceValueId", this.editorSourceValueId);
-        persistentState.put(
-            "editorSourceExtraValueId",
-            this.editorSourceExtraValueId
-        );
+        persistentState.put("editorSourceExtraValueId", this.editorSourceExtraValueId);
         return persistentState;
     }
 

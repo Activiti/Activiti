@@ -28,9 +28,7 @@ public abstract class AbstractTestCase extends TestCase {
 
     protected static final String EMPTY_LINE = "\n";
 
-    protected static Logger log = LoggerFactory.getLogger(
-        AbstractTestCase.class
-    );
+    protected static Logger log = LoggerFactory.getLogger(AbstractTestCase.class);
 
     protected boolean isEmptyLinesEnabled = true;
 
@@ -39,13 +37,7 @@ public abstract class AbstractTestCase extends TestCase {
      */
     public void assertTextPresent(String expected, String actual) {
         if ((actual == null) || (!actual.contains(expected))) {
-            throw new AssertionFailedError(
-                "expected presence of [" +
-                expected +
-                "], but was [" +
-                actual +
-                "]"
-            );
+            throw new AssertionFailedError("expected presence of [" + expected + "], but was [" + actual + "]");
         }
     }
 

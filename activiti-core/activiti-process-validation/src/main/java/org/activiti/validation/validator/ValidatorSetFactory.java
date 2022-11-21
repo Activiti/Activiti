@@ -49,9 +49,7 @@ import org.activiti.validation.validator.impl.UserTaskValidator;
 public class ValidatorSetFactory {
 
     public ValidatorSet createActivitiExecutableProcessValidatorSet() {
-        ValidatorSet validatorSet = new ValidatorSet(
-            ValidatorSetNames.ACTIVITI_EXECUTABLE_PROCESS
-        );
+        ValidatorSet validatorSet = new ValidatorSet(ValidatorSetNames.ACTIVITI_EXECUTABLE_PROCESS);
 
         validatorSet.addValidator(new AssociationValidator());
         validatorSet.addValidator(new SignalValidator());

@@ -50,10 +50,7 @@ public interface TimerJobEntityManager extends EntityManager<TimerJobEntity> {
      * This is for example used when deleting a process definition: it finds
      * the {@link TimerJobEntity} representing the timer start events.
      */
-    List<TimerJobEntity> findJobsByTypeAndProcessDefinitionId(
-        String type,
-        String processDefinitionId
-    );
+    List<TimerJobEntity> findJobsByTypeAndProcessDefinitionId(String type, String processDefinitionId);
 
     /**
      * The same as {@link #findJobsByTypeAndProcessDefinitionId(String, String)}, but
@@ -69,10 +66,7 @@ public interface TimerJobEntityManager extends EntityManager<TimerJobEntity> {
      * The same as {@link #findJobsByTypeAndProcessDefinitionId(String, String)}, but
      * by key and specifically for the 'no tenant' mode.
      */
-    List<TimerJobEntity> findJobsByTypeAndProcessDefinitionKeyNoTenantId(
-        String type,
-        String processDefinitionKey
-    );
+    List<TimerJobEntity> findJobsByTypeAndProcessDefinitionKeyNoTenantId(String type, String processDefinitionKey);
 
     /**
      * Returns all {@link TimerJobEntity} instances related to on {@link ExecutionEntity}.
@@ -101,16 +95,10 @@ public interface TimerJobEntityManager extends EntityManager<TimerJobEntity> {
      *
      * Returns null if the timer has finished its repetitions.
      */
-    TimerJobEntity createAndCalculateNextTimer(
-        JobEntity timerEntity,
-        VariableScope variableScope
-    );
+    TimerJobEntity createAndCalculateNextTimer(JobEntity timerEntity, VariableScope variableScope);
 
     /**
      * Changes the tenantId for all jobs related to a given {@link DeploymentEntity}.
      */
-    void updateJobTenantIdForDeployment(
-        String deploymentId,
-        String newTenantId
-    );
+    void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
 }

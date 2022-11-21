@@ -40,14 +40,8 @@ import org.activiti.validation.validator.ProcessLevelValidator;
 public class BoundaryEventValidator extends ProcessLevelValidator {
 
     @Override
-    protected void executeValidation(
-        BpmnModel bpmnModel,
-        Process process,
-        List<ValidationError> errors
-    ) {
-        List<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(
-            BoundaryEvent.class
-        );
+    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+        List<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class);
 
         // Only one boundary event of type 'cancel' can be attached to the same
         // element, so we store the count temporarily here
@@ -60,13 +54,8 @@ public class BoundaryEventValidator extends ProcessLevelValidator {
         for (int i = 0; i < boundaryEvents.size(); i++) {
             BoundaryEvent boundaryEvent = boundaryEvents.get(i);
 
-            if (
-                boundaryEvent.getEventDefinitions() != null &&
-                !boundaryEvent.getEventDefinitions().isEmpty()
-            ) {
-                EventDefinition eventDefinition = boundaryEvent
-                    .getEventDefinitions()
-                    .get(0);
+            if (boundaryEvent.getEventDefinitions() != null && !boundaryEvent.getEventDefinitions().isEmpty()) {
+                EventDefinition eventDefinition = boundaryEvent.getEventDefinitions().get(0);
                 if (
                     !(eventDefinition instanceof TimerEventDefinition) &&
                     !(eventDefinition instanceof ErrorEventDefinition) &&
@@ -85,9 +74,7 @@ public class BoundaryEventValidator extends ProcessLevelValidator {
                 }
 
                 if (eventDefinition instanceof CancelEventDefinition) {
-                    FlowElement attachedToFlowElement = bpmnModel.getFlowElement(
-                        boundaryEvent.getAttachedToRefId()
-                    );
+                    FlowElement attachedToFlowElement = bpmnModel.getFlowElement(boundaryEvent.getAttachedToRefId());
                     if (!(attachedToFlowElement instanceof Transaction)) {
                         addError(
                             errors,
@@ -97,84 +84,47 @@ public class BoundaryEventValidator extends ProcessLevelValidator {
                             "boundary event with cancelEventDefinition only supported on transaction subprocesses"
                         );
                     } else {
-                        if (
-                            !cancelBoundaryEventsCounts.containsKey(
-                                attachedToFlowElement.getId()
-                            )
-                        ) {
-                            cancelBoundaryEventsCounts.put(
-                                attachedToFlowElement.getId(),
-                                Integer.valueOf(0)
-                            );
+                        if (!cancelBoundaryEventsCounts.containsKey(attachedToFlowElement.getId())) {
+                            cancelBoundaryEventsCounts.put(attachedToFlowElement.getId(), Integer.valueOf(0));
                         }
                         cancelBoundaryEventsCounts.put(
                             attachedToFlowElement.getId(),
-                            Integer.valueOf(
-                                cancelBoundaryEventsCounts.get(
-                                    attachedToFlowElement.getId()
-                                ) +
-                                1
-                            )
+                            Integer.valueOf(cancelBoundaryEventsCounts.get(attachedToFlowElement.getId()) + 1)
                         );
                     }
-                } else if (
-                    eventDefinition instanceof CompensateEventDefinition
-                ) {
-                    if (
-                        !compensateBoundaryEventsCounts.containsKey(
-                            boundaryEvent.getAttachedToRefId()
-                        )
-                    ) {
-                        compensateBoundaryEventsCounts.put(
-                            boundaryEvent.getAttachedToRefId(),
-                            Integer.valueOf(0)
-                        );
+                } else if (eventDefinition instanceof CompensateEventDefinition) {
+                    if (!compensateBoundaryEventsCounts.containsKey(boundaryEvent.getAttachedToRefId())) {
+                        compensateBoundaryEventsCounts.put(boundaryEvent.getAttachedToRefId(), Integer.valueOf(0));
                     }
                     compensateBoundaryEventsCounts.put(
                         boundaryEvent.getAttachedToRefId(),
-                        compensateBoundaryEventsCounts.get(
-                            boundaryEvent.getAttachedToRefId()
-                        ) +
-                        1
+                        compensateBoundaryEventsCounts.get(boundaryEvent.getAttachedToRefId()) + 1
                     );
                 } else if (eventDefinition instanceof MessageEventDefinition) {
                     // Check if other message boundary events with same message
                     // id
                     for (int j = 0; j < boundaryEvents.size(); j++) {
                         if (j != i) {
-                            BoundaryEvent otherBoundaryEvent = boundaryEvents.get(
-                                j
-                            );
+                            BoundaryEvent otherBoundaryEvent = boundaryEvents.get(j);
                             if (
-                                otherBoundaryEvent.getAttachedToRefId() !=
-                                null &&
-                                otherBoundaryEvent
-                                    .getAttachedToRefId()
-                                    .equals(boundaryEvent.getAttachedToRefId())
+                                otherBoundaryEvent.getAttachedToRefId() != null &&
+                                otherBoundaryEvent.getAttachedToRefId().equals(boundaryEvent.getAttachedToRefId())
                             ) {
                                 if (
-                                    otherBoundaryEvent.getEventDefinitions() !=
-                                    null &&
-                                    !otherBoundaryEvent
-                                        .getEventDefinitions()
-                                        .isEmpty()
+                                    otherBoundaryEvent.getEventDefinitions() != null &&
+                                    !otherBoundaryEvent.getEventDefinitions().isEmpty()
                                 ) {
                                     EventDefinition otherEventDefinition = otherBoundaryEvent
                                         .getEventDefinitions()
                                         .get(0);
-                                    if (
-                                        otherEventDefinition instanceof MessageEventDefinition
-                                    ) {
+                                    if (otherEventDefinition instanceof MessageEventDefinition) {
                                         MessageEventDefinition currentMessageEventDefinition = (MessageEventDefinition) eventDefinition;
                                         MessageEventDefinition otherMessageEventDefinition = (MessageEventDefinition) otherEventDefinition;
                                         if (
-                                            otherMessageEventDefinition.getMessageRef() !=
-                                            null &&
+                                            otherMessageEventDefinition.getMessageRef() != null &&
                                             otherMessageEventDefinition
                                                 .getMessageRef()
-                                                .equals(
-                                                    currentMessageEventDefinition.getMessageRef()
-                                                )
+                                                .equals(currentMessageEventDefinition.getMessageRef())
                                         ) {
                                             addError(
                                                 errors,

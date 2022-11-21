@@ -31,12 +31,7 @@ public class DateResolverHelper {
 
     private DateResolverHelper() {}
 
-    public static void addDateFunctions(ActivitiElContext elContext)
-        throws NoSuchMethodException {
-        elContext.setFunction(
-            "",
-            NOW_FUNCTION_NAME,
-            DateResolverHelper.class.getMethod(NOW_INVOKE_METHOD)
-        );
+    public static void addDateFunctions(ActivitiElContext elContext) throws NoSuchMethodException {
+        elContext.setFunction("", NOW_FUNCTION_NAME, DateResolverHelper.class.getMethod(NOW_INVOKE_METHOD));
     }
 }

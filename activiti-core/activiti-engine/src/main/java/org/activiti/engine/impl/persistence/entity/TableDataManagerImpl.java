@@ -50,19 +50,13 @@ import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TableDataManagerImpl
-    extends AbstractManager
-    implements TableDataManager {
+public class TableDataManagerImpl extends AbstractManager implements TableDataManager {
 
-    public TableDataManagerImpl(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public TableDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);
     }
 
-    private static Logger log = LoggerFactory.getLogger(
-        TableDataManagerImpl.class
-    );
+    private static Logger log = LoggerFactory.getLogger(TableDataManagerImpl.class);
 
     public static Map<Class<?>, String> apiTypeToTableNameMap = new HashMap<Class<?>, String>();
     public static Map<Class<? extends Entity>, String> entityToTableNameMap = new HashMap<Class<? extends Entity>, String>();
@@ -71,93 +65,39 @@ public class TableDataManagerImpl
         // runtime
         entityToTableNameMap.put(TaskEntity.class, "ACT_RU_TASK");
         entityToTableNameMap.put(ExecutionEntity.class, "ACT_RU_EXECUTION");
-        entityToTableNameMap.put(
-            IdentityLinkEntity.class,
-            "ACT_RU_IDENTITYLINK"
-        );
-        entityToTableNameMap.put(
-            VariableInstanceEntity.class,
-            "ACT_RU_VARIABLE"
-        );
+        entityToTableNameMap.put(IdentityLinkEntity.class, "ACT_RU_IDENTITYLINK");
+        entityToTableNameMap.put(VariableInstanceEntity.class, "ACT_RU_VARIABLE");
 
         entityToTableNameMap.put(JobEntity.class, "ACT_RU_JOB");
         entityToTableNameMap.put(TimerJobEntity.class, "ACT_RU_TIMER_JOB");
-        entityToTableNameMap.put(
-            SuspendedJobEntity.class,
-            "ACT_RU_SUSPENDED_JOB"
-        );
-        entityToTableNameMap.put(
-            DeadLetterJobEntity.class,
-            "ACT_RU_DEADLETTER_JOB"
-        );
+        entityToTableNameMap.put(SuspendedJobEntity.class, "ACT_RU_SUSPENDED_JOB");
+        entityToTableNameMap.put(DeadLetterJobEntity.class, "ACT_RU_DEADLETTER_JOB");
 
-        entityToTableNameMap.put(
-            EventSubscriptionEntity.class,
-            "ACT_RU_EVENT_SUBSCR"
-        );
-        entityToTableNameMap.put(
-            CompensateEventSubscriptionEntity.class,
-            "ACT_RU_EVENT_SUBSCR"
-        );
-        entityToTableNameMap.put(
-            MessageEventSubscriptionEntity.class,
-            "ACT_RU_EVENT_SUBSCR"
-        );
-        entityToTableNameMap.put(
-            SignalEventSubscriptionEntity.class,
-            "ACT_RU_EVENT_SUBSCR"
-        );
+        entityToTableNameMap.put(EventSubscriptionEntity.class, "ACT_RU_EVENT_SUBSCR");
+        entityToTableNameMap.put(CompensateEventSubscriptionEntity.class, "ACT_RU_EVENT_SUBSCR");
+        entityToTableNameMap.put(MessageEventSubscriptionEntity.class, "ACT_RU_EVENT_SUBSCR");
+        entityToTableNameMap.put(SignalEventSubscriptionEntity.class, "ACT_RU_EVENT_SUBSCR");
 
         // repository
         entityToTableNameMap.put(DeploymentEntity.class, "ACT_RE_DEPLOYMENT");
-        entityToTableNameMap.put(
-            ProcessDefinitionEntity.class,
-            "ACT_RE_PROCDEF"
-        );
+        entityToTableNameMap.put(ProcessDefinitionEntity.class, "ACT_RE_PROCDEF");
         entityToTableNameMap.put(ModelEntity.class, "ACT_RE_MODEL");
-        entityToTableNameMap.put(
-            ProcessDefinitionInfoEntity.class,
-            "ACT_PROCDEF_INFO"
-        );
+        entityToTableNameMap.put(ProcessDefinitionInfoEntity.class, "ACT_PROCDEF_INFO");
 
         // history
         entityToTableNameMap.put(CommentEntity.class, "ACT_HI_COMMENT");
 
-        entityToTableNameMap.put(
-            HistoricActivityInstanceEntity.class,
-            "ACT_HI_ACTINST"
-        );
+        entityToTableNameMap.put(HistoricActivityInstanceEntity.class, "ACT_HI_ACTINST");
         entityToTableNameMap.put(AttachmentEntity.class, "ACT_HI_ATTACHMENT");
-        entityToTableNameMap.put(
-            HistoricProcessInstanceEntity.class,
-            "ACT_HI_PROCINST"
-        );
-        entityToTableNameMap.put(
-            HistoricVariableInstanceEntity.class,
-            "ACT_HI_VARINST"
-        );
-        entityToTableNameMap.put(
-            HistoricTaskInstanceEntity.class,
-            "ACT_HI_TASKINST"
-        );
-        entityToTableNameMap.put(
-            HistoricIdentityLinkEntity.class,
-            "ACT_HI_IDENTITYLINK"
-        );
+        entityToTableNameMap.put(HistoricProcessInstanceEntity.class, "ACT_HI_PROCINST");
+        entityToTableNameMap.put(HistoricVariableInstanceEntity.class, "ACT_HI_VARINST");
+        entityToTableNameMap.put(HistoricTaskInstanceEntity.class, "ACT_HI_TASKINST");
+        entityToTableNameMap.put(HistoricIdentityLinkEntity.class, "ACT_HI_IDENTITYLINK");
 
         // a couple of stuff goes to the same table
-        entityToTableNameMap.put(
-            HistoricDetailAssignmentEntity.class,
-            "ACT_HI_DETAIL"
-        );
-        entityToTableNameMap.put(
-            HistoricDetailTransitionInstanceEntity.class,
-            "ACT_HI_DETAIL"
-        );
-        entityToTableNameMap.put(
-            HistoricDetailVariableInstanceUpdateEntity.class,
-            "ACT_HI_DETAIL"
-        );
+        entityToTableNameMap.put(HistoricDetailAssignmentEntity.class, "ACT_HI_DETAIL");
+        entityToTableNameMap.put(HistoricDetailTransitionInstanceEntity.class, "ACT_HI_DETAIL");
+        entityToTableNameMap.put(HistoricDetailVariableInstanceUpdateEntity.class, "ACT_HI_DETAIL");
         entityToTableNameMap.put(HistoricDetailEntity.class, "ACT_HI_DETAIL");
 
         // general
@@ -177,27 +117,12 @@ public class TableDataManagerImpl
         apiTypeToTableNameMap.put(Model.class, "ACT_RE_MODEL");
 
         // history
-        apiTypeToTableNameMap.put(
-            HistoricProcessInstance.class,
-            "ACT_HI_PROCINST"
-        );
-        apiTypeToTableNameMap.put(
-            HistoricActivityInstance.class,
-            "ACT_HI_ACTINST"
-        );
+        apiTypeToTableNameMap.put(HistoricProcessInstance.class, "ACT_HI_PROCINST");
+        apiTypeToTableNameMap.put(HistoricActivityInstance.class, "ACT_HI_ACTINST");
         apiTypeToTableNameMap.put(HistoricDetail.class, "ACT_HI_DETAIL");
-        apiTypeToTableNameMap.put(
-            HistoricVariableUpdate.class,
-            "ACT_HI_DETAIL"
-        );
-        apiTypeToTableNameMap.put(
-            HistoricTaskInstance.class,
-            "ACT_HI_TASKINST"
-        );
-        apiTypeToTableNameMap.put(
-            HistoricVariableInstance.class,
-            "ACT_HI_VARINST"
-        );
+        apiTypeToTableNameMap.put(HistoricVariableUpdate.class, "ACT_HI_DETAIL");
+        apiTypeToTableNameMap.put(HistoricTaskInstance.class, "ACT_HI_TASKINST");
+        apiTypeToTableNameMap.put(HistoricVariableInstance.class, "ACT_HI_VARINST");
         // TODO: Identity skipped for the moment as no SQL injection is provided
         // here
     }
@@ -230,69 +155,32 @@ public class TableDataManagerImpl
             ResultSet tables = null;
             try {
                 log.debug("retrieving activiti tables from jdbc metadata");
-                String databaseTablePrefix = getDbSqlSession()
-                    .getDbSqlSessionFactory()
-                    .getDatabaseTablePrefix();
+                String databaseTablePrefix = getDbSqlSession().getDbSqlSessionFactory().getDatabaseTablePrefix();
                 String tableNameFilter = databaseTablePrefix + "ACT_%";
-                if (
-                    "postgres".equals(
-                            getDbSqlSession()
-                                .getDbSqlSessionFactory()
-                                .getDatabaseType()
-                        )
-                ) {
+                if ("postgres".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
                     tableNameFilter = databaseTablePrefix + "act_%";
                 }
-                if (
-                    "oracle".equals(
-                            getDbSqlSession()
-                                .getDbSqlSessionFactory()
-                                .getDatabaseType()
-                        )
-                ) {
-                    tableNameFilter =
-                        databaseTablePrefix +
-                        "ACT" +
-                        databaseMetaData.getSearchStringEscape() +
-                        "_%";
+                if ("oracle".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
+                    tableNameFilter = databaseTablePrefix + "ACT" + databaseMetaData.getSearchStringEscape() + "_%";
                 }
 
                 String catalog = null;
                 if (
-                    getProcessEngineConfiguration().getDatabaseCatalog() !=
-                    null &&
-                    getProcessEngineConfiguration()
-                        .getDatabaseCatalog()
-                        .length() >
-                    0
+                    getProcessEngineConfiguration().getDatabaseCatalog() != null &&
+                    getProcessEngineConfiguration().getDatabaseCatalog().length() > 0
                 ) {
-                    catalog =
-                        getProcessEngineConfiguration().getDatabaseCatalog();
+                    catalog = getProcessEngineConfiguration().getDatabaseCatalog();
                 }
 
                 String schema = null;
                 if (
-                    getProcessEngineConfiguration().getDatabaseSchema() !=
-                    null &&
-                    getProcessEngineConfiguration()
-                        .getDatabaseSchema()
-                        .length() >
-                    0
+                    getProcessEngineConfiguration().getDatabaseSchema() != null &&
+                    getProcessEngineConfiguration().getDatabaseSchema().length() > 0
                 ) {
-                    if (
-                        "oracle".equals(
-                                getDbSqlSession()
-                                    .getDbSqlSessionFactory()
-                                    .getDatabaseType()
-                            )
-                    ) {
-                        schema =
-                            getProcessEngineConfiguration()
-                                .getDatabaseSchema()
-                                .toUpperCase();
+                    if ("oracle".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
+                        schema = getProcessEngineConfiguration().getDatabaseSchema().toUpperCase();
                     } else {
-                        schema =
-                            getProcessEngineConfiguration().getDatabaseSchema();
+                        schema = getProcessEngineConfiguration().getDatabaseSchema();
                     }
                 }
 
@@ -313,42 +201,26 @@ public class TableDataManagerImpl
                 tables.close();
             }
         } catch (Exception e) {
-            throw new ActivitiException(
-                "couldn't get activiti table names using metadata: " +
-                e.getMessage(),
-                e
-            );
+            throw new ActivitiException("couldn't get activiti table names using metadata: " + e.getMessage(), e);
         }
         return tableNames;
     }
 
     protected long getTableCount(String tableName) {
         log.debug("selecting table count for {}", tableName);
-        Long count = (Long) getDbSqlSession()
-            .selectOne(
-                "selectTableCount",
-                singletonMap("tableName", tableName)
-            );
+        Long count = (Long) getDbSqlSession().selectOne("selectTableCount", singletonMap("tableName", tableName));
         return count;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public TablePage getTablePage(
-        TablePageQueryImpl tablePageQuery,
-        int firstResult,
-        int maxResults
-    ) {
+    public TablePage getTablePage(TablePageQueryImpl tablePageQuery, int firstResult, int maxResults) {
         TablePage tablePage = new TablePage();
 
         @SuppressWarnings("rawtypes")
         List tableData = getDbSqlSession()
             .getSqlSession()
-            .selectList(
-                "selectTableData",
-                tablePageQuery,
-                new RowBounds(firstResult, maxResults)
-            );
+            .selectList("selectTableData", tablePageQuery, new RowBounds(firstResult, maxResults));
 
         tablePage.setTableName(tablePageQuery.getTableName());
         tablePage.setTotal(getTableCount(tablePageQuery.getTableName()));
@@ -360,9 +232,7 @@ public class TableDataManagerImpl
 
     @Override
     public String getTableName(Class<?> entityClass, boolean withPrefix) {
-        String databaseTablePrefix = getDbSqlSession()
-            .getDbSqlSessionFactory()
-            .getDatabaseTablePrefix();
+        String databaseTablePrefix = getDbSqlSession().getDbSqlSessionFactory().getDatabaseTablePrefix();
         String tableName = null;
 
         if (Entity.class.isAssignableFrom(entityClass)) {
@@ -382,26 +252,16 @@ public class TableDataManagerImpl
         TableMetaData result = new TableMetaData();
         try {
             result.setTableName(tableName);
-            DatabaseMetaData metaData = getDbSqlSession()
-                .getSqlSession()
-                .getConnection()
-                .getMetaData();
+            DatabaseMetaData metaData = getDbSqlSession().getSqlSession().getConnection().getMetaData();
 
-            if (
-                "postgres".equals(
-                        getDbSqlSession()
-                            .getDbSqlSessionFactory()
-                            .getDatabaseType()
-                    )
-            ) {
+            if ("postgres".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
                 tableName = tableName.toLowerCase();
             }
 
             String catalog = null;
             if (
                 getProcessEngineConfiguration().getDatabaseCatalog() != null &&
-                getProcessEngineConfiguration().getDatabaseCatalog().length() >
-                0
+                getProcessEngineConfiguration().getDatabaseCatalog().length() > 0
             ) {
                 catalog = getProcessEngineConfiguration().getDatabaseCatalog();
             }
@@ -411,51 +271,23 @@ public class TableDataManagerImpl
                 getProcessEngineConfiguration().getDatabaseSchema() != null &&
                 getProcessEngineConfiguration().getDatabaseSchema().length() > 0
             ) {
-                if (
-                    "oracle".equals(
-                            getDbSqlSession()
-                                .getDbSqlSessionFactory()
-                                .getDatabaseType()
-                        )
-                ) {
-                    schema =
-                        getProcessEngineConfiguration()
-                            .getDatabaseSchema()
-                            .toUpperCase();
+                if ("oracle".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
+                    schema = getProcessEngineConfiguration().getDatabaseSchema().toUpperCase();
                 } else {
-                    schema =
-                        getProcessEngineConfiguration().getDatabaseSchema();
+                    schema = getProcessEngineConfiguration().getDatabaseSchema();
                 }
             }
 
-            ResultSet resultSet = metaData.getColumns(
-                catalog,
-                schema,
-                tableName,
-                null
-            );
+            ResultSet resultSet = metaData.getColumns(catalog, schema, tableName, null);
             while (resultSet.next()) {
                 boolean wrongSchema = false;
                 if (schema != null && schema.length() > 0) {
-                    for (
-                        int i = 0;
-                        i < resultSet.getMetaData().getColumnCount();
-                        i++
-                    ) {
-                        String columnName = resultSet
-                            .getMetaData()
-                            .getColumnName(i + 1);
-                        if (
-                            "TABLE_SCHEM".equalsIgnoreCase(columnName) ||
-                            "TABLE_SCHEMA".equalsIgnoreCase(columnName)
-                        ) {
+                    for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
+                        String columnName = resultSet.getMetaData().getColumnName(i + 1);
+                        if ("TABLE_SCHEM".equalsIgnoreCase(columnName) || "TABLE_SCHEMA".equalsIgnoreCase(columnName)) {
                             if (
                                 !schema.equalsIgnoreCase(
-                                    resultSet.getString(
-                                        resultSet
-                                            .getMetaData()
-                                            .getColumnName(i + 1)
-                                    )
+                                    resultSet.getString(resultSet.getMetaData().getColumnName(i + 1))
                                 )
                             ) {
                                 wrongSchema = true;
@@ -466,19 +298,13 @@ public class TableDataManagerImpl
                 }
 
                 if (!wrongSchema) {
-                    String name = resultSet
-                        .getString("COLUMN_NAME")
-                        .toUpperCase();
-                    String type = resultSet
-                        .getString("TYPE_NAME")
-                        .toUpperCase();
+                    String name = resultSet.getString("COLUMN_NAME").toUpperCase();
+                    String type = resultSet.getString("TYPE_NAME").toUpperCase();
                     result.addColumnMetaData(name, type);
                 }
             }
         } catch (SQLException e) {
-            throw new ActivitiException(
-                "Could not retrieve database metadata: " + e.getMessage()
-            );
+            throw new ActivitiException("Could not retrieve database metadata: " + e.getMessage());
         }
 
         if (result.getColumnNames().isEmpty()) {

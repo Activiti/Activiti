@@ -36,19 +36,13 @@ public class DeleteReasonTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testDeleteProcessInstance() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "deleteReasonProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("deleteReasonProcess");
         Task task = taskService.createTaskQuery().singleResult();
         assertThat(task.getName()).isEqualTo("A");
         taskService.complete(task.getId());
         runtimeService.deleteProcessInstance(processInstance.getId(), null);
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.AUDIT)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             assertThat(
                 historyService
                     .createHistoricProcessInstanceQuery()
@@ -69,50 +63,29 @@ public class DeleteReasonTest extends PluggableActivitiTestCase {
                 if (historicTaskInstance.getName().equals("A")) {
                     assertThat(historicTaskInstance.getDeleteReason()).isNull();
                 } else {
-                    assertThat(historicTaskInstance.getDeleteReason())
-                        .isEqualTo(DeleteReason.PROCESS_INSTANCE_DELETED);
+                    assertThat(historicTaskInstance.getDeleteReason()).isEqualTo(DeleteReason.PROCESS_INSTANCE_DELETED);
                 }
             }
 
             assertHistoricActivitiesDeleteReason(processInstance, null, "A");
-            assertHistoricActivitiesDeleteReason(
-                processInstance,
-                DeleteReason.PROCESS_INSTANCE_DELETED,
-                "B",
-                "C",
-                "D"
-            );
+            assertHistoricActivitiesDeleteReason(processInstance, DeleteReason.PROCESS_INSTANCE_DELETED, "B", "C", "D");
         }
     }
 
     @Deployment
     public void testDeleteProcessInstanceWithCustomDeleteReason() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "deleteReasonProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("deleteReasonProcess");
         Task task = taskService.createTaskQuery().singleResult();
         assertThat(task.getName()).isEqualTo("A");
         taskService.complete(task.getId());
 
         // Delete process instance with custom delete reason
         String customDeleteReason = "custom delete reason";
-        runtimeService.deleteProcessInstance(
-            processInstance.getId(),
-            customDeleteReason
-        );
-        assertThat(
-            runtimeService
-                .createExecutionQuery()
-                .processInstanceId(processInstance.getId())
-                .count()
-        )
+        runtimeService.deleteProcessInstance(processInstance.getId(), customDeleteReason);
+        assertThat(runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).count())
             .isEqualTo(0L);
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.AUDIT)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             assertThat(
                 historyService
                     .createHistoricProcessInstanceQuery()
@@ -133,54 +106,29 @@ public class DeleteReasonTest extends PluggableActivitiTestCase {
                 if (historicTaskInstance.getName().equals("A")) {
                     assertThat(historicTaskInstance.getDeleteReason()).isNull();
                 } else {
-                    assertThat(historicTaskInstance.getDeleteReason())
-                        .isEqualTo(customDeleteReason);
+                    assertThat(historicTaskInstance.getDeleteReason()).isEqualTo(customDeleteReason);
                 }
             }
 
             assertHistoricActivitiesDeleteReason(processInstance, null, "A");
-            assertHistoricActivitiesDeleteReason(
-                processInstance,
-                customDeleteReason,
-                "B",
-                "C",
-                "D"
-            );
+            assertHistoricActivitiesDeleteReason(processInstance, customDeleteReason, "B", "C", "D");
         }
     }
 
     @Deployment
     public void testRegularProcessInstanceEnd() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "deleteReasonProcess"
-        );
-        List<Task> tasks = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .list();
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("deleteReasonProcess");
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
         while (!tasks.isEmpty()) {
             for (Task task : tasks) {
                 taskService.complete(task.getId());
             }
-            tasks =
-                taskService
-                    .createTaskQuery()
-                    .processInstanceId(processInstance.getId())
-                    .list();
+            tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
         }
-        assertThat(
-            runtimeService
-                .createExecutionQuery()
-                .processInstanceId(processInstance.getId())
-                .count()
-        )
+        assertThat(runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).count())
             .isEqualTo(0L);
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.AUDIT)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             assertThat(
                 historyService
                     .createHistoricProcessInstanceQuery()
@@ -200,24 +148,14 @@ public class DeleteReasonTest extends PluggableActivitiTestCase {
                 assertThat(historicTaskInstance.getDeleteReason()).isNull();
             }
 
-            assertHistoricActivitiesDeleteReason(
-                processInstance,
-                null,
-                "A",
-                "B",
-                "C",
-                "D",
-                "E"
-            );
+            assertHistoricActivitiesDeleteReason(processInstance, null, "A", "B", "C", "D", "E");
         }
     }
 
     @Deployment
     public void testDeleteProcessInstanceWithReceiveTask() {
         // First case: one receive task
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "deleteReasonReceiveTask"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("deleteReasonReceiveTask");
         Execution execution = runtimeService
             .createExecutionQuery()
             .processInstanceId(processInstance.getId())
@@ -226,11 +164,7 @@ public class DeleteReasonTest extends PluggableActivitiTestCase {
         assertThat(execution).isNotNull();
         runtimeService.deleteProcessInstance(processInstance.getId(), null);
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.AUDIT)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             assertThat(
                 historyService
                     .createHistoricProcessInstanceQuery()
@@ -248,14 +182,12 @@ public class DeleteReasonTest extends PluggableActivitiTestCase {
             assertThat(historicActivityInstances).hasSize(1);
 
             for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
-                assertThat(historicActivityInstance.getDeleteReason())
-                    .isEqualTo(DeleteReason.PROCESS_INSTANCE_DELETED);
+                assertThat(historicActivityInstance.getDeleteReason()).isEqualTo(DeleteReason.PROCESS_INSTANCE_DELETED);
             }
         }
 
         // Second case: two receive tasks in embedded subprocess
-        processInstance =
-            runtimeService.startProcessInstanceByKey("deleteReasonReceiveTask");
+        processInstance = runtimeService.startProcessInstanceByKey("deleteReasonReceiveTask");
         Execution executionA = runtimeService
             .createExecutionQuery()
             .processInstanceId(processInstance.getId())
@@ -279,11 +211,7 @@ public class DeleteReasonTest extends PluggableActivitiTestCase {
 
         runtimeService.deleteProcessInstance(processInstance.getId(), null);
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.AUDIT)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             assertThat(
                 historyService
                     .createHistoricProcessInstanceQuery()
@@ -294,20 +222,13 @@ public class DeleteReasonTest extends PluggableActivitiTestCase {
                 .isEqualTo(DeleteReason.PROCESS_INSTANCE_DELETED);
 
             assertHistoricActivitiesDeleteReason(processInstance, null, "A");
-            assertHistoricActivitiesDeleteReason(
-                processInstance,
-                DeleteReason.PROCESS_INSTANCE_DELETED,
-                "B",
-                "C"
-            );
+            assertHistoricActivitiesDeleteReason(processInstance, DeleteReason.PROCESS_INSTANCE_DELETED, "B", "C");
         }
     }
 
     @Deployment
     public void testInterruptingBoundaryEvent() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "deleteReasonProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("deleteReasonProcess");
         Task task = taskService.createTaskQuery().singleResult();
         assertThat(task.getName()).isEqualTo("A");
         taskService.complete(task.getId());
@@ -318,13 +239,7 @@ public class DeleteReasonTest extends PluggableActivitiTestCase {
         managementService.executeJob(timerJob.getId());
 
         assertHistoricTasksDeleteReason(processInstance, null, "A");
-        assertHistoricTasksDeleteReason(
-            processInstance,
-            DeleteReason.BOUNDARY_EVENT_INTERRUPTING,
-            "B",
-            "C",
-            "D"
-        );
+        assertHistoricTasksDeleteReason(processInstance, DeleteReason.BOUNDARY_EVENT_INTERRUPTING, "B", "C", "D");
         assertHistoricActivitiesDeleteReason(processInstance, null, "A");
         assertHistoricActivitiesDeleteReason(
             processInstance,
@@ -338,9 +253,7 @@ public class DeleteReasonTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testInterruptingBoundaryEvent2() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "deleteReasonReceiveTask"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("deleteReasonReceiveTask");
         Execution execution = runtimeService
             .createExecutionQuery()
             .processInstanceId(processInstance.getId())

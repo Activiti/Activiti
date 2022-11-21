@@ -33,8 +33,7 @@ import org.springframework.core.io.Resource;
  *
 
  */
-public class ResourceParentFolderAutoDeploymentStrategy
-    extends AbstractAutoDeploymentStrategy {
+public class ResourceParentFolderAutoDeploymentStrategy extends AbstractAutoDeploymentStrategy {
 
     /**
      * The deployment mode this strategy handles.
@@ -66,10 +65,7 @@ public class ResourceParentFolderAutoDeploymentStrategy
         final Map<String, Set<Resource>> resourcesMap = createMap(resources);
 
         for (final Entry<String, Set<Resource>> group : resourcesMap.entrySet()) {
-            final String deploymentName = determineDeploymentName(
-                deploymentNameHint,
-                group.getKey()
-            );
+            final String deploymentName = determineDeploymentName(deploymentNameHint, group.getKey());
 
             DeploymentBuilder deploymentBuilder = repositoryService
                 .createDeployment()
@@ -111,8 +107,7 @@ public class ResourceParentFolderAutoDeploymentStrategy
         return result;
     }
 
-    private boolean resourceParentIsDirectory(final Resource resource)
-        throws IOException {
+    private boolean resourceParentIsDirectory(final Resource resource) throws IOException {
         return (
             resource.getFile() != null &&
             resource.getFile().getParentFile() != null &&
@@ -120,14 +115,7 @@ public class ResourceParentFolderAutoDeploymentStrategy
         );
     }
 
-    private String determineDeploymentName(
-        final String deploymentNameHint,
-        final String groupName
-    ) {
-        return String.format(
-            DEPLOYMENT_NAME_PATTERN,
-            deploymentNameHint,
-            groupName
-        );
+    private String determineDeploymentName(final String deploymentNameHint, final String groupName) {
+        return String.format(DEPLOYMENT_NAME_PATTERN, deploymentNameHint, groupName);
     }
 }

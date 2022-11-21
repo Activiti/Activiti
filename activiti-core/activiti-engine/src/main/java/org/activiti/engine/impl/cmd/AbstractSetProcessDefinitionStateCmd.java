@@ -44,8 +44,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 
 
  */
-public abstract class AbstractSetProcessDefinitionStateCmd
-    implements Command<Void> {
+public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Void> {
 
     protected String processDefinitionId;
     protected String processDefinitionKey;
@@ -81,19 +80,14 @@ public abstract class AbstractSetProcessDefinitionStateCmd
     }
 
     public Void execute(CommandContext commandContext) {
-        List<ProcessDefinitionEntity> processDefinitions = findProcessDefinition(
-            commandContext
-        );
+        List<ProcessDefinitionEntity> processDefinitions = findProcessDefinition(commandContext);
 
         executeInternal(commandContext, processDefinitions);
 
         return null;
     }
 
-    protected void executeInternal(
-        CommandContext commandContext,
-        List<ProcessDefinitionEntity> processDefinitions
-    ) {
+    protected void executeInternal(CommandContext commandContext, List<ProcessDefinitionEntity> processDefinitions) {
         if (executionDate != null) { // Process definition state change is delayed
             createTimerForDelayedExecution(commandContext, processDefinitions);
         } else { // Process definition state is changed now
@@ -101,9 +95,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd
         }
     }
 
-    protected List<ProcessDefinitionEntity> findProcessDefinition(
-        CommandContext commandContext
-    ) {
+    protected List<ProcessDefinitionEntity> findProcessDefinition(CommandContext commandContext) {
         // If process definition is already provided (eg. when command is called through the DeployCmd)
         // we don't need to do an extra database fetch and we can simply return it, wrapped in a list
         if (processDefinitionEntity != null) {
@@ -112,37 +104,26 @@ public abstract class AbstractSetProcessDefinitionStateCmd
 
         // Validation of input parameters
         if (processDefinitionId == null && processDefinitionKey == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Process definition id or key cannot be null"
-            );
+            throw new ActivitiIllegalArgumentException("Process definition id or key cannot be null");
         }
 
         List<ProcessDefinitionEntity> processDefinitionEntities = new ArrayList<ProcessDefinitionEntity>();
         ProcessDefinitionEntityManager processDefinitionManager = commandContext.getProcessDefinitionEntityManager();
 
         if (processDefinitionId != null) {
-            ProcessDefinitionEntity processDefinitionEntity = processDefinitionManager.findById(
-                processDefinitionId
-            );
+            ProcessDefinitionEntity processDefinitionEntity = processDefinitionManager.findById(processDefinitionId);
             if (processDefinitionEntity == null) {
                 throw new ActivitiObjectNotFoundException(
-                    "Cannot find process definition for id '" +
-                    processDefinitionId +
-                    "'",
+                    "Cannot find process definition for id '" + processDefinitionId + "'",
                     ProcessDefinition.class
                 );
             }
             processDefinitionEntities.add(processDefinitionEntity);
         } else {
-            ProcessDefinitionQueryImpl query = new ProcessDefinitionQueryImpl(
-                commandContext
-            )
+            ProcessDefinitionQueryImpl query = new ProcessDefinitionQueryImpl(commandContext)
                 .processDefinitionKey(processDefinitionKey);
 
-            if (
-                tenantId == null ||
-                ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId)
-            ) {
+            if (tenantId == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId)) {
                 query.processDefinitionWithoutTenantId();
             } else {
                 query.processDefinitionTenantId(tenantId);
@@ -150,17 +131,11 @@ public abstract class AbstractSetProcessDefinitionStateCmd
 
             List<ProcessDefinition> processDefinitions = query.list();
             if (processDefinitions.isEmpty()) {
-                throw new ActivitiException(
-                    "Cannot find process definition for key '" +
-                    processDefinitionKey +
-                    "'"
-                );
+                throw new ActivitiException("Cannot find process definition for key '" + processDefinitionKey + "'");
             }
 
             for (ProcessDefinition processDefinition : processDefinitions) {
-                processDefinitionEntities.add(
-                    (ProcessDefinitionEntity) processDefinition
-                );
+                processDefinitionEntities.add((ProcessDefinitionEntity) processDefinition);
             }
         }
         return processDefinitionEntities;
@@ -171,10 +146,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd
         List<ProcessDefinitionEntity> processDefinitions
     ) {
         for (ProcessDefinitionEntity processDefinition : processDefinitions) {
-            createTimerForDelayedExecutionInternal(
-                commandContext,
-                processDefinition
-            );
+            createTimerForDelayedExecutionInternal(commandContext, processDefinition);
         }
     }
 
@@ -182,9 +154,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd
         CommandContext commandContext,
         ProcessDefinitionEntity processDefinition
     ) {
-        TimerJobEntity timer = commandContext
-            .getTimerJobEntityManager()
-            .create();
+        TimerJobEntity timer = commandContext.getTimerJobEntityManager().create();
         timer.setJobType(JobEntity.JOB_TYPE_TIMER);
         timer.setProcessDefinitionId(processDefinition.getId());
 
@@ -196,9 +166,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd
         timer.setDuedate(executionDate);
         timer.setJobHandlerType(getDelayedExecutionJobHandlerType());
         timer.setJobHandlerConfiguration(
-            TimerChangeProcessDefinitionSuspensionStateJobHandler.createJobHandlerConfiguration(
-                includeProcessInstances
-            )
+            TimerChangeProcessDefinitionSuspensionStateJobHandler.createJobHandlerConfiguration(includeProcessInstances)
         );
         commandContext.getJobManager().scheduleTimerJob(timer);
     }
@@ -208,10 +176,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd
         List<ProcessDefinitionEntity> processDefinitions
     ) {
         for (ProcessDefinitionEntity processDefinition : processDefinitions) {
-            changeProcessDefinitionStateInternal(
-                commandContext,
-                processDefinition
-            );
+            changeProcessDefinitionStateInternal(commandContext, processDefinition);
         }
     }
 
@@ -219,10 +184,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd
         CommandContext commandContext,
         ProcessDefinitionEntity processDefinition
     ) {
-        SuspensionStateUtil.setSuspensionState(
-            processDefinition,
-            getProcessDefinitionSuspensionState()
-        );
+        SuspensionStateUtil.setSuspensionState(processDefinition, getProcessDefinitionSuspensionState());
 
         // Evict cache
         commandContext
@@ -249,12 +211,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd
 
                 // Fetch new batch of process instances
                 currentStartIndex += processInstances.size();
-                processInstances =
-                    fetchProcessInstancesPage(
-                        commandContext,
-                        processDefinition,
-                        currentStartIndex
-                    );
+                processInstances = fetchProcessInstancesPage(commandContext, processDefinition, currentStartIndex);
             }
         }
     }
@@ -264,17 +221,13 @@ public abstract class AbstractSetProcessDefinitionStateCmd
         ProcessDefinition processDefinition,
         int currentPageStartIndex
     ) {
-        if (
-            SuspensionState.ACTIVE.equals(getProcessDefinitionSuspensionState())
-        ) {
+        if (SuspensionState.ACTIVE.equals(getProcessDefinitionSuspensionState())) {
             return new ProcessInstanceQueryImpl(commandContext)
                 .processDefinitionId(processDefinition.getId())
                 .suspended()
                 .listPage(
                     currentPageStartIndex,
-                    commandContext
-                        .getProcessEngineConfiguration()
-                        .getBatchSizeProcessInstances()
+                    commandContext.getProcessEngineConfiguration().getBatchSizeProcessInstances()
                 );
         } else {
             return new ProcessInstanceQueryImpl(commandContext)
@@ -282,9 +235,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd
                 .active()
                 .listPage(
                     currentPageStartIndex,
-                    commandContext
-                        .getProcessEngineConfiguration()
-                        .getBatchSizeProcessInstances()
+                    commandContext.getProcessEngineConfiguration().getBatchSizeProcessInstances()
                 );
         }
     }

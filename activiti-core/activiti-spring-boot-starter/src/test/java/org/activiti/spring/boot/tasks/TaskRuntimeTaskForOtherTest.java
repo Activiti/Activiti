@@ -57,10 +57,7 @@ public class TaskRuntimeTaskForOtherTest {
         securityUtil.logInAs("garth");
 
         Task standAloneTask = taskRuntime.create(
-            TaskPayloadBuilder
-                .create()
-                .withName("task with no candidates besides owner")
-                .build()
+            TaskPayloadBuilder.create().withName("task with no candidates besides owner").build()
         );
 
         // the owner should be able to see the created task

@@ -28,8 +28,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 /**
 
  */
-public class GetProcessDefinitionInfoCmd
-    implements Command<ObjectNode>, Serializable {
+public class GetProcessDefinitionInfoCmd implements Command<ObjectNode>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -41,24 +40,14 @@ public class GetProcessDefinitionInfoCmd
 
     public ObjectNode execute(CommandContext commandContext) {
         if (processDefinitionId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "process definition id is null"
-            );
+            throw new ActivitiIllegalArgumentException("process definition id is null");
         }
 
-        DeploymentManager deploymentManager = commandContext
-            .getProcessEngineConfiguration()
-            .getDeploymentManager();
+        DeploymentManager deploymentManager = commandContext.getProcessEngineConfiguration().getDeploymentManager();
         // make sure the process definition is in the cache
-        ProcessDefinition processDefinition = deploymentManager.findDeployedProcessDefinitionById(
-            processDefinitionId
-        );
+        ProcessDefinition processDefinition = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
 
-        return executeInternal(
-            deploymentManager,
-            commandContext,
-            processDefinition
-        );
+        return executeInternal(deploymentManager, commandContext, processDefinition);
     }
 
     protected ObjectNode executeInternal(

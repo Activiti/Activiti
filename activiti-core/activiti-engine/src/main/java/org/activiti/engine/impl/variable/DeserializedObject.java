@@ -42,24 +42,12 @@ public class DeserializedObject {
 
     public void verifyIfBytesOfSerializedObjectChanged() {
         // this first check verifies if the variable value was not overwritten with another object
-        if (
-            deserializedObject == variableInstanceEntity.getCachedValue() &&
-            !variableInstanceEntity.isDeleted()
-        ) {
-            byte[] bytes = type.serialize(
-                deserializedObject,
-                variableInstanceEntity
-            );
+        if (deserializedObject == variableInstanceEntity.getCachedValue() && !variableInstanceEntity.isDeleted()) {
+            byte[] bytes = type.serialize(deserializedObject, variableInstanceEntity);
             if (!Arrays.equals(originalBytes, bytes)) {
                 // Add an additional check to prevent byte differences due to JDK changes etc
-                Object originalObject = type.deserialize(
-                    originalBytes,
-                    variableInstanceEntity
-                );
-                byte[] refreshedOriginalBytes = type.serialize(
-                    originalObject,
-                    variableInstanceEntity
-                );
+                Object originalObject = type.deserialize(originalBytes, variableInstanceEntity);
+                byte[] refreshedOriginalBytes = type.serialize(originalObject, variableInstanceEntity);
 
                 if (!Arrays.equals(refreshedOriginalBytes, bytes)) {
                     variableInstanceEntity.setBytes(bytes);

@@ -53,9 +53,7 @@ public class SubProcessConverterAutoLayoutTest extends AbstractConverterTest {
     }
 
     private void validateModel(BpmnModel model) {
-        FlowElement flowElement = model
-            .getMainProcess()
-            .getFlowElement("start1");
+        FlowElement flowElement = model.getMainProcess().getFlowElement("start1");
         assertThat(flowElement).isNotNull();
         assertThat(flowElement).isInstanceOf(StartEvent.class);
         assertThat(flowElement.getId()).isEqualTo("start1");
@@ -75,14 +73,12 @@ public class SubProcessConverterAutoLayoutTest extends AbstractConverterTest {
         SubProcess subProcess = (SubProcess) flowElement;
         assertThat(subProcess.getFlowElements().size() == 6).isTrue();
 
-        List<ValuedDataObject> dataObjects =
-            ((SubProcess) flowElement).getDataObjects();
+        List<ValuedDataObject> dataObjects = ((SubProcess) flowElement).getDataObjects();
         assertThat(dataObjects.size() == 1).isTrue();
 
         ValuedDataObject dataObj = dataObjects.get(0);
         assertThat(dataObj.getName()).isEqualTo("SubTest");
-        assertThat(dataObj.getItemSubjectRef().getStructureRef())
-            .isEqualTo("xsd:string");
+        assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:string");
         assertThat(dataObj.getValue()).isInstanceOf(String.class);
         assertThat(dataObj.getValue()).isEqualTo("Testing");
     }

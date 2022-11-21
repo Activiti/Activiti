@@ -25,23 +25,14 @@ import org.activiti.engine.runtime.Job;
 /**
 
  */
-public interface SuspendedJobDataManager
-    extends DataManager<SuspendedJobEntity> {
+public interface SuspendedJobDataManager extends DataManager<SuspendedJobEntity> {
     List<SuspendedJobEntity> findJobsByExecutionId(String executionId);
 
-    List<SuspendedJobEntity> findJobsByProcessInstanceId(
-        String processInstanceId
-    );
+    List<SuspendedJobEntity> findJobsByProcessInstanceId(String processInstanceId);
 
-    List<Job> findJobsByQueryCriteria(
-        SuspendedJobQueryImpl jobQuery,
-        Page page
-    );
+    List<Job> findJobsByQueryCriteria(SuspendedJobQueryImpl jobQuery, Page page);
 
     long findJobCountByQueryCriteria(SuspendedJobQueryImpl jobQuery);
 
-    void updateJobTenantIdForDeployment(
-        String deploymentId,
-        String newTenantId
-    );
+    void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
 }

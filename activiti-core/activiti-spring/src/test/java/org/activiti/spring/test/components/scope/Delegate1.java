@@ -41,9 +41,7 @@ public class Delegate1 implements JavaDelegate, InitializingBean {
 
         log.info("the processInstance#id is {}", pid);
 
-        assertThat(statefulObject)
-            .as("the 'scopedCustomer' reference can't be null")
-            .isNotNull();
+        assertThat(statefulObject).as("the 'scopedCustomer' reference can't be null").isNotNull();
         String uuid = UUID.randomUUID().toString();
         statefulObject.setName(uuid);
         log.info(
@@ -56,8 +54,6 @@ public class Delegate1 implements JavaDelegate, InitializingBean {
     }
 
     public void afterPropertiesSet() throws Exception {
-        assertThat(this.processInstance)
-            .as("the processInstance must not be null")
-            .isNotNull();
+        assertThat(this.processInstance).as("the processInstance must not be null").isNotNull();
     }
 }

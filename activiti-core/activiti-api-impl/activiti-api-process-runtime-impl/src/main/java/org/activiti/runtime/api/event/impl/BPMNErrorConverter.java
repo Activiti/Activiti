@@ -27,9 +27,7 @@ public class BPMNErrorConverter {
             internalEvent.getActivityType()
         );
 
-        bpmnError.setProcessDefinitionId(
-            internalEvent.getProcessDefinitionId()
-        );
+        bpmnError.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         bpmnError.setProcessInstanceId(internalEvent.getProcessInstanceId());
         bpmnError.setExecutionId(internalEvent.getExecutionId());
 

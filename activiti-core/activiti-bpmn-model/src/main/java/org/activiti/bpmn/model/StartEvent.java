@@ -70,10 +70,7 @@ public class StartEvent extends Event {
         setInterrupting(otherEvent.isInterrupting);
 
         formProperties = new ArrayList<FormProperty>();
-        if (
-            otherEvent.getFormProperties() != null &&
-            !otherEvent.getFormProperties().isEmpty()
-        ) {
+        if (otherEvent.getFormProperties() != null && !otherEvent.getFormProperties().isEmpty()) {
             for (FormProperty property : otherEvent.getFormProperties()) {
                 formProperties.add(property.clone());
             }

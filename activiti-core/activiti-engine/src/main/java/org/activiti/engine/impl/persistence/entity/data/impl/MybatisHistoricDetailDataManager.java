@@ -37,9 +37,7 @@ public class MybatisHistoricDetailDataManager
     extends AbstractDataManager<HistoricDetailEntity>
     implements HistoricDetailDataManager {
 
-    public MybatisHistoricDetailDataManager(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public MybatisHistoricDetailDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);
     }
 
@@ -71,34 +69,20 @@ public class MybatisHistoricDetailDataManager
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<HistoricDetailEntity> findHistoricDetailsByProcessInstanceId(
-        String processInstanceId
-    ) {
-        return getDbSqlSession()
-            .selectList(
-                "selectHistoricDetailByProcessInstanceId",
-                processInstanceId
-            );
+    public List<HistoricDetailEntity> findHistoricDetailsByProcessInstanceId(String processInstanceId) {
+        return getDbSqlSession().selectList("selectHistoricDetailByProcessInstanceId", processInstanceId);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<HistoricDetailEntity> findHistoricDetailsByTaskId(
-        String taskId
-    ) {
-        return getDbSqlSession()
-            .selectList("selectHistoricDetailByTaskId", taskId);
+    public List<HistoricDetailEntity> findHistoricDetailsByTaskId(String taskId) {
+        return getDbSqlSession().selectList("selectHistoricDetailByTaskId", taskId);
     }
 
     @Override
-    public long findHistoricDetailCountByQueryCriteria(
-        HistoricDetailQueryImpl historicVariableUpdateQuery
-    ) {
+    public long findHistoricDetailCountByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery) {
         return (Long) getDbSqlSession()
-            .selectOne(
-                "selectHistoricDetailCountByQueryCriteria",
-                historicVariableUpdateQuery
-            );
+            .selectOne("selectHistoricDetailCountByQueryCriteria", historicVariableUpdateQuery);
     }
 
     @Override
@@ -107,12 +91,7 @@ public class MybatisHistoricDetailDataManager
         HistoricDetailQueryImpl historicVariableUpdateQuery,
         Page page
     ) {
-        return getDbSqlSession()
-            .selectList(
-                "selectHistoricDetailsByQueryCriteria",
-                historicVariableUpdateQuery,
-                page
-            );
+        return getDbSqlSession().selectList("selectHistoricDetailsByQueryCriteria", historicVariableUpdateQuery, page);
     }
 
     @Override
@@ -123,19 +102,11 @@ public class MybatisHistoricDetailDataManager
         int maxResults
     ) {
         return getDbSqlSession()
-            .selectListWithRawParameter(
-                "selectHistoricDetailByNativeQuery",
-                parameterMap,
-                firstResult,
-                maxResults
-            );
+            .selectListWithRawParameter("selectHistoricDetailByNativeQuery", parameterMap, firstResult, maxResults);
     }
 
     @Override
-    public long findHistoricDetailCountByNativeQuery(
-        Map<String, Object> parameterMap
-    ) {
-        return (Long) getDbSqlSession()
-            .selectOne("selectHistoricDetailCountByNativeQuery", parameterMap);
+    public long findHistoricDetailCountByNativeQuery(Map<String, Object> parameterMap) {
+        return (Long) getDbSqlSession().selectOne("selectHistoricDetailCountByNativeQuery", parameterMap);
     }
 }

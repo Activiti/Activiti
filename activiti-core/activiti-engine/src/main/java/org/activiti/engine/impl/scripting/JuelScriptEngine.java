@@ -58,9 +58,7 @@ import org.activiti.engine.impl.util.ReflectUtil;
  *
 
  */
-public class JuelScriptEngine
-    extends AbstractScriptEngine
-    implements Compilable {
+public class JuelScriptEngine extends AbstractScriptEngine implements Compilable {
 
     private ScriptEngineFactory scriptEngineFactory;
     private ExpressionFactory expressionFactory;
@@ -68,8 +66,7 @@ public class JuelScriptEngine
     public JuelScriptEngine(ScriptEngineFactory scriptEngineFactory) {
         this.scriptEngineFactory = scriptEngineFactory;
         // Resolve the ExpressionFactory
-        expressionFactory =
-            ExpressionFactoryResolver.resolveExpressionFactory();
+        expressionFactory = ExpressionFactoryResolver.resolveExpressionFactory();
     }
 
     public JuelScriptEngine() {
@@ -86,14 +83,12 @@ public class JuelScriptEngine
         return compile(readFully(reader));
     }
 
-    public Object eval(String script, ScriptContext scriptContext)
-        throws ScriptException {
+    public Object eval(String script, ScriptContext scriptContext) throws ScriptException {
         ValueExpression expr = parse(script, scriptContext);
         return evaluateExpression(expr, scriptContext);
     }
 
-    public Object eval(Reader reader, ScriptContext scriptContext)
-        throws ScriptException {
+    public Object eval(Reader reader, ScriptContext scriptContext) throws ScriptException {
         return eval(readFully(reader), scriptContext);
     }
 
@@ -110,8 +105,7 @@ public class JuelScriptEngine
         return new SimpleBindings();
     }
 
-    private Object evaluateExpression(ValueExpression expr, ScriptContext ctx)
-        throws ScriptException {
+    private Object evaluateExpression(ValueExpression expr, ScriptContext ctx) throws ScriptException {
         try {
             return expr.getValue(createElContext(ctx));
         } catch (ELException elexp) {
@@ -126,16 +120,8 @@ public class JuelScriptEngine
         compositeResolver.add(new MapELResolver());
         compositeResolver.add(new CustomMapperJsonNodeELResolver());
         compositeResolver.add(new ResourceBundleELResolver());
-        compositeResolver.add(
-            new DynamicBeanPropertyELResolver(
-                ItemInstance.class,
-                "getFieldValue",
-                "setFieldValue"
-            )
-        );
-        compositeResolver.add(
-            new ELResolverReflectionBlockerDecorator(new BeanELResolver())
-        );
+        compositeResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class, "getFieldValue", "setFieldValue"));
+        compositeResolver.add(new ELResolverReflectionBlockerDecorator(new BeanELResolver()));
         return new SimpleResolver(compositeResolver);
     }
 
@@ -153,14 +139,9 @@ public class JuelScriptEngine
         return strBuffer.toString();
     }
 
-    private ValueExpression parse(String script, ScriptContext scriptContext)
-        throws ScriptException {
+    private ValueExpression parse(String script, ScriptContext scriptContext) throws ScriptException {
         try {
-            return expressionFactory.createValueExpression(
-                createElContext(scriptContext),
-                script,
-                Object.class
-            );
+            return expressionFactory.createValueExpression(createElContext(scriptContext), script, Object.class);
         } catch (ELException ele) {
             throw new ScriptException(ele);
         }
@@ -173,36 +154,20 @@ public class JuelScriptEngine
             return (ELContext) existingELCtx;
         }
 
-        scriptCtx.setAttribute(
-            "context",
-            scriptCtx,
-            ScriptContext.ENGINE_SCOPE
-        );
+        scriptCtx.setAttribute("context", scriptCtx, ScriptContext.ENGINE_SCOPE);
 
         // Built-in function are added to ScriptCtx
-        scriptCtx.setAttribute(
-            "out:print",
-            getPrintMethod(),
-            ScriptContext.ENGINE_SCOPE
-        );
+        scriptCtx.setAttribute("out:print", getPrintMethod(), ScriptContext.ENGINE_SCOPE);
 
         SecurityManager securityManager = System.getSecurityManager();
         if (securityManager == null) {
-            scriptCtx.setAttribute(
-                "lang:import",
-                getImportMethod(),
-                ScriptContext.ENGINE_SCOPE
-            );
+            scriptCtx.setAttribute("lang:import", getImportMethod(), ScriptContext.ENGINE_SCOPE);
         }
 
         ELContext elContext = new ELContext() {
             ELResolver resolver = createElResolver();
-            VariableMapper varMapper = new ScriptContextVariableMapper(
-                scriptCtx
-            );
-            FunctionMapper funcMapper = new ScriptContextFunctionMapper(
-                scriptCtx
-            );
+            VariableMapper varMapper = new ScriptContextVariableMapper(scriptCtx);
+            FunctionMapper funcMapper = new ScriptContextFunctionMapper(scriptCtx);
 
             @Override
             public ELResolver getELResolver() {
@@ -220,20 +185,13 @@ public class JuelScriptEngine
             }
         };
         // Store the elcontext in the scriptContext to be able to reuse
-        scriptCtx.setAttribute(
-            "elcontext",
-            elContext,
-            ScriptContext.ENGINE_SCOPE
-        );
+        scriptCtx.setAttribute("elcontext", elContext, ScriptContext.ENGINE_SCOPE);
         return elContext;
     }
 
     private static Method getPrintMethod() {
         try {
-            return JuelScriptEngine.class.getMethod(
-                    "print",
-                    new Class[] { Object.class }
-                );
+            return JuelScriptEngine.class.getMethod("print", new Class[] { Object.class });
         } catch (Exception exp) {
             // Will never occur
             return null;
@@ -248,11 +206,7 @@ public class JuelScriptEngine
         try {
             return JuelScriptEngine.class.getMethod(
                     "importFunctions",
-                    new Class[] {
-                        ScriptContext.class,
-                        String.class,
-                        Object.class,
-                    }
+                    new Class[] { ScriptContext.class, String.class, Object.class }
                 );
         } catch (Exception exp) {
             // Will never occur
@@ -260,11 +214,7 @@ public class JuelScriptEngine
         }
     }
 
-    public static void importFunctions(
-        ScriptContext ctx,
-        String namespace,
-        Object obj
-    ) {
+    public static void importFunctions(ScriptContext ctx, String namespace, Object obj) {
         Class<?> clazz = null;
         if (obj instanceof Class) {
             clazz = (Class<?>) obj;
@@ -333,10 +283,7 @@ public class JuelScriptEngine
                     return (ValueExpression) value;
                 } else {
                     // Create a new ValueExpression based on the variable value
-                    return expressionFactory.createValueExpression(
-                        value,
-                        Object.class
-                    );
+                    return expressionFactory.createValueExpression(value, Object.class);
                 }
             }
             return null;
@@ -373,12 +320,8 @@ public class JuelScriptEngine
             int scope = scriptContext.getAttributesScope(functionName);
             if (scope != -1) {
                 // Methods are added as variables in the ScriptScope
-                Object attributeValue = scriptContext.getAttribute(
-                    functionName
-                );
-                return (attributeValue instanceof Method)
-                    ? (Method) attributeValue
-                    : null;
+                Object attributeValue = scriptContext.getAttribute(functionName);
+                return (attributeValue instanceof Method) ? (Method) attributeValue : null;
             } else {
                 return null;
             }

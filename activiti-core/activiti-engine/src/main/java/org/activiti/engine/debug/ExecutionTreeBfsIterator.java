@@ -36,10 +36,7 @@ public class ExecutionTreeBfsIterator implements Iterator<ExecutionTreeNode> {
         this(executionTree, false);
     }
 
-    public ExecutionTreeBfsIterator(
-        ExecutionTreeNode rootNode,
-        boolean reverseOrder
-    ) {
+    public ExecutionTreeBfsIterator(ExecutionTreeNode rootNode, boolean reverseOrder) {
         this.rootNode = rootNode;
         this.reverseOrder = reverseOrder;
     }
@@ -57,10 +54,7 @@ public class ExecutionTreeBfsIterator implements Iterator<ExecutionTreeNode> {
                 flattenedList.add(currentNode);
             }
 
-            if (
-                currentNode.getChildren() != null &&
-                currentNode.getChildren().size() > 0
-            ) {
+            if (currentNode.getChildren() != null && currentNode.getChildren().size() > 0) {
                 for (ExecutionTreeNode childNode : currentNode.getChildren()) {
                     nodesToHandle.add(childNode);
                 }

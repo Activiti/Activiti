@@ -40,9 +40,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ProcessDefinitionInfoCache {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        ProcessDefinitionInfoCache.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(ProcessDefinitionInfoCache.class);
 
     protected Map<String, ProcessDefinitionInfoCacheObject> cache;
     protected CommandExecutor commandExecutor;
@@ -50,39 +48,24 @@ public class ProcessDefinitionInfoCache {
     /** Cache with no limit */
     public ProcessDefinitionInfoCache(CommandExecutor commandExecutor) {
         this.commandExecutor = commandExecutor;
-        this.cache =
-            synchronizedMap(
-                new HashMap<String, ProcessDefinitionInfoCacheObject>()
-            );
+        this.cache = synchronizedMap(new HashMap<String, ProcessDefinitionInfoCacheObject>());
     }
 
     /** Cache which has a hard limit: no more elements will be cached than the limit. */
-    public ProcessDefinitionInfoCache(
-        CommandExecutor commandExecutor,
-        final int limit
-    ) {
+    public ProcessDefinitionInfoCache(CommandExecutor commandExecutor, final int limit) {
         this.commandExecutor = commandExecutor;
         this.cache =
             synchronizedMap(
-                new LinkedHashMap<String, ProcessDefinitionInfoCacheObject>(
-                    limit + 1,
-                    0.75f,
-                    true
-                ) {
+                new LinkedHashMap<String, ProcessDefinitionInfoCacheObject>(limit + 1, 0.75f, true) {
                     // +1 is needed, because the entry is inserted first, before it is removed
                     // 0.75 is the default (see javadocs)
                     // true will keep the 'access-order', which is needed to have a real LRU cache
                     private static final long serialVersionUID = 1L;
 
-                    protected boolean removeEldestEntry(
-                        Map.Entry<String, ProcessDefinitionInfoCacheObject> eldest
-                    ) {
+                    protected boolean removeEldestEntry(Map.Entry<String, ProcessDefinitionInfoCacheObject> eldest) {
                         boolean removeEldest = size() > limit;
                         if (removeEldest) {
-                            logger.trace(
-                                "Cache limit is reached, {} will be evicted",
-                                eldest.getKey()
-                            );
+                            logger.trace("Cache limit is reached, {} will be evicted", eldest.getKey());
                         }
                         return removeEldest;
                     }
@@ -90,28 +73,18 @@ public class ProcessDefinitionInfoCache {
             );
     }
 
-    public ProcessDefinitionInfoCacheObject get(
-        final String processDefinitionId
-    ) {
+    public ProcessDefinitionInfoCacheObject get(final String processDefinitionId) {
         ProcessDefinitionInfoCacheObject infoCacheObject = null;
         Command<ProcessDefinitionInfoCacheObject> cacheCommand = new Command<ProcessDefinitionInfoCacheObject>() {
             @Override
-            public ProcessDefinitionInfoCacheObject execute(
-                CommandContext commandContext
-            ) {
-                return retrieveProcessDefinitionInfoCacheObject(
-                    processDefinitionId,
-                    commandContext
-                );
+            public ProcessDefinitionInfoCacheObject execute(CommandContext commandContext) {
+                return retrieveProcessDefinitionInfoCacheObject(processDefinitionId, commandContext);
             }
         };
 
         if (Context.getCommandContext() != null) {
             infoCacheObject =
-                retrieveProcessDefinitionInfoCacheObject(
-                    processDefinitionId,
-                    Context.getCommandContext()
-                );
+                retrieveProcessDefinitionInfoCacheObject(processDefinitionId, Context.getCommandContext());
         } else {
             infoCacheObject = commandExecutor.execute(cacheCommand);
         }
@@ -141,9 +114,7 @@ public class ProcessDefinitionInfoCache {
         CommandContext commandContext
     ) {
         ProcessDefinitionInfoEntityManager infoEntityManager = commandContext.getProcessDefinitionInfoEntityManager();
-        ObjectMapper objectMapper = commandContext
-            .getProcessEngineConfiguration()
-            .getObjectMapper();
+        ObjectMapper objectMapper = commandContext.getProcessEngineConfiguration().getObjectMapper();
 
         ProcessDefinitionInfoCacheObject cacheObject = null;
         if (cache.containsKey(processDefinitionId)) {
@@ -157,24 +128,16 @@ public class ProcessDefinitionInfoCache {
         ProcessDefinitionInfoEntity infoEntity = infoEntityManager.findProcessDefinitionInfoByProcessDefinitionId(
             processDefinitionId
         );
-        if (
-            infoEntity != null &&
-            infoEntity.getRevision() != cacheObject.getRevision()
-        ) {
+        if (infoEntity != null && infoEntity.getRevision() != cacheObject.getRevision()) {
             cacheObject.setRevision(infoEntity.getRevision());
             if (infoEntity.getInfoJsonId() != null) {
-                byte[] infoBytes = infoEntityManager.findInfoJsonById(
-                    infoEntity.getInfoJsonId()
-                );
+                byte[] infoBytes = infoEntityManager.findInfoJsonById(infoEntity.getInfoJsonId());
                 try {
-                    ObjectNode infoNode = (ObjectNode) objectMapper.readTree(
-                        infoBytes
-                    );
+                    ObjectNode infoNode = (ObjectNode) objectMapper.readTree(infoBytes);
                     cacheObject.setInfoNode(infoNode);
                 } catch (Exception e) {
                     throw new ActivitiException(
-                        "Error reading json info node for process definition " +
-                        processDefinitionId,
+                        "Error reading json info node for process definition " + processDefinitionId,
                         e
                     );
                 }

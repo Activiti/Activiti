@@ -40,62 +40,36 @@ public class CompensationEventHandler implements EventHandler {
         return CompensateEventSubscriptionEntity.EVENT_TYPE;
     }
 
-    public void handleEvent(
-        EventSubscriptionEntity eventSubscription,
-        Object payload,
-        CommandContext commandContext
-    ) {
+    public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
         String configuration = eventSubscription.getConfiguration();
         if (configuration == null) {
             throw new ActivitiException(
-                "Compensating execution not set for compensate event subscription with id " +
-                eventSubscription.getId()
+                "Compensating execution not set for compensate event subscription with id " + eventSubscription.getId()
             );
         }
 
-        ExecutionEntity compensatingExecution = commandContext
-            .getExecutionEntityManager()
-            .findById(configuration);
+        ExecutionEntity compensatingExecution = commandContext.getExecutionEntityManager().findById(configuration);
 
         String processDefinitionId = compensatingExecution.getProcessDefinitionId();
         Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
         if (process == null) {
             throw new ActivitiException(
-                "Cannot start process instance. Process model (id = " +
-                processDefinitionId +
-                ") could not be found"
+                "Cannot start process instance. Process model (id = " + processDefinitionId + ") could not be found"
             );
         }
 
-        FlowElement flowElement = process.getFlowElement(
-            eventSubscription.getActivityId(),
-            true
-        );
+        FlowElement flowElement = process.getFlowElement(eventSubscription.getActivityId(), true);
 
-        if (
-            flowElement instanceof SubProcess &&
-            !((SubProcess) flowElement).isForCompensation()
-        ) {
+        if (flowElement instanceof SubProcess && !((SubProcess) flowElement).isForCompensation()) {
             // descend into scope:
             compensatingExecution.setScope(true);
             List<CompensateEventSubscriptionEntity> eventsForThisScope = commandContext
                 .getEventSubscriptionEntityManager()
-                .findCompensateEventSubscriptionsByExecutionId(
-                    compensatingExecution.getId()
-                );
-            ScopeUtil.throwCompensationEvent(
-                eventsForThisScope,
-                compensatingExecution,
-                false
-            );
+                .findCompensateEventSubscriptionsByExecutionId(compensatingExecution.getId());
+            ScopeUtil.throwCompensationEvent(eventsForThisScope, compensatingExecution, false);
         } else {
             try {
-                if (
-                    commandContext
-                        .getProcessEngineConfiguration()
-                        .getEventDispatcher()
-                        .isEnabled()
-                ) {
+                if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
                     commandContext
                         .getProcessEngineConfiguration()
                         .getEventDispatcher()
@@ -108,15 +82,9 @@ public class CompensationEventHandler implements EventHandler {
                         );
                 }
                 compensatingExecution.setCurrentFlowElement(flowElement);
-                Context
-                    .getAgenda()
-                    .planContinueProcessInCompensation(compensatingExecution);
+                Context.getAgenda().planContinueProcessInCompensation(compensatingExecution);
             } catch (Exception e) {
-                throw new ActivitiException(
-                    "Error while handling compensation event " +
-                    eventSubscription,
-                    e
-                );
+                throw new ActivitiException("Error while handling compensation event " + eventSubscription, e);
             }
         }
     }

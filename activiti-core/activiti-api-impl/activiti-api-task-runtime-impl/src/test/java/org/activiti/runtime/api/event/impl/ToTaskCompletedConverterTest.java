@@ -46,9 +46,7 @@ public class ToTaskCompletedConverterTest {
     public void fromShouldReturnAPIEventContainingConvertedTask() {
         //given
         Task internalTask = mock(Task.class);
-        org.activiti.api.task.model.Task apiTask = mock(
-            org.activiti.api.task.model.Task.class
-        );
+        org.activiti.api.task.model.Task apiTask = mock(org.activiti.api.task.model.Task.class);
         String loginUser = "hruser";
         given(securityManager.getAuthenticatedUserId()).willReturn(loginUser);
         given(
@@ -65,9 +63,7 @@ public class ToTaskCompletedConverterTest {
 
         //when
 
-        TaskCompletedEvent taskCompletedEvent = toTaskCompletedConverter
-            .from(internalEvent)
-            .orElse(null);
+        TaskCompletedEvent taskCompletedEvent = toTaskCompletedConverter.from(internalEvent).orElse(null);
 
         //then
         assertThat(taskCompletedEvent).isNotNull();

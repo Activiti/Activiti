@@ -83,9 +83,7 @@ import org.activiti.engine.task.TaskQuery;
  */
 public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
-    public TaskServiceImpl(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public TaskServiceImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);
     }
 
@@ -124,143 +122,69 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
     @Override
     public void deleteTask(String taskId, String deleteReason, boolean cancel) {
-        commandExecutor.execute(
-            new DeleteTaskCmd(taskId, deleteReason, false, cancel)
-        );
+        commandExecutor.execute(new DeleteTaskCmd(taskId, deleteReason, false, cancel));
     }
 
     @Override
     public void deleteTasks(Collection<String> taskIds, String deleteReason) {
-        commandExecutor.execute(
-            new DeleteTaskCmd(taskIds, deleteReason, false, false)
-        );
+        commandExecutor.execute(new DeleteTaskCmd(taskIds, deleteReason, false, false));
     }
 
     @Override
-    public void deleteTasks(
-        Collection<String> taskIds,
-        String deleteReason,
-        boolean cancel
-    ) {
-        commandExecutor.execute(
-            new DeleteTaskCmd(taskIds, deleteReason, false, cancel)
-        );
+    public void deleteTasks(Collection<String> taskIds, String deleteReason, boolean cancel) {
+        commandExecutor.execute(new DeleteTaskCmd(taskIds, deleteReason, false, cancel));
     }
 
     public void setAssignee(String taskId, String userId) {
         commandExecutor.execute(
-            new AddIdentityLinkCmd(
-                taskId,
-                userId,
-                AddIdentityLinkCmd.IDENTITY_USER,
-                IdentityLinkType.ASSIGNEE
-            )
+            new AddIdentityLinkCmd(taskId, userId, AddIdentityLinkCmd.IDENTITY_USER, IdentityLinkType.ASSIGNEE)
         );
     }
 
     public void setOwner(String taskId, String userId) {
         commandExecutor.execute(
-            new AddIdentityLinkCmd(
-                taskId,
-                userId,
-                AddIdentityLinkCmd.IDENTITY_USER,
-                IdentityLinkType.OWNER
-            )
+            new AddIdentityLinkCmd(taskId, userId, AddIdentityLinkCmd.IDENTITY_USER, IdentityLinkType.OWNER)
         );
     }
 
     public void addCandidateUser(String taskId, String userId) {
         commandExecutor.execute(
-            new AddIdentityLinkCmd(
-                taskId,
-                userId,
-                AddIdentityLinkCmd.IDENTITY_USER,
-                IdentityLinkType.CANDIDATE
-            )
+            new AddIdentityLinkCmd(taskId, userId, AddIdentityLinkCmd.IDENTITY_USER, IdentityLinkType.CANDIDATE)
         );
     }
 
     public void addCandidateGroup(String taskId, String groupId) {
         commandExecutor.execute(
-            new AddIdentityLinkCmd(
-                taskId,
-                groupId,
-                AddIdentityLinkCmd.IDENTITY_GROUP,
-                IdentityLinkType.CANDIDATE
-            )
+            new AddIdentityLinkCmd(taskId, groupId, AddIdentityLinkCmd.IDENTITY_GROUP, IdentityLinkType.CANDIDATE)
         );
     }
 
-    public void addUserIdentityLink(
-        String taskId,
-        String userId,
-        String identityLinkType
-    ) {
+    public void addUserIdentityLink(String taskId, String userId, String identityLinkType) {
         commandExecutor.execute(
-            new AddIdentityLinkCmd(
-                taskId,
-                userId,
-                AddIdentityLinkCmd.IDENTITY_USER,
-                identityLinkType
-            )
+            new AddIdentityLinkCmd(taskId, userId, AddIdentityLinkCmd.IDENTITY_USER, identityLinkType)
         );
     }
 
-    public void addGroupIdentityLink(
-        String taskId,
-        String groupId,
-        String identityLinkType
-    ) {
+    public void addGroupIdentityLink(String taskId, String groupId, String identityLinkType) {
         commandExecutor.execute(
-            new AddIdentityLinkCmd(
-                taskId,
-                groupId,
-                AddIdentityLinkCmd.IDENTITY_GROUP,
-                identityLinkType
-            )
+            new AddIdentityLinkCmd(taskId, groupId, AddIdentityLinkCmd.IDENTITY_GROUP, identityLinkType)
         );
     }
 
     public void deleteCandidateGroup(String taskId, String groupId) {
-        commandExecutor.execute(
-            new DeleteIdentityLinkCmd(
-                taskId,
-                null,
-                groupId,
-                IdentityLinkType.CANDIDATE
-            )
-        );
+        commandExecutor.execute(new DeleteIdentityLinkCmd(taskId, null, groupId, IdentityLinkType.CANDIDATE));
     }
 
     public void deleteCandidateUser(String taskId, String userId) {
-        commandExecutor.execute(
-            new DeleteIdentityLinkCmd(
-                taskId,
-                userId,
-                null,
-                IdentityLinkType.CANDIDATE
-            )
-        );
+        commandExecutor.execute(new DeleteIdentityLinkCmd(taskId, userId, null, IdentityLinkType.CANDIDATE));
     }
 
-    public void deleteGroupIdentityLink(
-        String taskId,
-        String groupId,
-        String identityLinkType
-    ) {
-        commandExecutor.execute(
-            new DeleteIdentityLinkCmd(taskId, null, groupId, identityLinkType)
-        );
+    public void deleteGroupIdentityLink(String taskId, String groupId, String identityLinkType) {
+        commandExecutor.execute(new DeleteIdentityLinkCmd(taskId, null, groupId, identityLinkType));
     }
 
-    public void deleteUserIdentityLink(
-        String taskId,
-        String userId,
-        String identityLinkType
-    ) {
-        commandExecutor.execute(
-            new DeleteIdentityLinkCmd(taskId, userId, null, identityLinkType)
-        );
+    public void deleteUserIdentityLink(String taskId, String userId, String identityLinkType) {
+        commandExecutor.execute(new DeleteIdentityLinkCmd(taskId, userId, null, identityLinkType));
     }
 
     public List<IdentityLink> getIdentityLinksForTask(String taskId) {
@@ -284,24 +208,12 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     }
 
     @Override
-    public void complete(
-        String taskId,
-        Map<String, Object> variables,
-        Map<String, Object> transientVariables
-    ) {
-        commandExecutor.execute(
-            new CompleteTaskCmd(taskId, variables, transientVariables)
-        );
+    public void complete(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables) {
+        commandExecutor.execute(new CompleteTaskCmd(taskId, variables, transientVariables));
     }
 
-    public void complete(
-        String taskId,
-        Map<String, Object> variables,
-        boolean localScope
-    ) {
-        commandExecutor.execute(
-            new CompleteTaskCmd(taskId, variables, localScope)
-        );
+    public void complete(String taskId, Map<String, Object> variables, boolean localScope) {
+        commandExecutor.execute(new CompleteTaskCmd(taskId, variables, localScope));
     }
 
     public void delegateTask(String taskId, String userId) {
@@ -317,14 +229,8 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     }
 
     @Override
-    public void resolveTask(
-        String taskId,
-        Map<String, Object> variables,
-        Map<String, Object> transientVariables
-    ) {
-        commandExecutor.execute(
-            new ResolveTaskCmd(taskId, variables, transientVariables)
-        );
+    public void resolveTask(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables) {
+        commandExecutor.execute(new ResolveTaskCmd(taskId, variables, transientVariables));
     }
 
     public void setPriority(String taskId, int priority) {
@@ -336,10 +242,7 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     }
 
     public TaskQuery createTaskQuery() {
-        return new TaskQueryImpl(
-            commandExecutor,
-            processEngineConfiguration.getDatabaseType()
-        );
+        return new TaskQueryImpl(commandExecutor, processEngineConfiguration.getDatabaseType());
     }
 
     public NativeTaskQuery createNativeTaskQuery() {
@@ -347,81 +250,49 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     }
 
     public Map<String, Object> getVariables(String taskId) {
-        return commandExecutor.execute(
-            new GetTaskVariablesCmd(taskId, null, false)
-        );
+        return commandExecutor.execute(new GetTaskVariablesCmd(taskId, null, false));
     }
 
     public Map<String, Object> getVariablesLocal(String taskId) {
-        return commandExecutor.execute(
-            new GetTaskVariablesCmd(taskId, null, true)
-        );
+        return commandExecutor.execute(new GetTaskVariablesCmd(taskId, null, true));
     }
 
-    public Map<String, Object> getVariables(
-        String taskId,
-        Collection<String> variableNames
-    ) {
-        return commandExecutor.execute(
-            new GetTaskVariablesCmd(taskId, variableNames, false)
-        );
+    public Map<String, Object> getVariables(String taskId, Collection<String> variableNames) {
+        return commandExecutor.execute(new GetTaskVariablesCmd(taskId, variableNames, false));
     }
 
-    public Map<String, Object> getVariablesLocal(
-        String taskId,
-        Collection<String> variableNames
-    ) {
-        return commandExecutor.execute(
-            new GetTaskVariablesCmd(taskId, variableNames, true)
-        );
+    public Map<String, Object> getVariablesLocal(String taskId, Collection<String> variableNames) {
+        return commandExecutor.execute(new GetTaskVariablesCmd(taskId, variableNames, true));
     }
 
     public Object getVariable(String taskId, String variableName) {
-        return commandExecutor.execute(
-            new GetTaskVariableCmd(taskId, variableName, false)
-        );
+        return commandExecutor.execute(new GetTaskVariableCmd(taskId, variableName, false));
     }
 
     @Override
-    public <T> T getVariable(
-        String taskId,
-        String variableName,
-        Class<T> variableClass
-    ) {
+    public <T> T getVariable(String taskId, String variableName, Class<T> variableClass) {
         return variableClass.cast(getVariable(taskId, variableName));
     }
 
     public boolean hasVariable(String taskId, String variableName) {
-        return commandExecutor.execute(
-            new HasTaskVariableCmd(taskId, variableName, false)
-        );
+        return commandExecutor.execute(new HasTaskVariableCmd(taskId, variableName, false));
     }
 
     public Object getVariableLocal(String taskId, String variableName) {
-        return commandExecutor.execute(
-            new GetTaskVariableCmd(taskId, variableName, true)
-        );
+        return commandExecutor.execute(new GetTaskVariableCmd(taskId, variableName, true));
     }
 
     @Override
-    public <T> T getVariableLocal(
-        String taskId,
-        String variableName,
-        Class<T> variableClass
-    ) {
+    public <T> T getVariableLocal(String taskId, String variableName, Class<T> variableClass) {
         return variableClass.cast(getVariableLocal(taskId, variableName));
     }
 
-    public List<VariableInstance> getVariableInstancesLocalByTaskIds(
-        Set<String> taskIds
-    ) {
+    public List<VariableInstance> getVariableInstancesLocalByTaskIds(Set<String> taskIds) {
         return commandExecutor.execute(new GetTasksLocalVariablesCmd(taskIds));
     }
 
     public boolean hasVariableLocal(String taskId, String variableName) {
-        return commandExecutor.execute(
-            new HasTaskVariableCmd(taskId, variableName, true)
-        );
+        return commandExecutor.execute(new HasTaskVariableCmd(taskId, variableName, true));
     }
 
     public void setVariable(String taskId, String variableName, Object value) {
@@ -430,97 +301,52 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
         }
         Map<String, Object> variables = new HashMap<String, Object>();
         variables.put(variableName, value);
-        commandExecutor.execute(
-            new SetTaskVariablesCmd(taskId, variables, false)
-        );
+        commandExecutor.execute(new SetTaskVariablesCmd(taskId, variables, false));
     }
 
-    public void setVariableLocal(
-        String taskId,
-        String variableName,
-        Object value
-    ) {
+    public void setVariableLocal(String taskId, String variableName, Object value) {
         if (variableName == null) {
             throw new ActivitiIllegalArgumentException("variableName is null");
         }
         Map<String, Object> variables = new HashMap<String, Object>();
         variables.put(variableName, value);
-        commandExecutor.execute(
-            new SetTaskVariablesCmd(taskId, variables, true)
-        );
+        commandExecutor.execute(new SetTaskVariablesCmd(taskId, variables, true));
     }
 
-    public void setVariables(
-        String taskId,
-        Map<String, ? extends Object> variables
-    ) {
-        commandExecutor.execute(
-            new SetTaskVariablesCmd(taskId, variables, false)
-        );
+    public void setVariables(String taskId, Map<String, ? extends Object> variables) {
+        commandExecutor.execute(new SetTaskVariablesCmd(taskId, variables, false));
     }
 
-    public void setVariablesLocal(
-        String taskId,
-        Map<String, ? extends Object> variables
-    ) {
-        commandExecutor.execute(
-            new SetTaskVariablesCmd(taskId, variables, true)
-        );
+    public void setVariablesLocal(String taskId, Map<String, ? extends Object> variables) {
+        commandExecutor.execute(new SetTaskVariablesCmd(taskId, variables, true));
     }
 
     public void removeVariable(String taskId, String variableName) {
         Collection<String> variableNames = new ArrayList<String>();
         variableNames.add(variableName);
-        commandExecutor.execute(
-            new RemoveTaskVariablesCmd(taskId, variableNames, false)
-        );
+        commandExecutor.execute(new RemoveTaskVariablesCmd(taskId, variableNames, false));
     }
 
     public void removeVariableLocal(String taskId, String variableName) {
         Collection<String> variableNames = new ArrayList<String>(1);
         variableNames.add(variableName);
-        commandExecutor.execute(
-            new RemoveTaskVariablesCmd(taskId, variableNames, true)
-        );
+        commandExecutor.execute(new RemoveTaskVariablesCmd(taskId, variableNames, true));
     }
 
-    public void removeVariables(
-        String taskId,
-        Collection<String> variableNames
-    ) {
-        commandExecutor.execute(
-            new RemoveTaskVariablesCmd(taskId, variableNames, false)
-        );
+    public void removeVariables(String taskId, Collection<String> variableNames) {
+        commandExecutor.execute(new RemoveTaskVariablesCmd(taskId, variableNames, false));
     }
 
-    public void removeVariablesLocal(
-        String taskId,
-        Collection<String> variableNames
-    ) {
-        commandExecutor.execute(
-            new RemoveTaskVariablesCmd(taskId, variableNames, true)
-        );
+    public void removeVariablesLocal(String taskId, Collection<String> variableNames) {
+        commandExecutor.execute(new RemoveTaskVariablesCmd(taskId, variableNames, true));
     }
 
-    public Comment addComment(
-        String taskId,
-        String processInstance,
-        String message
-    ) {
-        return commandExecutor.execute(
-            new AddCommentCmd(taskId, processInstance, message)
-        );
+    public Comment addComment(String taskId, String processInstance, String message) {
+        return commandExecutor.execute(new AddCommentCmd(taskId, processInstance, message));
     }
 
-    public Comment addComment(
-        String taskId,
-        String processInstance,
-        String type,
-        String message
-    ) {
-        return commandExecutor.execute(
-            new AddCommentCmd(taskId, processInstance, type, message)
-        );
+    public Comment addComment(String taskId, String processInstance, String type, String message) {
+        return commandExecutor.execute(new AddCommentCmd(taskId, processInstance, type, message));
     }
 
     @Override
@@ -538,9 +364,7 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     }
 
     public List<Comment> getTaskComments(String taskId, String type) {
-        return commandExecutor.execute(
-            new GetTaskCommentsByTypeCmd(taskId, type)
-        );
+        return commandExecutor.execute(new GetTaskCommentsByTypeCmd(taskId, type));
     }
 
     public List<Comment> getCommentsByType(String type) {
@@ -552,18 +376,11 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     }
 
     public List<Comment> getProcessInstanceComments(String processInstanceId) {
-        return commandExecutor.execute(
-            new GetProcessInstanceCommentsCmd(processInstanceId)
-        );
+        return commandExecutor.execute(new GetProcessInstanceCommentsCmd(processInstanceId));
     }
 
-    public List<Comment> getProcessInstanceComments(
-        String processInstanceId,
-        String type
-    ) {
-        return commandExecutor.execute(
-            new GetProcessInstanceCommentsCmd(processInstanceId, type)
-        );
+    public List<Comment> getProcessInstanceComments(String processInstanceId, String type) {
+        return commandExecutor.execute(new GetProcessInstanceCommentsCmd(processInstanceId, type));
     }
 
     public Attachment createAttachment(
@@ -609,9 +426,7 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     }
 
     public InputStream getAttachmentContent(String attachmentId) {
-        return commandExecutor.execute(
-            new GetAttachmentContentCmd(attachmentId)
-        );
+        return commandExecutor.execute(new GetAttachmentContentCmd(attachmentId));
     }
 
     public void deleteAttachment(String attachmentId) {
@@ -619,9 +434,7 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     }
 
     public void deleteComments(String taskId, String processInstanceId) {
-        commandExecutor.execute(
-            new DeleteCommentCmd(taskId, processInstanceId, null)
-        );
+        commandExecutor.execute(new DeleteCommentCmd(taskId, processInstanceId, null));
     }
 
     @Override
@@ -635,18 +448,12 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
     @SuppressWarnings("unchecked")
     public List<Attachment> getTaskAttachments(String taskId) {
-        return (List<Attachment>) commandExecutor.execute(
-            new GetTaskAttachmentsCmd(taskId)
-        );
+        return (List<Attachment>) commandExecutor.execute(new GetTaskAttachmentsCmd(taskId));
     }
 
     @SuppressWarnings("unchecked")
-    public List<Attachment> getProcessInstanceAttachments(
-        String processInstanceId
-    ) {
-        return (List<Attachment>) commandExecutor.execute(
-            new GetProcessInstanceAttachmentsCmd(processInstanceId)
-        );
+    public List<Attachment> getProcessInstanceAttachments(String processInstanceId) {
+        return (List<Attachment>) commandExecutor.execute(new GetProcessInstanceAttachmentsCmd(processInstanceId));
     }
 
     public void saveAttachment(Attachment attachment) {
@@ -658,59 +465,33 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     }
 
     @Override
-    public VariableInstance getVariableInstance(
-        String taskId,
-        String variableName
-    ) {
-        return commandExecutor.execute(
-            new GetTaskVariableInstanceCmd(taskId, variableName, false)
-        );
+    public VariableInstance getVariableInstance(String taskId, String variableName) {
+        return commandExecutor.execute(new GetTaskVariableInstanceCmd(taskId, variableName, false));
     }
 
     @Override
-    public VariableInstance getVariableInstanceLocal(
-        String taskId,
-        String variableName
-    ) {
-        return commandExecutor.execute(
-            new GetTaskVariableInstanceCmd(taskId, variableName, true)
-        );
+    public VariableInstance getVariableInstanceLocal(String taskId, String variableName) {
+        return commandExecutor.execute(new GetTaskVariableInstanceCmd(taskId, variableName, true));
     }
 
     @Override
     public Map<String, VariableInstance> getVariableInstances(String taskId) {
-        return commandExecutor.execute(
-            new GetTaskVariableInstancesCmd(taskId, null, false)
-        );
+        return commandExecutor.execute(new GetTaskVariableInstancesCmd(taskId, null, false));
     }
 
     @Override
-    public Map<String, VariableInstance> getVariableInstances(
-        String taskId,
-        Collection<String> variableNames
-    ) {
-        return commandExecutor.execute(
-            new GetTaskVariableInstancesCmd(taskId, variableNames, false)
-        );
+    public Map<String, VariableInstance> getVariableInstances(String taskId, Collection<String> variableNames) {
+        return commandExecutor.execute(new GetTaskVariableInstancesCmd(taskId, variableNames, false));
     }
 
     @Override
-    public Map<String, VariableInstance> getVariableInstancesLocal(
-        String taskId
-    ) {
-        return commandExecutor.execute(
-            new GetTaskVariableInstancesCmd(taskId, null, true)
-        );
+    public Map<String, VariableInstance> getVariableInstancesLocal(String taskId) {
+        return commandExecutor.execute(new GetTaskVariableInstancesCmd(taskId, null, true));
     }
 
     @Override
-    public Map<String, VariableInstance> getVariableInstancesLocal(
-        String taskId,
-        Collection<String> variableNames
-    ) {
-        return commandExecutor.execute(
-            new GetTaskVariableInstancesCmd(taskId, variableNames, true)
-        );
+    public Map<String, VariableInstance> getVariableInstancesLocal(String taskId, Collection<String> variableNames) {
+        return commandExecutor.execute(new GetTaskVariableInstancesCmd(taskId, variableNames, true));
     }
 
     @Override
@@ -719,29 +500,13 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     }
 
     @Override
-    public Map<String, DataObject> getDataObjects(
-        String taskId,
-        String locale,
-        boolean withLocalizationFallback
-    ) {
-        return commandExecutor.execute(
-            new GetTaskDataObjectsCmd(
-                taskId,
-                null,
-                locale,
-                withLocalizationFallback
-            )
-        );
+    public Map<String, DataObject> getDataObjects(String taskId, String locale, boolean withLocalizationFallback) {
+        return commandExecutor.execute(new GetTaskDataObjectsCmd(taskId, null, locale, withLocalizationFallback));
     }
 
     @Override
-    public Map<String, DataObject> getDataObjects(
-        String taskId,
-        Collection<String> dataObjectNames
-    ) {
-        return commandExecutor.execute(
-            new GetTaskDataObjectsCmd(taskId, dataObjectNames)
-        );
+    public Map<String, DataObject> getDataObjects(String taskId, Collection<String> dataObjectNames) {
+        return commandExecutor.execute(new GetTaskDataObjectsCmd(taskId, dataObjectNames));
     }
 
     @Override
@@ -752,20 +517,13 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
         boolean withLocalizationFallback
     ) {
         return commandExecutor.execute(
-            new GetTaskDataObjectsCmd(
-                taskId,
-                dataObjectNames,
-                locale,
-                withLocalizationFallback
-            )
+            new GetTaskDataObjectsCmd(taskId, dataObjectNames, locale, withLocalizationFallback)
         );
     }
 
     @Override
     public DataObject getDataObject(String taskId, String dataObject) {
-        return commandExecutor.execute(
-            new GetTaskDataObjectCmd(taskId, dataObject)
-        );
+        return commandExecutor.execute(new GetTaskDataObjectCmd(taskId, dataObject));
     }
 
     @Override
@@ -776,12 +534,7 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
         boolean withLocalizationFallback
     ) {
         return commandExecutor.execute(
-            new GetTaskDataObjectCmd(
-                taskId,
-                dataObjectName,
-                locale,
-                withLocalizationFallback
-            )
+            new GetTaskDataObjectCmd(taskId, dataObjectName, locale, withLocalizationFallback)
         );
     }
 }

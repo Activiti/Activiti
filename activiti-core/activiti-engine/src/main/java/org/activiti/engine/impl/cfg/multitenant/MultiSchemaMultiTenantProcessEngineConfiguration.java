@@ -61,8 +61,7 @@ import org.slf4j.LoggerFactory;
  *  @deprecated multi-tenant code will be removed in future version of Activiti and Activiti Cloud
  */
 @Deprecated
-public class MultiSchemaMultiTenantProcessEngineConfiguration
-    extends ProcessEngineConfigurationImpl {
+public class MultiSchemaMultiTenantProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
 
     private static final Logger logger = LoggerFactory.getLogger(
         MultiSchemaMultiTenantProcessEngineConfiguration.class
@@ -71,9 +70,7 @@ public class MultiSchemaMultiTenantProcessEngineConfiguration
     protected TenantInfoHolder tenantInfoHolder;
     protected boolean booted;
 
-    public MultiSchemaMultiTenantProcessEngineConfiguration(
-        TenantInfoHolder tenantInfoHolder
-    ) {
+    public MultiSchemaMultiTenantProcessEngineConfiguration(TenantInfoHolder tenantInfoHolder) {
         this.tenantInfoHolder = tenantInfoHolder;
 
         // Using the UUID generator, as otherwise the ids are pulled from a global pool of ids, backed by
@@ -94,10 +91,7 @@ public class MultiSchemaMultiTenantProcessEngineConfiguration
      * to calling this method.
      */
     public void registerTenant(String tenantId, DataSource dataSource) {
-        ((TenantAwareDataSource) super.getDataSource()).addDataSource(
-                tenantId,
-                dataSource
-            );
+        ((TenantAwareDataSource) super.getDataSource()).addDataSource(tenantId, dataSource);
 
         if (booted) {
             createTenantSchema(tenantId);
@@ -113,17 +107,14 @@ public class MultiSchemaMultiTenantProcessEngineConfiguration
     @Override
     public void initAsyncExecutor() {
         if (asyncExecutor == null) {
-            asyncExecutor =
-                new ExecutorPerTenantAsyncExecutor(tenantInfoHolder);
+            asyncExecutor = new ExecutorPerTenantAsyncExecutor(tenantInfoHolder);
         }
 
         super.initAsyncExecutor();
 
         if (asyncExecutor instanceof TenantAwareAsyncExecutor) {
             for (String tenantId : tenantInfoHolder.getAllTenants()) {
-                (
-                    (TenantAwareAsyncExecutor) asyncExecutor
-                ).addTenantAsyncExecutor(tenantId, false); // false -> will be started later with all the other executors
+                ((TenantAwareAsyncExecutor) asyncExecutor).addTenantAsyncExecutor(tenantId, false); // false -> will be started later with all the other executors
             }
         }
     }
@@ -136,8 +127,7 @@ public class MultiSchemaMultiTenantProcessEngineConfiguration
         this.databaseSchemaUpdate = null;
 
         // Also, we shouldn't start the async executor until *after* the schema's have been created
-        boolean originalIsAutoActivateAsyncExecutor =
-            this.asyncExecutorActivate;
+        boolean originalIsAutoActivateAsyncExecutor = this.asyncExecutorActivate;
         this.asyncExecutorActivate = false;
 
         ProcessEngine processEngine = super.buildProcessEngine();
@@ -161,15 +151,9 @@ public class MultiSchemaMultiTenantProcessEngineConfiguration
     }
 
     protected void createTenantSchema(String tenantId) {
-        logger.info(
-            "creating/validating database schema for tenant " + tenantId
-        );
+        logger.info("creating/validating database schema for tenant " + tenantId);
         tenantInfoHolder.setCurrentTenantId(tenantId);
-        getCommandExecutor()
-            .execute(
-                getSchemaCommandConfig(),
-                new ExecuteSchemaOperationCommand(databaseSchemaUpdate)
-            );
+        getCommandExecutor().execute(getSchemaCommandConfig(), new ExecuteSchemaOperationCommand(databaseSchemaUpdate));
         tenantInfoHolder.clearCurrentTenantId();
     }
 

@@ -26,15 +26,13 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.springframework.context.ApplicationEventPublisher;
 
-public class ApplicationDeployedEventProducer
-    extends AbstractActivitiSmartLifeCycle {
+public class ApplicationDeployedEventProducer extends AbstractActivitiSmartLifeCycle {
 
     private RepositoryService repositoryService;
     private APIDeploymentConverter deploymentConverter;
     private List<ProcessRuntimeEventListener<ApplicationDeployedEvent>> listeners;
     private ApplicationEventPublisher eventPublisher;
-    private static final String APPLICATION_DEPLOYMENT_NAME =
-        "SpringAutoDeployment";
+    private static final String APPLICATION_DEPLOYMENT_NAME = "SpringAutoDeployment";
 
     public ApplicationDeployedEventProducer(
         RepositoryService repositoryService,
@@ -55,25 +53,18 @@ public class ApplicationDeployedEventProducer
             applicationDeployedEvents.forEach(listener::onEvent);
         }
         if (!applicationDeployedEvents.isEmpty()) {
-            eventPublisher.publishEvent(
-                new ApplicationDeployedEvents(applicationDeployedEvents)
-            );
+            eventPublisher.publishEvent(new ApplicationDeployedEvents(applicationDeployedEvents));
         }
     }
 
     private List<ApplicationDeployedEvent> getApplicationDeployedEvents() {
         List<Deployment> deployments = deploymentConverter.from(
-            repositoryService
-                .createDeploymentQuery()
-                .deploymentName(APPLICATION_DEPLOYMENT_NAME)
-                .list()
+            repositoryService.createDeploymentQuery().deploymentName(APPLICATION_DEPLOYMENT_NAME).list()
         );
 
         List<ApplicationDeployedEvent> applicationDeployedEvents = new ArrayList<>();
         for (Deployment deployment : deployments) {
-            ApplicationDeployedEventImpl applicationDeployedEvent = new ApplicationDeployedEventImpl(
-                deployment
-            );
+            ApplicationDeployedEventImpl applicationDeployedEvent = new ApplicationDeployedEventImpl(deployment);
             applicationDeployedEvents.add(applicationDeployedEvent);
         }
         return applicationDeployedEvents;

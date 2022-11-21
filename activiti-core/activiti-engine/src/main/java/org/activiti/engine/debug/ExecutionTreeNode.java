@@ -91,11 +91,7 @@ public class ExecutionTreeNode implements Iterable<ExecutionTreeNode> {
         return strb.toString();
     }
 
-    protected void internalToString(
-        StringBuilder strb,
-        String prefix,
-        boolean isTail
-    ) {
+    protected void internalToString(StringBuilder strb, String prefix, boolean isTail) {
         strb.append(
             prefix +
             (isTail ? "└── " : "├── ") +
@@ -106,32 +102,16 @@ public class ExecutionTreeNode implements Iterable<ExecutionTreeNode> {
             getExecutionEntity().getParentId() +
             (getExecutionEntity().isActive() ? " (active)" : " (not active)") +
             (getExecutionEntity().isScope() ? " (scope)" : "") +
-            (
-                getExecutionEntity().isMultiInstanceRoot()
-                    ? " (multi instance root)"
-                    : ""
-            ) +
+            (getExecutionEntity().isMultiInstanceRoot() ? " (multi instance root)" : "") +
             (getExecutionEntity().isEnded() ? " (ended)" : "") +
             System.lineSeparator()
         );
         if (children != null) {
             for (int i = 0; i < children.size() - 1; i++) {
-                children
-                    .get(i)
-                    .internalToString(
-                        strb,
-                        prefix + (isTail ? "    " : "│   "),
-                        false
-                    );
+                children.get(i).internalToString(strb, prefix + (isTail ? "    " : "│   "), false);
             }
             if (children.size() > 0) {
-                children
-                    .get(children.size() - 1)
-                    .internalToString(
-                        strb,
-                        prefix + (isTail ? "    " : "│   "),
-                        true
-                    );
+                children.get(children.size() - 1).internalToString(strb, prefix + (isTail ? "    " : "│   "), true);
             }
         }
     }
@@ -140,17 +120,9 @@ public class ExecutionTreeNode implements Iterable<ExecutionTreeNode> {
         FlowElement flowElement = getExecutionEntity().getCurrentFlowElement();
         if (flowElement instanceof SequenceFlow) {
             SequenceFlow sequenceFlow = (SequenceFlow) flowElement;
-            return (
-                sequenceFlow.getSourceRef() +
-                " -> " +
-                sequenceFlow.getTargetRef()
-            );
+            return (sequenceFlow.getSourceRef() + " -> " + sequenceFlow.getTargetRef());
         } else if (flowElement != null) {
-            return (
-                flowElement.getId() +
-                " (" +
-                flowElement.getClass().getSimpleName()
-            );
+            return (flowElement.getId() + " (" + flowElement.getClass().getSimpleName());
         } else {
             return "";
         }

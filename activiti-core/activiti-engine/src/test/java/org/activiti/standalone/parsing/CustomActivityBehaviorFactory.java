@@ -24,13 +24,10 @@ import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFacto
 /**
 
  */
-public class CustomActivityBehaviorFactory
-    extends DefaultActivityBehaviorFactory {
+public class CustomActivityBehaviorFactory extends DefaultActivityBehaviorFactory {
 
     @Override
-    public NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(
-        StartEvent startEvent
-    ) {
+    public NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(StartEvent startEvent) {
         return new NoneStartEventActivityBehavior() {
             public void execute(DelegateExecution execution) {
                 super.execute(execution);

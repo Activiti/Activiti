@@ -50,9 +50,7 @@ import org.slf4j.LoggerFactory;
 
 public class EventLogger implements ActivitiEventListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        EventLogger.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(EventLogger.class);
 
     private static final String EVENT_FLUSHER_KEY = "eventFlusher";
 
@@ -76,61 +74,22 @@ public class EventLogger implements ActivitiEventListener {
     }
 
     protected void initializeDefaultHandlers() {
-        addEventHandler(
-            ActivitiEventType.TASK_CREATED,
-            TaskCreatedEventHandler.class
-        );
-        addEventHandler(
-            ActivitiEventType.TASK_COMPLETED,
-            TaskCompletedEventHandler.class
-        );
-        addEventHandler(
-            ActivitiEventType.TASK_ASSIGNED,
-            TaskAssignedEventHandler.class
-        );
+        addEventHandler(ActivitiEventType.TASK_CREATED, TaskCreatedEventHandler.class);
+        addEventHandler(ActivitiEventType.TASK_COMPLETED, TaskCompletedEventHandler.class);
+        addEventHandler(ActivitiEventType.TASK_ASSIGNED, TaskAssignedEventHandler.class);
 
-        addEventHandler(
-            ActivitiEventType.SEQUENCEFLOW_TAKEN,
-            SequenceFlowTakenEventHandler.class
-        );
+        addEventHandler(ActivitiEventType.SEQUENCEFLOW_TAKEN, SequenceFlowTakenEventHandler.class);
 
-        addEventHandler(
-            ActivitiEventType.ACTIVITY_COMPLETED,
-            ActivityCompletedEventHandler.class
-        );
-        addEventHandler(
-            ActivitiEventType.ACTIVITY_STARTED,
-            ActivityStartedEventHandler.class
-        );
-        addEventHandler(
-            ActivitiEventType.ACTIVITY_SIGNALED,
-            ActivitySignaledEventHandler.class
-        );
-        addEventHandler(
-            ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
-            ActivityMessageEventHandler.class
-        );
-        addEventHandler(
-            ActivitiEventType.ACTIVITY_COMPENSATE,
-            ActivityCompensatedEventHandler.class
-        );
-        addEventHandler(
-            ActivitiEventType.ACTIVITY_ERROR_RECEIVED,
-            ActivityErrorReceivedEventHandler.class
-        );
+        addEventHandler(ActivitiEventType.ACTIVITY_COMPLETED, ActivityCompletedEventHandler.class);
+        addEventHandler(ActivitiEventType.ACTIVITY_STARTED, ActivityStartedEventHandler.class);
+        addEventHandler(ActivitiEventType.ACTIVITY_SIGNALED, ActivitySignaledEventHandler.class);
+        addEventHandler(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, ActivityMessageEventHandler.class);
+        addEventHandler(ActivitiEventType.ACTIVITY_COMPENSATE, ActivityCompensatedEventHandler.class);
+        addEventHandler(ActivitiEventType.ACTIVITY_ERROR_RECEIVED, ActivityErrorReceivedEventHandler.class);
 
-        addEventHandler(
-            ActivitiEventType.VARIABLE_CREATED,
-            VariableCreatedEventHandler.class
-        );
-        addEventHandler(
-            ActivitiEventType.VARIABLE_DELETED,
-            VariableDeletedEventHandler.class
-        );
-        addEventHandler(
-            ActivitiEventType.VARIABLE_UPDATED,
-            VariableUpdatedEventHandler.class
-        );
+        addEventHandler(ActivitiEventType.VARIABLE_CREATED, VariableCreatedEventHandler.class);
+        addEventHandler(ActivitiEventType.VARIABLE_DELETED, VariableDeletedEventHandler.class);
+        addEventHandler(ActivitiEventType.VARIABLE_UPDATED, VariableUpdatedEventHandler.class);
     }
 
     @Override
@@ -139,19 +98,14 @@ public class EventLogger implements ActivitiEventListener {
         if (eventHandler != null) {
             // Events are flushed when command context is closed
             CommandContext currentCommandContext = Context.getCommandContext();
-            EventFlusher eventFlusher = (EventFlusher) currentCommandContext.getAttribute(
-                EVENT_FLUSHER_KEY
-            );
+            EventFlusher eventFlusher = (EventFlusher) currentCommandContext.getAttribute(EVENT_FLUSHER_KEY);
 
             if (eventFlusher == null) {
                 eventFlusher = createEventFlusher();
                 if (eventFlusher == null) {
                     eventFlusher = new DatabaseEventFlusher(); // Default
                 }
-                currentCommandContext.addAttribute(
-                    EVENT_FLUSHER_KEY,
-                    eventFlusher
-                );
+                currentCommandContext.addAttribute(EVENT_FLUSHER_KEY, eventFlusher);
 
                 currentCommandContext.addCloseListener(eventFlusher);
                 currentCommandContext.addCloseListener(
@@ -169,14 +123,10 @@ public class EventLogger implements ActivitiEventListener {
                             }
                         }
 
-                        public void afterSessionsFlush(
-                            CommandContext commandContext
-                        ) {}
+                        public void afterSessionsFlush(CommandContext commandContext) {}
 
                         @Override
-                        public void closeFailure(
-                            CommandContext commandContext
-                        ) {}
+                        public void closeFailure(CommandContext commandContext) {}
                     }
                 );
             }
@@ -192,24 +142,15 @@ public class EventLogger implements ActivitiEventListener {
             Object entity = ((ActivitiEntityEvent) event).getEntity();
             if (entity instanceof ExecutionEntity) {
                 ExecutionEntity executionEntity = (ExecutionEntity) entity;
-                if (
-                    executionEntity
-                        .getProcessInstanceId()
-                        .equals(executionEntity.getId())
-                ) {
-                    eventHandlerClass =
-                        ProcessInstanceStartedEventHandler.class;
+                if (executionEntity.getProcessInstanceId().equals(executionEntity.getId())) {
+                    eventHandlerClass = ProcessInstanceStartedEventHandler.class;
                 }
             }
         } else if (event.getType().equals(ActivitiEventType.ENTITY_DELETED)) {
             Object entity = ((ActivitiEntityEvent) event).getEntity();
             if (entity instanceof ExecutionEntity) {
                 ExecutionEntity executionEntity = (ExecutionEntity) entity;
-                if (
-                    executionEntity
-                        .getProcessInstanceId()
-                        .equals(executionEntity.getId())
-                ) {
+                if (executionEntity.getProcessInstanceId().equals(executionEntity.getId())) {
                     eventHandlerClass = ProcessInstanceEndedEventHandler.class;
                 }
             }
@@ -230,19 +171,13 @@ public class EventLogger implements ActivitiEventListener {
         Class<? extends EventLoggerEventHandler> eventHandlerClass
     ) {
         try {
-            EventLoggerEventHandler eventHandler = eventHandlerClass
-                .getDeclaredConstructor()
-                .newInstance();
+            EventLoggerEventHandler eventHandler = eventHandlerClass.getDeclaredConstructor().newInstance();
             eventHandler.setTimeStamp(clock.getCurrentTime());
             eventHandler.setEvent(event);
             eventHandler.setObjectMapper(objectMapper);
             return eventHandler;
         } catch (Exception e) {
-            logger.warn(
-                "Could not instantiate " +
-                eventHandlerClass +
-                ", this is most likely a programmatic error"
-            );
+            logger.warn("Could not instantiate " + eventHandlerClass + ", this is most likely a programmatic error");
         }
         return null;
     }

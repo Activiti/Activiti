@@ -45,34 +45,22 @@ public class TimerDefinitionConverterTest extends AbstractConverterTest {
     }
 
     private void validateModel(BpmnModel model) {
-        IntermediateCatchEvent timer = (IntermediateCatchEvent) model
-            .getMainProcess()
-            .getFlowElement("timer");
+        IntermediateCatchEvent timer = (IntermediateCatchEvent) model.getMainProcess().getFlowElement("timer");
         assertThat(timer).isNotNull();
-        TimerEventDefinition timerEvent = (TimerEventDefinition) timer
-            .getEventDefinitions()
-            .get(0);
+        TimerEventDefinition timerEvent = (TimerEventDefinition) timer.getEventDefinitions().get(0);
         assertThat(timerEvent.getCalendarName()).isEqualTo("custom");
         assertThat(timerEvent.getTimeDuration()).isEqualTo("PT5M");
 
-        StartEvent start = (StartEvent) model
-            .getMainProcess()
-            .getFlowElement("theStart");
+        StartEvent start = (StartEvent) model.getMainProcess().getFlowElement("theStart");
         assertThat(start).isNotNull();
-        TimerEventDefinition startTimerEvent = (TimerEventDefinition) start
-            .getEventDefinitions()
-            .get(0);
+        TimerEventDefinition startTimerEvent = (TimerEventDefinition) start.getEventDefinitions().get(0);
         assertThat(startTimerEvent.getCalendarName()).isEqualTo("custom");
         assertThat(startTimerEvent.getTimeCycle()).isEqualTo("R2/PT5S");
         assertThat(startTimerEvent.getEndDate()).isEqualTo("${EndDate}");
 
-        BoundaryEvent boundaryTimer = (BoundaryEvent) model
-            .getMainProcess()
-            .getFlowElement("boundaryTimer");
+        BoundaryEvent boundaryTimer = (BoundaryEvent) model.getMainProcess().getFlowElement("boundaryTimer");
         assertThat(boundaryTimer).isNotNull();
-        TimerEventDefinition boundaryTimerEvent = (TimerEventDefinition) boundaryTimer
-            .getEventDefinitions()
-            .get(0);
+        TimerEventDefinition boundaryTimerEvent = (TimerEventDefinition) boundaryTimer.getEventDefinitions().get(0);
         assertThat(boundaryTimerEvent.getCalendarName()).isEqualTo("custom");
         assertThat(boundaryTimerEvent.getTimeDuration()).isEqualTo("PT10S");
         assertThat(boundaryTimerEvent.getEndDate()).isNull();

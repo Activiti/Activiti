@@ -41,9 +41,7 @@ import org.apache.commons.lang3.StringUtils;
 public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
 
     private final Pattern xmlChars = Pattern.compile("[<>&]");
-    private SimpleDateFormat sdf = new SimpleDateFormat(
-        "yyyy-MM-dd'T'HH:mm:ss"
-    );
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     protected boolean didWriteExtensionStartElement = false;
 
     public Class<? extends BaseElement> getBpmnElementType() {
@@ -56,23 +54,13 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected BaseElement convertXMLToElement(
-        XMLStreamReader xtr,
-        BpmnModel model
-    ) throws Exception {
+    protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
         ValuedDataObject dataObject = null;
         ItemDefinition itemSubjectRef = new ItemDefinition();
 
-        String structureRef = xtr.getAttributeValue(
-            null,
-            ATTRIBUTE_DATA_ITEM_REF
-        );
-        if (
-            StringUtils.isNotEmpty(structureRef) && structureRef.contains(":")
-        ) {
-            String dataType = structureRef.substring(
-                structureRef.indexOf(':') + 1
-            );
+        String structureRef = xtr.getAttributeValue(null, ATTRIBUTE_DATA_ITEM_REF);
+        if (StringUtils.isNotEmpty(structureRef) && structureRef.contains(":")) {
+            String dataType = structureRef.substring(structureRef.indexOf(':') + 1);
 
             if (dataType.equals("string")) {
                 dataObject = new StringDataObject();
@@ -100,9 +88,7 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
 
         if (dataObject != null) {
             dataObject.setId(xtr.getAttributeValue(null, ATTRIBUTE_DATA_ID));
-            dataObject.setName(
-                xtr.getAttributeValue(null, ATTRIBUTE_DATA_NAME)
-            );
+            dataObject.setName(xtr.getAttributeValue(null, ATTRIBUTE_DATA_NAME));
 
             BpmnXMLUtil.addXMLLocation(dataObject, xtr);
 
@@ -111,23 +97,15 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
 
             parseChildElements(getXMLElementName(), dataObject, model, xtr);
 
-            List<ExtensionElement> valuesElement = dataObject
-                .getExtensionElements()
-                .get("value");
+            List<ExtensionElement> valuesElement = dataObject.getExtensionElements().get("value");
             if (valuesElement != null && !valuesElement.isEmpty()) {
                 ExtensionElement valueElement = valuesElement.get(0);
                 if (StringUtils.isNotEmpty(valueElement.getElementText())) {
                     if (dataObject instanceof DateDataObject) {
                         try {
-                            dataObject.setValue(
-                                sdf.parse(valueElement.getElementText())
-                            );
+                            dataObject.setValue(sdf.parse(valueElement.getElementText()));
                         } catch (Exception e) {
-                            LOGGER.error(
-                                "Error converting {}",
-                                dataObject.getName(),
-                                e.getMessage()
-                            );
+                            LOGGER.error("Error converting {}", dataObject.getName(), e.getMessage());
                         }
                     } else {
                         dataObject.setValue(valueElement.getElementText());
@@ -143,23 +121,14 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalAttributes(
-        BaseElement element,
-        BpmnModel model,
-        XMLStreamWriter xtw
-    ) throws Exception {
+    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+        throws Exception {
         ValuedDataObject dataObject = (ValuedDataObject) element;
         if (
             dataObject.getItemSubjectRef() != null &&
-            StringUtils.isNotEmpty(
-                dataObject.getItemSubjectRef().getStructureRef()
-            )
+            StringUtils.isNotEmpty(dataObject.getItemSubjectRef().getStructureRef())
         ) {
-            writeDefaultAttribute(
-                ATTRIBUTE_DATA_ITEM_REF,
-                dataObject.getItemSubjectRef().getStructureRef(),
-                xtw
-            );
+            writeDefaultAttribute(ATTRIBUTE_DATA_ITEM_REF, dataObject.getItemSubjectRef().getStructureRef(), xtw);
         }
     }
 
@@ -171,20 +140,13 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
     ) throws Exception {
         ValuedDataObject dataObject = (ValuedDataObject) element;
 
-        if (
-            StringUtils.isNotEmpty(dataObject.getId()) &&
-            dataObject.getValue() != null
-        ) {
+        if (StringUtils.isNotEmpty(dataObject.getId()) && dataObject.getValue() != null) {
             if (!didWriteExtensionStartElement) {
                 xtw.writeStartElement(ELEMENT_EXTENSIONS);
                 didWriteExtensionStartElement = true;
             }
 
-            xtw.writeStartElement(
-                ACTIVITI_EXTENSIONS_PREFIX,
-                ELEMENT_DATA_VALUE,
-                ACTIVITI_EXTENSIONS_NAMESPACE
-            );
+            xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, ELEMENT_DATA_VALUE, ACTIVITI_EXTENSIONS_NAMESPACE);
             if (dataObject.getValue() != null) {
                 String value = null;
                 if (dataObject instanceof DateDataObject) {
@@ -193,10 +155,7 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
                     value = dataObject.getValue().toString();
                 }
 
-                if (
-                    dataObject instanceof StringDataObject &&
-                    xmlChars.matcher(value).find()
-                ) {
+                if (dataObject instanceof StringDataObject && xmlChars.matcher(value).find()) {
                     xtw.writeCData(value);
                 } else {
                     xtw.writeCharacters(value);
@@ -209,9 +168,6 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalChildElements(
-        BaseElement element,
-        BpmnModel model,
-        XMLStreamWriter xtw
-    ) throws Exception {}
+    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+        throws Exception {}
 }

@@ -24,8 +24,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 
  */
 @Internal
-public interface HistoricProcessInstanceEntity
-    extends HistoricScopeInstanceEntity, HistoricProcessInstance {
+public interface HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity, HistoricProcessInstance {
     void setEndActivityId(String endActivityId);
 
     void setBusinessKey(String businessKey);

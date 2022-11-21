@@ -41,25 +41,12 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
     /**
      * Test create, update and delete events of attachments on a task/process.
      */
-    @Deployment(
-        resources = {
-            "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml",
-        }
-    )
+    @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
     public void testAttachmentEntityEvents() throws Exception {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
-            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-                "oneTaskProcess"
-            );
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
-            Task task = taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+            Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
             assertThat(task).isNotNull();
 
             // Create link-attachment
@@ -73,32 +60,20 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
             );
             assertThat(attachment.getUserId()).isNull();
             assertThat(listener.getEventsReceived()).hasSize(2);
-            ActivitiEntityEvent event = (ActivitiEntityEvent) listener
-                .getEventsReceived()
-                .get(0);
-            assertThat(event.getType())
-                .isEqualTo(ActivitiEventType.ENTITY_CREATED);
-            assertThat(event.getProcessInstanceId())
-                .isEqualTo(processInstance.getId());
-            assertThat(event.getExecutionId())
-                .isEqualTo(processInstance.getId());
-            assertThat(event.getProcessDefinitionId())
-                .isEqualTo(processInstance.getProcessDefinitionId());
+            ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+            assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
+            assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+            assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
+            assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
             Attachment attachmentFromEvent = (Attachment) event.getEntity();
-            assertThat(attachmentFromEvent.getId())
-                .isEqualTo(attachment.getId());
+            assertThat(attachmentFromEvent.getId()).isEqualTo(attachment.getId());
             event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-            assertThat(event.getType())
-                .isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
-            assertThat(event.getProcessInstanceId())
-                .isEqualTo(processInstance.getId());
-            assertThat(event.getExecutionId())
-                .isEqualTo(processInstance.getId());
-            assertThat(event.getProcessDefinitionId())
-                .isEqualTo(processInstance.getProcessDefinitionId());
+            assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+            assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+            assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
+            assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
             attachmentFromEvent = (Attachment) event.getEntity();
-            assertThat(attachmentFromEvent.getId())
-                .isEqualTo(attachment.getId());
+            assertThat(attachmentFromEvent.getId()).isEqualTo(attachment.getId());
             listener.clearEventsReceived();
 
             // Create binary attachment
@@ -116,21 +91,15 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
             assertThat(attachment.getUserId()).isEqualTo("testuser");
             assertThat(listener.getEventsReceived()).hasSize(2);
             event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-            assertThat(event.getType())
-                .isEqualTo(ActivitiEventType.ENTITY_CREATED);
-            assertThat(event.getProcessInstanceId())
-                .isEqualTo(processInstance.getId());
-            assertThat(event.getExecutionId())
-                .isEqualTo(processInstance.getId());
-            assertThat(event.getProcessDefinitionId())
-                .isEqualTo(processInstance.getProcessDefinitionId());
+            assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
+            assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+            assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
+            assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
             attachmentFromEvent = (Attachment) event.getEntity();
-            assertThat(attachmentFromEvent.getId())
-                .isEqualTo(attachment.getId());
+            assertThat(attachmentFromEvent.getId()).isEqualTo(attachment.getId());
 
             event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-            assertThat(event.getType())
-                .isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+            assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
             listener.clearEventsReceived();
 
             // Update attachment
@@ -140,36 +109,25 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
 
             assertThat(listener.getEventsReceived()).hasSize(1);
             event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-            assertThat(event.getType())
-                .isEqualTo(ActivitiEventType.ENTITY_UPDATED);
-            assertThat(event.getProcessInstanceId())
-                .isEqualTo(processInstance.getId());
-            assertThat(event.getExecutionId())
-                .isEqualTo(processInstance.getId());
-            assertThat(event.getProcessDefinitionId())
-                .isEqualTo(processInstance.getProcessDefinitionId());
+            assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);
+            assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+            assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
+            assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
             attachmentFromEvent = (Attachment) event.getEntity();
-            assertThat(attachmentFromEvent.getId())
-                .isEqualTo(attachment.getId());
-            assertThat(attachmentFromEvent.getDescription())
-                .isEqualTo("Description");
+            assertThat(attachmentFromEvent.getId()).isEqualTo(attachment.getId());
+            assertThat(attachmentFromEvent.getDescription()).isEqualTo("Description");
             listener.clearEventsReceived();
 
             // Finally, delete attachment
             taskService.deleteAttachment(attachment.getId());
             assertThat(listener.getEventsReceived()).hasSize(1);
             event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-            assertThat(event.getType())
-                .isEqualTo(ActivitiEventType.ENTITY_DELETED);
-            assertThat(event.getProcessInstanceId())
-                .isEqualTo(processInstance.getId());
-            assertThat(event.getExecutionId())
-                .isEqualTo(processInstance.getId());
-            assertThat(event.getProcessDefinitionId())
-                .isEqualTo(processInstance.getProcessDefinitionId());
+            assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
+            assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
+            assertThat(event.getExecutionId()).isEqualTo(processInstance.getId());
+            assertThat(event.getProcessDefinitionId()).isEqualTo(processInstance.getProcessDefinitionId());
             attachmentFromEvent = (Attachment) event.getEntity();
-            assertThat(attachmentFromEvent.getId())
-                .isEqualTo(attachment.getId());
+            assertThat(attachmentFromEvent.getId()).isEqualTo(attachment.getId());
         }
     }
 
@@ -177,11 +135,7 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
      * Test create, update and delete events of users.
      */
     public void testAttachmentEntityEventsStandaloneTask() throws Exception {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             Task task = null;
             try {
                 task = taskService.newTask();
@@ -198,21 +152,15 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
                     "http://activiti.org"
                 );
                 assertThat(listener.getEventsReceived()).hasSize(2);
-                ActivitiEntityEvent event = (ActivitiEntityEvent) listener
-                    .getEventsReceived()
-                    .get(0);
-                assertThat(event.getType())
-                    .isEqualTo(ActivitiEventType.ENTITY_CREATED);
+                ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+                assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
                 assertThat(event.getProcessInstanceId()).isNull();
                 assertThat(event.getExecutionId()).isNull();
                 assertThat(event.getProcessDefinitionId()).isNull();
                 Attachment attachmentFromEvent = (Attachment) event.getEntity();
-                assertThat(attachmentFromEvent.getId())
-                    .isEqualTo(attachment.getId());
-                event =
-                    (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-                assertThat(event.getType())
-                    .isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+                assertThat(attachmentFromEvent.getId()).isEqualTo(attachment.getId());
+                event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+                assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
                 listener.clearEventsReceived();
 
                 // Create binary attachment
@@ -226,21 +174,16 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
                         new ByteArrayInputStream("test".getBytes())
                     );
                 assertThat(listener.getEventsReceived()).hasSize(2);
-                event =
-                    (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-                assertThat(event.getType())
-                    .isEqualTo(ActivitiEventType.ENTITY_CREATED);
+                event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+                assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
                 assertThat(event.getProcessInstanceId()).isNull();
                 assertThat(event.getExecutionId()).isNull();
                 assertThat(event.getProcessDefinitionId()).isNull();
                 attachmentFromEvent = (Attachment) event.getEntity();
-                assertThat(attachmentFromEvent.getId())
-                    .isEqualTo(attachment.getId());
+                assertThat(attachmentFromEvent.getId()).isEqualTo(attachment.getId());
 
-                event =
-                    (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-                assertThat(event.getType())
-                    .isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+                event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+                assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
                 listener.clearEventsReceived();
 
                 // Update attachment
@@ -249,33 +192,26 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
                 taskService.saveAttachment(attachment);
 
                 assertThat(listener.getEventsReceived()).hasSize(1);
-                event =
-                    (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-                assertThat(event.getType())
-                    .isEqualTo(ActivitiEventType.ENTITY_UPDATED);
+                event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+                assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);
                 assertThat(event.getProcessInstanceId()).isNull();
                 assertThat(event.getExecutionId()).isNull();
                 assertThat(event.getProcessDefinitionId()).isNull();
                 attachmentFromEvent = (Attachment) event.getEntity();
-                assertThat(attachmentFromEvent.getId())
-                    .isEqualTo(attachment.getId());
-                assertThat(attachmentFromEvent.getDescription())
-                    .isEqualTo("Description");
+                assertThat(attachmentFromEvent.getId()).isEqualTo(attachment.getId());
+                assertThat(attachmentFromEvent.getDescription()).isEqualTo("Description");
                 listener.clearEventsReceived();
 
                 // Finally, delete attachment
                 taskService.deleteAttachment(attachment.getId());
                 assertThat(listener.getEventsReceived()).hasSize(1);
-                event =
-                    (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-                assertThat(event.getType())
-                    .isEqualTo(ActivitiEventType.ENTITY_DELETED);
+                event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+                assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
                 assertThat(event.getProcessInstanceId()).isNull();
                 assertThat(event.getExecutionId()).isNull();
                 assertThat(event.getProcessDefinitionId()).isNull();
                 attachmentFromEvent = (Attachment) event.getEntity();
-                assertThat(attachmentFromEvent.getId())
-                    .isEqualTo(attachment.getId());
+                assertThat(attachmentFromEvent.getId()).isEqualTo(attachment.getId());
             } finally {
                 if (task != null && task.getId() != null) {
                     taskService.deleteTask(task.getId());
@@ -285,13 +221,8 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
         }
     }
 
-    public void testAttachmentEntityEventsOnHistoricTaskDelete()
-        throws Exception {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+    public void testAttachmentEntityEventsOnHistoricTaskDelete() throws Exception {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             Task task = null;
             try {
                 task = taskService.newTask();
@@ -314,17 +245,13 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
                 historyService.deleteHistoricTaskInstance(task.getId());
 
                 assertThat(listener.getEventsReceived()).hasSize(1);
-                ActivitiEntityEvent event = (ActivitiEntityEvent) listener
-                    .getEventsReceived()
-                    .get(0);
-                assertThat(event.getType())
-                    .isEqualTo(ActivitiEventType.ENTITY_DELETED);
+                ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+                assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
                 assertThat(event.getProcessInstanceId()).isNull();
                 assertThat(event.getExecutionId()).isNull();
                 assertThat(event.getProcessDefinitionId()).isNull();
                 Attachment attachmentFromEvent = (Attachment) event.getEntity();
-                assertThat(attachmentFromEvent.getId())
-                    .isEqualTo(attachment.getId());
+                assertThat(attachmentFromEvent.getId()).isEqualTo(attachment.getId());
             } finally {
                 if (task != null && task.getId() != null) {
                     taskService.deleteTask(task.getId());
@@ -338,9 +265,7 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         listener = new TestActivitiEntityEventListener(Attachment.class);
-        processEngineConfiguration
-            .getEventDispatcher()
-            .addEventListener(listener);
+        processEngineConfiguration.getEventDispatcher().addEventListener(listener);
     }
 
     @Override
@@ -348,9 +273,7 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
         super.tearDown();
 
         if (listener != null) {
-            processEngineConfiguration
-                .getEventDispatcher()
-                .removeEventListener(listener);
+            processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
         }
     }
 }

@@ -33,11 +33,9 @@ import org.junit.jupiter.api.Test;
 /**
  * @see <a href="https://activiti.atlassian.net/browse/ACT-1847">https://activiti.atlassian.net/browse/ACT-1847</a>
  */
-public class ValuedDataObjectWithExtensionsConverterTest
-    extends AbstractConverterTest {
+public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConverterTest {
 
-    protected static final String YOURCO_EXTENSIONS_NAMESPACE =
-        "http://yourco/bpmn";
+    protected static final String YOURCO_EXTENSIONS_NAMESPACE = "http://yourco/bpmn";
     protected static final String YOURCO_EXTENSIONS_PREFIX = "yourco";
 
     protected static final String ELEMENT_DATA_ATTRIBUTES = "attributes";
@@ -46,14 +44,11 @@ public class ValuedDataObjectWithExtensionsConverterTest
     protected static final String ATTRIBUTE_VALUE = "value";
 
     protected static final String ELEMENT_I18LN_LOCALIZATION = "i18ln";
-    protected static final String ATTRIBUTE_DATA_RESOURCE_BUNDLE_KEY_FOR_NAME =
-        "resourceBundleKeyForName";
+    protected static final String ATTRIBUTE_DATA_RESOURCE_BUNDLE_KEY_FOR_NAME = "resourceBundleKeyForName";
     protected static final String ATTRIBUTE_DATA_RESOURCE_BUNDLE_KEY_FOR_DESCRIPTION =
         "resourceBundleKeyForDescription";
-    protected static final String ATTRIBUTE_DATA_LABELED_ENTITY_ID_FOR_NAME =
-        "labeledEntityIdForName";
-    protected static final String ATTRIBUTE_DATA_LABELED_ENTITY_ID_FOR_DESCRIPTION =
-        "labeledEntityIdForDescription";
+    protected static final String ATTRIBUTE_DATA_LABELED_ENTITY_ID_FOR_NAME = "labeledEntityIdForName";
+    protected static final String ATTRIBUTE_DATA_LABELED_ENTITY_ID_FOR_DESCRIPTION = "labeledEntityIdForDescription";
 
     private Localization localization = new Localization();
 
@@ -71,9 +66,7 @@ public class ValuedDataObjectWithExtensionsConverterTest
             return resourceBundleKeyForName;
         }
 
-        public void setResourceBundleKeyForName(
-            String resourceBundleKeyForName
-        ) {
+        public void setResourceBundleKeyForName(String resourceBundleKeyForName) {
             this.resourceBundleKeyForName = resourceBundleKeyForName;
         }
 
@@ -81,11 +74,8 @@ public class ValuedDataObjectWithExtensionsConverterTest
             return resourceBundleKeyForDescription;
         }
 
-        public void setResourceBundleKeyForDescription(
-            String resourceBundleKeyForDescription
-        ) {
-            this.resourceBundleKeyForDescription =
-                resourceBundleKeyForDescription;
+        public void setResourceBundleKeyForDescription(String resourceBundleKeyForDescription) {
+            this.resourceBundleKeyForDescription = resourceBundleKeyForDescription;
         }
 
         public String getLabeledEntityIdForName() {
@@ -100,9 +90,7 @@ public class ValuedDataObjectWithExtensionsConverterTest
             return labeledEntityIdForDescription;
         }
 
-        public void setLabeledEntityIdForDescription(
-            String labeledEntityIdForDescription
-        ) {
+        public void setLabeledEntityIdForDescription(String labeledEntityIdForDescription) {
             this.labeledEntityIdForDescription = labeledEntityIdForDescription;
         }
 
@@ -110,18 +98,10 @@ public class ValuedDataObjectWithExtensionsConverterTest
         public String toString() {
             StringBuilder sb = new StringBuilder(100);
             sb.append("Localization: [");
-            sb
-                .append("resourceBundleKeyForName=")
-                .append(resourceBundleKeyForName);
-            sb
-                .append(", resourceBundleKeyForDescription=")
-                .append(resourceBundleKeyForDescription);
-            sb
-                .append(", labeledEntityIdForName=")
-                .append(labeledEntityIdForName);
-            sb
-                .append(", labeledEntityIdForDescription=")
-                .append(labeledEntityIdForDescription);
+            sb.append("resourceBundleKeyForName=").append(resourceBundleKeyForName);
+            sb.append(", resourceBundleKeyForDescription=").append(resourceBundleKeyForDescription);
+            sb.append(", labeledEntityIdForName=").append(labeledEntityIdForName);
+            sb.append(", labeledEntityIdForDescription=").append(labeledEntityIdForDescription);
             sb.append("]");
             return sb.toString();
         }
@@ -150,17 +130,13 @@ public class ValuedDataObjectWithExtensionsConverterTest
     }
 
     private void validateModel(BpmnModel model) {
-        FlowElement flowElement = model
-            .getMainProcess()
-            .getFlowElement("start1");
+        FlowElement flowElement = model.getMainProcess().getFlowElement("start1");
         assertThat(flowElement).isNotNull();
         assertThat(flowElement).isInstanceOf(StartEvent.class);
         assertThat(flowElement.getId()).isEqualTo("start1");
 
         // verify the main process data objects
-        List<ValuedDataObject> dataObjects = model
-            .getMainProcess()
-            .getDataObjects();
+        List<ValuedDataObject> dataObjects = model.getMainProcess().getDataObjects();
         assertThat(dataObjects).hasSize(1);
 
         Map<String, ValuedDataObject> objectMap = new HashMap<String, ValuedDataObject>();
@@ -171,8 +147,7 @@ public class ValuedDataObjectWithExtensionsConverterTest
         ValuedDataObject dataObj = objectMap.get("dObj1");
         assertThat(dataObj.getId()).isEqualTo("dObj1");
         assertThat(dataObj.getName()).isEqualTo("StringTest");
-        assertThat(dataObj.getItemSubjectRef().getStructureRef())
-            .isEqualTo("xsd:string");
+        assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:string");
         assertThat(dataObj.getValue()).isInstanceOf(String.class);
         assertThat(dataObj.getValue()).isEqualTo("Testing123");
 
@@ -189,14 +164,10 @@ public class ValuedDataObjectWithExtensionsConverterTest
          * Verify DataObject localization extension
          */
         Localization localization = getLocalization(dataObj);
-        assertThat(localization.getResourceBundleKeyForName())
-            .isEqualTo("rbkfn-1");
-        assertThat(localization.getResourceBundleKeyForDescription())
-            .isEqualTo("rbkfd-1");
-        assertThat(localization.getLabeledEntityIdForName())
-            .isEqualTo("leifn-1");
-        assertThat(localization.getLabeledEntityIdForDescription())
-            .isEqualTo("leifd-1");
+        assertThat(localization.getResourceBundleKeyForName()).isEqualTo("rbkfn-1");
+        assertThat(localization.getResourceBundleKeyForDescription()).isEqualTo("rbkfd-1");
+        assertThat(localization.getLabeledEntityIdForName()).isEqualTo("leifn-1");
+        assertThat(localization.getLabeledEntityIdForDescription()).isEqualTo("leifd-1");
 
         flowElement = model.getMainProcess().getFlowElement("subprocess1");
         assertThat(flowElement).isNotNull();
@@ -217,8 +188,7 @@ public class ValuedDataObjectWithExtensionsConverterTest
         dataObj = objectMap.get("dObj2");
         assertThat(dataObj.getId()).isEqualTo("dObj2");
         assertThat(dataObj.getName()).isEqualTo("BooleanTest");
-        assertThat(dataObj.getItemSubjectRef().getStructureRef())
-            .isEqualTo("xsd:boolean");
+        assertThat(dataObj.getItemSubjectRef().getStructureRef()).isEqualTo("xsd:boolean");
         assertThat(dataObj.getValue()).isInstanceOf(Boolean.class);
         assertThat(dataObj.getValue()).isEqualTo(Boolean.TRUE);
 
@@ -235,20 +205,13 @@ public class ValuedDataObjectWithExtensionsConverterTest
          * Verify DataObject localization extension
          */
         localization = getLocalization(dataObj);
-        assertThat(localization.getResourceBundleKeyForName())
-            .isEqualTo("rbkfn-2");
-        assertThat(localization.getResourceBundleKeyForDescription())
-            .isEqualTo("rbkfd-2");
-        assertThat(localization.getLabeledEntityIdForName())
-            .isEqualTo("leifn-2");
-        assertThat(localization.getLabeledEntityIdForDescription())
-            .isEqualTo("leifd-2");
+        assertThat(localization.getResourceBundleKeyForName()).isEqualTo("rbkfn-2");
+        assertThat(localization.getResourceBundleKeyForDescription()).isEqualTo("rbkfd-2");
+        assertThat(localization.getLabeledEntityIdForName()).isEqualTo("leifn-2");
+        assertThat(localization.getLabeledEntityIdForDescription()).isEqualTo("leifd-2");
     }
 
-    protected static String getExtensionValue(
-        String key,
-        ValuedDataObject dataObj
-    ) {
+    protected static String getExtensionValue(String key, ValuedDataObject dataObj) {
         Map<String, List<ExtensionElement>> extensionElements = dataObj.getExtensionElements();
 
         if (!extensionElements.isEmpty()) {
@@ -257,10 +220,7 @@ public class ValuedDataObjectWithExtensionsConverterTest
         return null;
     }
 
-    protected static ExtensionElement getExtensionElement(
-        String key,
-        ValuedDataObject dataObj
-    ) {
+    protected static ExtensionElement getExtensionElement(String key, ValuedDataObject dataObj) {
         Map<String, List<ExtensionElement>> extensionElements = dataObj.getExtensionElements();
 
         if (!extensionElements.isEmpty()) {
@@ -273,9 +233,7 @@ public class ValuedDataObjectWithExtensionsConverterTest
         Map<String, String> attributes = null;
 
         if (null != dObj) {
-            List<ExtensionElement> attributesExtension = dObj
-                .getExtensionElements()
-                .get(ELEMENT_DATA_ATTRIBUTES);
+            List<ExtensionElement> attributesExtension = dObj.getExtensionElements().get(ELEMENT_DATA_ATTRIBUTES);
 
             if (null != attributesExtension && !attributesExtension.isEmpty()) {
                 attributes = new HashMap<String, String>();
@@ -286,14 +244,8 @@ public class ValuedDataObjectWithExtensionsConverterTest
 
                 for (ExtensionElement attributeExtension : attributeExtensions) {
                     attributes.put(
-                        attributeExtension.getAttributeValue(
-                            YOURCO_EXTENSIONS_NAMESPACE,
-                            ATTRIBUTE_NAME
-                        ),
-                        attributeExtension.getAttributeValue(
-                            YOURCO_EXTENSIONS_NAMESPACE,
-                            ATTRIBUTE_VALUE
-                        )
+                        attributeExtension.getAttributeValue(YOURCO_EXTENSIONS_NAMESPACE, ATTRIBUTE_NAME),
+                        attributeExtension.getAttributeValue(YOURCO_EXTENSIONS_NAMESPACE, ATTRIBUTE_VALUE)
                     );
                 }
             }
@@ -302,37 +254,21 @@ public class ValuedDataObjectWithExtensionsConverterTest
     }
 
     protected Localization getLocalization(BaseElement dObj) {
-        List<ExtensionElement> i18lnExtension = dObj
-            .getExtensionElements()
-            .get(ELEMENT_I18LN_LOCALIZATION);
+        List<ExtensionElement> i18lnExtension = dObj.getExtensionElements().get(ELEMENT_I18LN_LOCALIZATION);
 
         if (!i18lnExtension.isEmpty()) {
-            Map<String, List<ExtensionAttribute>> extensionAttributes = i18lnExtension
-                .get(0)
-                .getAttributes();
+            Map<String, List<ExtensionAttribute>> extensionAttributes = i18lnExtension.get(0).getAttributes();
             localization.setLabeledEntityIdForName(
-                extensionAttributes
-                    .get(ATTRIBUTE_DATA_LABELED_ENTITY_ID_FOR_NAME)
-                    .get(0)
-                    .getValue()
+                extensionAttributes.get(ATTRIBUTE_DATA_LABELED_ENTITY_ID_FOR_NAME).get(0).getValue()
             );
             localization.setLabeledEntityIdForDescription(
-                extensionAttributes
-                    .get(ATTRIBUTE_DATA_LABELED_ENTITY_ID_FOR_DESCRIPTION)
-                    .get(0)
-                    .getValue()
+                extensionAttributes.get(ATTRIBUTE_DATA_LABELED_ENTITY_ID_FOR_DESCRIPTION).get(0).getValue()
             );
             localization.setResourceBundleKeyForName(
-                extensionAttributes
-                    .get(ATTRIBUTE_DATA_RESOURCE_BUNDLE_KEY_FOR_NAME)
-                    .get(0)
-                    .getValue()
+                extensionAttributes.get(ATTRIBUTE_DATA_RESOURCE_BUNDLE_KEY_FOR_NAME).get(0).getValue()
             );
             localization.setResourceBundleKeyForDescription(
-                extensionAttributes
-                    .get(ATTRIBUTE_DATA_RESOURCE_BUNDLE_KEY_FOR_DESCRIPTION)
-                    .get(0)
-                    .getValue()
+                extensionAttributes.get(ATTRIBUTE_DATA_RESOURCE_BUNDLE_KEY_FOR_DESCRIPTION).get(0).getValue()
             );
         }
         return localization;

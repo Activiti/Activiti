@@ -31,8 +31,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class VariableInstanceEntityImpl
     extends AbstractEntity
-    implements
-        VariableInstanceEntity, ValueFields, BulkDeleteable, Serializable {
+    implements VariableInstanceEntity, ValueFields, BulkDeleteable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -240,14 +239,10 @@ public class VariableInstanceEntityImpl
             sb.append(", doubleValue=").append(doubleValue);
         }
         if (textValue != null) {
-            sb
-                .append(", textValue=")
-                .append(StringUtils.abbreviate(textValue, 40));
+            sb.append(", textValue=").append(StringUtils.abbreviate(textValue, 40));
         }
         if (textValue2 != null) {
-            sb
-                .append(", textValue2=")
-                .append(StringUtils.abbreviate(textValue2, 40));
+            sb.append(", textValue2=").append(StringUtils.abbreviate(textValue2, 40));
         }
         if (byteArrayRef != null && byteArrayRef.getId() != null) {
             sb.append(", byteArrayValueId=").append(byteArrayRef.getId());

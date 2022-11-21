@@ -46,32 +46,19 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
         // Process has two service task: first sets transient vars,
         // second then processes transient var and puts data in real vars.
         // (mimicing a service + processing call)
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "transientVarsTest"
-        );
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
-        String message = (String) taskService.getVariable(
-            task.getId(),
-            "message"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("transientVarsTest");
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+        String message = (String) taskService.getVariable(task.getId(), "message");
         assertThat(message).isEqualTo("Hello World!");
 
         // Variable should not be there after user task
-        assertThat(
-            runtimeService.getVariable(processInstance.getId(), "response")
-        )
-            .isNull();
+        assertThat(runtimeService.getVariable(processInstance.getId(), "response")).isNull();
     }
 
     // Test case for ACT-4304
     @Deployment
     public void testTransientVariableDeletion() {
-        String processInstanceId = runtimeService
-            .startProcessInstanceByKey("transientVarsTest")
-            .getId();
+        String processInstanceId = runtimeService.startProcessInstanceByKey("transientVarsTest").getId();
         long count = historyService
             .createHistoricVariableInstanceQuery()
             .processInstanceId(processInstanceId)
@@ -89,20 +76,12 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testUseTransientVariableInExclusiveGateway() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "transientVarsTest"
-        );
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("transientVarsTest");
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task.getTaskDefinitionKey()).isEqualTo("responseOk");
 
         // Variable should not be there after user task
-        assertThat(
-            runtimeService.getVariable(processInstance.getId(), "response")
-        )
-            .isNull();
+        assertThat(runtimeService.getVariable(processInstance.getId(), "response")).isNull();
     }
 
     @Deployment
@@ -110,15 +89,9 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
         Map<String, Object> persistentVars = new HashMap<String, Object>();
         persistentVars.put("persistentVar1", "Hello World");
         persistentVars.put("persistentVar2", 987654321);
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "transientVarsTest",
-            persistentVars
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("transientVarsTest", persistentVars);
 
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task.getName()).isEqualTo("My Task");
 
         persistentVars.clear();
@@ -128,52 +101,16 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
         taskService.complete(task.getId(), persistentVars, transientVars);
 
         // Combined var has been set by execution listener
-        String combinedVar = (String) runtimeService.getVariable(
-            processInstance.getId(),
-            "combinedVar"
-        );
+        String combinedVar = (String) runtimeService.getVariable(processInstance.getId(), "combinedVar");
         assertThat(combinedVar).isEqualTo("Hello WorldABC123");
 
-        assertThat(
-            runtimeService.getVariable(
-                processInstance.getId(),
-                "persistentVar1"
-            )
-        )
-            .isNotNull();
-        assertThat(
-            runtimeService.getVariable(
-                processInstance.getId(),
-                "persistentVar2"
-            )
-        )
-            .isNotNull();
+        assertThat(runtimeService.getVariable(processInstance.getId(), "persistentVar1")).isNotNull();
+        assertThat(runtimeService.getVariable(processInstance.getId(), "persistentVar2")).isNotNull();
 
-        assertThat(
-            runtimeService.getVariable(
-                processInstance.getId(),
-                "unusedTransientVar"
-            )
-        )
-            .isNull();
-        assertThat(
-            runtimeService.getVariable(processInstance.getId(), "transientVar")
-        )
-            .isNull();
-        assertThat(
-            runtimeService.getVariable(
-                processInstance.getId(),
-                "secondTransientVar"
-            )
-        )
-            .isNull();
-        assertThat(
-            runtimeService.getVariable(
-                processInstance.getId(),
-                "thirdTransientVar"
-            )
-        )
-            .isNull();
+        assertThat(runtimeService.getVariable(processInstance.getId(), "unusedTransientVar")).isNull();
+        assertThat(runtimeService.getVariable(processInstance.getId(), "transientVar")).isNull();
+        assertThat(runtimeService.getVariable(processInstance.getId(), "secondTransientVar")).isNull();
+        assertThat(runtimeService.getVariable(processInstance.getId(), "thirdTransientVar")).isNull();
     }
 
     @Deployment
@@ -181,15 +118,9 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
         Map<String, Object> persistentVars = new HashMap<String, Object>();
         persistentVars.put("persistentVar1", "Hello World");
         persistentVars.put("persistentVar2", 987654321);
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "transientVarsTest",
-            persistentVars
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("transientVarsTest", persistentVars);
 
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task.getName()).isEqualTo("My Task");
 
         persistentVars.clear();
@@ -199,72 +130,27 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
         taskService.complete(task.getId(), persistentVars, transientVars);
 
         // Combined var has been set by execution listener
-        String combinedVar = (String) runtimeService.getVariable(
-            processInstance.getId(),
-            "combinedVar"
-        );
+        String combinedVar = (String) runtimeService.getVariable(processInstance.getId(), "combinedVar");
         assertThat(combinedVar).isEqualTo("Hello WorldABC123");
 
-        assertThat(
-            runtimeService.getVariable(
-                processInstance.getId(),
-                "persistentVar1"
-            )
-        )
-            .isNotNull();
-        assertThat(
-            runtimeService.getVariable(
-                processInstance.getId(),
-                "persistentVar2"
-            )
-        )
-            .isNotNull();
+        assertThat(runtimeService.getVariable(processInstance.getId(), "persistentVar1")).isNotNull();
+        assertThat(runtimeService.getVariable(processInstance.getId(), "persistentVar2")).isNotNull();
 
-        assertThat(
-            runtimeService.getVariable(
-                processInstance.getId(),
-                "unusedTransientVar"
-            )
-        )
-            .isNull();
-        assertThat(
-            runtimeService.getVariable(processInstance.getId(), "transientVar")
-        )
-            .isNull();
-        assertThat(
-            runtimeService.getVariable(
-                processInstance.getId(),
-                "secondTransientVar"
-            )
-        )
-            .isNull();
-        assertThat(
-            runtimeService.getVariable(
-                processInstance.getId(),
-                "thirdTransientVar"
-            )
-        )
-            .isNull();
+        assertThat(runtimeService.getVariable(processInstance.getId(), "unusedTransientVar")).isNull();
+        assertThat(runtimeService.getVariable(processInstance.getId(), "transientVar")).isNull();
+        assertThat(runtimeService.getVariable(processInstance.getId(), "secondTransientVar")).isNull();
+        assertThat(runtimeService.getVariable(processInstance.getId(), "thirdTransientVar")).isNull();
     }
 
     @Deployment
     public void testTaskListenerWithTransientVariables() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "transientVarsTest"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("transientVarsTest");
 
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task.getName()).isEqualTo("Task after");
 
-        String mergedResult = (String) taskService.getVariable(
-            task.getId(),
-            "mergedResult"
-        );
-        assertThat(mergedResult)
-            .isEqualTo("transientVar01transientVar02transientVar03");
+        String mergedResult = (String) taskService.getVariable(task.getId(), "mergedResult");
+        assertThat(mergedResult).isEqualTo("transientVar01transientVar02transientVar03");
     }
 
     @Deployment
@@ -273,57 +159,30 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
             "transientVarsTest",
             singletonMap("theVar", "Hello World")
         );
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
-        String varValue = (String) taskService.getVariable(
-            task.getId(),
-            "resultVar"
-        );
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+        String varValue = (String) taskService.getVariable(task.getId(), "resultVar");
         assertThat(varValue).isEqualTo("I am shadowed");
     }
 
     @Deployment
     public void testTriggerWithTransientVars() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "transientVarsTest"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("transientVarsTest");
 
-        Execution executionInWait1 = runtimeService
-            .createExecutionQuery()
-            .activityId("wait1")
-            .singleResult();
-        runtimeService.trigger(
-            executionInWait1.getId(),
-            singletonMap("persistentVar", "persistentValue01")
-        );
+        Execution executionInWait1 = runtimeService.createExecutionQuery().activityId("wait1").singleResult();
+        runtimeService.trigger(executionInWait1.getId(), singletonMap("persistentVar", "persistentValue01"));
 
-        Execution executionInWait2 = runtimeService
-            .createExecutionQuery()
-            .activityId("wait2")
-            .singleResult();
+        Execution executionInWait2 = runtimeService.createExecutionQuery().activityId("wait2").singleResult();
         runtimeService.trigger(
             executionInWait2.getId(),
             singletonMap("anotherPersistentVar", "persistentValue02"),
             singletonMap("transientVar", "transientValue")
         );
 
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
-        String result = (String) taskService.getVariable(
-            task.getId(),
-            "result"
-        );
-        assertThat(result)
-            .isEqualTo("persistentValue02persistentValue01transientValue");
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+        String result = (String) taskService.getVariable(task.getId(), "result");
+        assertThat(result).isEqualTo("persistentValue02persistentValue01transientValue");
 
-        assertThat(
-            runtimeService.getVariable(processInstance.getId(), "transientVar")
-        )
-            .isNull();
+        assertThat(runtimeService.getVariable(processInstance.getId(), "transientVar")).isNull();
     }
 
     @Deployment
@@ -333,13 +192,9 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
             .processDefinitionKey("transientVarsTest")
             .transientVariable("variable", "gotoA")
             .start();
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task.getName()).isEqualTo("A");
-        assertThat(runtimeService.getVariables(processInstance.getId()))
-            .hasSize(0);
+        assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
 
         processInstance =
             runtimeService
@@ -347,14 +202,9 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
                 .processDefinitionKey("transientVarsTest")
                 .transientVariable("variable", "gotoB")
                 .start();
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task.getName()).isEqualTo("B");
-        assertThat(runtimeService.getVariables(processInstance.getId()))
-            .hasSize(0);
+        assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
 
         processInstance =
             runtimeService
@@ -362,35 +212,23 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
                 .processDefinitionKey("transientVarsTest")
                 .transientVariable("variable", "somethingElse")
                 .start();
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task.getName()).isEqualTo("Default");
-        assertThat(runtimeService.getVariables(processInstance.getId()))
-            .hasSize(0);
+        assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
     }
 
     @Deployment
     public void testStartProcessInstanceById() {
-        String processDefinitionId = repositoryService
-            .createProcessDefinitionQuery()
-            .singleResult()
-            .getId();
+        String processDefinitionId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
 
         ProcessInstance processInstance = runtimeService
             .createProcessInstanceBuilder()
             .processDefinitionId(processDefinitionId)
             .transientVariable("variable", "gotoA")
             .start();
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task.getName()).isEqualTo("A");
-        assertThat(runtimeService.getVariables(processInstance.getId()))
-            .hasSize(0);
+        assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
 
         processInstance =
             runtimeService
@@ -398,14 +236,9 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
                 .processDefinitionId(processDefinitionId)
                 .transientVariable("variable", "gotoB")
                 .start();
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task.getName()).isEqualTo("B");
-        assertThat(runtimeService.getVariables(processInstance.getId()))
-            .hasSize(0);
+        assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
 
         processInstance =
             runtimeService
@@ -413,14 +246,9 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
                 .processDefinitionId(processDefinitionId)
                 .transientVariable("variable", "somethingElse")
                 .start();
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task.getName()).isEqualTo("Default");
-        assertThat(runtimeService.getVariables(processInstance.getId()))
-            .hasSize(0);
+        assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
     }
 
     @Deployment
@@ -430,13 +258,9 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
             .messageName("myMessage")
             .transientVariable("variable", "gotoA")
             .start();
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task.getName()).isEqualTo("A");
-        assertThat(runtimeService.getVariables(processInstance.getId()))
-            .hasSize(0);
+        assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
 
         processInstance =
             runtimeService
@@ -444,14 +268,9 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
                 .messageName("myMessage")
                 .transientVariable("variable", "gotoB")
                 .start();
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task.getName()).isEqualTo("B");
-        assertThat(runtimeService.getVariables(processInstance.getId()))
-            .hasSize(0);
+        assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
 
         processInstance =
             runtimeService
@@ -459,14 +278,9 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
                 .messageName("myMessage")
                 .transientVariable("variable", "somethingElse")
                 .start();
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task.getName()).isEqualTo("Default");
-        assertThat(runtimeService.getVariables(processInstance.getId()))
-            .hasSize(0);
+        assertThat(runtimeService.getVariables(processInstance.getId())).hasSize(0);
     }
 
     /* Service task class for previous tests */
@@ -478,10 +292,7 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
     public static class FetchDataServiceTask implements JavaDelegate {
 
         public void execute(DelegateExecution execution) {
-            execution.setTransientVariable(
-                "response",
-                "author=kermit;version=3;message=Hello World"
-            );
+            execution.setTransientVariable("response", "author=kermit;version=3;message=Hello World");
             execution.setTransientVariable("status", Integer.valueOf(200));
         }
     }
@@ -492,9 +303,7 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
     public static class ServiceTask02 implements JavaDelegate {
 
         public void execute(DelegateExecution execution) {
-            String response = (String) execution.getTransientVariable(
-                "response"
-            );
+            String response = (String) execution.getTransientVariable("response");
             for (String s : response.split(";")) {
                 String[] data = s.split("=");
                 if (data[0].equals("message")) {
@@ -504,34 +313,20 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
         }
     }
 
-    public static class CombineVariablesExecutionListener
-        implements ExecutionListener {
+    public static class CombineVariablesExecutionListener implements ExecutionListener {
 
         public void notify(DelegateExecution execution) {
-            String persistentVar1 = (String) execution.getVariable(
-                "persistentVar1"
-            );
+            String persistentVar1 = (String) execution.getVariable("persistentVar1");
 
-            Object unusedTransientVar = execution.getVariable(
-                "unusedTransientVar"
-            );
+            Object unusedTransientVar = execution.getVariable("unusedTransientVar");
             if (unusedTransientVar != null) {
-                throw new RuntimeException(
-                    "Unused transient var should have been deleted"
-                );
+                throw new RuntimeException("Unused transient var should have been deleted");
             }
 
-            String secondTransientVar = (String) execution.getVariable(
-                "secondTransientVar"
-            );
-            Number thirdTransientVar = (Number) execution.getTransientVariable(
-                "thirdTransientVar"
-            );
+            String secondTransientVar = (String) execution.getVariable("secondTransientVar");
+            Number thirdTransientVar = (Number) execution.getTransientVariable("thirdTransientVar");
 
-            String combinedVar =
-                persistentVar1 +
-                secondTransientVar +
-                thirdTransientVar.intValue();
+            String combinedVar = persistentVar1 + secondTransientVar + thirdTransientVar.intValue();
             execution.setVariable("combinedVar", combinedVar);
         }
     }
@@ -542,10 +337,7 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
 
         public void execute(DelegateExecution execution) {
             String var = (String) variableName.getValue(execution);
-            execution.setTransientVariable(
-                var,
-                "author=kermit;version=3;message=" + var
-            );
+            execution.setTransientVariable(var, "author=kermit;version=3;message=" + var);
         }
     }
 
@@ -559,9 +351,7 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
             String resultVar = (String) resultVariableName.getValue(execution);
 
             // Sets the name of the variable as 'resultVar'
-            for (String s : ((String) execution.getVariable(varName)).split(
-                    ";"
-                )) {
+            for (String s : ((String) execution.getVariable(varName)).split(";")) {
                 String[] data = s.split("=");
                 if (data[0].equals("message")) {
                     execution.setTransientVariable(resultVar, data[1]);
@@ -570,22 +360,17 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
         }
     }
 
-    public static class MergeTransientVariablesTaskListener
-        implements TaskListener {
+    public static class MergeTransientVariablesTaskListener implements TaskListener {
 
         public void notify(DelegateTask delegateTask) {
             Map<String, Object> transientVariables = delegateTask.getTransientVariables();
-            List<String> variableNames = new ArrayList(
-                transientVariables.keySet()
-            );
+            List<String> variableNames = new ArrayList(transientVariables.keySet());
             Collections.sort(variableNames);
 
             StringBuilder strb = new StringBuilder();
             for (String variableName : variableNames) {
                 if (variableName.startsWith("transientResult")) {
-                    String result = (String) transientVariables.get(
-                        variableName
-                    );
+                    String result = (String) transientVariables.get(variableName);
                     strb.append(result);
                 }
             }

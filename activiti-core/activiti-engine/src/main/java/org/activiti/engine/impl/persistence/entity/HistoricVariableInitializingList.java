@@ -28,8 +28,7 @@ import org.activiti.engine.impl.variable.JPAEntityVariableType;
  *
 
  */
-public class HistoricVariableInitializingList
-    extends ArrayList<HistoricVariableInstanceEntity> {
+public class HistoricVariableInitializingList extends ArrayList<HistoricVariableInstanceEntity> {
 
     private static final long serialVersionUID = 1L;
 
@@ -46,9 +45,7 @@ public class HistoricVariableInitializingList
     }
 
     @Override
-    public boolean addAll(
-        Collection<? extends HistoricVariableInstanceEntity> c
-    ) {
+    public boolean addAll(Collection<? extends HistoricVariableInstanceEntity> c) {
         for (HistoricVariableInstanceEntity e : c) {
             initializeVariable(e);
         }
@@ -56,10 +53,7 @@ public class HistoricVariableInitializingList
     }
 
     @Override
-    public boolean addAll(
-        int index,
-        Collection<? extends HistoricVariableInstanceEntity> c
-    ) {
+    public boolean addAll(int index, Collection<? extends HistoricVariableInstanceEntity> c) {
         for (HistoricVariableInstanceEntity e : c) {
             initializeVariable(e);
         }
@@ -70,25 +64,15 @@ public class HistoricVariableInitializingList
      * If the passed {@link HistoricVariableInstanceEntity} is a binary variable and the command-context is active, the variable value is fetched to ensure the byte-array is populated.
      */
     protected void initializeVariable(HistoricVariableInstanceEntity e) {
-        if (
-            Context.getCommandContext() != null &&
-            e != null &&
-            e.getVariableType() != null
-        ) {
+        if (Context.getCommandContext() != null && e != null && e.getVariableType() != null) {
             e.getValue();
 
             // make sure JPA entities are cached for later retrieval
             if (
-                JPAEntityVariableType.TYPE_NAME.equals(
-                    e.getVariableType().getTypeName()
-                ) ||
-                JPAEntityListVariableType.TYPE_NAME.equals(
-                    e.getVariableType().getTypeName()
-                )
+                JPAEntityVariableType.TYPE_NAME.equals(e.getVariableType().getTypeName()) ||
+                JPAEntityListVariableType.TYPE_NAME.equals(e.getVariableType().getTypeName())
             ) {
-                ((CacheableVariable) e.getVariableType()).setForceCacheable(
-                        true
-                    );
+                ((CacheableVariable) e.getVariableType()).setForceCacheable(true);
             }
         }
     }

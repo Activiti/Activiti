@@ -35,15 +35,11 @@ import org.slf4j.LoggerFactory;
 
 
  */
-public class InclusiveGatewayActivityBehavior
-    extends GatewayActivityBehavior
-    implements InactiveActivityBehavior {
+public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior implements InactiveActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 
-    private static Logger logger = LoggerFactory.getLogger(
-        InclusiveGatewayActivityBehavior.class.getName()
-    );
+    private static Logger logger = LoggerFactory.getLogger(InclusiveGatewayActivityBehavior.class.getName());
 
     @Override
     public void execute(DelegateExecution execution) {
@@ -77,11 +73,7 @@ public class InclusiveGatewayActivityBehavior
         boolean oneExecutionCanReachGateway = false;
         while (!oneExecutionCanReachGateway && executionIterator.hasNext()) {
             ExecutionEntity executionEntity = executionIterator.next();
-            if (
-                !executionEntity
-                    .getActivityId()
-                    .equals(execution.getCurrentActivityId())
-            ) {
+            if (!executionEntity.getActivityId().equals(execution.getCurrentActivityId())) {
                 boolean canReachGateway = ExecutionGraphUtil.isReachable(
                     execution.getProcessDefinitionId(),
                     executionEntity.getActivityId(),
@@ -91,10 +83,7 @@ public class InclusiveGatewayActivityBehavior
                     oneExecutionCanReachGateway = true;
                 }
             } else if (
-                executionEntity
-                    .getActivityId()
-                    .equals(execution.getCurrentActivityId()) &&
-                executionEntity.isActive()
+                executionEntity.getActivityId().equals(execution.getCurrentActivityId()) && executionEntity.isActive()
             ) {
                 // Special case: the execution has reached the inc gw, but the operation hasn't been executed yet for that execution
                 oneExecutionCanReachGateway = true;
@@ -103,9 +92,7 @@ public class InclusiveGatewayActivityBehavior
 
         // If no execution can reach the gateway, the gateway activates and executes fork behavior
         if (!oneExecutionCanReachGateway) {
-            logger.debug(
-                "Inclusive gateway cannot be reached by any execution and is activated"
-            );
+            logger.debug("Inclusive gateway cannot be reached by any execution and is activated");
 
             // Kill all executions here (except the incoming)
             Collection<ExecutionEntity> executionsInGateway = executionEntityManager.findInactiveExecutionsByActivityIdAndProcessInstanceId(
@@ -113,23 +100,14 @@ public class InclusiveGatewayActivityBehavior
                 execution.getProcessInstanceId()
             );
             for (ExecutionEntity executionEntityInGateway : executionsInGateway) {
-                if (
-                    !executionEntityInGateway.getId().equals(execution.getId())
-                ) {
-                    commandContext
-                        .getHistoryManager()
-                        .recordActivityEnd(executionEntityInGateway, null);
-                    executionEntityManager.deleteExecutionAndRelatedData(
-                        executionEntityInGateway,
-                        null
-                    );
+                if (!executionEntityInGateway.getId().equals(execution.getId())) {
+                    commandContext.getHistoryManager().recordActivityEnd(executionEntityInGateway, null);
+                    executionEntityManager.deleteExecutionAndRelatedData(executionEntityInGateway, null);
                 }
             }
 
             // Leave
-            commandContext
-                .getAgenda()
-                .planTakeOutgoingSequenceFlowsOperation(execution, true);
+            commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution, true);
         }
     }
 }

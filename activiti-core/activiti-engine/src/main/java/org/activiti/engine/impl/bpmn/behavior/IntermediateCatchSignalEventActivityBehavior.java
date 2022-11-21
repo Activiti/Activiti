@@ -30,18 +30,14 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.apache.commons.lang3.StringUtils;
 
-public class IntermediateCatchSignalEventActivityBehavior
-    extends IntermediateCatchEventActivityBehavior {
+public class IntermediateCatchSignalEventActivityBehavior extends IntermediateCatchEventActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 
     protected SignalEventDefinition signalEventDefinition;
     protected Signal signal;
 
-    public IntermediateCatchSignalEventActivityBehavior(
-        SignalEventDefinition signalEventDefinition,
-        Signal signal
-    ) {
+    public IntermediateCatchSignalEventActivityBehavior(SignalEventDefinition signalEventDefinition, Signal signal) {
         this.signalEventDefinition = signalEventDefinition;
         this.signal = signal;
     }
@@ -61,20 +57,12 @@ public class IntermediateCatchSignalEventActivityBehavior
             signalName = signalExpression.getValue(execution).toString();
         }
 
-        commandContext
-            .getEventSubscriptionEntityManager()
-            .insertSignalEvent(signalName, signal, executionEntity);
+        commandContext.getEventSubscriptionEntityManager().insertSignalEvent(signalName, signal, executionEntity);
     }
 
     @Override
-    public void trigger(
-        DelegateExecution execution,
-        String triggerName,
-        Object triggerData
-    ) {
-        ExecutionEntity executionEntity = deleteSignalEventSubscription(
-            execution
-        );
+    public void trigger(DelegateExecution execution, String triggerName, Object triggerData) {
+        ExecutionEntity executionEntity = deleteSignalEventSubscription(execution);
         leaveIntermediateCatchEvent(executionEntity);
     }
 
@@ -84,15 +72,10 @@ public class IntermediateCatchSignalEventActivityBehavior
         Context
             .getCommandContext()
             .getExecutionEntityManager()
-            .deleteExecutionAndRelatedData(
-                (ExecutionEntity) execution,
-                DeleteReason.EVENT_BASED_GATEWAY_CANCEL
-            );
+            .deleteExecutionAndRelatedData((ExecutionEntity) execution, DeleteReason.EVENT_BASED_GATEWAY_CANCEL);
     }
 
-    protected ExecutionEntity deleteSignalEventSubscription(
-        DelegateExecution execution
-    ) {
+    protected ExecutionEntity deleteSignalEventSubscription(DelegateExecution execution) {
         ExecutionEntity executionEntity = (ExecutionEntity) execution;
 
         String eventName = null;

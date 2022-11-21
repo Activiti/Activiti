@@ -38,9 +38,7 @@ public class DeploymentPersistenceTest extends PluggableActivitiTestCase {
             .addString("org/activiti/test/TheAnswer.string", "42")
             .deploy();
 
-        List<Deployment> deployments = repositoryService
-            .createDeploymentQuery()
-            .list();
+        List<Deployment> deployments = repositoryService.createDeploymentQuery().list();
         assertThat(deployments).hasSize(1);
         deployment = deployments.get(0);
 
@@ -48,29 +46,20 @@ public class DeploymentPersistenceTest extends PluggableActivitiTestCase {
         assertThat(deployment.getDeploymentTime()).isNotNull();
 
         String deploymentId = deployment.getId();
-        List<String> resourceNames = repositoryService.getDeploymentResourceNames(
-            deploymentId
-        );
+        List<String> resourceNames = repositoryService.getDeploymentResourceNames(deploymentId);
         Set<String> expectedResourceNames = new HashSet<String>();
         expectedResourceNames.add("org/activiti/test/HelloWorld.string");
         expectedResourceNames.add("org/activiti/test/TheAnswer.string");
-        assertThat(new HashSet<String>(resourceNames))
-            .isEqualTo(expectedResourceNames);
+        assertThat(new HashSet<String>(resourceNames)).isEqualTo(expectedResourceNames);
 
         InputStream resourceStream = repositoryService.getResourceAsStream(
             deploymentId,
             "org/activiti/test/HelloWorld.string"
         );
-        assertThat(IoUtil.readInputStream(resourceStream, "test"))
-            .isEqualTo("hello world".getBytes());
+        assertThat(IoUtil.readInputStream(resourceStream, "test")).isEqualTo("hello world".getBytes());
 
-        resourceStream =
-            repositoryService.getResourceAsStream(
-                deploymentId,
-                "org/activiti/test/TheAnswer.string"
-            );
-        assertThat(IoUtil.readInputStream(resourceStream, "test"))
-            .isEqualTo("42".getBytes());
+        resourceStream = repositoryService.getResourceAsStream(deploymentId, "org/activiti/test/TheAnswer.string");
+        assertThat(IoUtil.readInputStream(resourceStream, "test")).isEqualTo("42".getBytes());
 
         repositoryService.deleteDeployment(deploymentId);
     }

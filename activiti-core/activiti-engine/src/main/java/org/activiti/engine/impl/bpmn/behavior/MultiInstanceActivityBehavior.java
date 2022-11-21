@@ -65,16 +65,12 @@ public abstract class MultiInstanceActivityBehavior
 
     private static final long serialVersionUID = 1L;
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(
-        MultiInstanceActivityBehavior.class
-    );
+    protected static final Logger LOGGER = LoggerFactory.getLogger(MultiInstanceActivityBehavior.class);
 
     // Variable names for outer instance(as described in spec)
     protected static final String NUMBER_OF_INSTANCES = "nrOfInstances";
-    protected static final String NUMBER_OF_ACTIVE_INSTANCES =
-        "nrOfActiveInstances";
-    protected static final String NUMBER_OF_COMPLETED_INSTANCES =
-        "nrOfCompletedInstances";
+    protected static final String NUMBER_OF_ACTIVE_INSTANCES = "nrOfActiveInstances";
+    protected static final String NUMBER_OF_COMPLETED_INSTANCES = "nrOfCompletedInstances";
 
     // Instance members
     protected Activity activity;
@@ -96,22 +92,13 @@ public abstract class MultiInstanceActivityBehavior
      * @param innerActivityBehavior
      *          The original {@link ActivityBehavior} of the activity that will be wrapped inside this behavior.
      */
-    public MultiInstanceActivityBehavior(
-        Activity activity,
-        AbstractBpmnActivityBehavior innerActivityBehavior
-    ) {
+    public MultiInstanceActivityBehavior(Activity activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
         this.activity = activity;
         setInnerActivityBehavior(innerActivityBehavior);
     }
 
     public void execute(DelegateExecution execution) {
-        if (
-            getLocalLoopVariable(
-                execution,
-                getCollectionElementIndexVariable()
-            ) ==
-            null
-        ) {
+        if (getLocalLoopVariable(execution, getCollectionElementIndexVariable()) == null) {
             clearLoopDataOutputRef(execution);
             int nrOfInstances = 0;
 
@@ -125,9 +112,7 @@ public abstract class MultiInstanceActivityBehavior
                 super.leave(execution);
             }
         } else {
-            getCommandContext()
-                .getHistoryManager()
-                .recordActivityStart((ExecutionEntity) execution);
+            getCommandContext().getHistoryManager().recordActivityStart((ExecutionEntity) execution);
 
             innerActivityBehavior.execute(execution);
         }
@@ -141,10 +126,7 @@ public abstract class MultiInstanceActivityBehavior
 
     protected abstract int createInstances(DelegateExecution execution);
 
-    protected void executeCompensationBoundaryEvents(
-        FlowElement flowElement,
-        DelegateExecution execution
-    ) {
+    protected void executeCompensationBoundaryEvents(FlowElement flowElement, DelegateExecution execution) {
         //Execute compensation boundary events
         Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(
             execution.getProcessDefinitionId(),
@@ -153,17 +135,11 @@ public abstract class MultiInstanceActivityBehavior
         if (CollectionUtil.isNotEmpty(boundaryEvents)) {
             // The parent execution becomes a scope, and a child execution is created for each of the boundary events
             for (BoundaryEvent boundaryEvent : boundaryEvents) {
-                if (
-                    CollectionUtil.isEmpty(boundaryEvent.getEventDefinitions())
-                ) {
+                if (CollectionUtil.isEmpty(boundaryEvent.getEventDefinitions())) {
                     continue;
                 }
 
-                if (
-                    boundaryEvent
-                        .getEventDefinitions()
-                        .get(0) instanceof CompensateEventDefinition
-                ) {
+                if (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
                     ExecutionEntity childExecutionEntity = getCommandContext()
                         .getExecutionEntityManager()
                         .createChildExecution((ExecutionEntity) execution);
@@ -171,8 +147,7 @@ public abstract class MultiInstanceActivityBehavior
                     childExecutionEntity.setCurrentFlowElement(boundaryEvent);
                     childExecutionEntity.setScope(false);
 
-                    ActivityBehavior boundaryEventBehavior =
-                        ((ActivityBehavior) boundaryEvent.getBehavior());
+                    ActivityBehavior boundaryEventBehavior = ((ActivityBehavior) boundaryEvent.getBehavior());
                     boundaryEventBehavior.execute(childExecutionEntity);
                 }
             }
@@ -187,10 +162,7 @@ public abstract class MultiInstanceActivityBehavior
 
         // This could be cached or could be done at parsing time
         List<BoundaryEvent> results = new ArrayList<BoundaryEvent>(1);
-        Collection<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(
-            BoundaryEvent.class,
-            true
-        );
+        Collection<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class, true);
         for (BoundaryEvent boundaryEvent : boundaryEvents) {
             if (
                 boundaryEvent.getAttachedToRefId() != null &&
@@ -207,11 +179,7 @@ public abstract class MultiInstanceActivityBehavior
     }
 
     // Intercepts signals, and delegates it to the wrapped {@link ActivityBehavior}.
-    public void trigger(
-        DelegateExecution execution,
-        String signalName,
-        Object signalData
-    ) {
+    public void trigger(DelegateExecution execution, String signalName, Object signalData) {
         innerActivityBehavior.trigger(execution, signalName, signalData);
     }
 
@@ -222,10 +190,7 @@ public abstract class MultiInstanceActivityBehavior
     }
 
     // required for supporting external subprocesses
-    public void completing(
-        DelegateExecution execution,
-        DelegateExecution subProcessInstance
-    ) throws Exception {}
+    public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {}
 
     // required for supporting external subprocesses
     public void completed(DelegateExecution execution) throws Exception {
@@ -243,17 +208,12 @@ public abstract class MultiInstanceActivityBehavior
             Collection collection = resolveAndValidateCollection(execution);
             return collection.size();
         } else {
-            throw new ActivitiIllegalArgumentException(
-                "Couldn't resolve collection expression nor variable reference"
-            );
+            throw new ActivitiIllegalArgumentException("Couldn't resolve collection expression nor variable reference");
         }
     }
 
     @SuppressWarnings("rawtypes")
-    protected void executeOriginalBehavior(
-        DelegateExecution execution,
-        int loopCounter
-    ) {
+    protected void executeOriginalBehavior(DelegateExecution execution, int loopCounter) {
         if (usesCollection() && collectionElementVariable != null) {
             Collection collection = (Collection) resolveCollection(execution);
 
@@ -268,39 +228,28 @@ public abstract class MultiInstanceActivityBehavior
         }
 
         execution.setCurrentFlowElement(activity);
-        Context
-            .getAgenda()
-            .planContinueMultiInstanceOperation((ExecutionEntity) execution);
+        Context.getAgenda().planContinueMultiInstanceOperation((ExecutionEntity) execution);
     }
 
     @SuppressWarnings("rawtypes")
-    protected Collection resolveAndValidateCollection(
-        DelegateExecution execution
-    ) {
+    protected Collection resolveAndValidateCollection(DelegateExecution execution) {
         Object obj = resolveCollection(execution);
         if (collectionExpression != null) {
             if (!(obj instanceof Collection)) {
                 throw new ActivitiIllegalArgumentException(
-                    collectionExpression.getExpressionText() +
-                    "' didn't resolve to a Collection"
+                    collectionExpression.getExpressionText() + "' didn't resolve to a Collection"
                 );
             }
         } else if (collectionVariable != null) {
             if (obj == null) {
-                throw new ActivitiIllegalArgumentException(
-                    "Variable " + collectionVariable + " is not found"
-                );
+                throw new ActivitiIllegalArgumentException("Variable " + collectionVariable + " is not found");
             }
 
             if (!(obj instanceof Collection)) {
-                throw new ActivitiIllegalArgumentException(
-                    "Variable " + collectionVariable + "' is not a Collection"
-                );
+                throw new ActivitiIllegalArgumentException("Variable " + collectionVariable + "' is not a Collection");
             }
         } else {
-            throw new ActivitiIllegalArgumentException(
-                "Couldn't resolve collection expression nor variable reference"
-            );
+            throw new ActivitiIllegalArgumentException("Couldn't resolve collection expression nor variable reference");
         }
         return (Collection) obj;
     }
@@ -339,9 +288,7 @@ public abstract class MultiInstanceActivityBehavior
         }
     }
 
-    protected boolean completionConditionSatisfied(
-        DelegateExecution execution
-    ) {
+    protected boolean completionConditionSatisfied(DelegateExecution execution) {
         if (completionConditionExpression != null) {
             Object value = completionConditionExpression.getValue(execution);
             if (!(value instanceof Boolean)) {
@@ -354,28 +301,18 @@ public abstract class MultiInstanceActivityBehavior
 
             Boolean booleanValue = (Boolean) value;
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(
-                    "Completion condition of multi-instance satisfied: {}",
-                    booleanValue
-                );
+                LOGGER.debug("Completion condition of multi-instance satisfied: {}", booleanValue);
             }
             return booleanValue;
         }
         return false;
     }
 
-    protected void setLoopVariable(
-        DelegateExecution execution,
-        String variableName,
-        Object value
-    ) {
+    protected void setLoopVariable(DelegateExecution execution, String variableName, Object value) {
         execution.setVariableLocal(variableName, value);
     }
 
-    protected Integer getLoopVariable(
-        DelegateExecution execution,
-        String variableName
-    ) {
+    protected Integer getLoopVariable(DelegateExecution execution, String variableName) {
         Object value = execution.getVariableLocal(variableName);
         DelegateExecution parent = execution.getParent();
         while (value == null && parent != null) {
@@ -385,17 +322,11 @@ public abstract class MultiInstanceActivityBehavior
         return (Integer) (value != null ? value : 0);
     }
 
-    protected Integer getLocalLoopVariable(
-        DelegateExecution execution,
-        String variableName
-    ) {
+    protected Integer getLocalLoopVariable(DelegateExecution execution, String variableName) {
         return (Integer) execution.getVariableLocal(variableName);
     }
 
-    protected void removeLocalLoopVariable(
-        DelegateExecution execution,
-        String variableName
-    ) {
+    protected void removeLocalLoopVariable(DelegateExecution execution, String variableName) {
         execution.removeVariableLocal(variableName);
     }
 
@@ -406,11 +337,7 @@ public abstract class MultiInstanceActivityBehavior
         getCommandContext()
             .getProcessEngineConfiguration()
             .getListenerNotificationHelper()
-            .executeExecutionListeners(
-                activity,
-                execution,
-                ExecutionListener.EVENTNAME_END
-            );
+            .executeExecutionListeners(activity, execution, ExecutionListener.EVENTNAME_END);
     }
 
     protected void logLoopDetails(
@@ -424,9 +351,7 @@ public abstract class MultiInstanceActivityBehavior
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
                 "Multi-instance '{}' {}. Details: loopCounter={}, nrOrCompletedInstances={},nrOfActiveInstances={},nrOfInstances={}",
-                execution.getCurrentFlowElement() != null
-                    ? execution.getCurrentFlowElement().getId()
-                    : "",
+                execution.getCurrentFlowElement() != null ? execution.getCurrentFlowElement().getId() : "",
                 custom,
                 loopCounter,
                 nrOfCompletedInstances,
@@ -436,16 +361,10 @@ public abstract class MultiInstanceActivityBehavior
         }
     }
 
-    protected DelegateExecution getMultiInstanceRootExecution(
-        DelegateExecution executionEntity
-    ) {
+    protected DelegateExecution getMultiInstanceRootExecution(DelegateExecution executionEntity) {
         DelegateExecution multiInstanceRootExecution = null;
         DelegateExecution currentExecution = executionEntity;
-        while (
-            currentExecution != null &&
-            multiInstanceRootExecution == null &&
-            currentExecution.getParent() != null
-        ) {
+        while (currentExecution != null && multiInstanceRootExecution == null && currentExecution.getParent() != null) {
             if (currentExecution.isMultiInstanceRoot()) {
                 multiInstanceRootExecution = currentExecution;
             } else {
@@ -477,9 +396,7 @@ public abstract class MultiInstanceActivityBehavior
         return loopCardinalityExpression;
     }
 
-    public void setLoopCardinalityExpression(
-        Expression loopCardinalityExpression
-    ) {
+    public void setLoopCardinalityExpression(Expression loopCardinalityExpression) {
         this.loopCardinalityExpression = loopCardinalityExpression;
     }
 
@@ -487,9 +404,7 @@ public abstract class MultiInstanceActivityBehavior
         return completionConditionExpression;
     }
 
-    public void setCompletionConditionExpression(
-        Expression completionConditionExpression
-    ) {
+    public void setCompletionConditionExpression(Expression completionConditionExpression) {
         this.completionConditionExpression = completionConditionExpression;
     }
 
@@ -521,15 +436,11 @@ public abstract class MultiInstanceActivityBehavior
         return collectionElementIndexVariable;
     }
 
-    public void setCollectionElementIndexVariable(
-        String collectionElementIndexVariable
-    ) {
+    public void setCollectionElementIndexVariable(String collectionElementIndexVariable) {
         this.collectionElementIndexVariable = collectionElementIndexVariable;
     }
 
-    public void setInnerActivityBehavior(
-        AbstractBpmnActivityBehavior innerActivityBehavior
-    ) {
+    public void setInnerActivityBehavior(AbstractBpmnActivityBehavior innerActivityBehavior) {
         this.innerActivityBehavior = innerActivityBehavior;
         this.innerActivityBehavior.setMultiInstanceActivityBehavior(this);
     }
@@ -562,14 +473,9 @@ public abstract class MultiInstanceActivityBehavior
         this.outputDataItem = outputDataItem;
     }
 
-    protected void updateResultCollection(
-        DelegateExecution childExecution,
-        DelegateExecution miRootExecution
-    ) {
+    protected void updateResultCollection(DelegateExecution childExecution, DelegateExecution miRootExecution) {
         if (miRootExecution != null && hasLoopDataOutputRef()) {
-            Object loopDataOutputReference = miRootExecution.getVariableLocal(
-                getLoopDataOutputRef()
-            );
+            Object loopDataOutputReference = miRootExecution.getVariableLocal(getLoopDataOutputRef());
             List<Object> resultCollection;
             if (loopDataOutputReference instanceof List) {
                 resultCollection = (List<Object>) loopDataOutputReference;
@@ -577,11 +483,7 @@ public abstract class MultiInstanceActivityBehavior
                 resultCollection = new ArrayList<>();
             }
             resultCollection.add(getResultElementItem(childExecution));
-            setLoopVariable(
-                miRootExecution,
-                getLoopDataOutputRef(),
-                resultCollection
-            );
+            setLoopVariable(miRootExecution, getLoopDataOutputRef(), resultCollection);
         }
     }
 
@@ -593,9 +495,7 @@ public abstract class MultiInstanceActivityBehavior
         return Context.getCommandContext();
     }
 
-    protected Object getResultElementItem(
-        Map<String, Object> availableVariables
-    ) {
+    protected Object getResultElementItem(Map<String, Object> availableVariables) {
         if (hasOutputDataItem()) {
             return availableVariables.get(getOutputDataItem());
         } else {
@@ -609,24 +509,17 @@ public abstract class MultiInstanceActivityBehavior
                 NUMBER_OF_COMPLETED_INSTANCES,
                 NUMBER_OF_ACTIVE_INSTANCES
             );
-            HashMap<String, Object> resultItem = new HashMap<>(
-                availableVariables
-            );
+            HashMap<String, Object> resultItem = new HashMap<>(availableVariables);
             resultItemExclusions.forEach(resultItem.keySet()::remove);
             return resultItem;
         }
     }
 
-    protected void propagateLoopDataOutputRefToProcessInstance(
-        ExecutionEntity miRootExecution
-    ) {
+    protected void propagateLoopDataOutputRefToProcessInstance(ExecutionEntity miRootExecution) {
         if (hasLoopDataOutputRef()) {
             miRootExecution
                 .getProcessInstance()
-                .setVariable(
-                    getLoopDataOutputRef(),
-                    miRootExecution.getVariable(getLoopDataOutputRef())
-                );
+                .setVariable(getLoopDataOutputRef(), miRootExecution.getVariable(getLoopDataOutputRef()));
         }
     }
 }

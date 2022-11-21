@@ -22,13 +22,8 @@ import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity;
 /**
 
  */
-public interface HistoricIdentityLinkDataManager
-    extends DataManager<HistoricIdentityLinkEntity> {
-    List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByTaskId(
-        String taskId
-    );
+public interface HistoricIdentityLinkDataManager extends DataManager<HistoricIdentityLinkEntity> {
+    List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByTaskId(String taskId);
 
-    List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByProcessInstanceId(
-        String processInstanceId
-    );
+    List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByProcessInstanceId(String processInstanceId);
 }

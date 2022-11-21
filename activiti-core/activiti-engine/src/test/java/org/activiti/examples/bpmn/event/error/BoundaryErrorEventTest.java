@@ -45,39 +45,23 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
         super.tearDown();
     }
 
-    @Deployment(
-        resources = {
-            "org/activiti/examples/bpmn/event/error/reviewSalesLead.bpmn20.xml",
-        }
-    )
+    @Deployment(resources = { "org/activiti/examples/bpmn/event/error/reviewSalesLead.bpmn20.xml" })
     public void testReviewSalesLeadProcess() {
         // After starting the process, a task should be assigned to the
         // 'initiator' (normally set by GUI)
         Map<String, Object> variables = new HashMap<String, Object>();
         variables.put("details", "very interesting");
         variables.put("customerName", "Alfresco");
-        String procId = runtimeService
-            .startProcessInstanceByKey("reviewSaledLead", variables)
-            .getId();
-        Task task = taskService
-            .createTaskQuery()
-            .taskAssignee("kermit")
-            .singleResult();
+        String procId = runtimeService.startProcessInstanceByKey("reviewSaledLead", variables).getId();
+        Task task = taskService.createTaskQuery().taskAssignee("kermit").singleResult();
         assertThat(task.getName()).isEqualTo("Provide new sales lead");
 
         // After completing the task, the review subprocess will be active
         taskService.complete(task.getId());
-        Task ratingTask = taskService
-            .createTaskQuery()
-            .taskCandidateGroup("accountancy")
-            .singleResult();
+        Task ratingTask = taskService.createTaskQuery().taskCandidateGroup("accountancy").singleResult();
         assertThat(ratingTask.getName()).isEqualTo("Review customer rating");
-        Task profitabilityTask = taskService
-            .createTaskQuery()
-            .taskCandidateGroup("management")
-            .singleResult();
-        assertThat(profitabilityTask.getName())
-            .isEqualTo("Review profitability");
+        Task profitabilityTask = taskService.createTaskQuery().taskCandidateGroup("management").singleResult();
+        assertThat(profitabilityTask.getName()).isEqualTo("Review profitability");
 
         // Complete the management task by stating that not enough info was
         // provided
@@ -87,25 +71,15 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
         taskService.complete(profitabilityTask.getId(), variables);
 
         // The 'provide additional details' task should now be active
-        Task provideDetailsTask = taskService
-            .createTaskQuery()
-            .taskAssignee("kermit")
-            .singleResult();
-        assertThat(provideDetailsTask.getName())
-            .isEqualTo("Provide additional details");
+        Task provideDetailsTask = taskService.createTaskQuery().taskAssignee("kermit").singleResult();
+        assertThat(provideDetailsTask.getName()).isEqualTo("Provide additional details");
 
         // Providing more details (ie. completing the task), will activate the
         // subprocess again
         taskService.complete(provideDetailsTask.getId());
-        List<Task> reviewTasks = taskService
-            .createTaskQuery()
-            .orderByTaskName()
-            .asc()
-            .list();
-        assertThat(reviewTasks.get(0).getName())
-            .isEqualTo("Review customer rating");
-        assertThat(reviewTasks.get(1).getName())
-            .isEqualTo("Review profitability");
+        List<Task> reviewTasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+        assertThat(reviewTasks.get(0).getName()).isEqualTo("Review customer rating");
+        assertThat(reviewTasks.get(1).getName()).isEqualTo("Review profitability");
 
         // Completing both tasks normally ends the process
         taskService.complete(reviewTasks.get(0).getId());

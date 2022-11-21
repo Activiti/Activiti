@@ -94,11 +94,7 @@ public interface ProcessDiagramGenerator {
      * @param highLightedActivities activities to highlight
      * @param highLightedFlows flows to highlight
      */
-    InputStream generateDiagram(
-        BpmnModel bpmnModel,
-        List<String> highLightedActivities,
-        List<String> highLightedFlows
-    );
+    InputStream generateDiagram(BpmnModel bpmnModel, List<String> highLightedActivities, List<String> highLightedFlows);
 
     /**
      * Generates a diagram of the given process definition, using the diagram interchange information of the process.
@@ -106,10 +102,7 @@ public interface ProcessDiagramGenerator {
      * @param bpmnModel bpmn model to get diagram for
      * @param highLightedActivities activities to highlight
      */
-    InputStream generateDiagram(
-        BpmnModel bpmnModel,
-        List<String> highLightedActivities
-    );
+    InputStream generateDiagram(BpmnModel bpmnModel, List<String> highLightedActivities);
 
     /**
      * Generates a diagram of the given process definition, using the diagram interchange information of the process.

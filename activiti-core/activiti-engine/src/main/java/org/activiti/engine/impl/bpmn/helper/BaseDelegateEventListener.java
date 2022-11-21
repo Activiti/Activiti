@@ -25,8 +25,7 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
  *
 
  */
-public abstract class BaseDelegateEventListener
-    implements ActivitiEventListener {
+public abstract class BaseDelegateEventListener implements ActivitiEventListener {
 
     protected Class<?> entityClass;
 

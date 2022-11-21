@@ -35,8 +35,6 @@ public class GetSubTasksCmd implements Command<List<Task>>, Serializable {
     }
 
     public List<Task> execute(CommandContext commandContext) {
-        return commandContext
-            .getTaskEntityManager()
-            .findTasksByParentTaskId(parentTaskId);
+        return commandContext.getTaskEntityManager().findTasksByParentTaskId(parentTaskId);
     }
 }

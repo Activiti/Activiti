@@ -33,20 +33,17 @@ public class BpmnParser {
     /**
      * The namepace of the BPMN 2.0 diagram interchange elements.
      */
-    public static final String BPMN_DI_NS =
-        "http://www.omg.org/spec/BPMN/20100524/DI";
+    public static final String BPMN_DI_NS = "http://www.omg.org/spec/BPMN/20100524/DI";
 
     /**
      * The namespace of the BPMN 2.0 diagram common elements.
      */
-    public static final String BPMN_DC_NS =
-        "http://www.omg.org/spec/DD/20100524/DC";
+    public static final String BPMN_DC_NS = "http://www.omg.org/spec/DD/20100524/DC";
 
     /**
      * The namespace of the generic OMG DI elements (don't ask me why they didn't use the BPMN_DI_NS ...)
      */
-    public static final String OMG_DI_NS =
-        "http://www.omg.org/spec/DD/20100524/DI";
+    public static final String OMG_DI_NS = "http://www.omg.org/spec/DD/20100524/DI";
 
     protected ActivityBehaviorFactory activityBehaviorFactory;
     protected ListenerFactory listenerFactory;
@@ -64,9 +61,7 @@ public class BpmnParser {
         return activityBehaviorFactory;
     }
 
-    public void setActivityBehaviorFactory(
-        ActivityBehaviorFactory activityBehaviorFactory
-    ) {
+    public void setActivityBehaviorFactory(ActivityBehaviorFactory activityBehaviorFactory) {
         this.activityBehaviorFactory = activityBehaviorFactory;
     }
 

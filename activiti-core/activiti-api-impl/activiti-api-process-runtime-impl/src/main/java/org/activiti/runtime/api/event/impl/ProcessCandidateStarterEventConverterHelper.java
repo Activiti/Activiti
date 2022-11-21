@@ -21,28 +21,15 @@ import org.activiti.engine.task.IdentityLink;
 
 public class ProcessCandidateStarterEventConverterHelper {
 
-    public boolean isProcessCandidateStarterUserLink(
-        IdentityLink identityLink
-    ) {
-        return (
-            isProcessCandidateStarterLink(identityLink) &&
-            identityLink.getUserId() != null
-        );
+    public boolean isProcessCandidateStarterUserLink(IdentityLink identityLink) {
+        return (isProcessCandidateStarterLink(identityLink) && identityLink.getUserId() != null);
     }
 
-    public boolean isProcessCandidateStarterGroupLink(
-        IdentityLink identityLink
-    ) {
-        return (
-            isProcessCandidateStarterLink(identityLink) &&
-            identityLink.getGroupId() != null
-        );
+    public boolean isProcessCandidateStarterGroupLink(IdentityLink identityLink) {
+        return (isProcessCandidateStarterLink(identityLink) && identityLink.getGroupId() != null);
     }
 
     private boolean isProcessCandidateStarterLink(IdentityLink identityLink) {
-        return (
-            identityLink.getProcessDefinitionId() != null &&
-            CANDIDATE.equalsIgnoreCase(identityLink.getType())
-        );
+        return (identityLink.getProcessDefinitionId() != null && CANDIDATE.equalsIgnoreCase(identityLink.getType()));
     }
 }

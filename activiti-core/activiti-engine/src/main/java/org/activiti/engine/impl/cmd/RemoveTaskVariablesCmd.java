@@ -30,11 +30,7 @@ public class RemoveTaskVariablesCmd extends NeedsActiveTaskCmd<Void> {
     private final Collection<String> variableNames;
     private final boolean isLocal;
 
-    public RemoveTaskVariablesCmd(
-        String taskId,
-        Collection<String> variableNames,
-        boolean isLocal
-    ) {
+    public RemoveTaskVariablesCmd(String taskId, Collection<String> variableNames, boolean isLocal) {
         super(taskId);
         this.variableNames = variableNames;
         this.isLocal = isLocal;

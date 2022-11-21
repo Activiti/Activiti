@@ -35,10 +35,7 @@ public class UelExpressionCondition implements Condition {
         this.expression = expression;
     }
 
-    public boolean evaluate(
-        String sequenceFlowId,
-        DelegateExecution execution
-    ) {
+    public boolean evaluate(String sequenceFlowId, DelegateExecution execution) {
         Object result = expression.getValue(execution);
 
         if (result == null) {

@@ -25,9 +25,7 @@ import org.activiti.engine.ActivitiException;
  */
 public abstract class VariableType {
 
-    private static final Pattern EXPRESSION_PATTERN = Pattern.compile(
-        "^\\$\\{(.|\\n)*[\\}]$"
-    );
+    private static final Pattern EXPRESSION_PATTERN = Pattern.compile("^\\$\\{(.|\\n)*[\\}]$");
     private String name;
 
     public String getName() {

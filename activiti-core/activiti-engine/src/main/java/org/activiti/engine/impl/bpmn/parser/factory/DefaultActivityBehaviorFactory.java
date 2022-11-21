@@ -119,18 +119,13 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Default implementation of the {@link ActivityBehaviorFactory}. Used when no custom {@link ActivityBehaviorFactory} is injected on the {@link ProcessEngineConfigurationImpl}.
  */
-public class DefaultActivityBehaviorFactory
-    extends AbstractBehaviorFactory
-    implements ActivityBehaviorFactory {
+public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory implements ActivityBehaviorFactory {
 
-    public static final String DEFAULT_SERVICE_TASK_BEAN_NAME =
-        "defaultServiceTaskBehavior";
+    public static final String DEFAULT_SERVICE_TASK_BEAN_NAME = "defaultServiceTaskBehavior";
 
     private final ClassDelegateFactory classDelegateFactory;
 
-    public DefaultActivityBehaviorFactory(
-        ClassDelegateFactory classDelegateFactory
-    ) {
+    public DefaultActivityBehaviorFactory(ClassDelegateFactory classDelegateFactory) {
         this.classDelegateFactory = classDelegateFactory;
     }
 
@@ -141,9 +136,7 @@ public class DefaultActivityBehaviorFactory
     // Start event
     public static final String EXCEPTION_MAP_FIELD = "mapExceptions";
 
-    public NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(
-        StartEvent startEvent
-    ) {
+    public NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(StartEvent startEvent) {
         return new NoneStartEventActivityBehavior();
     }
 
@@ -153,43 +146,30 @@ public class DefaultActivityBehaviorFactory
         return new TaskActivityBehavior();
     }
 
-    public ManualTaskActivityBehavior createManualTaskActivityBehavior(
-        ManualTask manualTask
-    ) {
+    public ManualTaskActivityBehavior createManualTaskActivityBehavior(ManualTask manualTask) {
         return new ManualTaskActivityBehavior();
     }
 
-    public ReceiveTaskActivityBehavior createReceiveTaskActivityBehavior(
-        ReceiveTask receiveTask
-    ) {
+    public ReceiveTaskActivityBehavior createReceiveTaskActivityBehavior(ReceiveTask receiveTask) {
         return new ReceiveTaskActivityBehavior();
     }
 
     @Override
-    public UserTaskActivityBehavior createUserTaskActivityBehavior(
-        UserTask userTask
-    ) {
+    public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask) {
         return new UserTaskActivityBehavior(userTask);
     }
 
     // Service task
 
-    protected Expression getSkipExpressionFromServiceTask(
-        ServiceTask serviceTask
-    ) {
+    protected Expression getSkipExpressionFromServiceTask(ServiceTask serviceTask) {
         Expression result = null;
         if (StringUtils.isNotEmpty(serviceTask.getSkipExpression())) {
-            result =
-                expressionManager.createExpression(
-                    serviceTask.getSkipExpression()
-                );
+            result = expressionManager.createExpression(serviceTask.getSkipExpression());
         }
         return result;
     }
 
-    public ClassDelegate createClassDelegateServiceTask(
-        ServiceTask serviceTask
-    ) {
+    public ClassDelegate createClassDelegateServiceTask(ServiceTask serviceTask) {
         return classDelegateFactory.create(
             serviceTask.getId(),
             serviceTask.getImplementation(),
@@ -202,22 +182,16 @@ public class DefaultActivityBehaviorFactory
     public ServiceTaskDelegateExpressionActivityBehavior createServiceTaskDelegateExpressionActivityBehavior(
         ServiceTask serviceTask
     ) {
-        Expression delegateExpression = expressionManager.createExpression(
-            serviceTask.getImplementation()
-        );
+        Expression delegateExpression = expressionManager.createExpression(serviceTask.getImplementation());
         return createServiceTaskBehavior(serviceTask, delegateExpression);
     }
 
-    public ActivityBehavior createDefaultServiceTaskBehavior(
-        ServiceTask serviceTask
-    ) {
+    public ActivityBehavior createDefaultServiceTaskBehavior(ServiceTask serviceTask) {
         // this is covering the case where only the field `implementation` was defined in the process definition. I.e.
         // <serviceTask id="serviceTask" implementation="myServiceTaskImpl"/>
         // `myServiceTaskImpl` can be different things depending on the implementation of `defaultServiceTaskBehavior`
         // could be for instance a Spring bean or a target for a Spring Stream
-        Expression delegateExpression = expressionManager.createExpression(
-            "${" + DEFAULT_SERVICE_TASK_BEAN_NAME + "}"
-        );
+        Expression delegateExpression = expressionManager.createExpression("${" + DEFAULT_SERVICE_TASK_BEAN_NAME + "}");
         return createServiceTaskBehavior(serviceTask, delegateExpression);
     }
 
@@ -233,12 +207,8 @@ public class DefaultActivityBehaviorFactory
         );
     }
 
-    public ServiceTaskExpressionActivityBehavior createServiceTaskExpressionActivityBehavior(
-        ServiceTask serviceTask
-    ) {
-        Expression expression = expressionManager.createExpression(
-            serviceTask.getImplementation()
-        );
+    public ServiceTaskExpressionActivityBehavior createServiceTaskExpressionActivityBehavior(ServiceTask serviceTask) {
+        Expression expression = expressionManager.createExpression(serviceTask.getImplementation());
         return new ServiceTaskExpressionActivityBehavior(
             serviceTask.getId(),
             expression,
@@ -247,41 +217,24 @@ public class DefaultActivityBehaviorFactory
         );
     }
 
-    public WebServiceActivityBehavior createWebServiceActivityBehavior(
-        ServiceTask serviceTask
-    ) {
+    public WebServiceActivityBehavior createWebServiceActivityBehavior(ServiceTask serviceTask) {
         return new WebServiceActivityBehavior();
     }
 
-    public WebServiceActivityBehavior createWebServiceActivityBehavior(
-        SendTask sendTask
-    ) {
+    public WebServiceActivityBehavior createWebServiceActivityBehavior(SendTask sendTask) {
         return new WebServiceActivityBehavior();
     }
 
-    public MailActivityBehavior createMailActivityBehavior(
-        ServiceTask serviceTask
-    ) {
-        return createMailActivityBehavior(
-            serviceTask.getId(),
-            serviceTask.getFieldExtensions()
-        );
+    public MailActivityBehavior createMailActivityBehavior(ServiceTask serviceTask) {
+        return createMailActivityBehavior(serviceTask.getId(), serviceTask.getFieldExtensions());
     }
 
     public MailActivityBehavior createMailActivityBehavior(SendTask sendTask) {
-        return createMailActivityBehavior(
-            sendTask.getId(),
-            sendTask.getFieldExtensions()
-        );
+        return createMailActivityBehavior(sendTask.getId(), sendTask.getFieldExtensions());
     }
 
-    protected MailActivityBehavior createMailActivityBehavior(
-        String taskId,
-        List<FieldExtension> fields
-    ) {
-        List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(
-            fields
-        );
+    protected MailActivityBehavior createMailActivityBehavior(String taskId, List<FieldExtension> fields) {
+        List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(fields);
         return (MailActivityBehavior) ClassDelegate.defaultInstantiateDelegate(
             MailActivityBehavior.class,
             fieldDeclarations
@@ -290,20 +243,12 @@ public class DefaultActivityBehaviorFactory
 
     // We do not want a hard dependency on Mule, hence we return
     // ActivityBehavior and instantiate the delegate instance using a string instead of the Class itself.
-    public ActivityBehavior createMuleActivityBehavior(
-        ServiceTask serviceTask
-    ) {
-        return createMuleActivityBehavior(
-            serviceTask,
-            serviceTask.getFieldExtensions()
-        );
+    public ActivityBehavior createMuleActivityBehavior(ServiceTask serviceTask) {
+        return createMuleActivityBehavior(serviceTask, serviceTask.getFieldExtensions());
     }
 
     public ActivityBehavior createMuleActivityBehavior(SendTask sendTask) {
-        return createMuleActivityBehavior(
-            sendTask,
-            sendTask.getFieldExtensions()
-        );
+        return createMuleActivityBehavior(sendTask, sendTask.getFieldExtensions());
     }
 
     protected ActivityBehavior createMuleActivityBehavior(
@@ -311,40 +256,22 @@ public class DefaultActivityBehaviorFactory
         List<FieldExtension> fieldExtensions
     ) {
         try {
-            Class<?> theClass = Class.forName(
-                "org.activiti.mule.MuleSendActivitiBehavior"
-            );
-            List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(
-                fieldExtensions
-            );
-            return (ActivityBehavior) ClassDelegate.defaultInstantiateDelegate(
-                theClass,
-                fieldDeclarations
-            );
+            Class<?> theClass = Class.forName("org.activiti.mule.MuleSendActivitiBehavior");
+            List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(fieldExtensions);
+            return (ActivityBehavior) ClassDelegate.defaultInstantiateDelegate(theClass, fieldDeclarations);
         } catch (ClassNotFoundException e) {
-            throw new ActivitiException(
-                "Could not find org.activiti.mule.MuleSendActivitiBehavior: ",
-                e
-            );
+            throw new ActivitiException("Could not find org.activiti.mule.MuleSendActivitiBehavior: ", e);
         }
     }
 
     // We do not want a hard dependency on Camel, hence we return
     // ActivityBehavior and instantiate the delegate instance using a string instead of the Class itself.
-    public ActivityBehavior createCamelActivityBehavior(
-        ServiceTask serviceTask
-    ) {
-        return createCamelActivityBehavior(
-            serviceTask,
-            serviceTask.getFieldExtensions()
-        );
+    public ActivityBehavior createCamelActivityBehavior(ServiceTask serviceTask) {
+        return createCamelActivityBehavior(serviceTask, serviceTask.getFieldExtensions());
     }
 
     public ActivityBehavior createCamelActivityBehavior(SendTask sendTask) {
-        return createCamelActivityBehavior(
-            sendTask,
-            sendTask.getFieldExtensions()
-        );
+        return createCamelActivityBehavior(sendTask, sendTask.getFieldExtensions());
     }
 
     protected ActivityBehavior createCamelActivityBehavior(
@@ -356,9 +283,7 @@ public class DefaultActivityBehaviorFactory
             FieldExtension behaviorExtension = null;
             for (FieldExtension fieldExtension : fieldExtensions) {
                 if (
-                    "camelBehaviorClass".equals(
-                            fieldExtension.getFieldName()
-                        ) &&
+                    "camelBehaviorClass".equals(fieldExtension.getFieldName()) &&
                     StringUtils.isNotEmpty(fieldExtension.getStringValue())
                 ) {
                     theClass = Class.forName(fieldExtension.getStringValue());
@@ -373,28 +298,14 @@ public class DefaultActivityBehaviorFactory
 
             if (theClass == null) {
                 // Default Camel behavior class
-                theClass =
-                    Class.forName(
-                        "org.activiti.camel.impl.CamelBehaviorDefaultImpl"
-                    );
+                theClass = Class.forName("org.activiti.camel.impl.CamelBehaviorDefaultImpl");
             }
 
-            List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(
-                fieldExtensions
-            );
-            addExceptionMapAsFieldDeclaration(
-                fieldDeclarations,
-                task.getMapExceptions()
-            );
-            return (ActivityBehavior) ClassDelegate.defaultInstantiateDelegate(
-                theClass,
-                fieldDeclarations
-            );
+            List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(fieldExtensions);
+            addExceptionMapAsFieldDeclaration(fieldDeclarations, task.getMapExceptions());
+            return (ActivityBehavior) ClassDelegate.defaultInstantiateDelegate(theClass, fieldDeclarations);
         } catch (ClassNotFoundException e) {
-            throw new ActivitiException(
-                "Could not find org.activiti.camel.CamelBehavior: ",
-                e
-            );
+            throw new ActivitiException("Could not find org.activiti.camel.CamelBehavior: ", e);
         }
     }
 
@@ -410,21 +321,15 @@ public class DefaultActivityBehaviorFactory
         fieldDeclarations.add(exceptionMapsFieldDeclaration);
     }
 
-    public ShellActivityBehavior createShellActivityBehavior(
-        ServiceTask serviceTask
-    ) {
-        List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(
-            serviceTask.getFieldExtensions()
-        );
+    public ShellActivityBehavior createShellActivityBehavior(ServiceTask serviceTask) {
+        List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(serviceTask.getFieldExtensions());
         return (ShellActivityBehavior) ClassDelegate.defaultInstantiateDelegate(
             ShellActivityBehavior.class,
             fieldDeclarations
         );
     }
 
-    public ActivityBehavior createBusinessRuleTaskActivityBehavior(
-        BusinessRuleTask businessRuleTask
-    ) {
+    public ActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask) {
         BusinessRuleTaskDelegate ruleActivity = null;
         if (StringUtils.isNotEmpty(businessRuleTask.getClassName())) {
             try {
@@ -445,27 +350,18 @@ public class DefaultActivityBehaviorFactory
 
         for (String ruleVariableInputObject : businessRuleTask.getInputVariables()) {
             ruleActivity.addRuleVariableInputIdExpression(
-                expressionManager.createExpression(
-                    ruleVariableInputObject.trim()
-                )
+                expressionManager.createExpression(ruleVariableInputObject.trim())
             );
         }
 
         for (String rule : businessRuleTask.getRuleNames()) {
-            ruleActivity.addRuleIdExpression(
-                expressionManager.createExpression(rule.trim())
-            );
+            ruleActivity.addRuleIdExpression(expressionManager.createExpression(rule.trim()));
         }
 
         ruleActivity.setExclude(businessRuleTask.isExclude());
 
-        if (
-            businessRuleTask.getResultVariableName() != null &&
-            businessRuleTask.getResultVariableName().length() > 0
-        ) {
-            ruleActivity.setResultVariable(
-                businessRuleTask.getResultVariableName()
-            );
+        if (businessRuleTask.getResultVariableName() != null && businessRuleTask.getResultVariableName().length() > 0) {
+            ruleActivity.setResultVariable(businessRuleTask.getResultVariableName());
         } else {
             ruleActivity.setResultVariable("org.activiti.engine.rules.OUTPUT");
         }
@@ -475,9 +371,7 @@ public class DefaultActivityBehaviorFactory
 
     // Script task
 
-    public ScriptTaskActivityBehavior createScriptTaskActivityBehavior(
-        ScriptTask scriptTask
-    ) {
+    public ScriptTaskActivityBehavior createScriptTaskActivityBehavior(ScriptTask scriptTask) {
         String language = scriptTask.getScriptFormat();
         if (language == null) {
             language = ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE;
@@ -493,27 +387,19 @@ public class DefaultActivityBehaviorFactory
 
     // Gateways
 
-    public ExclusiveGatewayActivityBehavior createExclusiveGatewayActivityBehavior(
-        ExclusiveGateway exclusiveGateway
-    ) {
+    public ExclusiveGatewayActivityBehavior createExclusiveGatewayActivityBehavior(ExclusiveGateway exclusiveGateway) {
         return new ExclusiveGatewayActivityBehavior();
     }
 
-    public ParallelGatewayActivityBehavior createParallelGatewayActivityBehavior(
-        ParallelGateway parallelGateway
-    ) {
+    public ParallelGatewayActivityBehavior createParallelGatewayActivityBehavior(ParallelGateway parallelGateway) {
         return new ParallelGatewayActivityBehavior();
     }
 
-    public InclusiveGatewayActivityBehavior createInclusiveGatewayActivityBehavior(
-        InclusiveGateway inclusiveGateway
-    ) {
+    public InclusiveGatewayActivityBehavior createInclusiveGatewayActivityBehavior(InclusiveGateway inclusiveGateway) {
         return new InclusiveGatewayActivityBehavior();
     }
 
-    public EventBasedGatewayActivityBehavior createEventBasedGatewayActivityBehavior(
-        EventGateway eventGateway
-    ) {
+    public EventBasedGatewayActivityBehavior createEventBasedGatewayActivityBehavior(EventGateway eventGateway) {
         return new EventBasedGatewayActivityBehavior();
     }
 
@@ -523,27 +409,19 @@ public class DefaultActivityBehaviorFactory
         Activity activity,
         AbstractBpmnActivityBehavior innerActivityBehavior
     ) {
-        return new SequentialMultiInstanceBehavior(
-            activity,
-            innerActivityBehavior
-        );
+        return new SequentialMultiInstanceBehavior(activity, innerActivityBehavior);
     }
 
     public ParallelMultiInstanceBehavior createParallelMultiInstanceBehavior(
         Activity activity,
         AbstractBpmnActivityBehavior innerActivityBehavior
     ) {
-        return new ParallelMultiInstanceBehavior(
-            activity,
-            innerActivityBehavior
-        );
+        return new ParallelMultiInstanceBehavior(activity, innerActivityBehavior);
     }
 
     // Subprocess
 
-    public SubProcessActivityBehavior createSubprocessActivityBehavior(
-        SubProcess subProcess
-    ) {
+    public SubProcessActivityBehavior createSubprocessActivityBehavior(SubProcess subProcess) {
         return new SubProcessActivityBehavior();
     }
 
@@ -562,23 +440,16 @@ public class DefaultActivityBehaviorFactory
             messageEventDefinition
         );
 
-        return new EventSubProcessMessageStartEventActivityBehavior(
-            messageEventDefinition,
-            messageExecutionContext
-        );
+        return new EventSubProcessMessageStartEventActivityBehavior(messageEventDefinition, messageExecutionContext);
     }
 
-    public AdhocSubProcessActivityBehavior createAdhocSubprocessActivityBehavior(
-        SubProcess subProcess
-    ) {
+    public AdhocSubProcessActivityBehavior createAdhocSubprocessActivityBehavior(SubProcess subProcess) {
         return new AdhocSubProcessActivityBehavior();
     }
 
     // Call activity
 
-    public CallActivityBehavior createCallActivityBehavior(
-        CallActivity callActivity
-    ) {
+    public CallActivityBehavior createCallActivityBehavior(CallActivity callActivity) {
         String expressionRegex = "\\$+\\{+.+\\}";
 
         CallActivityBehavior callActivityBehaviour = null;
@@ -588,17 +459,12 @@ public class DefaultActivityBehaviorFactory
         ) {
             callActivityBehaviour =
                 createCallActivityBehavior(
-                    expressionManager.createExpression(
-                        callActivity.getCalledElement()
-                    ),
+                    expressionManager.createExpression(callActivity.getCalledElement()),
                     callActivity.getMapExceptions()
                 );
         } else {
             callActivityBehaviour =
-                createCallActivityBehavior(
-                    callActivity.getCalledElement(),
-                    callActivity.getMapExceptions()
-                );
+                createCallActivityBehavior(callActivity.getCalledElement(), callActivity.getMapExceptions());
         }
 
         return callActivityBehaviour;
@@ -620,9 +486,7 @@ public class DefaultActivityBehaviorFactory
 
     // Transaction
 
-    public TransactionActivityBehavior createTransactionActivityBehavior(
-        Transaction transaction
-    ) {
+    public TransactionActivityBehavior createTransactionActivityBehavior(Transaction transaction) {
         return new TransactionActivityBehavior();
     }
 
@@ -642,19 +506,14 @@ public class DefaultActivityBehaviorFactory
             intermediateCatchEvent,
             messageEventDefinition
         );
-        return new IntermediateCatchMessageEventActivityBehavior(
-            messageEventDefinition,
-            messageExecutionContext
-        );
+        return new IntermediateCatchMessageEventActivityBehavior(messageEventDefinition, messageExecutionContext);
     }
 
     public IntermediateCatchTimerEventActivityBehavior createIntermediateCatchTimerEventActivityBehavior(
         IntermediateCatchEvent intermediateCatchEvent,
         TimerEventDefinition timerEventDefinition
     ) {
-        return new IntermediateCatchTimerEventActivityBehavior(
-            timerEventDefinition
-        );
+        return new IntermediateCatchTimerEventActivityBehavior(timerEventDefinition);
     }
 
     public IntermediateCatchSignalEventActivityBehavior createIntermediateCatchSignalEventActivityBehavior(
@@ -662,10 +521,7 @@ public class DefaultActivityBehaviorFactory
         SignalEventDefinition signalEventDefinition,
         Signal signal
     ) {
-        return new IntermediateCatchSignalEventActivityBehavior(
-            signalEventDefinition,
-            signal
-        );
+        return new IntermediateCatchSignalEventActivityBehavior(signalEventDefinition, signal);
     }
 
     public IntermediateThrowNoneEventActivityBehavior createIntermediateThrowNoneEventActivityBehavior(
@@ -679,26 +535,19 @@ public class DefaultActivityBehaviorFactory
         SignalEventDefinition signalEventDefinition,
         Signal signal
     ) {
-        return new IntermediateThrowSignalEventActivityBehavior(
-            signalEventDefinition,
-            signal
-        );
+        return new IntermediateThrowSignalEventActivityBehavior(signalEventDefinition, signal);
     }
 
     public IntermediateThrowCompensationEventActivityBehavior createIntermediateThrowCompensationEventActivityBehavior(
         ThrowEvent throwEvent,
         CompensateEventDefinition compensateEventDefinition
     ) {
-        return new IntermediateThrowCompensationEventActivityBehavior(
-            compensateEventDefinition
-        );
+        return new IntermediateThrowCompensationEventActivityBehavior(compensateEventDefinition);
     }
 
     // End events
 
-    public NoneEndEventActivityBehavior createNoneEndEventActivityBehavior(
-        EndEvent endEvent
-    ) {
+    public NoneEndEventActivityBehavior createNoneEndEventActivityBehavior(EndEvent endEvent) {
         return new NoneEndEventActivityBehavior();
     }
 
@@ -706,49 +555,30 @@ public class DefaultActivityBehaviorFactory
         EndEvent endEvent,
         ErrorEventDefinition errorEventDefinition
     ) {
-        return new ErrorEndEventActivityBehavior(
-            errorEventDefinition.getErrorRef()
-        );
+        return new ErrorEndEventActivityBehavior(errorEventDefinition.getErrorRef());
     }
 
-    public CancelEndEventActivityBehavior createCancelEndEventActivityBehavior(
-        EndEvent endEvent
-    ) {
+    public CancelEndEventActivityBehavior createCancelEndEventActivityBehavior(EndEvent endEvent) {
         return new CancelEndEventActivityBehavior();
     }
 
-    public TerminateEndEventActivityBehavior createTerminateEndEventActivityBehavior(
-        EndEvent endEvent
-    ) {
+    public TerminateEndEventActivityBehavior createTerminateEndEventActivityBehavior(EndEvent endEvent) {
         boolean terminateAll = false;
         boolean terminateMultiInstance = false;
 
         if (
             endEvent.getEventDefinitions() != null &&
             endEvent.getEventDefinitions().size() > 0 &&
-            endEvent
-                .getEventDefinitions()
-                .get(0) instanceof TerminateEventDefinition
+            endEvent.getEventDefinitions().get(0) instanceof TerminateEventDefinition
         ) {
-            terminateAll =
-                (
-                    (TerminateEventDefinition) endEvent
-                        .getEventDefinitions()
-                        .get(0)
-                ).isTerminateAll();
+            terminateAll = ((TerminateEventDefinition) endEvent.getEventDefinitions().get(0)).isTerminateAll();
             terminateMultiInstance =
-                (
-                    (TerminateEventDefinition) endEvent
-                        .getEventDefinitions()
-                        .get(0)
-                ).isTerminateMultiInstance();
+                ((TerminateEventDefinition) endEvent.getEventDefinitions().get(0)).isTerminateMultiInstance();
         }
 
         TerminateEndEventActivityBehavior terminateEndEventActivityBehavior = new TerminateEndEventActivityBehavior();
         terminateEndEventActivityBehavior.setTerminateAll(terminateAll);
-        terminateEndEventActivityBehavior.setTerminateMultiInstance(
-            terminateMultiInstance
-        );
+        terminateEndEventActivityBehavior.setTerminateMultiInstance(terminateMultiInstance);
         return terminateEndEventActivityBehavior;
     }
 
@@ -772,10 +602,7 @@ public class DefaultActivityBehaviorFactory
         CompensateEventDefinition compensateEventDefinition,
         boolean interrupting
     ) {
-        return new BoundaryCompensateEventActivityBehavior(
-            compensateEventDefinition,
-            interrupting
-        );
+        return new BoundaryCompensateEventActivityBehavior(compensateEventDefinition, interrupting);
     }
 
     public BoundaryTimerEventActivityBehavior createBoundaryTimerEventActivityBehavior(
@@ -783,10 +610,7 @@ public class DefaultActivityBehaviorFactory
         TimerEventDefinition timerEventDefinition,
         boolean interrupting
     ) {
-        return new BoundaryTimerEventActivityBehavior(
-            timerEventDefinition,
-            interrupting
-        );
+        return new BoundaryTimerEventActivityBehavior(timerEventDefinition, interrupting);
     }
 
     public BoundarySignalEventActivityBehavior createBoundarySignalEventActivityBehavior(
@@ -795,11 +619,7 @@ public class DefaultActivityBehaviorFactory
         Signal signal,
         boolean interrupting
     ) {
-        return new BoundarySignalEventActivityBehavior(
-            signalEventDefinition,
-            signal,
-            interrupting
-        );
+        return new BoundarySignalEventActivityBehavior(signalEventDefinition, signal, interrupting);
     }
 
     public BoundaryMessageEventActivityBehavior createBoundaryMessageEventActivityBehavior(
@@ -811,11 +631,7 @@ public class DefaultActivityBehaviorFactory
             boundaryEvent,
             messageEventDefinition
         );
-        return new BoundaryMessageEventActivityBehavior(
-            messageEventDefinition,
-            interrupting,
-            messageExecutionContext
-        );
+        return new BoundaryMessageEventActivityBehavior(messageEventDefinition, interrupting, messageExecutionContext);
     }
 
     @Override
@@ -824,9 +640,7 @@ public class DefaultActivityBehaviorFactory
         MessageEventDefinition messageEventDefinition,
         Message message
     ) {
-        ThrowMessageDelegate throwMessageDelegate = createThrowMessageDelegate(
-            messageEventDefinition
-        );
+        ThrowMessageDelegate throwMessageDelegate = createThrowMessageDelegate(messageEventDefinition);
         MessageExecutionContext messageExecutionContext = createMessageExecutionContext(
             throwEvent,
             messageEventDefinition
@@ -845,9 +659,7 @@ public class DefaultActivityBehaviorFactory
         MessageEventDefinition messageEventDefinition,
         Message message
     ) {
-        ThrowMessageDelegate throwMessageDelegate = createThrowMessageDelegate(
-            messageEventDefinition
-        );
+        ThrowMessageDelegate throwMessageDelegate = createThrowMessageDelegate(messageEventDefinition);
         MessageExecutionContext messageExecutionContext = createMessageExecutionContext(
             endEvent,
             messageEventDefinition
@@ -860,18 +672,13 @@ public class DefaultActivityBehaviorFactory
         );
     }
 
-    protected ThrowMessageDelegate createThrowMessageDelegate(
-        MessageEventDefinition messageEventDefinition
-    ) {
+    protected ThrowMessageDelegate createThrowMessageDelegate(MessageEventDefinition messageEventDefinition) {
         Map<String, List<ExtensionAttribute>> attributes = messageEventDefinition.getAttributes();
 
         return checkClassDelegate(attributes)
             .map(this::createThrowMessageJavaDelegate)
             .map(Optional::of)
-            .orElseGet(() ->
-                checkDelegateExpression(attributes)
-                    .map(this::createThrowMessageDelegateExpression)
-            )
+            .orElseGet(() -> checkDelegateExpression(attributes).map(this::createThrowMessageDelegateExpression))
             .orElseGet(this::createDefaultThrowMessageDelegate);
     }
 
@@ -883,13 +690,10 @@ public class DefaultActivityBehaviorFactory
             bpmnEvent,
             messageEventDefinition
         );
-        return getMessageExecutionContextFactory()
-            .create(messageEventDefinition, mappingProvider, expressionManager);
+        return getMessageExecutionContextFactory().create(messageEventDefinition, mappingProvider, expressionManager);
     }
 
-    public ThrowMessageDelegate createThrowMessageJavaDelegate(
-        String className
-    ) {
+    public ThrowMessageDelegate createThrowMessageJavaDelegate(String className) {
         Class<? extends ThrowMessageDelegate> clazz = ReflectUtil
             .loadClass(className)
             .asSubclass(ThrowMessageDelegate.class);
@@ -897,12 +701,8 @@ public class DefaultActivityBehaviorFactory
         return new ThrowMessageJavaDelegate(clazz, emptyList());
     }
 
-    public ThrowMessageDelegate createThrowMessageDelegateExpression(
-        String delegateExpression
-    ) {
-        Expression expression = expressionManager.createExpression(
-            delegateExpression
-        );
+    public ThrowMessageDelegate createThrowMessageDelegateExpression(String delegateExpression) {
+        Expression expression = expressionManager.createExpression(delegateExpression);
 
         return new ThrowMessageDelegateExpression(expression, emptyList());
     }
@@ -919,29 +719,20 @@ public class DefaultActivityBehaviorFactory
             .create(bpmnEvent, messageEventDefinition, getExpressionManager());
     }
 
-    protected Optional<String> checkClassDelegate(
-        Map<String, List<ExtensionAttribute>> attributes
-    ) {
+    protected Optional<String> checkClassDelegate(Map<String, List<ExtensionAttribute>> attributes) {
         return getAttributeValue(attributes, "class");
     }
 
-    protected Optional<String> checkDelegateExpression(
-        Map<String, List<ExtensionAttribute>> attributes
-    ) {
+    protected Optional<String> checkDelegateExpression(Map<String, List<ExtensionAttribute>> attributes) {
         return getAttributeValue(attributes, "delegateExpression");
     }
 
-    protected Optional<String> getAttributeValue(
-        Map<String, List<ExtensionAttribute>> attributes,
-        String name
-    ) {
+    protected Optional<String> getAttributeValue(Map<String, List<ExtensionAttribute>> attributes, String name) {
         return Optional
             .ofNullable(attributes)
             .filter(it -> it.containsKey("activiti"))
             .map(it -> it.get("activiti"))
-            .flatMap(it ->
-                it.stream().filter(el -> name.equals(el.getName())).findAny()
-            )
+            .flatMap(it -> it.stream().filter(el -> name.equals(el.getName())).findAny())
             .map(ExtensionAttribute::getValue);
     }
 }

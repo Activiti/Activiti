@@ -45,13 +45,8 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testGetBpmnXmlFileThroughService() {
-        String deploymentId = repositoryService
-            .createDeploymentQuery()
-            .singleResult()
-            .getId();
-        List<String> deploymentResources = repositoryService.getDeploymentResourceNames(
-            deploymentId
-        );
+        String deploymentId = repositoryService.createDeploymentQuery().singleResult().getId();
+        List<String> deploymentResources = repositoryService.getDeploymentResourceNames(deploymentId);
 
         // verify bpmn file name
         assertThat(deploymentResources).hasSize(1);
@@ -59,33 +54,20 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
             "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testGetBpmnXmlFileThroughService.bpmn20.xml";
         assertThat(deploymentResources.get(0)).isEqualTo(bpmnResourceName);
 
-        ProcessDefinition processDefinition = repositoryService
-            .createProcessDefinitionQuery()
-            .singleResult();
-        assertThat(processDefinition.getResourceName())
-            .isEqualTo(bpmnResourceName);
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+        assertThat(processDefinition.getResourceName()).isEqualTo(bpmnResourceName);
         assertThat(processDefinition.getDiagramResourceName()).isNull();
         assertThat(processDefinition.hasStartFormKey()).isFalse();
 
         ProcessDefinition readOnlyProcessDefinition =
-            (
-                (RepositoryServiceImpl) repositoryService
-            ).getDeployedProcessDefinition(processDefinition.getId());
+            ((RepositoryServiceImpl) repositoryService).getDeployedProcessDefinition(processDefinition.getId());
         assertThat(readOnlyProcessDefinition.getDiagramResourceName()).isNull();
 
         // verify content
-        InputStream deploymentInputStream = repositoryService.getResourceAsStream(
-            deploymentId,
-            bpmnResourceName
-        );
-        String contentFromDeployment = readInputStreamToString(
-            deploymentInputStream
-        );
+        InputStream deploymentInputStream = repositoryService.getResourceAsStream(deploymentId, bpmnResourceName);
+        String contentFromDeployment = readInputStreamToString(deploymentInputStream);
         assertThat(contentFromDeployment.length() > 0).isTrue();
-        assertThat(
-            contentFromDeployment.contains("process id=\"emptyProcess\"")
-        )
-            .isTrue();
+        assertThat(contentFromDeployment.contains("process id=\"emptyProcess\"")).isTrue();
 
         InputStream fileInputStream = ReflectUtil.getResourceAsStream(
             "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testGetBpmnXmlFileThroughService.bpmn20.xml"
@@ -109,13 +91,10 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
                     )
                     .deploy();
             })
-            .withMessageContaining(
-                Problems.BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG
-            );
+            .withMessageContaining(Problems.BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG);
 
         // Verify that nothing is deployed
-        assertThat(repositoryService.createDeploymentQuery().count())
-            .isEqualTo(0);
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(0);
     }
 
     public void testViolateProcessDefinitionIdMaximumLength() {
@@ -123,16 +102,13 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
             .isThrownBy(() -> {
                 repositoryService
                     .createDeployment()
-                    .addClasspathResource(
-                        "org/activiti/engine/test/bpmn/deployment/processWithLongId.bpmn20.xml"
-                    )
+                    .addClasspathResource("org/activiti/engine/test/bpmn/deployment/processWithLongId.bpmn20.xml")
                     .deploy();
             })
             .withMessageContaining(Problems.PROCESS_DEFINITION_ID_TOO_LONG);
 
         // Verify that nothing is deployed
-        assertThat(repositoryService.createDeploymentQuery().count())
-            .isEqualTo(0);
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(0);
     }
 
     public void testViolateProcessDefinitionNameAndDescriptionMaximumLength() {
@@ -146,13 +122,10 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
                     .deploy();
             })
             .withMessageContaining(Problems.PROCESS_DEFINITION_NAME_TOO_LONG)
-            .withMessageContaining(
-                Problems.PROCESS_DEFINITION_DOCUMENTATION_TOO_LONG
-            );
+            .withMessageContaining(Problems.PROCESS_DEFINITION_DOCUMENTATION_TOO_LONG);
 
         // Verify that nothing is deployed
-        assertThat(repositoryService.createDeploymentQuery().count())
-            .isEqualTo(0);
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(0);
     }
 
     public void testViolateDefinitionTargetNamespaceMaximumLength() {
@@ -165,13 +138,10 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
                     )
                     .deploy();
             })
-            .withMessageContaining(
-                Problems.BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG
-            );
+            .withMessageContaining(Problems.BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG);
 
         // Verify that nothing is deployed
-        assertThat(repositoryService.createDeploymentQuery().count())
-            .isEqualTo(0);
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(0);
     }
 
     public void testDeploySameFileTwice() {
@@ -184,13 +154,8 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
             .name("twice")
             .deploy();
 
-        String deploymentId = repositoryService
-            .createDeploymentQuery()
-            .singleResult()
-            .getId();
-        List<String> deploymentResources = repositoryService.getDeploymentResourceNames(
-            deploymentId
-        );
+        String deploymentId = repositoryService.createDeploymentQuery().singleResult().getId();
+        List<String> deploymentResources = repositoryService.getDeploymentResourceNames(deploymentId);
 
         // verify bpmn file name
         assertThat(deploymentResources).hasSize(1);
@@ -227,8 +192,7 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
             });
 
         // Verify that nothing is deployed
-        assertThat(repositoryService.createDeploymentQuery().count())
-            .isEqualTo(0);
+        assertThat(repositoryService.createDeploymentQuery().count()).isEqualTo(0);
     }
 
     public void testDeployDifferentFiles() {
@@ -241,13 +205,8 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
             .name("twice")
             .deploy();
 
-        String deploymentId = repositoryService
-            .createDeploymentQuery()
-            .singleResult()
-            .getId();
-        List<String> deploymentResources = repositoryService.getDeploymentResourceNames(
-            deploymentId
-        );
+        String deploymentId = repositoryService.createDeploymentQuery().singleResult().getId();
+        List<String> deploymentResources = repositoryService.getDeploymentResourceNames(deploymentId);
 
         // verify bpmn file name
         assertThat(deploymentResources).hasSize(1);
@@ -278,37 +237,26 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
         }
     )
     public void testProcessDiagramResource() {
-        ProcessDefinition processDefinition = repositoryService
-            .createProcessDefinitionQuery()
-            .singleResult();
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
 
         assertThat(processDefinition.getResourceName())
             .isEqualTo(
                 "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.bpmn20.xml"
             );
-        BpmnModel processModel = repositoryService.getBpmnModel(
-            processDefinition.getId()
-        );
-        List<StartEvent> startEvents = processModel
-            .getMainProcess()
-            .findFlowElementsOfType(StartEvent.class);
+        BpmnModel processModel = repositoryService.getBpmnModel(processDefinition.getId());
+        List<StartEvent> startEvents = processModel.getMainProcess().findFlowElementsOfType(StartEvent.class);
         assertThat(startEvents).hasSize(1);
         assertThat(startEvents.get(0).getFormKey()).isEqualTo("someFormKey");
 
         String diagramResourceName = processDefinition.getDiagramResourceName();
         assertThat(diagramResourceName)
-            .isEqualTo(
-                "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.jpg"
-            );
+            .isEqualTo("org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.jpg");
 
         InputStream diagramStream = repositoryService.getResourceAsStream(
             deploymentIdFromDeploymentAnnotation,
             "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.jpg"
         );
-        byte[] diagramBytes = IoUtil.readInputStream(
-            diagramStream,
-            "diagram stream"
-        );
+        byte[] diagramBytes = IoUtil.readInputStream(diagramStream, "diagram stream");
         assertThat(diagramBytes.length).isEqualTo(33343);
     }
 
@@ -350,16 +298,10 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testProcessDefinitionDescription() {
-        String id = repositoryService
-            .createProcessDefinitionQuery()
-            .singleResult()
-            .getId();
+        String id = repositoryService.createProcessDefinitionQuery().singleResult().getId();
         ProcessDefinition processDefinition =
-            (
-                (RepositoryServiceImpl) repositoryService
-            ).getDeployedProcessDefinition(id);
-        assertThat(processDefinition.getDescription())
-            .isEqualTo("This is really good process documentation!");
+            ((RepositoryServiceImpl) repositoryService).getDeployedProcessDefinition(id);
+        assertThat(processDefinition.getDescription()).isEqualTo("This is really good process documentation!");
     }
 
     public void testDeploySameFileTwiceForDifferentTenantId() {
@@ -373,13 +315,8 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
             .tenantId("Tenant_A")
             .deploy();
 
-        String deploymentId = repositoryService
-            .createDeploymentQuery()
-            .singleResult()
-            .getId();
-        List<String> deploymentResources = repositoryService.getDeploymentResourceNames(
-            deploymentId
-        );
+        String deploymentId = repositoryService.createDeploymentQuery().singleResult().getId();
+        List<String> deploymentResources = repositoryService.getDeploymentResourceNames(deploymentId);
 
         // verify bpmn file name
         assertThat(deploymentResources).hasSize(1);

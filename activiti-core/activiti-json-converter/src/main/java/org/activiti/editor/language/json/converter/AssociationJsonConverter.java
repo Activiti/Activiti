@@ -40,22 +40,14 @@ public class AssociationJsonConverter extends BaseBpmnJsonConverter {
         fillBpmnTypes(convertersToJsonMap);
     }
 
-    public static void fillJsonTypes(
-        Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap
-    ) {
-        convertersToBpmnMap.put(
-            STENCIL_ASSOCIATION,
-            AssociationJsonConverter.class
-        );
+    public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
+        convertersToBpmnMap.put(STENCIL_ASSOCIATION, AssociationJsonConverter.class);
     }
 
     public static void fillBpmnTypes(
         Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap
     ) {
-        convertersToJsonMap.put(
-            Association.class,
-            AssociationJsonConverter.class
-        );
+        convertersToJsonMap.put(Association.class, AssociationJsonConverter.class);
     }
 
     @Override
@@ -84,19 +76,11 @@ public class AssociationJsonConverter extends BaseBpmnJsonConverter {
         );
         ArrayNode dockersArrayNode = objectMapper.createArrayNode();
         ObjectNode dockNode = objectMapper.createObjectNode();
-        dockNode.put(
-            EDITOR_BOUNDS_X,
-            model.getGraphicInfo(association.getSourceRef()).getWidth() / 2.0
-        );
-        dockNode.put(
-            EDITOR_BOUNDS_Y,
-            model.getGraphicInfo(association.getSourceRef()).getHeight() / 2.0
-        );
+        dockNode.put(EDITOR_BOUNDS_X, model.getGraphicInfo(association.getSourceRef()).getWidth() / 2.0);
+        dockNode.put(EDITOR_BOUNDS_Y, model.getGraphicInfo(association.getSourceRef()).getHeight() / 2.0);
         dockersArrayNode.add(dockNode);
 
-        List<GraphicInfo> graphicInfoList = model.getFlowLocationGraphicInfo(
-            association.getId()
-        );
+        List<GraphicInfo> graphicInfoList = model.getFlowLocationGraphicInfo(association.getId());
         if (graphicInfoList.size() > 2) {
             for (int i = 1; i < graphicInfoList.size() - 1; i++) {
                 GraphicInfo graphicInfo = graphicInfoList.get(i);
@@ -107,23 +91,15 @@ public class AssociationJsonConverter extends BaseBpmnJsonConverter {
             }
         }
 
-        GraphicInfo targetGraphicInfo = model.getGraphicInfo(
-            association.getTargetRef()
-        );
-        GraphicInfo flowGraphicInfo = graphicInfoList.get(
-            graphicInfoList.size() - 1
-        );
+        GraphicInfo targetGraphicInfo = model.getGraphicInfo(association.getTargetRef());
+        GraphicInfo flowGraphicInfo = graphicInfoList.get(graphicInfoList.size() - 1);
 
-        double diffTopY = Math.abs(
-            flowGraphicInfo.getY() - targetGraphicInfo.getY()
-        );
+        double diffTopY = Math.abs(flowGraphicInfo.getY() - targetGraphicInfo.getY());
         double diffRightX = Math.abs(
-            flowGraphicInfo.getX() -
-            (targetGraphicInfo.getX() + targetGraphicInfo.getWidth())
+            flowGraphicInfo.getX() - (targetGraphicInfo.getX() + targetGraphicInfo.getWidth())
         );
         double diffBottomY = Math.abs(
-            flowGraphicInfo.getY() -
-            (targetGraphicInfo.getY() + targetGraphicInfo.getHeight())
+            flowGraphicInfo.getY() - (targetGraphicInfo.getY() + targetGraphicInfo.getHeight())
         );
 
         dockNode = objectMapper.createObjectNode();
@@ -143,14 +119,9 @@ public class AssociationJsonConverter extends BaseBpmnJsonConverter {
         dockersArrayNode.add(dockNode);
         flowNode.set("dockers", dockersArrayNode);
         ArrayNode outgoingArrayNode = objectMapper.createArrayNode();
-        outgoingArrayNode.add(
-            BpmnJsonConverterUtil.createResourceNode(association.getTargetRef())
-        );
+        outgoingArrayNode.add(BpmnJsonConverterUtil.createResourceNode(association.getTargetRef()));
         flowNode.set("outgoing", outgoingArrayNode);
-        flowNode.set(
-            "target",
-            BpmnJsonConverterUtil.createResourceNode(association.getTargetRef())
-        );
+        flowNode.set("target", BpmnJsonConverterUtil.createResourceNode(association.getTargetRef()));
 
         ObjectNode propertiesNode = objectMapper.createObjectNode();
         propertiesNode.put(PROPERTY_OVERRIDE_ID, association.getId());
@@ -161,10 +132,7 @@ public class AssociationJsonConverter extends BaseBpmnJsonConverter {
     }
 
     @Override
-    protected void convertElementToJson(
-        ObjectNode propertiesNode,
-        BaseElement baseElement
-    ) {
+    protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
         // nothing to do
     }
 
@@ -183,13 +151,8 @@ public class AssociationJsonConverter extends BaseBpmnJsonConverter {
 
         if (sourceRef != null) {
             association.setSourceRef(sourceRef);
-            String targetId = elementNode
-                .get("target")
-                .get(EDITOR_SHAPE_ID)
-                .asText();
-            association.setTargetRef(
-                BpmnJsonConverterUtil.getElementId(shapeMap.get(targetId))
-            );
+            String targetId = elementNode.get("target").get(EDITOR_SHAPE_ID).asText();
+            association.setTargetRef(BpmnJsonConverterUtil.getElementId(shapeMap.get(targetId)));
         }
 
         return association;

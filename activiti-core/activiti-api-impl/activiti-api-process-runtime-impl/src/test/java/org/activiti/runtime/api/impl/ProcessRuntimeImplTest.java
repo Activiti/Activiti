@@ -128,22 +128,14 @@ public class ProcessRuntimeImplTest {
         internalProcessInstance.setProcessDefinitionKey("processDefinitionKey");
         internalProcessInstance.setStartUserId("testuser");
 
-        doReturn(internalProcessInstance)
-            .when(processRuntime)
-            .internalProcessInstance("processId");
+        doReturn(internalProcessInstance).when(processRuntime).internalProcessInstance("processId");
 
-        doReturn(true)
-            .when(securityPoliciesManager)
-            .canWrite("processDefinitionKey");
+        doReturn(true).when(securityPoliciesManager).canWrite("processDefinitionKey");
         doReturn("testuser").when(securityManager).getAuthenticatedUserId();
 
         ProcessInstanceQuery processQuery = mock(ProcessInstanceQuery.class);
-        doReturn(processQuery)
-            .when(processQuery)
-            .processInstanceId("processId");
-        doReturn(processQuery)
-            .when(runtimeService)
-            .createProcessInstanceQuery();
+        doReturn(processQuery).when(processQuery).processInstanceId("processId");
+        doReturn(processQuery).when(runtimeService).createProcessInstanceQuery();
 
         org.activiti.engine.runtime.ProcessInstance internalProcess = mock(
             org.activiti.engine.runtime.ProcessInstance.class
@@ -175,9 +167,7 @@ public class ProcessRuntimeImplTest {
         processDefinition.setId(processDefinitionId);
         processDefinition.setKey(processDefinitionKey);
         processDefinition.setAppVersion(null);
-        List<ProcessDefinition> findProcessDefinitionResult = singletonList(
-            processDefinition
-        );
+        List<ProcessDefinition> findProcessDefinitionResult = singletonList(processDefinition);
 
         DeploymentEntityImpl deploymentEntity = new DeploymentEntityImpl();
         deploymentEntity.setId("deploymentId");
@@ -185,8 +175,7 @@ public class ProcessRuntimeImplTest {
         given(commandExecutor.execute(any()))
             .willReturn(Arrays.asList(deploymentEntity))
             .willReturn(findProcessDefinitionResult);
-        given(securityPoliciesManager.canRead(processDefinitionKey))
-            .willReturn(true);
+        given(securityPoliciesManager.canRead(processDefinitionKey)).willReturn(true);
 
         processRuntime.processDefinition(processDefinitionId);
 
@@ -200,9 +189,7 @@ public class ProcessRuntimeImplTest {
         ProcessDefinitionEntityImpl processDefinition = new ProcessDefinitionEntityImpl();
         processDefinition.setId(processDefinitionId);
         processDefinition.setAppVersion(1);
-        List<ProcessDefinition> findProcessDefinitionResult = singletonList(
-            processDefinition
-        );
+        List<ProcessDefinition> findProcessDefinitionResult = singletonList(processDefinition);
 
         DeploymentEntityImpl latestDeploymentEntity = new DeploymentEntityImpl();
         latestDeploymentEntity.setId("deploymentId");
@@ -210,17 +197,14 @@ public class ProcessRuntimeImplTest {
         DeploymentImpl latestDeployment = new DeploymentImpl();
         latestDeployment.setVersion(2);
 
-        given(deploymentConverter.from(latestDeploymentEntity))
-            .willReturn(latestDeployment);
+        given(deploymentConverter.from(latestDeploymentEntity)).willReturn(latestDeployment);
         given(commandExecutor.execute(any()))
             .willReturn(Arrays.asList(latestDeploymentEntity))
             .willReturn(findProcessDefinitionResult)
             .willReturn(latestDeploymentEntity)
             .willReturn(latestDeployment);
 
-        Throwable exception = catchThrowable(() ->
-            processRuntime.processDefinition(processDefinitionId)
-        );
+        Throwable exception = catchThrowable(() -> processRuntime.processDefinition(processDefinitionId));
 
         assertThat(exception)
             .isInstanceOf(UnprocessableEntityException.class)
@@ -237,34 +221,26 @@ public class ProcessRuntimeImplTest {
         processDefinition.setId(processDefinitionId);
         processDefinition.setKey(processDefinitionKey);
         processDefinition.setAppVersion(1);
-        List<ProcessDefinition> findProcessDefinitionResult = singletonList(
-            processDefinition
-        );
+        List<ProcessDefinition> findProcessDefinitionResult = singletonList(processDefinition);
 
         DeploymentEntityImpl latestDeploymentEntity = new DeploymentEntityImpl();
         latestDeploymentEntity.setId("deploymentId");
         DeploymentImpl deployment = new DeploymentImpl();
         deployment.setVersion(1);
 
-        given(deploymentConverter.from(latestDeploymentEntity))
-            .willReturn(deployment);
+        given(deploymentConverter.from(latestDeploymentEntity)).willReturn(deployment);
         given(commandExecutor.execute(any()))
             .willReturn(Arrays.asList(latestDeploymentEntity))
             .willReturn(findProcessDefinitionResult)
             .willReturn(latestDeploymentEntity);
 
-        given(securityPoliciesManager.canRead(processDefinitionKey))
-            .willReturn(false);
+        given(securityPoliciesManager.canRead(processDefinitionKey)).willReturn(false);
 
-        Throwable exception = catchThrowable(() ->
-            processRuntime.processDefinition(processDefinitionId)
-        );
+        Throwable exception = catchThrowable(() -> processRuntime.processDefinition(processDefinitionId));
 
         assertThat(exception)
             .isInstanceOf(ActivitiObjectNotFoundException.class)
-            .hasMessage(
-                "Unable to find process definition for the given id or key:'processDefinitionId'"
-            );
+            .hasMessage("Unable to find process definition for the given id or key:'processDefinitionId'");
     }
 
     @Test
@@ -289,33 +265,23 @@ public class ProcessRuntimeImplTest {
                 createPayload.getProcessDefinitionKey()
             );
 
-        ProcessInstanceBuilder processInstanceBuilder = mock(
-            ProcessInstanceBuilder.class,
-            Answers.RETURNS_SELF
-        );
-        given(runtimeService.createProcessInstanceBuilder())
-            .willReturn(processInstanceBuilder);
+        ProcessInstanceBuilder processInstanceBuilder = mock(ProcessInstanceBuilder.class, Answers.RETURNS_SELF);
+        given(runtimeService.createProcessInstanceBuilder()).willReturn(processInstanceBuilder);
         org.activiti.engine.runtime.ProcessInstance internalProcessInstance = mock(
             org.activiti.engine.runtime.ProcessInstance.class
         );
-        given(processInstanceBuilder.create())
-            .willReturn(internalProcessInstance);
+        given(processInstanceBuilder.create()).willReturn(internalProcessInstance);
 
         ProcessInstanceImpl apiProcessInstance = new ProcessInstanceImpl();
-        given(processInstanceConverter.from(internalProcessInstance))
-            .willReturn(apiProcessInstance);
+        given(processInstanceConverter.from(internalProcessInstance)).willReturn(apiProcessInstance);
 
         //when
-        ProcessInstance createdProcessInstance = processRuntime.create(
-            createPayload
-        );
+        ProcessInstance createdProcessInstance = processRuntime.create(createPayload);
 
         //then
         assertThat(createdProcessInstance).isEqualTo(apiProcessInstance);
-        verify(processInstanceBuilder)
-            .processDefinitionId(processDefinition.getId());
-        verify(processInstanceBuilder)
-            .processDefinitionKey(processDefinition.getKey());
+        verify(processInstanceBuilder).processDefinitionId(processDefinition.getId());
+        verify(processInstanceBuilder).processDefinitionKey(processDefinition.getKey());
         verify(processInstanceBuilder).name(createPayload.getName());
     }
 
@@ -324,42 +290,27 @@ public class ProcessRuntimeImplTest {
         //given
         String processInstanceId = "process-instance-id";
         ProcessInstanceQuery processQuery = mock(ProcessInstanceQuery.class);
-        doReturn(processQuery)
-            .when(processQuery)
-            .processInstanceId(processInstanceId);
-        doReturn(processQuery)
-            .when(runtimeService)
-            .createProcessInstanceQuery();
+        doReturn(processQuery).when(processQuery).processInstanceId(processInstanceId);
+        doReturn(processQuery).when(runtimeService).createProcessInstanceQuery();
         ExecutionEntityImpl internalProcess = new ExecutionEntityImpl();
         internalProcess.setStartUserId("testuser");
         internalProcess.setAppVersion(1);
         doReturn(internalProcess).when(processQuery).singleResult();
-        when(
-            runtimeService.startCreatedProcessInstance(
-                internalProcess,
-                new HashMap<>()
-            )
-        )
-            .thenReturn(internalProcess);
+        when(runtimeService.startCreatedProcessInstance(internalProcess, new HashMap<>())).thenReturn(internalProcess);
         ProcessInstanceImpl apiProcessInstance = new ProcessInstanceImpl();
         apiProcessInstance.setBusinessKey("business-result");
         apiProcessInstance.setId("999-999");
-        given(processInstanceConverter.from(internalProcess))
-            .willReturn(apiProcessInstance);
+        given(processInstanceConverter.from(internalProcess)).willReturn(apiProcessInstance);
         given(securityPoliciesManager.canWrite(any())).willReturn(true);
         doReturn("testuser").when(securityManager).getAuthenticatedUserId();
 
         //when
         StartProcessPayload payload = new StartProcessPayload();
-        ProcessInstance createdProcessInstance = processRuntime.startCreatedProcess(
-            processInstanceId,
-            payload
-        );
+        ProcessInstance createdProcessInstance = processRuntime.startCreatedProcess(processInstanceId, payload);
 
         //then
         assertThat(createdProcessInstance.getId()).isEqualTo("999-999");
-        assertThat(createdProcessInstance.getBusinessKey())
-            .isEqualTo("business-result");
+        assertThat(createdProcessInstance.getBusinessKey()).isEqualTo("business-result");
     }
 
     @Test
@@ -367,23 +318,15 @@ public class ProcessRuntimeImplTest {
         //given
         String processInstanceId = "process-instance-id";
         ProcessInstanceQuery processQuery = mock(ProcessInstanceQuery.class);
-        doReturn(processQuery)
-            .when(processQuery)
-            .processInstanceId(processInstanceId);
-        doReturn(processQuery)
-            .when(runtimeService)
-            .createProcessInstanceQuery();
+        doReturn(processQuery).when(processQuery).processInstanceId(processInstanceId);
+        doReturn(processQuery).when(runtimeService).createProcessInstanceQuery();
         doReturn(null).when(processQuery).singleResult();
         StartProcessPayload payload = new StartProcessPayload();
 
-        Throwable exception = catchThrowable(() ->
-            processRuntime.startCreatedProcess(processInstanceId, payload)
-        );
+        Throwable exception = catchThrowable(() -> processRuntime.startCreatedProcess(processInstanceId, payload));
 
         assertThat(exception)
             .isInstanceOf(NotFoundException.class)
-            .hasMessage(
-                "Unable to find process instance for the given id:'process-instance-id'"
-            );
+            .hasMessage("Unable to find process instance for the given id:'process-instance-id'");
     }
 }

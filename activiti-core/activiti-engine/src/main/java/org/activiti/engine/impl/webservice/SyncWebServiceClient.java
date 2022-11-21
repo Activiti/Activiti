@@ -40,9 +40,6 @@ public interface SyncWebServiceClient {
      *          a not null map of overriden enpoint addresses. The key is the endpoint qualified name.
      * @return the result of invoking the method of the web service
      */
-    Object[] send(
-        String methodName,
-        Object[] arguments,
-        ConcurrentMap<QName, URL> overridenEndpointAddresses
-    ) throws Exception;
+    Object[] send(String methodName, Object[] arguments, ConcurrentMap<QName, URL> overridenEndpointAddresses)
+        throws Exception;
 }

@@ -32,14 +32,12 @@ import org.activiti.engine.task.Task;
 /**
 
  */
-public class HistoricProcessInstanceAndVariablesQueryTest
-    extends PluggableActivitiTestCase {
+public class HistoricProcessInstanceAndVariablesQueryTest extends PluggableActivitiTestCase {
 
     private static String PROCESS_DEFINITION_KEY = "oneTaskProcess";
     private static String PROCESS_DEFINITION_KEY_2 = "oneTaskProcess2";
     private static String PROCESS_DEFINITION_NAME_2 = "oneTaskProcess2Name";
-    private static String PROCESS_DEFINITION_CATEGORY_2 =
-        "org.activiti.enginge.test.api.runtime.2Category";
+    private static String PROCESS_DEFINITION_CATEGORY_2 = "org.activiti.enginge.test.api.runtime.2Category";
     private static String PROCESS_DEFINITION_KEY_3 = "oneTaskProcess3";
 
     private List<String> processInstanceIds;
@@ -51,71 +49,44 @@ public class HistoricProcessInstanceAndVariablesQueryTest
         super.setUp();
         repositoryService
             .createDeployment()
-            .addClasspathResource(
-                "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"
-            )
-            .addClasspathResource(
-                "org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml"
-            )
-            .addClasspathResource(
-                "org/activiti/engine/test/api/runtime/oneTaskProcess3.bpmn20.xml"
-            )
+            .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml")
+            .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml")
+            .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess3.bpmn20.xml")
             .deploy();
 
         processInstanceIds = new ArrayList<String>();
         for (int i = 0; i < 4; i++) {
             processInstanceIds.add(
                 runtimeService
-                    .startProcessInstanceByKey(
-                        PROCESS_DEFINITION_KEY,
-                        i + "",
-                        map("test", "test", "test2", "test2")
-                    )
+                    .startProcessInstanceByKey(PROCESS_DEFINITION_KEY, i + "", map("test", "test", "test2", "test2"))
                     .getId()
             );
             if (i == 0) {
-                Task task = taskService
-                    .createTaskQuery()
-                    .processInstanceId(processInstanceIds.get(0))
-                    .singleResult();
+                Task task = taskService.createTaskQuery().processInstanceId(processInstanceIds.get(0)).singleResult();
                 taskService.complete(task.getId());
             }
         }
         processInstanceIds.add(
             runtimeService
-                .startProcessInstanceByKey(
-                    PROCESS_DEFINITION_KEY_2,
-                    "1",
-                    singletonMap("anothertest", 123)
-                )
+                .startProcessInstanceByKey(PROCESS_DEFINITION_KEY_2, "1", singletonMap("anothertest", 123))
                 .getId()
         );
         processInstanceIds.add(
             runtimeService
-                .startProcessInstanceByKey(
-                    PROCESS_DEFINITION_KEY_3,
-                    "1",
-                    singletonMap("casetest", "MyTest")
-                )
+                .startProcessInstanceByKey(PROCESS_DEFINITION_KEY_3, "1", singletonMap("casetest", "MyTest"))
                 .getId()
         );
     }
 
     protected void tearDown() throws Exception {
-        for (org.activiti.engine.repository.Deployment deployment : repositoryService
-            .createDeploymentQuery()
-            .list()) {
+        for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
             repositoryService.deleteDeployment(deployment.getId(), true);
         }
         super.tearDown();
     }
 
     public void testQuery() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             HistoricProcessInstance processInstance = historyService
                 .createHistoricProcessInstanceQuery()
                 .includeProcessVariables()
@@ -143,8 +114,7 @@ public class HistoricProcessInstanceAndVariablesQueryTest
             assertThat(variableMap).hasSize(2);
             assertThat(variableMap.get("test")).isEqualTo("test");
             assertThat(variableMap.get("test2")).isEqualTo("test2");
-            assertThat(instanceList.get(0).getProcessDefinitionKey())
-                .isEqualTo(PROCESS_DEFINITION_KEY);
+            assertThat(instanceList.get(0).getProcessDefinitionKey()).isEqualTo(PROCESS_DEFINITION_KEY);
 
             processInstance =
                 historyService
@@ -157,28 +127,16 @@ public class HistoricProcessInstanceAndVariablesQueryTest
             assertThat(variableMap.get("anothertest")).isEqualTo(123);
 
             processInstance =
-                historyService
-                    .createHistoricProcessInstanceQuery()
-                    .includeProcessVariables()
-                    .finished()
-                    .singleResult();
+                historyService.createHistoricProcessInstanceQuery().includeProcessVariables().finished().singleResult();
             variableMap = processInstance.getProcessVariables();
             assertThat(variableMap).hasSize(2);
             assertThat(variableMap.get("test")).isEqualTo("test");
             assertThat(variableMap.get("test2")).isEqualTo("test2");
 
             instanceList =
-                historyService
-                    .createHistoricProcessInstanceQuery()
-                    .includeProcessVariables()
-                    .listPage(0, 50);
+                historyService.createHistoricProcessInstanceQuery().includeProcessVariables().listPage(0, 50);
             assertThat(instanceList).hasSize(6);
-            assertThat(
-                historyService
-                    .createHistoricProcessInstanceQuery()
-                    .includeProcessVariables()
-                    .count()
-            )
+            assertThat(historyService.createHistoricProcessInstanceQuery().includeProcessVariables().count())
                 .isEqualTo(6);
 
             instanceList =
@@ -262,17 +220,9 @@ public class HistoricProcessInstanceAndVariablesQueryTest
                 .isEqualTo(0);
 
             instanceList =
-                historyService
-                    .createHistoricProcessInstanceQuery()
-                    .includeProcessVariables()
-                    .listPage(0, 50);
+                historyService.createHistoricProcessInstanceQuery().includeProcessVariables().listPage(0, 50);
             assertThat(instanceList).hasSize(6);
-            assertThat(
-                historyService
-                    .createHistoricProcessInstanceQuery()
-                    .includeProcessVariables()
-                    .count()
-            )
+            assertThat(historyService.createHistoricProcessInstanceQuery().includeProcessVariables().count())
                 .isEqualTo(6);
 
             instanceList =
@@ -343,17 +293,9 @@ public class HistoricProcessInstanceAndVariablesQueryTest
     }
 
     public void testQueryByprocessDefinition() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // DeploymentId
-            String deploymentId = repositoryService
-                .createDeploymentQuery()
-                .list()
-                .get(0)
-                .getId();
+            String deploymentId = repositoryService.createDeploymentQuery().list().get(0).getId();
             HistoricProcessInstance processInstance = historyService
                 .createHistoricProcessInstanceQuery()
                 .includeProcessVariables()
@@ -363,8 +305,7 @@ public class HistoricProcessInstanceAndVariablesQueryTest
             Map<String, Object> variableMap = processInstance.getProcessVariables();
             assertThat(variableMap).hasSize(1);
             assertThat(variableMap.get("anothertest")).isEqualTo(123);
-            assertThat(processInstance.getDeploymentId())
-                .isEqualTo(deploymentId);
+            assertThat(processInstance.getDeploymentId()).isEqualTo(deploymentId);
 
             processInstance =
                 historyService
@@ -386,8 +327,7 @@ public class HistoricProcessInstanceAndVariablesQueryTest
             variableMap = processInstance.getProcessVariables();
             assertThat(variableMap).hasSize(1);
             assertThat(variableMap.get("anothertest")).isEqualTo(123);
-            assertThat(processInstance.getProcessDefinitionName())
-                .isEqualTo(PROCESS_DEFINITION_NAME_2);
+            assertThat(processInstance.getProcessDefinitionName()).isEqualTo(PROCESS_DEFINITION_NAME_2);
 
             processInstance =
                 historyService
@@ -422,11 +362,7 @@ public class HistoricProcessInstanceAndVariablesQueryTest
     }
 
     public void testOrQuery() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             HistoricProcessInstance processInstance = historyService
                 .createHistoricProcessInstanceQuery()
                 .includeProcessVariables()
@@ -630,11 +566,7 @@ public class HistoricProcessInstanceAndVariablesQueryTest
     }
 
     public void testOrQueryMultipleVariableValues() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             HistoricProcessInstanceQuery query0 = historyService
                 .createHistoricProcessInstanceQuery()
                 .includeProcessVariables()
@@ -701,17 +633,9 @@ public class HistoricProcessInstanceAndVariablesQueryTest
     }
 
     public void testOrQueryByprocessDefinition() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // DeploymentId
-            String deploymentId = repositoryService
-                .createDeploymentQuery()
-                .list()
-                .get(0)
-                .getId();
+            String deploymentId = repositoryService.createDeploymentQuery().list().get(0).getId();
             HistoricProcessInstanceQuery historicprocessInstanceQuery = historyService
                 .createHistoricProcessInstanceQuery()
                 .includeProcessVariables()
@@ -721,15 +645,11 @@ public class HistoricProcessInstanceAndVariablesQueryTest
                 .endOr();
             assertThat(historicprocessInstanceQuery.list()).hasSize(6);
             assertThat(historicprocessInstanceQuery.count()).isEqualTo(6);
-            Map<String, Object> variableMap = historicprocessInstanceQuery
-                .list()
-                .get(4)
-                .getProcessVariables();
+            Map<String, Object> variableMap = historicprocessInstanceQuery.list().get(4).getProcessVariables();
             assertThat(variableMap).hasSize(1);
             assertThat(variableMap.get("anothertest")).isEqualTo(123);
             for (HistoricProcessInstance processInstance : historicprocessInstanceQuery.list()) {
-                assertThat(processInstance.getDeploymentId())
-                    .isEqualTo(deploymentId);
+                assertThat(processInstance.getDeploymentId()).isEqualTo(deploymentId);
             }
 
             HistoricProcessInstance processInstance = historyService
@@ -755,8 +675,7 @@ public class HistoricProcessInstanceAndVariablesQueryTest
             variableMap = processInstance.getProcessVariables();
             assertThat(variableMap).hasSize(1);
             assertThat(variableMap.get("anothertest")).isEqualTo(123);
-            assertThat(processInstance.getProcessDefinitionName())
-                .isEqualTo(PROCESS_DEFINITION_NAME_2);
+            assertThat(processInstance.getProcessDefinitionName()).isEqualTo(PROCESS_DEFINITION_NAME_2);
 
             processInstance =
                 historyService

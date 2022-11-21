@@ -33,9 +33,7 @@ import org.activiti.engine.task.Event;
  */
 @Internal
 @Deprecated
-public class CommentEntityManagerImpl
-    extends AbstractEntityManager<CommentEntity>
-    implements CommentEntityManager {
+public class CommentEntityManagerImpl extends AbstractEntityManager<CommentEntity> implements CommentEntityManager {
 
     protected CommentDataManager commentDataManager;
 
@@ -65,8 +63,7 @@ public class CommentEntityManagerImpl
             String processDefinitionId = null;
             String processInstanceId = comment.getProcessInstanceId();
             if (comment.getProcessInstanceId() != null) {
-                ExecutionEntity process = getExecutionEntityManager()
-                    .findById(comment.getProcessInstanceId());
+                ExecutionEntity process = getExecutionEntityManager().findById(comment.getProcessInstanceId());
                 if (process != null) {
                     processDefinitionId = process.getProcessDefinitionId();
                 }
@@ -101,10 +98,7 @@ public class CommentEntityManagerImpl
     }
 
     @Override
-    public List<Comment> findCommentsByTaskIdAndType(
-        String taskId,
-        String type
-    ) {
+    public List<Comment> findCommentsByTaskIdAndType(String taskId, String type) {
         checkHistoryEnabled();
         return commentDataManager.findCommentsByTaskIdAndType(taskId, type);
     }
@@ -124,9 +118,7 @@ public class CommentEntityManagerImpl
     @Override
     public List<Event> findEventsByProcessInstanceId(String processInstanceId) {
         checkHistoryEnabled();
-        return commentDataManager.findEventsByProcessInstanceId(
-            processInstanceId
-        );
+        return commentDataManager.findEventsByProcessInstanceId(processInstanceId);
     }
 
     @Override
@@ -142,25 +134,15 @@ public class CommentEntityManagerImpl
     }
 
     @Override
-    public List<Comment> findCommentsByProcessInstanceId(
-        String processInstanceId
-    ) {
+    public List<Comment> findCommentsByProcessInstanceId(String processInstanceId) {
         checkHistoryEnabled();
-        return commentDataManager.findCommentsByProcessInstanceId(
-            processInstanceId
-        );
+        return commentDataManager.findCommentsByProcessInstanceId(processInstanceId);
     }
 
     @Override
-    public List<Comment> findCommentsByProcessInstanceId(
-        String processInstanceId,
-        String type
-    ) {
+    public List<Comment> findCommentsByProcessInstanceId(String processInstanceId, String type) {
         checkHistoryEnabled();
-        return commentDataManager.findCommentsByProcessInstanceId(
-            processInstanceId,
-            type
-        );
+        return commentDataManager.findCommentsByProcessInstanceId(processInstanceId, type);
     }
 
     @Override
@@ -186,8 +168,7 @@ public class CommentEntityManagerImpl
             String processDefinitionId = null;
             String processInstanceId = comment.getProcessInstanceId();
             if (comment.getProcessInstanceId() != null) {
-                ExecutionEntity process = getExecutionEntityManager()
-                    .findById(comment.getProcessInstanceId());
+                ExecutionEntity process = getExecutionEntityManager().findById(comment.getProcessInstanceId());
                 if (process != null) {
                     processDefinitionId = process.getProcessDefinitionId();
                 }
@@ -207,9 +188,7 @@ public class CommentEntityManagerImpl
 
     protected void checkHistoryEnabled() {
         if (!getHistoryManager().isHistoryEnabled()) {
-            throw new ActivitiException(
-                "In order to use comments, history should be enabled"
-            );
+            throw new ActivitiException("In order to use comments, history should be enabled");
         }
     }
 

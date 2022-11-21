@@ -37,9 +37,7 @@ public class EntityManagerSessionFactory implements SessionFactory {
         boolean closeEntityManager
     ) {
         if (entityManagerFactory == null) {
-            throw new ActivitiIllegalArgumentException(
-                "entityManagerFactory is null"
-            );
+            throw new ActivitiIllegalArgumentException("entityManagerFactory is null");
         }
         if (!(entityManagerFactory instanceof EntityManagerFactory)) {
             throw new ActivitiIllegalArgumentException(
@@ -57,11 +55,7 @@ public class EntityManagerSessionFactory implements SessionFactory {
     }
 
     public Session openSession(CommandContext commandContext) {
-        return new EntityManagerSessionImpl(
-            entityManagerFactory,
-            handleTransactions,
-            closeEntityManager
-        );
+        return new EntityManagerSessionImpl(entityManagerFactory, handleTransactions, closeEntityManager);
     }
 
     public EntityManagerFactory getEntityManagerFactory() {

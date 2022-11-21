@@ -31,10 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-@SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.NONE,
-    properties = "spring.main.banner-mode=off"
-)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, properties = "spring.main.banner-mode=off")
 public class ProcessExtensionResourceReaderIT {
 
     private static String FROM = "no-reply@activiti.org";
@@ -53,17 +50,10 @@ public class ProcessExtensionResourceReaderIT {
                 .getContextClassLoader()
                 .getResourceAsStream("processes/initial-vars-extensions.json")
         ) {
-            ProcessExtensionModel processExtensionModel = reader.read(
-                inputStream
-            );
+            ProcessExtensionModel processExtensionModel = reader.read(inputStream);
             assertThat(processExtensionModel).isNotNull();
-            assertThat(processExtensionModel.getId())
-                .isEqualTo("initialVarsProcess");
-            assertThat(
-                processExtensionModel
-                    .getExtensions("Process_initialVarsProcess")
-                    .getProperties()
-            )
+            assertThat(processExtensionModel.getId()).isEqualTo("initialVarsProcess");
+            assertThat(processExtensionModel.getExtensions("Process_initialVarsProcess").getProperties())
                 .containsKey("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
         }
     }
@@ -74,23 +64,16 @@ public class ProcessExtensionResourceReaderIT {
             InputStream inputStream = Thread
                 .currentThread()
                 .getContextClassLoader()
-                .getResourceAsStream(
-                    "processes/template-mapping-extensions.json"
-                )
+                .getResourceAsStream("processes/template-mapping-extensions.json")
         ) {
             //when
-            ProcessExtensionModel processExtensionModel = reader.read(
-                inputStream
-            );
+            ProcessExtensionModel processExtensionModel = reader.read(inputStream);
 
             //then
             assertThat(processExtensionModel).isNotNull();
-            assertThat(processExtensionModel.getId())
-                .isEqualTo("emailTemplateMapping");
+            assertThat(processExtensionModel.getId()).isEqualTo("emailTemplateMapping");
 
-            TemplatesDefinition templates = processExtensionModel
-                .getExtensions("processDefinitionId")
-                .getTemplates();
+            TemplatesDefinition templates = processExtensionModel.getExtensions("processDefinitionId").getTemplates();
             TaskTemplateDefinition defaultTemplate = templates.getDefaultTemplate();
             assertThat(defaultTemplate).isNotNull();
             assertThat(defaultTemplate.getAssignee())
@@ -101,12 +84,7 @@ public class ProcessExtensionResourceReaderIT {
                     TemplateDefinition::getFrom,
                     TemplateDefinition::getSubject
                 )
-                .containsExactly(
-                    FILE,
-                    "classpath:templates/email.html",
-                    FROM,
-                    "Default assignee subject"
-                );
+                .containsExactly(FILE, "classpath:templates/email.html", FROM, "Default assignee subject");
             assertThat(defaultTemplate.getCandidate())
                 .isNotNull()
                 .extracting(
@@ -115,15 +93,9 @@ public class ProcessExtensionResourceReaderIT {
                     TemplateDefinition::getFrom,
                     TemplateDefinition::getSubject
                 )
-                .containsExactly(
-                    VARIABLE,
-                    "myCandidateTemplateVariable",
-                    FROM,
-                    "Default candidate subject"
-                );
+                .containsExactly(VARIABLE, "myCandidateTemplateVariable", FROM, "Default candidate subject");
 
-            assertThat(templates.getTasks())
-                .containsOnlyKeys("myTaskId1", "myTaskId2", "myTaskId3");
+            assertThat(templates.getTasks()).containsOnlyKeys("myTaskId1", "myTaskId2", "myTaskId3");
 
             assertThat(templates.getTasks().get("myTaskId1").getAssignee())
                 .isNotNull()
@@ -157,24 +129,14 @@ public class ProcessExtensionResourceReaderIT {
 
             assertThat(templates.getTasks().get("myTaskId2").getAssignee())
                 .isNotNull()
-                .extracting(
-                    TemplateDefinition::getType,
-                    TemplateDefinition::getValue
-                )
+                .extracting(TemplateDefinition::getType, TemplateDefinition::getValue)
                 .containsExactly(VARIABLE, "myAssigneeTemplateVariable");
-            assertThat(templates.getTasks().get("myTaskId2").getCandidate())
-                .isNull();
-            assertThat(
-                templates.getTasks().get("myTaskId2").getAssignee().getFrom()
-            )
-                .isEqualTo(FROM);
-            assertThat(
-                templates.getTasks().get("myTaskId2").getAssignee().getSubject()
-            )
+            assertThat(templates.getTasks().get("myTaskId2").getCandidate()).isNull();
+            assertThat(templates.getTasks().get("myTaskId2").getAssignee().getFrom()).isEqualTo(FROM);
+            assertThat(templates.getTasks().get("myTaskId2").getAssignee().getSubject())
                 .isEqualTo("myTaskId2 assignee subject");
 
-            assertThat(templates.getTasks().get("myTaskId3").getAssignee())
-                .isNull();
+            assertThat(templates.getTasks().get("myTaskId3").getAssignee()).isNull();
             assertThat(templates.getTasks().get("myTaskId3").getCandidate())
                 .isNotNull()
                 .extracting(
@@ -183,12 +145,7 @@ public class ProcessExtensionResourceReaderIT {
                     TemplateDefinition::getFrom,
                     TemplateDefinition::getSubject
                 )
-                .containsExactly(
-                    VARIABLE,
-                    "myCandidateTemplateVariable",
-                    FROM,
-                    "myTaskId3 candidate subject"
-                );
+                .containsExactly(VARIABLE, "myCandidateTemplateVariable", FROM, "myTaskId3 candidate subject");
         }
     }
 
@@ -200,42 +157,21 @@ public class ProcessExtensionResourceReaderIT {
                 .getContextClassLoader()
                 .getResourceAsStream("processes/initial-vars-extensions.json")
         ) {
-            ProcessExtensionModel processExtensionModel = reader.read(
-                inputStream
-            );
+            ProcessExtensionModel processExtensionModel = reader.read(inputStream);
             assertThat(processExtensionModel).isNotNull();
-            assertThat(processExtensionModel.getId())
-                .isEqualTo("initialVarsProcess");
-            assertThat(
-                processExtensionModel
-                    .getExtensions("Process_initialVarsProcess")
-                    .getProperties()
-            )
+            assertThat(processExtensionModel.getId()).isEqualTo("initialVarsProcess");
+            assertThat(processExtensionModel.getExtensions("Process_initialVarsProcess").getProperties())
                 .extracting(stringVariableDefinitionMap ->
-                    stringVariableDefinitionMap.get(
-                        "379dc1a1-481d-4617-a027-ef39fdadf6667"
-                    )
+                    stringVariableDefinitionMap.get("379dc1a1-481d-4617-a027-ef39fdadf6667")
                 )
-                .extracting(
-                    VariableDefinition::getName,
-                    VariableDefinition::isAnalytics
-                )
+                .extracting(VariableDefinition::getName, VariableDefinition::isAnalytics)
                 .containsOnly("trackedId", true);
 
-            assertThat(
-                processExtensionModel
-                    .getExtensions("Process_initialVarsProcess")
-                    .getProperties()
-            )
+            assertThat(processExtensionModel.getExtensions("Process_initialVarsProcess").getProperties())
                 .extracting(stringVariableDefinitionMap ->
-                    stringVariableDefinitionMap.get(
-                        "379dc1a1-481d-4617-a027-ef39fdadf6668"
-                    )
+                    stringVariableDefinitionMap.get("379dc1a1-481d-4617-a027-ef39fdadf6668")
                 )
-                .extracting(
-                    VariableDefinition::getName,
-                    VariableDefinition::isAnalytics
-                )
+                .extracting(VariableDefinition::getName, VariableDefinition::isAnalytics)
                 .containsOnly("notTrackedId", false);
         }
     }

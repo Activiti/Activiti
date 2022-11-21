@@ -67,9 +67,7 @@ public class RuntimeConfigurationTest {
     public void validatingConfigurationForAdmin() {
         securityUtil.logInAs("admin");
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(
-            "admin"
-        );
+        UserDetails userDetails = userDetailsService.loadUserByUsername("admin");
         assertThat(userDetails).isNotNull();
 
         assertThat(userDetails.getAuthorities()).hasSize(1);

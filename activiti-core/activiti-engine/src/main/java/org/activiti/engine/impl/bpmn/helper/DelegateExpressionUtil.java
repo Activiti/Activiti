@@ -28,10 +28,7 @@ import org.activiti.engine.impl.context.Context;
  */
 public class DelegateExpressionUtil {
 
-    public static Object resolveDelegateExpression(
-        Expression expression,
-        VariableScope variableScope
-    ) {
+    public static Object resolveDelegateExpression(Expression expression, VariableScope variableScope) {
         return resolveDelegateExpression(expression, variableScope, null);
     }
 
@@ -48,24 +45,10 @@ public class DelegateExpressionUtil {
             DelegateExpressionFieldInjectionMode injectionMode = Context
                 .getProcessEngineConfiguration()
                 .getDelegateExpressionFieldInjectionMode();
-            if (
-                injectionMode.equals(
-                    DelegateExpressionFieldInjectionMode.COMPATIBILITY
-                )
-            ) {
-                ClassDelegate.applyFieldDeclaration(
-                    fieldDeclarations,
-                    delegate,
-                    true
-                );
-            } else if (
-                injectionMode.equals(DelegateExpressionFieldInjectionMode.MIXED)
-            ) {
-                ClassDelegate.applyFieldDeclaration(
-                    fieldDeclarations,
-                    delegate,
-                    false
-                );
+            if (injectionMode.equals(DelegateExpressionFieldInjectionMode.COMPATIBILITY)) {
+                ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate, true);
+            } else if (injectionMode.equals(DelegateExpressionFieldInjectionMode.MIXED)) {
+                ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate, false);
             }
         }
 

@@ -63,9 +63,7 @@ public class CreateProcessInstanceCmd implements Command<ProcessInstance> {
         this.tenantId = tenantId;
     }
 
-    public CreateProcessInstanceCmd(
-        ProcessInstanceBuilderImpl processInstanceBuilder
-    ) {
+    public CreateProcessInstanceCmd(ProcessInstanceBuilderImpl processInstanceBuilder) {
         this(
             processInstanceBuilder.getProcessDefinitionKey(),
             processInstanceBuilder.getProcessDefinitionId(),
@@ -73,30 +71,20 @@ public class CreateProcessInstanceCmd implements Command<ProcessInstance> {
             processInstanceBuilder.getVariables(),
             processInstanceBuilder.getTenantId()
         );
-        this.processInstanceName =
-            processInstanceBuilder.getProcessInstanceName();
-        this.transientVariables =
-            processInstanceBuilder.getTransientVariables();
+        this.processInstanceName = processInstanceBuilder.getProcessInstanceName();
+        this.transientVariables = processInstanceBuilder.getTransientVariables();
     }
 
     public ProcessInstance execute(CommandContext commandContext) {
-        DeploymentManager deploymentCache = commandContext
-            .getProcessEngineConfiguration()
-            .getDeploymentManager();
+        DeploymentManager deploymentCache = commandContext.getProcessEngineConfiguration().getDeploymentManager();
 
-        ProcessDefinitionRetriever processRetriever = new ProcessDefinitionRetriever(
-            this.tenantId,
-            deploymentCache
-        );
+        ProcessDefinitionRetriever processRetriever = new ProcessDefinitionRetriever(this.tenantId, deploymentCache);
         ProcessDefinition processDefinition = processRetriever.getProcessDefinition(
             this.processDefinitionId,
             this.processDefinitionKey
         );
 
-        processInstanceHelper =
-            commandContext
-                .getProcessEngineConfiguration()
-                .getProcessInstanceHelper();
+        processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
         return processInstanceHelper.createProcessInstance(
             processDefinition,
             businessKey,

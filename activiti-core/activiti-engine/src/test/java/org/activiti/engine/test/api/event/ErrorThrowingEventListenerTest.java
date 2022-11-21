@@ -39,13 +39,9 @@ public class ErrorThrowingEventListenerTest extends PluggableActivitiTestCase {
         try {
             listener = new ErrorThrowingEventListener();
 
-            processEngineConfiguration
-                .getEventDispatcher()
-                .addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
+            processEngineConfiguration.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
 
-            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-                "testError"
-            );
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testError");
             assertThat(processInstance).isNotNull();
 
             // Fetch the task and assign it. Should cause error-event to be
@@ -68,17 +64,13 @@ public class ErrorThrowingEventListenerTest extends PluggableActivitiTestCase {
                     .singleResult();
             assertThat(task).isNotNull();
         } finally {
-            processEngineConfiguration
-                .getEventDispatcher()
-                .removeEventListener(listener);
+            processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
         }
     }
 
     @Deployment
     public void testThrowErrorDefinedInProcessDefinition() throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testError"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testError");
         assertThat(processInstance).isNotNull();
 
         // Fetch the task and assign it. Should cause error-event to be
@@ -109,13 +101,9 @@ public class ErrorThrowingEventListenerTest extends PluggableActivitiTestCase {
             listener = new ErrorThrowingEventListener();
             listener.setErrorCode("123");
 
-            processEngineConfiguration
-                .getEventDispatcher()
-                .addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
+            processEngineConfiguration.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
 
-            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-                "testError"
-            );
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testError");
             assertThat(processInstance).isNotNull();
 
             // Fetch the task and assign it. Should cause error-event to be
@@ -142,8 +130,7 @@ public class ErrorThrowingEventListenerTest extends PluggableActivitiTestCase {
             // being created
             listener.setErrorCode("456");
 
-            processInstance =
-                runtimeService.startProcessInstanceByKey("testError");
+            processInstance = runtimeService.startProcessInstanceByKey("testError");
             assertThat(processInstance).isNotNull();
 
             // Fetch the task and assign it. Should cause error-event to be
@@ -165,18 +152,13 @@ public class ErrorThrowingEventListenerTest extends PluggableActivitiTestCase {
                     .singleResult();
             assertThat(task).isNotNull();
         } finally {
-            processEngineConfiguration
-                .getEventDispatcher()
-                .removeEventListener(listener);
+            processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
         }
     }
 
     @Deployment
-    public void testThrowErrorWithErrorcodeDefinedInProcessDefinition()
-        throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testError"
-        );
+    public void testThrowErrorWithErrorcodeDefinedInProcessDefinition() throws Exception {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testError");
         assertThat(processInstance).isNotNull();
 
         // Fetch the task and assign it. Should cause error-event to be

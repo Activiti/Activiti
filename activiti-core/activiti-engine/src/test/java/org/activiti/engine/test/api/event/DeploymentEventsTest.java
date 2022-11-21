@@ -43,70 +43,49 @@ public class DeploymentEventsTest extends PluggableActivitiTestCase {
             deployment =
                 repositoryService
                     .createDeployment()
-                    .addClasspathResource(
-                        "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"
-                    )
+                    .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml")
                     .deploy();
             assertThat(deployment).isNotNull();
 
             // Check create-event
             assertThat(listener.getEventsReceived()).hasSize(2);
-            assertThat(listener.getEventsReceived().get(0))
-                .isInstanceOf(ActivitiEntityEvent.class);
+            assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
 
-            ActivitiEntityEvent event = (ActivitiEntityEvent) listener
-                .getEventsReceived()
-                .get(0);
-            assertThat(event.getType())
-                .isEqualTo(ActivitiEventType.ENTITY_CREATED);
-            assertThat(((Deployment) event.getEntity()).getId())
-                .isEqualTo(deployment.getId());
+            ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+            assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
+            assertThat(((Deployment) event.getEntity()).getId()).isEqualTo(deployment.getId());
 
-            assertThat(listener.getEventsReceived().get(1))
-                .isInstanceOf(ActivitiEntityEvent.class);
+            assertThat(listener.getEventsReceived().get(1)).isInstanceOf(ActivitiEntityEvent.class);
             event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-            assertThat(event.getType())
-                .isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
-            assertThat(((Deployment) event.getEntity()).getId())
-                .isEqualTo(deployment.getId());
+            assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+            assertThat(((Deployment) event.getEntity()).getId()).isEqualTo(deployment.getId());
 
             listener.clearEventsReceived();
 
             // Check update event when category is updated
             repositoryService.setDeploymentCategory(deployment.getId(), "test");
             assertThat(listener.getEventsReceived()).hasSize(1);
-            assertThat(listener.getEventsReceived().get(0))
-                .isInstanceOf(ActivitiEntityEvent.class);
+            assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
 
             event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-            assertThat(event.getType())
-                .isEqualTo(ActivitiEventType.ENTITY_UPDATED);
-            assertThat(((Deployment) event.getEntity()).getId())
-                .isEqualTo(deployment.getId());
-            assertThat(((Deployment) event.getEntity()).getCategory())
-                .isEqualTo("test");
+            assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);
+            assertThat(((Deployment) event.getEntity()).getId()).isEqualTo(deployment.getId());
+            assertThat(((Deployment) event.getEntity()).getCategory()).isEqualTo("test");
             listener.clearEventsReceived();
 
             // Check delete event when category is updated
             repositoryService.deleteDeployment(deployment.getId(), true);
             assertThat(listener.getEventsReceived()).hasSize(1);
-            assertThat(listener.getEventsReceived().get(0))
-                .isInstanceOf(ActivitiEntityEvent.class);
+            assertThat(listener.getEventsReceived().get(0)).isInstanceOf(ActivitiEntityEvent.class);
 
             event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-            assertThat(event.getType())
-                .isEqualTo(ActivitiEventType.ENTITY_DELETED);
-            assertThat(((Deployment) event.getEntity()).getId())
-                .isEqualTo(deployment.getId());
+            assertThat(event.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
+            assertThat(((Deployment) event.getEntity()).getId()).isEqualTo(deployment.getId());
             listener.clearEventsReceived();
         } finally {
             if (
                 deployment != null &&
-                repositoryService
-                    .createDeploymentQuery()
-                    .deploymentId(deployment.getId())
-                    .count() >
-                0
+                repositoryService.createDeploymentQuery().deploymentId(deployment.getId()).count() > 0
             ) {
                 repositoryService.deleteDeployment(deployment.getId(), true);
             }
@@ -117,9 +96,7 @@ public class DeploymentEventsTest extends PluggableActivitiTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         listener = new TestActivitiEntityEventListener(Deployment.class);
-        processEngineConfiguration
-            .getEventDispatcher()
-            .addEventListener(listener);
+        processEngineConfiguration.getEventDispatcher().addEventListener(listener);
     }
 
     @Override
@@ -127,9 +104,7 @@ public class DeploymentEventsTest extends PluggableActivitiTestCase {
         super.tearDown();
 
         if (listener != null) {
-            processEngineConfiguration
-                .getEventDispatcher()
-                .removeEventListener(listener);
+            processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
         }
     }
 }

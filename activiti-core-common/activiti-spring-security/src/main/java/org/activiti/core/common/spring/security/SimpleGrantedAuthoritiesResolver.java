@@ -24,13 +24,10 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
-public class SimpleGrantedAuthoritiesResolver
-    implements GrantedAuthoritiesResolver {
+public class SimpleGrantedAuthoritiesResolver implements GrantedAuthoritiesResolver {
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities(
-        @NonNull Principal principal
-    ) {
+    public Collection<? extends GrantedAuthority> getAuthorities(@NonNull Principal principal) {
         return Optional
             .of(principal)
             .filter(this::isSupportedPrincipal)
@@ -43,12 +40,8 @@ public class SimpleGrantedAuthoritiesResolver
         return new SecurityException("Invalid principal authorities");
     }
 
-    protected <T> Collection<? extends GrantedAuthority> getAuthorities(
-        Authentication authentication
-    ) {
-        return Optional
-            .ofNullable(authentication.getAuthorities())
-            .orElseGet(this::emptyAuthorities);
+    protected <T> Collection<? extends GrantedAuthority> getAuthorities(Authentication authentication) {
+        return Optional.ofNullable(authentication.getAuthorities()).orElseGet(this::emptyAuthorities);
     }
 
     protected <T> Collection<T> emptyAuthorities() {

@@ -28,38 +28,27 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
 
  */
-public class MessageEventDefinitionParseHandler
-    extends AbstractBpmnParseHandler<MessageEventDefinition> {
+public class MessageEventDefinitionParseHandler extends AbstractBpmnParseHandler<MessageEventDefinition> {
 
     public Class<? extends BaseElement> getHandledType() {
         return MessageEventDefinition.class;
     }
 
-    protected void executeParse(
-        BpmnParse bpmnParse,
-        MessageEventDefinition messageDefinition
-    ) {
+    protected void executeParse(BpmnParse bpmnParse, MessageEventDefinition messageDefinition) {
         BpmnModel bpmnModel = bpmnParse.getBpmnModel();
         String messageRef = messageDefinition.getMessageRef();
         if (bpmnModel.containsMessageId(messageRef)) {
             Message message = bpmnModel.getMessage(messageRef);
             messageDefinition.setMessageRef(message.getName());
-            messageDefinition.setExtensionElements(
-                message.getExtensionElements()
-            );
+            messageDefinition.setExtensionElements(message.getExtensionElements());
         }
 
-        if (
-            bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent
-        ) {
+        if (bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent) {
             IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) bpmnParse.getCurrentFlowElement();
             intermediateCatchEvent.setBehavior(
                 bpmnParse
                     .getActivityBehaviorFactory()
-                    .createIntermediateCatchMessageEventActivityBehavior(
-                        intermediateCatchEvent,
-                        messageDefinition
-                    )
+                    .createIntermediateCatchMessageEventActivityBehavior(intermediateCatchEvent, messageDefinition)
             );
         } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
             BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();

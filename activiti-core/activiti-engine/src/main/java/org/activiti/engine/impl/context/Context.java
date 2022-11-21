@@ -61,20 +61,15 @@ public class Context {
     }
 
     public static ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
-        Stack<ProcessEngineConfigurationImpl> stack = getStack(
-            processEngineConfigurationStackThreadLocal
-        );
+        Stack<ProcessEngineConfigurationImpl> stack = getStack(processEngineConfigurationStackThreadLocal);
         if (stack.isEmpty()) {
             return null;
         }
         return stack.peek();
     }
 
-    public static void setProcessEngineConfiguration(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
-        getStack(processEngineConfigurationStackThreadLocal)
-            .push(processEngineConfiguration);
+    public static void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
+        getStack(processEngineConfigurationStackThreadLocal).push(processEngineConfiguration);
     }
 
     public static void removeProcessEngineConfiguration() {
@@ -82,18 +77,14 @@ public class Context {
     }
 
     public static TransactionContext getTransactionContext() {
-        Stack<TransactionContext> stack = getStack(
-            transactionContextThreadLocal
-        );
+        Stack<TransactionContext> stack = getStack(transactionContextThreadLocal);
         if (stack.isEmpty()) {
             return null;
         }
         return stack.peek();
     }
 
-    public static void setTransactionContext(
-        TransactionContext transactionContext
-    ) {
+    public static void setTransactionContext(TransactionContext transactionContext) {
         getStack(transactionContextThreadLocal).push(transactionContext);
     }
 
@@ -110,13 +101,8 @@ public class Context {
         return stack;
     }
 
-    public static ObjectNode getBpmnOverrideElementProperties(
-        String id,
-        String processDefinitionId
-    ) {
-        ObjectNode definitionInfoNode = getProcessDefinitionInfoNode(
-            processDefinitionId
-        );
+    public static ObjectNode getBpmnOverrideElementProperties(String id, String processDefinitionId) {
+        ObjectNode definitionInfoNode = getProcessDefinitionInfoNode(processDefinitionId);
         ObjectNode elementProperties = null;
         if (definitionInfoNode != null) {
             elementProperties =
@@ -133,37 +119,22 @@ public class Context {
         String processDefinitionId,
         boolean useFallback
     ) {
-        ObjectNode definitionInfoNode = getProcessDefinitionInfoNode(
-            processDefinitionId
-        );
+        ObjectNode definitionInfoNode = getProcessDefinitionInfoNode(processDefinitionId);
         ObjectNode localizationProperties = null;
         if (definitionInfoNode != null) {
             if (!useFallback) {
                 localizationProperties =
                     getProcessEngineConfiguration()
                         .getDynamicBpmnService()
-                        .getLocalizationElementProperties(
-                            language,
-                            id,
-                            definitionInfoNode
-                        );
+                        .getLocalizationElementProperties(language, id, definitionInfoNode);
             } else {
                 HashSet<Locale> candidateLocales = new LinkedHashSet<Locale>();
-                candidateLocales.addAll(
-                    resourceBundleControl.getCandidateLocales(
-                        id,
-                        Locale.forLanguageTag(language)
-                    )
-                );
+                candidateLocales.addAll(resourceBundleControl.getCandidateLocales(id, Locale.forLanguageTag(language)));
                 for (Locale locale : candidateLocales) {
                     localizationProperties =
                         getProcessEngineConfiguration()
                             .getDynamicBpmnService()
-                            .getLocalizationElementProperties(
-                                locale.toLanguageTag(),
-                                id,
-                                definitionInfoNode
-                            );
+                            .getLocalizationElementProperties(locale.toLanguageTag(), id, definitionInfoNode);
 
                     if (localizationProperties != null) {
                         break;
@@ -178,9 +149,7 @@ public class Context {
         bpmnOverrideContextThreadLocal.remove();
     }
 
-    protected static ObjectNode getProcessDefinitionInfoNode(
-        String processDefinitionId
-    ) {
+    protected static ObjectNode getProcessDefinitionInfoNode(String processDefinitionId) {
         Map<String, ObjectNode> bpmnOverrideMap = getBpmnOverrideContext();
         if (!bpmnOverrideMap.containsKey(processDefinitionId)) {
             ProcessDefinitionInfoCacheObject cacheObject = getProcessEngineConfiguration()
@@ -188,10 +157,7 @@ public class Context {
                 .getProcessDefinitionInfoCache()
                 .get(processDefinitionId);
 
-            addBpmnOverrideElement(
-                processDefinitionId,
-                cacheObject.getInfoNode()
-            );
+            addBpmnOverrideElement(processDefinitionId, cacheObject.getInfoNode());
         }
 
         return getBpmnOverrideContext().get(processDefinitionId);
@@ -205,10 +171,7 @@ public class Context {
         return bpmnOverrideMap;
     }
 
-    protected static void addBpmnOverrideElement(
-        String id,
-        ObjectNode infoNode
-    ) {
+    protected static void addBpmnOverrideElement(String id, ObjectNode infoNode) {
         Map<String, ObjectNode> bpmnOverrideMap = bpmnOverrideContextThreadLocal.get();
         if (bpmnOverrideMap == null) {
             bpmnOverrideMap = new HashMap<String, ObjectNode>();
@@ -220,10 +183,7 @@ public class Context {
     public static class ResourceBundleControl extends ResourceBundle.Control {
 
         @Override
-        public List<Locale> getCandidateLocales(
-            String baseName,
-            Locale locale
-        ) {
+        public List<Locale> getCandidateLocales(String baseName, Locale locale) {
             return super.getCandidateLocales(baseName, locale);
         }
     }
@@ -232,9 +192,7 @@ public class Context {
         return processDefinitionHelperThreadLocal.get();
     }
 
-    public static void setProcessDefinitionHelper(
-        ProcessDefinitionHelper processDefinitionHelper
-    ) {
+    public static void setProcessDefinitionHelper(ProcessDefinitionHelper processDefinitionHelper) {
         processDefinitionHelperThreadLocal.set(processDefinitionHelper);
     }
 

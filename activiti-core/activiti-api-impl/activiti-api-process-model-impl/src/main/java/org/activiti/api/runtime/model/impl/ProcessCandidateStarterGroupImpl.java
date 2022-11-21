@@ -26,10 +26,7 @@ public class ProcessCandidateStarterGroupImpl
 
     public ProcessCandidateStarterGroupImpl() {}
 
-    public ProcessCandidateStarterGroupImpl(
-        String processDefinitionId,
-        String groupId
-    ) {
+    public ProcessCandidateStarterGroupImpl(String processDefinitionId, String groupId) {
         super(processDefinitionId);
         this.groupId = groupId;
     }
@@ -41,10 +38,7 @@ public class ProcessCandidateStarterGroupImpl
         ProcessCandidateStarterGroupImpl that = (ProcessCandidateStarterGroupImpl) o;
         return (
             Objects.equals(groupId, that.groupId) &&
-            Objects.equals(
-                getProcessDefinitionId(),
-                that.getProcessDefinitionId()
-            )
+            Objects.equals(getProcessDefinitionId(), that.getProcessDefinitionId())
         );
     }
 

@@ -48,14 +48,10 @@ public class BpmnError extends ActivitiException {
 
     protected void setErrorCode(String errorCode) {
         if (errorCode == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Error Code must not be null."
-            );
+            throw new ActivitiIllegalArgumentException("Error Code must not be null.");
         }
         if (errorCode.length() < 1) {
-            throw new ActivitiIllegalArgumentException(
-                "Error Code must not be empty."
-            );
+            throw new ActivitiIllegalArgumentException("Error Code must not be empty.");
         }
         this.errorCode = errorCode;
     }

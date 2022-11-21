@@ -27,8 +27,7 @@ import org.activiti.engine.delegate.Expression;
  *
 
  */
-public class ExpressionCustomPropertiesResolver
-    implements CustomPropertiesResolver {
+public class ExpressionCustomPropertiesResolver implements CustomPropertiesResolver {
 
     protected Expression expression;
 
@@ -37,17 +36,13 @@ public class ExpressionCustomPropertiesResolver
     }
 
     @Override
-    public Map<String, Object> getCustomPropertiesMap(
-        DelegateExecution execution
-    ) {
+    public Map<String, Object> getCustomPropertiesMap(DelegateExecution execution) {
         Object expressionValue = expression.getValue(execution);
         if (expressionValue instanceof Map) {
             return (Map<String, Object>) expressionValue;
         } else {
             throw new ActivitiIllegalArgumentException(
-                "Custom properties resolver expression " +
-                expression +
-                " did not return a Map<String, Object>"
+                "Custom properties resolver expression " + expression + " did not return a Map<String, Object>"
             );
         }
     }

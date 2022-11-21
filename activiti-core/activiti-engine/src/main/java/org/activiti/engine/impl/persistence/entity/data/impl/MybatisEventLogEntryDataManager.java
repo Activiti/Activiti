@@ -33,9 +33,7 @@ public class MybatisEventLogEntryDataManager
     extends AbstractDataManager<EventLogEntryEntity>
     implements EventLogEntryDataManager {
 
-    public MybatisEventLogEntryDataManager(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public MybatisEventLogEntryDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);
     }
 
@@ -57,10 +55,7 @@ public class MybatisEventLogEntryDataManager
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<EventLogEntry> findEventLogEntries(
-        long startLogNr,
-        long pageSize
-    ) {
+    public List<EventLogEntry> findEventLogEntries(long startLogNr, long pageSize) {
         Map<String, Object> params = new HashMap<String, Object>(2);
         params.put("startLogNr", startLogNr);
         if (pageSize > 0) {
@@ -71,13 +66,10 @@ public class MybatisEventLogEntryDataManager
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<EventLogEntry> findEventLogEntriesByProcessInstanceId(
-        String processInstanceId
-    ) {
+    public List<EventLogEntry> findEventLogEntriesByProcessInstanceId(String processInstanceId) {
         Map<String, Object> params = new HashMap<String, Object>(2);
         params.put("processInstanceId", processInstanceId);
-        return getDbSqlSession()
-            .selectList("selectEventLogEntriesByProcessInstanceId", params);
+        return getDbSqlSession().selectList("selectEventLogEntriesByProcessInstanceId", params);
     }
 
     @Override

@@ -62,27 +62,17 @@ public class EventSubscriptionManager {
         }
     }
 
-    protected void removeObsoleteMessageEventSubscriptions(
-        ProcessDefinitionEntity previousProcessDefinition
-    ) {
+    protected void removeObsoleteMessageEventSubscriptions(ProcessDefinitionEntity previousProcessDefinition) {
         // remove all subscriptions for the previous version
         if (previousProcessDefinition != null) {
-            removeObsoleteEventSubscriptionsImpl(
-                previousProcessDefinition,
-                MessageEventHandler.EVENT_HANDLER_TYPE
-            );
+            removeObsoleteEventSubscriptionsImpl(previousProcessDefinition, MessageEventHandler.EVENT_HANDLER_TYPE);
         }
     }
 
-    protected void removeObsoleteSignalEventSubScription(
-        ProcessDefinitionEntity previousProcessDefinition
-    ) {
+    protected void removeObsoleteSignalEventSubScription(ProcessDefinitionEntity previousProcessDefinition) {
         // remove all subscriptions for the previous version
         if (previousProcessDefinition != null) {
-            removeObsoleteEventSubscriptionsImpl(
-                previousProcessDefinition,
-                SignalEventHandler.EVENT_HANDLER_TYPE
-            );
+            removeObsoleteEventSubscriptionsImpl(previousProcessDefinition, SignalEventHandler.EVENT_HANDLER_TYPE);
         }
     }
 
@@ -91,29 +81,15 @@ public class EventSubscriptionManager {
         Process process,
         BpmnModel bpmnModel
     ) {
-        if (
-            process != null &&
-            CollectionUtil.isNotEmpty(process.getFlowElements())
-        ) {
+        if (process != null && CollectionUtil.isNotEmpty(process.getFlowElements())) {
             for (FlowElement element : process.getFlowElements()) {
                 if (element instanceof StartEvent) {
                     StartEvent startEvent = (StartEvent) element;
-                    if (
-                        CollectionUtil.isNotEmpty(
-                            startEvent.getEventDefinitions()
-                        )
-                    ) {
-                        EventDefinition eventDefinition = startEvent
-                            .getEventDefinitions()
-                            .get(0);
+                    if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions())) {
+                        EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
                         if (eventDefinition instanceof MessageEventDefinition) {
                             MessageEventDefinition messageEventDefinition = (MessageEventDefinition) eventDefinition;
-                            insertMessageEvent(
-                                messageEventDefinition,
-                                startEvent,
-                                processDefinition,
-                                bpmnModel
-                            );
+                            insertMessageEvent(messageEventDefinition, startEvent, processDefinition, bpmnModel);
                         }
                     }
                 }
@@ -128,12 +104,8 @@ public class EventSubscriptionManager {
         BpmnModel bpmnModel
     ) {
         CommandContext commandContext = Context.getCommandContext();
-        if (
-            bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())
-        ) {
-            Message message = bpmnModel.getMessage(
-                messageEventDefinition.getMessageRef()
-            );
+        if (bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
+            Message message = bpmnModel.getMessage(messageEventDefinition.getMessageRef());
             messageEventDefinition.setMessageRef(message.getName());
         }
 
@@ -175,9 +147,7 @@ public class EventSubscriptionManager {
             newSubscription.setTenantId(processDefinition.getTenantId());
         }
 
-        commandContext
-            .getEventSubscriptionEntityManager()
-            .insert(newSubscription);
+        commandContext.getEventSubscriptionEntityManager().insert(newSubscription);
     }
 
     protected void addSignalEventSubscriptions(
@@ -186,54 +156,30 @@ public class EventSubscriptionManager {
         Process process,
         BpmnModel bpmnModel
     ) {
-        if (
-            process != null &&
-            CollectionUtil.isNotEmpty(process.getFlowElements())
-        ) {
+        if (process != null && CollectionUtil.isNotEmpty(process.getFlowElements())) {
             for (FlowElement element : process.getFlowElements()) {
                 if (element instanceof StartEvent) {
                     StartEvent startEvent = (StartEvent) element;
-                    if (
-                        CollectionUtil.isNotEmpty(
-                            startEvent.getEventDefinitions()
-                        )
-                    ) {
-                        EventDefinition eventDefinition = startEvent
-                            .getEventDefinitions()
-                            .get(0);
+                    if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions())) {
+                        EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
                         if (eventDefinition instanceof SignalEventDefinition) {
                             SignalEventDefinition signalEventDefinition = (SignalEventDefinition) eventDefinition;
                             SignalEventSubscriptionEntity subscriptionEntity = commandContext
                                 .getEventSubscriptionEntityManager()
                                 .createSignalEventSubscription();
-                            Signal signal = bpmnModel.getSignal(
-                                signalEventDefinition.getSignalRef()
-                            );
+                            Signal signal = bpmnModel.getSignal(signalEventDefinition.getSignalRef());
                             if (signal != null) {
-                                subscriptionEntity.setEventName(
-                                    signal.getName()
-                                );
+                                subscriptionEntity.setEventName(signal.getName());
                             } else {
-                                subscriptionEntity.setEventName(
-                                    signalEventDefinition.getSignalRef()
-                                );
+                                subscriptionEntity.setEventName(signalEventDefinition.getSignalRef());
                             }
-                            subscriptionEntity.setActivityId(
-                                startEvent.getId()
-                            );
-                            subscriptionEntity.setProcessDefinitionId(
-                                processDefinition.getId()
-                            );
+                            subscriptionEntity.setActivityId(startEvent.getId());
+                            subscriptionEntity.setProcessDefinitionId(processDefinition.getId());
                             if (processDefinition.getTenantId() != null) {
-                                subscriptionEntity.setTenantId(
-                                    processDefinition.getTenantId()
-                                );
+                                subscriptionEntity.setTenantId(processDefinition.getTenantId());
                             }
 
-                            Context
-                                .getCommandContext()
-                                .getEventSubscriptionEntityManager()
-                                .insert(subscriptionEntity);
+                            Context.getCommandContext().getEventSubscriptionEntityManager().insert(subscriptionEntity);
                         }
                     }
                 }

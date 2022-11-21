@@ -44,15 +44,10 @@ public class IntegrationContextServiceImplTest {
     public void findByIdShouldExecuteRetrieveIntegrationContextCmd() {
         //given
         IntegrationContextEntity entity = mock(IntegrationContextEntity.class);
-        given(
-            commandExecutor.execute(any(RetrieveIntegrationContextsCmd.class))
-        )
-            .willReturn(entity);
+        given(commandExecutor.execute(any(RetrieveIntegrationContextsCmd.class))).willReturn(entity);
 
         //when
-        IntegrationContextEntity commandResult = integrationContextService.findById(
-            "id"
-        );
+        IntegrationContextEntity commandResult = integrationContextService.findById("id");
 
         //then
         assertThat(commandResult).isEqualTo(entity);

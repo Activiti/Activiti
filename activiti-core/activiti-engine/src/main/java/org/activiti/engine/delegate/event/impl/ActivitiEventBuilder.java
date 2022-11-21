@@ -60,9 +60,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ActivitiEventBuilder {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(
-        ActivitiEventBuilder.class
-    );
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActivitiEventBuilder.class);
 
     /**
      * @param type
@@ -95,14 +93,8 @@ public class ActivitiEventBuilder {
      * @return an {@link ActivitiEntityEvent}. In case an {@link ExecutionContext} is active, the execution related event fields will be populated. If not, execution details will be retrieved from the
      *         {@link Object} if possible.
      */
-    public static ActivitiEntityEvent createEntityEvent(
-        ActivitiEventType type,
-        Object entity
-    ) {
-        ActivitiEntityEventImpl newEvent = new ActivitiEntityEventImpl(
-            entity,
-            type
-        );
+    public static ActivitiEntityEvent createEntityEvent(ActivitiEventType type, Object entity) {
+        ActivitiEntityEventImpl newEvent = new ActivitiEntityEventImpl(entity, type);
 
         // In case an execution-context is active, populate the event fields
         // related to the execution
@@ -179,18 +171,12 @@ public class ActivitiEventBuilder {
         String targetActivityType,
         Object targetActivityBehavior
     ) {
-        ActivitiSequenceFlowTakenEventImpl newEvent = new ActivitiSequenceFlowTakenEventImpl(
-            type
-        );
+        ActivitiSequenceFlowTakenEventImpl newEvent = new ActivitiSequenceFlowTakenEventImpl(type);
 
         if (executionEntity != null) {
             newEvent.setExecutionId(executionEntity.getId());
-            newEvent.setProcessInstanceId(
-                executionEntity.getProcessInstanceId()
-            );
-            newEvent.setProcessDefinitionId(
-                executionEntity.getProcessDefinitionId()
-            );
+            newEvent.setProcessInstanceId(executionEntity.getProcessInstanceId());
+            newEvent.setProcessDefinitionId(executionEntity.getProcessDefinitionId());
         }
 
         newEvent.setId(sequenceFlowId);
@@ -198,17 +184,13 @@ public class ActivitiEventBuilder {
         newEvent.setSourceActivityName(sourceActivityName);
         newEvent.setSourceActivityType(sourceActivityType);
         newEvent.setSourceActivityBehaviorClass(
-            sourceActivityBehavior != null
-                ? sourceActivityBehavior.getClass().getCanonicalName()
-                : null
+            sourceActivityBehavior != null ? sourceActivityBehavior.getClass().getCanonicalName() : null
         );
         newEvent.setTargetActivityId(targetActivityId);
         newEvent.setTargetActivityName(targetActivityName);
         newEvent.setTargetActivityType(targetActivityType);
         newEvent.setTargetActivityBehaviorClass(
-            targetActivityBehavior != null
-                ? targetActivityBehavior.getClass().getCanonicalName()
-                : null
+            targetActivityBehavior != null ? targetActivityBehavior.getClass().getCanonicalName() : null
         );
 
         return newEvent;
@@ -228,10 +210,7 @@ public class ActivitiEventBuilder {
         String processInstanceId,
         String processDefinitionId
     ) {
-        ActivitiEntityEventImpl newEvent = new ActivitiEntityEventImpl(
-            entity,
-            type
-        );
+        ActivitiEntityEventImpl newEvent = new ActivitiEntityEventImpl(entity, type);
 
         newEvent.setExecutionId(executionId);
         newEvent.setProcessInstanceId(processInstanceId);
@@ -254,11 +233,7 @@ public class ActivitiEventBuilder {
         Object entity,
         Throwable cause
     ) {
-        ActivitiEntityExceptionEventImpl newEvent = new ActivitiEntityExceptionEventImpl(
-            entity,
-            type,
-            cause
-        );
+        ActivitiEntityExceptionEventImpl newEvent = new ActivitiEntityExceptionEventImpl(entity, type, cause);
 
         // In case an execution-context is active, populate the event fields
         // related to the execution
@@ -283,11 +258,7 @@ public class ActivitiEventBuilder {
         String processInstanceId,
         String processDefinitionId
     ) {
-        ActivitiEntityExceptionEventImpl newEvent = new ActivitiEntityExceptionEventImpl(
-            entity,
-            type,
-            cause
-        );
+        ActivitiEntityExceptionEventImpl newEvent = new ActivitiEntityExceptionEventImpl(entity, type, cause);
 
         newEvent.setExecutionId(executionId);
         newEvent.setProcessInstanceId(processInstanceId);
@@ -304,9 +275,7 @@ public class ActivitiEventBuilder {
         String processDefinitionId,
         FlowElement flowElement
     ) {
-        ActivitiActivityEventImpl newEvent = new ActivitiActivityEventImpl(
-            type
-        );
+        ActivitiActivityEventImpl newEvent = new ActivitiActivityEventImpl(type);
         newEvent.setActivityId(activityId);
         newEvent.setActivityName(activityName);
         newEvent.setExecutionId(executionId);
@@ -328,10 +297,7 @@ public class ActivitiEventBuilder {
         FlowElement flowElement
     ) {
         String activityId = flowElement.getId();
-        String activityName = mayBeResolveExpression(
-            flowElement.getName(),
-            execution
-        );
+        String activityName = mayBeResolveExpression(flowElement.getName(), execution);
         return createActivityEvent(
             type,
             activityId,
@@ -343,23 +309,15 @@ public class ActivitiEventBuilder {
         );
     }
 
-    protected static String mayBeResolveExpression(
-        String expression,
-        DelegateExecution execution
-    ) {
+    protected static String mayBeResolveExpression(String expression, DelegateExecution execution) {
         if (StringUtils.isNotEmpty(expression)) {
             ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
             ExpressionManager expressionManager = processEngineConfiguration.getExpressionManager();
 
             try {
-                return (String) expressionManager
-                    .createExpression(expression)
-                    .getValue(execution);
+                return (String) expressionManager.createExpression(expression).getValue(execution);
             } catch (ActivitiException e) {
-                LOGGER.warn(
-                    "property not found in activity name expression " +
-                    e.getMessage()
-                );
+                LOGGER.warn("property not found in activity name expression " + e.getMessage());
             }
         }
         return expression;
@@ -367,9 +325,7 @@ public class ActivitiEventBuilder {
 
     protected static String parseActivityType(FlowNode flowNode) {
         String elementType = flowNode.getClass().getSimpleName();
-        elementType =
-            elementType.substring(0, 1).toLowerCase() +
-            elementType.substring(1);
+        elementType = elementType.substring(0, 1).toLowerCase() + elementType.substring(1);
         return elementType;
     }
 
@@ -401,10 +357,7 @@ public class ActivitiEventBuilder {
         return newEvent;
     }
 
-    public static ActivitiActivityCancelledEvent createActivityCancelledEvent(
-        ExecutionEntity execution,
-        Object cause
-    ) {
+    public static ActivitiActivityCancelledEvent createActivityCancelledEvent(ExecutionEntity execution, Object cause) {
         FlowNode currentFlowNode = (FlowNode) execution.getCurrentFlowElement();
 
         ActivitiActivityCancelledEventImpl newEvent = new ActivitiActivityCancelledEventImpl();
@@ -423,13 +376,9 @@ public class ActivitiEventBuilder {
         ProcessInstance processInstance,
         Object cause
     ) {
-        ActivitiProcessCancelledEventImpl newEvent = new ActivitiProcessCancelledEventImpl(
-            processInstance
-        );
+        ActivitiProcessCancelledEventImpl newEvent = new ActivitiProcessCancelledEventImpl(processInstance);
         newEvent.setExecutionId(processInstance.getId());
-        newEvent.setProcessDefinitionId(
-            processInstance.getProcessDefinitionId()
-        );
+        newEvent.setProcessDefinitionId(processInstance.getProcessDefinitionId());
         newEvent.setProcessInstanceId(processInstance.getProcessInstanceId());
         newEvent.setCause(cause);
         return newEvent;
@@ -440,12 +389,7 @@ public class ActivitiEventBuilder {
         String signalName,
         Object payload
     ) {
-        return createSignalEvent(
-            ActivitiEventType.ACTIVITY_SIGNALED,
-            execution,
-            signalName,
-            payload
-        );
+        return createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED, execution, signalName, payload);
     }
 
     public static ActivitiMessageEvent createMessageReceivedEvent(
@@ -503,9 +447,7 @@ public class ActivitiEventBuilder {
         newEvent.setMessageName(messageName);
         newEvent.setMessageCorrelationKey(correlationKey);
         newEvent.setMessageData(payload);
-        newEvent.setMessageBusinessKey(
-            execution.getProcessInstanceBusinessKey()
-        );
+        newEvent.setMessageBusinessKey(execution.getProcessInstanceBusinessKey());
 
         applyExecution(newEvent, execution);
 
@@ -541,9 +483,7 @@ public class ActivitiEventBuilder {
         String processInstanceId,
         String processDefinitionId
     ) {
-        ActivitiVariableEventImpl newEvent = new ActivitiVariableEventImpl(
-            type
-        );
+        ActivitiVariableEventImpl newEvent = new ActivitiVariableEventImpl(type);
         newEvent.setVariableName(variableName);
         newEvent.setVariableValue(variableValue);
         newEvent.setVariableType(variableType);
@@ -580,78 +520,44 @@ public class ActivitiEventBuilder {
         return updateEvent;
     }
 
-    public static ActivitiMembershipEvent createMembershipEvent(
-        ActivitiEventType type,
-        String groupId,
-        String userId
-    ) {
-        ActivitiMembershipEventImpl newEvent = new ActivitiMembershipEventImpl(
-            type
-        );
+    public static ActivitiMembershipEvent createMembershipEvent(ActivitiEventType type, String groupId, String userId) {
+        ActivitiMembershipEventImpl newEvent = new ActivitiMembershipEventImpl(type);
         newEvent.setUserId(userId);
         newEvent.setGroupId(groupId);
         return newEvent;
     }
 
-    protected static void populateEventWithCurrentContext(
-        ActivitiEventImpl event
-    ) {
+    protected static void populateEventWithCurrentContext(ActivitiEventImpl event) {
         if (event instanceof ActivitiEntityEvent) {
             Object persistedObject = ((ActivitiEntityEvent) event).getEntity();
             if (persistedObject instanceof Job) {
                 event.setExecutionId(((Job) persistedObject).getExecutionId());
-                event.setProcessInstanceId(
-                    ((Job) persistedObject).getProcessInstanceId()
-                );
-                event.setProcessDefinitionId(
-                    ((Job) persistedObject).getProcessDefinitionId()
-                );
+                event.setProcessInstanceId(((Job) persistedObject).getProcessInstanceId());
+                event.setProcessDefinitionId(((Job) persistedObject).getProcessDefinitionId());
             } else if (persistedObject instanceof DelegateExecution) {
-                event.setExecutionId(
-                    ((DelegateExecution) persistedObject).getId()
-                );
-                event.setProcessInstanceId(
-                    ((DelegateExecution) persistedObject).getProcessInstanceId()
-                );
-                event.setProcessDefinitionId(
-                    (
-                        (DelegateExecution) persistedObject
-                    ).getProcessDefinitionId()
-                );
+                event.setExecutionId(((DelegateExecution) persistedObject).getId());
+                event.setProcessInstanceId(((DelegateExecution) persistedObject).getProcessInstanceId());
+                event.setProcessDefinitionId(((DelegateExecution) persistedObject).getProcessDefinitionId());
             } else if (persistedObject instanceof IdentityLinkEntity) {
                 IdentityLinkEntity idLink = (IdentityLinkEntity) persistedObject;
                 if (idLink.getProcessDefinitionId() != null) {
                     event.setProcessDefinitionId(idLink.getProcessDefId());
                 } else if (idLink.getProcessInstance() != null) {
-                    event.setProcessDefinitionId(
-                        idLink.getProcessInstance().getProcessDefinitionId()
-                    );
+                    event.setProcessDefinitionId(idLink.getProcessInstance().getProcessDefinitionId());
                     event.setProcessInstanceId(idLink.getProcessInstanceId());
                     event.setExecutionId(idLink.getProcessInstanceId());
                 } else if (idLink.getTask() != null) {
-                    event.setProcessDefinitionId(
-                        idLink.getTask().getProcessDefinitionId()
-                    );
-                    event.setProcessInstanceId(
-                        idLink.getTask().getProcessInstanceId()
-                    );
+                    event.setProcessDefinitionId(idLink.getTask().getProcessDefinitionId());
+                    event.setProcessInstanceId(idLink.getTask().getProcessInstanceId());
                     event.setExecutionId(idLink.getTask().getExecutionId());
                 }
             } else if (persistedObject instanceof Task) {
-                event.setProcessInstanceId(
-                    ((Task) persistedObject).getProcessInstanceId()
-                );
+                event.setProcessInstanceId(((Task) persistedObject).getProcessInstanceId());
                 event.setExecutionId(((Task) persistedObject).getExecutionId());
-                event.setProcessDefinitionId(
-                    ((Task) persistedObject).getProcessDefinitionId()
-                );
-                event.setReason(
-                    TerminateEndEventActivityBehavior.createDeleteReason(null)
-                );
+                event.setProcessDefinitionId(((Task) persistedObject).getProcessDefinitionId());
+                event.setReason(TerminateEndEventActivityBehavior.createDeleteReason(null));
             } else if (persistedObject instanceof ProcessDefinition) {
-                event.setProcessDefinitionId(
-                    ((ProcessDefinition) persistedObject).getId()
-                );
+                event.setProcessDefinitionId(((ProcessDefinition) persistedObject).getId());
             }
         }
     }
@@ -671,10 +577,7 @@ public class ActivitiEventBuilder {
         return newEvent;
     }
 
-    private static void applyExecution(
-        ActivitiActivityEventImpl newEvent,
-        DelegateExecution execution
-    ) {
+    private static void applyExecution(ActivitiActivityEventImpl newEvent, DelegateExecution execution) {
         if (execution != null) {
             newEvent.setActivityId(execution.getCurrentActivityId());
             newEvent.setExecutionId(execution.getId());

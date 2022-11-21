@@ -44,9 +44,7 @@ import org.slf4j.LoggerFactory;
 
 public class JobRetryCmd implements Command<Object> {
 
-    private static final Logger log = LoggerFactory.getLogger(
-        JobRetryCmd.class.getName()
-    );
+    private static final Logger log = LoggerFactory.getLogger(JobRetryCmd.class.getName());
 
     protected String jobId;
     protected Throwable exception;
@@ -64,52 +62,31 @@ public class JobRetryCmd implements Command<Object> {
 
         ProcessEngineConfiguration processEngineConfig = commandContext.getProcessEngineConfiguration();
 
-        ExecutionEntity executionEntity = fetchExecutionEntity(
-            commandContext,
-            job.getExecutionId()
-        );
-        FlowElement currentFlowElement = executionEntity != null
-            ? executionEntity.getCurrentFlowElement()
-            : null;
+        ExecutionEntity executionEntity = fetchExecutionEntity(commandContext, job.getExecutionId());
+        FlowElement currentFlowElement = executionEntity != null ? executionEntity.getCurrentFlowElement() : null;
 
         String failedJobRetryTimeCycleValue = null;
         if (currentFlowElement instanceof ServiceTask) {
-            failedJobRetryTimeCycleValue =
-                (
-                    (ServiceTask) currentFlowElement
-                ).getFailedJobRetryTimeCycleValue();
+            failedJobRetryTimeCycleValue = ((ServiceTask) currentFlowElement).getFailedJobRetryTimeCycleValue();
         }
 
         AbstractJobEntity newJobEntity = null;
-        if (
-            currentFlowElement == null || failedJobRetryTimeCycleValue == null
-        ) {
+        if (currentFlowElement == null || failedJobRetryTimeCycleValue == null) {
             log.debug(
-                "activity or FailedJobRetryTimerCycleValue is null in job " +
-                jobId +
-                ". only decrementing retries."
+                "activity or FailedJobRetryTimerCycleValue is null in job " + jobId + ". only decrementing retries."
             );
 
             if (job.getRetries() <= 1) {
-                newJobEntity =
-                    commandContext.getJobManager().moveJobToDeadLetterJob(job);
+                newJobEntity = commandContext.getJobManager().moveJobToDeadLetterJob(job);
             } else {
-                newJobEntity =
-                    commandContext.getJobManager().moveJobToTimerJob(job);
+                newJobEntity = commandContext.getJobManager().moveJobToTimerJob(job);
             }
 
             newJobEntity.setRetries(job.getRetries() - 1);
-            if (
-                job.getDuedate() == null ||
-                JobEntity.JOB_TYPE_MESSAGE.equals(job.getJobType())
-            ) {
+            if (job.getDuedate() == null || JobEntity.JOB_TYPE_MESSAGE.equals(job.getJobType())) {
                 // add wait time for failed async job
                 newJobEntity.setDuedate(
-                    calculateDueDate(
-                        commandContext,
-                        processEngineConfig.getAsyncFailedJobWaitTime(),
-                        null
-                    )
+                    calculateDueDate(commandContext, processEngineConfig.getAsyncFailedJobWaitTime(), null)
                 );
             } else {
                 // add default wait time for failed job
@@ -134,13 +111,9 @@ public class JobRetryCmd implements Command<Object> {
                 }
 
                 if (jobRetries <= 1) {
-                    newJobEntity =
-                        commandContext
-                            .getJobManager()
-                            .moveJobToDeadLetterJob(job);
+                    newJobEntity = commandContext.getJobManager().moveJobToDeadLetterJob(job);
                 } else {
-                    newJobEntity =
-                        commandContext.getJobManager().moveJobToTimerJob(job);
+                    newJobEntity = commandContext.getJobManager().moveJobToTimerJob(job);
                 }
 
                 newJobEntity.setDuedate(durationHelper.getDateAfter());
@@ -167,8 +140,7 @@ public class JobRetryCmd implements Command<Object> {
                 newJobEntity.setRetries(jobRetries - 1);
             } catch (Exception e) {
                 throw new ActivitiException(
-                    "failedJobRetryTimeCylcle has wrong format:" +
-                    failedJobRetryTimeCycleValue,
+                    "failedJobRetryTimeCylcle has wrong format:" + failedJobRetryTimeCycleValue,
                     exception
                 );
             }
@@ -183,37 +155,22 @@ public class JobRetryCmd implements Command<Object> {
         ActivitiEventDispatcher eventDispatcher = commandContext.getEventDispatcher();
         if (eventDispatcher.isEnabled()) {
             eventDispatcher.dispatchEvent(
-                ActivitiEventBuilder.createEntityEvent(
-                    ActivitiEventType.ENTITY_UPDATED,
-                    newJobEntity
-                )
+                ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, newJobEntity)
             );
             eventDispatcher.dispatchEvent(
-                ActivitiEventBuilder.createEntityEvent(
-                    ActivitiEventType.JOB_RETRIES_DECREMENTED,
-                    newJobEntity
-                )
+                ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_RETRIES_DECREMENTED, newJobEntity)
             );
         }
 
         return null;
     }
 
-    protected Date calculateDueDate(
-        CommandContext commandContext,
-        int waitTimeInSeconds,
-        Date oldDate
-    ) {
+    protected Date calculateDueDate(CommandContext commandContext, int waitTimeInSeconds, Date oldDate) {
         Calendar newDateCal = new GregorianCalendar();
         if (oldDate != null) {
             newDateCal.setTime(oldDate);
         } else {
-            newDateCal.setTime(
-                commandContext
-                    .getProcessEngineConfiguration()
-                    .getClock()
-                    .getCurrentTime()
-            );
+            newDateCal.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
         }
 
         newDateCal.add(Calendar.SECOND, waitTimeInSeconds);
@@ -226,10 +183,7 @@ public class JobRetryCmd implements Command<Object> {
         return stringWriter.toString();
     }
 
-    protected ExecutionEntity fetchExecutionEntity(
-        CommandContext commandContext,
-        String executionId
-    ) {
+    protected ExecutionEntity fetchExecutionEntity(CommandContext commandContext, String executionId) {
         if (executionId == null) {
             return null;
         }

@@ -89,9 +89,7 @@ public interface TaskAdminRuntime {
 
     void createVariable(CreateTaskVariablePayload createTaskVariablePayload);
     void updateVariable(UpdateTaskVariablePayload updateTaskVariablePayload);
-    List<VariableInstance> variables(
-        GetTaskVariablesPayload getTaskVariablesPayload
-    );
+    List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload);
 
     /**
      * Assign a task with a new user

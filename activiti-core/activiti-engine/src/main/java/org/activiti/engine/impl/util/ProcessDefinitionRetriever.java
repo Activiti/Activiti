@@ -26,36 +26,22 @@ public class ProcessDefinitionRetriever {
     private String tenantId;
     private DeploymentManager deploymentCache;
 
-    public ProcessDefinitionRetriever(
-        String tenantId,
-        DeploymentManager deploymentCache
-    ) {
+    public ProcessDefinitionRetriever(String tenantId, DeploymentManager deploymentCache) {
         this.tenantId = tenantId;
         this.deploymentCache = deploymentCache;
     }
 
-    public ProcessDefinition getProcessDefinition(
-        String processDefinitionId,
-        String processDefinitionKey
-    ) {
+    public ProcessDefinition getProcessDefinition(String processDefinitionId, String processDefinitionKey) {
         if (processDefinitionId == null && processDefinitionKey == null) {
-            throw new ActivitiIllegalArgumentException(
-                "processDefinitionKey and processDefinitionId are null"
-            );
+            throw new ActivitiIllegalArgumentException("processDefinitionKey and processDefinitionId are null");
         }
 
         ProcessDefinition processDefinition =
-            this.getProcessDefinitionByProcessDefinitionId(
-                    processDefinitionId,
-                    deploymentCache
-                );
+            this.getProcessDefinitionByProcessDefinitionId(processDefinitionId, deploymentCache);
         if (processDefinition == null) {
             processDefinition =
                 (processDefinitionKey != null && hasNoTenant(tenantId))
-                    ? this.getProcessDefinitionByProcessDefinitionKey(
-                            processDefinitionKey,
-                            deploymentCache
-                        )
+                    ? this.getProcessDefinitionByProcessDefinitionKey(processDefinitionKey, deploymentCache)
                     : this.getProcessDefinitionByProcessDefinitionKeyAndTenantId(
                             processDefinitionKey,
                             tenantId,
@@ -81,10 +67,7 @@ public class ProcessDefinitionRetriever {
     ) {
         ProcessDefinition processDefinition = null;
         if (processDefinitionId != null) {
-            processDefinition =
-                deploymentCache.findDeployedProcessDefinitionById(
-                    processDefinitionId
-                );
+            processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
         }
         return processDefinition;
     }
@@ -94,15 +77,10 @@ public class ProcessDefinitionRetriever {
         DeploymentManager deploymentCache
     ) {
         ProcessDefinition processDefinition = null;
-        processDefinition =
-            deploymentCache.findDeployedLatestProcessDefinitionByKey(
-                processDefinitionKey
-            );
+        processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
         if (processDefinition == null) {
             throw new ActivitiObjectNotFoundException(
-                "No process definition found for key '" +
-                processDefinitionKey +
-                "'",
+                "No process definition found for key '" + processDefinitionKey + "'",
                 ProcessDefinition.class
             );
         }
@@ -121,18 +99,12 @@ public class ProcessDefinitionRetriever {
             !ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId)
         ) {
             processDefinition =
-                deploymentCache.findDeployedLatestProcessDefinitionByKeyAndTenantId(
-                    processDefinitionKey,
-                    tenantId
-                );
+                deploymentCache.findDeployedLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
         }
         return processDefinition;
     }
 
     private boolean hasNoTenant(String tenantId) {
-        return (
-            tenantId == null ||
-            ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId)
-        );
+        return (tenantId == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId));
     }
 }

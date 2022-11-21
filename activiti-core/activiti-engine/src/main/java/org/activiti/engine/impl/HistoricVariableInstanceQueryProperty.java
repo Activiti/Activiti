@@ -50,9 +50,7 @@ public class HistoricVariableInstanceQueryProperty implements QueryProperty {
         return name;
     }
 
-    public static HistoricVariableInstanceQueryProperty findByName(
-        String propertyName
-    ) {
+    public static HistoricVariableInstanceQueryProperty findByName(String propertyName) {
         return properties.get(propertyName);
     }
 }

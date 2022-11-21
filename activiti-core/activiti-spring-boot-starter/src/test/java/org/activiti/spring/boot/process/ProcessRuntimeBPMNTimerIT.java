@@ -48,14 +48,10 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles(ProcessRuntimeBPMNTimerIT.PROCESS_RUNTIME_BPMN_TIMER_IT)
 public class ProcessRuntimeBPMNTimerIT {
 
-    private static final String PROCESS_INTERMEDIATE_TIMER_EVENT =
-        "intermediateTimerEventExample";
-    private static final String PROCESS_TIMER_CANCELLED_EVENT =
-        "testTimerCancelledEvent";
-    public static final String PROCESS_RUNTIME_BPMN_TIMER_IT =
-        "ProcessRuntimeBPMNTimerIT";
-    private static final String VARIABLE_MAPPING_PROCESS_START_TIME =
-        "testTimerStartEvent";
+    private static final String PROCESS_INTERMEDIATE_TIMER_EVENT = "intermediateTimerEventExample";
+    private static final String PROCESS_TIMER_CANCELLED_EVENT = "testTimerCancelledEvent";
+    public static final String PROCESS_RUNTIME_BPMN_TIMER_IT = "ProcessRuntimeBPMNTimerIT";
+    private static final String VARIABLE_MAPPING_PROCESS_START_TIME = "testTimerStartEvent";
 
     @Autowired
     private ProcessBaseRuntime processBaseRuntime;
@@ -119,8 +115,7 @@ public class ProcessRuntimeBPMNTimerIT {
     }
 
     @Test
-    public void shouldGetTimerFiredScheduledEventsForProcessWithTimer()
-        throws Exception {
+    public void shouldGetTimerFiredScheduledEventsForProcessWithTimer() throws Exception {
         //given
         ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
             PROCESS_INTERMEDIATE_TIMER_EVENT
@@ -155,9 +150,7 @@ public class ProcessRuntimeBPMNTimerIT {
         Date dueDate = new Date(startTime.getTime() + waitTime);
 
         // After setting the clock to time '5minutes and 5 seconds', the second timer should fire
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(new Date(dueDate.getTime() + 5000));
+        processEngineConfiguration.getClock().setCurrentTime(new Date(dueDate.getTime() + 5000));
 
         //then
         await()
@@ -180,9 +173,7 @@ public class ProcessRuntimeBPMNTimerIT {
                         )
                     );
 
-                assertThat(
-                    localEventSource.getEvents(BPMNTimerExecutedEvent.class)
-                )
+                assertThat(localEventSource.getEvents(BPMNTimerExecutedEvent.class))
                     .extracting(
                         BPMNTimerEvent::getEventType,
                         BPMNTimerEvent::getProcessDefinitionId,
@@ -204,10 +195,7 @@ public class ProcessRuntimeBPMNTimerIT {
         //then the execution reaches the task
         Page<Task> tasks = taskRuntime.tasks(
             Pageable.of(0, 10),
-            TaskPayloadBuilder
-                .tasks()
-                .withProcessInstanceId(processInstance.getId())
-                .build()
+            TaskPayloadBuilder.tasks().withProcessInstanceId(processInstance.getId()).build()
         );
         assertThat(tasks.getContent()).hasSize(1);
         assertThat(tasks.getContent().get(0).getName()).isEqualTo("User Task");
@@ -243,21 +231,14 @@ public class ProcessRuntimeBPMNTimerIT {
 
         Page<Task> tasks = taskRuntime.tasks(
             Pageable.of(0, 10),
-            TaskPayloadBuilder
-                .tasks()
-                .withProcessInstanceId(processInstance.getId())
-                .build()
+            TaskPayloadBuilder.tasks().withProcessInstanceId(processInstance.getId()).build()
         );
         assertThat(tasks.getContent()).hasSize(1);
 
         Task task = tasks.getContent().get(0);
-        taskRuntime.claim(
-            TaskPayloadBuilder.claim().withTaskId(task.getId()).build()
-        );
+        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
-        taskRuntime.complete(
-            TaskPayloadBuilder.complete().withTaskId(task.getId()).build()
-        );
+        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
 
         List<BPMNTimerCancelledEvent> eventsCanceled = localEventSource.getTimerCancelledEvents();
         assertThat(eventsCanceled)
@@ -294,9 +275,7 @@ public class ProcessRuntimeBPMNTimerIT {
 
         //when shift 31 minutes
         long waitTime = 31 * 60 * 1000;
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(new Date(startTime.getTime() + waitTime));
+        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + waitTime));
 
         //then
         await()
@@ -309,21 +288,15 @@ public class ProcessRuntimeBPMNTimerIT {
                 assertThat(processInstancePage).isNotNull();
                 assertThat(processInstancePage.getContent()).isNotEmpty();
 
-                ProcessInstance processInstance = processInstancePage
-                    .getContent()
-                    .get(0);
-                assertThat(processInstance.getProcessDefinitionKey())
-                    .isEqualTo(VARIABLE_MAPPING_PROCESS_START_TIME);
+                ProcessInstance processInstance = processInstancePage.getContent().get(0);
+                assertThat(processInstance.getProcessDefinitionKey()).isEqualTo(VARIABLE_MAPPING_PROCESS_START_TIME);
 
                 List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessIdAsAdmin(
                     processInstance.getId()
                 );
 
                 assertThat(variables)
-                    .extracting(
-                        VariableInstance::getName,
-                        VariableInstance::getValue
-                    )
+                    .extracting(VariableInstance::getName, VariableInstance::getValue)
                     .containsOnly(tuple("process_variable_name", "value"));
             });
     }

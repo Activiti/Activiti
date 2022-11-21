@@ -37,9 +37,7 @@ public class BPMNErrorConverterTest {
         given(internalEvent.getProcessDefinitionId()).willReturn("procDefId");
         given(internalEvent.getProcessInstanceId()).willReturn("procInstId");
 
-        BPMNErrorImpl bpmnError = bpmnErrorConverter.convertToBPMNError(
-            internalEvent
-        );
+        BPMNErrorImpl bpmnError = bpmnErrorConverter.convertToBPMNError(internalEvent);
 
         //then
         assertThat(bpmnError).isNotNull();

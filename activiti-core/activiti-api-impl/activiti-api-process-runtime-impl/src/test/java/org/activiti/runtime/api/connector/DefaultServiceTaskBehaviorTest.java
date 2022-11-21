@@ -41,9 +41,7 @@ public class DefaultServiceTaskBehaviorTest {
     public void hasConnectorBeanShouldReturnTrueIfABeanOfConnectorTypeIsFound() {
         //given
         String connectorName = "connector";
-        DelegateExecution execution = ConnectorRuntimeApiTestHelper.buildExecution(
-            connectorName
-        );
+        DelegateExecution execution = ConnectorRuntimeApiTestHelper.buildExecution(connectorName);
         given(context.containsBean(connectorName)).willReturn(true);
         given(context.getBean(connectorName)).willReturn(mock(Connector.class));
 
@@ -58,9 +56,7 @@ public class DefaultServiceTaskBehaviorTest {
     public void hasConnectorBeanShouldReturnFalseIfNoBeanIsFoundWithTheGivenName() {
         //given
         String connectorName = "connector";
-        DelegateExecution execution = ConnectorRuntimeApiTestHelper.buildExecution(
-            connectorName
-        );
+        DelegateExecution execution = ConnectorRuntimeApiTestHelper.buildExecution(connectorName);
         given(context.containsBean(connectorName)).willReturn(false);
 
         //when
@@ -74,9 +70,7 @@ public class DefaultServiceTaskBehaviorTest {
     public void hasConnectorBeanShouldReturnFalseIfABeanOfDifferentTypeIsFound() {
         //given
         String connectorName = "connector";
-        DelegateExecution execution = ConnectorRuntimeApiTestHelper.buildExecution(
-            connectorName
-        );
+        DelegateExecution execution = ConnectorRuntimeApiTestHelper.buildExecution(connectorName);
         given(context.containsBean(connectorName)).willReturn(true);
         DelegateExecution nonConnectorBean = mock(DelegateExecution.class);
         given(context.getBean(connectorName)).willReturn(nonConnectorBean);

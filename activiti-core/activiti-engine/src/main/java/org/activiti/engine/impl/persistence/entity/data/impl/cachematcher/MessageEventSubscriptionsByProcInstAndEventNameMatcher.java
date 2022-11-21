@@ -28,25 +28,18 @@ public class MessageEventSubscriptionsByProcInstAndEventNameMatcher
     extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
 
     @Override
-    public boolean isRetained(
-        EventSubscriptionEntity eventSubscriptionEntity,
-        Object param
-    ) {
+    public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity, Object param) {
         Map<String, String> paramMap = (Map<String, String>) param;
         String processInstanceId = paramMap.get("processInstanceId");
         String eventName = paramMap.get("eventName");
 
         return (
             eventSubscriptionEntity.getEventType() != null &&
-            eventSubscriptionEntity
-                .getEventType()
-                .equals(MessageEventSubscriptionEntity.EVENT_TYPE) &&
+            eventSubscriptionEntity.getEventType().equals(MessageEventSubscriptionEntity.EVENT_TYPE) &&
             eventSubscriptionEntity.getEventName() != null &&
             eventSubscriptionEntity.getEventName().equals(eventName) &&
             eventSubscriptionEntity.getProcessInstanceId() != null &&
-            eventSubscriptionEntity
-                .getProcessInstanceId()
-                .equals(processInstanceId)
+            eventSubscriptionEntity.getProcessInstanceId().equals(processInstanceId)
         );
     }
 }

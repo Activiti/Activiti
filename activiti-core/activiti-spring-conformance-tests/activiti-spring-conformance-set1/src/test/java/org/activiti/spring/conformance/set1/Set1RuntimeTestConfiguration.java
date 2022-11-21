@@ -47,11 +47,7 @@ public class Set1RuntimeTestConfiguration {
             connector2Executed = true;
             integrationContext
                 .getOutBoundVariables()
-                .put(
-                    "var1",
-                    integrationContext.getInBoundVariables().get("var1") +
-                    "-modified"
-                );
+                .put("var1", integrationContext.getInBoundVariables().get("var1") + "-modified");
             return integrationContext;
         };
     }

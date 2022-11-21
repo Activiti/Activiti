@@ -32,10 +32,7 @@ public class ErrorConverterTest extends AbstractConverterTest {
         assertThat(bpmnModel.getErrors().values())
             .usingRecursiveFieldByFieldElementComparator()
             .isSubsetOf(
-                newArrayList(
-                    new Error("Error_0v4rsz5", "ok", "200"),
-                    new Error("Error_02htlc0", "conflict", "409")
-                )
+                newArrayList(new Error("Error_0v4rsz5", "ok", "200"), new Error("Error_02htlc0", "conflict", "409"))
             );
     }
 
@@ -44,14 +41,8 @@ public class ErrorConverterTest extends AbstractConverterTest {
         BpmnModel bpmnModel = readXMLFile();
         byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel);
         String convertedXml = new String(xml, StandardCharsets.UTF_8);
-        assertThat(convertedXml)
-            .contains(
-                "<error id=\"Error_0v4rsz5\" name=\"ok\" errorCode=\"200\">"
-            );
-        assertThat(convertedXml)
-            .contains(
-                "<error id=\"Error_02htlc0\" name=\"conflict\" errorCode=\"409\">"
-            );
+        assertThat(convertedXml).contains("<error id=\"Error_0v4rsz5\" name=\"ok\" errorCode=\"200\">");
+        assertThat(convertedXml).contains("<error id=\"Error_02htlc0\" name=\"conflict\" errorCode=\"409\">");
     }
 
     @Override

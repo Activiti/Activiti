@@ -32,8 +32,7 @@ import org.activiti.spring.process.ProcessVariablesInitiator;
 /**
  * Default implementation of the {@link ActivityBehaviorFactory}. Used when no custom {@link ActivityBehaviorFactory} is injected on the {@link ProcessEngineConfigurationImpl}.
  */
-public class MappingAwareActivityBehaviorFactory
-    extends DefaultActivityBehaviorFactory {
+public class MappingAwareActivityBehaviorFactory extends DefaultActivityBehaviorFactory {
 
     private VariablesCalculator variablesCalculator;
     private ProcessVariablesInitiator processVariablesInitiator;
@@ -49,22 +48,12 @@ public class MappingAwareActivityBehaviorFactory
         this.processVariablesInitiator = processVariablesInitiator;
         this.variablesPropagator = variablesPropagator;
 
-        this.setMessagePayloadMappingProviderFactory(
-                new JsonMessagePayloadMappingProviderFactory(
-                    variablesCalculator
-                )
-            );
+        this.setMessagePayloadMappingProviderFactory(new JsonMessagePayloadMappingProviderFactory(variablesCalculator));
     }
 
     @Override
-    public UserTaskActivityBehavior createUserTaskActivityBehavior(
-        UserTask userTask
-    ) {
-        return new MappingAwareUserTaskBehavior(
-            userTask,
-            variablesCalculator,
-            variablesPropagator
-        );
+    public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask) {
+        return new MappingAwareUserTaskBehavior(userTask, variablesCalculator, variablesPropagator);
     }
 
     @Override

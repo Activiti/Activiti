@@ -33,8 +33,7 @@ import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.parse.BpmnParseHandler;
 
-public abstract class AbstractBpmnParseHandler<T extends BaseElement>
-    implements BpmnParseHandler {
+public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements BpmnParseHandler {
 
     public Set<Class<? extends BaseElement>> getHandledTypes() {
         Set<Class<? extends BaseElement>> types = new HashSet<Class<? extends BaseElement>>();
@@ -52,54 +51,30 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement>
 
     protected abstract void executeParse(BpmnParse bpmnParse, T element);
 
-    protected ExecutionListener createExecutionListener(
-        BpmnParse bpmnParse,
-        ActivitiListener activitiListener
-    ) {
+    protected ExecutionListener createExecutionListener(BpmnParse bpmnParse, ActivitiListener activitiListener) {
         ExecutionListener executionListener = null;
 
-        if (
-            ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(
-                activitiListener.getImplementationType()
-            )
-        ) {
-            executionListener =
-                bpmnParse
-                    .getListenerFactory()
-                    .createClassDelegateExecutionListener(activitiListener);
+        if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
+            executionListener = bpmnParse.getListenerFactory().createClassDelegateExecutionListener(activitiListener);
         } else if (
-            ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(
-                activitiListener.getImplementationType()
-            )
+            ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())
         ) {
-            executionListener =
-                bpmnParse
-                    .getListenerFactory()
-                    .createExpressionExecutionListener(activitiListener);
+            executionListener = bpmnParse.getListenerFactory().createExpressionExecutionListener(activitiListener);
         } else if (
             ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(
                 activitiListener.getImplementationType()
             )
         ) {
             executionListener =
-                bpmnParse
-                    .getListenerFactory()
-                    .createDelegateExpressionExecutionListener(
-                        activitiListener
-                    );
+                bpmnParse.getListenerFactory().createDelegateExpressionExecutionListener(activitiListener);
         }
         return executionListener;
     }
 
-    protected String getPrecedingEventBasedGateway(
-        BpmnParse bpmnParse,
-        IntermediateCatchEvent event
-    ) {
+    protected String getPrecedingEventBasedGateway(BpmnParse bpmnParse, IntermediateCatchEvent event) {
         String eventBasedGatewayId = null;
         for (SequenceFlow sequenceFlow : event.getIncomingFlows()) {
-            FlowElement sourceElement = bpmnParse
-                .getBpmnModel()
-                .getFlowElement(sequenceFlow.getSourceRef());
+            FlowElement sourceElement = bpmnParse.getBpmnModel().getFlowElement(sequenceFlow.getSourceRef());
             if (sourceElement instanceof EventGateway) {
                 eventBasedGatewayId = sourceElement.getId();
                 break;
@@ -108,10 +83,7 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement>
         return eventBasedGatewayId;
     }
 
-    protected void processArtifacts(
-        BpmnParse bpmnParse,
-        Collection<Artifact> artifacts
-    ) {
+    protected void processArtifacts(BpmnParse bpmnParse, Collection<Artifact> artifacts) {
         // associations
         for (Artifact artifact : artifacts) {
             if (artifact instanceof Association) {
@@ -120,10 +92,7 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement>
         }
     }
 
-    protected void createAssociation(
-        BpmnParse bpmnParse,
-        Association association
-    ) {
+    protected void createAssociation(BpmnParse bpmnParse, Association association) {
         BpmnModel bpmnModel = bpmnParse.getBpmnModel();
         if (
             bpmnModel.getArtifact(association.getSourceRef()) != null ||

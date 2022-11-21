@@ -37,11 +37,7 @@ public class ResolveTaskCmd extends NeedsActiveTaskCmd<Void> {
         this.variables = variables;
     }
 
-    public ResolveTaskCmd(
-        String taskId,
-        Map<String, Object> variables,
-        Map<String, Object> transientVariables
-    ) {
+    public ResolveTaskCmd(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables) {
         this(taskId, variables);
         this.transientVariables = transientVariables;
     }
@@ -55,9 +51,7 @@ public class ResolveTaskCmd extends NeedsActiveTaskCmd<Void> {
         }
 
         task.setDelegationState(DelegationState.RESOLVED);
-        commandContext
-            .getTaskEntityManager()
-            .changeTaskAssignee(task, task.getOwner());
+        commandContext.getTaskEntityManager().changeTaskAssignee(task, task.getOwner());
 
         return null;
     }

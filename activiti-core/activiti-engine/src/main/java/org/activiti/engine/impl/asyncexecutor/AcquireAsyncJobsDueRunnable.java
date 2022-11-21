@@ -30,9 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 public class AcquireAsyncJobsDueRunnable implements Runnable {
 
-    private static Logger log = LoggerFactory.getLogger(
-        AcquireAsyncJobsDueRunnable.class
-    );
+    private static Logger log = LoggerFactory.getLogger(AcquireAsyncJobsDueRunnable.class);
 
     protected final AsyncExecutor asyncExecutor;
 
@@ -50,21 +48,15 @@ public class AcquireAsyncJobsDueRunnable implements Runnable {
         log.info("{} starting to acquire async jobs due");
         Thread.currentThread().setName("activiti-acquire-async-jobs");
 
-        final CommandExecutor commandExecutor = asyncExecutor
-            .getProcessEngineConfiguration()
-            .getCommandExecutor();
+        final CommandExecutor commandExecutor = asyncExecutor.getProcessEngineConfiguration().getCommandExecutor();
 
         while (!isInterrupted) {
             try {
-                AcquiredJobEntities acquiredJobs = commandExecutor.execute(
-                    new AcquireJobsCmd(asyncExecutor)
-                );
+                AcquiredJobEntities acquiredJobs = commandExecutor.execute(new AcquireJobsCmd(asyncExecutor));
 
                 boolean allJobsSuccessfullyOffered = true;
                 for (JobEntity job : acquiredJobs.getJobs()) {
-                    boolean jobSuccessFullyOffered = asyncExecutor.executeAsyncJob(
-                        job
-                    );
+                    boolean jobSuccessFullyOffered = asyncExecutor.executeAsyncJob(job);
                     if (!jobSuccessFullyOffered) {
                         allJobsSuccessfullyOffered = false;
                     }
@@ -73,24 +65,17 @@ public class AcquireAsyncJobsDueRunnable implements Runnable {
                 // If all jobs are executed, we check if we got back the amount we expected
                 // If not, we will wait, as to not query the database needlessly.
                 // Otherwise, we set the wait time to 0, as to query again immediately.
-                millisToWait =
-                    asyncExecutor.getDefaultAsyncJobAcquireWaitTimeInMillis();
+                millisToWait = asyncExecutor.getDefaultAsyncJobAcquireWaitTimeInMillis();
                 int jobsAcquired = acquiredJobs.size();
-                if (
-                    jobsAcquired >=
-                    asyncExecutor.getMaxAsyncJobsDuePerAcquisition()
-                ) {
+                if (jobsAcquired >= asyncExecutor.getMaxAsyncJobsDuePerAcquisition()) {
                     millisToWait = 0;
                 }
 
                 // If the queue was full, we wait too (even if we got enough jobs back), as not overload the queue
                 if (millisToWait == 0 && !allJobsSuccessfullyOffered) {
-                    millisToWait =
-                        asyncExecutor.getDefaultQueueSizeFullWaitTimeInMillis();
+                    millisToWait = asyncExecutor.getDefaultQueueSizeFullWaitTimeInMillis();
                 }
-            } catch (
-                ActivitiOptimisticLockingException optimisticLockingException
-            ) {
+            } catch (ActivitiOptimisticLockingException optimisticLockingException) {
                 if (log.isDebugEnabled()) {
                     log.debug(
                         "Optimistic locking exception during async job acquisition. If you have multiple async executors running against the same database, " +
@@ -102,22 +87,14 @@ public class AcquireAsyncJobsDueRunnable implements Runnable {
                     );
                 }
             } catch (Throwable e) {
-                log.error(
-                    "exception during async job acquisition: {}",
-                    e.getMessage(),
-                    e
-                );
-                millisToWait =
-                    asyncExecutor.getDefaultAsyncJobAcquireWaitTimeInMillis();
+                log.error("exception during async job acquisition: {}", e.getMessage(), e);
+                millisToWait = asyncExecutor.getDefaultAsyncJobAcquireWaitTimeInMillis();
             }
 
             if (millisToWait > 0) {
                 try {
                     if (log.isDebugEnabled()) {
-                        log.debug(
-                            "async job acquisition thread sleeping for {} millis",
-                            millisToWait
-                        );
+                        log.debug("async job acquisition thread sleeping for {} millis", millisToWait);
                     }
                     synchronized (MONITOR) {
                         if (!isInterrupted) {

@@ -36,8 +36,7 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 /**
 
  */
-public class BoundaryCompensateEventActivityBehavior
-    extends BoundaryEventActivityBehavior {
+public class BoundaryCompensateEventActivityBehavior extends BoundaryEventActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 
@@ -56,26 +55,15 @@ public class BoundaryCompensateEventActivityBehavior
         ExecutionEntity executionEntity = (ExecutionEntity) execution;
         BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
 
-        Process process = ProcessDefinitionUtil.getProcess(
-            execution.getProcessDefinitionId()
-        );
+        Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
         if (process == null) {
-            throw new ActivitiException(
-                "Process model (id = " +
-                execution.getId() +
-                ") could not be found"
-            );
+            throw new ActivitiException("Process model (id = " + execution.getId() + ") could not be found");
         }
 
         Activity compensationActivity = null;
-        List<Association> associations = process.findAssociationsWithSourceRefRecursive(
-            boundaryEvent.getId()
-        );
+        List<Association> associations = process.findAssociationsWithSourceRefRecursive(boundaryEvent.getId());
         for (Association association : associations) {
-            FlowElement targetElement = process.getFlowElement(
-                association.getTargetRef(),
-                true
-            );
+            FlowElement targetElement = process.getFlowElement(association.getTargetRef(), true);
             if (targetElement instanceof Activity) {
                 Activity activity = (Activity) targetElement;
                 if (activity.isForCompensation()) {
@@ -106,26 +94,18 @@ public class BoundaryCompensateEventActivityBehavior
 
         if (scopeExecution == null) {
             throw new ActivitiException(
-                "Could not find a scope execution for compensation boundary event " +
-                boundaryEvent.getId()
+                "Could not find a scope execution for compensation boundary event " + boundaryEvent.getId()
             );
         }
 
         Context
             .getCommandContext()
             .getEventSubscriptionEntityManager()
-            .insertCompensationEvent(
-                scopeExecution,
-                compensationActivity.getId()
-            );
+            .insertCompensationEvent(scopeExecution, compensationActivity.getId());
     }
 
     @Override
-    public void trigger(
-        DelegateExecution execution,
-        String triggerName,
-        Object triggerData
-    ) {
+    public void trigger(DelegateExecution execution, String triggerName, Object triggerData) {
         ExecutionEntity executionEntity = (ExecutionEntity) execution;
         BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
 
@@ -137,9 +117,7 @@ public class BoundaryCompensateEventActivityBehavior
             for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
                 if (
                     eventSubscription instanceof CompensateEventSubscriptionEntity &&
-                    eventSubscription
-                        .getActivityId()
-                        .equals(compensateEventDefinition.getActivityRef())
+                    eventSubscription.getActivityId().equals(compensateEventDefinition.getActivityRef())
                 ) {
                     eventSubscriptionEntityManager.delete(eventSubscription);
                 }

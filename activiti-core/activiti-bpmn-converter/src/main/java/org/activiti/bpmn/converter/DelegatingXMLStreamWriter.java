@@ -34,29 +34,19 @@ abstract class DelegatingXMLStreamWriter implements XMLStreamWriter {
         writer.writeStartElement(localName);
     }
 
-    public void writeStartElement(String namespaceURI, String localName)
-        throws XMLStreamException {
+    public void writeStartElement(String namespaceURI, String localName) throws XMLStreamException {
         writer.writeStartElement(namespaceURI, localName);
     }
 
-    public void writeStartElement(
-        String prefix,
-        String localName,
-        String namespaceURI
-    ) throws XMLStreamException {
+    public void writeStartElement(String prefix, String localName, String namespaceURI) throws XMLStreamException {
         writer.writeStartElement(prefix, localName, namespaceURI);
     }
 
-    public void writeEmptyElement(String namespaceURI, String localName)
-        throws XMLStreamException {
+    public void writeEmptyElement(String namespaceURI, String localName) throws XMLStreamException {
         writer.writeEmptyElement(namespaceURI, localName);
     }
 
-    public void writeEmptyElement(
-        String prefix,
-        String localName,
-        String namespaceURI
-    ) throws XMLStreamException {
+    public void writeEmptyElement(String prefix, String localName, String namespaceURI) throws XMLStreamException {
         writer.writeEmptyElement(prefix, localName, namespaceURI);
     }
 
@@ -80,35 +70,24 @@ abstract class DelegatingXMLStreamWriter implements XMLStreamWriter {
         writer.flush();
     }
 
-    public void writeAttribute(String localName, String value)
-        throws XMLStreamException {
+    public void writeAttribute(String localName, String value) throws XMLStreamException {
         writer.writeAttribute(localName, value);
     }
 
-    public void writeAttribute(
-        String prefix,
-        String namespaceURI,
-        String localName,
-        String value
-    ) throws XMLStreamException {
+    public void writeAttribute(String prefix, String namespaceURI, String localName, String value)
+        throws XMLStreamException {
         writer.writeAttribute(prefix, namespaceURI, localName, value);
     }
 
-    public void writeAttribute(
-        String namespaceURI,
-        String localName,
-        String value
-    ) throws XMLStreamException {
+    public void writeAttribute(String namespaceURI, String localName, String value) throws XMLStreamException {
         writer.writeAttribute(namespaceURI, localName, value);
     }
 
-    public void writeNamespace(String prefix, String namespaceURI)
-        throws XMLStreamException {
+    public void writeNamespace(String prefix, String namespaceURI) throws XMLStreamException {
         writer.writeNamespace(prefix, namespaceURI);
     }
 
-    public void writeDefaultNamespace(String namespaceURI)
-        throws XMLStreamException {
+    public void writeDefaultNamespace(String namespaceURI) throws XMLStreamException {
         writer.writeDefaultNamespace(namespaceURI);
     }
 
@@ -116,13 +95,11 @@ abstract class DelegatingXMLStreamWriter implements XMLStreamWriter {
         writer.writeComment(data);
     }
 
-    public void writeProcessingInstruction(String target)
-        throws XMLStreamException {
+    public void writeProcessingInstruction(String target) throws XMLStreamException {
         writer.writeProcessingInstruction(target);
     }
 
-    public void writeProcessingInstruction(String target, String data)
-        throws XMLStreamException {
+    public void writeProcessingInstruction(String target, String data) throws XMLStreamException {
         writer.writeProcessingInstruction(target, data);
     }
 
@@ -146,8 +123,7 @@ abstract class DelegatingXMLStreamWriter implements XMLStreamWriter {
         writer.writeStartDocument(version);
     }
 
-    public void writeStartDocument(String encoding, String version)
-        throws XMLStreamException {
+    public void writeStartDocument(String encoding, String version) throws XMLStreamException {
         writer.writeStartDocument(encoding, version);
     }
 
@@ -155,8 +131,7 @@ abstract class DelegatingXMLStreamWriter implements XMLStreamWriter {
         writer.writeCharacters(text);
     }
 
-    public void writeCharacters(char[] text, int start, int len)
-        throws XMLStreamException {
+    public void writeCharacters(char[] text, int start, int len) throws XMLStreamException {
         writer.writeCharacters(text, start, len);
     }
 
@@ -172,8 +147,7 @@ abstract class DelegatingXMLStreamWriter implements XMLStreamWriter {
         writer.setDefaultNamespace(uri);
     }
 
-    public void setNamespaceContext(NamespaceContext context)
-        throws XMLStreamException {
+    public void setNamespaceContext(NamespaceContext context) throws XMLStreamException {
         writer.setNamespaceContext(context);
     }
 

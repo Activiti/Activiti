@@ -22,36 +22,23 @@ import org.activiti.test.matchers.OperationScopeMatcher;
 import org.activiti.test.matchers.ProcessResultMatcher;
 import org.activiti.test.matchers.ProcessTaskMatcher;
 
-public class AwaitProcessInstanceAssertions
-    implements ProcessInstanceAssertions {
+public class AwaitProcessInstanceAssertions implements ProcessInstanceAssertions {
 
     private ProcessInstanceAssertions processInstanceAssertions;
 
-    public AwaitProcessInstanceAssertions(
-        ProcessInstanceAssertions processInstanceAssertions
-    ) {
+    public AwaitProcessInstanceAssertions(ProcessInstanceAssertions processInstanceAssertions) {
         this.processInstanceAssertions = processInstanceAssertions;
     }
 
     @Override
-    public ProcessInstanceAssertions expectFields(
-        ProcessResultMatcher... matchers
-    ) {
-        await()
-            .untilAsserted(() ->
-                processInstanceAssertions.expectFields(matchers)
-            );
+    public ProcessInstanceAssertions expectFields(ProcessResultMatcher... matchers) {
+        await().untilAsserted(() -> processInstanceAssertions.expectFields(matchers));
         return this;
     }
 
     @Override
-    public ProcessInstanceAssertions expectEvents(
-        OperationScopeMatcher... matchers
-    ) {
-        await()
-            .untilAsserted(() ->
-                processInstanceAssertions.expectEvents(matchers)
-            );
+    public ProcessInstanceAssertions expectEvents(OperationScopeMatcher... matchers) {
+        await().untilAsserted(() -> processInstanceAssertions.expectEvents(matchers));
         return this;
     }
 

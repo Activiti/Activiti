@@ -22,8 +22,7 @@ import org.activiti.engine.impl.persistence.entity.Entity;
 /**
 
  */
-public abstract class CachedEntityMatcherAdapter<EntityImpl extends Entity>
-    implements CachedEntityMatcher<EntityImpl> {
+public abstract class CachedEntityMatcherAdapter<EntityImpl extends Entity> implements CachedEntityMatcher<EntityImpl> {
 
     @Override
     public boolean isRetained(

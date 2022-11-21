@@ -48,21 +48,15 @@ public class ProcessEntryDeployerTest {
         FileContent fileContent = new FileContent("process", "any".getBytes());
         applicationContent.add(new ApplicationEntry("processes", fileContent));
 
-        DeploymentBuilder deploymentBuilder = mock(
-            DeploymentBuilder.class,
-            Answers.RETURNS_SELF
-        );
-        given(repositoryService.createDeployment())
-            .willReturn(deploymentBuilder);
+        DeploymentBuilder deploymentBuilder = mock(DeploymentBuilder.class, Answers.RETURNS_SELF);
+        given(repositoryService.createDeployment()).willReturn(deploymentBuilder);
 
         //when
         deployer.deployEntries(applicationContent);
 
         //then
         InOrder inOrder = inOrder(deploymentBuilder);
-        inOrder
-            .verify(deploymentBuilder)
-            .addBytes(fileContent.getName(), fileContent.getContent());
+        inOrder.verify(deploymentBuilder).addBytes(fileContent.getName(), fileContent.getContent());
         inOrder.verify(deploymentBuilder).deploy();
     }
 }

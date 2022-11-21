@@ -48,9 +48,7 @@ public class DeploymentBuilderImplTest {
     @Test
     public void addInputStreamShouldAddZipInputStreamWhenItsAZipLike() {
         //given
-        doReturn(deploymentBuilder)
-            .when(deploymentBuilder)
-            .addZipInputStream(any());
+        doReturn(deploymentBuilder).when(deploymentBuilder).addZipInputStream(any());
 
         //when
         deploymentBuilder.addInputStream("my.bar", resource);
@@ -60,16 +58,13 @@ public class DeploymentBuilderImplTest {
     }
 
     @Test
-    public void addInputStreamShouldAddNormalImportStreamWhenITsNotAZipLike()
-        throws Exception {
+    public void addInputStreamShouldAddNormalImportStreamWhenITsNotAZipLike() throws Exception {
         //given
         String resourceName = "any.xml";
         InputStream inputStream = mock(InputStream.class);
         given(resource.getInputStream()).willReturn(inputStream);
 
-        doReturn(deploymentBuilder)
-            .when(deploymentBuilder)
-            .addInputStream(resourceName, inputStream);
+        doReturn(deploymentBuilder).when(deploymentBuilder).addInputStream(resourceName, inputStream);
 
         //when
         deploymentBuilder.addInputStream(resourceName, resource);
@@ -79,19 +74,14 @@ public class DeploymentBuilderImplTest {
     }
 
     @Test
-    public void addInputStreamShouldThrowActivitiExceptionWhenIOExceptionIsThrown()
-        throws Exception {
+    public void addInputStreamShouldThrowActivitiExceptionWhenIOExceptionIsThrown() throws Exception {
         //given
         given(resource.getInputStream()).willThrow(new IOException());
 
         //when
-        Throwable thrown = catchThrowable(() ->
-            deploymentBuilder.addInputStream("any.xml", resource)
-        );
+        Throwable thrown = catchThrowable(() -> deploymentBuilder.addInputStream("any.xml", resource));
 
         //then
-        assertThat(thrown)
-            .isInstanceOf(ActivitiException.class)
-            .hasMessageContaining("Couldn't auto deploy resource");
+        assertThat(thrown).isInstanceOf(ActivitiException.class).hasMessageContaining("Couldn't auto deploy resource");
     }
 }

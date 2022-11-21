@@ -33,8 +33,7 @@ public class MultiInstanceParserTest {
     private XMLInputFactory xif = XMLInputFactory.newInstance();
 
     @Test
-    public void parseChildElement_should_setLoopCharacteristicsProperties()
-        throws Exception {
+    public void parseChildElement_should_setLoopCharacteristicsProperties() throws Exception {
         try (
             InputStream xmlStream = this.getClass()
                 .getClassLoader()
@@ -50,28 +49,21 @@ public class MultiInstanceParserTest {
 
             assertThat(loopCharacteristics).isNotNull();
             assertThat(loopCharacteristics.isSequential()).isFalse();
-            assertThat(loopCharacteristics.getInputDataItem())
-                .isEqualTo("assigneeList");
-            assertThat(loopCharacteristics.getElementVariable())
-                .isEqualTo("assignee");
+            assertThat(loopCharacteristics.getInputDataItem()).isEqualTo("assigneeList");
+            assertThat(loopCharacteristics.getElementVariable()).isEqualTo("assignee");
             assertThat(loopCharacteristics.getCompletionCondition())
                 .isEqualTo("${nrOfCompletedInstances/nrOfInstances >= 0.6 }");
-            assertThat(loopCharacteristics.getLoopDataOutputRef())
-                .isEqualTo("meals");
-            assertThat(loopCharacteristics.getOutputDataItem())
-                .isEqualTo("meal");
+            assertThat(loopCharacteristics.getLoopDataOutputRef()).isEqualTo("meals");
+            assertThat(loopCharacteristics.getOutputDataItem()).isEqualTo("meal");
         }
     }
 
     @Test
-    public void parseChildElement_should_setActivitiExtensionsElements()
-        throws Exception {
+    public void parseChildElement_should_setActivitiExtensionsElements() throws Exception {
         try (
             InputStream xmlStream = this.getClass()
                 .getClassLoader()
-                .getResourceAsStream(
-                    "multi-instance-loop-characteristics-extensions.xml"
-                )
+                .getResourceAsStream("multi-instance-loop-characteristics-extensions.xml")
         ) {
             XMLStreamReader xtr = xif.createXMLStreamReader(xmlStream, "UTF-8");
             moveReaderToMultiInstanceLine(xtr);
@@ -83,26 +75,19 @@ public class MultiInstanceParserTest {
 
             assertThat(loopCharacteristics).isNotNull();
             assertThat(loopCharacteristics.isSequential()).isTrue();
-            assertThat(loopCharacteristics.getInputDataItem())
-                .isEqualTo("assigneeList");
-            assertThat(loopCharacteristics.getElementVariable())
-                .isEqualTo("assignee");
-            assertThat(loopCharacteristics.getElementIndexVariable())
-                .isEqualTo("loopValueIndex");
+            assertThat(loopCharacteristics.getInputDataItem()).isEqualTo("assigneeList");
+            assertThat(loopCharacteristics.getElementVariable()).isEqualTo("assignee");
+            assertThat(loopCharacteristics.getElementIndexVariable()).isEqualTo("loopValueIndex");
         }
     }
 
-    private void moveReaderToMultiInstanceLine(XMLStreamReader xtr)
-        throws XMLStreamException {
+    private void moveReaderToMultiInstanceLine(XMLStreamReader xtr) throws XMLStreamException {
         do {
             xtr.next();
         } while (!isMultiInstance(xtr) && xtr.hasNext());
     }
 
     private boolean isMultiInstance(XMLStreamReader xtr) {
-        return (
-            xtr.isStartElement() &&
-            xtr.getLocalName().equals(ELEMENT_MULTIINSTANCE)
-        );
+        return (xtr.isStartElement() && xtr.getLocalName().equals(ELEMENT_MULTIINSTANCE));
     }
 }

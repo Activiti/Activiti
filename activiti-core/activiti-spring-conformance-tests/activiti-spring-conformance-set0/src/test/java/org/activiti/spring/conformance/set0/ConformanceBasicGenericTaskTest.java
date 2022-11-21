@@ -36,8 +36,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ConformanceBasicGenericTaskTest {
 
-    private final String processKey =
-        "processwit-c6fd1b26-0d64-47f2-8d04-0b70764444a7";
+    private final String processKey = "processwit-c6fd1b26-0d64-47f2-8d04-0b70764444a7";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -83,17 +82,12 @@ public class ConformanceBasicGenericTaskTest {
 
         //then
         assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getStatus())
-            .isEqualTo(ProcessInstance.ProcessInstanceStatus.COMPLETED);
-        assertThat(processInstance.getBusinessKey())
-            .isEqualTo("my-business-key");
-        assertThat(processInstance.getName())
-            .isEqualTo("my-process-instance-name");
+        assertThat(processInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.COMPLETED);
+        assertThat(processInstance.getBusinessKey()).isEqualTo("my-business-key");
+        assertThat(processInstance.getName()).isEqualTo("my-process-instance-name");
 
         // No Process Instance should be found
-        Throwable throwable = catchThrowable(() ->
-            processRuntime.processInstance(processInstance.getId())
-        );
+        Throwable throwable = catchThrowable(() -> processRuntime.processInstance(processInstance.getId()));
 
         assertThat(throwable).isInstanceOf(NotFoundException.class);
 
@@ -101,10 +95,7 @@ public class ConformanceBasicGenericTaskTest {
         throwable =
             catchThrowable(() ->
                 processRuntime.variables(
-                    ProcessPayloadBuilder
-                        .variables()
-                        .withProcessInstanceId(processInstance.getId())
-                        .build()
+                    ProcessPayloadBuilder.variables().withProcessInstanceId(processInstance.getId()).build()
                 )
             );
         assertThat(throwable).isInstanceOf(NotFoundException.class);

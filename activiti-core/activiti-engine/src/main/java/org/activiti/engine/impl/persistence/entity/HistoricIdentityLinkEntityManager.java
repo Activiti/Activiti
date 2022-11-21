@@ -23,15 +23,10 @@ import org.activiti.engine.api.internal.Internal;
 
  */
 @Internal
-public interface HistoricIdentityLinkEntityManager
-    extends EntityManager<HistoricIdentityLinkEntity> {
-    List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByTaskId(
-        String taskId
-    );
+public interface HistoricIdentityLinkEntityManager extends EntityManager<HistoricIdentityLinkEntity> {
+    List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByTaskId(String taskId);
 
-    List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByProcessInstanceId(
-        String processInstanceId
-    );
+    List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByProcessInstanceId(String processInstanceId);
 
     void deleteHistoricIdentityLinksByTaskId(String taskId);
 

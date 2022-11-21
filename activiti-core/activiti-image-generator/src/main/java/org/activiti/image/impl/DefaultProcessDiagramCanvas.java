@@ -84,9 +84,7 @@ import org.w3c.dom.Document;
  */
 public class DefaultProcessDiagramCanvas {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(
-        DefaultProcessDiagramCanvas.class
-    );
+    protected static final Logger LOGGER = LoggerFactory.getLogger(DefaultProcessDiagramCanvas.class);
 
     public enum SHAPE_TYPE {
         Rectangle,
@@ -110,22 +108,10 @@ public class DefaultProcessDiagramCanvas {
     protected static Color SUBPROCESS_BOX_COLOR = new Color(255, 255, 255);
     protected static Color EVENT_COLOR = new Color(255, 255, 255);
     protected static Color CONNECTION_COLOR = new Color(88, 88, 88);
-    protected static Color CONDITIONAL_INDICATOR_COLOR = new Color(
-        255,
-        255,
-        255
-    );
+    protected static Color CONDITIONAL_INDICATOR_COLOR = new Color(255, 255, 255);
     protected static Color HIGHLIGHT_CURRENT_COLOR = new Color(87, 255, 174);
-    protected static Color HIGHLIGHT_COMPLETED_ACTIVITY_COLOR = new Color(
-        51,
-        153,
-        255
-    );
-    protected static Color HIGHLIGHT_ERRORED_ACTIVITY_COLOR = new Color(
-        255,
-        55,
-        87
-    );
+    protected static Color HIGHLIGHT_COMPLETED_ACTIVITY_COLOR = new Color(51, 153, 255);
+    protected static Color HIGHLIGHT_ERRORED_ACTIVITY_COLOR = new Color(255, 55, 87);
     protected static Color LABEL_COLOR = new Color(112, 146, 190);
     protected static Color TASK_BORDER_COLOR = new Color(187, 187, 187);
     protected static Color EVENT_BORDER_COLOR = new Color(88, 88, 88);
@@ -242,12 +228,7 @@ public class DefaultProcessDiagramCanvas {
      * @param minY Hint that will be used when generating the image. Parts that fall
      * below minX on the horizontal scale will be cropped.
      */
-    public DefaultProcessDiagramCanvas(
-        int width,
-        int height,
-        int minX,
-        int minY
-    ) {
+    public DefaultProcessDiagramCanvas(int width, int height, int minX, int minY) {
         this.canvasWidth = width;
         this.canvasHeight = height;
         this.minX = minX;
@@ -267,17 +248,12 @@ public class DefaultProcessDiagramCanvas {
         // Create an instance of the SVG Generator.
         this.g = new ProcessDiagramSVGGraphics2D(document);
 
-        this.g.setSVGCanvasSize(
-                new Dimension(this.canvasWidth, this.canvasHeight)
-            );
+        this.g.setSVGCanvasSize(new Dimension(this.canvasWidth, this.canvasHeight));
 
         this.g.setBackground(new Color(255, 255, 255, 0));
         this.g.clearRect(0, 0, canvasWidth, canvasHeight);
 
-        g.setRenderingHint(
-            RenderingHints.KEY_ANTIALIASING,
-            RenderingHints.VALUE_ANTIALIAS_ON
-        );
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setPaint(Color.black);
 
         Font font = new Font(activityFontName, Font.BOLD, FONT_SIZE);
@@ -313,9 +289,7 @@ public class DefaultProcessDiagramCanvas {
      */
     public InputStream generateImage() {
         if (closed) {
-            throw new ActivitiImageException(
-                "ProcessDiagramGenerator already closed"
-            );
+            throw new ActivitiImageException("ProcessDiagramGenerator already closed");
         }
 
         try {
@@ -325,10 +299,7 @@ public class DefaultProcessDiagramCanvas {
             g.stream(out, true);
             return new ByteArrayInputStream(stream.toByteArray());
         } catch (UnsupportedEncodingException | SVGGraphics2DIOException e) {
-            throw new ActivitiImageException(
-                "Error while generating process image",
-                e
-            );
+            throw new ActivitiImageException("Error while generating process image", e);
         }
     }
 
@@ -357,11 +328,7 @@ public class DefaultProcessDiagramCanvas {
         drawStartEvent(id, graphicInfo, MESSAGE_CATCH_IMAGE);
     }
 
-    public void drawStartEvent(
-        String id,
-        GraphicInfo graphicInfo,
-        IconType icon
-    ) {
+    public void drawStartEvent(String id, GraphicInfo graphicInfo, IconType icon) {
         Paint originalPaint = g.getPaint();
         g.setPaint(EVENT_COLOR);
         Ellipse2D circle = new Ellipse2D.Double(
@@ -377,16 +344,8 @@ public class DefaultProcessDiagramCanvas {
 
         // calculate coordinates to center image
         if (icon != null) {
-            int imageX = (int) Math.round(
-                graphicInfo.getX() +
-                (graphicInfo.getWidth() / 2) -
-                (icon.getWidth() / 2)
-            );
-            int imageY = (int) Math.round(
-                graphicInfo.getY() +
-                (graphicInfo.getHeight() / 2) -
-                (icon.getHeight() / 2)
-            );
+            int imageX = (int) Math.round(graphicInfo.getX() + (graphicInfo.getWidth() / 2) - (icon.getWidth() / 2));
+            int imageY = (int) Math.round(graphicInfo.getY() + (graphicInfo.getHeight() / 2) - (icon.getHeight() / 2));
 
             icon.drawIcon(imageX, imageY, ICON_PADDING, g);
         }
@@ -395,11 +354,7 @@ public class DefaultProcessDiagramCanvas {
         g.setCurrentGroupId(id);
     }
 
-    public void drawNoneEndEvent(
-        String id,
-        String name,
-        GraphicInfo graphicInfo
-    ) {
+    public void drawNoneEndEvent(String id, String name, GraphicInfo graphicInfo) {
         Paint originalPaint = g.getPaint();
         Stroke originalStroke = g.getStroke();
         g.setPaint(EVENT_COLOR);
@@ -422,11 +377,7 @@ public class DefaultProcessDiagramCanvas {
         drawLabel(name, graphicInfo);
     }
 
-    public void drawErrorEndEvent(
-        String id,
-        String name,
-        GraphicInfo graphicInfo
-    ) {
+    public void drawErrorEndEvent(String id, String name, GraphicInfo graphicInfo) {
         drawNoneEndEvent(id, name, graphicInfo);
 
         int imageX = (int) (graphicInfo.getX() + (graphicInfo.getWidth() / 4));
@@ -461,16 +412,9 @@ public class DefaultProcessDiagramCanvas {
         int innerCircleSize = 4;
         int innerCircleX = (int) graphicInfo.getX() + innerCircleSize;
         int innerCircleY = (int) graphicInfo.getY() + innerCircleSize;
-        int innerCircleWidth = (int) graphicInfo.getWidth() -
-        (2 * innerCircleSize);
-        int innerCircleHeight = (int) graphicInfo.getHeight() -
-        (2 * innerCircleSize);
-        Ellipse2D innerCircle = new Ellipse2D.Double(
-            innerCircleX,
-            innerCircleY,
-            innerCircleWidth,
-            innerCircleHeight
-        );
+        int innerCircleWidth = (int) graphicInfo.getWidth() - (2 * innerCircleSize);
+        int innerCircleHeight = (int) graphicInfo.getHeight() - (2 * innerCircleSize);
+        Ellipse2D innerCircle = new Ellipse2D.Double(innerCircleX, innerCircleY, innerCircleWidth, innerCircleHeight);
 
         Paint originalPaint = g.getPaint();
         Stroke originalStroke = g.getStroke();
@@ -488,16 +432,8 @@ public class DefaultProcessDiagramCanvas {
 
         if (icon != null) {
             // calculate coordinates to center image
-            int imageX = (int) (
-                graphicInfo.getX() +
-                (graphicInfo.getWidth() / 2) -
-                (icon.getWidth() / 2)
-            );
-            int imageY = (int) (
-                graphicInfo.getY() +
-                (graphicInfo.getHeight() / 2) -
-                (icon.getHeight() / 2)
-            );
+            int imageX = (int) (graphicInfo.getX() + (graphicInfo.getWidth() / 2) - (icon.getWidth() / 2));
+            int imageY = (int) (graphicInfo.getY() + (graphicInfo.getHeight() / 2) - (icon.getHeight() / 2));
             if ("timer".equals(eventType)) {
                 // move image one pixel to center timer image
                 imageX++;
@@ -510,144 +446,54 @@ public class DefaultProcessDiagramCanvas {
         g.setCurrentGroupId(id);
     }
 
-    public void drawCatchingCompensateEvent(
-        String id,
-        String name,
-        GraphicInfo graphicInfo,
-        boolean isInterrupting
-    ) {
+    public void drawCatchingCompensateEvent(String id, String name, GraphicInfo graphicInfo, boolean isInterrupting) {
         drawCatchingCompensateEvent(id, graphicInfo, isInterrupting);
         drawLabel(name, graphicInfo);
     }
 
-    public void drawCatchingCompensateEvent(
-        String id,
-        GraphicInfo graphicInfo,
-        boolean isInterrupting
-    ) {
-        drawCatchingEvent(
-            id,
-            graphicInfo,
-            isInterrupting,
-            COMPENSATE_CATCH_IMAGE,
-            "compensate"
-        );
+    public void drawCatchingCompensateEvent(String id, GraphicInfo graphicInfo, boolean isInterrupting) {
+        drawCatchingEvent(id, graphicInfo, isInterrupting, COMPENSATE_CATCH_IMAGE, "compensate");
     }
 
-    public void drawCatchingTimerEvent(
-        String id,
-        String name,
-        GraphicInfo graphicInfo,
-        boolean isInterrupting
-    ) {
+    public void drawCatchingTimerEvent(String id, String name, GraphicInfo graphicInfo, boolean isInterrupting) {
         drawCatchingTimerEvent(id, graphicInfo, isInterrupting);
         drawLabel(name, graphicInfo);
     }
 
-    public void drawCatchingTimerEvent(
-        String id,
-        GraphicInfo graphicInfo,
-        boolean isInterrupting
-    ) {
-        drawCatchingEvent(
-            id,
-            graphicInfo,
-            isInterrupting,
-            TIMER_IMAGE,
-            "timer"
-        );
+    public void drawCatchingTimerEvent(String id, GraphicInfo graphicInfo, boolean isInterrupting) {
+        drawCatchingEvent(id, graphicInfo, isInterrupting, TIMER_IMAGE, "timer");
     }
 
-    public void drawCatchingErrorEvent(
-        String id,
-        String name,
-        GraphicInfo graphicInfo,
-        boolean isInterrupting
-    ) {
+    public void drawCatchingErrorEvent(String id, String name, GraphicInfo graphicInfo, boolean isInterrupting) {
         drawCatchingErrorEvent(id, graphicInfo, isInterrupting);
         drawLabel(name, graphicInfo);
     }
 
-    public void drawCatchingErrorEvent(
-        String id,
-        GraphicInfo graphicInfo,
-        boolean isInterrupting
-    ) {
-        drawCatchingEvent(
-            id,
-            graphicInfo,
-            isInterrupting,
-            ERROR_CATCH_IMAGE,
-            "error"
-        );
+    public void drawCatchingErrorEvent(String id, GraphicInfo graphicInfo, boolean isInterrupting) {
+        drawCatchingEvent(id, graphicInfo, isInterrupting, ERROR_CATCH_IMAGE, "error");
     }
 
-    public void drawCatchingSignalEvent(
-        String id,
-        String name,
-        GraphicInfo graphicInfo,
-        boolean isInterrupting
-    ) {
+    public void drawCatchingSignalEvent(String id, String name, GraphicInfo graphicInfo, boolean isInterrupting) {
         drawCatchingSignalEvent(id, graphicInfo, isInterrupting);
         drawLabel(name, graphicInfo);
     }
 
-    public void drawCatchingSignalEvent(
-        String id,
-        GraphicInfo graphicInfo,
-        boolean isInterrupting
-    ) {
-        drawCatchingEvent(
-            id,
-            graphicInfo,
-            isInterrupting,
-            SIGNAL_CATCH_IMAGE,
-            "signal"
-        );
+    public void drawCatchingSignalEvent(String id, GraphicInfo graphicInfo, boolean isInterrupting) {
+        drawCatchingEvent(id, graphicInfo, isInterrupting, SIGNAL_CATCH_IMAGE, "signal");
     }
 
-    public void drawCatchingMessageEvent(
-        String id,
-        GraphicInfo graphicInfo,
-        boolean isInterrupting
-    ) {
-        drawCatchingEvent(
-            id,
-            graphicInfo,
-            isInterrupting,
-            MESSAGE_CATCH_IMAGE,
-            "message"
-        );
+    public void drawCatchingMessageEvent(String id, GraphicInfo graphicInfo, boolean isInterrupting) {
+        drawCatchingEvent(id, graphicInfo, isInterrupting, MESSAGE_CATCH_IMAGE, "message");
     }
 
-    public void drawCatchingMessageEvent(
-        String id,
-        String name,
-        GraphicInfo graphicInfo,
-        boolean isInterrupting
-    ) {
-        drawCatchingEvent(
-            id,
-            graphicInfo,
-            isInterrupting,
-            MESSAGE_CATCH_IMAGE,
-            "message"
-        );
+    public void drawCatchingMessageEvent(String id, String name, GraphicInfo graphicInfo, boolean isInterrupting) {
+        drawCatchingEvent(id, graphicInfo, isInterrupting, MESSAGE_CATCH_IMAGE, "message");
 
         drawLabel(name, graphicInfo);
     }
 
-    public void drawThrowingCompensateEvent(
-        String id,
-        GraphicInfo graphicInfo
-    ) {
-        drawCatchingEvent(
-            id,
-            graphicInfo,
-            true,
-            COMPENSATE_THROW_IMAGE,
-            "compensate"
-        );
+    public void drawThrowingCompensateEvent(String id, GraphicInfo graphicInfo) {
+        drawCatchingEvent(id, graphicInfo, true, COMPENSATE_THROW_IMAGE, "compensate");
     }
 
     public void drawThrowingSignalEvent(String id, GraphicInfo graphicInfo) {
@@ -658,13 +504,7 @@ public class DefaultProcessDiagramCanvas {
         drawCatchingEvent(id, graphicInfo, true, null, "none");
     }
 
-    public void drawSequenceflow(
-        int srcX,
-        int srcY,
-        int targetX,
-        int targetY,
-        boolean conditional
-    ) {
+    public void drawSequenceflow(int srcX, int srcY, int targetX, int targetY, boolean conditional) {
         drawSequenceflow(srcX, srcY, targetX, targetY, conditional, false);
     }
 
@@ -702,15 +542,7 @@ public class DefaultProcessDiagramCanvas {
     ) {
         boolean conditional = false;
         boolean isDefault = false;
-        drawConnection(
-            xPoints,
-            yPoints,
-            conditional,
-            isDefault,
-            "association",
-            associationDirection,
-            highLighted
-        );
+        drawConnection(xPoints, yPoints, conditional, isDefault, "association", associationDirection, highLighted);
     }
 
     public void drawSequenceflow(
@@ -720,15 +552,7 @@ public class DefaultProcessDiagramCanvas {
         boolean isDefault,
         boolean highLighted
     ) {
-        drawConnection(
-            xPoints,
-            yPoints,
-            conditional,
-            isDefault,
-            "sequenceFlow",
-            AssociationDirection.ONE,
-            highLighted
-        );
+        drawConnection(xPoints, yPoints, conditional, isDefault, "sequenceFlow", AssociationDirection.ONE, highLighted);
     }
 
     public void drawConnection(
@@ -756,32 +580,17 @@ public class DefaultProcessDiagramCanvas {
             Integer sourceY = yPoints[i - 1];
             Integer targetX = xPoints[i];
             Integer targetY = yPoints[i];
-            Line2D.Double line = new Line2D.Double(
-                sourceX,
-                sourceY,
-                targetX,
-                targetY
-            );
+            Line2D.Double line = new Line2D.Double(sourceX, sourceY, targetX, targetY);
             g.draw(line);
         }
 
         if (isDefault) {
-            Line2D.Double line = new Line2D.Double(
-                xPoints[0],
-                yPoints[0],
-                xPoints[1],
-                yPoints[1]
-            );
+            Line2D.Double line = new Line2D.Double(xPoints[0], yPoints[0], xPoints[1], yPoints[1]);
             drawDefaultSequenceFlowIndicator(line);
         }
 
         if (conditional) {
-            Line2D.Double line = new Line2D.Double(
-                xPoints[0],
-                yPoints[0],
-                xPoints[1],
-                yPoints[1]
-            );
+            Line2D.Double line = new Line2D.Double(xPoints[0], yPoints[0], xPoints[1], yPoints[1]);
             drawConditionalSequenceFlowIndicator(line);
         }
 
@@ -798,33 +607,15 @@ public class DefaultProcessDiagramCanvas {
             drawArrowHead(line);
         }
         if (associationDirection.equals(AssociationDirection.BOTH)) {
-            Line2D.Double line = new Line2D.Double(
-                xPoints[1],
-                yPoints[1],
-                xPoints[0],
-                yPoints[0]
-            );
+            Line2D.Double line = new Line2D.Double(xPoints[1], yPoints[1], xPoints[0], yPoints[0]);
             drawArrowHead(line);
         }
         g.setPaint(originalPaint);
         g.setStroke(originalStroke);
     }
 
-    public void drawSequenceflowWithoutArrow(
-        int srcX,
-        int srcY,
-        int targetX,
-        int targetY,
-        boolean conditional
-    ) {
-        drawSequenceflowWithoutArrow(
-            srcX,
-            srcY,
-            targetX,
-            targetY,
-            conditional,
-            false
-        );
+    public void drawSequenceflowWithoutArrow(int srcX, int srcY, int targetX, int targetY, boolean conditional) {
+        drawSequenceflowWithoutArrow(srcX, srcY, targetX, targetY, conditional, false);
     }
 
     public void drawSequenceflowWithoutArrow(
@@ -886,12 +677,7 @@ public class DefaultProcessDiagramCanvas {
         double length = DEFAULT_INDICATOR_WIDTH;
         double halfOfLength = length / 2;
         double f = 8;
-        Line2D.Double defaultIndicator = new Line2D.Double(
-            -halfOfLength,
-            0,
-            halfOfLength,
-            0
-        );
+        Line2D.Double defaultIndicator = new Line2D.Double(-halfOfLength, 0, halfOfLength, 0);
 
         double angle = Math.atan2(line.y2 - line.y1, line.x2 - line.x1);
         double dx = f * Math.cos(angle);
@@ -940,31 +726,17 @@ public class DefaultProcessDiagramCanvas {
         g.setTransform(originalTransformation);
     }
 
-    public void drawTask(
-        TaskIconType icon,
-        String id,
-        String name,
-        GraphicInfo graphicInfo
-    ) {
+    public void drawTask(TaskIconType icon, String id, String name, GraphicInfo graphicInfo) {
         drawTask(id, name, graphicInfo);
 
-        icon.drawIcon(
-            (int) graphicInfo.getX(),
-            (int) graphicInfo.getY(),
-            ICON_PADDING,
-            g
-        );
+        icon.drawIcon((int) graphicInfo.getX(), (int) graphicInfo.getY(), ICON_PADDING, g);
     }
 
     public void drawTask(String id, String name, GraphicInfo graphicInfo) {
         drawTask(id, name, graphicInfo, false);
     }
 
-    public void drawPoolOrLane(
-        String id,
-        String name,
-        GraphicInfo graphicInfo
-    ) {
+    public void drawPoolOrLane(String id, String name, GraphicInfo graphicInfo) {
         int x = (int) graphicInfo.getX();
         int y = (int) graphicInfo.getY();
         int width = (int) graphicInfo.getWidth();
@@ -991,11 +763,7 @@ public class DefaultProcessDiagramCanvas {
             g.drawString(
                 truncated,
                 x + 2 + fontMetrics.getHeight(),
-                3 +
-                y +
-                availableTextSpace -
-                (availableTextSpace - realWidth) /
-                2
+                3 + y + availableTextSpace - (availableTextSpace - realWidth) / 2
             );
             g.setFont(currentFont);
         }
@@ -1004,12 +772,7 @@ public class DefaultProcessDiagramCanvas {
         g.setCurrentGroupId(id);
     }
 
-    protected void drawTask(
-        String id,
-        String name,
-        GraphicInfo graphicInfo,
-        boolean thickBorder
-    ) {
+    protected void drawTask(String id, String name, GraphicInfo graphicInfo, boolean thickBorder) {
         Paint originalPaint = g.getPaint();
         int x = (int) graphicInfo.getX();
         int y = (int) graphicInfo.getY();
@@ -1025,14 +788,7 @@ public class DefaultProcessDiagramCanvas {
         }
 
         // shape
-        RoundRectangle2D rect = new RoundRectangle2D.Double(
-            x,
-            y,
-            width,
-            height,
-            arcR,
-            arcR
-        );
+        RoundRectangle2D rect = new RoundRectangle2D.Double(x, y, width, height, arcR, arcR);
         g.fill(rect);
         g.setPaint(TASK_BORDER_COLOR);
 
@@ -1049,25 +805,9 @@ public class DefaultProcessDiagramCanvas {
         // text
         if (name != null && name.length() > 0) {
             int boxWidth = width - (2 * TEXT_PADDING);
-            int boxHeight =
-                height -
-                16 -
-                ICON_PADDING -
-                ICON_PADDING -
-                MARKER_WIDTH -
-                2 -
-                2;
+            int boxHeight = height - 16 - ICON_PADDING - ICON_PADDING - MARKER_WIDTH - 2 - 2;
             int boxX = x + width / 2 - boxWidth / 2;
-            int boxY =
-                y +
-                height /
-                2 -
-                boxHeight /
-                2 +
-                ICON_PADDING +
-                ICON_PADDING -
-                2 -
-                2;
+            int boxY = y + height / 2 - boxHeight / 2 + ICON_PADDING + ICON_PADDING - 2 - 2;
 
             drawMultilineCentredText(name, boxX, boxY, boxWidth, boxHeight);
         }
@@ -1076,34 +816,15 @@ public class DefaultProcessDiagramCanvas {
         g.setCurrentGroupId(id);
     }
 
-    protected void drawMultilineCentredText(
-        String text,
-        int x,
-        int y,
-        int boxWidth,
-        int boxHeight
-    ) {
+    protected void drawMultilineCentredText(String text, int x, int y, int boxWidth, int boxHeight) {
         drawMultilineText(text, x, y, boxWidth, boxHeight, true);
     }
 
-    protected void drawMultilineAnnotationText(
-        String text,
-        int x,
-        int y,
-        int boxWidth,
-        int boxHeight
-    ) {
+    protected void drawMultilineAnnotationText(String text, int x, int y, int boxWidth, int boxHeight) {
         drawMultilineText(text, x, y, boxWidth, boxHeight, false);
     }
 
-    protected void drawMultilineText(
-        String text,
-        int x,
-        int y,
-        int boxWidth,
-        int boxHeight,
-        boolean centered
-    ) {
+    protected void drawMultilineText(String text, int x, int y, int boxWidth, int boxHeight, boolean centered) {
         // Create an attributed string based in input text
         AttributedString attributedString = new AttributedString(text);
         attributedString.addAttribute(TextAttribute.FONT, g.getFont());
@@ -1116,29 +837,16 @@ public class DefaultProcessDiagramCanvas {
         List<TextLayout> layouts = new ArrayList<TextLayout>();
         String lastLine = null;
 
-        LineBreakMeasurer measurer = new LineBreakMeasurer(
-            characterIterator,
-            g.getFontRenderContext()
-        );
+        LineBreakMeasurer measurer = new LineBreakMeasurer(characterIterator, g.getFontRenderContext());
 
         TextLayout layout = null;
-        while (
-            measurer.getPosition() < characterIterator.getEndIndex() &&
-            currentHeight <= boxHeight
-        ) {
+        while (measurer.getPosition() < characterIterator.getEndIndex() && currentHeight <= boxHeight) {
             int previousPosition = measurer.getPosition();
 
             // Request next layout
             layout = measurer.nextLayout(boxWidth);
 
-            int height =
-                (
-                    (Float) (
-                        layout.getDescent() +
-                        layout.getAscent() +
-                        layout.getLeading()
-                    )
-                ).intValue();
+            int height = ((Float) (layout.getDescent() + layout.getAscent() + layout.getLeading())).intValue();
 
             if (currentHeight + height > boxHeight) {
                 // The line we're about to add should NOT be added anymore, append three dots to previous one instead
@@ -1147,17 +855,9 @@ public class DefaultProcessDiagramCanvas {
                     layouts.remove(layouts.size() - 1);
 
                     if (lastLine.length() >= 4) {
-                        lastLine =
-                            lastLine.substring(0, lastLine.length() - 4) +
-                            "...";
+                        lastLine = lastLine.substring(0, lastLine.length() - 4) + "...";
                     }
-                    layouts.add(
-                        new TextLayout(
-                            lastLine,
-                            g.getFont(),
-                            g.getFontRenderContext()
-                        )
-                    );
+                    layouts.add(new TextLayout(lastLine, g.getFont(), g.getFontRenderContext()));
                 } else {
                     // at least, draw one line
                     // even if text does not fit
@@ -1168,8 +868,7 @@ public class DefaultProcessDiagramCanvas {
                 break;
             } else {
                 layouts.add(layout);
-                lastLine =
-                    text.substring(previousPosition, measurer.getPosition());
+                lastLine = text.substring(previousPosition, measurer.getPosition());
                 currentHeight += height;
             }
         }
@@ -1180,21 +879,7 @@ public class DefaultProcessDiagramCanvas {
         // Actually draw the lines
         for (TextLayout textLayout : layouts) {
             currentY += textLayout.getAscent();
-            currentX =
-                x +
-                (
-                    centered
-                        ? (
-                            (
-                                boxWidth -
-                                (
-                                    (Double) textLayout.getBounds().getWidth()
-                                ).intValue()
-                            ) /
-                            2
-                        )
-                        : 0
-                );
+            currentX = x + (centered ? ((boxWidth - ((Double) textLayout.getBounds().getWidth()).intValue()) / 2) : 0);
 
             textLayout.draw(g, currentX, currentY);
             currentY += textLayout.getDescent() + textLayout.getLeading();
@@ -1207,10 +892,7 @@ public class DefaultProcessDiagramCanvas {
         // remove length for "..."
         int maxWidth = width - 10;
 
-        while (
-            fontMetrics.stringWidth(text + "...") > maxWidth &&
-            text.length() > 0
-        ) {
+        while (fontMetrics.stringWidth(text + "...") > maxWidth && text.length() > 0) {
             text = text.substring(0, text.length() - 1);
         }
 
@@ -1225,27 +907,15 @@ public class DefaultProcessDiagramCanvas {
         drawTask(USERTASK_IMAGE, id, name, graphicInfo);
     }
 
-    public void drawScriptTask(
-        String id,
-        String name,
-        GraphicInfo graphicInfo
-    ) {
+    public void drawScriptTask(String id, String name, GraphicInfo graphicInfo) {
         drawTask(SCRIPTTASK_IMAGE, id, name, graphicInfo);
     }
 
-    public void drawServiceTask(
-        String id,
-        String name,
-        GraphicInfo graphicInfo
-    ) {
+    public void drawServiceTask(String id, String name, GraphicInfo graphicInfo) {
         drawTask(SERVICETASK_IMAGE, id, name, graphicInfo);
     }
 
-    public void drawReceiveTask(
-        String id,
-        String name,
-        GraphicInfo graphicInfo
-    ) {
+    public void drawReceiveTask(String id, String name, GraphicInfo graphicInfo) {
         drawTask(RECEIVETASK_IMAGE, id, name, graphicInfo);
     }
 
@@ -1253,28 +923,15 @@ public class DefaultProcessDiagramCanvas {
         drawTask(SENDTASK_IMAGE, id, name, graphicInfo);
     }
 
-    public void drawManualTask(
-        String id,
-        String name,
-        GraphicInfo graphicInfo
-    ) {
+    public void drawManualTask(String id, String name, GraphicInfo graphicInfo) {
         drawTask(MANUALTASK_IMAGE, id, name, graphicInfo);
     }
 
-    public void drawBusinessRuleTask(
-        String id,
-        String name,
-        GraphicInfo graphicInfo
-    ) {
+    public void drawBusinessRuleTask(String id, String name, GraphicInfo graphicInfo) {
         drawTask(BUSINESS_RULE_TASK_IMAGE, id, name, graphicInfo);
     }
 
-    public void drawExpandedSubProcess(
-        String id,
-        String name,
-        GraphicInfo graphicInfo,
-        Class<?> type
-    ) {
+    public void drawExpandedSubProcess(String id, String name, GraphicInfo graphicInfo, Class<?> type) {
         RoundRectangle2D rect = new RoundRectangle2D.Double(
             graphicInfo.getX(),
             graphicInfo.getY(),
@@ -1320,40 +977,22 @@ public class DefaultProcessDiagramCanvas {
 
         if (name != null && !name.isEmpty()) {
             String text = fitTextToWidth(name, (int) graphicInfo.getWidth());
-            g.drawString(
-                text,
-                (int) graphicInfo.getX() + 10,
-                (int) graphicInfo.getY() + 15
-            );
+            g.drawString(text, (int) graphicInfo.getX() + 10, (int) graphicInfo.getY() + 15);
         }
 
         // set element's id
         g.setCurrentGroupId(id);
     }
 
-    public void drawCollapsedSubProcess(
-        String id,
-        String name,
-        GraphicInfo graphicInfo,
-        Boolean isTriggeredByEvent
-    ) {
+    public void drawCollapsedSubProcess(String id, String name, GraphicInfo graphicInfo, Boolean isTriggeredByEvent) {
         drawCollapsedTask(id, name, graphicInfo, false);
     }
 
-    public void drawCollapsedCallActivity(
-        String id,
-        String name,
-        GraphicInfo graphicInfo
-    ) {
+    public void drawCollapsedCallActivity(String id, String name, GraphicInfo graphicInfo) {
         drawCollapsedTask(id, name, graphicInfo, true);
     }
 
-    protected void drawCollapsedTask(
-        String id,
-        String name,
-        GraphicInfo graphicInfo,
-        boolean thickBorder
-    ) {
+    protected void drawCollapsedTask(String id, String name, GraphicInfo graphicInfo, boolean thickBorder) {
         // The collapsed marker is now visualized separately
         drawTask(id, name, graphicInfo, thickBorder);
     }
@@ -1378,13 +1017,7 @@ public class DefaultProcessDiagramCanvas {
             rect.getMaxY() - 2
         );
         g.draw(line);
-        line =
-            new Line2D.Double(
-                rect.getMinX() + 2,
-                rect.getCenterY(),
-                rect.getMaxX() - 2,
-                rect.getCenterY()
-            );
+        line = new Line2D.Double(rect.getMinX() + 2, rect.getCenterY(), rect.getMaxX() - 2, rect.getCenterY());
         g.draw(line);
     }
 
@@ -1403,21 +1036,9 @@ public class DefaultProcessDiagramCanvas {
             } else {
                 drawCollapsedMarker(x - MARKER_WIDTH / 2 - 2, y, width, height);
                 if (multiInstanceSequential) {
-                    drawMultiInstanceMarker(
-                        true,
-                        x + MARKER_WIDTH / 2 + 2,
-                        y,
-                        width,
-                        height
-                    );
+                    drawMultiInstanceMarker(true, x + MARKER_WIDTH / 2 + 2, y, width, height);
                 } else {
-                    drawMultiInstanceMarker(
-                        false,
-                        x + MARKER_WIDTH / 2 + 2,
-                        y,
-                        width,
-                        height
-                    );
+                    drawMultiInstanceMarker(false, x + MARKER_WIDTH / 2 + 2, y, width, height);
                 }
             }
         } else {
@@ -1474,20 +1095,9 @@ public class DefaultProcessDiagramCanvas {
         // plus inside rhombus
         Stroke orginalStroke = g.getStroke();
         g.setStroke(GATEWAY_TYPE_STROKE);
-        Line2D.Double line = new Line2D.Double(
-            x + 10,
-            y + height / 2,
-            x + width - 10,
-            y + height / 2
-        ); // horizontal
+        Line2D.Double line = new Line2D.Double(x + 10, y + height / 2, x + width - 10, y + height / 2); // horizontal
         g.draw(line);
-        line =
-            new Line2D.Double(
-                x + width / 2,
-                y + height - 10,
-                x + width / 2,
-                y + 10
-            ); // vertical
+        line = new Line2D.Double(x + width / 2, y + height - 10, x + width / 2, y + 10); // vertical
         g.draw(line);
         g.setStroke(orginalStroke);
 
@@ -1594,13 +1204,7 @@ public class DefaultProcessDiagramCanvas {
         g.setCurrentGroupId(id);
     }
 
-    public void drawMultiInstanceMarker(
-        boolean sequential,
-        int x,
-        int y,
-        int width,
-        int height
-    ) {
+    public void drawMultiInstanceMarker(boolean sequential, int x, int y, int width, int height) {
         int rectangleWidth = MARKER_WIDTH;
         int rectangleHeight = MARKER_WIDTH;
         int lineX = x + (width - rectangleWidth) / 2;
@@ -1610,9 +1214,7 @@ public class DefaultProcessDiagramCanvas {
         g.setStroke(MULTI_INSTANCE_STROKE);
 
         if (sequential) {
-            g.draw(
-                new Line2D.Double(lineX, lineY, lineX + rectangleWidth, lineY)
-            );
+            g.draw(new Line2D.Double(lineX, lineY, lineX + rectangleWidth, lineY));
             g.draw(
                 new Line2D.Double(
                     lineX,
@@ -1621,18 +1223,9 @@ public class DefaultProcessDiagramCanvas {
                     lineY + rectangleHeight / 2
                 )
             );
-            g.draw(
-                new Line2D.Double(
-                    lineX,
-                    lineY + rectangleHeight,
-                    lineX + rectangleWidth,
-                    lineY + rectangleHeight
-                )
-            );
+            g.draw(new Line2D.Double(lineX, lineY + rectangleHeight, lineX + rectangleWidth, lineY + rectangleHeight));
         } else {
-            g.draw(
-                new Line2D.Double(lineX, lineY, lineX, lineY + rectangleHeight)
-            );
+            g.draw(new Line2D.Double(lineX, lineY, lineX, lineY + rectangleHeight));
             g.draw(
                 new Line2D.Double(
                     lineX + rectangleWidth / 2,
@@ -1641,14 +1234,7 @@ public class DefaultProcessDiagramCanvas {
                     lineY + rectangleHeight
                 )
             );
-            g.draw(
-                new Line2D.Double(
-                    lineX + rectangleWidth,
-                    lineY,
-                    lineX + rectangleWidth,
-                    lineY + rectangleHeight
-                )
-            );
+            g.draw(new Line2D.Double(lineX + rectangleWidth, lineY, lineX + rectangleWidth, lineY + rectangleHeight));
         }
 
         g.setStroke(orginalStroke);
@@ -1715,11 +1301,7 @@ public class DefaultProcessDiagramCanvas {
         drawEventHighLight(graphicInfo, HIGHLIGHT_ERRORED_ACTIVITY_COLOR);
     }
 
-    public void drawTextAnnotation(
-        String id,
-        String text,
-        GraphicInfo graphicInfo
-    ) {
+    public void drawTextAnnotation(String id, String text, GraphicInfo graphicInfo) {
         int x = (int) graphicInfo.getX();
         int y = (int) graphicInfo.getY();
         int width = (int) graphicInfo.getWidth();
@@ -1767,11 +1349,7 @@ public class DefaultProcessDiagramCanvas {
         drawLabel(text, graphicInfo, true);
     }
 
-    public void drawLabel(
-        String text,
-        GraphicInfo graphicInfo,
-        boolean centered
-    ) {
+    public void drawLabel(String text, GraphicInfo graphicInfo, boolean centered) {
         float interline = 1.0f;
 
         // text
@@ -1799,15 +1377,10 @@ public class DefaultProcessDiagramCanvas {
                 Rectangle2D bb = tl.getBounds();
                 double tX = graphicInfo.getX();
                 if (centered) {
-                    tX +=
-                        (int) (graphicInfo.getWidth() / 2 - bb.getWidth() / 2);
+                    tX += (int) (graphicInfo.getWidth() / 2 - bb.getWidth() / 2);
                 }
                 tl.draw(g, (float) tX, textY);
-                textY +=
-                    tl.getDescent() +
-                    tl.getLeading() +
-                    (interline - 1.0f) *
-                    tl.getAscent();
+                textY += tl.getDescent() + tl.getLeading() + (interline - 1.0f) * tl.getAscent();
             }
 
             // restore originals
@@ -1836,9 +1409,7 @@ public class DefaultProcessDiagramCanvas {
 
         if (graphicInfoList != null && graphicInfoList.size() > 0) {
             GraphicInfo graphicInfoFirst = graphicInfoList.get(0);
-            GraphicInfo graphicInfoLast = graphicInfoList.get(
-                graphicInfoList.size() - 1
-            );
+            GraphicInfo graphicInfoLast = graphicInfoList.get(graphicInfoList.size() - 1);
             if (shapeFirst != null) {
                 graphicInfoFirst.setX(shapeFirst.getBounds2D().getCenterX());
                 graphicInfoFirst.setY(shapeFirst.getBounds2D().getCenterY());
@@ -1888,10 +1459,7 @@ public class DefaultProcessDiagramCanvas {
      * @param graphicInfo
      * @return Shape
      */
-    private static Shape createShape(
-        SHAPE_TYPE shapeType,
-        GraphicInfo graphicInfo
-    ) {
+    private static Shape createShape(SHAPE_TYPE shapeType, GraphicInfo graphicInfo) {
         if (SHAPE_TYPE.Rectangle.equals(shapeType)) {
             // source is rectangle
             return new Rectangle2D.Double(
@@ -1903,10 +1471,7 @@ public class DefaultProcessDiagramCanvas {
         } else if (SHAPE_TYPE.Rhombus.equals(shapeType)) {
             // source is rhombus
             Path2D.Double rhombus = new Path2D.Double();
-            rhombus.moveTo(
-                graphicInfo.getX(),
-                graphicInfo.getY() + graphicInfo.getHeight() / 2
-            );
+            rhombus.moveTo(graphicInfo.getX(), graphicInfo.getY() + graphicInfo.getHeight() / 2);
             rhombus.lineTo(
                 graphicInfo.getX() + graphicInfo.getWidth() / 2,
                 graphicInfo.getY() + graphicInfo.getHeight()
@@ -1915,14 +1480,8 @@ public class DefaultProcessDiagramCanvas {
                 graphicInfo.getX() + graphicInfo.getWidth(),
                 graphicInfo.getY() + graphicInfo.getHeight() / 2
             );
-            rhombus.lineTo(
-                graphicInfo.getX() + graphicInfo.getWidth() / 2,
-                graphicInfo.getY()
-            );
-            rhombus.lineTo(
-                graphicInfo.getX(),
-                graphicInfo.getY() + graphicInfo.getHeight() / 2
-            );
+            rhombus.lineTo(graphicInfo.getX() + graphicInfo.getWidth() / 2, graphicInfo.getY());
+            rhombus.lineTo(graphicInfo.getX(), graphicInfo.getY() + graphicInfo.getHeight() / 2);
             rhombus.closePath();
             return rhombus;
         } else if (SHAPE_TYPE.Ellipse.equals(shapeType)) {
@@ -1961,21 +1520,10 @@ public class DefaultProcessDiagramCanvas {
      * @param line
      * @return Intersection point
      */
-    private static Point getEllipseIntersection(
-        Shape shape,
-        Line2D.Double line
-    ) {
+    private static Point getEllipseIntersection(Shape shape, Line2D.Double line) {
         double angle = Math.atan2(line.y2 - line.y1, line.x2 - line.x1);
-        double x =
-            shape.getBounds2D().getWidth() /
-            2 *
-            Math.cos(angle) +
-            shape.getBounds2D().getCenterX();
-        double y =
-            shape.getBounds2D().getHeight() /
-            2 *
-            Math.sin(angle) +
-            shape.getBounds2D().getCenterY();
+        double x = shape.getBounds2D().getWidth() / 2 * Math.cos(angle) + shape.getBounds2D().getCenterX();
+        double y = shape.getBounds2D().getHeight() / 2 * Math.sin(angle) + shape.getBounds2D().getCenterY();
         Point p = new Point();
         p.setLocation(x, y);
         return p;
@@ -2025,21 +1573,12 @@ public class DefaultProcessDiagramCanvas {
      */
     private static Point getLinesIntersection(Line2D a, Line2D b) {
         double d =
-            (a.getX1() - a.getX2()) *
-            (b.getY2() - b.getY1()) -
-            (a.getY1() - a.getY2()) *
-            (b.getX2() - b.getX1());
+            (a.getX1() - a.getX2()) * (b.getY2() - b.getY1()) - (a.getY1() - a.getY2()) * (b.getX2() - b.getX1());
         double da =
-            (a.getX1() - b.getX1()) *
-            (b.getY2() - b.getY1()) -
-            (a.getY1() - b.getY1()) *
-            (b.getX2() - b.getX1());
+            (a.getX1() - b.getX1()) * (b.getY2() - b.getY1()) - (a.getY1() - b.getY1()) * (b.getX2() - b.getX1());
         double ta = da / d;
         Point p = new Point();
-        p.setLocation(
-            a.getX1() + ta * (a.getX2() - a.getX1()),
-            a.getY1() + ta * (a.getY2() - a.getY1())
-        );
+        p.setLocation(a.getX1() + ta * (a.getX2() - a.getX1()), a.getY1() + ta * (a.getY2() - a.getY1()));
         return p;
     }
 }

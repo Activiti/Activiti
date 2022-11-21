@@ -24,9 +24,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
  *
 
  */
-public class ActivitiErrorEventImpl
-    extends ActivitiActivityEventImpl
-    implements ActivitiErrorEvent {
+public class ActivitiErrorEventImpl extends ActivitiActivityEventImpl implements ActivitiErrorEvent {
 
     protected String errorId;
     protected String errorCode;

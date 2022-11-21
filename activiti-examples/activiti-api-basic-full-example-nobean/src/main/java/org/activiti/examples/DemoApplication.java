@@ -78,13 +78,8 @@ public class DemoApplication implements CommandLineRunner {
     public void run(String... args) {
         securityUtil.logInAs("system");
 
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
-            Pageable.of(0, 10)
-        );
-        logger.info(
-            "> Available Process definitions: " +
-            processDefinitionPage.getTotalItems()
-        );
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0, 10));
+        logger.info("> Available Process definitions: " + processDefinitionPage.getTotalItems());
         for (ProcessDefinition pd : processDefinitionPage.getContent()) {
             logger.info("\t > Process definition: " + pd);
         }
@@ -101,22 +96,14 @@ public class DemoApplication implements CommandLineRunner {
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
 
-        logger.info(
-            "> Starting process to process content: " +
-            content +
-            " at " +
-            formatter.format(new Date())
-        );
+        logger.info("> Starting process to process content: " + content + " at " + formatter.format(new Date()));
 
         ProcessInstance processInstance = processRuntime.start(
             ProcessPayloadBuilder
                 .start()
                 .withProcessDefinitionKey("categorizeHumanProcess")
                 .withName("Processing Content: " + content)
-                .withVariable(
-                    "content",
-                    objectMapper.convertValue(content, JsonNode.class)
-                )
+                .withVariable("content", objectMapper.convertValue(content, JsonNode.class))
                 .build()
         );
         logger.info(">>> Created Process Instance: " + processInstance);
@@ -130,9 +117,7 @@ public class DemoApplication implements CommandLineRunner {
         if (tasks.getTotalItems() > 0) {
             for (Task t : tasks.getContent()) {
                 logger.info("> Claiming task: " + t.getId());
-                taskRuntime.claim(
-                    TaskPayloadBuilder.claim().withTaskId(t.getId()).build()
-                );
+                taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(t.getId()).build());
 
                 List<VariableInstance> variables = taskRuntime.variables(
                     TaskPayloadBuilder.variables().withTaskId(t.getId()).build()
@@ -143,17 +128,9 @@ public class DemoApplication implements CommandLineRunner {
                         variableInstance.getValue(),
                         LinkedHashMap.class
                     );
-                    logger.info(
-                        "> Content received inside the task to approve: " +
-                        contentToProcess
-                    );
+                    logger.info("> Content received inside the task to approve: " + contentToProcess);
 
-                    if (
-                        contentToProcess
-                            .get("body")
-                            .toString()
-                            .contains("activiti")
-                    ) {
+                    if (contentToProcess.get("body").toString().contains("activiti")) {
                         logger.info("> User Approving content");
                         contentToProcess.put("approved", true);
                     } else {
@@ -177,9 +154,7 @@ public class DemoApplication implements CommandLineRunner {
     @Bean
     public Connector tagTextConnector() {
         return integrationContext -> {
-            LinkedHashMap contentToTag = (LinkedHashMap) integrationContext
-                .getInBoundVariables()
-                .get("content");
+            LinkedHashMap contentToTag = (LinkedHashMap) integrationContext.getInBoundVariables().get("content");
             contentToTag.put("tags", singletonList(" :) "));
             integrationContext.addOutBoundVariable("content", contentToTag);
             logger.info("Final Content: " + contentToTag);
@@ -190,9 +165,7 @@ public class DemoApplication implements CommandLineRunner {
     @Bean
     public Connector discardTextConnector() {
         return integrationContext -> {
-            LinkedHashMap contentToDiscard = (LinkedHashMap) integrationContext
-                .getInBoundVariables()
-                .get("content");
+            LinkedHashMap contentToDiscard = (LinkedHashMap) integrationContext.getInBoundVariables().get("content");
             contentToDiscard.put("tags", singletonList(" :( "));
             integrationContext.addOutBoundVariable("content", contentToDiscard);
             logger.info("Final Content: " + contentToDiscard);

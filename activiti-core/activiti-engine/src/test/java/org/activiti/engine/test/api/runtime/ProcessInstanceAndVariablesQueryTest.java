@@ -28,8 +28,7 @@ import org.activiti.engine.runtime.ProcessInstanceQuery;
 
 /**
  */
-public class ProcessInstanceAndVariablesQueryTest
-    extends PluggableActivitiTestCase {
+public class ProcessInstanceAndVariablesQueryTest extends PluggableActivitiTestCase {
 
     private static String PROCESS_DEFINITION_KEY = "oneTaskProcess";
     private static String PROCESS_DEFINITION_KEY_2 = "oneTaskProcess2";
@@ -44,15 +43,9 @@ public class ProcessInstanceAndVariablesQueryTest
         super.setUp();
         repositoryService
             .createDeployment()
-            .addClasspathResource(
-                "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"
-            )
-            .addClasspathResource(
-                "org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml"
-            )
-            .addClasspathResource(
-                "org/activiti/engine/test/api/runtime/oneTaskProcess3.bpmn20.xml"
-            )
+            .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml")
+            .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess2.bpmn20.xml")
+            .addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess3.bpmn20.xml")
             .deploy();
 
         Map<String, Object> startMap = new HashMap<String, Object>();
@@ -61,45 +54,25 @@ public class ProcessInstanceAndVariablesQueryTest
         processInstanceIds = new ArrayList<String>();
         for (int i = 0; i < 4; i++) {
             processInstanceIds.add(
-                runtimeService
-                    .startProcessInstanceByKey(
-                        PROCESS_DEFINITION_KEY,
-                        i + "",
-                        startMap
-                    )
-                    .getId()
+                runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, i + "", startMap).getId()
             );
         }
 
         startMap.clear();
         startMap.put("anothertest", 123);
         processInstanceIds.add(
-            runtimeService
-                .startProcessInstanceByKey(
-                    PROCESS_DEFINITION_KEY_2,
-                    "1",
-                    startMap
-                )
-                .getId()
+            runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY_2, "1", startMap).getId()
         );
 
         startMap.clear();
         startMap.put("casetest", "MyCaseTest");
         processInstanceIds.add(
-            runtimeService
-                .startProcessInstanceByKey(
-                    PROCESS_DEFINITION_KEY_3,
-                    "1",
-                    startMap
-                )
-                .getId()
+            runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY_3, "1", startMap).getId()
         );
     }
 
     protected void tearDown() throws Exception {
-        for (org.activiti.engine.repository.Deployment deployment : repositoryService
-            .createDeploymentQuery()
-            .list()) {
+        for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
             repositoryService.deleteDeployment(deployment.getId(), true);
         }
         super.tearDown();
@@ -285,10 +258,7 @@ public class ProcessInstanceAndVariablesQueryTest
     }
 
     public void testOrQueryMultipleVariableValues() {
-        ProcessInstanceQuery query0 = runtimeService
-            .createProcessInstanceQuery()
-            .includeProcessVariables()
-            .or();
+        ProcessInstanceQuery query0 = runtimeService.createProcessInstanceQuery().includeProcessVariables().or();
         for (int i = 0; i < 20; i++) {
             query0 = query0.variableValueEquals("anothertest", i);
         }
@@ -311,20 +281,12 @@ public class ProcessInstanceAndVariablesQueryTest
         assertThat(variableMap).hasSize(1);
         assertThat(variableMap.get("anothertest")).isEqualTo(123);
 
-        ProcessInstanceQuery query2 = runtimeService
-            .createProcessInstanceQuery()
-            .includeProcessVariables()
-            .or();
+        ProcessInstanceQuery query2 = runtimeService.createProcessInstanceQuery().includeProcessVariables().or();
         for (int i = 0; i < 20; i++) {
             query2 = query2.variableValueEquals("anothertest", i);
         }
         query2 =
-            query2
-                .endOr()
-                .or()
-                .processDefinitionKey(PROCESS_DEFINITION_KEY_2)
-                .processDefinitionId("undefined")
-                .endOr();
+            query2.endOr().or().processDefinitionKey(PROCESS_DEFINITION_KEY_2).processDefinitionId("undefined").endOr();
         assertThat(query2.singleResult()).isNull();
 
         ProcessInstanceQuery query3 = runtimeService
@@ -336,12 +298,7 @@ public class ProcessInstanceAndVariablesQueryTest
             query3 = query3.variableValueEquals("anothertest", i);
         }
         query3 =
-            query3
-                .endOr()
-                .or()
-                .processDefinitionKey(PROCESS_DEFINITION_KEY_2)
-                .processDefinitionId("undefined")
-                .endOr();
+            query3.endOr().or().processDefinitionKey(PROCESS_DEFINITION_KEY_2).processDefinitionId("undefined").endOr();
         variableMap = query3.singleResult().getProcessVariables();
         assertThat(variableMap).hasSize(1);
         assertThat(variableMap.get("anothertest")).isEqualTo(123);

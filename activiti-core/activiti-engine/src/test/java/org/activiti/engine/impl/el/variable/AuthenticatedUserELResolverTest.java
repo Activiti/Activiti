@@ -37,10 +37,7 @@ public class AuthenticatedUserELResolverTest {
     @Test
     public void canResolve_should_returnTrueWhenPropertyIsAuthenticatedUser() {
         //when
-        boolean canResolve = resolver.canResolve(
-            AUTHENTICATED_USER_KEY,
-            mock(VariableScope.class)
-        );
+        boolean canResolve = resolver.canResolve(AUTHENTICATED_USER_KEY, mock(VariableScope.class));
         //then
         assertThat(canResolve).isTrue();
     }
@@ -48,10 +45,7 @@ public class AuthenticatedUserELResolverTest {
     @Test
     public void canResolve_should_returnFalseWhenPropertyIsNotAuthenticatedUser() {
         //when
-        boolean canResolve = resolver.canResolve(
-            "anyOtherProperty",
-            mock(VariableScope.class)
-        );
+        boolean canResolve = resolver.canResolve("anyOtherProperty", mock(VariableScope.class));
         //then
         assertThat(canResolve).isFalse();
     }
@@ -62,10 +56,7 @@ public class AuthenticatedUserELResolverTest {
         Authentication.setAuthenticatedUserId("jane");
 
         //when
-        Object result = resolver.resolve(
-            AUTHENTICATED_USER_KEY,
-            mock(VariableScope.class)
-        );
+        Object result = resolver.resolve(AUTHENTICATED_USER_KEY, mock(VariableScope.class));
 
         //then
         assertThat(result).isEqualTo("jane");

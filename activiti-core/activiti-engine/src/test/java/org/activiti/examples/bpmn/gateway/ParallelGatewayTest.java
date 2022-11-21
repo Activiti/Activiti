@@ -32,14 +32,8 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testForkJoin() {
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "forkJoin"
-        );
-        TaskQuery query = taskService
-            .createTaskQuery()
-            .processInstanceId(pi.getId())
-            .orderByTaskName()
-            .asc();
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("forkJoin");
+        TaskQuery query = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc();
 
         List<Task> tasks = query.list();
         assertThat(tasks).hasSize(2);
@@ -60,14 +54,8 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testUnbalancedForkJoin() {
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "UnbalancedForkJoin"
-        );
-        TaskQuery query = taskService
-            .createTaskQuery()
-            .processInstanceId(pi.getId())
-            .orderByTaskName()
-            .asc();
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("UnbalancedForkJoin");
+        TaskQuery query = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc();
 
         List<Task> tasks = query.list();
         assertThat(tasks).hasSize(3);

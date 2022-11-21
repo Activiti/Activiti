@@ -22,9 +22,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
-public class Process
-    extends BaseElement
-    implements FlowElementsContainer, HasExecutionListeners, AcceptUpdates {
+public class Process extends BaseElement implements FlowElementsContainer, HasExecutionListeners, AcceptUpdates {
 
     protected String name;
     protected boolean executable = true;
@@ -81,9 +79,7 @@ public class Process
         return executionListeners;
     }
 
-    public void setExecutionListeners(
-        List<ActivitiListener> executionListeners
-    ) {
+    public void setExecutionListeners(List<ActivitiListener> executionListeners) {
         this.executionListeners = executionListeners;
     }
 
@@ -114,10 +110,7 @@ public class Process
     /**
      * @param searchRecurive: searches the whole process, including subprocesses
      */
-    public FlowElement getFlowElement(
-        String flowElementId,
-        boolean searchRecurive
-    ) {
+    public FlowElement getFlowElement(String flowElementId, boolean searchRecurive) {
         if (searchRecurive) {
             return flowElementMap.get(flowElementId);
         } else {
@@ -125,9 +118,7 @@ public class Process
         }
     }
 
-    public List<Association> findAssociationsWithSourceRefRecursive(
-        String sourceRef
-    ) {
+    public List<Association> findAssociationsWithSourceRefRecursive(String sourceRef) {
         return findAssociationsWithSourceRefRecursive(this, sourceRef);
     }
 
@@ -152,19 +143,14 @@ public class Process
         for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
             if (flowElement instanceof FlowElementsContainer) {
                 associations.addAll(
-                    findAssociationsWithSourceRefRecursive(
-                        (FlowElementsContainer) flowElement,
-                        sourceRef
-                    )
+                    findAssociationsWithSourceRefRecursive((FlowElementsContainer) flowElement, sourceRef)
                 );
             }
         }
         return associations;
     }
 
-    public List<Association> findAssociationsWithTargetRefRecursive(
-        String targetRef
-    ) {
+    public List<Association> findAssociationsWithTargetRefRecursive(String targetRef) {
         return findAssociationsWithTargetRefRecursive(this, targetRef);
     }
 
@@ -176,10 +162,7 @@ public class Process
         for (Artifact artifact : flowElementsContainer.getArtifacts()) {
             if (artifact instanceof Association) {
                 Association association = (Association) artifact;
-                if (
-                    association.getTargetRef() != null &&
-                    association.getTargetRef().equals(targetRef)
-                ) {
+                if (association.getTargetRef() != null && association.getTargetRef().equals(targetRef)) {
                     associations.add(association);
                 }
             }
@@ -188,10 +171,7 @@ public class Process
         for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
             if (flowElement instanceof FlowElementsContainer) {
                 associations.addAll(
-                    findAssociationsWithTargetRefRecursive(
-                        (FlowElementsContainer) flowElement,
-                        targetRef
-                    )
+                    findAssociationsWithTargetRefRecursive((FlowElementsContainer) flowElement, targetRef)
                 );
             }
         }
@@ -201,9 +181,7 @@ public class Process
     /**
      * Searches the whole process, including subprocesses
      */
-    public FlowElementsContainer getFlowElementsContainer(
-        String flowElementId
-    ) {
+    public FlowElementsContainer getFlowElementsContainer(String flowElementId) {
         return getFlowElementsContainer(this, flowElementId);
     }
 
@@ -212,10 +190,7 @@ public class Process
         String flowElementId
     ) {
         for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
-            if (
-                flowElement.getId() != null &&
-                flowElement.getId().equals(flowElementId)
-            ) {
+            if (flowElement.getId() != null && flowElement.getId().equals(flowElementId)) {
                 return flowElementsContainer;
             } else if (flowElement instanceof FlowElementsContainer) {
                 FlowElementsContainer result = getFlowElementsContainer(
@@ -250,9 +225,7 @@ public class Process
             flowElementMap.put(element.getId(), element);
         }
         if (element instanceof FlowElementsContainer) {
-            flowElementMap.putAll(
-                ((FlowElementsContainer) element).getFlowElementMap()
-            );
+            flowElementMap.putAll(((FlowElementsContainer) element).getFlowElementMap());
         }
     }
 
@@ -344,12 +317,7 @@ public class Process
             }
             if (flowElement instanceof SubProcess) {
                 if (goIntoSubprocesses) {
-                    foundFlowElements.addAll(
-                        findFlowElementsInSubProcessOfType(
-                            (SubProcess) flowElement,
-                            type
-                        )
-                    );
+                    foundFlowElements.addAll(findFlowElementsInSubProcessOfType((SubProcess) flowElement, type));
                 }
             }
         }
@@ -376,12 +344,7 @@ public class Process
             }
             if (flowElement instanceof SubProcess) {
                 if (goIntoSubprocesses) {
-                    foundFlowElements.addAll(
-                        findFlowElementsInSubProcessOfType(
-                            (SubProcess) flowElement,
-                            type
-                        )
-                    );
+                    foundFlowElements.addAll(findFlowElementsInSubProcessOfType((SubProcess) flowElement, type));
                 }
             }
         }
@@ -392,22 +355,13 @@ public class Process
         return findParent(childElement, this);
     }
 
-    public FlowElementsContainer findParent(
-        FlowElement childElement,
-        FlowElementsContainer flowElementsContainer
-    ) {
+    public FlowElementsContainer findParent(FlowElement childElement, FlowElementsContainer flowElementsContainer) {
         for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
-            if (
-                childElement.getId() != null &&
-                childElement.getId().equals(flowElement.getId())
-            ) {
+            if (childElement.getId() != null && childElement.getId().equals(flowElement.getId())) {
                 return flowElementsContainer;
             }
             if (flowElement instanceof FlowElementsContainer) {
-                FlowElementsContainer result = findParent(
-                    childElement,
-                    (FlowElementsContainer) flowElement
-                );
+                FlowElementsContainer result = findParent(childElement, (FlowElementsContainer) flowElement);
                 if (result != null) {
                     return result;
                 }
@@ -434,40 +388,24 @@ public class Process
         }
 
         executionListeners = new ArrayList<ActivitiListener>();
-        if (
-            otherElement.getExecutionListeners() != null &&
-            !otherElement.getExecutionListeners().isEmpty()
-        ) {
+        if (otherElement.getExecutionListeners() != null && !otherElement.getExecutionListeners().isEmpty()) {
             for (ActivitiListener listener : otherElement.getExecutionListeners()) {
                 executionListeners.add(listener.clone());
             }
         }
 
         candidateStarterUsers = new ArrayList<String>();
-        if (
-            otherElement.getCandidateStarterUsers() != null &&
-            !otherElement.getCandidateStarterUsers().isEmpty()
-        ) {
-            candidateStarterUsers.addAll(
-                otherElement.getCandidateStarterUsers()
-            );
+        if (otherElement.getCandidateStarterUsers() != null && !otherElement.getCandidateStarterUsers().isEmpty()) {
+            candidateStarterUsers.addAll(otherElement.getCandidateStarterUsers());
         }
 
         candidateStarterGroups = new ArrayList<String>();
-        if (
-            otherElement.getCandidateStarterGroups() != null &&
-            !otherElement.getCandidateStarterGroups().isEmpty()
-        ) {
-            candidateStarterGroups.addAll(
-                otherElement.getCandidateStarterGroups()
-            );
+        if (otherElement.getCandidateStarterGroups() != null && !otherElement.getCandidateStarterGroups().isEmpty()) {
+            candidateStarterGroups.addAll(otherElement.getCandidateStarterGroups());
         }
 
         eventListeners = new ArrayList<EventListener>();
-        if (
-            otherElement.getEventListeners() != null &&
-            !otherElement.getEventListeners().isEmpty()
-        ) {
+        if (otherElement.getEventListeners() != null && !otherElement.getEventListeners().isEmpty()) {
             for (EventListener listener : otherElement.getEventListeners()) {
                 eventListeners.add(listener.clone());
             }
@@ -492,10 +430,7 @@ public class Process
         }
 
         dataObjects = new ArrayList<ValuedDataObject>();
-        if (
-            otherElement.getDataObjects() != null &&
-            !otherElement.getDataObjects().isEmpty()
-        ) {
+        if (otherElement.getDataObjects() != null && !otherElement.getDataObjects().isEmpty()) {
             for (ValuedDataObject dataObject : otherElement.getDataObjects()) {
                 ValuedDataObject clone = dataObject.clone();
                 dataObjects.add(clone);
@@ -526,7 +461,6 @@ public class Process
 
     @Override
     public void accept(ReferenceOverrider referenceOverrider) {
-        getFlowElements()
-            .forEach(flowElement -> flowElement.accept(referenceOverrider));
+        getFlowElements().forEach(flowElement -> flowElement.accept(referenceOverrider));
     }
 }

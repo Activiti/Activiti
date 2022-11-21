@@ -25,9 +25,6 @@ public class APIProcessCandidateStarterGroupConverter
 
     @Override
     public ProcessCandidateStarterGroup from(IdentityLink identityLink) {
-        return new ProcessCandidateStarterGroupImpl(
-            identityLink.getProcessDefinitionId(),
-            identityLink.getGroupId()
-        );
+        return new ProcessCandidateStarterGroupImpl(identityLink.getProcessDefinitionId(), identityLink.getGroupId());
     }
 }

@@ -64,18 +64,12 @@ public class ProcessRuntimeTasksIT {
         securityUtil.logInAs("garth");
 
         ProcessInstance processInstance = processRuntime.start(
-            ProcessPayloadBuilder
-                .start()
-                .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
-                .build()
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(SINGLE_TASK_PROCESS).build()
         );
 
         Page<Task> tasks = taskRuntime.tasks(
             Pageable.of(0, 50),
-            TaskPayloadBuilder
-                .tasks()
-                .withProcessInstanceId(processInstance.getId())
-                .build()
+            TaskPayloadBuilder.tasks().withProcessInstanceId(processInstance.getId()).build()
         );
 
         assertThat(tasks.getContent()).hasSize(1);

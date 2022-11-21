@@ -30,10 +30,7 @@ public class SetProcessVariablesPayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public SetProcessVariablesPayload(
-        String processInstanceId,
-        Map<String, Object> variables
-    ) {
+    public SetProcessVariablesPayload(String processInstanceId, Map<String, Object> variables) {
         this();
         this.processInstanceId = processInstanceId;
         this.variables = variables;

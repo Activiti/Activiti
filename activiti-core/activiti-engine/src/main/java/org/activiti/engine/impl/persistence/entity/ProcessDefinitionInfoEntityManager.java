@@ -22,15 +22,10 @@ import org.activiti.engine.api.internal.Internal;
 
  */
 @Internal
-public interface ProcessDefinitionInfoEntityManager
-    extends EntityManager<ProcessDefinitionInfoEntity> {
-    void insertProcessDefinitionInfo(
-        ProcessDefinitionInfoEntity processDefinitionInfo
-    );
+public interface ProcessDefinitionInfoEntityManager extends EntityManager<ProcessDefinitionInfoEntity> {
+    void insertProcessDefinitionInfo(ProcessDefinitionInfoEntity processDefinitionInfo);
 
-    void updateProcessDefinitionInfo(
-        ProcessDefinitionInfoEntity updatedProcessDefinitionInfo
-    );
+    void updateProcessDefinitionInfo(ProcessDefinitionInfoEntity updatedProcessDefinitionInfo);
 
     void deleteProcessDefinitionInfo(String processDefinitionId);
 
@@ -40,9 +35,7 @@ public interface ProcessDefinitionInfoEntityManager
 
     ProcessDefinitionInfoEntity findById(String id);
 
-    ProcessDefinitionInfoEntity findProcessDefinitionInfoByProcessDefinitionId(
-        String processDefinitionId
-    );
+    ProcessDefinitionInfoEntity findProcessDefinitionInfoByProcessDefinitionId(String processDefinitionId);
 
     byte[] findInfoJsonById(String infoJsonId);
 }

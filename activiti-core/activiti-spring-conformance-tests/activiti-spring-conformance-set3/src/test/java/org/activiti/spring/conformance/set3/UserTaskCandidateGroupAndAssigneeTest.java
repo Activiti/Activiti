@@ -45,8 +45,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class UserTaskCandidateGroupAndAssigneeTest {
 
-    private final String processKey =
-        "usertaskas-b5300a4b-8950-4486-ba20-a8d775a3d75d";
+    private final String processKey = "usertaskas-b5300a4b-8950-4486-ba20-a8d775a3d75d";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -82,19 +81,11 @@ public class UserTaskCandidateGroupAndAssigneeTest {
             )
             //then
             .expectFields(
-                processInstance()
-                    .status(ProcessInstance.ProcessInstanceStatus.RUNNING),
+                processInstance().status(ProcessInstance.ProcessInstanceStatus.RUNNING),
                 processInstance().name("my-process-instance-name"),
                 processInstance().businessKey("my-business-key")
             )
-            .expect(
-                processInstance()
-                    .hasTask(
-                        "Task User1",
-                        Task.TaskStatus.ASSIGNED,
-                        withAssignee("user1")
-                    )
-            )
+            .expect(processInstance().hasTask("Task User1", Task.TaskStatus.ASSIGNED, withAssignee("user1")))
             .expectEvents(
                 processInstance().hasBeenStarted(),
                 startEvent("StartEvent_1").hasBeenStarted(),
@@ -106,9 +97,7 @@ public class UserTaskCandidateGroupAndAssigneeTest {
             .andReturn();
 
         // I should be able to get the process instance from the Runtime because it is still running
-        ProcessInstance processInstanceById = processRuntime.processInstance(
-            processInstance.getId()
-        );
+        ProcessInstance processInstanceById = processRuntime.processInstance(processInstance.getId());
         assertThat(processInstanceById).isEqualTo(processInstance);
 
         // I should get a task for User1
@@ -116,18 +105,13 @@ public class UserTaskCandidateGroupAndAssigneeTest {
             .tasks()
             .withProcessInstanceId(processInstance.getId())
             .build();
-        Page<Task> tasks = taskRuntime.tasks(
-            Pageable.of(0, 50),
-            processInstanceTasksPayload
-        );
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50), processInstanceTasksPayload);
         assertThat(tasks.getTotalItems()).isEqualTo(1);
         Task task = tasks.getContent().get(0);
 
         //given
         taskOperations
-            .complete(
-                TaskPayloadBuilder.complete().withTaskId(task.getId()).build()
-            )
+            .complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build())
             //then
             .expectEvents(
                 task().hasBeenCompleted(),
@@ -140,22 +124,15 @@ public class UserTaskCandidateGroupAndAssigneeTest {
                         "Task Group1",
                         Task.TaskStatus.CREATED,
                         createdTask -> {
-                            assertThat(
-                                taskRuntime.userCandidates(createdTask.getId())
-                            )
-                                .isEmpty();
-                            assertThat(
-                                taskRuntime.groupCandidates(createdTask.getId())
-                            )
-                                .contains("group1");
+                            assertThat(taskRuntime.userCandidates(createdTask.getId())).isEmpty();
+                            assertThat(taskRuntime.groupCandidates(createdTask.getId())).contains("group1");
                         }
                     )
             );
 
         // Check with user1 as he is a candidate
 
-        tasks =
-            taskRuntime.tasks(Pageable.of(0, 50), processInstanceTasksPayload);
+        tasks = taskRuntime.tasks(Pageable.of(0, 50), processInstanceTasksPayload);
 
         assertThat(tasks.getTotalItems()).isEqualTo(1);
 
@@ -169,8 +146,7 @@ public class UserTaskCandidateGroupAndAssigneeTest {
         // Check with user3 candidates which is a candidate
         securityUtil.logInAs("user3");
 
-        tasks =
-            taskRuntime.tasks(Pageable.of(0, 50), processInstanceTasksPayload);
+        tasks = taskRuntime.tasks(Pageable.of(0, 50), processInstanceTasksPayload);
 
         assertThat(tasks.getTotalItems()).isEqualTo(1);
     }
@@ -178,13 +154,9 @@ public class UserTaskCandidateGroupAndAssigneeTest {
     @AfterEach
     public void cleanup() {
         securityUtil.logInAs("admin");
-        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(
-            Pageable.of(0, 50)
-        );
+        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0, 50));
         for (ProcessInstance pi : processInstancePage.getContent()) {
-            processAdminRuntime.delete(
-                ProcessPayloadBuilder.delete(pi.getId())
-            );
+            processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
         clearEvents();
     }

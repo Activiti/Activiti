@@ -31,15 +31,11 @@ public abstract class JobExecutorTestCase extends PluggableActivitiTestCase {
     protected TweetHandler tweetHandler = new TweetHandler();
 
     public void setUp() throws Exception {
-        processEngineConfiguration
-            .getJobHandlers()
-            .put(tweetHandler.getType(), tweetHandler);
+        processEngineConfiguration.getJobHandlers().put(tweetHandler.getType(), tweetHandler);
     }
 
     public void tearDown() throws Exception {
-        processEngineConfiguration
-            .getJobHandlers()
-            .remove(tweetHandler.getType());
+        processEngineConfiguration.getJobHandlers().remove(tweetHandler.getType());
     }
 
     protected JobEntity createTweetMessage(String msg) {

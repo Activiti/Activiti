@@ -27,8 +27,7 @@ import org.apache.commons.lang3.StringUtils;
  *
 
  */
-public class MessageImplicitDataInputAssociation
-    extends AbstractDataAssociation {
+public class MessageImplicitDataInputAssociation extends AbstractDataAssociation {
 
     private static final long serialVersionUID = 1L;
 
@@ -43,9 +42,7 @@ public class MessageImplicitDataInputAssociation
             MessageInstance message = (MessageInstance) execution.getVariable(
                 WebServiceActivityBehavior.CURRENT_MESSAGE
             );
-            if (
-                message.getStructureInstance() instanceof FieldBaseStructureInstance
-            ) {
+            if (message.getStructureInstance() instanceof FieldBaseStructureInstance) {
                 FieldBaseStructureInstance structure = (FieldBaseStructureInstance) message.getStructureInstance();
                 structure.setFieldValue(this.target, value);
             }

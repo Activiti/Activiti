@@ -62,8 +62,7 @@ public interface StencilConstants {
     final String STENCIL_EVENT_BOUNDARY_SIGNAL = "BoundarySignalEvent";
     final String STENCIL_EVENT_BOUNDARY_MESSAGE = "BoundaryMessageEvent";
     final String STENCIL_EVENT_BOUNDARY_CANCEL = "BoundaryCancelEvent";
-    final String STENCIL_EVENT_BOUNDARY_COMPENSATION =
-        "BoundaryCompensationEvent";
+    final String STENCIL_EVENT_BOUNDARY_COMPENSATION = "BoundaryCompensationEvent";
 
     final String STENCIL_EVENT_CATCH_SIGNAL = "CatchSignalEvent";
     final String STENCIL_EVENT_CATCH_TIMER = "CatchTimerEvent";
@@ -118,8 +117,7 @@ public interface StencilConstants {
     final String PROPERTY_EXCLUSIVE = "exclusivedefinition";
 
     final String PROPERTY_MULTIINSTANCE_TYPE = "multiinstance_type";
-    final String PROPERTY_MULTIINSTANCE_CARDINALITY =
-        "multiinstance_cardinality";
+    final String PROPERTY_MULTIINSTANCE_CARDINALITY = "multiinstance_cardinality";
     final String PROPERTY_MULTIINSTANCE_COLLECTION = "multiinstance_collection";
     final String PROPERTY_MULTIINSTANCE_VARIABLE = "multiinstance_variable";
     final String PROPERTY_MULTIINSTANCE_CONDITION = "multiinstance_condition";
@@ -140,8 +138,7 @@ public interface StencilConstants {
     final String PROPERTY_EVENTLISTENER_RETHROW_EVENT = "rethrowEvent";
     final String PROPERTY_EVENTLISTENER_RETHROW_TYPE = "rethrowType";
     final String PROPERTY_EVENTLISTENER_CLASS_NAME = "className";
-    final String PROPERTY_EVENTLISTENER_DELEGATE_EXPRESSION =
-        "delegateExpression";
+    final String PROPERTY_EVENTLISTENER_DELEGATE_EXPRESSION = "delegateExpression";
     final String PROPERTY_EVENTLISTENER_ENTITY_TYPE = "entityType";
     final String PROPERTY_EVENTLISTENER_ERROR_CODE = "errorcode";
     final String PROPERTY_EVENTLISTENER_SIGNAL_NAME = "signalname";
@@ -165,10 +162,8 @@ public interface StencilConstants {
 
     final String PROPERTY_SERVICETASK_CLASS = "servicetaskclass";
     final String PROPERTY_SERVICETASK_EXPRESSION = "servicetaskexpression";
-    final String PROPERTY_SERVICETASK_DELEGATE_EXPRESSION =
-        "servicetaskdelegateexpression";
-    final String PROPERTY_SERVICETASK_RESULT_VARIABLE =
-        "servicetaskresultvariable";
+    final String PROPERTY_SERVICETASK_DELEGATE_EXPRESSION = "servicetaskdelegateexpression";
+    final String PROPERTY_SERVICETASK_RESULT_VARIABLE = "servicetaskresultvariable";
     final String PROPERTY_SERVICETASK_FIELDS = "servicetaskfields";
     final String PROPERTY_SERVICETASK_FIELD_NAME = "name";
     final String PROPERTY_SERVICETASK_FIELD_STRING_VALUE = "stringValue";
@@ -213,8 +208,7 @@ public interface StencilConstants {
     final String PROPERTY_MAILTASK_HTML = "mailtaskhtml";
     final String PROPERTY_MAILTASK_CHARSET = "mailtaskcharset";
 
-    final String PROPERTY_CALLACTIVITY_CALLEDELEMENT =
-        "callactivitycalledelement";
+    final String PROPERTY_CALLACTIVITY_CALLEDELEMENT = "callactivitycalledelement";
     final String PROPERTY_CALLACTIVITY_IN = "callactivityinparameters";
     final String PROPERTY_CALLACTIVITY_OUT = "callactivityoutparameters";
     final String PROPERTY_IOPARAMETER_SOURCE = "source";
@@ -225,8 +219,7 @@ public interface StencilConstants {
 
     final String PROPERTY_MULETASK_ENDPOINT_URL = "muletaskendpointurl";
     final String PROPERTY_MULETASK_LANGUAGE = "muletasklanguage";
-    final String PROPERTY_MULETASK_PAYLOAD_EXPRESSION =
-        "muletaskpayloadexpression";
+    final String PROPERTY_MULETASK_PAYLOAD_EXPRESSION = "muletaskpayloadexpression";
     final String PROPERTY_MULETASK_RESULT_VARIABLE = "muletaskresultvariable";
 
     final String PROPERTY_SEQUENCEFLOW_DEFAULT = "defaultflow";
@@ -247,12 +240,8 @@ public interface StencilConstants {
     final String PROPERTY_TERMINATE_ALL = "terminateall";
     final String PROPERTY_TERMINATE_MULTI_INSTANCE = "terminateMultiInstance";
 
-    final String PROPERTY_DECISIONTABLE_REFERENCE =
-        "decisiontaskdecisiontablereference";
-    final String PROPERTY_DECISIONTABLE_REFERENCE_ID =
-        "decisiontablereferenceid";
-    final String PROPERTY_DECISIONTABLE_REFERENCE_NAME =
-        "decisiontablereferencename";
-    final String PROPERTY_DECISIONTABLE_REFERENCE_KEY =
-        "decisionTableReferenceKey";
+    final String PROPERTY_DECISIONTABLE_REFERENCE = "decisiontaskdecisiontablereference";
+    final String PROPERTY_DECISIONTABLE_REFERENCE_ID = "decisiontablereferenceid";
+    final String PROPERTY_DECISIONTABLE_REFERENCE_NAME = "decisiontablereferencename";
+    final String PROPERTY_DECISIONTABLE_REFERENCE_KEY = "decisionTableReferenceKey";
 }

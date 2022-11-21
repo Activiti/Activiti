@@ -32,10 +32,7 @@ public class SimpleDataInputAssociation extends AbstractDataAssociation {
 
     protected List<Assignment> assignments = new ArrayList<Assignment>();
 
-    public SimpleDataInputAssociation(
-        Expression sourceExpression,
-        String target
-    ) {
+    public SimpleDataInputAssociation(Expression sourceExpression, String target) {
         super(sourceExpression, target);
     }
 

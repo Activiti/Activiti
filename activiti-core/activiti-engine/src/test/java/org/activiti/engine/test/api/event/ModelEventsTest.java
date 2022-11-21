@@ -45,30 +45,12 @@ public class ModelEventsTest extends PluggableActivitiTestCase {
 
             // Check create event
             assertThat(listener.getEventsReceived()).hasSize(2);
-            assertThat(listener.getEventsReceived().get(0).getType())
-                .isEqualTo(ActivitiEventType.ENTITY_CREATED);
-            assertThat(
-                (
-                    (Model) (
-                        (ActivitiEntityEvent) listener
-                            .getEventsReceived()
-                            .get(0)
-                    ).getEntity()
-                ).getId()
-            )
+            assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
+            assertThat(((Model) ((ActivitiEntityEvent) listener.getEventsReceived().get(0)).getEntity()).getId())
                 .isEqualTo(model.getId());
 
-            assertThat(listener.getEventsReceived().get(1).getType())
-                .isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
-            assertThat(
-                (
-                    (Model) (
-                        (ActivitiEntityEvent) listener
-                            .getEventsReceived()
-                            .get(1)
-                    ).getEntity()
-                ).getId()
-            )
+            assertThat(listener.getEventsReceived().get(1).getType()).isEqualTo(ActivitiEventType.ENTITY_INITIALIZED);
+            assertThat(((Model) ((ActivitiEntityEvent) listener.getEventsReceived().get(1)).getEntity()).getId())
                 .isEqualTo(model.getId());
             listener.clearEventsReceived();
 
@@ -77,57 +59,28 @@ public class ModelEventsTest extends PluggableActivitiTestCase {
             model.setName("Updated");
             repositoryService.saveModel(model);
             assertThat(listener.getEventsReceived()).hasSize(1);
-            assertThat(listener.getEventsReceived().get(0).getType())
-                .isEqualTo(ActivitiEventType.ENTITY_UPDATED);
-            assertThat(
-                (
-                    (Model) (
-                        (ActivitiEntityEvent) listener
-                            .getEventsReceived()
-                            .get(0)
-                    ).getEntity()
-                ).getId()
-            )
+            assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);
+            assertThat(((Model) ((ActivitiEntityEvent) listener.getEventsReceived().get(0)).getEntity()).getId())
                 .isEqualTo(model.getId());
             listener.clearEventsReceived();
 
             // Test additional update-methods (source and extra-source)
-            repositoryService.addModelEditorSource(
-                model.getId(),
-                "test".getBytes()
-            );
-            repositoryService.addModelEditorSourceExtra(
-                model.getId(),
-                "test extra".getBytes()
-            );
+            repositoryService.addModelEditorSource(model.getId(), "test".getBytes());
+            repositoryService.addModelEditorSourceExtra(model.getId(), "test extra".getBytes());
             assertThat(listener.getEventsReceived()).hasSize(2);
-            assertThat(listener.getEventsReceived().get(0).getType())
-                .isEqualTo(ActivitiEventType.ENTITY_UPDATED);
-            assertThat(listener.getEventsReceived().get(1).getType())
-                .isEqualTo(ActivitiEventType.ENTITY_UPDATED);
+            assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);
+            assertThat(listener.getEventsReceived().get(1).getType()).isEqualTo(ActivitiEventType.ENTITY_UPDATED);
             listener.clearEventsReceived();
 
             // Delete model events
             repositoryService.deleteModel(model.getId());
             assertThat(listener.getEventsReceived()).hasSize(1);
-            assertThat(listener.getEventsReceived().get(0).getType())
-                .isEqualTo(ActivitiEventType.ENTITY_DELETED);
-            assertThat(
-                (
-                    (Model) (
-                        (ActivitiEntityEvent) listener
-                            .getEventsReceived()
-                            .get(0)
-                    ).getEntity()
-                ).getId()
-            )
+            assertThat(listener.getEventsReceived().get(0).getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
+            assertThat(((Model) ((ActivitiEntityEvent) listener.getEventsReceived().get(0)).getEntity()).getId())
                 .isEqualTo(model.getId());
             listener.clearEventsReceived();
         } finally {
-            if (
-                model != null &&
-                repositoryService.getModel(model.getId()) != null
-            ) {
+            if (model != null && repositoryService.getModel(model.getId()) != null) {
                 repositoryService.deleteModel(model.getId());
             }
         }
@@ -137,9 +90,7 @@ public class ModelEventsTest extends PluggableActivitiTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         listener = new TestActivitiEntityEventListener(Model.class);
-        processEngineConfiguration
-            .getEventDispatcher()
-            .addEventListener(listener);
+        processEngineConfiguration.getEventDispatcher().addEventListener(listener);
     }
 
     @Override
@@ -147,9 +98,7 @@ public class ModelEventsTest extends PluggableActivitiTestCase {
         super.tearDown();
 
         if (listener != null) {
-            processEngineConfiguration
-                .getEventDispatcher()
-                .removeEventListener(listener);
+            processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
         }
     }
 }

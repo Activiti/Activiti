@@ -47,8 +47,7 @@ public class TimerFiredListenerDelegateTest {
 
     @BeforeEach
     public void setUp() {
-        listenerDelegate =
-            new TimerFiredListenerDelegate(singletonList(listener), converter);
+        listenerDelegate = new TimerFiredListenerDelegate(singletonList(listener), converter);
     }
 
     @Test
@@ -56,8 +55,7 @@ public class TimerFiredListenerDelegateTest {
         //given
         ActivitiEntityEvent internalEvent = mock(ActivitiEntityEvent.class);
         BPMNTimerFiredEventImpl convertedEvent = new BPMNTimerFiredEventImpl();
-        given(converter.from(internalEvent))
-            .willReturn(Optional.of(convertedEvent));
+        given(converter.from(internalEvent)).willReturn(Optional.of(convertedEvent));
 
         //when
         listenerDelegate.onEvent(internalEvent);

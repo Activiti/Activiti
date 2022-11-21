@@ -52,9 +52,6 @@ public class IntegerType implements VariableType {
         if (value == null) {
             return true;
         }
-        return (
-            Integer.class.isAssignableFrom(value.getClass()) ||
-            int.class.isAssignableFrom(value.getClass())
-        );
+        return (Integer.class.isAssignableFrom(value.getClass()) || int.class.isAssignableFrom(value.getClass()));
     }
 }

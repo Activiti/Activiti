@@ -39,9 +39,7 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 
-    private static Logger log = LoggerFactory.getLogger(
-        ExclusiveGatewayActivityBehavior.class
-    );
+    private static Logger log = LoggerFactory.getLogger(ExclusiveGatewayActivityBehavior.class);
 
     /**
      * The default behaviour of BPMN, taking every outgoing sequence flow (where the condition evaluates to true), is not valid for an exclusive gateway.
@@ -54,20 +52,14 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
     @Override
     public void leave(DelegateExecution execution) {
         if (log.isDebugEnabled()) {
-            log.debug(
-                "Leaving exclusive gateway '{}'",
-                execution.getCurrentActivityId()
-            );
+            log.debug("Leaving exclusive gateway '{}'", execution.getCurrentActivityId());
         }
 
         ExclusiveGateway exclusiveGateway = (ExclusiveGateway) execution.getCurrentFlowElement();
 
         if (
             Context.getProcessEngineConfiguration() != null &&
-            Context
-                .getProcessEngineConfiguration()
-                .getEventDispatcher()
-                .isEnabled()
+            Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()
         ) {
             Context
                 .getProcessEngineConfiguration()
@@ -86,62 +78,36 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
         String defaultSequenceFlowId = exclusiveGateway.getDefaultFlow();
 
         // Determine sequence flow to take
-        Iterator<SequenceFlow> sequenceFlowIterator = exclusiveGateway
-            .getOutgoingFlows()
-            .iterator();
+        Iterator<SequenceFlow> sequenceFlowIterator = exclusiveGateway.getOutgoingFlows().iterator();
         while (outgoingSequenceFlow == null && sequenceFlowIterator.hasNext()) {
             SequenceFlow sequenceFlow = sequenceFlowIterator.next();
 
             String skipExpressionString = sequenceFlow.getSkipExpression();
-            if (
-                !SkipExpressionUtil.isSkipExpressionEnabled(
-                    execution,
-                    skipExpressionString
-                )
-            ) {
-                boolean conditionEvaluatesToTrue = ConditionUtil.hasTrueCondition(
-                    sequenceFlow,
-                    execution
-                );
+            if (!SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpressionString)) {
+                boolean conditionEvaluatesToTrue = ConditionUtil.hasTrueCondition(sequenceFlow, execution);
                 if (
                     conditionEvaluatesToTrue &&
-                    (
-                        defaultSequenceFlowId == null ||
-                        !defaultSequenceFlowId.equals(sequenceFlow.getId())
-                    )
+                    (defaultSequenceFlowId == null || !defaultSequenceFlowId.equals(sequenceFlow.getId()))
                 ) {
                     if (log.isDebugEnabled()) {
-                        log.debug(
-                            "Sequence flow '{}'selected as outgoing sequence flow.",
-                            sequenceFlow.getId()
-                        );
+                        log.debug("Sequence flow '{}'selected as outgoing sequence flow.", sequenceFlow.getId());
                     }
                     outgoingSequenceFlow = sequenceFlow;
                 }
             } else if (
-                SkipExpressionUtil.shouldSkipFlowElement(
-                    Context.getCommandContext(),
-                    execution,
-                    skipExpressionString
-                )
+                SkipExpressionUtil.shouldSkipFlowElement(Context.getCommandContext(), execution, skipExpressionString)
             ) {
                 outgoingSequenceFlow = sequenceFlow;
             }
 
             // Already store it, if we would need it later. Saves one for loop.
-            if (
-                defaultSequenceFlowId != null &&
-                defaultSequenceFlowId.equals(sequenceFlow.getId())
-            ) {
+            if (defaultSequenceFlowId != null && defaultSequenceFlowId.equals(sequenceFlow.getId())) {
                 defaultSequenceFlow = sequenceFlow;
             }
         }
 
         // We have to record the end here, or else we're already past it
-        Context
-            .getCommandContext()
-            .getHistoryManager()
-            .recordActivityEnd((ExecutionEntity) execution, null);
+        Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution, null);
 
         // Leave the gateway
         if (outgoingSequenceFlow != null) {

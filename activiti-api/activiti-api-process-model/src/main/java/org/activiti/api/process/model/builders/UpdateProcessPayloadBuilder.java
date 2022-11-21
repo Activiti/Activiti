@@ -40,16 +40,12 @@ public class UpdateProcessPayloadBuilder {
         return this;
     }
 
-    public UpdateProcessPayloadBuilder withProcessInstanceId(
-        String processInstanceId
-    ) {
+    public UpdateProcessPayloadBuilder withProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
         return this;
     }
 
-    public UpdateProcessPayloadBuilder withProcessInstance(
-        ProcessInstance processInstance
-    ) {
+    public UpdateProcessPayloadBuilder withProcessInstance(ProcessInstance processInstance) {
         this.processInstanceId = processInstance.getId();
         this.businessKey = processInstance.getBusinessKey();
         this.name = processInstance.getName();
@@ -57,11 +53,6 @@ public class UpdateProcessPayloadBuilder {
     }
 
     public UpdateProcessPayload build() {
-        return new UpdateProcessPayload(
-            processInstanceId,
-            name,
-            description,
-            businessKey
-        );
+        return new UpdateProcessPayload(processInstanceId, name, description, businessKey);
     }
 }

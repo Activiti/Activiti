@@ -29,15 +29,11 @@ public class NativeHistoricActivityInstanceQueryImpl
 
     private static final long serialVersionUID = 1L;
 
-    public NativeHistoricActivityInstanceQueryImpl(
-        CommandContext commandContext
-    ) {
+    public NativeHistoricActivityInstanceQueryImpl(CommandContext commandContext) {
         super(commandContext);
     }
 
-    public NativeHistoricActivityInstanceQueryImpl(
-        CommandExecutor commandExecutor
-    ) {
+    public NativeHistoricActivityInstanceQueryImpl(CommandExecutor commandExecutor) {
         super(commandExecutor);
     }
 
@@ -51,17 +47,10 @@ public class NativeHistoricActivityInstanceQueryImpl
     ) {
         return commandContext
             .getHistoricActivityInstanceEntityManager()
-            .findHistoricActivityInstancesByNativeQuery(
-                parameterMap,
-                firstResult,
-                maxResults
-            );
+            .findHistoricActivityInstancesByNativeQuery(parameterMap, firstResult, maxResults);
     }
 
-    public long executeCount(
-        CommandContext commandContext,
-        Map<String, Object> parameterMap
-    ) {
+    public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
         return commandContext
             .getHistoricActivityInstanceEntityManager()
             .findHistoricActivityInstanceCountByNativeQuery(parameterMap);

@@ -216,9 +216,7 @@ public class AsyncExecutorProperties {
         return maxAsyncJobsDuePerAcquisition;
     }
 
-    public void setMaxAsyncJobsDuePerAcquisition(
-        int maxAsyncJobsDuePerAcquisition
-    ) {
+    public void setMaxAsyncJobsDuePerAcquisition(int maxAsyncJobsDuePerAcquisition) {
         this.maxAsyncJobsDuePerAcquisition = maxAsyncJobsDuePerAcquisition;
     }
 
@@ -226,31 +224,23 @@ public class AsyncExecutorProperties {
         return defaultTimerJobAcquireWaitTimeInMillis;
     }
 
-    public void setDefaultTimerJobAcquireWaitTimeInMillis(
-        int defaultTimerJobAcquireWaitTimeInMillis
-    ) {
-        this.defaultTimerJobAcquireWaitTimeInMillis =
-            defaultTimerJobAcquireWaitTimeInMillis;
+    public void setDefaultTimerJobAcquireWaitTimeInMillis(int defaultTimerJobAcquireWaitTimeInMillis) {
+        this.defaultTimerJobAcquireWaitTimeInMillis = defaultTimerJobAcquireWaitTimeInMillis;
     }
 
     public int getDefaultAsyncJobAcquireWaitTimeInMillis() {
         return defaultAsyncJobAcquireWaitTimeInMillis;
     }
 
-    public void setDefaultAsyncJobAcquireWaitTimeInMillis(
-        int defaultAsyncJobAcquireWaitTimeInMillis
-    ) {
-        this.defaultAsyncJobAcquireWaitTimeInMillis =
-            defaultAsyncJobAcquireWaitTimeInMillis;
+    public void setDefaultAsyncJobAcquireWaitTimeInMillis(int defaultAsyncJobAcquireWaitTimeInMillis) {
+        this.defaultAsyncJobAcquireWaitTimeInMillis = defaultAsyncJobAcquireWaitTimeInMillis;
     }
 
     public int getDefaultQueueSizeFullWaitTime() {
         return defaultQueueSizeFullWaitTime;
     }
 
-    public void setDefaultQueueSizeFullWaitTime(
-        int defaultQueueSizeFullWaitTime
-    ) {
+    public void setDefaultQueueSizeFullWaitTime(int defaultQueueSizeFullWaitTime) {
         this.defaultQueueSizeFullWaitTime = defaultQueueSizeFullWaitTime;
     }
 

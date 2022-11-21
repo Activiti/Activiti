@@ -36,8 +36,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 
 
  */
-public class StartProcessInstanceCmd<T>
-    implements Command<ProcessInstance>, Serializable {
+public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String processDefinitionKey;
@@ -72,9 +71,7 @@ public class StartProcessInstanceCmd<T>
         this.tenantId = tenantId;
     }
 
-    public StartProcessInstanceCmd(
-        ProcessInstanceBuilderImpl processInstanceBuilder
-    ) {
+    public StartProcessInstanceCmd(ProcessInstanceBuilderImpl processInstanceBuilder) {
         this(
             processInstanceBuilder.getProcessDefinitionKey(),
             processInstanceBuilder.getProcessDefinitionId(),
@@ -82,30 +79,20 @@ public class StartProcessInstanceCmd<T>
             processInstanceBuilder.getVariables(),
             processInstanceBuilder.getTenantId()
         );
-        this.processInstanceName =
-            processInstanceBuilder.getProcessInstanceName();
-        this.transientVariables =
-            processInstanceBuilder.getTransientVariables();
+        this.processInstanceName = processInstanceBuilder.getProcessInstanceName();
+        this.transientVariables = processInstanceBuilder.getTransientVariables();
     }
 
     public ProcessInstance execute(CommandContext commandContext) {
-        DeploymentManager deploymentCache = commandContext
-            .getProcessEngineConfiguration()
-            .getDeploymentManager();
+        DeploymentManager deploymentCache = commandContext.getProcessEngineConfiguration().getDeploymentManager();
 
-        ProcessDefinitionRetriever processRetriever = new ProcessDefinitionRetriever(
-            this.tenantId,
-            deploymentCache
-        );
+        ProcessDefinitionRetriever processRetriever = new ProcessDefinitionRetriever(this.tenantId, deploymentCache);
         ProcessDefinition processDefinition = processRetriever.getProcessDefinition(
             this.processDefinitionId,
             this.processDefinitionKey
         );
 
-        processInstanceHelper =
-            commandContext
-                .getProcessEngineConfiguration()
-                .getProcessInstanceHelper();
+        processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
         ProcessInstance processInstance = createAndStartProcessInstance(
             processDefinition,
             businessKey,
@@ -132,9 +119,7 @@ public class StartProcessInstanceCmd<T>
         );
     }
 
-    protected Map<String, Object> processDataObjects(
-        Collection<ValuedDataObject> dataObjects
-    ) {
+    protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
         Map<String, Object> variablesMap = new HashMap<String, Object>();
         // convert data objects to process variables
         if (dataObjects != null) {

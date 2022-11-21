@@ -24,9 +24,7 @@ import org.activiti.engine.delegate.event.ActivitiSignalEvent;
  *
 
  */
-public class ActivitiSignalEventImpl
-    extends ActivitiActivityEventImpl
-    implements ActivitiSignalEvent {
+public class ActivitiSignalEventImpl extends ActivitiActivityEventImpl implements ActivitiSignalEvent {
 
     protected String signalName;
     protected Object signalData;

@@ -28,9 +28,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TweetExceptionHandler implements JobHandler {
 
-    private static Logger log = LoggerFactory.getLogger(
-        TweetExceptionHandler.class
-    );
+    private static Logger log = LoggerFactory.getLogger(TweetExceptionHandler.class);
 
     protected int exceptionsRemaining = 2;
 
@@ -38,17 +36,10 @@ public class TweetExceptionHandler implements JobHandler {
         return "tweet-exception";
     }
 
-    public void execute(
-        JobEntity job,
-        String configuration,
-        ExecutionEntity execution,
-        CommandContext commandContext
-    ) {
+    public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
         if (exceptionsRemaining > 0) {
             exceptionsRemaining--;
-            throw new RuntimeException(
-                "exception remaining: " + exceptionsRemaining
-            );
+            throw new RuntimeException("exception remaining: " + exceptionsRemaining);
         }
         log.info("no more exceptions to throw.");
     }

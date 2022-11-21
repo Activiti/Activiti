@@ -29,10 +29,7 @@ public class ExecutionListenerInvocation extends DelegateInvocation {
     protected final ExecutionListener executionListenerInstance;
     protected final DelegateExecution execution;
 
-    public ExecutionListenerInvocation(
-        ExecutionListener executionListenerInstance,
-        DelegateExecution execution
-    ) {
+    public ExecutionListenerInvocation(ExecutionListener executionListenerInstance, DelegateExecution execution) {
         this.executionListenerInstance = executionListenerInstance;
         this.execution = execution;
     }

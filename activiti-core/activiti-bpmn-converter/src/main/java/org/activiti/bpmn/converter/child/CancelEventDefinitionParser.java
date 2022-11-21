@@ -28,11 +28,7 @@ public class CancelEventDefinitionParser extends BaseChildElementParser {
         return ELEMENT_EVENT_CANCELDEFINITION;
     }
 
-    public void parseChildElement(
-        XMLStreamReader xtr,
-        BaseElement parentElement,
-        BpmnModel model
-    ) throws Exception {
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
         if (!(parentElement instanceof Event)) {
             return;
         }

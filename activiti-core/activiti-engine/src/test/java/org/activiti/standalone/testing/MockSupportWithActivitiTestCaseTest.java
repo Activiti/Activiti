@@ -36,11 +36,7 @@ public class MockSupportWithActivitiTestCaseTest extends ActivitiTestCase {
 
         ServiceTaskTestMock.CALL_COUNT.set(0);
 
-        mockSupport()
-            .mockServiceTaskWithClassDelegate(
-                "com.yourcompany.delegate",
-                ServiceTaskTestMock.class
-            );
+        mockSupport().mockServiceTaskWithClassDelegate("com.yourcompany.delegate", ServiceTaskTestMock.class);
         mockSupport()
             .mockServiceTaskWithClassDelegate(
                 "com.yourcompany.anotherDelegate",
@@ -110,18 +106,12 @@ public class MockSupportWithActivitiTestCaseTest extends ActivitiTestCase {
     @Deployment
     @NoOpServiceTasks
     public void testNoOpServiceTasksAnnotation() {
-        assertThat(mockSupport().getNrOfNoOpServiceTaskExecutions())
-            .isEqualTo(0);
+        assertThat(mockSupport().getNrOfNoOpServiceTaskExecutions()).isEqualTo(0);
         runtimeService.startProcessInstanceByKey("mockSupportTest");
-        assertThat(mockSupport().getNrOfNoOpServiceTaskExecutions())
-            .isEqualTo(5);
+        assertThat(mockSupport().getNrOfNoOpServiceTaskExecutions()).isEqualTo(5);
 
         for (int i = 1; i <= 5; i++) {
-            assertThat(
-                mockSupport()
-                    .getExecutedNoOpServiceTaskDelegateClassNames()
-                    .get(i - 1)
-            )
+            assertThat(mockSupport().getExecutedNoOpServiceTaskDelegateClassNames().get(i - 1))
                 .isEqualTo("com.yourcompany.delegate" + i);
         }
     }
@@ -133,23 +123,15 @@ public class MockSupportWithActivitiTestCaseTest extends ActivitiTestCase {
     )
     @NoOpServiceTasks(
         ids = { "serviceTask1", "serviceTask3", "serviceTask5" },
-        classNames = {
-            "com.yourcompany.delegate2", "com.yourcompany.delegate4",
-        }
+        classNames = { "com.yourcompany.delegate2", "com.yourcompany.delegate4" }
     )
     public void testNoOpServiceTasksWithIdsAnnotation() {
-        assertThat(mockSupport().getNrOfNoOpServiceTaskExecutions())
-            .isEqualTo(0);
+        assertThat(mockSupport().getNrOfNoOpServiceTaskExecutions()).isEqualTo(0);
         runtimeService.startProcessInstanceByKey("mockSupportTest");
-        assertThat(mockSupport().getNrOfNoOpServiceTaskExecutions())
-            .isEqualTo(5);
+        assertThat(mockSupport().getNrOfNoOpServiceTaskExecutions()).isEqualTo(5);
 
         for (int i = 1; i <= 5; i++) {
-            assertThat(
-                mockSupport()
-                    .getExecutedNoOpServiceTaskDelegateClassNames()
-                    .get(i - 1)
-            )
+            assertThat(mockSupport().getExecutedNoOpServiceTaskDelegateClassNames().get(i - 1))
                 .isEqualTo("com.yourcompany.delegate" + i);
         }
     }

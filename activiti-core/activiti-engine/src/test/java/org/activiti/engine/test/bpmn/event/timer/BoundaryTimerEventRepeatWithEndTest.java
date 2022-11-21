@@ -35,8 +35,7 @@ import org.joda.time.format.ISODateTimeFormat;
 /**
 
  */
-public class BoundaryTimerEventRepeatWithEndTest
-    extends PluggableActivitiTestCase {
+public class BoundaryTimerEventRepeatWithEndTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testRepeatWithEnd() throws Throwable {
@@ -52,19 +51,11 @@ public class BoundaryTimerEventRepeatWithEndTest
         // reset the timer
         Calendar nextTimeCal = Calendar.getInstance();
         nextTimeCal.setTime(baseTime);
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(nextTimeCal.getTime());
+        processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "repeatWithEnd"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("repeatWithEnd");
 
-        runtimeService.setVariable(
-            processInstance.getId(),
-            "EndDateForBoundary",
-            dateStr
-        );
+        runtimeService.setVariable(processInstance.getId(), "EndDateForBoundary", dateStr);
 
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
@@ -80,9 +71,7 @@ public class BoundaryTimerEventRepeatWithEndTest
         assertThat(jobs).hasSize(1);
 
         // boundary events
-        Job executableJob = managementService.moveTimerToExecutableJob(
-            jobs.get(0).getId()
-        );
+        Job executableJob = managementService.moveTimerToExecutableJob(jobs.get(0).getId());
         managementService.executeJob(executableJob.getId());
 
         assertThat(managementService.createJobQuery().list()).hasSize(0);
@@ -90,12 +79,9 @@ public class BoundaryTimerEventRepeatWithEndTest
         assertThat(jobs).hasSize(1);
 
         nextTimeCal.add(Calendar.MINUTE, 15); // after 15 minutes
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(nextTimeCal.getTime());
+        processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
-        executableJob =
-            managementService.moveTimerToExecutableJob(jobs.get(0).getId());
+        executableJob = managementService.moveTimerToExecutableJob(jobs.get(0).getId());
         managementService.executeJob(executableJob.getId());
 
         assertThat(managementService.createJobQuery().list()).hasSize(0);
@@ -104,12 +90,9 @@ public class BoundaryTimerEventRepeatWithEndTest
 
         nextTimeCal.add(Calendar.MINUTE, 5); // after another 5 minutes (20 minutes and 1 second from the baseTime) the BoundaryEndTime is reached
         nextTimeCal.add(Calendar.SECOND, 1);
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(nextTimeCal.getTime());
+        processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
-        executableJob =
-            managementService.moveTimerToExecutableJob(jobs.get(0).getId());
+        executableJob = managementService.moveTimerToExecutableJob(jobs.get(0).getId());
         managementService.executeJob(executableJob.getId());
 
         jobs = managementService.createTimerJobQuery().list();
@@ -128,11 +111,7 @@ public class BoundaryTimerEventRepeatWithEndTest
         jobs = managementService.createJobQuery().list();
         assertThat(jobs).hasSize(0);
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             HistoricProcessInstance historicInstance = historyService
                 .createHistoricProcessInstanceQuery()
                 .processInstanceId(processInstance.getId())
@@ -141,9 +120,7 @@ public class BoundaryTimerEventRepeatWithEndTest
         }
 
         // now all the process instances should be completed
-        List<ProcessInstance> processInstances = runtimeService
-            .createProcessInstanceQuery()
-            .list();
+        List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
         assertThat(processInstances).hasSize(0);
 
         // no jobs

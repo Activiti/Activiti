@@ -44,17 +44,9 @@ public class ProcessRuntimeOperations implements ProcessOperations {
     }
 
     @Override
-    public ProcessInstanceAssertions start(
-        StartProcessPayload startProcessPayload
-    ) {
-        ProcessInstance processInstance = processRuntime.start(
-            startProcessPayload
-        );
-        return new ProcessInstanceAssertionsImpl(
-            eventSource,
-            taskSources,
-            processInstance
-        );
+    public ProcessInstanceAssertions start(StartProcessPayload startProcessPayload) {
+        ProcessInstance processInstance = processRuntime.start(startProcessPayload);
+        return new ProcessInstanceAssertionsImpl(eventSource, taskSources, processInstance);
     }
 
     @Override

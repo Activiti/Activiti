@@ -35,11 +35,7 @@ public class GetTaskVariableCmd implements Command<Object>, Serializable {
     protected String variableName;
     protected boolean isLocal;
 
-    public GetTaskVariableCmd(
-        String taskId,
-        String variableName,
-        boolean isLocal
-    ) {
+    public GetTaskVariableCmd(String taskId, String variableName, boolean isLocal) {
         this.taskId = taskId;
         this.variableName = variableName;
         this.isLocal = isLocal;
@@ -53,15 +49,10 @@ public class GetTaskVariableCmd implements Command<Object>, Serializable {
             throw new ActivitiIllegalArgumentException("variableName is null");
         }
 
-        TaskEntity task = commandContext
-            .getTaskEntityManager()
-            .findById(taskId);
+        TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);
 
         if (task == null) {
-            throw new ActivitiObjectNotFoundException(
-                "task " + taskId + " doesn't exist",
-                Task.class
-            );
+            throw new ActivitiObjectNotFoundException("task " + taskId + " doesn't exist", Task.class);
         }
 
         Object value;

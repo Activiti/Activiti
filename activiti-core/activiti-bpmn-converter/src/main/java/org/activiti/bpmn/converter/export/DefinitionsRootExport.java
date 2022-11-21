@@ -49,45 +49,31 @@ public class DefinitionsRootExport implements BpmnXMLConstants {
     );
 
     @SuppressWarnings("unchecked")
-    public static void writeRootElement(
-        BpmnModel model,
-        XMLStreamWriter xtw,
-        String encoding
-    ) throws Exception {
+    public static void writeRootElement(BpmnModel model, XMLStreamWriter xtw, String encoding) throws Exception {
         xtw.writeStartDocument(encoding, "1.0");
 
         // start definitions root element
-        xtw.writeStartElement(
-            BPMN2_PREFIX,
-            ELEMENT_DEFINITIONS,
-            BPMN2_NAMESPACE
-        );
+        xtw.writeStartElement(BPMN2_PREFIX, ELEMENT_DEFINITIONS, BPMN2_NAMESPACE);
         xtw.setDefaultNamespace(BPMN2_NAMESPACE);
         xtw.writeDefaultNamespace(BPMN2_NAMESPACE);
 
         xtw.writeNamespace(BPMN2_PREFIX, BPMN2_NAMESPACE);
         xtw.writeNamespace(XSI_PREFIX, XSI_NAMESPACE);
         xtw.writeNamespace(XSD_PREFIX, SCHEMA_NAMESPACE);
-        xtw.writeNamespace(
-            ACTIVITI_EXTENSIONS_PREFIX,
-            ACTIVITI_EXTENSIONS_NAMESPACE
-        );
+        xtw.writeNamespace(ACTIVITI_EXTENSIONS_PREFIX, ACTIVITI_EXTENSIONS_NAMESPACE);
         xtw.writeNamespace(BPMNDI_PREFIX, BPMNDI_NAMESPACE);
         xtw.writeNamespace(OMGDC_PREFIX, OMGDC_NAMESPACE);
         xtw.writeNamespace(OMGDI_PREFIX, OMGDI_NAMESPACE);
         for (String prefix : model.getNamespaces().keySet()) {
-            if (
-                !defaultNamespaces.contains(prefix) &&
-                StringUtils.isNotEmpty(prefix)
-            ) xtw.writeNamespace(prefix, model.getNamespaces().get(prefix));
+            if (!defaultNamespaces.contains(prefix) && StringUtils.isNotEmpty(prefix)) xtw.writeNamespace(
+                prefix,
+                model.getNamespaces().get(prefix)
+            );
         }
         xtw.writeAttribute(TYPE_LANGUAGE_ATTRIBUTE, SCHEMA_NAMESPACE);
         xtw.writeAttribute(EXPRESSION_LANGUAGE_ATTRIBUTE, XPATH_NAMESPACE);
         if (StringUtils.isNotEmpty(model.getTargetNamespace())) {
-            xtw.writeAttribute(
-                TARGET_NAMESPACE_ATTRIBUTE,
-                model.getTargetNamespace()
-            );
+            xtw.writeAttribute(TARGET_NAMESPACE_ATTRIBUTE, model.getTargetNamespace());
         } else {
             xtw.writeAttribute(TARGET_NAMESPACE_ATTRIBUTE, PROCESS_NAMESPACE);
         }

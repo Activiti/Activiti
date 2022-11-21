@@ -31,9 +31,7 @@ public class StringToSetConverter implements Converter<String, Set<Object>> {
 
     @Override
     public Set<Object> convert(String source) {
-        JavaType javaType = objectMapper
-            .getTypeFactory()
-            .constructParametricType(Set.class, Object.class);
+        JavaType javaType = objectMapper.getTypeFactory().constructParametricType(Set.class, Object.class);
         try {
             return objectMapper.readValue(source, javaType);
         } catch (Exception cause) {

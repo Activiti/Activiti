@@ -19,14 +19,11 @@ import java.util.List;
 import org.activiti.spring.resources.ResourceFinderDescriptor;
 import org.springframework.core.io.Resource;
 
-public class ProcessDefinitionResourceFinderDescriptor
-    implements ResourceFinderDescriptor {
+public class ProcessDefinitionResourceFinderDescriptor implements ResourceFinderDescriptor {
 
     private ActivitiProperties activitiProperties;
 
-    public ProcessDefinitionResourceFinderDescriptor(
-        ActivitiProperties activitiProperties
-    ) {
+    public ProcessDefinitionResourceFinderDescriptor(ActivitiProperties activitiProperties) {
         this.activitiProperties = activitiProperties;
     }
 
@@ -47,19 +44,12 @@ public class ProcessDefinitionResourceFinderDescriptor
 
     @Override
     public String getMsgForEmptyResources() {
-        return (
-            "No process definitions were found for auto-deployment in the location `" +
-            getLocationPrefix() +
-            "`"
-        );
+        return ("No process definitions were found for auto-deployment in the location `" + getLocationPrefix() + "`");
     }
 
     @Override
     public String getMsgForResourcesFound(List<String> foundProcessResources) {
-        return (
-            "The following process definition files will be deployed: " +
-            foundProcessResources
-        );
+        return ("The following process definition files will be deployed: " + foundProcessResources);
     }
 
     @Override

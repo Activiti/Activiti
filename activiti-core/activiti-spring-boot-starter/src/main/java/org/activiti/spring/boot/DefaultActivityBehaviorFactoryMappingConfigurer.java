@@ -22,8 +22,7 @@ import org.activiti.runtime.api.impl.MappingAwareActivityBehaviorFactory;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.process.ProcessVariablesInitiator;
 
-public class DefaultActivityBehaviorFactoryMappingConfigurer
-    implements ProcessEngineConfigurationConfigurer {
+public class DefaultActivityBehaviorFactoryMappingConfigurer implements ProcessEngineConfigurationConfigurer {
 
     private ExtensionsVariablesMappingProvider variablesMappingProvider;
 
@@ -41,18 +40,13 @@ public class DefaultActivityBehaviorFactoryMappingConfigurer
     ) {
         this.variablesMappingProvider = variablesMappingProvider;
         this.processVariablesInitiator = processVariablesInitiator;
-        this.eventSubscriptionPayloadMappingProvider =
-            eventSubscriptionPayloadMappingProvider;
+        this.eventSubscriptionPayloadMappingProvider = eventSubscriptionPayloadMappingProvider;
         this.variablesPropagator = variablesPropagator;
     }
 
     @Override
-    public void configure(
-        SpringProcessEngineConfiguration processEngineConfiguration
-    ) {
-        processEngineConfiguration.setEventSubscriptionPayloadMappingProvider(
-            eventSubscriptionPayloadMappingProvider
-        );
+    public void configure(SpringProcessEngineConfiguration processEngineConfiguration) {
+        processEngineConfiguration.setEventSubscriptionPayloadMappingProvider(eventSubscriptionPayloadMappingProvider);
 
         processEngineConfiguration.setActivityBehaviorFactory(
             new MappingAwareActivityBehaviorFactory(

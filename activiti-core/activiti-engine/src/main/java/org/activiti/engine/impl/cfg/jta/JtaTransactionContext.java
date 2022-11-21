@@ -49,20 +49,13 @@ public class JtaTransactionContext implements TransactionContext {
         try {
             Transaction transaction = getTransaction();
             int status = transaction.getStatus();
-            if (
-                status != Status.STATUS_NO_TRANSACTION &&
-                status != Status.STATUS_ROLLEDBACK
-            ) {
+            if (status != Status.STATUS_NO_TRANSACTION && status != Status.STATUS_ROLLEDBACK) {
                 transaction.setRollbackOnly();
             }
         } catch (IllegalStateException e) {
-            throw new ActivitiException(
-                "Unexpected IllegalStateException while marking transaction rollback only"
-            );
+            throw new ActivitiException("Unexpected IllegalStateException while marking transaction rollback only");
         } catch (SystemException e) {
-            throw new ActivitiException(
-                "SystemException while marking transaction rollback only"
-            );
+            throw new ActivitiException("SystemException while marking transaction rollback only");
         }
     }
 
@@ -70,10 +63,7 @@ public class JtaTransactionContext implements TransactionContext {
         try {
             return transactionManager.getTransaction();
         } catch (SystemException e) {
-            throw new ActivitiException(
-                "SystemException while getting transaction ",
-                e
-            );
+            throw new ActivitiException("SystemException while getting transaction ", e);
         }
     }
 
@@ -85,32 +75,18 @@ public class JtaTransactionContext implements TransactionContext {
         CommandContext commandContext = Context.getCommandContext();
         try {
             transaction.registerSynchronization(
-                new TransactionStateSynchronization(
-                    transactionState,
-                    transactionListener,
-                    commandContext
-                )
+                new TransactionStateSynchronization(transactionState, transactionListener, commandContext)
             );
         } catch (IllegalStateException e) {
-            throw new ActivitiException(
-                "IllegalStateException while registering synchronization ",
-                e
-            );
+            throw new ActivitiException("IllegalStateException while registering synchronization ", e);
         } catch (RollbackException e) {
-            throw new ActivitiException(
-                "RollbackException while registering synchronization ",
-                e
-            );
+            throw new ActivitiException("RollbackException while registering synchronization ", e);
         } catch (SystemException e) {
-            throw new ActivitiException(
-                "SystemException while registering synchronization ",
-                e
-            );
+            throw new ActivitiException("SystemException while registering synchronization ", e);
         }
     }
 
-    public static class TransactionStateSynchronization
-        implements Synchronization {
+    public static class TransactionStateSynchronization implements Synchronization {
 
         protected final TransactionListener transactionListener;
         protected final TransactionState transactionState;
@@ -136,15 +112,9 @@ public class JtaTransactionContext implements TransactionContext {
         }
 
         public void afterCompletion(int status) {
-            if (
-                Status.STATUS_ROLLEDBACK == status &&
-                TransactionState.ROLLED_BACK.equals(transactionState)
-            ) {
+            if (Status.STATUS_ROLLEDBACK == status && TransactionState.ROLLED_BACK.equals(transactionState)) {
                 transactionListener.execute(commandContext);
-            } else if (
-                Status.STATUS_COMMITTED == status &&
-                TransactionState.COMMITTED.equals(transactionState)
-            ) {
+            } else if (Status.STATUS_COMMITTED == status && TransactionState.COMMITTED.equals(transactionState)) {
                 transactionListener.execute(commandContext);
             }
         }

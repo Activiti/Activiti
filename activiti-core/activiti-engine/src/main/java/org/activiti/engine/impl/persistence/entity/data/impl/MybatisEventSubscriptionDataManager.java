@@ -75,9 +75,7 @@ public class MybatisEventSubscriptionDataManager
 
     protected CachedEntityMatcher<EventSubscriptionEntity> messageEventSubscriptionsByProcInstAndEventNameMatcher = new MessageEventSubscriptionsByProcInstAndEventNameMatcher();
 
-    public MybatisEventSubscriptionDataManager(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public MybatisEventSubscriptionDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);
     }
 
@@ -113,12 +111,9 @@ public class MybatisEventSubscriptionDataManager
     }
 
     @Override
-    public long findEventSubscriptionCountByQueryCriteria(
-        EventSubscriptionQueryImpl eventSubscriptionQueryImpl
-    ) {
+    public long findEventSubscriptionCountByQueryCriteria(EventSubscriptionQueryImpl eventSubscriptionQueryImpl) {
         final String query = "selectEventSubscriptionCountByQueryCriteria";
-        return (Long) getDbSqlSession()
-            .selectOne(query, eventSubscriptionQueryImpl);
+        return (Long) getDbSqlSession().selectOne(query, eventSubscriptionQueryImpl);
     }
 
     @Override
@@ -128,8 +123,7 @@ public class MybatisEventSubscriptionDataManager
         Page page
     ) {
         final String query = "selectEventSubscriptionByQueryCriteria";
-        return getDbSqlSession()
-            .selectList(query, eventSubscriptionQueryImpl, page);
+        return getDbSqlSession().selectList(query, eventSubscriptionQueryImpl, page);
     }
 
     @Override
@@ -159,19 +153,11 @@ public class MybatisEventSubscriptionDataManager
 
         final Map<String, String> params = new HashMap<String, String>();
         params.put("eventName", eventName);
-        if (
-            tenantId != null &&
-            !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)
-        ) {
+        if (tenantId != null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)) {
             params.put("tenantId", tenantId);
         }
 
-        List<EventSubscriptionEntity> result = getList(
-            query,
-            params,
-            signalEventSubscriptionByEventNameMatcher,
-            true
-        );
+        List<EventSubscriptionEntity> result = getList(query, params, signalEventSubscriptionByEventNameMatcher, true);
         return toSignalEventSubscriptionEntityList(result);
     }
 
@@ -180,18 +166,12 @@ public class MybatisEventSubscriptionDataManager
         final String processInstanceId,
         final String eventName
     ) {
-        final String query =
-            "selectSignalEventSubscriptionsByProcessInstanceAndEventName";
+        final String query = "selectSignalEventSubscriptionsByProcessInstanceAndEventName";
         Map<String, String> params = new HashMap<String, String>();
         params.put("processInstanceId", processInstanceId);
         params.put("eventName", eventName);
         return toSignalEventSubscriptionEntityList(
-            getList(
-                query,
-                params,
-                signalEventSubscriptionByProcInstAndEventNameMatcher,
-                true
-            )
+            getList(query, params, signalEventSubscriptionByProcInstAndEventNameMatcher, true)
         );
     }
 
@@ -248,15 +228,8 @@ public class MybatisEventSubscriptionDataManager
     }
 
     @Override
-    public List<EventSubscriptionEntity> findEventSubscriptionsByExecution(
-        final String executionId
-    ) {
-        return getList(
-            "selectEventSubscriptionsByExecution",
-            executionId,
-            eventSubscritionsByExecutionIdMatcher,
-            true
-        );
+    public List<EventSubscriptionEntity> findEventSubscriptionsByExecution(final String executionId) {
+        return getList("selectEventSubscriptionsByExecution", executionId, eventSubscritionsByExecutionIdMatcher, true);
     }
 
     @Override
@@ -266,17 +239,13 @@ public class MybatisEventSubscriptionDataManager
         String processDefinitionId,
         String tenantId
     ) {
-        final String query =
-            "selectEventSubscriptionsByTypeAndProcessDefinitionId";
+        final String query = "selectEventSubscriptionsByTypeAndProcessDefinitionId";
         Map<String, String> params = new HashMap<String, String>();
         if (type != null) {
             params.put("eventType", type);
         }
         params.put("processDefinitionId", processDefinitionId);
-        if (
-            tenantId != null &&
-            !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)
-        ) {
+        if (tenantId != null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)) {
             params.put("tenantId", tenantId);
         }
         return getDbSqlSession().selectList(query, params);
@@ -291,19 +260,11 @@ public class MybatisEventSubscriptionDataManager
         Map<String, String> params = new HashMap<String, String>();
         params.put("eventType", type);
         params.put("eventName", eventName);
-        if (
-            tenantId != null &&
-            !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)
-        ) {
+        if (tenantId != null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)) {
             params.put("tenantId", tenantId);
         }
 
-        return getList(
-            "selectEventSubscriptionsByName",
-            params,
-            eventSubscriptionsByNameMatcher,
-            true
-        );
+        return getList("selectEventSubscriptionsByName", params, eventSubscriptionsByNameMatcher, true);
     }
 
     @Override
@@ -322,16 +283,10 @@ public class MybatisEventSubscriptionDataManager
     }
 
     @Override
-    public MessageEventSubscriptionEntity findMessageStartEventSubscriptionByName(
-        String messageName,
-        String tenantId
-    ) {
+    public MessageEventSubscriptionEntity findMessageStartEventSubscriptionByName(String messageName, String tenantId) {
         Map<String, String> params = new HashMap<String, String>();
         params.put("eventName", messageName);
-        if (
-            tenantId != null &&
-            !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)
-        ) {
+        if (tenantId != null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)) {
             params.put("tenantId", tenantId);
         }
         MessageEventSubscriptionEntity entity = (MessageEventSubscriptionEntity) getDbSqlSession()
@@ -340,10 +295,7 @@ public class MybatisEventSubscriptionDataManager
     }
 
     @Override
-    public void updateEventSubscriptionTenantId(
-        String oldTenantId,
-        String newTenantId
-    ) {
+    public void updateEventSubscriptionTenantId(String oldTenantId, String newTenantId) {
         Map<String, String> params = new HashMap<String, String>();
         params.put("oldTenantId", oldTenantId);
         params.put("newTenantId", newTenantId);
@@ -351,9 +303,7 @@ public class MybatisEventSubscriptionDataManager
     }
 
     @Override
-    public void deleteEventSubscriptionsForProcessDefinition(
-        String processDefinitionId
-    ) {
+    public void deleteEventSubscriptionsForProcessDefinition(String processDefinitionId) {
         getDbSqlSession()
             .delete(
                 "deleteEventSubscriptionsForProcessDefinition",
@@ -369,9 +319,7 @@ public class MybatisEventSubscriptionDataManager
             result.size()
         );
         for (EventSubscriptionEntity eventSubscriptionEntity : result) {
-            signalEventSubscriptionEntities.add(
-                (SignalEventSubscriptionEntity) eventSubscriptionEntity
-            );
+            signalEventSubscriptionEntities.add((SignalEventSubscriptionEntity) eventSubscriptionEntity);
         }
         return signalEventSubscriptionEntities;
     }
@@ -383,9 +331,7 @@ public class MybatisEventSubscriptionDataManager
             result.size()
         );
         for (EventSubscriptionEntity eventSubscriptionEntity : result) {
-            messageEventSubscriptionEntities.add(
-                (MessageEventSubscriptionEntity) eventSubscriptionEntity
-            );
+            messageEventSubscriptionEntities.add((MessageEventSubscriptionEntity) eventSubscriptionEntity);
         }
         return messageEventSubscriptionEntities;
     }

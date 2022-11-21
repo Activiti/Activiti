@@ -23,19 +23,14 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 /**
 
  */
-public class SubProcessParseHandler
-    extends AbstractActivityBpmnParseHandler<SubProcess> {
+public class SubProcessParseHandler extends AbstractActivityBpmnParseHandler<SubProcess> {
 
     protected Class<? extends BaseElement> getHandledType() {
         return SubProcess.class;
     }
 
     protected void executeParse(BpmnParse bpmnParse, SubProcess subProcess) {
-        subProcess.setBehavior(
-            bpmnParse
-                .getActivityBehaviorFactory()
-                .createSubprocessActivityBehavior(subProcess)
-        );
+        subProcess.setBehavior(bpmnParse.getActivityBehaviorFactory().createSubprocessActivityBehavior(subProcess));
 
         bpmnParse.processFlowElements(subProcess.getFlowElements());
         processArtifacts(bpmnParse, subProcess.getArtifacts());

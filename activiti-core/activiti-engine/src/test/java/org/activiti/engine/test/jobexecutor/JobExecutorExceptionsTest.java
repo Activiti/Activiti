@@ -39,21 +39,13 @@ public class JobExecutorExceptionsTest extends PluggableActivitiTestCase {
         }
     )
     public void testQueryByExceptionWithRealJobExecutor() {
-        TimerJobQuery query = managementService
-            .createTimerJobQuery()
-            .withException();
+        TimerJobQuery query = managementService.createTimerJobQuery().withException();
         assertThat(query.count()).isEqualTo(0);
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "exceptionInJobExecution"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("exceptionInJobExecution");
 
         // Timer is set for 4 hours, so move clock 5 hours
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(
-                new Date(new Date().getTime() + 5 * 60 * 60 * 1000)
-            );
+        processEngineConfiguration.getClock().setCurrentTime(new Date(new Date().getTime() + 5 * 60 * 60 * 1000));
 
         // The execution is waiting in the first usertask. This contains a
         // boundary timer event which we will execute manual for testing purposes.
@@ -63,22 +55,12 @@ public class JobExecutorExceptionsTest extends PluggableActivitiTestCase {
             100L,
             new Callable<Boolean>() {
                 public Boolean call() throws Exception {
-                    return (
-                        managementService
-                            .createTimerJobQuery()
-                            .withException()
-                            .count() ==
-                        1
-                    );
+                    return (managementService.createTimerJobQuery().withException().count() == 1);
                 }
             }
         );
 
-        query =
-            managementService
-                .createTimerJobQuery()
-                .processInstanceId(processInstance.getId())
-                .withException();
+        query = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).withException();
         assertThat(query.count()).isEqualTo(1);
     }
 }

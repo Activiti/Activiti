@@ -41,10 +41,7 @@ public class SpringAsyncExecutor extends DefaultAsyncJobExecutor {
 
     public SpringAsyncExecutor() {}
 
-    public SpringAsyncExecutor(
-        TaskExecutor taskExecutor,
-        SpringRejectedJobsHandler rejectedJobsHandler
-    ) {
+    public SpringAsyncExecutor(TaskExecutor taskExecutor, SpringRejectedJobsHandler rejectedJobsHandler) {
         this.taskExecutor = taskExecutor;
         this.rejectedJobsHandler = rejectedJobsHandler;
     }
@@ -71,21 +68,14 @@ public class SpringAsyncExecutor extends DefaultAsyncJobExecutor {
      *
      * @param rejectedJobsHandler
      */
-    public void setRejectedJobsHandler(
-        SpringRejectedJobsHandler rejectedJobsHandler
-    ) {
+    public void setRejectedJobsHandler(SpringRejectedJobsHandler rejectedJobsHandler) {
         this.rejectedJobsHandler = rejectedJobsHandler;
     }
 
     @Override
     public boolean executeAsyncJob(Job job) {
         try {
-            taskExecutor.execute(
-                new ExecuteAsyncRunnable(
-                    (JobEntity) job,
-                    processEngineConfiguration
-                )
-            );
+            taskExecutor.execute(new ExecuteAsyncRunnable((JobEntity) job, processEngineConfiguration));
             return true;
         } catch (RejectedExecutionException e) {
             rejectedJobsHandler.jobRejected(this, job);

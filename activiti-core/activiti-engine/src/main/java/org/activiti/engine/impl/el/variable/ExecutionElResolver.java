@@ -27,10 +27,7 @@ public class ExecutionElResolver implements VariableScopeItemELResolver {
     public boolean canResolve(String property, VariableScope variableScope) {
         return (
             EXECUTION_KEY.equals(property) &&
-            (
-                variableScope instanceof ExecutionEntity ||
-                variableScope instanceof TaskEntity
-            )
+            (variableScope instanceof ExecutionEntity || variableScope instanceof TaskEntity)
         );
     }
 

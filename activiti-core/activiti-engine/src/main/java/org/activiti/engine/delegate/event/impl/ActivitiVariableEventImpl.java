@@ -25,9 +25,7 @@ import org.activiti.engine.impl.variable.VariableType;
  *
 
  */
-public class ActivitiVariableEventImpl
-    extends ActivitiEventImpl
-    implements ActivitiVariableEvent {
+public class ActivitiVariableEventImpl extends ActivitiEventImpl implements ActivitiVariableEvent {
 
     protected String variableName;
     protected Object variableValue;

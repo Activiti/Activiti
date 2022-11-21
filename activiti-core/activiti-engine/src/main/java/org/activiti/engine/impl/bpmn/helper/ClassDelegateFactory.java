@@ -33,8 +33,5 @@ public interface ClassDelegateFactory {
         List<MapExceptionEntry> mapExceptions
     );
 
-    public ClassDelegate create(
-        String className,
-        List<FieldDeclaration> fieldDeclarations
-    );
+    public ClassDelegate create(String className, List<FieldDeclaration> fieldDeclarations);
 }

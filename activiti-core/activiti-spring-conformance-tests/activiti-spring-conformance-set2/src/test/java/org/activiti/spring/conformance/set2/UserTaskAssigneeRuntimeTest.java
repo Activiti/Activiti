@@ -47,8 +47,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class UserTaskAssigneeRuntimeTest {
 
-    private final String processKey =
-        "usertask-6a854551-861f-4cc5-a1a1-73b8a14ccdc4";
+    private final String processKey = "usertask-6a854551-861f-4cc5-a1a1-73b8a14ccdc4";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -98,17 +97,12 @@ public class UserTaskAssigneeRuntimeTest {
 
         //then
         assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getStatus())
-            .isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
-        assertThat(processInstance.getBusinessKey())
-            .isEqualTo("my-business-key");
-        assertThat(processInstance.getName())
-            .isEqualTo("my-process-instance-name");
+        assertThat(processInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(processInstance.getBusinessKey()).isEqualTo("my-business-key");
+        assertThat(processInstance.getName()).isEqualTo("my-process-instance-name");
 
         // I should be able to get the process instance from the Runtime because it is still running
-        ProcessInstance processInstanceById = processRuntime.processInstance(
-            processInstance.getId()
-        );
+        ProcessInstance processInstanceById = processRuntime.processInstance(processInstance.getId());
 
         assertThat(processInstanceById).isEqualTo(processInstance);
 
@@ -134,9 +128,7 @@ public class UserTaskAssigneeRuntimeTest {
 
         assertThat(tasks.getTotalItems()).isEqualTo(0);
 
-        Throwable throwable = catchThrowable(() ->
-            taskRuntime.task(task.getId())
-        );
+        Throwable throwable = catchThrowable(() -> taskRuntime.task(task.getId()));
 
         assertThat(throwable).isInstanceOf(NotFoundException.class);
 
@@ -158,12 +150,9 @@ public class UserTaskAssigneeRuntimeTest {
         // complete with user1
         securityUtil.logInAs("user1");
 
-        Task completedTask = taskRuntime.complete(
-            TaskPayloadBuilder.complete().withTaskId(task.getId()).build()
-        );
+        Task completedTask = taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
 
-        assertThat(completedTask.getStatus())
-            .isEqualTo(Task.TaskStatus.COMPLETED);
+        assertThat(completedTask.getStatus()).isEqualTo(Task.TaskStatus.COMPLETED);
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
             .extracting(RuntimeEvent::getEventType)

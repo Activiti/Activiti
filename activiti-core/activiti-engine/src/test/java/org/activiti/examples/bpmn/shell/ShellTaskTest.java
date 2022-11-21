@@ -35,13 +35,9 @@ public class ShellTaskTest extends PluggableActivitiTestCase {
 
     OsType getSystemOsType() {
         String osName = System.getProperty("os.name").toLowerCase();
-        if (osName.contains("win")) return OsType.WINDOWS; else if (
-            osName.contains("mac")
-        ) return OsType.MAC; else if (
+        if (osName.contains("win")) return OsType.WINDOWS; else if (osName.contains("mac")) return OsType.MAC; else if (
             (osName.contains("nix")) || (osName.contains("nux"))
-        ) return OsType.LINUX; else if (
-            osName.contains("sunos")
-        ) return OsType.SOLARIS; else return OsType.UNKOWN;
+        ) return OsType.LINUX; else if (osName.contains("sunos")) return OsType.SOLARIS; else return OsType.UNKOWN;
     }
 
     protected void setUp() throws Exception {
@@ -55,14 +51,9 @@ public class ShellTaskTest extends PluggableActivitiTestCase {
     @Deployment
     public void testEchoShellWindows() {
         if (osType == OsType.WINDOWS) {
-            ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-                "echoShellWindows"
-            );
+            ProcessInstance pi = runtimeService.startProcessInstanceByKey("echoShellWindows");
 
-            String st = (String) runtimeService.getVariable(
-                pi.getId(),
-                "resultVar"
-            );
+            String st = (String) runtimeService.getVariable(pi.getId(), "resultVar");
             assertThat(st).isNotNull();
             assertThat(st.startsWith("EchoTest")).isTrue();
         }
@@ -71,14 +62,9 @@ public class ShellTaskTest extends PluggableActivitiTestCase {
     @Deployment
     public void testEchoShellLinux() {
         if (osType == OsType.LINUX) {
-            ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-                "echoShellLinux"
-            );
+            ProcessInstance pi = runtimeService.startProcessInstanceByKey("echoShellLinux");
 
-            String st = (String) runtimeService.getVariable(
-                pi.getId(),
-                "resultVar"
-            );
+            String st = (String) runtimeService.getVariable(pi.getId(), "resultVar");
             assertThat(st).isNotNull();
             assertThat(st.startsWith("EchoTest")).isTrue();
         }
@@ -87,14 +73,9 @@ public class ShellTaskTest extends PluggableActivitiTestCase {
     @Deployment
     public void testEchoShellMac() {
         if (osType == OsType.MAC) {
-            ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-                "echoShellMac"
-            );
+            ProcessInstance pi = runtimeService.startProcessInstanceByKey("echoShellMac");
 
-            String st = (String) runtimeService.getVariable(
-                pi.getId(),
-                "resultVar"
-            );
+            String st = (String) runtimeService.getVariable(pi.getId(), "resultVar");
             assertThat(st).isNotNull();
             assertThat(st.startsWith("EchoTest")).isTrue();
         }

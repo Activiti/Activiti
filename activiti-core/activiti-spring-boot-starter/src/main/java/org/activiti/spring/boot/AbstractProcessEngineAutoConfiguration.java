@@ -41,17 +41,11 @@ import org.springframework.core.task.TaskExecutor;
  * Provides sane definitions for the various beans required to be productive with Activiti in Spring.
  *
  */
-public abstract class AbstractProcessEngineAutoConfiguration
-    extends AbstractProcessEngineConfiguration {
+public abstract class AbstractProcessEngineAutoConfiguration extends AbstractProcessEngineConfiguration {
 
     @Bean
-    public SpringAsyncExecutor springAsyncExecutor(
-        TaskExecutor applicationTaskExecutor
-    ) {
-        return new SpringAsyncExecutor(
-            applicationTaskExecutor,
-            springRejectedJobsHandler()
-        );
+    public SpringAsyncExecutor springAsyncExecutor(TaskExecutor applicationTaskExecutor) {
+        return new SpringAsyncExecutor(applicationTaskExecutor, springRejectedJobsHandler());
     }
 
     @Bean
@@ -59,32 +53,21 @@ public abstract class AbstractProcessEngineAutoConfiguration
         return new SpringCallerRunsRejectedJobsHandler();
     }
 
-    protected Set<Class<?>> getCustomMybatisMapperClasses(
-        List<String> customMyBatisMappers
-    ) {
+    protected Set<Class<?>> getCustomMybatisMapperClasses(List<String> customMyBatisMappers) {
         Set<Class<?>> mybatisMappers = new HashSet<>();
         for (String customMybatisMapperClassName : customMyBatisMappers) {
             try {
-                Class customMybatisClass = Class.forName(
-                    customMybatisMapperClassName
-                );
+                Class customMybatisClass = Class.forName(customMybatisMapperClassName);
                 mybatisMappers.add(customMybatisClass);
             } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException(
-                    "Class " +
-                    customMybatisMapperClassName +
-                    " has not been found.",
-                    e
-                );
+                throw new IllegalArgumentException("Class " + customMybatisMapperClassName + " has not been found.", e);
             }
         }
         return mybatisMappers;
     }
 
     @Bean
-    public ProcessEngineFactoryBean processEngine(
-        SpringProcessEngineConfiguration configuration
-    ) {
+    public ProcessEngineFactoryBean processEngine(SpringProcessEngineConfiguration configuration) {
         return super.springProcessEngineBean(configuration);
     }
 
@@ -98,9 +81,7 @@ public abstract class AbstractProcessEngineAutoConfiguration
     @Bean
     @ConditionalOnMissingBean
     @Override
-    public RepositoryService repositoryServiceBean(
-        ProcessEngine processEngine
-    ) {
+    public RepositoryService repositoryServiceBean(ProcessEngine processEngine) {
         return super.repositoryServiceBean(processEngine);
     }
 
@@ -121,9 +102,7 @@ public abstract class AbstractProcessEngineAutoConfiguration
     @Bean
     @ConditionalOnMissingBean
     @Override
-    public ManagementService managementServiceBeanBean(
-        ProcessEngine processEngine
-    ) {
+    public ManagementService managementServiceBeanBean(ProcessEngine processEngine) {
         return super.managementServiceBeanBean(processEngine);
     }
 
@@ -136,18 +115,14 @@ public abstract class AbstractProcessEngineAutoConfiguration
     @Bean
     @ConditionalOnMissingBean
     @Override
-    public IntegrationContextManager integrationContextManagerBean(
-        ProcessEngine processEngine
-    ) {
+    public IntegrationContextManager integrationContextManagerBean(ProcessEngine processEngine) {
         return super.integrationContextManagerBean(processEngine);
     }
 
     @Bean
     @ConditionalOnMissingBean
     @Override
-    public IntegrationContextService integrationContextServiceBean(
-        ProcessEngine processEngine
-    ) {
+    public IntegrationContextService integrationContextServiceBean(ProcessEngine processEngine) {
         return super.integrationContextServiceBean(processEngine);
     }
 }

@@ -65,18 +65,12 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
     ) {
         Map<String, Object> processedVariables = new HashMap<>();
         if (processExtensionService.hasExtensionsFor(processDefinition)) {
-            Extension processExtension = processExtensionService.getExtensionsFor(
-                processDefinition
-            );
+            Extension processExtension = processExtensionService.getExtensionsFor(processDefinition);
 
             Map<String, VariableDefinition> variableDefinitionMap = processExtension.getProperties();
-            processedVariables =
-                processVariables(variables, variableDefinitionMap);
+            processedVariables = processVariables(variables, variableDefinitionMap);
 
-            Set<String> missingRequiredVars = checkRequiredVariables(
-                processedVariables,
-                variableDefinitionMap
-            );
+            Set<String> missingRequiredVars = checkRequiredVariables(processedVariables, variableDefinitionMap);
             if (!missingRequiredVars.isEmpty()) {
                 throw new ActivitiException(
                     "Can't start process '" +
@@ -121,11 +115,7 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
                 processVariables = calculateOutPutVariables;
             }
 
-            processVariables =
-                calculateVariablesFromExtensionFile(
-                    processDefinition,
-                    processVariables
-                );
+            processVariables = calculateVariablesFromExtensionFile(processDefinition, processVariables);
         }
         return processVariables;
     }
@@ -134,9 +124,7 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
         Map<String, Object> variables,
         Map<String, VariableDefinition> variableDefinitionMap
     ) {
-        Map<String, Object> newVarsMap = new HashMap<>(
-            Optional.ofNullable(variables).orElse(emptyMap())
-        );
+        Map<String, Object> newVarsMap = new HashMap<>(Optional.ofNullable(variables).orElse(emptyMap()));
         variableDefinitionMap.forEach((k, v) -> {
             if (!newVarsMap.containsKey(v.getName()) && v.getValue() != null) {
                 newVarsMap.put(v.getName(), createDefaultVariableValue(v));
@@ -145,9 +133,7 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
         return newVarsMap;
     }
 
-    private Object createDefaultVariableValue(
-        VariableDefinition variableDefinition
-    ) {
+    private Object createDefaultVariableValue(VariableDefinition variableDefinition) {
         // take a default from the variable definition in the proc extensions
         return variableParsingService.parse(variableDefinition);
     }
@@ -173,12 +159,7 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
         variableDefinitionMap.forEach((k, v) -> {
             //if we have definition for this variable then validate it
             if (variables.containsKey(v.getName())) {
-                if (
-                    !variableValidationService.validate(
-                        variables.get(v.getName()),
-                        v
-                    )
-                ) {
+                if (!variableValidationService.validate(variables.get(v.getName()), v)) {
                     mismatchedVars.add(v.getName());
                 }
             }

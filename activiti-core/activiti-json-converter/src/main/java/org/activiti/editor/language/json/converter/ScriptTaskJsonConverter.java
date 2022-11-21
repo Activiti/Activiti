@@ -36,37 +36,23 @@ public class ScriptTaskJsonConverter extends BaseBpmnJsonConverter {
         fillBpmnTypes(convertersToJsonMap);
     }
 
-    public static void fillJsonTypes(
-        Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap
-    ) {
-        convertersToBpmnMap.put(
-            STENCIL_TASK_SCRIPT,
-            ScriptTaskJsonConverter.class
-        );
+    public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
+        convertersToBpmnMap.put(STENCIL_TASK_SCRIPT, ScriptTaskJsonConverter.class);
     }
 
     public static void fillBpmnTypes(
         Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap
     ) {
-        convertersToJsonMap.put(
-            ScriptTask.class,
-            ScriptTaskJsonConverter.class
-        );
+        convertersToJsonMap.put(ScriptTask.class, ScriptTaskJsonConverter.class);
     }
 
     protected String getStencilId(BaseElement baseElement) {
         return STENCIL_TASK_SCRIPT;
     }
 
-    protected void convertElementToJson(
-        ObjectNode propertiesNode,
-        BaseElement baseElement
-    ) {
+    protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
         ScriptTask scriptTask = (ScriptTask) baseElement;
-        propertiesNode.put(
-            PROPERTY_SCRIPT_FORMAT,
-            scriptTask.getScriptFormat()
-        );
+        propertiesNode.put(PROPERTY_SCRIPT_FORMAT, scriptTask.getScriptFormat());
         propertiesNode.put(PROPERTY_SCRIPT_TEXT, scriptTask.getScript());
     }
 
@@ -76,12 +62,8 @@ public class ScriptTaskJsonConverter extends BaseBpmnJsonConverter {
         Map<String, JsonNode> shapeMap
     ) {
         ScriptTask task = new ScriptTask();
-        task.setScriptFormat(
-            getPropertyValueAsString(PROPERTY_SCRIPT_FORMAT, elementNode)
-        );
-        task.setScript(
-            getPropertyValueAsString(PROPERTY_SCRIPT_TEXT, elementNode)
-        );
+        task.setScriptFormat(getPropertyValueAsString(PROPERTY_SCRIPT_FORMAT, elementNode));
+        task.setScript(getPropertyValueAsString(PROPERTY_SCRIPT_TEXT, elementNode));
         return task;
     }
 }

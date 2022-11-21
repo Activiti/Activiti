@@ -35,10 +35,7 @@ public class ActivitiClassLoadingException extends ActivitiException {
         return className;
     }
 
-    private static String getExceptionMessageMessage(
-        String className,
-        Throwable cause
-    ) {
+    private static String getExceptionMessageMessage(String className, Throwable cause) {
         if (cause instanceof ClassNotFoundException) {
             return "Class not found: " + className;
         } else {

@@ -37,9 +37,7 @@ import org.activiti.engine.impl.variable.VariableTypes;
 
 /**
  */
-public abstract class VariableScopeImpl
-    extends AbstractEntity
-    implements Serializable, VariableScope {
+public abstract class VariableScopeImpl extends AbstractEntity implements Serializable, VariableScope {
 
     private static final long serialVersionUID = 1L;
 
@@ -57,9 +55,7 @@ public abstract class VariableScopeImpl
 
     protected abstract VariableScopeImpl getParentVariableScope();
 
-    protected abstract void initializeVariableInstanceBackPointer(
-        VariableInstanceEntity variableInstance
-    );
+    protected abstract void initializeVariableInstanceBackPointer(VariableInstanceEntity variableInstance);
 
     protected void ensureVariableInstancesInitialized() {
         if (variableInstances == null) {
@@ -67,16 +63,11 @@ public abstract class VariableScopeImpl
 
             CommandContext commandContext = Context.getCommandContext();
             if (commandContext == null) {
-                throw new ActivitiException(
-                    "lazy loading outside command context"
-                );
+                throw new ActivitiException("lazy loading outside command context");
             }
             Collection<VariableInstanceEntity> variableInstancesList = loadVariableInstances();
             for (VariableInstanceEntity variableInstance : variableInstancesList) {
-                variableInstances.put(
-                    variableInstance.getName(),
-                    variableInstance
-                );
+                variableInstances.put(variableInstance.getName(), variableInstance);
             }
         }
     }
@@ -86,45 +77,29 @@ public abstract class VariableScopeImpl
     }
 
     public Map<String, VariableInstance> getVariableInstances() {
-        return collectVariableInstances(
-            new HashMap<String, VariableInstance>()
-        );
+        return collectVariableInstances(new HashMap<String, VariableInstance>());
     }
 
     public Map<String, Object> getVariables(Collection<String> variableNames) {
         return getVariables(variableNames, true);
     }
 
-    public Map<String, VariableInstance> getVariableInstances(
-        Collection<String> variableNames
-    ) {
+    public Map<String, VariableInstance> getVariableInstances(Collection<String> variableNames) {
         return getVariableInstances(variableNames, true);
     }
 
-    public Map<String, Object> getVariables(
-        Collection<String> variableNames,
-        boolean fetchAllVariables
-    ) {
+    public Map<String, Object> getVariables(Collection<String> variableNames, boolean fetchAllVariables) {
         Map<String, Object> requestedVariables = new HashMap<String, Object>();
         Set<String> variableNamesToFetch = new HashSet<String>(variableNames);
 
         // Transient variables 'shadow' any existing variables.
         // The values in the fetch-cache will be more recent, so they can override any existing ones
         for (String variableName : variableNames) {
-            if (
-                transientVariabes != null &&
-                transientVariabes.containsKey(variableName)
-            ) {
-                requestedVariables.put(
-                    variableName,
-                    transientVariabes.get(variableName).getValue()
-                );
+            if (transientVariabes != null && transientVariabes.containsKey(variableName)) {
+                requestedVariables.put(variableName, transientVariabes.get(variableName).getValue());
                 variableNamesToFetch.remove(variableName);
             } else if (usedVariablesCache.containsKey(variableName)) {
-                requestedVariables.put(
-                    variableName,
-                    usedVariablesCache.get(variableName).getValue()
-                );
+                requestedVariables.put(variableName, usedVariablesCache.get(variableName).getValue());
                 variableNamesToFetch.remove(variableName);
             }
         }
@@ -134,25 +109,18 @@ public abstract class VariableScopeImpl
             // it here also, the cached values will already be applied too
             Map<String, Object> allVariables = getVariables();
             for (String variableName : variableNamesToFetch) {
-                requestedVariables.put(
-                    variableName,
-                    allVariables.get(variableName)
-                );
+                requestedVariables.put(variableName, allVariables.get(variableName));
             }
             return requestedVariables;
         } else {
             // Go up if needed
             VariableScope parent = getParentVariableScope();
             if (parent != null) {
-                requestedVariables.putAll(
-                    parent.getVariables(variableNamesToFetch, fetchAllVariables)
-                );
+                requestedVariables.putAll(parent.getVariables(variableNamesToFetch, fetchAllVariables));
             }
 
             // Fetch variables on this scope
-            List<VariableInstanceEntity> variables = getSpecificVariables(
-                variableNamesToFetch
-            );
+            List<VariableInstanceEntity> variables = getSpecificVariables(variableNamesToFetch);
             for (VariableInstanceEntity variable : variables) {
                 requestedVariables.put(variable.getName(), variable.getValue());
             }
@@ -170,20 +138,11 @@ public abstract class VariableScopeImpl
 
         // The values in the fetch-cache will be more recent, so they can override any existing ones
         for (String variableName : variableNames) {
-            if (
-                transientVariabes != null &&
-                transientVariabes.containsKey(variableName)
-            ) {
-                requestedVariables.put(
-                    variableName,
-                    transientVariabes.get(variableName)
-                );
+            if (transientVariabes != null && transientVariabes.containsKey(variableName)) {
+                requestedVariables.put(variableName, transientVariabes.get(variableName));
                 variableNamesToFetch.remove(variableName);
             } else if (usedVariablesCache.containsKey(variableName)) {
-                requestedVariables.put(
-                    variableName,
-                    usedVariablesCache.get(variableName)
-                );
+                requestedVariables.put(variableName, usedVariablesCache.get(variableName));
                 variableNamesToFetch.remove(variableName);
             }
         }
@@ -193,28 +152,18 @@ public abstract class VariableScopeImpl
             // also, the cached values will already be applied too
             Map<String, VariableInstance> allVariables = getVariableInstances();
             for (String variableName : variableNamesToFetch) {
-                requestedVariables.put(
-                    variableName,
-                    allVariables.get(variableName)
-                );
+                requestedVariables.put(variableName, allVariables.get(variableName));
             }
             return requestedVariables;
         } else {
             // Go up if needed
             VariableScope parent = getParentVariableScope();
             if (parent != null) {
-                requestedVariables.putAll(
-                    parent.getVariableInstances(
-                        variableNamesToFetch,
-                        fetchAllVariables
-                    )
-                );
+                requestedVariables.putAll(parent.getVariableInstances(variableNamesToFetch, fetchAllVariables));
             }
 
             // Fetch variables on this scope
-            List<VariableInstanceEntity> variables = getSpecificVariables(
-                variableNamesToFetch
-            );
+            List<VariableInstanceEntity> variables = getSpecificVariables(variableNamesToFetch);
             for (VariableInstanceEntity variable : variables) {
                 requestedVariables.put(variable.getName(), variable);
             }
@@ -223,9 +172,7 @@ public abstract class VariableScopeImpl
         }
     }
 
-    protected Map<String, Object> collectVariables(
-        HashMap<String, Object> variables
-    ) {
+    protected Map<String, Object> collectVariables(HashMap<String, Object> variables) {
         ensureVariableInstancesInitialized();
         VariableScopeImpl parentScope = getParentVariableScope();
         if (parentScope != null) {
@@ -233,34 +180,23 @@ public abstract class VariableScopeImpl
         }
 
         for (VariableInstanceEntity variableInstance : variableInstances.values()) {
-            variables.put(
-                variableInstance.getName(),
-                variableInstance.getValue()
-            );
+            variables.put(variableInstance.getName(), variableInstance.getValue());
         }
 
         for (String variableName : usedVariablesCache.keySet()) {
-            variables.put(
-                variableName,
-                usedVariablesCache.get(variableName).getValue()
-            );
+            variables.put(variableName, usedVariablesCache.get(variableName).getValue());
         }
 
         if (transientVariabes != null) {
             for (String variableName : transientVariabes.keySet()) {
-                variables.put(
-                    variableName,
-                    transientVariabes.get(variableName).getValue()
-                );
+                variables.put(variableName, transientVariabes.get(variableName).getValue());
             }
         }
 
         return variables;
     }
 
-    protected Map<String, VariableInstance> collectVariableInstances(
-        HashMap<String, VariableInstance> variables
-    ) {
+    protected Map<String, VariableInstance> collectVariableInstances(HashMap<String, VariableInstance> variables) {
         ensureVariableInstancesInitialized();
         VariableScopeImpl parentScope = getParentVariableScope();
         if (parentScope != null) {
@@ -303,25 +239,16 @@ public abstract class VariableScopeImpl
      */
     public Object getVariable(String variableName, boolean fetchAllVariables) {
         Object value = null;
-        VariableInstance variable = getVariableInstance(
-            variableName,
-            fetchAllVariables
-        );
+        VariableInstance variable = getVariableInstance(variableName, fetchAllVariables);
         if (variable != null) {
             value = variable.getValue();
         }
         return value;
     }
 
-    public VariableInstance getVariableInstance(
-        String variableName,
-        boolean fetchAllVariables
-    ) {
+    public VariableInstance getVariableInstance(String variableName, boolean fetchAllVariables) {
         // Transient variable
-        if (
-            transientVariabes != null &&
-            transientVariabes.containsKey(variableName)
-        ) {
+        if (transientVariabes != null && transientVariabes.containsKey(variableName)) {
             return transientVariabes.get(variableName);
         }
 
@@ -332,9 +259,7 @@ public abstract class VariableScopeImpl
 
         if (fetchAllVariables == true) {
             ensureVariableInstancesInitialized();
-            VariableInstanceEntity variableInstance = variableInstances.get(
-                variableName
-            );
+            VariableInstanceEntity variableInstance = variableInstances.get(variableName);
             if (variableInstance != null) {
                 return variableInstance;
             }
@@ -347,10 +272,7 @@ public abstract class VariableScopeImpl
 
             return null;
         } else {
-            if (
-                variableInstances != null &&
-                variableInstances.containsKey(variableName)
-            ) {
+            if (variableInstances != null && variableInstances.containsKey(variableName)) {
                 return variableInstances.get(variableName);
             }
 
@@ -370,9 +292,7 @@ public abstract class VariableScopeImpl
         }
     }
 
-    protected abstract VariableInstanceEntity getSpecificVariable(
-        String variableName
-    );
+    protected abstract VariableInstanceEntity getSpecificVariable(String variableName);
 
     public Object getVariableLocal(String variableName) {
         return getVariableLocal(variableName, true);
@@ -382,29 +302,17 @@ public abstract class VariableScopeImpl
         return getVariableInstanceLocal(variableName, true);
     }
 
-    public Object getVariableLocal(
-        String variableName,
-        boolean fetchAllVariables
-    ) {
+    public Object getVariableLocal(String variableName, boolean fetchAllVariables) {
         Object value = null;
-        VariableInstance variable = getVariableInstanceLocal(
-            variableName,
-            fetchAllVariables
-        );
+        VariableInstance variable = getVariableInstanceLocal(variableName, fetchAllVariables);
         if (variable != null) {
             value = variable.getValue();
         }
         return value;
     }
 
-    public VariableInstance getVariableInstanceLocal(
-        String variableName,
-        boolean fetchAllVariables
-    ) {
-        if (
-            transientVariabes != null &&
-            transientVariabes.containsKey(variableName)
-        ) {
+    public VariableInstance getVariableInstanceLocal(String variableName, boolean fetchAllVariables) {
+        if (transientVariabes != null && transientVariabes.containsKey(variableName)) {
             return transientVariabes.get(variableName);
         }
 
@@ -415,21 +323,14 @@ public abstract class VariableScopeImpl
         if (fetchAllVariables == true) {
             ensureVariableInstancesInitialized();
 
-            VariableInstanceEntity variableInstance = variableInstances.get(
-                variableName
-            );
+            VariableInstanceEntity variableInstance = variableInstances.get(variableName);
             if (variableInstance != null) {
                 return variableInstance;
             }
             return null;
         } else {
-            if (
-                variableInstances != null &&
-                variableInstances.containsKey(variableName)
-            ) {
-                VariableInstanceEntity variable = variableInstances.get(
-                    variableName
-                );
+            if (variableInstances != null && variableInstances.containsKey(variableName)) {
+                VariableInstanceEntity variable = variableInstances.get(variableName);
                 if (variable != null) {
                     return variableInstances.get(variableName);
                 }
@@ -481,10 +382,7 @@ public abstract class VariableScopeImpl
     }
 
     public boolean hasVariableLocal(String variableName) {
-        if (
-            transientVariabes != null &&
-            transientVariabes.containsKey(variableName)
-        ) {
+        if (transientVariabes != null && transientVariabes.containsKey(variableName)) {
             return true;
         }
         ensureVariableInstancesInitialized();
@@ -499,9 +397,7 @@ public abstract class VariableScopeImpl
         ensureVariableInstancesInitialized();
         VariableScopeImpl parentScope = getParentVariableScope();
         if (parentScope != null) {
-            variableNames.addAll(
-                parentScope.collectVariableNames(variableNames)
-            );
+            variableNames.addAll(parentScope.collectVariableNames(variableNames));
         }
         for (VariableInstanceEntity variableInstance : variableInstances.values()) {
             variableNames.add(variableInstance.getName());
@@ -517,23 +413,14 @@ public abstract class VariableScopeImpl
         Map<String, Object> variables = new HashMap<String, Object>();
         ensureVariableInstancesInitialized();
         for (VariableInstanceEntity variableInstance : variableInstances.values()) {
-            variables.put(
-                variableInstance.getName(),
-                variableInstance.getValue()
-            );
+            variables.put(variableInstance.getName(), variableInstance.getValue());
         }
         for (String variableName : usedVariablesCache.keySet()) {
-            variables.put(
-                variableName,
-                usedVariablesCache.get(variableName).getValue()
-            );
+            variables.put(variableName, usedVariablesCache.get(variableName).getValue());
         }
         if (transientVariabes != null) {
             for (String variableName : transientVariabes.keySet()) {
-                variables.put(
-                    variableName,
-                    transientVariabes.get(variableName).getValue()
-                );
+                variables.put(variableName, transientVariabes.get(variableName).getValue());
             }
         }
         return variables;
@@ -554,41 +441,25 @@ public abstract class VariableScopeImpl
         return variables;
     }
 
-    public Map<String, Object> getVariablesLocal(
-        Collection<String> variableNames
-    ) {
+    public Map<String, Object> getVariablesLocal(Collection<String> variableNames) {
         return getVariablesLocal(variableNames, true);
     }
 
-    public Map<String, VariableInstance> getVariableInstancesLocal(
-        Collection<String> variableNames
-    ) {
+    public Map<String, VariableInstance> getVariableInstancesLocal(Collection<String> variableNames) {
         return getVariableInstancesLocal(variableNames, true);
     }
 
-    public Map<String, Object> getVariablesLocal(
-        Collection<String> variableNames,
-        boolean fetchAllVariables
-    ) {
+    public Map<String, Object> getVariablesLocal(Collection<String> variableNames, boolean fetchAllVariables) {
         Map<String, Object> requestedVariables = new HashMap<String, Object>();
 
         // The values in the fetch-cache will be more recent, so they can override any existing ones
         Set<String> variableNamesToFetch = new HashSet<String>(variableNames);
         for (String variableName : variableNames) {
-            if (
-                transientVariabes != null &&
-                transientVariabes.containsKey(variableName)
-            ) {
-                requestedVariables.put(
-                    variableName,
-                    transientVariabes.get(variableName).getValue()
-                );
+            if (transientVariabes != null && transientVariabes.containsKey(variableName)) {
+                requestedVariables.put(variableName, transientVariabes.get(variableName).getValue());
                 variableNamesToFetch.remove(variableName);
             } else if (usedVariablesCache.containsKey(variableName)) {
-                requestedVariables.put(
-                    variableName,
-                    usedVariablesCache.get(variableName).getValue()
-                );
+                requestedVariables.put(variableName, usedVariablesCache.get(variableName).getValue());
                 variableNamesToFetch.remove(variableName);
             }
         }
@@ -596,15 +467,10 @@ public abstract class VariableScopeImpl
         if (fetchAllVariables == true) {
             Map<String, Object> allVariables = getVariablesLocal();
             for (String variableName : variableNamesToFetch) {
-                requestedVariables.put(
-                    variableName,
-                    allVariables.get(variableName)
-                );
+                requestedVariables.put(variableName, allVariables.get(variableName));
             }
         } else {
-            List<VariableInstanceEntity> variables = getSpecificVariables(
-                variableNamesToFetch
-            );
+            List<VariableInstanceEntity> variables = getSpecificVariables(variableNamesToFetch);
             for (VariableInstanceEntity variable : variables) {
                 requestedVariables.put(variable.getName(), variable.getValue());
             }
@@ -622,20 +488,11 @@ public abstract class VariableScopeImpl
         // The values in the fetch-cache will be more recent, so they can override any existing ones
         Set<String> variableNamesToFetch = new HashSet<String>(variableNames);
         for (String variableName : variableNames) {
-            if (
-                transientVariabes != null &&
-                transientVariabes.containsKey(variableName)
-            ) {
-                requestedVariables.put(
-                    variableName,
-                    transientVariabes.get(variableName)
-                );
+            if (transientVariabes != null && transientVariabes.containsKey(variableName)) {
+                requestedVariables.put(variableName, transientVariabes.get(variableName));
                 variableNamesToFetch.remove(variableName);
             } else if (usedVariablesCache.containsKey(variableName)) {
-                requestedVariables.put(
-                    variableName,
-                    usedVariablesCache.get(variableName)
-                );
+                requestedVariables.put(variableName, usedVariablesCache.get(variableName));
                 variableNamesToFetch.remove(variableName);
             }
         }
@@ -643,15 +500,10 @@ public abstract class VariableScopeImpl
         if (fetchAllVariables == true) {
             Map<String, VariableInstance> allVariables = getVariableInstancesLocal();
             for (String variableName : variableNamesToFetch) {
-                requestedVariables.put(
-                    variableName,
-                    allVariables.get(variableName)
-                );
+                requestedVariables.put(variableName, allVariables.get(variableName));
             }
         } else {
-            List<VariableInstanceEntity> variables = getSpecificVariables(
-                variableNamesToFetch
-            );
+            List<VariableInstanceEntity> variables = getSpecificVariables(variableNamesToFetch);
             for (VariableInstanceEntity variable : variables) {
                 requestedVariables.put(variable.getName(), variable);
             }
@@ -660,9 +512,7 @@ public abstract class VariableScopeImpl
         return requestedVariables;
     }
 
-    protected abstract List<VariableInstanceEntity> getSpecificVariables(
-        Collection<String> variableNames
-    );
+    protected abstract List<VariableInstanceEntity> getSpecificVariables(Collection<String> variableNames);
 
     public Set<String> getVariableNamesLocal() {
         Set<String> variableNames = new HashSet<String>();
@@ -709,18 +559,14 @@ public abstract class VariableScopeImpl
 
     public void removeVariables() {
         ensureVariableInstancesInitialized();
-        Set<String> variableNames = new HashSet<String>(
-            variableInstances.keySet()
-        );
+        Set<String> variableNames = new HashSet<String>(variableInstances.keySet());
         for (String variableName : variableNames) {
             removeVariable(variableName);
         }
     }
 
     public void removeVariablesLocal() {
-        List<String> variableNames = new ArrayList<String>(
-            getVariableNamesLocal()
-        );
+        List<String> variableNames = new ArrayList<String>(getVariableNamesLocal());
         for (String variableName : variableNames) {
             removeVariableLocal(variableName);
         }
@@ -754,17 +600,8 @@ public abstract class VariableScopeImpl
      * (ie fetching all variables) Setting the fetchAllVariables parameter to false does not do that.
      *
      */
-    public void setVariable(
-        String variableName,
-        Object value,
-        boolean fetchAllVariables
-    ) {
-        setVariable(
-            variableName,
-            value,
-            getSourceActivityExecution(),
-            fetchAllVariables
-        );
+    public void setVariable(String variableName, Object value, boolean fetchAllVariables) {
+        setVariable(variableName, value, getSourceActivityExecution(), fetchAllVariables);
     }
 
     /**
@@ -782,11 +619,7 @@ public abstract class VariableScopeImpl
         if (fetchAllVariables == true) {
             // If it's in the cache, it's more recent
             if (usedVariablesCache.containsKey(variableName)) {
-                updateVariableInstance(
-                    usedVariablesCache.get(variableName),
-                    value,
-                    sourceExecution
-                );
+                updateVariableInstance(usedVariablesCache.get(variableName), value, sourceExecution);
             }
 
             // If the variable exists on this scope, replace it
@@ -801,12 +634,7 @@ public abstract class VariableScopeImpl
                 if (sourceExecution == null) {
                     parentVariableScope.setVariable(variableName, value);
                 } else {
-                    parentVariableScope.setVariable(
-                        variableName,
-                        value,
-                        sourceExecution,
-                        true
-                    );
+                    parentVariableScope.setVariable(variableName, value, sourceExecution, true);
                 }
                 return;
             }
@@ -821,26 +649,13 @@ public abstract class VariableScopeImpl
         } else {
             // Check local cache first
             if (usedVariablesCache.containsKey(variableName)) {
-                updateVariableInstance(
-                    usedVariablesCache.get(variableName),
-                    value,
-                    sourceExecution
-                );
-            } else if (
-                variableInstances != null &&
-                variableInstances.containsKey(variableName)
-            ) {
-                updateVariableInstance(
-                    variableInstances.get(variableName),
-                    value,
-                    sourceExecution
-                );
+                updateVariableInstance(usedVariablesCache.get(variableName), value, sourceExecution);
+            } else if (variableInstances != null && variableInstances.containsKey(variableName)) {
+                updateVariableInstance(variableInstances.get(variableName), value, sourceExecution);
             } else {
                 // Not in local cache, check if defined on this scope
                 // Create it if it doesn't exist yet
-                VariableInstanceEntity variable = getSpecificVariable(
-                    variableName
-                );
+                VariableInstanceEntity variable = getSpecificVariable(variableName);
                 if (variable != null) {
                     updateVariableInstance(variable, value, sourceExecution);
                     usedVariablesCache.put(variableName, variable);
@@ -848,29 +663,15 @@ public abstract class VariableScopeImpl
                     VariableScopeImpl parent = getParentVariableScope();
                     if (parent != null) {
                         if (sourceExecution == null) {
-                            parent.setVariable(
-                                variableName,
-                                value,
-                                fetchAllVariables
-                            );
+                            parent.setVariable(variableName, value, fetchAllVariables);
                         } else {
-                            parent.setVariable(
-                                variableName,
-                                value,
-                                sourceExecution,
-                                fetchAllVariables
-                            );
+                            parent.setVariable(variableName, value, sourceExecution, fetchAllVariables);
                         }
 
                         return;
                     }
 
-                    variable =
-                        createVariableInstance(
-                            variableName,
-                            value,
-                            sourceExecution
-                        );
+                    variable = createVariableInstance(variableName, value, sourceExecution);
                     usedVariablesCache.put(variableName, variable);
                 }
             }
@@ -878,12 +679,7 @@ public abstract class VariableScopeImpl
     }
 
     public Object setVariableLocal(String variableName, Object value) {
-        return setVariableLocal(
-            variableName,
-            value,
-            getSourceActivityExecution(),
-            true
-        );
+        return setVariableLocal(variableName, value, getSourceActivityExecution(), true);
     }
 
     /**
@@ -892,17 +688,8 @@ public abstract class VariableScopeImpl
      * Setting the fetchAllVariables parameter to true is the default behaviour (ie fetching all variables) Setting the fetchAllVariables parameter to false does not do that.
      *
      */
-    public Object setVariableLocal(
-        String variableName,
-        Object value,
-        boolean fetchAllVariables
-    ) {
-        return setVariableLocal(
-            variableName,
-            value,
-            getSourceActivityExecution(),
-            fetchAllVariables
-        );
+    public Object setVariableLocal(String variableName, Object value, boolean fetchAllVariables) {
+        return setVariableLocal(variableName, value, getSourceActivityExecution(), fetchAllVariables);
     }
 
     public Object setVariableLocal(
@@ -914,18 +701,12 @@ public abstract class VariableScopeImpl
         if (fetchAllVariables == true) {
             // If it's in the cache, it's more recent
             if (usedVariablesCache.containsKey(variableName)) {
-                updateVariableInstance(
-                    usedVariablesCache.get(variableName),
-                    value,
-                    sourceActivityExecution
-                );
+                updateVariableInstance(usedVariablesCache.get(variableName), value, sourceActivityExecution);
             }
 
             ensureVariableInstancesInitialized();
 
-            VariableInstanceEntity variableInstance = variableInstances.get(
-                variableName
-            );
+            VariableInstanceEntity variableInstance = variableInstances.get(variableName);
             if (variableInstance == null) {
                 variableInstance = usedVariablesCache.get(variableName);
             }
@@ -933,47 +714,21 @@ public abstract class VariableScopeImpl
             if (variableInstance == null) {
                 createVariableLocal(variableName, value);
             } else {
-                updateVariableInstance(
-                    variableInstance,
-                    value,
-                    sourceActivityExecution
-                );
+                updateVariableInstance(variableInstance, value, sourceActivityExecution);
             }
 
             return null;
         } else {
             if (usedVariablesCache.containsKey(variableName)) {
-                updateVariableInstance(
-                    usedVariablesCache.get(variableName),
-                    value,
-                    sourceActivityExecution
-                );
-            } else if (
-                variableInstances != null &&
-                variableInstances.containsKey(variableName)
-            ) {
-                updateVariableInstance(
-                    variableInstances.get(variableName),
-                    value,
-                    sourceActivityExecution
-                );
+                updateVariableInstance(usedVariablesCache.get(variableName), value, sourceActivityExecution);
+            } else if (variableInstances != null && variableInstances.containsKey(variableName)) {
+                updateVariableInstance(variableInstances.get(variableName), value, sourceActivityExecution);
             } else {
-                VariableInstanceEntity variable = getSpecificVariable(
-                    variableName
-                );
+                VariableInstanceEntity variable = getSpecificVariable(variableName);
                 if (variable != null) {
-                    updateVariableInstance(
-                        variable,
-                        value,
-                        sourceActivityExecution
-                    );
+                    updateVariableInstance(variable, value, sourceActivityExecution);
                 } else {
-                    variable =
-                        createVariableInstance(
-                            variableName,
-                            value,
-                            sourceActivityExecution
-                        );
+                    variable = createVariableInstance(variableName, value, sourceActivityExecution);
                 }
                 usedVariablesCache.put(variableName, variable);
             }
@@ -989,11 +744,7 @@ public abstract class VariableScopeImpl
     /**
      * only called when a new variable is created on this variable scope. This method is also responsible for propagating the creation of this variable to the history.
      */
-    protected void createVariableLocal(
-        String variableName,
-        Object value,
-        ExecutionEntity sourceActivityExecution
-    ) {
+    protected void createVariableLocal(String variableName, Object value, ExecutionEntity sourceActivityExecution) {
         ensureVariableInstancesInitialized();
 
         if (variableInstances.containsKey(variableName)) {
@@ -1011,10 +762,7 @@ public abstract class VariableScopeImpl
         removeVariable(variableName, getSourceActivityExecution());
     }
 
-    protected void removeVariable(
-        String variableName,
-        ExecutionEntity sourceActivityExecution
-    ) {
+    protected void removeVariable(String variableName, ExecutionEntity sourceActivityExecution) {
         ensureVariableInstancesInitialized();
         if (variableInstances.containsKey(variableName)) {
             removeVariableLocal(variableName);
@@ -1025,10 +773,7 @@ public abstract class VariableScopeImpl
             if (sourceActivityExecution == null) {
                 parentVariableScope.removeVariable(variableName);
             } else {
-                parentVariableScope.removeVariable(
-                    variableName,
-                    sourceActivityExecution
-                );
+                parentVariableScope.removeVariable(variableName, sourceActivityExecution);
             }
         }
     }
@@ -1041,19 +786,11 @@ public abstract class VariableScopeImpl
         return null;
     }
 
-    protected void removeVariableLocal(
-        String variableName,
-        ExecutionEntity sourceActivityExecution
-    ) {
+    protected void removeVariableLocal(String variableName, ExecutionEntity sourceActivityExecution) {
         ensureVariableInstancesInitialized();
-        VariableInstanceEntity variableInstance = variableInstances.remove(
-            variableName
-        );
+        VariableInstanceEntity variableInstance = variableInstances.remove(variableName);
         if (variableInstance != null) {
-            deleteVariableInstanceForExplicitUserCall(
-                variableInstance,
-                sourceActivityExecution
-            );
+            deleteVariableInstanceForExplicitUserCall(variableInstance, sourceActivityExecution);
         }
     }
 
@@ -1061,17 +798,11 @@ public abstract class VariableScopeImpl
         VariableInstanceEntity variableInstance,
         ExecutionEntity sourceActivityExecution
     ) {
-        Context
-            .getCommandContext()
-            .getVariableInstanceEntityManager()
-            .delete(variableInstance);
+        Context.getCommandContext().getVariableInstanceEntityManager().delete(variableInstance);
         variableInstance.setValue(null);
 
         // Record historic variable deletion
-        Context
-            .getCommandContext()
-            .getHistoryManager()
-            .recordVariableRemoved(variableInstance);
+        Context.getCommandContext().getHistoryManager().recordVariableRemoved(variableInstance);
 
         // Record historic detail
         Context
@@ -1095,9 +826,7 @@ public abstract class VariableScopeImpl
         // isAbleToStore(), even though another type
         // higher in the chain is eligible for storage.
 
-        VariableTypes variableTypes = Context
-            .getProcessEngineConfiguration()
-            .getVariableTypes();
+        VariableTypes variableTypes = Context.getProcessEngineConfiguration().getVariableTypes();
 
         VariableType newType = variableTypes.findVariableType(value);
 
@@ -1119,10 +848,7 @@ public abstract class VariableScopeImpl
                 isActivityIdUsedForDetails()
             );
 
-        Context
-            .getCommandContext()
-            .getHistoryManager()
-            .recordVariableUpdate(variableInstance);
+        Context.getCommandContext().getHistoryManager().recordVariableUpdate(variableInstance);
     }
 
     protected VariableInstanceEntity createVariableInstance(
@@ -1130,9 +856,7 @@ public abstract class VariableScopeImpl
         Object value,
         ExecutionEntity sourceActivityExecution
     ) {
-        VariableTypes variableTypes = Context
-            .getProcessEngineConfiguration()
-            .getVariableTypes();
+        VariableTypes variableTypes = Context.getProcessEngineConfiguration().getVariableTypes();
 
         VariableType type = variableTypes.findVariableType(value);
 
@@ -1141,20 +865,14 @@ public abstract class VariableScopeImpl
             .getVariableInstanceEntityManager()
             .create(variableName, type, value);
         initializeVariableInstanceBackPointer(variableInstance);
-        Context
-            .getCommandContext()
-            .getVariableInstanceEntityManager()
-            .insert(variableInstance);
+        Context.getCommandContext().getVariableInstanceEntityManager().insert(variableInstance);
 
         if (variableInstances != null) {
             variableInstances.put(variableName, variableInstance);
         }
 
         // Record historic variable
-        Context
-            .getCommandContext()
-            .getHistoryManager()
-            .recordVariableCreate(variableInstance);
+        Context.getCommandContext().getHistoryManager().recordVariableCreate(variableInstance);
 
         // Record historic detail
         Context
@@ -1173,49 +891,29 @@ public abstract class VariableScopeImpl
      * Transient variables
      */
 
-    public void setTransientVariablesLocal(
-        Map<String, Object> transientVariables
-    ) {
+    public void setTransientVariablesLocal(Map<String, Object> transientVariables) {
         for (String variableName : transientVariables.keySet()) {
-            setTransientVariableLocal(
-                variableName,
-                transientVariables.get(variableName)
-            );
+            setTransientVariableLocal(variableName, transientVariables.get(variableName));
         }
     }
 
-    public void setTransientVariableLocal(
-        String variableName,
-        Object variableValue
-    ) {
+    public void setTransientVariableLocal(String variableName, Object variableValue) {
         if (transientVariabes == null) {
             transientVariabes = new HashMap<String, VariableInstance>();
         }
-        transientVariabes.put(
-            variableName,
-            new TransientVariableInstance(variableName, variableValue)
-        );
+        transientVariabes.put(variableName, new TransientVariableInstance(variableName, variableValue));
     }
 
     public void setTransientVariables(Map<String, Object> transientVariables) {
         for (String variableName : transientVariables.keySet()) {
-            setTransientVariable(
-                variableName,
-                transientVariables.get(variableName)
-            );
+            setTransientVariable(variableName, transientVariables.get(variableName));
         }
     }
 
-    public void setTransientVariable(
-        String variableName,
-        Object variableValue
-    ) {
+    public void setTransientVariable(String variableName, Object variableValue) {
         VariableScopeImpl parentVariableScope = getParentVariableScope();
         if (parentVariableScope != null) {
-            parentVariableScope.setTransientVariable(
-                variableName,
-                variableValue
-            );
+            parentVariableScope.setTransientVariable(variableName, variableValue);
             return;
         }
         setTransientVariableLocal(variableName, variableValue);
@@ -1232,10 +930,7 @@ public abstract class VariableScopeImpl
         if (transientVariabes != null) {
             Map<String, Object> variables = new HashMap<String, Object>();
             for (String variableName : transientVariabes.keySet()) {
-                variables.put(
-                    variableName,
-                    transientVariabes.get(variableName).getValue()
-                );
+                variables.put(variableName, transientVariabes.get(variableName).getValue());
             }
             return variables;
         } else {
@@ -1244,10 +939,7 @@ public abstract class VariableScopeImpl
     }
 
     public Object getTransientVariable(String variableName) {
-        if (
-            transientVariabes != null &&
-            transientVariabes.containsKey(variableName)
-        ) {
+        if (transientVariabes != null && transientVariabes.containsKey(variableName)) {
             return transientVariabes.get(variableName).getValue();
         }
 
@@ -1263,9 +955,7 @@ public abstract class VariableScopeImpl
         return collectTransientVariables(new HashMap<String, Object>());
     }
 
-    protected Map<String, Object> collectTransientVariables(
-        HashMap<String, Object> variables
-    ) {
+    protected Map<String, Object> collectTransientVariables(HashMap<String, Object> variables) {
         VariableScopeImpl parentScope = getParentVariableScope();
         if (parentScope != null) {
             variables.putAll(parentScope.collectVariables(variables));
@@ -1273,10 +963,7 @@ public abstract class VariableScopeImpl
 
         if (transientVariabes != null) {
             for (String variableName : transientVariabes.keySet()) {
-                variables.put(
-                    variableName,
-                    transientVariabes.get(variableName).getValue()
-                );
+                variables.put(variableName, transientVariabes.get(variableName).getValue());
             }
         }
 
@@ -1296,10 +983,7 @@ public abstract class VariableScopeImpl
     }
 
     public void removeTransientVariable(String variableName) {
-        if (
-            transientVariabes != null &&
-            transientVariabes.containsKey(variableName)
-        ) {
+        if (transientVariabes != null && transientVariabes.containsKey(variableName)) {
             removeTransientVariableLocal(variableName);
             return;
         }

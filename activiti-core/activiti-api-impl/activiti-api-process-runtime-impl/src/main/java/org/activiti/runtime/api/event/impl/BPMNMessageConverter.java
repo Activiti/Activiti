@@ -23,15 +23,9 @@ import org.activiti.engine.delegate.event.ActivitiMessageEvent;
 public class BPMNMessageConverter {
 
     @SuppressWarnings("unchecked")
-    public BPMNMessageImpl convertToBPMNMessage(
-        ActivitiMessageEvent internalEvent
-    ) {
-        BPMNMessageImpl bpmnMessage = new BPMNMessageImpl(
-            internalEvent.getActivityId()
-        );
-        bpmnMessage.setProcessDefinitionId(
-            internalEvent.getProcessDefinitionId()
-        );
+    public BPMNMessageImpl convertToBPMNMessage(ActivitiMessageEvent internalEvent) {
+        BPMNMessageImpl bpmnMessage = new BPMNMessageImpl(internalEvent.getActivityId());
+        bpmnMessage.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         bpmnMessage.setProcessInstanceId(internalEvent.getProcessInstanceId());
 
         bpmnMessage.setMessagePayload(

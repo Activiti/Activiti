@@ -31,8 +31,7 @@ import org.activiti.engine.test.Deployment;
  *
 
  */
-public class MessageThrowingEventListenerTest
-    extends PluggableActivitiTestCase {
+public class MessageThrowingEventListenerTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testThrowMessage() throws Exception {
@@ -41,20 +40,13 @@ public class MessageThrowingEventListenerTest
             listener = new MessageThrowingEventListener();
             listener.setMessageName("Message");
 
-            processEngineConfiguration
-                .getEventDispatcher()
-                .addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
+            processEngineConfiguration.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
 
-            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-                "testMessage"
-            );
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testMessage");
             assertThat(processInstance).isNotNull();
 
             // Fetch the task and re-assig it to trigger the event-listener
-            Task task = taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+            Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
             assertThat(task).isNotNull();
             taskService.setAssignee(task.getId(), "kermit");
 
@@ -77,24 +69,17 @@ public class MessageThrowingEventListenerTest
                 .singleResult();
             assertThat(boundaryTask).isNotNull();
         } finally {
-            processEngineConfiguration
-                .getEventDispatcher()
-                .removeEventListener(listener);
+            processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
         }
     }
 
     @Deployment
     public void testThrowMessageDefinedInProcessDefinition() throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testMessage"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testMessage");
         assertThat(processInstance).isNotNull();
 
         // Fetch the task and re-assign it to trigger the event-listener
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task).isNotNull();
         taskService.setAssignee(task.getId(), "kermit");
 
@@ -124,20 +109,13 @@ public class MessageThrowingEventListenerTest
             listener = new MessageThrowingEventListener();
             listener.setMessageName("Message");
 
-            processEngineConfiguration
-                .getEventDispatcher()
-                .addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
+            processEngineConfiguration.getEventDispatcher().addEventListener(listener, ActivitiEventType.TASK_ASSIGNED);
 
-            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-                "testMessage"
-            );
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testMessage");
             assertThat(processInstance).isNotNull();
 
             // Fetch the task and re-assig it to trigger the event-listener
-            Task task = taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+            Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
             assertThat(task).isNotNull();
             taskService.setAssignee(task.getId(), "kermit");
 
@@ -159,9 +137,7 @@ public class MessageThrowingEventListenerTest
                 .singleResult();
             assertThat(boundaryTask).isNotNull();
         } finally {
-            processEngineConfiguration
-                .getEventDispatcher()
-                .removeEventListener(listener);
+            processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
         }
     }
 }

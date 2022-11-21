@@ -32,9 +32,7 @@ public class ParsedDeploymentBuilderFactory {
         this.bpmnParser = bpmnParser;
     }
 
-    public ParsedDeploymentBuilder getBuilderForDeployment(
-        DeploymentEntity deployment
-    ) {
+    public ParsedDeploymentBuilder getBuilderForDeployment(DeploymentEntity deployment) {
         return getBuilderForDeploymentAndSettings(deployment, null);
     }
 
@@ -42,10 +40,6 @@ public class ParsedDeploymentBuilderFactory {
         DeploymentEntity deployment,
         Map<String, Object> deploymentSettings
     ) {
-        return new ParsedDeploymentBuilder(
-            deployment,
-            bpmnParser,
-            deploymentSettings
-        );
+        return new ParsedDeploymentBuilder(deployment, bpmnParser, deploymentSettings);
     }
 }

@@ -106,9 +106,7 @@ public class HistoryConfigurationTest {
 
     @BeforeEach
     public void init() {
-        ApplicationEventPublisher eventPublisher = spy(
-            applicationEventPublisher
-        );
+        ApplicationEventPublisher eventPublisher = spy(applicationEventPublisher);
 
         spy(
             new ProcessRuntimeImpl(
@@ -158,13 +156,9 @@ public class HistoryConfigurationTest {
                 .build()
         );
 
-        assertThat(RuntimeTestConfiguration.completedProcesses)
-            .contains(categorizeProcess.getId());
+        assertThat(RuntimeTestConfiguration.completedProcesses).contains(categorizeProcess.getId());
         assertThat(
-            historyService
-                .createHistoricProcessInstanceQuery()
-                .processInstanceId(categorizeProcess.getId())
-                .count()
+            historyService.createHistoricProcessInstanceQuery().processInstanceId(categorizeProcess.getId()).count()
         )
             .isEqualTo(1);
     }

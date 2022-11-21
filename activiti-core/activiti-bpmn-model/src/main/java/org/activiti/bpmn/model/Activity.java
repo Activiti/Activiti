@@ -34,9 +34,7 @@ public abstract class Activity extends FlowNode {
         return failedJobRetryTimeCycleValue;
     }
 
-    public void setFailedJobRetryTimeCycleValue(
-        String failedJobRetryTimeCycleValue
-    ) {
+    public void setFailedJobRetryTimeCycleValue(String failedJobRetryTimeCycleValue) {
         this.failedJobRetryTimeCycleValue = failedJobRetryTimeCycleValue;
     }
 
@@ -68,9 +66,7 @@ public abstract class Activity extends FlowNode {
         return loopCharacteristics;
     }
 
-    public void setLoopCharacteristics(
-        MultiInstanceLoopCharacteristics loopCharacteristics
-    ) {
+    public void setLoopCharacteristics(MultiInstanceLoopCharacteristics loopCharacteristics) {
         this.loopCharacteristics = loopCharacteristics;
     }
 
@@ -90,9 +86,7 @@ public abstract class Activity extends FlowNode {
         return dataInputAssociations;
     }
 
-    public void setDataInputAssociations(
-        List<DataAssociation> dataInputAssociations
-    ) {
+    public void setDataInputAssociations(List<DataAssociation> dataInputAssociations) {
         this.dataInputAssociations = dataInputAssociations;
     }
 
@@ -100,9 +94,7 @@ public abstract class Activity extends FlowNode {
         return dataOutputAssociations;
     }
 
-    public void setDataOutputAssociations(
-        List<DataAssociation> dataOutputAssociations
-    ) {
+    public void setDataOutputAssociations(List<DataAssociation> dataOutputAssociations) {
         this.dataOutputAssociations = dataOutputAssociations;
     }
 
@@ -116,35 +108,25 @@ public abstract class Activity extends FlowNode {
 
     public void setValues(Activity otherActivity) {
         super.setValues(otherActivity);
-        setFailedJobRetryTimeCycleValue(
-            otherActivity.getFailedJobRetryTimeCycleValue()
-        );
+        setFailedJobRetryTimeCycleValue(otherActivity.getFailedJobRetryTimeCycleValue());
         setDefaultFlow(otherActivity.getDefaultFlow());
         setForCompensation(otherActivity.isForCompensation());
         if (otherActivity.getLoopCharacteristics() != null) {
-            setLoopCharacteristics(
-                otherActivity.getLoopCharacteristics().clone()
-            );
+            setLoopCharacteristics(otherActivity.getLoopCharacteristics().clone());
         }
         if (otherActivity.getIoSpecification() != null) {
             setIoSpecification(otherActivity.getIoSpecification().clone());
         }
 
         dataInputAssociations = new ArrayList<DataAssociation>();
-        if (
-            otherActivity.getDataInputAssociations() != null &&
-            !otherActivity.getDataInputAssociations().isEmpty()
-        ) {
+        if (otherActivity.getDataInputAssociations() != null && !otherActivity.getDataInputAssociations().isEmpty()) {
             for (DataAssociation association : otherActivity.getDataInputAssociations()) {
                 dataInputAssociations.add(association.clone());
             }
         }
 
         dataOutputAssociations = new ArrayList<DataAssociation>();
-        if (
-            otherActivity.getDataOutputAssociations() != null &&
-            !otherActivity.getDataOutputAssociations().isEmpty()
-        ) {
+        if (otherActivity.getDataOutputAssociations() != null && !otherActivity.getDataOutputAssociations().isEmpty()) {
             for (DataAssociation association : otherActivity.getDataOutputAssociations()) {
                 dataOutputAssociations.add(association.clone());
             }

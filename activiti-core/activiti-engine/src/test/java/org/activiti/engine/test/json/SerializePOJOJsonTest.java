@@ -33,9 +33,7 @@ import org.activiti.examples.variables.SomeSerializable;
 public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
 
     public SerializePOJOJsonTest() {
-        super(
-            "org/activiti/standalone/cfg/variable/custom-serialize-variables-activiti.cfg.xml"
-        );
+        super("org/activiti/standalone/cfg/variable/custom-serialize-variables-activiti.cfg.xml");
     }
 
     @Deployment
@@ -50,22 +48,10 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
         vars.put("userMap", map);
         List<String> list = asList("bob", "john", "hannah");
         vars.put("userCollection", list);
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testJsonVarInExpression",
-            vars
-        );
-        String taskId = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult()
-            .getId();
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testJsonVarInExpression", vars);
+        String taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
         taskService.complete(taskId);
-        taskId =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult()
-                .getId();
+        taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
         taskService
             .getIdentityLinksForTask(taskId)
             .stream()
@@ -80,10 +66,7 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
                 }
             );
         taskService.complete(taskId);
-        HistoricTaskInstance task = historyService
-            .createHistoricTaskInstanceQuery()
-            .taskId(taskId)
-            .singleResult();
+        HistoricTaskInstance task = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
         assertThat(task.getAssignee()).isEqualTo("bob");
         assertThat(task.getCategory()).isEqualTo("test");
     }
@@ -97,16 +80,9 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
             "testCollectionJsonVarInExpression",
             vars
         );
-        String taskId = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult()
-            .getId();
+        String taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
         taskService.complete(taskId);
-        List<Task> tasks = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .list();
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
         assertThat(tasks).hasSize(3);
         tasks.forEach(task -> taskService.complete(task.getId()));
     }
@@ -122,11 +98,7 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
             "testCollectionInJsonVarInExpression",
             vars
         );
-        String taskId = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult()
-            .getId();
+        String taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
         taskService.complete(taskId);
         taskService
             .createTaskQuery()
@@ -143,22 +115,10 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
         map = new HashMap<String, Object>();
         map.put("userCollection", beanList);
         vars.put("userMap", map);
-        processInstance =
-            runtimeService.startProcessInstanceByKey(
-                "testCollectionInJsonVarInExpression",
-                vars
-            );
-        taskId =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult()
-                .getId();
+        processInstance = runtimeService.startProcessInstanceByKey("testCollectionInJsonVarInExpression", vars);
+        taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
         taskService.complete(taskId);
-        List<Task> tasks = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .list();
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
         assertThat(tasks).hasSize(3);
         tasks.forEach(task -> taskService.complete(task.getId()));
     }
@@ -180,16 +140,9 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
             "testPOJOCollectionInJsonVarInExpression",
             vars
         );
-        String taskId = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult()
-            .getId();
+        String taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
         taskService.complete(taskId);
-        List<Task> tasks = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .list();
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
         assertThat(tasks).hasSize(3);
         tasks.forEach(task -> taskService.complete(task.getId()));
     }

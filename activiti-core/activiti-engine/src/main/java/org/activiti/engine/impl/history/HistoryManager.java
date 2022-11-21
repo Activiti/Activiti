@@ -40,27 +40,17 @@ public interface HistoryManager {
     /**
      * Record a process-instance ended. Updates the historic process instance if activity history is enabled.
      */
-    void recordProcessInstanceEnd(
-        String processInstanceId,
-        String deleteReason,
-        String activityId
-    );
+    void recordProcessInstanceEnd(String processInstanceId, String deleteReason, String activityId);
 
     /**
      * Record a process-instance started and record start-event if activity history is enabled.
      */
-    void recordProcessInstanceStart(
-        ExecutionEntity processInstance,
-        FlowElement startElement
-    );
+    void recordProcessInstanceStart(ExecutionEntity processInstance, FlowElement startElement);
 
     /**
      * Record a process-instance name change.
      */
-    void recordProcessInstanceNameChange(
-        String processInstanceId,
-        String newName
-    );
+    void recordProcessInstanceNameChange(String processInstanceId, String newName);
 
     /**
      * Record a sub-process-instance started and alters the calledProcessinstanceId on the current active activity's historic counterpart. Only effective when activity history is enabled.
@@ -79,10 +69,7 @@ public interface HistoryManager {
     /**
      * Record the end of an activity, if activity history is enabled.
      */
-    void recordActivityEnd(
-        ExecutionEntity executionEntity,
-        String deleteReason
-    );
+    void recordActivityEnd(ExecutionEntity executionEntity, String deleteReason);
 
     /**
      * Finds the {@link HistoricActivityInstanceEntity} that is active in the given execution.
@@ -96,10 +83,7 @@ public interface HistoryManager {
     /**
      * Record a change of the process-definition id of a process instance, if activity history is enabled.
      */
-    void recordProcessDefinitionChange(
-        String processInstanceId,
-        String processDefinitionId
-    );
+    void recordProcessDefinitionChange(String processInstanceId, String processDefinitionId);
 
     /**
      * Record the creation of a task, if audit history is enabled.
@@ -187,10 +171,7 @@ public interface HistoryManager {
     /**
      * Record a change of the process-definition id of a task instance, if activity history is enabled.
      */
-    public abstract void recordTaskProcessDefinitionChange(
-        String taskId,
-        String processDefinitionId
-    );
+    public abstract void recordTaskProcessDefinitionChange(String taskId, String processDefinitionId);
 
     /**
      * Record a variable has been created, if audit history is enabled.
@@ -219,33 +200,17 @@ public interface HistoryManager {
     /**
      * Creates a new comment to indicate a new {@link IdentityLink} has been created or deleted, if history is enabled.
      */
-    void createIdentityLinkComment(
-        String taskId,
-        String userId,
-        String groupId,
-        String type,
-        boolean create
-    );
+    void createIdentityLinkComment(String taskId, String userId, String groupId, String type, boolean create);
 
     /**
      * Creates a new comment to indicate a new user {@link IdentityLink} has been created or deleted, if history is enabled.
      */
-    void createUserIdentityLinkComment(
-        String taskId,
-        String userId,
-        String type,
-        boolean create
-    );
+    void createUserIdentityLinkComment(String taskId, String userId, String type, boolean create);
 
     /**
      * Creates a new comment to indicate a new group {@link IdentityLink} has been created or deleted, if history is enabled.
      */
-    void createGroupIdentityLinkComment(
-        String taskId,
-        String groupId,
-        String type,
-        boolean create
-    );
+    void createGroupIdentityLinkComment(String taskId, String groupId, String type, boolean create);
 
     /**
      * Creates a new comment to indicate a new {@link IdentityLink} has been created or deleted, if history is enabled.
@@ -296,12 +261,7 @@ public interface HistoryManager {
     /**
      * Creates a new comment to indicate a new attachment has been created or deleted, if history is enabled.
      */
-    void createAttachmentComment(
-        String taskId,
-        String processInstanceId,
-        String attachmentName,
-        boolean create
-    );
+    void createAttachmentComment(String taskId, String processInstanceId, String attachmentName, boolean create);
 
     // Identity link related history
     /**

@@ -44,11 +44,7 @@ public class ErrorThrowingEventListener extends BaseDelegateEventListener {
 
         if (event.getExecutionId() != null) {
             // Get the execution based on the event's execution ID instead
-            execution =
-                Context
-                    .getCommandContext()
-                    .getExecutionEntityManager()
-                    .findById(event.getExecutionId());
+            execution = Context.getCommandContext().getExecutionEntityManager().findById(event.getExecutionId());
         }
 
         if (execution == null) {
@@ -60,10 +56,7 @@ public class ErrorThrowingEventListener extends BaseDelegateEventListener {
         try {
             ErrorPropagation.propagateError(errorCode, execution);
         } catch (Exception e) {
-            throw new ActivitiException(
-                "Error while propagating error-event",
-                e
-            );
+            throw new ActivitiException("Error while propagating error-event", e);
         }
     }
 

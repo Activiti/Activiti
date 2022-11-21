@@ -26,24 +26,13 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ResourceNameUtil {
 
-    public static final String[] BPMN_RESOURCE_SUFFIXES = new String[] {
-        "bpmn20.xml",
-        "bpmn",
-    };
-    public static final String[] DIAGRAM_SUFFIXES = new String[] {
-        "png",
-        "jpg",
-        "gif",
-        "svg",
-    };
+    public static final String[] BPMN_RESOURCE_SUFFIXES = new String[] { "bpmn20.xml", "bpmn" };
+    public static final String[] DIAGRAM_SUFFIXES = new String[] { "png", "jpg", "gif", "svg" };
 
     public static String stripBpmnFileSuffix(String bpmnFileResource) {
         for (String suffix : BPMN_RESOURCE_SUFFIXES) {
             if (bpmnFileResource.endsWith(suffix)) {
-                return bpmnFileResource.substring(
-                    0,
-                    bpmnFileResource.length() - suffix.length()
-                );
+                return bpmnFileResource.substring(0, bpmnFileResource.length() - suffix.length());
             }
         }
         return bpmnFileResource;
@@ -54,9 +43,7 @@ public class ResourceNameUtil {
         String processKey,
         String diagramSuffix
     ) {
-        String bpmnFileResourceBase = ResourceNameUtil.stripBpmnFileSuffix(
-            bpmnFileResource
-        );
+        String bpmnFileResourceBase = ResourceNameUtil.stripBpmnFileSuffix(bpmnFileResource);
         return bpmnFileResourceBase + processKey + "." + diagramSuffix;
     }
 
@@ -84,14 +71,10 @@ public class ResourceNameUtil {
         Map<String, ResourceEntity> resources
     ) {
         if (StringUtils.isEmpty(processDefinition.getResourceName())) {
-            throw new IllegalStateException(
-                "Provided process definition must have its resource name set."
-            );
+            throw new IllegalStateException("Provided process definition must have its resource name set.");
         }
 
-        String bpmnResourceBase = stripBpmnFileSuffix(
-            processDefinition.getResourceName()
-        );
+        String bpmnResourceBase = stripBpmnFileSuffix(processDefinition.getResourceName());
         String key = processDefinition.getKey();
 
         for (String diagramSuffix : DIAGRAM_SUFFIXES) {

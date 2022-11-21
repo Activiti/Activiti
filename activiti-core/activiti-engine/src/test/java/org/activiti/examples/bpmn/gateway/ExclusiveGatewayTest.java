@@ -44,54 +44,26 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
 
         // Test with input == 1
         variables.put("input", 1);
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "exclusiveGateway",
-            variables
-        );
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(pi.getId())
-            .singleResult();
-        assertThat(task.getName())
-            .isEqualTo("Send e-mail for more information");
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("exclusiveGateway", variables);
+        Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+        assertThat(task.getName()).isEqualTo("Send e-mail for more information");
 
         // Test with input == 2
         variables.put("input", 2);
-        pi =
-            runtimeService.startProcessInstanceByKey(
-                "exclusiveGateway",
-                variables
-            );
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(pi.getId())
-                .singleResult();
+        pi = runtimeService.startProcessInstanceByKey("exclusiveGateway", variables);
+        task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
         assertThat(task.getName()).isEqualTo("Check account balance");
 
         // Test with input == 3
         variables.put("input", 3);
-        pi =
-            runtimeService.startProcessInstanceByKey(
-                "exclusiveGateway",
-                variables
-            );
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(pi.getId())
-                .singleResult();
+        pi = runtimeService.startProcessInstanceByKey("exclusiveGateway", variables);
+        task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
         assertThat(task.getName()).isEqualTo("Call customer");
 
         // Test with input == 4
         variables.put("input", 4);
         // Exception is expected since no outgoing sequence flow matches
         assertThatExceptionOfType(ActivitiException.class)
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByKey(
-                    "exclusiveGateway",
-                    variables
-                )
-            );
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("exclusiveGateway", variables));
     }
 }

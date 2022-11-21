@@ -57,8 +57,7 @@ public class ApplicationDeployedEventProducerTest {
     @Mock
     private ProcessRuntimeEventListener<ApplicationDeployedEvent> secondListener;
 
-    private static final String APPLICATION_DEPLOYMENT_NAME =
-        "SpringAutoDeployment";
+    private static final String APPLICATION_DEPLOYMENT_NAME = "SpringAutoDeployment";
 
     @BeforeEach
     public void setUp() {
@@ -74,16 +73,11 @@ public class ApplicationDeployedEventProducerTest {
     @Test
     public void shouldPublishEventsWhenApplicationIsDeployed() {
         DeploymentQuery deploymentQuery = mock(DeploymentQuery.class);
-        given(repositoryService.createDeploymentQuery())
-            .willReturn(deploymentQuery);
+        given(repositoryService.createDeploymentQuery()).willReturn(deploymentQuery);
 
-        List<Deployment> internalDeployment = asList(
-            mock(Deployment.class),
-            mock(Deployment.class)
-        );
+        List<Deployment> internalDeployment = asList(mock(Deployment.class), mock(Deployment.class));
 
-        given(deploymentQuery.deploymentName(APPLICATION_DEPLOYMENT_NAME))
-            .willReturn(deploymentQuery);
+        given(deploymentQuery.deploymentName(APPLICATION_DEPLOYMENT_NAME)).willReturn(deploymentQuery);
         given(deploymentQuery.list()).willReturn(internalDeployment);
 
         List<org.activiti.api.process.model.Deployment> apiDeployments = asList(
@@ -93,9 +87,7 @@ public class ApplicationDeployedEventProducerTest {
 
         producer.start();
 
-        ArgumentCaptor<ApplicationDeployedEvent> captor = ArgumentCaptor.forClass(
-            ApplicationDeployedEvent.class
-        );
+        ArgumentCaptor<ApplicationDeployedEvent> captor = ArgumentCaptor.forClass(ApplicationDeployedEvent.class);
         verify(firstListener).onEvent(captor.capture());
         verify(secondListener).onEvent(captor.capture());
 

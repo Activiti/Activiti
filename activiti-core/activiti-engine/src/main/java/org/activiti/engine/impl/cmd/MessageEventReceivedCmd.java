@@ -39,11 +39,7 @@ public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
     protected final String messageName;
     protected final boolean async;
 
-    public MessageEventReceivedCmd(
-        String messageName,
-        String executionId,
-        Map<String, Object> processVariables
-    ) {
+    public MessageEventReceivedCmd(String messageName, String executionId, Map<String, Object> processVariables) {
         super(executionId);
         this.messageName = messageName;
 
@@ -55,35 +51,23 @@ public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
         this.async = false;
     }
 
-    public MessageEventReceivedCmd(
-        String messageName,
-        String executionId,
-        boolean async
-    ) {
+    public MessageEventReceivedCmd(String messageName, String executionId, boolean async) {
         super(executionId);
         this.messageName = messageName;
         this.payload = null;
         this.async = async;
     }
 
-    protected Void execute(
-        CommandContext commandContext,
-        ExecutionEntity execution
-    ) {
+    protected Void execute(CommandContext commandContext, ExecutionEntity execution) {
         if (messageName == null) {
-            throw new ActivitiIllegalArgumentException(
-                "messageName cannot be null"
-            );
+            throw new ActivitiIllegalArgumentException("messageName cannot be null");
         }
 
         executeInternal(commandContext, execution);
         return null;
     }
 
-    protected void executeInternal(
-        CommandContext commandContext,
-        ExecutionEntity execution
-    ) {
+    protected void executeInternal(CommandContext commandContext, ExecutionEntity execution) {
         EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
         List<EventSubscriptionEntity> eventSubscriptions = eventSubscriptionEntityManager.findEventSubscriptionsByNameAndExecution(
             MessageEventHandler.EVENT_HANDLER_TYPE,
@@ -102,13 +86,7 @@ public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
         }
 
         // there can be only one:
-        EventSubscriptionEntity eventSubscriptionEntity = eventSubscriptions.get(
-            0
-        );
-        eventSubscriptionEntityManager.eventReceived(
-            eventSubscriptionEntity,
-            payload,
-            async
-        );
+        EventSubscriptionEntity eventSubscriptionEntity = eventSubscriptions.get(0);
+        eventSubscriptionEntityManager.eventReceived(eventSubscriptionEntity, payload, async);
     }
 }

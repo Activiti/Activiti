@@ -31,23 +31,14 @@ public abstract class GatewayActivityBehavior extends FlowNodeActivityBehavior {
     private static final long serialVersionUID = 1L;
 
     protected void lockFirstParentScope(DelegateExecution execution) {
-        ExecutionEntityManager executionEntityManager = Context
-            .getCommandContext()
-            .getExecutionEntityManager();
+        ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
 
         boolean found = false;
         ExecutionEntity parentScopeExecution = null;
         ExecutionEntity currentExecution = (ExecutionEntity) execution;
-        while (
-            !found &&
-            currentExecution != null &&
-            currentExecution.getParentId() != null
-        ) {
-            parentScopeExecution =
-                executionEntityManager.findById(currentExecution.getParentId());
-            if (
-                parentScopeExecution != null && parentScopeExecution.isScope()
-            ) {
+        while (!found && currentExecution != null && currentExecution.getParentId() != null) {
+            parentScopeExecution = executionEntityManager.findById(currentExecution.getParentId());
+            if (parentScopeExecution != null && parentScopeExecution.isScope()) {
                 found = true;
             }
             currentExecution = parentScopeExecution;

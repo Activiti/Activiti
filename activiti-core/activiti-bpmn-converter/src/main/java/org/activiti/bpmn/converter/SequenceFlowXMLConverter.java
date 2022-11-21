@@ -38,22 +38,13 @@ public class SequenceFlowXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected BaseElement convertXMLToElement(
-        XMLStreamReader xtr,
-        BpmnModel model
-    ) throws Exception {
+    protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
         SequenceFlow sequenceFlow = new SequenceFlow();
         BpmnXMLUtil.addXMLLocation(sequenceFlow, xtr);
-        sequenceFlow.setSourceRef(
-            xtr.getAttributeValue(null, ATTRIBUTE_FLOW_SOURCE_REF)
-        );
-        sequenceFlow.setTargetRef(
-            xtr.getAttributeValue(null, ATTRIBUTE_FLOW_TARGET_REF)
-        );
+        sequenceFlow.setSourceRef(xtr.getAttributeValue(null, ATTRIBUTE_FLOW_SOURCE_REF));
+        sequenceFlow.setTargetRef(xtr.getAttributeValue(null, ATTRIBUTE_FLOW_TARGET_REF));
         sequenceFlow.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
-        sequenceFlow.setSkipExpression(
-            xtr.getAttributeValue(null, ATTRIBUTE_FLOW_SKIP_EXPRESSION)
-        );
+        sequenceFlow.setSkipExpression(xtr.getAttributeValue(null, ATTRIBUTE_FLOW_SKIP_EXPRESSION));
 
         parseChildElements(getXMLElementName(), sequenceFlow, model, xtr);
 
@@ -61,47 +52,24 @@ public class SequenceFlowXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalAttributes(
-        BaseElement element,
-        BpmnModel model,
-        XMLStreamWriter xtw
-    ) throws Exception {
+    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+        throws Exception {
         SequenceFlow sequenceFlow = (SequenceFlow) element;
-        writeDefaultAttribute(
-            ATTRIBUTE_FLOW_SOURCE_REF,
-            sequenceFlow.getSourceRef(),
-            xtw
-        );
-        writeDefaultAttribute(
-            ATTRIBUTE_FLOW_TARGET_REF,
-            sequenceFlow.getTargetRef(),
-            xtw
-        );
+        writeDefaultAttribute(ATTRIBUTE_FLOW_SOURCE_REF, sequenceFlow.getSourceRef(), xtw);
+        writeDefaultAttribute(ATTRIBUTE_FLOW_TARGET_REF, sequenceFlow.getTargetRef(), xtw);
         if (StringUtils.isNotEmpty(sequenceFlow.getSkipExpression())) {
-            writeDefaultAttribute(
-                ATTRIBUTE_FLOW_SKIP_EXPRESSION,
-                sequenceFlow.getSkipExpression(),
-                xtw
-            );
+            writeDefaultAttribute(ATTRIBUTE_FLOW_SKIP_EXPRESSION, sequenceFlow.getSkipExpression(), xtw);
         }
     }
 
     @Override
-    protected void writeAdditionalChildElements(
-        BaseElement element,
-        BpmnModel model,
-        XMLStreamWriter xtw
-    ) throws Exception {
+    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+        throws Exception {
         SequenceFlow sequenceFlow = (SequenceFlow) element;
 
         if (StringUtils.isNotEmpty(sequenceFlow.getConditionExpression())) {
             xtw.writeStartElement(ELEMENT_FLOW_CONDITION);
-            xtw.writeAttribute(
-                XSI_PREFIX,
-                XSI_NAMESPACE,
-                "type",
-                "tFormalExpression"
-            );
+            xtw.writeAttribute(XSI_PREFIX, XSI_NAMESPACE, "type", "tFormalExpression");
             xtw.writeCData(sequenceFlow.getConditionExpression());
             xtw.writeEndElement();
         }

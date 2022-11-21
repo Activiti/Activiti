@@ -29,13 +29,9 @@ public class CycleBusinessCalendarTest extends AbstractTestCase {
 
     public void testSimpleCron() throws Exception {
         Clock testingClock = new DefaultClockImpl();
-        CycleBusinessCalendar businessCalendar = new CycleBusinessCalendar(
-            testingClock
-        );
+        CycleBusinessCalendar businessCalendar = new CycleBusinessCalendar(testingClock);
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-            "yyyy MM dd - HH:mm"
-        );
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy MM dd - HH:mm");
         Date now = simpleDateFormat.parse("2011 03 11 - 17:23");
         testingClock.setCurrentTime(now);
 
@@ -48,13 +44,9 @@ public class CycleBusinessCalendarTest extends AbstractTestCase {
 
     public void testSimpleDuration() throws Exception {
         Clock testingClock = new DefaultClockImpl();
-        CycleBusinessCalendar businessCalendar = new CycleBusinessCalendar(
-            testingClock
-        );
+        CycleBusinessCalendar businessCalendar = new CycleBusinessCalendar(testingClock);
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-            "yyyy MM dd - HH:mm"
-        );
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy MM dd - HH:mm");
         Date now = simpleDateFormat.parse("2010 06 11 - 17:23");
         testingClock.setCurrentTime(now);
 

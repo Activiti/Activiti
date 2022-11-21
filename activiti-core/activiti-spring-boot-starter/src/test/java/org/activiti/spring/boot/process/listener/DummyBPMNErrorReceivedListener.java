@@ -22,8 +22,7 @@ import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener
 import org.springframework.stereotype.Component;
 
 @Component
-public class DummyBPMNErrorReceivedListener
-    implements BPMNElementEventListener<BPMNErrorReceivedEvent> {
+public class DummyBPMNErrorReceivedListener implements BPMNElementEventListener<BPMNErrorReceivedEvent> {
 
     private List<BPMNErrorReceivedEvent> errorReceivedEvents = new LinkedList<>();
 

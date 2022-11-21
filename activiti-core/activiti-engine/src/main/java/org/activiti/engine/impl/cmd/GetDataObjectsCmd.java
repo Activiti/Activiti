@@ -39,8 +39,7 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.DataObject;
 import org.activiti.engine.runtime.Execution;
 
-public class GetDataObjectsCmd
-    implements Command<Map<String, DataObject>>, Serializable {
+public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String executionId;
@@ -49,11 +48,7 @@ public class GetDataObjectsCmd
     protected String locale;
     protected boolean withLocalizationFallback;
 
-    public GetDataObjectsCmd(
-        String executionId,
-        Collection<String> dataObjectNames,
-        boolean isLocal
-    ) {
+    public GetDataObjectsCmd(String executionId, Collection<String> dataObjectNames, boolean isLocal) {
         this.executionId = executionId;
         this.dataObjectNames = dataObjectNames;
         this.isLocal = isLocal;
@@ -79,21 +74,13 @@ public class GetDataObjectsCmd
             throw new ActivitiIllegalArgumentException("executionId is null");
         }
 
-        ExecutionEntity execution = commandContext
-            .getExecutionEntityManager()
-            .findById(executionId);
+        ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
 
         if (execution == null) {
-            throw new ActivitiObjectNotFoundException(
-                "execution " + executionId + " doesn't exist",
-                Execution.class
-            );
+            throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
         }
 
-        Map<String, VariableInstance> variables = getVariables(
-            execution,
-            commandContext
-        );
+        Map<String, VariableInstance> variables = getVariables(execution, commandContext);
 
         Map<String, DataObject> dataObjects = null;
         if (variables != null) {
@@ -110,33 +97,19 @@ public class GetDataObjectsCmd
                     executionEntity = executionEntity.getParent();
                 }
 
-                BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(
-                    execution.getProcessDefinitionId()
-                );
+                BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(execution.getProcessDefinitionId());
                 ValuedDataObject foundDataObject = null;
                 if (executionEntity.getParentId() == null) {
-                    for (ValuedDataObject dataObject : bpmnModel
-                        .getMainProcess()
-                        .getDataObjects()) {
-                        if (
-                            dataObject
-                                .getName()
-                                .equals(variableEntity.getName())
-                        ) {
+                    for (ValuedDataObject dataObject : bpmnModel.getMainProcess().getDataObjects()) {
+                        if (dataObject.getName().equals(variableEntity.getName())) {
                             foundDataObject = dataObject;
                             break;
                         }
                     }
                 } else {
-                    SubProcess subProcess = (SubProcess) bpmnModel.getFlowElement(
-                        execution.getActivityId()
-                    );
+                    SubProcess subProcess = (SubProcess) bpmnModel.getFlowElement(execution.getActivityId());
                     for (ValuedDataObject dataObject : subProcess.getDataObjects()) {
-                        if (
-                            dataObject
-                                .getName()
-                                .equals(variableEntity.getName())
-                        ) {
+                        if (dataObject.getName().equals(variableEntity.getName())) {
                             foundDataObject = dataObject;
                             break;
                         }
@@ -155,15 +128,11 @@ public class GetDataObjectsCmd
                     );
 
                     if (languageNode != null) {
-                        JsonNode nameNode = languageNode.get(
-                            DynamicBpmnConstants.LOCALIZATION_NAME
-                        );
+                        JsonNode nameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
                         if (nameNode != null) {
                             localizedName = nameNode.asText();
                         }
-                        JsonNode descriptionNode = languageNode.get(
-                            DynamicBpmnConstants.LOCALIZATION_DESCRIPTION
-                        );
+                        JsonNode descriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
                         if (descriptionNode != null) {
                             localizedDescription = descriptionNode.asText();
                         }
@@ -190,10 +159,7 @@ public class GetDataObjectsCmd
         return dataObjects;
     }
 
-    public Map<String, VariableInstance> getVariables(
-        ExecutionEntity execution,
-        CommandContext commandContext
-    ) {
+    public Map<String, VariableInstance> getVariables(ExecutionEntity execution, CommandContext commandContext) {
         Map<String, VariableInstance> variables = null;
 
         if (dataObjectNames == null || dataObjectNames.isEmpty()) {
@@ -206,11 +172,9 @@ public class GetDataObjectsCmd
         } else {
             // Fetch specific collection of variables
             if (isLocal) {
-                variables =
-                    execution.getVariableInstancesLocal(dataObjectNames, false);
+                variables = execution.getVariableInstancesLocal(dataObjectNames, false);
             } else {
-                variables =
-                    execution.getVariableInstances(dataObjectNames, false);
+                variables = execution.getVariableInstances(dataObjectNames, false);
             }
         }
         return variables;

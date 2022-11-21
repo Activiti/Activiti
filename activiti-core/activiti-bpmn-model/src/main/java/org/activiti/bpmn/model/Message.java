@@ -128,16 +128,12 @@ public class Message extends BaseElement {
             return this;
         }
 
-        public Builder extensionElements(
-            Map<String, List<ExtensionElement>> extensionElements
-        ) {
+        public Builder extensionElements(Map<String, List<ExtensionElement>> extensionElements) {
             this.extensionElements = extensionElements;
             return this;
         }
 
-        public Builder attributes(
-            Map<String, List<ExtensionAttribute>> attributes
-        ) {
+        public Builder attributes(Map<String, List<ExtensionAttribute>> attributes) {
             this.attributes = attributes;
             return this;
         }

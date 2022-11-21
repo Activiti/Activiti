@@ -34,9 +34,7 @@ public class SimpleGrantedAuthoritiesRolesMapper
     }
 
     @Override
-    public List<String> getRoles(
-        Collection<? extends GrantedAuthority> authorities
-    ) {
+    public List<String> getRoles(Collection<? extends GrantedAuthority> authorities) {
         return getAuthoritesFilteredByPrefix(authorities, prefix);
     }
 }

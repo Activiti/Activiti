@@ -69,11 +69,7 @@ public class DurationHelper {
 
     protected ClockReader clockReader;
 
-    public DurationHelper(
-        String expressionS,
-        int maxIterations,
-        ClockReader clockReader
-    ) throws Exception {
+    public DurationHelper(String expressionS, int maxIterations, ClockReader clockReader) throws Exception {
         this.clockReader = clockReader;
         this.maxIterations = maxIterations;
         List<String> expression = asList(expressionS.split("/"));
@@ -105,10 +101,7 @@ public class DurationHelper {
                 period = parsePeriod(expression.get(1));
             } else {
                 end = parseDate(expression.get(1));
-                period =
-                    datatypeFactory.newDuration(
-                        end.getTimeInMillis() - start.getTimeInMillis()
-                    );
+                period = datatypeFactory.newDuration(end.getTimeInMillis() - start.getTimeInMillis());
             }
         }
         if (start == null) {
@@ -116,8 +109,7 @@ public class DurationHelper {
         }
     }
 
-    public DurationHelper(String expressionS, ClockReader clockReader)
-        throws Exception {
+    public DurationHelper(String expressionS, ClockReader clockReader) throws Exception {
         this(expressionS, -1, clockReader);
     }
 
@@ -137,11 +129,7 @@ public class DurationHelper {
     }
 
     public Boolean isValidDate(Date newTimer) {
-        return (
-            end == null ||
-            end.getTime().after(newTimer) ||
-            end.getTime().equals(newTimer)
-        );
+        return (end == null || end.getTime().after(newTimer) || end.getTime().equals(newTimer));
     }
 
     public Date getDateAfter() {
@@ -151,10 +139,7 @@ public class DurationHelper {
     }
 
     private Calendar getDateAfterRepeat(Calendar date) {
-        Calendar current = TimeZoneUtil.convertToTimeZone(
-            start,
-            date.getTimeZone()
-        );
+        Calendar current = TimeZoneUtil.convertToTimeZone(start, date.getTimeZone());
 
         if (repeatWithNoBounds) {
             while (current.before(date) || current.equals(date)) { // As long as current date is not past the engine date, we keep looping
@@ -173,12 +158,7 @@ public class DurationHelper {
                 current = add(current, period);
             }
         }
-        return current.before(date)
-            ? date
-            : TimeZoneUtil.convertToTimeZone(
-                current,
-                clockReader.getCurrentTimeZone()
-            );
+        return current.before(date) ? date : TimeZoneUtil.convertToTimeZone(current, clockReader.getCurrentTimeZone());
     }
 
     protected Calendar add(Calendar date, Duration duration) {
@@ -186,19 +166,10 @@ public class DurationHelper {
 
         // duration.addTo does not account for daylight saving time (xerces),
         // reversing order of addition fixes the problem
-        calendar.add(
-            Calendar.SECOND,
-            duration.getSeconds() * duration.getSign()
-        );
-        calendar.add(
-            Calendar.MINUTE,
-            duration.getMinutes() * duration.getSign()
-        );
+        calendar.add(Calendar.SECOND, duration.getSeconds() * duration.getSign());
+        calendar.add(Calendar.MINUTE, duration.getMinutes() * duration.getSign());
         calendar.add(Calendar.HOUR, duration.getHours() * duration.getSign());
-        calendar.add(
-            Calendar.DAY_OF_MONTH,
-            duration.getDays() * duration.getSign()
-        );
+        calendar.add(Calendar.DAY_OF_MONTH, duration.getDays() * duration.getSign());
         calendar.add(Calendar.MONTH, duration.getMonths() * duration.getSign());
         calendar.add(Calendar.YEAR, duration.getYears() * duration.getSign());
 
@@ -211,20 +182,13 @@ public class DurationHelper {
             dateCalendar =
                 ISODateTimeFormat
                     .dateTimeParser()
-                    .withZone(
-                        DateTimeZone.forTimeZone(
-                            clockReader.getCurrentTimeZone()
-                        )
-                    )
+                    .withZone(DateTimeZone.forTimeZone(clockReader.getCurrentTimeZone()))
                     .parseDateTime(date)
                     .toCalendar(null);
         } catch (IllegalArgumentException e) {
             // try to parse a java.util.date to string back to a java.util.date
             dateCalendar = new GregorianCalendar();
-            DateFormat DATE_FORMAT = new SimpleDateFormat(
-                "EEE MMM dd kk:mm:ss z yyyy",
-                Locale.ENGLISH
-            );
+            DateFormat DATE_FORMAT = new SimpleDateFormat("EEE MMM dd kk:mm:ss z yyyy", Locale.ENGLISH);
             dateCalendar.setTime(DATE_FORMAT.parse(date));
         }
 

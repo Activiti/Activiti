@@ -31,9 +31,7 @@ public class DeleteEventLogEntry implements Command<Void> {
 
     @Override
     public Void execute(CommandContext commandContext) {
-        commandContext
-            .getEventLogEntryEntityManager()
-            .deleteEventLogEntry(logNr);
+        commandContext.getEventLogEntryEntityManager().deleteEventLogEntry(logNr);
         return null;
     }
 }

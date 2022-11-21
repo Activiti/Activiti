@@ -23,8 +23,7 @@ import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 
-public class TestMultipleActivitiEventListener
-    implements ActivitiEventListener {
+public class TestMultipleActivitiEventListener implements ActivitiEventListener {
 
     private List<ActivitiEvent> eventsReceived;
     private List<Class<?>> entityClasses;
@@ -46,19 +45,13 @@ public class TestMultipleActivitiEventListener
     public void onEvent(ActivitiEvent event) {
         if (
             isAssignableFrom(eventClasses, event) &&
-            isAssignableFrom(
-                entityClasses,
-                ((ActivitiEntityEvent) event).getEntity()
-            )
+            isAssignableFrom(entityClasses, ((ActivitiEntityEvent) event).getEntity())
         ) {
             eventsReceived.add(event);
         }
     }
 
-    private boolean isAssignableFrom(
-        Collection<Class<?>> classes,
-        Object entity
-    ) {
+    private boolean isAssignableFrom(Collection<Class<?>> classes, Object entity) {
         for (Class<?> itemClass : classes) {
             if (itemClass.isAssignableFrom(entity.getClass())) return true;
         }

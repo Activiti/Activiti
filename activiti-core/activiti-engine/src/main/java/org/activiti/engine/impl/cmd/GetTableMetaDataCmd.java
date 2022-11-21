@@ -25,8 +25,7 @@ import org.activiti.engine.management.TableMetaData;
 /**
 
  */
-public class GetTableMetaDataCmd
-    implements Command<TableMetaData>, Serializable {
+public class GetTableMetaDataCmd implements Command<TableMetaData>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String tableName;

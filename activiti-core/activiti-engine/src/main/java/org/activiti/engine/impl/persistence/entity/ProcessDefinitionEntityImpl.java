@@ -25,9 +25,7 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.context.Context;
 
-public class ProcessDefinitionEntityImpl
-    extends AbstractEntity
-    implements ProcessDefinitionEntity, Serializable {
+public class ProcessDefinitionEntityImpl extends AbstractEntity implements ProcessDefinitionEntity, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -66,10 +64,7 @@ public class ProcessDefinitionEntityImpl
     public List<IdentityLinkEntity> getIdentityLinks() {
         if (!isIdentityLinksInitialized) {
             definitionIdentityLinkEntities =
-                Context
-                    .getCommandContext()
-                    .getIdentityLinkEntityManager()
-                    .findIdentityLinksByProcessDefinitionId(id);
+                Context.getCommandContext().getIdentityLinkEntityManager().findIdentityLinksByProcessDefinitionId(id);
             isIdentityLinksInitialized = true;
         }
 
@@ -188,9 +183,7 @@ public class ProcessDefinitionEntityImpl
         return isGraphicalNotationDefined;
     }
 
-    public void setGraphicalNotationDefined(
-        boolean isGraphicalNotationDefined
-    ) {
+    public void setGraphicalNotationDefined(boolean isGraphicalNotationDefined) {
         this.isGraphicalNotationDefined = isGraphicalNotationDefined;
     }
 

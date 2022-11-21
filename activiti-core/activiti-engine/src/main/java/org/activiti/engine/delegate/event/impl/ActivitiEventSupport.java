@@ -35,40 +35,28 @@ import org.slf4j.LoggerFactory;
  */
 public class ActivitiEventSupport {
 
-    private static final Logger LOG = LoggerFactory.getLogger(
-        ActivitiEventSupport.class
-    );
+    private static final Logger LOG = LoggerFactory.getLogger(ActivitiEventSupport.class);
 
     protected List<ActivitiEventListener> eventListeners;
     protected Map<ActivitiEventType, List<ActivitiEventListener>> typedListeners;
 
     public ActivitiEventSupport() {
         eventListeners = new CopyOnWriteArrayList<ActivitiEventListener>();
-        typedListeners =
-            new HashMap<ActivitiEventType, List<ActivitiEventListener>>();
+        typedListeners = new HashMap<ActivitiEventType, List<ActivitiEventListener>>();
     }
 
-    public synchronized void addEventListener(
-        ActivitiEventListener listenerToAdd
-    ) {
+    public synchronized void addEventListener(ActivitiEventListener listenerToAdd) {
         if (listenerToAdd == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Listener cannot be null."
-            );
+            throw new ActivitiIllegalArgumentException("Listener cannot be null.");
         }
         if (!eventListeners.contains(listenerToAdd)) {
             eventListeners.add(listenerToAdd);
         }
     }
 
-    public synchronized void addEventListener(
-        ActivitiEventListener listenerToAdd,
-        ActivitiEventType... types
-    ) {
+    public synchronized void addEventListener(ActivitiEventListener listenerToAdd, ActivitiEventType... types) {
         if (listenerToAdd == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Listener cannot be null."
-            );
+            throw new ActivitiIllegalArgumentException("Listener cannot be null.");
         }
 
         if (types == null || types.length == 0) {
@@ -94,9 +82,7 @@ public class ActivitiEventSupport {
         }
 
         if (event.getType() == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Event type cannot be null."
-            );
+            throw new ActivitiIllegalArgumentException("Event type cannot be null.");
         }
 
         // Call global listeners
@@ -115,33 +101,21 @@ public class ActivitiEventSupport {
         }
     }
 
-    protected void dispatchEvent(
-        ActivitiEvent event,
-        ActivitiEventListener listener
-    ) {
+    protected void dispatchEvent(ActivitiEvent event, ActivitiEventListener listener) {
         try {
             listener.onEvent(event);
         } catch (Throwable t) {
             if (listener.isFailOnException()) {
-                throw new ActivitiException(
-                    "Exception while executing event-listener",
-                    t
-                );
+                throw new ActivitiException("Exception while executing event-listener", t);
             } else {
                 // Ignore the exception and continue notifying remaining listeners. The listener
                 // explicitly states that the exception should not bubble up
-                LOG.warn(
-                    "Exception while executing event-listener, which was ignored",
-                    t
-                );
+                LOG.warn("Exception while executing event-listener, which was ignored", t);
             }
         }
     }
 
-    protected synchronized void addTypedEventListener(
-        ActivitiEventListener listener,
-        ActivitiEventType type
-    ) {
+    protected synchronized void addTypedEventListener(ActivitiEventListener listener, ActivitiEventType type) {
         List<ActivitiEventListener> listeners = typedListeners.get(type);
         if (listeners == null) {
             // Add an empty list of listeners for this type

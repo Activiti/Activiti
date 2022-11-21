@@ -24,17 +24,14 @@ import org.springframework.core.io.Resource;
 /**
  * Default implementation of {@link AutoDeploymentStrategy} that groups all {@link Resource}s into a single deployment. This implementation is equivalent to the previously used implementation.
  */
-public class DefaultAutoDeploymentStrategy
-    extends AbstractAutoDeploymentStrategy {
+public class DefaultAutoDeploymentStrategy extends AbstractAutoDeploymentStrategy {
 
     /**
      * The deployment mode this strategy handles.
      */
     public static final String DEPLOYMENT_MODE = "default";
 
-    public DefaultAutoDeploymentStrategy(
-        ApplicationUpgradeContextService applicationUpgradeContextService
-    ) {
+    public DefaultAutoDeploymentStrategy(ApplicationUpgradeContextService applicationUpgradeContextService) {
         super(applicationUpgradeContextService);
     }
 

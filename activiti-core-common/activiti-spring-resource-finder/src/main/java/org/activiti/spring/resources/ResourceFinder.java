@@ -28,9 +28,7 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 
 public class ResourceFinder {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(
-        ResourceFinder.class
-    );
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceFinder.class);
 
     private ResourcePatternResolver resourceLoader;
 
@@ -38,15 +36,12 @@ public class ResourceFinder {
         this.resourceLoader = resourceLoader;
     }
 
-    public List<Resource> discoverResources(
-        ResourceFinderDescriptor resourceFinderDescriptor
-    ) throws IOException {
+    public List<Resource> discoverResources(ResourceFinderDescriptor resourceFinderDescriptor) throws IOException {
         List<Resource> resources = new ArrayList<>();
 
         if (resourceFinderDescriptor.shouldLookUpResources()) {
             for (String suffix : resourceFinderDescriptor.getLocationSuffixes()) {
-                String path =
-                    resourceFinderDescriptor.getLocationPrefix() + suffix;
+                String path = resourceFinderDescriptor.getLocationPrefix() + suffix;
                 resources.addAll(asList(resourceLoader.getResources(path)));
             }
             if (resources.isEmpty()) {
@@ -58,11 +53,7 @@ public class ResourceFinder {
                     .stream()
                     .map(Resource::getFilename)
                     .collect(Collectors.toList());
-                LOGGER.info(
-                    resourceFinderDescriptor.getMsgForResourcesFound(
-                        foundResources
-                    )
-                );
+                LOGGER.info(resourceFinderDescriptor.getMsgForResourcesFound(foundResources));
             }
         }
         return resources;

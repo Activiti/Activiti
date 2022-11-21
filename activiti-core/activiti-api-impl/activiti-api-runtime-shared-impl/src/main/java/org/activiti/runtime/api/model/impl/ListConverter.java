@@ -19,8 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class ListConverter<SourceT, TargetT>
-    implements ModelConverter<SourceT, TargetT> {
+public abstract class ListConverter<SourceT, TargetT> implements ModelConverter<SourceT, TargetT> {
 
     public List<TargetT> from(Collection<SourceT> sources) {
         List<TargetT> targetElements = new ArrayList<>();

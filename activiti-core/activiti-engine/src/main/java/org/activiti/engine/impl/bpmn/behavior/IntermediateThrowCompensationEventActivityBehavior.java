@@ -37,16 +37,13 @@ import org.apache.commons.lang3.StringUtils;
 
 
  */
-public class IntermediateThrowCompensationEventActivityBehavior
-    extends FlowNodeActivityBehavior {
+public class IntermediateThrowCompensationEventActivityBehavior extends FlowNodeActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 
     protected final CompensateEventDefinition compensateEventDefinition;
 
-    public IntermediateThrowCompensationEventActivityBehavior(
-        CompensateEventDefinition compensateEventDefinition
-    ) {
+    public IntermediateThrowCompensationEventActivityBehavior(CompensateEventDefinition compensateEventDefinition) {
         this.compensateEventDefinition = compensateEventDefinition;
     }
 
@@ -78,9 +75,7 @@ public class IntermediateThrowCompensationEventActivityBehavior
             );
         } else {
             // If no activity ref is provided, it is broadcast to the current sub process / process instance
-            Process process = ProcessDefinitionUtil.getProcess(
-                execution.getProcessDefinitionId()
-            );
+            Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
 
             FlowElementsContainer flowElementsContainer = null;
             if (throwEvent.getSubProcess() == null) {
@@ -105,11 +100,7 @@ public class IntermediateThrowCompensationEventActivityBehavior
             leave(execution);
         } else {
             // TODO: implement async (waitForCompletion=false in bpmn)
-            ScopeUtil.throwCompensationEvent(
-                eventSubscriptions,
-                execution,
-                false
-            );
+            ScopeUtil.throwCompensationEvent(eventSubscriptions, execution, false);
             leave(execution);
         }
     }

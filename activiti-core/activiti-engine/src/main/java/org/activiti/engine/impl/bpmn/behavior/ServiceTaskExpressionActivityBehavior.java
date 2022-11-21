@@ -36,8 +36,7 @@ import org.apache.commons.lang3.StringUtils;
 
 
  */
-public class ServiceTaskExpressionActivityBehavior
-    extends TaskActivityBehavior {
+public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 
@@ -61,43 +60,26 @@ public class ServiceTaskExpressionActivityBehavior
     public void execute(DelegateExecution execution) {
         Object value = null;
         try {
-            boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(
-                execution,
-                skipExpression
-            );
+            boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
             if (
                 !isSkipExpressionEnabled ||
-                (
-                    isSkipExpressionEnabled &&
-                    !SkipExpressionUtil.shouldSkipFlowElement(
-                        execution,
-                        skipExpression
-                    )
-                )
+                (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))
             ) {
-                if (
-                    Context
-                        .getProcessEngineConfiguration()
-                        .isEnableProcessDefinitionInfoCache()
-                ) {
+                if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {
                     ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(
                         serviceTaskId,
                         execution.getProcessDefinitionId()
                     );
                     if (
                         taskElementProperties != null &&
-                        taskElementProperties.has(
-                            DynamicBpmnConstants.SERVICE_TASK_EXPRESSION
-                        )
+                        taskElementProperties.has(DynamicBpmnConstants.SERVICE_TASK_EXPRESSION)
                     ) {
                         String overrideExpression = taskElementProperties
                             .get(DynamicBpmnConstants.SERVICE_TASK_EXPRESSION)
                             .asText();
                         if (
                             StringUtils.isNotEmpty(overrideExpression) &&
-                            !overrideExpression.equals(
-                                expression.getExpressionText()
-                            )
+                            !overrideExpression.equals(expression.getExpressionText())
                         ) {
                             expression =
                                 Context
@@ -129,10 +111,7 @@ public class ServiceTaskExpressionActivityBehavior
             if (error != null) {
                 ErrorPropagation.propagateError(error, execution);
             } else {
-                throw new ActivitiException(
-                    "Could not execute service task expression",
-                    exc
-                );
+                throw new ActivitiException("Could not execute service task expression", exc);
             }
         }
     }

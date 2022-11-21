@@ -25,10 +25,7 @@ public class ProcessValidatorFactory {
 
     public ProcessValidator createDefaultProcessValidator() {
         ProcessValidatorImpl processValidator = new ProcessValidatorImpl();
-        processValidator.addValidatorSet(
-            new ValidatorSetFactory()
-                .createActivitiExecutableProcessValidatorSet()
-        );
+        processValidator.addValidatorSet(new ValidatorSetFactory().createActivitiExecutableProcessValidatorSet());
         return processValidator;
     }
 }

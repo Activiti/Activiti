@@ -28,9 +28,7 @@ import org.slf4j.LoggerFactory;
 
 public class MDCLoggingTest extends PluggableActivitiTestCase {
 
-    private Logger rootLogger = (Logger) LoggerFactory.getLogger(
-        Logger.ROOT_LOGGER_NAME
-    );
+    private Logger rootLogger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 
     MemoryLogAppender console = new MemoryLogAppender();
 
@@ -68,46 +66,21 @@ public class MDCLoggingTest extends PluggableActivitiTestCase {
         setCustomLogger();
 
         assertThatExceptionOfType(Exception.class)
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByKey("testLoggerProcess")
-            );
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("testLoggerProcess"));
         String messages = console.toString();
 
+        assertThat(messages.contains("ProcessDefinitionId=" + TestService.processDefinitionId)).isTrue();
+        assertThat(messages.contains("executionId=" + TestService.executionId)).isTrue();
+        assertThat(messages.contains("mdcProcessInstanceID=" + TestService.processInstanceId)).isTrue();
         assertThat(
-            messages.contains(
-                "ProcessDefinitionId=" + TestService.processDefinitionId
-            )
-        )
-            .isTrue();
-        assertThat(messages.contains("executionId=" + TestService.executionId))
-            .isTrue();
-        assertThat(
-            messages.contains(
-                "mdcProcessInstanceID=" + TestService.processInstanceId
-            )
-        )
-            .isTrue();
-        assertThat(
-            messages.contains(
-                "mdcBusinessKey=" +
-                (TestService.businessKey == null ? "" : TestService.businessKey)
-            )
+            messages.contains("mdcBusinessKey=" + (TestService.businessKey == null ? "" : TestService.businessKey))
         )
             .isTrue();
         console.clear();
         unsetCustomLogger();
 
         assertThatExceptionOfType(Exception.class)
-            .isThrownBy(() ->
-                runtimeService.startProcessInstanceByKey("testLoggerProcess")
-            );
-        assertThat(
-            console
-                .toString()
-                .contains(
-                    "ProcessDefinitionId=" + TestService.processDefinitionId
-                )
-        )
-            .isFalse();
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("testLoggerProcess"));
+        assertThat(console.toString().contains("ProcessDefinitionId=" + TestService.processDefinitionId)).isFalse();
     }
 }

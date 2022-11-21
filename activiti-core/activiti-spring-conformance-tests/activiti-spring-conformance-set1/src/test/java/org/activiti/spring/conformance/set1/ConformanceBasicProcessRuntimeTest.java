@@ -59,33 +59,23 @@ public class ConformanceBasicProcessRuntimeTest {
     public void shouldProcessDefinitions() {
         securityUtil.logInAs("user1");
 
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
-            Pageable.of(0, 50)
-        );
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0, 50));
 
         List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent();
         assertThat(processDefinitions)
             .extracting(ProcessDefinition::getName)
-            .containsOnly(
-                "ServiceTask with Implementation",
-                "ServiceTask with Implementation Modify Variable"
-            );
+            .containsOnly("ServiceTask with Implementation", "ServiceTask with Implementation Modify Variable");
     }
 
     @Test
     public void shouldProcessDefinitionsMetaData() {
         securityUtil.logInAs("user1");
 
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
-            Pageable.of(0, 50)
-        );
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0, 50));
 
         List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent();
         assertThat(processDefinitions)
             .extracting(ProcessDefinition::getName)
-            .containsOnly(
-                "ServiceTask with Implementation",
-                "ServiceTask with Implementation Modify Variable"
-            );
+            .containsOnly("ServiceTask with Implementation", "ServiceTask with Implementation Modify Variable");
     }
 }

@@ -45,9 +45,7 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
             repositoryService
                 .createDeployment()
                 .tenantId("One%")
-                .addClasspathResource(
-                    "org/activiti/standalone/escapeclause/oneTaskProcessEscapeClauseTest.bpmn20.xml"
-                )
+                .addClasspathResource("org/activiti/standalone/escapeclause/oneTaskProcessEscapeClauseTest.bpmn20.xml")
                 .deploy()
                 .getId();
 
@@ -55,42 +53,22 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
             repositoryService
                 .createDeployment()
                 .tenantId("Two_")
-                .addClasspathResource(
-                    "org/activiti/standalone/escapeclause/oneTaskProcessEscapeClauseTest.bpmn20.xml"
-                )
+                .addClasspathResource("org/activiti/standalone/escapeclause/oneTaskProcessEscapeClauseTest.bpmn20.xml")
                 .deploy()
                 .getId();
 
-        processInstance1 =
-            runtimeService.startProcessInstanceByKeyAndTenantId(
-                "oneTaskProcess",
-                "One%",
-                "One%"
-            );
+        processInstance1 = runtimeService.startProcessInstanceByKeyAndTenantId("oneTaskProcess", "One%", "One%");
         runtimeService.setProcessInstanceName(processInstance1.getId(), "One%");
 
-        processInstance2 =
-            runtimeService.startProcessInstanceByKeyAndTenantId(
-                "oneTaskProcess",
-                "Two_",
-                "Two_"
-            );
+        processInstance2 = runtimeService.startProcessInstanceByKeyAndTenantId("oneTaskProcess", "Two_", "Two_");
         runtimeService.setProcessInstanceName(processInstance2.getId(), "Two_");
 
-        task1 =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance1.getId())
-                .singleResult();
+        task1 = taskService.createTaskQuery().processInstanceId(processInstance1.getId()).singleResult();
         taskService.setAssignee(task1.getId(), "assignee%");
         taskService.setOwner(task1.getId(), "owner%");
         taskService.setVariableLocal(task1.getId(), "var1", "One%");
 
-        task2 =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance2.getId())
-                .singleResult();
+        task2 = taskService.createTaskQuery().processInstanceId(processInstance2.getId()).singleResult();
         task2.setName("my task_");
         task2.setDescription("documentation_");
         taskService.saveTask(task2);
@@ -110,24 +88,13 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
     @Test
     public void testQueryByNameLike() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // nameLike
-            Task task = taskService
-                .createTaskQuery()
-                .taskNameLike("%\\%%")
-                .singleResult();
+            Task task = taskService.createTaskQuery().taskNameLike("%\\%%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task1.getId());
 
-            task =
-                taskService
-                    .createTaskQuery()
-                    .taskNameLike("%\\_%")
-                    .singleResult();
+            task = taskService.createTaskQuery().taskNameLike("%\\_%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task2.getId());
 
@@ -156,24 +123,13 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
     @Test
     public void testQueryByNameLikeIgnoreCase() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // nameLikeIgnoreCase
-            Task task = taskService
-                .createTaskQuery()
-                .taskNameLikeIgnoreCase("%\\%%")
-                .singleResult();
+            Task task = taskService.createTaskQuery().taskNameLikeIgnoreCase("%\\%%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task1.getId());
 
-            task =
-                taskService
-                    .createTaskQuery()
-                    .taskNameLikeIgnoreCase("%\\_%")
-                    .singleResult();
+            task = taskService.createTaskQuery().taskNameLikeIgnoreCase("%\\_%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task2.getId());
 
@@ -202,24 +158,13 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
     @Test
     public void testQueryByDescriptionLike() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // descriptionLike
-            Task task = taskService
-                .createTaskQuery()
-                .taskDescriptionLike("%\\%%")
-                .singleResult();
+            Task task = taskService.createTaskQuery().taskDescriptionLike("%\\%%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task1.getId());
 
-            task =
-                taskService
-                    .createTaskQuery()
-                    .taskDescriptionLike("%\\_%")
-                    .singleResult();
+            task = taskService.createTaskQuery().taskDescriptionLike("%\\_%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task2.getId());
 
@@ -248,24 +193,13 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
     @Test
     public void testQueryByDescriptionLikeIgnoreCase() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // descriptionLikeIgnoreCase
-            Task task = taskService
-                .createTaskQuery()
-                .taskDescriptionLikeIgnoreCase("%\\%%")
-                .singleResult();
+            Task task = taskService.createTaskQuery().taskDescriptionLikeIgnoreCase("%\\%%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task1.getId());
 
-            task =
-                taskService
-                    .createTaskQuery()
-                    .taskDescriptionLikeIgnoreCase("%\\_%")
-                    .singleResult();
+            task = taskService.createTaskQuery().taskDescriptionLikeIgnoreCase("%\\_%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task2.getId());
 
@@ -294,24 +228,13 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
     @Test
     public void testQueryByAssigneeLike() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // assigneeLike
-            Task task = taskService
-                .createTaskQuery()
-                .taskAssigneeLike("%\\%%")
-                .singleResult();
+            Task task = taskService.createTaskQuery().taskAssigneeLike("%\\%%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task1.getId());
 
-            task =
-                taskService
-                    .createTaskQuery()
-                    .taskAssigneeLike("%\\_%")
-                    .singleResult();
+            task = taskService.createTaskQuery().taskAssigneeLike("%\\_%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task2.getId());
             // orQuery
@@ -329,24 +252,13 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
     @Test
     public void testQueryByAssigneeLikeIgnoreCase() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // assigneeLikeIgnoreCase
-            Task task = taskService
-                .createTaskQuery()
-                .taskAssigneeLike("%\\%%")
-                .singleResult();
+            Task task = taskService.createTaskQuery().taskAssigneeLike("%\\%%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task1.getId());
 
-            task =
-                taskService
-                    .createTaskQuery()
-                    .taskAssigneeLike("%\\_%")
-                    .singleResult();
+            task = taskService.createTaskQuery().taskAssigneeLike("%\\_%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task2.getId());
             // orQuery
@@ -364,24 +276,13 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
     @Test
     public void testQueryByOwnerLike() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // taskOwnerLike
-            Task task = taskService
-                .createTaskQuery()
-                .taskOwnerLike("%\\%%")
-                .singleResult();
+            Task task = taskService.createTaskQuery().taskOwnerLike("%\\%%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task1.getId());
 
-            task =
-                taskService
-                    .createTaskQuery()
-                    .taskOwnerLike("%\\_%")
-                    .singleResult();
+            task = taskService.createTaskQuery().taskOwnerLike("%\\_%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task2.getId());
 
@@ -410,24 +311,13 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
     @Test
     public void testQueryByOwnerLikeIgnoreCase() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // taskOwnerLikeIgnoreCase
-            Task task = taskService
-                .createTaskQuery()
-                .taskOwnerLikeIgnoreCase("%\\%%")
-                .singleResult();
+            Task task = taskService.createTaskQuery().taskOwnerLikeIgnoreCase("%\\%%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task1.getId());
 
-            task =
-                taskService
-                    .createTaskQuery()
-                    .taskOwnerLikeIgnoreCase("%\\_%")
-                    .singleResult();
+            task = taskService.createTaskQuery().taskOwnerLikeIgnoreCase("%\\_%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task2.getId());
 
@@ -456,24 +346,13 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
     @Test
     public void testQueryByProcessInstanceBusinessKeyLike() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // processInstanceBusinessKeyLike
-            Task task = taskService
-                .createTaskQuery()
-                .processInstanceBusinessKeyLike("%\\%%")
-                .singleResult();
+            Task task = taskService.createTaskQuery().processInstanceBusinessKeyLike("%\\%%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task1.getId());
 
-            task =
-                taskService
-                    .createTaskQuery()
-                    .processInstanceBusinessKeyLike("%\\_%")
-                    .singleResult();
+            task = taskService.createTaskQuery().processInstanceBusinessKeyLike("%\\_%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task2.getId());
 
@@ -502,24 +381,13 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
     @Test
     public void testQueryByProcessInstanceBusinessKeyLikeIgnoreCase() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // processInstanceBusinessKeyLike
-            Task task = taskService
-                .createTaskQuery()
-                .processInstanceBusinessKeyLikeIgnoreCase("%\\%%")
-                .singleResult();
+            Task task = taskService.createTaskQuery().processInstanceBusinessKeyLikeIgnoreCase("%\\%%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task1.getId());
 
-            task =
-                taskService
-                    .createTaskQuery()
-                    .processInstanceBusinessKeyLikeIgnoreCase("%\\_%")
-                    .singleResult();
+            task = taskService.createTaskQuery().processInstanceBusinessKeyLikeIgnoreCase("%\\_%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task2.getId());
             // orQuery
@@ -537,23 +405,12 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
     @Test
     public void testQueryByKeyLike() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // taskDefinitionKeyLike
-            Task task = taskService
-                .createTaskQuery()
-                .taskDefinitionKeyLike("%\\%%")
-                .singleResult();
+            Task task = taskService.createTaskQuery().taskDefinitionKeyLike("%\\%%").singleResult();
             assertThat(task).isNull();
 
-            task =
-                taskService
-                    .createTaskQuery()
-                    .taskDefinitionKeyLike("%\\_%")
-                    .singleResult();
+            task = taskService.createTaskQuery().taskDefinitionKeyLike("%\\_%").singleResult();
             assertThat(task).isNull();
 
             // orQuery
@@ -579,23 +436,12 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
     @Test
     public void testQueryByProcessDefinitionKeyLike() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // processDefinitionKeyLike
-            Task task = taskService
-                .createTaskQuery()
-                .processDefinitionKeyLike("%\\%%")
-                .singleResult();
+            Task task = taskService.createTaskQuery().processDefinitionKeyLike("%\\%%").singleResult();
             assertThat(task).isNull();
 
-            task =
-                taskService
-                    .createTaskQuery()
-                    .processDefinitionKeyLike("%\\_%")
-                    .singleResult();
+            task = taskService.createTaskQuery().processDefinitionKeyLike("%\\_%").singleResult();
             assertThat(task).isNull();
 
             // orQuery
@@ -621,23 +467,12 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
     @Test
     public void testQueryByProcessDefinitionKeyLikeIgnoreCase() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // processDefinitionKeyLikeIgnoreCase
-            Task task = taskService
-                .createTaskQuery()
-                .processDefinitionKeyLikeIgnoreCase("%\\%%")
-                .singleResult();
+            Task task = taskService.createTaskQuery().processDefinitionKeyLikeIgnoreCase("%\\%%").singleResult();
             assertThat(task).isNull();
 
-            task =
-                taskService
-                    .createTaskQuery()
-                    .processDefinitionKeyLikeIgnoreCase("%\\_%")
-                    .singleResult();
+            task = taskService.createTaskQuery().processDefinitionKeyLikeIgnoreCase("%\\_%").singleResult();
             assertThat(task).isNull();
 
             // orQuery
@@ -663,11 +498,7 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
     @Test
     public void testQueryByProcessDefinitionNameLike() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // processDefinitionNameLike
             List<Task> list = taskService
                 .createTaskQuery()
@@ -703,24 +534,13 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
     @Test
     public void testQueryLikeByQueryVariableValue() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // taskVariableValueLike
-            Task task = taskService
-                .createTaskQuery()
-                .taskVariableValueLike("var1", "%\\%%")
-                .singleResult();
+            Task task = taskService.createTaskQuery().taskVariableValueLike("var1", "%\\%%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task1.getId());
 
-            task =
-                taskService
-                    .createTaskQuery()
-                    .taskVariableValueLike("var1", "%\\_%")
-                    .singleResult();
+            task = taskService.createTaskQuery().taskVariableValueLike("var1", "%\\_%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task2.getId());
 
@@ -748,24 +568,13 @@ public class TaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
     }
 
     public void testQueryLikeIgnoreCaseByQueryVariableValue() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.ACTIVITY)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             // taskVariableValueLikeIgnoreCase
-            Task task = taskService
-                .createTaskQuery()
-                .taskVariableValueLikeIgnoreCase("var1", "%\\%%")
-                .singleResult();
+            Task task = taskService.createTaskQuery().taskVariableValueLikeIgnoreCase("var1", "%\\%%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task1.getId());
 
-            task =
-                taskService
-                    .createTaskQuery()
-                    .taskVariableValueLikeIgnoreCase("var1", "%\\_%")
-                    .singleResult();
+            task = taskService.createTaskQuery().taskVariableValueLikeIgnoreCase("var1", "%\\_%").singleResult();
             assertThat(task).isNotNull();
             assertThat(task.getId()).isEqualTo(task2.getId());
 

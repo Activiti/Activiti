@@ -29,9 +29,7 @@ import org.activiti.engine.repository.Model;
 
 
  */
-public class ModelEntityManagerImpl
-    extends AbstractEntityManager<ModelEntity>
-    implements ModelEntityManager {
+public class ModelEntityManagerImpl extends AbstractEntityManager<ModelEntity> implements ModelEntityManager {
 
     protected ModelDataManager modelDataManager;
 
@@ -100,23 +98,16 @@ public class ModelEntityManagerImpl
     @Override
     public void deleteEditorSourceExtra(ModelEntity model) {
         if (model.getEditorSourceExtraValueId() != null) {
-            ByteArrayRef ref = new ByteArrayRef(
-                model.getEditorSourceExtraValueId()
-            );
+            ByteArrayRef ref = new ByteArrayRef(model.getEditorSourceExtraValueId());
             ref.delete();
         }
     }
 
     @Override
-    public void insertEditorSourceExtraForModel(
-        String modelId,
-        byte[] modelSource
-    ) {
+    public void insertEditorSourceExtraForModel(String modelId, byte[] modelSource) {
         ModelEntity model = findById(modelId);
         if (model != null) {
-            ByteArrayRef ref = new ByteArrayRef(
-                model.getEditorSourceExtraValueId()
-            );
+            ByteArrayRef ref = new ByteArrayRef(model.getEditorSourceExtraValueId());
             ref.setValue("source-extra", modelSource);
 
             if (model.getEditorSourceExtraValueId() == null) {
@@ -127,10 +118,7 @@ public class ModelEntityManagerImpl
     }
 
     @Override
-    public List<Model> findModelsByQueryCriteria(
-        ModelQueryImpl query,
-        Page page
-    ) {
+    public List<Model> findModelsByQueryCriteria(ModelQueryImpl query, Page page) {
         return modelDataManager.findModelsByQueryCriteria(query, page);
     }
 
@@ -157,23 +145,13 @@ public class ModelEntityManagerImpl
             return null;
         }
 
-        ByteArrayRef ref = new ByteArrayRef(
-            model.getEditorSourceExtraValueId()
-        );
+        ByteArrayRef ref = new ByteArrayRef(model.getEditorSourceExtraValueId());
         return ref.getBytes();
     }
 
     @Override
-    public List<Model> findModelsByNativeQuery(
-        Map<String, Object> parameterMap,
-        int firstResult,
-        int maxResults
-    ) {
-        return modelDataManager.findModelsByNativeQuery(
-            parameterMap,
-            firstResult,
-            maxResults
-        );
+    public List<Model> findModelsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
+        return modelDataManager.findModelsByNativeQuery(parameterMap, firstResult, maxResults);
     }
 
     @Override

@@ -30,11 +30,8 @@ public class MessageEventHandler extends AbstractEventHandler {
 
     private final EventSubscriptionPayloadMappingProvider messageEventVariableMappingProvider;
 
-    public MessageEventHandler(
-        EventSubscriptionPayloadMappingProvider messageEventVariableMappingProvider
-    ) {
-        this.messageEventVariableMappingProvider =
-            messageEventVariableMappingProvider;
+    public MessageEventHandler(EventSubscriptionPayloadMappingProvider messageEventVariableMappingProvider) {
+        this.messageEventVariableMappingProvider = messageEventVariableMappingProvider;
     }
 
     public String getEventHandlerType() {
@@ -42,19 +39,10 @@ public class MessageEventHandler extends AbstractEventHandler {
     }
 
     @Override
-    public void handleEvent(
-        EventSubscriptionEntity eventSubscription,
-        Object payload,
-        CommandContext commandContext
-    ) {
+    public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
         // As stated in the ActivitiEventType java-doc, the message-event is
         // thrown before the actual message has been sent
-        if (
-            commandContext
-                .getProcessEngineConfiguration()
-                .getEventDispatcher()
-                .isEnabled()
-        ) {
+        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
             ExecutionEntity execution = eventSubscription.getExecution();
             String messageName = eventSubscription.getEventName();
             String correlationKey = eventSubscription.getConfiguration();
@@ -63,19 +51,11 @@ public class MessageEventHandler extends AbstractEventHandler {
                 .getProcessEngineConfiguration()
                 .getEventDispatcher()
                 .dispatchEvent(
-                    ActivitiEventBuilder.createMessageReceivedEvent(
-                        execution,
-                        messageName,
-                        correlationKey,
-                        payload
-                    )
+                    ActivitiEventBuilder.createMessageReceivedEvent(execution, messageName, correlationKey, payload)
                 );
         }
 
-        Object variables = messageEventVariableMappingProvider.apply(
-            payload,
-            eventSubscription
-        );
+        Object variables = messageEventVariableMappingProvider.apply(payload, eventSubscription);
 
         super.handleEvent(eventSubscription, variables, commandContext);
     }

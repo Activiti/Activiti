@@ -30,27 +30,15 @@ import org.activiti.engine.test.Deployment;
  */
 public class ScriptTaskListenerTest extends PluggableActivitiTestCase {
 
-    @Deployment(
-        resources = {
-            "org/activiti/examples/bpmn/tasklistener/ScriptTaskListenerTest.bpmn20.xml",
-        }
-    )
+    @Deployment(resources = { "org/activiti/examples/bpmn/tasklistener/ScriptTaskListenerTest.bpmn20.xml" })
     public void testScriptTaskListener() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "scriptTaskListenerProcess"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("scriptTaskListenerProcess");
         Task task = taskService.createTaskQuery().singleResult();
-        assertThat(task.getName())
-            .as("Name does not match")
-            .isEqualTo("All your base are belong to us");
+        assertThat(task.getName()).as("Name does not match").isEqualTo("All your base are belong to us");
 
         taskService.complete(task.getId());
 
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.AUDIT)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             HistoricTaskInstance historicTask = historyService
                 .createHistoricTaskInstanceQuery()
                 .taskId(task.getId())
@@ -58,19 +46,13 @@ public class ScriptTaskListenerTest extends PluggableActivitiTestCase {
             assertThat(historicTask.getOwner()).isEqualTo("kermit");
 
             task = taskService.createTaskQuery().singleResult();
-            assertThat(task.getName())
-                .as("Task name not set with 'bar' variable")
-                .isEqualTo("BAR");
+            assertThat(task.getName()).as("Task name not set with 'bar' variable").isEqualTo("BAR");
         }
 
         Object bar = runtimeService.getVariable(processInstance.getId(), "bar");
-        assertThat(bar)
-            .as("Expected 'bar' variable to be local to script")
-            .isNull();
+        assertThat(bar).as("Expected 'bar' variable to be local to script").isNull();
 
         Object foo = runtimeService.getVariable(processInstance.getId(), "foo");
-        assertThat(foo)
-            .as("Could not find the 'foo' variable in variable scope")
-            .isEqualTo("FOO");
+        assertThat(foo).as("Could not find the 'foo' variable in variable scope").isEqualTo("FOO");
     }
 }

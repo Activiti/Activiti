@@ -35,11 +35,7 @@ public class GetExecutionVariableCmd implements Command<Object>, Serializable {
     protected String variableName;
     protected boolean isLocal;
 
-    public GetExecutionVariableCmd(
-        String executionId,
-        String variableName,
-        boolean isLocal
-    ) {
+    public GetExecutionVariableCmd(String executionId, String variableName, boolean isLocal) {
         this.executionId = executionId;
         this.variableName = variableName;
         this.isLocal = isLocal;
@@ -53,23 +49,15 @@ public class GetExecutionVariableCmd implements Command<Object>, Serializable {
             throw new ActivitiIllegalArgumentException("variableName is null");
         }
 
-        ExecutionEntity execution = commandContext
-            .getExecutionEntityManager()
-            .findById(executionId);
+        ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(executionId);
 
         if (execution == null) {
-            throw new ActivitiObjectNotFoundException(
-                "execution " + executionId + " doesn't exist",
-                Execution.class
-            );
+            throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
         }
         return executeInternal(execution, commandContext);
     }
 
-    protected Object executeInternal(
-        ExecutionEntity execution,
-        CommandContext commandContext
-    ) {
+    protected Object executeInternal(ExecutionEntity execution, CommandContext commandContext) {
         Object value;
 
         if (isLocal) {

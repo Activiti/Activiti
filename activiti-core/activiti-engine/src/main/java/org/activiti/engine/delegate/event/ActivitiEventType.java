@@ -297,9 +297,7 @@ public enum ActivitiEventType {
                     }
                 }
                 if (!found) {
-                    throw new ActivitiIllegalArgumentException(
-                        "Invalid event-type: " + typeName
-                    );
+                    throw new ActivitiIllegalArgumentException("Invalid event-type: " + typeName);
                 }
             }
         }

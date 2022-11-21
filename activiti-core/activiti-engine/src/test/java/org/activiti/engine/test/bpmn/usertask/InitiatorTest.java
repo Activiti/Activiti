@@ -36,8 +36,7 @@ public class InitiatorTest extends PluggableActivitiTestCase {
             Authentication.setAuthenticatedUserId(null);
         }
 
-        assertThat(taskService.createTaskQuery().taskAssignee("bono").count())
-            .isEqualTo(1);
+        assertThat(taskService.createTaskQuery().taskAssignee("bono").count()).isEqualTo(1);
     }
 
     // See ACT-1372
@@ -50,7 +49,6 @@ public class InitiatorTest extends PluggableActivitiTestCase {
             Authentication.setAuthenticatedUserId(null);
         }
 
-        assertThat(taskService.createTaskQuery().taskAssignee("bono").count())
-            .isEqualTo(1);
+        assertThat(taskService.createTaskQuery().taskAssignee("bono").count()).isEqualTo(1);
     }
 }

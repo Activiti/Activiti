@@ -58,9 +58,7 @@ public class ByteArrayEntityManagerImpl
         return byteArrayDataManager;
     }
 
-    public void setByteArrayDataManager(
-        ByteArrayDataManager byteArrayDataManager
-    ) {
+    public void setByteArrayDataManager(ByteArrayDataManager byteArrayDataManager) {
         this.byteArrayDataManager = byteArrayDataManager;
     }
 }

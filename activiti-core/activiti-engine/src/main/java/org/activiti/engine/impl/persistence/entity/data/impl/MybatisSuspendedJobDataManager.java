@@ -38,9 +38,7 @@ public class MybatisSuspendedJobDataManager
 
     protected CachedEntityMatcher<SuspendedJobEntity> suspendedJobsByExecutionIdMatcher = new SuspendedJobsByExecutionIdMatcher();
 
-    public MybatisSuspendedJobDataManager(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public MybatisSuspendedJobDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);
     }
 
@@ -56,53 +54,32 @@ public class MybatisSuspendedJobDataManager
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Job> findJobsByQueryCriteria(
-        SuspendedJobQueryImpl jobQuery,
-        Page page
-    ) {
+    public List<Job> findJobsByQueryCriteria(SuspendedJobQueryImpl jobQuery, Page page) {
         String query = "selectSuspendedJobByQueryCriteria";
         return getDbSqlSession().selectList(query, jobQuery, page);
     }
 
     @Override
     public long findJobCountByQueryCriteria(SuspendedJobQueryImpl jobQuery) {
-        return (Long) getDbSqlSession()
-            .selectOne("selectSuspendedJobCountByQueryCriteria", jobQuery);
+        return (Long) getDbSqlSession().selectOne("selectSuspendedJobCountByQueryCriteria", jobQuery);
     }
 
     @Override
-    public List<SuspendedJobEntity> findJobsByExecutionId(
-        final String executionId
-    ) {
-        return getList(
-            "selectSuspendedJobsByExecutionId",
-            executionId,
-            suspendedJobsByExecutionIdMatcher,
-            true
-        );
+    public List<SuspendedJobEntity> findJobsByExecutionId(final String executionId) {
+        return getList("selectSuspendedJobsByExecutionId", executionId, suspendedJobsByExecutionIdMatcher, true);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<SuspendedJobEntity> findJobsByProcessInstanceId(
-        final String processInstanceId
-    ) {
-        return getDbSqlSession()
-            .selectList(
-                "selectSuspendedJobsByProcessInstanceId",
-                processInstanceId
-            );
+    public List<SuspendedJobEntity> findJobsByProcessInstanceId(final String processInstanceId) {
+        return getDbSqlSession().selectList("selectSuspendedJobsByProcessInstanceId", processInstanceId);
     }
 
     @Override
-    public void updateJobTenantIdForDeployment(
-        String deploymentId,
-        String newTenantId
-    ) {
+    public void updateJobTenantIdForDeployment(String deploymentId, String newTenantId) {
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put("deploymentId", deploymentId);
         params.put("tenantId", newTenantId);
-        getDbSqlSession()
-            .update("updateSuspendedJobTenantIdForDeployment", params);
+        getDbSqlSession().update("updateSuspendedJobTenantIdForDeployment", params);
     }
 }

@@ -31,30 +31,22 @@ import org.activiti.engine.test.Deployment;
 public class CustomFlowExecutionListenerTest extends ResourceActivitiTestCase {
 
     public CustomFlowExecutionListenerTest() {
-        super(
-            "org/activiti/examples/bpmn/executionlistener/custom.flow.parse.handler.activiti.cfg.xml"
-        );
+        super("org/activiti/examples/bpmn/executionlistener/custom.flow.parse.handler.activiti.cfg.xml");
     }
 
     @Deployment(
-        resources = {
-            "org/activiti/examples/bpmn/executionlistener/CustomFlowExecutionListenerTest.bpmn20.xml",
-        }
+        resources = { "org/activiti/examples/bpmn/executionlistener/CustomFlowExecutionListenerTest.bpmn20.xml" }
     )
     public void testScriptExecutionListener() {
         Map<String, Object> variableMap = new HashMap<String, Object>();
         variableMap.put("customFlowBean", new CustomFlowBean());
-        runtimeService.startProcessInstanceByKey(
-            "scriptExecutionListenerProcess",
-            variableMap
-        );
+        runtimeService.startProcessInstanceByKey("scriptExecutionListenerProcess", variableMap);
         HistoricVariableInstance variable = historyService
             .createHistoricVariableInstanceQuery()
             .variableName("flow1_activiti_conditions")
             .singleResult();
         assertThat(variable).isNotNull();
-        assertThat(variable.getVariableName())
-            .isEqualTo("flow1_activiti_conditions");
+        assertThat(variable.getVariableName()).isEqualTo("flow1_activiti_conditions");
         @SuppressWarnings("unchecked")
         List<String> conditions = (List<String>) variable.getValue();
         assertThat(conditions).hasSize(2);

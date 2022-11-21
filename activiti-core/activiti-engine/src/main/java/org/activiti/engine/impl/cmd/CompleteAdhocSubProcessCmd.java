@@ -42,9 +42,7 @@ public class CompleteAdhocSubProcessCmd implements Command<Void>, Serializable {
 
     public Void execute(CommandContext commandContext) {
         ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-        ExecutionEntity execution = executionEntityManager.findById(
-            executionId
-        );
+        ExecutionEntity execution = executionEntityManager.findById(executionId);
         if (execution == null) {
             throw new ActivitiObjectNotFoundException(
                 "No execution found for id '" + executionId + "'",
@@ -65,21 +63,12 @@ public class CompleteAdhocSubProcessCmd implements Command<Void>, Serializable {
             );
         }
 
-        ExecutionEntity outgoingFlowExecution = executionEntityManager.createChildExecution(
-            execution.getParent()
-        );
-        outgoingFlowExecution.setCurrentFlowElement(
-            execution.getCurrentFlowElement()
-        );
+        ExecutionEntity outgoingFlowExecution = executionEntityManager.createChildExecution(execution.getParent());
+        outgoingFlowExecution.setCurrentFlowElement(execution.getCurrentFlowElement());
 
         executionEntityManager.deleteExecutionAndRelatedData(execution, null);
 
-        Context
-            .getAgenda()
-            .planTakeOutgoingSequenceFlowsOperation(
-                outgoingFlowExecution,
-                true
-            );
+        Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(outgoingFlowExecution, true);
 
         return null;
     }

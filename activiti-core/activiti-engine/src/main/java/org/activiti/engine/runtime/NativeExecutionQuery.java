@@ -24,5 +24,4 @@ import org.activiti.engine.query.NativeQuery;
 
  */
 @Internal
-public interface NativeExecutionQuery
-    extends NativeQuery<NativeExecutionQuery, Execution> {}
+public interface NativeExecutionQuery extends NativeQuery<NativeExecutionQuery, Execution> {}

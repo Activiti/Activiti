@@ -42,8 +42,7 @@ import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntit
  *
 
  */
-public class EventSubProcessMessageStartEventActivityBehavior
-    extends AbstractBpmnActivityBehavior {
+public class EventSubProcessMessageStartEventActivityBehavior extends AbstractBpmnActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 
@@ -65,20 +64,14 @@ public class EventSubProcessMessageStartEventActivityBehavior
         execution.setScope(true);
 
         // initialize the template-defined data objects as variables
-        Map<String, Object> dataObjectVars = processDataObjects(
-            eventSubProcess.getDataObjects()
-        );
+        Map<String, Object> dataObjectVars = processDataObjects(eventSubProcess.getDataObjects());
         if (dataObjectVars != null) {
             execution.setVariablesLocal(dataObjectVars);
         }
     }
 
     @Override
-    public void trigger(
-        DelegateExecution execution,
-        String triggerName,
-        Object triggerData
-    ) {
+    public void trigger(DelegateExecution execution, String triggerName, Object triggerData) {
         CommandContext commandContext = Context.getCommandContext();
         ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
         ExecutionEntity executionEntity = (ExecutionEntity) execution;
@@ -92,10 +85,7 @@ public class EventSubProcessMessageStartEventActivityBehavior
                 if (!childExecution.getId().equals(executionEntity.getId())) {
                     executionEntityManager.cancelExecutionAndRelatedData(
                         childExecution,
-                        DeleteReason.EVENT_SUBPROCESS_INTERRUPTING +
-                        "(" +
-                        startEvent.getId() +
-                        ")"
+                        DeleteReason.EVENT_SUBPROCESS_INTERRUPTING + "(" + startEvent.getId() + ")"
                     );
                 }
             }
@@ -118,23 +108,17 @@ public class EventSubProcessMessageStartEventActivityBehavior
         }
 
         executionEntity.setCurrentFlowElement(
-            (SubProcess) executionEntity
-                .getCurrentFlowElement()
-                .getParentContainer()
+            (SubProcess) executionEntity.getCurrentFlowElement().getParentContainer()
         );
         executionEntity.setScope(true);
 
-        ExecutionEntity outgoingFlowExecution = executionEntityManager.createChildExecution(
-            executionEntity
-        );
+        ExecutionEntity outgoingFlowExecution = executionEntityManager.createChildExecution(executionEntity);
         outgoingFlowExecution.setCurrentFlowElement(startEvent);
 
         leave(outgoingFlowExecution);
     }
 
-    protected Map<String, Object> processDataObjects(
-        Collection<ValuedDataObject> dataObjects
-    ) {
+    protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
         Map<String, Object> variablesMap = new HashMap<>();
         // convert data objects to process variables
         if (dataObjects != null) {

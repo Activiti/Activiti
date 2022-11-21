@@ -52,10 +52,7 @@ public class ProcessEngineEndpoint {
         // Process definitions
         metrics.put(
             "processDefinitionCount",
-            processEngine
-                .getRepositoryService()
-                .createProcessDefinitionQuery()
-                .count()
+            processEngine.getRepositoryService().createProcessDefinitionQuery().count()
         );
 
         // List of all process definitions
@@ -67,12 +64,7 @@ public class ProcessEngineEndpoint {
             .list();
         List<String> processDefinitionKeys = new ArrayList<String>();
         for (ProcessDefinition processDefinition : processDefinitions) {
-            processDefinitionKeys.add(
-                processDefinition.getKey() +
-                " (v" +
-                processDefinition.getVersion() +
-                ")"
-            );
+            processDefinitionKeys.add(processDefinition.getKey() + " (v" + processDefinition.getVersion() + ")");
         }
         metrics.put("deployedProcessDefinitions", processDefinitionKeys);
 
@@ -81,10 +73,7 @@ public class ProcessEngineEndpoint {
         metrics.put("runningProcessInstanceCount", processInstanceCountMap);
         for (ProcessDefinition processDefinition : processDefinitions) {
             processInstanceCountMap.put(
-                processDefinition.getKey() +
-                " (v" +
-                processDefinition.getVersion() +
-                ")",
+                processDefinition.getKey() + " (v" + processDefinition.getVersion() + ")",
                 processEngine
                     .getRuntimeService()
                     .createProcessInstanceQuery()
@@ -93,16 +82,10 @@ public class ProcessEngineEndpoint {
             );
         }
         Map<String, Object> completedProcessInstanceCountMap = new HashMap<String, Object>();
-        metrics.put(
-            "completedProcessInstanceCount",
-            completedProcessInstanceCountMap
-        );
+        metrics.put("completedProcessInstanceCount", completedProcessInstanceCountMap);
         for (ProcessDefinition processDefinition : processDefinitions) {
             completedProcessInstanceCountMap.put(
-                processDefinition.getKey() +
-                " (v" +
-                processDefinition.getVersion() +
-                ")",
+                processDefinition.getKey() + " (v" + processDefinition.getVersion() + ")",
                 processEngine
                     .getHistoryService()
                     .createHistoricProcessInstanceQuery()
@@ -113,17 +96,10 @@ public class ProcessEngineEndpoint {
         }
 
         // Open tasks
-        metrics.put(
-            "openTaskCount",
-            processEngine.getTaskService().createTaskQuery().count()
-        );
+        metrics.put("openTaskCount", processEngine.getTaskService().createTaskQuery().count());
         metrics.put(
             "completedTaskCount",
-            processEngine
-                .getHistoryService()
-                .createHistoricTaskInstanceQuery()
-                .finished()
-                .count()
+            processEngine.getHistoryService().createHistoricTaskInstanceQuery().finished().count()
         );
 
         // Tasks completed today
@@ -133,20 +109,14 @@ public class ProcessEngineEndpoint {
                 .getHistoryService()
                 .createHistoricTaskInstanceQuery()
                 .finished()
-                .taskCompletedAfter(
-                    new Date(System.currentTimeMillis() - secondsForDays(1))
-                )
+                .taskCompletedAfter(new Date(System.currentTimeMillis() - secondsForDays(1)))
                 .count()
         );
 
         // Process steps
         metrics.put(
             "completedActivities",
-            processEngine
-                .getHistoryService()
-                .createHistoricActivityInstanceQuery()
-                .finished()
-                .count()
+            processEngine.getHistoryService().createHistoricActivityInstanceQuery().finished().count()
         );
 
         // Process definition cache
@@ -155,10 +125,7 @@ public class ProcessEngineEndpoint {
                 (ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration()
             ).getProcessDefinitionCache();
         if (deploymentCache instanceof DefaultDeploymentCache) {
-            metrics.put(
-                "cachedProcessDefinitionCount",
-                ((DefaultDeploymentCache) deploymentCache).size()
-            );
+            metrics.put("cachedProcessDefinitionCount", ((DefaultDeploymentCache) deploymentCache).size());
         }
         return metrics;
     }

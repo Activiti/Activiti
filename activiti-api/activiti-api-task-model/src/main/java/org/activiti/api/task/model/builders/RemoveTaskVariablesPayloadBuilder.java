@@ -42,9 +42,7 @@ public class RemoveTaskVariablesPayloadBuilder {
         return this;
     }
 
-    public RemoveTaskVariablesPayloadBuilder withDescription(
-        String description
-    ) {
+    public RemoveTaskVariablesPayloadBuilder withDescription(String description) {
         this.description = description;
         return this;
     }

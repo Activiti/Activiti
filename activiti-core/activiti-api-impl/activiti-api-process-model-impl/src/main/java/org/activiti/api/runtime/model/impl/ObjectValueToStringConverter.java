@@ -22,8 +22,7 @@ import java.util.Map;
 import org.springframework.core.convert.converter.Converter;
 
 @ProcessVariableTypeConverter
-public class ObjectValueToStringConverter
-    implements Converter<ObjectValue, String> {
+public class ObjectValueToStringConverter implements Converter<ObjectValue, String> {
 
     private static final String CLASS = "@class";
     private final ObjectMapper objectMapper;
@@ -36,20 +35,13 @@ public class ObjectValueToStringConverter
     @Override
     public String convert(ObjectValue source) {
         try {
-            Map<String, Object> value = objectMapper.convertValue(
-                source,
-                Map.class
-            );
+            Map<String, Object> value = objectMapper.convertValue(source, Map.class);
 
             if (Map.class.isInstance(value.get(OBJECT_TYPE_KEY))) {
-                Map<String, Object> object = objectMapper.convertValue(
-                    source.getObject(),
-                    Map.class
-                );
+                Map<String, Object> object = objectMapper.convertValue(source.getObject(), Map.class);
 
                 if (object.containsKey(CLASS)) {
-                    Map.class.cast(value.get(OBJECT_TYPE_KEY))
-                        .put(CLASS, object.get(CLASS));
+                    Map.class.cast(value.get(OBJECT_TYPE_KEY)).put(CLASS, object.get(CLASS));
                 }
             }
 

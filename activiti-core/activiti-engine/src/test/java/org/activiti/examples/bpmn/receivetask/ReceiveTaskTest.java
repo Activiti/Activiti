@@ -29,9 +29,7 @@ public class ReceiveTaskTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testWaitStateBehavior() {
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "receiveTask"
-        );
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("receiveTask");
         Execution execution = runtimeService
             .createExecutionQuery()
             .processInstanceId(pi.getId())

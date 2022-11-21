@@ -43,10 +43,7 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager
  */
 public class DestroyScopeOperation extends AbstractOperation {
 
-    public DestroyScopeOperation(
-        CommandContext commandContext,
-        ExecutionEntity execution
-    ) {
+    public DestroyScopeOperation(CommandContext commandContext, ExecutionEntity execution) {
         super(commandContext, execution);
     }
 
@@ -56,14 +53,10 @@ public class DestroyScopeOperation extends AbstractOperation {
         // This could be the incoming execution, or the first parent execution where isScope = true
 
         // Find parent scope execution
-        ExecutionEntity scopeExecution = execution.isScope()
-            ? execution
-            : findFirstParentScopeExecution(execution);
+        ExecutionEntity scopeExecution = execution.isScope() ? execution : findFirstParentScopeExecution(execution);
 
         if (scopeExecution == null) {
-            throw new ActivitiException(
-                "Programmatic error: no parent scope execution found for boundary event"
-            );
+            throw new ActivitiException("Programmatic error: no parent scope execution found for boundary event");
         }
 
         ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
@@ -79,17 +72,9 @@ public class DestroyScopeOperation extends AbstractOperation {
 
         // Remove variables associated with this scope
         VariableInstanceEntityManager variableInstanceEntityManager = commandContext.getVariableInstanceEntityManager();
-        removeAllVariablesFromScope(
-            scopeExecution,
-            variableInstanceEntityManager
-        );
+        removeAllVariablesFromScope(scopeExecution, variableInstanceEntityManager);
 
-        commandContext
-            .getHistoryManager()
-            .recordActivityEnd(
-                scopeExecution,
-                scopeExecution.getDeleteReason()
-            );
+        commandContext.getHistoryManager().recordActivityEnd(scopeExecution, scopeExecution.getDeleteReason());
         executionEntityManager.delete(scopeExecution);
     }
 
@@ -105,10 +90,7 @@ public class DestroyScopeOperation extends AbstractOperation {
         }
     }
 
-    private void deleteAllScopeJobs(
-        ExecutionEntity scopeExecution,
-        TimerJobEntityManager timerJobEntityManager
-    ) {
+    private void deleteAllScopeJobs(ExecutionEntity scopeExecution, TimerJobEntityManager timerJobEntityManager) {
         Collection<TimerJobEntity> timerJobsForExecution = timerJobEntityManager.findJobsByExecutionId(
             scopeExecution.getId()
         );
@@ -117,9 +99,7 @@ public class DestroyScopeOperation extends AbstractOperation {
         }
 
         JobEntityManager jobEntityManager = commandContext.getJobEntityManager();
-        Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(
-            scopeExecution.getId()
-        );
+        Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(scopeExecution.getId());
         for (JobEntity job : jobsForExecution) {
             jobEntityManager.delete(job);
         }
@@ -141,20 +121,10 @@ public class DestroyScopeOperation extends AbstractOperation {
         }
     }
 
-    private void deleteAllScopeTasks(
-        ExecutionEntity scopeExecution,
-        TaskEntityManager taskEntityManager
-    ) {
-        Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(
-            scopeExecution.getId()
-        );
+    private void deleteAllScopeTasks(ExecutionEntity scopeExecution, TaskEntityManager taskEntityManager) {
+        Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(scopeExecution.getId());
         for (TaskEntity taskEntity : tasksForExecution) {
-            taskEntityManager.deleteTask(
-                taskEntity,
-                execution.getDeleteReason(),
-                false,
-                false
-            );
+            taskEntityManager.deleteTask(taskEntity, execution.getDeleteReason(), false, false);
         }
     }
 
@@ -167,10 +137,7 @@ public class DestroyScopeOperation extends AbstractOperation {
             scopeExecution.getId()
         );
         for (ExecutionEntity childExecution : childExecutions) {
-            executionEntityManager.deleteExecutionAndRelatedData(
-                childExecution,
-                execution.getDeleteReason()
-            );
+            executionEntityManager.deleteExecutionAndRelatedData(childExecution, execution.getDeleteReason());
         }
         return executionEntityManager;
     }

@@ -40,11 +40,7 @@ public interface ModelEntityManager extends EntityManager<ModelEntity> {
 
     byte[] findEditorSourceExtraByModelId(String modelId);
 
-    List<Model> findModelsByNativeQuery(
-        Map<String, Object> parameterMap,
-        int firstResult,
-        int maxResults
-    );
+    List<Model> findModelsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
 
     long findModelCountByNativeQuery(Map<String, Object> parameterMap);
 

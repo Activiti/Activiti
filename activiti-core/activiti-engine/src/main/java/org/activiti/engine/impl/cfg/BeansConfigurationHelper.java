@@ -29,24 +29,15 @@ import org.springframework.core.io.Resource;
  */
 public class BeansConfigurationHelper {
 
-    public static ProcessEngineConfiguration parseProcessEngineConfiguration(
-        Resource springResource,
-        String beanName
-    ) {
+    public static ProcessEngineConfiguration parseProcessEngineConfiguration(Resource springResource, String beanName) {
         DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
-        XmlBeanDefinitionReader xmlBeanDefinitionReader = new XmlBeanDefinitionReader(
-            beanFactory
-        );
-        xmlBeanDefinitionReader.setValidationMode(
-            XmlBeanDefinitionReader.VALIDATION_XSD
-        );
+        XmlBeanDefinitionReader xmlBeanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
+        xmlBeanDefinitionReader.setValidationMode(XmlBeanDefinitionReader.VALIDATION_XSD);
         xmlBeanDefinitionReader.loadBeanDefinitions(springResource);
         ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl) beanFactory.getBean(
             beanName
         );
-        processEngineConfiguration.setBeans(
-            new SpringBeanFactoryProxyMap(beanFactory)
-        );
+        processEngineConfiguration.setBeans(new SpringBeanFactoryProxyMap(beanFactory));
         return processEngineConfiguration;
     }
 

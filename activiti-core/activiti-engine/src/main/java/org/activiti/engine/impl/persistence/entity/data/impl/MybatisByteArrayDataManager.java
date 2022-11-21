@@ -26,13 +26,9 @@ import org.activiti.engine.impl.persistence.entity.data.ByteArrayDataManager;
 /**
 
  */
-public class MybatisByteArrayDataManager
-    extends AbstractDataManager<ByteArrayEntity>
-    implements ByteArrayDataManager {
+public class MybatisByteArrayDataManager extends AbstractDataManager<ByteArrayEntity> implements ByteArrayDataManager {
 
-    public MybatisByteArrayDataManager(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public MybatisByteArrayDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);
     }
 
@@ -54,11 +50,6 @@ public class MybatisByteArrayDataManager
 
     @Override
     public void deleteByteArrayNoRevisionCheck(String byteArrayEntityId) {
-        getDbSqlSession()
-            .delete(
-                "deleteByteArrayNoRevisionCheck",
-                byteArrayEntityId,
-                ByteArrayEntityImpl.class
-            );
+        getDbSqlSession().delete("deleteByteArrayNoRevisionCheck", byteArrayEntityId, ByteArrayEntityImpl.class);
     }
 }

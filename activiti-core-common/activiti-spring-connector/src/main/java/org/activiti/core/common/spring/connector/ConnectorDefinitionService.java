@@ -50,15 +50,12 @@ public class ConnectorDefinitionService {
 
         Resource connectorRootPath = resourceLoader.getResource(connectorRoot);
         if (connectorRootPath.exists()) {
-            return Optional.ofNullable(
-                resourceLoader.getResources(connectorRoot + "**.json")
-            );
+            return Optional.ofNullable(resourceLoader.getResources(connectorRoot + "**.json"));
         }
         return resources;
     }
 
-    private ConnectorDefinition read(InputStream inputStream)
-        throws IOException {
+    private ConnectorDefinition read(InputStream inputStream) throws IOException {
         return objectMapper.readValue(inputStream, ConnectorDefinition.class);
     }
 
@@ -81,20 +78,14 @@ public class ConnectorDefinitionService {
             for (ConnectorDefinition connectorDefinition : connectorDefinitions) {
                 String name = connectorDefinition.getName();
                 if (name == null || name.isEmpty()) {
-                    throw new IllegalStateException(
-                        "connectorDefinition name cannot be null or empty"
-                    );
+                    throw new IllegalStateException("connectorDefinition name cannot be null or empty");
                 }
                 if (name.contains(".")) {
-                    throw new IllegalStateException(
-                        "connectorDefinition name cannot have '.' character"
-                    );
+                    throw new IllegalStateException("connectorDefinition name cannot have '.' character");
                 }
                 if (!processedNames.add(name)) {
                     throw new IllegalStateException(
-                        "More than one connectorDefinition with name '" +
-                        name +
-                        "' was found. Names must be unique."
+                        "More than one connectorDefinition with name '" + name + "' was found. Names must be unique."
                     );
                 }
             }

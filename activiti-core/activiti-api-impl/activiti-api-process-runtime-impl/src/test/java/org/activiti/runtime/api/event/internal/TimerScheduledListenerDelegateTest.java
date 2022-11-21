@@ -47,11 +47,7 @@ public class TimerScheduledListenerDelegateTest {
 
     @BeforeEach
     public void setUp() {
-        listenerDelegate =
-            new TimerScheduledListenerDelegate(
-                singletonList(listener),
-                converter
-            );
+        listenerDelegate = new TimerScheduledListenerDelegate(singletonList(listener), converter);
     }
 
     @Test
@@ -59,8 +55,7 @@ public class TimerScheduledListenerDelegateTest {
         //given
         ActivitiEntityEvent internalEvent = mock(ActivitiEntityEvent.class);
         BPMNTimerScheduledEventImpl convertedEvent = new BPMNTimerScheduledEventImpl();
-        given(converter.from(internalEvent))
-            .willReturn(Optional.of(convertedEvent));
+        given(converter.from(internalEvent)).willReturn(Optional.of(convertedEvent));
 
         //when
         listenerDelegate.onEvent(internalEvent);

@@ -58,12 +58,7 @@ public class ProcessVariablesMapTypeRegistry {
         LocalDate.class
     );
 
-    private static Class<?>[] containerTypes = {
-        Map.class,
-        JsonNode.class,
-        List.class,
-        Set.class,
-    };
+    private static Class<?>[] containerTypes = { Map.class, JsonNode.class, List.class, Set.class };
 
     static {
         typeRegistry.put("byte", Byte.class);
@@ -121,23 +116,14 @@ public class ProcessVariablesMapTypeRegistry {
         return scalarTypes.contains(clazz);
     }
 
-    public static Optional<Class<?>> getContainerType(
-        Class<?> clazz,
-        Object value
-    ) {
-        return Stream
-            .of(containerTypes)
-            .filter(type -> type.isInstance(value))
-            .findFirst();
+    public static Optional<Class<?>> getContainerType(Class<?> clazz, Object value) {
+        return Stream.of(containerTypes).filter(type -> type.isInstance(value)).findFirst();
     }
 
     public static boolean canConvert(Object value) {
         Class<?> clazz = value.getClass();
 
-        return (
-            scalarTypes.contains(clazz) ||
-            getContainerType(clazz, value).isPresent()
-        );
+        return (scalarTypes.contains(clazz) || getContainerType(clazz, value).isPresent());
     }
 
     public static boolean containsType(String type) {

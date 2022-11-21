@@ -29,22 +29,13 @@ import org.activiti.engine.repository.Deployment;
 public interface DeploymentDataManager extends DataManager<DeploymentEntity> {
     DeploymentEntity findLatestDeploymentByName(String deploymentName);
 
-    long findDeploymentCountByQueryCriteria(
-        DeploymentQueryImpl deploymentQuery
-    );
+    long findDeploymentCountByQueryCriteria(DeploymentQueryImpl deploymentQuery);
 
-    List<Deployment> findDeploymentsByQueryCriteria(
-        DeploymentQueryImpl deploymentQuery,
-        Page page
-    );
+    List<Deployment> findDeploymentsByQueryCriteria(DeploymentQueryImpl deploymentQuery, Page page);
 
     List<String> getDeploymentResourceNames(String deploymentId);
 
-    List<Deployment> findDeploymentsByNativeQuery(
-        Map<String, Object> parameterMap,
-        int firstResult,
-        int maxResults
-    );
+    List<Deployment> findDeploymentsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
 
     long findDeploymentCountByNativeQuery(Map<String, Object> parameterMap);
 

@@ -34,26 +34,15 @@ public class ProcessEventJobHandler implements JobHandler {
         return TYPE;
     }
 
-    public void execute(
-        JobEntity job,
-        String configuration,
-        ExecutionEntity execution,
-        CommandContext commandContext
-    ) {
+    public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
         EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
 
         // lookup subscription:
-        EventSubscriptionEntity eventSubscriptionEntity = eventSubscriptionEntityManager.findById(
-            configuration
-        );
+        EventSubscriptionEntity eventSubscriptionEntity = eventSubscriptionEntityManager.findById(configuration);
 
         // if event subscription is null, ignore
         if (eventSubscriptionEntity != null) {
-            eventSubscriptionEntityManager.eventReceived(
-                eventSubscriptionEntity,
-                null,
-                false
-            );
+            eventSubscriptionEntityManager.eventReceived(eventSubscriptionEntity, null, false);
         }
     }
 }

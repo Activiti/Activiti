@@ -26,18 +26,14 @@ import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
-public abstract class TimerEventCompatibilityTest
-    extends PluggableActivitiTestCase {
+public abstract class TimerEventCompatibilityTest extends PluggableActivitiTestCase {
 
     protected void changeConfigurationToPlainText(TimerJobEntity job) {
-        String activityId = TimerEventHandler.getActivityIdFromConfiguration(
-            job.getJobHandlerConfiguration()
-        );
+        String activityId = TimerEventHandler.getActivityIdFromConfiguration(job.getJobHandlerConfiguration());
 
         final TimerJobEntity finalJob = job;
         CommandExecutor commandExecutor =
-            ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration()
-                .getCommandExecutor();
+            ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
         CommandConfig config = new CommandConfig().transactionNotSupported();
         final String finalActivityId = activityId;
         commandExecutor.execute(
@@ -75,13 +71,7 @@ public abstract class TimerEventCompatibilityTest
         processEngineConfiguration
             .getClock()
             .setCurrentTime(
-                new Date(
-                    processEngineConfiguration
-                        .getClock()
-                        .getCurrentTime()
-                        .getTime() +
-                    ((minutes * 60 * 1000))
-                )
+                new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + ((minutes * 60 * 1000)))
             );
     }
 }

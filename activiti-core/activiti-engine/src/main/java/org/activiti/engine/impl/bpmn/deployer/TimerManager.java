@@ -38,16 +38,12 @@ import org.activiti.engine.impl.util.CollectionUtil;
  */
 public class TimerManager {
 
-    protected void removeObsoleteTimers(
-        ProcessDefinitionEntity processDefinition
-    ) {
+    protected void removeObsoleteTimers(ProcessDefinitionEntity processDefinition) {
         List<TimerJobEntity> jobsToDelete = null;
 
         if (
             processDefinition.getTenantId() != null &&
-            !ProcessEngineConfiguration.NO_TENANT_ID.equals(
-                processDefinition.getTenantId()
-            )
+            !ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())
         ) {
             jobsToDelete =
                 Context
@@ -71,47 +67,28 @@ public class TimerManager {
 
         if (jobsToDelete != null) {
             for (TimerJobEntity job : jobsToDelete) {
-                new CancelJobsCmd(job.getId())
-                    .execute(Context.getCommandContext());
+                new CancelJobsCmd(job.getId()).execute(Context.getCommandContext());
             }
         }
     }
 
-    protected void scheduleTimers(
-        ProcessDefinitionEntity processDefinition,
-        Process process
-    ) {
+    protected void scheduleTimers(ProcessDefinitionEntity processDefinition, Process process) {
         JobManager jobManager = Context.getCommandContext().getJobManager();
-        List<TimerJobEntity> timers = getTimerDeclarations(
-            processDefinition,
-            process
-        );
+        List<TimerJobEntity> timers = getTimerDeclarations(processDefinition, process);
         for (TimerJobEntity timer : timers) {
             jobManager.scheduleTimerJob(timer);
         }
     }
 
-    protected List<TimerJobEntity> getTimerDeclarations(
-        ProcessDefinitionEntity processDefinition,
-        Process process
-    ) {
+    protected List<TimerJobEntity> getTimerDeclarations(ProcessDefinitionEntity processDefinition, Process process) {
         JobManager jobManager = Context.getCommandContext().getJobManager();
         List<TimerJobEntity> timers = new ArrayList<TimerJobEntity>();
-        if (
-            process != null &&
-            CollectionUtil.isNotEmpty(process.getFlowElements())
-        ) {
+        if (process != null && CollectionUtil.isNotEmpty(process.getFlowElements())) {
             for (FlowElement element : process.getFlowElements()) {
                 if (element instanceof StartEvent) {
                     StartEvent startEvent = (StartEvent) element;
-                    if (
-                        CollectionUtil.isNotEmpty(
-                            startEvent.getEventDefinitions()
-                        )
-                    ) {
-                        EventDefinition eventDefinition = startEvent
-                            .getEventDefinitions()
-                            .get(0);
+                    if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions())) {
+                        EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
                         if (eventDefinition instanceof TimerEventDefinition) {
                             TimerEventDefinition timerEventDefinition = (TimerEventDefinition) eventDefinition;
                             TimerJobEntity timerJob = jobManager.createTimerJob(
@@ -127,14 +104,10 @@ public class TimerManager {
                             );
 
                             if (timerJob != null) {
-                                timerJob.setProcessDefinitionId(
-                                    processDefinition.getId()
-                                );
+                                timerJob.setProcessDefinitionId(processDefinition.getId());
 
                                 if (processDefinition.getTenantId() != null) {
-                                    timerJob.setTenantId(
-                                        processDefinition.getTenantId()
-                                    );
+                                    timerJob.setTenantId(processDefinition.getTenantId());
                                 }
                                 timers.add(timerJob);
                             }

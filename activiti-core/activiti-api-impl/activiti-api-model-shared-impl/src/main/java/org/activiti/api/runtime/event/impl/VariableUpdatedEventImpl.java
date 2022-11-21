@@ -18,9 +18,7 @@ package org.activiti.api.runtime.event.impl;
 import org.activiti.api.model.shared.event.VariableUpdatedEvent;
 import org.activiti.api.model.shared.model.VariableInstance;
 
-public class VariableUpdatedEventImpl<T>
-    extends VariableEventImpl
-    implements VariableUpdatedEvent {
+public class VariableUpdatedEventImpl<T> extends VariableEventImpl implements VariableUpdatedEvent {
 
     private T previousValue;
 

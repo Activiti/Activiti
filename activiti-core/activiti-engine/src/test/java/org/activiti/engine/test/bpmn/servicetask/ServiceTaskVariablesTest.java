@@ -55,8 +55,7 @@ public class ServiceTaskVariablesTest extends PluggableActivitiTestCase {
             Variable v = (Variable) execution.getVariable("variable");
             synchronized (ServiceTaskVariablesTest.class) {
                 // we expect this to be 'true'
-                isOkInDelegate2 =
-                    (v.value != null && v.value.equals("delegate1"));
+                isOkInDelegate2 = (v.value != null && v.value.equals("delegate1"));
             }
             v.value = "delegate2";
             execution.setVariable("variable", v);
@@ -69,8 +68,7 @@ public class ServiceTaskVariablesTest extends PluggableActivitiTestCase {
             Variable v = (Variable) execution.getVariable("variable");
             synchronized (ServiceTaskVariablesTest.class) {
                 // we expect this to be 'true' as well
-                isOkInDelegate3 =
-                    (v.value != null && v.value.equals("delegate2"));
+                isOkInDelegate3 = (v.value != null && v.value.equals("delegate2"));
             }
         }
     }

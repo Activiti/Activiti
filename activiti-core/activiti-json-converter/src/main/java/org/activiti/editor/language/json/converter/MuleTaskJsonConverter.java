@@ -36,9 +36,7 @@ public class MuleTaskJsonConverter extends BaseBpmnJsonConverter {
         fillBpmnTypes(convertersToJsonMap);
     }
 
-    public static void fillJsonTypes(
-        Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap
-    ) {
+    public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
         convertersToBpmnMap.put(STENCIL_TASK_MULE, MuleTaskJsonConverter.class);
     }
 
@@ -50,10 +48,7 @@ public class MuleTaskJsonConverter extends BaseBpmnJsonConverter {
         return STENCIL_TASK_MULE;
     }
 
-    protected void convertElementToJson(
-        ObjectNode propertiesNode,
-        BaseElement baseElement
-    ) {
+    protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
         // done in service task
     }
 
@@ -64,25 +59,10 @@ public class MuleTaskJsonConverter extends BaseBpmnJsonConverter {
     ) {
         ServiceTask task = new ServiceTask();
         task.setType("mule");
-        addField(
-            "endpointUrl",
-            PROPERTY_MULETASK_ENDPOINT_URL,
-            elementNode,
-            task
-        );
+        addField("endpointUrl", PROPERTY_MULETASK_ENDPOINT_URL, elementNode, task);
         addField("language", PROPERTY_MULETASK_LANGUAGE, elementNode, task);
-        addField(
-            "payloadExpression",
-            PROPERTY_MULETASK_PAYLOAD_EXPRESSION,
-            elementNode,
-            task
-        );
-        addField(
-            "resultVariable",
-            PROPERTY_MULETASK_RESULT_VARIABLE,
-            elementNode,
-            task
-        );
+        addField("payloadExpression", PROPERTY_MULETASK_PAYLOAD_EXPRESSION, elementNode, task);
+        addField("resultVariable", PROPERTY_MULETASK_RESULT_VARIABLE, elementNode, task);
         return task;
     }
 }

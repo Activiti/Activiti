@@ -44,11 +44,7 @@ public class ApplicationDeployerTest {
 
     @BeforeEach
     public void setUp() {
-        deployer =
-            new ApplicationDeployer(
-                applicationLoader,
-                asList(firstDeployer, secondDeployer)
-            );
+        deployer = new ApplicationDeployer(applicationLoader, asList(firstDeployer, secondDeployer));
     }
 
     @Test
@@ -56,8 +52,7 @@ public class ApplicationDeployerTest {
         //given
         ApplicationContent firstApp = mock(ApplicationContent.class);
         ApplicationContent secondApp = mock(ApplicationContent.class);
-        given(applicationLoader.loadApplications())
-            .willReturn(asList(firstApp, secondApp));
+        given(applicationLoader.loadApplications()).willReturn(asList(firstApp, secondApp));
 
         //when
         deployer.deploy();

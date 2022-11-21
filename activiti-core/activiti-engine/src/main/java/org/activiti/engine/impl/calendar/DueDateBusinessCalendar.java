@@ -37,17 +37,12 @@ public class DueDateBusinessCalendar extends BusinessCalendarImpl {
         try {
             // check if due period was specified
             if (duedate.startsWith("P")) {
-                return new DateTime(clockReader.getCurrentTime())
-                    .plus(Period.parse(duedate))
-                    .toDate();
+                return new DateTime(clockReader.getCurrentTime()).plus(Period.parse(duedate)).toDate();
             }
 
             return DateTime.parse(duedate).toDate();
         } catch (Exception e) {
-            throw new ActivitiException(
-                "couldn't resolve duedate: " + e.getMessage(),
-                e
-            );
+            throw new ActivitiException("couldn't resolve duedate: " + e.getMessage(), e);
         }
     }
 }

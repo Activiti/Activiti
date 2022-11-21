@@ -31,8 +31,7 @@ import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.util.StreamUtils;
 
-public class ProcessDeployedEventProducer
-    extends AbstractActivitiSmartLifeCycle {
+public class ProcessDeployedEventProducer extends AbstractActivitiSmartLifeCycle {
 
     private RepositoryService repositoryService;
     private APIProcessDefinitionConverter converter;
@@ -54,22 +53,12 @@ public class ProcessDeployedEventProducer
     @Override
     public void doStart() {
         List<ProcessDefinition> processDefinitions = converter.from(
-            repositoryService
-                .createProcessDefinitionQuery()
-                .latestVersion()
-                .list()
+            repositoryService.createProcessDefinitionQuery().latestVersion().list()
         );
         List<ProcessDeployedEvent> processDeployedEvents = new ArrayList<>();
         for (ProcessDefinition processDefinition : processDefinitions) {
-            try (
-                InputStream inputStream = repositoryService.getProcessModel(
-                    processDefinition.getId()
-                )
-            ) {
-                String xmlModel = StreamUtils.copyToString(
-                    inputStream,
-                    StandardCharsets.UTF_8
-                );
+            try (InputStream inputStream = repositoryService.getProcessModel(processDefinition.getId())) {
+                String xmlModel = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
                 ProcessDeployedEventImpl processDeployedEvent = new ProcessDeployedEventImpl(
                     processDefinition,
                     xmlModel
@@ -80,17 +69,13 @@ public class ProcessDeployedEventProducer
                 }
             } catch (IOException e) {
                 throw new ActivitiException(
-                    "Error occurred while getting process model '" +
-                    processDefinition.getId() +
-                    "' : ",
+                    "Error occurred while getting process model '" + processDefinition.getId() + "' : ",
                     e
                 );
             }
         }
         if (!processDeployedEvents.isEmpty()) {
-            eventPublisher.publishEvent(
-                new ProcessDeployedEvents(processDeployedEvents)
-            );
+            eventPublisher.publishEvent(new ProcessDeployedEvents(processDeployedEvents));
         }
     }
 

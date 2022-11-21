@@ -44,12 +44,7 @@ public class RecorderExecutionListener implements ExecutionListener {
         private final String activityName;
         private final String parameter;
 
-        public RecordedEvent(
-            String activityId,
-            String activityName,
-            String eventName,
-            String parameter
-        ) {
+        public RecordedEvent(String activityId, String activityName, String eventName, String parameter) {
             this.activityId = activityId;
             this.activityName = activityName;
             this.parameter = parameter;
@@ -76,21 +71,14 @@ public class RecorderExecutionListener implements ExecutionListener {
     public void notify(DelegateExecution execution) {
         ExecutionEntity executionCasted = ((ExecutionEntity) execution);
 
-        org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(
-            execution.getProcessDefinitionId()
-        );
+        org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
         String activityId = execution.getCurrentActivityId();
-        FlowElement currentFlowElement = process.getFlowElement(
-            activityId,
-            true
-        );
+        FlowElement currentFlowElement = process.getFlowElement(activityId, true);
 
         recordedEvents.add(
             new RecordedEvent(
                 executionCasted.getActivityId(),
-                (currentFlowElement != null)
-                    ? currentFlowElement.getName()
-                    : null,
+                (currentFlowElement != null) ? currentFlowElement.getName() : null,
                 execution.getEventName(),
                 (String) parameter.getValue(execution)
             )

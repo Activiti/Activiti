@@ -33,24 +33,12 @@ import org.activiti.validation.validator.ProcessLevelValidator;
 public class EventGatewayValidator extends ProcessLevelValidator {
 
     @Override
-    protected void executeValidation(
-        BpmnModel bpmnModel,
-        Process process,
-        List<ValidationError> errors
-    ) {
-        List<EventGateway> eventGateways = process.findFlowElementsOfType(
-            EventGateway.class
-        );
+    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+        List<EventGateway> eventGateways = process.findFlowElementsOfType(EventGateway.class);
         for (EventGateway eventGateway : eventGateways) {
             for (SequenceFlow sequenceFlow : eventGateway.getOutgoingFlows()) {
-                FlowElement flowElement = process.getFlowElement(
-                    sequenceFlow.getTargetRef(),
-                    true
-                );
-                if (
-                    flowElement != null &&
-                    !(flowElement instanceof IntermediateCatchEvent)
-                ) {
+                FlowElement flowElement = process.getFlowElement(sequenceFlow.getTargetRef(), true);
+                if (flowElement != null && !(flowElement instanceof IntermediateCatchEvent)) {
                     addError(
                         errors,
                         Problems.EVENT_GATEWAY_ONLY_CONNECTED_TO_INTERMEDIATE_EVENTS,

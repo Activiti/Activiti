@@ -21,8 +21,7 @@ import java.time.format.DateTimeFormatter;
 import org.springframework.core.convert.converter.Converter;
 
 @ProcessVariableTypeConverter
-public class StringToLocalDateConverter
-    implements Converter<String, LocalDate> {
+public class StringToLocalDateConverter implements Converter<String, LocalDate> {
 
     @Override
     public LocalDate convert(String source) {

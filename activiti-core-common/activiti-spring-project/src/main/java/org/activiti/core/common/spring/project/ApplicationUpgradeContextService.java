@@ -64,11 +64,7 @@ public class ApplicationUpgradeContextService {
 
         return read(
             resourceOptional
-                .orElseThrow(() ->
-                    new FileNotFoundException(
-                        "'" + projectManifestFilePath + "' manifest not found."
-                    )
-                )
+                .orElseThrow(() -> new FileNotFoundException("'" + projectManifestFilePath + "' manifest not found."))
                 .getInputStream()
         );
     }

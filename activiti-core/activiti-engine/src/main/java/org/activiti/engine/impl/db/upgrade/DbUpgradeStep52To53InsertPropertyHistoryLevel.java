@@ -21,8 +21,7 @@ import org.activiti.engine.impl.db.DbSqlSession;
 /**
 
  */
-public class DbUpgradeStep52To53InsertPropertyHistoryLevel
-    implements DbUpgradeStep {
+public class DbUpgradeStep52To53InsertPropertyHistoryLevel implements DbUpgradeStep {
 
     public void execute(DbSqlSession dbSqlSession) throws Exception {
         // As of 5.11, the history-setting is no longer stored in the database,

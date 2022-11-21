@@ -58,10 +58,7 @@ public class CollectionUtil {
      * @param objects varargs containing the key1, value1, key2, value2, etc. Note: although an Object, we will cast the key to String internally
      * @throws ActivitiIllegalArgumentException when objects are not even or key/value are not expected types
      */
-    public static <T> Map<String, T> mapOfClass(
-        Class<T> clazz,
-        Object... objects
-    ) {
+    public static <T> Map<String, T> mapOfClass(Class<T> clazz, Object... objects) {
         if (objects.length % 2 != 0) {
             throw new ActivitiIllegalArgumentException(
                 "The input should always be even since we expect a list of key-value pairs!"
@@ -76,20 +73,12 @@ public class CollectionUtil {
             Object value = objects[valueIndex];
             if (!String.class.isInstance(key)) {
                 throw new ActivitiIllegalArgumentException(
-                    "key at index " +
-                    keyIndex +
-                    " should be a String but is a " +
-                    key.getClass()
+                    "key at index " + keyIndex + " should be a String but is a " + key.getClass()
                 );
             }
             if (value != null && !clazz.isInstance(value)) {
                 throw new ActivitiIllegalArgumentException(
-                    "value at index " +
-                    valueIndex +
-                    " should be a " +
-                    clazz +
-                    " but is a " +
-                    value.getClass()
+                    "value at index " + valueIndex + " should be a " + clazz + " but is a " + value.getClass()
                 );
             }
             map.put((String) key, (T) value);

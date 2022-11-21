@@ -18,9 +18,7 @@ package org.activiti.api.task.model.impl;
 import java.util.Objects;
 import org.activiti.api.task.model.TaskCandidateGroup;
 
-public class TaskCandidateGroupImpl
-    extends TaskCandidateImpl
-    implements TaskCandidateGroup {
+public class TaskCandidateGroupImpl extends TaskCandidateImpl implements TaskCandidateGroup {
 
     private String groupId;
 
@@ -45,10 +43,7 @@ public class TaskCandidateGroupImpl
             return false;
         }
         TaskCandidateGroupImpl that = (TaskCandidateGroupImpl) o;
-        return (
-            Objects.equals(groupId, that.groupId) &&
-            Objects.equals(getTaskId(), that.getTaskId())
-        );
+        return (Objects.equals(groupId, that.groupId) && Objects.equals(getTaskId(), that.getTaskId()));
     }
 
     @Override

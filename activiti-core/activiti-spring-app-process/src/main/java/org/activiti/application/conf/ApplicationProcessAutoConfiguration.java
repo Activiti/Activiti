@@ -32,9 +32,7 @@ public class ApplicationProcessAutoConfiguration {
     }
 
     @Bean
-    public ApplicationEntryDeployer processEntryDeployer(
-        RepositoryService repositoryService
-    ) {
+    public ApplicationEntryDeployer processEntryDeployer(RepositoryService repositoryService) {
         return new ProcessEntryDeployer(repositoryService);
     }
 }

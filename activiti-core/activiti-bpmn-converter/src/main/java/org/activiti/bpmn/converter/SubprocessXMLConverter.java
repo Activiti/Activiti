@@ -47,9 +47,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SubprocessXMLConverter extends BpmnXMLConverter {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(
-        SubprocessXMLConverter.class
-    );
+    protected static final Logger LOGGER = LoggerFactory.getLogger(SubprocessXMLConverter.class);
 
     @Override
     public byte[] convertToXML(BpmnModel model, String encoding) {
@@ -57,10 +55,7 @@ public class SubprocessXMLConverter extends BpmnXMLConverter {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
             XMLOutputFactory xof = XMLOutputFactory.newInstance();
-            OutputStreamWriter out = new OutputStreamWriter(
-                outputStream,
-                encoding
-            );
+            OutputStreamWriter out = new OutputStreamWriter(outputStream, encoding);
 
             XMLStreamWriter writer = xof.createXMLStreamWriter(out);
             XMLStreamWriter xtw = new IndentingXMLStreamWriter(writer);
@@ -68,16 +63,10 @@ public class SubprocessXMLConverter extends BpmnXMLConverter {
             DefinitionsRootExport.writeRootElement(model, xtw, encoding);
             CollaborationExport.writePools(model, xtw);
             DataStoreExport.writeDataStores(model, xtw);
-            SignalAndMessageDefinitionExport.writeSignalsAndMessages(
-                model,
-                xtw
-            );
+            SignalAndMessageDefinitionExport.writeSignalsAndMessages(model, xtw);
 
             for (Process process : model.getProcesses()) {
-                if (
-                    process.getFlowElements().isEmpty() &&
-                    process.getLanes().isEmpty()
-                ) {
+                if (process.getFlowElements().isEmpty() && process.getLanes().isEmpty()) {
                     // empty process, ignore it
                     continue;
                 }
@@ -99,10 +88,7 @@ public class SubprocessXMLConverter extends BpmnXMLConverter {
             // refactor each subprocess into a separate Diagram
             List<BpmnModel> subModels = parseSubModels(model);
             for (BpmnModel tempModel : subModels) {
-                if (
-                    !tempModel.getFlowLocationMap().isEmpty() ||
-                    !tempModel.getLocationMap().isEmpty()
-                ) {
+                if (!tempModel.getFlowLocationMap().isEmpty() || !tempModel.getLocationMap().isEmpty()) {
                     BPMNDIExport.writeBPMNDI(tempModel, xtw);
                 }
             }
@@ -129,9 +115,7 @@ public class SubprocessXMLConverter extends BpmnXMLConverter {
         List<BpmnModel> subModels = new ArrayList<BpmnModel>();
 
         // find all subprocesses
-        Collection<FlowElement> flowElements = model
-            .getMainProcess()
-            .getFlowElements();
+        Collection<FlowElement> flowElements = model.getMainProcess().getFlowElements();
         Map<String, GraphicInfo> locations = new HashMap<String, GraphicInfo>();
         Map<String, List<GraphicInfo>> flowLocations = new HashMap<String, List<GraphicInfo>>();
         Map<String, GraphicInfo> labelLocations = new HashMap<String, GraphicInfo>();
@@ -149,41 +133,22 @@ public class SubprocessXMLConverter extends BpmnXMLConverter {
         for (FlowElement element : flowElements) {
             elementId = element.getId();
             if (element instanceof SubProcess) {
-                subModels.addAll(
-                    parseSubModels(
-                        element,
-                        locations,
-                        flowLocations,
-                        labelLocations
-                    )
-                );
+                subModels.addAll(parseSubModels(element, locations, flowLocations, labelLocations));
             }
 
-            if (
-                element instanceof SequenceFlow &&
-                null != flowLocations.get(elementId)
-            ) {
+            if (element instanceof SequenceFlow && null != flowLocations.get(elementId)) {
                 // must be an edge
-                mainModel
-                    .getFlowLocationMap()
-                    .put(elementId, flowLocations.get(elementId));
+                mainModel.getFlowLocationMap().put(elementId, flowLocations.get(elementId));
             } else {
                 // do not include data objects because they do not have a corresponding shape in the BPMNDI data
-                if (
-                    !(element instanceof DataObject) &&
-                    null != locations.get(elementId)
-                ) {
+                if (!(element instanceof DataObject) && null != locations.get(elementId)) {
                     // must be a shape
-                    mainModel
-                        .getLocationMap()
-                        .put(elementId, locations.get(elementId));
+                    mainModel.getLocationMap().put(elementId, locations.get(elementId));
                 }
             }
             // also check for any labels
             if (null != labelLocations.get(elementId)) {
-                mainModel
-                    .getLabelLocationMap()
-                    .put(elementId, labelLocations.get(elementId));
+                mainModel.getLabelLocationMap().put(elementId, labelLocations.get(elementId));
             }
         }
         // add main process model to list
@@ -203,55 +168,33 @@ public class SubprocessXMLConverter extends BpmnXMLConverter {
         String elementId = null;
 
         // find nested subprocess models
-        Collection<FlowElement> subFlowElements =
-            ((SubProcess) subElement).getFlowElements();
+        Collection<FlowElement> subFlowElements = ((SubProcess) subElement).getFlowElements();
         // set main process in submodel to subprocess
         Process newMainProcess = new Process();
         newMainProcess.setId(subElement.getId());
         newMainProcess.getFlowElements().addAll(subFlowElements);
-        newMainProcess
-            .getArtifacts()
-            .addAll(((SubProcess) subElement).getArtifacts());
+        newMainProcess.getArtifacts().addAll(((SubProcess) subElement).getArtifacts());
         subModel.addProcess(newMainProcess);
 
         for (FlowElement element : subFlowElements) {
             elementId = element.getId();
             if (element instanceof SubProcess) {
-                subModels.addAll(
-                    parseSubModels(
-                        element,
-                        locations,
-                        flowLocations,
-                        labelLocations
-                    )
-                );
+                subModels.addAll(parseSubModels(element, locations, flowLocations, labelLocations));
             }
 
-            if (
-                element instanceof SequenceFlow &&
-                null != flowLocations.get(elementId)
-            ) {
+            if (element instanceof SequenceFlow && null != flowLocations.get(elementId)) {
                 // must be an edge
-                subModel
-                    .getFlowLocationMap()
-                    .put(elementId, flowLocations.get(elementId));
+                subModel.getFlowLocationMap().put(elementId, flowLocations.get(elementId));
             } else {
                 // do not include data objects because they do not have a corresponding shape in the BPMNDI data
-                if (
-                    !(element instanceof DataObject) &&
-                    null != locations.get(elementId)
-                ) {
+                if (!(element instanceof DataObject) && null != locations.get(elementId)) {
                     // must be a shape
-                    subModel
-                        .getLocationMap()
-                        .put(elementId, locations.get(elementId));
+                    subModel.getLocationMap().put(elementId, locations.get(elementId));
                 }
             }
             // also check for any labels
             if (null != labelLocations.get(elementId)) {
-                subModel
-                    .getLabelLocationMap()
-                    .put(elementId, labelLocations.get(elementId));
+                subModel.getLabelLocationMap().put(elementId, labelLocations.get(elementId));
             }
         }
         subModels.add(subModel);

@@ -42,40 +42,19 @@ public interface TaskEntityManager extends EntityManager<TaskEntity> {
 
     long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery);
 
-    List<Task> findTasksByNativeQuery(
-        Map<String, Object> parameterMap,
-        int firstResult,
-        int maxResults
-    );
+    List<Task> findTasksByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
 
     long findTaskCountByNativeQuery(Map<String, Object> parameterMap);
 
     List<Task> findTasksByParentTaskId(String parentTaskId);
 
-    void updateTaskTenantIdForDeployment(
-        String deploymentId,
-        String newTenantId
-    );
+    void updateTaskTenantIdForDeployment(String deploymentId, String newTenantId);
 
     void deleteTask(String taskId, String deleteReason, boolean cascade);
 
-    void deleteTask(
-        String taskId,
-        String deleteReason,
-        boolean cascade,
-        boolean cancel
-    );
+    void deleteTask(String taskId, String deleteReason, boolean cascade, boolean cancel);
 
-    void deleteTasksByProcessInstanceId(
-        String processInstanceId,
-        String deleteReason,
-        boolean cascade
-    );
+    void deleteTasksByProcessInstanceId(String processInstanceId, String deleteReason, boolean cascade);
 
-    void deleteTask(
-        TaskEntity task,
-        String deleteReason,
-        boolean cascade,
-        boolean cancel
-    );
+    void deleteTask(TaskEntity task, String deleteReason, boolean cascade, boolean cancel);
 }

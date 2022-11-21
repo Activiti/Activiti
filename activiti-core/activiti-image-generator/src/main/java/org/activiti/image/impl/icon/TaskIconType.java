@@ -57,22 +57,14 @@ public abstract class TaskIconType extends IconType {
         final int iconPadding,
         final ProcessDiagramSVGGraphics2D svgGenerator
     ) {
-        Element gTag = svgGenerator
-            .getDOMFactory()
-            .createElementNS(null, SVGGraphics2D.SVG_G_TAG);
+        Element gTag = svgGenerator.getDOMFactory().createElementNS(null, SVGGraphics2D.SVG_G_TAG);
         gTag.setAttributeNS(
             null,
             "transform",
-            "translate(" +
-            (imageX + iconPadding) +
-            "," +
-            (imageY + iconPadding) +
-            ")"
+            "translate(" + (imageX + iconPadding) + "," + (imageY + iconPadding) + ")"
         );
 
-        Element pathTag = svgGenerator
-            .getDOMFactory()
-            .createElementNS(null, SVGGraphics2D.SVG_PATH_TAG);
+        Element pathTag = svgGenerator.getDOMFactory().createElementNS(null, SVGGraphics2D.SVG_PATH_TAG);
         pathTag.setAttributeNS(null, "d", this.getDValue());
         pathTag.setAttributeNS(null, "anchors", this.getAnchorValue());
         pathTag.setAttributeNS(null, "style", this.getStyleValue());

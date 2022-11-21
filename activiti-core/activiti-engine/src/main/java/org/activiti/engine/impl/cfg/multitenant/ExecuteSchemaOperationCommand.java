@@ -38,11 +38,7 @@ public class ExecuteSchemaOperationCommand implements Command<Void> {
     }
 
     public Void execute(CommandContext commandContext) {
-        if (
-            ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_DROP_CREATE.equals(
-                schemaOperation
-            )
-        ) {
+        if (ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_DROP_CREATE.equals(schemaOperation)) {
             try {
                 commandContext.getDbSqlSession().dbSchemaDrop();
             } catch (RuntimeException e) {
@@ -50,28 +46,14 @@ public class ExecuteSchemaOperationCommand implements Command<Void> {
             }
         }
         if (
-            org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP.equals(
-                schemaOperation
-            ) ||
-            ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_DROP_CREATE.equals(
-                schemaOperation
-            ) ||
-            ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_CREATE.equals(
-                schemaOperation
-            )
+            org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP.equals(schemaOperation) ||
+            ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_DROP_CREATE.equals(schemaOperation) ||
+            ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_CREATE.equals(schemaOperation)
         ) {
             commandContext.getDbSqlSession().dbSchemaCreate();
-        } else if (
-            org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE.equals(
-                schemaOperation
-            )
-        ) {
+        } else if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE.equals(schemaOperation)) {
             commandContext.getDbSqlSession().dbSchemaCheckVersion();
-        } else if (
-            ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE.equals(
-                schemaOperation
-            )
-        ) {
+        } else if (ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE.equals(schemaOperation)) {
             commandContext.getDbSqlSession().dbSchemaUpdate();
         }
 

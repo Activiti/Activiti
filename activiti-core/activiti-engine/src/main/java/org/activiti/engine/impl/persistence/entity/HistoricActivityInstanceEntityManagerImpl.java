@@ -41,8 +41,7 @@ public class HistoricActivityInstanceEntityManagerImpl
         HistoricActivityInstanceDataManager historicActivityInstanceDataManager
     ) {
         super(processEngineConfiguration);
-        this.historicActivityInstanceDataManager =
-            historicActivityInstanceDataManager;
+        this.historicActivityInstanceDataManager = historicActivityInstanceDataManager;
     }
 
     @Override
@@ -71,9 +70,7 @@ public class HistoricActivityInstanceEntityManagerImpl
     }
 
     @Override
-    public void deleteHistoricActivityInstancesByProcessInstanceId(
-        String historicProcessInstanceId
-    ) {
+    public void deleteHistoricActivityInstancesByProcessInstanceId(String historicProcessInstanceId) {
         if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
             historicActivityInstanceDataManager.deleteHistoricActivityInstancesByProcessInstanceId(
                 historicProcessInstanceId
@@ -115,12 +112,8 @@ public class HistoricActivityInstanceEntityManagerImpl
     }
 
     @Override
-    public long findHistoricActivityInstanceCountByNativeQuery(
-        Map<String, Object> parameterMap
-    ) {
-        return historicActivityInstanceDataManager.findHistoricActivityInstanceCountByNativeQuery(
-            parameterMap
-        );
+    public long findHistoricActivityInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
+        return historicActivityInstanceDataManager.findHistoricActivityInstanceCountByNativeQuery(parameterMap);
     }
 
     public HistoricActivityInstanceDataManager getHistoricActivityInstanceDataManager() {
@@ -130,7 +123,6 @@ public class HistoricActivityInstanceEntityManagerImpl
     public void setHistoricActivityInstanceDataManager(
         HistoricActivityInstanceDataManager historicActivityInstanceDataManager
     ) {
-        this.historicActivityInstanceDataManager =
-            historicActivityInstanceDataManager;
+        this.historicActivityInstanceDataManager = historicActivityInstanceDataManager;
     }
 }

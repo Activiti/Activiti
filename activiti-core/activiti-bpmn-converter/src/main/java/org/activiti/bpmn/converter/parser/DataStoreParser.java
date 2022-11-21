@@ -38,10 +38,7 @@ public class DataStoreParser implements BpmnXMLConstants {
                 dataStore.setName(name);
             }
 
-            String itemSubjectRef = xtr.getAttributeValue(
-                null,
-                ATTRIBUTE_ITEM_SUBJECT_REF
-            );
+            String itemSubjectRef = xtr.getAttributeValue(null, ATTRIBUTE_ITEM_SUBJECT_REF);
             if (StringUtils.isNotEmpty(itemSubjectRef)) {
                 dataStore.setItemSubjectRef(itemSubjectRef);
             }
@@ -50,12 +47,7 @@ public class DataStoreParser implements BpmnXMLConstants {
 
             model.addDataStore(dataStore.getId(), dataStore);
 
-            BpmnXMLUtil.parseChildElements(
-                ELEMENT_DATA_STORE,
-                dataStore,
-                xtr,
-                model
-            );
+            BpmnXMLUtil.parseChildElements(ELEMENT_DATA_STORE, dataStore, xtr, model);
         }
     }
 }

@@ -77,8 +77,7 @@ public class ProcessInstanceBuilderImplTest {
     public void create_shouldDelegateCreationToRuntimeService() {
         //given
         ProcessInstance processInstance = mock(ProcessInstance.class);
-        given(runtimeService.createProcessInstance(processInstanceBuilder))
-            .willReturn(processInstance);
+        given(runtimeService.createProcessInstance(processInstanceBuilder)).willReturn(processInstance);
         //when
         ProcessInstance createdProcess = processInstanceBuilder.create();
         //then

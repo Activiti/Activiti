@@ -26,11 +26,7 @@ public class DummyServiceTask extends TaskActivityBehavior {
     }
 
     @Override
-    public void trigger(
-        DelegateExecution execution,
-        String signalName,
-        Object signalData
-    ) {
+    public void trigger(DelegateExecution execution, String signalName, Object signalData) {
         leave(execution);
     }
 }

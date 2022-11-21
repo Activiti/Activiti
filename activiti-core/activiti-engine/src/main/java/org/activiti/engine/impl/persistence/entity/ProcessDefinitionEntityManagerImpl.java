@@ -52,12 +52,8 @@ public class ProcessDefinitionEntityManagerImpl
     }
 
     @Override
-    public ProcessDefinitionEntity findLatestProcessDefinitionByKey(
-        String processDefinitionKey
-    ) {
-        return processDefinitionDataManager.findLatestProcessDefinitionByKey(
-            processDefinitionKey
-        );
+    public ProcessDefinitionEntity findLatestProcessDefinitionByKey(String processDefinitionKey) {
+        return processDefinitionDataManager.findLatestProcessDefinitionByKey(processDefinitionKey);
     }
 
     @Override
@@ -65,17 +61,12 @@ public class ProcessDefinitionEntityManagerImpl
         String processDefinitionKey,
         String tenantId
     ) {
-        return processDefinitionDataManager.findLatestProcessDefinitionByKeyAndTenantId(
-            processDefinitionKey,
-            tenantId
-        );
+        return processDefinitionDataManager.findLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
     }
 
     @Override
     public void deleteProcessDefinitionsByDeploymentId(String deploymentId) {
-        processDefinitionDataManager.deleteProcessDefinitionsByDeploymentId(
-            deploymentId
-        );
+        processDefinitionDataManager.deleteProcessDefinitionsByDeploymentId(deploymentId);
     }
 
     @Override
@@ -83,19 +74,12 @@ public class ProcessDefinitionEntityManagerImpl
         ProcessDefinitionQueryImpl processDefinitionQuery,
         Page page
     ) {
-        return processDefinitionDataManager.findProcessDefinitionsByQueryCriteria(
-            processDefinitionQuery,
-            page
-        );
+        return processDefinitionDataManager.findProcessDefinitionsByQueryCriteria(processDefinitionQuery, page);
     }
 
     @Override
-    public long findProcessDefinitionCountByQueryCriteria(
-        ProcessDefinitionQueryImpl processDefinitionQuery
-    ) {
-        return processDefinitionDataManager.findProcessDefinitionCountByQueryCriteria(
-            processDefinitionQuery
-        );
+    public long findProcessDefinitionCountByQueryCriteria(ProcessDefinitionQueryImpl processDefinitionQuery) {
+        return processDefinitionDataManager.findProcessDefinitionCountByQueryCriteria(processDefinitionQuery);
     }
 
     @Override
@@ -103,10 +87,7 @@ public class ProcessDefinitionEntityManagerImpl
         String deploymentId,
         String processDefinitionKey
     ) {
-        return processDefinitionDataManager.findProcessDefinitionByDeploymentAndKey(
-            deploymentId,
-            processDefinitionKey
-        );
+        return processDefinitionDataManager.findProcessDefinitionByDeploymentAndKey(deploymentId, processDefinitionKey);
     }
 
     @Override
@@ -128,10 +109,7 @@ public class ProcessDefinitionEntityManagerImpl
         Integer processDefinitionVersion,
         String tenantId
     ) {
-        if (
-            tenantId == null ||
-            ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId)
-        ) {
+        if (tenantId == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId)) {
             return processDefinitionDataManager.findProcessDefinitionByKeyAndVersion(
                 processDefinitionKey,
                 processDefinitionVersion
@@ -151,40 +129,24 @@ public class ProcessDefinitionEntityManagerImpl
         int firstResult,
         int maxResults
     ) {
-        return processDefinitionDataManager.findProcessDefinitionsByNativeQuery(
-            parameterMap,
-            firstResult,
-            maxResults
-        );
+        return processDefinitionDataManager.findProcessDefinitionsByNativeQuery(parameterMap, firstResult, maxResults);
     }
 
     @Override
-    public long findProcessDefinitionCountByNativeQuery(
-        Map<String, Object> parameterMap
-    ) {
-        return processDefinitionDataManager.findProcessDefinitionCountByNativeQuery(
-            parameterMap
-        );
+    public long findProcessDefinitionCountByNativeQuery(Map<String, Object> parameterMap) {
+        return processDefinitionDataManager.findProcessDefinitionCountByNativeQuery(parameterMap);
     }
 
     @Override
-    public void updateProcessDefinitionTenantIdForDeployment(
-        String deploymentId,
-        String newTenantId
-    ) {
-        processDefinitionDataManager.updateProcessDefinitionTenantIdForDeployment(
-            deploymentId,
-            newTenantId
-        );
+    public void updateProcessDefinitionTenantIdForDeployment(String deploymentId, String newTenantId) {
+        processDefinitionDataManager.updateProcessDefinitionTenantIdForDeployment(deploymentId, newTenantId);
     }
 
     public ProcessDefinitionDataManager getProcessDefinitionDataManager() {
         return processDefinitionDataManager;
     }
 
-    public void setProcessDefinitionDataManager(
-        ProcessDefinitionDataManager processDefinitionDataManager
-    ) {
+    public void setProcessDefinitionDataManager(ProcessDefinitionDataManager processDefinitionDataManager) {
         this.processDefinitionDataManager = processDefinitionDataManager;
     }
 }

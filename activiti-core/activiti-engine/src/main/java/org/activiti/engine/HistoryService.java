@@ -114,14 +114,10 @@ public interface HistoryService {
      * Retrieves the {@link HistoricIdentityLink}s associated with the given process instance. Such an {@link IdentityLink} informs how a certain identity (eg. group or user) is associated with a
      * certain process instance, even if the instance is completed as opposed to {@link IdentityLink}s which only exist for active instances.
      */
-    List<HistoricIdentityLink> getHistoricIdentityLinksForProcessInstance(
-        String processInstanceId
-    );
+    List<HistoricIdentityLink> getHistoricIdentityLinksForProcessInstance(String processInstanceId);
 
     /**
      * Allows to retrieve the {@link ProcessInstanceHistoryLog} for one process instance.
      */
-    ProcessInstanceHistoryLogQuery createProcessInstanceHistoryLogQuery(
-        String processInstanceId
-    );
+    ProcessInstanceHistoryLogQuery createProcessInstanceHistoryLogQuery(String processInstanceId);
 }

@@ -69,18 +69,13 @@ public class JPAEntityMappings {
 
     public String getJPAClassString(Object value) {
         if (value == null) {
-            throw new ActivitiIllegalArgumentException(
-                "null value cannot be saved"
-            );
+            throw new ActivitiIllegalArgumentException("null value cannot be saved");
         }
 
         EntityMetaData metaData = getEntityMetaData(value.getClass());
         if (!metaData.isJPAEntity()) {
             throw new ActivitiIllegalArgumentException(
-                "Object is not a JPA Entity: class='" +
-                value.getClass() +
-                "', " +
-                value
+                "Object is not a JPA Entity: class='" + value.getClass() + "', " + value
             );
         }
 
@@ -92,10 +87,7 @@ public class JPAEntityMappings {
         EntityMetaData metaData = getEntityMetaData(value.getClass());
         if (!metaData.isJPAEntity()) {
             throw new ActivitiIllegalArgumentException(
-                "Object is not a JPA Entity: class='" +
-                value.getClass() +
-                "', " +
-                value
+                "Object is not a JPA Entity: class='" + value.getClass() + "', " + value
             );
         }
         Object idValue = getIdValue(value, metaData);
@@ -115,10 +107,7 @@ public class JPAEntityMappings {
                 iae
             );
         } catch (IllegalAccessException iae) {
-            throw new ActivitiException(
-                "Cannot access id method/field for JPA Entity",
-                iae
-            );
+            throw new ActivitiException("Cannot access id method/field for JPA Entity", iae);
         } catch (InvocationTargetException ite) {
             throw new ActivitiException(
                 "Exception occurred while getting value from id field/method on JPAEntity: " +
@@ -128,9 +117,7 @@ public class JPAEntityMappings {
         }
 
         // Fall trough when no method and field is set
-        throw new ActivitiException(
-            "Cannot get id from JPA Entity, no id method/field set"
-        );
+        throw new ActivitiException("Cannot get id from JPA Entity, no id method/field set");
     }
 
     public Object getJPAEntity(String className, String idString) {
@@ -145,19 +132,11 @@ public class JPAEntityMappings {
     }
 
     private Object findEntity(Class<?> entityClass, Object primaryKey) {
-        EntityManager em = Context
-            .getCommandContext()
-            .getSession(EntityManagerSession.class)
-            .getEntityManager();
+        EntityManager em = Context.getCommandContext().getSession(EntityManagerSession.class).getEntityManager();
 
         Object entity = em.find(entityClass, primaryKey);
         if (entity == null) {
-            throw new ActivitiException(
-                "Entity does not exist: " +
-                entityClass.getName() +
-                " - " +
-                primaryKey
-            );
+            throw new ActivitiException("Entity does not exist: " + entityClass.getName() + " - " + primaryKey);
         }
         return entity;
     }
@@ -202,9 +181,7 @@ public class JPAEntityMappings {
 
     public String getIdString(Object value) {
         if (value == null) {
-            throw new ActivitiIllegalArgumentException(
-                "Value of primary key for JPA-Entity cannot be null"
-            );
+            throw new ActivitiIllegalArgumentException("Value of primary key for JPA-Entity cannot be null");
         }
         // Only java.sql.date and java.util.date require custom handling, the
         // other types
@@ -229,8 +206,7 @@ public class JPAEntityMappings {
             return value.toString();
         } else {
             throw new ActivitiIllegalArgumentException(
-                "Unsupported Primary key type for JPA-Entity: " +
-                value.getClass().getName()
+                "Unsupported Primary key type for JPA-Entity: " + value.getClass().getName()
             );
         }
     }

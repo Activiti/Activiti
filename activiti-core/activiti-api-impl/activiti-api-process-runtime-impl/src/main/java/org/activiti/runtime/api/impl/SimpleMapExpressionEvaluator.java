@@ -34,10 +34,6 @@ public class SimpleMapExpressionEvaluator implements ExpressionEvaluator {
         ExpressionManager expressionManager,
         DelegateInterceptor delegateInterceptor
     ) {
-        return expression.getValue(
-            expressionManager,
-            delegateInterceptor,
-            context
-        );
+        return expression.getValue(expressionManager, delegateInterceptor, context);
     }
 }

@@ -39,16 +39,12 @@ public class IdentityApplication {
         List<GrantedAuthority> userAuthorities = new ArrayList<>();
         userAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
 
-        extendedInMemoryUserDetailsManager.createUser(
-            new User("user", "password", userAuthorities)
-        );
+        extendedInMemoryUserDetailsManager.createUser(new User("user", "password", userAuthorities));
 
         List<GrantedAuthority> adminAuthorities = new ArrayList<>();
         adminAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_ADMIN"));
 
-        extendedInMemoryUserDetailsManager.createUser(
-            new User("admin", "password", adminAuthorities)
-        );
+        extendedInMemoryUserDetailsManager.createUser(new User("admin", "password", adminAuthorities));
 
         return extendedInMemoryUserDetailsManager;
     }

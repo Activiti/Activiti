@@ -65,16 +65,8 @@ public class TaskRuntimeHelperTest {
     @BeforeEach
     public void setUp() {
         taskRuntimeHelper =
-            spy(
-                new TaskRuntimeHelper(
-                    taskService,
-                    taskConverter,
-                    securityManager,
-                    taskVariablesValidator
-                )
-            );
-        when(securityManager.getAuthenticatedUserId())
-            .thenReturn(AUTHENTICATED_USER);
+            spy(new TaskRuntimeHelper(taskService, taskConverter, securityManager, taskVariablesValidator));
+        when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
     }
 
     @Test
@@ -91,12 +83,8 @@ public class TaskRuntimeHelperTest {
             .withFormKey("new form key")
             .build();
         Task internalTask = buildInternalTask(AUTHENTICATED_USER);
-        doReturn(internalTask)
-            .when(taskRuntimeHelper)
-            .getInternalTaskWithChecks("taskId");
-        doReturn(internalTask)
-            .when(taskRuntimeHelper)
-            .getInternalTask("taskId");
+        doReturn(internalTask).when(taskRuntimeHelper).getInternalTaskWithChecks("taskId");
+        doReturn(internalTask).when(taskRuntimeHelper).getInternalTask("taskId");
 
         //when
         taskRuntimeHelper.applyUpdateTaskPayload(false, updateTaskPayload);
@@ -120,9 +108,7 @@ public class TaskRuntimeHelperTest {
     public void applyUpdateTaskPayloadShouldThrowExceptionWhenAssigneeIsNotSetAndIsNotAdmin() {
         //given
         Task internalTask = mock(Task.class);
-        doReturn(internalTask)
-            .when(taskRuntimeHelper)
-            .getInternalTaskWithChecks("taskId");
+        doReturn(internalTask).when(taskRuntimeHelper).getInternalTaskWithChecks("taskId");
 
         UpdateTaskPayload updateTaskPayload = TaskPayloadBuilder
             .update()
@@ -131,16 +117,12 @@ public class TaskRuntimeHelperTest {
             .build();
 
         //when
-        Throwable throwable = catchThrowable(() ->
-            taskRuntimeHelper.applyUpdateTaskPayload(false, updateTaskPayload)
-        );
+        Throwable throwable = catchThrowable(() -> taskRuntimeHelper.applyUpdateTaskPayload(false, updateTaskPayload));
 
         //then
         assertThat(throwable)
             .isInstanceOf(IllegalStateException.class)
-            .hasMessage(
-                "You cannot update a task where you are not the assignee"
-            );
+            .hasMessage("You cannot update a task where you are not the assignee");
     }
 
     @Test
@@ -151,12 +133,8 @@ public class TaskRuntimeHelperTest {
         task.setAssignee(assignee);
         Task internalTask = buildInternalTask(assignee);
 
-        doReturn(internalTask)
-            .when(taskRuntimeHelper)
-            .getInternalTaskWithChecks("taskId");
-        doReturn(internalTask)
-            .when(taskRuntimeHelper)
-            .getInternalTask("taskId");
+        doReturn(internalTask).when(taskRuntimeHelper).getInternalTaskWithChecks("taskId");
+        doReturn(internalTask).when(taskRuntimeHelper).getInternalTask("taskId");
 
         when(taskConverter.from(any(Task.class))).thenReturn(task);
 
@@ -183,8 +161,7 @@ public class TaskRuntimeHelperTest {
         given(securityManager.getAuthenticatedUserGroups()).willReturn(groups);
 
         TaskQuery taskQuery = mock(TaskQuery.class);
-        given(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, groups))
-            .willReturn(taskQuery);
+        given(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, groups)).willReturn(taskQuery);
         given(taskQuery.taskOwner(AUTHENTICATED_USER)).willReturn(taskQuery);
         given(taskQuery.or()).willReturn(taskQuery);
         given(taskQuery.endOr()).willReturn(taskQuery);
@@ -196,9 +173,7 @@ public class TaskRuntimeHelperTest {
 
         //when
 
-        Task retrievedTask = taskRuntimeHelper.getInternalTaskWithChecks(
-            "taskId"
-        );
+        Task retrievedTask = taskRuntimeHelper.getInternalTaskWithChecks("taskId");
 
         //then
         assertThat(retrievedTask).isEqualTo(internalTask);
@@ -211,8 +186,7 @@ public class TaskRuntimeHelperTest {
         given(securityManager.getAuthenticatedUserGroups()).willReturn(groups);
 
         TaskQuery taskQuery = mock(TaskQuery.class);
-        given(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, groups))
-            .willReturn(taskQuery);
+        given(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, groups)).willReturn(taskQuery);
         given(taskQuery.taskOwner(AUTHENTICATED_USER)).willReturn(taskQuery);
         given(taskQuery.or()).willReturn(taskQuery);
         given(taskQuery.endOr()).willReturn(taskQuery);
@@ -222,9 +196,7 @@ public class TaskRuntimeHelperTest {
         given(taskService.createTaskQuery()).willReturn(taskQuery);
 
         //when
-        Throwable thrown = catchThrowable(() ->
-            taskRuntimeHelper.getInternalTaskWithChecks("taskId")
-        );
+        Throwable thrown = catchThrowable(() -> taskRuntimeHelper.getInternalTaskWithChecks("taskId"));
 
         //then
         assertThat(thrown)
@@ -238,15 +210,11 @@ public class TaskRuntimeHelperTest {
         given(securityManager.getAuthenticatedUserId()).willReturn(null);
 
         //when
-        Throwable thrown = catchThrowable(() ->
-            taskRuntimeHelper.getInternalTaskWithChecks("taskId")
-        );
+        Throwable thrown = catchThrowable(() -> taskRuntimeHelper.getInternalTaskWithChecks("taskId"));
 
         //then
         assertThat(thrown)
             .isInstanceOf(IllegalStateException.class)
-            .hasMessage(
-                "There is no authenticated user, we need a user authenticated to find tasks"
-            );
+            .hasMessage("There is no authenticated user, we need a user authenticated to find tasks");
     }
 }

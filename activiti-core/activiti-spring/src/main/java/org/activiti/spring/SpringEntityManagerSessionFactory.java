@@ -54,21 +54,10 @@ public class SpringEntityManagerSessionFactory implements SessionFactory {
     }
 
     public Session openSession(CommandContext commandContext) {
-        EntityManager entityManager = EntityManagerFactoryUtils.getTransactionalEntityManager(
-            entityManagerFactory
-        );
+        EntityManager entityManager = EntityManagerFactoryUtils.getTransactionalEntityManager(entityManagerFactory);
         if (entityManager == null) {
-            return new EntityManagerSessionImpl(
-                entityManagerFactory,
-                handleTransactions,
-                closeEntityManager
-            );
+            return new EntityManagerSessionImpl(entityManagerFactory, handleTransactions, closeEntityManager);
         }
-        return new EntityManagerSessionImpl(
-            entityManagerFactory,
-            entityManager,
-            false,
-            false
-        );
+        return new EntityManagerSessionImpl(entityManagerFactory, entityManager, false, false);
     }
 }

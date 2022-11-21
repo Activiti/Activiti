@@ -29,10 +29,7 @@ import org.activiti.engine.runtime.Job;
 public interface TimerJobDataManager extends DataManager<TimerJobEntity> {
     List<TimerJobEntity> findTimerJobsToExecute(Page page);
 
-    List<TimerJobEntity> findJobsByTypeAndProcessDefinitionId(
-        String jobHandlerType,
-        String processDefinitionId
-    );
+    List<TimerJobEntity> findJobsByTypeAndProcessDefinitionId(String jobHandlerType, String processDefinitionId);
 
     List<TimerJobEntity> findJobsByTypeAndProcessDefinitionKeyNoTenantId(
         String jobHandlerType,
@@ -53,8 +50,5 @@ public interface TimerJobDataManager extends DataManager<TimerJobEntity> {
 
     long findJobCountByQueryCriteria(TimerJobQueryImpl jobQuery);
 
-    void updateJobTenantIdForDeployment(
-        String deploymentId,
-        String newTenantId
-    );
+    void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
 }

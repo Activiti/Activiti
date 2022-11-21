@@ -41,9 +41,7 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
      */
     public void testDuplicateVariableInsertOnExecution() throws Exception {
         String processDefinitionId = deployOneTaskTestProcess();
-        final ProcessInstance processInstance = runtimeService.startProcessInstanceById(
-            processDefinitionId
-        );
+        final ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinitionId);
 
         final CyclicBarrier startBarrier = new CyclicBarrier(2);
         final CyclicBarrier endBarrier = new CyclicBarrier(2);
@@ -56,11 +54,7 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
                 public void run() {
                     try {
                         managementService.executeCommand(
-                            new SetVariableWithBarriersCommand(
-                                startBarrier,
-                                endBarrier,
-                                processInstance.getId()
-                            )
+                            new SetVariableWithBarriersCommand(startBarrier, endBarrier, processInstance.getId())
                         );
                     } catch (Exception e) {
                         exceptions.add(e);
@@ -75,11 +69,7 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
                 public void run() {
                     try {
                         managementService.executeCommand(
-                            new SetVariableWithBarriersCommand(
-                                startBarrier,
-                                endBarrier,
-                                processInstance.getId()
-                            )
+                            new SetVariableWithBarriersCommand(startBarrier, endBarrier, processInstance.getId())
                         );
                     } catch (Exception e) {
                         exceptions.add(e);
@@ -99,15 +89,10 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
         assertThat(exceptions).hasSize(1);
 
         // One variable should be set
-        Map<String, Object> variables = runtimeService.getVariables(
-            processInstance.getId()
-        );
+        Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
         assertThat(variables).hasSize(1);
         assertThat(variables.get("var")).isEqualTo("12345");
-        runtimeService.deleteProcessInstance(
-            processInstance.getId(),
-            "ShouldNotFail"
-        );
+        runtimeService.deleteProcessInstance(processInstance.getId(), "ShouldNotFail");
     }
 
     /**
@@ -116,13 +101,8 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
      */
     public void testDuplicateVariableInsertOnTask() throws Exception {
         String processDefinitionId = deployOneTaskTestProcess();
-        final ProcessInstance processInstance = runtimeService.startProcessInstanceById(
-            processDefinitionId
-        );
-        final Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        final ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinitionId);
+        final Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 
         final CyclicBarrier startBarrier = new CyclicBarrier(2);
         final CyclicBarrier endBarrier = new CyclicBarrier(2);
@@ -135,11 +115,7 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
                 public void run() {
                     try {
                         managementService.executeCommand(
-                            new SetTaskVariableWithBarriersCommand(
-                                startBarrier,
-                                endBarrier,
-                                task.getId()
-                            )
+                            new SetTaskVariableWithBarriersCommand(startBarrier, endBarrier, task.getId())
                         );
                     } catch (Exception e) {
                         exceptions.add(e);
@@ -154,11 +130,7 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
                 public void run() {
                     try {
                         managementService.executeCommand(
-                            new SetTaskVariableWithBarriersCommand(
-                                startBarrier,
-                                endBarrier,
-                                task.getId()
-                            )
+                            new SetTaskVariableWithBarriersCommand(startBarrier, endBarrier, task.getId())
                         );
                     } catch (Exception e) {
                         exceptions.add(e);
@@ -176,19 +148,13 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
 
         // One of the 2 threads should get an optimistic lock exception
         assertThat(exceptions).hasSize(1);
-        assertThat(exceptions.get(0))
-            .isInstanceOf(ActivitiOptimisticLockingException.class);
+        assertThat(exceptions.get(0)).isInstanceOf(ActivitiOptimisticLockingException.class);
 
         // One variable should be set
-        Map<String, Object> variables = runtimeService.getVariables(
-            processInstance.getId()
-        );
+        Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
         assertThat(variables).hasSize(1);
         assertThat(variables.get("var")).isEqualTo("12345");
-        runtimeService.deleteProcessInstance(
-            processInstance.getId(),
-            "ShouldNotFail"
-        );
+        runtimeService.deleteProcessInstance(processInstance.getId(), "ShouldNotFail");
     }
 
     /**
@@ -223,12 +189,7 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
                 throw new RuntimeException(e);
             }
 
-            new SetExecutionVariablesCmd(
-                executionId,
-                singletonMap("var", "12345"),
-                false
-            )
-                .execute(commandContext);
+            new SetExecutionVariablesCmd(executionId, singletonMap("var", "12345"), false).execute(commandContext);
 
             try {
                 endBarrier.await();
@@ -253,11 +214,7 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
         private CyclicBarrier endBarrier;
         private String taskId;
 
-        public SetTaskVariableWithBarriersCommand(
-            CyclicBarrier startBarrier,
-            CyclicBarrier endBarrier,
-            String taskId
-        ) {
+        public SetTaskVariableWithBarriersCommand(CyclicBarrier startBarrier, CyclicBarrier endBarrier, String taskId) {
             this.startBarrier = startBarrier;
             this.endBarrier = endBarrier;
             this.taskId = taskId;
@@ -273,8 +230,7 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
                 throw new RuntimeException(e);
             }
 
-            new SetTaskVariablesCmd(taskId, singletonMap("var", "12345"), false)
-                .execute(commandContext);
+            new SetTaskVariablesCmd(taskId, singletonMap("var", "12345"), false).execute(commandContext);
 
             try {
                 endBarrier.await();

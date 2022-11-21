@@ -29,7 +29,5 @@ public interface SecurityPoliciesManager {
 
     boolean arePoliciesDefined();
 
-    Map<String, Set<String>> getAllowedKeys(
-        SecurityPolicyAccess... securityPolicyAccess
-    );
+    Map<String, Set<String>> getAllowedKeys(SecurityPolicyAccess... securityPolicyAccess);
 }

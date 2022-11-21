@@ -30,18 +30,14 @@ public class AssigneeOverwriteFromVariable implements TaskListener {
     public void notify(DelegateTask delegateTask) {
         // get mapping table from variable
         DelegateExecution execution = delegateTask.getExecution();
-        Map<String, String> assigneeMappingTable = (Map<String, String>) execution.getVariable(
-            "assigneeMappingTable"
-        );
+        Map<String, String> assigneeMappingTable = (Map<String, String>) execution.getVariable("assigneeMappingTable");
 
         // get assignee from process
         String assigneeFromProcessDefinition = delegateTask.getAssignee();
 
         // overwrite assignee if there is an entry in the mapping table
         if (assigneeMappingTable.containsKey(assigneeFromProcessDefinition)) {
-            String assigneeFromMappingTable = assigneeMappingTable.get(
-                assigneeFromProcessDefinition
-            );
+            String assigneeFromMappingTable = assigneeMappingTable.get(assigneeFromProcessDefinition);
             delegateTask.setAssignee(assigneeFromMappingTable);
         }
     }

@@ -53,10 +53,7 @@ public class SuspendedJobEntityManagerImpl
     }
 
     @Override
-    public List<Job> findJobsByQueryCriteria(
-        SuspendedJobQueryImpl jobQuery,
-        Page page
-    ) {
+    public List<Job> findJobsByQueryCriteria(SuspendedJobQueryImpl jobQuery, Page page) {
         return jobDataManager.findJobsByQueryCriteria(jobQuery, page);
     }
 
@@ -66,22 +63,15 @@ public class SuspendedJobEntityManagerImpl
     }
 
     @Override
-    public void updateJobTenantIdForDeployment(
-        String deploymentId,
-        String newTenantId
-    ) {
-        jobDataManager.updateJobTenantIdForDeployment(
-            deploymentId,
-            newTenantId
-        );
+    public void updateJobTenantIdForDeployment(String deploymentId, String newTenantId) {
+        jobDataManager.updateJobTenantIdForDeployment(deploymentId, newTenantId);
     }
 
     @Override
     public void insert(SuspendedJobEntity jobEntity, boolean fireCreateEvent) {
         // add link to execution
         if (jobEntity.getExecutionId() != null) {
-            ExecutionEntity execution = getExecutionEntityManager()
-                .findById(jobEntity.getExecutionId());
+            ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
 
             // Inherit tenant if (if applicable)
             if (execution.getTenantId() != null) {
@@ -90,9 +80,7 @@ public class SuspendedJobEntityManagerImpl
 
             if (isExecutionRelatedEntityCountEnabled(execution)) {
                 CountingExecutionEntity countingExecutionEntity = (CountingExecutionEntity) execution;
-                countingExecutionEntity.setSuspendedJobCount(
-                    countingExecutionEntity.getSuspendedJobCount() + 1
-                );
+                countingExecutionEntity.setSuspendedJobCount(countingExecutionEntity.getSuspendedJobCount() + 1);
             }
         }
 
@@ -110,28 +98,18 @@ public class SuspendedJobEntityManagerImpl
 
         deleteExceptionByteArrayRef(jobEntity);
 
-        if (
-            jobEntity.getExecutionId() != null &&
-            isExecutionRelatedEntityCountEnabledGlobally()
-        ) {
+        if (jobEntity.getExecutionId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
             CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager()
                 .findById(jobEntity.getExecutionId());
             if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
-                executionEntity.setSuspendedJobCount(
-                    executionEntity.getSuspendedJobCount() - 1
-                );
+                executionEntity.setSuspendedJobCount(executionEntity.getSuspendedJobCount() - 1);
             }
         }
 
         // Send event
         if (getEventDispatcher().isEnabled()) {
             getEventDispatcher()
-                .dispatchEvent(
-                    ActivitiEventBuilder.createEntityEvent(
-                        ActivitiEventType.ENTITY_DELETED,
-                        this
-                    )
-                );
+                .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, this));
         }
     }
 
@@ -148,9 +126,7 @@ public class SuspendedJobEntityManagerImpl
 
     protected SuspendedJobEntity createSuspendedJob(AbstractJobEntity job) {
         SuspendedJobEntity newSuspendedJobEntity = create();
-        newSuspendedJobEntity.setJobHandlerConfiguration(
-            job.getJobHandlerConfiguration()
-        );
+        newSuspendedJobEntity.setJobHandlerConfiguration(job.getJobHandlerConfiguration());
         newSuspendedJobEntity.setJobHandlerType(job.getJobHandlerType());
         newSuspendedJobEntity.setExclusive(job.isExclusive());
         newSuspendedJobEntity.setRepeat(job.getRepeat());
@@ -158,9 +134,7 @@ public class SuspendedJobEntityManagerImpl
         newSuspendedJobEntity.setEndDate(job.getEndDate());
         newSuspendedJobEntity.setExecutionId(job.getExecutionId());
         newSuspendedJobEntity.setProcessInstanceId(job.getProcessInstanceId());
-        newSuspendedJobEntity.setProcessDefinitionId(
-            job.getProcessDefinitionId()
-        );
+        newSuspendedJobEntity.setProcessDefinitionId(job.getProcessDefinitionId());
 
         // Inherit tenant
         newSuspendedJobEntity.setTenantId(job.getTenantId());

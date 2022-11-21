@@ -30,10 +30,7 @@ public class VariableScopeResolverFactory implements ResolverFactory {
         VariableScope variableScope
     ) {
         if (variableScope != null) {
-            return new VariableScopeResolver(
-                processEngineConfiguration,
-                variableScope
-            );
+            return new VariableScopeResolver(processEngineConfiguration, variableScope);
         }
         return null;
     }

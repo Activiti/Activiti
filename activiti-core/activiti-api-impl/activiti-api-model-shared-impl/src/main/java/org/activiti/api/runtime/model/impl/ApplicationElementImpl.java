@@ -50,8 +50,6 @@ public class ApplicationElementImpl implements ApplicationElement {
 
     @Override
     public String toString() {
-        return (
-            "ApplicationElementImpl{" + "appVersion='" + appVersion + '\'' + '}'
-        );
+        return ("ApplicationElementImpl{" + "appVersion='" + appVersion + '\'' + '}');
     }
 }

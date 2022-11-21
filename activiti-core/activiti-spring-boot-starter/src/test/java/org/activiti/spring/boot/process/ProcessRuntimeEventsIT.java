@@ -48,10 +48,8 @@ public class ProcessRuntimeEventsIT {
     private static final String SINGLE_TASK_PROCESS = "SingleTaskProcess";
     private static final String LOGGED_USER = "user";
 
-    private static final String PARENT_PROCESS_CALL_ACTIVITY =
-        "parentproc-843144bc-3797-40db-8edc-d23190b118e3";
-    private static final String SUB_PROCESS_CALL_ACTIVITY =
-        "subprocess-fb5f2386-709a-4947-9aa0-bbf31497384f";
+    private static final String PARENT_PROCESS_CALL_ACTIVITY = "parentproc-843144bc-3797-40db-8edc-d23190b118e3";
+    private static final String SUB_PROCESS_CALL_ACTIVITY = "subprocess-fb5f2386-709a-4947-9aa0-bbf31497384f";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -84,24 +82,14 @@ public class ProcessRuntimeEventsIT {
     @Test
     public void taskCreatedEvent_should_includeCandidates() {
         //given
-        processRuntime.start(
-            ProcessPayloadBuilder
-                .start()
-                .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
-                .build()
-        );
+        processRuntime.start(ProcessPayloadBuilder.start().withProcessDefinitionKey(SINGLE_TASK_PROCESS).build());
 
         //when
-        List<TaskCreatedEvent> events = localEventSource.getEvents(
-            TaskCreatedEvent.class
-        );
+        List<TaskCreatedEvent> events = localEventSource.getEvents(TaskCreatedEvent.class);
 
         //then
         assertThat(events)
-            .extracting(
-                event -> event.getEntity().getCandidateUsers(),
-                event -> event.getEntity().getCandidateGroups()
-            )
+            .extracting(event -> event.getEntity().getCandidateUsers(), event -> event.getEntity().getCandidateGroups())
             .containsExactly(
                 tuple(
                     Arrays.asList("firstCandidateUser", "secondCandidateUser"),
@@ -139,24 +127,15 @@ public class ProcessRuntimeEventsIT {
         );
 
         //then
-        List<VariableCreatedEvent> variableCreatedEvents = localEventSource.getEvents(
-            VariableCreatedEvent.class
-        );
+        List<VariableCreatedEvent> variableCreatedEvents = localEventSource.getEvents(VariableCreatedEvent.class);
         assertThat(variableCreatedEvents).hasSize(1);
 
-        VariableCreatedEvent variableCreatedEvent = variableCreatedEvents.get(
-            0
-        );
-        assertThat(variableCreatedEvent.getProcessInstanceId())
-            .isEqualTo(singleTaskProcess.getId());
-        assertThat(variableCreatedEvent.getEntity().getName())
-            .isEqualTo("name");
-        assertThat(variableCreatedEvent.getEntity().getType())
-            .isEqualTo("string");
-        assertThat(variableCreatedEvent.getEntity().<String>getValue())
-            .isEqualTo("peter");
-        assertThat(variableCreatedEvent.getEntity().getProcessInstanceId())
-            .isEqualTo(singleTaskProcess.getId());
+        VariableCreatedEvent variableCreatedEvent = variableCreatedEvents.get(0);
+        assertThat(variableCreatedEvent.getProcessInstanceId()).isEqualTo(singleTaskProcess.getId());
+        assertThat(variableCreatedEvent.getEntity().getName()).isEqualTo("name");
+        assertThat(variableCreatedEvent.getEntity().getType()).isEqualTo("string");
+        assertThat(variableCreatedEvent.getEntity().<String>getValue()).isEqualTo("peter");
+        assertThat(variableCreatedEvent.getEntity().getProcessInstanceId()).isEqualTo(singleTaskProcess.getId());
     }
 
     @Test
@@ -167,19 +146,13 @@ public class ProcessRuntimeEventsIT {
                 .start()
                 .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
                 .withVariables(
-                    Map.ofEntries(
-                        Map.entry("name", "peter"),
-                        Map.entry("active", true),
-                        Map.entry("age", 25)
-                    )
+                    Map.ofEntries(Map.entry("name", "peter"), Map.entry("active", true), Map.entry("age", 25))
                 )
                 .build()
         );
 
         //then
-        List<VariableCreatedEvent> variableCreatedEvents = localEventSource.getEvents(
-            VariableCreatedEvent.class
-        );
+        List<VariableCreatedEvent> variableCreatedEvents = localEventSource.getEvents(VariableCreatedEvent.class);
         assertThat(variableCreatedEvents)
             .hasSize(3)
             .extracting(RuntimeEvent::getProcessInstanceId)
@@ -210,24 +183,15 @@ public class ProcessRuntimeEventsIT {
         );
 
         //then
-        List<VariableUpdatedEvent> variableCreatedEvents = localEventSource.getEvents(
-            VariableUpdatedEvent.class
-        );
+        List<VariableUpdatedEvent> variableCreatedEvents = localEventSource.getEvents(VariableUpdatedEvent.class);
         assertThat(variableCreatedEvents).hasSize(1);
 
-        VariableUpdatedEvent variableUpdatedEvent = variableCreatedEvents.get(
-            0
-        );
-        assertThat(variableUpdatedEvent.getEntity().getName())
-            .isEqualTo("name");
-        assertThat(variableUpdatedEvent.getEntity().getType())
-            .isEqualTo("string");
-        assertThat(variableUpdatedEvent.getEntity().<String>getValue())
-            .isEqualTo("paul");
-        assertThat(variableUpdatedEvent.<String>getPreviousValue())
-            .isEqualTo("peter");
-        assertThat(variableUpdatedEvent.getEntity().getProcessInstanceId())
-            .isEqualTo(singleTaskProcess.getId());
+        VariableUpdatedEvent variableUpdatedEvent = variableCreatedEvents.get(0);
+        assertThat(variableUpdatedEvent.getEntity().getName()).isEqualTo("name");
+        assertThat(variableUpdatedEvent.getEntity().getType()).isEqualTo("string");
+        assertThat(variableUpdatedEvent.getEntity().<String>getValue()).isEqualTo("paul");
+        assertThat(variableUpdatedEvent.<String>getPreviousValue()).isEqualTo("peter");
+        assertThat(variableUpdatedEvent.getEntity().getProcessInstanceId()).isEqualTo(singleTaskProcess.getId());
     }
 
     @Test
@@ -246,39 +210,25 @@ public class ProcessRuntimeEventsIT {
         processRuntime.delete(ProcessPayloadBuilder.delete(processInstance));
 
         //then
-        List<ProcessCancelledEvent> processCancelledEvents = localEventSource.getEvents(
-            ProcessCancelledEvent.class
-        );
+        List<ProcessCancelledEvent> processCancelledEvents = localEventSource.getEvents(ProcessCancelledEvent.class);
         assertThat(processCancelledEvents).hasSize(1);
 
-        ProcessCancelledEvent processCancelledEvent = processCancelledEvents.get(
-            0
-        );
-        assertThat(processCancelledEvent.getCause())
-            .isEqualTo("process instance deleted");
-        assertThat(processCancelledEvent.getEntity().getId())
-            .isEqualTo(processInstance.getId());
+        ProcessCancelledEvent processCancelledEvent = processCancelledEvents.get(0);
+        assertThat(processCancelledEvent.getCause()).isEqualTo("process instance deleted");
+        assertThat(processCancelledEvent.getEntity().getId()).isEqualTo(processInstance.getId());
         assertThat(processCancelledEvent.getEntity().getProcessDefinitionId())
             .isEqualTo(processInstance.getProcessDefinitionId());
-        assertThat(processCancelledEvent.getEntity().getName())
-            .isEqualTo(processInstance.getName());
-        assertThat(processCancelledEvent.getEntity().getBusinessKey())
-            .isEqualTo(processInstance.getBusinessKey());
-        assertThat(processCancelledEvent.getEntity().getStartDate())
-            .isEqualTo(processInstance.getStartDate());
-        assertThat(processCancelledEvent.getEntity().getInitiator())
-            .isEqualTo(LOGGED_USER);
+        assertThat(processCancelledEvent.getEntity().getName()).isEqualTo(processInstance.getName());
+        assertThat(processCancelledEvent.getEntity().getBusinessKey()).isEqualTo(processInstance.getBusinessKey());
+        assertThat(processCancelledEvent.getEntity().getStartDate()).isEqualTo(processInstance.getStartDate());
+        assertThat(processCancelledEvent.getEntity().getInitiator()).isEqualTo(LOGGED_USER);
     }
 
     @Test
     public void startProcessEvent_should_includeDefinitionMetadataForChildProcesses() {
         //given
-        ProcessDefinition parentProcessDefinition = processRuntime.processDefinition(
-            PARENT_PROCESS_CALL_ACTIVITY
-        );
-        ProcessDefinition childProcessDefinition = processRuntime.processDefinition(
-            SUB_PROCESS_CALL_ACTIVITY
-        );
+        ProcessDefinition parentProcessDefinition = processRuntime.processDefinition(PARENT_PROCESS_CALL_ACTIVITY);
+        ProcessDefinition childProcessDefinition = processRuntime.processDefinition(SUB_PROCESS_CALL_ACTIVITY);
 
         String instanceName = "myNamedInstance";
         processRuntime.start(
@@ -290,9 +240,7 @@ public class ProcessRuntimeEventsIT {
         );
 
         //when
-        List<ProcessStartedEvent> processStartedEvents = localEventSource.getEvents(
-            ProcessStartedEvent.class
-        );
+        List<ProcessStartedEvent> processStartedEvents = localEventSource.getEvents(ProcessStartedEvent.class);
 
         //then
         assertThat(processStartedEvents)

@@ -27,15 +27,11 @@ import org.springframework.test.context.ContextConfiguration;
 /**
  * @link https://activiti.atlassian.net/browse/ACT-1166
  */
-@ContextConfiguration(
-    "classpath:org/activiti/spring/test/servicetask/serviceraskSpringTestCatchError-context.xml"
-)
+@ContextConfiguration("classpath:org/activiti/spring/test/servicetask/serviceraskSpringTestCatchError-context.xml")
 public class BoundaryErrorEventSpringTest extends SpringActivitiTestCase {
 
     private void cleanUp() {
-        List<org.activiti.engine.repository.Deployment> deployments = repositoryService
-            .createDeploymentQuery()
-            .list();
+        List<org.activiti.engine.repository.Deployment> deployments = repositoryService.createDeploymentQuery().list();
         for (org.activiti.engine.repository.Deployment deployment : deployments) {
             repositoryService.deleteDeployment(deployment.getId(), true);
         }
@@ -49,9 +45,7 @@ public class BoundaryErrorEventSpringTest extends SpringActivitiTestCase {
     @Deployment
     public void testCatchErrorThrownByJavaDelegateOnServiceTask() {
         String procId = runtimeService
-            .startProcessInstanceByKey(
-                "catchErrorThrownByExpressionDelegateOnServiceTask"
-            )
+            .startProcessInstanceByKey("catchErrorThrownByExpressionDelegateOnServiceTask")
             .getId();
         assertThatErrorHasBeenCaught(procId);
     }
@@ -59,9 +53,7 @@ public class BoundaryErrorEventSpringTest extends SpringActivitiTestCase {
     private void assertThatErrorHasBeenCaught(String procId) {
         // The service task will throw an error event,
         // which is caught on the service task boundary
-        assertThat(taskService.createTaskQuery().count())
-            .as("No tasks found in task list.")
-            .isEqualTo(1);
+        assertThat(taskService.createTaskQuery().count()).as("No tasks found in task list.").isEqualTo(1);
         Task task = taskService.createTaskQuery().singleResult();
         assertThat(task.getName()).isEqualTo("Escalated Task");
 

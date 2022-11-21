@@ -31,38 +31,23 @@ public class SetExecutionVariablesCmd extends NeedsActiveExecutionCmd<Object> {
     protected Map<String, ? extends Object> variables;
     protected boolean isLocal;
 
-    public SetExecutionVariablesCmd(
-        String executionId,
-        Map<String, ? extends Object> variables,
-        boolean isLocal
-    ) {
+    public SetExecutionVariablesCmd(String executionId, Map<String, ? extends Object> variables, boolean isLocal) {
         super(executionId);
         this.variables = variables;
         this.isLocal = isLocal;
     }
 
-    protected Object execute(
-        CommandContext commandContext,
-        ExecutionEntity execution
-    ) {
+    protected Object execute(CommandContext commandContext, ExecutionEntity execution) {
         if (isLocal) {
             if (variables != null) {
                 for (String variableName : variables.keySet()) {
-                    execution.setVariableLocal(
-                        variableName,
-                        variables.get(variableName),
-                        false
-                    );
+                    execution.setVariableLocal(variableName, variables.get(variableName), false);
                 }
             }
         } else {
             if (variables != null) {
                 for (String variableName : variables.keySet()) {
-                    execution.setVariable(
-                        variableName,
-                        variables.get(variableName),
-                        false
-                    );
+                    execution.setVariable(variableName, variables.get(variableName), false);
                 }
             }
         }
@@ -77,10 +62,6 @@ public class SetExecutionVariablesCmd extends NeedsActiveExecutionCmd<Object> {
 
     @Override
     protected String getSuspendedExceptionMessage() {
-        return (
-            "Cannot set variables because execution '" +
-            executionId +
-            "' is suspended"
-        );
+        return ("Cannot set variables because execution '" + executionId + "' is suspended");
     }
 }

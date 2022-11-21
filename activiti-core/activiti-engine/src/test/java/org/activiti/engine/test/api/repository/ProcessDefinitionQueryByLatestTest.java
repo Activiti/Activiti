@@ -24,11 +24,9 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 
-public class ProcessDefinitionQueryByLatestTest
-    extends PluggableActivitiTestCase {
+public class ProcessDefinitionQueryByLatestTest extends PluggableActivitiTestCase {
 
-    private static String XML_FILE_PATH =
-        "org/activiti/engine/test/repository/latest/";
+    private static String XML_FILE_PATH = "org/activiti/engine/test/repository/latest/";
 
     @Override
     protected void setUp() throws Exception {
@@ -40,8 +38,7 @@ public class ProcessDefinitionQueryByLatestTest
         super.tearDown();
     }
 
-    protected List<String> deploy(List<String> xmlFileNameList)
-        throws Exception {
+    protected List<String> deploy(List<String> xmlFileNameList) throws Exception {
         List<String> deploymentIdList = new ArrayList<String>();
         for (String xmlFileName : xmlFileNameList) {
             String deploymentId = repositoryService
@@ -94,8 +91,7 @@ public class ProcessDefinitionQueryByLatestTest
             .latestVersion();
         processDefinitions = idQuery2.list();
         assertThat(processDefinitions).hasSize(1);
-        assertThat(processDefinitions.get(0).getKey())
-            .isEqualTo("testProcess1");
+        assertThat(processDefinitions.get(0).getKey()).isEqualTo("testProcess1");
 
         ProcessDefinitionQuery idQuery3 = repositoryService
             .createProcessDefinitionQuery()
@@ -103,8 +99,7 @@ public class ProcessDefinitionQueryByLatestTest
             .latestVersion();
         processDefinitions = idQuery3.list();
         assertThat(processDefinitions).hasSize(1);
-        assertThat(processDefinitions.get(0).getKey())
-            .isEqualTo("testProcess2");
+        assertThat(processDefinitions.get(0).getKey()).isEqualTo("testProcess2");
 
         // Undeploy
         unDeploy(deploymentIdList);
@@ -127,8 +122,7 @@ public class ProcessDefinitionQueryByLatestTest
         List<ProcessDefinition> processDefinitions = nameQuery.list();
         assertThat(processDefinitions).hasSize(1);
         assertThat(processDefinitions.get(0).getVersion()).isEqualTo(1);
-        assertThat(processDefinitions.get(0).getKey())
-            .isEqualTo("testProcess2");
+        assertThat(processDefinitions.get(0).getKey()).isEqualTo("testProcess2");
 
         // nameLike
         ProcessDefinitionQuery nameLikeQuery = repositoryService
@@ -138,8 +132,7 @@ public class ProcessDefinitionQueryByLatestTest
         processDefinitions = nameLikeQuery.list();
         assertThat(processDefinitions).hasSize(1);
         assertThat(processDefinitions.get(0).getVersion()).isEqualTo(1);
-        assertThat(processDefinitions.get(0).getKey())
-            .isEqualTo("testProcess2");
+        assertThat(processDefinitions.get(0).getKey()).isEqualTo("testProcess2");
 
         // Undeploy
         unDeploy(deploymentIdList);
@@ -161,8 +154,7 @@ public class ProcessDefinitionQueryByLatestTest
             .latestVersion();
         List<ProcessDefinition> processDefinitions = nameQuery.list();
         assertThat(processDefinitions).hasSize(1);
-        assertThat(processDefinitions.get(0).getKey())
-            .isEqualTo("testProcess2");
+        assertThat(processDefinitions.get(0).getKey()).isEqualTo("testProcess2");
 
         // Undeploy
         unDeploy(deploymentIdList);
@@ -191,8 +183,7 @@ public class ProcessDefinitionQueryByLatestTest
             .latestVersion();
         processDefinitions = deploymentQuery2.list();
         assertThat(processDefinitions).hasSize(1);
-        assertThat(processDefinitions.get(0).getKey())
-            .isEqualTo("testProcess1");
+        assertThat(processDefinitions.get(0).getKey()).isEqualTo("testProcess1");
 
         // Undeploy
         unDeploy(deploymentIdList);

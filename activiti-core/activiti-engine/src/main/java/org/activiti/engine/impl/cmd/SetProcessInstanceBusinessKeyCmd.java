@@ -30,29 +30,21 @@ import org.activiti.engine.runtime.ProcessInstance;
  *
 
  */
-public class SetProcessInstanceBusinessKeyCmd
-    implements Command<Void>, Serializable {
+public class SetProcessInstanceBusinessKeyCmd implements Command<Void>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private final String processInstanceId;
     private final String businessKey;
 
-    public SetProcessInstanceBusinessKeyCmd(
-        String processInstanceId,
-        String businessKey
-    ) {
+    public SetProcessInstanceBusinessKeyCmd(String processInstanceId, String businessKey) {
         if (processInstanceId == null || processInstanceId.length() < 1) {
             throw new ActivitiIllegalArgumentException(
-                "The process instance id is mandatory, but '" +
-                processInstanceId +
-                "' has been provided."
+                "The process instance id is mandatory, but '" + processInstanceId + "' has been provided."
             );
         }
         if (businessKey == null) {
-            throw new ActivitiIllegalArgumentException(
-                "The business key is mandatory, but 'null' has been provided."
-            );
+            throw new ActivitiIllegalArgumentException("The business key is mandatory, but 'null' has been provided.");
         }
 
         this.processInstanceId = processInstanceId;
@@ -61,14 +53,10 @@ public class SetProcessInstanceBusinessKeyCmd
 
     public Void execute(CommandContext commandContext) {
         ExecutionEntityManager executionManager = commandContext.getExecutionEntityManager();
-        ExecutionEntity processInstance = executionManager.findById(
-            processInstanceId
-        );
+        ExecutionEntity processInstance = executionManager.findById(processInstanceId);
         if (processInstance == null) {
             throw new ActivitiObjectNotFoundException(
-                "No process instance found for id = '" +
-                processInstanceId +
-                "'.",
+                "No process instance found for id = '" + processInstanceId + "'.",
                 ProcessInstance.class
             );
         } else if (!processInstance.isProcessInstanceType()) {
@@ -96,9 +84,6 @@ public class SetProcessInstanceBusinessKeyCmd
         ExecutionEntityManager executionManager,
         ExecutionEntity processInstance
     ) {
-        executionManager.updateProcessInstanceBusinessKey(
-            processInstance,
-            businessKey
-        );
+        executionManager.updateProcessInstanceBusinessKey(processInstance, businessKey);
     }
 }

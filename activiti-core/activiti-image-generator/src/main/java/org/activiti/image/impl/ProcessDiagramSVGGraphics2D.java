@@ -23,12 +23,7 @@ public class ProcessDiagramSVGGraphics2D extends SVGGraphics2D {
 
     public ProcessDiagramSVGGraphics2D(Document domFactory) {
         super(domFactory);
-        this.setDOMGroupManager(
-                new ProcessDiagramDOMGroupManager(
-                    this.getGraphicContext(),
-                    this.getDOMTreeManager()
-                )
-            );
+        this.setDOMGroupManager(new ProcessDiagramDOMGroupManager(this.getGraphicContext(), this.getDOMTreeManager()));
     }
 
     @Override

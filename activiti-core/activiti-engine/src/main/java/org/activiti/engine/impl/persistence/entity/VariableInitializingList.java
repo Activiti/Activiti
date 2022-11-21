@@ -28,8 +28,7 @@ import org.activiti.engine.impl.variable.JPAEntityVariableType;
  *
 
  */
-public class VariableInitializingList
-    extends ArrayList<VariableInstanceEntity> {
+public class VariableInitializingList extends ArrayList<VariableInstanceEntity> {
 
     private static final long serialVersionUID = 1L;
 
@@ -54,10 +53,7 @@ public class VariableInitializingList
     }
 
     @Override
-    public boolean addAll(
-        int index,
-        Collection<? extends VariableInstanceEntity> c
-    ) {
+    public boolean addAll(int index, Collection<? extends VariableInstanceEntity> c) {
         for (VariableInstanceEntity e : c) {
             initializeVariable(e);
         }
@@ -68,21 +64,13 @@ public class VariableInitializingList
      * If the passed {@link VariableInstanceEntity} is a binary variable and the command-context is active, the variable value is fetched to ensure the byte-array is populated.
      */
     protected void initializeVariable(VariableInstanceEntity e) {
-        if (
-            Context.getCommandContext() != null &&
-            e != null &&
-            e.getType() != null
-        ) {
+        if (Context.getCommandContext() != null && e != null && e.getType() != null) {
             e.getValue();
 
             // make sure JPA entities are cached for later retrieval
             if (
-                JPAEntityVariableType.TYPE_NAME.equals(
-                    e.getType().getTypeName()
-                ) ||
-                JPAEntityListVariableType.TYPE_NAME.equals(
-                    e.getType().getTypeName()
-                )
+                JPAEntityVariableType.TYPE_NAME.equals(e.getType().getTypeName()) ||
+                JPAEntityListVariableType.TYPE_NAME.equals(e.getType().getTypeName())
             ) {
                 ((CacheableVariable) e.getType()).setForceCacheable(true);
             }

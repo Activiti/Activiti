@@ -39,24 +39,18 @@ public class RuntimeTestConfiguration {
         authorities.add(new SimpleGrantedAuthority("GROUP_activitiTeam"));
         authorities.add(new SimpleGrantedAuthority("GROUP_developers"));
 
-        extendedInMemoryUserDetailsManager.createUser(
-            new User("bob", "password", authorities)
-        );
+        extendedInMemoryUserDetailsManager.createUser(new User("bob", "password", authorities));
 
         List<GrantedAuthority> adminAuthorities = new ArrayList<>();
         adminAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_ADMIN"));
 
-        extendedInMemoryUserDetailsManager.createUser(
-            new User("admin", "password", adminAuthorities)
-        );
+        extendedInMemoryUserDetailsManager.createUser(new User("admin", "password", adminAuthorities));
 
         List<GrantedAuthority> garthAuthorities = new ArrayList<>();
         garthAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
         garthAuthorities.add(new SimpleGrantedAuthority("GROUP_doctor"));
 
-        extendedInMemoryUserDetailsManager.createUser(
-            new User("garth", "password", garthAuthorities)
-        );
+        extendedInMemoryUserDetailsManager.createUser(new User("garth", "password", garthAuthorities));
 
         return extendedInMemoryUserDetailsManager;
     }

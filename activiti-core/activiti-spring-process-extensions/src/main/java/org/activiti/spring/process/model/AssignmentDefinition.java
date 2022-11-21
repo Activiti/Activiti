@@ -61,12 +61,7 @@ public class AssignmentDefinition {
 
     AssignmentDefinition() {}
 
-    public AssignmentDefinition(
-        String id,
-        AssignmentEnum assignment,
-        AssignmentType type,
-        AssignmentMode mode
-    ) {
+    public AssignmentDefinition(String id, AssignmentEnum assignment, AssignmentType type, AssignmentMode mode) {
         this.id = id;
         this.assignment = assignment;
         this.type = type;
@@ -110,12 +105,7 @@ public class AssignmentDefinition {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AssignmentDefinition that = (AssignmentDefinition) o;
-        return (
-            Objects.equals(id, that.id) &&
-            assignment == that.assignment &&
-            type == that.type &&
-            mode == that.mode
-        );
+        return (Objects.equals(id, that.id) && assignment == that.assignment && type == that.type && mode == that.mode);
     }
 
     @Override

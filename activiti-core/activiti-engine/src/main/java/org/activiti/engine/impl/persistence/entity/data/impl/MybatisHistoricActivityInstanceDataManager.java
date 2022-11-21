@@ -39,9 +39,7 @@ public class MybatisHistoricActivityInstanceDataManager
 
     protected CachedEntityMatcher<HistoricActivityInstanceEntity> unfinishedHistoricActivityInstanceMatcher = new UnfinishedHistoricActivityInstanceMatcher();
 
-    public MybatisHistoricActivityInstanceDataManager(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public MybatisHistoricActivityInstanceDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);
     }
 
@@ -86,9 +84,7 @@ public class MybatisHistoricActivityInstanceDataManager
     }
 
     @Override
-    public void deleteHistoricActivityInstancesByProcessInstanceId(
-        String historicProcessInstanceId
-    ) {
+    public void deleteHistoricActivityInstancesByProcessInstanceId(String historicProcessInstanceId) {
         getDbSqlSession()
             .delete(
                 "deleteHistoricActivityInstancesByProcessInstanceId",
@@ -102,10 +98,7 @@ public class MybatisHistoricActivityInstanceDataManager
         HistoricActivityInstanceQueryImpl historicActivityInstanceQuery
     ) {
         return (Long) getDbSqlSession()
-            .selectOne(
-                "selectHistoricActivityInstanceCountByQueryCriteria",
-                historicActivityInstanceQuery
-            );
+            .selectOne("selectHistoricActivityInstanceCountByQueryCriteria", historicActivityInstanceQuery);
     }
 
     @Override
@@ -115,11 +108,7 @@ public class MybatisHistoricActivityInstanceDataManager
         Page page
     ) {
         return getDbSqlSession()
-            .selectList(
-                "selectHistoricActivityInstancesByQueryCriteria",
-                historicActivityInstanceQuery,
-                page
-            );
+            .selectList("selectHistoricActivityInstancesByQueryCriteria", historicActivityInstanceQuery, page);
     }
 
     @Override
@@ -139,13 +128,7 @@ public class MybatisHistoricActivityInstanceDataManager
     }
 
     @Override
-    public long findHistoricActivityInstanceCountByNativeQuery(
-        Map<String, Object> parameterMap
-    ) {
-        return (Long) getDbSqlSession()
-            .selectOne(
-                "selectHistoricActivityInstanceCountByNativeQuery",
-                parameterMap
-            );
+    public long findHistoricActivityInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
+        return (Long) getDbSqlSession().selectOne("selectHistoricActivityInstanceCountByNativeQuery", parameterMap);
     }
 }

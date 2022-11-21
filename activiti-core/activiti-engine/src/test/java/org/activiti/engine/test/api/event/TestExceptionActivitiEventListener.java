@@ -19,8 +19,7 @@ package org.activiti.engine.test.api.event;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 
-public class TestExceptionActivitiEventListener
-    implements ActivitiEventListener {
+public class TestExceptionActivitiEventListener implements ActivitiEventListener {
 
     private boolean failOnException;
 

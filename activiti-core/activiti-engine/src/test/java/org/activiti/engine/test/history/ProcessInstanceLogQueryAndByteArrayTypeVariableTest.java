@@ -33,8 +33,7 @@ import org.activiti.engine.task.Task;
 /**
 
  */
-public class ProcessInstanceLogQueryAndByteArrayTypeVariableTest
-    extends PluggableActivitiTestCase {
+public class ProcessInstanceLogQueryAndByteArrayTypeVariableTest extends PluggableActivitiTestCase {
 
     protected String processInstanceId;
 
@@ -59,10 +58,7 @@ public class ProcessInstanceLogQueryAndByteArrayTypeVariableTest
         Map<String, Object> vars = new HashMap<String, Object>();
         // ByteArrayType Variable
         vars.put("var", LARGE_STRING_VALUE);
-        this.processInstanceId =
-            runtimeService
-                .startProcessInstanceByKey("twoTasksProcess", vars)
-                .getId();
+        this.processInstanceId = runtimeService.startProcessInstanceByKey("twoTasksProcess", vars).getId();
 
         // Finish tasks
         for (Task task : taskService.createTaskQuery().list()) {
@@ -76,11 +72,7 @@ public class ProcessInstanceLogQueryAndByteArrayTypeVariableTest
     }
 
     public void testIncludeVariables() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.FULL)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
             ProcessInstanceHistoryLog log = historyService
                 .createProcessInstanceHistoryLogQuery(processInstanceId)
                 .includeVariables()
@@ -90,27 +82,19 @@ public class ProcessInstanceLogQueryAndByteArrayTypeVariableTest
 
             for (HistoricData event : events) {
                 assertThat(event).isInstanceOf(HistoricVariableInstance.class);
-                assertThat(LARGE_STRING_VALUE)
-                    .isEqualTo(
-                        ((HistoricVariableInstanceEntity) event).getValue()
-                    );
+                assertThat(LARGE_STRING_VALUE).isEqualTo(((HistoricVariableInstanceEntity) event).getValue());
             }
         }
     }
 
     public void testIncludeVariableUpdates() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.FULL)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
             HistoricVariableInstance historicVariableInstance = historyService
                 .createHistoricVariableInstanceQuery()
                 .processInstanceId(processInstanceId)
                 .variableName("var")
                 .singleResult();
-            assertThat(LARGE_STRING_VALUE)
-                .isEqualTo(historicVariableInstance.getValue());
+            assertThat(LARGE_STRING_VALUE).isEqualTo(historicVariableInstance.getValue());
 
             ProcessInstanceHistoryLog log = historyService
                 .createProcessInstanceHistoryLogQuery(processInstanceId)
@@ -122,11 +106,7 @@ public class ProcessInstanceLogQueryAndByteArrayTypeVariableTest
             for (HistoricData event : events) {
                 assertThat(event).isInstanceOf(HistoricVariableUpdate.class);
                 assertThat(LARGE_STRING_VALUE)
-                    .isEqualTo(
-                        (
-                            (HistoricDetailVariableInstanceUpdateEntity) event
-                        ).getValue()
-                    );
+                    .isEqualTo(((HistoricDetailVariableInstanceUpdateEntity) event).getValue());
             }
         }
     }

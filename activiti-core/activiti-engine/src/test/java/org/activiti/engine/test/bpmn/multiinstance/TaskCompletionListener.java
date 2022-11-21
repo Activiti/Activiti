@@ -25,9 +25,7 @@ import org.activiti.engine.delegate.TaskListener;
 public class TaskCompletionListener implements TaskListener {
 
     public void notify(DelegateTask delegateTask) {
-        Integer counter = (Integer) delegateTask.getVariable(
-            "taskListenerCounter"
-        );
+        Integer counter = (Integer) delegateTask.getVariable("taskListenerCounter");
         if (counter == null) {
             counter = 0;
         }

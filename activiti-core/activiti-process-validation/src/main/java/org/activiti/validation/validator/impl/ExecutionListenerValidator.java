@@ -33,25 +33,11 @@ import org.activiti.validation.validator.ProcessLevelValidator;
 public class ExecutionListenerValidator extends ProcessLevelValidator {
 
     @Override
-    protected void executeValidation(
-        BpmnModel bpmnModel,
-        Process process,
-        List<ValidationError> errors
-    ) {
-        validateListeners(
-            process,
-            process,
-            process.getExecutionListeners(),
-            errors
-        );
+    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+        validateListeners(process, process, process.getExecutionListeners(), errors);
 
         for (FlowElement flowElement : process.getFlowElements()) {
-            validateListeners(
-                process,
-                flowElement,
-                flowElement.getExecutionListeners(),
-                errors
-            );
+            validateListeners(process, flowElement, flowElement.getExecutionListeners(), errors);
         }
     }
 
@@ -63,10 +49,7 @@ public class ExecutionListenerValidator extends ProcessLevelValidator {
     ) {
         if (listeners != null) {
             for (ActivitiListener listener : listeners) {
-                if (
-                    listener.getImplementation() == null ||
-                    listener.getImplementationType() == null
-                ) {
+                if (listener.getImplementation() == null || listener.getImplementationType() == null) {
                     addError(
                         errors,
                         Problems.EXECUTION_LISTENER_IMPLEMENTATION_MISSING,
@@ -77,9 +60,7 @@ public class ExecutionListenerValidator extends ProcessLevelValidator {
                 }
                 if (
                     listener.getOnTransaction() != null &&
-                    ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(
-                        listener.getImplementationType()
-                    )
+                    ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getImplementationType())
                 ) {
                     addError(
                         errors,

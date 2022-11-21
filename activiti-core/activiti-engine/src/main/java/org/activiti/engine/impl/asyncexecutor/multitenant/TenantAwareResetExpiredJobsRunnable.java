@@ -23,8 +23,7 @@ import org.activiti.engine.impl.cfg.multitenant.TenantInfoHolder;
 /**
 
  */
-public class TenantAwareResetExpiredJobsRunnable
-    extends ResetExpiredJobsRunnable {
+public class TenantAwareResetExpiredJobsRunnable extends ResetExpiredJobsRunnable {
 
     protected TenantInfoHolder tenantInfoHolder;
     protected String tenantId;

@@ -60,8 +60,7 @@ public class HistoricProcessInstanceEntityImpl
         processDefinitionId = processInstance.getProcessDefinitionId();
         processDefinitionKey = processInstance.getProcessDefinitionKey();
         processDefinitionName = processInstance.getProcessDefinitionName();
-        processDefinitionVersion =
-            processInstance.getProcessDefinitionVersion();
+        processDefinitionVersion = processInstance.getProcessDefinitionVersion();
         deploymentId = processInstance.getDeploymentId();
         startTime = processInstance.getStartTime();
         startUserId = processInstance.getStartUserId();
@@ -89,10 +88,7 @@ public class HistoricProcessInstanceEntityImpl
         persistentState.put("processDefinitionId", processDefinitionId);
         persistentState.put("processDefinitionKey", processDefinitionKey);
         persistentState.put("processDefinitionName", processDefinitionName);
-        persistentState.put(
-            "processDefinitionVersion",
-            processDefinitionVersion
-        );
+        persistentState.put("processDefinitionVersion", processDefinitionVersion);
         persistentState.put("deploymentId", deploymentId);
         return persistentState;
     }
@@ -223,14 +219,8 @@ public class HistoricProcessInstanceEntityImpl
         Map<String, Object> variables = new HashMap<String, Object>();
         if (queryVariables != null) {
             for (HistoricVariableInstanceEntity variableInstance : queryVariables) {
-                if (
-                    variableInstance.getId() != null &&
-                    variableInstance.getTaskId() == null
-                ) {
-                    variables.put(
-                        variableInstance.getName(),
-                        variableInstance.getValue()
-                    );
+                if (variableInstance.getId() != null && variableInstance.getTaskId() == null) {
+                    variables.put(variableInstance.getName(), variableInstance.getValue());
                 }
             }
         }
@@ -244,9 +234,7 @@ public class HistoricProcessInstanceEntityImpl
         return queryVariables;
     }
 
-    public void setQueryVariables(
-        List<HistoricVariableInstanceEntity> queryVariables
-    ) {
+    public void setQueryVariables(List<HistoricVariableInstanceEntity> queryVariables) {
         this.queryVariables = queryVariables;
     }
 
@@ -254,10 +242,6 @@ public class HistoricProcessInstanceEntityImpl
 
     @Override
     public String toString() {
-        return (
-            "HistoricProcessInstanceEntity[superProcessInstanceId=" +
-            superProcessInstanceId +
-            "]"
-        );
+        return ("HistoricProcessInstanceEntity[superProcessInstanceId=" + superProcessInstanceId + "]");
     }
 }

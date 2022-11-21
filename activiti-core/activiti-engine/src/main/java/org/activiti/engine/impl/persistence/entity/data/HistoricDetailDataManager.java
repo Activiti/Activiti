@@ -26,23 +26,18 @@ import org.activiti.engine.impl.persistence.entity.HistoricDetailEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailTransitionInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
 
-public interface HistoricDetailDataManager
-    extends DataManager<HistoricDetailEntity> {
+public interface HistoricDetailDataManager extends DataManager<HistoricDetailEntity> {
     HistoricDetailAssignmentEntity createHistoricDetailAssignment();
 
     HistoricDetailTransitionInstanceEntity createHistoricDetailTransitionInstance();
 
     HistoricDetailVariableInstanceUpdateEntity createHistoricDetailVariableInstanceUpdate();
 
-    List<HistoricDetailEntity> findHistoricDetailsByProcessInstanceId(
-        String processInstanceId
-    );
+    List<HistoricDetailEntity> findHistoricDetailsByProcessInstanceId(String processInstanceId);
 
     List<HistoricDetailEntity> findHistoricDetailsByTaskId(String taskId);
 
-    long findHistoricDetailCountByQueryCriteria(
-        HistoricDetailQueryImpl historicVariableUpdateQuery
-    );
+    long findHistoricDetailCountByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery);
 
     List<HistoricDetail> findHistoricDetailsByQueryCriteria(
         HistoricDetailQueryImpl historicVariableUpdateQuery,

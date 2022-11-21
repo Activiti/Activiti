@@ -35,8 +35,6 @@ public class FindExpiredJobsCmd implements Command<List<JobEntity>> {
 
     @Override
     public List<JobEntity> execute(CommandContext commandContext) {
-        return commandContext
-            .getJobEntityManager()
-            .findExpiredJobs(new Page(0, pageSize));
+        return commandContext.getJobEntityManager().findExpiredJobs(new Page(0, pageSize));
     }
 }

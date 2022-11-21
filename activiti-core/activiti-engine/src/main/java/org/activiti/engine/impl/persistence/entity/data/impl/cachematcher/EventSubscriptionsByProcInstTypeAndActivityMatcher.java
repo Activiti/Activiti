@@ -27,10 +27,7 @@ public class EventSubscriptionsByProcInstTypeAndActivityMatcher
     extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
 
     @Override
-    public boolean isRetained(
-        EventSubscriptionEntity eventSubscriptionEntity,
-        Object parameter
-    ) {
+    public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity, Object parameter) {
         Map<String, String> params = (Map<String, String>) parameter;
         String type = params.get("eventType");
         String processInstanceId = params.get("processInstanceId");
@@ -40,9 +37,7 @@ public class EventSubscriptionsByProcInstTypeAndActivityMatcher
             eventSubscriptionEntity.getEventType() != null &&
             eventSubscriptionEntity.getEventType().equals(type) &&
             eventSubscriptionEntity.getProcessInstanceId() != null &&
-            eventSubscriptionEntity
-                .getProcessInstanceId()
-                .equals(processInstanceId) &&
+            eventSubscriptionEntity.getProcessInstanceId().equals(processInstanceId) &&
             eventSubscriptionEntity.getActivityId() != null &&
             eventSubscriptionEntity.getActivityId().equals(activityId)
         );

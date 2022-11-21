@@ -85,31 +85,17 @@ public abstract class ActivitiTestCase extends TestCase {
     @Override
     protected void runTest() throws Throwable {
         // Support for mockup annotations on test method
-        TestHelper.annotationMockSupportSetup(
-            getClass(),
-            getName(),
-            mockSupport
-        );
+        TestHelper.annotationMockSupportSetup(getClass(), getName(), mockSupport);
 
         // The deployment of processes denoted by @Deployment should
         // be done after the setup(). After all, the mockups must be
         // configured in the engine before the actual deployment happens
-        deploymentId =
-            TestHelper.annotationDeploymentSetUp(
-                processEngine,
-                getClass(),
-                getName()
-            );
+        deploymentId = TestHelper.annotationDeploymentSetUp(processEngine, getClass(), getName());
 
         super.runTest();
 
         // Remove deployment
-        TestHelper.annotationDeploymentTearDown(
-            processEngine,
-            deploymentId,
-            getClass(),
-            getName()
-        );
+        TestHelper.annotationDeploymentTearDown(processEngine, deploymentId, getClass(), getName());
 
         // Reset mocks
         TestHelper.annotationMockSupportTeardown(mockSupport);
@@ -120,8 +106,7 @@ public abstract class ActivitiTestCase extends TestCase {
     }
 
     protected void initializeServices() {
-        processEngineConfiguration =
-            ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
+        processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
         repositoryService = processEngine.getRepositoryService();
         runtimeService = processEngine.getRuntimeService();
         taskService = processEngine.getTaskService();

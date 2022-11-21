@@ -59,10 +59,7 @@ public interface JobEntityManager extends EntityManager<JobEntity> {
     /**
      * Returns all {@link JobEntity} instances related to on {@link ProcessDefinitionEntity}.
      */
-    List<JobEntity> findJobsByTypeAndProcessDefinitionId(
-        String jobTypeTimer,
-        String id
-    );
+    List<JobEntity> findJobsByTypeAndProcessDefinitionId(String jobTypeTimer, String id);
 
     /**
      * Returns all {@link JobEntity} instances related to one process instance {@link ExecutionEntity}.
@@ -96,8 +93,5 @@ public interface JobEntityManager extends EntityManager<JobEntity> {
     /**
      * Changes the tenantId for all jobs related to a given {@link DeploymentEntity}.
      */
-    void updateJobTenantIdForDeployment(
-        String deploymentId,
-        String newTenantId
-    );
+    void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
 }

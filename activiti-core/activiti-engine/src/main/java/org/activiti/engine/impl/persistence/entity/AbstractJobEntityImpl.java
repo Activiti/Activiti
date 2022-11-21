@@ -67,10 +67,7 @@ public abstract class AbstractJobEntityImpl
         persistentState.put("exceptionMessage", exceptionMessage);
 
         if (exceptionByteArrayRef != null) {
-            persistentState.put(
-                "exceptionByteArrayId",
-                exceptionByteArrayRef.getId()
-            );
+            persistentState.put("exceptionByteArrayId", exceptionByteArrayRef.getId());
         }
 
         return persistentState;
@@ -217,11 +214,7 @@ public abstract class AbstractJobEntityImpl
     }
 
     public void setExceptionMessage(String exceptionMessage) {
-        this.exceptionMessage =
-            StringUtils.abbreviate(
-                exceptionMessage,
-                MAX_EXCEPTION_MESSAGE_LENGTH
-            );
+        this.exceptionMessage = StringUtils.abbreviate(exceptionMessage, MAX_EXCEPTION_MESSAGE_LENGTH);
     }
 
     public ByteArrayRef getExceptionByteArrayRef() {

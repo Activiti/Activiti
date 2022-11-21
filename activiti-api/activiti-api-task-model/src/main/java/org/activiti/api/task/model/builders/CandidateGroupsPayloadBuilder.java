@@ -29,9 +29,7 @@ public class CandidateGroupsPayloadBuilder {
         return this;
     }
 
-    public CandidateGroupsPayloadBuilder withCandidateGroups(
-        List<String> candidateGroups
-    ) {
+    public CandidateGroupsPayloadBuilder withCandidateGroups(List<String> candidateGroups) {
         if (candidateGroups == null) {
             candidateGroups = new ArrayList<>();
         }
@@ -39,9 +37,7 @@ public class CandidateGroupsPayloadBuilder {
         return this;
     }
 
-    public CandidateGroupsPayloadBuilder withCandidateGroup(
-        String candidateGroup
-    ) {
+    public CandidateGroupsPayloadBuilder withCandidateGroup(String candidateGroup) {
         this.candidateGroups.add(candidateGroup);
         return this;
     }

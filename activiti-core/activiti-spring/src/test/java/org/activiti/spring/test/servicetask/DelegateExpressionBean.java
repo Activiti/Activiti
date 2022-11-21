@@ -28,9 +28,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DelegateExpressionBean implements JavaDelegate {
 
-    private static final Logger log = LoggerFactory.getLogger(
-        DelegateExpressionBean.class
-    );
+    private static final Logger log = LoggerFactory.getLogger(DelegateExpressionBean.class);
     private SentenceGenerator sentenceGenerator;
 
     private FixedValue someField;
@@ -40,21 +38,12 @@ public class DelegateExpressionBean implements JavaDelegate {
         if (sentenceGenerator != null) {
             execution.setVariable("myVar", sentenceGenerator.getSentence());
         } else {
-            execution.setVariable(
-                "myVar",
-                "SentenceGenerator is not injected by spring"
-            );
+            execution.setVariable("myVar", "SentenceGenerator is not injected by spring");
         }
         if (someField != null) {
-            execution.setVariable(
-                "fieldInjection",
-                someField.getValue(execution)
-            );
+            execution.setVariable("fieldInjection", someField.getValue(execution));
         } else {
-            execution.setVariable(
-                "fieldInjection",
-                "Field injection not working"
-            );
+            execution.setVariable("fieldInjection", "Field injection not working");
         }
         log.info("Leaving DelegateExpressionBean.execute()");
     }

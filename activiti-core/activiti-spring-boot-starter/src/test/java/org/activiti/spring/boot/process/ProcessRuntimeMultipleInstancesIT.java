@@ -33,8 +33,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessRuntimeMultipleInstancesIT {
 
-    private static final String PROCESS_MULTIPLE_INSTANCE_1 =
-        "Process_1HN1Cx_u";
+    private static final String PROCESS_MULTIPLE_INSTANCE_1 = "Process_1HN1Cx_u";
     private static final String PROCESS_MULTIPLE_INSTANCE_2 = "Process_0j9xfcp";
 
     @Autowired
@@ -56,36 +55,24 @@ public class ProcessRuntimeMultipleInstancesIT {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance1 = processRuntime.start(
-            ProcessPayloadBuilder
-                .start()
-                .withProcessDefinitionKey(PROCESS_MULTIPLE_INSTANCE_1)
-                .build()
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(PROCESS_MULTIPLE_INSTANCE_1).build()
         );
         assertThat(processInstance1).isNotNull();
 
         List<VariableInstance> processInstance1Vars = processRuntime.variables(
-            ProcessPayloadBuilder
-                .variables()
-                .withProcessInstanceId(processInstance1.getId())
-                .build()
+            ProcessPayloadBuilder.variables().withProcessInstanceId(processInstance1.getId()).build()
         );
         assertThat(processInstance1Vars)
             .extracting(VariableInstance::getName, VariableInstance::getValue)
             .containsOnly(tuple("name", "Kermit"));
 
         ProcessInstance processInstance2 = processRuntime.start(
-            ProcessPayloadBuilder
-                .start()
-                .withProcessDefinitionKey(PROCESS_MULTIPLE_INSTANCE_2)
-                .build()
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(PROCESS_MULTIPLE_INSTANCE_2).build()
         );
         assertThat(processInstance1).isNotNull();
 
         List<VariableInstance> processInstance2Vars = processRuntime.variables(
-            ProcessPayloadBuilder
-                .variables()
-                .withProcessInstanceId(processInstance2.getId())
-                .build()
+            ProcessPayloadBuilder.variables().withProcessInstanceId(processInstance2.getId()).build()
         );
         assertThat(processInstance2Vars)
             .extracting(VariableInstance::getName, VariableInstance::getValue)

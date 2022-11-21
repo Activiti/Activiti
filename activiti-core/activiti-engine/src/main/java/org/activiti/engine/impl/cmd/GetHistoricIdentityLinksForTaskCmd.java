@@ -31,21 +31,15 @@ import org.activiti.engine.task.IdentityLinkType;
 /**
 
  */
-public class GetHistoricIdentityLinksForTaskCmd
-    implements Command<List<HistoricIdentityLink>>, Serializable {
+public class GetHistoricIdentityLinksForTaskCmd implements Command<List<HistoricIdentityLink>>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String taskId;
     protected String processInstanceId;
 
-    public GetHistoricIdentityLinksForTaskCmd(
-        String taskId,
-        String processInstanceId
-    ) {
+    public GetHistoricIdentityLinksForTaskCmd(String taskId, String processInstanceId) {
         if (taskId == null && processInstanceId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "taskId or processInstanceId is required"
-            );
+            throw new ActivitiIllegalArgumentException("taskId or processInstanceId is required");
         }
         this.taskId = taskId;
         this.processInstanceId = processInstanceId;
@@ -60,12 +54,8 @@ public class GetHistoricIdentityLinksForTaskCmd
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    protected List<HistoricIdentityLink> getLinksForTask(
-        CommandContext commandContext
-    ) {
-        HistoricTaskInstanceEntity task = commandContext
-            .getHistoricTaskInstanceEntityManager()
-            .findById(taskId);
+    protected List<HistoricIdentityLink> getLinksForTask(CommandContext commandContext) {
+        HistoricTaskInstanceEntity task = commandContext.getHistoricTaskInstanceEntityManager().findById(taskId);
 
         if (task == null) {
             throw new ActivitiObjectNotFoundException(
@@ -81,18 +71,14 @@ public class GetHistoricIdentityLinksForTaskCmd
         // Similar to GetIdentityLinksForTask, return assignee and owner as
         // identity link
         if (task.getAssignee() != null) {
-            HistoricIdentityLinkEntity identityLink = commandContext
-                .getHistoricIdentityLinkEntityManager()
-                .create();
+            HistoricIdentityLinkEntity identityLink = commandContext.getHistoricIdentityLinkEntityManager().create();
             identityLink.setUserId(task.getAssignee());
             identityLink.setTaskId(task.getId());
             identityLink.setType(IdentityLinkType.ASSIGNEE);
             identityLinks.add(identityLink);
         }
         if (task.getOwner() != null) {
-            HistoricIdentityLinkEntity identityLink = commandContext
-                .getHistoricIdentityLinkEntityManager()
-                .create();
+            HistoricIdentityLinkEntity identityLink = commandContext.getHistoricIdentityLinkEntityManager().create();
             identityLink.setTaskId(task.getId());
             identityLink.setUserId(task.getOwner());
             identityLink.setType(IdentityLinkType.OWNER);
@@ -103,9 +89,7 @@ public class GetHistoricIdentityLinksForTaskCmd
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    protected List<HistoricIdentityLink> getLinksForProcessInstance(
-        CommandContext commandContext
-    ) {
+    protected List<HistoricIdentityLink> getLinksForProcessInstance(CommandContext commandContext) {
         return (List) commandContext
             .getHistoricIdentityLinkEntityManager()
             .findHistoricIdentityLinksByProcessInstanceId(processInstanceId);

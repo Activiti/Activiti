@@ -27,11 +27,8 @@ import org.activiti.engine.impl.Page;
 
  */
 @Internal
-public interface HistoricVariableInstanceEntityManager
-    extends EntityManager<HistoricVariableInstanceEntity> {
-    HistoricVariableInstanceEntity copyAndInsert(
-        VariableInstanceEntity variableInstance
-    );
+public interface HistoricVariableInstanceEntityManager extends EntityManager<HistoricVariableInstanceEntity> {
+    HistoricVariableInstanceEntity copyAndInsert(VariableInstanceEntity variableInstance);
 
     void copyVariableValue(
         HistoricVariableInstanceEntity historicVariableInstance,
@@ -43,9 +40,7 @@ public interface HistoricVariableInstanceEntityManager
         Page page
     );
 
-    HistoricVariableInstanceEntity findHistoricVariableInstanceByVariableInstanceId(
-        String variableInstanceId
-    );
+    HistoricVariableInstanceEntity findHistoricVariableInstanceByVariableInstanceId(String variableInstanceId);
 
     long findHistoricVariableInstanceCountByQueryCriteria(
         HistoricVariableInstanceQueryImpl historicProcessVariableQuery
@@ -57,13 +52,9 @@ public interface HistoricVariableInstanceEntityManager
         int maxResults
     );
 
-    long findHistoricVariableInstanceCountByNativeQuery(
-        Map<String, Object> parameterMap
-    );
+    long findHistoricVariableInstanceCountByNativeQuery(Map<String, Object> parameterMap);
 
     void deleteHistoricVariableInstancesByTaskId(String taskId);
 
-    void deleteHistoricVariableInstanceByProcessInstanceId(
-        String historicProcessInstanceId
-    );
+    void deleteHistoricVariableInstanceByProcessInstanceId(String historicProcessInstanceId);
 }

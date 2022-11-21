@@ -28,15 +28,11 @@ public class NativeHistoricVariableInstanceQueryImpl
 
     private static final long serialVersionUID = 1L;
 
-    public NativeHistoricVariableInstanceQueryImpl(
-        CommandContext commandContext
-    ) {
+    public NativeHistoricVariableInstanceQueryImpl(CommandContext commandContext) {
         super(commandContext);
     }
 
-    public NativeHistoricVariableInstanceQueryImpl(
-        CommandExecutor commandExecutor
-    ) {
+    public NativeHistoricVariableInstanceQueryImpl(CommandExecutor commandExecutor) {
         super(commandExecutor);
     }
 
@@ -50,17 +46,10 @@ public class NativeHistoricVariableInstanceQueryImpl
     ) {
         return commandContext
             .getHistoricVariableInstanceEntityManager()
-            .findHistoricVariableInstancesByNativeQuery(
-                parameterMap,
-                firstResult,
-                maxResults
-            );
+            .findHistoricVariableInstancesByNativeQuery(parameterMap, firstResult, maxResults);
     }
 
-    public long executeCount(
-        CommandContext commandContext,
-        Map<String, Object> parameterMap
-    ) {
+    public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
         return commandContext
             .getHistoricVariableInstanceEntityManager()
             .findHistoricVariableInstanceCountByNativeQuery(parameterMap);

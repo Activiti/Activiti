@@ -26,8 +26,7 @@ import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntit
 /**
 
  */
-public interface HistoricActivityInstanceDataManager
-    extends DataManager<HistoricActivityInstanceEntity> {
+public interface HistoricActivityInstanceDataManager extends DataManager<HistoricActivityInstanceEntity> {
     List<HistoricActivityInstanceEntity> findUnfinishedHistoricActivityInstancesByExecutionAndActivityId(
         String executionId,
         String activityId
@@ -37,9 +36,7 @@ public interface HistoricActivityInstanceDataManager
         String processInstanceId
     );
 
-    void deleteHistoricActivityInstancesByProcessInstanceId(
-        String historicProcessInstanceId
-    );
+    void deleteHistoricActivityInstancesByProcessInstanceId(String historicProcessInstanceId);
 
     long findHistoricActivityInstanceCountByQueryCriteria(
         HistoricActivityInstanceQueryImpl historicActivityInstanceQuery
@@ -56,7 +53,5 @@ public interface HistoricActivityInstanceDataManager
         int maxResults
     );
 
-    long findHistoricActivityInstanceCountByNativeQuery(
-        Map<String, Object> parameterMap
-    );
+    long findHistoricActivityInstanceCountByNativeQuery(Map<String, Object> parameterMap);
 }

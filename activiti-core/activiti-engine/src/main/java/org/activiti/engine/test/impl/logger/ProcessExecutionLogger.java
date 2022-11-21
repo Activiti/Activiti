@@ -30,9 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ProcessExecutionLogger {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        ProcessExecutionLogger.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(ProcessExecutionLogger.class);
 
     protected Map<String, List<DebugInfo>> debugInfoMap = new HashMap<String, List<DebugInfo>>();
 
@@ -47,10 +45,7 @@ public class ProcessExecutionLogger {
         addDebugInfo(debugInfo, false);
     }
 
-    public synchronized void addDebugInfo(
-        AbstractDebugInfo debugInfo,
-        boolean generateExecutionTreeRepresentation
-    ) {
+    public synchronized void addDebugInfo(AbstractDebugInfo debugInfo, boolean generateExecutionTreeRepresentation) {
         // Store debug info
         String threadName = Thread.currentThread().getName();
         if (!debugInfoMap.containsKey(threadName)) {
@@ -74,19 +69,10 @@ public class ProcessExecutionLogger {
                 if (executionEntity.getParentId() == null) {
                     processInstances.add(executionEntity);
                 } else {
-                    if (
-                        !parentMapping.containsKey(
-                            executionEntity.getParentId()
-                        )
-                    ) {
-                        parentMapping.put(
-                            executionEntity.getParentId(),
-                            new ArrayList<ExecutionEntity>()
-                        );
+                    if (!parentMapping.containsKey(executionEntity.getParentId())) {
+                        parentMapping.put(executionEntity.getParentId(), new ArrayList<ExecutionEntity>());
                     }
-                    parentMapping
-                        .get(executionEntity.getParentId())
-                        .add(executionEntity);
+                    parentMapping.get(executionEntity.getParentId()).add(executionEntity);
                 }
             }
         }
@@ -112,9 +98,7 @@ public class ProcessExecutionLogger {
         Map<String, List<ExecutionEntity>> parentMapping
     ) {
         if (parentMapping.containsKey(parentNode.getId())) {
-            for (ExecutionEntity childExecutionEntity : parentMapping.get(
-                parentNode.getId()
-            )) {
+            for (ExecutionEntity childExecutionEntity : parentMapping.get(parentNode.getId())) {
                 DebugInfoExecutionTreeNode childNode = new DebugInfoExecutionTreeNode();
                 childNode.setId(childExecutionEntity.getId());
                 childNode.setActivityId(
@@ -127,9 +111,7 @@ public class ProcessExecutionLogger {
                         ? childExecutionEntity.getCurrentFlowElement().getName()
                         : null
                 );
-                childNode.setProcessDefinitionId(
-                    childExecutionEntity.getProcessDefinitionId()
-                );
+                childNode.setProcessDefinitionId(childExecutionEntity.getProcessDefinitionId());
 
                 childNode.setParentNode(childNode);
                 parentNode.getChildNodes().add(childNode);

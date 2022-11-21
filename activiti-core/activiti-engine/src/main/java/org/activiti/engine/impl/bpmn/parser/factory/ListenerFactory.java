@@ -41,45 +41,27 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
  */
 @Internal
 public interface ListenerFactory {
-    public abstract TaskListener createClassDelegateTaskListener(
-        ActivitiListener activitiListener
-    );
+    public abstract TaskListener createClassDelegateTaskListener(ActivitiListener activitiListener);
 
-    public abstract TaskListener createExpressionTaskListener(
-        ActivitiListener activitiListener
-    );
+    public abstract TaskListener createExpressionTaskListener(ActivitiListener activitiListener);
 
-    public abstract TaskListener createDelegateExpressionTaskListener(
-        ActivitiListener activitiListener
-    );
+    public abstract TaskListener createDelegateExpressionTaskListener(ActivitiListener activitiListener);
 
-    public abstract ExecutionListener createClassDelegateExecutionListener(
-        ActivitiListener activitiListener
-    );
+    public abstract ExecutionListener createClassDelegateExecutionListener(ActivitiListener activitiListener);
 
-    public abstract ExecutionListener createExpressionExecutionListener(
-        ActivitiListener activitiListener
-    );
+    public abstract ExecutionListener createExpressionExecutionListener(ActivitiListener activitiListener);
 
-    public abstract ExecutionListener createDelegateExpressionExecutionListener(
-        ActivitiListener activitiListener
-    );
+    public abstract ExecutionListener createDelegateExpressionExecutionListener(ActivitiListener activitiListener);
 
     public abstract TransactionDependentExecutionListener createTransactionDependentDelegateExpressionExecutionListener(
         ActivitiListener activitiListener
     );
 
-    public abstract ActivitiEventListener createClassDelegateEventListener(
-        EventListener eventListener
-    );
+    public abstract ActivitiEventListener createClassDelegateEventListener(EventListener eventListener);
 
-    public abstract ActivitiEventListener createDelegateExpressionEventListener(
-        EventListener eventListener
-    );
+    public abstract ActivitiEventListener createDelegateExpressionEventListener(EventListener eventListener);
 
-    public abstract ActivitiEventListener createEventThrowingEventListener(
-        EventListener eventListener
-    );
+    public abstract ActivitiEventListener createEventThrowingEventListener(EventListener eventListener);
 
     public abstract CustomPropertiesResolver createClassDelegateCustomPropertiesResolver(
         ActivitiListener activitiListener

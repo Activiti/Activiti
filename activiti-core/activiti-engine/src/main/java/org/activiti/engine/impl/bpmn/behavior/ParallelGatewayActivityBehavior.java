@@ -52,9 +52,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
 
     private static final long serialVersionUID = 1840892471343975524L;
 
-    private static Logger log = LoggerFactory.getLogger(
-        ParallelGatewayActivityBehavior.class
-    );
+    private static Logger log = LoggerFactory.getLogger(ParallelGatewayActivityBehavior.class);
 
     public void execute(DelegateExecution execution) {
         // First off all, deactivate the execution
@@ -77,20 +75,16 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
 
         DelegateExecution multiInstanceExecution = null;
         if (hasMultiInstanceParent(parallelGateway)) {
-            multiInstanceExecution =
-                findMultiInstanceParentExecution(execution);
+            multiInstanceExecution = findMultiInstanceParentExecution(execution);
         }
 
-        ExecutionEntityManager executionEntityManager = Context
-            .getCommandContext()
-            .getExecutionEntityManager();
+        ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
         Collection<ExecutionEntity> joinedExecutions = executionEntityManager.findInactiveExecutionsByActivityIdAndProcessInstanceId(
             execution.getCurrentActivityId(),
             execution.getProcessInstanceId()
         );
         if (multiInstanceExecution != null) {
-            joinedExecutions =
-                cleanJoinedExecutions(joinedExecutions, multiInstanceExecution);
+            joinedExecutions = cleanJoinedExecutions(joinedExecutions, multiInstanceExecution);
         }
 
         int nbrOfExecutionsToJoin = parallelGateway.getIncomingFlows().size();
@@ -99,10 +93,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
         // Fork
 
         // Is needed to set the endTime for all historic activity joins
-        Context
-            .getCommandContext()
-            .getHistoryManager()
-            .recordActivityEnd((ExecutionEntity) execution, null);
+        Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution, null);
 
         if (nbrOfExecutionsCurrentlyJoined == nbrOfExecutionsToJoin) {
             // Fork
@@ -120,21 +111,13 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
                 for (ExecutionEntity joinedExecution : joinedExecutions) {
                     // The current execution will be reused and not deleted
                     if (!joinedExecution.getId().equals(execution.getId())) {
-                        executionEntityManager.deleteExecutionAndRelatedData(
-                            joinedExecution,
-                            null
-                        );
+                        executionEntityManager.deleteExecutionAndRelatedData(joinedExecution, null);
                     }
                 }
             }
 
             // TODO: potential optimization here: reuse more then 1 execution, only 1 currently
-            Context
-                .getAgenda()
-                .planTakeOutgoingSequenceFlowsOperation(
-                    (ExecutionEntity) execution,
-                    false
-                ); // false -> ignoring conditions on parallel gw
+            Context.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) execution, false); // false -> ignoring conditions on parallel gw
         } else if (log.isDebugEnabled()) {
             log.debug(
                 "parallel gateway '{}' does not activate: {} of {} joined",
@@ -151,12 +134,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
     ) {
         List<ExecutionEntity> cleanedExecutions = new ArrayList<ExecutionEntity>();
         for (ExecutionEntity executionEntity : joinedExecutions) {
-            if (
-                isChildOfMultiInstanceExecution(
-                    executionEntity,
-                    multiInstanceExecution
-                )
-            ) {
+            if (isChildOfMultiInstanceExecution(executionEntity, multiInstanceExecution)) {
                 cleanedExecutions.add(executionEntity);
             }
         }
@@ -170,15 +148,10 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
         boolean isChild = false;
         DelegateExecution parentExecution = executionEntity.getParent();
         if (parentExecution != null) {
-            if (
-                parentExecution.getId().equals(multiInstanceExecution.getId())
-            ) {
+            if (parentExecution.getId().equals(multiInstanceExecution.getId())) {
                 isChild = true;
             } else {
-                boolean isNestedChild = isChildOfMultiInstanceExecution(
-                    parentExecution,
-                    multiInstanceExecution
-                );
+                boolean isNestedChild = isChildOfMultiInstanceExecution(parentExecution, multiInstanceExecution);
                 if (isNestedChild) {
                     isChild = true;
                 }
@@ -194,9 +167,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
             if (flowNode.getSubProcess().getLoopCharacteristics() != null) {
                 hasMultiInstanceParent = true;
             } else {
-                boolean hasNestedMultiInstanceParent = hasMultiInstanceParent(
-                    flowNode.getSubProcess()
-                );
+                boolean hasNestedMultiInstanceParent = hasMultiInstanceParent(flowNode.getSubProcess());
                 if (hasNestedMultiInstanceParent) {
                     hasMultiInstanceParent = true;
                 }
@@ -206,15 +177,10 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
         return hasMultiInstanceParent;
     }
 
-    protected DelegateExecution findMultiInstanceParentExecution(
-        DelegateExecution execution
-    ) {
+    protected DelegateExecution findMultiInstanceParentExecution(DelegateExecution execution) {
         DelegateExecution multiInstanceExecution = null;
         DelegateExecution parentExecution = execution.getParent();
-        if (
-            parentExecution != null &&
-            parentExecution.getCurrentFlowElement() != null
-        ) {
+        if (parentExecution != null && parentExecution.getCurrentFlowElement() != null) {
             FlowElement flowElement = parentExecution.getCurrentFlowElement();
             if (flowElement instanceof Activity) {
                 Activity activity = (Activity) flowElement;
@@ -224,9 +190,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
             }
 
             if (multiInstanceExecution == null) {
-                DelegateExecution potentialMultiInstanceExecution = findMultiInstanceParentExecution(
-                    parentExecution
-                );
+                DelegateExecution potentialMultiInstanceExecution = findMultiInstanceParentExecution(parentExecution);
                 if (potentialMultiInstanceExecution != null) {
                     multiInstanceExecution = potentialMultiInstanceExecution;
                 }

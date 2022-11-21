@@ -25,13 +25,10 @@ import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 /**
 
  */
-public class EngineClosedEventHandler
-    extends AbstractDatabaseEventLoggerEventHandler {
+public class EngineClosedEventHandler extends AbstractDatabaseEventLoggerEventHandler {
 
     @Override
-    public EventLogEntryEntity generateEventLogEntry(
-        CommandContext commandContext
-    ) {
+    public EventLogEntryEntity generateEventLogEntry(CommandContext commandContext) {
         Map<String, Object> data = new HashMap<String, Object>();
         try {
             data.put("ip", InetAddress.getLocalHost().getHostAddress()); // Note

@@ -19,37 +19,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
-public class ExecutionAndProcessInstanceQueryVersionTest
-    extends PluggableActivitiTestCase {
+public class ExecutionAndProcessInstanceQueryVersionTest extends PluggableActivitiTestCase {
 
     private static final String PROCESS_DEFINITION_KEY = "oneTaskProcess";
-    private static final String DEPLOYMENT_FILE_PATH =
-        "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml";
+    private static final String DEPLOYMENT_FILE_PATH = "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml";
 
     private org.activiti.engine.repository.Deployment oldDeployment;
     private org.activiti.engine.repository.Deployment newDeployment;
 
     protected void setUp() throws Exception {
         super.setUp();
-        oldDeployment =
-            repositoryService
-                .createDeployment()
-                .addClasspathResource(DEPLOYMENT_FILE_PATH)
-                .deploy();
+        oldDeployment = repositoryService.createDeployment().addClasspathResource(DEPLOYMENT_FILE_PATH).deploy();
 
-        runtimeService
-            .startProcessInstanceByKey(PROCESS_DEFINITION_KEY)
-            .getId();
+        runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY).getId();
 
-        newDeployment =
-            repositoryService
-                .createDeployment()
-                .addClasspathResource(DEPLOYMENT_FILE_PATH)
-                .deploy();
+        newDeployment = repositoryService.createDeployment().addClasspathResource(DEPLOYMENT_FILE_PATH).deploy();
 
-        runtimeService
-            .startProcessInstanceByKey(PROCESS_DEFINITION_KEY)
-            .getId();
+        runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY).getId();
     }
 
     protected void tearDown() throws Exception {
@@ -58,48 +44,12 @@ public class ExecutionAndProcessInstanceQueryVersionTest
     }
 
     public void testProcessInstanceQueryByProcessDefinitionVersion() {
-        assertThat(
-            runtimeService
-                .createProcessInstanceQuery()
-                .processDefinitionVersion(1)
-                .count()
-        )
-            .isEqualTo(1);
-        assertThat(
-            runtimeService
-                .createProcessInstanceQuery()
-                .processDefinitionVersion(2)
-                .count()
-        )
-            .isEqualTo(1);
-        assertThat(
-            runtimeService
-                .createProcessInstanceQuery()
-                .processDefinitionVersion(3)
-                .count()
-        )
-            .isEqualTo(0);
-        assertThat(
-            runtimeService
-                .createProcessInstanceQuery()
-                .processDefinitionVersion(1)
-                .count()
-        )
-            .isEqualTo(1);
-        assertThat(
-            runtimeService
-                .createProcessInstanceQuery()
-                .processDefinitionVersion(2)
-                .list()
-        )
-            .hasSize(1);
-        assertThat(
-            runtimeService
-                .createProcessInstanceQuery()
-                .processDefinitionVersion(3)
-                .list()
-        )
-            .hasSize(0);
+        assertThat(runtimeService.createProcessInstanceQuery().processDefinitionVersion(1).count()).isEqualTo(1);
+        assertThat(runtimeService.createProcessInstanceQuery().processDefinitionVersion(2).count()).isEqualTo(1);
+        assertThat(runtimeService.createProcessInstanceQuery().processDefinitionVersion(3).count()).isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().processDefinitionVersion(1).count()).isEqualTo(1);
+        assertThat(runtimeService.createProcessInstanceQuery().processDefinitionVersion(2).list()).hasSize(1);
+        assertThat(runtimeService.createProcessInstanceQuery().processDefinitionVersion(3).list()).hasSize(0);
     }
 
     public void testProcessInstanceQueryByProcessDefinitionVersionAndKey() {
@@ -233,48 +183,12 @@ public class ExecutionAndProcessInstanceQueryVersionTest
     }
 
     public void testExecutionQueryByProcessDefinitionVersion() {
-        assertThat(
-            runtimeService
-                .createExecutionQuery()
-                .processDefinitionVersion(1)
-                .count()
-        )
-            .isEqualTo(2);
-        assertThat(
-            runtimeService
-                .createExecutionQuery()
-                .processDefinitionVersion(2)
-                .count()
-        )
-            .isEqualTo(2);
-        assertThat(
-            runtimeService
-                .createExecutionQuery()
-                .processDefinitionVersion(3)
-                .count()
-        )
-            .isEqualTo(0);
-        assertThat(
-            runtimeService
-                .createExecutionQuery()
-                .processDefinitionVersion(1)
-                .list()
-        )
-            .hasSize(2);
-        assertThat(
-            runtimeService
-                .createExecutionQuery()
-                .processDefinitionVersion(2)
-                .list()
-        )
-            .hasSize(2);
-        assertThat(
-            runtimeService
-                .createExecutionQuery()
-                .processDefinitionVersion(3)
-                .list()
-        )
-            .hasSize(0);
+        assertThat(runtimeService.createExecutionQuery().processDefinitionVersion(1).count()).isEqualTo(2);
+        assertThat(runtimeService.createExecutionQuery().processDefinitionVersion(2).count()).isEqualTo(2);
+        assertThat(runtimeService.createExecutionQuery().processDefinitionVersion(3).count()).isEqualTo(0);
+        assertThat(runtimeService.createExecutionQuery().processDefinitionVersion(1).list()).hasSize(2);
+        assertThat(runtimeService.createExecutionQuery().processDefinitionVersion(2).list()).hasSize(2);
+        assertThat(runtimeService.createExecutionQuery().processDefinitionVersion(3).list()).hasSize(0);
     }
 
     public void testExecutionQueryByProcessDefinitionVersionAndKey() {
@@ -295,19 +209,11 @@ public class ExecutionAndProcessInstanceQueryVersionTest
         )
             .isEqualTo(2);
         assertThat(
-            runtimeService
-                .createExecutionQuery()
-                .processDefinitionKey("undefined")
-                .processDefinitionVersion(1)
-                .count()
+            runtimeService.createExecutionQuery().processDefinitionKey("undefined").processDefinitionVersion(1).count()
         )
             .isEqualTo(0);
         assertThat(
-            runtimeService
-                .createExecutionQuery()
-                .processDefinitionKey("undefined")
-                .processDefinitionVersion(2)
-                .count()
+            runtimeService.createExecutionQuery().processDefinitionKey("undefined").processDefinitionVersion(2).count()
         )
             .isEqualTo(0);
         assertThat(
@@ -327,19 +233,11 @@ public class ExecutionAndProcessInstanceQueryVersionTest
         )
             .hasSize(2);
         assertThat(
-            runtimeService
-                .createExecutionQuery()
-                .processDefinitionKey("undefined")
-                .processDefinitionVersion(1)
-                .list()
+            runtimeService.createExecutionQuery().processDefinitionKey("undefined").processDefinitionVersion(1).list()
         )
             .hasSize(0);
         assertThat(
-            runtimeService
-                .createExecutionQuery()
-                .processDefinitionKey("undefined")
-                .processDefinitionVersion(2)
-                .list()
+            runtimeService.createExecutionQuery().processDefinitionKey("undefined").processDefinitionVersion(2).list()
         )
             .hasSize(0);
     }

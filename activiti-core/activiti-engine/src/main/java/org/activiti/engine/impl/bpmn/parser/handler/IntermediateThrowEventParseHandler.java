@@ -31,21 +31,15 @@ import org.slf4j.LoggerFactory;
 /**
 
  */
-public class IntermediateThrowEventParseHandler
-    extends AbstractActivityBpmnParseHandler<ThrowEvent> {
+public class IntermediateThrowEventParseHandler extends AbstractActivityBpmnParseHandler<ThrowEvent> {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        IntermediateThrowEventParseHandler.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(IntermediateThrowEventParseHandler.class);
 
     public Class<? extends BaseElement> getHandledType() {
         return ThrowEvent.class;
     }
 
-    protected void executeParse(
-        BpmnParse bpmnParse,
-        ThrowEvent intermediateEvent
-    ) {
+    protected void executeParse(BpmnParse bpmnParse, ThrowEvent intermediateEvent) {
         EventDefinition eventDefinition = null;
         if (!intermediateEvent.getEventDefinitions().isEmpty()) {
             eventDefinition = intermediateEvent.getEventDefinitions().get(0);
@@ -59,9 +53,7 @@ public class IntermediateThrowEventParseHandler
                     .createIntermediateThrowSignalEventActivityBehavior(
                         intermediateEvent,
                         signalEventDefinition,
-                        bpmnParse
-                            .getBpmnModel()
-                            .getSignal(signalEventDefinition.getSignalRef())
+                        bpmnParse.getBpmnModel().getSignal(signalEventDefinition.getSignalRef())
                     )
             );
         } else if (eventDefinition instanceof CompensateEventDefinition) {
@@ -76,44 +68,27 @@ public class IntermediateThrowEventParseHandler
             );
         } else if (eventDefinition instanceof MessageEventDefinition) {
             MessageEventDefinition messageEventDefinition = (MessageEventDefinition) eventDefinition;
-            Message message = bpmnParse
-                .getBpmnModel()
-                .getMessage(messageEventDefinition.getMessageRef());
+            Message message = bpmnParse.getBpmnModel().getMessage(messageEventDefinition.getMessageRef());
 
             BpmnModel bpmnModel = bpmnParse.getBpmnModel();
-            if (
-                bpmnModel.containsMessageId(
-                    messageEventDefinition.getMessageRef()
-                )
-            ) {
+            if (bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
                 messageEventDefinition.setMessageRef(message.getName());
-                messageEventDefinition.setExtensionElements(
-                    message.getExtensionElements()
-                );
+                messageEventDefinition.setExtensionElements(message.getExtensionElements());
             }
 
             intermediateEvent.setBehavior(
                 bpmnParse
                     .getActivityBehaviorFactory()
-                    .createThrowMessageEventActivityBehavior(
-                        intermediateEvent,
-                        messageEventDefinition,
-                        message
-                    )
+                    .createThrowMessageEventActivityBehavior(intermediateEvent, messageEventDefinition, message)
             );
         } else if (eventDefinition == null) {
             intermediateEvent.setBehavior(
                 bpmnParse
                     .getActivityBehaviorFactory()
-                    .createIntermediateThrowNoneEventActivityBehavior(
-                        intermediateEvent
-                    )
+                    .createIntermediateThrowNoneEventActivityBehavior(intermediateEvent)
             );
         } else {
-            logger.warn(
-                "Unsupported intermediate throw event type for throw event " +
-                intermediateEvent.getId()
-            );
+            logger.warn("Unsupported intermediate throw event type for throw event " + intermediateEvent.getId());
         }
     }
     //

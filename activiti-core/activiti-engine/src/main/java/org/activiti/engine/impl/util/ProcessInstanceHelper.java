@@ -69,11 +69,7 @@ public class ProcessInstanceHelper {
     }
 
     public Process getActiveProcess(ProcessDefinition processDefinition) {
-        if (
-            ProcessDefinitionUtil.isProcessDefinitionSuspended(
-                processDefinition.getId()
-            )
-        ) {
+        if (ProcessDefinitionUtil.isProcessDefinitionSuspended(processDefinition.getId())) {
             throw new ActivitiException(
                 "Cannot start process instance. Process definition " +
                 processDefinition.getName() +
@@ -83,9 +79,7 @@ public class ProcessInstanceHelper {
             );
         }
 
-        Process process = ProcessDefinitionUtil.getProcess(
-            processDefinition.getId()
-        );
+        Process process = ProcessDefinitionUtil.getProcess(processDefinition.getId());
         if (process == null) {
             throw new ActivitiException(
                 "Cannot start process instance. Process model " +
@@ -98,16 +92,10 @@ public class ProcessInstanceHelper {
         return process;
     }
 
-    public FlowElement getInitialFlowElement(
-        Process process,
-        String processDefinitionID
-    ) {
+    public FlowElement getInitialFlowElement(Process process, String processDefinitionID) {
         FlowElement initialFlowElement = process.getInitialFlowElement();
         if (initialFlowElement == null) {
-            throw new ActivitiException(
-                "No start element found for process definition " +
-                processDefinitionID
-            );
+            throw new ActivitiException("No start element found for process definition " + processDefinitionID);
         }
         return initialFlowElement;
     }
@@ -122,8 +110,7 @@ public class ProcessInstanceHelper {
     ) {
         Process process = this.getActiveProcess(processDefinition);
 
-        FlowElement initialFlowElement =
-            this.getInitialFlowElement(process, processDefinition.getId());
+        FlowElement initialFlowElement = this.getInitialFlowElement(process, processDefinition.getId());
 
         return createAndStartProcessInstanceWithInitialFlowElement(
             processDefinition,
@@ -145,8 +132,7 @@ public class ProcessInstanceHelper {
         Map<String, Object> transientVariables
     ) {
         Process process = this.getActiveProcess(processDefinition);
-        FlowElement initialFlowElement =
-            this.getInitialFlowElement(process, processDefinition.getId());
+        FlowElement initialFlowElement = this.getInitialFlowElement(process, processDefinition.getId());
 
         ExecutionEntity processInstance = createProcessInstanceWithInitialFlowElement(
             processDefinition,
@@ -168,19 +154,13 @@ public class ProcessInstanceHelper {
         Process process = this.getActiveProcess(processDefinition);
 
         FlowElement initialFlowElement = null;
-        BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(
-            processDefinition.getId()
-        );
+        BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processDefinition.getId());
         for (FlowElement flowElement : process.getFlowElements()) {
             if (flowElement instanceof StartEvent) {
                 StartEvent startEvent = (StartEvent) flowElement;
                 if (
-                    CollectionUtil.isNotEmpty(
-                        startEvent.getEventDefinitions()
-                    ) &&
-                    startEvent
-                        .getEventDefinitions()
-                        .get(0) instanceof MessageEventDefinition
+                    CollectionUtil.isNotEmpty(startEvent.getEventDefinitions()) &&
+                    startEvent.getEventDefinitions().get(0) instanceof MessageEventDefinition
                 ) {
                     MessageEventDefinition messageEventDefinition = (MessageEventDefinition) startEvent
                         .getEventDefinitions()
@@ -220,32 +200,18 @@ public class ProcessInstanceHelper {
         );
 
         // Dispatch message received event
-        dispatchStartMessageReceivedEvent(
-            processInstance,
-            messageName,
-            messageVariables
-        );
+        dispatchStartMessageReceivedEvent(processInstance, messageName, messageVariables);
 
         // Finally start the process
         CommandContext commandContext = Context.getCommandContext();
-        startProcessInstance(
-            processInstance,
-            commandContext,
-            processVariables,
-            initialFlowElement,
-            transientVariables
-        );
+        startProcessInstance(processInstance, commandContext, processVariables, initialFlowElement, transientVariables);
 
         return processInstance;
     }
 
-    private void updateProcessInstanceStartDate(
-        ExecutionEntity processInstance
-    ) {
+    private void updateProcessInstanceStartDate(ExecutionEntity processInstance) {
         CommandContext commandContext = Context.getCommandContext();
-        commandContext
-            .getExecutionEntityManager()
-            .updateProcessInstanceStartDate(processInstance);
+        commandContext.getExecutionEntityManager().updateProcessInstanceStartDate(processInstance);
     }
 
     public ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(
@@ -267,13 +233,7 @@ public class ProcessInstanceHelper {
         );
         if (startProcessInstance) {
             CommandContext commandContext = Context.getCommandContext();
-            startProcessInstance(
-                processInstance,
-                commandContext,
-                variables,
-                initialFlowElement,
-                transientVariables
-            );
+            startProcessInstance(processInstance, commandContext, variables, initialFlowElement, transientVariables);
         }
 
         return processInstance;
@@ -285,9 +245,7 @@ public class ProcessInstanceHelper {
         ExecutionEntity processInstance
     ) {
         updateProcessInstanceStartDate(processInstance);
-        commandContext
-            .getHistoryManager()
-            .recordProcessInstanceStart(processInstance, initialFlowElement);
+        commandContext.getHistoryManager().recordProcessInstanceStart(processInstance, initialFlowElement);
     }
 
     private void createProcessVariables(
@@ -296,9 +254,7 @@ public class ProcessInstanceHelper {
         Map<String, Object> transientVariables,
         Process process
     ) {
-        processInstance.setVariables(
-            processDataObjects(process.getDataObjects())
-        );
+        processInstance.setVariables(processDataObjects(process.getDataObjects()));
         // Set the variables passed into the start command
         if (variables != null) {
             for (String varName : variables.keySet()) {
@@ -307,19 +263,11 @@ public class ProcessInstanceHelper {
         }
         if (transientVariables != null) {
             for (String varName : transientVariables.keySet()) {
-                processInstance.setTransientVariable(
-                    varName,
-                    transientVariables.get(varName)
-                );
+                processInstance.setTransientVariable(varName, transientVariables.get(varName));
             }
         }
         // Fire events
-        if (
-            Context
-                .getProcessEngineConfiguration()
-                .getEventDispatcher()
-                .isEnabled()
-        ) {
+        if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
             Context
                 .getProcessEngineConfiguration()
                 .getEventDispatcher()
@@ -341,20 +289,9 @@ public class ProcessInstanceHelper {
         FlowElement initialFlowElement,
         Map<String, Object> transientVariables
     ) {
-        Process process = ProcessDefinitionUtil.getProcess(
-            processInstance.getProcessDefinitionId()
-        );
-        createProcessVariables(
-            processInstance,
-            variables,
-            transientVariables,
-            process
-        );
-        recordStartProcessInstance(
-            commandContext,
-            initialFlowElement,
-            processInstance
-        );
+        Process process = ProcessDefinitionUtil.getProcess(processInstance.getProcessDefinitionId());
+        createProcessVariables(processInstance, variables, transientVariables, process);
+        recordStartProcessInstance(commandContext, initialFlowElement, processInstance);
 
         // Event sub process handling
         List<MessageEventSubscriptionEntity> messageEventSubscriptions = new LinkedList<>();
@@ -364,40 +301,22 @@ public class ProcessInstanceHelper {
                 for (FlowElement subElement : eventSubProcess.getFlowElements()) {
                     if (subElement instanceof StartEvent) {
                         StartEvent startEvent = (StartEvent) subElement;
-                        if (
-                            CollectionUtil.isNotEmpty(
-                                startEvent.getEventDefinitions()
-                            )
-                        ) {
-                            EventDefinition eventDefinition = startEvent
-                                .getEventDefinitions()
-                                .get(0);
-                            if (
-                                eventDefinition instanceof MessageEventDefinition
-                            ) {
+                        if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions())) {
+                            EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
+                            if (eventDefinition instanceof MessageEventDefinition) {
                                 MessageEventDefinition messageEventDefinition = (MessageEventDefinition) eventDefinition;
                                 BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(
                                     processInstance.getProcessDefinitionId()
                                 );
-                                if (
-                                    bpmnModel.containsMessageId(
-                                        messageEventDefinition.getMessageRef()
-                                    )
-                                ) {
+                                if (bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
                                     messageEventDefinition.setMessageRef(
-                                        bpmnModel
-                                            .getMessage(
-                                                messageEventDefinition.getMessageRef()
-                                            )
-                                            .getName()
+                                        bpmnModel.getMessage(messageEventDefinition.getMessageRef()).getName()
                                     );
                                 }
                                 ExecutionEntity messageExecution = commandContext
                                     .getExecutionEntityManager()
                                     .createChildExecution(processInstance);
-                                messageExecution.setCurrentFlowElement(
-                                    startEvent
-                                );
+                                messageExecution.setCurrentFlowElement(startEvent);
                                 messageExecution.setEventScope(true);
 
                                 String messageName = getMessageName(
@@ -408,18 +327,13 @@ public class ProcessInstanceHelper {
 
                                 MessageEventSubscriptionEntity subscription = commandContext
                                     .getEventSubscriptionEntityManager()
-                                    .insertMessageEvent(
-                                        messageName,
-                                        messageExecution
-                                    );
+                                    .insertMessageEvent(messageName, messageExecution);
                                 Optional<String> correlationKey = getCorrelationKey(
                                     commandContext,
                                     messageEventDefinition,
                                     messageExecution
                                 );
-                                correlationKey.ifPresent(
-                                    subscription::setConfiguration
-                                );
+                                correlationKey.ifPresent(subscription::setConfiguration);
 
                                 messageEventSubscriptions.add(subscription);
                             }
@@ -435,22 +349,9 @@ public class ProcessInstanceHelper {
 
         commandContext.getAgenda().planContinueProcessOperation(execution);
 
-        if (
-            Context
-                .getProcessEngineConfiguration()
-                .getEventDispatcher()
-                .isEnabled()
-        ) {
-            ActivitiEventDispatcher eventDispatcher = Context
-                .getProcessEngineConfiguration()
-                .getEventDispatcher();
-            eventDispatcher.dispatchEvent(
-                ActivitiEventBuilder.createProcessStartedEvent(
-                    execution,
-                    variables,
-                    false
-                )
-            );
+        if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();
+            eventDispatcher.dispatchEvent(ActivitiEventBuilder.createProcessStartedEvent(execution, variables, false));
 
             for (MessageEventSubscriptionEntity messageEventSubscription : messageEventSubscriptions) {
                 commandContext
@@ -467,9 +368,7 @@ public class ProcessInstanceHelper {
         }
     }
 
-    protected Map<String, Object> processDataObjects(
-        Collection<ValuedDataObject> dataObjects
-    ) {
+    protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
         Map<String, Object> variablesMap = new HashMap<String, Object>();
         // convert data objects to process variables
         if (dataObjects != null) {
@@ -485,16 +384,12 @@ public class ProcessInstanceHelper {
         MessageEventDefinition messageEventDefinition,
         DelegateExecution execution
     ) {
-        ExpressionManager expressionManager = commandContext
-            .getProcessEngineConfiguration()
-            .getExpressionManager();
+        ExpressionManager expressionManager = commandContext.getProcessEngineConfiguration().getExpressionManager();
 
         return Optional
             .ofNullable(messageEventDefinition.getCorrelationKey())
             .map(correlationKey -> {
-                Expression expression = expressionManager.createExpression(
-                    messageEventDefinition.getCorrelationKey()
-                );
+                Expression expression = expressionManager.createExpression(messageEventDefinition.getCorrelationKey());
 
                 return expression.getValue(execution).toString();
             });
@@ -505,9 +400,7 @@ public class ProcessInstanceHelper {
         MessageEventDefinition messageEventDefinition,
         DelegateExecution execution
     ) {
-        ExpressionManager expressionManager = commandContext
-            .getProcessEngineConfiguration()
-            .getExpressionManager();
+        ExpressionManager expressionManager = commandContext.getProcessEngineConfiguration().getExpressionManager();
 
         String messageName = Optional
             .ofNullable(messageEventDefinition.getMessageRef())
@@ -530,8 +423,7 @@ public class ProcessInstanceHelper {
         // Create the process instance
         String initiatorVariableName = null;
         if (initialFlowElement instanceof StartEvent) {
-            initiatorVariableName =
-                ((StartEvent) initialFlowElement).getInitiator();
+            initiatorVariableName = ((StartEvent) initialFlowElement).getInitiator();
         }
 
         ExecutionEntity processInstance = commandContext
@@ -544,16 +436,10 @@ public class ProcessInstanceHelper {
             );
 
         // Set processInstance name
-        setProcessInstanceName(
-            commandContext,
-            processInstance,
-            processInstanceName
-        );
+        setProcessInstanceName(commandContext, processInstance, processInstanceName);
 
         // Create the first execution that will visit all the process definition elements
-        ExecutionEntity execution = commandContext
-            .getExecutionEntityManager()
-            .createChildExecution(processInstance);
+        ExecutionEntity execution = commandContext.getExecutionEntityManager().createChildExecution(processInstance);
         execution.setCurrentFlowElement(initialFlowElement);
 
         return processInstance;
@@ -568,10 +454,7 @@ public class ProcessInstanceHelper {
             processInstance.setName(processInstanceName);
             commandContext
                 .getHistoryManager()
-                .recordProcessInstanceNameChange(
-                    processInstance.getId(),
-                    processInstanceName
-                );
+                .recordProcessInstanceNameChange(processInstance.getId(), processInstanceName);
         }
     }
 
@@ -581,26 +464,12 @@ public class ProcessInstanceHelper {
         Map<String, Object> variables
     ) {
         // Dispatch message received event
-        if (
-            Context
-                .getProcessEngineConfiguration()
-                .getEventDispatcher()
-                .isEnabled()
-        ) {
+        if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
             // There will always be one child execution created
-            DelegateExecution execution = processInstance
-                .getExecutions()
-                .get(0);
-            ActivitiEventDispatcher eventDispatcher = Context
-                .getProcessEngineConfiguration()
-                .getEventDispatcher();
+            DelegateExecution execution = processInstance.getExecutions().get(0);
+            ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();
             eventDispatcher.dispatchEvent(
-                ActivitiEventBuilder.createMessageReceivedEvent(
-                    execution,
-                    messageName,
-                    null,
-                    variables
-                )
+                ActivitiEventBuilder.createMessageReceivedEvent(execution, messageName, null, variables)
             );
         }
     }

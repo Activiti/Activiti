@@ -26,9 +26,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CommandInvoker extends AbstractCommandInterceptor {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        CommandInvoker.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(CommandInvoker.class);
 
     @Override
     @SuppressWarnings("unchecked")
@@ -43,9 +41,7 @@ public class CommandInvoker extends AbstractCommandInterceptor {
                 new Runnable() {
                     @Override
                     public void run() {
-                        commandContext.setResult(
-                            command.execute(commandContext)
-                        );
+                        commandContext.setResult(command.execute(commandContext));
                     }
                 }
             );
@@ -76,15 +72,9 @@ public class CommandInvoker extends AbstractCommandInterceptor {
 
             // Execute the operation if the operation has no execution (i.e. it's an operation not working on a process instance)
             // or the operation has an execution and it is not ended
-            if (
-                operation.getExecution() == null ||
-                !operation.getExecution().isEnded()
-            ) {
+            if (operation.getExecution() == null || !operation.getExecution().isEnded()) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug(
-                        "Executing operation {} ",
-                        operation.getClass()
-                    );
+                    logger.debug("Executing operation {} ", operation.getClass());
                 }
 
                 runnable.run();
@@ -101,8 +91,6 @@ public class CommandInvoker extends AbstractCommandInterceptor {
 
     @Override
     public void setNext(CommandInterceptor next) {
-        throw new UnsupportedOperationException(
-            "CommandInvoker must be the last interceptor in the chain"
-        );
+        throw new UnsupportedOperationException("CommandInvoker must be the last interceptor in the chain");
     }
 }

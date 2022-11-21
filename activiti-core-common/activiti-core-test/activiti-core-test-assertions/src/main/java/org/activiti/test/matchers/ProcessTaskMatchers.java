@@ -43,19 +43,12 @@ public class ProcessTaskMatchers {
             hasBeenStarted().match(operationScope, events);
             List<TaskCreatedEvent> taskCreatedEvents = events
                 .stream()
-                .filter(event ->
-                    TaskRuntimeEvent.TaskEvents.TASK_CREATED.equals(
-                        event.getEventType()
-                    )
-                )
+                .filter(event -> TaskRuntimeEvent.TaskEvents.TASK_CREATED.equals(event.getEventType()))
                 .map(TaskCreatedEvent.class::cast)
                 .collect(Collectors.toList());
             assertThat(taskCreatedEvents)
                 .filteredOn(event ->
-                    event
-                        .getEntity()
-                        .getProcessInstanceId()
-                        .equals(operationScope.getProcessInstanceId())
+                    event.getEntity().getProcessInstanceId().equals(operationScope.getProcessInstanceId())
                 )
                 .extracting(event -> event.getEntity().getName())
                 .contains(taskName);
@@ -66,19 +59,12 @@ public class ProcessTaskMatchers {
         return (operationScope, events) -> {
             List<TaskAssignedEvent> taskAssignedEvents = events
                 .stream()
-                .filter(event ->
-                    TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED.equals(
-                        event.getEventType()
-                    )
-                )
+                .filter(event -> TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED.equals(event.getEventType()))
                 .map(TaskAssignedEvent.class::cast)
                 .collect(Collectors.toList());
             assertThat(taskAssignedEvents)
                 .filteredOn(event ->
-                    event
-                        .getEntity()
-                        .getProcessInstanceId()
-                        .equals(operationScope.getProcessInstanceId())
+                    event.getEntity().getProcessInstanceId().equals(operationScope.getProcessInstanceId())
                 )
                 .extracting(event -> event.getEntity().getName())
                 .contains(taskName);
@@ -89,24 +75,14 @@ public class ProcessTaskMatchers {
         return (operationScope, events) -> {
             List<BPMNActivityStartedEvent> taskStartedEvents = events
                 .stream()
-                .filter(event ->
-                    BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED.equals(
-                        event.getEventType()
-                    )
-                )
+                .filter(event -> BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED.equals(event.getEventType()))
                 .map(BPMNActivityStartedEvent.class::cast)
                 .collect(Collectors.toList());
             assertThat(taskStartedEvents)
                 .filteredOn(event ->
-                    event
-                        .getEntity()
-                        .getProcessInstanceId()
-                        .equals(operationScope.getProcessInstanceId())
+                    event.getEntity().getProcessInstanceId().equals(operationScope.getProcessInstanceId())
                 )
-                .extracting(
-                    event -> event.getEntity().getActivityName(),
-                    event -> event.getEntity().getActivityType()
-                )
+                .extracting(event -> event.getEntity().getActivityName(), event -> event.getEntity().getActivityType())
                 .as(
                     "Unable to find event " +
                     BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED +

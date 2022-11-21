@@ -40,10 +40,7 @@ public class JuelExpression implements Expression {
     private String expressionText;
     private ValueExpression valueExpression;
 
-    public JuelExpression(
-        ValueExpression valueExpression,
-        String expressionText
-    ) {
+    public JuelExpression(ValueExpression valueExpression, String expressionText) {
         this.valueExpression = valueExpression;
         this.expressionText = expressionText;
     }
@@ -54,10 +51,7 @@ public class JuelExpression implements Expression {
             .getProcessEngineConfiguration()
             .getExpressionManager()
             .getElContext(variableScope);
-        return getValueFromContext(
-            elContext,
-            Context.getProcessEngineConfiguration().getDelegateInterceptor()
-        );
+        return getValueFromContext(elContext, Context.getProcessEngineConfiguration().getDelegateInterceptor());
     }
 
     @Override
@@ -67,20 +61,10 @@ public class JuelExpression implements Expression {
             .getExpressionManager()
             .getElContext(variableScope);
         try {
-            ExpressionSetInvocation invocation = new ExpressionSetInvocation(
-                valueExpression,
-                elContext,
-                value
-            );
-            Context
-                .getProcessEngineConfiguration()
-                .getDelegateInterceptor()
-                .handleInvocation(invocation);
+            ExpressionSetInvocation invocation = new ExpressionSetInvocation(valueExpression, elContext, value);
+            Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(invocation);
         } catch (Exception e) {
-            throw new ActivitiException(
-                "Error while evaluating expression: " + expressionText,
-                e
-            );
+            throw new ActivitiException("Error while evaluating expression: " + expressionText, e);
         }
     }
 
@@ -103,38 +87,21 @@ public class JuelExpression implements Expression {
         DelegateInterceptor delegateInterceptor,
         Map<String, Object> availableVariables
     ) {
-        ELContext elContext = expressionManager.getElContext(
-            availableVariables
-        );
+        ELContext elContext = expressionManager.getElContext(availableVariables);
         return getValueFromContext(elContext, delegateInterceptor);
     }
 
-    private Object getValueFromContext(
-        ELContext elContext,
-        DelegateInterceptor delegateInterceptor
-    ) {
+    private Object getValueFromContext(ELContext elContext, DelegateInterceptor delegateInterceptor) {
         try {
-            ExpressionGetInvocation invocation = new ExpressionGetInvocation(
-                valueExpression,
-                elContext
-            );
+            ExpressionGetInvocation invocation = new ExpressionGetInvocation(valueExpression, elContext);
             delegateInterceptor.handleInvocation(invocation);
             return invocation.getInvocationResult();
         } catch (PropertyNotFoundException pnfe) {
-            throw new ActivitiException(
-                "Unknown property used in expression: " + expressionText,
-                pnfe
-            );
+            throw new ActivitiException("Unknown property used in expression: " + expressionText, pnfe);
         } catch (MethodNotFoundException mnfe) {
-            throw new ActivitiException(
-                "Unknown method used in expression: " + expressionText,
-                mnfe
-            );
+            throw new ActivitiException("Unknown method used in expression: " + expressionText, mnfe);
         } catch (Exception ele) {
-            throw new ActivitiException(
-                "Error while evaluating expression: " + expressionText,
-                ele
-            );
+            throw new ActivitiException("Error while evaluating expression: " + expressionText, ele);
         }
     }
 }

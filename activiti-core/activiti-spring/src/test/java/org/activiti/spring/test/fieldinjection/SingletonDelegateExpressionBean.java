@@ -38,22 +38,13 @@ public class SingletonDelegateExpressionBean implements JavaDelegate {
         // just a quick check to avoid creating a specific test for it
         int nrOfFieldExtensions = DelegateHelper.getFields(execution).size();
         if (nrOfFieldExtensions != 3) {
-            throw new RuntimeException(
-                "Error: 3 field extensions expected, but was " +
-                nrOfFieldExtensions
-            );
+            throw new RuntimeException("Error: 3 field extensions expected, but was " + nrOfFieldExtensions);
         }
 
-        Expression fieldAExpression = DelegateHelper.getFieldExpression(
-            execution,
-            "fieldA"
-        );
+        Expression fieldAExpression = DelegateHelper.getFieldExpression(execution, "fieldA");
         Number fieldA = (Number) fieldAExpression.getValue(execution);
 
-        Expression fieldBExpression = DelegateHelper.getFieldExpression(
-            execution,
-            "fieldB"
-        );
+        Expression fieldBExpression = DelegateHelper.getFieldExpression(execution, "fieldB");
         Number fieldB = (Number) fieldBExpression.getValue(execution);
 
         int result = fieldA.intValue() + fieldB.intValue();

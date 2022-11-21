@@ -30,15 +30,9 @@ import org.activiti.engine.test.Deployment;
  */
 public class FailedJobRetryCmdTest extends PluggableActivitiTestCase {
 
-    @Deployment(
-        resources = {
-            "org/activiti/engine/test/cmd/FailedJobRetryCmdTest.testFailedServiceTask.bpmn20.xml",
-        }
-    )
+    @Deployment(resources = { "org/activiti/engine/test/cmd/FailedJobRetryCmdTest.testFailedServiceTask.bpmn20.xml" })
     public void testFailedServiceTask() {
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "failedServiceTask"
-        );
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("failedServiceTask");
         assertThat(pi).isNotNull();
         waitForExecutedJobWithRetriesLeft(4);
 
@@ -46,8 +40,7 @@ public class FailedJobRetryCmdTest extends PluggableActivitiTestCase {
 
         Job job = fetchJob(pi.getProcessInstanceId());
         assertThat(job).isNotNull();
-        assertThat(job.getProcessInstanceId())
-            .isEqualTo(pi.getProcessInstanceId());
+        assertThat(job.getProcessInstanceId()).isEqualTo(pi.getProcessInstanceId());
 
         assertThat(job.getRetries()).isEqualTo(4);
 
@@ -87,21 +80,12 @@ public class FailedJobRetryCmdTest extends PluggableActivitiTestCase {
 
         waitForExecutedJobWithRetriesLeft(0);
 
-        job =
-            managementService
-                .createDeadLetterJobQuery()
-                .jobId(job.getId())
-                .singleResult();
+        job = managementService.createDeadLetterJobQuery().jobId(job.getId()).singleResult();
         assertThat(job.getRetries()).isEqualTo(0);
-        assertThat(
-            managementService.createDeadLetterJobQuery().withException().count()
-        )
-            .isEqualTo(1);
+        assertThat(managementService.createDeadLetterJobQuery().withException().count()).isEqualTo(1);
         assertThat(managementService.createJobQuery().count()).isEqualTo(0);
-        assertThat(managementService.createTimerJobQuery().count())
-            .isEqualTo(0);
-        assertThat(managementService.createDeadLetterJobQuery().count())
-            .isEqualTo(1);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(0);
+        assertThat(managementService.createDeadLetterJobQuery().count()).isEqualTo(1);
 
         execution = refreshExecutionEntity(execution.getId());
         assertThat(execution.getActivityId()).isEqualTo("failingServiceTask");
@@ -130,32 +114,19 @@ public class FailedJobRetryCmdTest extends PluggableActivitiTestCase {
     }
 
     protected void stillOneJobWithExceptionAndRetriesLeft() {
-        assertThat(
-            managementService.createTimerJobQuery().withException().count()
-        )
-            .isEqualTo(1);
-        assertThat(managementService.createTimerJobQuery().count())
-            .isEqualTo(1);
+        assertThat(managementService.createTimerJobQuery().withException().count()).isEqualTo(1);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
     }
 
     protected Job fetchJob(String processInstanceId) {
-        return managementService
-            .createTimerJobQuery()
-            .processInstanceId(processInstanceId)
-            .singleResult();
+        return managementService.createTimerJobQuery().processInstanceId(processInstanceId).singleResult();
     }
 
     protected Job refreshJob(String jobId) {
-        return managementService
-            .createTimerJobQuery()
-            .jobId(jobId)
-            .singleResult();
+        return managementService.createTimerJobQuery().jobId(jobId).singleResult();
     }
 
     protected ExecutionEntity refreshExecutionEntity(String executionId) {
-        return (ExecutionEntity) runtimeService
-            .createExecutionQuery()
-            .executionId(executionId)
-            .singleResult();
+        return (ExecutionEntity) runtimeService.createExecutionQuery().executionId(executionId).singleResult();
     }
 }

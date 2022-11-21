@@ -26,10 +26,7 @@ import org.activiti.engine.api.internal.Internal;
 public interface ResourceEntityManager extends EntityManager<ResourceEntity> {
     List<ResourceEntity> findResourcesByDeploymentId(String deploymentId);
 
-    ResourceEntity findResourceByDeploymentIdAndResourceName(
-        String deploymentId,
-        String resourceName
-    );
+    ResourceEntity findResourceByDeploymentIdAndResourceName(String deploymentId, String resourceName);
 
     void deleteResourcesByDeploymentId(String deploymentId);
 }

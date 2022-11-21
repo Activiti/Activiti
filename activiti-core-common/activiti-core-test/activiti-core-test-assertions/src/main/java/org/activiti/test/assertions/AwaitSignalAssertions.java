@@ -33,13 +33,7 @@ public class AwaitSignalAssertions implements SignalAssertions {
         ProcessInstance processInstance,
         OperationScopeMatcher... matchers
     ) {
-        await()
-            .untilAsserted(() ->
-                signalAssertions.expectEventsOnProcessInstance(
-                    processInstance,
-                    matchers
-                )
-            );
+        await().untilAsserted(() -> signalAssertions.expectEventsOnProcessInstance(processInstance, matchers));
         return this;
     }
 }

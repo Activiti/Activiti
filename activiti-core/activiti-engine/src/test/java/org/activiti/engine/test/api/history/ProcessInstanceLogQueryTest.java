@@ -45,12 +45,7 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
 
         // Start process instance
         this.processInstanceId =
-            runtimeService
-                .startProcessInstanceByKey(
-                    "twoTasksProcess",
-                    map("var1", "Hello", "var2", 123)
-                )
-                .getId();
+            runtimeService.startProcessInstanceByKey("twoTasksProcess", map("var1", "Hello", "var2", 123)).getId();
 
         // Add some comments
         taskService.addComment(null, processInstanceId, "Hello World");
@@ -68,9 +63,7 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
 
     @Override
     protected void tearDown() throws Exception {
-        for (Comment comment : taskService.getProcessInstanceComments(
-            processInstanceId
-        )) {
+        for (Comment comment : taskService.getProcessInstanceComments(processInstanceId)) {
             taskService.deleteComment(comment.getId());
         }
 
@@ -148,11 +141,7 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
     }
 
     public void testIncludeVariables() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.FULL)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
             ProcessInstanceHistoryLog log = historyService
                 .createProcessInstanceHistoryLogQuery(processInstanceId)
                 .includeVariables()
@@ -167,11 +156,7 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
     }
 
     public void testIncludeVariableUpdates() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.FULL)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
             ProcessInstanceHistoryLog log = historyService
                 .createProcessInstanceHistoryLogQuery(processInstanceId)
                 .includeVariableUpdates()
@@ -186,11 +171,7 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
     }
 
     public void testEverything() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.FULL)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
             ProcessInstanceHistoryLog log = historyService
                 .createProcessInstanceHistoryLogQuery(processInstanceId)
                 .includeTasks()

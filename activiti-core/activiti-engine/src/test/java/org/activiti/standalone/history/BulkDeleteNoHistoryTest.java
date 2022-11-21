@@ -34,9 +34,7 @@ public class BulkDeleteNoHistoryTest extends ResourceActivitiTestCase {
         super("org/activiti/standalone/history/nohistory.activiti.cfg.xml");
     }
 
-    @Deployment(
-        resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" }
-    )
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
     public void testLargeAmountOfVariableBulkDelete() throws Exception {
         Map<String, Object> variables = new HashMap<String, Object>();
 
@@ -45,26 +43,15 @@ public class BulkDeleteNoHistoryTest extends ResourceActivitiTestCase {
             variables.put("var" + i, i);
         }
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "oneTaskProcess",
-            variables
-        );
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task).isNotNull();
 
         // Completing the task will cause a bulk delete of 4001 entities
         taskService.complete(task.getId());
 
         // Check if process is gone
-        assertThat(
-            runtimeService
-                .createProcessInstanceQuery()
-                .processInstanceId(processInstance.getId())
-                .count()
-        )
+        assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count())
             .isEqualTo(0L);
     }
 }

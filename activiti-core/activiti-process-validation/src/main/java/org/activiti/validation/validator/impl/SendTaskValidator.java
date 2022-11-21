@@ -33,21 +33,13 @@ import org.apache.commons.lang3.StringUtils;
 public class SendTaskValidator extends ExternalInvocationTaskValidator {
 
     @Override
-    protected void executeValidation(
-        BpmnModel bpmnModel,
-        Process process,
-        List<ValidationError> errors
-    ) {
-        List<SendTask> sendTasks = process.findFlowElementsOfType(
-            SendTask.class
-        );
+    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+        List<SendTask> sendTasks = process.findFlowElementsOfType(SendTask.class);
         for (SendTask sendTask : sendTasks) {
             // Verify implementation
             if (
                 StringUtils.isEmpty(sendTask.getType()) &&
-                !ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE.equalsIgnoreCase(
-                    sendTask.getImplementationType()
-                )
+                !ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE.equalsIgnoreCase(sendTask.getImplementationType())
             ) {
                 addError(
                     errors,
@@ -75,12 +67,7 @@ public class SendTaskValidator extends ExternalInvocationTaskValidator {
                 }
 
                 if (sendTask.getType().equalsIgnoreCase("mail")) {
-                    validateFieldDeclarationsForEmail(
-                        process,
-                        sendTask,
-                        sendTask.getFieldExtensions(),
-                        errors
-                    );
+                    validateFieldDeclarationsForEmail(process, sendTask, sendTask.getFieldExtensions(), errors);
                 }
             }
 
@@ -96,28 +83,15 @@ public class SendTaskValidator extends ExternalInvocationTaskValidator {
         List<ValidationError> errors
     ) {
         if (
-            ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE.equalsIgnoreCase(
-                sendTask.getImplementationType()
-            ) &&
+            ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE.equalsIgnoreCase(sendTask.getImplementationType()) &&
             StringUtils.isNotEmpty(sendTask.getOperationRef())
         ) {
             boolean operationFound = false;
-            if (
-                bpmnModel.getInterfaces() != null &&
-                !bpmnModel.getInterfaces().isEmpty()
-            ) {
+            if (bpmnModel.getInterfaces() != null && !bpmnModel.getInterfaces().isEmpty()) {
                 for (Interface bpmnInterface : bpmnModel.getInterfaces()) {
-                    if (
-                        bpmnInterface.getOperations() != null &&
-                        !bpmnInterface.getOperations().isEmpty()
-                    ) {
+                    if (bpmnInterface.getOperations() != null && !bpmnInterface.getOperations().isEmpty()) {
                         for (Operation operation : bpmnInterface.getOperations()) {
-                            if (
-                                operation.getId() != null &&
-                                operation
-                                    .getId()
-                                    .equals(sendTask.getOperationRef())
-                            ) {
+                            if (operation.getId() != null && operation.getId().equals(sendTask.getOperationRef())) {
                                 operationFound = true;
                             }
                         }

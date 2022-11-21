@@ -25,9 +25,6 @@ public class APIProcessCandidateStarterUserConverter
 
     @Override
     public ProcessCandidateStarterUser from(IdentityLink identityLink) {
-        return new ProcessCandidateStarterUserImpl(
-            identityLink.getProcessDefinitionId(),
-            identityLink.getUserId()
-        );
+        return new ProcessCandidateStarterUserImpl(identityLink.getProcessDefinitionId(), identityLink.getUserId());
     }
 }

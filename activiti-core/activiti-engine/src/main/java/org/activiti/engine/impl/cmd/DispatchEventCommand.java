@@ -44,9 +44,7 @@ public class DispatchEventCommand implements Command<Void> {
         if (commandContext.getEventDispatcher().isEnabled()) {
             commandContext.getEventDispatcher().dispatchEvent(event);
         } else {
-            throw new ActivitiException(
-                "Message dispatcher is disabled, cannot dispatch event"
-            );
+            throw new ActivitiException("Message dispatcher is disabled, cannot dispatch event");
         }
 
         return null;

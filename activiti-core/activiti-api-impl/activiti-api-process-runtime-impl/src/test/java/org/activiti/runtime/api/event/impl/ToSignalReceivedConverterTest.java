@@ -41,9 +41,7 @@ public class ToSignalReceivedConverterTest {
     @Test
     public void fromShouldReturnConvertedEventAndSetProcessInstanceIdAndProcessDefinitionId() {
         //given
-        ActivitiSignalEventImpl internalEvent = new ActivitiSignalEventImpl(
-            ActivitiEventType.ACTIVITY_SIGNALED
-        );
+        ActivitiSignalEventImpl internalEvent = new ActivitiSignalEventImpl(ActivitiEventType.ACTIVITY_SIGNALED);
         internalEvent.setProcessDefinitionId("procDefId");
         internalEvent.setProcessInstanceId("procInstId");
 
@@ -51,16 +49,12 @@ public class ToSignalReceivedConverterTest {
         given(toSignalConverter.from(internalEvent)).willReturn(bpmnSignal);
 
         //when
-        BPMNSignalReceivedEvent bpmnSignalReceivedEvent = toSignalReceivedConverter
-            .from(internalEvent)
-            .orElse(null);
+        BPMNSignalReceivedEvent bpmnSignalReceivedEvent = toSignalReceivedConverter.from(internalEvent).orElse(null);
 
         //then
         assertThat(bpmnSignalReceivedEvent).isNotNull();
         assertThat(bpmnSignalReceivedEvent.getEntity()).isEqualTo(bpmnSignal);
-        assertThat(bpmnSignalReceivedEvent.getProcessDefinitionId())
-            .isEqualTo("procDefId");
-        assertThat(bpmnSignalReceivedEvent.getProcessInstanceId())
-            .isEqualTo("procInstId");
+        assertThat(bpmnSignalReceivedEvent.getProcessDefinitionId()).isEqualTo("procDefId");
+        assertThat(bpmnSignalReceivedEvent.getProcessInstanceId()).isEqualTo("procInstId");
     }
 }

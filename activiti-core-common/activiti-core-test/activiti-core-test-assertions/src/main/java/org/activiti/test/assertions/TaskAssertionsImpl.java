@@ -34,11 +34,7 @@ public class TaskAssertionsImpl implements TaskAssertions {
 
     private List<TaskSource> taskSources;
 
-    public TaskAssertionsImpl(
-        Task task,
-        List<TaskSource> taskSources,
-        EventSource eventSource
-    ) {
+    public TaskAssertionsImpl(Task task, List<TaskSource> taskSources, EventSource eventSource) {
         this.task = task;
         this.taskSources = taskSources;
         this.eventSource = eventSource;
@@ -48,10 +44,7 @@ public class TaskAssertionsImpl implements TaskAssertions {
     public TaskAssertions expectEvents(OperationScopeMatcher... matchers) {
         List<RuntimeEvent<?, ?>> events = eventSource.getEvents();
         for (OperationScopeMatcher matcher : matchers) {
-            matcher.match(
-                scope(task.getProcessInstanceId(), task.getId()),
-                events
-            );
+            matcher.match(scope(task.getProcessInstanceId(), task.getId()), events);
         }
         return this;
     }

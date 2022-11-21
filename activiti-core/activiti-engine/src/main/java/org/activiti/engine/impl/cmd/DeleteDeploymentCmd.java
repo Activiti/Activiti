@@ -41,10 +41,7 @@ public class DeleteDeploymentCmd implements Command<Void>, Serializable {
         }
 
         // Remove process definitions from cache:
-        commandContext
-            .getProcessEngineConfiguration()
-            .getDeploymentManager()
-            .removeDeployment(deploymentId, cascade);
+        commandContext.getProcessEngineConfiguration().getDeploymentManager().removeDeployment(deploymentId, cascade);
 
         return null;
     }

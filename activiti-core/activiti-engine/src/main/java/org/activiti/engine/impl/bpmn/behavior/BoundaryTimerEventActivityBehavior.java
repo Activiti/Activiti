@@ -30,17 +30,13 @@ import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 /**
 
  */
-public class BoundaryTimerEventActivityBehavior
-    extends BoundaryEventActivityBehavior {
+public class BoundaryTimerEventActivityBehavior extends BoundaryEventActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 
     protected TimerEventDefinition timerEventDefinition;
 
-    public BoundaryTimerEventActivityBehavior(
-        TimerEventDefinition timerEventDefinition,
-        boolean interrupting
-    ) {
+    public BoundaryTimerEventActivityBehavior(TimerEventDefinition timerEventDefinition, boolean interrupting) {
         super(interrupting);
         this.timerEventDefinition = timerEventDefinition;
     }
@@ -50,9 +46,7 @@ public class BoundaryTimerEventActivityBehavior
         ExecutionEntity executionEntity = (ExecutionEntity) execution;
         if (!(execution.getCurrentFlowElement() instanceof BoundaryEvent)) {
             throw new ActivitiException(
-                "Programmatic error: " +
-                this.getClass() +
-                " should not be used for anything else than a boundary event"
+                "Programmatic error: " + this.getClass() + " should not be used for anything else than a boundary event"
             );
         }
 

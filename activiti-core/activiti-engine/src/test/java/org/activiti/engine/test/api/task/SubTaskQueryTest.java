@@ -78,19 +78,11 @@ public class SubTaskQueryTest extends PluggableActivitiTestCase {
      */
     public void testQueryExcludeSubtasksSorted() throws Exception {
         // query all tasks, including subtasks
-        TaskQuery query = taskService
-            .createTaskQuery()
-            .orderByTaskAssignee()
-            .asc();
+        TaskQuery query = taskService.createTaskQuery().orderByTaskAssignee().asc();
         assertThat(query.count()).isEqualTo(10);
         assertThat(query.list()).hasSize(10);
         // query only parent tasks (exclude subtasks)
-        query =
-            taskService
-                .createTaskQuery()
-                .excludeSubtasks()
-                .orderByTaskAssignee()
-                .desc();
+        query = taskService.createTaskQuery().excludeSubtasks().orderByTaskAssignee().desc();
         assertThat(query.count()).isEqualTo(3);
         assertThat(query.list()).hasSize(3);
     }
@@ -105,11 +97,7 @@ public class SubTaskQueryTest extends PluggableActivitiTestCase {
         assertThat(query.count()).isEqualTo(7);
         assertThat(query.list()).hasSize(7);
         // exclude subtasks
-        query =
-            taskService
-                .createTaskQuery()
-                .taskAssignee("gonzo")
-                .excludeSubtasks();
+        query = taskService.createTaskQuery().taskAssignee("gonzo").excludeSubtasks();
         assertThat(query.count()).isEqualTo(2);
         assertThat(query.list()).hasSize(2);
 
@@ -120,11 +108,7 @@ public class SubTaskQueryTest extends PluggableActivitiTestCase {
         assertThat(query.list()).hasSize(0);
         assertThat(query.singleResult()).isNull();
         // exclude subtasks
-        query =
-            taskService
-                .createTaskQuery()
-                .taskAssignee(KERMIT)
-                .excludeSubtasks();
+        query = taskService.createTaskQuery().taskAssignee(KERMIT).excludeSubtasks();
         assertThat(query.count()).isEqualTo(0);
         assertThat(query.list()).hasSize(0);
         assertThat(query.singleResult()).isNull();
@@ -140,11 +124,7 @@ public class SubTaskQueryTest extends PluggableActivitiTestCase {
         assertThat(query.count()).isEqualTo(7);
         assertThat(query.listPage(0, 2)).hasSize(2);
         // exclude subtasks
-        query =
-            taskService
-                .createTaskQuery()
-                .taskAssignee("gonzo")
-                .excludeSubtasks();
+        query = taskService.createTaskQuery().taskAssignee("gonzo").excludeSubtasks();
         assertThat(query.count()).isEqualTo(2);
         assertThat(query.listPage(0, 1)).hasSize(1);
 
@@ -155,11 +135,7 @@ public class SubTaskQueryTest extends PluggableActivitiTestCase {
         assertThat(query.listPage(0, 2)).hasSize(0);
         assertThat(query.singleResult()).isNull();
         // exclude subtasks
-        query =
-            taskService
-                .createTaskQuery()
-                .taskAssignee(KERMIT)
-                .excludeSubtasks();
+        query = taskService.createTaskQuery().taskAssignee(KERMIT).excludeSubtasks();
         assertThat(query.count()).isEqualTo(0);
         assertThat(query.listPage(0, 2)).hasSize(0);
         assertThat(query.singleResult()).isNull();
@@ -173,49 +149,25 @@ public class SubTaskQueryTest extends PluggableActivitiTestCase {
 
         // gonzo has 2 root tasks and 3+2 subtasks assigned
         // include subtasks
-        TaskQuery query = taskService
-            .createTaskQuery()
-            .taskAssignee("gonzo")
-            .orderByTaskCreateTime()
-            .desc();
+        TaskQuery query = taskService.createTaskQuery().taskAssignee("gonzo").orderByTaskCreateTime().desc();
         assertThat(query.count()).isEqualTo(7);
         assertThat(query.list()).hasSize(7);
-        assertThat(query.list().get(0).getCreateTime())
-            .isEqualTo(sdf.parse("02/01/2009 01:01:01.000"));
+        assertThat(query.list().get(0).getCreateTime()).isEqualTo(sdf.parse("02/01/2009 01:01:01.000"));
 
         // exclude subtasks
-        query =
-            taskService
-                .createTaskQuery()
-                .taskAssignee("gonzo")
-                .excludeSubtasks()
-                .orderByTaskCreateTime()
-                .asc();
+        query = taskService.createTaskQuery().taskAssignee("gonzo").excludeSubtasks().orderByTaskCreateTime().asc();
         assertThat(query.count()).isEqualTo(2);
         assertThat(query.list()).hasSize(2);
-        assertThat(query.list().get(0).getCreateTime())
-            .isEqualTo(sdf.parse("01/02/2008 02:02:02.000"));
-        assertThat(query.list().get(1).getCreateTime())
-            .isEqualTo(sdf.parse("05/02/2008 02:02:02.000"));
+        assertThat(query.list().get(0).getCreateTime()).isEqualTo(sdf.parse("01/02/2008 02:02:02.000"));
+        assertThat(query.list().get(1).getCreateTime()).isEqualTo(sdf.parse("05/02/2008 02:02:02.000"));
 
         // kermit has no root tasks and no subtasks assigned include subtasks
-        query =
-            taskService
-                .createTaskQuery()
-                .taskAssignee(KERMIT)
-                .orderByTaskCreateTime()
-                .asc();
+        query = taskService.createTaskQuery().taskAssignee(KERMIT).orderByTaskCreateTime().asc();
         assertThat(query.count()).isEqualTo(0);
         assertThat(query.list()).hasSize(0);
         assertThat(query.singleResult()).isNull();
         // exclude subtasks
-        query =
-            taskService
-                .createTaskQuery()
-                .taskAssignee(KERMIT)
-                .excludeSubtasks()
-                .orderByTaskCreateTime()
-                .desc();
+        query = taskService.createTaskQuery().taskAssignee(KERMIT).excludeSubtasks().orderByTaskCreateTime().desc();
         assertThat(query.count()).isEqualTo(0);
         assertThat(query.list()).hasSize(0);
         assertThat(query.singleResult()).isNull();
@@ -224,64 +176,36 @@ public class SubTaskQueryTest extends PluggableActivitiTestCase {
     /**
      * test for task inclusion/exclusion when additional filter is specified (like assignee), ordered.
      */
-    public void testQueryByAssigneeExcludeSubtasksOrderedAndPaginated()
-        throws Exception {
+    public void testQueryByAssigneeExcludeSubtasksOrderedAndPaginated() throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
 
         // gonzo has 2 root tasks and 3+2 subtasks assigned
         // include subtasks
-        TaskQuery query = taskService
-            .createTaskQuery()
-            .taskAssignee("gonzo")
-            .orderByTaskCreateTime()
-            .asc();
+        TaskQuery query = taskService.createTaskQuery().taskAssignee("gonzo").orderByTaskCreateTime().asc();
         assertThat(query.count()).isEqualTo(7);
         assertThat(query.listPage(0, 1)).hasSize(1);
-        assertThat(query.listPage(0, 1).get(0).getCreateTime())
-            .isEqualTo(sdf.parse("01/02/2008 02:02:02.000"));
+        assertThat(query.listPage(0, 1).get(0).getCreateTime()).isEqualTo(sdf.parse("01/02/2008 02:02:02.000"));
         assertThat(query.listPage(1, 1)).hasSize(1);
-        assertThat(query.listPage(1, 1).get(0).getCreateTime())
-            .isEqualTo(sdf.parse("05/02/2008 02:02:02.000"));
+        assertThat(query.listPage(1, 1).get(0).getCreateTime()).isEqualTo(sdf.parse("05/02/2008 02:02:02.000"));
         assertThat(query.listPage(0, 2)).hasSize(2);
-        assertThat(query.listPage(0, 2).get(0).getCreateTime())
-            .isEqualTo(sdf.parse("01/02/2008 02:02:02.000"));
-        assertThat(query.listPage(0, 2).get(1).getCreateTime())
-            .isEqualTo(sdf.parse("05/02/2008 02:02:02.000"));
+        assertThat(query.listPage(0, 2).get(0).getCreateTime()).isEqualTo(sdf.parse("01/02/2008 02:02:02.000"));
+        assertThat(query.listPage(0, 2).get(1).getCreateTime()).isEqualTo(sdf.parse("05/02/2008 02:02:02.000"));
 
         // exclude subtasks
-        query =
-            taskService
-                .createTaskQuery()
-                .taskAssignee("gonzo")
-                .excludeSubtasks()
-                .orderByTaskCreateTime()
-                .desc();
+        query = taskService.createTaskQuery().taskAssignee("gonzo").excludeSubtasks().orderByTaskCreateTime().desc();
         assertThat(query.count()).isEqualTo(2);
         assertThat(query.listPage(1, 1)).hasSize(1);
-        assertThat(query.listPage(1, 1).get(0).getCreateTime())
-            .isEqualTo(sdf.parse("01/02/2008 02:02:02.000"));
+        assertThat(query.listPage(1, 1).get(0).getCreateTime()).isEqualTo(sdf.parse("01/02/2008 02:02:02.000"));
         assertThat(query.listPage(0, 1)).hasSize(1);
-        assertThat(query.listPage(0, 1).get(0).getCreateTime())
-            .isEqualTo(sdf.parse("05/02/2008 02:02:02.000"));
+        assertThat(query.listPage(0, 1).get(0).getCreateTime()).isEqualTo(sdf.parse("05/02/2008 02:02:02.000"));
 
         // kermit has no root tasks and no subtasks assigned include subtasks
-        query =
-            taskService
-                .createTaskQuery()
-                .taskAssignee(KERMIT)
-                .orderByTaskCreateTime()
-                .asc();
+        query = taskService.createTaskQuery().taskAssignee(KERMIT).orderByTaskCreateTime().asc();
         assertThat(query.count()).isEqualTo(0);
         assertThat(query.listPage(0, 2)).hasSize(0);
         assertThat(query.singleResult()).isNull();
         // exclude subtasks
-        query =
-            taskService
-                .createTaskQuery()
-                .taskAssignee(KERMIT)
-                .excludeSubtasks()
-                .orderByTaskCreateTime()
-                .desc();
+        query = taskService.createTaskQuery().taskAssignee(KERMIT).excludeSubtasks().orderByTaskCreateTime().desc();
         assertThat(query.count()).isEqualTo(0);
         assertThat(query.listPage(0, 2)).hasSize(0);
         assertThat(query.singleResult()).isNull();
@@ -306,25 +230,15 @@ public class SubTaskQueryTest extends PluggableActivitiTestCase {
         taskService.saveTask(subTask);
         taskIds.add(subTask.getId());
 
-        TaskQuery query = taskService
-            .createTaskQuery()
-            .taskParentTaskId(rootTask.getId());
+        TaskQuery query = taskService.createTaskQuery().taskParentTaskId(rootTask.getId());
 
         assertThat(query.count()).isEqualTo(2);
 
-        query =
-            taskService
-                .createTaskQuery()
-                .taskAssignee("gonzo")
-                .taskParentTaskId(rootTask.getId());
+        query = taskService.createTaskQuery().taskAssignee("gonzo").taskParentTaskId(rootTask.getId());
 
         assertThat(query.count()).isEqualTo(1);
 
-        query =
-            taskService
-                .createTaskQuery()
-                .taskAssignee("kermit")
-                .taskParentTaskId(rootTask.getId());
+        query = taskService.createTaskQuery().taskAssignee("kermit").taskParentTaskId(rootTask.getId());
 
         assertThat(query.count()).isEqualTo(0);
 
@@ -350,9 +264,7 @@ public class SubTaskQueryTest extends PluggableActivitiTestCase {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
         // 1 parent task for kermit
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(sdf.parse("01/01/2008 01:01:01.000"));
+        processEngineConfiguration.getClock().setCurrentTime(sdf.parse("01/01/2008 01:01:01.000"));
         Task rootTask1 = taskService.newTask();
         rootTask1.setName("rootTestTask");
         rootTask1.setDescription("rootTestTask description");
@@ -360,9 +272,7 @@ public class SubTaskQueryTest extends PluggableActivitiTestCase {
         ids.add(rootTask1.getId());
         taskService.addCandidateUser(rootTask1.getId(), KERMIT);
         // 2 sub-tasks for the task above
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(sdf.parse("01/01/2009 01:01:01.000"));
+        processEngineConfiguration.getClock().setCurrentTime(sdf.parse("01/01/2009 01:01:01.000"));
         for (int i = 1; i <= 2; i++) {
             Task subtask = taskService.newTask();
             subtask.setName("kermitSubTask" + i);
@@ -375,9 +285,7 @@ public class SubTaskQueryTest extends PluggableActivitiTestCase {
 
         // 2 parent tasks for gonzo
         // first parent task for gonzo
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(sdf.parse("01/02/2008 02:02:02.000"));
+        processEngineConfiguration.getClock().setCurrentTime(sdf.parse("01/02/2008 02:02:02.000"));
         Task rootTask2 = taskService.newTask();
         rootTask2.setName("gonzoRootTask1");
         rootTask2.setDescription("gonzo Root task1 description");
@@ -385,9 +293,7 @@ public class SubTaskQueryTest extends PluggableActivitiTestCase {
         taskService.setAssignee(rootTask2.getId(), GONZO);
         ids.add(rootTask2.getId());
         // second parent task for gonzo
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(sdf.parse("05/02/2008 02:02:02.000"));
+        processEngineConfiguration.getClock().setCurrentTime(sdf.parse("05/02/2008 02:02:02.000"));
         Task rootTask3 = taskService.newTask();
         rootTask3.setName("gonzoRootTask2");
         rootTask3.setDescription("gonzo Root task2 description");
@@ -395,9 +301,7 @@ public class SubTaskQueryTest extends PluggableActivitiTestCase {
         taskService.setAssignee(rootTask3.getId(), GONZO);
         ids.add(rootTask3.getId());
         // 3 sub-tasks for the first parent task
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(sdf.parse("01/01/2009 01:01:01.000"));
+        processEngineConfiguration.getClock().setCurrentTime(sdf.parse("01/01/2009 01:01:01.000"));
         for (int i = 1; i <= 3; i++) {
             Task subtask = taskService.newTask();
             subtask.setName("gonzoSubTask1_" + i);
@@ -408,9 +312,7 @@ public class SubTaskQueryTest extends PluggableActivitiTestCase {
             ids.add(subtask.getId());
         }
         // 2 sub-tasks for the second parent task
-        processEngineConfiguration
-            .getClock()
-            .setCurrentTime(sdf.parse("02/01/2009 01:01:01.000"));
+        processEngineConfiguration.getClock().setCurrentTime(sdf.parse("02/01/2009 01:01:01.000"));
         for (int i = 1; i <= 2; i++) {
             Task subtask = taskService.newTask();
             subtask.setName("gonzoSubTask2_" + i);

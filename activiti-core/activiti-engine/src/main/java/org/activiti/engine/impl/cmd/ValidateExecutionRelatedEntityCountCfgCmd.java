@@ -26,15 +26,11 @@ import org.slf4j.LoggerFactory;
 /**
 
  */
-public class ValidateExecutionRelatedEntityCountCfgCmd
-    implements Command<Void> {
+public class ValidateExecutionRelatedEntityCountCfgCmd implements Command<Void> {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        ValidateExecutionRelatedEntityCountCfgCmd.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(ValidateExecutionRelatedEntityCountCfgCmd.class);
 
-    public static String PROPERTY_EXECUTION_RELATED_ENTITY_COUNT =
-        "cfg.execution-related-entities-count";
+    public static String PROPERTY_EXECUTION_RELATED_ENTITY_COUNT = "cfg.execution-related-entities-count";
 
     @Override
     public Void execute(CommandContext commandContext) {
@@ -61,9 +57,7 @@ public class ValidateExecutionRelatedEntityCountCfgCmd
             .getProcessEngineConfiguration()
             .getPerformanceSettings()
             .isEnableExecutionRelationshipCounts();
-        PropertyEntity propertyEntity = propertyEntityManager.findById(
-            PROPERTY_EXECUTION_RELATED_ENTITY_COUNT
-        );
+        PropertyEntity propertyEntity = propertyEntityManager.findById(PROPERTY_EXECUTION_RELATED_ENTITY_COUNT);
 
         if (propertyEntity == null) {
             // 'not there' case in the table above: easy, simply insert the value
@@ -73,9 +67,7 @@ public class ValidateExecutionRelatedEntityCountCfgCmd
             newPropertyEntity.setValue(Boolean.toString(configProperty));
             propertyEntityManager.insert(newPropertyEntity);
         } else {
-            boolean propertyValue = Boolean.valueOf(
-                propertyEntity.getValue().toString().toLowerCase()
-            );
+            boolean propertyValue = Boolean.valueOf(propertyEntity.getValue().toString().toLowerCase());
             if (!configProperty && propertyValue) {
                 if (logger.isInfoEnabled()) {
                     logger.info(

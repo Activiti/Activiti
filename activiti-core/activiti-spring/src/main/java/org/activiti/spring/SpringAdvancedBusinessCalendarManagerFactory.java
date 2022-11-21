@@ -80,10 +80,7 @@ public class SpringAdvancedBusinessCalendarManagerFactory {
         );
         mapBusinessCalendarManager.addBusinessCalendar(
             AdvancedCycleBusinessCalendar.NAME,
-            new AdvancedCycleBusinessCalendar(
-                getClock(),
-                defaultScheduleVersion
-            )
+            new AdvancedCycleBusinessCalendar(getClock(), defaultScheduleVersion)
         );
 
         return mapBusinessCalendarManager;

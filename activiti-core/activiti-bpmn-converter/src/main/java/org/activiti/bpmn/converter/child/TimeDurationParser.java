@@ -29,11 +29,7 @@ public class TimeDurationParser extends BaseChildElementParser {
         return ATTRIBUTE_TIMER_DURATION;
     }
 
-    public void parseChildElement(
-        XMLStreamReader xtr,
-        BaseElement parentElement,
-        BpmnModel model
-    ) throws Exception {
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
         if (!(parentElement instanceof TimerEventDefinition)) return;
 
         TimerEventDefinition eventDefinition = (TimerEventDefinition) parentElement;

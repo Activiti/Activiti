@@ -34,19 +34,14 @@ import org.activiti.validation.validator.ProcessLevelValidator;
 public class IntermediateCatchEventValidator extends ProcessLevelValidator {
 
     @Override
-    protected void executeValidation(
-        BpmnModel bpmnModel,
-        Process process,
-        List<ValidationError> errors
-    ) {
+    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
         List<IntermediateCatchEvent> intermediateCatchEvents = process.findFlowElementsOfType(
             IntermediateCatchEvent.class
         );
         for (IntermediateCatchEvent intermediateCatchEvent : intermediateCatchEvents) {
             EventDefinition eventDefinition = null;
             if (!intermediateCatchEvent.getEventDefinitions().isEmpty()) {
-                eventDefinition =
-                    intermediateCatchEvent.getEventDefinitions().get(0);
+                eventDefinition = intermediateCatchEvent.getEventDefinitions().get(0);
             }
 
             if (eventDefinition == null) {

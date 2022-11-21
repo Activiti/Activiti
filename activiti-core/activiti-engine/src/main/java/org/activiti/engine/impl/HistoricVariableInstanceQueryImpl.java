@@ -67,13 +67,9 @@ public class HistoricVariableInstanceQueryImpl
         return this;
     }
 
-    public HistoricVariableInstanceQueryImpl processInstanceId(
-        String processInstanceId
-    ) {
+    public HistoricVariableInstanceQueryImpl processInstanceId(String processInstanceId) {
         if (processInstanceId == null) {
-            throw new ActivitiIllegalArgumentException(
-                "processInstanceId is null"
-            );
+            throw new ActivitiIllegalArgumentException("processInstanceId is null");
         }
         this.processInstanceId = processInstanceId;
         return this;
@@ -87,24 +83,18 @@ public class HistoricVariableInstanceQueryImpl
         return this;
     }
 
-    public HistoricVariableInstanceQueryImpl executionIds(
-        Set<String> executionIds
-    ) {
+    public HistoricVariableInstanceQueryImpl executionIds(Set<String> executionIds) {
         if (executionIds == null) {
             throw new ActivitiIllegalArgumentException("executionIds is null");
         }
         if (executionIds.isEmpty()) {
-            throw new ActivitiIllegalArgumentException(
-                "Set of executionIds is empty"
-            );
+            throw new ActivitiIllegalArgumentException("Set of executionIds is empty");
         }
         this.executionIds = executionIds;
         return this;
     }
 
-    public HistoricVariableInstanceQuery activityInstanceId(
-        String activityInstanceId
-    ) {
+    public HistoricVariableInstanceQuery activityInstanceId(String activityInstanceId) {
         this.activityInstanceId = activityInstanceId;
         return this;
     }
@@ -114,9 +104,7 @@ public class HistoricVariableInstanceQueryImpl
             throw new ActivitiIllegalArgumentException("taskId is null");
         }
         if (excludeTaskRelated) {
-            throw new ActivitiIllegalArgumentException(
-                "Cannot use taskId together with excludeTaskVariables"
-            );
+            throw new ActivitiIllegalArgumentException("Cannot use taskId together with excludeTaskVariables");
         }
         this.taskId = taskId;
         return this;
@@ -127,14 +115,10 @@ public class HistoricVariableInstanceQueryImpl
             throw new ActivitiIllegalArgumentException("taskIds is null");
         }
         if (taskIds.isEmpty()) {
-            throw new ActivitiIllegalArgumentException(
-                "Set of taskIds is empty"
-            );
+            throw new ActivitiIllegalArgumentException("Set of taskIds is empty");
         }
         if (excludeTaskRelated) {
-            throw new ActivitiIllegalArgumentException(
-                "Cannot use taskIds together with excludeTaskVariables"
-            );
+            throw new ActivitiIllegalArgumentException("Cannot use taskIds together with excludeTaskVariables");
         }
         this.taskIds = taskIds;
         return this;
@@ -143,14 +127,10 @@ public class HistoricVariableInstanceQueryImpl
     @Override
     public HistoricVariableInstanceQuery excludeTaskVariables() {
         if (taskId != null) {
-            throw new ActivitiIllegalArgumentException(
-                "Cannot use taskId together with excludeTaskVariables"
-            );
+            throw new ActivitiIllegalArgumentException("Cannot use taskId together with excludeTaskVariables");
         }
         if (taskIds != null) {
-            throw new ActivitiIllegalArgumentException(
-                "Cannot use taskIds together with excludeTaskVariables"
-            );
+            throw new ActivitiIllegalArgumentException("Cannot use taskIds together with excludeTaskVariables");
         }
         excludeTaskRelated = true;
         return this;
@@ -169,10 +149,43 @@ public class HistoricVariableInstanceQueryImpl
         return this;
     }
 
-    public HistoricVariableInstanceQuery variableValueEquals(
-        String variableName,
-        Object variableValue
-    ) {
+    public HistoricVariableInstanceQuery variableValueEquals(String variableName, Object variableValue) {
+        if (variableName == null) {
+            throw new ActivitiIllegalArgumentException("variableName is null");
+        }
+        if (variableValue == null) {
+            throw new ActivitiIllegalArgumentException("variableValue is null");
+        }
+        this.variableName = variableName;
+        queryVariableValue = new QueryVariableValue(variableName, variableValue, QueryOperator.EQUALS, true);
+        return this;
+    }
+
+    public HistoricVariableInstanceQuery variableValueNotEquals(String variableName, Object variableValue) {
+        if (variableName == null) {
+            throw new ActivitiIllegalArgumentException("variableName is null");
+        }
+        if (variableValue == null) {
+            throw new ActivitiIllegalArgumentException("variableValue is null");
+        }
+        this.variableName = variableName;
+        queryVariableValue = new QueryVariableValue(variableName, variableValue, QueryOperator.NOT_EQUALS, true);
+        return this;
+    }
+
+    public HistoricVariableInstanceQuery variableValueLike(String variableName, String variableValue) {
+        if (variableName == null) {
+            throw new ActivitiIllegalArgumentException("variableName is null");
+        }
+        if (variableValue == null) {
+            throw new ActivitiIllegalArgumentException("variableValue is null");
+        }
+        this.variableName = variableName;
+        queryVariableValue = new QueryVariableValue(variableName, variableValue, QueryOperator.LIKE, true);
+        return this;
+    }
+
+    public HistoricVariableInstanceQuery variableValueLikeIgnoreCase(String variableName, String variableValue) {
         if (variableName == null) {
             throw new ActivitiIllegalArgumentException("variableName is null");
         }
@@ -181,85 +194,13 @@ public class HistoricVariableInstanceQueryImpl
         }
         this.variableName = variableName;
         queryVariableValue =
-            new QueryVariableValue(
-                variableName,
-                variableValue,
-                QueryOperator.EQUALS,
-                true
-            );
+            new QueryVariableValue(variableName, variableValue.toLowerCase(), QueryOperator.LIKE_IGNORE_CASE, true);
         return this;
     }
 
-    public HistoricVariableInstanceQuery variableValueNotEquals(
-        String variableName,
-        Object variableValue
-    ) {
-        if (variableName == null) {
-            throw new ActivitiIllegalArgumentException("variableName is null");
-        }
-        if (variableValue == null) {
-            throw new ActivitiIllegalArgumentException("variableValue is null");
-        }
-        this.variableName = variableName;
-        queryVariableValue =
-            new QueryVariableValue(
-                variableName,
-                variableValue,
-                QueryOperator.NOT_EQUALS,
-                true
-            );
-        return this;
-    }
-
-    public HistoricVariableInstanceQuery variableValueLike(
-        String variableName,
-        String variableValue
-    ) {
-        if (variableName == null) {
-            throw new ActivitiIllegalArgumentException("variableName is null");
-        }
-        if (variableValue == null) {
-            throw new ActivitiIllegalArgumentException("variableValue is null");
-        }
-        this.variableName = variableName;
-        queryVariableValue =
-            new QueryVariableValue(
-                variableName,
-                variableValue,
-                QueryOperator.LIKE,
-                true
-            );
-        return this;
-    }
-
-    public HistoricVariableInstanceQuery variableValueLikeIgnoreCase(
-        String variableName,
-        String variableValue
-    ) {
-        if (variableName == null) {
-            throw new ActivitiIllegalArgumentException("variableName is null");
-        }
-        if (variableValue == null) {
-            throw new ActivitiIllegalArgumentException("variableValue is null");
-        }
-        this.variableName = variableName;
-        queryVariableValue =
-            new QueryVariableValue(
-                variableName,
-                variableValue.toLowerCase(),
-                QueryOperator.LIKE_IGNORE_CASE,
-                true
-            );
-        return this;
-    }
-
-    public HistoricVariableInstanceQuery variableNameLike(
-        String variableNameLike
-    ) {
+    public HistoricVariableInstanceQuery variableNameLike(String variableNameLike) {
         if (variableNameLike == null) {
-            throw new ActivitiIllegalArgumentException(
-                "variableNameLike is null"
-            );
+            throw new ActivitiIllegalArgumentException("variableNameLike is null");
         }
         this.variableNameLike = variableNameLike;
         return this;
@@ -267,9 +208,7 @@ public class HistoricVariableInstanceQueryImpl
 
     protected void ensureVariablesInitialized() {
         if (this.queryVariableValue != null) {
-            VariableTypes variableTypes = Context
-                .getProcessEngineConfiguration()
-                .getVariableTypes();
+            VariableTypes variableTypes = Context.getProcessEngineConfiguration().getVariableTypes();
             queryVariableValue.initialize(variableTypes);
         }
     }
@@ -282,10 +221,7 @@ public class HistoricVariableInstanceQueryImpl
             .findHistoricVariableInstanceCountByQueryCriteria(this);
     }
 
-    public List<HistoricVariableInstance> executeList(
-        CommandContext commandContext,
-        Page page
-    ) {
+    public List<HistoricVariableInstance> executeList(CommandContext commandContext, Page page) {
         checkQueryOk();
         ensureVariablesInitialized();
 
@@ -295,28 +231,17 @@ public class HistoricVariableInstanceQueryImpl
 
         if (!excludeVariableInitialization) {
             for (HistoricVariableInstance historicVariableInstance : historicVariableInstances) {
-                if (
-                    historicVariableInstance instanceof HistoricVariableInstanceEntity
-                ) {
+                if (historicVariableInstance instanceof HistoricVariableInstanceEntity) {
                     HistoricVariableInstanceEntity variableEntity = (HistoricVariableInstanceEntity) historicVariableInstance;
-                    if (
-                        variableEntity != null &&
-                        variableEntity.getVariableType() != null
-                    ) {
+                    if (variableEntity != null && variableEntity.getVariableType() != null) {
                         variableEntity.getValue();
 
                         // make sure JPA entities are cached for later retrieval
                         if (
-                            JPAEntityVariableType.TYPE_NAME.equals(
-                                variableEntity.getVariableType().getTypeName()
-                            ) ||
-                            JPAEntityListVariableType.TYPE_NAME.equals(
-                                variableEntity.getVariableType().getTypeName()
-                            )
+                            JPAEntityVariableType.TYPE_NAME.equals(variableEntity.getVariableType().getTypeName()) ||
+                            JPAEntityListVariableType.TYPE_NAME.equals(variableEntity.getVariableType().getTypeName())
                         ) {
-                            (
-                                (CacheableVariable) variableEntity.getVariableType()
-                            ).setForceCacheable(true);
+                            ((CacheableVariable) variableEntity.getVariableType()).setForceCacheable(true);
                         }
                     }
                 }

@@ -39,11 +39,7 @@ public class TaskCleanUpUtil {
         for (Task task : tasks.getContent()) {
             if (task.getProcessInstanceId() == null) {
                 taskAdminRuntime.delete(
-                    TaskPayloadBuilder
-                        .delete()
-                        .withTaskId(task.getId())
-                        .withReason("test clean up")
-                        .build()
+                    TaskPayloadBuilder.delete().withTaskId(task.getId()).withReason("test clean up").build()
                 );
             }
         }

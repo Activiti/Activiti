@@ -38,10 +38,7 @@ public class DataStoreReferenceXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected BaseElement convertXMLToElement(
-        XMLStreamReader xtr,
-        BpmnModel model
-    ) throws Exception {
+    protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
         DataStoreReference dataStoreRef = new DataStoreReference();
         BpmnXMLUtil.addXMLLocation(dataStoreRef, xtr);
         parseChildElements(getXMLElementName(), dataStoreRef, model, xtr);
@@ -49,33 +46,21 @@ public class DataStoreReferenceXMLConverter extends BaseBpmnXMLConverter {
     }
 
     @Override
-    protected void writeAdditionalAttributes(
-        BaseElement element,
-        BpmnModel model,
-        XMLStreamWriter xtw
-    ) throws Exception {
+    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+        throws Exception {
         DataStoreReference dataStoreRef = (DataStoreReference) element;
         if (StringUtils.isNotEmpty(dataStoreRef.getDataStoreRef())) {
-            xtw.writeAttribute(
-                ATTRIBUTE_DATA_STORE_REF,
-                dataStoreRef.getDataStoreRef()
-            );
+            xtw.writeAttribute(ATTRIBUTE_DATA_STORE_REF, dataStoreRef.getDataStoreRef());
         }
 
         if (StringUtils.isNotEmpty(dataStoreRef.getItemSubjectRef())) {
-            xtw.writeAttribute(
-                ATTRIBUTE_ITEM_SUBJECT_REF,
-                dataStoreRef.getItemSubjectRef()
-            );
+            xtw.writeAttribute(ATTRIBUTE_ITEM_SUBJECT_REF, dataStoreRef.getItemSubjectRef());
         }
     }
 
     @Override
-    protected void writeAdditionalChildElements(
-        BaseElement element,
-        BpmnModel model,
-        XMLStreamWriter xtw
-    ) throws Exception {
+    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+        throws Exception {
         DataStoreReference dataStoreRef = (DataStoreReference) element;
         if (StringUtils.isNotEmpty(dataStoreRef.getDataState())) {
             xtw.writeStartElement(ELEMENT_DATA_STATE);

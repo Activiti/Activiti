@@ -55,11 +55,7 @@ public class MessageThrowingEventListener extends BaseDelegateEventListener {
             );
 
             for (EventSubscriptionEntity messageEventSubscriptionEntity : subscriptionEntities) {
-                eventSubscriptionEntityManager.eventReceived(
-                    messageEventSubscriptionEntity,
-                    null,
-                    false
-                );
+                eventSubscriptionEntityManager.eventReceived(messageEventSubscriptionEntity, null, false);
             }
         }
     }

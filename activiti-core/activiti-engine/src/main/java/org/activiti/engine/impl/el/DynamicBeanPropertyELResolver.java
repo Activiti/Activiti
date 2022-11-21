@@ -50,11 +50,7 @@ public class DynamicBeanPropertyELResolver extends ELResolver {
         this.writeMethodName = writeMethodName;
     }
 
-    public DynamicBeanPropertyELResolver(
-        Class<?> subject,
-        String readMethodName,
-        String writeMethodName
-    ) {
+    public DynamicBeanPropertyELResolver(Class<?> subject, String readMethodName, String writeMethodName) {
         this(false, subject, readMethodName, writeMethodName);
     }
 
@@ -68,10 +64,7 @@ public class DynamicBeanPropertyELResolver extends ELResolver {
     }
 
     @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(
-        ELContext context,
-        Object base
-    ) {
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
         return null;
     }
 
@@ -94,11 +87,7 @@ public class DynamicBeanPropertyELResolver extends ELResolver {
         String propertyName = property.toString();
 
         try {
-            Object value = ReflectUtil.invoke(
-                base,
-                this.readMethodName,
-                new Object[] { propertyName }
-            );
+            Object value = ReflectUtil.invoke(base, this.readMethodName, new Object[] { propertyName });
             context.setPropertyResolved(true);
             return value;
         } catch (Exception e) {
@@ -112,23 +101,14 @@ public class DynamicBeanPropertyELResolver extends ELResolver {
     }
 
     @Override
-    public void setValue(
-        ELContext context,
-        Object base,
-        Object property,
-        Object value
-    ) {
+    public void setValue(ELContext context, Object base, Object property, Object value) {
         if (base == null || this.getCommonPropertyType(context, base) == null) {
             return;
         }
 
         String propertyName = property.toString();
         try {
-            ReflectUtil.invoke(
-                base,
-                this.writeMethodName,
-                new Object[] { propertyName, value }
-            );
+            ReflectUtil.invoke(base, this.writeMethodName, new Object[] { propertyName, value });
             context.setPropertyResolved(true);
         } catch (Exception e) {
             throw new ELException(e);

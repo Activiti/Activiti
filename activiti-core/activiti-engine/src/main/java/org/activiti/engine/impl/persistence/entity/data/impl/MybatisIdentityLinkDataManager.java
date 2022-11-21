@@ -36,9 +36,7 @@ public class MybatisIdentityLinkDataManager
 
     protected CachedEntityMatcher<IdentityLinkEntity> identityLinkByProcessInstanceMatcher = new IdentityLinksByProcInstMatcher();
 
-    public MybatisIdentityLinkDataManager(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public MybatisIdentityLinkDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);
     }
 
@@ -55,15 +53,12 @@ public class MybatisIdentityLinkDataManager
     @Override
     @SuppressWarnings("unchecked")
     public List<IdentityLinkEntity> findIdentityLinksByTaskId(String taskId) {
-        return getDbSqlSession()
-            .selectList("selectIdentityLinksByTask", taskId);
+        return getDbSqlSession().selectList("selectIdentityLinksByTask", taskId);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<IdentityLinkEntity> findIdentityLinksByProcessInstanceId(
-        String processInstanceId
-    ) {
+    public List<IdentityLinkEntity> findIdentityLinksByProcessInstanceId(String processInstanceId) {
         return getList(
             "selectIdentityLinksByProcessInstance",
             processInstanceId,
@@ -74,14 +69,8 @@ public class MybatisIdentityLinkDataManager
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<IdentityLinkEntity> findIdentityLinksByProcessDefinitionId(
-        String processDefinitionId
-    ) {
-        return getDbSqlSession()
-            .selectList(
-                "selectIdentityLinksByProcessDefinition",
-                processDefinitionId
-            );
+    public List<IdentityLinkEntity> findIdentityLinksByProcessDefinitionId(String processDefinitionId) {
+        return getDbSqlSession().selectList("selectIdentityLinksByProcessDefinition", processDefinitionId);
     }
 
     @Override
@@ -97,8 +86,7 @@ public class MybatisIdentityLinkDataManager
         parameters.put("userId", userId);
         parameters.put("groupId", groupId);
         parameters.put("type", type);
-        return getDbSqlSession()
-            .selectList("selectIdentityLinkByTaskUserGroupAndType", parameters);
+        return getDbSqlSession().selectList("selectIdentityLinkByTaskUserGroupAndType", parameters);
     }
 
     @Override
@@ -114,11 +102,7 @@ public class MybatisIdentityLinkDataManager
         parameters.put("userId", userId);
         parameters.put("groupId", groupId);
         parameters.put("type", type);
-        return getDbSqlSession()
-            .selectList(
-                "selectIdentityLinkByProcessInstanceUserGroupAndType",
-                parameters
-            );
+        return getDbSqlSession().selectList("selectIdentityLinkByProcessInstanceUserGroupAndType", parameters);
     }
 
     @Override
@@ -132,20 +116,11 @@ public class MybatisIdentityLinkDataManager
         parameters.put("processDefinitionId", processDefinitionId);
         parameters.put("userId", userId);
         parameters.put("groupId", groupId);
-        return getDbSqlSession()
-            .selectList(
-                "selectIdentityLinkByProcessDefinitionUserAndGroup",
-                parameters
-            );
+        return getDbSqlSession().selectList("selectIdentityLinkByProcessDefinitionUserAndGroup", parameters);
     }
 
     @Override
     public void deleteIdentityLinksByProcDef(String processDefId) {
-        getDbSqlSession()
-            .delete(
-                "deleteIdentityLinkByProcDef",
-                processDefId,
-                IdentityLinkEntityImpl.class
-            );
+        getDbSqlSession().delete("deleteIdentityLinkByProcDef", processDefId, IdentityLinkEntityImpl.class);
     }
 }

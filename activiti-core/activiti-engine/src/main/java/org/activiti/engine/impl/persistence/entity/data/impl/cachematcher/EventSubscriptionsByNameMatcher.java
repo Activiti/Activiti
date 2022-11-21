@@ -24,15 +24,11 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 /**
 
  */
-public class EventSubscriptionsByNameMatcher
-    extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
+public class EventSubscriptionsByNameMatcher extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean isRetained(
-        EventSubscriptionEntity eventSubscriptionEntity,
-        Object parameter
-    ) {
+    public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity, Object parameter) {
         Map<String, String> params = (Map<String, String>) parameter;
         String type = params.get("eventType");
         String eventName = params.get("eventName");
@@ -44,19 +40,14 @@ public class EventSubscriptionsByNameMatcher
             eventSubscriptionEntity.getEventName() != null &&
             eventSubscriptionEntity.getEventName().equals(eventName)
         ) {
-            if (
-                tenantId != null &&
-                !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)
-            ) {
+            if (tenantId != null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID)) {
                 return (
                     eventSubscriptionEntity.getTenantId() != null &&
                     eventSubscriptionEntity.getTenantId().equals(tenantId)
                 );
             } else {
                 return (
-                    ProcessEngineConfiguration.NO_TENANT_ID.equals(
-                        eventSubscriptionEntity.getTenantId()
-                    ) ||
+                    ProcessEngineConfiguration.NO_TENANT_ID.equals(eventSubscriptionEntity.getTenantId()) ||
                     eventSubscriptionEntity.getTenantId() == null
                 );
             }

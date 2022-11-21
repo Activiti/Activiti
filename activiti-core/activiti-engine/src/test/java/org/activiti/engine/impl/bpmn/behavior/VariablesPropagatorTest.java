@@ -53,9 +53,7 @@ public class VariablesPropagatorTest {
     @Before
     public void setUp() {
         autoCloseable = openMocks(this);
-        doReturn(executionEntityManager)
-            .when(variablesPropagator)
-            .getExecutionEntityManager();
+        doReturn(executionEntityManager).when(variablesPropagator).getExecutionEntityManager();
     }
 
     @After
@@ -67,24 +65,12 @@ public class VariablesPropagatorTest {
     public void should_setProcessInstanceVariablesAfterResolvingMapping_when_parentIsNotMultiInstanceRoot() {
         //given
         final String processInstanceId = UUID.randomUUID().toString();
-        final DelegateExecution execution = buildExecution(
-            processInstanceId,
-            false
-        );
-        final ExecutionEntity processInstanceEntity = mock(
-            ExecutionEntity.class
-        );
-        given(executionEntityManager.findById(processInstanceId))
-            .willReturn(processInstanceEntity);
+        final DelegateExecution execution = buildExecution(processInstanceId, false);
+        final ExecutionEntity processInstanceEntity = mock(ExecutionEntity.class);
+        given(executionEntityManager.findById(processInstanceId)).willReturn(processInstanceEntity);
 
-        final Map<String, Object> availableVariables = Collections.singletonMap(
-            "beforeMapping",
-            "value"
-        );
-        final Map<String, Object> outboundVariables = Collections.singletonMap(
-            "mapped",
-            "value"
-        );
+        final Map<String, Object> availableVariables = Collections.singletonMap("beforeMapping", "value");
+        final Map<String, Object> outboundVariables = Collections.singletonMap("mapped", "value");
         given(
             variablesCalculator.calculateOutPutVariables(
                 MappingExecutionContext.buildMappingExecutionContext(execution),
@@ -100,20 +86,15 @@ public class VariablesPropagatorTest {
         verify(processInstanceEntity).setVariables(outboundVariables);
     }
 
-    private DelegateExecution buildExecution(
-        String processInstanceId,
-        boolean multiInstanceRoot
-    ) {
+    private DelegateExecution buildExecution(String processInstanceId, boolean multiInstanceRoot) {
         final DelegateExecution execution = mock(DelegateExecution.class);
         when(execution.getProcessInstanceId()).thenReturn(processInstanceId);
         when(execution.getCurrentActivityId()).thenReturn("myTask");
-        when(execution.getProcessDefinitionId())
-            .thenReturn(UUID.randomUUID().toString());
+        when(execution.getProcessDefinitionId()).thenReturn(UUID.randomUUID().toString());
 
         final DelegateExecution parentExecution = mock(DelegateExecution.class);
         when(execution.getParent()).thenReturn(parentExecution);
-        when(parentExecution.isMultiInstanceRoot())
-            .thenReturn(multiInstanceRoot);
+        when(parentExecution.isMultiInstanceRoot()).thenReturn(multiInstanceRoot);
         return execution;
     }
 
@@ -121,14 +102,8 @@ public class VariablesPropagatorTest {
     public void should_propagateAvailableVariablesToLocalScope_when_parentIsMultiInstanceRoot() {
         //given
         final String processInstanceId = UUID.randomUUID().toString();
-        final DelegateExecution execution = buildExecution(
-            processInstanceId,
-            true
-        );
-        final Map<String, Object> availableVariables = Collections.singletonMap(
-            "beforeMapping",
-            "value"
-        );
+        final DelegateExecution execution = buildExecution(processInstanceId, true);
+        final Map<String, Object> availableVariables = Collections.singletonMap("beforeMapping", "value");
 
         //when
         variablesPropagator.propagate(execution, availableVariables);

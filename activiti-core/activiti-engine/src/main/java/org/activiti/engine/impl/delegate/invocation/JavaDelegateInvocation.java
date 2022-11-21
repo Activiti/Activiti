@@ -29,10 +29,7 @@ public class JavaDelegateInvocation extends DelegateInvocation {
     protected final JavaDelegate delegateInstance;
     protected final DelegateExecution execution;
 
-    public JavaDelegateInvocation(
-        JavaDelegate delegateInstance,
-        DelegateExecution execution
-    ) {
+    public JavaDelegateInvocation(JavaDelegate delegateInstance, DelegateExecution execution) {
         this.delegateInstance = delegateInstance;
         this.execution = execution;
     }

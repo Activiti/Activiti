@@ -25,11 +25,7 @@ import org.junit.jupiter.api.Test;
 
 public class MappingAwareActivityBehaviorFactoryTest {
 
-    private MappingAwareActivityBehaviorFactory factory = new MappingAwareActivityBehaviorFactory(
-        null,
-        null,
-        null
-    );
+    private MappingAwareActivityBehaviorFactory factory = new MappingAwareActivityBehaviorFactory(null, null, null);
 
     @Test
     public void createUserTaskActivityBehaviorShouldReturnMappingAwareUserTaskBehavior() {
@@ -45,12 +41,7 @@ public class MappingAwareActivityBehaviorFactoryTest {
 
     @Test
     public void createCallActivityBehaviorWithExpressionShouldReturnMappingAwareCallActivityBehavior() {
-        assertThat(
-            factory.createCallActivityBehavior(
-                mock(Expression.class),
-                emptyList()
-            )
-        )
+        assertThat(factory.createCallActivityBehavior(mock(Expression.class), emptyList()))
             .isInstanceOf(MappingAwareCallActivityBehavior.class);
     }
 

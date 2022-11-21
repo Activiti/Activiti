@@ -21,8 +21,7 @@ import java.util.stream.Collectors;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
-public class ExtendedInMemoryUserDetailsManager
-    extends InMemoryUserDetailsManager {
+public class ExtendedInMemoryUserDetailsManager extends InMemoryUserDetailsManager {
 
     private List<String> users = new ArrayList<>();
     private List<String> groups = new ArrayList<>();

@@ -29,9 +29,7 @@ public class VariableEventFilterTest {
     @Test
     public void should_emmitEvent_when_executionIdIsEqualsToProcessInstanceId() {
         //given
-        ActivitiVariableEventImpl event = new ActivitiVariableEventImpl(
-            ActivitiEventType.VARIABLE_CREATED
-        );
+        ActivitiVariableEventImpl event = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_CREATED);
         event.setExecutionId("id");
         event.setProcessInstanceId("id");
 
@@ -45,9 +43,7 @@ public class VariableEventFilterTest {
     @Test
     public void shouldNot_emmitEvent_when_executionIdIsNotEqualsToProcessInstanceIdAndTaskIdIsNotSet() {
         //given
-        ActivitiVariableEventImpl event = new ActivitiVariableEventImpl(
-            ActivitiEventType.VARIABLE_CREATED
-        );
+        ActivitiVariableEventImpl event = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_CREATED);
         event.setExecutionId("id");
         event.setProcessInstanceId("anotherId");
 
@@ -61,9 +57,7 @@ public class VariableEventFilterTest {
     @Test
     public void should_EmmitEvent_when_executionIdIsNotEqualsToProcessInstanceIdAndTaskIdIsSet() {
         //given
-        ActivitiVariableEventImpl event = new ActivitiVariableEventImpl(
-            ActivitiEventType.VARIABLE_CREATED
-        );
+        ActivitiVariableEventImpl event = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_CREATED);
         event.setExecutionId("id");
         event.setProcessInstanceId("anotherId");
         event.setTaskId("taskId");
@@ -78,9 +72,7 @@ public class VariableEventFilterTest {
     @Test
     public void should_EmmitEvent_when_executionIdAndProcessInstanceIdAreNotSetAndTaskIdIsSet() {
         //given
-        ActivitiVariableEventImpl event = new ActivitiVariableEventImpl(
-            ActivitiEventType.VARIABLE_CREATED
-        );
+        ActivitiVariableEventImpl event = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_CREATED);
         event.setExecutionId(null);
         event.setProcessInstanceId(null);
         event.setTaskId("taskId");

@@ -56,52 +56,33 @@ public class IdentityLinkEntityManagerImpl
         super.insert(entity, fireCreateEvent);
         getHistoryManager().recordIdentityLinkCreated(entity);
 
-        if (
-            entity.getProcessInstanceId() != null &&
-            isExecutionRelatedEntityCountEnabledGlobally()
-        ) {
+        if (entity.getProcessInstanceId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
             CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager()
                 .findById(entity.getProcessInstanceId());
             if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
-                executionEntity.setIdentityLinkCount(
-                    executionEntity.getIdentityLinkCount() + 1
-                );
+                executionEntity.setIdentityLinkCount(executionEntity.getIdentityLinkCount() + 1);
             }
         }
     }
 
     @Override
-    public void deleteIdentityLink(
-        IdentityLinkEntity identityLink,
-        boolean cascadeHistory
-    ) {
+    public void deleteIdentityLink(IdentityLinkEntity identityLink, boolean cascadeHistory) {
         delete(identityLink, false);
         if (cascadeHistory) {
-            getHistoryManager()
-                .deleteHistoricIdentityLink(identityLink.getId());
+            getHistoryManager().deleteHistoricIdentityLink(identityLink.getId());
         }
 
-        if (
-            identityLink.getProcessInstanceId() != null &&
-            isExecutionRelatedEntityCountEnabledGlobally()
-        ) {
+        if (identityLink.getProcessInstanceId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
             CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager()
                 .findById(identityLink.getProcessInstanceId());
             if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
-                executionEntity.setIdentityLinkCount(
-                    executionEntity.getIdentityLinkCount() - 1
-                );
+                executionEntity.setIdentityLinkCount(executionEntity.getIdentityLinkCount() - 1);
             }
         }
 
         if (getEventDispatcher().isEnabled()) {
             getEventDispatcher()
-                .dispatchEvent(
-                    ActivitiEventBuilder.createEntityEvent(
-                        ActivitiEventType.ENTITY_DELETED,
-                        identityLink
-                    )
-                );
+                .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, identityLink));
         }
     }
 
@@ -111,21 +92,13 @@ public class IdentityLinkEntityManagerImpl
     }
 
     @Override
-    public List<IdentityLinkEntity> findIdentityLinksByProcessInstanceId(
-        String processInstanceId
-    ) {
-        return identityLinkDataManager.findIdentityLinksByProcessInstanceId(
-            processInstanceId
-        );
+    public List<IdentityLinkEntity> findIdentityLinksByProcessInstanceId(String processInstanceId) {
+        return identityLinkDataManager.findIdentityLinksByProcessInstanceId(processInstanceId);
     }
 
     @Override
-    public List<IdentityLinkEntity> findIdentityLinksByProcessDefinitionId(
-        String processDefinitionId
-    ) {
-        return identityLinkDataManager.findIdentityLinksByProcessDefinitionId(
-            processDefinitionId
-        );
+    public List<IdentityLinkEntity> findIdentityLinksByProcessDefinitionId(String processDefinitionId) {
+        return identityLinkDataManager.findIdentityLinksByProcessDefinitionId(processDefinitionId);
     }
 
     @Override
@@ -135,12 +108,7 @@ public class IdentityLinkEntityManagerImpl
         String groupId,
         String type
     ) {
-        return identityLinkDataManager.findIdentityLinkByTaskUserGroupAndType(
-            taskId,
-            userId,
-            groupId,
-            type
-        );
+        return identityLinkDataManager.findIdentityLinkByTaskUserGroupAndType(taskId, userId, groupId, type);
     }
 
     @Override
@@ -181,9 +149,7 @@ public class IdentityLinkEntityManagerImpl
         IdentityLinkEntity identityLinkEntity = identityLinkDataManager.create();
         executionEntity.getIdentityLinks().add(identityLinkEntity);
         identityLinkEntity.setProcessInstance(
-            executionEntity.getProcessInstance() != null
-                ? executionEntity.getProcessInstance()
-                : executionEntity
+            executionEntity.getProcessInstance() != null ? executionEntity.getProcessInstance() : executionEntity
         );
         identityLinkEntity.setUserId(userId);
         identityLinkEntity.setGroupId(groupId);
@@ -193,12 +159,7 @@ public class IdentityLinkEntityManagerImpl
     }
 
     @Override
-    public IdentityLinkEntity addIdentityLink(
-        TaskEntity taskEntity,
-        String userId,
-        String groupId,
-        String type
-    ) {
+    public IdentityLinkEntity addIdentityLink(TaskEntity taskEntity, String userId, String groupId, String type) {
         IdentityLinkEntity identityLinkEntity = identityLinkDataManager.create();
         taskEntity.getIdentityLinks().add(identityLinkEntity);
         identityLinkEntity.setTask(taskEntity);
@@ -207,11 +168,7 @@ public class IdentityLinkEntityManagerImpl
         identityLinkEntity.setType(type);
         insert(identityLinkEntity);
         if (userId != null && taskEntity.getProcessInstanceId() != null) {
-            involveUser(
-                taskEntity.getProcessInstance(),
-                userId,
-                IdentityLinkType.PARTICIPANT
-            );
+            involveUser(taskEntity.getProcessInstance(), userId, IdentityLinkType.PARTICIPANT);
         }
         return identityLinkEntity;
     }
@@ -237,15 +194,9 @@ public class IdentityLinkEntityManagerImpl
      * but only if the user is not associated with the execution entity yet.
      **/
     @Override
-    public IdentityLinkEntity involveUser(
-        ExecutionEntity executionEntity,
-        String userId,
-        String type
-    ) {
+    public IdentityLinkEntity involveUser(ExecutionEntity executionEntity, String userId, String type) {
         for (IdentityLinkEntity identityLink : executionEntity.getIdentityLinks()) {
-            if (
-                identityLink.isUser() && identityLink.getUserId().equals(userId)
-            ) {
+            if (identityLink.isUser() && identityLink.getUserId().equals(userId)) {
                 return identityLink;
             }
         }
@@ -258,10 +209,7 @@ public class IdentityLinkEntityManagerImpl
     }
 
     @Override
-    public void addCandidateUsers(
-        TaskEntity taskEntity,
-        Collection<String> candidateUsers
-    ) {
+    public void addCandidateUsers(TaskEntity taskEntity, Collection<String> candidateUsers) {
         for (String candidateUser : candidateUsers) {
             addCandidateUser(taskEntity, candidateUser);
         }
@@ -273,40 +221,24 @@ public class IdentityLinkEntityManagerImpl
     }
 
     @Override
-    public void addCandidateGroups(
-        TaskEntity taskEntity,
-        Collection<String> candidateGroups
-    ) {
+    public void addCandidateGroups(TaskEntity taskEntity, Collection<String> candidateGroups) {
         for (String candidateGroup : candidateGroups) {
             addCandidateGroup(taskEntity, candidateGroup);
         }
     }
 
     @Override
-    public void addGroupIdentityLink(
-        TaskEntity taskEntity,
-        String groupId,
-        String identityLinkType
-    ) {
+    public void addGroupIdentityLink(TaskEntity taskEntity, String groupId, String identityLinkType) {
         addIdentityLink(taskEntity, null, groupId, identityLinkType);
     }
 
     @Override
-    public void addUserIdentityLink(
-        TaskEntity taskEntity,
-        String userId,
-        String identityLinkType
-    ) {
+    public void addUserIdentityLink(TaskEntity taskEntity, String userId, String identityLinkType) {
         addIdentityLink(taskEntity, userId, null, identityLinkType);
     }
 
     @Override
-    public void deleteIdentityLink(
-        ExecutionEntity executionEntity,
-        String userId,
-        String groupId,
-        String type
-    ) {
+    public void deleteIdentityLink(ExecutionEntity executionEntity, String userId, String groupId, String type) {
         String id = executionEntity.getProcessInstanceId() != null
             ? executionEntity.getProcessInstanceId()
             : executionEntity.getId();
@@ -325,12 +257,7 @@ public class IdentityLinkEntityManagerImpl
     }
 
     @Override
-    public void deleteIdentityLink(
-        TaskEntity taskEntity,
-        String userId,
-        String groupId,
-        String type
-    ) {
+    public void deleteIdentityLink(TaskEntity taskEntity, String userId, String groupId, String type) {
         List<IdentityLinkEntity> identityLinks = findIdentityLinkByTaskUserGroupAndType(
             taskEntity.getId(),
             userId,
@@ -348,20 +275,12 @@ public class IdentityLinkEntityManagerImpl
         List<IdentityLinkEntity> removedIdentityLinkEntities = new ArrayList<IdentityLinkEntity>();
         for (IdentityLinkEntity identityLinkEntity : taskEntity.getIdentityLinks()) {
             if (
-                IdentityLinkType.CANDIDATE.equals(
-                    identityLinkEntity.getType()
-                ) &&
+                IdentityLinkType.CANDIDATE.equals(identityLinkEntity.getType()) &&
                 identityLinkIds.contains(identityLinkEntity.getId()) == false
             ) {
                 if (
-                    (
-                        userId != null &&
-                        userId.equals(identityLinkEntity.getUserId())
-                    ) ||
-                    (
-                        groupId != null &&
-                        groupId.equals(identityLinkEntity.getGroupId())
-                    )
+                    (userId != null && userId.equals(identityLinkEntity.getUserId())) ||
+                    (groupId != null && groupId.equals(identityLinkEntity.getGroupId()))
                 ) {
                     deleteIdentityLink(identityLinkEntity, true);
                     removedIdentityLinkEntities.add(identityLinkEntity);
@@ -373,11 +292,7 @@ public class IdentityLinkEntityManagerImpl
     }
 
     @Override
-    public void deleteIdentityLink(
-        ProcessDefinitionEntity processDefinitionEntity,
-        String userId,
-        String groupId
-    ) {
+    public void deleteIdentityLink(ProcessDefinitionEntity processDefinitionEntity, String userId, String groupId) {
         List<IdentityLinkEntity> identityLinks = findIdentityLinkByProcessDefinitionUserAndGroup(
             processDefinitionEntity.getId(),
             userId,
@@ -390,9 +305,7 @@ public class IdentityLinkEntityManagerImpl
 
     @Override
     public void deleteIdentityLinksByTaskId(String taskId) {
-        List<IdentityLinkEntity> identityLinks = findIdentityLinksByTaskId(
-            taskId
-        );
+        List<IdentityLinkEntity> identityLinks = findIdentityLinksByTaskId(taskId);
         for (IdentityLinkEntity identityLink : identityLinks) {
             deleteIdentityLink(identityLink, false);
         }
@@ -407,9 +320,7 @@ public class IdentityLinkEntityManagerImpl
         return identityLinkDataManager;
     }
 
-    public void setIdentityLinkDataManager(
-        IdentityLinkDataManager identityLinkDataManager
-    ) {
+    public void setIdentityLinkDataManager(IdentityLinkDataManager identityLinkDataManager) {
         this.identityLinkDataManager = identityLinkDataManager;
     }
 }

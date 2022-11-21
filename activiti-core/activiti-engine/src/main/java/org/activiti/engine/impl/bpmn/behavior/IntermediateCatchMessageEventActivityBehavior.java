@@ -29,8 +29,7 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManage
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 
-public class IntermediateCatchMessageEventActivityBehavior
-    extends IntermediateCatchEventActivityBehavior {
+public class IntermediateCatchMessageEventActivityBehavior extends IntermediateCatchEventActivityBehavior {
 
     private static final long serialVersionUID = 1L;
 
@@ -52,12 +51,7 @@ public class IntermediateCatchMessageEventActivityBehavior
             commandContext,
             execution
         );
-        if (
-            commandContext
-                .getProcessEngineConfiguration()
-                .getEventDispatcher()
-                .isEnabled()
-        ) {
+        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
             commandContext
                 .getProcessEngineConfiguration()
                 .getEventDispatcher()
@@ -72,14 +66,8 @@ public class IntermediateCatchMessageEventActivityBehavior
     }
 
     @Override
-    public void trigger(
-        DelegateExecution execution,
-        String triggerName,
-        Object triggerData
-    ) {
-        ExecutionEntity executionEntity = deleteMessageEventSubScription(
-            execution
-        );
+    public void trigger(DelegateExecution execution, String triggerName, Object triggerData) {
+        ExecutionEntity executionEntity = deleteMessageEventSubScription(execution);
         leaveIntermediateCatchEvent(executionEntity);
     }
 
@@ -89,15 +77,10 @@ public class IntermediateCatchMessageEventActivityBehavior
         Context
             .getCommandContext()
             .getExecutionEntityManager()
-            .deleteExecutionAndRelatedData(
-                (ExecutionEntity) execution,
-                DeleteReason.EVENT_BASED_GATEWAY_CANCEL
-            );
+            .deleteExecutionAndRelatedData((ExecutionEntity) execution, DeleteReason.EVENT_BASED_GATEWAY_CANCEL);
     }
 
-    protected ExecutionEntity deleteMessageEventSubScription(
-        DelegateExecution execution
-    ) {
+    protected ExecutionEntity deleteMessageEventSubScription(DelegateExecution execution) {
         ExecutionEntity executionEntity = (ExecutionEntity) execution;
         // Should we use triggerName and triggerData, because message name expression can change?
         String messageName = messageExecutionContext.getMessageName(execution);

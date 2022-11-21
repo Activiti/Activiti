@@ -35,9 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(
-        ProcessParseHandler.class
-    );
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessParseHandler.class);
 
     public static final String PROPERTYNAME_DOCUMENTATION = "documentation";
 
@@ -53,16 +51,11 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
                 "'. Set the attribute isExecutable=\"true\" to deploy this process."
             );
         } else {
-            bpmnParse
-                .getProcessDefinitions()
-                .add(transformProcess(bpmnParse, process));
+            bpmnParse.getProcessDefinitions().add(transformProcess(bpmnParse, process));
         }
     }
 
-    protected ProcessDefinitionEntity transformProcess(
-        BpmnParse bpmnParse,
-        Process process
-    ) {
+    protected ProcessDefinitionEntity transformProcess(BpmnParse bpmnParse, Process process) {
         ProcessDefinitionEntity currentProcessDefinition = Context
             .getCommandContext()
             .getProcessDefinitionEntityManager()
@@ -74,27 +67,18 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
          */
         currentProcessDefinition.setKey(process.getId());
         currentProcessDefinition.setName(process.getName());
-        currentProcessDefinition.setCategory(
-            bpmnParse.getBpmnModel().getTargetNamespace()
-        );
+        currentProcessDefinition.setCategory(bpmnParse.getBpmnModel().getTargetNamespace());
         currentProcessDefinition.setDescription(process.getDocumentation());
-        currentProcessDefinition.setDeploymentId(
-            bpmnParse.getDeployment().getId()
-        );
+        currentProcessDefinition.setDeploymentId(bpmnParse.getDeployment().getId());
 
         if (bpmnParse.getDeployment().getEngineVersion() != null) {
-            currentProcessDefinition.setEngineVersion(
-                bpmnParse.getDeployment().getEngineVersion()
-            );
+            currentProcessDefinition.setEngineVersion(bpmnParse.getDeployment().getEngineVersion());
         }
 
         createEventListeners(bpmnParse, process.getEventListeners());
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(
-                "Parsing process {}",
-                currentProcessDefinition.getKey()
-            );
+            LOGGER.debug("Parsing process {}", currentProcessDefinition.getKey());
         }
 
         bpmnParse.processFlowElements(process.getFlowElements());
@@ -103,29 +87,16 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
         return currentProcessDefinition;
     }
 
-    protected void createEventListeners(
-        BpmnParse bpmnParse,
-        List<EventListener> eventListeners
-    ) {
+    protected void createEventListeners(BpmnParse bpmnParse, List<EventListener> eventListeners) {
         if (eventListeners != null && !eventListeners.isEmpty()) {
             for (EventListener eventListener : eventListeners) {
                 // Extract specific event-types (if any)
-                ActivitiEventType[] types = ActivitiEventType.getTypesFromString(
-                    eventListener.getEvents()
-                );
+                ActivitiEventType[] types = ActivitiEventType.getTypesFromString(eventListener.getEvents());
 
-                if (
-                    ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(
-                        eventListener.getImplementationType()
-                    )
-                ) {
+                if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(eventListener.getImplementationType())) {
                     getEventSupport(bpmnParse.getBpmnModel())
                         .addEventListener(
-                            bpmnParse
-                                .getListenerFactory()
-                                .createClassDelegateEventListener(
-                                    eventListener
-                                ),
+                            bpmnParse.getListenerFactory().createClassDelegateEventListener(eventListener),
                             types
                         );
                 } else if (
@@ -135,11 +106,7 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
                 ) {
                     getEventSupport(bpmnParse.getBpmnModel())
                         .addEventListener(
-                            bpmnParse
-                                .getListenerFactory()
-                                .createDelegateExpressionEventListener(
-                                    eventListener
-                                ),
+                            bpmnParse.getListenerFactory().createDelegateExpressionEventListener(eventListener),
                             types
                         );
                 } else if (
@@ -158,11 +125,7 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
                 ) {
                     getEventSupport(bpmnParse.getBpmnModel())
                         .addEventListener(
-                            bpmnParse
-                                .getListenerFactory()
-                                .createEventThrowingEventListener(
-                                    eventListener
-                                ),
+                            bpmnParse.getListenerFactory().createEventThrowingEventListener(eventListener),
                             types
                         );
                 } else {

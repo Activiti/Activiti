@@ -31,9 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ManagedAsyncJobExecutor extends DefaultAsyncJobExecutor {
 
-    private static Logger log = LoggerFactory.getLogger(
-        ManagedAsyncJobExecutor.class
-    );
+    private static Logger log = LoggerFactory.getLogger(ManagedAsyncJobExecutor.class);
 
     protected ManagedThreadFactory threadFactory;
 
@@ -47,9 +45,7 @@ public class ManagedAsyncJobExecutor extends DefaultAsyncJobExecutor {
 
     protected void initAsyncJobExecutionThreadPool() {
         if (threadFactory == null) {
-            log.warn(
-                "A managed thread factory was not found, falling back to self-managed threads"
-            );
+            log.warn("A managed thread factory was not found, falling back to self-managed threads");
             super.initAsyncJobExecutionThreadPool();
         } else {
             if (threadPoolQueue == null) {
@@ -73,9 +69,7 @@ public class ManagedAsyncJobExecutor extends DefaultAsyncJobExecutor {
                     threadPoolQueue,
                     threadFactory
                 );
-                threadPoolExecutor.setRejectedExecutionHandler(
-                    new ThreadPoolExecutor.CallerRunsPolicy()
-                );
+                threadPoolExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
                 executorService = threadPoolExecutor;
             }
 

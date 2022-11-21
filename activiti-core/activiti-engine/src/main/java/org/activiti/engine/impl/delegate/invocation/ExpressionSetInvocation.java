@@ -29,11 +29,7 @@ public class ExpressionSetInvocation extends ExpressionInvocation {
     protected final Object value;
     protected ELContext elContext;
 
-    public ExpressionSetInvocation(
-        ValueExpression valueExpression,
-        ELContext elContext,
-        Object value
-    ) {
+    public ExpressionSetInvocation(ValueExpression valueExpression, ELContext elContext, Object value) {
         super(valueExpression);
         this.value = value;
         this.elContext = elContext;

@@ -56,15 +56,9 @@ class ProcessVariablesMapTypeRegistryTest {
 
     @ParameterizedTest
     @MethodSource("typesToClass")
-    public void forType_shouldReturn_relatedClass(
-        String type,
-        Class<?> expectedClass
-    ) {
+    public void forType_shouldReturn_relatedClass(String type, Class<?> expectedClass) {
         //when
-        Class<?> relatedClass = ProcessVariablesMapTypeRegistry.forType(
-            type,
-            String.class
-        );
+        Class<?> relatedClass = ProcessVariablesMapTypeRegistry.forType(type, String.class);
 
         //then
         assertThat(relatedClass).isEqualTo(expectedClass);
@@ -76,10 +70,7 @@ class ProcessVariablesMapTypeRegistryTest {
         String type = "unknown";
 
         //when
-        Class<?> relatedClass = ProcessVariablesMapTypeRegistry.forType(
-            type,
-            String.class
-        );
+        Class<?> relatedClass = ProcessVariablesMapTypeRegistry.forType(type, String.class);
 
         //then
         assertThat(relatedClass).isEqualTo(String.class);

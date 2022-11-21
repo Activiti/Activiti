@@ -62,10 +62,7 @@ public class SerializableType extends ByteArrayType {
             Object deserializedObject = deserialize(bytes, valueFields);
             valueFields.setCachedValue(deserializedObject);
 
-            if (
-                trackDeserializedObjects &&
-                valueFields instanceof VariableInstanceEntity
-            ) {
+            if (trackDeserializedObjects && valueFields instanceof VariableInstanceEntity) {
                 Context
                     .getCommandContext()
                     .addCloseListener(
@@ -91,10 +88,7 @@ public class SerializableType extends ByteArrayType {
 
         super.setValue(bytes, valueFields);
 
-        if (
-            trackDeserializedObjects &&
-            valueFields instanceof VariableInstanceEntity
-        ) {
+        if (trackDeserializedObjects && valueFields instanceof VariableInstanceEntity) {
             Context
                 .getCommandContext()
                 .addCloseListener(
@@ -121,11 +115,7 @@ public class SerializableType extends ByteArrayType {
             oos.writeObject(value);
         } catch (Exception e) {
             throw new ActivitiException(
-                "Couldn't serialize value '" +
-                value +
-                "' in variable '" +
-                valueFields.getName() +
-                "'",
+                "Couldn't serialize value '" + value + "' in variable '" + valueFields.getName() + "'",
                 e
             );
         } finally {
@@ -142,12 +132,7 @@ public class SerializableType extends ByteArrayType {
 
             return deserializedObject;
         } catch (Exception e) {
-            throw new ActivitiException(
-                "Couldn't deserialize object in variable '" +
-                valueFields.getName() +
-                "'",
-                e
-            );
+            throw new ActivitiException("Couldn't deserialize object in variable '" + valueFields.getName() + "'", e);
         } finally {
             IoUtil.closeSilently(bais);
         }
@@ -158,18 +143,15 @@ public class SerializableType extends ByteArrayType {
         return value instanceof Serializable;
     }
 
-    protected ObjectInputStream createObjectInputStream(InputStream is)
-        throws IOException {
+    protected ObjectInputStream createObjectInputStream(InputStream is) throws IOException {
         return new ObjectInputStream(is) {
-            protected Class<?> resolveClass(ObjectStreamClass desc)
-                throws IOException, ClassNotFoundException {
+            protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
                 return ReflectUtil.loadClass(desc.getName());
             }
         };
     }
 
-    protected ObjectOutputStream createObjectOutputStream(OutputStream os)
-        throws IOException {
+    protected ObjectOutputStream createObjectOutputStream(OutputStream os) throws IOException {
         return new ObjectOutputStream(os);
     }
 }

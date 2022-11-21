@@ -18,9 +18,7 @@ package org.activiti.api.runtime.model.impl;
 import java.util.Objects;
 import org.activiti.api.process.model.BPMNSequenceFlow;
 
-public class BPMNSequenceFlowImpl
-    extends BPMNElementImpl
-    implements BPMNSequenceFlow {
+public class BPMNSequenceFlowImpl extends BPMNElementImpl implements BPMNSequenceFlow {
 
     private String sourceActivityElementId;
     private String sourceActivityName;
@@ -31,11 +29,7 @@ public class BPMNSequenceFlowImpl
 
     public BPMNSequenceFlowImpl() {}
 
-    public BPMNSequenceFlowImpl(
-        String elementId,
-        String sourceActivityElementId,
-        String targetActivityElementId
-    ) {
+    public BPMNSequenceFlowImpl(String elementId, String sourceActivityElementId, String targetActivityElementId) {
         this.setElementId(elementId);
         this.sourceActivityElementId = sourceActivityElementId;
         this.targetActivityElementId = targetActivityElementId;
@@ -98,16 +92,10 @@ public class BPMNSequenceFlowImpl
         BPMNSequenceFlowImpl that = (BPMNSequenceFlowImpl) o;
         return (
             Objects.equals(getElementId(), that.getElementId()) &&
-            Objects.equals(
-                sourceActivityElementId,
-                that.getSourceActivityElementId()
-            ) &&
+            Objects.equals(sourceActivityElementId, that.getSourceActivityElementId()) &&
             Objects.equals(sourceActivityType, that.getSourceActivityType()) &&
             Objects.equals(sourceActivityName, that.getSourceActivityName()) &&
-            Objects.equals(
-                targetActivityElementId,
-                that.getTargetActivityElementId()
-            ) &&
+            Objects.equals(targetActivityElementId, that.getTargetActivityElementId()) &&
             Objects.equals(targetActivityType, that.getTargetActivityType()) &&
             Objects.equals(targetActivityName, that.getTargetActivityName())
         );
@@ -115,11 +103,7 @@ public class BPMNSequenceFlowImpl
 
     @Override
     public int hashCode() {
-        return Objects.hash(
-            getElementId(),
-            sourceActivityElementId,
-            targetActivityElementId
-        );
+        return Objects.hash(getElementId(), sourceActivityElementId, targetActivityElementId);
     }
 
     @Override

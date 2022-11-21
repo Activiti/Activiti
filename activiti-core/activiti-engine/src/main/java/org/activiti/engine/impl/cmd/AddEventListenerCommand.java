@@ -32,10 +32,7 @@ public class AddEventListenerCommand implements Command<Void> {
     protected ActivitiEventListener listener;
     protected ActivitiEventType[] types;
 
-    public AddEventListenerCommand(
-        ActivitiEventListener listener,
-        ActivitiEventType[] types
-    ) {
+    public AddEventListenerCommand(ActivitiEventListener listener, ActivitiEventType[] types) {
         this.listener = listener;
         this.types = types;
     }
@@ -52,15 +49,9 @@ public class AddEventListenerCommand implements Command<Void> {
         }
 
         if (types != null) {
-            commandContext
-                .getProcessEngineConfiguration()
-                .getEventDispatcher()
-                .addEventListener(listener, types);
+            commandContext.getProcessEngineConfiguration().getEventDispatcher().addEventListener(listener, types);
         } else {
-            commandContext
-                .getProcessEngineConfiguration()
-                .getEventDispatcher()
-                .addEventListener(listener);
+            commandContext.getProcessEngineConfiguration().getEventDispatcher().addEventListener(listener);
         }
 
         return null;

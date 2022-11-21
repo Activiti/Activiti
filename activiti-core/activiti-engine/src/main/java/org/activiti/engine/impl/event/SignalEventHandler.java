@@ -45,11 +45,7 @@ public class SignalEventHandler extends AbstractEventHandler {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void handleEvent(
-        EventSubscriptionEntity eventSubscription,
-        Object payload,
-        CommandContext commandContext
-    ) {
+    public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
         if (eventSubscription.getExecutionId() != null) {
             dispatchActivitySignalledEvent(
                 eventSubscription.getExecution(),
@@ -62,38 +58,26 @@ public class SignalEventHandler extends AbstractEventHandler {
         } else if (eventSubscription.getProcessDefinitionId() != null) {
             // Find initial flow element matching the signal start event
             String processDefinitionId = eventSubscription.getProcessDefinitionId();
-            ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinition(
-                processDefinitionId
-            );
+            ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinition(processDefinitionId);
 
             if (processDefinition == null) {
                 throw new ActivitiObjectNotFoundException(
-                    "No process definition found for id '" +
-                    processDefinitionId +
-                    "'",
+                    "No process definition found for id '" + processDefinitionId + "'",
                     ProcessDefinition.class
                 );
             }
 
             if (processDefinition.isSuspended()) {
                 throw new ActivitiException(
-                    "Could not handle signal: process definition with id: " +
-                    processDefinitionId +
-                    " is suspended"
+                    "Could not handle signal: process definition with id: " + processDefinitionId + " is suspended"
                 );
             }
 
-            org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(
-                processDefinitionId
-            );
-            FlowElement flowElement = process.getFlowElement(
-                eventSubscription.getActivityId(),
-                true
-            );
+            org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
+            FlowElement flowElement = process.getFlowElement(eventSubscription.getActivityId(), true);
             if (flowElement == null) {
                 throw new ActivitiException(
-                    "Could not find matching FlowElement for activityId " +
-                    eventSubscription.getActivityId()
+                    "Could not find matching FlowElement for activityId " + eventSubscription.getActivityId()
                 );
             }
 
@@ -114,27 +98,12 @@ public class SignalEventHandler extends AbstractEventHandler {
                 flowElement,
                 process
             );
-            DelegateExecution execution = executionEntity
-                .getExecutions()
-                .get(0);
-            dispatchActivitySignalledEvent(
-                execution,
-                eventSubscription.getEventName(),
-                payload,
-                commandContext
-            );
+            DelegateExecution execution = executionEntity.getExecutions().get(0);
+            dispatchActivitySignalledEvent(execution, eventSubscription.getEventName(), payload, commandContext);
 
-            processInstanceHelper.startProcessInstance(
-                executionEntity,
-                commandContext,
-                variables,
-                flowElement,
-                null
-            );
+            processInstanceHelper.startProcessInstance(executionEntity, commandContext, variables, flowElement, null);
         } else {
-            throw new ActivitiException(
-                "Invalid signal handling: no execution nor process definition set"
-            );
+            throw new ActivitiException("Invalid signal handling: no execution nor process definition set");
         }
     }
 
@@ -144,22 +113,14 @@ public class SignalEventHandler extends AbstractEventHandler {
         Object payload,
         CommandContext commandContext
     ) {
-        if (
-            commandContext
-                .getProcessEngineConfiguration()
-                .getEventDispatcher()
-                .isEnabled()
-        ) {
+        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
             ActivitiSignalEvent signalEvent = ActivitiEventBuilder.createActivitiySignalledEvent(
                 execution,
                 signalName,
                 payload
             );
 
-            Context
-                .getProcessEngineConfiguration()
-                .getEventDispatcher()
-                .dispatchEvent(signalEvent);
+            Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(signalEvent);
         }
     }
 }

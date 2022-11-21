@@ -85,11 +85,9 @@ public class ProcessRuntimeBPMNMessageIT {
 
     private static final String START_MESSAGE_PAYLOAD = "startMessagePayload";
 
-    private static final String PROCESS_INTERMEDIATE_THROW_MESSAGE_EVENT =
-        "intermediateThrowMessageEvent";
+    private static final String PROCESS_INTERMEDIATE_THROW_MESSAGE_EVENT = "intermediateThrowMessageEvent";
 
-    private static final String CATCH_MESSAGE_PAYLOAD =
-        "Process_catchMessagePayload";
+    private static final String CATCH_MESSAGE_PAYLOAD = "Process_catchMessagePayload";
 
     @Component
     public static class TestStartMessageDeployedRuntimeEventListener
@@ -103,9 +101,7 @@ public class ProcessRuntimeBPMNMessageIT {
         }
 
         public StartMessageDeployedEvent[] getStartMessageDeployedEvents() {
-            return startMessageDeployedEvents.toArray(
-                new StartMessageDeployedEvent[] {}
-            );
+            return startMessageDeployedEvents.toArray(new StartMessageDeployedEvent[] {});
         }
     }
 
@@ -116,15 +112,11 @@ public class ProcessRuntimeBPMNMessageIT {
 
         @EventListener
         public void onEvent(StartMessageDeployedEvents event) {
-            startMessageDeployedEvents.addAll(
-                event.getStartMessageDeployedEvents()
-            );
+            startMessageDeployedEvents.addAll(event.getStartMessageDeployedEvents());
         }
 
         public StartMessageDeployedEvent[] getStartMessageDeployedEvents() {
-            return startMessageDeployedEvents.toArray(
-                new StartMessageDeployedEvent[] {}
-            );
+            return startMessageDeployedEvents.toArray(new StartMessageDeployedEvent[] {});
         }
     }
 
@@ -173,15 +165,11 @@ public class ProcessRuntimeBPMNMessageIT {
         assertThat(events)
             .isNotEmpty()
             .extracting(StartMessageDeployedEvent::getEntity)
-            .extracting(
-                StartMessageDeploymentDefinition::getMessageSubscription
-            )
+            .extracting(StartMessageDeploymentDefinition::getMessageSubscription)
             .extracting(StartMessageSubscription::getEventName)
             .contains("testMessage", "startMessagePayload");
 
-        assertThat(
-            startMessageDeployedApplicationEventListener.getStartMessageDeployedEvents()
-        )
+        assertThat(startMessageDeployedApplicationEventListener.getStartMessageDeployedEvents())
             .containsExactly(events);
     }
 
@@ -191,9 +179,7 @@ public class ProcessRuntimeBPMNMessageIT {
             ProcessPayloadBuilder
                 .start()
                 .withBusinessKey("businessKey")
-                .withProcessDefinitionKey(
-                    PROCESS_INTERMEDIATE_THROW_MESSAGE_EVENT
-                )
+                .withProcessDefinitionKey(PROCESS_INTERMEDIATE_THROW_MESSAGE_EVENT)
                 .build()
         );
         assertThat(MessageTestConfiguration.messageEvents)
@@ -205,8 +191,7 @@ public class ProcessRuntimeBPMNMessageIT {
                 event -> event.getEntity().getProcessDefinitionId(),
                 event -> event.getEntity().getProcessInstanceId(),
                 event -> event.getEntity().getMessagePayload().getName(),
-                event ->
-                    event.getEntity().getMessagePayload().getCorrelationKey(),
+                event -> event.getEntity().getMessagePayload().getCorrelationKey(),
                 event -> event.getEntity().getMessagePayload().getBusinessKey(),
                 event -> event.getEntity().getMessagePayload().getVariables()
             )
@@ -255,8 +240,7 @@ public class ProcessRuntimeBPMNMessageIT {
                 event -> event.getEntity().getProcessDefinitionId(),
                 event -> event.getEntity().getProcessInstanceId(),
                 event -> event.getEntity().getMessagePayload().getName(),
-                event ->
-                    event.getEntity().getMessagePayload().getCorrelationKey(),
+                event -> event.getEntity().getMessagePayload().getCorrelationKey(),
                 event -> event.getEntity().getMessagePayload().getBusinessKey(),
                 event -> event.getEntity().getMessagePayload().getVariables()
             )
@@ -287,10 +271,7 @@ public class ProcessRuntimeBPMNMessageIT {
 
         // and
         List<VariableInstance> variables = processRuntime.variables(
-            ProcessPayloadBuilder
-                .variables()
-                .withProcessInstanceId(process.getId())
-                .build()
+            ProcessPayloadBuilder.variables().withProcessInstanceId(process.getId()).build()
         );
 
         assertThat(variables)
@@ -318,8 +299,7 @@ public class ProcessRuntimeBPMNMessageIT {
                 event -> event.getEntity().getProcessDefinitionId(),
                 event -> event.getEntity().getProcessInstanceId(),
                 event -> event.getEntity().getMessagePayload().getName(),
-                event ->
-                    event.getEntity().getMessagePayload().getCorrelationKey(),
+                event -> event.getEntity().getMessagePayload().getCorrelationKey(),
                 event -> event.getEntity().getMessagePayload().getBusinessKey(),
                 event -> event.getEntity().getMessagePayload().getVariables()
             )
@@ -339,10 +319,7 @@ public class ProcessRuntimeBPMNMessageIT {
 
         // and
         List<VariableInstance> variables = processRuntime.variables(
-            ProcessPayloadBuilder
-                .variables()
-                .withProcessInstanceId(process.getId())
-                .build()
+            ProcessPayloadBuilder.variables().withProcessInstanceId(process.getId()).build()
         );
 
         assertThat(variables)
@@ -370,8 +347,7 @@ public class ProcessRuntimeBPMNMessageIT {
                 event -> event.getEntity().getProcessDefinitionId(),
                 event -> event.getEntity().getProcessInstanceId(),
                 event -> event.getEntity().getMessagePayload().getName(),
-                event ->
-                    event.getEntity().getMessagePayload().getCorrelationKey(),
+                event -> event.getEntity().getMessagePayload().getCorrelationKey(),
                 event -> event.getEntity().getMessagePayload().getBusinessKey(),
                 event -> event.getEntity().getMessagePayload().getVariables()
             )
@@ -403,11 +379,7 @@ public class ProcessRuntimeBPMNMessageIT {
 
         // when
         processRuntime.receive(
-            MessagePayloadBuilder
-                .receive(TEST_MESSAGE)
-                .withVariable("key", "value")
-                .withCorrelationKey("foo")
-                .build()
+            MessagePayloadBuilder.receive(TEST_MESSAGE).withVariable("key", "value").withCorrelationKey("foo").build()
         );
         // then
         assertThat(MessageTestConfiguration.messageEvents)
@@ -419,8 +391,7 @@ public class ProcessRuntimeBPMNMessageIT {
                 event -> event.getEntity().getProcessDefinitionId(),
                 event -> event.getEntity().getProcessInstanceId(),
                 event -> event.getEntity().getMessagePayload().getName(),
-                event ->
-                    event.getEntity().getMessagePayload().getCorrelationKey(),
+                event -> event.getEntity().getMessagePayload().getCorrelationKey(),
                 event -> event.getEntity().getMessagePayload().getBusinessKey(),
                 event -> event.getEntity().getMessagePayload().getVariables()
             )
@@ -454,11 +425,7 @@ public class ProcessRuntimeBPMNMessageIT {
     public void shouldThrowEndMessageEvent() {
         // when
         ProcessInstance process = processRuntime.start(
-            ProcessPayloadBuilder
-                .start()
-                .withBusinessKey("businessKey")
-                .withProcessDefinitionKey(END_MESSAGE)
-                .build()
+            ProcessPayloadBuilder.start().withBusinessKey("businessKey").withProcessDefinitionKey(END_MESSAGE).build()
         );
 
         // then
@@ -471,8 +438,7 @@ public class ProcessRuntimeBPMNMessageIT {
                 event -> event.getEntity().getProcessDefinitionId(),
                 event -> event.getEntity().getProcessInstanceId(),
                 event -> event.getEntity().getMessagePayload().getName(),
-                event ->
-                    event.getEntity().getMessagePayload().getCorrelationKey(),
+                event -> event.getEntity().getMessagePayload().getCorrelationKey(),
                 event -> event.getEntity().getMessagePayload().getBusinessKey(),
                 event -> event.getEntity().getMessagePayload().getVariables()
             )
@@ -504,11 +470,7 @@ public class ProcessRuntimeBPMNMessageIT {
 
         // when
         processRuntime.receive(
-            MessagePayloadBuilder
-                .receive(TEST_MESSAGE)
-                .withVariable("key", "value")
-                .withCorrelationKey("foo")
-                .build()
+            MessagePayloadBuilder.receive(TEST_MESSAGE).withVariable("key", "value").withCorrelationKey("foo").build()
         );
         // then
         assertThat(MessageTestConfiguration.messageEvents)
@@ -520,8 +482,7 @@ public class ProcessRuntimeBPMNMessageIT {
                 event -> event.getEntity().getProcessDefinitionId(),
                 event -> event.getEntity().getProcessInstanceId(),
                 event -> event.getEntity().getMessagePayload().getName(),
-                event ->
-                    event.getEntity().getMessagePayload().getCorrelationKey(),
+                event -> event.getEntity().getMessagePayload().getCorrelationKey(),
                 event -> event.getEntity().getMessagePayload().getBusinessKey(),
                 event -> event.getEntity().getMessagePayload().getVariables()
             )
@@ -564,11 +525,7 @@ public class ProcessRuntimeBPMNMessageIT {
 
         // when
         processRuntime.receive(
-            MessagePayloadBuilder
-                .receive(TEST_MESSAGE)
-                .withVariable("key", "value")
-                .withCorrelationKey("foo")
-                .build()
+            MessagePayloadBuilder.receive(TEST_MESSAGE).withVariable("key", "value").withCorrelationKey("foo").build()
         );
         // then
         assertThat(MessageTestConfiguration.messageEvents)
@@ -580,8 +537,7 @@ public class ProcessRuntimeBPMNMessageIT {
                 event -> event.getEntity().getProcessDefinitionId(),
                 event -> event.getEntity().getProcessInstanceId(),
                 event -> event.getEntity().getMessagePayload().getName(),
-                event ->
-                    event.getEntity().getMessagePayload().getCorrelationKey(),
+                event -> event.getEntity().getMessagePayload().getCorrelationKey(),
                 event -> event.getEntity().getMessagePayload().getBusinessKey(),
                 event -> event.getEntity().getMessagePayload().getVariables()
             )
@@ -624,11 +580,7 @@ public class ProcessRuntimeBPMNMessageIT {
 
         // when
         processRuntime.receive(
-            MessagePayloadBuilder
-                .receive(TEST_MESSAGE)
-                .withVariable("key", "value")
-                .withCorrelationKey("foo")
-                .build()
+            MessagePayloadBuilder.receive(TEST_MESSAGE).withVariable("key", "value").withCorrelationKey("foo").build()
         );
         // then
         assertThat(MessageTestConfiguration.messageEvents)
@@ -640,8 +592,7 @@ public class ProcessRuntimeBPMNMessageIT {
                 event -> event.getEntity().getProcessDefinitionId(),
                 event -> event.getEntity().getProcessInstanceId(),
                 event -> event.getEntity().getMessagePayload().getName(),
-                event ->
-                    event.getEntity().getMessagePayload().getCorrelationKey(),
+                event -> event.getEntity().getMessagePayload().getCorrelationKey(),
                 event -> event.getEntity().getMessagePayload().getBusinessKey(),
                 event -> event.getEntity().getMessagePayload().getVariables()
             )
@@ -683,11 +634,7 @@ public class ProcessRuntimeBPMNMessageIT {
         );
         // when
         processRuntime.receive(
-            MessagePayloadBuilder
-                .receive(TEST_MESSAGE)
-                .withVariable("key", "value")
-                .withCorrelationKey("foo")
-                .build()
+            MessagePayloadBuilder.receive(TEST_MESSAGE).withVariable("key", "value").withCorrelationKey("foo").build()
         );
         // then
         assertThat(MessageTestConfiguration.messageEvents)
@@ -699,8 +646,7 @@ public class ProcessRuntimeBPMNMessageIT {
                 event -> event.getEntity().getProcessDefinitionId(),
                 event -> event.getEntity().getProcessInstanceId(),
                 event -> event.getEntity().getMessagePayload().getName(),
-                event ->
-                    event.getEntity().getMessagePayload().getCorrelationKey(),
+                event -> event.getEntity().getMessagePayload().getCorrelationKey(),
                 event -> event.getEntity().getMessagePayload().getBusinessKey(),
                 event -> event.getEntity().getMessagePayload().getVariables()
             )
@@ -743,26 +689,17 @@ public class ProcessRuntimeBPMNMessageIT {
 
         // then
         List<VariableInstance> variables = processRuntime.variables(
-            ProcessPayloadBuilder
-                .variables()
-                .withProcessInstance(process)
-                .build()
+            ProcessPayloadBuilder.variables().withProcessInstance(process).build()
         );
 
         assertThat(variables)
             .extracting(VariableInstance::getName, VariableInstance::getValue)
-            .containsOnly(
-                tuple("intermediate_var", ""),
-                tuple("inter_message_var", "check2")
-            );
+            .containsOnly(tuple("intermediate_var", ""), tuple("inter_message_var", "check2"));
 
         // when
         Page<Task> tasks = taskRuntime.tasks(
             Pageable.of(0, 2),
-            TaskPayloadBuilder
-                .tasks()
-                .withProcessInstanceId(process.getId())
-                .build()
+            TaskPayloadBuilder.tasks().withProcessInstanceId(process.getId()).build()
         );
         // then
         assertThat(tasks.getContent()).hasSize(1);
@@ -771,45 +708,26 @@ public class ProcessRuntimeBPMNMessageIT {
 
         // when
         taskRuntime.complete(
-            TaskPayloadBuilder
-                .complete()
-                .withTaskId(taskId)
-                .withVariable("Text0739ze", "foo")
-                .build()
+            TaskPayloadBuilder.complete().withTaskId(taskId).withVariable("Text0739ze", "foo").build()
         );
 
         // then
-        variables =
-            processRuntime.variables(
-                ProcessPayloadBuilder
-                    .variables()
-                    .withProcessInstance(process)
-                    .build()
-            );
+        variables = processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(process).build());
 
         assertThat(variables)
             .extracting(VariableInstance::getName, VariableInstance::getValue)
-            .containsOnly(
-                tuple("intermediate_var", "foo"),
-                tuple("inter_message_var", "check2")
-            );
+            .containsOnly(tuple("intermediate_var", "foo"), tuple("inter_message_var", "check2"));
 
         // when
         processRuntime.receive(
-            MessagePayloadBuilder
-                .receive("intermediate-catch-message-check2")
-                .withCorrelationKey("foo")
-                .build()
+            MessagePayloadBuilder.receive("intermediate-catch-message-check2").withCorrelationKey("foo").build()
         );
 
         // then
         tasks =
             taskRuntime.tasks(
                 Pageable.of(0, 2),
-                TaskPayloadBuilder
-                    .tasks()
-                    .withProcessInstanceId(process.getId())
-                    .build()
+                TaskPayloadBuilder.tasks().withProcessInstanceId(process.getId()).build()
             );
 
         assertThat(tasks.getContent()).hasSize(1);
@@ -817,9 +735,7 @@ public class ProcessRuntimeBPMNMessageIT {
         taskId = tasks.getContent().get(0).getId();
 
         // then
-        taskRuntime.complete(
-            TaskPayloadBuilder.complete().withTaskId(taskId).build()
-        );
+        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(taskId).build());
 
         // then
         assertThat(MessageTestConfiguration.messageEvents)
@@ -831,8 +747,7 @@ public class ProcessRuntimeBPMNMessageIT {
                 event -> event.getEntity().getProcessDefinitionId(),
                 event -> event.getEntity().getProcessInstanceId(),
                 event -> event.getEntity().getMessagePayload().getName(),
-                event ->
-                    event.getEntity().getMessagePayload().getCorrelationKey(),
+                event -> event.getEntity().getMessagePayload().getCorrelationKey(),
                 event -> event.getEntity().getMessagePayload().getBusinessKey(),
                 event -> event.getEntity().getMessagePayload().getVariables()
             )
@@ -873,10 +788,7 @@ public class ProcessRuntimeBPMNMessageIT {
         );
         // when
         processRuntime.receive(
-            MessagePayloadBuilder
-                .receive("int-boundary-message")
-                .withCorrelationKey("correlationId")
-                .build()
+            MessagePayloadBuilder.receive("int-boundary-message").withCorrelationKey("correlationId").build()
         );
 
         // then
@@ -889,8 +801,7 @@ public class ProcessRuntimeBPMNMessageIT {
                 event -> event.getEntity().getProcessDefinitionId(),
                 event -> event.getEntity().getProcessInstanceId(),
                 event -> event.getEntity().getMessagePayload().getName(),
-                event ->
-                    event.getEntity().getMessagePayload().getCorrelationKey(),
+                event -> event.getEntity().getMessagePayload().getCorrelationKey(),
                 event -> event.getEntity().getMessagePayload().getBusinessKey(),
                 event -> event.getEntity().getMessagePayload().getVariables()
             )
@@ -932,10 +843,7 @@ public class ProcessRuntimeBPMNMessageIT {
         // when
         Throwable thrown = catchThrowable(() -> {
             processRuntime.receive(
-                MessagePayloadBuilder
-                    .receive("int-boundary-message")
-                    .withCorrelationKey(null)
-                    .build()
+                MessagePayloadBuilder.receive("int-boundary-message").withCorrelationKey(null).build()
             );
         });
 
@@ -956,10 +864,7 @@ public class ProcessRuntimeBPMNMessageIT {
         // when
         Throwable thrown = catchThrowable(() -> {
             processRuntime.receive(
-                MessagePayloadBuilder
-                    .receive("non-found-boundary-message")
-                    .withCorrelationKey("correlationId")
-                    .build()
+                MessagePayloadBuilder.receive("non-found-boundary-message").withCorrelationKey("correlationId").build()
             );
         });
 
@@ -989,8 +894,7 @@ public class ProcessRuntimeBPMNMessageIT {
                 event -> event.getEntity().getProcessDefinitionId(),
                 event -> event.getEntity().getProcessInstanceId(),
                 event -> event.getEntity().getMessagePayload().getName(),
-                event ->
-                    event.getEntity().getMessagePayload().getCorrelationKey(),
+                event -> event.getEntity().getMessagePayload().getCorrelationKey(),
                 event -> event.getEntity().getMessagePayload().getBusinessKey(),
                 event -> event.getEntity().getMessagePayload().getVariables()
             )
@@ -1050,13 +954,7 @@ public class ProcessRuntimeBPMNMessageIT {
         );
 
         List<Task> allTasks = taskRuntime
-            .tasks(
-                Pageable.of(0, 2),
-                TaskPayloadBuilder
-                    .tasks()
-                    .withProcessInstanceId(processInstance.getId())
-                    .build()
-            )
+            .tasks(Pageable.of(0, 2), TaskPayloadBuilder.tasks().withProcessInstanceId(processInstance.getId()).build())
             .getContent();
         assertThat(allTasks.size()).isEqualTo(1);
 
@@ -1069,8 +967,7 @@ public class ProcessRuntimeBPMNMessageIT {
                 event -> event.getEntity().getProcessDefinitionId(),
                 event -> event.getEntity().getProcessInstanceId(),
                 event -> event.getEntity().getMessagePayload().getName(),
-                event ->
-                    event.getEntity().getMessagePayload().getCorrelationKey(),
+                event -> event.getEntity().getMessagePayload().getCorrelationKey(),
                 event -> event.getEntity().getMessagePayload().getBusinessKey(),
                 event -> event.getEntity().getMessagePayload().getVariables()
             )
@@ -1088,28 +985,13 @@ public class ProcessRuntimeBPMNMessageIT {
                 )
             );
         assertThat(localEventSource.getEvents())
-            .filteredOn(event ->
-                event
-                    .getEventType()
-                    .equals(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED)
-            )
-            .extracting(
-                RuntimeEvent::getEventType,
-                event -> ((Task) event.getEntity()).getName()
-            )
-            .containsExactly(
-                tuple(
-                    TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
-                    allTasks.get(0).getName()
-                )
-            );
+            .filteredOn(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED))
+            .extracting(RuntimeEvent::getEventType, event -> ((Task) event.getEntity()).getName())
+            .containsExactly(tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, allTasks.get(0).getName()));
 
         // sending the Interrupted Start Message to process
         processRuntime.receive(
-            MessagePayloadBuilder
-                .receive("interruptedMessage")
-                .withCorrelationKey("correlationKey")
-                .build()
+            MessagePayloadBuilder.receive("interruptedMessage").withCorrelationKey("correlationKey").build()
         );
 
         //then
@@ -1122,8 +1004,7 @@ public class ProcessRuntimeBPMNMessageIT {
                 event -> event.getEntity().getProcessDefinitionId(),
                 event -> event.getEntity().getProcessInstanceId(),
                 event -> event.getEntity().getMessagePayload().getName(),
-                event ->
-                    event.getEntity().getMessagePayload().getCorrelationKey(),
+                event -> event.getEntity().getMessagePayload().getCorrelationKey(),
                 event -> event.getEntity().getMessagePayload().getBusinessKey(),
                 event -> event.getEntity().getMessagePayload().getVariables()
             )
@@ -1153,39 +1034,16 @@ public class ProcessRuntimeBPMNMessageIT {
             );
 
         // then
-        assertThat(
-            taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId())
-        )
-            .isEmpty();
+        assertThat(taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId())).isEmpty();
 
         assertThat(localEventSource.getEvents())
-            .filteredOn(event ->
-                event
-                    .getEventType()
-                    .equals(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED)
-            )
-            .extracting(
-                RuntimeEvent::getEventType,
-                event -> ((Task) event.getEntity()).getName()
-            )
-            .containsExactly(
-                tuple(
-                    TaskRuntimeEvent.TaskEvents.TASK_CANCELLED,
-                    allTasks.get(0).getName()
-                )
-            );
+            .filteredOn(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED))
+            .extracting(RuntimeEvent::getEventType, event -> ((Task) event.getEntity()).getName())
+            .containsExactly(tuple(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED, allTasks.get(0).getName()));
 
         assertThat(localEventSource.getEvents())
-            .extracting(
-                RuntimeEvent::getEventType,
-                RuntimeEvent::getProcessInstanceId
-            )
-            .contains(
-                tuple(
-                    ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
-                    processInstance.getId()
-                )
-            );
+            .extracting(RuntimeEvent::getEventType, RuntimeEvent::getProcessInstanceId)
+            .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED, processInstance.getId()));
     }
 
     @Test
@@ -1200,13 +1058,7 @@ public class ProcessRuntimeBPMNMessageIT {
         );
 
         List<Task> allTasks = taskRuntime
-            .tasks(
-                Pageable.of(0, 2),
-                TaskPayloadBuilder
-                    .tasks()
-                    .withProcessInstanceId(processInstance.getId())
-                    .build()
-            )
+            .tasks(Pageable.of(0, 2), TaskPayloadBuilder.tasks().withProcessInstanceId(processInstance.getId()).build())
             .getContent();
         assertThat(allTasks.size()).isEqualTo(1);
 
@@ -1219,8 +1071,7 @@ public class ProcessRuntimeBPMNMessageIT {
                 event -> event.getEntity().getProcessDefinitionId(),
                 event -> event.getEntity().getProcessInstanceId(),
                 event -> event.getEntity().getMessagePayload().getName(),
-                event ->
-                    event.getEntity().getMessagePayload().getCorrelationKey(),
+                event -> event.getEntity().getMessagePayload().getCorrelationKey(),
                 event -> event.getEntity().getMessagePayload().getBusinessKey(),
                 event -> event.getEntity().getMessagePayload().getVariables()
             )
@@ -1239,28 +1090,13 @@ public class ProcessRuntimeBPMNMessageIT {
             );
 
         assertThat(localEventSource.getEvents())
-            .filteredOn(event ->
-                event
-                    .getEventType()
-                    .equals(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED)
-            )
-            .extracting(
-                RuntimeEvent::getEventType,
-                event -> ((Task) event.getEntity()).getName()
-            )
-            .containsExactly(
-                tuple(
-                    TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
-                    allTasks.get(0).getName()
-                )
-            );
+            .filteredOn(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED))
+            .extracting(RuntimeEvent::getEventType, event -> ((Task) event.getEntity()).getName())
+            .containsExactly(tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, allTasks.get(0).getName()));
 
         // sending the Non Interrupted Start Message to process
         processRuntime.receive(
-            MessagePayloadBuilder
-                .receive("nonInterruptedMessage")
-                .withCorrelationKey("correlationKey")
-                .build()
+            MessagePayloadBuilder.receive("nonInterruptedMessage").withCorrelationKey("correlationKey").build()
         );
 
         //then
@@ -1273,8 +1109,7 @@ public class ProcessRuntimeBPMNMessageIT {
                 event -> event.getEntity().getProcessDefinitionId(),
                 event -> event.getEntity().getProcessInstanceId(),
                 event -> event.getEntity().getMessagePayload().getName(),
-                event ->
-                    event.getEntity().getMessagePayload().getCorrelationKey(),
+                event -> event.getEntity().getMessagePayload().getCorrelationKey(),
                 event -> event.getEntity().getMessagePayload().getBusinessKey(),
                 event -> event.getEntity().getMessagePayload().getVariables()
             )
@@ -1303,60 +1138,23 @@ public class ProcessRuntimeBPMNMessageIT {
                 )
             );
 
-        assertThat(
-            taskBaseRuntime
-                .getTasksByProcessInstanceId(processInstance.getId())
-                .size()
-        )
-            .isEqualTo(1);
+        assertThat(taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId()).size()).isEqualTo(1);
         assertThat(localEventSource.getEvents())
-            .filteredOn(event ->
-                event
-                    .getEventType()
-                    .equals(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED)
-            )
-            .extracting(
-                RuntimeEvent::getEventType,
-                event -> ((Task) event.getEntity()).getName()
-            )
-            .containsExactly(
-                tuple(
-                    TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
-                    allTasks.get(0).getName()
-                )
-            );
+            .filteredOn(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED))
+            .extracting(RuntimeEvent::getEventType, event -> ((Task) event.getEntity()).getName())
+            .containsExactly(tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, allTasks.get(0).getName()));
 
         localEventSource.clearEvents();
 
         taskBaseRuntime.completeTask(allTasks.get(0).getId());
 
         assertThat(localEventSource.getEvents())
-            .filteredOn(event ->
-                event
-                    .getEventType()
-                    .equals(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED)
-            )
-            .extracting(
-                RuntimeEvent::getEventType,
-                event -> ((Task) event.getEntity()).getName()
-            )
-            .containsExactly(
-                tuple(
-                    TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
-                    allTasks.get(0).getName()
-                )
-            );
+            .filteredOn(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED))
+            .extracting(RuntimeEvent::getEventType, event -> ((Task) event.getEntity()).getName())
+            .containsExactly(tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED, allTasks.get(0).getName()));
 
         assertThat(localEventSource.getEvents())
-            .extracting(
-                RuntimeEvent::getEventType,
-                RuntimeEvent::getProcessInstanceId
-            )
-            .contains(
-                tuple(
-                    ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
-                    processInstance.getId()
-                )
-            );
+            .extracting(RuntimeEvent::getEventType, RuntimeEvent::getProcessInstanceId)
+            .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED, processInstance.getId()));
     }
 }

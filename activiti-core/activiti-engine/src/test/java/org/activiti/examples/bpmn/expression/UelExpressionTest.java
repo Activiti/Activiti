@@ -37,25 +37,14 @@ public class UelExpressionTest extends PluggableActivitiTestCase {
             "uelExpressions",
             singletonMap("order", order)
         );
-        Task task = taskService
-            .createTaskQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task.getName()).isEqualTo("Standard service");
 
         // While an order of 300, gives us a premium service (goes through an
         // UEL method expression)
         order = new UelExpressionTestOrder(300);
-        processInstance =
-            runtimeService.startProcessInstanceByKey(
-                "uelExpressions",
-                singletonMap("order", order)
-            );
-        task =
-            taskService
-                .createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .singleResult();
+        processInstance = runtimeService.startProcessInstanceByKey("uelExpressions", singletonMap("order", order));
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         assertThat(task.getName()).isEqualTo("Premium service");
     }
 }

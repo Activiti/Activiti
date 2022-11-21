@@ -19,8 +19,7 @@ import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.impl.delegate.MessagePayloadMappingProvider;
 import org.activiti.engine.impl.el.ExpressionManager;
 
-public class DefaultMessageExecutionContextFactory
-    implements MessageExecutionContextFactory {
+public class DefaultMessageExecutionContextFactory implements MessageExecutionContextFactory {
 
     public DefaultMessageExecutionContextFactory() {
         super();

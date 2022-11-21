@@ -49,26 +49,15 @@ public class MappingAwareCallActivityBehaviorTest {
         DelegateExecution execution = buildExecution();
         ProcessDefinition processDefinition = mock(ProcessDefinition.class);
         Map<String, Object> providerVariables = singletonMap("var1", "v1");
-        given(mappingProvider.calculateInputVariables(execution))
-            .willReturn(providerVariables);
+        given(mappingProvider.calculateInputVariables(execution)).willReturn(providerVariables);
 
-        HashMap<String, Object> initiatorVariables = new HashMap<>(
-            providerVariables
-        );
+        HashMap<String, Object> initiatorVariables = new HashMap<>(providerVariables);
         initiatorVariables.put("var2", "default");
-        given(
-            processVariablesInitiator.calculateVariablesFromExtensionFile(
-                processDefinition,
-                providerVariables
-            )
-        )
+        given(processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition, providerVariables))
             .willReturn(initiatorVariables);
 
         //when
-        Map<String, Object> inboundVariables = behavior.calculateInboundVariables(
-            execution,
-            processDefinition
-        );
+        Map<String, Object> inboundVariables = behavior.calculateInboundVariables(execution, processDefinition);
         //then
         assertThat(inboundVariables).isEqualTo(initiatorVariables);
     }

@@ -34,10 +34,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  */
 public class TriggerExecutionOperation extends AbstractOperation {
 
-    public TriggerExecutionOperation(
-        CommandContext commandContext,
-        ExecutionEntity execution
-    ) {
+    public TriggerExecutionOperation(CommandContext commandContext, ExecutionEntity execution) {
         super(commandContext, execution);
     }
 
@@ -45,26 +42,16 @@ public class TriggerExecutionOperation extends AbstractOperation {
     public void run() {
         FlowElement currentFlowElement = getCurrentFlowElement(execution);
         if (currentFlowElement instanceof FlowNode) {
-            ActivityBehavior activityBehavior = (ActivityBehavior) (
-                (FlowNode) currentFlowElement
-            ).getBehavior();
+            ActivityBehavior activityBehavior = (ActivityBehavior) ((FlowNode) currentFlowElement).getBehavior();
             if (activityBehavior instanceof TriggerableActivityBehavior) {
                 if (currentFlowElement instanceof BoundaryEvent) {
-                    commandContext
-                        .getHistoryManager()
-                        .recordActivityStart(execution);
+                    commandContext.getHistoryManager().recordActivityStart(execution);
                 }
 
-                ((TriggerableActivityBehavior) activityBehavior).trigger(
-                        execution,
-                        null,
-                        null
-                    );
+                ((TriggerableActivityBehavior) activityBehavior).trigger(execution, null, null);
 
                 if (currentFlowElement instanceof BoundaryEvent) {
-                    commandContext
-                        .getHistoryManager()
-                        .recordActivityEnd(execution, null);
+                    commandContext.getHistoryManager().recordActivityEnd(execution, null);
                 }
             } else {
                 throw new ActivitiException(

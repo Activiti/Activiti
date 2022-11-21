@@ -22,9 +22,7 @@ import java.io.Serializable;
 
 
  */
-public class ResourceEntityImpl
-    extends AbstractEntityNoRevision
-    implements ResourceEntity, Serializable {
+public class ResourceEntityImpl extends AbstractEntityNoRevision implements ResourceEntity, Serializable {
 
     private static final long serialVersionUID = 1L;
 

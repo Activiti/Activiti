@@ -127,9 +127,7 @@ public class XML {
         }
         for (i = 0; i < length; i += 1) {
             if (Character.isWhitespace(string.charAt(i))) {
-                throw new JSONException(
-                    "'" + string + "' contains a space character."
-                );
+                throw new JSONException("'" + string + "' contains a space character.");
             }
         }
     }
@@ -146,8 +144,7 @@ public class XML {
      * @return true if the close tag is processed.
      * @throws JSONException
      */
-    private static boolean parse(XMLTokener x, JSONObject context, String name)
-        throws JSONException {
+    private static boolean parse(XMLTokener x, JSONObject context, String name) throws JSONException {
         char c;
         int i;
         String n;
@@ -270,10 +267,7 @@ public class XML {
                         } else if (t instanceof String) {
                             s = (String) t;
                             if (s.length() > 0) {
-                                o.accumulate(
-                                    "content",
-                                    JSONObject.stringToValue(s)
-                                );
+                                o.accumulate("content", JSONObject.stringToValue(s));
                             }
                             // Nested element
 
@@ -281,9 +275,7 @@ public class XML {
                             if (parse(x, o, n)) {
                                 if (o.length() == 0) {
                                     context.accumulate(n, "");
-                                } else if (
-                                    o.length() == 1 && o.opt("content") != null
-                                ) {
+                                } else if (o.length() == 1 && o.opt("content") != null) {
                                     context.accumulate(n, o.opt("content"));
                                 } else {
                                     context.accumulate(n, o);
@@ -341,8 +333,7 @@ public class XML {
      * @return A string.
      * @throws JSONException
      */
-    public static String toString(Object o, String tagName)
-        throws JSONException {
+    public static String toString(Object o, String tagName) throws JSONException {
         StringBuilder b = new StringBuilder();
         int i;
         JSONArray ja;
@@ -445,9 +436,7 @@ public class XML {
             s = (o == null) ? "null" : escape(o.toString());
             return (tagName == null)
                 ? "\"" + s + "\""
-                : (s.length() == 0)
-                    ? "<" + tagName + "/>"
-                    : "<" + tagName + ">" + s + "</" + tagName + ">";
+                : (s.length() == 0) ? "<" + tagName + "/>" : "<" + tagName + ">" + s + "</" + tagName + ">";
         }
     }
 }

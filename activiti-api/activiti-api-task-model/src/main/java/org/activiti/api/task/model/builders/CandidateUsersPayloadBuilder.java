@@ -29,9 +29,7 @@ public class CandidateUsersPayloadBuilder {
         return this;
     }
 
-    public CandidateUsersPayloadBuilder withCandidateUsers(
-        List<String> candidateUsers
-    ) {
+    public CandidateUsersPayloadBuilder withCandidateUsers(List<String> candidateUsers) {
         if (candidateUsers == null) {
             candidateUsers = new ArrayList<>();
         }
@@ -39,9 +37,7 @@ public class CandidateUsersPayloadBuilder {
         return this;
     }
 
-    public CandidateUsersPayloadBuilder withCandidateUser(
-        String candidateUser
-    ) {
+    public CandidateUsersPayloadBuilder withCandidateUser(String candidateUser) {
         this.candidateUsers.add(candidateUser);
         return this;
     }

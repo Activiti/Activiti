@@ -58,22 +58,16 @@ public class PerformanceSettings {
         return enableEagerExecutionTreeFetching;
     }
 
-    public void setEnableEagerExecutionTreeFetching(
-        boolean enableEagerExecutionTreeFetching
-    ) {
-        this.enableEagerExecutionTreeFetching =
-            enableEagerExecutionTreeFetching;
+    public void setEnableEagerExecutionTreeFetching(boolean enableEagerExecutionTreeFetching) {
+        this.enableEagerExecutionTreeFetching = enableEagerExecutionTreeFetching;
     }
 
     public boolean isEnableExecutionRelationshipCounts() {
         return enableExecutionRelationshipCounts;
     }
 
-    public void setEnableExecutionRelationshipCounts(
-        boolean enableExecutionRelationshipCounts
-    ) {
-        this.enableExecutionRelationshipCounts =
-            enableExecutionRelationshipCounts;
+    public void setEnableExecutionRelationshipCounts(boolean enableExecutionRelationshipCounts) {
+        this.enableExecutionRelationshipCounts = enableExecutionRelationshipCounts;
     }
 
     public boolean isValidateExecutionRelationshipCountConfigOnBoot() {
@@ -83,8 +77,7 @@ public class PerformanceSettings {
     public void setValidateExecutionRelationshipCountConfigOnBoot(
         boolean validateExecutionRelationshipCountConfigOnBoot
     ) {
-        this.validateExecutionRelationshipCountConfigOnBoot =
-            validateExecutionRelationshipCountConfigOnBoot;
+        this.validateExecutionRelationshipCountConfigOnBoot = validateExecutionRelationshipCountConfigOnBoot;
     }
 
     public boolean isEnableLocalization() {

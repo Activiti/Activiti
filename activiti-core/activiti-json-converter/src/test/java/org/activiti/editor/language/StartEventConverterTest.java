@@ -48,9 +48,7 @@ public class StartEventConverterTest extends AbstractConverterTest {
     }
 
     private void validateModel(BpmnModel model) {
-        FlowElement flowElement = model
-            .getMainProcess()
-            .getFlowElement("start", true);
+        FlowElement flowElement = model.getMainProcess().getFlowElement("start", true);
         assertThat(flowElement).isInstanceOf(StartEvent.class);
 
         StartEvent startEvent = (StartEvent) flowElement;
@@ -61,19 +59,14 @@ public class StartEventConverterTest extends AbstractConverterTest {
         assertThat(startEvent.getDocumentation()).isEqualTo("startDoc");
 
         assertThat(startEvent.getExecutionListeners()).hasSize(2);
-        ActivitiListener executionListener = startEvent
-            .getExecutionListeners()
-            .get(0);
+        ActivitiListener executionListener = startEvent.getExecutionListeners().get(0);
         assertThat(executionListener.getEvent()).isEqualTo("start");
-        assertThat(executionListener.getImplementation())
-            .isEqualTo("org.test.TestClass");
-        assertThat(executionListener.getImplementationType())
-            .isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
+        assertThat(executionListener.getImplementation()).isEqualTo("org.test.TestClass");
+        assertThat(executionListener.getImplementationType()).isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
 
         executionListener = startEvent.getExecutionListeners().get(1);
         assertThat(executionListener.getEvent()).isEqualTo("end");
-        assertThat(executionListener.getImplementation())
-            .isEqualTo("${someExpression}");
+        assertThat(executionListener.getImplementation()).isEqualTo("${someExpression}");
         assertThat(executionListener.getImplementationType())
             .isEqualTo(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION);
 

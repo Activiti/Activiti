@@ -27,18 +27,11 @@ import org.activiti.validation.ValidationError;
  */
 public abstract class ValidatorImpl implements Validator {
 
-    public void addError(
-        List<ValidationError> validationErrors,
-        ValidationError error
-    ) {
+    public void addError(List<ValidationError> validationErrors, ValidationError error) {
         validationErrors.add(error);
     }
 
-    protected void addError(
-        List<ValidationError> validationErrors,
-        String problem,
-        String description
-    ) {
+    protected void addError(List<ValidationError> validationErrors, String problem, String description) {
         addError(validationErrors, problem, null, null, description, false);
     }
 
@@ -58,14 +51,7 @@ public abstract class ValidatorImpl implements Validator {
         BaseElement baseElement,
         String description
     ) {
-        addError(
-            validationErrors,
-            problem,
-            process,
-            baseElement,
-            description,
-            false
-        );
+        addError(validationErrors, problem, process, baseElement, description, false);
     }
 
     protected void addWarning(
@@ -75,14 +61,7 @@ public abstract class ValidatorImpl implements Validator {
         BaseElement baseElement,
         String description
     ) {
-        addError(
-            validationErrors,
-            problem,
-            process,
-            baseElement,
-            description,
-            true
-        );
+        addError(validationErrors, problem, process, baseElement, description, true);
     }
 
     protected void addError(

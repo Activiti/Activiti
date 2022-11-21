@@ -33,8 +33,7 @@ public class VariableScopeResolver implements Resolver {
 
     protected String variableScopeKey = "execution";
 
-    protected static final String processEngineConfigurationKey =
-        "processEngineConfiguration";
+    protected static final String processEngineConfigurationKey = "processEngineConfiguration";
     protected static final String runtimeServiceKey = "runtimeService";
     protected static final String taskServiceKey = "taskService";
     protected static final String repositoryServiceKey = "repositoryService";
@@ -59,29 +58,20 @@ public class VariableScopeResolver implements Resolver {
         this.processEngineConfiguration = processEngineConfiguration;
 
         if (variableScope == null) {
-            throw new ActivitiIllegalArgumentException(
-                "variableScope cannot be null"
-            );
+            throw new ActivitiIllegalArgumentException("variableScope cannot be null");
         }
         if (variableScope instanceof ExecutionEntity) {
             variableScopeKey = "execution";
         } else if (variableScope instanceof TaskEntity) {
             variableScopeKey = "task";
         } else {
-            throw new ActivitiException(
-                "unsupported variable scope type: " +
-                variableScope.getClass().getName()
-            );
+            throw new ActivitiException("unsupported variable scope type: " + variableScope.getClass().getName());
         }
         this.variableScope = variableScope;
     }
 
     public boolean containsKey(Object key) {
-        return (
-            variableScopeKey.equals(key) ||
-            KEYS.contains(key) ||
-            variableScope.hasVariable((String) key)
-        );
+        return (variableScopeKey.equals(key) || KEYS.contains(key) || variableScope.hasVariable((String) key));
     }
 
     public Object get(Object key) {

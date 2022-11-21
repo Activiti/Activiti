@@ -48,9 +48,7 @@ public class ServiceTaskConverterTest extends AbstractConverterTest {
     }
 
     private void validateModel(BpmnModel model) {
-        FlowElement flowElement = model
-            .getMainProcess()
-            .getFlowElement("servicetask", true);
+        FlowElement flowElement = model.getMainProcess().getFlowElement("servicetask", true);
         assertThat(flowElement).isNotNull();
         assertThat(flowElement).isInstanceOf(ServiceTask.class);
         assertThat(flowElement.getId()).isEqualTo("servicetask");
@@ -70,33 +68,17 @@ public class ServiceTaskConverterTest extends AbstractConverterTest {
         List<ActivitiListener> listeners = serviceTask.getExecutionListeners();
         assertThat(listeners).hasSize(3);
         ActivitiListener listener = (ActivitiListener) listeners.get(0);
-        assertThat(
-            ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(
-                listener.getImplementationType()
-            )
-        )
-            .isTrue();
-        assertThat(listener.getImplementation())
-            .isEqualTo("org.test.TestClass");
+        assertThat(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())).isTrue();
+        assertThat(listener.getImplementation()).isEqualTo("org.test.TestClass");
         assertThat(listener.getEvent()).isEqualTo("start");
         listener = (ActivitiListener) listeners.get(1);
-        assertThat(
-            ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(
-                listener.getImplementationType()
-            )
-        )
-            .isTrue();
+        assertThat(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getImplementationType())).isTrue();
         assertThat(listener.getImplementation()).isEqualTo("${testExpression}");
         assertThat(listener.getEvent()).isEqualTo("end");
         listener = (ActivitiListener) listeners.get(2);
-        assertThat(
-            ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(
-                listener.getImplementationType()
-            )
-        )
+        assertThat(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType()))
             .isTrue();
-        assertThat(listener.getImplementation())
-            .isEqualTo("${delegateExpression}");
+        assertThat(listener.getImplementation()).isEqualTo("${delegateExpression}");
         assertThat(listener.getEvent()).isEqualTo("start");
     }
 }

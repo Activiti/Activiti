@@ -39,10 +39,7 @@ public class VariableSetter implements JavaDelegate {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        Context
-            .getProcessEngineConfiguration()
-            .getClock()
-            .setCurrentTime(updatedDate);
+        Context.getProcessEngineConfiguration().getClock().setCurrentTime(updatedDate);
 
         execution.setVariable("aVariable", "updated value");
         execution.setVariable("bVariable", 123);
@@ -59,10 +56,7 @@ public class VariableSetter implements JavaDelegate {
         }
         execution.setVariable("fVariable", theDate);
 
-        execution.setVariable(
-            "gVariable",
-            new SerializableVariable("hello hello")
-        );
+        execution.setVariable("gVariable", new SerializableVariable("hello hello"));
         execution.setVariable("hVariable", ";-)".getBytes());
     }
 }

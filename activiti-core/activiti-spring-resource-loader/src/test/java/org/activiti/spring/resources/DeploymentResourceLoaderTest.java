@@ -40,16 +40,9 @@ public class DeploymentResourceLoaderTest {
         Resource resource = new ClassPathResource("file-selected.txt");
 
         RepositoryService service = Mockito.mock(RepositoryService.class);
+        Mockito.when(service.getDeploymentResourceNames("123456")).thenReturn(names);
         Mockito
-            .when(service.getDeploymentResourceNames("123456"))
-            .thenReturn(names);
-        Mockito
-            .when(
-                service.getResourceAsStream(
-                    "123456",
-                    "classpath:file-selected.txt"
-                )
-            )
+            .when(service.getResourceAsStream("123456", "classpath:file-selected.txt"))
             .thenReturn(resource.getInputStream());
 
         DeploymentResourceLoader deploymentResourceLoader = new DeploymentResourceLoader<String>();
@@ -63,23 +56,14 @@ public class DeploymentResourceLoaderTest {
 
             @Override
             public String read(InputStream inputStream) throws IOException {
-                return new String(
-                    IoUtil.readInputStream(inputStream, "the stream")
-                );
+                return new String(IoUtil.readInputStream(inputStream, "the stream"));
             }
         };
 
         //when
-        List<String> loaded = deploymentResourceLoader.loadResourcesForDeployment(
-            "123456",
-            selectorReader
-        );
+        List<String> loaded = deploymentResourceLoader.loadResourcesForDeployment("123456", selectorReader);
 
         //then
-        assertThat(loaded)
-            .hasSize(1)
-            .contains(
-                "a selected resource" + System.getProperty("line.separator")
-            );
+        assertThat(loaded).hasSize(1).contains("a selected resource" + System.getProperty("line.separator"));
     }
 }

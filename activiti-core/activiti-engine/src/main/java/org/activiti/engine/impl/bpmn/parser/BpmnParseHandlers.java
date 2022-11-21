@@ -31,20 +31,15 @@ import org.slf4j.Logger;
  */
 public class BpmnParseHandlers {
 
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(
-        BpmnParseHandlers.class
-    );
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(BpmnParseHandlers.class);
 
     protected Map<Class<? extends BaseElement>, List<BpmnParseHandler>> parseHandlers;
 
     public BpmnParseHandlers() {
-        this.parseHandlers =
-            new HashMap<Class<? extends BaseElement>, List<BpmnParseHandler>>();
+        this.parseHandlers = new HashMap<Class<? extends BaseElement>, List<BpmnParseHandler>>();
     }
 
-    public List<BpmnParseHandler> getHandlersFor(
-        Class<? extends BaseElement> clazz
-    ) {
+    public List<BpmnParseHandler> getHandlersFor(Class<? extends BaseElement> clazz) {
         return parseHandlers.get(clazz);
     }
 
@@ -80,11 +75,7 @@ public class BpmnParseHandlers {
         List<BpmnParseHandler> handlers = parseHandlers.get(element.getClass());
 
         if (handlers == null) {
-            LOGGER.warn(
-                "Could not find matching parse handler for + " +
-                element.getId() +
-                " this is likely a bug."
-            );
+            LOGGER.warn("Could not find matching parse handler for + " + element.getId() + " this is likely a bug.");
         } else {
             for (BpmnParseHandler handler : handlers) {
                 handler.parse(bpmnParse, element);

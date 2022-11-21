@@ -24,8 +24,7 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 /**
 
  */
-public class IsProcessDefinitionSuspendedCmd
-    implements Command<Boolean>, Serializable {
+public class IsProcessDefinitionSuspendedCmd implements Command<Boolean>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String processDefinitionId;
@@ -35,8 +34,6 @@ public class IsProcessDefinitionSuspendedCmd
     }
 
     public Boolean execute(CommandContext commandContext) {
-        return ProcessDefinitionUtil.isProcessDefinitionSuspended(
-            processDefinitionId
-        );
+        return ProcessDefinitionUtil.isProcessDefinitionSuspended(processDefinitionId);
     }
 }

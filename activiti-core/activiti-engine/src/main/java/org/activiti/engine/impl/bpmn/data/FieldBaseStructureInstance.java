@@ -30,9 +30,7 @@ public class FieldBaseStructureInstance implements StructureInstance {
 
     protected Map<String, Object> fieldValues;
 
-    public FieldBaseStructureInstance(
-        FieldBaseStructureDefinition structureDefinition
-    ) {
+    public FieldBaseStructureInstance(FieldBaseStructureDefinition structureDefinition) {
         this.structureDefinition = structureDefinition;
         this.fieldValues = new HashMap<String, Object>();
     }

@@ -171,11 +171,7 @@ public interface TaskService {
      * @throws ActivitiException
      *           when an error occurs while deleting the tasks or in case one of the tasks is part of a running process.
      */
-    void deleteTasks(
-        Collection<String> taskIds,
-        String deleteReason,
-        boolean cancel
-    );
+    void deleteTasks(Collection<String> taskIds, String deleteReason, boolean cancel);
 
     /**
      * Claim responsibility for a task: the given user is made assignee for the task. The difference with {@link #setAssignee(String, String)} is that here a check is done if the task already has a user
@@ -252,11 +248,7 @@ public interface TaskService {
     /**
      * Similar to {@link #resolveTask(String, Map)}, but allows to set transient variables too.
      */
-    void resolveTask(
-        String taskId,
-        Map<String, Object> variables,
-        Map<String, Object> transientVariables
-    );
+    void resolveTask(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables);
 
     /**
      * Called when the task is successfully executed, and the required task parameters are given by the end-user.
@@ -273,11 +265,7 @@ public interface TaskService {
     /**
      * Similar to {@link #complete(String, Map)}, but allows to set transient variables too.
      */
-    void complete(
-        String taskId,
-        Map<String, Object> variables,
-        Map<String, Object> transientVariables
-    );
+    void complete(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables);
 
     /**
      * Called when the task is successfully executed, and the required task parameters are given by the end-user.
@@ -291,11 +279,7 @@ public interface TaskService {
      * @throws ActivitiObjectNotFoundException
      *           when no task exists with the given id.
      */
-    void complete(
-        String taskId,
-        Map<String, Object> variables,
-        boolean localScope
-    );
+    void complete(String taskId, Map<String, Object> variables, boolean localScope);
 
     /**
      * Changes the assignee of the given task to the given userId. No check is done whether the user is known by the identity component.
@@ -363,11 +347,7 @@ public interface TaskService {
      * @throws ActivitiObjectNotFoundException
      *           when the task or user doesn't exist.
      */
-    void addUserIdentityLink(
-        String taskId,
-        String userId,
-        String identityLinkType
-    );
+    void addUserIdentityLink(String taskId, String userId, String identityLinkType);
 
     /**
      * Involves a group with a task. The type of identityLink is defined by the given identityLink.
@@ -381,11 +361,7 @@ public interface TaskService {
      * @throws ActivitiObjectNotFoundException
      *           when the task or group doesn't exist.
      */
-    void addGroupIdentityLink(
-        String taskId,
-        String groupId,
-        String identityLinkType
-    );
+    void addGroupIdentityLink(String taskId, String groupId, String identityLinkType);
 
     /**
      * Convenience shorthand for {@link #deleteUserIdentityLink(String, String, String)}; with type {@link IdentityLinkType#CANDIDATE}
@@ -423,11 +399,7 @@ public interface TaskService {
      * @throws ActivitiObjectNotFoundException
      *           when the task or user doesn't exist.
      */
-    void deleteUserIdentityLink(
-        String taskId,
-        String userId,
-        String identityLinkType
-    );
+    void deleteUserIdentityLink(String taskId, String userId, String identityLinkType);
 
     /**
      * Removes the association between a group and a task for the given identityLinkType.
@@ -441,11 +413,7 @@ public interface TaskService {
      * @throws ActivitiObjectNotFoundException
      *           when the task or group doesn't exist.
      */
-    void deleteGroupIdentityLink(
-        String taskId,
-        String groupId,
-        String identityLinkType
-    );
+    void deleteGroupIdentityLink(String taskId, String groupId, String identityLinkType);
 
     /**
      * Changes the priority of the task.
@@ -501,10 +469,7 @@ public interface TaskService {
     /**
      * set variables on a task. If the variable is not already existing, it will be created in the task.
      */
-    void setVariablesLocal(
-        String taskId,
-        Map<String, ? extends Object> variables
-    );
+    void setVariablesLocal(String taskId, Map<String, ? extends Object> variables);
 
     /**
      * get a variables and search in the task scope and if available also the execution scopes.
@@ -514,11 +479,7 @@ public interface TaskService {
     /**
      * get a variables and search in the task scope and if available also the execution scopes.
      */
-    <T> T getVariable(
-        String taskId,
-        String variableName,
-        Class<T> variableClass
-    );
+    <T> T getVariable(String taskId, String variableName, Class<T> variableClass);
 
     /**
      * The variable. Searching for the variable is done in all scopes that are visible to the given task (including parent scopes). Returns null when no variable value is found with the given
@@ -547,11 +508,7 @@ public interface TaskService {
     /**
      * checks whether or not the task has a variable defined with the given name.
      */
-    <T> T getVariableLocal(
-        String taskId,
-        String variableName,
-        Class<T> variableClass
-    );
+    <T> T getVariableLocal(String taskId, String variableName, Class<T> variableClass);
 
     /**
      * The variable for a task. Returns the variable when it is set for the task (and not searching parent scopes). Returns null when no variable is found with the given
@@ -565,10 +522,7 @@ public interface TaskService {
      * @throws ActivitiObjectNotFoundException
      *           when no task is found for the given taskId.
      */
-    VariableInstance getVariableInstanceLocal(
-        String taskId,
-        String variableName
-    );
+    VariableInstance getVariableInstanceLocal(String taskId, String variableName);
 
     /**
      * checks whether or not the task has a variable defined with the given name, local task scope only.
@@ -603,10 +557,7 @@ public interface TaskService {
      * @throws ActivitiObjectNotFoundException
      *           when no taskId is found for the given taskId.
      */
-    Map<String, VariableInstance> getVariableInstances(
-        String taskId,
-        Collection<String> variableNames
-    );
+    Map<String, VariableInstance> getVariableInstances(String taskId, Collection<String> variableNames);
 
     /**
      * get all variables and search only in the task scope. If you have many task local variables and you only need a few, consider using {@link #getVariablesLocal(String, Collection)} for better
@@ -617,21 +568,13 @@ public interface TaskService {
     /**
      * get values for all given variableNames and search only in the task scope.
      */
-    Map<String, Object> getVariables(
-        String taskId,
-        Collection<String> variableNames
-    );
+    Map<String, Object> getVariables(String taskId, Collection<String> variableNames);
 
     /** get a variable on a task */
-    Map<String, Object> getVariablesLocal(
-        String taskId,
-        Collection<String> variableNames
-    );
+    Map<String, Object> getVariablesLocal(String taskId, Collection<String> variableNames);
 
     /** get all variables and search only in the task scope. */
-    List<VariableInstance> getVariableInstancesLocalByTaskIds(
-        Set<String> taskIds
-    );
+    List<VariableInstance> getVariableInstancesLocalByTaskIds(Set<String> taskIds);
 
     /**
      * All variable values that are defined in the task scope, without taking outer scopes into account. If you have many task local variables and you only need a few, consider using
@@ -656,10 +599,7 @@ public interface TaskService {
      * @throws ActivitiObjectNotFoundException
      *           when no taskId is found for the given taskId.
      */
-    Map<String, VariableInstance> getVariableInstancesLocal(
-        String taskId,
-        Collection<String> variableNames
-    );
+    Map<String, VariableInstance> getVariableInstancesLocal(String taskId, Collection<String> variableNames);
 
     /**
      * Removes the variable from the task. When the variable does not exist, nothing happens.
@@ -705,11 +645,7 @@ public interface TaskService {
      * @throws ActivitiObjectNotFoundException
      *           when no task is found for the given task.
      */
-    Map<String, DataObject> getDataObjects(
-        String taskId,
-        String locale,
-        boolean withLocalizationFallback
-    );
+    Map<String, DataObject> getDataObjects(String taskId, String locale, boolean withLocalizationFallback);
 
     /**
      * The DataObjects for all given dataObjectNames, takes all dataObjects into account which are visible from the given task scope (including parent scopes).
@@ -722,10 +658,7 @@ public interface TaskService {
      * @throws ActivitiObjectNotFoundException
      *           when no task is found for the given taskId.
      */
-    Map<String, DataObject> getDataObjects(
-        String taskId,
-        Collection<String> dataObjectNames
-    );
+    Map<String, DataObject> getDataObjects(String taskId, Collection<String> dataObjectNames);
 
     /**
      * The DataObjects for all given dataObjectNames, takes all dataObjects into account which are visible from the given task scope (including parent scopes).
@@ -779,23 +712,13 @@ public interface TaskService {
      * @throws ActivitiObjectNotFoundException
      *           when no task is found for the given taskId.
      */
-    DataObject getDataObject(
-        String taskId,
-        String dataObjectName,
-        String locale,
-        boolean withLocalizationFallback
-    );
+    DataObject getDataObject(String taskId, String dataObjectName, String locale, boolean withLocalizationFallback);
 
     /** Add a comment to a task and/or process instance. */
     Comment addComment(String taskId, String processInstanceId, String message);
 
     /** Add a comment to a task and/or process instance with a custom type. */
-    Comment addComment(
-        String taskId,
-        String processInstanceId,
-        String type,
-        String message
-    );
+    Comment addComment(String taskId, String processInstanceId, String type, String message);
 
     /**
      * Returns an individual comment with the given id. Returns null if no comment exists with the given id.
@@ -834,10 +757,7 @@ public interface TaskService {
     List<Comment> getProcessInstanceComments(String processInstanceId);
 
     /** The comments related to the given process instance. */
-    List<Comment> getProcessInstanceComments(
-        String processInstanceId,
-        String type
-    );
+    List<Comment> getProcessInstanceComments(String processInstanceId, String type);
 
     /**
      * Add a new attachment to a task and/or a process instance and use an input stream to provide the content

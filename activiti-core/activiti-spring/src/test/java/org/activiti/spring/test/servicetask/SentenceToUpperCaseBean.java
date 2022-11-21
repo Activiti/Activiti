@@ -26,10 +26,7 @@ public class SentenceToUpperCaseBean {
     protected SentenceGenerator sentenceGenerator;
 
     public void setSentence(DelegateExecution execution) {
-        execution.setVariable(
-            "myVar",
-            sentenceGenerator.getSentence().toUpperCase()
-        );
+        execution.setVariable("myVar", sentenceGenerator.getSentence().toUpperCase());
     }
 
     public void setSentenceGenerator(SentenceGenerator sentenceGenerator) {

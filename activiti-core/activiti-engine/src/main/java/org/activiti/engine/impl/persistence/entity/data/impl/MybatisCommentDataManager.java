@@ -30,13 +30,9 @@ import org.activiti.engine.task.Event;
 /**
 
  */
-public class MybatisCommentDataManager
-    extends AbstractDataManager<CommentEntity>
-    implements CommentDataManager {
+public class MybatisCommentDataManager extends AbstractDataManager<CommentEntity> implements CommentDataManager {
 
-    public MybatisCommentDataManager(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public MybatisCommentDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);
     }
 
@@ -58,20 +54,12 @@ public class MybatisCommentDataManager
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Comment> findCommentsByTaskIdAndType(
-        String taskId,
-        String type
-    ) {
+    public List<Comment> findCommentsByTaskIdAndType(String taskId, String type) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("taskId", taskId);
         params.put("type", type);
         return getDbSqlSession()
-            .selectListWithRawParameter(
-                "selectCommentsByTaskIdAndType",
-                params,
-                0,
-                Integer.MAX_VALUE
-            );
+            .selectListWithRawParameter("selectCommentsByTaskIdAndType", params, 0, Integer.MAX_VALUE);
     }
 
     @Override
@@ -89,51 +77,33 @@ public class MybatisCommentDataManager
     @Override
     @SuppressWarnings("unchecked")
     public List<Event> findEventsByProcessInstanceId(String processInstanceId) {
-        return getDbSqlSession()
-            .selectList("selectEventsByProcessInstanceId", processInstanceId);
+        return getDbSqlSession().selectList("selectEventsByProcessInstanceId", processInstanceId);
     }
 
     @Override
     public void deleteCommentsByTaskId(String taskId) {
-        getDbSqlSession()
-            .delete("deleteCommentsByTaskId", taskId, CommentEntityImpl.class);
+        getDbSqlSession().delete("deleteCommentsByTaskId", taskId, CommentEntityImpl.class);
     }
 
     @Override
     public void deleteCommentsByProcessInstanceId(String processInstanceId) {
-        getDbSqlSession()
-            .delete(
-                "deleteCommentsByProcessInstanceId",
-                processInstanceId,
-                CommentEntityImpl.class
-            );
+        getDbSqlSession().delete("deleteCommentsByProcessInstanceId", processInstanceId, CommentEntityImpl.class);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Comment> findCommentsByProcessInstanceId(
-        String processInstanceId
-    ) {
-        return getDbSqlSession()
-            .selectList("selectCommentsByProcessInstanceId", processInstanceId);
+    public List<Comment> findCommentsByProcessInstanceId(String processInstanceId) {
+        return getDbSqlSession().selectList("selectCommentsByProcessInstanceId", processInstanceId);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Comment> findCommentsByProcessInstanceId(
-        String processInstanceId,
-        String type
-    ) {
+    public List<Comment> findCommentsByProcessInstanceId(String processInstanceId, String type) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("processInstanceId", processInstanceId);
         params.put("type", type);
         return getDbSqlSession()
-            .selectListWithRawParameter(
-                "selectCommentsByProcessInstanceIdAndType",
-                params,
-                0,
-                Integer.MAX_VALUE
-            );
+            .selectListWithRawParameter("selectCommentsByProcessInstanceIdAndType", params, 0, Integer.MAX_VALUE);
     }
 
     @Override

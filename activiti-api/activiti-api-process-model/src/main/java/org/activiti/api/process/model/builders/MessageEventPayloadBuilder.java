@@ -27,13 +27,8 @@ public class MessageEventPayloadBuilder {
     private String businessKey;
     private Map<String, Object> variables;
 
-    public static MessageEventPayloadBuilder from(
-        MessageEventPayload messagePayload
-    ) {
-        Objects.requireNonNull(
-            messagePayload,
-            "messagePayload must not be null"
-        );
+    public static MessageEventPayloadBuilder from(MessageEventPayload messagePayload) {
+        Objects.requireNonNull(messagePayload, "messagePayload must not be null");
 
         return new MessageEventPayloadBuilder()
             .withName(messagePayload.getName())
@@ -54,9 +49,7 @@ public class MessageEventPayloadBuilder {
         return this;
     }
 
-    public MessageEventPayloadBuilder withVariables(
-        Map<String, Object> variables
-    ) {
+    public MessageEventPayloadBuilder withVariables(Map<String, Object> variables) {
         this.variables = variables;
 
         return this;
@@ -70,9 +63,7 @@ public class MessageEventPayloadBuilder {
         return this;
     }
 
-    public MessageEventPayloadBuilder withCorrelationKey(
-        String correlationKey
-    ) {
+    public MessageEventPayloadBuilder withCorrelationKey(String correlationKey) {
         this.correlationKey = correlationKey;
 
         return this;
@@ -85,12 +76,7 @@ public class MessageEventPayloadBuilder {
     }
 
     public MessageEventPayload build() {
-        return new MessageEventPayload(
-            name,
-            correlationKey,
-            businessKey,
-            variables
-        );
+        return new MessageEventPayload(name, correlationKey, businessKey, variables);
     }
 
     @Override

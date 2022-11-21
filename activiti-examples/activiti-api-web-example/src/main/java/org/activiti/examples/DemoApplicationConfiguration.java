@@ -42,13 +42,10 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @EnableWebSecurity
 public class DemoApplicationConfiguration extends WebSecurityConfigurerAdapter {
 
-    private Logger logger = LoggerFactory.getLogger(
-        DemoApplicationConfiguration.class
-    );
+    private Logger logger = LoggerFactory.getLogger(DemoApplicationConfiguration.class);
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth)
-        throws Exception {
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService());
     }
 
@@ -63,54 +60,25 @@ public class DemoApplicationConfiguration extends WebSecurityConfigurerAdapter {
         InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
 
         String[][] usersGroupsAndRoles = {
-            {
-                "bob",
-                "{bcrypt}password",
-                "ROLE_ACTIVITI_USER",
-                "GROUP_activitiTeam",
-            },
-            {
-                "john",
-                "{bcrypt}password",
-                "ROLE_ACTIVITI_USER",
-                "GROUP_activitiTeam",
-            },
-            {
-                "hannah",
-                "{bcrypt}password",
-                "ROLE_ACTIVITI_USER",
-                "GROUP_activitiTeam",
-            },
-            {
-                "other",
-                "{bcrypt}password",
-                "ROLE_ACTIVITI_USER",
-                "GROUP_otherTeam",
-            },
+            { "bob", "{bcrypt}password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam" },
+            { "john", "{bcrypt}password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam" },
+            { "hannah", "{bcrypt}password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam" },
+            { "other", "{bcrypt}password", "ROLE_ACTIVITI_USER", "GROUP_otherTeam" },
             { "admin", "{bcrypt}password", "ROLE_ACTIVITI_ADMIN" },
         };
 
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
         for (String[] user : usersGroupsAndRoles) {
-            List<String> authoritiesStrings = asList(
-                Arrays.copyOfRange(user, 2, user.length)
-            );
+            List<String> authoritiesStrings = asList(Arrays.copyOfRange(user, 2, user.length));
             logger.info(
-                "> Registering new user: " +
-                user[0] +
-                " with the following Authorities[" +
-                authoritiesStrings +
-                "]"
+                "> Registering new user: " + user[0] + " with the following Authorities[" + authoritiesStrings + "]"
             );
             inMemoryUserDetailsManager.createUser(
                 new User(
                     user[0],
                     passwordEncoder.encode(user[1]),
-                    authoritiesStrings
-                        .stream()
-                        .map(s -> new SimpleGrantedAuthority(s))
-                        .collect(Collectors.toList())
+                    authoritiesStrings.stream().map(s -> new SimpleGrantedAuthority(s)).collect(Collectors.toList())
                 )
             );
         }
@@ -120,13 +88,6 @@ public class DemoApplicationConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-            .csrf()
-            .disable()
-            .authorizeRequests()
-            .anyRequest()
-            .authenticated()
-            .and()
-            .httpBasic();
+        http.csrf().disable().authorizeRequests().anyRequest().authenticated().and().httpBasic();
     }
 }

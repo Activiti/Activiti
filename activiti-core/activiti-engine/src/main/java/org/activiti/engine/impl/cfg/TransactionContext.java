@@ -26,8 +26,5 @@ public interface TransactionContext {
 
     void rollback();
 
-    void addTransactionListener(
-        TransactionState transactionState,
-        TransactionListener transactionListener
-    );
+    void addTransactionListener(TransactionState transactionState, TransactionListener transactionListener);
 }

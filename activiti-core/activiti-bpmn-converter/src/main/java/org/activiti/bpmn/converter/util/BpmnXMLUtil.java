@@ -70,19 +70,13 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
         genericChildParserMap.put(parser.getElementName(), parser);
     }
 
-    public static void addXMLLocation(
-        BaseElement element,
-        XMLStreamReader xtr
-    ) {
+    public static void addXMLLocation(BaseElement element, XMLStreamReader xtr) {
         Location location = xtr.getLocation();
         element.setXmlRowNumber(location.getLineNumber());
         element.setXmlColumnNumber(location.getColumnNumber());
     }
 
-    public static void addXMLLocation(
-        GraphicInfo graphicInfo,
-        XMLStreamReader xtr
-    ) {
+    public static void addXMLLocation(GraphicInfo graphicInfo, XMLStreamReader xtr) {
         Location location = xtr.getLocation();
         graphicInfo.setXmlRowNumber(location.getLineNumber());
         graphicInfo.setXmlColumnNumber(location.getColumnNumber());
@@ -119,27 +113,16 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
                 if (ELEMENT_EXTENSIONS.equals(xtr.getLocalName())) {
                     inExtensionElements = true;
                 } else if (localParserMap.containsKey(xtr.getLocalName())) {
-                    BaseChildElementParser childParser = localParserMap.get(
-                        xtr.getLocalName()
-                    );
+                    BaseChildElementParser childParser = localParserMap.get(xtr.getLocalName());
                     //if we're into an extension element but the current element is not accepted by this parentElement then is read as a custom extension element
-                    if (
-                        inExtensionElements &&
-                        !childParser.accepts(parentElement)
-                    ) {
-                        ExtensionElement extensionElement = BpmnXMLUtil.parseExtensionElement(
-                            xtr
-                        );
+                    if (inExtensionElements && !childParser.accepts(parentElement)) {
+                        ExtensionElement extensionElement = BpmnXMLUtil.parseExtensionElement(xtr);
                         parentElement.addExtensionElement(extensionElement);
                         continue;
                     }
-                    localParserMap
-                        .get(xtr.getLocalName())
-                        .parseChildElement(xtr, parentElement, model);
+                    localParserMap.get(xtr.getLocalName()).parseChildElement(xtr, parentElement, model);
                 } else if (inExtensionElements) {
-                    ExtensionElement extensionElement = BpmnXMLUtil.parseExtensionElement(
-                        xtr
-                    );
+                    ExtensionElement extensionElement = BpmnXMLUtil.parseExtensionElement(xtr);
                     parentElement.addExtensionElement(extensionElement);
                 }
             } else if (xtr.isEndElement()) {
@@ -152,8 +135,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
         }
     }
 
-    public static ExtensionElement parseExtensionElement(XMLStreamReader xtr)
-        throws Exception {
+    public static ExtensionElement parseExtensionElement(XMLStreamReader xtr) throws Exception {
         ExtensionElement extensionElement = new ExtensionElement();
         extensionElement.setName(xtr.getLocalName());
         if (StringUtils.isNotEmpty(xtr.getNamespaceURI())) {
@@ -171,9 +153,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
                 extensionAttribute.setNamespace(xtr.getAttributeNamespace(i));
             }
             if (StringUtils.isNotEmpty(xtr.getAttributePrefix(i))) {
-                extensionAttribute.setNamespacePrefix(
-                    xtr.getAttributePrefix(i)
-                );
+                extensionAttribute.setNamespacePrefix(xtr.getAttributePrefix(i));
             }
             extensionElement.addAttribute(extensionAttribute);
         }
@@ -181,60 +161,34 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
         boolean readyWithExtensionElement = false;
         while (!readyWithExtensionElement && xtr.hasNext()) {
             xtr.next();
-            if (
-                xtr.isCharacters() ||
-                XMLStreamReader.CDATA == xtr.getEventType()
-            ) {
+            if (xtr.isCharacters() || XMLStreamReader.CDATA == xtr.getEventType()) {
                 if (StringUtils.isNotEmpty(xtr.getText().trim())) {
-                    if (
-                        StringUtils.isBlank(extensionElement.getElementText())
-                    ) {
+                    if (StringUtils.isBlank(extensionElement.getElementText())) {
                         extensionElement.setElementText(xtr.getText().trim());
                     } else {
-                        extensionElement.setElementText(
-                            extensionElement
-                                .getElementText()
-                                .concat(xtr.getText().trim())
-                        );
+                        extensionElement.setElementText(extensionElement.getElementText().concat(xtr.getText().trim()));
                     }
                 }
             } else if (xtr.isStartElement()) {
-                ExtensionElement childExtensionElement = parseExtensionElement(
-                    xtr
-                );
+                ExtensionElement childExtensionElement = parseExtensionElement(xtr);
                 extensionElement.addChildElement(childExtensionElement);
-            } else if (
-                xtr.isEndElement() &&
-                extensionElement.getName().equalsIgnoreCase(xtr.getLocalName())
-            ) {
+            } else if (xtr.isEndElement() && extensionElement.getName().equalsIgnoreCase(xtr.getLocalName())) {
                 readyWithExtensionElement = true;
             }
         }
         return extensionElement;
     }
 
-    public static void writeDefaultAttribute(
-        String attributeName,
-        String value,
-        XMLStreamWriter xtw
-    ) throws Exception {
+    public static void writeDefaultAttribute(String attributeName, String value, XMLStreamWriter xtw) throws Exception {
         if (StringUtils.isNotEmpty(value) && !"null".equalsIgnoreCase(value)) {
             xtw.writeAttribute(attributeName, value);
         }
     }
 
-    public static void writeQualifiedAttribute(
-        String attributeName,
-        String value,
-        XMLStreamWriter xtw
-    ) throws Exception {
+    public static void writeQualifiedAttribute(String attributeName, String value, XMLStreamWriter xtw)
+        throws Exception {
         if (StringUtils.isNotEmpty(value)) {
-            xtw.writeAttribute(
-                ACTIVITI_EXTENSIONS_PREFIX,
-                ACTIVITI_EXTENSIONS_NAMESPACE,
-                attributeName,
-                value
-            );
+            xtw.writeAttribute(ACTIVITI_EXTENSIONS_PREFIX, ACTIVITI_EXTENSIONS_NAMESPACE, attributeName, value);
         }
     }
 
@@ -245,12 +199,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
     ) throws Exception {
         return (
             didWriteExtensionStartElement =
-                writeExtensionElements(
-                    baseElement,
-                    didWriteExtensionStartElement,
-                    null,
-                    xtw
-                )
+                writeExtensionElements(baseElement, didWriteExtensionStartElement, null, xtw)
         );
     }
 
@@ -270,9 +219,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
                 namespaceMap = new HashMap<String, String>();
             }
 
-            for (List<ExtensionElement> extensionElements : baseElement
-                .getExtensionElements()
-                .values()) {
+            for (List<ExtensionElement> extensionElements : baseElement.getExtensionElements().values()) {
                 for (ExtensionElement extensionElement : extensionElements) {
                     writeExtensionElement(extensionElement, namespaceMap, xtw);
                 }
@@ -289,11 +236,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
         if (StringUtils.isNotEmpty(extensionElement.getName())) {
             Map<String, String> localNamespaceMap = new HashMap<String, String>();
             if (StringUtils.isNotEmpty(extensionElement.getNamespace())) {
-                if (
-                    StringUtils.isNotEmpty(
-                        extensionElement.getNamespacePrefix()
-                    )
-                ) {
+                if (StringUtils.isNotEmpty(extensionElement.getNamespacePrefix())) {
                     xtw.writeStartElement(
                         extensionElement.getNamespacePrefix(),
                         extensionElement.getName(),
@@ -301,66 +244,31 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
                     );
 
                     if (
-                        !namespaceMap.containsKey(
-                            extensionElement.getNamespacePrefix()
-                        ) ||
-                        !namespaceMap
-                            .get(extensionElement.getNamespacePrefix())
-                            .equals(extensionElement.getNamespace())
+                        !namespaceMap.containsKey(extensionElement.getNamespacePrefix()) ||
+                        !namespaceMap.get(extensionElement.getNamespacePrefix()).equals(extensionElement.getNamespace())
                     ) {
-                        xtw.writeNamespace(
-                            extensionElement.getNamespacePrefix(),
-                            extensionElement.getNamespace()
-                        );
-                        namespaceMap.put(
-                            extensionElement.getNamespacePrefix(),
-                            extensionElement.getNamespace()
-                        );
-                        localNamespaceMap.put(
-                            extensionElement.getNamespacePrefix(),
-                            extensionElement.getNamespace()
-                        );
+                        xtw.writeNamespace(extensionElement.getNamespacePrefix(), extensionElement.getNamespace());
+                        namespaceMap.put(extensionElement.getNamespacePrefix(), extensionElement.getNamespace());
+                        localNamespaceMap.put(extensionElement.getNamespacePrefix(), extensionElement.getNamespace());
                     }
                 } else {
-                    xtw.writeStartElement(
-                        extensionElement.getNamespace(),
-                        extensionElement.getName()
-                    );
+                    xtw.writeStartElement(extensionElement.getNamespace(), extensionElement.getName());
                 }
             } else {
                 xtw.writeStartElement(extensionElement.getName());
             }
 
-            for (List<ExtensionAttribute> attributes : extensionElement
-                .getAttributes()
-                .values()) {
+            for (List<ExtensionAttribute> attributes : extensionElement.getAttributes().values()) {
                 for (ExtensionAttribute attribute : attributes) {
-                    if (
-                        StringUtils.isNotEmpty(attribute.getName()) &&
-                        attribute.getValue() != null
-                    ) {
+                    if (StringUtils.isNotEmpty(attribute.getName()) && attribute.getValue() != null) {
                         if (StringUtils.isNotEmpty(attribute.getNamespace())) {
-                            if (
-                                StringUtils.isNotEmpty(
-                                    attribute.getNamespacePrefix()
-                                )
-                            ) {
+                            if (StringUtils.isNotEmpty(attribute.getNamespacePrefix())) {
                                 if (
-                                    !namespaceMap.containsKey(
-                                        attribute.getNamespacePrefix()
-                                    ) ||
-                                    !namespaceMap
-                                        .get(attribute.getNamespacePrefix())
-                                        .equals(attribute.getNamespace())
+                                    !namespaceMap.containsKey(attribute.getNamespacePrefix()) ||
+                                    !namespaceMap.get(attribute.getNamespacePrefix()).equals(attribute.getNamespace())
                                 ) {
-                                    xtw.writeNamespace(
-                                        attribute.getNamespacePrefix(),
-                                        attribute.getNamespace()
-                                    );
-                                    namespaceMap.put(
-                                        attribute.getNamespacePrefix(),
-                                        attribute.getNamespace()
-                                    );
+                                    xtw.writeNamespace(attribute.getNamespacePrefix(), attribute.getNamespace());
+                                    namespaceMap.put(attribute.getNamespacePrefix(), attribute.getNamespace());
                                 }
 
                                 xtw.writeAttribute(
@@ -370,17 +278,10 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
                                     attribute.getValue()
                                 );
                             } else {
-                                xtw.writeAttribute(
-                                    attribute.getNamespace(),
-                                    attribute.getName(),
-                                    attribute.getValue()
-                                );
+                                xtw.writeAttribute(attribute.getNamespace(), attribute.getName(), attribute.getValue());
                             }
                         } else {
-                            xtw.writeAttribute(
-                                attribute.getName(),
-                                attribute.getValue()
-                            );
+                            xtw.writeAttribute(attribute.getName(), attribute.getValue());
                         }
                     }
                 }
@@ -389,9 +290,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
             if (extensionElement.getElementText() != null) {
                 xtw.writeCData(extensionElement.getElementText());
             } else {
-                for (List<ExtensionElement> childElements : extensionElement
-                    .getChildElements()
-                    .values()) {
+                for (List<ExtensionElement> childElements : extensionElement.getChildElements().values()) {
                     for (ExtensionElement childElement : childElements) {
                         writeExtensionElement(childElement, namespaceMap, xtw);
                     }
@@ -473,9 +372,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
                 extensionAttribute.setNamespace(xtr.getAttributeNamespace(i));
             }
             if (StringUtils.isNotEmpty(xtr.getAttributePrefix(i))) {
-                extensionAttribute.setNamespacePrefix(
-                    xtr.getAttributePrefix(i)
-                );
+                extensionAttribute.setNamespacePrefix(xtr.getAttributePrefix(i));
             }
             if (!isBlacklisted(extensionAttribute, blackLists)) {
                 element.addAttribute(extensionAttribute);
@@ -488,12 +385,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
         XMLStreamWriter xtw,
         List<ExtensionAttribute>... blackLists
     ) throws XMLStreamException {
-        writeCustomAttributes(
-            attributes,
-            xtw,
-            new LinkedHashMap<String, String>(),
-            blackLists
-        );
+        writeCustomAttributes(attributes, xtw, new LinkedHashMap<String, String>(), blackLists);
     }
 
     /**
@@ -514,32 +406,16 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
                 for (ExtensionAttribute attribute : attributeList) {
                     if (!isBlacklisted(attribute, blackLists)) {
                         if (attribute.getNamespacePrefix() == null) {
-                            if (
-                                attribute.getNamespace() == null
-                            ) xtw.writeAttribute(
+                            if (attribute.getNamespace() == null) xtw.writeAttribute(
                                 attribute.getName(),
                                 attribute.getValue()
                             ); else {
-                                xtw.writeAttribute(
-                                    attribute.getNamespace(),
-                                    attribute.getName(),
-                                    attribute.getValue()
-                                );
+                                xtw.writeAttribute(attribute.getNamespace(), attribute.getName(), attribute.getValue());
                             }
                         } else {
-                            if (
-                                !namespaceMap.containsKey(
-                                    attribute.getNamespacePrefix()
-                                )
-                            ) {
-                                namespaceMap.put(
-                                    attribute.getNamespacePrefix(),
-                                    attribute.getNamespace()
-                                );
-                                xtw.writeNamespace(
-                                    attribute.getNamespacePrefix(),
-                                    attribute.getNamespace()
-                                );
+                            if (!namespaceMap.containsKey(attribute.getNamespacePrefix())) {
+                                namespaceMap.put(attribute.getNamespacePrefix(), attribute.getNamespace());
+                                xtw.writeNamespace(attribute.getNamespacePrefix(), attribute.getNamespace());
                             }
                             xtw.writeAttribute(
                                 attribute.getNamespacePrefix(),
@@ -554,10 +430,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
         }
     }
 
-    public static boolean isBlacklisted(
-        ExtensionAttribute attribute,
-        List<ExtensionAttribute>... blackLists
-    ) {
+    public static boolean isBlacklisted(ExtensionAttribute attribute, List<ExtensionAttribute>... blackLists) {
         if (blackLists != null) {
             for (List<ExtensionAttribute> blackList : blackLists) {
                 for (ExtensionAttribute blackAttribute : blackList) {
@@ -565,14 +438,9 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
                         if (
                             blackAttribute.getNamespace() != null &&
                             attribute.getNamespace() != null &&
-                            blackAttribute
-                                .getNamespace()
-                                .equals(attribute.getNamespace())
+                            blackAttribute.getNamespace().equals(attribute.getNamespace())
                         ) return true;
-                        if (
-                            blackAttribute.getNamespace() == null &&
-                            attribute.getNamespace() == null
-                        ) return true;
+                        if (blackAttribute.getNamespace() == null && attribute.getNamespace() == null) return true;
                     }
                 }
             }
@@ -580,10 +448,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
         return false;
     }
 
-    public static void writeIncomingAndOutgoingFlowElement(
-        FlowNode flowNode,
-        XMLStreamWriter xtw
-    ) throws Exception {
+    public static void writeIncomingAndOutgoingFlowElement(FlowNode flowNode, XMLStreamWriter xtw) throws Exception {
         if (!flowNode.getIncomingFlows().isEmpty()) {
             for (SequenceFlow incomingSequence : flowNode.getIncomingFlows()) {
                 writeIncomingElementChild(xtw, incomingSequence);
@@ -597,28 +462,14 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
         }
     }
 
-    public static void writeIncomingElementChild(
-        XMLStreamWriter xtw,
-        SequenceFlow incomingSequence
-    ) throws Exception {
-        xtw.writeStartElement(
-            BPMN2_PREFIX,
-            ELEMENT_GATEWAY_INCOMING,
-            BPMN2_NAMESPACE
-        );
+    public static void writeIncomingElementChild(XMLStreamWriter xtw, SequenceFlow incomingSequence) throws Exception {
+        xtw.writeStartElement(BPMN2_PREFIX, ELEMENT_GATEWAY_INCOMING, BPMN2_NAMESPACE);
         xtw.writeCharacters(incomingSequence.getId());
         xtw.writeEndElement();
     }
 
-    public static void writeOutgoingElementChild(
-        XMLStreamWriter xtw,
-        SequenceFlow outgoingSequence
-    ) throws Exception {
-        xtw.writeStartElement(
-            BPMN2_PREFIX,
-            ELEMENT_GATEWAY_OUTGOING,
-            BPMN2_NAMESPACE
-        );
+    public static void writeOutgoingElementChild(XMLStreamWriter xtw, SequenceFlow outgoingSequence) throws Exception {
+        xtw.writeStartElement(BPMN2_PREFIX, ELEMENT_GATEWAY_OUTGOING, BPMN2_NAMESPACE);
         xtw.writeCharacters(outgoingSequence.getId());
         xtw.writeEndElement();
     }
@@ -629,26 +480,12 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
      */
     public static XMLInputFactory createSafeXmlInputFactory() {
         XMLInputFactory xif = XMLInputFactory.newInstance();
-        if (
-            xif.isPropertySupported(
-                XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES
-            )
-        ) {
-            xif.setProperty(
-                XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES,
-                false
-            );
+        if (xif.isPropertySupported(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES)) {
+            xif.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false);
         }
 
-        if (
-            xif.isPropertySupported(
-                XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES
-            )
-        ) {
-            xif.setProperty(
-                XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES,
-                false
-            );
+        if (xif.isPropertySupported(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES)) {
+            xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
         }
 
         if (xif.isPropertySupported(XMLInputFactory.SUPPORT_DTD)) {

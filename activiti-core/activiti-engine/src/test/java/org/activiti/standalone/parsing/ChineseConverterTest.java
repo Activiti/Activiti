@@ -41,36 +41,18 @@ public class ChineseConverterTest extends ResourceActivitiTestCase {
     }
 
     protected BpmnModel readXMLFile() throws Exception {
-        InputStream xmlStream =
-            this.getClass().getClassLoader().getResourceAsStream(getResource());
+        InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream(getResource());
         StreamSource xmlSource = new InputStreamSource(xmlStream);
         BpmnModel bpmnModel = new BpmnXMLConverter()
-            .convertToBpmnModel(
-                xmlSource,
-                false,
-                false,
-                processEngineConfiguration.getXmlEncoding()
-            );
+            .convertToBpmnModel(xmlSource, false, false, processEngineConfiguration.getXmlEncoding());
         return bpmnModel;
     }
 
-    protected BpmnModel exportAndReadXMLFile(BpmnModel bpmnModel)
-        throws Exception {
-        byte[] xml = new BpmnXMLConverter()
-            .convertToXML(
-                bpmnModel,
-                processEngineConfiguration.getXmlEncoding()
-            );
-        StreamSource xmlSource = new InputStreamSource(
-            new ByteArrayInputStream(xml)
-        );
+    protected BpmnModel exportAndReadXMLFile(BpmnModel bpmnModel) throws Exception {
+        byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel, processEngineConfiguration.getXmlEncoding());
+        StreamSource xmlSource = new InputStreamSource(new ByteArrayInputStream(xml));
         BpmnModel parsedModel = new BpmnXMLConverter()
-            .convertToBpmnModel(
-                xmlSource,
-                false,
-                false,
-                processEngineConfiguration.getXmlEncoding()
-            );
+            .convertToBpmnModel(xmlSource, false, false, processEngineConfiguration.getXmlEncoding());
         return parsedModel;
     }
 
@@ -83,9 +65,7 @@ public class ChineseConverterTest extends ResourceActivitiTestCase {
                 .name("test")
                 .addString("test.bpmn20.xml", new String(xml))
                 .deploy();
-            processEngine
-                .getRepositoryService()
-                .deleteDeployment(deployment.getId());
+            processEngine.getRepositoryService().deleteDeployment(deployment.getId());
         } finally {
             processEngine.close();
         }

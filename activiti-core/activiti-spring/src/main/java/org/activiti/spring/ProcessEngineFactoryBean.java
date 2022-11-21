@@ -34,9 +34,7 @@ import org.springframework.context.ApplicationContextAware;
 
 
  */
-public class ProcessEngineFactoryBean
-    implements
-        FactoryBean<ProcessEngine>, DisposableBean, ApplicationContextAware {
+public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, DisposableBean, ApplicationContextAware {
 
     protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
@@ -49,8 +47,7 @@ public class ProcessEngineFactoryBean
         }
     }
 
-    public void setApplicationContext(ApplicationContext applicationContext)
-        throws BeansException {
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
 
@@ -59,9 +56,7 @@ public class ProcessEngineFactoryBean
         configureExternallyManagedTransactions();
 
         if (processEngineConfiguration.getBeans() == null) {
-            processEngineConfiguration.setBeans(
-                new SpringBeanFactoryProxyMap(applicationContext)
-            );
+            processEngineConfiguration.setBeans(new SpringBeanFactoryProxyMap(applicationContext));
         }
 
         this.processEngine = processEngineConfiguration.buildProcessEngine();
@@ -69,33 +64,24 @@ public class ProcessEngineFactoryBean
     }
 
     protected void configureExpressionManager() {
-        if (
-            processEngineConfiguration.getExpressionManager() == null &&
-            applicationContext != null
-        ) {
+        if (processEngineConfiguration.getExpressionManager() == null && applicationContext != null) {
             SpringExpressionManager expressionManager = new SpringExpressionManager(
                 applicationContext,
                 processEngineConfiguration.getBeans()
             );
             List<CustomFunctionProvider> customFunctionProviders = processEngineConfiguration.getCustomFunctionProviders();
             if (customFunctionProviders != null) {
-                expressionManager.setCustomFunctionProviders(
-                    customFunctionProviders
-                );
+                expressionManager.setCustomFunctionProviders(customFunctionProviders);
             }
             processEngineConfiguration.setExpressionManager(expressionManager);
         }
     }
 
     protected void configureExternallyManagedTransactions() {
-        if (
-            processEngineConfiguration instanceof SpringProcessEngineConfiguration
-        ) { // remark: any config can be injected, so we cannot have SpringConfiguration as member
+        if (processEngineConfiguration instanceof SpringProcessEngineConfiguration) { // remark: any config can be injected, so we cannot have SpringConfiguration as member
             SpringProcessEngineConfiguration engineConfiguration = (SpringProcessEngineConfiguration) processEngineConfiguration;
             if (engineConfiguration.getTransactionManager() != null) {
-                processEngineConfiguration.setTransactionsExternallyManaged(
-                    true
-                );
+                processEngineConfiguration.setTransactionsExternallyManaged(true);
             }
         }
     }
@@ -112,9 +98,7 @@ public class ProcessEngineFactoryBean
         return processEngineConfiguration;
     }
 
-    public void setProcessEngineConfiguration(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
         this.processEngineConfiguration = processEngineConfiguration;
     }
 }

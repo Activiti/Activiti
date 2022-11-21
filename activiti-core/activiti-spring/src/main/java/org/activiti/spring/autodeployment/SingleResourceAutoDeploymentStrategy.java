@@ -26,17 +26,14 @@ import org.springframework.core.io.Resource;
  *
 
  */
-public class SingleResourceAutoDeploymentStrategy
-    extends AbstractAutoDeploymentStrategy {
+public class SingleResourceAutoDeploymentStrategy extends AbstractAutoDeploymentStrategy {
 
     /**
      * The deployment mode this strategy handles.
      */
     public static final String DEPLOYMENT_MODE = "single-resource";
 
-    public SingleResourceAutoDeploymentStrategy(
-        ApplicationUpgradeContextService applicationUpgradeContextService
-    ) {
+    public SingleResourceAutoDeploymentStrategy(ApplicationUpgradeContextService applicationUpgradeContextService) {
         super(applicationUpgradeContextService);
     }
 

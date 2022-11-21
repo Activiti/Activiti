@@ -33,9 +33,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 
  */
 @TestExecutionListeners(DependencyInjectionTestExecutionListener.class)
-public abstract class SpringActivitiTestCase
-    extends AbstractActivitiTestCase
-    implements ApplicationContextAware {
+public abstract class SpringActivitiTestCase extends AbstractActivitiTestCase implements ApplicationContextAware {
 
     // we need a data structure to store all the resolved ProcessEngines and map
     // them to something
@@ -62,8 +60,7 @@ public abstract class SpringActivitiTestCase
 
     @Override
     protected void initializeProcessEngine() {
-        ContextConfiguration contextConfiguration = getClass()
-            .getAnnotation(ContextConfiguration.class);
+        ContextConfiguration contextConfiguration = getClass().getAnnotation(ContextConfiguration.class);
         String[] value = contextConfiguration.value();
         boolean hasOneArg = value != null && value.length == 1;
         String key = hasOneArg ? value[0] : ProcessEngine.class.getName();

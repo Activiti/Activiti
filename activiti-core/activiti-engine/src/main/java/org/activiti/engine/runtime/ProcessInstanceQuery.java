@@ -29,8 +29,7 @@ import org.activiti.engine.query.Query;
  *
  */
 @Internal
-public interface ProcessInstanceQuery
-    extends Query<ProcessInstanceQuery, ProcessInstance> {
+public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, ProcessInstance> {
     /** Select the process instance with the given id */
     ProcessInstanceQuery processInstanceId(String processInstanceId);
 
@@ -38,17 +37,12 @@ public interface ProcessInstanceQuery
     ProcessInstanceQuery processInstanceIds(Set<String> processInstanceIds);
 
     /** Select process instances with the given business key */
-    ProcessInstanceQuery processInstanceBusinessKey(
-        String processInstanceBusinessKey
-    );
+    ProcessInstanceQuery processInstanceBusinessKey(String processInstanceBusinessKey);
 
     /**
      * Select process instance with the given business key, unique for the given process definition
      */
-    ProcessInstanceQuery processInstanceBusinessKey(
-        String processInstanceBusinessKey,
-        String processDefinitionKey
-    );
+    ProcessInstanceQuery processInstanceBusinessKey(String processInstanceBusinessKey, String processDefinitionKey);
 
     /**
      * Only select process instances that have the given tenant id.
@@ -66,9 +60,7 @@ public interface ProcessInstanceQuery
     ProcessInstanceQuery processInstanceWithoutTenantId();
 
     /** Only select process instances whose process definition category is processDefinitionCategory. */
-    ProcessInstanceQuery processDefinitionCategory(
-        String processDefinitionCategory
-    );
+    ProcessInstanceQuery processDefinitionCategory(String processDefinitionCategory);
 
     /**
      * Select process instances whose process definition name is processDefinitionName
@@ -78,9 +70,7 @@ public interface ProcessInstanceQuery
     /** Only select process instances with a certain process definition version.
      * Particulary useful when used in combination with {@link #processDefinitionKey(String)}
      */
-    ProcessInstanceQuery processDefinitionVersion(
-        Integer processDefinitionVersion
-    );
+    ProcessInstanceQuery processDefinitionVersion(Integer processDefinitionVersion);
 
     /**
      * Select the process instances which are defined by a process definition with the given key.
@@ -90,9 +80,7 @@ public interface ProcessInstanceQuery
     /**
      * Select the process instances which are defined by process definitions with the given keys.
      */
-    ProcessInstanceQuery processDefinitionKeys(
-        Set<String> processDefinitionKeys
-    );
+    ProcessInstanceQuery processDefinitionKeys(Set<String> processDefinitionKeys);
 
     /**
      * Select the process instances which are defined by a process definition with the given id.
@@ -162,10 +150,7 @@ public interface ProcessInstanceQuery
      * @param value
      *          value of the variable, cannot be null.
      */
-    ProcessInstanceQuery variableValueEqualsIgnoreCase(
-        String name,
-        String value
-    );
+    ProcessInstanceQuery variableValueEqualsIgnoreCase(String name, String value);
 
     /**
      * Only select process instances which have a global variable with the given name, but with a different value than the passed value. Byte-arrays and {@link Serializable} objects (which are not
@@ -188,10 +173,7 @@ public interface ProcessInstanceQuery
      * @param value
      *          value of the variable, cannot be null.
      */
-    ProcessInstanceQuery variableValueNotEqualsIgnoreCase(
-        String name,
-        String value
-    );
+    ProcessInstanceQuery variableValueNotEqualsIgnoreCase(String name, String value);
 
     /**
      * Only select process instances which have a variable value greater than the passed value. Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers) are not
@@ -213,10 +195,7 @@ public interface ProcessInstanceQuery
      * @param value
      *          variable value, cannot be null.
      */
-    ProcessInstanceQuery variableValueGreaterThanOrEqual(
-        String name,
-        Object value
-    );
+    ProcessInstanceQuery variableValueGreaterThanOrEqual(String name, Object value);
 
     /**
      * Only select process instances which have a global variable value less than the passed value. Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers) are not
@@ -238,10 +217,7 @@ public interface ProcessInstanceQuery
      * @param value
      *          variable value, cannot be null.
      */
-    ProcessInstanceQuery variableValueLessThanOrEqual(
-        String name,
-        Object value
-    );
+    ProcessInstanceQuery variableValueLessThanOrEqual(String name, Object value);
 
     /**
      * Only select process instances which have a global variable value like the given value. This be used on string variables only.
@@ -286,9 +262,7 @@ public interface ProcessInstanceQuery
     /**
      * Only select process instances with a name like the given value, ignoring upper/lower case.
      */
-    ProcessInstanceQuery processInstanceNameLikeIgnoreCase(
-        String nameLikeIgnoreCase
-    );
+    ProcessInstanceQuery processInstanceNameLikeIgnoreCase(String nameLikeIgnoreCase);
 
     /**
      * Localize process name and description to specified locale.
@@ -308,9 +282,7 @@ public interface ProcessInstanceQuery
     /**
      * Limit process instance variables
      */
-    ProcessInstanceQuery limitProcessInstanceVariables(
-        Integer processInstanceVariablesLimit
-    );
+    ProcessInstanceQuery limitProcessInstanceVariables(Integer processInstanceVariablesLimit);
 
     /**
      * Only select process instances that failed due to an exception happening during a job execution.

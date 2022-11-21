@@ -34,8 +34,7 @@ import org.activiti.engine.test.api.event.TestActivitiEntityEventListener;
 /**
 
  */
-public class StartTimerEventRepeatWithEndExpressionTest
-    extends PluggableActivitiTestCase {
+public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivitiTestCase {
 
     private TestActivitiEntityEventListener listener;
 
@@ -43,9 +42,7 @@ public class StartTimerEventRepeatWithEndExpressionTest
     protected void setUp() throws Exception {
         super.setUp();
         listener = new TestActivitiEntityEventListener(Job.class);
-        processEngineConfiguration
-            .getEventDispatcher()
-            .addEventListener(listener);
+        processEngineConfiguration.getEventDispatcher().addEventListener(listener);
     }
 
     @Override
@@ -53,9 +50,7 @@ public class StartTimerEventRepeatWithEndExpressionTest
         super.tearDown();
 
         if (listener != null) {
-            processEngineConfiguration
-                .getEventDispatcher()
-                .removeEventListener(listener);
+            processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
         }
     }
 
@@ -80,8 +75,7 @@ public class StartTimerEventRepeatWithEndExpressionTest
                 "org/activiti/engine/test/bpmn/event/timer/StartTimerEventRepeatWithEndExpressionTest.testCycleDateStartTimerEvent.bpmn20.xml"
             )
             .deploy();
-        assertThat(repositoryService.createProcessDefinitionQuery().count())
-            .isEqualTo(1);
+        assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(1);
 
         // AFTER DEPLOYMENT
         // when the process is deployed there will be created a timerStartEvent
@@ -94,19 +88,11 @@ public class StartTimerEventRepeatWithEndExpressionTest
         dueDateCalendar.set(2025, Calendar.DECEMBER, 11, 0, 0, 0);
 
         // check the due date is inside the 2 seconds range
-        assertThat(
-            Math.abs(
-                dueDateCalendar.getTime().getTime() -
-                jobs.get(0).getDuedate().getTime()
-            ) <
-            2000
-        )
+        assertThat(Math.abs(dueDateCalendar.getTime().getTime() - jobs.get(0).getDuedate().getTime()) < 2000)
             .isEqualTo(true);
 
         // No process instances
-        List<ProcessInstance> processInstances = runtimeService
-            .createProcessInstanceQuery()
-            .list();
+        List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
         assertThat(processInstances).hasSize(0);
 
         // No tasks
@@ -120,8 +106,7 @@ public class StartTimerEventRepeatWithEndExpressionTest
         waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000L, 200);
 
         // there must be a pending job because the endDate is not reached yet");
-        assertThat(managementService.createTimerJobQuery().count())
-            .isEqualTo(1);
+        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
 
         // After the first startEvent Execution should be one process instance started
         processInstances = runtimeService.createProcessInstanceQuery().list();
@@ -138,13 +123,7 @@ public class StartTimerEventRepeatWithEndExpressionTest
         dueDateCalendar = Calendar.getInstance();
         dueDateCalendar.set(2025, Calendar.DECEMBER, 12, 0, 0, 0);
 
-        assertThat(
-            Math.abs(
-                dueDateCalendar.getTime().getTime() -
-                jobs.get(0).getDuedate().getTime()
-            ) <
-            2000
-        )
+        assertThat(Math.abs(dueDateCalendar.getTime().getTime() - jobs.get(0).getDuedate().getTime()) < 2000)
             .isEqualTo(true);
 
         // ADVANCE THE CLOCK SO THE END DATE WILL BE REACHED
@@ -182,9 +161,7 @@ public class StartTimerEventRepeatWithEndExpressionTest
         // count "entity created" events
         int eventCreatedCount = 0;
         for (ActivitiEvent eventReceived : eventsReceived) {
-            if (
-                ActivitiEventType.ENTITY_CREATED.equals(eventReceived.getType())
-            ) {
+            if (ActivitiEventType.ENTITY_CREATED.equals(eventReceived.getType())) {
                 eventCreatedCount++;
             }
         }
@@ -192,9 +169,7 @@ public class StartTimerEventRepeatWithEndExpressionTest
         // count "entity deleted" events
         int eventDeletedCount = 0;
         for (ActivitiEvent eventReceived : eventsReceived) {
-            if (
-                ActivitiEventType.ENTITY_DELETED.equals(eventReceived.getType())
-            ) {
+            if (ActivitiEventType.ENTITY_DELETED.equals(eventReceived.getType())) {
                 eventDeletedCount++;
             }
         }
@@ -206,11 +181,7 @@ public class StartTimerEventRepeatWithEndExpressionTest
         // let's complete the userTasks where the process is hanging in order to
         // complete the processes.
         for (ProcessInstance processInstance : processInstances) {
-            tasks =
-                taskService
-                    .createTaskQuery()
-                    .processInstanceId(processInstance.getProcessInstanceId())
-                    .list();
+            tasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstanceId()).list();
             Task task = tasks.get(0);
             assertThat(task.getName()).isEqualTo("Task A");
             assertThat(tasks).hasSize(1);
@@ -234,23 +205,14 @@ public class StartTimerEventRepeatWithEndExpressionTest
         listener.clearEventsReceived();
         processEngineConfiguration.setClock(previousClock);
 
-        repositoryService.deleteDeployment(
-            repositoryService.createDeploymentQuery().singleResult().getId(),
-            true
-        );
+        repositoryService.deleteDeployment(repositoryService.createDeploymentQuery().singleResult().getId(), true);
     }
 
     private void moveByMinutes(int minutes) throws Exception {
         processEngineConfiguration
             .getClock()
             .setCurrentTime(
-                new Date(
-                    processEngineConfiguration
-                        .getClock()
-                        .getCurrentTime()
-                        .getTime() +
-                    ((minutes * 60 * 1000))
-                )
+                new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + ((minutes * 60 * 1000)))
             );
     }
 }

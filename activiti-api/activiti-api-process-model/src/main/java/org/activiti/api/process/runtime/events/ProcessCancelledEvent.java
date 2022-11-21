@@ -18,7 +18,6 @@ package org.activiti.api.process.runtime.events;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 
-public interface ProcessCancelledEvent
-    extends ProcessRuntimeEvent<ProcessInstance> {
+public interface ProcessCancelledEvent extends ProcessRuntimeEvent<ProcessInstance> {
     String getCause();
 }

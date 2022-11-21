@@ -34,9 +34,7 @@ public class MybatisHistoricIdentityLinkDataManager
 
     protected CachedEntityMatcher<HistoricIdentityLinkEntity> historicIdentityLinksByProcInstMatcher = new HistoricIdentityLinksByProcInstMatcher();
 
-    public MybatisHistoricIdentityLinkDataManager(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public MybatisHistoricIdentityLinkDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
         super(processEngineConfiguration);
     }
 
@@ -52,11 +50,8 @@ public class MybatisHistoricIdentityLinkDataManager
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByTaskId(
-        String taskId
-    ) {
-        return getDbSqlSession()
-            .selectList("selectHistoricIdentityLinksByTask", taskId);
+    public List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByTaskId(String taskId) {
+        return getDbSqlSession().selectList("selectHistoricIdentityLinksByTask", taskId);
     }
 
     @Override

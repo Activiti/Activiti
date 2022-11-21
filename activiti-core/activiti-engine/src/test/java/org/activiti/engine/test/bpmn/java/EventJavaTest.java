@@ -48,9 +48,7 @@ public class EventJavaTest extends PluggableActivitiTestCase {
         timerDef.setTimeDuration("PT5M");
         startEvent.getEventDefinitions().add(timerDef);
         ActivitiListener listener = new ActivitiListener();
-        listener.setImplementationType(
-            ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION
-        );
+        listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION);
         listener.setImplementation("${test}");
         listener.setEvent("end");
         startEvent.getExecutionListeners().add(listener);
@@ -70,10 +68,7 @@ public class EventJavaTest extends PluggableActivitiTestCase {
 
         byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel);
 
-        new BpmnXMLConverter()
-            .validateModel(
-                new InputStreamSource(new ByteArrayInputStream(xml))
-            );
+        new BpmnXMLConverter().validateModel(new InputStreamSource(new ByteArrayInputStream(xml)));
 
         Deployment deployment = repositoryService
             .createDeployment()

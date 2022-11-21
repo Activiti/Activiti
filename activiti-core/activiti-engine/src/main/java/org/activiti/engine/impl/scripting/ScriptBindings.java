@@ -38,16 +38,7 @@ public class ScriptBindings implements Bindings {
      * This list contains the keywords for JUEL, Javascript and Groovy.
      */
     protected static final Set<String> UNSTORED_KEYS = new HashSet<String>(
-        asList(
-            "out",
-            "out:print",
-            "lang:import",
-            "context",
-            "elcontext",
-            "print",
-            "println",
-            "nashorn.global"
-        )
+        asList("out", "out:print", "lang:import", "context", "elcontext", "print", "println", "nashorn.global")
     );
 
     protected List<Resolver> scriptResolvers;
@@ -55,22 +46,13 @@ public class ScriptBindings implements Bindings {
     protected Bindings defaultBindings;
     protected boolean storeScriptVariables = true; // By default everything is stored (backwards compatibility)
 
-    public ScriptBindings(
-        List<Resolver> scriptResolvers,
-        VariableScope variableScope
-    ) {
+    public ScriptBindings(List<Resolver> scriptResolvers, VariableScope variableScope) {
         this.scriptResolvers = scriptResolvers;
         this.variableScope = variableScope;
-        this.defaultBindings =
-            new SimpleScriptContext()
-                .getBindings(SimpleScriptContext.ENGINE_SCOPE);
+        this.defaultBindings = new SimpleScriptContext().getBindings(SimpleScriptContext.ENGINE_SCOPE);
     }
 
-    public ScriptBindings(
-        List<Resolver> scriptResolvers,
-        VariableScope variableScope,
-        boolean storeScriptVariables
-    ) {
+    public ScriptBindings(List<Resolver> scriptResolvers, VariableScope variableScope, boolean storeScriptVariables) {
         this(scriptResolvers, variableScope);
         this.storeScriptVariables = storeScriptVariables;
     }

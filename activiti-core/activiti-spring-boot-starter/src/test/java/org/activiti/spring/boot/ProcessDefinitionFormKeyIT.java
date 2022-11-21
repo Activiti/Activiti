@@ -48,9 +48,7 @@ public class ProcessDefinitionFormKeyIT {
     @Test
     public void processDefinitionHasFormKey() {
         securityUtil.logInAs("garth");
-        ProcessDefinition processDefinition = processRuntime.processDefinition(
-            SINGLE_TASK_PROCESS
-        );
+        ProcessDefinition processDefinition = processRuntime.processDefinition(SINGLE_TASK_PROCESS);
         assertThat(processDefinition.getFormKey()).isEqualTo("startForm");
     }
 }

@@ -41,34 +41,22 @@ public class SubProcessTest extends PluggableActivitiTestCase {
 
         // After staring the process, both tasks in the subprocess should be
         // active
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "fixSystemFailure"
-        );
-        List<Task> tasks = taskService
-            .createTaskQuery()
-            .processInstanceId(pi.getId())
-            .orderByTaskName()
-            .asc()
-            .list();
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("fixSystemFailure");
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc().list();
 
         // Tasks are ordered by name (see query)
         assertThat(tasks).hasSize(2);
         Task investigateHardwareTask = tasks.get(0);
         Task investigateSoftwareTask = tasks.get(1);
-        assertThat(investigateHardwareTask.getName())
-            .isEqualTo("Investigate hardware");
-        assertThat(investigateSoftwareTask.getName())
-            .isEqualTo("Investigate software");
+        assertThat(investigateHardwareTask.getName()).isEqualTo("Investigate hardware");
+        assertThat(investigateSoftwareTask.getName()).isEqualTo("Investigate software");
 
         // Completing both the tasks finishes the subprocess and enables the
         // task after the subprocess
         taskService.complete(investigateHardwareTask.getId());
         taskService.complete(investigateSoftwareTask.getId());
 
-        Task writeReportTask = taskService
-            .createTaskQuery()
-            .processInstanceId(pi.getId())
-            .singleResult();
+        Task writeReportTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
         assertThat(writeReportTask.getName()).isEqualTo("Write report");
 
         // Clean up

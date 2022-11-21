@@ -42,25 +42,11 @@ public class EndEventJsonConverter extends BaseBpmnJsonConverter {
         fillBpmnTypes(convertersToJsonMap);
     }
 
-    public static void fillJsonTypes(
-        Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap
-    ) {
-        convertersToBpmnMap.put(
-            STENCIL_EVENT_END_NONE,
-            EndEventJsonConverter.class
-        );
-        convertersToBpmnMap.put(
-            STENCIL_EVENT_END_ERROR,
-            EndEventJsonConverter.class
-        );
-        convertersToBpmnMap.put(
-            STENCIL_EVENT_END_CANCEL,
-            EndEventJsonConverter.class
-        );
-        convertersToBpmnMap.put(
-            STENCIL_EVENT_END_TERMINATE,
-            EndEventJsonConverter.class
-        );
+    public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
+        convertersToBpmnMap.put(STENCIL_EVENT_END_NONE, EndEventJsonConverter.class);
+        convertersToBpmnMap.put(STENCIL_EVENT_END_ERROR, EndEventJsonConverter.class);
+        convertersToBpmnMap.put(STENCIL_EVENT_END_CANCEL, EndEventJsonConverter.class);
+        convertersToBpmnMap.put(STENCIL_EVENT_END_TERMINATE, EndEventJsonConverter.class);
     }
 
     public static void fillBpmnTypes(
@@ -88,10 +74,7 @@ public class EndEventJsonConverter extends BaseBpmnJsonConverter {
         }
     }
 
-    protected void convertElementToJson(
-        ObjectNode propertiesNode,
-        BaseElement baseElement
-    ) {
+    protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
         EndEvent endEvent = (EndEvent) baseElement;
         addEventProperties(endEvent, propertiesNode);
     }
@@ -111,24 +94,14 @@ public class EndEventJsonConverter extends BaseBpmnJsonConverter {
         } else if (STENCIL_EVENT_END_TERMINATE.equals(stencilId)) {
             TerminateEventDefinition eventDefinition = new TerminateEventDefinition();
 
-            String terminateAllStringValue = getPropertyValueAsString(
-                PROPERTY_TERMINATE_ALL,
-                elementNode
-            );
+            String terminateAllStringValue = getPropertyValueAsString(PROPERTY_TERMINATE_ALL, elementNode);
             if (StringUtils.isNotEmpty(terminateAllStringValue)) {
-                eventDefinition.setTerminateAll(
-                    "true".equals(terminateAllStringValue)
-                );
+                eventDefinition.setTerminateAll("true".equals(terminateAllStringValue));
             }
 
-            String terminateMiStringValue = getPropertyValueAsString(
-                PROPERTY_TERMINATE_MULTI_INSTANCE,
-                elementNode
-            );
+            String terminateMiStringValue = getPropertyValueAsString(PROPERTY_TERMINATE_MULTI_INSTANCE, elementNode);
             if (StringUtils.isNotEmpty(terminateMiStringValue)) {
-                eventDefinition.setTerminateMultiInstance(
-                    "true".equals(terminateMiStringValue)
-                );
+                eventDefinition.setTerminateMultiInstance("true".equals(terminateMiStringValue));
             }
 
             endEvent.getEventDefinitions().add(eventDefinition);

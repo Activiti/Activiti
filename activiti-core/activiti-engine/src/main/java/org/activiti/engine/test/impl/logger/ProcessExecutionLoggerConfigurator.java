@@ -22,39 +22,28 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 /**
 
  */
-public class ProcessExecutionLoggerConfigurator
-    extends AbstractProcessEngineConfigurator {
+public class ProcessExecutionLoggerConfigurator extends AbstractProcessEngineConfigurator {
 
     protected ProcessExecutionLogger processExecutionLogger;
 
     @Override
-    public void beforeInit(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public void beforeInit(ProcessEngineConfigurationImpl processEngineConfiguration) {
         processExecutionLogger = new ProcessExecutionLogger();
-        processEngineConfiguration.setCommandInvoker(
-            new LoggingCommandInvoker(processExecutionLogger)
-        );
+        processEngineConfiguration.setCommandInvoker(new LoggingCommandInvoker(processExecutionLogger));
     }
 
     @Override
-    public void configure(
-        ProcessEngineConfigurationImpl processEngineConfiguration
-    ) {
+    public void configure(ProcessEngineConfigurationImpl processEngineConfiguration) {
         processEngineConfiguration
             .getEventDispatcher()
-            .addEventListener(
-                new DebugInfoEntityEventListener(processExecutionLogger)
-            );
+            .addEventListener(new DebugInfoEntityEventListener(processExecutionLogger));
     }
 
     public ProcessExecutionLogger getProcessExecutionLogger() {
         return processExecutionLogger;
     }
 
-    public void setProcessExecutionLogger(
-        ProcessExecutionLogger processExecutionLogger
-    ) {
+    public void setProcessExecutionLogger(ProcessExecutionLogger processExecutionLogger) {
         this.processExecutionLogger = processExecutionLogger;
     }
 }

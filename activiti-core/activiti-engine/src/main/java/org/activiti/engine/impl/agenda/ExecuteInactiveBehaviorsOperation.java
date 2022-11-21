@@ -37,9 +37,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ExecuteInactiveBehaviorsOperation extends AbstractOperation {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        ExecuteInactiveBehaviorsOperation.class
-    );
+    private static final Logger logger = LoggerFactory.getLogger(ExecuteInactiveBehaviorsOperation.class);
 
     protected Collection<ExecutionEntity> involvedExecutions;
 
@@ -61,16 +59,10 @@ public class ExecuteInactiveBehaviorsOperation extends AbstractOperation {
          */
 
         for (ExecutionEntity executionEntity : involvedExecutions) {
-            Process process = ProcessDefinitionUtil.getProcess(
-                executionEntity.getProcessDefinitionId()
-            );
+            Process process = ProcessDefinitionUtil.getProcess(executionEntity.getProcessDefinitionId());
             Collection<String> flowNodeIdsWithInactivatedBehavior = new ArrayList<String>();
-            for (FlowNode flowNode : process.findFlowElementsOfType(
-                FlowNode.class
-            )) {
-                if (
-                    flowNode.getBehavior() instanceof InactiveActivityBehavior
-                ) {
+            for (FlowNode flowNode : process.findFlowElementsOfType(FlowNode.class)) {
+                if (flowNode.getBehavior() instanceof InactiveActivityBehavior) {
                     flowNodeIdsWithInactivatedBehavior.add(flowNode.getId());
                 }
             }
@@ -78,21 +70,14 @@ public class ExecuteInactiveBehaviorsOperation extends AbstractOperation {
             if (flowNodeIdsWithInactivatedBehavior.size() > 0) {
                 Collection<ExecutionEntity> inactiveExecutions = commandContext
                     .getExecutionEntityManager()
-                    .findInactiveExecutionsByProcessInstanceId(
-                        executionEntity.getProcessInstanceId()
-                    );
+                    .findInactiveExecutionsByProcessInstanceId(executionEntity.getProcessInstanceId());
                 for (ExecutionEntity inactiveExecution : inactiveExecutions) {
                     if (
                         !inactiveExecution.isActive() &&
-                        flowNodeIdsWithInactivatedBehavior.contains(
-                            inactiveExecution.getActivityId()
-                        ) &&
+                        flowNodeIdsWithInactivatedBehavior.contains(inactiveExecution.getActivityId()) &&
                         !inactiveExecution.isDeleted()
                     ) {
-                        FlowNode flowNode = (FlowNode) process.getFlowElement(
-                            inactiveExecution.getActivityId(),
-                            true
-                        );
+                        FlowNode flowNode = (FlowNode) process.getFlowElement(inactiveExecution.getActivityId(), true);
                         InactiveActivityBehavior inactiveActivityBehavior =
                             ((InactiveActivityBehavior) flowNode.getBehavior());
                         logger.debug(
@@ -100,9 +85,7 @@ public class ExecuteInactiveBehaviorsOperation extends AbstractOperation {
                             inactiveActivityBehavior.getClass(),
                             flowNode.getId()
                         );
-                        inactiveActivityBehavior.executeInactive(
-                            inactiveExecution
-                        );
+                        inactiveActivityBehavior.executeInactive(inactiveExecution);
                     }
                 }
             }

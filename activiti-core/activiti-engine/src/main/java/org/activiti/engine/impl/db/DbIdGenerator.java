@@ -42,10 +42,7 @@ public class DbIdGenerator implements IdGenerator {
     }
 
     protected synchronized void getNewBlock() {
-        IdBlock idBlock = commandExecutor.execute(
-            commandConfig,
-            new GetNextIdBlockCmd(idBlockSize)
-        );
+        IdBlock idBlock = commandExecutor.execute(commandConfig, new GetNextIdBlockCmd(idBlockSize));
         this.nextId = idBlock.getNextId();
         this.lastId = idBlock.getLastId();
     }

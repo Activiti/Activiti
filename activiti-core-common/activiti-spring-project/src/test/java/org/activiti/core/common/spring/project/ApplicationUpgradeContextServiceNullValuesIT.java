@@ -29,9 +29,7 @@ import org.springframework.test.context.TestPropertySource;
     classes = ApplicationUpgradeContextAutoConfiguration.class,
     webEnvironment = SpringBootTest.WebEnvironment.NONE
 )
-@TestPropertySource(
-    properties = { "project.manifest.file.path=null", "application.version=0" }
-)
+@TestPropertySource(properties = { "project.manifest.file.path=null", "application.version=0" })
 public class ApplicationUpgradeContextServiceNullValuesIT {
 
     @Autowired
@@ -39,19 +37,13 @@ public class ApplicationUpgradeContextServiceNullValuesIT {
 
     @Test
     public void should_throwException_when_noManifestPresent() {
-        assertThat(applicationUpgradeContextService.hasProjectManifest())
-            .isFalse();
-        Throwable thrown = catchThrowable(() ->
-            applicationUpgradeContextService.loadProjectManifest()
-        );
-        assertThat(thrown)
-            .isInstanceOf(FileNotFoundException.class)
-            .hasMessageContaining("manifest not found");
+        assertThat(applicationUpgradeContextService.hasProjectManifest()).isFalse();
+        Throwable thrown = catchThrowable(() -> applicationUpgradeContextService.loadProjectManifest());
+        assertThat(thrown).isInstanceOf(FileNotFoundException.class).hasMessageContaining("manifest not found");
     }
 
     @Test
     public void should_notHaveDefaultEnforcedAppVersion() {
-        assertThat(applicationUpgradeContextService.hasEnforcedAppVersion())
-            .isFalse();
+        assertThat(applicationUpgradeContextService.hasEnforcedAppVersion()).isFalse();
     }
 }

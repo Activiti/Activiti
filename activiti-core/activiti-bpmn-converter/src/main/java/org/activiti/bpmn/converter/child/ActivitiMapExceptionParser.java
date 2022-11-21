@@ -35,25 +35,15 @@ public class ActivitiMapExceptionParser extends BaseChildElementParser {
     }
 
     @Override
-    public void parseChildElement(
-        XMLStreamReader xtr,
-        BaseElement parentElement,
-        BpmnModel model
-    ) throws Exception {
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
         if (!(parentElement instanceof Activity)) return;
 
         String errorCode = xtr.getAttributeValue(null, MAP_EXCEPTION_ERRORCODE);
-        String andChildren = xtr.getAttributeValue(
-            null,
-            MAP_EXCEPTION_ANDCHILDREN
-        );
+        String andChildren = xtr.getAttributeValue(null, MAP_EXCEPTION_ANDCHILDREN);
         String exceptionClass = xtr.getElementText();
         boolean hasChildrenBool = false;
 
-        if (
-            StringUtils.isEmpty(andChildren) ||
-            andChildren.toLowerCase().equals("false")
-        ) {
+        if (StringUtils.isEmpty(andChildren) || andChildren.toLowerCase().equals("false")) {
             hasChildrenBool = false;
         } else if (andChildren.toLowerCase().equals("true")) {
             hasChildrenBool = true;
@@ -68,25 +58,13 @@ public class ActivitiMapExceptionParser extends BaseChildElementParser {
             );
         }
 
-        if (
-            StringUtils.isEmpty(errorCode) ||
-            StringUtils.isEmpty(errorCode.trim())
-        ) {
+        if (StringUtils.isEmpty(errorCode) || StringUtils.isEmpty(errorCode.trim())) {
             throw new XMLException(
-                "No errorCode defined mapException with errorCode=" +
-                errorCode +
-                " and class=" +
-                exceptionClass
+                "No errorCode defined mapException with errorCode=" + errorCode + " and class=" + exceptionClass
             );
         }
 
         ((Activity) parentElement).getMapExceptions()
-            .add(
-                new MapExceptionEntry(
-                    errorCode,
-                    exceptionClass,
-                    hasChildrenBool
-                )
-            );
+            .add(new MapExceptionEntry(errorCode, exceptionClass, hasChildrenBool));
     }
 }

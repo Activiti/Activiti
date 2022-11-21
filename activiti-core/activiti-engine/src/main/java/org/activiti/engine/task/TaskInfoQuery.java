@@ -29,8 +29,7 @@ import org.activiti.engine.query.Query;
  *
  */
 @Internal
-public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo>
-    extends Query<T, V> {
+public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo> extends Query<T, V> {
     /**
      * Only select tasks with the given task id (in practice, there will be maximum one of this kind)
      */
@@ -199,9 +198,7 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
      * This method, unlike the {@link #processInstanceBusinessKeyLike(String)} method will not take in account the upper/lower case: both the input parameter as the column value are lowercased when the
      * query is executed.
      */
-    T processInstanceBusinessKeyLikeIgnoreCase(
-        String processInstanceBusinessKeyLikeIgnoreCase
-    );
+    T processInstanceBusinessKeyLikeIgnoreCase(String processInstanceBusinessKeyLikeIgnoreCase);
 
     /**
      * Only select tasks for the given execution.
@@ -280,9 +277,7 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
      * This method, unlike the {@link #processDefinitionKeyLike(String)} method will not take in account the upper/lower case: both the input parameter as the column value are lowercased when the query
      * is executed.
      */
-    T processDefinitionKeyLikeIgnoreCase(
-        String processDefinitionKeyLikeIgnoreCase
-    );
+    T processDefinitionKeyLikeIgnoreCase(String processDefinitionKeyLikeIgnoreCase);
 
     /** Only select tasks that have a process definition for which the key is present in the given list **/
     T processDefinitionKeyIn(List<String> processDefinitionKeys);

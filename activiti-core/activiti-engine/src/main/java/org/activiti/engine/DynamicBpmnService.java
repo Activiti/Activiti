@@ -25,37 +25,19 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public interface DynamicBpmnService {
     ObjectNode getProcessDefinitionInfo(String processDefinitionId);
 
-    void saveProcessDefinitionInfo(
-        String processDefinitionId,
-        ObjectNode infoNode
-    );
+    void saveProcessDefinitionInfo(String processDefinitionId, ObjectNode infoNode);
 
     ObjectNode changeServiceTaskClassName(String id, String className);
 
-    void changeServiceTaskClassName(
-        String id,
-        String className,
-        ObjectNode infoNode
-    );
+    void changeServiceTaskClassName(String id, String className, ObjectNode infoNode);
 
     ObjectNode changeServiceTaskExpression(String id, String expression);
 
-    void changeServiceTaskExpression(
-        String id,
-        String expression,
-        ObjectNode infoNode
-    );
+    void changeServiceTaskExpression(String id, String expression, ObjectNode infoNode);
 
-    ObjectNode changeServiceTaskDelegateExpression(
-        String id,
-        String expression
-    );
+    ObjectNode changeServiceTaskDelegateExpression(String id, String expression);
 
-    void changeServiceTaskDelegateExpression(
-        String id,
-        String expression,
-        ObjectNode infoNode
-    );
+    void changeServiceTaskDelegateExpression(String id, String expression, ObjectNode infoNode);
 
     ObjectNode changeScriptTaskScript(String id, String script);
 
@@ -67,11 +49,7 @@ public interface DynamicBpmnService {
 
     ObjectNode changeUserTaskDescription(String id, String description);
 
-    void changeUserTaskDescription(
-        String id,
-        String description,
-        ObjectNode infoNode
-    );
+    void changeUserTaskDescription(String id, String description, ObjectNode infoNode);
 
     ObjectNode changeUserTaskDueDate(String id, String dueDate);
 
@@ -79,19 +57,11 @@ public interface DynamicBpmnService {
 
     ObjectNode changeUserTaskPriority(String id, String priority);
 
-    void changeUserTaskPriority(
-        String id,
-        String priority,
-        ObjectNode infoNode
-    );
+    void changeUserTaskPriority(String id, String priority, ObjectNode infoNode);
 
     ObjectNode changeUserTaskCategory(String id, String category);
 
-    void changeUserTaskCategory(
-        String id,
-        String category,
-        ObjectNode infoNode
-    );
+    void changeUserTaskCategory(String id, String category, ObjectNode infoNode);
 
     ObjectNode changeUserTaskFormKey(String id, String formKey);
 
@@ -99,21 +69,13 @@ public interface DynamicBpmnService {
 
     ObjectNode changeUserTaskAssignee(String id, String assignee);
 
-    void changeUserTaskAssignee(
-        String id,
-        String assignee,
-        ObjectNode infoNode
-    );
+    void changeUserTaskAssignee(String id, String assignee, ObjectNode infoNode);
 
     ObjectNode changeUserTaskOwner(String id, String owner);
 
     void changeUserTaskOwner(String id, String owner, ObjectNode infoNode);
 
-    ObjectNode changeUserTaskCandidateUser(
-        String id,
-        String candidateUser,
-        boolean overwriteOtherChangedEntries
-    );
+    ObjectNode changeUserTaskCandidateUser(String id, String candidateUser, boolean overwriteOtherChangedEntries);
 
     void changeUserTaskCandidateUser(
         String id,
@@ -122,11 +84,7 @@ public interface DynamicBpmnService {
         ObjectNode infoNode
     );
 
-    ObjectNode changeUserTaskCandidateGroup(
-        String id,
-        String candidateGroup,
-        boolean overwriteOtherChangedEntries
-    );
+    ObjectNode changeUserTaskCandidateGroup(String id, String candidateGroup, boolean overwriteOtherChangedEntries);
 
     void changeUserTaskCandidateGroup(
         String id,
@@ -135,52 +93,23 @@ public interface DynamicBpmnService {
         ObjectNode infoNode
     );
 
-    ObjectNode changeDmnTaskDecisionTableKey(
-        String id,
-        String decisionTableKey
-    );
+    ObjectNode changeDmnTaskDecisionTableKey(String id, String decisionTableKey);
 
-    void changeDmnTaskDecisionTableKey(
-        String id,
-        String decisionTableKey,
-        ObjectNode infoNode
-    );
+    void changeDmnTaskDecisionTableKey(String id, String decisionTableKey, ObjectNode infoNode);
 
     ObjectNode changeSequenceFlowCondition(String id, String condition);
 
-    void changeSequenceFlowCondition(
-        String id,
-        String condition,
-        ObjectNode infoNode
-    );
+    void changeSequenceFlowCondition(String id, String condition, ObjectNode infoNode);
 
     ObjectNode getBpmnElementProperties(String id, ObjectNode infoNode);
 
     ObjectNode changeLocalizationName(String language, String id, String value);
 
-    void changeLocalizationName(
-        String language,
-        String id,
-        String value,
-        ObjectNode infoNode
-    );
+    void changeLocalizationName(String language, String id, String value, ObjectNode infoNode);
 
-    ObjectNode changeLocalizationDescription(
-        String language,
-        String id,
-        String value
-    );
+    ObjectNode changeLocalizationDescription(String language, String id, String value);
 
-    void changeLocalizationDescription(
-        String language,
-        String id,
-        String value,
-        ObjectNode infoNode
-    );
+    void changeLocalizationDescription(String language, String id, String value, ObjectNode infoNode);
 
-    ObjectNode getLocalizationElementProperties(
-        String language,
-        String id,
-        ObjectNode infoNode
-    );
+    ObjectNode getLocalizationElementProperties(String language, String id, ObjectNode infoNode);
 }

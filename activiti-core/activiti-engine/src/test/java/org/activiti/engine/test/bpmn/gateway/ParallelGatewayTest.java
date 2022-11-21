@@ -37,41 +37,31 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
      */
     @Deployment
     public void testSplitMergeNoWaitstates() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "forkJoinNoWaitStates"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("forkJoinNoWaitStates");
         assertThat(processInstance.isEnded()).isTrue();
     }
 
     @Deployment
     public void testUnstructuredConcurrencyTwoForks() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "unstructuredConcurrencyTwoForks"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("unstructuredConcurrencyTwoForks");
         assertThat(processInstance.isEnded()).isTrue();
     }
 
     @Deployment
     public void testUnstructuredConcurrencyTwoJoins() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "unstructuredConcurrencyTwoJoins"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("unstructuredConcurrencyTwoJoins");
         assertThat(processInstance.isEnded()).isTrue();
     }
 
     @Deployment
     public void testForkFollowedByOnlyEndEvents() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "forkFollowedByEndEvents"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("forkFollowedByEndEvents");
         assertThat(processInstance.isEnded()).isTrue();
     }
 
     @Deployment
     public void testNestedForksFollowedByEndEvents() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "nestedForksFollowedByEndEvents"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("nestedForksFollowedByEndEvents");
         assertThat(processInstance.isEnded()).isTrue();
     }
 
@@ -149,9 +139,7 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
     // Test to verify ACT-1755
     @Deployment
     public void testHistoryTables() {
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "testHistoryRecords"
-        );
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("testHistoryRecords");
 
         List<HistoricActivityInstance> history = historyService
             .createHistoricActivityInstanceQuery()
@@ -167,16 +155,9 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testAsyncBehavior() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "async"
-        );
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("async");
         waitForJobExecutorToProcessAllJobs(5000L, 250L);
-        assertThat(
-            runtimeService
-                .createProcessInstanceQuery()
-                .processInstanceId(processInstance.getId())
-                .count()
-        )
+        assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count())
             .isEqualTo(0);
     }
 
@@ -188,21 +169,15 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testHistoricActivityInstanceEndTimes() {
-        if (
-            processEngineConfiguration
-                .getHistoryLevel()
-                .isAtLeast(HistoryLevel.AUDIT)
-        ) {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             runtimeService.startProcessInstanceByKey("nestedForkJoin");
             List<HistoricActivityInstance> historicActivityInstances = historyService
                 .createHistoricActivityInstanceQuery()
                 .list();
             assertThat(historicActivityInstances).hasSize(21);
             for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
-                assertThat(historicActivityInstance.getStartTime() != null)
-                    .isTrue();
-                assertThat(historicActivityInstance.getEndTime() != null)
-                    .isTrue();
+                assertThat(historicActivityInstance.getStartTime() != null).isTrue();
+                assertThat(historicActivityInstance.getEndTime() != null).isTrue();
             }
         }
     }

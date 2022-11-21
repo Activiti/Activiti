@@ -76,22 +76,16 @@ public class ActivitiListener extends BaseElement {
         return customPropertiesResolverImplementationType;
     }
 
-    public void setCustomPropertiesResolverImplementationType(
-        String customPropertiesResolverImplementationType
-    ) {
-        this.customPropertiesResolverImplementationType =
-            customPropertiesResolverImplementationType;
+    public void setCustomPropertiesResolverImplementationType(String customPropertiesResolverImplementationType) {
+        this.customPropertiesResolverImplementationType = customPropertiesResolverImplementationType;
     }
 
     public String getCustomPropertiesResolverImplementation() {
         return customPropertiesResolverImplementation;
     }
 
-    public void setCustomPropertiesResolverImplementation(
-        String customPropertiesResolverImplementation
-    ) {
-        this.customPropertiesResolverImplementation =
-            customPropertiesResolverImplementation;
+    public void setCustomPropertiesResolverImplementation(String customPropertiesResolverImplementation) {
+        this.customPropertiesResolverImplementation = customPropertiesResolverImplementation;
     }
 
     public Object getInstance() {
@@ -114,10 +108,7 @@ public class ActivitiListener extends BaseElement {
         setImplementationType(otherListener.getImplementationType());
 
         fieldExtensions = new ArrayList<FieldExtension>();
-        if (
-            otherListener.getFieldExtensions() != null &&
-            !otherListener.getFieldExtensions().isEmpty()
-        ) {
+        if (otherListener.getFieldExtensions() != null && !otherListener.getFieldExtensions().isEmpty()) {
             for (FieldExtension extension : otherListener.getFieldExtensions()) {
                 fieldExtensions.add(extension.clone());
             }

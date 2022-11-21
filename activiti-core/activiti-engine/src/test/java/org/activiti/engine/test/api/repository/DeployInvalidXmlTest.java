@@ -50,9 +50,7 @@ public class DeployInvalidXmlTest extends PluggableActivitiTestCase {
             .isThrownBy(() ->
                 repositoryService
                     .createDeployment()
-                    .addClasspathResource(
-                        "org/activiti/engine/test/api/repository/nonSchemaConformantXml.bpmn20.xml"
-                    )
+                    .addClasspathResource("org/activiti/engine/test/api/repository/nonSchemaConformantXml.bpmn20.xml")
                     .deploy()
                     .getId()
             );
@@ -104,8 +102,7 @@ public class DeployInvalidXmlTest extends PluggableActivitiTestCase {
         "</definitions>";
 
     // See https://activiti.atlassian.net/browse/ACT-1579?focusedCommentId=319886#comment-319886
-    public void testProcessEngineDenialOfServiceAttackUsingUnsafeXmlTest()
-        throws InterruptedException {
+    public void testProcessEngineDenialOfServiceAttackUsingUnsafeXmlTest() throws InterruptedException {
         // Putting this in a Runnable so we can time it out
         // Without safe xml, this would run forever
         MyRunnable runnable = new MyRunnable(repositoryService);
@@ -135,12 +132,7 @@ public class DeployInvalidXmlTest extends PluggableActivitiTestCase {
                     .addString("test.bpmn20.xml", UNSAFE_XML)
                     .deploy()
                     .getId();
-                assertThat(
-                    repositoryService
-                        .createProcessDefinitionQuery()
-                        .singleResult()
-                )
-                    .isEqualTo(1);
+                assertThat(repositoryService.createProcessDefinitionQuery().singleResult()).isEqualTo(1);
                 repositoryService.deleteDeployment(deploymentId, true);
             } catch (Exception e) {
                 // Exception is expected
@@ -159,11 +151,8 @@ public class DeployInvalidXmlTest extends PluggableActivitiTestCase {
             .deploy()
             .getId();
         try {
-            ProcessDefinition processDefinition = repositoryService
-                .createProcessDefinitionQuery()
-                .singleResult();
-            assertThat(processDefinition.getDescription())
-                .isEqualTo("Test 1 2 3 null");
+            ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+            assertThat(processDefinition.getDescription()).isEqualTo("Test 1 2 3 null");
         } finally {
             repositoryService.deleteDeployment(deploymentId, true);
         }

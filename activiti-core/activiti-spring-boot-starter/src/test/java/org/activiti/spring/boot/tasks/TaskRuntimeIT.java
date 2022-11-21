@@ -65,10 +65,7 @@ public class TaskRuntimeIT {
     public void should_beAbleToAssignTaskToInitiatorEvenWhenInitiatorIsNotSetInStartEvent() {
         //given
         ProcessInstance processInstance = processRuntime.start(
-            ProcessPayloadBuilder
-                .start()
-                .withProcessDefinitionKey("taskToInitiatorProcess")
-                .build()
+            ProcessPayloadBuilder.start().withProcessDefinitionKey("taskToInitiatorProcess").build()
         );
 
         //when
