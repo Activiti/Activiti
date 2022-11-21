@@ -28,7 +28,6 @@ jobs:
           output: ' '
       - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit-format@AAE-11403-experiment-prettier-format
         with:
-          pre-commit-args: --files ${{ steps.file_changes.outputs.files }}
           pre-commit-all-files: false
 
   build:
