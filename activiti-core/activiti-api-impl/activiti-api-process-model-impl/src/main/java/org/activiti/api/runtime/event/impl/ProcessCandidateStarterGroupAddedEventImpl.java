@@ -19,12 +19,15 @@ import org.activiti.api.process.model.ProcessCandidateStarterGroup;
 import org.activiti.api.process.model.events.ProcessCandidateStarterGroupEvent;
 import org.activiti.api.process.runtime.events.ProcessCandidateStarterGroupAddedEvent;
 
-public class ProcessCandidateStarterGroupAddedEventImpl extends RuntimeEventImpl<ProcessCandidateStarterGroup, ProcessCandidateStarterGroupEvent.ProcessCandidateStarterGroupEvents> implements ProcessCandidateStarterGroupAddedEvent {
+public class ProcessCandidateStarterGroupAddedEventImpl
+    extends RuntimeEventImpl<ProcessCandidateStarterGroup, ProcessCandidateStarterGroupEvent.ProcessCandidateStarterGroupEvents>
+    implements ProcessCandidateStarterGroupAddedEvent {
 
-    public ProcessCandidateStarterGroupAddedEventImpl() {
-    }
+    public ProcessCandidateStarterGroupAddedEventImpl() {}
 
-    public ProcessCandidateStarterGroupAddedEventImpl(ProcessCandidateStarterGroup entity) {
+    public ProcessCandidateStarterGroupAddedEventImpl(
+        ProcessCandidateStarterGroup entity
+    ) {
         super(entity);
     }
 

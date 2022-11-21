@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
-
 
 /**
 
 
  */
-public class CompensateEventSubscriptionEntityImpl extends EventSubscriptionEntityImpl implements CompensateEventSubscriptionEntity {
+public class CompensateEventSubscriptionEntityImpl
+    extends EventSubscriptionEntityImpl
+    implements CompensateEventSubscriptionEntity {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public CompensateEventSubscriptionEntityImpl() {
-    eventType = EVENT_TYPE;
-  }
-
+    public CompensateEventSubscriptionEntityImpl() {
+        eventType = EVENT_TYPE;
+    }
 }

@@ -26,7 +26,10 @@ public class DateVariableType extends JavaObjectVariableType {
 
     private final DateFormatterProvider dateFormatterProvider;
 
-    public DateVariableType(Class clazz, DateFormatterProvider dateFormatterProvider) {
+    public DateVariableType(
+        Class clazz,
+        DateFormatterProvider dateFormatterProvider
+    ) {
         super(clazz);
         this.dateFormatterProvider = dateFormatterProvider;
     }
@@ -38,7 +41,6 @@ public class DateVariableType extends JavaObjectVariableType {
 
     @Override
     public Object parseFromValue(Object value) throws ActivitiException {
-
         try {
             if (isExpression(value)) {
                 return value;

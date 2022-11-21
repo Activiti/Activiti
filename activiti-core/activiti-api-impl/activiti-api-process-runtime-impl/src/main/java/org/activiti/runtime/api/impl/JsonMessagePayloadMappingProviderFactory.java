@@ -22,23 +22,28 @@ import org.activiti.engine.impl.delegate.MessagePayloadMappingProvider;
 import org.activiti.engine.impl.delegate.MessagePayloadMappingProviderFactory;
 import org.activiti.engine.impl.el.ExpressionManager;
 
-public class JsonMessagePayloadMappingProviderFactory implements MessagePayloadMappingProviderFactory {
+public class JsonMessagePayloadMappingProviderFactory
+    implements MessagePayloadMappingProviderFactory {
 
     private final VariablesCalculator variablesCalculator;
 
     public JsonMessagePayloadMappingProviderFactory(
-        VariablesCalculator variablesCalculator) {
+        VariablesCalculator variablesCalculator
+    ) {
         this.variablesCalculator = variablesCalculator;
     }
 
     @Override
-    public MessagePayloadMappingProvider create(Event bpmnEvent,
-                                                MessageEventDefinition messageEventDefinition,
-                                                ExpressionManager expressionManager) {
-        return new JsonMessagePayloadMappingProvider(bpmnEvent,
-                                                     messageEventDefinition,
-                                                     expressionManager,
-            variablesCalculator);
+    public MessagePayloadMappingProvider create(
+        Event bpmnEvent,
+        MessageEventDefinition messageEventDefinition,
+        ExpressionManager expressionManager
+    ) {
+        return new JsonMessagePayloadMappingProvider(
+            bpmnEvent,
+            messageEventDefinition,
+            expressionManager,
+            variablesCalculator
+        );
     }
-
 }

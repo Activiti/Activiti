@@ -17,7 +17,6 @@
 package org.activiti.engine.impl;
 
 import java.io.Serializable;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.delegate.DelegateExecution;
 
@@ -25,6 +24,5 @@ import org.activiti.engine.delegate.DelegateExecution;
  */
 @Internal
 public interface Condition extends Serializable {
-
-  boolean evaluate(String sequenceFlowId, DelegateExecution execution);
+    boolean evaluate(String sequenceFlowId, DelegateExecution execution);
 }

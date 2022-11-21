@@ -17,7 +17,6 @@
 package org.activiti.validation;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.validation.validator.ValidatorSet;
 
@@ -27,15 +26,13 @@ import org.activiti.validation.validator.ValidatorSet;
 
  */
 public interface ProcessValidator {
+    /**
+     * Validates the provided {@link BpmnModel} and returns a list of all {@link ValidationError} occurences found.
+     */
+    List<ValidationError> validate(BpmnModel bpmnModel);
 
-  /**
-   * Validates the provided {@link BpmnModel} and returns a list of all {@link ValidationError} occurences found.
-   */
-  List<ValidationError> validate(BpmnModel bpmnModel);
-
-  /**
-   * Returns the {@link ValidatorSet} instances for this process validator. Useful if some validation rules need to be disabled.
-   */
-  List<ValidatorSet> getValidatorSets();
-
+    /**
+     * Returns the {@link ValidatorSet} instances for this process validator. Useful if some validation rules need to be disabled.
+     */
+    List<ValidatorSet> getValidatorSets();
 }

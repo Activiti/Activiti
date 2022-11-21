@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 
 /**
@@ -29,59 +28,61 @@ import org.activiti.engine.ActivitiException;
  */
 public class DefaultVariableTypes implements VariableTypes, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private final List<VariableType> typesList = new ArrayList<VariableType>();
-  private final Map<String, VariableType> typesMap = new HashMap<String, VariableType>();
+    private final List<VariableType> typesList = new ArrayList<VariableType>();
+    private final Map<String, VariableType> typesMap = new HashMap<String, VariableType>();
 
-  public DefaultVariableTypes addType(VariableType type) {
-    return addType(type, typesList.size());
-  }
-
-  public DefaultVariableTypes addType(VariableType type, int index) {
-    typesList.add(index, type);
-    typesMap.put(type.getTypeName(), type);
-    return this;
-  }
-
-  public void setTypesList(List<VariableType> typesList) {
-    this.typesList.clear();
-    this.typesList.addAll(typesList);
-    this.typesMap.clear();
-    for (VariableType type : typesList) {
-      typesMap.put(type.getTypeName(), type);
+    public DefaultVariableTypes addType(VariableType type) {
+        return addType(type, typesList.size());
     }
-  }
 
-  public VariableType getVariableType(String typeName) {
-    return typesMap.get(typeName);
-  }
-
-  public VariableType findVariableType(Object value) {
-    for (VariableType type : typesList) {
-      if (type.isAbleToStore(value)) {
-        return type;
-      }
+    public DefaultVariableTypes addType(VariableType type, int index) {
+        typesList.add(index, type);
+        typesMap.put(type.getTypeName(), type);
+        return this;
     }
-    throw new ActivitiException("couldn't find a variable type that is able to serialize " + value);
-  }
 
-  public int getTypeIndex(VariableType type) {
-    return typesList.indexOf(type);
-  }
-
-  public int getTypeIndex(String typeName) {
-    VariableType type = typesMap.get(typeName);
-    if (type != null) {
-      return getTypeIndex(type);
-    } else {
-      return -1;
+    public void setTypesList(List<VariableType> typesList) {
+        this.typesList.clear();
+        this.typesList.addAll(typesList);
+        this.typesMap.clear();
+        for (VariableType type : typesList) {
+            typesMap.put(type.getTypeName(), type);
+        }
     }
-  }
 
-  public VariableTypes removeType(VariableType type) {
-    typesList.remove(type);
-    typesMap.remove(type.getTypeName());
-    return this;
-  }
+    public VariableType getVariableType(String typeName) {
+        return typesMap.get(typeName);
+    }
+
+    public VariableType findVariableType(Object value) {
+        for (VariableType type : typesList) {
+            if (type.isAbleToStore(value)) {
+                return type;
+            }
+        }
+        throw new ActivitiException(
+            "couldn't find a variable type that is able to serialize " + value
+        );
+    }
+
+    public int getTypeIndex(VariableType type) {
+        return typesList.indexOf(type);
+    }
+
+    public int getTypeIndex(String typeName) {
+        VariableType type = typesMap.get(typeName);
+        if (type != null) {
+            return getTypeIndex(type);
+        } else {
+            return -1;
+        }
+    }
+
+    public VariableTypes removeType(VariableType type) {
+        typesList.remove(type);
+        typesMap.remove(type.getTypeName());
+        return this;
+    }
 }

@@ -21,18 +21,28 @@ import org.activiti.engine.impl.util.json.JSONObject;
 /**
 
  */
-public abstract class TimerChangeProcessDefinitionSuspensionStateJobHandler implements JobHandler {
+public abstract class TimerChangeProcessDefinitionSuspensionStateJobHandler
+    implements JobHandler {
 
-  private static final String JOB_HANDLER_CFG_INCLUDE_PROCESS_INSTANCES = "includeProcessInstances";
+    private static final String JOB_HANDLER_CFG_INCLUDE_PROCESS_INSTANCES =
+        "includeProcessInstances";
 
-  public static String createJobHandlerConfiguration(boolean includeProcessInstances) {
-    JSONObject json = new JSONObject();
-    json.put(JOB_HANDLER_CFG_INCLUDE_PROCESS_INSTANCES, includeProcessInstances);
-    return json.toString();
-  }
+    public static String createJobHandlerConfiguration(
+        boolean includeProcessInstances
+    ) {
+        JSONObject json = new JSONObject();
+        json.put(
+            JOB_HANDLER_CFG_INCLUDE_PROCESS_INSTANCES,
+            includeProcessInstances
+        );
+        return json.toString();
+    }
 
-  public static boolean getIncludeProcessInstances(JSONObject jobHandlerCfgJson) {
-    return jobHandlerCfgJson.getBoolean(JOB_HANDLER_CFG_INCLUDE_PROCESS_INSTANCES);
-  }
-
+    public static boolean getIncludeProcessInstances(
+        JSONObject jobHandlerCfgJson
+    ) {
+        return jobHandlerCfgJson.getBoolean(
+            JOB_HANDLER_CFG_INCLUDE_PROCESS_INSTANCES
+        );
+    }
 }

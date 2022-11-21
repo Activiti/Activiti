@@ -16,7 +16,6 @@
 package org.activiti.api.process.model;
 
 public interface BPMNElement {
-
     String getElementId();
 
     String getProcessInstanceId();

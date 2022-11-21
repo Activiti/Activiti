@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring;
 
+import java.util.List;
 import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -27,8 +27,6 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import java.util.List;
-
 /**
 
 
@@ -36,68 +34,87 @@ import java.util.List;
 
 
  */
-public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, DisposableBean, ApplicationContextAware {
+public class ProcessEngineFactoryBean
+    implements
+        FactoryBean<ProcessEngine>, DisposableBean, ApplicationContextAware {
 
-  protected ProcessEngineConfigurationImpl processEngineConfiguration;
+    protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
-  protected ApplicationContext applicationContext;
-  protected ProcessEngine processEngine;
+    protected ApplicationContext applicationContext;
+    protected ProcessEngine processEngine;
 
-  public void destroy() throws Exception {
-    if (processEngine != null) {
-      processEngine.close();
-    }
-  }
-
-  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-    this.applicationContext = applicationContext;
-  }
-
-  public ProcessEngine getObject() throws Exception {
-    configureExpressionManager();
-    configureExternallyManagedTransactions();
-
-    if (processEngineConfiguration.getBeans() == null) {
-      processEngineConfiguration.setBeans(new SpringBeanFactoryProxyMap(applicationContext));
+    public void destroy() throws Exception {
+        if (processEngine != null) {
+            processEngine.close();
+        }
     }
 
-    this.processEngine = processEngineConfiguration.buildProcessEngine();
-    return this.processEngine;
-  }
-
-  protected void configureExpressionManager() {
-    if (processEngineConfiguration.getExpressionManager() == null && applicationContext != null) {
-      SpringExpressionManager expressionManager = new SpringExpressionManager(applicationContext, processEngineConfiguration.getBeans());
-      List<CustomFunctionProvider> customFunctionProviders = processEngineConfiguration.getCustomFunctionProviders();
-      if (customFunctionProviders != null) {
-        expressionManager.setCustomFunctionProviders(customFunctionProviders);
-      }
-      processEngineConfiguration.setExpressionManager(expressionManager);
+    public void setApplicationContext(ApplicationContext applicationContext)
+        throws BeansException {
+        this.applicationContext = applicationContext;
     }
-  }
 
-  protected void configureExternallyManagedTransactions() {
-    if (processEngineConfiguration instanceof SpringProcessEngineConfiguration) { // remark: any config can be injected, so we cannot have SpringConfiguration as member
-      SpringProcessEngineConfiguration engineConfiguration = (SpringProcessEngineConfiguration) processEngineConfiguration;
-      if (engineConfiguration.getTransactionManager() != null) {
-        processEngineConfiguration.setTransactionsExternallyManaged(true);
-      }
+    public ProcessEngine getObject() throws Exception {
+        configureExpressionManager();
+        configureExternallyManagedTransactions();
+
+        if (processEngineConfiguration.getBeans() == null) {
+            processEngineConfiguration.setBeans(
+                new SpringBeanFactoryProxyMap(applicationContext)
+            );
+        }
+
+        this.processEngine = processEngineConfiguration.buildProcessEngine();
+        return this.processEngine;
     }
-  }
 
-  public Class<ProcessEngine> getObjectType() {
-    return ProcessEngine.class;
-  }
+    protected void configureExpressionManager() {
+        if (
+            processEngineConfiguration.getExpressionManager() == null &&
+            applicationContext != null
+        ) {
+            SpringExpressionManager expressionManager = new SpringExpressionManager(
+                applicationContext,
+                processEngineConfiguration.getBeans()
+            );
+            List<CustomFunctionProvider> customFunctionProviders = processEngineConfiguration.getCustomFunctionProviders();
+            if (customFunctionProviders != null) {
+                expressionManager.setCustomFunctionProviders(
+                    customFunctionProviders
+                );
+            }
+            processEngineConfiguration.setExpressionManager(expressionManager);
+        }
+    }
 
-  public boolean isSingleton() {
-    return true;
-  }
+    protected void configureExternallyManagedTransactions() {
+        if (
+            processEngineConfiguration instanceof SpringProcessEngineConfiguration
+        ) { // remark: any config can be injected, so we cannot have SpringConfiguration as member
+            SpringProcessEngineConfiguration engineConfiguration = (SpringProcessEngineConfiguration) processEngineConfiguration;
+            if (engineConfiguration.getTransactionManager() != null) {
+                processEngineConfiguration.setTransactionsExternallyManaged(
+                    true
+                );
+            }
+        }
+    }
 
-  public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
-    return processEngineConfiguration;
-  }
+    public Class<ProcessEngine> getObjectType() {
+        return ProcessEngine.class;
+    }
 
-  public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
-    this.processEngineConfiguration = processEngineConfiguration;
-  }
+    public boolean isSingleton() {
+        return true;
+    }
+
+    public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
+        return processEngineConfiguration;
+    }
+
+    public void setProcessEngineConfiguration(
+        ProcessEngineConfigurationImpl processEngineConfiguration
+    ) {
+        this.processEngineConfiguration = processEngineConfiguration;
+    }
 }

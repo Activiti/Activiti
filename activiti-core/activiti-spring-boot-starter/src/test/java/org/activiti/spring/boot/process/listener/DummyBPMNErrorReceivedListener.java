@@ -17,13 +17,13 @@ package org.activiti.spring.boot.process.listener;
 
 import java.util.LinkedList;
 import java.util.List;
-
 import org.activiti.api.process.model.events.BPMNErrorReceivedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DummyBPMNErrorReceivedListener implements BPMNElementEventListener<BPMNErrorReceivedEvent> {
+public class DummyBPMNErrorReceivedListener
+    implements BPMNElementEventListener<BPMNErrorReceivedEvent> {
 
     private List<BPMNErrorReceivedEvent> errorReceivedEvents = new LinkedList<>();
 
@@ -36,7 +36,7 @@ public class DummyBPMNErrorReceivedListener implements BPMNElementEventListener<
         return errorReceivedEvents;
     }
 
-    public void clear(){
+    public void clear() {
         errorReceivedEvents.clear();
     }
 }

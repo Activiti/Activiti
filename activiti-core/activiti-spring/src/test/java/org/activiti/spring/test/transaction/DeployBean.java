@@ -31,15 +31,19 @@ public class DeployBean {
             .createDeployment()
             .addString(
                 "process01.bpmn20.xml",
-                "<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' targetNamespace='http://activiti.org/BPMN20'>"
-                    + "<process id='process01' name='Insurance Damage Report' /></definitions>").deploy();
+                "<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' targetNamespace='http://activiti.org/BPMN20'>" +
+                "<process id='process01' name='Insurance Damage Report' /></definitions>"
+            )
+            .deploy();
 
         repositoryService
             .createDeployment()
             .addString(
                 "process01.bpmn20.xml",
-                "<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' targetNamespace='http://activiti.org/BPMN20'>"
-                    + "<process id='process01' name='Insurance Damage Report' this_should='fail' /></definitions>").deploy();
+                "<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' targetNamespace='http://activiti.org/BPMN20'>" +
+                "<process id='process01' name='Insurance Damage Report' this_should='fail' /></definitions>"
+            )
+            .deploy();
     }
 
     public RepositoryService getRepositoryService() {
@@ -49,5 +53,4 @@ public class DeployBean {
     public void setRepositoryService(RepositoryService repositoryService) {
         this.repositoryService = repositoryService;
     }
-
 }

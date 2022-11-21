@@ -15,32 +15,43 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import java.util.Optional;
 import org.activiti.api.task.runtime.events.TaskCandidateGroupAddedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.runtime.api.model.impl.APITaskCandidateGroupConverter;
 
-import java.util.Optional;
-
-public class ToAPITaskCandidateGroupAddedEventConverter implements EventConverter<TaskCandidateGroupAddedEvent, ActivitiEntityEvent> {
+public class ToAPITaskCandidateGroupAddedEventConverter
+    implements
+        EventConverter<TaskCandidateGroupAddedEvent, ActivitiEntityEvent> {
 
     private APITaskCandidateGroupConverter converter;
     private TaskCandidateEventConverterHelper taskCandidateEventConverterHelper = new TaskCandidateEventConverterHelper();
 
-    public ToAPITaskCandidateGroupAddedEventConverter(APITaskCandidateGroupConverter converter) {
+    public ToAPITaskCandidateGroupAddedEventConverter(
+        APITaskCandidateGroupConverter converter
+    ) {
         this.converter = converter;
     }
 
     @Override
-    public Optional<TaskCandidateGroupAddedEvent> from(ActivitiEntityEvent internalEvent) {
+    public Optional<TaskCandidateGroupAddedEvent> from(
+        ActivitiEntityEvent internalEvent
+    ) {
         TaskCandidateGroupAddedEventImpl event = null;
         if (internalEvent.getEntity() instanceof IdentityLink) {
             IdentityLink identityLink = (IdentityLink) internalEvent.getEntity();
-            if (taskCandidateEventConverterHelper.isTaskCandidateGroupLink(identityLink)) {
-                event = new TaskCandidateGroupAddedEventImpl(converter.from(identityLink));
+            if (
+                taskCandidateEventConverterHelper.isTaskCandidateGroupLink(
+                    identityLink
+                )
+            ) {
+                event =
+                    new TaskCandidateGroupAddedEventImpl(
+                        converter.from(identityLink)
+                    );
             }
         }
         return Optional.ofNullable(event);
     }
-
 }

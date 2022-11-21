@@ -15,6 +15,8 @@
  */
 package org.activiti.spring.boot.process;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.runtime.ProcessAdminRuntime;
 import org.activiti.api.process.runtime.ProcessRuntime;
@@ -27,8 +29,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource("classpath:application-with-sec-policies.properties")
@@ -47,39 +47,38 @@ public class ProcessRuntimeSecurityPoliciesIT {
     private ProcessCleanUpUtil processCleanUpUtil;
 
     @AfterEach
-    public void cleanUp(){
+    public void cleanUp() {
         processCleanUpUtil.cleanUpWithAdmin();
     }
 
     @Test
     public void getRestrictedProcessDefs() {
-
         securityUtil.logInAs("user");
 
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
-                                                                                                      50));
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
+            Pageable.of(0, 50)
+        );
         assertThat(processDefinitionPage.getContent()).isNotNull();
         assertThat(processDefinitionPage.getContent()).hasSize(2);
-
     }
 
     @Test
     public void getAllProcessDefsForAdmin() {
-
         securityUtil.logInAs("admin");
 
-        Page<ProcessDefinition> processDefinitionPage = processAdminRuntime.processDefinitions(Pageable.of(0,
-                50));
+        Page<ProcessDefinition> processDefinitionPage = processAdminRuntime.processDefinitions(
+            Pageable.of(0, 50)
+        );
         assertThat(processDefinitionPage.getContent()).isNotNull();
         assertThat(processDefinitionPage.getContent())
-                .extracting(ProcessDefinition::getKey)
-                .contains("categorizeProcessConnectors",
-                          "categorizeHumanProcess",
-                          "SingleTaskProcessRestricted",
-                          "categorizeProcess",
-                          "integrationGatewayProcess",
-                          "waiter");
-
+            .extracting(ProcessDefinition::getKey)
+            .contains(
+                "categorizeProcessConnectors",
+                "categorizeHumanProcess",
+                "SingleTaskProcessRestricted",
+                "categorizeProcess",
+                "integrationGatewayProcess",
+                "waiter"
+            );
     }
-
 }

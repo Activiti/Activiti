@@ -28,22 +28,24 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public class RemoveEventListenerCommand implements Command<Void> {
 
-  protected ActivitiEventListener listener;
+    protected ActivitiEventListener listener;
 
-  public RemoveEventListenerCommand(ActivitiEventListener listener) {
-    super();
-    this.listener = listener;
-  }
-
-  @Override
-  public Void execute(CommandContext commandContext) {
-    if (listener == null) {
-      throw new ActivitiIllegalArgumentException("listener is null.");
+    public RemoveEventListenerCommand(ActivitiEventListener listener) {
+        super();
+        this.listener = listener;
     }
 
-    commandContext.getProcessEngineConfiguration().getEventDispatcher().removeEventListener(listener);
+    @Override
+    public Void execute(CommandContext commandContext) {
+        if (listener == null) {
+            throw new ActivitiIllegalArgumentException("listener is null.");
+        }
 
-    return null;
-  }
+        commandContext
+            .getProcessEngineConfiguration()
+            .getEventDispatcher()
+            .removeEventListener(listener);
 
+        return null;
+    }
 }

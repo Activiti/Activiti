@@ -27,18 +27,18 @@ import org.activiti.engine.delegate.VariableScope;
  */
 public class Assignment {
 
-  protected Expression fromExpression;
+    protected Expression fromExpression;
 
-  protected Expression toExpression;
+    protected Expression toExpression;
 
-  public Assignment(Expression fromExpression, Expression toExpression) {
-    this.fromExpression = fromExpression;
-    this.toExpression = toExpression;
-  }
+    public Assignment(Expression fromExpression, Expression toExpression) {
+        this.fromExpression = fromExpression;
+        this.toExpression = toExpression;
+    }
 
-  public void evaluate(DelegateExecution execution) {
-    VariableScope variableScope = (VariableScope) execution;
-    Object value = this.fromExpression.getValue(variableScope);
-    this.toExpression.setValue(value, variableScope);
-  }
+    public void evaluate(DelegateExecution execution) {
+        VariableScope variableScope = (VariableScope) execution;
+        Object value = this.fromExpression.getValue(variableScope);
+        this.toExpression.setValue(value, variableScope);
+    }
 }

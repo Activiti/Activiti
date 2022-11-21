@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.history;
 
 import org.activiti.engine.api.internal.Internal;
@@ -25,12 +24,11 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface HistoricVariableUpdate extends HistoricDetail {
+    String getVariableName();
 
-  String getVariableName();
+    String getVariableTypeName();
 
-  String getVariableTypeName();
+    Object getValue();
 
-  Object getValue();
-
-  int getRevision();
+    int getRevision();
 }

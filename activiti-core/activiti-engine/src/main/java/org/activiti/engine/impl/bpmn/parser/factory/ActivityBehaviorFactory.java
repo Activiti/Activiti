@@ -114,114 +114,232 @@ import org.activiti.engine.impl.delegate.ActivityBehavior;
  */
 @Internal
 public interface ActivityBehaviorFactory {
+    public abstract NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(
+        StartEvent startEvent
+    );
 
-  public abstract NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(StartEvent startEvent);
+    public abstract TaskActivityBehavior createTaskActivityBehavior(Task task);
 
-  public abstract TaskActivityBehavior createTaskActivityBehavior(Task task);
+    public abstract ManualTaskActivityBehavior createManualTaskActivityBehavior(
+        ManualTask manualTask
+    );
 
-  public abstract ManualTaskActivityBehavior createManualTaskActivityBehavior(ManualTask manualTask);
+    public abstract ReceiveTaskActivityBehavior createReceiveTaskActivityBehavior(
+        ReceiveTask receiveTask
+    );
 
-  public abstract ReceiveTaskActivityBehavior createReceiveTaskActivityBehavior(ReceiveTask receiveTask);
+    public abstract UserTaskActivityBehavior createUserTaskActivityBehavior(
+        UserTask userTask
+    );
 
-  public abstract UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask);
+    public abstract ClassDelegate createClassDelegateServiceTask(
+        ServiceTask serviceTask
+    );
 
-  public abstract ClassDelegate createClassDelegateServiceTask(ServiceTask serviceTask);
+    public abstract ServiceTaskDelegateExpressionActivityBehavior createServiceTaskDelegateExpressionActivityBehavior(
+        ServiceTask serviceTask
+    );
 
-  public abstract ServiceTaskDelegateExpressionActivityBehavior createServiceTaskDelegateExpressionActivityBehavior(ServiceTask serviceTask);
+    public abstract ActivityBehavior createDefaultServiceTaskBehavior(
+        ServiceTask serviceTask
+    );
 
-  public abstract ActivityBehavior createDefaultServiceTaskBehavior(ServiceTask serviceTask);
+    public abstract ServiceTaskExpressionActivityBehavior createServiceTaskExpressionActivityBehavior(
+        ServiceTask serviceTask
+    );
 
-  public abstract ServiceTaskExpressionActivityBehavior createServiceTaskExpressionActivityBehavior(ServiceTask serviceTask);
+    public abstract WebServiceActivityBehavior createWebServiceActivityBehavior(
+        ServiceTask serviceTask
+    );
 
-  public abstract WebServiceActivityBehavior createWebServiceActivityBehavior(ServiceTask serviceTask);
+    public abstract WebServiceActivityBehavior createWebServiceActivityBehavior(
+        SendTask sendTask
+    );
 
-  public abstract WebServiceActivityBehavior createWebServiceActivityBehavior(SendTask sendTask);
+    public abstract MailActivityBehavior createMailActivityBehavior(
+        ServiceTask serviceTask
+    );
 
-  public abstract MailActivityBehavior createMailActivityBehavior(ServiceTask serviceTask);
+    public abstract MailActivityBehavior createMailActivityBehavior(
+        SendTask sendTask
+    );
 
-  public abstract MailActivityBehavior createMailActivityBehavior(SendTask sendTask);
+    // We do not want a hard dependency on the Mule module, hence we return
+    // ActivityBehavior and instantiate the delegate instance using a string instead of the Class itself.
+    public abstract ActivityBehavior createMuleActivityBehavior(
+        ServiceTask serviceTask
+    );
 
-  // We do not want a hard dependency on the Mule module, hence we return
-  // ActivityBehavior and instantiate the delegate instance using a string instead of the Class itself.
-  public abstract ActivityBehavior createMuleActivityBehavior(ServiceTask serviceTask);
+    public abstract ActivityBehavior createMuleActivityBehavior(
+        SendTask sendTask
+    );
 
-  public abstract ActivityBehavior createMuleActivityBehavior(SendTask sendTask);
+    public abstract ActivityBehavior createCamelActivityBehavior(
+        ServiceTask serviceTask
+    );
 
-  public abstract ActivityBehavior createCamelActivityBehavior(ServiceTask serviceTask);
+    public abstract ActivityBehavior createCamelActivityBehavior(
+        SendTask sendTask
+    );
 
-  public abstract ActivityBehavior createCamelActivityBehavior(SendTask sendTask);
+    public abstract ShellActivityBehavior createShellActivityBehavior(
+        ServiceTask serviceTask
+    );
 
-  public abstract ShellActivityBehavior createShellActivityBehavior(ServiceTask serviceTask);
+    public abstract ActivityBehavior createBusinessRuleTaskActivityBehavior(
+        BusinessRuleTask businessRuleTask
+    );
 
-  public abstract ActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask);
+    public abstract ScriptTaskActivityBehavior createScriptTaskActivityBehavior(
+        ScriptTask scriptTask
+    );
 
-  public abstract ScriptTaskActivityBehavior createScriptTaskActivityBehavior(ScriptTask scriptTask);
+    public abstract ExclusiveGatewayActivityBehavior createExclusiveGatewayActivityBehavior(
+        ExclusiveGateway exclusiveGateway
+    );
 
-  public abstract ExclusiveGatewayActivityBehavior createExclusiveGatewayActivityBehavior(ExclusiveGateway exclusiveGateway);
+    public abstract ParallelGatewayActivityBehavior createParallelGatewayActivityBehavior(
+        ParallelGateway parallelGateway
+    );
 
-  public abstract ParallelGatewayActivityBehavior createParallelGatewayActivityBehavior(ParallelGateway parallelGateway);
+    public abstract InclusiveGatewayActivityBehavior createInclusiveGatewayActivityBehavior(
+        InclusiveGateway inclusiveGateway
+    );
 
-  public abstract InclusiveGatewayActivityBehavior createInclusiveGatewayActivityBehavior(InclusiveGateway inclusiveGateway);
+    public abstract EventBasedGatewayActivityBehavior createEventBasedGatewayActivityBehavior(
+        EventGateway eventGateway
+    );
 
-  public abstract EventBasedGatewayActivityBehavior createEventBasedGatewayActivityBehavior(EventGateway eventGateway);
+    public abstract SequentialMultiInstanceBehavior createSequentialMultiInstanceBehavior(
+        Activity activity,
+        AbstractBpmnActivityBehavior innerActivityBehavior
+    );
 
-  public abstract SequentialMultiInstanceBehavior createSequentialMultiInstanceBehavior(Activity activity, AbstractBpmnActivityBehavior innerActivityBehavior);
+    public abstract ParallelMultiInstanceBehavior createParallelMultiInstanceBehavior(
+        Activity activity,
+        AbstractBpmnActivityBehavior innerActivityBehavior
+    );
 
-  public abstract ParallelMultiInstanceBehavior createParallelMultiInstanceBehavior(Activity activity, AbstractBpmnActivityBehavior innerActivityBehavior);
+    public abstract SubProcessActivityBehavior createSubprocessActivityBehavior(
+        SubProcess subProcess
+    );
 
-  public abstract SubProcessActivityBehavior createSubprocessActivityBehavior(SubProcess subProcess);
+    public abstract EventSubProcessErrorStartEventActivityBehavior createEventSubProcessErrorStartEventActivityBehavior(
+        StartEvent startEvent
+    );
 
-  public abstract EventSubProcessErrorStartEventActivityBehavior createEventSubProcessErrorStartEventActivityBehavior(StartEvent startEvent);
+    public abstract EventSubProcessMessageStartEventActivityBehavior createEventSubProcessMessageStartEventActivityBehavior(
+        StartEvent startEvent,
+        MessageEventDefinition messageEventDefinition
+    );
 
-  public abstract EventSubProcessMessageStartEventActivityBehavior createEventSubProcessMessageStartEventActivityBehavior(StartEvent startEvent, MessageEventDefinition messageEventDefinition);
+    public abstract AdhocSubProcessActivityBehavior createAdhocSubprocessActivityBehavior(
+        SubProcess subProcess
+    );
 
-  public abstract AdhocSubProcessActivityBehavior createAdhocSubprocessActivityBehavior(SubProcess subProcess);
+    public abstract CallActivityBehavior createCallActivityBehavior(
+        CallActivity callActivity
+    );
 
-  public abstract CallActivityBehavior createCallActivityBehavior(CallActivity callActivity);
+    public abstract TransactionActivityBehavior createTransactionActivityBehavior(
+        Transaction transaction
+    );
 
-  public abstract TransactionActivityBehavior createTransactionActivityBehavior(Transaction transaction);
+    public abstract IntermediateCatchEventActivityBehavior createIntermediateCatchEventActivityBehavior(
+        IntermediateCatchEvent intermediateCatchEvent
+    );
 
-  public abstract IntermediateCatchEventActivityBehavior createIntermediateCatchEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent);
+    public abstract IntermediateCatchMessageEventActivityBehavior createIntermediateCatchMessageEventActivityBehavior(
+        IntermediateCatchEvent intermediateCatchEvent,
+        MessageEventDefinition messageEventDefinition
+    );
 
-  public abstract IntermediateCatchMessageEventActivityBehavior createIntermediateCatchMessageEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent,
-      MessageEventDefinition messageEventDefinition);
+    public abstract IntermediateCatchTimerEventActivityBehavior createIntermediateCatchTimerEventActivityBehavior(
+        IntermediateCatchEvent intermediateCatchEvent,
+        TimerEventDefinition timerEventDefinition
+    );
 
-  public abstract IntermediateCatchTimerEventActivityBehavior createIntermediateCatchTimerEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent, TimerEventDefinition timerEventDefinition);
+    public abstract IntermediateCatchSignalEventActivityBehavior createIntermediateCatchSignalEventActivityBehavior(
+        IntermediateCatchEvent intermediateCatchEvent,
+        SignalEventDefinition signalEventDefinition,
+        Signal signal
+    );
 
-  public abstract IntermediateCatchSignalEventActivityBehavior createIntermediateCatchSignalEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent,
-      SignalEventDefinition signalEventDefinition, Signal signal);
+    public abstract IntermediateThrowNoneEventActivityBehavior createIntermediateThrowNoneEventActivityBehavior(
+        ThrowEvent throwEvent
+    );
 
-  public abstract IntermediateThrowNoneEventActivityBehavior createIntermediateThrowNoneEventActivityBehavior(ThrowEvent throwEvent);
+    public abstract IntermediateThrowSignalEventActivityBehavior createIntermediateThrowSignalEventActivityBehavior(
+        ThrowEvent throwEvent,
+        SignalEventDefinition signalEventDefinition,
+        Signal signal
+    );
 
-  public abstract IntermediateThrowSignalEventActivityBehavior createIntermediateThrowSignalEventActivityBehavior(ThrowEvent throwEvent, SignalEventDefinition signalEventDefinition, Signal signal);
+    public abstract IntermediateThrowCompensationEventActivityBehavior createIntermediateThrowCompensationEventActivityBehavior(
+        ThrowEvent throwEvent,
+        CompensateEventDefinition compensateEventDefinition
+    );
 
-  public abstract IntermediateThrowCompensationEventActivityBehavior createIntermediateThrowCompensationEventActivityBehavior(ThrowEvent throwEvent, CompensateEventDefinition compensateEventDefinition);
+    public abstract IntermediateThrowMessageEventActivityBehavior createThrowMessageEventActivityBehavior(
+        ThrowEvent throwEvent,
+        MessageEventDefinition messageEventDefinition,
+        Message message
+    );
 
-  public abstract IntermediateThrowMessageEventActivityBehavior createThrowMessageEventActivityBehavior(ThrowEvent throwEvent,
-                                                                                                        MessageEventDefinition messageEventDefinition,
-                                                                                                        Message message);
+    public abstract NoneEndEventActivityBehavior createNoneEndEventActivityBehavior(
+        EndEvent endEvent
+    );
 
-  public abstract NoneEndEventActivityBehavior createNoneEndEventActivityBehavior(EndEvent endEvent);
+    public abstract ErrorEndEventActivityBehavior createErrorEndEventActivityBehavior(
+        EndEvent endEvent,
+        ErrorEventDefinition errorEventDefinition
+    );
 
-  public abstract ErrorEndEventActivityBehavior createErrorEndEventActivityBehavior(EndEvent endEvent, ErrorEventDefinition errorEventDefinition);
+    public abstract CancelEndEventActivityBehavior createCancelEndEventActivityBehavior(
+        EndEvent endEvent
+    );
 
-  public abstract CancelEndEventActivityBehavior createCancelEndEventActivityBehavior(EndEvent endEvent);
+    public abstract TerminateEndEventActivityBehavior createTerminateEndEventActivityBehavior(
+        EndEvent endEvent
+    );
 
-  public abstract TerminateEndEventActivityBehavior createTerminateEndEventActivityBehavior(EndEvent endEvent);
+    public abstract BoundaryEventActivityBehavior createBoundaryEventActivityBehavior(
+        BoundaryEvent boundaryEvent,
+        boolean interrupting
+    );
 
-  public abstract BoundaryEventActivityBehavior createBoundaryEventActivityBehavior(BoundaryEvent boundaryEvent, boolean interrupting);
+    public abstract BoundaryCancelEventActivityBehavior createBoundaryCancelEventActivityBehavior(
+        CancelEventDefinition cancelEventDefinition
+    );
 
-  public abstract BoundaryCancelEventActivityBehavior createBoundaryCancelEventActivityBehavior(CancelEventDefinition cancelEventDefinition);
+    public abstract BoundaryTimerEventActivityBehavior createBoundaryTimerEventActivityBehavior(
+        BoundaryEvent boundaryEvent,
+        TimerEventDefinition timerEventDefinition,
+        boolean interrupting
+    );
 
-  public abstract BoundaryTimerEventActivityBehavior createBoundaryTimerEventActivityBehavior(BoundaryEvent boundaryEvent, TimerEventDefinition timerEventDefinition, boolean interrupting);
+    public abstract BoundarySignalEventActivityBehavior createBoundarySignalEventActivityBehavior(
+        BoundaryEvent boundaryEvent,
+        SignalEventDefinition signalEventDefinition,
+        Signal signal,
+        boolean interrupting
+    );
 
-  public abstract BoundarySignalEventActivityBehavior createBoundarySignalEventActivityBehavior(BoundaryEvent boundaryEvent, SignalEventDefinition signalEventDefinition, Signal signal, boolean interrupting);
+    public abstract BoundaryMessageEventActivityBehavior createBoundaryMessageEventActivityBehavior(
+        BoundaryEvent boundaryEvent,
+        MessageEventDefinition messageEventDefinition,
+        boolean interrupting
+    );
 
-  public abstract BoundaryMessageEventActivityBehavior createBoundaryMessageEventActivityBehavior(BoundaryEvent boundaryEvent, MessageEventDefinition messageEventDefinition, boolean interrupting);
+    public abstract BoundaryCompensateEventActivityBehavior createBoundaryCompensateEventActivityBehavior(
+        BoundaryEvent boundaryEvent,
+        CompensateEventDefinition compensateEventDefinition,
+        boolean interrupting
+    );
 
-  public abstract BoundaryCompensateEventActivityBehavior createBoundaryCompensateEventActivityBehavior(BoundaryEvent boundaryEvent, CompensateEventDefinition compensateEventDefinition, boolean interrupting);
-
-  public abstract ThrowMessageEndEventActivityBehavior createThrowMessageEndEventActivityBehavior(EndEvent endEvent,
-                                                                                                  MessageEventDefinition messageEventDefinition,
-                                                                                                  Message message);
+    public abstract ThrowMessageEndEventActivityBehavior createThrowMessageEndEventActivityBehavior(
+        EndEvent endEvent,
+        MessageEventDefinition messageEventDefinition,
+        Message message
+    );
 }

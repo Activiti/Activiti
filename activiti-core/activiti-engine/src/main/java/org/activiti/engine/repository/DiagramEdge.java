@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.repository;
 
 import java.util.List;
@@ -26,34 +25,32 @@ import java.util.List;
  */
 public class DiagramEdge extends DiagramElement {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private List<DiagramEdgeWaypoint> waypoints;
+    private List<DiagramEdgeWaypoint> waypoints;
 
-  public DiagramEdge() {
-  }
+    public DiagramEdge() {}
 
-  public DiagramEdge(String id, List<DiagramEdgeWaypoint> waypoints) {
-    super(id);
-    this.waypoints = waypoints;
-  }
+    public DiagramEdge(String id, List<DiagramEdgeWaypoint> waypoints) {
+        super(id);
+        this.waypoints = waypoints;
+    }
 
-  @Override
-  public boolean isNode() {
-    return false;
-  }
+    @Override
+    public boolean isNode() {
+        return false;
+    }
 
-  @Override
-  public boolean isEdge() {
-    return true;
-  }
+    @Override
+    public boolean isEdge() {
+        return true;
+    }
 
-  public List<DiagramEdgeWaypoint> getWaypoints() {
-    return waypoints;
-  }
+    public List<DiagramEdgeWaypoint> getWaypoints() {
+        return waypoints;
+    }
 
-  public void setWaypoints(List<DiagramEdgeWaypoint> waypoints) {
-    this.waypoints = waypoints;
-  }
-
+    public void setWaypoints(List<DiagramEdgeWaypoint> waypoints) {
+        this.waypoints = waypoints;
+    }
 }

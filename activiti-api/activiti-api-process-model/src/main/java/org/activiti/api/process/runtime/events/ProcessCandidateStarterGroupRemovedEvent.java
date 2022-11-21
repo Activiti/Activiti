@@ -17,5 +17,5 @@ package org.activiti.api.process.runtime.events;
 
 import org.activiti.api.process.model.events.ProcessCandidateStarterGroupEvent;
 
-public interface ProcessCandidateStarterGroupRemovedEvent extends ProcessCandidateStarterGroupEvent {
-}
+public interface ProcessCandidateStarterGroupRemovedEvent
+    extends ProcessCandidateStarterGroupEvent {}

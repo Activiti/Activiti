@@ -18,7 +18,8 @@ package org.activiti.engine.impl.el.variable;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.identity.Authentication;
 
-public class AuthenticatedUserELResolver implements VariableScopeItemELResolver {
+public class AuthenticatedUserELResolver
+    implements VariableScopeItemELResolver {
 
     private static final String AUTHENTICATED_USER_KEY = "authenticatedUserId";
 

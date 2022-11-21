@@ -19,28 +19,27 @@ package org.activiti.engine.impl.asyncexecutor;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 
 /**
  */
 public class AcquiredTimerJobEntities {
 
-  protected Map<String, TimerJobEntity> acquiredJobs = new HashMap<String, TimerJobEntity>();
+    protected Map<String, TimerJobEntity> acquiredJobs = new HashMap<String, TimerJobEntity>();
 
-  public void addJob(TimerJobEntity job) {
-    acquiredJobs.put(job.getId(), job);
-  }
+    public void addJob(TimerJobEntity job) {
+        acquiredJobs.put(job.getId(), job);
+    }
 
-  public Collection<TimerJobEntity> getJobs() {
-    return acquiredJobs.values();
-  }
+    public Collection<TimerJobEntity> getJobs() {
+        return acquiredJobs.values();
+    }
 
-  public boolean contains(String jobId) {
-    return acquiredJobs.containsKey(jobId);
-  }
+    public boolean contains(String jobId) {
+        return acquiredJobs.containsKey(jobId);
+    }
 
-  public int size() {
-    return acquiredJobs.size();
-  }
+    public int size() {
+        return acquiredJobs.size();
+    }
 }

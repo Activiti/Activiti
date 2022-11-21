@@ -31,82 +31,115 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration(locations = "JPASpringTest-context.xml")
 public class JpaTest extends SpringActivitiTestCase {
 
-  public void testJpaVariableHappyPath() {
-    before();
+    public void testJpaVariableHappyPath() {
+        before();
 
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("LoanRequestProcess", map(
-      "customerName", "John Doe",
-      "amount", 15000L
-    ));
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "LoanRequestProcess",
+            map("customerName", "John Doe", "amount", 15000L)
+        );
 
-    // Variable should be present containing the loanRequest created by the spring bean
-    Object value = runtimeService.getVariable(processInstance.getId(), "loanRequest");
-    assertThat(value).isNotNull();
-    assertThat(value).isInstanceOf(LoanRequest.class);
-    LoanRequest request = (LoanRequest) value;
-    assertThat(request.getCustomerName()).isEqualTo("John Doe");
-    assertThat(request.getAmount().longValue()).isEqualTo(15000L);
-    assertThat(request.isApproved()).isFalse();
+        // Variable should be present containing the loanRequest created by the spring bean
+        Object value = runtimeService.getVariable(
+            processInstance.getId(),
+            "loanRequest"
+        );
+        assertThat(value).isNotNull();
+        assertThat(value).isInstanceOf(LoanRequest.class);
+        LoanRequest request = (LoanRequest) value;
+        assertThat(request.getCustomerName()).isEqualTo("John Doe");
+        assertThat(request.getAmount().longValue()).isEqualTo(15000L);
+        assertThat(request.isApproved()).isFalse();
 
-    // We will approve the request, which will update the entity
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertThat(task).isNotNull();
-    taskService.complete(task.getId(), singletonMap("approvedByManager", Boolean.TRUE));
+        // We will approve the request, which will update the entity
+        Task task = taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .singleResult();
+        assertThat(task).isNotNull();
+        taskService.complete(
+            task.getId(),
+            singletonMap("approvedByManager", Boolean.TRUE)
+        );
 
-    // If approved, the processsInstance should be finished, gateway based on loanRequest.approved value
-    assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
+        // If approved, the processsInstance should be finished, gateway based on loanRequest.approved value
+        assertThat(
+            runtimeService
+                .createProcessInstanceQuery()
+                .processInstanceId(processInstance.getId())
+                .count()
+        )
+            .isEqualTo(0);
 
-    // Cleanup
-    deleteDeployments();
-  }
-
-  public void testJpaVariableDisapprovalPath() {
-
-    before();
-
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("LoanRequestProcess", map(
-      "customerName", "Jane Doe",
-      "amount", 50000
-    ));
-
-    // Variable should be present containing the loanRequest created by the spring bean
-    Object value = runtimeService.getVariable(processInstance.getId(), "loanRequest");
-    assertThat(value).isNotNull();
-    assertThat(value).isInstanceOf(LoanRequest.class);
-    LoanRequest request = (LoanRequest) value;
-    assertThat(request.getCustomerName()).isEqualTo("Jane Doe");
-    assertThat(request.getAmount().longValue()).isEqualTo(50000L);
-    assertThat(request.isApproved()).isFalse();
-
-    // We will disapprove the request, which will update the entity
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertThat(task).isNotNull();
-    taskService.complete(task.getId(), singletonMap("approvedByManager", Boolean.FALSE));
-
-    runtimeService.getVariable(processInstance.getId(), "loanRequest");
-    request = (LoanRequest) value;
-    assertThat(request.isApproved()).isFalse();
-
-    // If disapproved, an extra task will be available instead of the process ending
-    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertThat(task).isNotNull();
-    assertThat(task.getName()).isEqualTo("Send rejection letter");
-
-    // Cleanup
-    deleteDeployments();
-  }
-
-  protected void before() {
-    String[] defs = { "org/activiti/spring/test/jpa/JPASpringTest.bpmn20.xml" };
-    for (String pd : defs)
-      repositoryService.createDeployment().addClasspathResource(pd).deploy();
-  }
-
-  protected void deleteDeployments() {
-    for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-      repositoryService.deleteDeployment(deployment.getId(), true);
+        // Cleanup
+        deleteDeployments();
     }
-  }
+
+    public void testJpaVariableDisapprovalPath() {
+        before();
+
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "LoanRequestProcess",
+            map("customerName", "Jane Doe", "amount", 50000)
+        );
+
+        // Variable should be present containing the loanRequest created by the spring bean
+        Object value = runtimeService.getVariable(
+            processInstance.getId(),
+            "loanRequest"
+        );
+        assertThat(value).isNotNull();
+        assertThat(value).isInstanceOf(LoanRequest.class);
+        LoanRequest request = (LoanRequest) value;
+        assertThat(request.getCustomerName()).isEqualTo("Jane Doe");
+        assertThat(request.getAmount().longValue()).isEqualTo(50000L);
+        assertThat(request.isApproved()).isFalse();
+
+        // We will disapprove the request, which will update the entity
+        Task task = taskService
+            .createTaskQuery()
+            .processInstanceId(processInstance.getId())
+            .singleResult();
+        assertThat(task).isNotNull();
+        taskService.complete(
+            task.getId(),
+            singletonMap("approvedByManager", Boolean.FALSE)
+        );
+
+        runtimeService.getVariable(processInstance.getId(), "loanRequest");
+        request = (LoanRequest) value;
+        assertThat(request.isApproved()).isFalse();
+
+        // If disapproved, an extra task will be available instead of the process ending
+        task =
+            taskService
+                .createTaskQuery()
+                .processInstanceId(processInstance.getId())
+                .singleResult();
+        assertThat(task).isNotNull();
+        assertThat(task.getName()).isEqualTo("Send rejection letter");
+
+        // Cleanup
+        deleteDeployments();
+    }
+
+    protected void before() {
+        String[] defs = {
+            "org/activiti/spring/test/jpa/JPASpringTest.bpmn20.xml",
+        };
+        for (String pd : defs) repositoryService
+            .createDeployment()
+            .addClasspathResource(pd)
+            .deploy();
+    }
+
+    protected void deleteDeployments() {
+        for (Deployment deployment : repositoryService
+            .createDeploymentQuery()
+            .list()) {
+            repositoryService.deleteDeployment(deployment.getId(), true);
+        }
+    }
 }
 /*
  *
@@ -145,15 +178,15 @@ public class JpaTest extends SpringActivitiTestCase {
  * conf.setDeploymentName(defaultText( activitiProperties.getDeploymentName(), conf.getDeploymentName())); conf.setDatabaseSchema(defaultText( activitiProperties.getDatabaseSchema(),
  * conf.getDatabaseSchema()));
  *//*
-    *
-    *
-    * engine.setDatabaseSchemaUpdate(ProcessEngineConfiguration. DB_SCHEMA_UPDATE_TRUE);
-    *
-    * return engine; }
-    *
-    * @Bean public ProcessEngineFactoryBean processEngine(SpringProcessEngineConfiguration configuration) throws Exception { ProcessEngineFactoryBean processEngineFactoryBean = new
-    * ProcessEngineFactoryBean(); processEngineFactoryBean.setProcessEngineConfiguration(configuration); return processEngineFactoryBean; } }
-    */
+ *
+ *
+ * engine.setDatabaseSchemaUpdate(ProcessEngineConfiguration. DB_SCHEMA_UPDATE_TRUE);
+ *
+ * return engine; }
+ *
+ * @Bean public ProcessEngineFactoryBean processEngine(SpringProcessEngineConfiguration configuration) throws Exception { ProcessEngineFactoryBean processEngineFactoryBean = new
+ * ProcessEngineFactoryBean(); processEngineFactoryBean.setProcessEngineConfiguration(configuration); return processEngineFactoryBean; } }
+ */
 /*
  * @Bean public AbstractActivitiConfigurer abstractActivitiConfigurer( final EntityManagerFactory emf, final PlatformTransactionManager transactionManager) {
  *

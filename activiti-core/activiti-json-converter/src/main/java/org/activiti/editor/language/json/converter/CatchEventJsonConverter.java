@@ -16,9 +16,10 @@
 
 package org.activiti.editor.language.json.converter;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
@@ -26,63 +27,85 @@ import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.SignalEventDefinition;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 /**
 
  */
 public class CatchEventJsonConverter extends BaseBpmnJsonConverter {
 
-  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
-
-    fillJsonTypes(convertersToBpmnMap);
-    fillBpmnTypes(convertersToJsonMap);
-  }
-
-  public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
-    convertersToBpmnMap.put(STENCIL_EVENT_CATCH_TIMER, CatchEventJsonConverter.class);
-    convertersToBpmnMap.put(STENCIL_EVENT_CATCH_MESSAGE, CatchEventJsonConverter.class);
-    convertersToBpmnMap.put(STENCIL_EVENT_CATCH_SIGNAL, CatchEventJsonConverter.class);
-  }
-
-  public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
-    convertersToJsonMap.put(IntermediateCatchEvent.class, CatchEventJsonConverter.class);
-  }
-
-  protected String getStencilId(BaseElement baseElement) {
-    IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) baseElement;
-    List<EventDefinition> eventDefinitions = catchEvent.getEventDefinitions();
-    if (eventDefinitions.size() != 1) {
-      // return timer event as default;
-      return STENCIL_EVENT_CATCH_TIMER;
+    public static void fillTypes(
+        Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
+        Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap
+    ) {
+        fillJsonTypes(convertersToBpmnMap);
+        fillBpmnTypes(convertersToJsonMap);
     }
 
-    EventDefinition eventDefinition = eventDefinitions.get(0);
-    if (eventDefinition instanceof MessageEventDefinition) {
-      return STENCIL_EVENT_CATCH_MESSAGE;
-    } else if (eventDefinition instanceof SignalEventDefinition) {
-      return STENCIL_EVENT_CATCH_SIGNAL;
-    } else {
-      return STENCIL_EVENT_CATCH_TIMER;
+    public static void fillJsonTypes(
+        Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap
+    ) {
+        convertersToBpmnMap.put(
+            STENCIL_EVENT_CATCH_TIMER,
+            CatchEventJsonConverter.class
+        );
+        convertersToBpmnMap.put(
+            STENCIL_EVENT_CATCH_MESSAGE,
+            CatchEventJsonConverter.class
+        );
+        convertersToBpmnMap.put(
+            STENCIL_EVENT_CATCH_SIGNAL,
+            CatchEventJsonConverter.class
+        );
     }
-  }
 
-  protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
-    IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) baseElement;
-    addEventProperties(catchEvent, propertiesNode);
-  }
-
-  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
-    IntermediateCatchEvent catchEvent = new IntermediateCatchEvent();
-    String stencilId = BpmnJsonConverterUtil.getStencilId(elementNode);
-    if (STENCIL_EVENT_CATCH_TIMER.equals(stencilId)) {
-      convertJsonToTimerDefinition(elementNode, catchEvent);
-    } else if (STENCIL_EVENT_CATCH_MESSAGE.equals(stencilId)) {
-      convertJsonToMessageDefinition(elementNode, catchEvent);
-    } else if (STENCIL_EVENT_CATCH_SIGNAL.equals(stencilId)) {
-      convertJsonToSignalDefinition(elementNode, catchEvent);
+    public static void fillBpmnTypes(
+        Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap
+    ) {
+        convertersToJsonMap.put(
+            IntermediateCatchEvent.class,
+            CatchEventJsonConverter.class
+        );
     }
-    return catchEvent;
-  }
+
+    protected String getStencilId(BaseElement baseElement) {
+        IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) baseElement;
+        List<EventDefinition> eventDefinitions = catchEvent.getEventDefinitions();
+        if (eventDefinitions.size() != 1) {
+            // return timer event as default;
+            return STENCIL_EVENT_CATCH_TIMER;
+        }
+
+        EventDefinition eventDefinition = eventDefinitions.get(0);
+        if (eventDefinition instanceof MessageEventDefinition) {
+            return STENCIL_EVENT_CATCH_MESSAGE;
+        } else if (eventDefinition instanceof SignalEventDefinition) {
+            return STENCIL_EVENT_CATCH_SIGNAL;
+        } else {
+            return STENCIL_EVENT_CATCH_TIMER;
+        }
+    }
+
+    protected void convertElementToJson(
+        ObjectNode propertiesNode,
+        BaseElement baseElement
+    ) {
+        IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) baseElement;
+        addEventProperties(catchEvent, propertiesNode);
+    }
+
+    protected FlowElement convertJsonToElement(
+        JsonNode elementNode,
+        JsonNode modelNode,
+        Map<String, JsonNode> shapeMap
+    ) {
+        IntermediateCatchEvent catchEvent = new IntermediateCatchEvent();
+        String stencilId = BpmnJsonConverterUtil.getStencilId(elementNode);
+        if (STENCIL_EVENT_CATCH_TIMER.equals(stencilId)) {
+            convertJsonToTimerDefinition(elementNode, catchEvent);
+        } else if (STENCIL_EVENT_CATCH_MESSAGE.equals(stencilId)) {
+            convertJsonToMessageDefinition(elementNode, catchEvent);
+        } else if (STENCIL_EVENT_CATCH_SIGNAL.equals(stencilId)) {
+            convertJsonToSignalDefinition(elementNode, catchEvent);
+        }
+        return catchEvent;
+    }
 }

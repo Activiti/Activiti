@@ -19,45 +19,46 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class BoundaryEvent extends Event {
 
-  @JsonIgnore
-  protected Activity attachedToRef;
-  protected String attachedToRefId;
-  protected boolean cancelActivity = true;
+    @JsonIgnore
+    protected Activity attachedToRef;
 
-  public Activity getAttachedToRef() {
-    return attachedToRef;
-  }
+    protected String attachedToRefId;
+    protected boolean cancelActivity = true;
 
-  public void setAttachedToRef(Activity attachedToRef) {
-    this.attachedToRef = attachedToRef;
-  }
+    public Activity getAttachedToRef() {
+        return attachedToRef;
+    }
 
-  public String getAttachedToRefId() {
-    return attachedToRefId;
-  }
+    public void setAttachedToRef(Activity attachedToRef) {
+        this.attachedToRef = attachedToRef;
+    }
 
-  public void setAttachedToRefId(String attachedToRefId) {
-    this.attachedToRefId = attachedToRefId;
-  }
+    public String getAttachedToRefId() {
+        return attachedToRefId;
+    }
 
-  public boolean isCancelActivity() {
-    return cancelActivity;
-  }
+    public void setAttachedToRefId(String attachedToRefId) {
+        this.attachedToRefId = attachedToRefId;
+    }
 
-  public void setCancelActivity(boolean cancelActivity) {
-    this.cancelActivity = cancelActivity;
-  }
+    public boolean isCancelActivity() {
+        return cancelActivity;
+    }
 
-  public BoundaryEvent clone() {
-    BoundaryEvent clone = new BoundaryEvent();
-    clone.setValues(this);
-    return clone;
-  }
+    public void setCancelActivity(boolean cancelActivity) {
+        this.cancelActivity = cancelActivity;
+    }
 
-  public void setValues(BoundaryEvent otherEvent) {
-    super.setValues(otherEvent);
-    setAttachedToRefId(otherEvent.getAttachedToRefId());
-    setAttachedToRef(otherEvent.getAttachedToRef());
-    setCancelActivity(otherEvent.isCancelActivity());
-  }
+    public BoundaryEvent clone() {
+        BoundaryEvent clone = new BoundaryEvent();
+        clone.setValues(this);
+        return clone;
+    }
+
+    public void setValues(BoundaryEvent otherEvent) {
+        super.setValues(otherEvent);
+        setAttachedToRefId(otherEvent.getAttachedToRefId());
+        setAttachedToRef(otherEvent.getAttachedToRef());
+        setCancelActivity(otherEvent.isCancelActivity());
+    }
 }

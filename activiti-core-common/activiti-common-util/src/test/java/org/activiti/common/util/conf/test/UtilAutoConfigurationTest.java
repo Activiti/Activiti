@@ -29,7 +29,7 @@ public class UtilAutoConfigurationTest {
 
     @SpringBootConfiguration
     @EnableAutoConfiguration
-    static class Configuration {};
+    static class Configuration {}
 
     @Autowired
     private DateFormatterProvider dateFormatterProvider;

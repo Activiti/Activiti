@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.history.DeleteReason;
@@ -30,40 +29,59 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntityManager;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 
-public class IntermediateCatchTimerEventActivityBehavior extends IntermediateCatchEventActivityBehavior {
+public class IntermediateCatchTimerEventActivityBehavior
+    extends IntermediateCatchEventActivityBehavior {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected TimerEventDefinition timerEventDefinition;
+    protected TimerEventDefinition timerEventDefinition;
 
-  public IntermediateCatchTimerEventActivityBehavior(TimerEventDefinition timerEventDefinition) {
-    this.timerEventDefinition = timerEventDefinition;
-  }
-
-  public void execute(DelegateExecution execution) {
-    JobManager jobManager = Context.getCommandContext().getJobManager();
-
-    // end date should be ignored for intermediate timer events.
-    TimerJobEntity timerJob = jobManager.createTimerJob(timerEventDefinition, false, (ExecutionEntity) execution, TriggerTimerEventJobHandler.TYPE,
-        TimerEventHandler.createConfiguration(execution.getCurrentActivityId(), null, timerEventDefinition.getCalendarName()));
-
-    if (timerJob != null) {
-      jobManager.scheduleTimerJob(timerJob);
-    }
-  }
-
-  @Override
-  public void eventCancelledByEventGateway(DelegateExecution execution) {
-    JobEntityManager jobEntityManager = Context.getCommandContext().getJobEntityManager();
-    List<JobEntity> jobEntities = jobEntityManager.findJobsByExecutionId(execution.getId());
-
-    for (JobEntity jobEntity : jobEntities) { // Should be only one
-      jobEntityManager.delete(jobEntity);
+    public IntermediateCatchTimerEventActivityBehavior(
+        TimerEventDefinition timerEventDefinition
+    ) {
+        this.timerEventDefinition = timerEventDefinition;
     }
 
-    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution,
-        DeleteReason.EVENT_BASED_GATEWAY_CANCEL);
-  }
+    public void execute(DelegateExecution execution) {
+        JobManager jobManager = Context.getCommandContext().getJobManager();
 
+        // end date should be ignored for intermediate timer events.
+        TimerJobEntity timerJob = jobManager.createTimerJob(
+            timerEventDefinition,
+            false,
+            (ExecutionEntity) execution,
+            TriggerTimerEventJobHandler.TYPE,
+            TimerEventHandler.createConfiguration(
+                execution.getCurrentActivityId(),
+                null,
+                timerEventDefinition.getCalendarName()
+            )
+        );
 
+        if (timerJob != null) {
+            jobManager.scheduleTimerJob(timerJob);
+        }
+    }
+
+    @Override
+    public void eventCancelledByEventGateway(DelegateExecution execution) {
+        JobEntityManager jobEntityManager = Context
+            .getCommandContext()
+            .getJobEntityManager();
+        List<JobEntity> jobEntities = jobEntityManager.findJobsByExecutionId(
+            execution.getId()
+        );
+
+        for (JobEntity jobEntity : jobEntities) { // Should be only one
+            jobEntityManager.delete(jobEntity);
+        }
+
+        Context
+            .getCommandContext()
+            .getExecutionEntityManager()
+            .deleteExecutionAndRelatedData(
+                (ExecutionEntity) execution,
+                DeleteReason.EVENT_BASED_GATEWAY_CANCEL
+            );
+    }
 }

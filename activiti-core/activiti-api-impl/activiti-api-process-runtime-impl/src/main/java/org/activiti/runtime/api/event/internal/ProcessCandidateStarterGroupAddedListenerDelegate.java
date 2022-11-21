@@ -15,6 +15,7 @@
  */
 package org.activiti.runtime.api.event.internal;
 
+import java.util.List;
 import org.activiti.api.process.runtime.events.ProcessCandidateStarterGroupAddedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -22,29 +23,32 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToAPIProcessCandidateStarterGroupAddedEventConverter;
 
-import java.util.List;
-
-public class ProcessCandidateStarterGroupAddedListenerDelegate implements ActivitiEventListener {
+public class ProcessCandidateStarterGroupAddedListenerDelegate
+    implements ActivitiEventListener {
 
     private List<ProcessRuntimeEventListener<ProcessCandidateStarterGroupAddedEvent>> listeners;
 
     private ToAPIProcessCandidateStarterGroupAddedEventConverter processCandidateStarterGroupAddedEventConverter;
 
-    public ProcessCandidateStarterGroupAddedListenerDelegate(List<ProcessRuntimeEventListener<ProcessCandidateStarterGroupAddedEvent>> listeners,
-                                                             ToAPIProcessCandidateStarterGroupAddedEventConverter processCandidateStarterGroupAddedEventConverter) {
+    public ProcessCandidateStarterGroupAddedListenerDelegate(
+        List<ProcessRuntimeEventListener<ProcessCandidateStarterGroupAddedEvent>> listeners,
+        ToAPIProcessCandidateStarterGroupAddedEventConverter processCandidateStarterGroupAddedEventConverter
+    ) {
         this.listeners = listeners;
-        this.processCandidateStarterGroupAddedEventConverter = processCandidateStarterGroupAddedEventConverter;
+        this.processCandidateStarterGroupAddedEventConverter =
+            processCandidateStarterGroupAddedEventConverter;
     }
 
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiEntityEvent) {
-            processCandidateStarterGroupAddedEventConverter.from((ActivitiEntityEvent) event)
-                    .ifPresent(convertedEvent -> {
-                        for (ProcessRuntimeEventListener<ProcessCandidateStarterGroupAddedEvent> listener : listeners ) {
-                            listener.onEvent(convertedEvent);
-                        }
-                    });
+            processCandidateStarterGroupAddedEventConverter
+                .from((ActivitiEntityEvent) event)
+                .ifPresent(convertedEvent -> {
+                    for (ProcessRuntimeEventListener<ProcessCandidateStarterGroupAddedEvent> listener : listeners) {
+                        listener.onEvent(convertedEvent);
+                    }
+                });
         }
     }
 

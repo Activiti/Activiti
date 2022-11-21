@@ -15,17 +15,15 @@
  */
 package org.activiti.api.task.model.events;
 
-
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.task.model.TaskCandidateGroup;
 
-public interface TaskCandidateGroupEvent extends RuntimeEvent<TaskCandidateGroup, TaskCandidateGroupEvent.TaskCandidateGroupEvents> {
-
+public interface TaskCandidateGroupEvent
+    extends
+        RuntimeEvent<TaskCandidateGroup, TaskCandidateGroupEvent.TaskCandidateGroupEvents> {
     enum TaskCandidateGroupEvents {
-
         TASK_CANDIDATE_GROUP_ADDED,
 
-        TASK_CANDIDATE_GROUP_REMOVED
+        TASK_CANDIDATE_GROUP_REMOVED,
     }
-
 }

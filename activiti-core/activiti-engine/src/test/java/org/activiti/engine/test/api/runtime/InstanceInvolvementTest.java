@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.api.runtime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -33,124 +31,179 @@ import org.activiti.engine.test.Deployment;
  */
 public class InstanceInvolvementTest extends PluggableActivitiTestCase {
 
-  @Deployment(resources = { "org/activiti/engine/test/api/runtime/threeParallelTasks.bpmn20.xml" })
-  public void testInvolvements() {
-    // "user1", "user2", "user3" and "user4 should not be involved with any
-    // process instance
-    assertNoInvolvement("user1");
-    assertNoInvolvement("user2");
-    assertNoInvolvement("user3");
-    assertNoInvolvement("user4");
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/api/runtime/threeParallelTasks.bpmn20.xml",
+        }
+    )
+    public void testInvolvements() {
+        // "user1", "user2", "user3" and "user4 should not be involved with any
+        // process instance
+        assertNoInvolvement("user1");
+        assertNoInvolvement("user2");
+        assertNoInvolvement("user3");
+        assertNoInvolvement("user4");
 
-    // start a new process instance as "user1"
-    String instanceId = startProcessAsUser("threeParallelTasks", "user1");
+        // start a new process instance as "user1"
+        String instanceId = startProcessAsUser("threeParallelTasks", "user1");
 
-    // there are supposed to be 3 tasks
-    List<Task> tasks = taskService.createTaskQuery().processInstanceId(instanceId).list();
-    assertThat(tasks).hasSize(3);
+        // there are supposed to be 3 tasks
+        List<Task> tasks = taskService
+            .createTaskQuery()
+            .processInstanceId(instanceId)
+            .list();
+        assertThat(tasks).hasSize(3);
 
-    // "user1" should now be involved as the starter of the new process
-    // instance. "user2" is still not involved.
-    assertInvolvement("user1", instanceId);
-    assertNoInvolvement("user2");
+        // "user1" should now be involved as the starter of the new process
+        // instance. "user2" is still not involved.
+        assertInvolvement("user1", instanceId);
+        assertNoInvolvement("user2");
 
-    // "user2" should be involved with the new process instance after
-    // claiming a task
-    taskService.claim(tasks.get(0).getId(), "user2");
-    assertInvolvement("user2", instanceId);
+        // "user2" should be involved with the new process instance after
+        // claiming a task
+        taskService.claim(tasks.get(0).getId(), "user2");
+        assertInvolvement("user2", instanceId);
 
-    // "user2" should still be involved with the new process instance even
-    // after completing his task
-    taskService.complete(tasks.get(0).getId());
-    assertInvolvement("user2", instanceId);
+        // "user2" should still be involved with the new process instance even
+        // after completing his task
+        taskService.complete(tasks.get(0).getId());
+        assertInvolvement("user2", instanceId);
 
-    // "user3" should be involved after completing a task even without
-    // claiming it
-    completeTaskAsUser(tasks.get(1).getId(), "user3");
-    assertInvolvement("user3", instanceId);
+        // "user3" should be involved after completing a task even without
+        // claiming it
+        completeTaskAsUser(tasks.get(1).getId(), "user3");
+        assertInvolvement("user3", instanceId);
 
-    // "user4" should be involved after manually adding an identity link
-    runtimeService.addUserIdentityLink(instanceId, "user4", "custom");
-    assertInvolvement("user4", instanceId);
+        // "user4" should be involved after manually adding an identity link
+        runtimeService.addUserIdentityLink(instanceId, "user4", "custom");
+        assertInvolvement("user4", instanceId);
 
-    // verify all identity links for this instance
-    // note that since "user1" already is the starter, he is not involved as
-    // a participant as well
-    List<IdentityLink> identityLinks = runtimeService.getIdentityLinksForProcessInstance(instanceId);
-    assertThat(containsIdentityLink(identityLinks, "user1", "starter")).isTrue();
-    assertThat(containsIdentityLink(identityLinks, "user2", "participant")).isTrue();
-    assertThat(containsIdentityLink(identityLinks, "user3", "participant")).isTrue();
-    assertThat(containsIdentityLink(identityLinks, "user4", "custom")).isTrue();
-    assertThat(identityLinks).hasSize(4);
+        // verify all identity links for this instance
+        // note that since "user1" already is the starter, he is not involved as
+        // a participant as well
+        List<IdentityLink> identityLinks = runtimeService.getIdentityLinksForProcessInstance(
+            instanceId
+        );
+        assertThat(containsIdentityLink(identityLinks, "user1", "starter"))
+            .isTrue();
+        assertThat(containsIdentityLink(identityLinks, "user2", "participant"))
+            .isTrue();
+        assertThat(containsIdentityLink(identityLinks, "user3", "participant"))
+            .isTrue();
+        assertThat(containsIdentityLink(identityLinks, "user4", "custom"))
+            .isTrue();
+        assertThat(identityLinks).hasSize(4);
 
-    // "user1" completes the remaining task, ending the process
-    completeTaskAsUser(tasks.get(2).getId(), "user1");
+        // "user1" completes the remaining task, ending the process
+        completeTaskAsUser(tasks.get(2).getId(), "user1");
 
-    // none of the users should now be involved with any process instance
-    assertNoInvolvement("user1");
-    assertNoInvolvement("user2");
-    assertNoInvolvement("user3");
-    assertNoInvolvement("user4");
-  }
-
-  @Deployment(resources = { "org/activiti/engine/test/api/runtime/threeParallelTasks.bpmn20.xml" })
-  public void testInstanceRemoval() {
-    String instanceId = startProcessAsUser("threeParallelTasks", "user1");
-    assertInvolvement("user1", instanceId);
-    runtimeService.deleteProcessInstance(instanceId, "Testing instance removal");
-    assertNoInvolvement("user1");
-    // this will fail with a "DB NOT CLEAN" if the identity links are not
-    // removed
-  }
-
-  /**
-   * Test for ACT-1686
-   */
-  @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
-  public void testUserMultipleTimesinvolvedWithProcessInstance() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-
-    // Add 2 links of a different type for the same user
-    runtimeService.addUserIdentityLink(processInstance.getId(), "kermit", "type1");
-    runtimeService.addUserIdentityLink(processInstance.getId(), "kermit", "type2");
-
-    assertThat(runtimeService.createProcessInstanceQuery().involvedUser("kermit").count()).isEqualTo(1L);
-  }
-
-  private void assertNoInvolvement(String userId) {
-    assertThat(runtimeService.createProcessInstanceQuery().involvedUser(userId).count()).isEqualTo(0L);
-  }
-
-  private void assertInvolvement(String userId, String instanceId) {
-    ProcessInstance involvedInstance = runtimeService.createProcessInstanceQuery().involvedUser(userId).singleResult();
-    assertThat(involvedInstance.getId()).isEqualTo(instanceId);
-  }
-
-  private String startProcessAsUser(String processId, String userId) {
-    try {
-      Authentication.setAuthenticatedUserId(userId);
-      return runtimeService.startProcessInstanceByKey(processId).getId();
-    } finally {
-      Authentication.setAuthenticatedUserId(null);
+        // none of the users should now be involved with any process instance
+        assertNoInvolvement("user1");
+        assertNoInvolvement("user2");
+        assertNoInvolvement("user3");
+        assertNoInvolvement("user4");
     }
-  }
 
-  private void completeTaskAsUser(String taskId, String userId) {
-    try {
-      Authentication.setAuthenticatedUserId(userId);
-      taskService.complete(taskId);
-    } finally {
-      Authentication.setAuthenticatedUserId(null);
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/api/runtime/threeParallelTasks.bpmn20.xml",
+        }
+    )
+    public void testInstanceRemoval() {
+        String instanceId = startProcessAsUser("threeParallelTasks", "user1");
+        assertInvolvement("user1", instanceId);
+        runtimeService.deleteProcessInstance(
+            instanceId,
+            "Testing instance removal"
+        );
+        assertNoInvolvement("user1");
+        // this will fail with a "DB NOT CLEAN" if the identity links are not
+        // removed
     }
-  }
 
-  private boolean containsIdentityLink(List<IdentityLink> identityLinks, String userId, String type) {
-    for (IdentityLink identityLink : identityLinks) {
-      if (userId.equals(identityLink.getUserId()) && type.equals(identityLink.getType())) {
-        return true;
-      }
+    /**
+     * Test for ACT-1686
+     */
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml",
+        }
+    )
+    public void testUserMultipleTimesinvolvedWithProcessInstance() {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "oneTaskProcess"
+        );
+
+        // Add 2 links of a different type for the same user
+        runtimeService.addUserIdentityLink(
+            processInstance.getId(),
+            "kermit",
+            "type1"
+        );
+        runtimeService.addUserIdentityLink(
+            processInstance.getId(),
+            "kermit",
+            "type2"
+        );
+
+        assertThat(
+            runtimeService
+                .createProcessInstanceQuery()
+                .involvedUser("kermit")
+                .count()
+        )
+            .isEqualTo(1L);
     }
-    return false;
-  }
 
+    private void assertNoInvolvement(String userId) {
+        assertThat(
+            runtimeService
+                .createProcessInstanceQuery()
+                .involvedUser(userId)
+                .count()
+        )
+            .isEqualTo(0L);
+    }
+
+    private void assertInvolvement(String userId, String instanceId) {
+        ProcessInstance involvedInstance = runtimeService
+            .createProcessInstanceQuery()
+            .involvedUser(userId)
+            .singleResult();
+        assertThat(involvedInstance.getId()).isEqualTo(instanceId);
+    }
+
+    private String startProcessAsUser(String processId, String userId) {
+        try {
+            Authentication.setAuthenticatedUserId(userId);
+            return runtimeService.startProcessInstanceByKey(processId).getId();
+        } finally {
+            Authentication.setAuthenticatedUserId(null);
+        }
+    }
+
+    private void completeTaskAsUser(String taskId, String userId) {
+        try {
+            Authentication.setAuthenticatedUserId(userId);
+            taskService.complete(taskId);
+        } finally {
+            Authentication.setAuthenticatedUserId(null);
+        }
+    }
+
+    private boolean containsIdentityLink(
+        List<IdentityLink> identityLinks,
+        String userId,
+        String type
+    ) {
+        for (IdentityLink identityLink : identityLinks) {
+            if (
+                userId.equals(identityLink.getUserId()) &&
+                type.equals(identityLink.getType())
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

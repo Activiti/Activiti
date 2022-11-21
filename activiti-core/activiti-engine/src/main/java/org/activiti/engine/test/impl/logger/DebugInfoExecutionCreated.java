@@ -24,24 +24,29 @@ import org.slf4j.Logger;
  */
 public class DebugInfoExecutionCreated extends AbstractDebugInfo {
 
-  protected ExecutionEntity executionEntity;
-  protected String flowElementId;
+    protected ExecutionEntity executionEntity;
+    protected String flowElementId;
 
-  public DebugInfoExecutionCreated(ExecutionEntity executionEntity) {
-    this.executionEntity = executionEntity;
-    this.flowElementId = executionEntity.getCurrentFlowElement() != null ? executionEntity.getCurrentFlowElement().getId() : null;
-  }
-
-  @Override
-  public void printOut(Logger logger) {
-    StringBuilder strb = new StringBuilder(25);
-    strb.append("Execution ").append(executionEntity.getId()).append(" created");
-
-    if (flowElementId != null) {
-      strb.append(" at flow element ").append(flowElementId);
+    public DebugInfoExecutionCreated(ExecutionEntity executionEntity) {
+        this.executionEntity = executionEntity;
+        this.flowElementId =
+            executionEntity.getCurrentFlowElement() != null
+                ? executionEntity.getCurrentFlowElement().getId()
+                : null;
     }
 
-    logger.info(strb.toString());
-  }
+    @Override
+    public void printOut(Logger logger) {
+        StringBuilder strb = new StringBuilder(25);
+        strb
+            .append("Execution ")
+            .append(executionEntity.getId())
+            .append(" created");
 
+        if (flowElementId != null) {
+            strb.append(" at flow element ").append(flowElementId);
+        }
+
+        logger.info(strb.toString());
+    }
 }

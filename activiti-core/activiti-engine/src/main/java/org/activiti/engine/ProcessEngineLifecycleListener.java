@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine;
 
 import org.activiti.engine.api.internal.Internal;
@@ -25,20 +24,19 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface ProcessEngineLifecycleListener {
+    /**
+     * Called right after the process-engine has been built.
+     *
+     * @param processEngine
+     *          engine that was built
+     */
+    void onProcessEngineBuilt(ProcessEngine processEngine);
 
-  /**
-   * Called right after the process-engine has been built.
-   *
-   * @param processEngine
-   *          engine that was built
-   */
-  void onProcessEngineBuilt(ProcessEngine processEngine);
-
-  /**
-   * Called right after the process-engine has been closed.
-   *
-   * @param processEngine
-   *          engine that was closed
-   */
-  void onProcessEngineClosed(ProcessEngine processEngine);
+    /**
+     * Called right after the process-engine has been closed.
+     *
+     * @param processEngine
+     *          engine that was closed
+     */
+    void onProcessEngineClosed(ProcessEngine processEngine);
 }

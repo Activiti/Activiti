@@ -17,8 +17,8 @@ package org.activiti.api.model.shared.event;
 
 import java.io.Serializable;
 
-public interface RuntimeEvent<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> extends Serializable {
-
+public interface RuntimeEvent<ENTITY_TYPE, EVENT_TYPE extends Enum<?>>
+    extends Serializable {
     String getId();
 
     ENTITY_TYPE getEntity();
@@ -38,5 +38,4 @@ public interface RuntimeEvent<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> extends S
     Integer getProcessDefinitionVersion();
 
     String getBusinessKey();
-
 }

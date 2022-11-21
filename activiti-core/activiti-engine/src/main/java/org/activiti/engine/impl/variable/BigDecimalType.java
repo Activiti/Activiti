@@ -33,26 +33,29 @@ public class BigDecimalType implements VariableType {
 
     @Override
     public Object getValue(ValueFields valueFields) {
-        return Optional.ofNullable(valueFields)
-                       .map(ValueFields::getTextValue)
-                       .map(BigDecimal::new)
-                       .orElse(null);
+        return Optional
+            .ofNullable(valueFields)
+            .map(ValueFields::getTextValue)
+            .map(BigDecimal::new)
+            .orElse(null);
     }
 
     @Override
     public void setValue(Object value, ValueFields valueFields) {
-        String textValue = Optional.ofNullable(value)
-                                   .map(Object::toString)
-                                   .orElse(null);
+        String textValue = Optional
+            .ofNullable(value)
+            .map(Object::toString)
+            .orElse(null);
 
         valueFields.setTextValue(textValue);
     }
 
     @Override
     public boolean isAbleToStore(Object value) {
-        return Optional.ofNullable(value)
-                       .map(Object::getClass)
-                       .map(BigDecimal.class::isAssignableFrom)
-                       .orElse(true);
+        return Optional
+            .ofNullable(value)
+            .map(Object::getClass)
+            .map(BigDecimal.class::isAssignableFrom)
+            .orElse(true);
     }
 }

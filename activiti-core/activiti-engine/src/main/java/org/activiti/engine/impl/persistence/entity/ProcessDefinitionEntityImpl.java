@@ -21,210 +21,216 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.context.Context;
 
-public class ProcessDefinitionEntityImpl extends AbstractEntity implements ProcessDefinitionEntity, Serializable {
+public class ProcessDefinitionEntityImpl
+    extends AbstractEntity
+    implements ProcessDefinitionEntity, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String name;
-  protected String description;
-  protected String key;
-  protected int version;
-  protected String category;
-  protected String deploymentId;
-  protected String resourceName;
-  protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
-  protected Integer historyLevel;
-  protected String diagramResourceName;
-  protected boolean isGraphicalNotationDefined;
-  protected Map<String, Object> variables;
-  protected boolean hasStartFormKey;
-  protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
-  protected boolean isIdentityLinksInitialized;
-  protected List<IdentityLinkEntity> definitionIdentityLinkEntities = new ArrayList<IdentityLinkEntity>();
-  protected IOSpecification ioSpecification;
-  protected Integer appVersion;
+    protected String name;
+    protected String description;
+    protected String key;
+    protected int version;
+    protected String category;
+    protected String deploymentId;
+    protected String resourceName;
+    protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
+    protected Integer historyLevel;
+    protected String diagramResourceName;
+    protected boolean isGraphicalNotationDefined;
+    protected Map<String, Object> variables;
+    protected boolean hasStartFormKey;
+    protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
+    protected boolean isIdentityLinksInitialized;
+    protected List<IdentityLinkEntity> definitionIdentityLinkEntities = new ArrayList<IdentityLinkEntity>();
+    protected IOSpecification ioSpecification;
+    protected Integer appVersion;
 
     // Backwards compatibility
-  protected String engineVersion;
+    protected String engineVersion;
 
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = new HashMap<String, Object>();
-    persistentState.put("suspensionState", this.suspensionState);
-    persistentState.put("category", this.category);
-    return persistentState;
-  }
-
-  // getters and setters
-  // //////////////////////////////////////////////////////
-
-  public List<IdentityLinkEntity> getIdentityLinks() {
-    if (!isIdentityLinksInitialized) {
-      definitionIdentityLinkEntities = Context.getCommandContext().getIdentityLinkEntityManager().findIdentityLinksByProcessDefinitionId(id);
-      isIdentityLinksInitialized = true;
+    public Object getPersistentState() {
+        Map<String, Object> persistentState = new HashMap<String, Object>();
+        persistentState.put("suspensionState", this.suspensionState);
+        persistentState.put("category", this.category);
+        return persistentState;
     }
 
-    return definitionIdentityLinkEntities;
-  }
+    // getters and setters
+    // //////////////////////////////////////////////////////
 
-  public String getKey() {
-    return key;
-  }
+    public List<IdentityLinkEntity> getIdentityLinks() {
+        if (!isIdentityLinksInitialized) {
+            definitionIdentityLinkEntities =
+                Context
+                    .getCommandContext()
+                    .getIdentityLinkEntityManager()
+                    .findIdentityLinksByProcessDefinitionId(id);
+            isIdentityLinksInitialized = true;
+        }
 
-  public void setKey(String key) {
-    this.key = key;
-  }
+        return definitionIdentityLinkEntities;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public String getKey() {
+        return key;
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public void setKey(String key) {
+        this.key = key;
+    }
 
-  public void setDescription(String description) {
-    this.description = description;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public String getDescription() {
-    return description;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public String getDeploymentId() {
-    return deploymentId;
-  }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-  public void setDeploymentId(String deploymentId) {
-    this.deploymentId = deploymentId;
-  }
+    public String getDescription() {
+        return description;
+    }
 
-  public int getVersion() {
-    return version;
-  }
+    public String getDeploymentId() {
+        return deploymentId;
+    }
 
-  public void setVersion(int version) {
-    this.version = version;
-  }
+    public void setDeploymentId(String deploymentId) {
+        this.deploymentId = deploymentId;
+    }
 
-  public String getResourceName() {
-    return resourceName;
-  }
+    public int getVersion() {
+        return version;
+    }
 
-  public void setResourceName(String resourceName) {
-    this.resourceName = resourceName;
-  }
+    public void setVersion(int version) {
+        this.version = version;
+    }
 
-  public String getTenantId() {
-    return tenantId;
-  }
+    public String getResourceName() {
+        return resourceName;
+    }
 
-  public void setTenantId(String tenantId) {
-    this.tenantId = tenantId;
-  }
+    public void setResourceName(String resourceName) {
+        this.resourceName = resourceName;
+    }
 
-  public Integer getHistoryLevel() {
-    return historyLevel;
-  }
+    public String getTenantId() {
+        return tenantId;
+    }
 
-  public void setHistoryLevel(Integer historyLevel) {
-    this.historyLevel = historyLevel;
-  }
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
 
-  public Map<String, Object> getVariables() {
-    return variables;
-  }
+    public Integer getHistoryLevel() {
+        return historyLevel;
+    }
 
-  public void setVariables(Map<String, Object> variables) {
-    this.variables = variables;
-  }
+    public void setHistoryLevel(Integer historyLevel) {
+        this.historyLevel = historyLevel;
+    }
 
-  public String getCategory() {
-    return category;
-  }
+    public Map<String, Object> getVariables() {
+        return variables;
+    }
 
-  public void setCategory(String category) {
-    this.category = category;
-  }
+    public void setVariables(Map<String, Object> variables) {
+        this.variables = variables;
+    }
 
-  public String getDiagramResourceName() {
-    return diagramResourceName;
-  }
+    public String getCategory() {
+        return category;
+    }
 
-  public void setDiagramResourceName(String diagramResourceName) {
-    this.diagramResourceName = diagramResourceName;
-  }
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
-  public boolean hasStartFormKey() {
-    return hasStartFormKey;
-  }
+    public String getDiagramResourceName() {
+        return diagramResourceName;
+    }
 
-  public boolean getHasStartFormKey() {
-    return hasStartFormKey;
-  }
+    public void setDiagramResourceName(String diagramResourceName) {
+        this.diagramResourceName = diagramResourceName;
+    }
 
-  public void setStartFormKey(boolean hasStartFormKey) {
-    this.hasStartFormKey = hasStartFormKey;
-  }
+    public boolean hasStartFormKey() {
+        return hasStartFormKey;
+    }
 
-  public void setHasStartFormKey(boolean hasStartFormKey) {
-    this.hasStartFormKey = hasStartFormKey;
-  }
+    public boolean getHasStartFormKey() {
+        return hasStartFormKey;
+    }
 
-  public boolean isGraphicalNotationDefined() {
-    return isGraphicalNotationDefined;
-  }
+    public void setStartFormKey(boolean hasStartFormKey) {
+        this.hasStartFormKey = hasStartFormKey;
+    }
 
-  public boolean hasGraphicalNotation() {
-    return isGraphicalNotationDefined;
-  }
+    public void setHasStartFormKey(boolean hasStartFormKey) {
+        this.hasStartFormKey = hasStartFormKey;
+    }
 
-  public void setGraphicalNotationDefined(boolean isGraphicalNotationDefined) {
-    this.isGraphicalNotationDefined = isGraphicalNotationDefined;
-  }
+    public boolean isGraphicalNotationDefined() {
+        return isGraphicalNotationDefined;
+    }
 
-  public int getSuspensionState() {
-    return suspensionState;
-  }
+    public boolean hasGraphicalNotation() {
+        return isGraphicalNotationDefined;
+    }
 
-  public void setSuspensionState(int suspensionState) {
-    this.suspensionState = suspensionState;
-  }
+    public void setGraphicalNotationDefined(
+        boolean isGraphicalNotationDefined
+    ) {
+        this.isGraphicalNotationDefined = isGraphicalNotationDefined;
+    }
 
-  public boolean isSuspended() {
-    return suspensionState == SuspensionState.SUSPENDED.getStateCode();
-  }
+    public int getSuspensionState() {
+        return suspensionState;
+    }
 
-  public String getEngineVersion() {
-    return engineVersion;
-  }
+    public void setSuspensionState(int suspensionState) {
+        this.suspensionState = suspensionState;
+    }
 
-  public void setEngineVersion(String engineVersion) {
-    this.engineVersion = engineVersion;
-  }
+    public boolean isSuspended() {
+        return suspensionState == SuspensionState.SUSPENDED.getStateCode();
+    }
 
-  public IOSpecification getIoSpecification() {
-    return ioSpecification;
-  }
+    public String getEngineVersion() {
+        return engineVersion;
+    }
 
-  public void setIoSpecification(IOSpecification ioSpecification) {
-    this.ioSpecification = ioSpecification;
-  }
+    public void setEngineVersion(String engineVersion) {
+        this.engineVersion = engineVersion;
+    }
 
-  public String toString() {
-    return "ProcessDefinitionEntity[" + id + "]";
-  }
+    public IOSpecification getIoSpecification() {
+        return ioSpecification;
+    }
 
-  public void setAppVersion(Integer appVersion){
-      this.appVersion = appVersion;
-  }
+    public void setIoSpecification(IOSpecification ioSpecification) {
+        this.ioSpecification = ioSpecification;
+    }
 
-  public Integer getAppVersion(){
-      return this.appVersion;
-  }
+    public String toString() {
+        return "ProcessDefinitionEntity[" + id + "]";
+    }
 
+    public void setAppVersion(Integer appVersion) {
+        this.appVersion = appVersion;
+    }
+
+    public Integer getAppVersion() {
+        return this.appVersion;
+    }
 }

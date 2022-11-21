@@ -21,13 +21,13 @@ import static org.activiti.core.el.CommonELResolversUtil.jsonNodeResolver;
 import static org.activiti.core.el.CommonELResolversUtil.listResolver;
 import static org.activiti.core.el.CommonELResolversUtil.mapResolver;
 
+import de.odysseus.el.ExpressionFactoryImpl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
-import de.odysseus.el.ExpressionFactoryImpl;
 
 public class JuelExpressionResolver implements ExpressionResolver {
 
@@ -42,22 +42,33 @@ public class JuelExpressionResolver implements ExpressionResolver {
         this(expressionFactory, new ArrayList<>());
     }
 
-    public JuelExpressionResolver(ExpressionFactory expressionFactory, List<CustomFunctionProvider> customFunctionProviders) {
+    public JuelExpressionResolver(
+        ExpressionFactory expressionFactory,
+        List<CustomFunctionProvider> customFunctionProviders
+    ) {
         this.expressionFactory = expressionFactory;
         this.customFunctionProviders = customFunctionProviders;
     }
 
     @Override
-    public <T> T resolveExpression(String expression, Map<String, Object> variables, Class<T> type) {
-        if(expression == null) {
+    public <T> T resolveExpression(
+        String expression,
+        Map<String, Object> variables,
+        Class<T> type
+    ) {
+        if (expression == null) {
             return null;
         }
         final ELContext context = buildContext(variables);
-        final ValueExpression valueExpression = expressionFactory.createValueExpression(context, expression, type);
-        return (T)valueExpression.getValue(context);
+        final ValueExpression valueExpression = expressionFactory.createValueExpression(
+            context,
+            expression,
+            type
+        );
+        return (T) valueExpression.getValue(context);
     }
 
-    protected ELContext buildContext (Map<String, Object> variables) {
+    protected ELContext buildContext(Map<String, Object> variables) {
         return new ELContextBuilder()
             .withResolvers(
                 arrayResolver(),

@@ -15,15 +15,14 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import java.util.Set;
-
-import org.springframework.core.convert.converter.Converter;
-
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Set;
+import org.springframework.core.convert.converter.Converter;
 
 @ProcessVariableTypeConverter
 public class StringToSetConverter implements Converter<String, Set<Object>> {
+
     private final ObjectMapper objectMapper;
 
     public StringToSetConverter(ObjectMapper objectMapper) {
@@ -32,9 +31,9 @@ public class StringToSetConverter implements Converter<String, Set<Object>> {
 
     @Override
     public Set<Object> convert(String source) {
-        JavaType javaType = objectMapper.getTypeFactory()
-                                        .constructParametricType(Set.class,
-                                                                 Object.class);
+        JavaType javaType = objectMapper
+            .getTypeFactory()
+            .constructParametricType(Set.class, Object.class);
         try {
             return objectMapper.readValue(source, javaType);
         } catch (Exception cause) {

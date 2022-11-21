@@ -17,6 +17,7 @@
 package org.activiti.runtime.api.conf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
 import org.activiti.engine.impl.bpmn.behavior.VariablesPropagator;
@@ -33,14 +34,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
-
 @Configuration
 public class ConnectorsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ExpressionManager expressionManager(List<CustomFunctionProvider> customFunctionProviders) {
+    public ExpressionManager expressionManager(
+        List<CustomFunctionProvider> customFunctionProviders
+    ) {
         ExpressionManager expressionManager = new ExpressionManager();
         expressionManager.setCustomFunctionProviders(customFunctionProviders);
         return expressionManager;
@@ -48,37 +49,62 @@ public class ConnectorsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ExpressionResolver expressionResolver(ExpressionManager expressionManager, ObjectMapper objectMapper) {
-        return new ExpressionResolver(expressionManager, objectMapper, new DefaultDelegateInterceptor());
+    public ExpressionResolver expressionResolver(
+        ExpressionManager expressionManager,
+        ObjectMapper objectMapper
+    ) {
+        return new ExpressionResolver(
+            expressionManager,
+            objectMapper,
+            new DefaultDelegateInterceptor()
+        );
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public IntegrationContextBuilder integrationContextBuilder(ExtensionsVariablesMappingProvider variablesMappingProvider,
-                                                               ExpressionManager expressionManager) {
-        return new IntegrationContextBuilder(variablesMappingProvider,
-                                             expressionManager);
+    public IntegrationContextBuilder integrationContextBuilder(
+        ExtensionsVariablesMappingProvider variablesMappingProvider,
+        ExpressionManager expressionManager
+    ) {
+        return new IntegrationContextBuilder(
+            variablesMappingProvider,
+            expressionManager
+        );
     }
 
     @Bean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
-    @ConditionalOnMissingBean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
+    @ConditionalOnMissingBean(
+        name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME
+    )
     public DefaultServiceTaskBehavior defaultServiceTaskBehavior(
         ApplicationContext applicationContext,
         IntegrationContextBuilder integrationContextBuilder,
-        VariablesPropagator variablesPropagator) {
-        return new DefaultServiceTaskBehavior(applicationContext, integrationContextBuilder, variablesPropagator);
+        VariablesPropagator variablesPropagator
+    ) {
+        return new DefaultServiceTaskBehavior(
+            applicationContext,
+            integrationContextBuilder,
+            variablesPropagator
+        );
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ExtensionsVariablesMappingProvider variablesMappingProvider(ProcessExtensionService processExtensionService,
-                                                             ExpressionResolver expressionResolver) {
-        return new ExtensionsVariablesMappingProvider(processExtensionService, expressionResolver);
+    public ExtensionsVariablesMappingProvider variablesMappingProvider(
+        ProcessExtensionService processExtensionService,
+        ExpressionResolver expressionResolver
+    ) {
+        return new ExtensionsVariablesMappingProvider(
+            processExtensionService,
+            expressionResolver
+        );
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public VariablesPropagator variablesPropagator(VariablesCalculator variablesCalculator) {
+    public VariablesPropagator variablesPropagator(
+        VariablesCalculator variablesCalculator
+    ) {
         return new VariablesPropagator(variablesCalculator);
     }
 }

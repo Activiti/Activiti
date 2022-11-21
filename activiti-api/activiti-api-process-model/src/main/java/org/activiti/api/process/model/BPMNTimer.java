@@ -18,6 +18,5 @@ package org.activiti.api.process.model;
 import org.activiti.api.process.model.payloads.TimerPayload;
 
 public interface BPMNTimer extends BPMNElement {
-
     TimerPayload getTimerPayload();
 }

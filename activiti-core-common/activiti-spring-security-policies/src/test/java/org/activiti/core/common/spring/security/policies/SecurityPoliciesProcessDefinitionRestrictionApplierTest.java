@@ -15,13 +15,12 @@
  */
 package org.activiti.core.common.spring.security.policies;
 
-import java.util.Set;
-
-import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
-import org.junit.jupiter.api.Test;
-
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Set;
+import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
+import org.junit.jupiter.api.Test;
 
 public class SecurityPoliciesProcessDefinitionRestrictionApplierTest {
 
@@ -33,7 +32,9 @@ public class SecurityPoliciesProcessDefinitionRestrictionApplierTest {
         Set<String> keys = singleton("procDef");
 
         //when
-        GetProcessDefinitionsPayload filter = restrictionApplier.restrictToKeys(keys);
+        GetProcessDefinitionsPayload filter = restrictionApplier.restrictToKeys(
+            keys
+        );
 
         //then
         assertThat(filter.getProcessDefinitionKeys()).isEqualTo(keys);
@@ -46,6 +47,7 @@ public class SecurityPoliciesProcessDefinitionRestrictionApplierTest {
 
         //then
         assertThat(filter.getProcessDefinitionKeys()).hasSize(1);
-        assertThat(filter.getProcessDefinitionKeys().iterator().next()).startsWith("missing-");
+        assertThat(filter.getProcessDefinitionKeys().iterator().next())
+            .startsWith("missing-");
     }
 }

@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cfg;
 
 import java.util.Map;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
@@ -27,6 +25,10 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
  */
 @Internal
 public interface ServiceInvoker {
-
-  void invoke(String serviceType, Map<String, Object> parameters, ExecutionEntity execution, TaskEntity task);
+    void invoke(
+        String serviceType,
+        Map<String, Object> parameters,
+        ExecutionEntity execution,
+        TaskEntity task
+    );
 }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.listener;
 
 import org.activiti.engine.delegate.DelegateTask;
@@ -26,21 +25,20 @@ import org.activiti.engine.delegate.TaskListener;
  */
 public class ExpressionTaskListener implements TaskListener {
 
-  protected Expression expression;
+    protected Expression expression;
 
-  public ExpressionTaskListener(Expression expression) {
-    this.expression = expression;
-  }
+    public ExpressionTaskListener(Expression expression) {
+        this.expression = expression;
+    }
 
-  public void notify(DelegateTask delegateTask) {
-    expression.getValue(delegateTask);
-  }
+    public void notify(DelegateTask delegateTask) {
+        expression.getValue(delegateTask);
+    }
 
-  /**
-   * returns the expression text for this task listener. Comes in handy if you want to check which listeners you already have.
-   */
-  public String getExpressionText() {
-    return expression.getExpressionText();
-  }
-
+    /**
+     * returns the expression text for this task listener. Comes in handy if you want to check which listeners you already have.
+     */
+    public String getExpressionText() {
+        return expression.getExpressionText();
+    }
 }

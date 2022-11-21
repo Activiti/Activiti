@@ -15,6 +15,10 @@
  */
 package org.activiti.application.deployer;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+
 import org.activiti.application.ApplicationContent;
 import org.activiti.application.ApplicationEntry;
 import org.activiti.application.FileContent;
@@ -27,10 +31,6 @@ import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 public class ProcessEntryDeployerTest {
@@ -45,22 +45,24 @@ public class ProcessEntryDeployerTest {
     public void deployEntriesShouldDelegateDeploymentToDeployBuilder() {
         //given
         ApplicationContent applicationContent = new ApplicationContent();
-        FileContent fileContent = new FileContent("process",
-                                              "any".getBytes());
-        applicationContent.add(new ApplicationEntry("processes",
-                                                    fileContent));
+        FileContent fileContent = new FileContent("process", "any".getBytes());
+        applicationContent.add(new ApplicationEntry("processes", fileContent));
 
-        DeploymentBuilder deploymentBuilder = mock(DeploymentBuilder.class,
-                                      Answers.RETURNS_SELF);
-        given(repositoryService.createDeployment()).willReturn(deploymentBuilder);
+        DeploymentBuilder deploymentBuilder = mock(
+            DeploymentBuilder.class,
+            Answers.RETURNS_SELF
+        );
+        given(repositoryService.createDeployment())
+            .willReturn(deploymentBuilder);
 
         //when
         deployer.deployEntries(applicationContent);
 
         //then
         InOrder inOrder = inOrder(deploymentBuilder);
-        inOrder.verify(deploymentBuilder).addBytes(fileContent.getName(), fileContent.getContent());
+        inOrder
+            .verify(deploymentBuilder)
+            .addBytes(fileContent.getName(), fileContent.getContent());
         inOrder.verify(deploymentBuilder).deploy();
     }
-
 }

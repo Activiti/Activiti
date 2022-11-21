@@ -26,21 +26,23 @@ import org.activiti.engine.impl.el.FixedValue;
  */
 public class MyExecutionListenerBean implements ExecutionListener {
 
-  private FixedValue someField;
+    private FixedValue someField;
 
-  public void notify(DelegateExecution execution) {
-    execution.setVariable("executionListenerVar", "working");
-    if (someField != null) {
-      execution.setVariable("executionListenerField", someField.getValue(execution));
+    public void notify(DelegateExecution execution) {
+        execution.setVariable("executionListenerVar", "working");
+        if (someField != null) {
+            execution.setVariable(
+                "executionListenerField",
+                someField.getValue(execution)
+            );
+        }
     }
-  }
 
-  public FixedValue getSomeField() {
-    return someField;
-  }
+    public FixedValue getSomeField() {
+        return someField;
+    }
 
-  public void setSomeField(FixedValue someField) {
-    this.someField = someField;
-  }
-
+    public void setSomeField(FixedValue someField) {
+        this.someField = someField;
+    }
 }

@@ -26,9 +26,11 @@ public class ActivitiCoreCommonUtilAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DateFormatterProvider dateFormatterProvider(@Value("${spring.activiti.date-format-pattern:yyyy-MM-dd[['T']HH:mm:ss[.SSS'Z']]}")
-                                                       String dateFormatPattern) {
+    public DateFormatterProvider dateFormatterProvider(
+        @Value(
+            "${spring.activiti.date-format-pattern:yyyy-MM-dd[['T']HH:mm:ss[.SSS'Z']]}"
+        ) String dateFormatPattern
+    ) {
         return new DateFormatterProvider(dateFormatPattern);
     }
-
 }

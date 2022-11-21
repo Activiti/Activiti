@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.el;
 
 import org.activiti.engine.ActivitiException;
@@ -30,22 +29,40 @@ import org.activiti.engine.impl.Condition;
  */
 public class UelExpressionCondition implements Condition {
 
-  protected Expression expression;
+    protected Expression expression;
 
-  public UelExpressionCondition(Expression expression) {
-    this.expression = expression;
-  }
-
-  public boolean evaluate(String sequenceFlowId, DelegateExecution execution) {
-    Object result = expression.getValue(execution);
-
-    if (result == null) {
-      throw new ActivitiException("condition expression returns null (sequenceFlowId: " + sequenceFlowId + " execution: " + execution + ")");
+    public UelExpressionCondition(Expression expression) {
+        this.expression = expression;
     }
-    if (!(result instanceof Boolean)) {
-      throw new ActivitiException("condition expression returns non-Boolean (sequenceFlowId: " + sequenceFlowId + " execution: " + execution + "): " + result + " (" + result.getClass().getName() + ")");
-    }
-    return (Boolean) result;
-  }
 
+    public boolean evaluate(
+        String sequenceFlowId,
+        DelegateExecution execution
+    ) {
+        Object result = expression.getValue(execution);
+
+        if (result == null) {
+            throw new ActivitiException(
+                "condition expression returns null (sequenceFlowId: " +
+                sequenceFlowId +
+                " execution: " +
+                execution +
+                ")"
+            );
+        }
+        if (!(result instanceof Boolean)) {
+            throw new ActivitiException(
+                "condition expression returns non-Boolean (sequenceFlowId: " +
+                sequenceFlowId +
+                " execution: " +
+                execution +
+                "): " +
+                result +
+                " (" +
+                result.getClass().getName() +
+                ")"
+            );
+        }
+        return (Boolean) result;
+    }
 }

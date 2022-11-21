@@ -16,21 +16,21 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import org.activiti.engine.api.internal.Internal;
-
 import java.util.List;
+import org.activiti.engine.api.internal.Internal;
 
 /**
 
  */
 @Internal
 @Deprecated
-public interface AttachmentEntityManager extends EntityManager<AttachmentEntity> {
+public interface AttachmentEntityManager
+    extends EntityManager<AttachmentEntity> {
+    List<AttachmentEntity> findAttachmentsByProcessInstanceId(
+        String processInstanceId
+    );
 
-  List<AttachmentEntity> findAttachmentsByProcessInstanceId(String processInstanceId);
+    List<AttachmentEntity> findAttachmentsByTaskId(String taskId);
 
-  List<AttachmentEntity> findAttachmentsByTaskId(String taskId);
-
-  void deleteAttachmentsByTaskId(String taskId);
-
+    void deleteAttachmentsByTaskId(String taskId);
 }

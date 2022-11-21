@@ -18,7 +18,6 @@ package org.activiti.spring.impl.test;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.test.AbstractActivitiTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,44 +33,49 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 
  */
 @TestExecutionListeners(DependencyInjectionTestExecutionListener.class)
-public abstract class SpringActivitiTestCase extends AbstractActivitiTestCase implements ApplicationContextAware {
+public abstract class SpringActivitiTestCase
+    extends AbstractActivitiTestCase
+    implements ApplicationContextAware {
 
-  // we need a data structure to store all the resolved ProcessEngines and map
-  // them to something
-  protected Map<Object, ProcessEngine> cachedProcessEngines = new ConcurrentHashMap<Object, ProcessEngine>();
+    // we need a data structure to store all the resolved ProcessEngines and map
+    // them to something
+    protected Map<Object, ProcessEngine> cachedProcessEngines = new ConcurrentHashMap<Object, ProcessEngine>();
 
-  // protected static Map<String, ProcessEngine> cachedProcessEngines = new
-  // HashMap<String, ProcessEngine>();
+    // protected static Map<String, ProcessEngine> cachedProcessEngines = new
+    // HashMap<String, ProcessEngine>();
 
-  protected TestContextManager testContextManager;
+    protected TestContextManager testContextManager;
 
-  @Autowired
-  protected ApplicationContext applicationContext;
+    @Autowired
+    protected ApplicationContext applicationContext;
 
-  public SpringActivitiTestCase() {
-    this.testContextManager = new TestContextManager(getClass());
-  }
+    public SpringActivitiTestCase() {
+        this.testContextManager = new TestContextManager(getClass());
+    }
 
-  @Override
-  public void runBare() throws Throwable {
-    testContextManager.prepareTestInstance(this); // this will initialize
-                                                  // all dependencies
-    super.runBare();
-  }
+    @Override
+    public void runBare() throws Throwable {
+        testContextManager.prepareTestInstance(this); // this will initialize
+        // all dependencies
+        super.runBare();
+    }
 
-  @Override
-  protected void initializeProcessEngine() {
-    ContextConfiguration contextConfiguration = getClass().getAnnotation(ContextConfiguration.class);
-    String[] value = contextConfiguration.value();
-    boolean hasOneArg = value != null && value.length == 1;
-    String key = hasOneArg ? value[0] : ProcessEngine.class.getName();
-    ProcessEngine engine = this.cachedProcessEngines.containsKey(key) ? this.cachedProcessEngines.get(key) : this.applicationContext.getBean(ProcessEngine.class);
+    @Override
+    protected void initializeProcessEngine() {
+        ContextConfiguration contextConfiguration = getClass()
+            .getAnnotation(ContextConfiguration.class);
+        String[] value = contextConfiguration.value();
+        boolean hasOneArg = value != null && value.length == 1;
+        String key = hasOneArg ? value[0] : ProcessEngine.class.getName();
+        ProcessEngine engine = this.cachedProcessEngines.containsKey(key)
+            ? this.cachedProcessEngines.get(key)
+            : this.applicationContext.getBean(ProcessEngine.class);
 
-    this.cachedProcessEngines.put(key, engine);
-    this.processEngine = engine;
-  }
+        this.cachedProcessEngines.put(key, engine);
+        this.processEngine = engine;
+    }
 
-  public void setApplicationContext(ApplicationContext applicationContext) {
-    this.applicationContext = applicationContext;
-  }
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
 }

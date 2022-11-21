@@ -26,25 +26,41 @@ import org.activiti.engine.impl.context.Context;
  */
 public class ScriptCondition implements Condition {
 
-  private final String expression;
-  private final String language;
+    private final String expression;
+    private final String language;
 
-  public ScriptCondition(String expression, String language) {
-    this.expression = expression;
-    this.language = language;
-  }
-
-  public boolean evaluate(String sequenceFlowId, DelegateExecution execution) {
-    ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
-
-    Object result = scriptingEngines.evaluate(expression, language, execution);
-    if (result == null) {
-      throw new ActivitiException("condition script returns null: " + expression);
+    public ScriptCondition(String expression, String language) {
+        this.expression = expression;
+        this.language = language;
     }
-    if (!(result instanceof Boolean)) {
-      throw new ActivitiException("condition script returns non-Boolean: " + result + " (" + result.getClass().getName() + ")");
-    }
-    return (Boolean) result;
-  }
 
+    public boolean evaluate(
+        String sequenceFlowId,
+        DelegateExecution execution
+    ) {
+        ScriptingEngines scriptingEngines = Context
+            .getProcessEngineConfiguration()
+            .getScriptingEngines();
+
+        Object result = scriptingEngines.evaluate(
+            expression,
+            language,
+            execution
+        );
+        if (result == null) {
+            throw new ActivitiException(
+                "condition script returns null: " + expression
+            );
+        }
+        if (!(result instanceof Boolean)) {
+            throw new ActivitiException(
+                "condition script returns non-Boolean: " +
+                result +
+                " (" +
+                result.getClass().getName() +
+                ")"
+            );
+        }
+        return (Boolean) result;
+    }
 }

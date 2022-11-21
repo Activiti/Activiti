@@ -15,6 +15,14 @@
  */
 package org.activiti.runtime.api.event.internal;
 
+import static java.util.Collections.singletonList;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+
+import java.util.Optional;
 import org.activiti.api.process.model.events.BPMNTimerExecutedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.runtime.event.impl.BPMNTimerExecutedEventImpl;
@@ -25,15 +33,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
-
-import static java.util.Collections.singletonList;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class TimerExecutedListenerDelegateTest {
@@ -48,7 +47,11 @@ public class TimerExecutedListenerDelegateTest {
 
     @BeforeEach
     public void setUp() {
-        listenerDelegate = new TimerExecutedListenerDelegate(singletonList(listener), converter);
+        listenerDelegate =
+            new TimerExecutedListenerDelegate(
+                singletonList(listener),
+                converter
+            );
     }
 
     @Test
@@ -56,7 +59,8 @@ public class TimerExecutedListenerDelegateTest {
         //given
         ActivitiEntityEvent internalEvent = mock(ActivitiEntityEvent.class);
         BPMNTimerExecutedEventImpl convertedEvent = new BPMNTimerExecutedEventImpl();
-        given(converter.from(internalEvent)).willReturn(Optional.of(convertedEvent));
+        given(converter.from(internalEvent))
+            .willReturn(Optional.of(convertedEvent));
 
         //when
         listenerDelegate.onEvent(internalEvent);

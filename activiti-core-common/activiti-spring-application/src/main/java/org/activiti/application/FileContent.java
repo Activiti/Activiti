@@ -19,10 +19,9 @@ public class FileContent {
 
     private String name;
 
-    private byte [] content;
+    private byte[] content;
 
-    public FileContent(String name,
-                       byte[] content) {
+    public FileContent(String name, byte[] content) {
         this.name = name;
         this.content = content;
     }
@@ -34,5 +33,4 @@ public class FileContent {
     public byte[] getContent() {
         return content;
     }
-
 }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.testing;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,14 +27,15 @@ import org.activiti.engine.test.Deployment;
  */
 public class ActivitiTestCaseTest extends ActivitiTestCase {
 
-  @Deployment
-  public void testSimpleProcess() {
-    runtimeService.startProcessInstanceByKey("simpleProcess");
+    @Deployment
+    public void testSimpleProcess() {
+        runtimeService.startProcessInstanceByKey("simpleProcess");
 
-    Task task = taskService.createTaskQuery().singleResult();
-    assertThat(task.getName()).isEqualTo("My Task");
+        Task task = taskService.createTaskQuery().singleResult();
+        assertThat(task.getName()).isEqualTo("My Task");
 
-    taskService.complete(task.getId());
-    assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
-  }
+        taskService.complete(task.getId());
+        assertThat(runtimeService.createProcessInstanceQuery().count())
+            .isEqualTo(0);
+    }
 }

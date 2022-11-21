@@ -24,20 +24,21 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
  */
 public class SetTaskPriorityCmd extends NeedsActiveTaskCmd<Void> {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected int priority;
+    protected int priority;
 
-  public SetTaskPriorityCmd(String taskId, int priority) {
-    super(taskId);
-    this.priority = priority;
-  }
+    public SetTaskPriorityCmd(String taskId, int priority) {
+        super(taskId);
+        this.priority = priority;
+    }
 
-  protected Void execute(CommandContext commandContext, TaskEntity task) {
-    task.setPriority(priority);
-    commandContext.getHistoryManager().recordTaskPriorityChange(task.getId(), task.getPriority());
-    commandContext.getTaskEntityManager().update(task);
-    return null;
-  }
-
+    protected Void execute(CommandContext commandContext, TaskEntity task) {
+        task.setPriority(priority);
+        commandContext
+            .getHistoryManager()
+            .recordTaskPriorityChange(task.getId(), task.getPriority());
+        commandContext.getTaskEntityManager().update(task);
+        return null;
+    }
 }

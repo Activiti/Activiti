@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.mock;
-
-import org.activiti.engine.api.internal.Internal;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import org.activiti.engine.api.internal.Internal;
 
 /**
 
@@ -28,11 +26,9 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 @Internal
 public @interface MockServiceTask {
+    public String id() default "";
 
-  public String id() default "";
+    public String originalClassName() default "";
 
-  public String originalClassName() default "";
-
-  public String mockedClassName() default "";
-
+    public String mockedClassName() default "";
 }

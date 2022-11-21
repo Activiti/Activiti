@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
@@ -35,92 +34,118 @@ import org.activiti.engine.task.Task;
  */
 public class AddCommentCmd implements Command<Comment> {
 
-  protected String taskId;
-  protected String processInstanceId;
-  protected String type;
-  protected String message;
+    protected String taskId;
+    protected String processInstanceId;
+    protected String type;
+    protected String message;
 
-  public AddCommentCmd(String taskId, String processInstanceId, String message) {
-    this.taskId = taskId;
-    this.processInstanceId = processInstanceId;
-    this.message = message;
-  }
-
-  public AddCommentCmd(String taskId, String processInstanceId, String type, String message) {
-    this.taskId = taskId;
-    this.processInstanceId = processInstanceId;
-    this.type = type;
-    this.message = message;
-  }
-
-  public Comment execute(CommandContext commandContext) {
-
-    TaskEntity task = null;
-    // Validate task
-    if (taskId != null) {
-      task = commandContext.getTaskEntityManager().findById(taskId);
-
-      if (task == null) {
-        throw new ActivitiObjectNotFoundException("Cannot find task with id " + taskId, Task.class);
-      }
-
-      if (task.isSuspended()) {
-        throw new ActivitiException(getSuspendedTaskException());
-      }
+    public AddCommentCmd(
+        String taskId,
+        String processInstanceId,
+        String message
+    ) {
+        this.taskId = taskId;
+        this.processInstanceId = processInstanceId;
+        this.message = message;
     }
 
-    ExecutionEntity execution = null;
-    if (processInstanceId != null) {
-      execution = commandContext.getExecutionEntityManager().findById(processInstanceId);
-
-      if (execution == null) {
-        throw new ActivitiObjectNotFoundException("execution " + processInstanceId + " doesn't exist", Execution.class);
-      }
-
-      if (execution.isSuspended()) {
-        throw new ActivitiException(getSuspendedExceptionMessage());
-      }
+    public AddCommentCmd(
+        String taskId,
+        String processInstanceId,
+        String type,
+        String message
+    ) {
+        this.taskId = taskId;
+        this.processInstanceId = processInstanceId;
+        this.type = type;
+        this.message = message;
     }
 
-    String processDefinitionId = null;
-    if (execution != null) {
-      processDefinitionId = execution.getProcessDefinitionId();
-    } else if (task != null) {
-      processDefinitionId = task.getProcessDefinitionId();
+    public Comment execute(CommandContext commandContext) {
+        TaskEntity task = null;
+        // Validate task
+        if (taskId != null) {
+            task = commandContext.getTaskEntityManager().findById(taskId);
+
+            if (task == null) {
+                throw new ActivitiObjectNotFoundException(
+                    "Cannot find task with id " + taskId,
+                    Task.class
+                );
+            }
+
+            if (task.isSuspended()) {
+                throw new ActivitiException(getSuspendedTaskException());
+            }
+        }
+
+        ExecutionEntity execution = null;
+        if (processInstanceId != null) {
+            execution =
+                commandContext
+                    .getExecutionEntityManager()
+                    .findById(processInstanceId);
+
+            if (execution == null) {
+                throw new ActivitiObjectNotFoundException(
+                    "execution " + processInstanceId + " doesn't exist",
+                    Execution.class
+                );
+            }
+
+            if (execution.isSuspended()) {
+                throw new ActivitiException(getSuspendedExceptionMessage());
+            }
+        }
+
+        String processDefinitionId = null;
+        if (execution != null) {
+            processDefinitionId = execution.getProcessDefinitionId();
+        } else if (task != null) {
+            processDefinitionId = task.getProcessDefinitionId();
+        }
+
+        return executeInternal(commandContext, processDefinitionId);
     }
 
-    return executeInternal(commandContext,processDefinitionId);
-  }
+    protected Comment executeInternal(
+        CommandContext commandContext,
+        String processDefinitionId
+    ) {
+        String userId = Authentication.getAuthenticatedUserId();
+        CommentEntity comment = commandContext
+            .getCommentEntityManager()
+            .create();
+        comment.setUserId(userId);
+        comment.setType((type == null) ? CommentEntity.TYPE_COMMENT : type);
+        comment.setTime(
+            commandContext
+                .getProcessEngineConfiguration()
+                .getClock()
+                .getCurrentTime()
+        );
+        comment.setTaskId(taskId);
+        comment.setProcessInstanceId(processInstanceId);
+        comment.setAction(Event.ACTION_ADD_COMMENT);
 
-  protected Comment executeInternal(CommandContext commandContext,String processDefinitionId){
+        String eventMessage = message.replaceAll("\\s+", " ");
+        if (eventMessage.length() > 163) {
+            eventMessage = eventMessage.substring(0, 160) + "...";
+        }
+        comment.setMessage(eventMessage);
 
-      String userId = Authentication.getAuthenticatedUserId();
-      CommentEntity comment = commandContext.getCommentEntityManager().create();
-      comment.setUserId(userId);
-      comment.setType((type == null) ? CommentEntity.TYPE_COMMENT : type);
-      comment.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
-      comment.setTaskId(taskId);
-      comment.setProcessInstanceId(processInstanceId);
-      comment.setAction(Event.ACTION_ADD_COMMENT);
+        comment.setFullMessage(message);
 
-      String eventMessage = message.replaceAll("\\s+", " ");
-      if (eventMessage.length() > 163) {
-          eventMessage = eventMessage.substring(0, 160) + "...";
-      }
-      comment.setMessage(eventMessage);
+        commandContext.getCommentEntityManager().insert(comment);
 
-      comment.setFullMessage(message);
+        return comment;
+    }
 
-      commandContext.getCommentEntityManager().insert(comment);
+    protected String getSuspendedTaskException() {
+        return "Cannot add a comment to a suspended task";
+    }
 
-      return comment;
-  }
-
-  protected String getSuspendedTaskException() {
-    return "Cannot add a comment to a suspended task";
-  }
-
-  protected String getSuspendedExceptionMessage() {
-    return "Cannot add a comment to a suspended execution";
-  }
+    protected String getSuspendedExceptionMessage() {
+        return "Cannot add a comment to a suspended execution";
+    }
 }

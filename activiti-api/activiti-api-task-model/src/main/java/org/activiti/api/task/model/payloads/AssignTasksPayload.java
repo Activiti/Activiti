@@ -16,10 +16,9 @@
 
 package org.activiti.api.task.model.payloads;
 
-import org.activiti.api.model.shared.Payload;
-
 import java.util.List;
 import java.util.UUID;
+import org.activiti.api.model.shared.Payload;
 
 public class AssignTasksPayload implements Payload {
 
@@ -31,8 +30,7 @@ public class AssignTasksPayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public AssignTasksPayload(List<String> taskIds,
-                              String assignee) {
+    public AssignTasksPayload(List<String> taskIds, String assignee) {
         this();
         this.taskIds = taskIds;
         this.assignee = assignee;

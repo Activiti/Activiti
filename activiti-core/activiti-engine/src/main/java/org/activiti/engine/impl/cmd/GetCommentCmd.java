@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -29,18 +27,18 @@ import org.activiti.engine.task.Comment;
  */
 public class GetCommentCmd implements Command<Comment>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String commentId;
+    private static final long serialVersionUID = 1L;
+    protected String commentId;
 
-  public GetCommentCmd(String commentId) {
-    this.commentId = commentId;
+    public GetCommentCmd(String commentId) {
+        this.commentId = commentId;
 
-    if (commentId == null) {
-      throw new ActivitiIllegalArgumentException("commentId is null");
+        if (commentId == null) {
+            throw new ActivitiIllegalArgumentException("commentId is null");
+        }
     }
-  }
 
-  public Comment execute(CommandContext commandContext) {
-    return commandContext.getCommentEntityManager().findComment(commentId);
-  }
+    public Comment execute(CommandContext commandContext) {
+        return commandContext.getCommentEntityManager().findComment(commentId);
+    }
 }

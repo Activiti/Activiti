@@ -15,6 +15,12 @@
  */
 package org.activiti.runtime.api.event.internal;
 
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+
+import java.util.Optional;
 import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.runtime.event.impl.BPMNSignalReceivedEventImpl;
@@ -26,13 +32,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
-
-import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class SignalReceivedListenerDelegateTest {
@@ -50,15 +49,22 @@ public class SignalReceivedListenerDelegateTest {
 
     @BeforeEach
     public void setUp() {
-        listenerDelegate = new SignalReceivedListenerDelegate(asList(firstListener, secondListener), converter);
+        listenerDelegate =
+            new SignalReceivedListenerDelegate(
+                asList(firstListener, secondListener),
+                converter
+            );
     }
 
     @Test
     public void onEventShouldCallOnAvailableListenersWhenIsASignalEvent() {
         //given
-        ActivitiSignalEventImpl internalEvent = new ActivitiSignalEventImpl(ActivitiEventType.ACTIVITY_SIGNALED);
+        ActivitiSignalEventImpl internalEvent = new ActivitiSignalEventImpl(
+            ActivitiEventType.ACTIVITY_SIGNALED
+        );
         BPMNSignalReceivedEventImpl signalReceivedEvent = new BPMNSignalReceivedEventImpl();
-        given(converter.from(internalEvent)).willReturn(Optional.of(signalReceivedEvent));
+        given(converter.from(internalEvent))
+            .willReturn(Optional.of(signalReceivedEvent));
 
         //when
         listenerDelegate.onEvent(internalEvent);

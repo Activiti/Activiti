@@ -16,7 +16,6 @@
 package org.activiti.test.operations;
 
 import java.util.List;
-
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
 import org.activiti.api.task.model.payloads.CompleteTaskPayload;
@@ -34,9 +33,11 @@ public class TaskRuntimeOperations implements TaskOperations {
 
     private List<TaskSource> taskSources;
 
-    public TaskRuntimeOperations(TaskRuntime taskRuntime,
-                                 EventSource eventSource,
-                                 List<TaskSource> taskSources) {
+    public TaskRuntimeOperations(
+        TaskRuntime taskRuntime,
+        EventSource eventSource,
+        List<TaskSource> taskSources
+    ) {
         this.taskRuntime = taskRuntime;
         this.eventSource = eventSource;
         this.taskSources = taskSources;
@@ -49,9 +50,7 @@ public class TaskRuntimeOperations implements TaskOperations {
     }
 
     private TaskAssertions buildTaskAssertions(Task task) {
-        return new TaskAssertionsImpl(task,
-                                      taskSources,
-                                      eventSource);
+        return new TaskAssertionsImpl(task, taskSources, eventSource);
     }
 
     @Override

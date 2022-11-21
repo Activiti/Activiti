@@ -16,12 +16,11 @@
 
 package org.activiti.spring.test.transaction;
 
+import javax.sql.DataSource;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.sql.DataSource;
 
 public class UserBean {
 
@@ -31,7 +30,11 @@ public class UserBean {
 
     private final DataSource dataSource;
 
-    public UserBean(final RuntimeService runtimeService, final TaskService taskService, final DataSource dataSource) {
+    public UserBean(
+        final RuntimeService runtimeService,
+        final TaskService taskService,
+        final DataSource dataSource
+    ) {
         this.runtimeService = runtimeService;
         this.taskService = taskService;
         this.dataSource = dataSource;
@@ -47,15 +50,15 @@ public class UserBean {
 
     @Transactional
     public void completeTask(String taskId) {
-
         // First insert a record in the MY_TABLE table
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        int nrOfRows = jdbcTemplate.update("insert into MY_TABLE values ('test');");
+        int nrOfRows = jdbcTemplate.update(
+            "insert into MY_TABLE values ('test');"
+        );
         if (nrOfRows != 1) {
             throw new RuntimeException("Insert into MY_TABLE failed");
         }
 
         taskService.complete(taskId);
     }
-
 }

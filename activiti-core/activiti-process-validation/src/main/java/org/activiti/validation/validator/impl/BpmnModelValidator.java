@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.validation.ValidationError;
@@ -34,83 +33,157 @@ import org.activiti.validation.validator.ValidatorImpl;
  */
 public class BpmnModelValidator extends ValidatorImpl {
 
-  @Override
-  public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
-
-    List<Process> processesDuplicated = getProcessesWithSameId(bpmnModel.getProcesses());
-    if(! processesDuplicated.isEmpty() ) {
-        addError(errors, Problems.PROCESS_DEFINITION_ID_NOT_UNIQUE, processesDuplicated.get(0),
-            "The id of the process definition must be unique");
-    }
-
-    // If all process definitions of this bpmnModel are not executable, raise an error
-    boolean isAtLeastOneExecutable = validateAtLeastOneExecutable(bpmnModel, errors);
-
-    // If at least one process definition is executable, show a warning for each of the none-executables
-    if (isAtLeastOneExecutable) {
-      for (Process process : bpmnModel.getProcesses()) {
-        if (!process.isExecutable()) {
-          addWarning(errors, Problems.PROCESS_DEFINITION_NOT_EXECUTABLE, process, process,
-              "Process definition is not executable. Please verify that this is intentional.");
+    @Override
+    public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
+        List<Process> processesDuplicated = getProcessesWithSameId(
+            bpmnModel.getProcesses()
+        );
+        if (!processesDuplicated.isEmpty()) {
+            addError(
+                errors,
+                Problems.PROCESS_DEFINITION_ID_NOT_UNIQUE,
+                processesDuplicated.get(0),
+                "The id of the process definition must be unique"
+            );
         }
-        handleProcessConstraints(bpmnModel, process, errors);
-      }
-    }
-    handleBPMNModelConstraints(bpmnModel, errors);
-  }
 
-  protected void handleProcessConstraints(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-    if (process.getId() != null && process.getId().length() > Constraints.PROCESS_DEFINITION_ID_MAX_LENGTH) {
-      addError(errors, Problems.PROCESS_DEFINITION_ID_TOO_LONG, process,
-          "The id of the process definition must not contain more than " + Constraints.PROCESS_DEFINITION_ID_MAX_LENGTH + " characters");
-    }
-    if (process.getName() != null && process.getName().length() > Constraints.PROCESS_DEFINITION_NAME_MAX_LENGTH) {
-      addError(errors, Problems.PROCESS_DEFINITION_NAME_TOO_LONG, process,
-          "The name of the process definition must not contain more than " + Constraints.PROCESS_DEFINITION_NAME_MAX_LENGTH + " characters");
-    }
-    if (process.getDocumentation() != null && process.getDocumentation().length() > Constraints.PROCESS_DEFINITION_DOCUMENTATION_MAX_LENGTH) {
-      addError(errors, Problems.PROCESS_DEFINITION_DOCUMENTATION_TOO_LONG, process,
-          "The documentation of the process definition must not contain more than " + Constraints.PROCESS_DEFINITION_DOCUMENTATION_MAX_LENGTH + " characters");
-    }
-  }
+        // If all process definitions of this bpmnModel are not executable, raise an error
+        boolean isAtLeastOneExecutable = validateAtLeastOneExecutable(
+            bpmnModel,
+            errors
+        );
 
-  protected void handleBPMNModelConstraints(BpmnModel bpmnModel, List<ValidationError> errors) {
-    if (bpmnModel.getTargetNamespace() != null && bpmnModel.getTargetNamespace().length() > Constraints.BPMN_MODEL_TARGET_NAMESPACE_MAX_LENGTH) {
-      addError(errors, Problems.BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG,
-          "The targetNamespace of the bpmn model must not contain more than " + Constraints.BPMN_MODEL_TARGET_NAMESPACE_MAX_LENGTH + " characters");
-    }
-  }
-
-	/**
-	 * Returns 'true' if at least one process definition in the {@link BpmnModel} is executable.
-	 */
-  protected boolean validateAtLeastOneExecutable(BpmnModel bpmnModel, List<ValidationError> errors) {
-	  int nrOfExecutableDefinitions = 0;
-		for (Process process : bpmnModel.getProcesses()) {
-			if (process.isExecutable()) {
-				nrOfExecutableDefinitions++;
-			}
-		}
-
-		if (nrOfExecutableDefinitions == 0) {
-			addError(errors, Problems.ALL_PROCESS_DEFINITIONS_NOT_EXECUTABLE,
-					"All process definition are set to be non-executable (property 'isExecutable' on process). This is not allowed.");
-		}
-
-		return nrOfExecutableDefinitions > 0;
-  }
-
-  protected List<Process> getProcessesWithSameId(final List<Process> processes) {
-            List<Process> filteredProcesses = processes.stream()
-                .filter(process -> process.getName() != null).collect(Collectors.toList());
-          return getDuplicatesMap(filteredProcesses).values().stream()
-              .filter(duplicates -> duplicates.size() > 1)
-              .flatMap(Collection::stream)
-              .collect(Collectors.toList());
-  }
-
-  private static Map<String, List<Process>> getDuplicatesMap(List<Process> processes) {
-        return processes.stream().collect(Collectors.groupingBy(Process::getId));
+        // If at least one process definition is executable, show a warning for each of the none-executables
+        if (isAtLeastOneExecutable) {
+            for (Process process : bpmnModel.getProcesses()) {
+                if (!process.isExecutable()) {
+                    addWarning(
+                        errors,
+                        Problems.PROCESS_DEFINITION_NOT_EXECUTABLE,
+                        process,
+                        process,
+                        "Process definition is not executable. Please verify that this is intentional."
+                    );
+                }
+                handleProcessConstraints(bpmnModel, process, errors);
+            }
+        }
+        handleBPMNModelConstraints(bpmnModel, errors);
     }
 
+    protected void handleProcessConstraints(
+        BpmnModel bpmnModel,
+        Process process,
+        List<ValidationError> errors
+    ) {
+        if (
+            process.getId() != null &&
+            process.getId().length() >
+            Constraints.PROCESS_DEFINITION_ID_MAX_LENGTH
+        ) {
+            addError(
+                errors,
+                Problems.PROCESS_DEFINITION_ID_TOO_LONG,
+                process,
+                "The id of the process definition must not contain more than " +
+                Constraints.PROCESS_DEFINITION_ID_MAX_LENGTH +
+                " characters"
+            );
+        }
+        if (
+            process.getName() != null &&
+            process.getName().length() >
+            Constraints.PROCESS_DEFINITION_NAME_MAX_LENGTH
+        ) {
+            addError(
+                errors,
+                Problems.PROCESS_DEFINITION_NAME_TOO_LONG,
+                process,
+                "The name of the process definition must not contain more than " +
+                Constraints.PROCESS_DEFINITION_NAME_MAX_LENGTH +
+                " characters"
+            );
+        }
+        if (
+            process.getDocumentation() != null &&
+            process.getDocumentation().length() >
+            Constraints.PROCESS_DEFINITION_DOCUMENTATION_MAX_LENGTH
+        ) {
+            addError(
+                errors,
+                Problems.PROCESS_DEFINITION_DOCUMENTATION_TOO_LONG,
+                process,
+                "The documentation of the process definition must not contain more than " +
+                Constraints.PROCESS_DEFINITION_DOCUMENTATION_MAX_LENGTH +
+                " characters"
+            );
+        }
+    }
+
+    protected void handleBPMNModelConstraints(
+        BpmnModel bpmnModel,
+        List<ValidationError> errors
+    ) {
+        if (
+            bpmnModel.getTargetNamespace() != null &&
+            bpmnModel.getTargetNamespace().length() >
+            Constraints.BPMN_MODEL_TARGET_NAMESPACE_MAX_LENGTH
+        ) {
+            addError(
+                errors,
+                Problems.BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG,
+                "The targetNamespace of the bpmn model must not contain more than " +
+                Constraints.BPMN_MODEL_TARGET_NAMESPACE_MAX_LENGTH +
+                " characters"
+            );
+        }
+    }
+
+    /**
+     * Returns 'true' if at least one process definition in the {@link BpmnModel} is executable.
+     */
+    protected boolean validateAtLeastOneExecutable(
+        BpmnModel bpmnModel,
+        List<ValidationError> errors
+    ) {
+        int nrOfExecutableDefinitions = 0;
+        for (Process process : bpmnModel.getProcesses()) {
+            if (process.isExecutable()) {
+                nrOfExecutableDefinitions++;
+            }
+        }
+
+        if (nrOfExecutableDefinitions == 0) {
+            addError(
+                errors,
+                Problems.ALL_PROCESS_DEFINITIONS_NOT_EXECUTABLE,
+                "All process definition are set to be non-executable (property 'isExecutable' on process). This is not allowed."
+            );
+        }
+
+        return nrOfExecutableDefinitions > 0;
+    }
+
+    protected List<Process> getProcessesWithSameId(
+        final List<Process> processes
+    ) {
+        List<Process> filteredProcesses = processes
+            .stream()
+            .filter(process -> process.getName() != null)
+            .collect(Collectors.toList());
+        return getDuplicatesMap(filteredProcesses)
+            .values()
+            .stream()
+            .filter(duplicates -> duplicates.size() > 1)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
+    }
+
+    private static Map<String, List<Process>> getDuplicatesMap(
+        List<Process> processes
+    ) {
+        return processes
+            .stream()
+            .collect(Collectors.groupingBy(Process::getId));
+    }
 }

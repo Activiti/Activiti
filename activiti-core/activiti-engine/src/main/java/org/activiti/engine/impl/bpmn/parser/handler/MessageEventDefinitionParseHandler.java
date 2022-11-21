@@ -28,34 +28,52 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
 
  */
-public class MessageEventDefinitionParseHandler extends AbstractBpmnParseHandler<MessageEventDefinition> {
+public class MessageEventDefinitionParseHandler
+    extends AbstractBpmnParseHandler<MessageEventDefinition> {
 
-  public Class<? extends BaseElement> getHandledType() {
-    return MessageEventDefinition.class;
-  }
-
-  protected void executeParse(BpmnParse bpmnParse, MessageEventDefinition messageDefinition) {
-    BpmnModel bpmnModel = bpmnParse.getBpmnModel();
-    String messageRef = messageDefinition.getMessageRef();
-    if (bpmnModel.containsMessageId(messageRef)) {
-      Message message = bpmnModel.getMessage(messageRef);
-      messageDefinition.setMessageRef(message.getName());
-      messageDefinition.setExtensionElements(message.getExtensionElements());
+    public Class<? extends BaseElement> getHandledType() {
+        return MessageEventDefinition.class;
     }
 
-    if (bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent) {
-      IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) bpmnParse.getCurrentFlowElement();
-      intermediateCatchEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateCatchMessageEventActivityBehavior(intermediateCatchEvent, messageDefinition));
+    protected void executeParse(
+        BpmnParse bpmnParse,
+        MessageEventDefinition messageDefinition
+    ) {
+        BpmnModel bpmnModel = bpmnParse.getBpmnModel();
+        String messageRef = messageDefinition.getMessageRef();
+        if (bpmnModel.containsMessageId(messageRef)) {
+            Message message = bpmnModel.getMessage(messageRef);
+            messageDefinition.setMessageRef(message.getName());
+            messageDefinition.setExtensionElements(
+                message.getExtensionElements()
+            );
+        }
 
-    } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
-      BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
-      boundaryEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryMessageEventActivityBehavior(boundaryEvent, messageDefinition, boundaryEvent.isCancelActivity()));
+        if (
+            bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent
+        ) {
+            IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) bpmnParse.getCurrentFlowElement();
+            intermediateCatchEvent.setBehavior(
+                bpmnParse
+                    .getActivityBehaviorFactory()
+                    .createIntermediateCatchMessageEventActivityBehavior(
+                        intermediateCatchEvent,
+                        messageDefinition
+                    )
+            );
+        } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
+            BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
+            boundaryEvent.setBehavior(
+                bpmnParse
+                    .getActivityBehaviorFactory()
+                    .createBoundaryMessageEventActivityBehavior(
+                        boundaryEvent,
+                        messageDefinition,
+                        boundaryEvent.isCancelActivity()
+                    )
+            );
+        } else {
+            // What to do here?
+        }
     }
-
-    else {
-      // What to do here?
-    }
-
-  }
-
 }

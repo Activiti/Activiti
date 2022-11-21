@@ -30,8 +30,11 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
     private final IntegrationContextBuilder integrationContextBuilder;
     private final VariablesPropagator variablesPropagator;
 
-    public DefaultServiceTaskBehavior(ApplicationContext applicationContext,
-        IntegrationContextBuilder integrationContextBuilder, VariablesPropagator variablesPropagator) {
+    public DefaultServiceTaskBehavior(
+        ApplicationContext applicationContext,
+        IntegrationContextBuilder integrationContextBuilder,
+        VariablesPropagator variablesPropagator
+    ) {
         this.applicationContext = applicationContext;
         this.integrationContextBuilder = integrationContextBuilder;
         this.variablesPropagator = variablesPropagator;
@@ -44,27 +47,38 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
     @Override
     public void execute(DelegateExecution execution) {
         Connector connector = getConnector(getImplementation(execution));
-        IntegrationContext integrationContext = connector.apply(integrationContextBuilder.from(execution));
+        IntegrationContext integrationContext = connector.apply(
+            integrationContextBuilder.from(execution)
+        );
 
-        variablesPropagator.propagate(execution, integrationContext.getOutBoundVariables());
+        variablesPropagator.propagate(
+            execution,
+            integrationContext.getOutBoundVariables()
+        );
         leave(execution);
     }
 
     private String getImplementation(DelegateExecution execution) {
-        return ((ServiceTask) execution.getCurrentFlowElement()).getImplementation();
+        return (
+            (ServiceTask) execution.getCurrentFlowElement()
+        ).getImplementation();
     }
 
     private Connector getConnector(String implementation) {
-        return applicationContext.getBean(implementation,
-                                          Connector.class);
+        return applicationContext.getBean(implementation, Connector.class);
     }
 
     private String getServiceTaskImplementation(DelegateExecution execution) {
-        return ((ServiceTask) execution.getCurrentFlowElement()).getImplementation();
+        return (
+            (ServiceTask) execution.getCurrentFlowElement()
+        ).getImplementation();
     }
 
     public boolean hasConnectorBean(DelegateExecution execution) {
         String implementation = getServiceTaskImplementation(execution);
-        return applicationContext.containsBean(implementation) && applicationContext.getBean(implementation) instanceof Connector;
+        return (
+            applicationContext.containsBean(implementation) &&
+            applicationContext.getBean(implementation) instanceof Connector
+        );
     }
 }

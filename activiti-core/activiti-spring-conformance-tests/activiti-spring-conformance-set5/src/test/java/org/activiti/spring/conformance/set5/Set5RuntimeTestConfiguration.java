@@ -25,7 +25,6 @@ public class Set5RuntimeTestConfiguration {
     @Bean(name = "connector-a")
     public Connector connectorA() {
         return integrationContext -> {
-
             return integrationContext;
         };
     }
@@ -33,10 +32,7 @@ public class Set5RuntimeTestConfiguration {
     @Bean(name = "connector-b")
     public Connector connectorB() {
         return integrationContext -> {
-
             return integrationContext;
         };
     }
-
-
 }

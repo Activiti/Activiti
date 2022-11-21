@@ -18,7 +18,6 @@ package org.activiti.engine.impl.cfg.multitenant;
 
 import java.util.Collection;
 
-
 /**
  * Interface to be implemented when using the {@link MultiSchemaMultiTenantProcessEngineConfiguration} and used
  * to set/get the current user and tenant identifier.
@@ -31,25 +30,23 @@ import java.util.Collection;
  */
 @Deprecated
 public interface TenantInfoHolder {
+    /**
+     * Returns all known tenant identifiers.
+     */
+    Collection<String> getAllTenants();
 
-  /**
-   * Returns all known tenant identifiers.
-   */
-  Collection<String> getAllTenants();
+    /**
+     * Sets the current tenant identifier.
+     */
+    void setCurrentTenantId(String tenantid);
 
-  /**
-   * Sets the current tenant identifier.
-   */
-  void setCurrentTenantId(String tenantid);
+    /**
+     * Returns the current tenant identifier.
+     */
+    String getCurrentTenantId();
 
-  /**
-   * Returns the current tenant identifier.
-   */
-  String getCurrentTenantId();
-
-  /**
-   * Clears the current tenant identifier settings.
-   */
-  void clearCurrentTenantId();
-
+    /**
+     * Clears the current tenant identifier settings.
+     */
+    void clearCurrentTenantId();
 }

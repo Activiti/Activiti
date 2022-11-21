@@ -15,9 +15,8 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import org.activiti.api.process.model.VariableDefinition;
-
 import java.util.Objects;
+import org.activiti.api.process.model.VariableDefinition;
 
 public class VariableDefinitionImpl implements VariableDefinition {
 
@@ -107,33 +106,59 @@ public class VariableDefinitionImpl implements VariableDefinition {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         VariableDefinitionImpl that = (VariableDefinitionImpl) o;
-        return required == that.required &&
+        return (
+            required == that.required &&
             Objects.equals(display, that.display) &&
             Objects.equals(id, that.id) &&
             Objects.equals(name, that.name) &&
             Objects.equals(description, that.description) &&
             Objects.equals(type, that.type) &&
             Objects.equals(displayName, that.displayName) &&
-            Objects.equals(analytics, that.analytics);
+            Objects.equals(analytics, that.analytics)
+        );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, type, required, display, displayName, analytics);
+        return Objects.hash(
+            id,
+            name,
+            description,
+            type,
+            required,
+            display,
+            displayName,
+            analytics
+        );
     }
 
     @Override
     public String toString() {
-        return "VariableDefinitionImpl{" +
-            "id='" + id + '\'' +
-            ", name='" + name + '\'' +
-            ", description='" + description + '\'' +
-            ", type='" + type + '\'' +
-            ", required=" + required +
-            ", display=" + display +
-            ", displayName='" + displayName + '\'' +
-            ", analytics='" + analytics + '\'' +
-            '}';
+        return (
+            "VariableDefinitionImpl{" +
+            "id='" +
+            id +
+            '\'' +
+            ", name='" +
+            name +
+            '\'' +
+            ", description='" +
+            description +
+            '\'' +
+            ", type='" +
+            type +
+            '\'' +
+            ", required=" +
+            required +
+            ", display=" +
+            display +
+            ", displayName='" +
+            displayName +
+            '\'' +
+            ", analytics='" +
+            analytics +
+            '\'' +
+            '}'
+        );
     }
-
 }

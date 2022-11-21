@@ -19,15 +19,16 @@ public class OperationScopeImpl implements OperationScope {
 
     private String processInstanceId;
 
-    private String  taskId;
+    private String taskId;
 
-    public OperationScopeImpl(String processInstanceId,
-                              String taskId) {
+    public OperationScopeImpl(String processInstanceId, String taskId) {
         this.processInstanceId = processInstanceId;
         this.taskId = taskId;
     }
 
-    public static OperationScope processInstanceScope(String processInstanceId) {
+    public static OperationScope processInstanceScope(
+        String processInstanceId
+    ) {
         return new OperationScopeImpl(processInstanceId, null);
     }
 
@@ -35,7 +36,10 @@ public class OperationScopeImpl implements OperationScope {
         return new OperationScopeImpl(null, taskId);
     }
 
-    public static OperationScope scope(String processInstanceId, String taskId) {
+    public static OperationScope scope(
+        String processInstanceId,
+        String taskId
+    ) {
         return new OperationScopeImpl(processInstanceId, taskId);
     }
 
@@ -56,5 +60,4 @@ public class OperationScopeImpl implements OperationScope {
     public String getTaskId() {
         return taskId;
     }
-
 }

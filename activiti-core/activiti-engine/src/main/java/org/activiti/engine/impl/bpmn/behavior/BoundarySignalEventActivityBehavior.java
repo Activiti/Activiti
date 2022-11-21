@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
@@ -35,59 +34,76 @@ import org.apache.commons.lang3.StringUtils;
 
 
  */
-public class BoundarySignalEventActivityBehavior extends BoundaryEventActivityBehavior {
+public class BoundarySignalEventActivityBehavior
+    extends BoundaryEventActivityBehavior {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected SignalEventDefinition signalEventDefinition;
-  protected Signal signal;
+    protected SignalEventDefinition signalEventDefinition;
+    protected Signal signal;
 
-  public BoundarySignalEventActivityBehavior(SignalEventDefinition signalEventDefinition, Signal signal, boolean interrupting) {
-    super(interrupting);
-    this.signalEventDefinition = signalEventDefinition;
-    this.signal = signal;
-  }
-
-  @Override
-  public void execute(DelegateExecution execution) {
-    CommandContext commandContext = Context.getCommandContext();
-    ExecutionEntity executionEntity = (ExecutionEntity) execution;
-
-    String signalName = null;
-    if (StringUtils.isNotEmpty(signalEventDefinition.getSignalRef())) {
-      signalName = signalEventDefinition.getSignalRef();
-    } else {
-      Expression signalExpression = commandContext.getProcessEngineConfiguration().getExpressionManager()
-          .createExpression(signalEventDefinition.getSignalExpression());
-      signalName = signalExpression.getValue(execution).toString();
+    public BoundarySignalEventActivityBehavior(
+        SignalEventDefinition signalEventDefinition,
+        Signal signal,
+        boolean interrupting
+    ) {
+        super(interrupting);
+        this.signalEventDefinition = signalEventDefinition;
+        this.signal = signal;
     }
 
-    commandContext.getEventSubscriptionEntityManager().insertSignalEvent(signalName, signal, executionEntity);
-  }
+    @Override
+    public void execute(DelegateExecution execution) {
+        CommandContext commandContext = Context.getCommandContext();
+        ExecutionEntity executionEntity = (ExecutionEntity) execution;
 
-  @Override
-  public void trigger(DelegateExecution execution, String triggerName, Object triggerData) {
-    ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
-
-    if (boundaryEvent.isCancelActivity()) {
-      String eventName = null;
-      if (signal != null) {
-        eventName = signal.getName();
-      } else {
-        eventName = signalEventDefinition.getSignalRef();
-      }
-
-      EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
-      List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
-      for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
-        if (eventSubscription instanceof SignalEventSubscriptionEntity && eventSubscription.getEventName().equals(eventName)) {
-
-          eventSubscriptionEntityManager.delete(eventSubscription);
+        String signalName = null;
+        if (StringUtils.isNotEmpty(signalEventDefinition.getSignalRef())) {
+            signalName = signalEventDefinition.getSignalRef();
+        } else {
+            Expression signalExpression = commandContext
+                .getProcessEngineConfiguration()
+                .getExpressionManager()
+                .createExpression(signalEventDefinition.getSignalExpression());
+            signalName = signalExpression.getValue(execution).toString();
         }
-      }
+
+        commandContext
+            .getEventSubscriptionEntityManager()
+            .insertSignalEvent(signalName, signal, executionEntity);
     }
 
-    super.trigger(executionEntity, triggerName, triggerData);
-  }
+    @Override
+    public void trigger(
+        DelegateExecution execution,
+        String triggerName,
+        Object triggerData
+    ) {
+        ExecutionEntity executionEntity = (ExecutionEntity) execution;
+        BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
+
+        if (boundaryEvent.isCancelActivity()) {
+            String eventName = null;
+            if (signal != null) {
+                eventName = signal.getName();
+            } else {
+                eventName = signalEventDefinition.getSignalRef();
+            }
+
+            EventSubscriptionEntityManager eventSubscriptionEntityManager = Context
+                .getCommandContext()
+                .getEventSubscriptionEntityManager();
+            List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
+            for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
+                if (
+                    eventSubscription instanceof SignalEventSubscriptionEntity &&
+                    eventSubscription.getEventName().equals(eventName)
+                ) {
+                    eventSubscriptionEntityManager.delete(eventSubscription);
+                }
+            }
+        }
+
+        super.trigger(executionEntity, triggerName, triggerData);
+    }
 }

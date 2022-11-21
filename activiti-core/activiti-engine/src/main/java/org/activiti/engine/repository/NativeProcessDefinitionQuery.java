@@ -23,6 +23,5 @@ import org.activiti.engine.query.NativeQuery;
  *
  */
 @Internal
-public interface NativeProcessDefinitionQuery extends NativeQuery<NativeProcessDefinitionQuery, ProcessDefinition> {
-
-}
+public interface NativeProcessDefinitionQuery
+    extends NativeQuery<NativeProcessDefinitionQuery, ProcessDefinition> {}

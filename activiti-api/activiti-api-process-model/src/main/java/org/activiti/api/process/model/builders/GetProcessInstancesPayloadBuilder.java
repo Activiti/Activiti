@@ -17,7 +17,6 @@ package org.activiti.api.process.model.builders;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
 
 public class GetProcessInstancesPayloadBuilder {
@@ -28,18 +27,23 @@ public class GetProcessInstancesPayloadBuilder {
     private boolean activeOnly = false;
     private String parentProcessInstanceId;
 
-
-    public GetProcessInstancesPayloadBuilder withBusinessKey(String businessKey) {
+    public GetProcessInstancesPayloadBuilder withBusinessKey(
+        String businessKey
+    ) {
         this.businessKey = businessKey;
         return this;
     }
 
-    public GetProcessInstancesPayloadBuilder withProcessDefinitionKeys(Set<String> processDefinitionKeys) {
+    public GetProcessInstancesPayloadBuilder withProcessDefinitionKeys(
+        Set<String> processDefinitionKeys
+    ) {
         this.processDefinitionKeys = processDefinitionKeys;
         return this;
     }
 
-    public GetProcessInstancesPayloadBuilder withProcessDefinitionKey(String processDefinitionKey) {
+    public GetProcessInstancesPayloadBuilder withProcessDefinitionKey(
+        String processDefinitionKey
+    ) {
         if (processDefinitionKeys == null) {
             processDefinitionKeys = new HashSet<>();
         }
@@ -57,19 +61,24 @@ public class GetProcessInstancesPayloadBuilder {
         return this;
     }
 
-    public GetProcessInstancesPayloadBuilder withParentProcessInstanceId(String parentProcessInstanceId) {
+    public GetProcessInstancesPayloadBuilder withParentProcessInstanceId(
+        String parentProcessInstanceId
+    ) {
         this.parentProcessInstanceId = parentProcessInstanceId;
         return this;
     }
 
-
     public GetProcessInstancesPayload build() {
         GetProcessInstancesPayload getProcessInstancesPayload = new GetProcessInstancesPayload();
         getProcessInstancesPayload.setBusinessKey(businessKey);
-        getProcessInstancesPayload.setProcessDefinitionKeys(processDefinitionKeys);
+        getProcessInstancesPayload.setProcessDefinitionKeys(
+            processDefinitionKeys
+        );
         getProcessInstancesPayload.setActiveOnly(activeOnly);
         getProcessInstancesPayload.setSuspendedOnly(suspendedOnly);
-        getProcessInstancesPayload.setParentProcessInstanceId(parentProcessInstanceId);
+        getProcessInstancesPayload.setParentProcessInstanceId(
+            parentProcessInstanceId
+        );
         return getProcessInstancesPayload;
     }
 }

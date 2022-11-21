@@ -16,7 +16,6 @@
 package org.activiti.api.runtime.model.impl;
 
 import java.util.List;
-
 import org.activiti.api.process.model.ProcessDefinitionMeta;
 
 public class ProcessDefinitionMetaImpl implements ProcessDefinitionMeta {
@@ -26,8 +25,7 @@ public class ProcessDefinitionMetaImpl implements ProcessDefinitionMeta {
     private List<String> groupIds;
     private List<String> connectorsIds;
 
-    public ProcessDefinitionMetaImpl() {
-    }
+    public ProcessDefinitionMetaImpl() {}
 
     public ProcessDefinitionMetaImpl(String processDefinitionKey) {
         this.processDefinitionKey = processDefinitionKey;

@@ -18,9 +18,7 @@ package org.activiti.engine.impl.el.variable;
 import org.activiti.engine.delegate.VariableScope;
 
 public interface VariableScopeItemELResolver {
-
     boolean canResolve(String property, VariableScope variableScope);
 
     Object resolve(String property, VariableScope variableScope);
-
 }

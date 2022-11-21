@@ -17,42 +17,51 @@
 package org.activiti.spring.test.fieldinjection;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.DelegateHelper;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
-import org.activiti.engine.delegate.DelegateHelper;
 
 /**
 
  */
 public class SingletonDelegateExpressionBean implements JavaDelegate {
 
-  public static AtomicInteger INSTANCE_COUNT = new AtomicInteger(0);
+    public static AtomicInteger INSTANCE_COUNT = new AtomicInteger(0);
 
-  public SingletonDelegateExpressionBean() {
-    INSTANCE_COUNT.incrementAndGet();
-  }
-
-  @Override
-  public void execute(DelegateExecution execution) {
-
-    // just a quick check to avoid creating a specific test for it
-    int nrOfFieldExtensions = DelegateHelper.getFields(execution).size();
-    if (nrOfFieldExtensions != 3) {
-      throw new RuntimeException("Error: 3 field extensions expected, but was " + nrOfFieldExtensions);
+    public SingletonDelegateExpressionBean() {
+        INSTANCE_COUNT.incrementAndGet();
     }
 
-    Expression fieldAExpression = DelegateHelper.getFieldExpression(execution, "fieldA");
-    Number fieldA = (Number) fieldAExpression.getValue(execution);
+    @Override
+    public void execute(DelegateExecution execution) {
+        // just a quick check to avoid creating a specific test for it
+        int nrOfFieldExtensions = DelegateHelper.getFields(execution).size();
+        if (nrOfFieldExtensions != 3) {
+            throw new RuntimeException(
+                "Error: 3 field extensions expected, but was " +
+                nrOfFieldExtensions
+            );
+        }
 
-    Expression fieldBExpression = DelegateHelper.getFieldExpression(execution, "fieldB");
-    Number fieldB = (Number) fieldBExpression.getValue(execution);
+        Expression fieldAExpression = DelegateHelper.getFieldExpression(
+            execution,
+            "fieldA"
+        );
+        Number fieldA = (Number) fieldAExpression.getValue(execution);
 
-    int result = fieldA.intValue() + fieldB.intValue();
+        Expression fieldBExpression = DelegateHelper.getFieldExpression(
+            execution,
+            "fieldB"
+        );
+        Number fieldB = (Number) fieldBExpression.getValue(execution);
 
-    String resultVariableName = DelegateHelper.getFieldExpression(execution, "resultVariableName").getValue(execution).toString();
-    execution.setVariable(resultVariableName, result);
-  }
+        int result = fieldA.intValue() + fieldB.intValue();
 
+        String resultVariableName = DelegateHelper
+            .getFieldExpression(execution, "resultVariableName")
+            .getValue(execution)
+            .toString();
+        execution.setVariable(resultVariableName, result);
+    }
 }

@@ -21,11 +21,10 @@ import java.util.TimeZone;
 
 public class TimeZoneUtil {
 
-  public static Calendar convertToTimeZone(Calendar time, TimeZone timeZone) {
-    Calendar foreignTime = new GregorianCalendar(timeZone);
-    foreignTime.setTimeInMillis(time.getTimeInMillis());
+    public static Calendar convertToTimeZone(Calendar time, TimeZone timeZone) {
+        Calendar foreignTime = new GregorianCalendar(timeZone);
+        foreignTime.setTimeInMillis(time.getTimeInMillis());
 
-    return foreignTime;
-  }
-
+        return foreignTime;
+    }
 }

@@ -26,30 +26,41 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
 
  */
-public class CompensateEventDefinitionParseHandler extends AbstractBpmnParseHandler<CompensateEventDefinition> {
+public class CompensateEventDefinitionParseHandler
+    extends AbstractBpmnParseHandler<CompensateEventDefinition> {
 
-  public Class<? extends BaseElement> getHandledType() {
-    return CompensateEventDefinition.class;
-  }
-
-  protected void executeParse(BpmnParse bpmnParse, CompensateEventDefinition eventDefinition) {
-
-    if (bpmnParse.getCurrentFlowElement() instanceof ThrowEvent) {
-      ThrowEvent throwEvent = (ThrowEvent) bpmnParse.getCurrentFlowElement();
-      throwEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowCompensationEventActivityBehavior(
-          throwEvent, eventDefinition));
-
-    } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
-      BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
-      boundaryEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryCompensateEventActivityBehavior(boundaryEvent,
-          eventDefinition, boundaryEvent.isCancelActivity()));
-
-    } else {
-
-      // What to do?
-
+    public Class<? extends BaseElement> getHandledType() {
+        return CompensateEventDefinition.class;
     }
 
-  }
+    protected void executeParse(
+        BpmnParse bpmnParse,
+        CompensateEventDefinition eventDefinition
+    ) {
+        if (bpmnParse.getCurrentFlowElement() instanceof ThrowEvent) {
+            ThrowEvent throwEvent = (ThrowEvent) bpmnParse.getCurrentFlowElement();
+            throwEvent.setBehavior(
+                bpmnParse
+                    .getActivityBehaviorFactory()
+                    .createIntermediateThrowCompensationEventActivityBehavior(
+                        throwEvent,
+                        eventDefinition
+                    )
+            );
+        } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
+            BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
+            boundaryEvent.setBehavior(
+                bpmnParse
+                    .getActivityBehaviorFactory()
+                    .createBoundaryCompensateEventActivityBehavior(
+                        boundaryEvent,
+                        eventDefinition,
+                        boundaryEvent.isCancelActivity()
+                    )
+            );
+        } else {
+            // What to do?
 
+        }
+    }
 }

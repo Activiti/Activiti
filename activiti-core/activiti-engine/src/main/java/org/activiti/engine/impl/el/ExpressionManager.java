@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.el;
 
+import de.odysseus.el.ExpressionFactoryImpl;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +29,6 @@ import javax.el.ExpressionFactory;
 import javax.el.ListELResolver;
 import javax.el.MapELResolver;
 import javax.el.ValueExpression;
-import de.odysseus.el.ExpressionFactoryImpl;
 import org.activiti.core.el.ActivitiElContext;
 import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.core.el.ELContextBuilder;
@@ -62,17 +61,14 @@ public class ExpressionManager {
     }
 
     public ExpressionManager(boolean initFactory) {
-        this(null,
-             initFactory);
+        this(null, initFactory);
     }
 
     public ExpressionManager(Map<Object, Object> beans) {
-        this(beans,
-             true);
+        this(beans, true);
     }
 
-    public ExpressionManager(Map<Object, Object> beans,
-                             boolean initFactory) {
+    public ExpressionManager(Map<Object, Object> beans, boolean initFactory) {
         // Use the ExpressionFactoryImpl in activiti build in version of juel,
         // with parametrised method expressions enabled
         if (initFactory) {
@@ -82,11 +78,12 @@ public class ExpressionManager {
     }
 
     public Expression createExpression(String expression) {
-        ValueExpression valueExpression = expressionFactory.createValueExpression(getElContext(Collections.emptyMap()),
+        ValueExpression valueExpression = expressionFactory.createValueExpression(
+            getElContext(Collections.emptyMap()),
             expression.trim(),
-            Object.class);
-        return new JuelExpression(valueExpression,
-            expression);
+            Object.class
+        );
+        return new JuelExpression(valueExpression, expression);
     }
 
     public void setExpressionFactory(ExpressionFactory expressionFactory) {
@@ -97,7 +94,9 @@ public class ExpressionManager {
         return customFunctionProviders;
     }
 
-    public void setCustomFunctionProviders(List<CustomFunctionProvider> customFunctionProviders) {
+    public void setCustomFunctionProviders(
+        List<CustomFunctionProvider> customFunctionProviders
+    ) {
         this.customFunctionProviders = customFunctionProviders;
     }
 
@@ -111,7 +110,9 @@ public class ExpressionManager {
         if (elContext == null) {
             elContext = createElContext(variableScope);
             if (variableScope instanceof VariableScopeImpl) {
-                ((VariableScopeImpl) variableScope).setCachedElContext(elContext);
+                ((VariableScopeImpl) variableScope).setCachedElContext(
+                        elContext
+                    );
             }
         }
 
@@ -119,7 +120,9 @@ public class ExpressionManager {
     }
 
     protected ActivitiElContext createElContext(VariableScope variableScope) {
-        return (ActivitiElContext) new ELContextBuilder().withResolvers(createElResolver(variableScope)).buildWithCustomFunctions(customFunctionProviders);
+        return (ActivitiElContext) new ELContextBuilder()
+            .withResolvers(createElResolver(variableScope))
+            .buildWithCustomFunctions(customFunctionProviders);
     }
 
     protected ELResolver createElResolver(VariableScope variableScope) {
@@ -144,10 +147,16 @@ public class ExpressionManager {
         elResolver.add(new ListELResolver());
         elResolver.add(new MapELResolver());
         elResolver.add(new CustomMapperJsonNodeELResolver());
-        elResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class,
-                                                         "getFieldValue",
-                                                         "setFieldValue")); // TODO: needs verification
-        elResolver.add(new ELResolverReflectionBlockerDecorator(new BeanELResolver()));
+        elResolver.add(
+            new DynamicBeanPropertyELResolver(
+                ItemInstance.class,
+                "getFieldValue",
+                "setFieldValue"
+            )
+        ); // TODO: needs verification
+        elResolver.add(
+            new ELResolverReflectionBlockerDecorator(new BeanELResolver())
+        );
     }
 
     public Map<Object, Object> getBeans() {
@@ -161,6 +170,9 @@ public class ExpressionManager {
     public ELContext getElContext(Map<String, Object> availableVariables) {
         CompositeELResolver elResolver = new CompositeELResolver();
         addBaseResolvers(elResolver);
-        return new ELContextBuilder().withResolvers(elResolver).withVariables(availableVariables).buildWithCustomFunctions(customFunctionProviders);
+        return new ELContextBuilder()
+            .withResolvers(elResolver)
+            .withVariables(availableVariables)
+            .buildWithCustomFunctions(customFunctionProviders);
     }
 }

@@ -24,17 +24,15 @@ import org.activiti.engine.impl.db.HasRevision;
  */
 @Internal
 public interface PropertyEntity extends Entity, HasRevision {
+    String getName();
 
-  String getName();
+    void setName(String name);
 
-  void setName(String name);
+    String getValue();
 
-  String getValue();
+    void setValue(String value);
 
-  void setValue(String value);
+    String getId();
 
-  String getId();
-
-  Object getPersistentState();
-
+    Object getPersistentState();
 }

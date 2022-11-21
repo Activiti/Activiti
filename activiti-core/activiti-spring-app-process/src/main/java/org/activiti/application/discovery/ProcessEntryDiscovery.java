@@ -17,7 +17,6 @@ package org.activiti.application.discovery;
 
 import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
-
 import org.activiti.application.ApplicationEntryDiscovery;
 
 public class ProcessEntryDiscovery implements ApplicationEntryDiscovery {
@@ -26,12 +25,12 @@ public class ProcessEntryDiscovery implements ApplicationEntryDiscovery {
 
     @Override
     public Predicate<ZipEntry> filter(ZipEntry entry) {
-        return zipEntry -> !zipEntry.isDirectory() && zipEntry.getName().contains(PROCESSES);
+        return zipEntry ->
+            !zipEntry.isDirectory() && zipEntry.getName().contains(PROCESSES);
     }
 
     @Override
     public String getEntryType() {
         return PROCESSES;
     }
-
 }

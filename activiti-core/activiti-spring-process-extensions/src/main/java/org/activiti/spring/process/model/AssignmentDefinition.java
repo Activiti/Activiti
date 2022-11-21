@@ -40,7 +40,6 @@ public class AssignmentDefinition {
         private AssignmentType(String type) {
             this.type = type;
         }
-
     }
 
     public enum AssignmentMode {
@@ -52,7 +51,6 @@ public class AssignmentDefinition {
         private AssignmentMode(String mode) {
             this.mode = mode;
         }
-
     }
 
     private String id;
@@ -61,13 +59,14 @@ public class AssignmentDefinition {
     private AssignmentType type;
     private AssignmentMode mode;
 
-    AssignmentDefinition() {
-    }
+    AssignmentDefinition() {}
 
-    public AssignmentDefinition(String id,
-                                AssignmentEnum assignment,
-                                AssignmentType type,
-                                AssignmentMode mode) {
+    public AssignmentDefinition(
+        String id,
+        AssignmentEnum assignment,
+        AssignmentType type,
+        AssignmentMode mode
+    ) {
         this.id = id;
         this.assignment = assignment;
         this.type = type;
@@ -111,25 +110,33 @@ public class AssignmentDefinition {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AssignmentDefinition that = (AssignmentDefinition) o;
-        return Objects.equals(id,
-                              that.id) && assignment == that.assignment && type == that.type && mode == that.mode;
+        return (
+            Objects.equals(id, that.id) &&
+            assignment == that.assignment &&
+            type == that.type &&
+            mode == that.mode
+        );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id,
-                            assignment,
-                            type,
-                            mode);
+        return Objects.hash(id, assignment, type, mode);
     }
 
     @Override
     public String toString() {
-        return "AssignmentDefinition{" +
-            "id='" + id + '\'' +
-            ", assignment=" + assignment +
-            ", type=" + type +
-            ", mode=" + mode +
-            '}';
+        return (
+            "AssignmentDefinition{" +
+            "id='" +
+            id +
+            '\'' +
+            ", assignment=" +
+            assignment +
+            ", type=" +
+            type +
+            ", mode=" +
+            mode +
+            '}'
+        );
     }
 }

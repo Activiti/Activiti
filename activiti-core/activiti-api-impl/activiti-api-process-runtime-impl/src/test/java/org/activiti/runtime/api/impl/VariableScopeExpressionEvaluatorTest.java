@@ -32,7 +32,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class VariableScopeExpressionEvaluatorTest {
 
     @Mock
-    private  ExpressionManager expressionManager;
+    private ExpressionManager expressionManager;
 
     @Mock
     private DelegateInterceptor delegateInterceptor;
@@ -42,13 +42,18 @@ public class VariableScopeExpressionEvaluatorTest {
         //given
         VariableScope variableScope = mock(VariableScope.class);
         VariableScopeExpressionEvaluator evaluator = new VariableScopeExpressionEvaluator(
-            variableScope);
+            variableScope
+        );
 
         Expression expression = mock(Expression.class);
         given(expression.getValue(variableScope)).willReturn("London");
 
         //when
-        Object value = evaluator.evaluate(expression, expressionManager, delegateInterceptor);
+        Object value = evaluator.evaluate(
+            expression,
+            expressionManager,
+            delegateInterceptor
+        );
 
         //then
         assertThat(value).isEqualTo("London");

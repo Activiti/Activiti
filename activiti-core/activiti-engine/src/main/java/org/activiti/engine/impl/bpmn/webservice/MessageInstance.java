@@ -26,20 +26,20 @@ import org.activiti.engine.impl.bpmn.data.StructureInstance;
  */
 public class MessageInstance {
 
-  protected MessageDefinition message;
+    protected MessageDefinition message;
 
-  protected ItemInstance item;
+    protected ItemInstance item;
 
-  public MessageInstance(MessageDefinition message, ItemInstance item) {
-    this.message = message;
-    this.item = item;
-  }
+    public MessageInstance(MessageDefinition message, ItemInstance item) {
+        this.message = message;
+        this.item = item;
+    }
 
-  public StructureInstance getStructureInstance() {
-    return this.item.getStructureInstance();
-  }
+    public StructureInstance getStructureInstance() {
+        return this.item.getStructureInstance();
+    }
 
-  public MessageDefinition getMessage() {
-    return this.message;
-  }
+    public MessageDefinition getMessage() {
+        return this.message;
+    }
 }

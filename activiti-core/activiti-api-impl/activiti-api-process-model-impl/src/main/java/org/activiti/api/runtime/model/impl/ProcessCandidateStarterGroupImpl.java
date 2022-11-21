@@ -15,18 +15,21 @@
  */
 package org.activiti.api.runtime.model.impl;
 
+import java.util.Objects;
 import org.activiti.api.process.model.ProcessCandidateStarterGroup;
 
-import java.util.Objects;
-
-public class ProcessCandidateStarterGroupImpl extends ProcessCandidateStarterImpl implements ProcessCandidateStarterGroup {
+public class ProcessCandidateStarterGroupImpl
+    extends ProcessCandidateStarterImpl
+    implements ProcessCandidateStarterGroup {
 
     private String groupId;
 
-    public ProcessCandidateStarterGroupImpl() {
-    }
+    public ProcessCandidateStarterGroupImpl() {}
 
-    public ProcessCandidateStarterGroupImpl(String processDefinitionId, String groupId) {
+    public ProcessCandidateStarterGroupImpl(
+        String processDefinitionId,
+        String groupId
+    ) {
         super(processDefinitionId);
         this.groupId = groupId;
     }
@@ -36,8 +39,13 @@ public class ProcessCandidateStarterGroupImpl extends ProcessCandidateStarterImp
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProcessCandidateStarterGroupImpl that = (ProcessCandidateStarterGroupImpl) o;
-        return Objects.equals(groupId, that.groupId) &&
-                Objects.equals(getProcessDefinitionId(), that.getProcessDefinitionId());
+        return (
+            Objects.equals(groupId, that.groupId) &&
+            Objects.equals(
+                getProcessDefinitionId(),
+                that.getProcessDefinitionId()
+            )
+        );
     }
 
     @Override

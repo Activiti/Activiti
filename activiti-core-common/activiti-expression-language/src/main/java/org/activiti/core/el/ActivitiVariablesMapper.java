@@ -25,8 +25,7 @@ public class ActivitiVariablesMapper extends VariableMapper {
 
     Map<String, ValueExpression> map = Collections.emptyMap();
 
-    public ActivitiVariablesMapper() {
-    }
+    public ActivitiVariablesMapper() {}
 
     public ActivitiVariablesMapper(Map<String, ValueExpression> map) {
         this.map = map;
@@ -38,7 +37,10 @@ public class ActivitiVariablesMapper extends VariableMapper {
     }
 
     @Override
-    public ValueExpression setVariable(String variable, ValueExpression expression) {
+    public ValueExpression setVariable(
+        String variable,
+        ValueExpression expression
+    ) {
         if (map.isEmpty()) {
             map = new HashMap<>();
         }

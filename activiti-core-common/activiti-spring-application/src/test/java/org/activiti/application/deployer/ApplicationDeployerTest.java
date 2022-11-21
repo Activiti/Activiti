@@ -15,6 +15,11 @@
  */
 package org.activiti.application.deployer;
 
+import static java.util.Arrays.asList;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import org.activiti.application.ApplicationContent;
 import org.activiti.application.ApplicationService;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,11 +27,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static java.util.Arrays.asList;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class ApplicationDeployerTest {
@@ -44,8 +44,11 @@ public class ApplicationDeployerTest {
 
     @BeforeEach
     public void setUp() {
-        deployer = new ApplicationDeployer(applicationLoader,
-                                           asList(firstDeployer, secondDeployer));
+        deployer =
+            new ApplicationDeployer(
+                applicationLoader,
+                asList(firstDeployer, secondDeployer)
+            );
     }
 
     @Test
@@ -53,7 +56,8 @@ public class ApplicationDeployerTest {
         //given
         ApplicationContent firstApp = mock(ApplicationContent.class);
         ApplicationContent secondApp = mock(ApplicationContent.class);
-        given(applicationLoader.loadApplications()).willReturn(asList(firstApp, secondApp));
+        given(applicationLoader.loadApplications())
+            .willReturn(asList(firstApp, secondApp));
 
         //when
         deployer.deploy();

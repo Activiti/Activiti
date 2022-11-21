@@ -19,9 +19,7 @@ import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
 
 public interface ApplicationEntryDiscovery {
-
     Predicate<ZipEntry> filter(ZipEntry entry);
 
     String getEntryType();
-
 }

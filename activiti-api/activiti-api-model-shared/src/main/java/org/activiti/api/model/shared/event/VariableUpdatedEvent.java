@@ -16,6 +16,5 @@
 package org.activiti.api.model.shared.event;
 
 public interface VariableUpdatedEvent extends VariableEvent {
-
     <T> T getPreviousValue();
 }

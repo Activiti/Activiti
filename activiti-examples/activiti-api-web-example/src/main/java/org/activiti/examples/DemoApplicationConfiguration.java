@@ -18,6 +18,8 @@ package org.activiti.examples;
 import static java.util.Arrays.asList;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,62 +38,95 @@ import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Configuration
 @EnableWebSecurity
 public class DemoApplicationConfiguration extends WebSecurityConfigurerAdapter {
 
-    private Logger logger = LoggerFactory.getLogger(DemoApplicationConfiguration.class);
+    private Logger logger = LoggerFactory.getLogger(
+        DemoApplicationConfiguration.class
+    );
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    public void configureGlobal(AuthenticationManagerBuilder auth)
+        throws Exception {
         auth.userDetailsService(userDetailsService());
     }
 
-	@Bean
+    @Bean
     @Override
-	public UserDetailsService userDetailsServiceBean() throws Exception {
+    public UserDetailsService userDetailsServiceBean() throws Exception {
         return super.userDetailsServiceBean();
     }
 
     @Override
     public UserDetailsService userDetailsService() {
-
         InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
 
         String[][] usersGroupsAndRoles = {
-                {"bob", "{bcrypt}password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
-                {"john", "{bcrypt}password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
-                {"hannah", "{bcrypt}password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
-                {"other", "{bcrypt}password", "ROLE_ACTIVITI_USER", "GROUP_otherTeam"},
-                {"admin", "{bcrypt}password", "ROLE_ACTIVITI_ADMIN"},
+            {
+                "bob",
+                "{bcrypt}password",
+                "ROLE_ACTIVITI_USER",
+                "GROUP_activitiTeam",
+            },
+            {
+                "john",
+                "{bcrypt}password",
+                "ROLE_ACTIVITI_USER",
+                "GROUP_activitiTeam",
+            },
+            {
+                "hannah",
+                "{bcrypt}password",
+                "ROLE_ACTIVITI_USER",
+                "GROUP_activitiTeam",
+            },
+            {
+                "other",
+                "{bcrypt}password",
+                "ROLE_ACTIVITI_USER",
+                "GROUP_otherTeam",
+            },
+            { "admin", "{bcrypt}password", "ROLE_ACTIVITI_ADMIN" },
         };
 
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
         for (String[] user : usersGroupsAndRoles) {
-            List<String> authoritiesStrings = asList(Arrays.copyOfRange(user, 2, user.length));
-            logger.info("> Registering new user: " + user[0] + " with the following Authorities[" + authoritiesStrings + "]");
-            inMemoryUserDetailsManager.createUser(new User(user[0], passwordEncoder.encode(user[1]),
-                    authoritiesStrings.stream().map(s -> new SimpleGrantedAuthority(s)).collect(Collectors.toList())));
+            List<String> authoritiesStrings = asList(
+                Arrays.copyOfRange(user, 2, user.length)
+            );
+            logger.info(
+                "> Registering new user: " +
+                user[0] +
+                " with the following Authorities[" +
+                authoritiesStrings +
+                "]"
+            );
+            inMemoryUserDetailsManager.createUser(
+                new User(
+                    user[0],
+                    passwordEncoder.encode(user[1]),
+                    authoritiesStrings
+                        .stream()
+                        .map(s -> new SimpleGrantedAuthority(s))
+                        .collect(Collectors.toList())
+                )
+            );
         }
-
 
         return inMemoryUserDetailsManager;
     }
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .authorizeRequests()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .httpBasic();
+            .csrf()
+            .disable()
+            .authorizeRequests()
+            .anyRequest()
+            .authenticated()
+            .and()
+            .httpBasic();
     }
-
 }

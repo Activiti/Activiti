@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.test.autodeployment;
+
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.InputStream;
-
 import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
@@ -31,9 +32,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ContextResource;
 import org.springframework.core.io.Resource;
-
-import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public abstract class AbstractAutoDeploymentStrategyTest {
@@ -102,11 +100,13 @@ public abstract class AbstractAutoDeploymentStrategyTest {
         when(resourceMock5.getFile()).thenReturn(fileMock5);
         when(fileMock5.getAbsolutePath()).thenReturn(resourceName5);
 
-        when(repositoryServiceMock.createDeployment()).thenReturn(deploymentBuilderMock);
-        when(deploymentBuilderMock.enableDuplicateFiltering()).thenReturn(deploymentBuilderMock);
-        when(deploymentBuilderMock.name(isA(String.class))).thenReturn(deploymentBuilderMock);
+        when(repositoryServiceMock.createDeployment())
+            .thenReturn(deploymentBuilderMock);
+        when(deploymentBuilderMock.enableDuplicateFiltering())
+            .thenReturn(deploymentBuilderMock);
+        when(deploymentBuilderMock.name(isA(String.class)))
+            .thenReturn(deploymentBuilderMock);
 
         when(deploymentBuilderMock.deploy()).thenReturn(deploymentMock);
     }
-
 }

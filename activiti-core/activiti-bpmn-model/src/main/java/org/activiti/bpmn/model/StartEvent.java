@@ -20,62 +20,65 @@ import java.util.List;
 
 public class StartEvent extends Event {
 
-  protected String initiator;
-  protected String formKey;
-  protected boolean isInterrupting;
-  protected List<FormProperty> formProperties = new ArrayList<FormProperty>();
+    protected String initiator;
+    protected String formKey;
+    protected boolean isInterrupting;
+    protected List<FormProperty> formProperties = new ArrayList<FormProperty>();
 
-  public String getInitiator() {
-    return initiator;
-  }
-
-  public void setInitiator(String initiator) {
-    this.initiator = initiator;
-  }
-
-  public String getFormKey() {
-    return formKey;
-  }
-
-  public void setFormKey(String formKey) {
-    this.formKey = formKey;
-  }
-
-  public boolean isInterrupting() {
-    return isInterrupting;
-  }
-
-  public void setInterrupting(boolean isInterrupting) {
-    this.isInterrupting = isInterrupting;
-  }
-
-  public List<FormProperty> getFormProperties() {
-    return formProperties;
-  }
-
-  public void setFormProperties(List<FormProperty> formProperties) {
-    this.formProperties = formProperties;
-  }
-
-  public StartEvent clone() {
-    StartEvent clone = new StartEvent();
-    clone.setValues(this);
-    return clone;
-  }
-
-  public void setValues(StartEvent otherEvent) {
-    super.setValues(otherEvent);
-    setInitiator(otherEvent.getInitiator());
-    setFormKey(otherEvent.getFormKey());
-    setInterrupting(otherEvent.isInterrupting);
-
-    formProperties = new ArrayList<FormProperty>();
-    if (otherEvent.getFormProperties() != null && !otherEvent.getFormProperties().isEmpty()) {
-      for (FormProperty property : otherEvent.getFormProperties()) {
-        formProperties.add(property.clone());
-      }
+    public String getInitiator() {
+        return initiator;
     }
-  }
+
+    public void setInitiator(String initiator) {
+        this.initiator = initiator;
+    }
+
+    public String getFormKey() {
+        return formKey;
+    }
+
+    public void setFormKey(String formKey) {
+        this.formKey = formKey;
+    }
+
+    public boolean isInterrupting() {
+        return isInterrupting;
+    }
+
+    public void setInterrupting(boolean isInterrupting) {
+        this.isInterrupting = isInterrupting;
+    }
+
+    public List<FormProperty> getFormProperties() {
+        return formProperties;
+    }
+
+    public void setFormProperties(List<FormProperty> formProperties) {
+        this.formProperties = formProperties;
+    }
+
+    public StartEvent clone() {
+        StartEvent clone = new StartEvent();
+        clone.setValues(this);
+        return clone;
+    }
+
+    public void setValues(StartEvent otherEvent) {
+        super.setValues(otherEvent);
+        setInitiator(otherEvent.getInitiator());
+        setFormKey(otherEvent.getFormKey());
+        setInterrupting(otherEvent.isInterrupting);
+
+        formProperties = new ArrayList<FormProperty>();
+        if (
+            otherEvent.getFormProperties() != null &&
+            !otherEvent.getFormProperties().isEmpty()
+        ) {
+            for (FormProperty property : otherEvent.getFormProperties()) {
+                formProperties.add(property.clone());
+            }
+        }
+    }
 
     @Override
     public void accept(ReferenceOverrider referenceOverrider) {

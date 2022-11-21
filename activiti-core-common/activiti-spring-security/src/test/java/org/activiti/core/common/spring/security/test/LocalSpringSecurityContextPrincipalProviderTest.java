@@ -17,6 +17,8 @@ package org.activiti.core.common.spring.security.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.security.Principal;
+import java.util.Optional;
 import org.activiti.core.common.spring.security.LocalSpringSecurityContextPrincipalProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,10 +26,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.security.Principal;
-import java.util.Optional;
-
 
 public class LocalSpringSecurityContextPrincipalProviderTest {
 
@@ -41,9 +39,11 @@ public class LocalSpringSecurityContextPrincipalProviderTest {
     @Test
     public void testGetCurrentPrincipalAuthenticated() {
         // given
-        Authentication authentication = new UsernamePasswordAuthenticationToken("user",
-                                                                                "password",
-                                                                                AuthorityUtils.createAuthorityList("ROLE_user"));
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+            "user",
+            "password",
+            AuthorityUtils.createAuthorityList("ROLE_user")
+        );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -52,15 +52,16 @@ public class LocalSpringSecurityContextPrincipalProviderTest {
 
         // then
         assertThat(authentication.isAuthenticated()).isTrue();
-        assertThat(principal).isNotEmpty()
-                             .contains(authentication);
+        assertThat(principal).isNotEmpty().contains(authentication);
     }
 
     @Test
     public void testGetCurrentPrincipalNotAuthenticated() {
         // given
-        Authentication authentication = new UsernamePasswordAuthenticationToken("user",
-                                                                                "password");
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+            "user",
+            "password"
+        );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -83,5 +84,4 @@ public class LocalSpringSecurityContextPrincipalProviderTest {
         // then
         assertThat(principal).isEmpty();
     }
-
 }

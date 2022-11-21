@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.history.HistoricProcessInstance;
 
@@ -26,46 +24,45 @@ import org.activiti.engine.history.HistoricProcessInstance;
 
  */
 @Internal
-public interface HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity, HistoricProcessInstance {
+public interface HistoricProcessInstanceEntity
+    extends HistoricScopeInstanceEntity, HistoricProcessInstance {
+    void setEndActivityId(String endActivityId);
 
-  void setEndActivityId(String endActivityId);
+    void setBusinessKey(String businessKey);
 
-  void setBusinessKey(String businessKey);
+    void setStartUserId(String startUserId);
 
-  void setStartUserId(String startUserId);
+    void setStartActivityId(String startUserId);
 
-  void setStartActivityId(String startUserId);
+    void setSuperProcessInstanceId(String superProcessInstanceId);
 
-  void setSuperProcessInstanceId(String superProcessInstanceId);
+    void setTenantId(String tenantId);
 
-  void setTenantId(String tenantId);
+    void setName(String name);
 
-  void setName(String name);
+    void setLocalizedName(String localizedName);
 
-  void setLocalizedName(String localizedName);
+    void setDescription(String description);
 
-  void setDescription(String description);
+    void setLocalizedDescription(String localizedDescription);
 
-  void setLocalizedDescription(String localizedDescription);
+    String getProcessDefinitionKey();
 
-  String getProcessDefinitionKey();
+    void setProcessDefinitionKey(String processDefinitionKey);
 
-  void setProcessDefinitionKey(String processDefinitionKey);
+    String getProcessDefinitionName();
 
-  String getProcessDefinitionName();
+    void setProcessDefinitionName(String processDefinitionName);
 
-  void setProcessDefinitionName(String processDefinitionName);
+    Integer getProcessDefinitionVersion();
 
-  Integer getProcessDefinitionVersion();
+    void setProcessDefinitionVersion(Integer processDefinitionVersion);
 
-  void setProcessDefinitionVersion(Integer processDefinitionVersion);
+    String getDeploymentId();
 
-  String getDeploymentId();
+    void setDeploymentId(String deploymentId);
 
-  void setDeploymentId(String deploymentId);
+    List<HistoricVariableInstanceEntity> getQueryVariables();
 
-  List<HistoricVariableInstanceEntity> getQueryVariables();
-
-  void setQueryVariables(List<HistoricVariableInstanceEntity> queryVariables);
-
+    void setQueryVariables(List<HistoricVariableInstanceEntity> queryVariables);
 }

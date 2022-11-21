@@ -20,19 +20,20 @@ import org.activiti.api.process.model.StartMessageDeploymentDefinition;
 import org.activiti.api.process.model.events.MessageDefinitionEvent;
 import org.activiti.api.process.model.events.StartMessageDeployedEvent;
 
-public class StartMessageDeployedEventImpl extends RuntimeEventImpl<StartMessageDeploymentDefinition, MessageDefinitionEvent.MessageDefinitionEvents>
-                                           implements StartMessageDeployedEvent {
+public class StartMessageDeployedEventImpl
+    extends RuntimeEventImpl<StartMessageDeploymentDefinition, MessageDefinitionEvent.MessageDefinitionEvents>
+    implements StartMessageDeployedEvent {
 
     private StartMessageDeployedEventImpl(Builder builder) {
         this(builder.entity);
     }
 
-    StartMessageDeployedEventImpl() {
-    }
+    StartMessageDeployedEventImpl() {}
 
-    public StartMessageDeployedEventImpl(StartMessageDeploymentDefinition startMessageEventSubscription) {
+    public StartMessageDeployedEventImpl(
+        StartMessageDeploymentDefinition startMessageEventSubscription
+    ) {
         super(startMessageEventSubscription);
-
         ProcessDefinition processDefinition = startMessageEventSubscription.getProcessDefinition();
 
         setProcessDefinitionId(processDefinition.getId());
@@ -49,7 +50,9 @@ public class StartMessageDeployedEventImpl extends RuntimeEventImpl<StartMessage
      * @param startMessageDeployedEventImpl to initialize the builder with
      * @return created builder
      */
-    public static Builder builderFrom(StartMessageDeployedEventImpl startMessageDeployedEventImpl) {
+    public static Builder builderFrom(
+        StartMessageDeployedEventImpl startMessageDeployedEventImpl
+    ) {
         return new Builder(startMessageDeployedEventImpl);
     }
 
@@ -60,31 +63,30 @@ public class StartMessageDeployedEventImpl extends RuntimeEventImpl<StartMessage
 
         private StartMessageDeploymentDefinition entity;
 
-        public Builder() {
-        }
+        public Builder() {}
 
-        private Builder(StartMessageDeployedEventImpl startMessageDeployedEventImpl) {
+        private Builder(
+            StartMessageDeployedEventImpl startMessageDeployedEventImpl
+        ) {
             this.entity = startMessageDeployedEventImpl.getEntity();
         }
 
         /**
-        * Builder method for entity parameter.
-        * @param entity field to set
-        * @return builder
-        */
+         * Builder method for entity parameter.
+         * @param entity field to set
+         * @return builder
+         */
         public Builder withEntity(StartMessageDeploymentDefinition entity) {
             this.entity = entity;
             return this;
         }
 
         /**
-        * Builder method of the builder.
-        * @return built class
-        */
+         * Builder method of the builder.
+         * @return built class
+         */
         public StartMessageDeployedEventImpl build() {
             return new StartMessageDeployedEventImpl(this);
         }
     }
-
-
 }

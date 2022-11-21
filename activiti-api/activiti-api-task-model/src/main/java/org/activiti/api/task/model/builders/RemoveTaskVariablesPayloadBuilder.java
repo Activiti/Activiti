@@ -16,7 +16,6 @@
 package org.activiti.api.task.model.builders;
 
 import java.util.Date;
-
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 
 public class RemoveTaskVariablesPayloadBuilder {
@@ -43,7 +42,9 @@ public class RemoveTaskVariablesPayloadBuilder {
         return this;
     }
 
-    public RemoveTaskVariablesPayloadBuilder withDescription(String description) {
+    public RemoveTaskVariablesPayloadBuilder withDescription(
+        String description
+    ) {
         this.description = description;
         return this;
     }

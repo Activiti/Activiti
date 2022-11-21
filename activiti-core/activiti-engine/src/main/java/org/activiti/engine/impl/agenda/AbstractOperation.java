@@ -18,12 +18,12 @@ package org.activiti.engine.impl.agenda;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.HasExecutionListeners;
+import org.activiti.engine.Agenda;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
-import org.activiti.engine.Agenda;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**
@@ -37,93 +37,125 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
  */
 public abstract class AbstractOperation implements Runnable {
 
-  protected CommandContext commandContext;
-  protected Agenda agenda;
-  protected ExecutionEntity execution;
+    protected CommandContext commandContext;
+    protected Agenda agenda;
+    protected ExecutionEntity execution;
 
-  public AbstractOperation() {
+    public AbstractOperation() {}
 
-  }
-
-  public AbstractOperation(CommandContext commandContext, ExecutionEntity execution) {
-    this.commandContext = commandContext;
-    this.execution = execution;
-    this.agenda = commandContext.getAgenda();
-  }
-
-  /**
-   * Helper method to match the activityId of an execution with a FlowElement of the process definition referenced by the execution.
-   */
-  protected FlowElement getCurrentFlowElement(final ExecutionEntity execution) {
-    if (execution.getCurrentFlowElement() != null) {
-      return execution.getCurrentFlowElement();
-    } else if (execution.getCurrentActivityId() != null) {
-      String processDefinitionId = execution.getProcessDefinitionId();
-      org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
-      String activityId = execution.getCurrentActivityId();
-      FlowElement currentFlowElement = process.getFlowElement(activityId, true);
-      return currentFlowElement;
+    public AbstractOperation(
+        CommandContext commandContext,
+        ExecutionEntity execution
+    ) {
+        this.commandContext = commandContext;
+        this.execution = execution;
+        this.agenda = commandContext.getAgenda();
     }
-    return null;
-  }
 
-  /**
-   * Executes the execution listeners defined on the given element, with the given event type.
-   * Uses the {@link #execution} of this operation instance as argument for the execution listener.
-   */
-  protected void executeExecutionListeners(HasExecutionListeners elementWithExecutionListeners, String eventType) {
-    executeExecutionListeners(elementWithExecutionListeners, execution, eventType);
-  }
-
-  /**
-   * Executes the execution listeners defined on the given element, with the given event type,
-   * and passing the provided execution to the {@link ExecutionListener} instances.
-   */
-  protected void executeExecutionListeners(HasExecutionListeners elementWithExecutionListeners,
-      ExecutionEntity executionEntity, String eventType) {
-    commandContext.getProcessEngineConfiguration().getListenerNotificationHelper()
-      .executeExecutionListeners(elementWithExecutionListeners, executionEntity, eventType);
-  }
-
-  /**
-   * Returns the first parent execution of the provided execution that is a scope.
-   */
-  protected ExecutionEntity findFirstParentScopeExecution(ExecutionEntity executionEntity) {
-    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-    ExecutionEntity parentScopeExecution = null;
-    ExecutionEntity currentlyExaminedExecution = executionEntityManager.findById(executionEntity.getParentId());
-    while (currentlyExaminedExecution != null && parentScopeExecution == null) {
-      if (currentlyExaminedExecution.isScope()) {
-        parentScopeExecution = currentlyExaminedExecution;
-      } else {
-        currentlyExaminedExecution = executionEntityManager.findById(currentlyExaminedExecution.getParentId());
-      }
+    /**
+     * Helper method to match the activityId of an execution with a FlowElement of the process definition referenced by the execution.
+     */
+    protected FlowElement getCurrentFlowElement(
+        final ExecutionEntity execution
+    ) {
+        if (execution.getCurrentFlowElement() != null) {
+            return execution.getCurrentFlowElement();
+        } else if (execution.getCurrentActivityId() != null) {
+            String processDefinitionId = execution.getProcessDefinitionId();
+            org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(
+                processDefinitionId
+            );
+            String activityId = execution.getCurrentActivityId();
+            FlowElement currentFlowElement = process.getFlowElement(
+                activityId,
+                true
+            );
+            return currentFlowElement;
+        }
+        return null;
     }
-    return parentScopeExecution;
-  }
 
-  public CommandContext getCommandContext() {
-    return commandContext;
-  }
+    /**
+     * Executes the execution listeners defined on the given element, with the given event type.
+     * Uses the {@link #execution} of this operation instance as argument for the execution listener.
+     */
+    protected void executeExecutionListeners(
+        HasExecutionListeners elementWithExecutionListeners,
+        String eventType
+    ) {
+        executeExecutionListeners(
+            elementWithExecutionListeners,
+            execution,
+            eventType
+        );
+    }
 
-  public void setCommandContext(CommandContext commandContext) {
-    this.commandContext = commandContext;
-  }
+    /**
+     * Executes the execution listeners defined on the given element, with the given event type,
+     * and passing the provided execution to the {@link ExecutionListener} instances.
+     */
+    protected void executeExecutionListeners(
+        HasExecutionListeners elementWithExecutionListeners,
+        ExecutionEntity executionEntity,
+        String eventType
+    ) {
+        commandContext
+            .getProcessEngineConfiguration()
+            .getListenerNotificationHelper()
+            .executeExecutionListeners(
+                elementWithExecutionListeners,
+                executionEntity,
+                eventType
+            );
+    }
 
-  public Agenda getAgenda() {
-    return agenda;
-  }
+    /**
+     * Returns the first parent execution of the provided execution that is a scope.
+     */
+    protected ExecutionEntity findFirstParentScopeExecution(
+        ExecutionEntity executionEntity
+    ) {
+        ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
+        ExecutionEntity parentScopeExecution = null;
+        ExecutionEntity currentlyExaminedExecution = executionEntityManager.findById(
+            executionEntity.getParentId()
+        );
+        while (
+            currentlyExaminedExecution != null && parentScopeExecution == null
+        ) {
+            if (currentlyExaminedExecution.isScope()) {
+                parentScopeExecution = currentlyExaminedExecution;
+            } else {
+                currentlyExaminedExecution =
+                    executionEntityManager.findById(
+                        currentlyExaminedExecution.getParentId()
+                    );
+            }
+        }
+        return parentScopeExecution;
+    }
 
-  public void setAgenda(DefaultActivitiEngineAgenda agenda) {
-    this.agenda = agenda;
-  }
+    public CommandContext getCommandContext() {
+        return commandContext;
+    }
 
-  public ExecutionEntity getExecution() {
-    return execution;
-  }
+    public void setCommandContext(CommandContext commandContext) {
+        this.commandContext = commandContext;
+    }
 
-  public void setExecution(ExecutionEntity execution) {
-    this.execution = execution;
-  }
+    public Agenda getAgenda() {
+        return agenda;
+    }
 
+    public void setAgenda(DefaultActivitiEngineAgenda agenda) {
+        this.agenda = agenda;
+    }
+
+    public ExecutionEntity getExecution() {
+        return execution;
+    }
+
+    public void setExecution(ExecutionEntity execution) {
+        this.execution = execution;
+    }
 }

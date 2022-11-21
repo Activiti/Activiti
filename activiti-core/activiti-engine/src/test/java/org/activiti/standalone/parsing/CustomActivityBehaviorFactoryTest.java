@@ -19,36 +19,37 @@ package org.activiti.standalone.parsing;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
 /**
 
  */
-public class CustomActivityBehaviorFactoryTest extends ResourceActivitiTestCase {
+public class CustomActivityBehaviorFactoryTest
+    extends ResourceActivitiTestCase {
 
-  public CustomActivityBehaviorFactoryTest() {
-    super("org/activiti/standalone/parsing/custom.activitybehaviorfactory.activiti.cfg.xml");
-  }
-
-  // The custom activity factory will change this value
-  public static AtomicInteger COUNTER = new AtomicInteger(0);
-
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-    COUNTER.set(0);
-  }
-
-  @Deployment
-  public void testCustomActivityBehaviorFactory() {
-    int nrOfProcessInstances = 6;
-    for (int i = 0; i < nrOfProcessInstances; i++) {
-      runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    public CustomActivityBehaviorFactoryTest() {
+        super(
+            "org/activiti/standalone/parsing/custom.activitybehaviorfactory.activiti.cfg.xml"
+        );
     }
 
-    assertThat(COUNTER.get()).isEqualTo(nrOfProcessInstances);
-  }
+    // The custom activity factory will change this value
+    public static AtomicInteger COUNTER = new AtomicInteger(0);
 
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        COUNTER.set(0);
+    }
+
+    @Deployment
+    public void testCustomActivityBehaviorFactory() {
+        int nrOfProcessInstances = 6;
+        for (int i = 0; i < nrOfProcessInstances; i++) {
+            runtimeService.startProcessInstanceByKey("oneTaskProcess");
+        }
+
+        assertThat(COUNTER.get()).isEqualTo(nrOfProcessInstances);
+    }
 }

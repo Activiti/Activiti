@@ -26,60 +26,63 @@ import org.activiti.engine.impl.cfg.TransactionPropagation;
  */
 public class CommandConfig {
 
-  private boolean contextReusePossible;
-  private TransactionPropagation propagation;
+    private boolean contextReusePossible;
+    private TransactionPropagation propagation;
 
-  public CommandConfig() {
-    this.contextReusePossible = true;
-    this.propagation = TransactionPropagation.REQUIRED;
-  }
+    public CommandConfig() {
+        this.contextReusePossible = true;
+        this.propagation = TransactionPropagation.REQUIRED;
+    }
 
-  public CommandConfig(boolean contextReusePossible) {
-    this.contextReusePossible = contextReusePossible;
-    this.propagation = TransactionPropagation.REQUIRED;
-  }
+    public CommandConfig(boolean contextReusePossible) {
+        this.contextReusePossible = contextReusePossible;
+        this.propagation = TransactionPropagation.REQUIRED;
+    }
 
-  public CommandConfig(boolean contextReusePossible, TransactionPropagation transactionPropagation) {
-    this.contextReusePossible = contextReusePossible;
-    this.propagation = transactionPropagation;
-  }
+    public CommandConfig(
+        boolean contextReusePossible,
+        TransactionPropagation transactionPropagation
+    ) {
+        this.contextReusePossible = contextReusePossible;
+        this.propagation = transactionPropagation;
+    }
 
-  protected CommandConfig(CommandConfig commandConfig) {
-    this.contextReusePossible = commandConfig.contextReusePossible;
-    this.propagation = commandConfig.propagation;
-  }
+    protected CommandConfig(CommandConfig commandConfig) {
+        this.contextReusePossible = commandConfig.contextReusePossible;
+        this.propagation = commandConfig.propagation;
+    }
 
-  public boolean isContextReusePossible() {
-    return contextReusePossible;
-  }
+    public boolean isContextReusePossible() {
+        return contextReusePossible;
+    }
 
-  public TransactionPropagation getTransactionPropagation() {
-    return propagation;
-  }
+    public TransactionPropagation getTransactionPropagation() {
+        return propagation;
+    }
 
-  public CommandConfig setContextReusePossible(boolean contextReusePossible) {
-    CommandConfig config = new CommandConfig(this);
-    config.contextReusePossible = contextReusePossible;
-    return config;
-  }
+    public CommandConfig setContextReusePossible(boolean contextReusePossible) {
+        CommandConfig config = new CommandConfig(this);
+        config.contextReusePossible = contextReusePossible;
+        return config;
+    }
 
-  public CommandConfig transactionRequired() {
-    CommandConfig config = new CommandConfig(this);
-    config.propagation = TransactionPropagation.REQUIRED;
-    return config;
-  }
+    public CommandConfig transactionRequired() {
+        CommandConfig config = new CommandConfig(this);
+        config.propagation = TransactionPropagation.REQUIRED;
+        return config;
+    }
 
-  public CommandConfig transactionRequiresNew() {
-    CommandConfig config = new CommandConfig();
-    config.contextReusePossible = false;
-    config.propagation = TransactionPropagation.REQUIRES_NEW;
-    return config;
-  }
+    public CommandConfig transactionRequiresNew() {
+        CommandConfig config = new CommandConfig();
+        config.contextReusePossible = false;
+        config.propagation = TransactionPropagation.REQUIRES_NEW;
+        return config;
+    }
 
-  public CommandConfig transactionNotSupported() {
-    CommandConfig config = new CommandConfig();
-    config.contextReusePossible = false;
-    config.propagation = TransactionPropagation.NOT_SUPPORTED;
-    return config;
-  }
+    public CommandConfig transactionNotSupported() {
+        CommandConfig config = new CommandConfig();
+        config.contextReusePossible = false;
+        config.propagation = TransactionPropagation.NOT_SUPPORTED;
+        return config;
+    }
 }

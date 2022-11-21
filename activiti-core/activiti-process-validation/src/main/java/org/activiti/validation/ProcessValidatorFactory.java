@@ -23,10 +23,12 @@ import org.activiti.validation.validator.ValidatorSetFactory;
  */
 public class ProcessValidatorFactory {
 
-  public ProcessValidator createDefaultProcessValidator() {
-    ProcessValidatorImpl processValidator = new ProcessValidatorImpl();
-    processValidator.addValidatorSet(new ValidatorSetFactory().createActivitiExecutableProcessValidatorSet());
-    return processValidator;
-  }
-
+    public ProcessValidator createDefaultProcessValidator() {
+        ProcessValidatorImpl processValidator = new ProcessValidatorImpl();
+        processValidator.addValidatorSet(
+            new ValidatorSetFactory()
+                .createActivitiExecutableProcessValidatorSet()
+        );
+        return processValidator;
+    }
 }

@@ -22,19 +22,19 @@ import org.junit.jupiter.api.Test;
 
 public class EmptyModelTest extends AbstractConverterTest {
 
-  @Test
-  public void convertXMLToModel() throws Exception {
-    assertThatExceptionOfType(XMLException.class)
-      .isThrownBy(() -> readXMLFile());
-  }
+    @Test
+    public void convertXMLToModel() throws Exception {
+        assertThatExceptionOfType(XMLException.class)
+            .isThrownBy(() -> readXMLFile());
+    }
 
-  @Test
-  public void convertModelToXML() throws Exception {
-    assertThatExceptionOfType(XMLException.class)
-      .isThrownBy(() -> readXMLFile());
-  }
+    @Test
+    public void convertModelToXML() throws Exception {
+        assertThatExceptionOfType(XMLException.class)
+            .isThrownBy(() -> readXMLFile());
+    }
 
-  protected String getResource() {
-    return "empty.bpmn";
-  }
+    protected String getResource() {
+        return "empty.bpmn";
+    }
 }

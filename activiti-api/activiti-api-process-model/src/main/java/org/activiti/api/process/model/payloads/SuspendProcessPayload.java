@@ -16,9 +16,7 @@
 package org.activiti.api.process.model.payloads;
 
 import java.util.UUID;
-
 import org.activiti.api.model.shared.Payload;
-
 
 public class SuspendProcessPayload implements Payload {
 

@@ -64,18 +64,22 @@ public class TaskRuntimeIT {
     @Test
     public void should_beAbleToAssignTaskToInitiatorEvenWhenInitiatorIsNotSetInStartEvent() {
         //given
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
-            .withProcessDefinitionKey("taskToInitiatorProcess")
-            .build());
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
+                .withProcessDefinitionKey("taskToInitiatorProcess")
+                .build()
+        );
 
         //when
-        Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0, 10),
-            TaskPayloadBuilder.tasksForProcess(processInstance).build());
+        Page<Task> taskPage = taskRuntime.tasks(
+            Pageable.of(0, 10),
+            TaskPayloadBuilder.tasksForProcess(processInstance).build()
+        );
 
         //then
         assertThat(taskPage.getContent())
             .extracting(Task::getName, Task::getAssignee)
             .containsExactly(tuple("my-task", INITIATOR));
-
     }
 }

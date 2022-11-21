@@ -17,7 +17,6 @@ package org.activiti.api.task.model.builders;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.api.task.model.payloads.CompleteTaskPayload;
 
 public class CompleteTaskPayloadBuilder {
@@ -30,23 +29,22 @@ public class CompleteTaskPayloadBuilder {
         return this;
     }
 
-    public CompleteTaskPayloadBuilder withVariables(Map<String, Object> variables) {
+    public CompleteTaskPayloadBuilder withVariables(
+        Map<String, Object> variables
+    ) {
         this.variables = variables;
         return this;
     }
 
-    public CompleteTaskPayloadBuilder withVariable(String name,
-                                                   Object value) {
+    public CompleteTaskPayloadBuilder withVariable(String name, Object value) {
         if (this.variables == null) {
             this.variables = new HashMap<>();
         }
-        this.variables.put(name,
-                           value);
+        this.variables.put(name, value);
         return this;
     }
 
     public CompleteTaskPayload build() {
-        return new CompleteTaskPayload(taskId,
-                                       variables);
+        return new CompleteTaskPayload(taskId, variables);
     }
 }

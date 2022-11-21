@@ -25,8 +25,10 @@ public class AwaitableTaskOperations implements TaskOperations {
     private TaskOperations taskOperations;
     private boolean awaitEnabled;
 
-    public AwaitableTaskOperations(TaskOperations taskOperations,
-                                   boolean awaitEnabled) {
+    public AwaitableTaskOperations(
+        TaskOperations taskOperations,
+        boolean awaitEnabled
+    ) {
         this.taskOperations = taskOperations;
         this.awaitEnabled = awaitEnabled;
     }
@@ -46,7 +48,9 @@ public class AwaitableTaskOperations implements TaskOperations {
 
     @Override
     public TaskAssertions complete(CompleteTaskPayload completeTaskPayload) {
-        TaskAssertions taskAssertions = taskOperations.complete(completeTaskPayload);
+        TaskAssertions taskAssertions = taskOperations.complete(
+            completeTaskPayload
+        );
         return awaitableAssertions(taskAssertions);
     }
 }

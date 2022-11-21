@@ -35,63 +35,109 @@ import org.slf4j.LoggerFactory;
 
 
  */
-public class EndEventParseHandler extends AbstractActivityBpmnParseHandler<EndEvent> {
+public class EndEventParseHandler
+    extends AbstractActivityBpmnParseHandler<EndEvent> {
 
-  private static final Logger logger = LoggerFactory.getLogger(EndEventParseHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(
+        EndEventParseHandler.class
+    );
 
-  public Class<? extends BaseElement> getHandledType() {
-    return EndEvent.class;
-  }
-
-  @Override
-  protected void executeParse(BpmnParse bpmnParse, EndEvent endEvent) {
-
-    EventDefinition eventDefinition = null;
-    if (endEvent.getEventDefinitions().size() > 0) {
-      eventDefinition = endEvent.getEventDefinitions().get(0);
-
-      if (eventDefinition instanceof ErrorEventDefinition) {
-        ErrorEventDefinition errorDefinition = (ErrorEventDefinition) eventDefinition;
-        if (bpmnParse.getBpmnModel().containsErrorRef(errorDefinition.getErrorRef())) {
-
-          for(Error error : bpmnParse.getBpmnModel().getErrors().values()) {
-            String errorCode = null;
-            if(error.getId().equals(errorDefinition.getErrorRef())){
-              errorCode = error.getErrorCode();
-            }
-            if (StringUtils.isEmpty(errorCode)) {
-              logger.warn("errorCode is required for an error event " + endEvent.getId());
-            }
-          }
-        }
-        endEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createErrorEndEventActivityBehavior(endEvent, errorDefinition));
-      } else if (eventDefinition instanceof TerminateEventDefinition) {
-        endEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createTerminateEndEventActivityBehavior(endEvent));
-      } else if (eventDefinition instanceof CancelEventDefinition) {
-        endEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createCancelEndEventActivityBehavior(endEvent));
-      } else if (eventDefinition instanceof MessageEventDefinition) {
-        MessageEventDefinition messageEventDefinition = MessageEventDefinition.class
-                                                                              .cast(eventDefinition);
-        Message message = bpmnParse.getBpmnModel()
-                                   .getMessage(messageEventDefinition.getMessageRef());
-
-        BpmnModel bpmnModel = bpmnParse.getBpmnModel();
-        if (bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
-          messageEventDefinition.setMessageRef(message.getName());
-          messageEventDefinition.setExtensionElements(message.getExtensionElements());
-        }
-
-        endEvent.setBehavior(bpmnParse.getActivityBehaviorFactory()
-                                      .createThrowMessageEndEventActivityBehavior(endEvent,
-                                                                                  messageEventDefinition,
-                                                                                  message));
-      } else {
-        endEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createNoneEndEventActivityBehavior(endEvent));
-      }
-
-    } else {
-      endEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createNoneEndEventActivityBehavior(endEvent));
+    public Class<? extends BaseElement> getHandledType() {
+        return EndEvent.class;
     }
-  }
 
+    @Override
+    protected void executeParse(BpmnParse bpmnParse, EndEvent endEvent) {
+        EventDefinition eventDefinition = null;
+        if (endEvent.getEventDefinitions().size() > 0) {
+            eventDefinition = endEvent.getEventDefinitions().get(0);
+
+            if (eventDefinition instanceof ErrorEventDefinition) {
+                ErrorEventDefinition errorDefinition = (ErrorEventDefinition) eventDefinition;
+                if (
+                    bpmnParse
+                        .getBpmnModel()
+                        .containsErrorRef(errorDefinition.getErrorRef())
+                ) {
+                    for (Error error : bpmnParse
+                        .getBpmnModel()
+                        .getErrors()
+                        .values()) {
+                        String errorCode = null;
+                        if (
+                            error.getId().equals(errorDefinition.getErrorRef())
+                        ) {
+                            errorCode = error.getErrorCode();
+                        }
+                        if (StringUtils.isEmpty(errorCode)) {
+                            logger.warn(
+                                "errorCode is required for an error event " +
+                                endEvent.getId()
+                            );
+                        }
+                    }
+                }
+                endEvent.setBehavior(
+                    bpmnParse
+                        .getActivityBehaviorFactory()
+                        .createErrorEndEventActivityBehavior(
+                            endEvent,
+                            errorDefinition
+                        )
+                );
+            } else if (eventDefinition instanceof TerminateEventDefinition) {
+                endEvent.setBehavior(
+                    bpmnParse
+                        .getActivityBehaviorFactory()
+                        .createTerminateEndEventActivityBehavior(endEvent)
+                );
+            } else if (eventDefinition instanceof CancelEventDefinition) {
+                endEvent.setBehavior(
+                    bpmnParse
+                        .getActivityBehaviorFactory()
+                        .createCancelEndEventActivityBehavior(endEvent)
+                );
+            } else if (eventDefinition instanceof MessageEventDefinition) {
+                MessageEventDefinition messageEventDefinition =
+                    MessageEventDefinition.class.cast(eventDefinition);
+                Message message = bpmnParse
+                    .getBpmnModel()
+                    .getMessage(messageEventDefinition.getMessageRef());
+
+                BpmnModel bpmnModel = bpmnParse.getBpmnModel();
+                if (
+                    bpmnModel.containsMessageId(
+                        messageEventDefinition.getMessageRef()
+                    )
+                ) {
+                    messageEventDefinition.setMessageRef(message.getName());
+                    messageEventDefinition.setExtensionElements(
+                        message.getExtensionElements()
+                    );
+                }
+
+                endEvent.setBehavior(
+                    bpmnParse
+                        .getActivityBehaviorFactory()
+                        .createThrowMessageEndEventActivityBehavior(
+                            endEvent,
+                            messageEventDefinition,
+                            message
+                        )
+                );
+            } else {
+                endEvent.setBehavior(
+                    bpmnParse
+                        .getActivityBehaviorFactory()
+                        .createNoneEndEventActivityBehavior(endEvent)
+                );
+            }
+        } else {
+            endEvent.setBehavior(
+                bpmnParse
+                    .getActivityBehaviorFactory()
+                    .createNoneEndEventActivityBehavior(endEvent)
+            );
+        }
+    }
 }

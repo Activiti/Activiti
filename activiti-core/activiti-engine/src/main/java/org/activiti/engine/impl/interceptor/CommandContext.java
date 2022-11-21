@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiEngineAgenda;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
@@ -81,20 +80,28 @@ public class CommandContext {
     protected boolean reused;
 
     protected ActivitiEngineAgenda agenda;
-    protected Map<String, ExecutionEntity> involvedExecutions = new HashMap<>(1); // The executions involved with the command
+    protected Map<String, ExecutionEntity> involvedExecutions = new HashMap<>(
+        1
+    ); // The executions involved with the command
     protected LinkedList<Object> resultStack = new LinkedList<>(); // needs to be a stack, as JavaDelegates can do api calls again
 
-    public CommandContext(Command<?> command,
-                          ProcessEngineConfigurationImpl processEngineConfiguration) {
+    public CommandContext(
+        Command<?> command,
+        ProcessEngineConfigurationImpl processEngineConfiguration
+    ) {
         this.command = command;
         this.processEngineConfiguration = processEngineConfiguration;
-        this.failedJobCommandFactory = processEngineConfiguration.getFailedJobCommandFactory();
-        this.sessionFactories = processEngineConfiguration.getSessionFactories();
-        this.agenda = processEngineConfiguration.getEngineAgendaFactory().createAgenda(this);
+        this.failedJobCommandFactory =
+            processEngineConfiguration.getFailedJobCommandFactory();
+        this.sessionFactories =
+            processEngineConfiguration.getSessionFactories();
+        this.agenda =
+            processEngineConfiguration
+                .getEngineAgendaFactory()
+                .createAgenda(this);
     }
 
     public void close() {
-
         // The intention of this method is that all resources are closed properly, even if exceptions occur
         // in close or flush methods of the sessions or the transaction context.
 
@@ -108,7 +115,6 @@ public class CommandContext {
                 } catch (Throwable exception) {
                     exception(exception);
                 } finally {
-
                     try {
                         if (exception == null) {
                             executeCloseListenersAfterSessionFlushed();
@@ -142,16 +148,17 @@ public class CommandContext {
     }
 
     protected void logException() {
-        if (exception instanceof JobNotFoundException || exception instanceof ActivitiTaskAlreadyClaimedException) {
+        if (
+            exception instanceof JobNotFoundException ||
+            exception instanceof ActivitiTaskAlreadyClaimedException
+        ) {
             // reduce log level, because this may have been caused because of job deletion due to cancelActiviti="true"
-            log.info("Error while closing command context",
-                     exception);
+            log.info("Error while closing command context", exception);
         } else if (exception instanceof ActivitiOptimisticLockingException) {
             // reduce log level, as normally we're not interested in logging this exception
             log.debug("Optimistic locking exception : " + exception);
         } else {
-            log.error("Error while closing command context",
-                      exception);
+            log.error("Error while closing command context", exception);
         }
     }
 
@@ -161,12 +168,16 @@ public class CommandContext {
         } else if (exception instanceof RuntimeException) {
             throw (RuntimeException) exception;
         } else {
-            throw new ActivitiException("exception while executing command " + command,
-                                        exception);
+            throw new ActivitiException(
+                "exception while executing command " + command,
+                exception
+            );
         }
     }
 
-    public void addCloseListener(CommandContextCloseListener commandContextCloseListener) {
+    public void addCloseListener(
+        CommandContextCloseListener commandContextCloseListener
+    ) {
         if (closeListeners == null) {
             closeListeners = new ArrayList<>(1);
         }
@@ -262,19 +273,19 @@ public class CommandContext {
         if (this.exception == null) {
             this.exception = exception;
         } else {
-            log.error("masked exception in command context. for root cause, see below as it will be rethrown later.",
-                      exception);
+            log.error(
+                "masked exception in command context. for root cause, see below as it will be rethrown later.",
+                exception
+            );
             LogMDC.clear();
         }
     }
 
-    public void addAttribute(String key,
-                             Object value) {
+    public void addAttribute(String key, Object value) {
         if (attributes == null) {
             attributes = new HashMap<>(1);
         }
-        attributes.put(key,
-                       value);
+        attributes.put(key, value);
     }
 
     public Object getAttribute(String key) {
@@ -292,17 +303,19 @@ public class CommandContext {
         return null;
     }
 
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings({ "unchecked" })
     public <T> T getSession(Class<T> sessionClass) {
         Session session = sessions.get(sessionClass);
         if (session == null) {
             SessionFactory sessionFactory = sessionFactories.get(sessionClass);
             if (sessionFactory == null) {
-                throw new ActivitiException("no session factory configured for " + sessionClass.getName());
+                throw new ActivitiException(
+                    "no session factory configured for " +
+                    sessionClass.getName()
+                );
             }
             session = sessionFactory.openSession(this);
-            sessions.put(sessionClass,
-                         session);
+            sessions.put(sessionClass, session);
         }
 
         return (T) session;
@@ -436,8 +449,7 @@ public class CommandContext {
 
     public void addInvolvedExecution(ExecutionEntity executionEntity) {
         if (executionEntity.getId() != null) {
-            involvedExecutions.put(executionEntity.getId(),
-                                   executionEntity);
+            involvedExecutions.put(executionEntity.getId(), executionEntity);
         }
     }
 

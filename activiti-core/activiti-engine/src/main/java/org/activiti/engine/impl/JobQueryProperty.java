@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.runtime.JobQuery;
 
@@ -30,30 +28,39 @@ import org.activiti.engine.runtime.JobQuery;
  */
 public class JobQueryProperty implements QueryProperty {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private static final Map<String, JobQueryProperty> properties = new HashMap<String, JobQueryProperty>();
+    private static final Map<String, JobQueryProperty> properties = new HashMap<String, JobQueryProperty>();
 
-  public static final JobQueryProperty JOB_ID = new JobQueryProperty("ID_");
-  public static final JobQueryProperty PROCESS_INSTANCE_ID = new JobQueryProperty("RES.PROCESS_INSTANCE_ID_");
-  public static final JobQueryProperty EXECUTION_ID = new JobQueryProperty("RES.EXECUTION_ID_");
-  public static final JobQueryProperty DUEDATE = new JobQueryProperty("RES.DUEDATE_");
-  public static final JobQueryProperty RETRIES = new JobQueryProperty("RES.RETRIES_");
-  public static final JobQueryProperty TENANT_ID = new JobQueryProperty("RES.TENANT_ID_");
+    public static final JobQueryProperty JOB_ID = new JobQueryProperty("ID_");
+    public static final JobQueryProperty PROCESS_INSTANCE_ID = new JobQueryProperty(
+        "RES.PROCESS_INSTANCE_ID_"
+    );
+    public static final JobQueryProperty EXECUTION_ID = new JobQueryProperty(
+        "RES.EXECUTION_ID_"
+    );
+    public static final JobQueryProperty DUEDATE = new JobQueryProperty(
+        "RES.DUEDATE_"
+    );
+    public static final JobQueryProperty RETRIES = new JobQueryProperty(
+        "RES.RETRIES_"
+    );
+    public static final JobQueryProperty TENANT_ID = new JobQueryProperty(
+        "RES.TENANT_ID_"
+    );
 
-  private String name;
+    private String name;
 
-  public JobQueryProperty(String name) {
-    this.name = name;
-    properties.put(name, this);
-  }
+    public JobQueryProperty(String name) {
+        this.name = name;
+        properties.put(name, this);
+    }
 
-  public String getName() {
-    return name;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public static JobQueryProperty findByName(String propertyName) {
-    return properties.get(propertyName);
-  }
-
+    public static JobQueryProperty findByName(String propertyName) {
+        return properties.get(propertyName);
+    }
 }

@@ -15,6 +15,13 @@
  */
 package org.activiti.runtime.api.impl;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.Task;
@@ -31,25 +38,21 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class TaskAdminRuntimeImplTest {
 
     @Mock
     private TaskService taskService;
+
     @Mock
     private APIVariableInstanceConverter variableInstanceConverter;
+
     @Mock
     private TaskRuntimeHelper taskRuntimeHelper;
+
     @Mock
     private SecurityManager securityManager;
+
     @Spy
     private APITaskConverter taskConverter = new APITaskConverter(taskService);
 
@@ -60,7 +63,10 @@ class TaskAdminRuntimeImplTest {
     void should_assignOneTask() {
         final String taskId = "taskId";
         final String assignee = "hruser";
-        AssignTasksPayload assignTasksPayload = new AssignTasksPayload(List.of(taskId), assignee);
+        AssignTasksPayload assignTasksPayload = new AssignTasksPayload(
+            List.of(taskId),
+            assignee
+        );
 
         TaskEntityImpl task = new TaskEntityImpl();
         task.setId(taskId);
@@ -72,7 +78,10 @@ class TaskAdminRuntimeImplTest {
         verify(taskService).unclaim(eq(taskId));
         verify(taskService).claim(eq(taskId), eq(assignee));
         Assertions.assertThat(tasks.getContent()).hasSize(1);
-        Assertions.assertThat(tasks.getContent()).extracting(Task::getAssignee).containsExactly(assignee);
+        Assertions
+            .assertThat(tasks.getContent())
+            .extracting(Task::getAssignee)
+            .containsExactly(assignee);
     }
 
     @Test
@@ -80,7 +89,10 @@ class TaskAdminRuntimeImplTest {
         final String taskId1 = "taskId1";
         final String taskId2 = "taskId2";
         final String assignee = "hruser";
-        AssignTasksPayload assignTasksPayload = new AssignTasksPayload(List.of(taskId1, taskId2), assignee);
+        AssignTasksPayload assignTasksPayload = new AssignTasksPayload(
+            List.of(taskId1, taskId2),
+            assignee
+        );
 
         TaskEntityImpl task1 = new TaskEntityImpl();
         task1.setId(taskId1);
@@ -99,13 +111,19 @@ class TaskAdminRuntimeImplTest {
         verify(taskService).unclaim(eq(taskId2));
         verify(taskService).claim(eq(taskId2), eq(assignee));
         Assertions.assertThat(tasks.getContent()).hasSize(2);
-        Assertions.assertThat(tasks.getContent()).extracting(Task::getAssignee).containsOnly(assignee);
+        Assertions
+            .assertThat(tasks.getContent())
+            .extracting(Task::getAssignee)
+            .containsOnly(assignee);
     }
 
     @Test
     void should_notAssign_when_listIsEmpty() {
         final String assignee = "hruser";
-        AssignTasksPayload assignTasksPayload = new AssignTasksPayload(List.of(), assignee);
+        AssignTasksPayload assignTasksPayload = new AssignTasksPayload(
+            List.of(),
+            assignee
+        );
 
         Page<Task> tasks = taskAdminRuntime.assignMultiple(assignTasksPayload);
 
@@ -113,5 +131,4 @@ class TaskAdminRuntimeImplTest {
         verify(taskService, never()).claim(any(), any());
         Assertions.assertThat(tasks.getContent()).hasSize(0);
     }
-
 }

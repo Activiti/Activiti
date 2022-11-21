@@ -17,6 +17,7 @@ package org.activiti.core.el;
 
 import static org.activiti.core.el.DateResolverHelper.addDateFunctions;
 import static org.activiti.core.el.ListResolverHelper.addListFunctions;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,7 +36,9 @@ import org.slf4j.LoggerFactory;
  */
 public class ELContextBuilder {
 
-    private static final Logger logger = LoggerFactory.getLogger(ELContextBuilder.class);
+    private static final Logger logger = LoggerFactory.getLogger(
+        ELContextBuilder.class
+    );
 
     private List<ELResolver> resolvers;
     private Map<String, Object> variables;
@@ -55,7 +58,9 @@ public class ELContextBuilder {
         return new ActivitiElContext(elResolver);
     }
 
-    public ELContext buildWithCustomFunctions(List<CustomFunctionProvider> customFunctionProviders) {
+    public ELContext buildWithCustomFunctions(
+        List<CustomFunctionProvider> customFunctionProviders
+    ) {
         CompositeELResolver elResolver = createCompositeResolver();
         ActivitiElContext elContext = new ActivitiElContext(elResolver);
         try {
@@ -77,14 +82,23 @@ public class ELContextBuilder {
     }
 
     private void addResolvers(CompositeELResolver compositeResolver) {
-        Stream.ofNullable(resolvers)
+        Stream
+            .ofNullable(resolvers)
             .flatMap(Collection::stream)
             .forEach(compositeResolver::add);
     }
 
     private CompositeELResolver createCompositeResolver() {
         CompositeELResolver elResolver = new CompositeELResolver();
-        elResolver.add(new ReadOnlyMapELResolver((Objects.nonNull(variables) ? new HashMap<>(variables) : Collections.emptyMap())));
+        elResolver.add(
+            new ReadOnlyMapELResolver(
+                (
+                    Objects.nonNull(variables)
+                        ? new HashMap<>(variables)
+                        : Collections.emptyMap()
+                )
+            )
+        );
         addResolvers(elResolver);
         return elResolver;
     }

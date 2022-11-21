@@ -21,7 +21,7 @@ public class TemplateDefinition {
 
     public enum TemplateType {
         VARIABLE,
-        FILE;
+        FILE,
     }
 
     private String from;
@@ -32,8 +32,7 @@ public class TemplateDefinition {
 
     private String value;
 
-    TemplateDefinition() {
-    }
+    TemplateDefinition() {}
 
     public TemplateDefinition(TemplateType type, String value) {
         this.type = type;
@@ -77,27 +76,35 @@ public class TemplateDefinition {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TemplateDefinition that = (TemplateDefinition) o;
-        return Objects.equals(from, that.from) &&
+        return (
+            Objects.equals(from, that.from) &&
             Objects.equals(subject, that.subject) &&
             type == that.type &&
-            Objects.equals(value, that.value);
+            Objects.equals(value, that.value)
+        );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(from,
-                            subject,
-                            type,
-                            value);
+        return Objects.hash(from, subject, type, value);
     }
 
     @Override
     public String toString() {
-        return "TemplateDefinition{" +
-            "from='" + from + '\'' +
-            ", subject='" + subject + '\'' +
-            ", type=" + type +
-            ", value='" + value + '\'' +
-            '}';
+        return (
+            "TemplateDefinition{" +
+            "from='" +
+            from +
+            '\'' +
+            ", subject='" +
+            subject +
+            '\'' +
+            ", type=" +
+            type +
+            ", value='" +
+            value +
+            '\'' +
+            '}'
+        );
     }
 }

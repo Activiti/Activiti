@@ -23,35 +23,34 @@ import java.util.UUID;
  */
 public class UUIDType implements VariableType {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public String getTypeName() {
-    return "uuid";
-  }
-
-  public boolean isCachable() {
-    return true;
-  }
-
-  public Object getValue(ValueFields valueFields) {
-    String textValue = valueFields.getTextValue();
-    if (textValue == null)
-      return null;
-    return UUID.fromString(textValue);
-  }
-
-  public void setValue(Object value, ValueFields valueFields) {
-    if (value != null) {
-      valueFields.setTextValue(value.toString());
-    } else {
-      valueFields.setTextValue(null);
+    public String getTypeName() {
+        return "uuid";
     }
-  }
 
-  public boolean isAbleToStore(Object value) {
-    if (value == null) {
-      return true;
+    public boolean isCachable() {
+        return true;
     }
-    return UUID.class.isAssignableFrom(value.getClass());
-  }
+
+    public Object getValue(ValueFields valueFields) {
+        String textValue = valueFields.getTextValue();
+        if (textValue == null) return null;
+        return UUID.fromString(textValue);
+    }
+
+    public void setValue(Object value, ValueFields valueFields) {
+        if (value != null) {
+            valueFields.setTextValue(value.toString());
+        } else {
+            valueFields.setTextValue(null);
+        }
+    }
+
+    public boolean isAbleToStore(Object value) {
+        if (value == null) {
+            return true;
+        }
+        return UUID.class.isAssignableFrom(value.getClass());
+    }
 }

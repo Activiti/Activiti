@@ -19,7 +19,6 @@ package org.activiti.engine.test.api.event;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.delegate.event.impl.ActivitiEventSupport;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -32,39 +31,61 @@ import org.activiti.engine.test.Deployment;
  *
 
  */
-public class ProcessDefinitionScopedEventListenerTest extends PluggableActivitiTestCase {
+public class ProcessDefinitionScopedEventListenerTest
+    extends PluggableActivitiTestCase {
 
-  protected TestActivitiEventListener testListenerAsBean;
-  protected Map<Object, Object> oldBeans;
+    protected TestActivitiEventListener testListenerAsBean;
+    protected Map<Object, Object> oldBeans;
 
-  /**
-   * Test to verify listeners on a process-definition are only called for events related to that definition.
-   */
-  @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml", "org/activiti/engine/test/api/event/simpleProcess.bpmn20.xml" })
-  public void testProcessDefinitionScopedListener() throws Exception {
-    ProcessDefinition firstDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deploymentIdFromDeploymentAnnotation).processDefinitionKey("oneTaskProcess").singleResult();
-    assertThat(firstDefinition).isNotNull();
+    /**
+     * Test to verify listeners on a process-definition are only called for events related to that definition.
+     */
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml",
+            "org/activiti/engine/test/api/event/simpleProcess.bpmn20.xml",
+        }
+    )
+    public void testProcessDefinitionScopedListener() throws Exception {
+        ProcessDefinition firstDefinition = repositoryService
+            .createProcessDefinitionQuery()
+            .deploymentId(deploymentIdFromDeploymentAnnotation)
+            .processDefinitionKey("oneTaskProcess")
+            .singleResult();
+        assertThat(firstDefinition).isNotNull();
 
-    ProcessDefinition secondDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deploymentIdFromDeploymentAnnotation).processDefinitionKey("simpleProcess").singleResult();
-    assertThat(firstDefinition).isNotNull();
+        ProcessDefinition secondDefinition = repositoryService
+            .createProcessDefinitionQuery()
+            .deploymentId(deploymentIdFromDeploymentAnnotation)
+            .processDefinitionKey("simpleProcess")
+            .singleResult();
+        assertThat(firstDefinition).isNotNull();
 
-    // Fetch a reference to the process definition entity to add the listener
-    TestActivitiEventListener listener = new TestActivitiEventListener();
-    BpmnModel bpmnModel = repositoryService.getBpmnModel(firstDefinition.getId());
-    assertThat(bpmnModel).isNotNull();
+        // Fetch a reference to the process definition entity to add the listener
+        TestActivitiEventListener listener = new TestActivitiEventListener();
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(
+            firstDefinition.getId()
+        );
+        assertThat(bpmnModel).isNotNull();
 
-    ((ActivitiEventSupport) bpmnModel.getEventSupport()).addEventListener(listener);
+        ((ActivitiEventSupport) bpmnModel.getEventSupport()).addEventListener(
+                listener
+            );
 
-    // Start a process for the first definition, events should be received
-    ProcessInstance processInstance = runtimeService.startProcessInstanceById(firstDefinition.getId());
-    assertThat(processInstance).isNotNull();
+        // Start a process for the first definition, events should be received
+        ProcessInstance processInstance = runtimeService.startProcessInstanceById(
+            firstDefinition.getId()
+        );
+        assertThat(processInstance).isNotNull();
 
-    assertThat(listener.getEventsReceived().isEmpty()).isFalse();
-    listener.clearEventsReceived();
+        assertThat(listener.getEventsReceived().isEmpty()).isFalse();
+        listener.clearEventsReceived();
 
-    // Start an instance of the other definition
-    ProcessInstance otherInstance = runtimeService.startProcessInstanceById(secondDefinition.getId());
-    assertThat(otherInstance).isNotNull();
-    assertThat(listener.getEventsReceived().isEmpty()).isTrue();
-  }
+        // Start an instance of the other definition
+        ProcessInstance otherInstance = runtimeService.startProcessInstanceById(
+            secondDefinition.getId()
+        );
+        assertThat(otherInstance).isNotNull();
+        assertThat(listener.getEventsReceived().isEmpty()).isTrue();
+    }
 }

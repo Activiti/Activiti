@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.event.EventLogEntry;
 
@@ -28,35 +27,33 @@ import org.activiti.engine.event.EventLogEntry;
  */
 @Internal
 public interface EventLogEntryEntity extends Entity, EventLogEntry {
+    void setLogNumber(long logNumber);
 
-  void setLogNumber(long logNumber);
+    void setType(String type);
 
-  void setType(String type);
+    void setProcessDefinitionId(String processDefinitionId);
 
-  void setProcessDefinitionId(String processDefinitionId);
+    void setProcessInstanceId(String processInstanceId);
 
-  void setProcessInstanceId(String processInstanceId);
+    void setExecutionId(String executionId);
 
-  void setExecutionId(String executionId);
+    void setTaskId(String taskId);
 
-  void setTaskId(String taskId);
+    void setTimeStamp(Date timeStamp);
 
-  void setTimeStamp(Date timeStamp);
+    void setUserId(String userId);
 
-  void setUserId(String userId);
+    void setData(byte[] data);
 
-  void setData(byte[] data);
+    String getLockOwner();
 
-  String getLockOwner();
+    void setLockOwner(String lockOwner);
 
-  void setLockOwner(String lockOwner);
+    String getLockTime();
 
-  String getLockTime();
+    void setLockTime(String lockTime);
 
-  void setLockTime(String lockTime);
+    int getProcessed();
 
-  int getProcessed();
-
-  void setProcessed(int isProcessed);
-
+    void setProcessed(int isProcessed);
 }

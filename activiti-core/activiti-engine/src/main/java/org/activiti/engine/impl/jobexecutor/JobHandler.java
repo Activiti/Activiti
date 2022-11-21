@@ -26,8 +26,12 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
  */
 @Internal
 public interface JobHandler {
+    String getType();
 
-  String getType();
-
-  void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext);
+    void execute(
+        JobEntity job,
+        String configuration,
+        ExecutionEntity execution,
+        CommandContext commandContext
+    );
 }

@@ -15,6 +15,10 @@
  */
 package org.activiti.engine.impl.cmd.integration;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
@@ -24,10 +28,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DeleteIntegrationContextCmdTest {
@@ -43,15 +43,21 @@ public class DeleteIntegrationContextCmdTest {
 
     @Before
     public void setUp() throws Exception {
-        given(commandContext.getProcessEngineConfiguration()).willReturn(processEngineConfiguration);
-        given(processEngineConfiguration.getIntegrationContextManager()).willReturn(integrationContextManager);
+        given(commandContext.getProcessEngineConfiguration())
+            .willReturn(processEngineConfiguration);
+        given(processEngineConfiguration.getIntegrationContextManager())
+            .willReturn(integrationContextManager);
     }
 
     @Test
     public void executeShouldDeleteIntegrationContext() throws Exception {
         //given
-        IntegrationContextEntity integrationContextEntity = mock(IntegrationContextEntity.class);
-        DeleteIntegrationContextCmd command = new DeleteIntegrationContextCmd(integrationContextEntity);
+        IntegrationContextEntity integrationContextEntity = mock(
+            IntegrationContextEntity.class
+        );
+        DeleteIntegrationContextCmd command = new DeleteIntegrationContextCmd(
+            integrationContextEntity
+        );
 
         //when
         command.execute(commandContext);

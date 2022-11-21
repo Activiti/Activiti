@@ -17,13 +17,13 @@ package org.activiti.bpmn.model;
 
 public class ComplexGateway extends Gateway {
 
-  public ComplexGateway clone() {
-    ComplexGateway clone = new ComplexGateway();
-    clone.setValues(this);
-    return clone;
-  }
+    public ComplexGateway clone() {
+        ComplexGateway clone = new ComplexGateway();
+        clone.setValues(this);
+        return clone;
+    }
 
-  public void setValues(ComplexGateway otherElement) {
-    super.setValues(otherElement);
-  }
+    public void setValues(ComplexGateway otherElement) {
+        super.setValues(otherElement);
+    }
 }

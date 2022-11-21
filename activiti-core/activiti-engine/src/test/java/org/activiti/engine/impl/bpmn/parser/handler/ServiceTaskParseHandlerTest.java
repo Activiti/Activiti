@@ -15,6 +15,10 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
+
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.impl.bpmn.behavior.ServiceTaskDelegateExpressionActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
@@ -25,10 +29,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ServiceTaskParseHandlerTest {
@@ -44,19 +44,27 @@ public class ServiceTaskParseHandlerTest {
 
     @Before
     public void setUp() throws Exception {
-        given(bpmnParse.getActivityBehaviorFactory()).willReturn(activityBehaviorFactory);
+        given(bpmnParse.getActivityBehaviorFactory())
+            .willReturn(activityBehaviorFactory);
     }
 
     @Test
-    public void executeParseShouldUseDefaultBehaviorWhenNoInformationIsProvided() throws Exception {
+    public void executeParseShouldUseDefaultBehaviorWhenNoInformationIsProvided()
+        throws Exception {
         //given
         ServiceTask serviceTask = new ServiceTask();
-        ServiceTaskDelegateExpressionActivityBehavior defaultBehavior = mock(ServiceTaskDelegateExpressionActivityBehavior.class);
-        given(activityBehaviorFactory.createDefaultServiceTaskBehavior(serviceTask)).willReturn(defaultBehavior);
+        ServiceTaskDelegateExpressionActivityBehavior defaultBehavior = mock(
+            ServiceTaskDelegateExpressionActivityBehavior.class
+        );
+        given(
+            activityBehaviorFactory.createDefaultServiceTaskBehavior(
+                serviceTask
+            )
+        )
+            .willReturn(defaultBehavior);
 
         //when
-        serviceTaskParseHandler.executeParse(bpmnParse,
-                                             serviceTask);
+        serviceTaskParseHandler.executeParse(bpmnParse, serviceTask);
 
         //then
         assertThat(serviceTask.getBehavior()).isEqualTo(defaultBehavior);

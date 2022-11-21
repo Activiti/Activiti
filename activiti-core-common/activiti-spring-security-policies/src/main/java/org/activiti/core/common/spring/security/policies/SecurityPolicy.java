@@ -18,6 +18,7 @@ package org.activiti.core.common.spring.security.policies;
 import java.util.List;
 
 public class SecurityPolicy {
+
     private String name;
     private List<String> groups;
     private List<String> users;

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.testing;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,39 +37,48 @@ import org.junit.Test;
  */
 public class ActivitiRuleJunit4Test {
 
-  @Rule
-  public ActivitiRule activitiRule = new ActivitiRule();
+    @Rule
+    public ActivitiRule activitiRule = new ActivitiRule();
 
-  @Test
-  @Deployment
-  public void ruleUsageExample() {
-    RuntimeService runtimeService = activitiRule.getRuntimeService();
-    runtimeService.startProcessInstanceByKey("ruleUsage");
+    @Test
+    @Deployment
+    public void ruleUsageExample() {
+        RuntimeService runtimeService = activitiRule.getRuntimeService();
+        runtimeService.startProcessInstanceByKey("ruleUsage");
 
-    TaskService taskService = activitiRule.getTaskService();
-    Task task = taskService.createTaskQuery().singleResult();
-    assertThat(task.getName()).isEqualTo("My Task");
+        TaskService taskService = activitiRule.getTaskService();
+        Task task = taskService.createTaskQuery().singleResult();
+        assertThat(task.getName()).isEqualTo("My Task");
 
-    taskService.complete(task.getId());
-    assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
-  }
+        taskService.complete(task.getId());
+        assertThat(runtimeService.createProcessInstanceQuery().count())
+            .isEqualTo(0);
+    }
 
-  // this is to show how JobTestHelper could be used to wait for jobs to be all processed
-  @Test
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/async/AsyncTaskTest.testAsyncTask.bpmn20.xml" })
-  public void testWaitForJobs() {
-    RuntimeService runtimeService = activitiRule.getRuntimeService();
-    ManagementService managementService = activitiRule.getManagementService();
+    // this is to show how JobTestHelper could be used to wait for jobs to be all processed
+    @Test
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/bpmn/async/AsyncTaskTest.testAsyncTask.bpmn20.xml",
+        }
+    )
+    public void testWaitForJobs() {
+        RuntimeService runtimeService = activitiRule.getRuntimeService();
+        ManagementService managementService = activitiRule.getManagementService();
 
-    // start process
-    runtimeService.startProcessInstanceByKey("asyncTask");
+        // start process
+        runtimeService.startProcessInstanceByKey("asyncTask");
 
-    // now there should be one job in the database:
-    assertThat(managementService.createJobQuery().count()).isEqualTo(1);
+        // now there should be one job in the database:
+        assertThat(managementService.createJobQuery().count()).isEqualTo(1);
 
-    JobTestHelper.waitForJobExecutorToProcessAllJobs(activitiRule, 5000L, 500L);
+        JobTestHelper.waitForJobExecutorToProcessAllJobs(
+            activitiRule,
+            5000L,
+            500L
+        );
 
-    // the job is done
-    assertThat(managementService.createJobQuery().count()).isEqualTo(0);
-  }
+        // the job is done
+        assertThat(managementService.createJobQuery().count()).isEqualTo(0);
+    }
 }

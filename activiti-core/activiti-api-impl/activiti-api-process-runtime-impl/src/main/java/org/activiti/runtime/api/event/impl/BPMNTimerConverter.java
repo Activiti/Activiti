@@ -40,7 +40,11 @@ public class BPMNTimerConverter {
     public BPMNTimerImpl convertToBPMNTimer(ActivitiEntityEvent internalEvent) {
         AbstractJobEntity jobEntity = (AbstractJobEntity) internalEvent.getEntity();
 
-        BPMNTimerImpl timer = new BPMNTimerImpl(TimerEventHandler.getActivityIdFromConfiguration(jobEntity.getJobHandlerConfiguration()));
+        BPMNTimerImpl timer = new BPMNTimerImpl(
+            TimerEventHandler.getActivityIdFromConfiguration(
+                jobEntity.getJobHandlerConfiguration()
+            )
+        );
         timer.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         timer.setProcessInstanceId(internalEvent.getProcessInstanceId());
         timer.setTimerPayload(convertToTimerPayload(jobEntity));
@@ -49,8 +53,15 @@ public class BPMNTimerConverter {
     }
 
     public boolean isTimerRelatedEvent(ActivitiEvent event) {
-        return event instanceof ActivitiEntityEvent &&
-                AbstractJobEntity.class.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass()) &&
-                ((AbstractJobEntity) ((ActivitiEntityEvent) event).getEntity()).getJobType().equals("timer");
+        return (
+            event instanceof ActivitiEntityEvent &&
+            AbstractJobEntity.class.isAssignableFrom(
+                    ((ActivitiEntityEvent) event).getEntity().getClass()
+                ) &&
+            (
+                (AbstractJobEntity) ((ActivitiEntityEvent) event).getEntity()
+            ).getJobType()
+                .equals("timer")
+        );
     }
 }

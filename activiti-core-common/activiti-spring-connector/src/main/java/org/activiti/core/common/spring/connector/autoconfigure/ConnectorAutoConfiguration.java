@@ -18,6 +18,8 @@ package org.activiti.core.common.spring.connector.autoconfigure;
 import static java.util.Collections.emptyList;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.List;
 import org.activiti.core.common.model.connector.ConnectorDefinition;
 import org.activiti.core.common.spring.connector.ConnectorDefinitionService;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,29 +29,42 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
-import java.io.IOException;
-import java.util.List;
-
 @Configuration
 public class ConnectorAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnMissingClass(value = "org.springframework.http.converter.json.Jackson2ObjectMapperBuilder")
+    @ConditionalOnMissingClass(
+        value = "org.springframework.http.converter.json.Jackson2ObjectMapperBuilder"
+    )
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ConnectorDefinitionService connectorDefinitionService(@Value("${activiti.connectors.dir:classpath:/connectors/}") String connectorRoot, ObjectMapper objectMapper, ResourcePatternResolver resourceLoader) {
-        return new ConnectorDefinitionService(connectorRoot, objectMapper, resourceLoader);
+    public ConnectorDefinitionService connectorDefinitionService(
+        @Value(
+            "${activiti.connectors.dir:classpath:/connectors/}"
+        ) String connectorRoot,
+        ObjectMapper objectMapper,
+        ResourcePatternResolver resourceLoader
+    ) {
+        return new ConnectorDefinitionService(
+            connectorRoot,
+            objectMapper,
+            resourceLoader
+        );
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public List<ConnectorDefinition> connectorDefinitions(ConnectorDefinitionService connectorDefinitionService) throws IOException {
+    public List<ConnectorDefinition> connectorDefinitions(
+        ConnectorDefinitionService connectorDefinitionService
+    ) throws IOException {
         List<ConnectorDefinition> connectorDefinitions = connectorDefinitionService.get();
-        return connectorDefinitions == null? emptyList() : connectorDefinitions;
+        return connectorDefinitions == null
+            ? emptyList()
+            : connectorDefinitions;
     }
 }

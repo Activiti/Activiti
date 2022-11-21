@@ -16,6 +16,5 @@
 package org.activiti.core.el;
 
 public interface CustomFunctionProvider {
-
     void addCustomFunctions(ActivitiElContext elContext);
 }

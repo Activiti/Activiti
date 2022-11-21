@@ -15,24 +15,30 @@
  */
 package org.activiti.runtime.api.event.impl;
 
-import org.activiti.engine.task.IdentityLink;
-
 import static org.activiti.engine.task.IdentityLinkType.CANDIDATE;
+
+import org.activiti.engine.task.IdentityLink;
 
 public class TaskCandidateEventConverterHelper {
 
     public boolean isTaskCandidateUserLink(IdentityLink identityLink) {
-        return isTaskCandidateLink(identityLink) &&
-                identityLink.getUserId() != null;
+        return (
+            isTaskCandidateLink(identityLink) &&
+            identityLink.getUserId() != null
+        );
     }
 
     public boolean isTaskCandidateGroupLink(IdentityLink identityLink) {
-        return isTaskCandidateLink(identityLink) &&
-                identityLink.getGroupId() != null;
+        return (
+            isTaskCandidateLink(identityLink) &&
+            identityLink.getGroupId() != null
+        );
     }
 
     private boolean isTaskCandidateLink(IdentityLink identityLink) {
-        return identityLink.getTaskId() != null &&
-                CANDIDATE.equalsIgnoreCase(identityLink.getType());
+        return (
+            identityLink.getTaskId() != null &&
+            CANDIDATE.equalsIgnoreCase(identityLink.getType())
+        );
     }
 }

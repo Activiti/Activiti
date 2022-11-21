@@ -26,16 +26,18 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 public class ApplicationDeployedEventIT {
+
     @Autowired
     private DeployedApplicationListener listener;
+
     private static final String DEPLOYMENT_TYPE_NAME = "SpringAutoDeployment";
 
     @Test
     public void shouldTriggerApplicationDeployedEvents() {
-       List<Deployment> deployedApplications = listener.getDeployedApplication();
+        List<Deployment> deployedApplications = listener.getDeployedApplication();
 
-       assertThat(deployedApplications)
-               .extracting(Deployment::getName)
-               .containsExactly(DEPLOYMENT_TYPE_NAME);
+        assertThat(deployedApplications)
+            .extracting(Deployment::getName)
+            .containsExactly(DEPLOYMENT_TYPE_NAME);
     }
 }

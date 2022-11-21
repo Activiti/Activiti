@@ -19,7 +19,6 @@ package org.activiti.engine.impl.persistence.entity;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
@@ -27,176 +26,192 @@ import org.activiti.engine.impl.db.BulkDeleteable;
 /**
 
  */
-public class IdentityLinkEntityImpl extends AbstractEntityNoRevision implements IdentityLinkEntity, Serializable, BulkDeleteable {
+public class IdentityLinkEntityImpl
+    extends AbstractEntityNoRevision
+    implements IdentityLinkEntity, Serializable, BulkDeleteable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String type;
-  protected String userId;
-  protected String groupId;
-  protected String taskId;
-  protected String processInstanceId;
-  protected String processDefId;
-  protected TaskEntity task;
-  protected ExecutionEntity processInstance;
-  protected ProcessDefinitionEntity processDef;
+    protected String type;
+    protected String userId;
+    protected String groupId;
+    protected String taskId;
+    protected String processInstanceId;
+    protected String processDefId;
+    protected TaskEntity task;
+    protected ExecutionEntity processInstance;
+    protected ProcessDefinitionEntity processDef;
 
-  public IdentityLinkEntityImpl() {
+    public IdentityLinkEntityImpl() {}
 
-  }
+    public Object getPersistentState() {
+        Map<String, Object> persistentState = new HashMap<String, Object>();
+        persistentState.put("id", this.id);
+        persistentState.put("type", this.type);
 
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = new HashMap<String, Object>();
-    persistentState.put("id", this.id);
-    persistentState.put("type", this.type);
+        if (this.userId != null) {
+            persistentState.put("userId", this.userId);
+        }
 
-    if (this.userId != null) {
-      persistentState.put("userId", this.userId);
+        if (this.groupId != null) {
+            persistentState.put("groupId", this.groupId);
+        }
+
+        if (this.taskId != null) {
+            persistentState.put("taskId", this.taskId);
+        }
+
+        if (this.processInstanceId != null) {
+            persistentState.put("processInstanceId", this.processInstanceId);
+        }
+
+        if (this.processDefId != null) {
+            persistentState.put("processDefId", this.processDefId);
+        }
+
+        return persistentState;
     }
 
-    if (this.groupId != null) {
-      persistentState.put("groupId", this.groupId);
+    public boolean isUser() {
+        return userId != null;
     }
 
-    if (this.taskId != null) {
-      persistentState.put("taskId", this.taskId);
+    public boolean isGroup() {
+        return groupId != null;
     }
 
-    if (this.processInstanceId != null) {
-      persistentState.put("processInstanceId", this.processInstanceId);
+    public String getType() {
+        return type;
     }
 
-    if (this.processDefId != null) {
-      persistentState.put("processDefId", this.processDefId);
+    public void setType(String type) {
+        this.type = type;
     }
 
-    return persistentState;
-  }
-
-  public boolean isUser() {
-    return userId != null;
-  }
-
-  public boolean isGroup() {
-    return groupId != null;
-  }
-
-  public String getType() {
-    return type;
-  }
-
-  public void setType(String type) {
-    this.type = type;
-  }
-
-  public String getUserId() {
-    return userId;
-  }
-
-  public void setUserId(String userId) {
-    if (this.groupId != null && userId != null) {
-      throw new ActivitiException("Cannot assign a userId to a task assignment that already has a groupId");
+    public String getUserId() {
+        return userId;
     }
-    this.userId = userId;
-  }
 
-  public String getGroupId() {
-    return groupId;
-  }
-
-  public void setGroupId(String groupId) {
-    if (this.userId != null && groupId != null) {
-      throw new ActivitiException("Cannot assign a groupId to a task assignment that already has a userId");
+    public void setUserId(String userId) {
+        if (this.groupId != null && userId != null) {
+            throw new ActivitiException(
+                "Cannot assign a userId to a task assignment that already has a groupId"
+            );
+        }
+        this.userId = userId;
     }
-    this.groupId = groupId;
-  }
 
-  public String getTaskId() {
-    return taskId;
-  }
-
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
-  }
-
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
-
-  public void setProcessInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
-
-  public String getProcessDefId() {
-    return processDefId;
-  }
-
-  public void setProcessDefId(String processDefId) {
-    this.processDefId = processDefId;
-  }
-
-  public TaskEntity getTask() {
-    if ((task == null) && (taskId != null)) {
-      this.task = Context.getCommandContext().getTaskEntityManager().findById(taskId);
+    public String getGroupId() {
+        return groupId;
     }
-    return task;
-  }
 
-  public void setTask(TaskEntity task) {
-    this.task = task;
-    this.taskId = task.getId();
-  }
+    public void setGroupId(String groupId) {
+        if (this.userId != null && groupId != null) {
+            throw new ActivitiException(
+                "Cannot assign a groupId to a task assignment that already has a userId"
+            );
+        }
+        this.groupId = groupId;
+    }
 
-  public ExecutionEntity getProcessInstance() {
-    if ((processInstance == null) && (processInstanceId != null)) {
-      this.processInstance = Context.getCommandContext().getExecutionEntityManager().findById(processInstanceId);
+    public String getTaskId() {
+        return taskId;
     }
-    return processInstance;
-  }
 
-  public void setProcessInstance(ExecutionEntity processInstance) {
-    this.processInstance = processInstance;
-    this.processInstanceId = processInstance.getId();
-  }
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
 
-  public ProcessDefinitionEntity getProcessDef() {
-    if ((processDef == null) && (processDefId != null)) {
-      this.processDef = Context.getCommandContext().getProcessDefinitionEntityManager().findById(processDefId);
+    public String getProcessInstanceId() {
+        return processInstanceId;
     }
-    return processDef;
-  }
 
-  public void setProcessDef(ProcessDefinitionEntity processDef) {
-    this.processDef = processDef;
-    this.processDefId = processDef.getId();
-  }
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
 
-  @Override
-  public String getProcessDefinitionId() {
-    return this.processDefId;
-  }
+    public String getProcessDefId() {
+        return processDefId;
+    }
 
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("IdentityLinkEntity[id=").append(id);
-    sb.append(", type=").append(type);
-    if (userId != null) {
-      sb.append(", userId=").append(userId);
+    public void setProcessDefId(String processDefId) {
+        this.processDefId = processDefId;
     }
-    if (groupId != null) {
-      sb.append(", groupId=").append(groupId);
+
+    public TaskEntity getTask() {
+        if ((task == null) && (taskId != null)) {
+            this.task =
+                Context
+                    .getCommandContext()
+                    .getTaskEntityManager()
+                    .findById(taskId);
+        }
+        return task;
     }
-    if (taskId != null) {
-      sb.append(", taskId=").append(taskId);
+
+    public void setTask(TaskEntity task) {
+        this.task = task;
+        this.taskId = task.getId();
     }
-    if (processInstanceId != null) {
-      sb.append(", processInstanceId=").append(processInstanceId);
+
+    public ExecutionEntity getProcessInstance() {
+        if ((processInstance == null) && (processInstanceId != null)) {
+            this.processInstance =
+                Context
+                    .getCommandContext()
+                    .getExecutionEntityManager()
+                    .findById(processInstanceId);
+        }
+        return processInstance;
     }
-    if (processDefId != null) {
-      sb.append(", processDefId=").append(processDefId);
+
+    public void setProcessInstance(ExecutionEntity processInstance) {
+        this.processInstance = processInstance;
+        this.processInstanceId = processInstance.getId();
     }
-    sb.append("]");
-    return sb.toString();
-  }
+
+    public ProcessDefinitionEntity getProcessDef() {
+        if ((processDef == null) && (processDefId != null)) {
+            this.processDef =
+                Context
+                    .getCommandContext()
+                    .getProcessDefinitionEntityManager()
+                    .findById(processDefId);
+        }
+        return processDef;
+    }
+
+    public void setProcessDef(ProcessDefinitionEntity processDef) {
+        this.processDef = processDef;
+        this.processDefId = processDef.getId();
+    }
+
+    @Override
+    public String getProcessDefinitionId() {
+        return this.processDefId;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("IdentityLinkEntity[id=").append(id);
+        sb.append(", type=").append(type);
+        if (userId != null) {
+            sb.append(", userId=").append(userId);
+        }
+        if (groupId != null) {
+            sb.append(", groupId=").append(groupId);
+        }
+        if (taskId != null) {
+            sb.append(", taskId=").append(taskId);
+        }
+        if (processInstanceId != null) {
+            sb.append(", processInstanceId=").append(processInstanceId);
+        }
+        if (processDefId != null) {
+            sb.append(", processDefId=").append(processDefId);
+        }
+        sb.append("]");
+        return sb.toString();
+    }
 }

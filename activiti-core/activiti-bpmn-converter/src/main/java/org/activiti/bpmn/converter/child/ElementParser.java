@@ -19,9 +19,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 public interface ElementParser<T> {
-
     boolean canParseCurrentElement(XMLStreamReader reader);
 
-    void setInformation(XMLStreamReader reader, T informationContainer) throws XMLStreamException;
-
+    void setInformation(XMLStreamReader reader, T informationContainer)
+        throws XMLStreamException;
 }

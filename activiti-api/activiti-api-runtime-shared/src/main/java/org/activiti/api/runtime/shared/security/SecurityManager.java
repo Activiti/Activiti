@@ -18,7 +18,6 @@ package org.activiti.api.runtime.shared.security;
 import java.util.List;
 
 public interface SecurityManager {
-
     /**
      * Get currently authenticated user id from application security context
      *
@@ -44,5 +43,4 @@ public interface SecurityManager {
      * @throws SecurityException if principal security context is not valid
      */
     List<String> getAuthenticatedUserRoles() throws SecurityException;
-
 }

@@ -19,12 +19,16 @@ import org.activiti.api.model.shared.event.VariableCreatedEvent;
 import org.activiti.api.model.shared.event.VariableEvent;
 import org.activiti.api.model.shared.model.VariableInstance;
 
-public class VariableCreatedEventImpl extends VariableEventImpl implements VariableCreatedEvent {
+public class VariableCreatedEventImpl
+    extends VariableEventImpl
+    implements VariableCreatedEvent {
 
-    public VariableCreatedEventImpl() {
-    }
+    public VariableCreatedEventImpl() {}
 
-    public VariableCreatedEventImpl(VariableInstance entity, String processDefinitionId) {
+    public VariableCreatedEventImpl(
+        VariableInstance entity,
+        String processDefinitionId
+    ) {
         super(entity);
         setProcessInstanceId(entity.getProcessInstanceId());
         setProcessDefinitionId(processDefinitionId);
@@ -34,5 +38,4 @@ public class VariableCreatedEventImpl extends VariableEventImpl implements Varia
     public VariableEvent.VariableEvents getEventType() {
         return VariableEvent.VariableEvents.VARIABLE_CREATED;
     }
-
 }

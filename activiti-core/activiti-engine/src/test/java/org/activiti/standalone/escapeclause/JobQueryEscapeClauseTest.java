@@ -29,57 +29,73 @@ public class JobQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        deploymentId = repositoryService.createDeployment()
-                .addClasspathResource("org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml")
+        deploymentId =
+            repositoryService
+                .createDeployment()
+                .addClasspathResource(
+                    "org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml"
+                )
                 .tenantId("tenant%")
                 .deploy()
                 .getId();
 
-        deploymentTwoId = repositoryService.createDeployment()
-                .addClasspathResource("org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml")
+        deploymentTwoId =
+            repositoryService
+                .createDeployment()
+                .addClasspathResource(
+                    "org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml"
+                )
                 .tenantId("tenant_")
                 .deploy()
                 .getId();
 
-        deploymentThreeId = repositoryService.createDeployment()
-                .addClasspathResource("org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml")
+        deploymentThreeId =
+            repositoryService
+                .createDeployment()
+                .addClasspathResource(
+                    "org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml"
+                )
                 .tenantId("test")
                 .deploy()
                 .getId();
 
-        runtimeService.startProcessInstanceByKeyAndTenantId("timerOnTask",
-                                                            "tenant%").getId();
+        runtimeService
+            .startProcessInstanceByKeyAndTenantId("timerOnTask", "tenant%")
+            .getId();
 
-        runtimeService.startProcessInstanceByKeyAndTenantId("timerOnTask",
-                                                            "tenant_").getId();
+        runtimeService
+            .startProcessInstanceByKeyAndTenantId("timerOnTask", "tenant_")
+            .getId();
 
-        runtimeService.startProcessInstanceByKeyAndTenantId("timerOnTask",
-                                                            "test").getId();
+        runtimeService
+            .startProcessInstanceByKeyAndTenantId("timerOnTask", "test")
+            .getId();
     }
 
     @Override
     protected void tearDown() throws Exception {
-        repositoryService.deleteDeployment(deploymentId,
-                                           true);
-        repositoryService.deleteDeployment(deploymentTwoId,
-                                           true);
-        repositoryService.deleteDeployment(deploymentThreeId,
-                                           true);
+        repositoryService.deleteDeployment(deploymentId, true);
+        repositoryService.deleteDeployment(deploymentTwoId, true);
+        repositoryService.deleteDeployment(deploymentThreeId, true);
         super.tearDown();
     }
 
     public void testQueryByTenantIdLike() {
-        TimerJobQuery query = managementService.createTimerJobQuery().jobTenantIdLike("%\\%%");
+        TimerJobQuery query = managementService
+            .createTimerJobQuery()
+            .jobTenantIdLike("%\\%%");
         assertThat(query.singleResult().getTenantId()).isEqualTo("tenant%");
         assertThat(query.list()).hasSize(1);
         assertThat(query.count()).isEqualTo(1);
 
-        query = managementService.createTimerJobQuery().jobTenantIdLike("%\\_%");
+        query =
+            managementService.createTimerJobQuery().jobTenantIdLike("%\\_%");
         assertThat(query.singleResult().getTenantId()).isEqualTo("tenant_");
         assertThat(query.list()).hasSize(1);
         assertThat(query.count()).isEqualTo(1);
 
-        query = managementService.createTimerJobQuery().jobTenantIdLike("%test%");
+        query =
+            managementService.createTimerJobQuery().jobTenantIdLike("%test%");
         assertThat(query.singleResult().getTenantId()).isEqualTo("test");
         assertThat(query.list()).hasSize(1);
         assertThat(query.count()).isEqualTo(1);

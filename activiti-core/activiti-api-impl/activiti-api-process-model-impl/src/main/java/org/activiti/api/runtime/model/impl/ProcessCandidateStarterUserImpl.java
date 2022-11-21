@@ -15,18 +15,21 @@
  */
 package org.activiti.api.runtime.model.impl;
 
+import java.util.Objects;
 import org.activiti.api.process.model.ProcessCandidateStarterUser;
 
-import java.util.Objects;
-
-public class ProcessCandidateStarterUserImpl extends ProcessCandidateStarterImpl implements ProcessCandidateStarterUser {
+public class ProcessCandidateStarterUserImpl
+    extends ProcessCandidateStarterImpl
+    implements ProcessCandidateStarterUser {
 
     private String userId;
 
-    public ProcessCandidateStarterUserImpl() {
-    }
+    public ProcessCandidateStarterUserImpl() {}
 
-    public ProcessCandidateStarterUserImpl(String processDefinitionId, String userId) {
+    public ProcessCandidateStarterUserImpl(
+        String processDefinitionId,
+        String userId
+    ) {
         super(processDefinitionId);
         this.userId = userId;
     }
@@ -36,8 +39,13 @@ public class ProcessCandidateStarterUserImpl extends ProcessCandidateStarterImpl
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProcessCandidateStarterUserImpl that = (ProcessCandidateStarterUserImpl) o;
-        return Objects.equals(userId, that.userId) &&
-                Objects.equals(getProcessDefinitionId(), that.getProcessDefinitionId());
+        return (
+            Objects.equals(userId, that.userId) &&
+            Objects.equals(
+                getProcessDefinitionId(),
+                that.getProcessDefinitionId()
+            )
+        );
     }
 
     @Override

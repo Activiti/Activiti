@@ -15,6 +15,9 @@
  */
 package org.activiti.spring.boot.process;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -30,14 +33,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@TestPropertySource("classpath:application-with-candidate-starters-enabled.properties")
+@TestPropertySource(
+    "classpath:application-with-candidate-starters-enabled.properties"
+)
 public class ProcessRuntimeCandidateStartersIT {
 
-    private static final String RESTRICTED_PROCESS_DEFINITION_KEY = "SingleTaskProcessRestricted";
+    private static final String RESTRICTED_PROCESS_DEFINITION_KEY =
+        "SingleTaskProcessRestricted";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -49,7 +52,7 @@ public class ProcessRuntimeCandidateStartersIT {
     private ProcessCleanUpUtil processCleanUpUtil;
 
     @AfterEach
-    public void cleanUp(){
+    public void cleanUp() {
         processCleanUpUtil.cleanUpWithAdmin();
     }
 
@@ -57,74 +60,94 @@ public class ProcessRuntimeCandidateStartersIT {
     public void candidateStarterUser_should_getProcessDefinitions() {
         loginAsCandidateStarterUser();
 
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
-                                                                                                      50));
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
+            Pageable.of(0, 50)
+        );
         assertThat(processDefinitionPage.getContent()).isNotNull();
         assertThat(processDefinitionPage.getContent()).hasSize(1);
-        assertThat(processDefinitionPage.getContent().get(0).getKey()).isEqualTo(RESTRICTED_PROCESS_DEFINITION_KEY);
+        assertThat(processDefinitionPage.getContent().get(0).getKey())
+            .isEqualTo(RESTRICTED_PROCESS_DEFINITION_KEY);
     }
 
     @Test
     public void candidateStarterGroupMembers_should_getProcessDefinitions() {
         loginAsGroupMemberCandidateStarter();
 
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
-            50));
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
+            Pageable.of(0, 50)
+        );
         assertThat(processDefinitionPage.getContent()).isNotNull();
         assertThat(processDefinitionPage.getContent()).hasSize(1);
-        assertThat(processDefinitionPage.getContent().get(0).getKey()).isEqualTo(RESTRICTED_PROCESS_DEFINITION_KEY);
+        assertThat(processDefinitionPage.getContent().get(0).getKey())
+            .isEqualTo(RESTRICTED_PROCESS_DEFINITION_KEY);
     }
 
     @Test
     public void nonCandidateStarters_shouldNot_getProcessDefinitions() {
         loginAsANonCandidateStarter();
 
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
-            50));
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(
+            Pageable.of(0, 50)
+        );
         assertThat(processDefinitionPage.getContent()).isNotNull();
         assertThat(processDefinitionPage.getContent()).isEmpty();
     }
-
 
     @Test
     public void candidateStarterUser_should_getProcessDefinition() {
         loginAsCandidateStarterUser();
 
-        ProcessDefinition processDefinition = processRuntime.processDefinition(RESTRICTED_PROCESS_DEFINITION_KEY);
+        ProcessDefinition processDefinition = processRuntime.processDefinition(
+            RESTRICTED_PROCESS_DEFINITION_KEY
+        );
         assertThat(processDefinition).isNotNull();
-        assertThat(processDefinition.getKey()).isEqualTo(RESTRICTED_PROCESS_DEFINITION_KEY);
+        assertThat(processDefinition.getKey())
+            .isEqualTo(RESTRICTED_PROCESS_DEFINITION_KEY);
     }
 
     @Test
     public void candidateStarterGroupMembers_should_getProcessDefinition() {
         loginAsGroupMemberCandidateStarter();
 
-        ProcessDefinition processDefinition = processRuntime.processDefinition(RESTRICTED_PROCESS_DEFINITION_KEY);
+        ProcessDefinition processDefinition = processRuntime.processDefinition(
+            RESTRICTED_PROCESS_DEFINITION_KEY
+        );
         assertThat(processDefinition).isNotNull();
-        assertThat(processDefinition.getKey()).isEqualTo(RESTRICTED_PROCESS_DEFINITION_KEY);
+        assertThat(processDefinition.getKey())
+            .isEqualTo(RESTRICTED_PROCESS_DEFINITION_KEY);
     }
 
     @Test
     public void nonCandidateStarters_shouldNot_getProcessDefinition() {
         loginAsANonCandidateStarter();
 
-        Throwable throwable = catchThrowable(() -> processRuntime.processDefinition(RESTRICTED_PROCESS_DEFINITION_KEY));
+        Throwable throwable = catchThrowable(() ->
+            processRuntime.processDefinition(RESTRICTED_PROCESS_DEFINITION_KEY)
+        );
 
         assertThat(throwable)
             .isInstanceOf(ActivitiObjectNotFoundException.class)
-            .hasMessage("Unable to find process definition for the given id or key:'" + RESTRICTED_PROCESS_DEFINITION_KEY + "'");
+            .hasMessage(
+                "Unable to find process definition for the given id or key:'" +
+                RESTRICTED_PROCESS_DEFINITION_KEY +
+                "'"
+            );
     }
 
     @Test
     public void candidateStarterUser_can_startProcess() {
         loginAsCandidateStarterUser();
 
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
-            .withProcessDefinitionKey(RESTRICTED_PROCESS_DEFINITION_KEY)
-            .build());
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder
+                .start()
+                .withProcessDefinitionKey(RESTRICTED_PROCESS_DEFINITION_KEY)
+                .build()
+        );
 
         assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getProcessDefinitionKey()).isEqualTo(RESTRICTED_PROCESS_DEFINITION_KEY);
+        assertThat(processInstance.getProcessDefinitionKey())
+            .isEqualTo(RESTRICTED_PROCESS_DEFINITION_KEY);
     }
 
     private void loginAsCandidateStarterUser() {
@@ -138,5 +161,4 @@ public class ProcessRuntimeCandidateStartersIT {
     private void loginAsANonCandidateStarter() {
         securityUtil.logInAs("garth");
     }
-
 }

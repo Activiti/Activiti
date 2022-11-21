@@ -17,6 +17,7 @@ package org.activiti.spring.process.variable.types;
 
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +29,9 @@ import org.junit.jupiter.api.Test;
 
 class DateVariableTypeTest {
 
-    private DateFormatterProvider provider = new DateFormatterProvider("yyyy-MM-dd[['T']HH:mm:ss[.SSS'Z']]");
+    private DateFormatterProvider provider = new DateFormatterProvider(
+        "yyyy-MM-dd[['T']HH:mm:ss[.SSS'Z']]"
+    );
     private List<ActivitiException> exceptionList;
     DateVariableType dateVariableType;
 
@@ -40,16 +43,21 @@ class DateVariableTypeTest {
 
     @Test
     public void should_returnDate_when_parseValidString() {
-        Object result = dateVariableType.parseFromValue("1985-10-26T01:22:00.001Z");
+        Object result = dateVariableType.parseFromValue(
+            "1985-10-26T01:22:00.001Z"
+        );
 
         assertTrue(result.getClass().getName().equals(Date.class.getName()));
     }
 
     @Test
     public void should_throwException_when_parseInvalidString() {
-        Throwable thrown = catchThrowable(() -> dateVariableType.parseFromValue("${now()"));
+        Throwable thrown = catchThrowable(() ->
+            dateVariableType.parseFromValue("${now()")
+        );
 
-        Assertions.assertThat(thrown)
+        Assertions
+            .assertThat(thrown)
             .isInstanceOf(ActivitiException.class)
             .hasMessage("Error parsing date value ${now()");
     }

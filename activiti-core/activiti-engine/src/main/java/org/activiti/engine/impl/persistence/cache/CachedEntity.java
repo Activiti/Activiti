@@ -23,43 +23,45 @@ import org.activiti.engine.impl.persistence.entity.Entity;
  */
 public class CachedEntity {
 
-  /**
-   * The actual {@link Entity} instance.
-   */
-  protected Entity entity;
+    /**
+     * The actual {@link Entity} instance.
+     */
+    protected Entity entity;
 
-  /**
-   * Represents the 'persistence state' at the moment this {@link CachedEntity} instance was created.
-   * It is used later on to determine if a {@link Entity} has been updated, by comparing
-   * the 'persistent state' at that moment with this instance here.
-   */
-  protected Object originalPersistentState;
+    /**
+     * Represents the 'persistence state' at the moment this {@link CachedEntity} instance was created.
+     * It is used later on to determine if a {@link Entity} has been updated, by comparing
+     * the 'persistent state' at that moment with this instance here.
+     */
+    protected Object originalPersistentState;
 
-  public CachedEntity(Entity entity, boolean storeState) {
-    this.entity = entity;
-    if (storeState) {
-      this.originalPersistentState = entity.getPersistentState();
+    public CachedEntity(Entity entity, boolean storeState) {
+        this.entity = entity;
+        if (storeState) {
+            this.originalPersistentState = entity.getPersistentState();
+        }
     }
-  }
 
-  public Entity getEntity() {
-    return entity;
-  }
+    public Entity getEntity() {
+        return entity;
+    }
 
-  public void setEntity(Entity entity) {
-    this.entity = entity;
-  }
+    public void setEntity(Entity entity) {
+        this.entity = entity;
+    }
 
-  public Object getOriginalPersistentState() {
-    return originalPersistentState;
-  }
+    public Object getOriginalPersistentState() {
+        return originalPersistentState;
+    }
 
-  public void setOriginalPersistentState(Object originalPersistentState) {
-    this.originalPersistentState = originalPersistentState;
-  }
+    public void setOriginalPersistentState(Object originalPersistentState) {
+        this.originalPersistentState = originalPersistentState;
+    }
 
-  public boolean hasChanged() {
-    return entity.getPersistentState() != null && !entity.getPersistentState().equals(originalPersistentState);
-  }
-
+    public boolean hasChanged() {
+        return (
+            entity.getPersistentState() != null &&
+            !entity.getPersistentState().equals(originalPersistentState)
+        );
+    }
 }

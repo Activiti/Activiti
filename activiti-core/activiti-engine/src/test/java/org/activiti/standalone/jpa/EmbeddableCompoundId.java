@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.jpa;
 
 import java.io.Serializable;
-
 import javax.persistence.Embeddable;
 
 /**
@@ -27,37 +25,36 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class EmbeddableCompoundId implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private long idPart1;
+    private long idPart1;
 
-  private String idPart2;
+    private String idPart2;
 
-  public long getIdPart1() {
-    return idPart1;
-  }
+    public long getIdPart1() {
+        return idPart1;
+    }
 
-  public void setIdPart1(long idPart1) {
-    this.idPart1 = idPart1;
-  }
+    public void setIdPart1(long idPart1) {
+        this.idPart1 = idPart1;
+    }
 
-  public String getIdPart2() {
-    return idPart2;
-  }
+    public String getIdPart2() {
+        return idPart2;
+    }
 
-  public void setIdPart2(String idPart2) {
-    this.idPart2 = idPart2;
-  }
+    public void setIdPart2(String idPart2) {
+        this.idPart2 = idPart2;
+    }
 
-  @Override
-  public boolean equals(Object obj) {
-    EmbeddableCompoundId other = (EmbeddableCompoundId) obj;
-    return idPart1 == other.idPart1 && idPart2.equals(other.idPart2);
-  }
+    @Override
+    public boolean equals(Object obj) {
+        EmbeddableCompoundId other = (EmbeddableCompoundId) obj;
+        return idPart1 == other.idPart1 && idPart2.equals(other.idPart2);
+    }
 
-  @Override
-  public int hashCode() {
-    return (idPart1 + idPart2).hashCode();
-  }
-
+    @Override
+    public int hashCode() {
+        return (idPart1 + idPart2).hashCode();
+    }
 }

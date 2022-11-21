@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.scripting;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,14 +27,16 @@ import org.activiti.engine.test.Deployment;
  */
 public class ScriptBeanAccessTest extends ResourceActivitiTestCase {
 
-  public ScriptBeanAccessTest() {
-    super("org/activiti/standalone/scripting/activiti.cfg.xml");
-  }
+    public ScriptBeanAccessTest() {
+        super("org/activiti/standalone/scripting/activiti.cfg.xml");
+    }
 
-  @Deployment
-  public void testConfigurationBeanAccess() {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("ScriptBeanAccess");
-    assertThat(runtimeService.getVariable(pi.getId(), "myVariable")).isEqualTo("myValue");
-  }
-
+    @Deployment
+    public void testConfigurationBeanAccess() {
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey(
+            "ScriptBeanAccess"
+        );
+        assertThat(runtimeService.getVariable(pi.getId(), "myVariable"))
+            .isEqualTo("myValue");
+    }
 }

@@ -18,7 +18,6 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.Page;
@@ -28,22 +27,30 @@ import org.activiti.engine.repository.Deployment;
 
  */
 @Internal
-public interface DeploymentEntityManager extends EntityManager<DeploymentEntity> {
+public interface DeploymentEntityManager
+    extends EntityManager<DeploymentEntity> {
+    DeploymentEntity findLatestDeploymentByName(String deploymentName);
 
-  DeploymentEntity findLatestDeploymentByName(String deploymentName);
+    List<Deployment> findDeploymentsByQueryCriteria(
+        DeploymentQueryImpl deploymentQuery,
+        Page page
+    );
 
-  List<Deployment> findDeploymentsByQueryCriteria(DeploymentQueryImpl deploymentQuery, Page page);
+    List<String> getDeploymentResourceNames(String deploymentId);
 
-  List<String> getDeploymentResourceNames(String deploymentId);
+    List<Deployment> findDeploymentsByNativeQuery(
+        Map<String, Object> parameterMap,
+        int firstResult,
+        int maxResults
+    );
 
-  List<Deployment> findDeploymentsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
+    long findDeploymentCountByNativeQuery(Map<String, Object> parameterMap);
 
-  long findDeploymentCountByNativeQuery(Map<String, Object> parameterMap);
+    long findDeploymentCountByQueryCriteria(
+        DeploymentQueryImpl deploymentQuery
+    );
 
-  long findDeploymentCountByQueryCriteria(DeploymentQueryImpl deploymentQuery);
+    void deleteDeployment(String deploymentId, boolean cascade);
 
-  void deleteDeployment(String deploymentId, boolean cascade);
-
-  Deployment selectLatestDeployment(String deploymentName);
-
+    Deployment selectLatestDeployment(String deploymentName);
 }

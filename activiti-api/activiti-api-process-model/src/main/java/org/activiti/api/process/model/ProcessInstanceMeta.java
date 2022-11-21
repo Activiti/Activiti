@@ -18,7 +18,6 @@ package org.activiti.api.process.model;
 import java.util.List;
 
 public interface ProcessInstanceMeta {
-
     String getProcessInstanceId();
 
     List<String> getActiveActivitiesIds();

@@ -18,9 +18,9 @@ package org.activiti.engine.impl;
 import org.activiti.bpmn.model.BpmnModel;
 
 public interface ProcessDefinitionHelper {
-
-    org.activiti.bpmn.model.Process getProcessDefinitionProcessObject(String processDefinitionId);
+    org.activiti.bpmn.model.Process getProcessDefinitionProcessObject(
+        String processDefinitionId
+    );
 
     BpmnModel getProcessDefinitionBpmnModel(String processDefinitionId);
-
 }

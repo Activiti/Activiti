@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-
 import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
@@ -27,46 +25,62 @@ import org.activiti.engine.impl.persistence.entity.data.EventLogEntryDataManager
 /**
 
  */
-public class EventLogEntryEntityManagerImpl extends AbstractEntityManager<EventLogEntryEntity> implements EventLogEntryEntityManager {
+public class EventLogEntryEntityManagerImpl
+    extends AbstractEntityManager<EventLogEntryEntity>
+    implements EventLogEntryEntityManager {
 
-  protected EventLogEntryDataManager eventLogEntryDataManager;
+    protected EventLogEntryDataManager eventLogEntryDataManager;
 
-  public EventLogEntryEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, EventLogEntryDataManager eventLogEntryDataManager) {
-    super(processEngineConfiguration);
-    this.eventLogEntryDataManager = eventLogEntryDataManager;
-  }
+    public EventLogEntryEntityManagerImpl(
+        ProcessEngineConfigurationImpl processEngineConfiguration,
+        EventLogEntryDataManager eventLogEntryDataManager
+    ) {
+        super(processEngineConfiguration);
+        this.eventLogEntryDataManager = eventLogEntryDataManager;
+    }
 
-  @Override
-  protected DataManager<EventLogEntryEntity> getDataManager() {
-    return eventLogEntryDataManager;
-  }
+    @Override
+    protected DataManager<EventLogEntryEntity> getDataManager() {
+        return eventLogEntryDataManager;
+    }
 
-  @Override
-  public List<EventLogEntry> findAllEventLogEntries() {
-    return eventLogEntryDataManager.findAllEventLogEntries();
-  }
+    @Override
+    public List<EventLogEntry> findAllEventLogEntries() {
+        return eventLogEntryDataManager.findAllEventLogEntries();
+    }
 
-  @Override
-  public List<EventLogEntry> findEventLogEntries(long startLogNr, long pageSize) {
-   return eventLogEntryDataManager.findEventLogEntries(startLogNr, pageSize);
-  }
+    @Override
+    public List<EventLogEntry> findEventLogEntries(
+        long startLogNr,
+        long pageSize
+    ) {
+        return eventLogEntryDataManager.findEventLogEntries(
+            startLogNr,
+            pageSize
+        );
+    }
 
-  @Override
-  public List<EventLogEntry> findEventLogEntriesByProcessInstanceId(String processInstanceId) {
-    return eventLogEntryDataManager.findEventLogEntriesByProcessInstanceId(processInstanceId);
-  }
+    @Override
+    public List<EventLogEntry> findEventLogEntriesByProcessInstanceId(
+        String processInstanceId
+    ) {
+        return eventLogEntryDataManager.findEventLogEntriesByProcessInstanceId(
+            processInstanceId
+        );
+    }
 
-  @Override
-  public void deleteEventLogEntry(long logNr) {
-    eventLogEntryDataManager.deleteEventLogEntry(logNr);
-  }
+    @Override
+    public void deleteEventLogEntry(long logNr) {
+        eventLogEntryDataManager.deleteEventLogEntry(logNr);
+    }
 
-  public EventLogEntryDataManager getEventLogEntryDataManager() {
-    return eventLogEntryDataManager;
-  }
+    public EventLogEntryDataManager getEventLogEntryDataManager() {
+        return eventLogEntryDataManager;
+    }
 
-  public void setEventLogEntryDataManager(EventLogEntryDataManager eventLogEntryDataManager) {
-    this.eventLogEntryDataManager = eventLogEntryDataManager;
-  }
-
+    public void setEventLogEntryDataManager(
+        EventLogEntryDataManager eventLogEntryDataManager
+    ) {
+        this.eventLogEntryDataManager = eventLogEntryDataManager;
+    }
 }

@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
-
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
@@ -27,25 +26,31 @@ import org.activiti.engine.runtime.Job;
 
  */
 public interface JobDataManager extends DataManager<JobEntity> {
+    List<JobEntity> findJobsToExecute(Page page);
 
-  List<JobEntity> findJobsToExecute(Page page);
+    List<JobEntity> findJobsByExecutionId(final String executionId);
 
-  List<JobEntity> findJobsByExecutionId(final String executionId);
+    List<JobEntity> findJobsByProcessDefinitionId(
+        final String processDefinitionId
+    );
 
-  List<JobEntity> findJobsByProcessDefinitionId(final String processDefinitionId);
+    List<JobEntity> findJobsByTypeAndProcessDefinitionId(
+        final String jobTypeTimer,
+        final String id
+    );
 
-  List<JobEntity> findJobsByTypeAndProcessDefinitionId(final String jobTypeTimer, final String id);
+    List<JobEntity> findJobsByProcessInstanceId(final String processInstanceId);
 
-  List<JobEntity> findJobsByProcessInstanceId(final String processInstanceId);
+    List<JobEntity> findExpiredJobs(Page page);
 
-  List<JobEntity> findExpiredJobs(Page page);
+    List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page);
 
-  List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page);
+    long findJobCountByQueryCriteria(JobQueryImpl jobQuery);
 
-  long findJobCountByQueryCriteria(JobQueryImpl jobQuery);
+    void updateJobTenantIdForDeployment(
+        String deploymentId,
+        String newTenantId
+    );
 
-  void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
-
-  void resetExpiredJob(String jobId);
-
+    void resetExpiredJob(String jobId);
 }

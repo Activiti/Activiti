@@ -17,6 +17,4 @@ package org.activiti.api.task.runtime.events;
 
 import org.activiti.api.task.model.events.TaskCandidateUserEvent;
 
-public interface TaskCandidateUserRemovedEvent extends TaskCandidateUserEvent {
-
-}
+public interface TaskCandidateUserRemovedEvent extends TaskCandidateUserEvent {}

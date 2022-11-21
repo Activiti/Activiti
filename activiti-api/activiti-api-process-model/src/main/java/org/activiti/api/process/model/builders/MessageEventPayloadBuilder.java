@@ -18,7 +18,6 @@ package org.activiti.api.process.model.builders;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-
 import org.activiti.api.process.model.payloads.MessageEventPayload;
 
 public class MessageEventPayloadBuilder {
@@ -28,13 +27,19 @@ public class MessageEventPayloadBuilder {
     private String businessKey;
     private Map<String, Object> variables;
 
-    public static MessageEventPayloadBuilder from(MessageEventPayload messagePayload) {
-        Objects.requireNonNull(messagePayload, "messagePayload must not be null");
+    public static MessageEventPayloadBuilder from(
+        MessageEventPayload messagePayload
+    ) {
+        Objects.requireNonNull(
+            messagePayload,
+            "messagePayload must not be null"
+        );
 
-        return new MessageEventPayloadBuilder().withName(messagePayload.getName())
-                                               .withBusinessKey(messagePayload.getBusinessKey())
-                                               .withCorrelationKey(messagePayload.getCorrelationKey())
-                                               .withVariables(messagePayload.getVariables());
+        return new MessageEventPayloadBuilder()
+            .withName(messagePayload.getName())
+            .withBusinessKey(messagePayload.getBusinessKey())
+            .withCorrelationKey(messagePayload.getCorrelationKey())
+            .withVariables(messagePayload.getVariables());
     }
 
     public static MessageEventPayloadBuilder messageEvent(String name) {
@@ -49,23 +54,25 @@ public class MessageEventPayloadBuilder {
         return this;
     }
 
-    public MessageEventPayloadBuilder withVariables(Map<String, Object> variables) {
+    public MessageEventPayloadBuilder withVariables(
+        Map<String, Object> variables
+    ) {
         this.variables = variables;
 
         return this;
     }
 
-    public MessageEventPayloadBuilder withVariable(String name,
-                                                     Object value) {
+    public MessageEventPayloadBuilder withVariable(String name, Object value) {
         if (this.variables == null) {
             this.variables = new LinkedHashMap<>();
         }
-        this.variables.put(name,
-                           value);
+        this.variables.put(name, value);
         return this;
     }
 
-    public MessageEventPayloadBuilder withCorrelationKey(String correlationKey) {
+    public MessageEventPayloadBuilder withCorrelationKey(
+        String correlationKey
+    ) {
         this.correlationKey = correlationKey;
 
         return this;
@@ -77,12 +84,13 @@ public class MessageEventPayloadBuilder {
         return this;
     }
 
-
     public MessageEventPayload build() {
-        return new MessageEventPayload(name,
-                                       correlationKey,
-                                       businessKey,
-                                       variables);
+        return new MessageEventPayload(
+            name,
+            correlationKey,
+            businessKey,
+            variables
+        );
     }
 
     @Override
@@ -107,16 +115,15 @@ public class MessageEventPayloadBuilder {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         MessageEventPayloadBuilder other = (MessageEventPayloadBuilder) obj;
-        return Objects.equals(correlationKey, other.correlationKey)
-                && Objects.equals(businessKey, other.businessKey)
-                && Objects.equals(name, other.name)
-                && Objects.equals(variables, other.variables);
+        return (
+            Objects.equals(correlationKey, other.correlationKey) &&
+            Objects.equals(businessKey, other.businessKey) &&
+            Objects.equals(name, other.name) &&
+            Objects.equals(variables, other.variables)
+        );
     }
 }

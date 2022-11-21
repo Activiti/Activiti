@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.event.error;
 
 import org.activiti.engine.delegate.BpmnError;
@@ -26,18 +25,24 @@ import org.activiti.engine.delegate.JavaDelegate;
  */
 public class ThrowBpmnErrorDelegate implements JavaDelegate {
 
-  public void execute(DelegateExecution execution) {
-    Integer executionsBeforeError = (Integer) execution.getVariable("executionsBeforeError");
-    Integer executions = (Integer) execution.getVariable("executions");
-    if (executions == null) {
-      executions = 0;
+    public void execute(DelegateExecution execution) {
+        Integer executionsBeforeError = (Integer) execution.getVariable(
+            "executionsBeforeError"
+        );
+        Integer executions = (Integer) execution.getVariable("executions");
+        if (executions == null) {
+            executions = 0;
+        }
+        executions++;
+        if (
+            executionsBeforeError == null || executionsBeforeError < executions
+        ) {
+            throw new BpmnError(
+                "23",
+                "This is a business fault, which can be caught by a BPMN Error Event."
+            );
+        } else {
+            execution.setVariable("executions", executions);
+        }
     }
-    executions++;
-    if (executionsBeforeError == null || executionsBeforeError < executions) {
-      throw new BpmnError("23", "This is a business fault, which can be caught by a BPMN Error Event.");
-    } else {
-      execution.setVariable("executions", executions);
-    }
-  }
-
 }

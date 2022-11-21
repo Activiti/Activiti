@@ -16,7 +16,6 @@
 package org.activiti.api.task.runtime;
 
 import java.util.List;
-
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
@@ -39,7 +38,6 @@ import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
  * All the methods require an authenticated Admin user
  */
 public interface TaskAdminRuntime {
-
     /**
      * Deletes a task
      * - no matter the assignee or if the admin user can see the task
@@ -59,8 +57,7 @@ public interface TaskAdminRuntime {
     /**
      * Get all tasks with payload filters
      */
-    Page<Task> tasks(Pageable pageable,
-                     GetTasksPayload getTasksPayload);
+    Page<Task> tasks(Pageable pageable, GetTasksPayload getTasksPayload);
 
     /**
      * Claim a task with the currently authenticated user
@@ -92,7 +89,9 @@ public interface TaskAdminRuntime {
 
     void createVariable(CreateTaskVariablePayload createTaskVariablePayload);
     void updateVariable(UpdateTaskVariablePayload updateTaskVariablePayload);
-    List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload);
+    List<VariableInstance> variables(
+        GetTaskVariablesPayload getTaskVariablesPayload
+    );
 
     /**
      * Assign a task with a new user
@@ -111,5 +110,4 @@ public interface TaskAdminRuntime {
 
     List<String> userCandidates(String taskId);
     List<String> groupCandidates(String taskId);
-
 }

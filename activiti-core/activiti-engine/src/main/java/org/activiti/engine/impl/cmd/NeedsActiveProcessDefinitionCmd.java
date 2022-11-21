@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -29,33 +28,49 @@ import org.activiti.engine.repository.ProcessDefinition;
 /**
 
  */
-public abstract class NeedsActiveProcessDefinitionCmd<T> implements Command<T>, Serializable {
+public abstract class NeedsActiveProcessDefinitionCmd<T>
+    implements Command<T>, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String processDefinitionId;
+    protected String processDefinitionId;
 
-  public NeedsActiveProcessDefinitionCmd(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
-
-  public T execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = ProcessDefinitionUtil.getProcessDefinitionFromDatabase(processDefinitionId);
-
-    if (processDefinition == null) {
-      throw new ActivitiObjectNotFoundException("No process definition found for id = '" + processDefinitionId + "'", ProcessDefinition.class);
+    public NeedsActiveProcessDefinitionCmd(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
     }
 
-    if (processDefinition.isSuspended()) {
-      throw new ActivitiException("Cannot execute operation because process definition '" + processDefinition.getName() + "' (id=" + processDefinition.getId() + ") is suspended");
+    public T execute(CommandContext commandContext) {
+        ProcessDefinitionEntity processDefinition = ProcessDefinitionUtil.getProcessDefinitionFromDatabase(
+            processDefinitionId
+        );
+
+        if (processDefinition == null) {
+            throw new ActivitiObjectNotFoundException(
+                "No process definition found for id = '" +
+                processDefinitionId +
+                "'",
+                ProcessDefinition.class
+            );
+        }
+
+        if (processDefinition.isSuspended()) {
+            throw new ActivitiException(
+                "Cannot execute operation because process definition '" +
+                processDefinition.getName() +
+                "' (id=" +
+                processDefinition.getId() +
+                ") is suspended"
+            );
+        }
+
+        return execute(commandContext, processDefinition);
     }
 
-    return execute(commandContext, processDefinition);
-  }
-
-  /**
-   * Subclasses should implement this. The provided {@link ProcessDefinition} is guaranteed to be an active process definition (ie. not suspended).
-   */
-  protected abstract T execute(CommandContext commandContext, ProcessDefinitionEntity processDefinition);
-
+    /**
+     * Subclasses should implement this. The provided {@link ProcessDefinition} is guaranteed to be an active process definition (ie. not suspended).
+     */
+    protected abstract T execute(
+        CommandContext commandContext,
+        ProcessDefinitionEntity processDefinition
+    );
 }

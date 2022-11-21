@@ -24,22 +24,21 @@ import java.io.Serializable;
 
 public class TestBean implements Serializable {
 
-  private static final long serialVersionUID = -8840933240517620693L;
+    private static final long serialVersionUID = -8840933240517620693L;
 
-  public String twoParametersMethod(String param1, String param2) {
-    return "kermit";
-  }
+    public String twoParametersMethod(String param1, String param2) {
+        return "kermit";
+    }
 
-  public String returnParamAsGroupMethod(String param1) {
-    return param1;
-  }
+    public String returnParamAsGroupMethod(String param1) {
+        return param1;
+    }
 
-  public String oneParameterMethod(String param1) {
-    return "kermit";
-  }
+    public String oneParameterMethod(String param1) {
+        return "kermit";
+    }
 
-  public String getTestProperty() {
-    return "kermit";
-  }
-
+    public String getTestProperty() {
+        return "kermit";
+    }
 }

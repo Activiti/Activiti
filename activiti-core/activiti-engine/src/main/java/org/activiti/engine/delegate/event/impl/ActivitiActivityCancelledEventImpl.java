@@ -24,20 +24,21 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
  *
 
  */
-public class ActivitiActivityCancelledEventImpl extends ActivitiActivityEventImpl implements ActivitiActivityCancelledEvent {
+public class ActivitiActivityCancelledEventImpl
+    extends ActivitiActivityEventImpl
+    implements ActivitiActivityCancelledEvent {
 
-  protected Object cause;
+    protected Object cause;
 
-  public ActivitiActivityCancelledEventImpl() {
-    super(ActivitiEventType.ACTIVITY_CANCELLED);
-  }
+    public ActivitiActivityCancelledEventImpl() {
+        super(ActivitiEventType.ACTIVITY_CANCELLED);
+    }
 
-  public void setCause(Object cause) {
-    this.cause = cause;
-  }
+    public void setCause(Object cause) {
+        this.cause = cause;
+    }
 
-  public Object getCause() {
-    return cause;
-  }
-
+    public Object getCause() {
+        return cause;
+    }
 }

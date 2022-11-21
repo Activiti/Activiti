@@ -16,29 +16,33 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-
 import org.activiti.engine.api.internal.Internal;
 
 /**
 
  */
 @Internal
-public interface ProcessDefinitionInfoEntityManager extends EntityManager<ProcessDefinitionInfoEntity> {
+public interface ProcessDefinitionInfoEntityManager
+    extends EntityManager<ProcessDefinitionInfoEntity> {
+    void insertProcessDefinitionInfo(
+        ProcessDefinitionInfoEntity processDefinitionInfo
+    );
 
-  void insertProcessDefinitionInfo(ProcessDefinitionInfoEntity processDefinitionInfo);
+    void updateProcessDefinitionInfo(
+        ProcessDefinitionInfoEntity updatedProcessDefinitionInfo
+    );
 
-  void updateProcessDefinitionInfo(ProcessDefinitionInfoEntity updatedProcessDefinitionInfo);
+    void deleteProcessDefinitionInfo(String processDefinitionId);
 
-  void deleteProcessDefinitionInfo(String processDefinitionId);
+    void updateInfoJson(String id, byte[] json);
 
-  void updateInfoJson(String id, byte[] json);
+    void deleteInfoJson(ProcessDefinitionInfoEntity processDefinitionInfo);
 
-  void deleteInfoJson(ProcessDefinitionInfoEntity processDefinitionInfo);
+    ProcessDefinitionInfoEntity findById(String id);
 
-  ProcessDefinitionInfoEntity findById(String id);
+    ProcessDefinitionInfoEntity findProcessDefinitionInfoByProcessDefinitionId(
+        String processDefinitionId
+    );
 
-  ProcessDefinitionInfoEntity findProcessDefinitionInfoByProcessDefinitionId(String processDefinitionId);
-
-  byte[] findInfoJsonById(String infoJsonId);
-
+    byte[] findInfoJsonById(String infoJsonId);
 }

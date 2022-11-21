@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.core.io.Resource;
 
 public class ApplicationService {
@@ -27,8 +26,10 @@ public class ApplicationService {
     private ApplicationDiscovery applicationDiscovery;
     private ApplicationReader applicationReader;
 
-    public ApplicationService(ApplicationDiscovery applicationDiscovery,
-                              ApplicationReader applicationReader) {
+    public ApplicationService(
+        ApplicationDiscovery applicationDiscovery,
+        ApplicationReader applicationReader
+    ) {
         this.applicationDiscovery = applicationDiscovery;
         this.applicationReader = applicationReader;
     }
@@ -38,14 +39,18 @@ public class ApplicationService {
         List<Resource> applicationResources = applicationDiscovery.discoverApplications();
         try {
             for (Resource applicationResource : applicationResources) {
-                try (InputStream inputStream = applicationResource.getInputStream()) {
+                try (
+                    InputStream inputStream = applicationResource.getInputStream()
+                ) {
                     applications.add(applicationReader.read(inputStream));
                 }
             }
         } catch (IOException e) {
-            throw new ApplicationLoadException("Unable to load application resource", e);
+            throw new ApplicationLoadException(
+                "Unable to load application resource",
+                e
+            );
         }
         return applications;
     }
-
 }

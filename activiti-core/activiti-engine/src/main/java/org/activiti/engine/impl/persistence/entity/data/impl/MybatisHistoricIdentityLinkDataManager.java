@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.List;
-
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity;
@@ -29,33 +28,46 @@ import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.Histor
 /**
 
  */
-public class MybatisHistoricIdentityLinkDataManager extends AbstractDataManager<HistoricIdentityLinkEntity> implements HistoricIdentityLinkDataManager {
+public class MybatisHistoricIdentityLinkDataManager
+    extends AbstractDataManager<HistoricIdentityLinkEntity>
+    implements HistoricIdentityLinkDataManager {
 
-  protected CachedEntityMatcher<HistoricIdentityLinkEntity> historicIdentityLinksByProcInstMatcher = new HistoricIdentityLinksByProcInstMatcher();
+    protected CachedEntityMatcher<HistoricIdentityLinkEntity> historicIdentityLinksByProcInstMatcher = new HistoricIdentityLinksByProcInstMatcher();
 
-  public MybatisHistoricIdentityLinkDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
-    super(processEngineConfiguration);
-  }
+    public MybatisHistoricIdentityLinkDataManager(
+        ProcessEngineConfigurationImpl processEngineConfiguration
+    ) {
+        super(processEngineConfiguration);
+    }
 
-  @Override
-  public Class<? extends HistoricIdentityLinkEntity> getManagedEntityClass() {
-    return HistoricIdentityLinkEntityImpl.class;
-  }
+    @Override
+    public Class<? extends HistoricIdentityLinkEntity> getManagedEntityClass() {
+        return HistoricIdentityLinkEntityImpl.class;
+    }
 
-  @Override
-  public HistoricIdentityLinkEntity create() {
-    return new HistoricIdentityLinkEntityImpl();
-  }
+    @Override
+    public HistoricIdentityLinkEntity create() {
+        return new HistoricIdentityLinkEntityImpl();
+    }
 
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByTaskId(String taskId) {
-    return getDbSqlSession().selectList("selectHistoricIdentityLinksByTask", taskId);
-  }
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByTaskId(
+        String taskId
+    ) {
+        return getDbSqlSession()
+            .selectList("selectHistoricIdentityLinksByTask", taskId);
+    }
 
-  @Override
-  public List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByProcessInstanceId(final String processInstanceId) {
-    return getList("selectHistoricIdentityLinksByProcessInstance", processInstanceId, historicIdentityLinksByProcInstMatcher, true);
-  }
-
+    @Override
+    public List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByProcessInstanceId(
+        final String processInstanceId
+    ) {
+        return getList(
+            "selectHistoricIdentityLinksByProcessInstance",
+            processInstanceId,
+            historicIdentityLinksByProcInstMatcher,
+            true
+        );
+    }
 }

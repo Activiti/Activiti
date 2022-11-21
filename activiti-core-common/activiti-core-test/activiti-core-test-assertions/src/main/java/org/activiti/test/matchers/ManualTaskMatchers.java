@@ -21,7 +21,6 @@ public class ManualTaskMatchers extends ActivityMatchers {
 
     private ManualTaskMatchers(String definitionKey) {
         super(definitionKey);
-
     }
 
     @Override
@@ -32,5 +31,4 @@ public class ManualTaskMatchers extends ActivityMatchers {
     public static ManualTaskMatchers manualTask(String definitionKey) {
         return new ManualTaskMatchers(definitionKey);
     }
-
 }

@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -29,52 +27,88 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 
  */
-public class DeleteIdentityLinkForProcessInstanceCmd implements Command<Object>, Serializable {
+public class DeleteIdentityLinkForProcessInstanceCmd
+    implements Command<Object>, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String processInstanceId;
+    protected String processInstanceId;
 
-  protected String userId;
+    protected String userId;
 
-  protected String groupId;
+    protected String groupId;
 
-  protected String type;
+    protected String type;
 
-  public DeleteIdentityLinkForProcessInstanceCmd(String processInstanceId, String userId, String groupId, String type) {
-    validateParams(userId, groupId, processInstanceId, type);
-    this.processInstanceId = processInstanceId;
-    this.userId = userId;
-    this.groupId = groupId;
-    this.type = type;
-  }
-
-  protected void validateParams(String userId, String groupId, String processInstanceId, String type) {
-    if (processInstanceId == null) {
-      throw new ActivitiIllegalArgumentException("processInstanceId is null");
+    public DeleteIdentityLinkForProcessInstanceCmd(
+        String processInstanceId,
+        String userId,
+        String groupId,
+        String type
+    ) {
+        validateParams(userId, groupId, processInstanceId, type);
+        this.processInstanceId = processInstanceId;
+        this.userId = userId;
+        this.groupId = groupId;
+        this.type = type;
     }
 
-    if (type == null) {
-      throw new ActivitiIllegalArgumentException("type is required when deleting a process identity link");
+    protected void validateParams(
+        String userId,
+        String groupId,
+        String processInstanceId,
+        String type
+    ) {
+        if (processInstanceId == null) {
+            throw new ActivitiIllegalArgumentException(
+                "processInstanceId is null"
+            );
+        }
+
+        if (type == null) {
+            throw new ActivitiIllegalArgumentException(
+                "type is required when deleting a process identity link"
+            );
+        }
+
+        if (userId == null && groupId == null) {
+            throw new ActivitiIllegalArgumentException(
+                "userId and groupId cannot both be null"
+            );
+        }
     }
 
-    if (userId == null && groupId == null) {
-      throw new ActivitiIllegalArgumentException("userId and groupId cannot both be null");
+    public Void execute(CommandContext commandContext) {
+        ExecutionEntity processInstance = commandContext
+            .getExecutionEntityManager()
+            .findById(processInstanceId);
+
+        if (processInstance == null) {
+            throw new ActivitiObjectNotFoundException(
+                "Cannot find process instance with id " + processInstanceId,
+                ExecutionEntity.class
+            );
+        }
+
+        executeInternal(commandContext, processInstance);
+        return null;
     }
-  }
 
-  public Void execute(CommandContext commandContext) {
-    ExecutionEntity processInstance = commandContext.getExecutionEntityManager().findById(processInstanceId);
-
-    if (processInstance == null) {
-      throw new ActivitiObjectNotFoundException("Cannot find process instance with id " + processInstanceId, ExecutionEntity.class);
+    protected void executeInternal(
+        CommandContext commandContext,
+        ExecutionEntity processInstance
+    ) {
+        commandContext
+            .getIdentityLinkEntityManager()
+            .deleteIdentityLink(processInstance, userId, groupId, type);
+        commandContext
+            .getHistoryManager()
+            .createProcessInstanceIdentityLinkComment(
+                processInstanceId,
+                userId,
+                groupId,
+                type,
+                false
+            );
     }
-
-    executeInternal(commandContext,processInstance);
-    return null;
-  }
-  protected void executeInternal(CommandContext commandContext,ExecutionEntity processInstance) {
-      commandContext.getIdentityLinkEntityManager().deleteIdentityLink(processInstance, userId, groupId, type);
-      commandContext.getHistoryManager().createProcessInstanceIdentityLinkComment(processInstanceId, userId, groupId, type, false);
-  }
 }

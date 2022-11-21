@@ -16,8 +16,9 @@
 
 package org.activiti.editor.language.json.converter;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Map;
-
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ExtensionAttribute;
 import org.activiti.bpmn.model.ExtensionElement;
@@ -25,72 +26,98 @@ import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.ServiceTask;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 /**
 
 
  */
-public class DecisionTaskJsonConverter extends BaseBpmnJsonConverter implements DecisionTableAwareConverter {
+public class DecisionTaskJsonConverter
+    extends BaseBpmnJsonConverter
+    implements DecisionTableAwareConverter {
 
-  protected Map<String, String> decisionTableMap;
+    protected Map<String, String> decisionTableMap;
 
-  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
-      Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
-
-    fillJsonTypes(convertersToBpmnMap);
-    fillBpmnTypes(convertersToJsonMap);
-  }
-
-  public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
-    convertersToBpmnMap.put(STENCIL_TASK_DECISION, DecisionTaskJsonConverter.class);
-  }
-
-  public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
-  }
-
-  protected String getStencilId(BaseElement baseElement) {
-    return STENCIL_TASK_DECISION;
-  }
-
-  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
-
-    ServiceTask serviceTask = new ServiceTask();
-    serviceTask.setType(ServiceTask.DMN_TASK);
-
-    JsonNode decisionTableReferenceNode = getProperty(PROPERTY_DECISIONTABLE_REFERENCE, elementNode);
-    if (decisionTableReferenceNode != null && decisionTableReferenceNode.has("id") && !(decisionTableReferenceNode.get("id").isNull())) {
-
-      String decisionTableId = decisionTableReferenceNode.get("id").asText();
-      if (decisionTableMap != null) {
-        String decisionTableKey = decisionTableMap.get(decisionTableId);
-
-        FieldExtension decisionTableKeyField = new FieldExtension();
-        decisionTableKeyField.setFieldName(PROPERTY_DECISIONTABLE_REFERENCE_KEY);
-        decisionTableKeyField.setStringValue(decisionTableKey);
-        serviceTask.getFieldExtensions().add(decisionTableKeyField);
-      }
+    public static void fillTypes(
+        Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
+        Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap
+    ) {
+        fillJsonTypes(convertersToBpmnMap);
+        fillBpmnTypes(convertersToJsonMap);
     }
 
-    return serviceTask;
-  }
+    public static void fillJsonTypes(
+        Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap
+    ) {
+        convertersToBpmnMap.put(
+            STENCIL_TASK_DECISION,
+            DecisionTaskJsonConverter.class
+        );
+    }
 
-  @Override
-  protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
+    public static void fillBpmnTypes(
+        Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap
+    ) {}
 
-  }
+    protected String getStencilId(BaseElement baseElement) {
+        return STENCIL_TASK_DECISION;
+    }
 
-  @Override
-  public void setDecisionTableMap(Map<String, String> decisionTableMap) {
-    this.decisionTableMap = decisionTableMap;
-  }
+    protected FlowElement convertJsonToElement(
+        JsonNode elementNode,
+        JsonNode modelNode,
+        Map<String, JsonNode> shapeMap
+    ) {
+        ServiceTask serviceTask = new ServiceTask();
+        serviceTask.setType(ServiceTask.DMN_TASK);
 
-  protected void addExtensionAttributeToExtension(ExtensionElement element, String attributeName, String value) {
-    ExtensionAttribute extensionAttribute = new ExtensionAttribute(NAMESPACE, attributeName);
-    extensionAttribute.setNamespacePrefix("modeler");
-    extensionAttribute.setValue(value);
-    element.addAttribute(extensionAttribute);
-  }
+        JsonNode decisionTableReferenceNode = getProperty(
+            PROPERTY_DECISIONTABLE_REFERENCE,
+            elementNode
+        );
+        if (
+            decisionTableReferenceNode != null &&
+            decisionTableReferenceNode.has("id") &&
+            !(decisionTableReferenceNode.get("id").isNull())
+        ) {
+            String decisionTableId = decisionTableReferenceNode
+                .get("id")
+                .asText();
+            if (decisionTableMap != null) {
+                String decisionTableKey = decisionTableMap.get(decisionTableId);
 
+                FieldExtension decisionTableKeyField = new FieldExtension();
+                decisionTableKeyField.setFieldName(
+                    PROPERTY_DECISIONTABLE_REFERENCE_KEY
+                );
+                decisionTableKeyField.setStringValue(decisionTableKey);
+                serviceTask.getFieldExtensions().add(decisionTableKeyField);
+            }
+        }
+
+        return serviceTask;
+    }
+
+    @Override
+    protected void convertElementToJson(
+        ObjectNode propertiesNode,
+        BaseElement baseElement
+    ) {}
+
+    @Override
+    public void setDecisionTableMap(Map<String, String> decisionTableMap) {
+        this.decisionTableMap = decisionTableMap;
+    }
+
+    protected void addExtensionAttributeToExtension(
+        ExtensionElement element,
+        String attributeName,
+        String value
+    ) {
+        ExtensionAttribute extensionAttribute = new ExtensionAttribute(
+            NAMESPACE,
+            attributeName
+        );
+        extensionAttribute.setNamespacePrefix("modeler");
+        extensionAttribute.setValue(value);
+        element.addAttribute(extensionAttribute);
+    }
 }

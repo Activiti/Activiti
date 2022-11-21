@@ -34,14 +34,12 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  */
 @Internal
 public interface Agenda {
+    boolean isEmpty();
 
-  boolean isEmpty();
+    Runnable getNextOperation();
 
-  Runnable getNextOperation();
-
-  /**
-   * Generic method to plan a {@link Runnable}.
-   */
-  void planOperation(Runnable operation);
-
+    /**
+     * Generic method to plan a {@link Runnable}.
+     */
+    void planOperation(Runnable operation);
 }

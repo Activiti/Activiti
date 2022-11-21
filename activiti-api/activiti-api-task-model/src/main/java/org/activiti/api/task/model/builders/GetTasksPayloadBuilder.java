@@ -17,7 +17,6 @@ package org.activiti.api.task.model.builders;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.api.task.model.payloads.GetTasksPayload;
 
 public class GetTasksPayloadBuilder {
@@ -37,7 +36,9 @@ public class GetTasksPayloadBuilder {
         return this;
     }
 
-    public GetTasksPayloadBuilder withProcessInstanceId(String processInstanceId) {
+    public GetTasksPayloadBuilder withProcessInstanceId(
+        String processInstanceId
+    ) {
         this.processInstanceId = processInstanceId;
         return this;
     }
@@ -56,9 +57,11 @@ public class GetTasksPayloadBuilder {
     }
 
     public GetTasksPayload build() {
-        return new GetTasksPayload(assignee,
-                                   groups,
-                                   processInstanceId,
-                                   parentTaskId);
+        return new GetTasksPayload(
+            assignee,
+            groups,
+            processInstanceId,
+            parentTaskId
+        );
     }
 }

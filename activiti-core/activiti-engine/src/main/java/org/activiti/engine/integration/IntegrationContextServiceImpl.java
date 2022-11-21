@@ -20,7 +20,8 @@ import org.activiti.engine.impl.cmd.integration.RetrieveIntegrationContextsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 
-public class IntegrationContextServiceImpl implements IntegrationContextService {
+public class IntegrationContextServiceImpl
+    implements IntegrationContextService {
 
     private CommandExecutor commandExecutor;
 
@@ -34,7 +35,11 @@ public class IntegrationContextServiceImpl implements IntegrationContextService 
     }
 
     @Override
-    public void deleteIntegrationContext(IntegrationContextEntity integrationContextEntity) {
-        commandExecutor.execute(new DeleteIntegrationContextCmd(integrationContextEntity));
+    public void deleteIntegrationContext(
+        IntegrationContextEntity integrationContextEntity
+    ) {
+        commandExecutor.execute(
+            new DeleteIntegrationContextCmd(integrationContextEntity)
+        );
     }
 }

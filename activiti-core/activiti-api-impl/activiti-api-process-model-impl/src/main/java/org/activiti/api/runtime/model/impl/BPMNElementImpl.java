@@ -16,7 +16,6 @@
 package org.activiti.api.runtime.model.impl;
 
 import java.util.Objects;
-
 import org.activiti.api.process.model.BPMNElement;
 
 public class BPMNElementImpl implements BPMNElement {
@@ -43,7 +42,6 @@ public class BPMNElementImpl implements BPMNElement {
         this.processDefinitionId = processDefinitionId;
     }
 
-
     @Override
     public String getElementId() {
         return elementId;
@@ -62,20 +60,15 @@ public class BPMNElementImpl implements BPMNElement {
             return false;
         }
         BPMNElementImpl that = (BPMNElementImpl) o;
-        return Objects.equals(processInstanceId,
-                               that.processInstanceId) &&
-                Objects.equals(processDefinitionId,
-                               that.processDefinitionId) &&
-                Objects.equals(elementId,
-                               that.elementId);
+        return (
+            Objects.equals(processInstanceId, that.processInstanceId) &&
+            Objects.equals(processDefinitionId, that.processDefinitionId) &&
+            Objects.equals(elementId, that.elementId)
+        );
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(elementId,
-                            processInstanceId,
-                            processDefinitionId);
+        return Objects.hash(elementId, processInstanceId, processDefinitionId);
     }
-
 }

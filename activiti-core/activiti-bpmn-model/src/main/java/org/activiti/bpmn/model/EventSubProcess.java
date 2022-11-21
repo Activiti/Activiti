@@ -15,6 +15,4 @@
  */
 package org.activiti.bpmn.model;
 
-public class EventSubProcess extends SubProcess {
-
-}
+public class EventSubProcess extends SubProcess {}

@@ -49,7 +49,10 @@ public class CommandStats {
         }
     }
 
-    protected void addToDbOperation(Map<String, Long> executionMap, Map<String, Long> globalMap) {
+    protected void addToDbOperation(
+        Map<String, Long> executionMap,
+        Map<String, Long> globalMap
+    ) {
         for (String key : executionMap.keySet()) {
             if (!globalMap.containsKey(key)) {
                 globalMap.put(key, 0L);
@@ -70,9 +73,10 @@ public class CommandStats {
     public double getAverageExecutionTime() {
         long total = 0;
         for (Long timing : commandExecutionTimings) {
-          total += timing.longValue();
+            total += timing.longValue();
         }
-        double average = (double) total / (double) commandExecutionTimings.size();
+        double average = (double) total /
+        (double) commandExecutionTimings.size();
         return Math.round(average * 100.0) / 100.0;
     }
 
@@ -84,12 +88,13 @@ public class CommandStats {
     }
 
     public double getAverageDatabaseExecutionTime() {
-      long total = 0;
-      for (Long timing : databaseTimings) {
-        total += timing.longValue();
-      }
-      double average = (double) total / (double) commandExecutionTimings.size();
-      return Math.round(average * 100.0) / 100.0;
+        long total = 0;
+        for (Long timing : databaseTimings) {
+            total += timing.longValue();
+        }
+        double average = (double) total /
+        (double) commandExecutionTimings.size();
+        return Math.round(average * 100.0) / 100.0;
     }
 
     public Map<String, Long> getDbSelects() {
@@ -123,5 +128,4 @@ public class CommandStats {
     public void setDbDeletes(Map<String, Long> dbDeletes) {
         this.dbDeletes = dbDeletes;
     }
-
 }

@@ -23,13 +23,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 
-public class FailOnNoProcessAutoDeploymentStrategy extends AbstractAutoDeploymentStrategy {
+public class FailOnNoProcessAutoDeploymentStrategy
+    extends AbstractAutoDeploymentStrategy {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(FailOnNoProcessAutoDeploymentStrategy.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(
+        FailOnNoProcessAutoDeploymentStrategy.class
+    );
 
     public static final String DEPLOYMENT_MODE = "fail-on-no-process";
 
-    public FailOnNoProcessAutoDeploymentStrategy(ApplicationUpgradeContextService applicationUpgradeContextService) {
+    public FailOnNoProcessAutoDeploymentStrategy(
+        ApplicationUpgradeContextService applicationUpgradeContextService
+    ) {
         super(applicationUpgradeContextService);
     }
 
@@ -39,9 +44,15 @@ public class FailOnNoProcessAutoDeploymentStrategy extends AbstractAutoDeploymen
     }
 
     @Override
-    public void deployResources(String deploymentNameHint, Resource[] resources, RepositoryService repositoryService) {
-        DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering()
-                .name(deploymentNameHint);
+    public void deployResources(
+        String deploymentNameHint,
+        Resource[] resources,
+        RepositoryService repositoryService
+    ) {
+        DeploymentBuilder deploymentBuilder = repositoryService
+            .createDeployment()
+            .enableDuplicateFiltering()
+            .name(deploymentNameHint);
 
         int validProcessCount = 0;
         for (final Resource resource : resources) {
@@ -51,8 +62,10 @@ public class FailOnNoProcessAutoDeploymentStrategy extends AbstractAutoDeploymen
                 validProcessCount++;
                 deploymentBuilder.addInputStream(resourceName, resource);
             } else {
-                LOGGER.error("The following resource wasn't included in the deployment since it is invalid:\n{}",
-                        resourceName);
+                LOGGER.error(
+                    "The following resource wasn't included in the deployment since it is invalid:\n{}",
+                    resourceName
+                );
             }
         }
 

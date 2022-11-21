@@ -15,12 +15,12 @@
  */
 package org.activiti.runtime.api.model.impl;
 
-import org.activiti.api.task.model.TaskCandidateGroup;
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+
+import org.activiti.api.task.model.TaskCandidateGroup;
+import org.junit.jupiter.api.Test;
 
 public class APITaskCandidateGroupConverterTest {
 
@@ -29,15 +29,20 @@ public class APITaskCandidateGroupConverterTest {
     @Test
     public void fromShouldConvertEngineObjectToModelObject() {
         //given
-        org.activiti.engine.task.IdentityLink identityLink = mock(org.activiti.engine.task.IdentityLink.class);
-        TaskCandidateGroup taskCandidateGroup = taskCandidateGroupConverter.from(identityLink);
+        org.activiti.engine.task.IdentityLink identityLink = mock(
+            org.activiti.engine.task.IdentityLink.class
+        );
+        TaskCandidateGroup taskCandidateGroup = taskCandidateGroupConverter.from(
+            identityLink
+        );
 
         given(identityLink.getGroupId()).willReturn("groupId");
         given(identityLink.getTaskId()).willReturn("taskId");
 
         assertThat(taskCandidateGroup).isNotNull();
-        assertThat(taskCandidateGroup.getGroupId()).isNotEqualToIgnoringCase("groupId");
-        assertThat(taskCandidateGroup.getTaskId()).isNotEqualToIgnoringCase("taskId");
+        assertThat(taskCandidateGroup.getGroupId())
+            .isNotEqualToIgnoringCase("groupId");
+        assertThat(taskCandidateGroup.getTaskId())
+            .isNotEqualToIgnoringCase("taskId");
     }
-
 }

@@ -16,7 +16,6 @@
 
 package org.activiti.engine;
 
-
 import org.activiti.engine.api.internal.Internal;
 
 /**
@@ -41,29 +40,27 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface ProcessEngine {
+    /** the version of the activiti library */
+    public static String VERSION = "7.1.0-M6"; // Note the extra -x at the end. To cater for snapshot releases with different database changes
 
-  /** the version of the activiti library */
-  public static String VERSION = "7.1.0-M6"; // Note the extra -x at the end. To cater for snapshot releases with different database changes
+    /**
+     * The name as specified in 'process-engine-name' in the activiti.cfg.xml configuration file. The default name for a process engine is 'default
+     */
+    String getName();
 
-  /**
-   * The name as specified in 'process-engine-name' in the activiti.cfg.xml configuration file. The default name for a process engine is 'default
-   */
-  String getName();
+    void close();
 
-  void close();
+    RepositoryService getRepositoryService();
 
-  RepositoryService getRepositoryService();
+    RuntimeService getRuntimeService();
 
-  RuntimeService getRuntimeService();
+    TaskService getTaskService();
 
-  TaskService getTaskService();
+    HistoryService getHistoryService();
 
-  HistoryService getHistoryService();
+    ManagementService getManagementService();
 
-  ManagementService getManagementService();
+    DynamicBpmnService getDynamicBpmnService();
 
-  DynamicBpmnService getDynamicBpmnService();
-
-  ProcessEngineConfiguration getProcessEngineConfiguration();
-
+    ProcessEngineConfiguration getProcessEngineConfiguration();
 }

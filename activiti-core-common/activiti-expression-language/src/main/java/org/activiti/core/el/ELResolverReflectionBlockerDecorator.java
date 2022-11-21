@@ -30,26 +30,39 @@ import javax.el.ELResolver;
 public class ELResolverReflectionBlockerDecorator extends ELResolverDecorator {
 
     private static final String JAVA_REFLECTION_PACKAGE = "java.lang.reflect";
-    private static final Predicate<Method> IS_FINAL = method -> Modifier.isFinal(method.getModifiers());
-    private static final Predicate<Method> IS_NATIVE = method -> Modifier.isNative(method.getModifiers());
-    private static final Set<String> NATIVE_METHODS = Arrays.stream(Object.class.getMethods())
-                                                            .filter(IS_FINAL.or(IS_NATIVE))
-                                                            .map(Method::getName)
-                                                            .collect(Collectors.toSet());
+    private static final Predicate<Method> IS_FINAL = method ->
+        Modifier.isFinal(method.getModifiers());
+    private static final Predicate<Method> IS_NATIVE = method ->
+        Modifier.isNative(method.getModifiers());
+    private static final Set<String> NATIVE_METHODS = Arrays
+        .stream(Object.class.getMethods())
+        .filter(IS_FINAL.or(IS_NATIVE))
+        .map(Method::getName)
+        .collect(Collectors.toSet());
 
     public ELResolverReflectionBlockerDecorator(ELResolver resolver) {
         super(resolver);
     }
 
     @Override
-    public Object invoke(ELContext context, Object base, Object method, Class<?>[] paramTypes, Object[] params) {
+    public Object invoke(
+        ELContext context,
+        Object base,
+        Object method,
+        Class<?>[] paramTypes,
+        Object[] params
+    ) {
         final String basePackageName = base.getClass().getPackageName();
-        if(JAVA_REFLECTION_PACKAGE.equals(basePackageName)) {
-            throw new IllegalArgumentException("Illegal use of Reflection in a JUEL Expression");
+        if (JAVA_REFLECTION_PACKAGE.equals(basePackageName)) {
+            throw new IllegalArgumentException(
+                "Illegal use of Reflection in a JUEL Expression"
+            );
         }
 
-        if(NATIVE_METHODS.contains(method)) {
-            throw new IllegalArgumentException("Illegal use of Native Method in a JUEL Expression");
+        if (NATIVE_METHODS.contains(method)) {
+            throw new IllegalArgumentException(
+                "Illegal use of Native Method in a JUEL Expression"
+            );
         }
         return super.invoke(context, base, method, paramTypes, params);
     }

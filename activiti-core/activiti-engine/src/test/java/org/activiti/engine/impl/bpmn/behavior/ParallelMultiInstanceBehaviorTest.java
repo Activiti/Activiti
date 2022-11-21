@@ -59,7 +59,9 @@ public class ParallelMultiInstanceBehaviorTest {
     @Before
     public void setUp() {
         autoCloseable = openMocks(this);
-        doReturn(commandContext).when(multiInstanceBehavior).getCommandContext();
+        doReturn(commandContext)
+            .when(multiInstanceBehavior)
+            .getCommandContext();
     }
 
     @After
@@ -102,6 +104,7 @@ public class ParallelMultiInstanceBehaviorTest {
         //then
         assertThat(hasOutputDataItem).isFalse();
     }
+
     @Test
     public void hasLoopDataOutputRef_should_returnTrue_when_dataOutputRefIsSet() {
         //given
@@ -141,14 +144,19 @@ public class ParallelMultiInstanceBehaviorTest {
     @Test
     public void getResultItemElement_should_useExecutionVariablesLocal() {
         //given
-        Map<String, Object> variablesLocal = Collections.singletonMap("var", "value");
+        Map<String, Object> variablesLocal = Collections.singletonMap(
+            "var",
+            "value"
+        );
         DelegateExecution childExecution = mock(DelegateExecution.class);
         given(childExecution.getVariablesLocal()).willReturn(variablesLocal);
-        given(multiInstanceBehavior.getResultElementItem(variablesLocal)).willReturn("result");
+        given(multiInstanceBehavior.getResultElementItem(variablesLocal))
+            .willReturn("result");
 
         //when
-        Object resultElementItem = multiInstanceBehavior
-            .getResultElementItem(childExecution);
+        Object resultElementItem = multiInstanceBehavior.getResultElementItem(
+            childExecution
+        );
 
         //then
         assertThat(resultElementItem).isEqualTo("result");
@@ -157,11 +165,18 @@ public class ParallelMultiInstanceBehaviorTest {
     @Test
     public void getResultItemElement_should_returnOutputDataItem_when_outputDataItemIsSet() {
         //given
-        Map<String, Object> variables = Map.of("name", "John", "city", "London");
+        Map<String, Object> variables = Map.of(
+            "name",
+            "John",
+            "city",
+            "London"
+        );
         multiInstanceBehavior.setOutputDataItem("city");
 
         //when
-        Object resultElementItem = multiInstanceBehavior.getResultElementItem(variables);
+        Object resultElementItem = multiInstanceBehavior.getResultElementItem(
+            variables
+        );
 
         //then
         assertThat(resultElementItem).isEqualTo("London");
@@ -173,21 +188,28 @@ public class ParallelMultiInstanceBehaviorTest {
         multiInstanceBehavior.setOutputDataItem(null);
         multiInstanceBehavior.setCollectionElementIndexVariable("counter");
         Map<String, Object> variables = Map.of(
-            "name", "John",
-            "city", "London",
-            MultiInstanceActivityBehavior.NUMBER_OF_COMPLETED_INSTANCES, 3,
-            MultiInstanceActivityBehavior.NUMBER_OF_ACTIVE_INSTANCES, 2,
-            MultiInstanceActivityBehavior.NUMBER_OF_INSTANCES, 5,
-            multiInstanceBehavior.getCollectionElementIndexVariable(), 1
-            );
+            "name",
+            "John",
+            "city",
+            "London",
+            MultiInstanceActivityBehavior.NUMBER_OF_COMPLETED_INSTANCES,
+            3,
+            MultiInstanceActivityBehavior.NUMBER_OF_ACTIVE_INSTANCES,
+            2,
+            MultiInstanceActivityBehavior.NUMBER_OF_INSTANCES,
+            5,
+            multiInstanceBehavior.getCollectionElementIndexVariable(),
+            1
+        );
 
         //when
-        Object resultElementItem = multiInstanceBehavior.getResultElementItem(variables);
+        Object resultElementItem = multiInstanceBehavior.getResultElementItem(
+            variables
+        );
 
         //then
-        assertThat(resultElementItem).isEqualTo(Map.of(
-            "name", "John",
-            "city", "London"));
+        assertThat(resultElementItem)
+            .isEqualTo(Map.of("name", "John", "city", "London"));
     }
 
     @Test
@@ -198,7 +220,10 @@ public class ParallelMultiInstanceBehaviorTest {
         DelegateExecution miRootExecution = mock(DelegateExecution.class);
 
         //when
-        multiInstanceBehavior.updateResultCollection(childExecution, miRootExecution);
+        multiInstanceBehavior.updateResultCollection(
+            childExecution,
+            miRootExecution
+        );
 
         //then
         verifyNoInteractions(childExecution, miRootExecution);
@@ -210,13 +235,22 @@ public class ParallelMultiInstanceBehaviorTest {
         multiInstanceBehavior.setLoopDataOutputRef("miResult");
         DelegateExecution childExecution = mock(DelegateExecution.class);
         DelegateExecution miRootExecution = mock(DelegateExecution.class);
-        doReturn("currentItem").when(multiInstanceBehavior).getResultElementItem(childExecution);
+        doReturn("currentItem")
+            .when(multiInstanceBehavior)
+            .getResultElementItem(childExecution);
 
         //when
-        multiInstanceBehavior.updateResultCollection(childExecution, miRootExecution);
+        multiInstanceBehavior.updateResultCollection(
+            childExecution,
+            miRootExecution
+        );
 
         //then
-        verify(miRootExecution).setVariableLocal("miResult", Collections.singletonList("currentItem"));
+        verify(miRootExecution)
+            .setVariableLocal(
+                "miResult",
+                Collections.singletonList("currentItem")
+            );
     }
 
     @Test
@@ -226,14 +260,23 @@ public class ParallelMultiInstanceBehaviorTest {
         multiInstanceBehavior.setLoopDataOutputRef(loopDataOutputRef);
         DelegateExecution childExecution = mock(DelegateExecution.class);
         DelegateExecution miRootExecution = mock(DelegateExecution.class);
-        given(miRootExecution.getVariableLocal(loopDataOutputRef)).willReturn(new ArrayList<>(Collections.singleton("previousItem")));
-        doReturn("currentItem").when(multiInstanceBehavior).getResultElementItem(childExecution);
+        given(miRootExecution.getVariableLocal(loopDataOutputRef))
+            .willReturn(new ArrayList<>(Collections.singleton("previousItem")));
+        doReturn("currentItem")
+            .when(multiInstanceBehavior)
+            .getResultElementItem(childExecution);
 
         //when
-        multiInstanceBehavior.updateResultCollection(childExecution, miRootExecution);
+        multiInstanceBehavior.updateResultCollection(
+            childExecution,
+            miRootExecution
+        );
 
         //then
-        verify(miRootExecution).setVariableLocal(loopDataOutputRef, Arrays.asList("previousItem", "currentItem"));
+        verify(miRootExecution)
+            .setVariableLocal(
+                loopDataOutputRef,
+                Arrays.asList("previousItem", "currentItem")
+            );
     }
-
 }
