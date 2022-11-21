@@ -20,7 +20,7 @@ public class EmptyResult extends Result<Void> {
     public EmptyResult() {
     }
 
-    public EmptyResult(Payload payload) {
+    public EmptyResult  (Payload payload) {
         super(payload,
               null);
     }

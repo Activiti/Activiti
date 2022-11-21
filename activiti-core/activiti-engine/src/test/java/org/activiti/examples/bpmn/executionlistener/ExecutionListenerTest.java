@@ -36,7 +36,7 @@ import org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener.Re
 public class ExecutionListenerTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/examples/bpmn/executionlistener/ExecutionListenersProcess.bpmn20.xml" })
-  public void testExecutionListenersOnAllPossibleElements() {
+  public void testExecutionListenersOnAllPossibleElements  () {
     RecorderExecutionListener.clear();
 
     // Process start executionListener will have executionListener class
