@@ -66,7 +66,6 @@ public class MultiInstanceParser extends BaseChildElementParser {
 
     private void parseMultiInstanceProperties(XMLStreamReader xtr,
         MultiInstanceLoopCharacteristics multiInstanceDef) {
-        boolean readyWithMultiInstance = false;
         try {
             do {
                 ElementParser<MultiInstanceLoopCharacteristics> matchingParser = multiInstanceElementParsers
@@ -78,12 +77,12 @@ public class MultiInstanceParser extends BaseChildElementParser {
                     matchingParser.setInformation(xtr, multiInstanceDef);
                 }
                 if (xtr.isEndElement() && getElementName().equalsIgnoreCase(xtr.getLocalName())) {
-                    readyWithMultiInstance = true;
+                    break;
                 }
                 if (xtr.hasNext()) {
                     xtr.next();
                 }
-            } while (!readyWithMultiInstance && xtr.hasNext());
+            } while (xtr.hasNext());
         } catch (Exception e) {
             LOGGER.warn("Error parsing multi instance definition",
                         e);
