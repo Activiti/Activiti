@@ -29,6 +29,8 @@ import javax.sql.DataSource;
 import org.activiti.api.process.model.events.ApplicationDeployedEvent;
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
 import org.activiti.api.process.model.events.StartMessageDeployedEvent;
+import org.activiti.api.process.runtime.events.ProcessCandidateStarterGroupAddedEvent;
+import org.activiti.api.process.runtime.events.ProcessCandidateStarterUserAddedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
@@ -43,6 +45,7 @@ import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.spring.ApplicationDeployedEventProducer;
+import org.activiti.spring.ProcessCandidateStartersEventProducer;
 import org.activiti.spring.ProcessDeployedEventProducer;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
@@ -212,6 +215,14 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
                 Optional.ofNullable(listeners)
                         .orElse(emptyList()),
                 eventPublisher);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ProcessCandidateStartersEventProducer processCandidateStartersEventProducer(RepositoryService repositoryService,
+                                                                                       @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessCandidateStarterUserAddedEvent>> candidateStarterUserListeners,
+                                                                                       @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessCandidateStarterGroupAddedEvent>> candidateStarterGroupListeners) {
+        return new ProcessCandidateStartersEventProducer(repositoryService, candidateStarterUserListeners, candidateStarterGroupListeners);
     }
 
     @Bean
