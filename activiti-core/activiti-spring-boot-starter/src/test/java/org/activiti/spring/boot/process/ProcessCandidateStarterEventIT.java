@@ -25,6 +25,7 @@ import org.activiti.spring.boot.process.listener.ProcessCandidateStarterUserRemo
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
 
@@ -33,6 +34,7 @@ import static org.assertj.core.groups.Tuple.tuple;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@TestPropertySource(properties = "activiti.candidateStarters.enabled=true")
 public class ProcessCandidateStarterEventIT {
 
     @Autowired
