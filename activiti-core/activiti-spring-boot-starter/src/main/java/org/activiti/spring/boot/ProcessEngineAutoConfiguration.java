@@ -61,6 +61,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
@@ -219,6 +220,7 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnProperty("activiti.candidateStarters.enabled")
     public ProcessCandidateStartersEventProducer processCandidateStartersEventProducer(RepositoryService repositoryService,
                                                                                        @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessCandidateStarterUserAddedEvent>> candidateStarterUserListeners,
                                                                                        @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessCandidateStarterGroupAddedEvent>> candidateStarterGroupListeners) {
