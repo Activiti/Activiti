@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-parent</artifactId>
-  <version>7.5.0-SNAPSHOT</version>
+  <version>7.7.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Activiti :: Parent</name>
   <description>${project.name}</description>
@@ -222,7 +222,7 @@
     <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
-    <spring-boot.version>2.7.3</spring-boot.version>
+    <spring-boot.version>2.7.6</spring-boot.version>
     <h2.version>1.4.200</h2.version>
     <versions-maven-plugin.version>2.11.0</versions-maven-plugin.version>
 

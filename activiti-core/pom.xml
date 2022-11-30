@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>7.5.0-SNAPSHOT</version>
+    <version>7.7.0-SNAPSHOT</version>
   </parent>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-core</artifactId>
@@ -19,7 +19,7 @@
     <java-uuid-generator.version>4.0.1</java-uuid-generator.version>
     <javaGeom.version>0.11.1</javaGeom.version>
     <jgraphx.version>4.2.2</jgraphx.version>
-    <joda-time.version>2.10.14</joda-time.version>
+    <joda-time.version>2.12.0</joda-time.version>
     <json-unit.version>2.35.0</json-unit.version>
     <mybatis.version>3.5.10</mybatis.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
@@ -92,11 +92,31 @@
         <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>batik-awt-util</artifactId>
         <version>${batik.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xalan</groupId>
+            <artifactId>serializer</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>batik-dom</artifactId>
         <version>${batik.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xalan</groupId>
+            <artifactId>serializer</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.xmlgraphics</groupId>

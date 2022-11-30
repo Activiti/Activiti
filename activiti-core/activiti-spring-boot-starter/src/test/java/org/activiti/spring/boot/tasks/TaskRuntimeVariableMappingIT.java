@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.awaitility.Awaitility.await;
 
+import static java.util.Arrays.asList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -51,6 +52,14 @@ public class TaskRuntimeVariableMappingIT {
     private static final String TASK_MAP_ALL_OUTPUTS = "taskVariableMappingSendAllOutputs";
 
     private static final String TASK_MAP_ALL_PREVALENCE = "taskVariableMappingSendAllPrevalence";
+
+    private static final String TASK_ASSIGNEE_MAPPING = "taskAssigneeMapping";
+
+    private static final String TASK_ASSIGNEE_SEQUENTIAL_MAP_ALL = "taskAssigneeSequentialMapAll";
+
+    private static final String TASK_ASSIGNEE_MULTI_INSTANCE_MAPPING = "taskMultiInstanceVariableMapping";
+
+    private static final String ASSIGNEE_VARIABLE_NAME = "sys_task_assignee";
 
     @Autowired
     private SecurityUtil securityUtil;
@@ -263,7 +272,9 @@ public class TaskRuntimeVariableMappingIT {
                         tuple("task_input_variable_name_1",
                               "outputValue"),
                         tuple("task_output_variable_name_1",
-                              "outputTaskValue")
+                              "outputTaskValue"),
+                        tuple(ASSIGNEE_VARIABLE_NAME,
+                              "user")
                         //since there is no mapping for outputs either, all the variables are passed
                 );
         processBaseRuntime.delete(processInstance.getId());
@@ -388,7 +399,10 @@ public class TaskRuntimeVariableMappingIT {
                 tuple("new_task_output_variable_name",
                 "newOutputMappedValue"),
                 tuple("task_input_variable_name_1",
-                    "inputmap1Value"));
+                    "inputmap1Value"),
+                tuple(ASSIGNEE_VARIABLE_NAME,
+                    "user")
+            );
 
         processBaseRuntime.delete(processInstance.getId());
 
@@ -452,7 +466,9 @@ public class TaskRuntimeVariableMappingIT {
                 tuple("task_input_variable_name_1",
                     "outputValue"),
                 tuple("task_output_variable_name_1",
-                    "outputTaskValue")
+                    "outputTaskValue"),
+                tuple(ASSIGNEE_VARIABLE_NAME,
+                    "user")
                 //since there is no mapping for outputs either, all the variables are passed
             );
         processBaseRuntime.delete(processInstance.getId());
@@ -584,6 +600,115 @@ public class TaskRuntimeVariableMappingIT {
         assertThat(taskVariables)
             .extracting(VariableInstance::getName, VariableInstance::getValue)
             .containsExactly(tuple("outputText", "From child"));
-
     }
+
+    @Test
+    public void should_mapTaskAssignee_when_mappingToVariable() {
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_ASSIGNEE_MAPPING);
+
+        Task task = checkTasks(processInstance.getId());
+
+        assertThat(task.getName()).isEqualTo("testSimpleTask");
+
+        taskBaseRuntime.completeTask(task.getId());
+
+        List<VariableInstance> procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
+        assertThat(procVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .containsOnly(
+                tuple("process_variable_unmapped_1",
+                    "unmapped1Value"),
+                tuple("process_variable_inputmap_1",
+                    "inputmap1Value"),
+                tuple("process_variable_outputmap_1",
+                    "outputmap1Value"),
+                tuple("theTaskAssignee",
+                    "user")
+
+            );
+        processBaseRuntime.delete(processInstance.getId());
+    }
+
+    @Test
+    public void should_haveLastTaskAssigneeValue_when_sequentialTasks() {
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_ASSIGNEE_SEQUENTIAL_MAP_ALL);
+
+        Task task = checkTasks(processInstance.getId());
+
+        assertThat(task.getName()).isEqualTo("task1");
+
+        taskBaseRuntime.completeTask(task.getId());
+
+        List<VariableInstance> procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
+        assertThat(procVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .containsOnly(
+                tuple(ASSIGNEE_VARIABLE_NAME,
+                    "user")
+            );
+
+
+        securityUtil.logInAs("garth");
+
+        task = checkTasks(processInstance.getId());
+
+        assertThat(task.getName()).isEqualTo("task2");
+
+        taskBaseRuntime.completeTask(task.getId());
+
+        securityUtil.logInAs("user");
+        procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
+        assertThat(procVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .containsOnly(
+                tuple(ASSIGNEE_VARIABLE_NAME,
+                    "garth")
+            );
+
+        processBaseRuntime.delete(processInstance.getId());
+    }
+
+    @Test
+    public void should_mapTaskAssignee_when_mappingToVariable_multi_instances() {
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_ASSIGNEE_MULTI_INSTANCE_MAPPING);
+
+        List<Task> tasks = checkMultiInstanceTasks(processInstance.getId(), 2);
+
+        taskBaseRuntime.completeTask(tasks.get(0).getId());
+
+        taskBaseRuntime.assignTask(tasks.get(1).getId(), "garth");
+        securityUtil.logInAs("garth");
+        taskBaseRuntime.completeTask(tasks.get(1).getId());
+
+        securityUtil.logInAs("user");
+
+        List<VariableInstance> procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
+        assertThat(procVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .contains(
+                 tuple("miResult",
+                     asList(
+                         Map.of(ASSIGNEE_VARIABLE_NAME, "user"),
+                         Map.of(ASSIGNEE_VARIABLE_NAME, "garth")
+                    )
+                 )
+            );
+        processBaseRuntime.delete(processInstance.getId());
+    }
+
+    private List<Task> checkMultiInstanceTasks(String processInstanceId, int size) {
+        List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstanceId);
+        assertThat(tasks).isNotEmpty();
+        assertThat(tasks).hasSize(size);
+        return tasks;
+    }
+
 }
