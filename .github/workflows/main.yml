@@ -20,7 +20,7 @@ jobs:
   pre-commit:
     runs-on: ubuntu-latest
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@v1.21.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@v1.24.2
 
   build:
     runs-on: ubuntu-latest
@@ -45,7 +45,7 @@ jobs:
           java-version: 11
           distribution: 'temurin'
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@v1.21.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@v1.24.2
         id: update-pom-to-next-version
         if: github.event_name == 'push'
 
@@ -113,7 +113,7 @@ jobs:
 
       - name: Install updatebot
         if: github.event_name == 'push'
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@v1.21.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@v1.24.2
 
       - name: Run updatebot
         if: github.event_name == 'push'
@@ -134,7 +134,7 @@ jobs:
     if: always() && failure() && github.event_name == 'push'
     steps:
       - name: Slack Notification
-        uses: Alfresco/alfresco-build-tools/.github/actions/send-slack-notification@v1.21.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/send-slack-notification@v1.24.2
         with:
           channel-id: 'eng-hxp-studio-activiti-gh-notifs'
           token: ${{ secrets.SLACK_NOTIFICATION_BOT_TOKEN }}
