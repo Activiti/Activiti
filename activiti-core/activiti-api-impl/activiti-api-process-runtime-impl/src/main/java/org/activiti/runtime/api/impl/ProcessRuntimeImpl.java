@@ -15,6 +15,7 @@
  */
 package org.activiti.runtime.api.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -99,9 +100,6 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     private final SecurityManager securityManager;
 
-    @Value("${activiti.candidateStarters.enabled:false}")
-    private boolean candidateStartersEnabled;
-
     public ProcessRuntimeImpl(RepositoryService repositoryService,
                               APIProcessDefinitionConverter processDefinitionConverter,
                               RuntimeService runtimeService,
@@ -147,11 +145,9 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     }
 
     private ProcessDefinitionQuery createProcessDefinitionQueryWithAccessCheck() {
-        ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
-        if (candidateStartersEnabled) {
-            processDefinitionQuery.startableByUser(securityManager.getAuthenticatedUserId());
-        }
-        return processDefinitionQuery;
+        return repositoryService.createProcessDefinitionQuery()
+                                .startableByUser(securityManager.getAuthenticatedUserId())
+                                .startableByGroups(getCurrentUserGroupsIncludingEveryOneGroup());
     }
 
     private Optional<org.activiti.engine.repository.ProcessDefinition> findLatestProcessDefinition(ProcessDefinitionQuery processDefinitionQuery) {
@@ -555,4 +551,9 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         return taskQuery.count() > 0;
     }
 
+    private List<String> getCurrentUserGroupsIncludingEveryOneGroup() {
+        List<String> groups = new ArrayList<>(securityManager.getAuthenticatedUserGroups());
+        groups.add("*");
+        return groups;
+    }
 }

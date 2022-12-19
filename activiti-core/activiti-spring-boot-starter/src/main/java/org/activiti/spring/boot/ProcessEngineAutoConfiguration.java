@@ -220,7 +220,6 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty("activiti.candidateStarters.enabled")
     public ProcessCandidateStartersEventProducer processCandidateStartersEventProducer(RepositoryService repositoryService,
                                                                                        @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessCandidateStarterUserAddedEvent>> candidateStarterUserListeners,
                                                                                        @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessCandidateStarterGroupAddedEvent>> candidateStarterGroupListeners) {
@@ -293,6 +292,12 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
                 Optional.ofNullable(listeners)
                         .orElse(emptyList()),
                 eventPublisher);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public CandidateStartersDeploymentConfigurer candidateStartersDeploymentConfigurer() {
+        return new CandidateStartersDeploymentConfigurer();
     }
 
 }

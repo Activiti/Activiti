@@ -42,12 +42,20 @@ public class ProcessParser implements BpmnXMLConstants {
       if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_PROCESS_EXECUTABLE))) {
         process.setExecutable(Boolean.parseBoolean(xtr.getAttributeValue(null, ATTRIBUTE_PROCESS_EXECUTABLE)));
       }
+
       String candidateUsersString = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_PROCESS_CANDIDATE_USERS);
+      if (candidateUsersString != null) {
+          process.setCandidateStarterUsersExists(true);
+      }
       if (StringUtils.isNotEmpty(candidateUsersString)) {
         List<String> candidateUsers = BpmnXMLUtil.parseDelimitedList(candidateUsersString);
         process.setCandidateStarterUsers(candidateUsers);
       }
+
       String candidateGroupsString = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_PROCESS_CANDIDATE_GROUPS);
+      if (candidateGroupsString != null) {
+          process.setCandidateStarterGroupsExists(true);
+      }
       if (StringUtils.isNotEmpty(candidateGroupsString)) {
         List<String> candidateGroups = BpmnXMLUtil.parseDelimitedList(candidateGroupsString);
         process.setCandidateStarterGroups(candidateGroups);

@@ -348,8 +348,39 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
   }
 
   public void testQueryWithEmptyIdSet() {
-    List<ProcessDefinition> processDefinitionList = repositoryService.createProcessDefinitionQuery().processDefinitionIds(new HashSet<>(0)).list();
+    List<ProcessDefinition> processDefinitionList = repositoryService.createProcessDefinitionQuery()
+        .processDefinitionIds(new HashSet<>(0)).list();
     assertThat(processDefinitionList).isNotEmpty();
+  }
+
+  public void testQueryWithNoCandidateStarters() {
+    List<ProcessDefinition> processDefinitionList = repositoryService.createProcessDefinitionQuery()
+        .startableByUser("user1").list();
+    assertThat(processDefinitionList).isEmpty();
+  }
+
+  public void testQueryWithCandidateStarterUser() {
+    String processDefinitionId = repositoryService.createProcessDefinitionQuery()
+        .processDefinitionKey("one")
+        .latestVersion()
+        .singleResult()
+        .getId();
+    repositoryService.addCandidateStarterUser(processDefinitionId,"user1");
+    List<ProcessDefinition> processDefinitionList = repositoryService.createProcessDefinitionQuery()
+        .startableByUser("user1").list();
+    assertThat(processDefinitionList).hasSize(1);
+  }
+
+  public void testQueryWithCandidateStarterGroup() {
+    String processDefinitionId = repositoryService.createProcessDefinitionQuery().
+        processDefinitionKey("one")
+        .latestVersion()
+        .singleResult()
+        .getId();
+    repositoryService.addCandidateStarterGroup(processDefinitionId,"group1");
+    List<ProcessDefinition> processDefinitionList = repositoryService.createProcessDefinitionQuery()
+        .startableByGroups(List.of("group1")).list();
+    assertThat(processDefinitionList).hasSize(1);
   }
 
 }

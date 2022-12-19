@@ -165,7 +165,7 @@ public class BpmnDeploymentHelper  {
     timerManager.scheduleTimers(processDefinition, process);
   }
 
-  enum ExpressionType {
+  protected enum ExpressionType {
     USER, GROUP
   }
 
