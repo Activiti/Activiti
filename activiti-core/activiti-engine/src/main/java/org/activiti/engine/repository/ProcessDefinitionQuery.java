@@ -147,7 +147,7 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
 
     /**
      * Only selects process definitions which given group members are authorized to start
-     * If not set and startableByUser is set, the members of that user will be used
+     * If not set and startableByUser is set, the groups of that user will be used
      */
     ProcessDefinitionQuery startableByGroups(List<String> groupIds);
 
