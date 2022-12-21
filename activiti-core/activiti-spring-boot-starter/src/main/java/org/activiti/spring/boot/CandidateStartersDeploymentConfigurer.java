@@ -37,8 +37,8 @@ public class CandidateStartersDeploymentConfigurer implements ProcessEngineConfi
         public void addAuthorizationsForNewProcessDefinition(Process process, ProcessDefinitionEntity processDefinition) {
             super.addAuthorizationsForNewProcessDefinition(process, processDefinition);
             if (process != null &&
-                !process.isCandidateStarterUsersExists() &&
-                !process.isCandidateStarterGroupsExists()) {
+                !process.isCandidateStarterUsersDefined() &&
+                !process.isCandidateStarterGroupsDefined()) {
                 addAuthorizationsFromIterator(Context.getCommandContext(), List.of(EVERYONE_GROUP), processDefinition, ExpressionType.GROUP);
             }
         }

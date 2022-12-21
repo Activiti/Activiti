@@ -38,8 +38,8 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   protected List<String> candidateStarterGroups = new ArrayList<String>();
   protected List<EventListener> eventListeners = new ArrayList<EventListener>();
   protected Map<String, FlowElement> flowElementMap = new LinkedHashMap<String, FlowElement>();
-  protected boolean candidateStarterUsersExists;
-  protected boolean candidateStarterGroupsExists;
+  protected boolean candidateStarterUsersDefined;
+  protected boolean candidateStarterGroupsDefined;
 
   // Added during process definition parsing
   protected FlowElement initialFlowElement;
@@ -276,20 +276,20 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
     this.candidateStarterGroups = candidateStarterGroups;
   }
 
-  public boolean isCandidateStarterUsersExists() {
-    return candidateStarterUsersExists;
+  public boolean isCandidateStarterUsersDefined() {
+    return candidateStarterUsersDefined;
   }
 
-  public void setCandidateStarterUsersExists(boolean candidateStarterUsersExists) {
-    this.candidateStarterUsersExists = candidateStarterUsersExists;
+  public void setCandidateStarterUsersDefined(boolean candidateStarterUsersDefined) {
+    this.candidateStarterUsersDefined = candidateStarterUsersDefined;
   }
 
-  public boolean isCandidateStarterGroupsExists() {
-    return candidateStarterGroupsExists;
+  public boolean isCandidateStarterGroupsDefined() {
+    return candidateStarterGroupsDefined;
   }
 
-  public void setCandidateStarterGroupsExists(boolean candidateStarterGroupsExists) {
-    this.candidateStarterGroupsExists = candidateStarterGroupsExists;
+  public void setCandidateStarterGroupsDefined(boolean candidateStarterGroupsDefined) {
+    this.candidateStarterGroupsDefined = candidateStarterGroupsDefined;
   }
 
   public List<EventListener> getEventListeners() {
