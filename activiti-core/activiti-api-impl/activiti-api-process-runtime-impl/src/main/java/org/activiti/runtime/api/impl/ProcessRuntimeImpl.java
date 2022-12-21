@@ -75,6 +75,8 @@ import org.springframework.transaction.annotation.Transactional;
 @PreAuthorize("hasRole('ACTIVITI_USER')")
 public class ProcessRuntimeImpl implements ProcessRuntime {
 
+    private static final String EVERYONE_GROUP = "*";
+
     private final RepositoryService repositoryService;
 
     private final APIProcessDefinitionConverter processDefinitionConverter;
@@ -552,7 +554,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     private List<String> getCurrentUserGroupsIncludingEveryOneGroup() {
         List<String> groups = new ArrayList<>(securityManager.getAuthenticatedUserGroups());
-        groups.add("*");
+        groups.add(EVERYONE_GROUP);
         return groups;
     }
 }

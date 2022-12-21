@@ -25,6 +25,8 @@ import java.util.List;
 
 public class CandidateStartersDeploymentConfigurer implements ProcessEngineConfigurationConfigurer {
 
+    private static final String EVERYONE_GROUP = "*";
+
     @Override
     public void configure(SpringProcessEngineConfiguration processEngineConfiguration) {
         processEngineConfiguration.setBpmnDeploymentHelper(new CandidateStartersDeploymentHelper());
@@ -37,7 +39,7 @@ public class CandidateStartersDeploymentConfigurer implements ProcessEngineConfi
             if (process != null &&
                 !process.isCandidateStarterUsersExists() &&
                 !process.isCandidateStarterGroupsExists()) {
-                addAuthorizationsFromIterator(Context.getCommandContext(), List.of("*"), processDefinition, ExpressionType.GROUP);
+                addAuthorizationsFromIterator(Context.getCommandContext(), List.of(EVERYONE_GROUP), processDefinition, ExpressionType.GROUP);
             }
         }
     }
