@@ -22,22 +22,25 @@ import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.RepositoryService;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@TestPropertySource("classpath:application-with-candidate-starters-enabled.properties")
 public class ProcessRuntimeCandidateStartersIT {
 
+    private static final String NO_CANDIDATES_SET_PROCESS_DEFINITION_KEY = "SingleTaskProcess";
     private static final String RESTRICTED_PROCESS_DEFINITION_KEY = "SingleTaskProcessRestricted";
+
+    @Autowired
+    private RepositoryService repositoryService;
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -60,8 +63,8 @@ public class ProcessRuntimeCandidateStartersIT {
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
                                                                                                       50));
         assertThat(processDefinitionPage.getContent()).isNotNull();
-        assertThat(processDefinitionPage.getContent()).hasSize(1);
-        assertThat(processDefinitionPage.getContent().get(0).getKey()).isEqualTo(RESTRICTED_PROCESS_DEFINITION_KEY);
+        assertThat(processDefinitionPage.getContent()) // All processes except UnstartableProcess
+            .hasSize((int) repositoryService.createProcessDefinitionQuery().count() -1);
     }
 
     @Test
@@ -71,18 +74,20 @@ public class ProcessRuntimeCandidateStartersIT {
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
             50));
         assertThat(processDefinitionPage.getContent()).isNotNull();
-        assertThat(processDefinitionPage.getContent()).hasSize(1);
-        assertThat(processDefinitionPage.getContent().get(0).getKey()).isEqualTo(RESTRICTED_PROCESS_DEFINITION_KEY);
+        assertThat(processDefinitionPage.getContent()) // All processes except UnstartableProcess
+            .hasSize((int) repositoryService.createProcessDefinitionQuery().count() -1);
     }
 
     @Test
-    public void nonCandidateStarters_shouldNot_getProcessDefinitions() {
+    public void nonCandidateStarters_shouldNot_getRestrictedProcessDefinitions() {
         loginAsANonCandidateStarter();
 
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
             50));
         assertThat(processDefinitionPage.getContent()).isNotNull();
-        assertThat(processDefinitionPage.getContent()).isEmpty();
+        // All processes except SingleTaskProcessRestricted and UnstartableProcess
+        assertThat(processDefinitionPage.getContent())
+            .hasSize((int) repositoryService.createProcessDefinitionQuery().count() - 2);
     }
 
 
@@ -105,7 +110,16 @@ public class ProcessRuntimeCandidateStartersIT {
     }
 
     @Test
-    public void nonCandidateStarters_shouldNot_getProcessDefinition() {
+    public void nonCandidateStarter_should_getProcessDefinitionWithNoCandidatesSet() {
+        loginAsCandidateStarterUser();
+
+        ProcessDefinition processDefinition = processRuntime.processDefinition(NO_CANDIDATES_SET_PROCESS_DEFINITION_KEY);
+        assertThat(processDefinition).isNotNull();
+        assertThat(processDefinition.getKey()).isEqualTo(NO_CANDIDATES_SET_PROCESS_DEFINITION_KEY);
+    }
+
+    @Test
+    public void nonCandidateStarters_shouldNot_getProcessDefinitionWithCandidatesSet() {
         loginAsANonCandidateStarter();
 
         Throwable throwable = catchThrowable(() -> processRuntime.processDefinition(RESTRICTED_PROCESS_DEFINITION_KEY));

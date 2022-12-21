@@ -59,6 +59,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     private boolean latest;
     private SuspensionState suspensionState;
     private String authorizationUserId;
+    private List<String> authorizationGroups;
     private String procDefId;
     private String tenantId;
     private String tenantIdLike;
@@ -297,13 +298,17 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     }
 
     public List<String> getAuthorizationGroups() {
+        if (authorizationGroups != null) {
+            return authorizationGroups;
+        }
         // Similar behaviour as the TaskQuery.taskCandidateUser() which
         // includes the groups the candidate
         // user is part of
         if (authorizationUserId != null) {
             UserGroupManager userGroupManager = Context.getProcessEngineConfiguration().getUserGroupManager();
             if (userGroupManager != null) {
-                return userGroupManager.getUserGroups(authorizationUserId);
+                authorizationGroups = userGroupManager.getUserGroups(authorizationUserId);
+                return authorizationGroups;
             } else {
                 log.warn("No UserGroupManager set on ProcessEngineConfiguration. Tasks queried only where user is directly related, not through groups.");
             }
@@ -489,6 +494,11 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
             throw new ActivitiIllegalArgumentException("userId is null");
         }
         this.authorizationUserId = userId;
+        return this;
+    }
+
+    public ProcessDefinitionQuery startableByGroups(List<String> groupIds) {
+        authorizationGroups = groupIds;
         return this;
     }
 }

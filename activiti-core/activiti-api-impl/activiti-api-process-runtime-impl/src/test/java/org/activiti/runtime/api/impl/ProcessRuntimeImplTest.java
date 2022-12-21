@@ -155,6 +155,8 @@ public class ProcessRuntimeImplTest {
 
     @Test
     public void should_getProcessDefinitionById_when_appVersionIsNull() {
+        doReturn("user").when(securityManager).getAuthenticatedUserId();
+
         String processDefinitionId = "processDefinitionId";
         String processDefinitionKey = "processDefinitionKey";
 
@@ -179,6 +181,8 @@ public class ProcessRuntimeImplTest {
 
     @Test
     public void should_throwActivitiUnprocessableEntryException_when_processDefinitionAppVersionDiffersFromCurrentDeploymentVersion() {
+        doReturn("user").when(securityManager).getAuthenticatedUserId();
+
         String processDefinitionId = "processDefinitionId";
         ProcessDefinitionEntityImpl processDefinition = new ProcessDefinitionEntityImpl();
         processDefinition.setId(processDefinitionId);
@@ -207,6 +211,8 @@ public class ProcessRuntimeImplTest {
 
     @Test
     public void should_throwActivitiObjectNotFoundException_when_canReadFalse() {
+        doReturn("user").when(securityManager).getAuthenticatedUserId();
+
         String processDefinitionId = "processDefinitionId";
         String processDefinitionKey = "processDefinitionKey";
         ProcessDefinitionEntityImpl processDefinition = new ProcessDefinitionEntityImpl();
