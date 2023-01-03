@@ -17,6 +17,10 @@ package org.activiti.spring.boot.process;
 
 import org.activiti.api.process.model.ProcessCandidateStarterGroup;
 import org.activiti.api.process.model.ProcessCandidateStarterUser;
+import org.activiti.api.process.runtime.events.ProcessCandidateStarterGroupAddedEvent;
+import org.activiti.api.process.runtime.events.ProcessCandidateStarterUserAddedEvent;
+import org.activiti.api.runtime.event.impl.ProcessCandidateStarterGroupAddedEvents;
+import org.activiti.api.runtime.event.impl.ProcessCandidateStarterUserAddedEvents;
 import org.activiti.engine.RepositoryService;
 import org.activiti.spring.boot.process.listener.ProcessCandidateStarterGroupAddedListener;
 import org.activiti.spring.boot.process.listener.ProcessCandidateStarterGroupRemovedListener;
@@ -60,6 +64,14 @@ public class ProcessCandidateStarterEventIT {
     }
 
     @Test
+    public void shouldPublishProcessCandidateStarterAddedEvents() {
+        String processDefinitionId = getProcessDefinitionId();
+        assertPublishedCandidateStartersEvents(processDefinitionId,
+                                               candidateStarterUserListener.getPublishedEvents(),
+                                               candidateStarterGroupListener.getPublishedEvents());
+    }
+
+    @Test
     public void shouldTriggerProcessCandidateStarterRemovedEvents() {
         String processDefinitionId = getProcessDefinitionId();
 
@@ -67,8 +79,8 @@ public class ProcessCandidateStarterEventIT {
         repositoryService.deleteCandidateStarterGroup(processDefinitionId, "activitiTeam");
 
         assertCandidateStarters(processDefinitionId,
-                                candidateStarterUserRemovedListener.getCandidateStarterUsers(),
-                                candidateStarterGroupRemovedListener.getCandidateStarterGroups());
+            candidateStarterUserRemovedListener.getCandidateStarterUsers(),
+            candidateStarterGroupRemovedListener.getCandidateStarterGroups());
     }
 
     private String getProcessDefinitionId() {
@@ -85,6 +97,22 @@ public class ProcessCandidateStarterEventIT {
             .contains(tuple(processDefinitionId, "user"));
 
         assertThat(candidateStarterGroups)
+            .extracting(ProcessCandidateStarterGroup::getProcessDefinitionId, ProcessCandidateStarterGroup::getGroupId)
+            .contains(tuple(processDefinitionId, "activitiTeam"));
+    }
+
+    private void assertPublishedCandidateStartersEvents(String processDefinitionId,
+                                                        ProcessCandidateStarterUserAddedEvents candidateStarterUsersAddedEvents,
+                                                        ProcessCandidateStarterGroupAddedEvents candidateStarterGroupsAddedEvents) {
+        assertThat(candidateStarterUsersAddedEvents).isNotNull();
+        assertThat(candidateStarterUsersAddedEvents.getEvents())
+            .extracting(ProcessCandidateStarterUserAddedEvent::getEntity)
+            .extracting(ProcessCandidateStarterUser::getProcessDefinitionId, ProcessCandidateStarterUser::getUserId)
+            .contains(tuple(processDefinitionId, "user"));
+
+        assertThat(candidateStarterGroupsAddedEvents).isNotNull();
+        assertThat(candidateStarterGroupsAddedEvents.getEvents())
+            .extracting(ProcessCandidateStarterGroupAddedEvent::getEntity)
             .extracting(ProcessCandidateStarterGroup::getProcessDefinitionId, ProcessCandidateStarterGroup::getGroupId)
             .contains(tuple(processDefinitionId, "activitiTeam"));
     }
