@@ -15,24 +15,33 @@
  */
 package org.activiti.spring;
 
-import java.util.ArrayList;
 import java.util.List;
-import org.activiti.api.process.model.Deployment;
+import java.util.stream.Collectors;
 import org.activiti.api.process.model.events.ApplicationDeployedEvent;
+import org.activiti.api.process.model.events.ApplicationEvent.ApplicationEvents;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.event.impl.ApplicationDeployedEventImpl;
 import org.activiti.api.runtime.event.impl.ApplicationDeployedEvents;
 import org.activiti.engine.RepositoryService;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 
 public class ApplicationDeployedEventProducer extends AbstractActivitiSmartLifeCycle {
+
+    protected static final Logger LOGGER = LoggerFactory.getLogger(ApplicationDeployedEventProducer.class);
+
+    private static final String APPLICATION_DEPLOYMENT_NAME= "SpringAutoDeployment";
 
     private RepositoryService repositoryService;
     private APIDeploymentConverter deploymentConverter;
     private List<ProcessRuntimeEventListener<ApplicationDeployedEvent>> listeners;
     private ApplicationEventPublisher eventPublisher;
-    private static final String APPLICATION_DEPLOYMENT_NAME= "SpringAutoDeployment";
+
+    @Value("${activiti.deploy.after-rollback:false}")
+    private boolean afterRollback;
 
     public ApplicationDeployedEventProducer(RepositoryService repositoryService,
             APIDeploymentConverter deploymentConverter,
@@ -56,17 +65,29 @@ public class ApplicationDeployedEventProducer extends AbstractActivitiSmartLifeC
     }
 
     private List<ApplicationDeployedEvent> getApplicationDeployedEvents() {
-        List<Deployment> deployments = deploymentConverter.from(repositoryService
+        ApplicationEvents eventType = getEventType();
+        return deploymentConverter.from(repositoryService
                         .createDeploymentQuery()
                         .deploymentName(APPLICATION_DEPLOYMENT_NAME)
-                        .list());
+                        .list())
+            .stream()
+            .map(deployment -> new ApplicationDeployedEventImpl(deployment, eventType))
+            .collect(Collectors.toList());
+    }
 
-        List<ApplicationDeployedEvent> applicationDeployedEvents = new ArrayList<>();
-        for (Deployment deployment : deployments) {
-            ApplicationDeployedEventImpl applicationDeployedEvent = new ApplicationDeployedEventImpl(deployment);
-            applicationDeployedEvents.add(applicationDeployedEvent);
+    private ApplicationEvents getEventType() {
+        ApplicationEvents eventType;
+        if(afterRollback) {
+            LOGGER.info("This pod has been marked as created after a rollback.");
+            eventType = ApplicationEvents.APPLICATION_ROLLBACK;
+        } else {
+            eventType = ApplicationEvents.APPLICATION_DEPLOYED;
         }
-        return applicationDeployedEvents;
+        return eventType;
+    }
+
+    public void setAfterRollback(boolean afterRollback) {
+        this.afterRollback = afterRollback;
     }
 
     @Override
