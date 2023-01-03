@@ -18,6 +18,8 @@ package org.activiti.spring.boot.process.listener;
 import org.activiti.api.process.model.ProcessCandidateStarterGroup;
 import org.activiti.api.process.runtime.events.ProcessCandidateStarterGroupAddedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
+import org.activiti.api.runtime.event.impl.ProcessCandidateStarterGroupAddedEvents;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ import java.util.List;
 public class ProcessCandidateStarterGroupAddedListener implements ProcessRuntimeEventListener<ProcessCandidateStarterGroupAddedEvent> {
 
     private List<ProcessCandidateStarterGroup> candidateStarterGroups = new ArrayList<>();
+    private ProcessCandidateStarterGroupAddedEvents events;
 
     @Override
     public void onEvent(ProcessCandidateStarterGroupAddedEvent event) {
@@ -35,6 +38,15 @@ public class ProcessCandidateStarterGroupAddedListener implements ProcessRuntime
 
     public List<ProcessCandidateStarterGroup> getCandidateStarterGroups() {
         return candidateStarterGroups;
+    }
+
+    @EventListener
+    public void publishedEvent(ProcessCandidateStarterGroupAddedEvents events) {
+        this.events = events;
+    }
+
+    public ProcessCandidateStarterGroupAddedEvents getPublishedEvents() {
+        return events;
     }
 
 }

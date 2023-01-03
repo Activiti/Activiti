@@ -221,8 +221,12 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
     @ConditionalOnMissingBean
     public ProcessCandidateStartersEventProducer processCandidateStartersEventProducer(RepositoryService repositoryService,
                                                                                        @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessCandidateStarterUserAddedEvent>> candidateStarterUserListeners,
-                                                                                       @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessCandidateStarterGroupAddedEvent>> candidateStarterGroupListeners) {
-        return new ProcessCandidateStartersEventProducer(repositoryService, candidateStarterUserListeners, candidateStarterGroupListeners);
+                                                                                       @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessCandidateStarterGroupAddedEvent>> candidateStarterGroupListeners,
+                                                                                       ApplicationEventPublisher eventPublisher) {
+        return new ProcessCandidateStartersEventProducer(repositoryService,
+                                                         candidateStarterUserListeners,
+                                                         candidateStarterGroupListeners,
+                                                         eventPublisher);
     }
 
     @Bean
