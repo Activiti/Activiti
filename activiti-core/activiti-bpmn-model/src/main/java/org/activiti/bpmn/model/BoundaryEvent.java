@@ -48,6 +48,15 @@ public class BoundaryEvent extends Event {
     this.cancelActivity = cancelActivity;
   }
 
+  public boolean hasErrorEventDefinition() {
+    if(this.eventDefinitions != null && !this.eventDefinitions.isEmpty()){
+      return this.eventDefinitions.stream().anyMatch(eventDefinition ->
+        ErrorEventDefinition.class.isInstance(eventDefinition)
+      );
+    }
+    return false;
+  }
+
   public BoundaryEvent clone() {
     BoundaryEvent clone = new BoundaryEvent();
     clone.setValues(this);
