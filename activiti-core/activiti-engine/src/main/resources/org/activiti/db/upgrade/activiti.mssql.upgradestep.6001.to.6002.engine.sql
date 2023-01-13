@@ -211,3 +211,5 @@ alter table ACT_RU_EXECUTION add VAR_COUNT_ int;
 alter table ACT_RU_EXECUTION add ID_LINK_COUNT_ int;
 
 update ACT_GE_PROPERTY set VALUE_ = '6.0.0.2' where NAME_ = 'schema.version';
+
+update ACT_RU_EXECUTION as exe set START_USER_ID_ = (select START_USER_ID_ from ACT_HI_PROCINST where PROC_INST_ID_=exe.PROC_INST_ID_);
