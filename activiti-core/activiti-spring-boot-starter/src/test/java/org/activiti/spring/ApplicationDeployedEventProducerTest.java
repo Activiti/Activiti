@@ -92,6 +92,7 @@ public class ApplicationDeployedEventProducerTest {
                                                      mock(Deployment.class));
 
         given(deploymentQuery.deploymentName(APPLICATION_DEPLOYMENT_NAME)).willReturn(deploymentQuery);
+        given(deploymentQuery.latestVersion()).willReturn(deploymentQuery);
         given(deploymentQuery.list()).willReturn(internalDeployment);
 
         List<org.activiti.api.process.model.Deployment> apiDeployments= asList(

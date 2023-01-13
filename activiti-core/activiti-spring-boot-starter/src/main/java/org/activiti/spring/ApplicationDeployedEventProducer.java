@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.util.CollectionUtils;
 
 public class ApplicationDeployedEventProducer extends AbstractActivitiSmartLifeCycle {
 
@@ -56,11 +57,14 @@ public class ApplicationDeployedEventProducer extends AbstractActivitiSmartLifeC
     @Override
     public void doStart() {
         List<ApplicationDeployedEvent> applicationDeployedEvents = getApplicationDeployedEvents();
-        for (ProcessRuntimeEventListener<ApplicationDeployedEvent> listener : listeners) {
-            applicationDeployedEvents.forEach(listener::onEvent);
-        }
+
         if (!applicationDeployedEvents.isEmpty()) {
-            eventPublisher.publishEvent(new ApplicationDeployedEvents(applicationDeployedEvents));
+            ApplicationDeployedEvent applicationDeployedEvent = applicationDeployedEvents.get(0);
+            for (ProcessRuntimeEventListener<ApplicationDeployedEvent> listener : listeners) {
+                listener.onEvent(applicationDeployedEvent);
+            }
+
+            eventPublisher.publishEvent(new ApplicationDeployedEvents(List.of(applicationDeployedEvent)));
         }
     }
 
@@ -69,6 +73,7 @@ public class ApplicationDeployedEventProducer extends AbstractActivitiSmartLifeC
         return deploymentConverter.from(repositoryService
                         .createDeploymentQuery()
                         .deploymentName(APPLICATION_DEPLOYMENT_NAME)
+                        .latestVersion()
                         .list())
             .stream()
             .map(deployment -> new ApplicationDeployedEventImpl(deployment, eventType))
