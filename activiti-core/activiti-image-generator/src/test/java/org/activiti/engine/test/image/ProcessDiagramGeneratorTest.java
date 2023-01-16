@@ -15,10 +15,6 @@
  */
 package org.activiti.engine.test.image;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.ProcessEngines;
@@ -34,6 +30,15 @@ import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.anim.dom.SVGOMDocument;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.apache.commons.io.IOUtils;
+import org.springframework.util.ResourceUtils;
+import org.springframework.util.StreamUtils;
+import org.xmlunit.assertj3.XmlAssert;
+
+import java.io.File;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -41,6 +46,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
+
+    public static final String TEST_OUTPUT_RESULT_PATH = "classpath:org/activiti/engine/test/image/" +
+            "ProcessDiagramGeneratorTest.testOutput.result.svg";
+
+    private final ProcessDiagramGenerator imageGenerator = new DefaultProcessDiagramGenerator();
+
+    private final String activityFontName = imageGenerator.getDefaultActivityFontName();
+
+    private final String labelFontName = imageGenerator.getDefaultLabelFontName();
+
+    private final String annotationFontName = imageGenerator.getDefaultAnnotationFontName();
 
     @Override
     protected void initializeProcessEngine() {
@@ -59,11 +75,6 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testHighLighted() throws Exception {
-        ProcessDiagramGenerator imageGenerator = new DefaultProcessDiagramGenerator();
-        String activityFontName = imageGenerator.getDefaultActivityFontName();
-        String labelFontName = imageGenerator.getDefaultLabelFontName();
-        String annotationFontName = imageGenerator.getDefaultAnnotationFontName();
-
         runtimeService.startProcessInstanceByKey("myProcess");
         List<Task> tasks = taskService.createTaskQuery().list();
         for (Task task : tasks) {
@@ -89,11 +100,6 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testSmallBoxLabels() throws Exception {
-        ProcessDiagramGenerator imageGenerator = new DefaultProcessDiagramGenerator();
-        String activityFontName = imageGenerator.getDefaultActivityFontName();
-        String labelFontName = imageGenerator.getDefaultLabelFontName();
-        String annotationFontName = imageGenerator.getDefaultAnnotationFontName();
-
         String id = repositoryService.createProcessDefinitionQuery().processDefinitionKey("myProcess").singleResult()
                 .getId();
 
@@ -110,11 +116,6 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testTransactionElements() throws Exception {
-        ProcessDiagramGenerator imageGenerator = new DefaultProcessDiagramGenerator();
-        String activityFontName = imageGenerator.getDefaultActivityFontName();
-        String labelFontName = imageGenerator.getDefaultLabelFontName();
-        String annotationFontName = imageGenerator.getDefaultAnnotationFontName();
-
         String id = repositoryService.createProcessDefinitionQuery().processDefinitionKey("transactionSubRequest").singleResult()
                 .getId();
 
@@ -131,11 +132,6 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testAllElements() throws Exception {
-        ProcessDiagramGenerator imageGenerator = new DefaultProcessDiagramGenerator();
-        String activityFontName = imageGenerator.getDefaultActivityFontName();
-        String labelFontName = imageGenerator.getDefaultLabelFontName();
-        String annotationFontName = imageGenerator.getDefaultAnnotationFontName();
-
         String id = repositoryService.createProcessDefinitionQuery().processDefinitionKey("myProcess").singleResult()
                 .getId();
         BpmnModel bpmnModel = repositoryService.getBpmnModel(id);
@@ -171,6 +167,20 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
         }
     }
 
+    @Deployment
+    public void testOutput() throws Exception {
+        String id = repositoryService.createProcessDefinitionQuery().processDefinitionKey("big-process").singleResult()
+                .getId();
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(id);
+        try (final InputStream resourceStream = imageGenerator.generateDiagram(bpmnModel, activityFontName,
+                labelFontName, annotationFontName)) {
+            byte[] bytes = StreamUtils.copyToByteArray(resourceStream);
+            String resultSvgContent = new String(bytes, StandardCharsets.UTF_8);
+            File expectedResultFile = ResourceUtils.getFile(TEST_OUTPUT_RESULT_PATH);
+            XmlAssert.assertThat(expectedResultFile).and(resultSvgContent).ignoreWhitespace().areIdentical();
+        }
+    }
+
     /**
      * Test that when the diagram is generated for a model without graphic info
      * then the default diagram image is returned
@@ -187,11 +197,6 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
                 .singleResult()
                 .getId();
         BpmnModel bpmnModel = repositoryService.getBpmnModel(id);
-
-        ProcessDiagramGenerator imageGenerator = new DefaultProcessDiagramGenerator();
-        String activityFontName = imageGenerator.getDefaultActivityFontName();
-        String labelFontName = imageGenerator.getDefaultLabelFontName();
-        String annotationFontName = imageGenerator.getDefaultAnnotationFontName();
 
         //WHEN
         try (final InputStream resourceStream = imageGenerator.generateDiagram(bpmnModel,
