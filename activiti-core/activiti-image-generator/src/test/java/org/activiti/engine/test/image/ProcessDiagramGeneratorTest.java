@@ -177,7 +177,7 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
             byte[] bytes = StreamUtils.copyToByteArray(resourceStream);
             String resultSvgContent = new String(bytes, StandardCharsets.UTF_8);
             File expectedResultFile = ResourceUtils.getFile(TEST_OUTPUT_RESULT_PATH);
-            XmlAssert.assertThat(expectedResultFile).and(resultSvgContent).ignoreWhitespace().areIdentical();
+            XmlAssert.assertThat(resultSvgContent).and(expectedResultFile).ignoreWhitespace().areIdentical();
         }
     }
 
