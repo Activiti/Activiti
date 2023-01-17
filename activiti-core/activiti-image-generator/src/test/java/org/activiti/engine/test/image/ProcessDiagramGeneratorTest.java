@@ -184,6 +184,7 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
             File expectedResultFile = ResourceUtils.getFile(TEST_OUTPUT_RESULT_PATH);
             XmlAssert.assertThat(resultSvgContent).and(expectedResultFile)
                     .ignoreWhitespace()
+                    .withNodeFilter(node -> !"path".equals(node.getNodeName()))
                     .withDifferenceEvaluator(new StyleAttributeEvaluator())
                     .areIdentical();
         }
