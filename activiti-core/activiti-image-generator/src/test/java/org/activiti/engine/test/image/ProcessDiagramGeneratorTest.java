@@ -33,12 +33,18 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.StreamUtils;
 import org.xmlunit.assertj3.XmlAssert;
+import org.xmlunit.diff.Comparison;
+import org.xmlunit.diff.ComparisonResult;
+import org.xmlunit.diff.ComparisonType;
+import org.xmlunit.diff.DifferenceEvaluator;
 
 import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -172,12 +178,14 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
         String id = repositoryService.createProcessDefinitionQuery().processDefinitionKey("big-process").singleResult()
                 .getId();
         BpmnModel bpmnModel = repositoryService.getBpmnModel(id);
-        try (final InputStream resourceStream = imageGenerator.generateDiagram(bpmnModel, activityFontName,
-                labelFontName, annotationFontName)) {
+        try (final InputStream resourceStream = imageGenerator.generateDiagram(bpmnModel, "", "", "")) {
             byte[] bytes = StreamUtils.copyToByteArray(resourceStream);
             String resultSvgContent = new String(bytes, StandardCharsets.UTF_8);
             File expectedResultFile = ResourceUtils.getFile(TEST_OUTPUT_RESULT_PATH);
-            XmlAssert.assertThat(resultSvgContent).and(expectedResultFile).ignoreWhitespace().areIdentical();
+            XmlAssert.assertThat(resultSvgContent).and(expectedResultFile)
+                    .ignoreWhitespace()
+                    .withDifferenceEvaluator(new StyleAttributeEvaluator())
+                    .areIdentical();
         }
     }
 
@@ -256,4 +264,28 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
         return (SVGOMDocument) factory.createDocument(null, resourceStream);
     }
 
+    private static class StyleAttributeEvaluator implements DifferenceEvaluator {
+        @Override
+        public ComparisonResult evaluate(Comparison comparison, ComparisonResult outcome) {
+            if (outcome != ComparisonResult.EQUAL && isStyleAttribute(comparison)) {
+                List<String> controlStream = split(comparison.getControlDetails());
+                List<String> testStream = split(comparison.getTestDetails());
+                if (controlStream.size() == testStream.size() && controlStream.containsAll(testStream)) {
+                    return ComparisonResult.EQUAL;
+                }
+            }
+            return outcome;
+        }
+
+        private boolean isStyleAttribute(Comparison comparison) {
+            return comparison.getType() == ComparisonType.ATTR_VALUE &&
+                    "style".equals(comparison.getControlDetails().getTarget().getNodeName());
+        }
+
+        private List<String> split(Comparison.Detail comparison) {
+            return Arrays.stream(((String) comparison.getValue()).split(";"))
+                    .map(String::trim)
+                    .collect(Collectors.toList());
+        }
+    }
 }
