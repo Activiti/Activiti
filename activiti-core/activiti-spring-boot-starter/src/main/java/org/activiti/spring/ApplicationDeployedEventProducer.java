@@ -85,7 +85,7 @@ public class ApplicationDeployedEventProducer extends AbstractActivitiSmartLifeC
 
     private Deployment withProjectVersion1Based(Deployment deployment) {
         String projectReleaseVersion = deployment.getProjectReleaseVersion();
-        if(projectReleaseVersion != null && StringUtils.isNumeric(projectReleaseVersion)) {
+        if(StringUtils.isNumeric(projectReleaseVersion)) {
             //The project version in the database is 0 based while in the devops section is 1 based
             DeploymentImpl result = new DeploymentImpl();
             result.setVersion(deployment.getVersion());
