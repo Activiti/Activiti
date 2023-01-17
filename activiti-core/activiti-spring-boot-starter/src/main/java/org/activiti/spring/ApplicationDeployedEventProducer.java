@@ -17,18 +17,20 @@ package org.activiti.spring;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.activiti.api.process.model.Deployment;
 import org.activiti.api.process.model.events.ApplicationDeployedEvent;
 import org.activiti.api.process.model.events.ApplicationEvent.ApplicationEvents;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.event.impl.ApplicationDeployedEventImpl;
 import org.activiti.api.runtime.event.impl.ApplicationDeployedEvents;
+import org.activiti.api.runtime.model.impl.DeploymentImpl;
 import org.activiti.engine.RepositoryService;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.util.CollectionUtils;
 
 public class ApplicationDeployedEventProducer extends AbstractActivitiSmartLifeCycle {
 
@@ -76,8 +78,25 @@ public class ApplicationDeployedEventProducer extends AbstractActivitiSmartLifeC
                         .latestVersion()
                         .list())
             .stream()
+            .map(this::withProjectVersion1Based)
             .map(deployment -> new ApplicationDeployedEventImpl(deployment, eventType))
             .collect(Collectors.toList());
+    }
+
+    private Deployment withProjectVersion1Based(Deployment deployment) {
+        String projectReleaseVersion = deployment.getProjectReleaseVersion();
+        if(StringUtils.isNumeric(projectReleaseVersion)) {
+            //The project version in the database is 0 based while in the devops section is 1 based
+            DeploymentImpl result = new DeploymentImpl();
+            result.setVersion(deployment.getVersion());
+            result.setId(deployment.getId());
+            result.setName(deployment.getName());
+            int projectReleaseVersionInt = Integer.valueOf(projectReleaseVersion) + 1;
+            result.setProjectReleaseVersion(String.valueOf(projectReleaseVersionInt));
+            return result;
+        } else {
+            return deployment;
+        }
     }
 
     private ApplicationEvents getEventType() {
