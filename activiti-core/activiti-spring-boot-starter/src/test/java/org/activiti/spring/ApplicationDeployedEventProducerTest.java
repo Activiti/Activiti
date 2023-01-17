@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import org.activiti.api.process.model.events.ApplicationDeployedEvent;
@@ -95,8 +96,10 @@ public class ApplicationDeployedEventProducerTest {
         given(deploymentQuery.latestVersion()).willReturn(deploymentQuery);
         given(deploymentQuery.list()).willReturn(internalDeployment);
 
-        List<org.activiti.api.process.model.Deployment> apiDeployments= asList(
-            mock(org.activiti.api.process.model.Deployment.class));
+        org.activiti.api.process.model.Deployment deployment = mock(org.activiti.api.process.model.Deployment.class);
+        when(deployment.getProjectReleaseVersion()).thenReturn("1");
+        when(deployment.getId()).thenReturn("123");
+        List<org.activiti.api.process.model.Deployment> apiDeployments = asList(deployment);
         given(converter.from(internalDeployment)).willReturn(apiDeployments);
 
         producer.start();
@@ -108,8 +111,16 @@ public class ApplicationDeployedEventProducerTest {
         List<ApplicationDeployedEvent> allValues = captor.getAllValues();
         assertThat(allValues)
             .extracting(ApplicationDeployedEvent::getEntity)
+            .extracting(org.activiti.api.process.model.Deployment::getId)
             .hasSize(2)
-            .containsOnly(apiDeployments.get(0));
+            .containsOnly("123");
+
+        assertThat(allValues)
+            .extracting(ApplicationDeployedEvent::getEntity)
+            .extracting(org.activiti.api.process.model.Deployment::getProjectReleaseVersion)
+            .hasSize(2)
+            .containsOnly("2");
+
 
         ArgumentCaptor<ApplicationDeployedEvents> captorPublisher = ArgumentCaptor.forClass(ApplicationDeployedEvents.class);
         verify(eventPublisher).publishEvent(captorPublisher.capture());
