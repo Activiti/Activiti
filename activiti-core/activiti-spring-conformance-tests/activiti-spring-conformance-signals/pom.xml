@@ -6,7 +6,7 @@
   <parent>
     <artifactId>activiti-spring-conformance-tests</artifactId>
     <groupId>org.activiti</groupId>
-    <version>7.4.2-SNAPSHOT</version>
+    <version>7.4.2-alpha.1</version>
   </parent>
   <artifactId>activiti-spring-conformance-signals</artifactId>
   <name>Activiti :: Spring :: Conformance Variables</name>
