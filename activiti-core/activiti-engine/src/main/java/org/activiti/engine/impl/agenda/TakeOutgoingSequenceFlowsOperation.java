@@ -42,6 +42,7 @@ import org.activiti.engine.impl.el.UelExpressionCondition;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.condition.ConditionUtil;
 import org.slf4j.Logger;
@@ -299,7 +300,15 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
     }
 
     protected void cleanupExecutions(FlowElement currentFlowElement) {
-        if (execution.getParentId() != null && execution.isScope()) {
+        if (execution.getParentId() != null && execution.isScope() && execution.hasInstances()) {
+            for (TaskEntity taskEntity : commandContext.getTaskEntityManager().findTasksByProcessInstanceId(execution.getProcessInstanceId()))
+            {
+                //If there's a task with the current execution associated, this execution cannot be deleted yet or else it will throw a
+                //database error
+                if(taskEntity.getExecutionId().equals(execution.getId())){
+                    return;
+                }
+            }
 
             // If the execution is a scope (and not a process instance), the scope must first be
             // destroyed before we can continue and follow the sequence flow

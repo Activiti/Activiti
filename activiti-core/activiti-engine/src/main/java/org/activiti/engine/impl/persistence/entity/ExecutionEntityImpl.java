@@ -80,6 +80,8 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   protected boolean isMultiInstanceRoot;
   protected boolean isCountEnabled;
 
+  protected boolean hasInstances = true;
+
   // events ///////////////////////////////////////////////////////////////////
 
   // TODO: still needed in v6?
@@ -748,6 +750,12 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   public void setMultiInstanceRoot(boolean isMultiInstanceRoot) {
     this.isMultiInstanceRoot = isMultiInstanceRoot;
   }
+
+  @Override
+  public Boolean hasInstances() { return hasInstances; }
+
+  @Override
+  public void setInstances(Boolean hasInstances) { this.hasInstances = hasInstances; }
 
   @Override
   public boolean isCountEnabled() {

@@ -175,5 +175,14 @@ public interface DelegateExecution extends VariableScope {
    * @param isMultiInstanceRoot
    */
   void setMultiInstanceRoot(boolean isMultiInstanceRoot);
+  /**
+   * Returns whether this execution has instances or not.
+   */
+  Boolean hasInstances();
+  /**
+   * Changes whether this execution has instances or not.
+   * @param hasInstances
+   */
+  void setInstances(Boolean hasInstances);
 
 }

@@ -108,6 +108,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
       }
 
       if (nrOfInstances == 0) {
+        execution.setInstances(false);
         super.leave(execution);
       }
 
