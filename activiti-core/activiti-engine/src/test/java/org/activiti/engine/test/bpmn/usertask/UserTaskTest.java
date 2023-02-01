@@ -18,11 +18,15 @@
 package org.activiti.engine.test.bpmn.usertask;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -146,5 +150,31 @@ public class UserTaskTest extends PluggableActivitiTestCase {
 
     assertThat(task.getFormKey()).isEqualTo("test123");
   }
+
+    @Deployment(resources = { "org/activiti/engine/test/bpmn/UserTaskTest.testCompleteTaskWithEmptyVariable.bpmn20.xml" })
+    public void testCompleteTaskWithEmptyVariable() {
+
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestBusinessReviewSB");
+        Task distributionTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+        taskService.claim(distributionTask.getId(), processInstance.getStartUserId());
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class).isThrownBy(
+            ()->taskService.complete(distributionTask.getId())).isInstanceOf(ActivitiIllegalArgumentException.class).withMessage("Variable currentDistributionList is not found");
+
+        Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
+        variables.put("currentDistributionList", Arrays.asList("user_1_1_1"));
+        runtimeService.setVariables(processInstance.getId(), variables);
+        taskService.complete(distributionTask.getId());
+        assertThatNoException();
+
+        Task distributionTaskEmptyVar = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskUnassigned().singleResult();
+        variables = runtimeService.getVariables(processInstance.getId());
+        variables.put("currentDistributionList", Arrays.asList(""));
+        runtimeService.setVariables(processInstance.getId(), variables);
+        taskService.claim(distributionTaskEmptyVar.getId(),processInstance.getStartUserId());
+        taskService.complete(distributionTaskEmptyVar.getId());
+        assertThatNoException();
+
+    }
+
 
 }
