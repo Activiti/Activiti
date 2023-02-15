@@ -20,9 +20,9 @@
          #{deployment.category, jdbcType=VARCHAR},
          #{deployment.key, jdbcType=VARCHAR},
          #{deployment.tenantId, jdbcType=VARCHAR},
-         #{deployment.deploymentTime, jdbcType=TIMESTAMP}),
+         #{deployment.deploymentTime, jdbcType=TIMESTAMP},
          #{deployment.version, jdbcType=INTEGER},
-         #{deployment.projectReleaseVersion, jdbcType=VARCHAR}
+         #{deployment.projectReleaseVersion, jdbcType=VARCHAR})
       </foreach>
   </insert>
 
@@ -35,9 +35,9 @@
            #{deployment.category, jdbcType=VARCHAR},
            #{deployment.key, jdbcType=VARCHAR},
            #{deployment.tenantId, jdbcType=VARCHAR},
-           #{deployment.deploymentTime, jdbcType=TIMESTAMP}),
+           #{deployment.deploymentTime, jdbcType=TIMESTAMP},
            #{deployment.version, jdbcType=INTEGER},
-           #{deployment.projectReleaseVersion, jdbcType=VARCHAR}
+           #{deployment.projectReleaseVersion, jdbcType=VARCHAR})
       </foreach>
     SELECT * FROM dual
   </insert>
