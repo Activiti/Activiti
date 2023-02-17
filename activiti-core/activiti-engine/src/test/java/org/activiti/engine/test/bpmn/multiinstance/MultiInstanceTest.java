@@ -57,6 +57,16 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   public static final String NR_OF_LOOPS_KEY = "nrOfLoops";
   public static final String LOOP_COUNTER_KEY = "loopCounter";
 
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.parallelEmbeddedSubProcess.bpmn20.xml" })
+  public void testParallelEmbeddedSubProcess() {
+      String procId = runtimeService.startProcessInstanceByKey("mnt-23090").getId();
+      assertProcessEnded(procId);
+
+      final Map<String, Object> variablesLocal = runtimeService.getVariablesLocal(runtimeService.createExecutionQuery().parentId(procId).list().get(0).getId());
+      assertThat(variablesLocal.get("nrOfInstances")).isEqualTo(4);
+      assertThat(variablesLocal.get("nrOfCompletedInstances")).isEqualTo(4);
+  }
+
   @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.sequentialUserTasks.bpmn20.xml" })
   public void testSequentialUserTasks() {
     checkSequentialUserTasks("miSequentialUserTasks", LOOP_COUNTER_KEY);
