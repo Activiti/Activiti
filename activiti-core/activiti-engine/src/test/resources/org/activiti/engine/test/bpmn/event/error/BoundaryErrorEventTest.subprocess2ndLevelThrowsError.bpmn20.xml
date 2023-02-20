@@ -10,7 +10,9 @@
 
     <subProcess id="subprocessThrowsError">
       <startEvent id="subprocessStart"/>
-      <sequenceFlow id="subprocessFlow1" sourceRef="subprocessStart" targetRef="subprocessErrorEnd"/>
+      <userTask id="taskInSubprocess" name="Task in subprocess" />
+      <sequenceFlow id="subprocessFlow1" sourceRef="subprocessStart" targetRef="taskInSubprocess"/>
+      <sequenceFlow id="subprocessFlow2" sourceRef="taskInSubprocess" targetRef="subprocessErrorEnd"/>
       <endEvent id="subprocessErrorEnd">
         <errorEventDefinition errorRef="myError" />
       </endEvent>
