@@ -56,9 +56,10 @@ public class ErrorPropagation {
     }
 
     if (!execution.getProcessInstanceId().equals(execution.getRootProcessInstanceId())) { // Call activity
-      tryExecuteCatchInCallActivity(errorRef, execution);
+        eventMap.putAll(findCatchingEventsAndExecuteCatchForCallActivity(errorRef, execution));
     }
-    else if (eventMap.size() == 0) {
+
+    if (eventMap.size() == 0) {
       throw new BpmnError(errorRef, "No catching boundary event found for error with errorCode '" + errorRef + "', neither in same process nor in parent process");
     }
   }
@@ -124,7 +125,7 @@ public class ErrorPropagation {
     }
   }
 
-  protected static void tryExecuteCatchInCallActivity(String errorRef, DelegateExecution execution) {
+  protected static Map<String, List<Event>> findCatchingEventsAndExecuteCatchForCallActivity(String errorRef, DelegateExecution execution) {
       ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
       ExecutionEntity processInstanceExecution = executionEntityManager.findById(execution.getProcessInstanceId());
       if (processInstanceExecution != null) {
@@ -156,7 +157,7 @@ public class ErrorPropagation {
 
                   executeCatch(eventMap, parentExecution, errorRef);
 
-                  return;
+                  return eventMap;
               } else {
                   toDeleteProcessInstanceIds.add(parentExecution.getProcessInstanceId());
                   ExecutionEntity superExecution = parentExecution.getSuperExecution();
@@ -170,6 +171,8 @@ public class ErrorPropagation {
               }
           }
       }
+
+      return Collections.emptyMap();
   }
 
   protected static void executeEventHandler(Event event, ExecutionEntity parentExecution, ExecutionEntity currentExecution, String errorId) {
