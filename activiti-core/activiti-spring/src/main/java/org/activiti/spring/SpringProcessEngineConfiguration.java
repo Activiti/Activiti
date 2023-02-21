@@ -50,7 +50,7 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
     protected Integer transactionSynchronizationAdapterOrder = null;
     private Collection<AutoDeploymentStrategy> deploymentStrategies = new ArrayList<>();
     private DefaultAutoDeploymentStrategy defaultAutoDeploymentStrategy;
-    private Boolean isRollbackDeployment;
+    private boolean isRollbackDeployment;
 
     public SpringProcessEngineConfiguration() {
         this(null);
@@ -58,13 +58,15 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
 
     public SpringProcessEngineConfiguration(ApplicationUpgradeContextService applicationUpgradeContextService) {
         this.transactionsExternallyManaged = true;
-        this.isRollbackDeployment = applicationUpgradeContextService.isRollbackDeployment();
         defaultAutoDeploymentStrategy = new DefaultAutoDeploymentStrategy(applicationUpgradeContextService);
         deploymentStrategies.add(defaultAutoDeploymentStrategy);
         deploymentStrategies.add(new SingleResourceAutoDeploymentStrategy(applicationUpgradeContextService));
         deploymentStrategies.add(new ResourceParentFolderAutoDeploymentStrategy(applicationUpgradeContextService));
         deploymentStrategies.add(new FailOnNoProcessAutoDeploymentStrategy(applicationUpgradeContextService));
         deploymentStrategies.add(new NeverFailAutoDeploymentStrategy(applicationUpgradeContextService));
+        if(applicationUpgradeContextService!= null) {
+            this.isRollbackDeployment = applicationUpgradeContextService.isRollbackDeployment();
+        }
     }
 
     @Override

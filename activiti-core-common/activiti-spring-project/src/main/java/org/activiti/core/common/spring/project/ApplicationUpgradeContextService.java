@@ -31,7 +31,7 @@ public class ApplicationUpgradeContextService {
 
     private Integer enforcedAppVersion;
 
-    private Boolean isRollbackDeployment;
+    private boolean isRollbackDeployment;
 
     private final ObjectMapper objectMapper;
 
@@ -64,7 +64,7 @@ public class ApplicationUpgradeContextService {
             ProjectManifest.class);
     }
 
-    public Boolean isRollbackDeployment() {
+    public boolean isRollbackDeployment() {
         return isRollbackDeployment;
     }
 
