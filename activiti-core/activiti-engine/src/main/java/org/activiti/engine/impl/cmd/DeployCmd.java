@@ -137,7 +137,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
 
     private DeploymentEntity checkForRollback(CommandContext commandContext, DeploymentEntity latestDeployment) {
 
-        if (commandContext.getProcessEngineConfiguration().getRollbackEnvironment().isRollbackEnabled() &&
+        if (commandContext.getProcessEngineConfiguration().isRollbackDeployment() &&
             latestDeployment.getVersion() > deploymentBuilder.getEnforcedAppVersion()) {
 
             LOGGER.info("Rollback detected: Previous rolled back deployment will be deleted");

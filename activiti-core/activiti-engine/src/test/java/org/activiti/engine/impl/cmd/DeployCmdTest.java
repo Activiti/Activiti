@@ -17,7 +17,6 @@ package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.delegate.event.impl.ActivitiEventDispatcherImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cfg.RollbackEnvironment;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
@@ -57,9 +56,6 @@ public class DeployCmdTest {
     private DeploymentManager deploymentManager;
 
     @Mock
-    private RollbackEnvironment rollbackEnvironment;
-
-    @Mock
     private ActivitiEventDispatcherImpl activitiEventDispatcher;
 
     @Mock
@@ -81,7 +77,6 @@ public class DeployCmdTest {
         given(processEngineConfiguration.getClock()).willReturn(clock);
         given(processEngineConfiguration.getEventDispatcher()).willReturn(activitiEventDispatcher);
         given(processEngineConfiguration.getDeploymentManager()).willReturn(deploymentManager);
-        given(processEngineConfiguration.getRollbackEnvironment()).willReturn(rollbackEnvironment);
         given(deploymentBuilder.getDeployment()).willReturn(new DeploymentEntityImpl());
         given(deploymentBuilder.isDuplicateFilterEnabled()).willReturn(true);
     }
@@ -124,7 +119,7 @@ public class DeployCmdTest {
         given(deploymentEntityManager.findLatestDeploymentByName(any())).willReturn(rolledBackDeployment);
         given(deploymentBuilder.getEnforcedAppVersion()).willReturn(ENFORCED_DEPLOYMENT_VERSION);
         given(deploymentBuilder.hasEnforcedAppVersion()).willReturn(true);
-        given(rollbackEnvironment.isRollbackEnabled()).willReturn(true);
+        given(processEngineConfiguration.isRollbackDeployment()).willReturn(true);
 
         DeploymentEntityImpl existingDeployment = buildExistingDeployment();
 
