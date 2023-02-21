@@ -51,59 +51,13 @@ public class ErrorPropagation {
 
   public static void propagateError(String errorRef, DelegateExecution execution) {
     Map<String, List<Event>> eventMap = findCatchingEventsForProcess(execution.getProcessDefinitionId(), errorRef);
-    if (eventMap.size() > 0) {
-      executeCatch(eventMap, execution, errorRef);
-    } else if (!execution.getProcessInstanceId().equals(execution.getRootProcessInstanceId())) { // Call activity
 
-      ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
-      ExecutionEntity processInstanceExecution = executionEntityManager.findById(execution.getProcessInstanceId());
-      if (processInstanceExecution != null) {
-
-        ExecutionEntity parentExecution = processInstanceExecution.getSuperExecution();
-
-        Set<String> toDeleteProcessInstanceIds = new HashSet<String>();
-        toDeleteProcessInstanceIds.add(execution.getProcessInstanceId());
-
-        while (parentExecution != null && eventMap.size() == 0) {
-          eventMap = findCatchingEventsForProcess(parentExecution.getProcessDefinitionId(), errorRef);
-          if (eventMap.size() > 0) {
-
-            for (String processInstanceId : toDeleteProcessInstanceIds) {
-              ExecutionEntity processInstanceEntity = executionEntityManager.findById(processInstanceId);
-
-              // Delete
-              executionEntityManager.deleteProcessInstanceExecutionEntity(processInstanceEntity.getId(),
-                  execution.getCurrentFlowElement() != null ? execution.getCurrentFlowElement().getId() : null,
-                  "ERROR_EVENT " + errorRef,
-                  false, false);
-
-              // Event
-              if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-                Context.getProcessEngineConfiguration().getEventDispatcher()
-                    .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED_WITH_ERROR_END_EVENT, processInstanceEntity));
-              }
-            }
-            executeCatch(eventMap, parentExecution, errorRef);
-
-          } else {
-            toDeleteProcessInstanceIds.add(parentExecution.getProcessInstanceId());
-            ExecutionEntity superExecution = parentExecution.getSuperExecution();
-            if (superExecution != null) {
-              parentExecution = superExecution;
-            } else if (!parentExecution.getId().equals(parentExecution.getRootProcessInstanceId())) { // stop at the root
-                parentExecution = parentExecution.getProcessInstance();
-            } else {
-              parentExecution = null;
-            }
-          }
+    try {
+        executeCatch(eventMap, execution, errorRef);
+    } finally {
+        if (eventMap.size() == 0) {
+            throw new BpmnError(errorRef, "No catching boundary event found for error with errorCode '" + errorRef + "', neither in same process nor in parent process");
         }
-
-      }
-
-    }
-
-    if (eventMap.size() == 0) {
-      throw new BpmnError(errorRef, "No catching boundary event found for error with errorCode '" + errorRef + "', neither in same process nor in parent process");
     }
   }
 
@@ -163,12 +117,74 @@ public class ErrorPropagation {
 
     if (matchingEvent != null && parentExecution != null) {
       executeEventHandler(matchingEvent, parentExecution, currentExecution, errorId);
-    } else {
+    }
+    else if (isCallActivity(delegateExecution)) {
+      eventMap.putAll(findCatchingEventsAndExecuteCatchForCallActivity(errorId, delegateExecution));
+    }
+    else {
       throw new ActivitiException("No matching parent execution for error code " + errorId + " found");
     }
   }
 
-  protected static void executeEventHandler(Event event, ExecutionEntity parentExecution, ExecutionEntity currentExecution, String errorId) {
+    private static boolean isCallActivity(DelegateExecution delegateExecution) {
+        return !delegateExecution.getProcessInstanceId()
+            .equals(delegateExecution.getRootProcessInstanceId());
+    }
+
+    protected static Map<String, List<Event>> findCatchingEventsAndExecuteCatchForCallActivity(String errorRef, DelegateExecution execution) {
+      ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+      ExecutionEntity processInstanceExecution = executionEntityManager.findById(execution.getProcessInstanceId());
+
+      Map<String, List<Event>> eventMap = Collections.emptyMap();
+      if (processInstanceExecution != null) {
+
+          ExecutionEntity parentExecution = processInstanceExecution.getSuperExecution();
+
+          Set<String> toDeleteProcessInstanceIds = new HashSet<>();
+          toDeleteProcessInstanceIds.add(execution.getProcessInstanceId());
+
+          while (!parentExecution.isRootExecution() && eventMap.isEmpty()) {
+              eventMap = findCatchingEventsForProcess(parentExecution.getProcessDefinitionId(), errorRef);
+              if (!eventMap.isEmpty()) {
+                  for (String processInstanceId : toDeleteProcessInstanceIds) {
+                      deleteProcessInstanceEntity(errorRef, execution, executionEntityManager, processInstanceId);
+                  }
+                  executeCatch(eventMap, parentExecution, errorRef);
+              } else {
+                  toDeleteProcessInstanceIds.add(parentExecution.getProcessInstanceId());
+                  ExecutionEntity superExecution = parentExecution.getSuperExecution();
+                  if (superExecution != null) {
+                      parentExecution = superExecution;
+                  } else {
+                      parentExecution = parentExecution.getProcessInstance();
+                  }
+              }
+          }
+      }
+
+      return eventMap;
+  }
+
+    private static void deleteProcessInstanceEntity(String errorRef, DelegateExecution execution,
+        ExecutionEntityManager executionEntityManager, String processInstanceId) {
+        ExecutionEntity processInstanceEntity = executionEntityManager.findById(processInstanceId);
+
+        executionEntityManager.deleteProcessInstanceExecutionEntity(processInstanceEntity.getId(),
+                                                                    execution.getCurrentFlowElement() != null ? execution.getCurrentFlowElement().getId() : null,
+                                                                    "ERROR_EVENT " + errorRef,
+                                                                    false, false);
+        dispatchProcessErroredEvent(processInstanceEntity);
+    }
+
+    private static void dispatchProcessErroredEvent(ExecutionEntity processInstanceEntity) {
+        if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            Context.getProcessEngineConfiguration().getEventDispatcher()
+                   .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED_WITH_ERROR_END_EVENT,
+                       processInstanceEntity));
+        }
+    }
+
+    protected static void executeEventHandler(Event event, ExecutionEntity parentExecution, ExecutionEntity currentExecution, String errorId) {
     if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(parentExecution.getProcessDefinitionId());
       if (bpmnModel != null) {

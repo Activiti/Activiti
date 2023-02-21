@@ -212,6 +212,24 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     assertProcessEnded(procId);
   }
 
+    @Deployment(resources = { "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnCallActivity-parent.bpmn20.xml",
+        "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.subprocess2ndLevelThrowsError.bpmn20.xml" })
+    public void testCatchErrorOnCallActivityWithSubprocess() {
+        String procId = runtimeService.startProcessInstanceByKey("catchErrorOnCallActivity").getId();
+        Task task = taskService.createTaskQuery().singleResult();
+        assertThat(task.getName()).isEqualTo("Task in subprocess");
+
+        // Completing the task will reach the end error event,
+        // which is caught on the call activity boundary
+        taskService.complete(task.getId());
+        task = taskService.createTaskQuery().singleResult();
+        assertThat(task.getName()).isEqualTo("Escalated Task");
+
+        // Completing the task will end the process instance
+        taskService.complete(task.getId());
+        assertProcessEnded(procId);
+    }
+
   @Deployment(resources = { "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.subprocess.bpmn20.xml" })
   public void testUncaughtError() {
     runtimeService.startProcessInstanceByKey("simpleSubProcess");
