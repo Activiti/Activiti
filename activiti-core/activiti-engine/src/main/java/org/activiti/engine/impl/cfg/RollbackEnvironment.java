@@ -19,12 +19,6 @@ public class RollbackEnvironment {
 
     public static final String ACTIVITI_DEPLOY_AFTER_ROLLBACK_VARIABLE_NAME = "ACTIVITI_DEPLOY_AFTER_ROLLBACK";
 
-    private boolean isRollbackEnabled;
-
-    public RollbackEnvironment() {
-        this.isRollbackEnabled = isRollbackEnabled();
-    }
-
     public boolean isRollbackEnabled() {
         return Boolean.parseBoolean(System.getenv(ACTIVITI_DEPLOY_AFTER_ROLLBACK_VARIABLE_NAME));
     }
