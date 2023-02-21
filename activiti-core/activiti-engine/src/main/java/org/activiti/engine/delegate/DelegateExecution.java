@@ -44,6 +44,12 @@ public interface DelegateExecution extends VariableScope {
    */
   String getRootProcessInstanceId();
 
+    /**
+     * Determines if the current execution is the root one
+     * @return true if the current execution is the root one; false otherwise
+     */
+    boolean isRootExecution();
+
   /**
    * Will contain the event name in case this execution is passed in for an {@link ExecutionListener}.
    */
