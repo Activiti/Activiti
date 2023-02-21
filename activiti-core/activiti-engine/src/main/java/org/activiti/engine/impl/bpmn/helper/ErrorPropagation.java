@@ -51,16 +51,13 @@ public class ErrorPropagation {
 
   public static void propagateError(String errorRef, DelegateExecution execution) {
     Map<String, List<Event>> eventMap = findCatchingEventsForProcess(execution.getProcessDefinitionId(), errorRef);
-    if (eventMap.size() > 0) {
-      executeCatch(eventMap, execution, errorRef);
-    }
 
-    if (!execution.getProcessInstanceId().equals(execution.getRootProcessInstanceId())) { // Call activity
-        eventMap.putAll(findCatchingEventsAndExecuteCatchForCallActivity(errorRef, execution));
-    }
-
-    if (eventMap.size() == 0) {
-      throw new BpmnError(errorRef, "No catching boundary event found for error with errorCode '" + errorRef + "', neither in same process nor in parent process");
+    try {
+        executeCatch(eventMap, execution, errorRef);
+    } finally {
+        if (eventMap.size() == 0) {
+            throw new BpmnError(errorRef, "No catching boundary event found for error with errorCode '" + errorRef + "', neither in same process nor in parent process");
+        }
     }
   }
 
@@ -120,7 +117,11 @@ public class ErrorPropagation {
 
     if (matchingEvent != null && parentExecution != null) {
       executeEventHandler(matchingEvent, parentExecution, currentExecution, errorId);
-    } else if (delegateExecution.getProcessInstanceId().equals(delegateExecution.getRootProcessInstanceId())){
+    }
+    else if (!delegateExecution.getProcessInstanceId().equals(delegateExecution.getRootProcessInstanceId())) {
+      eventMap.putAll(findCatchingEventsAndExecuteCatchForCallActivity(errorId, delegateExecution));
+    }
+    else {
       throw new ActivitiException("No matching parent execution for error code " + errorId + " found");
     }
   }
