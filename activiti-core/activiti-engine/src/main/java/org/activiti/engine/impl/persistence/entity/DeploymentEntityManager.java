@@ -16,13 +16,13 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.List;
-import java.util.Map;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.repository.Deployment;
+
+import java.util.List;
+import java.util.Map;
 
 /**
 
@@ -31,6 +31,8 @@ import org.activiti.engine.repository.Deployment;
 public interface DeploymentEntityManager extends EntityManager<DeploymentEntity> {
 
   DeploymentEntity findLatestDeploymentByName(String deploymentName);
+
+  DeploymentEntity findDeploymentByVersion(Integer version);
 
   List<Deployment> findDeploymentsByQueryCriteria(DeploymentQueryImpl deploymentQuery, Page page);
 
@@ -43,7 +45,5 @@ public interface DeploymentEntityManager extends EntityManager<DeploymentEntity>
   long findDeploymentCountByQueryCriteria(DeploymentQueryImpl deploymentQuery);
 
   void deleteDeployment(String deploymentId, boolean cascade);
-
-  Deployment selectLatestDeployment(String deploymentName);
 
 }

@@ -760,6 +760,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected CommandContextFactory commandContextFactory;
   protected TransactionContextFactory transactionContextFactory;
 
+  protected RollbackEnvironment rollbackEnvironment = new RollbackEnvironment();
+
   protected Map<Object, Object> beans;
 
   protected DelegateInterceptor delegateInterceptor;
@@ -3707,6 +3709,14 @@ public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
   public ProcessEngineConfigurationImpl setAsyncExecutorMessageQueueMode(boolean asyncExecutorMessageQueueMode) {
     this.asyncExecutorMessageQueueMode = asyncExecutorMessageQueueMode;
     return this;
+  }
+
+  public RollbackEnvironment getRollbackEnvironment() {
+      return rollbackEnvironment;
+  }
+
+  public void setRollbackEnvironment(RollbackEnvironment rollbackEnvironment) {
+      this.rollbackEnvironment = rollbackEnvironment;
   }
 
   public EventSubscriptionPayloadMappingProvider getEventSubscriptionPayloadMappingProvider() {
