@@ -144,10 +144,11 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
             DeleteDeploymentCmd deleteDeploymentCmd = new DeleteDeploymentCmd(latestDeployment.getId(), false);
             deleteDeploymentCmd.execute(commandContext);
 
-            latestDeployment = getDeploymentEntityForCurrentEnforcedAppVersion(commandContext);
+            return getDeploymentEntityForCurrentEnforcedAppVersion(commandContext);
+        } else {
+            return latestDeployment;
         }
 
-        return latestDeployment;
     }
 
     private DeploymentEntity getDeploymentEntityForCurrentEnforcedAppVersion(CommandContext commandContext) {

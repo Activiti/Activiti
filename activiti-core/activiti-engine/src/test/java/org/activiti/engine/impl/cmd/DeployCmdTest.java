@@ -132,6 +132,7 @@ public class DeployCmdTest {
 
         Deployment deployment = deployCmd.executeDeploy(commandContext);
 
+        assertThat(deployment.getName()).isEqualTo(existingDeployment.getName());
         assertThat(((DeploymentEntity)deployment).isNew()).isFalse();
         assertThat((deployment).getVersion()).isEqualTo(ENFORCED_DEPLOYMENT_VERSION);
 
