@@ -50,7 +50,6 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
     protected Integer transactionSynchronizationAdapterOrder = null;
     private Collection<AutoDeploymentStrategy> deploymentStrategies = new ArrayList<>();
     private DefaultAutoDeploymentStrategy defaultAutoDeploymentStrategy;
-    private boolean isRollbackDeployment;
 
     public SpringProcessEngineConfiguration() {
         this(null);
@@ -173,10 +172,6 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
   public void setDeploymentMode(String deploymentMode) {
     this.deploymentMode = deploymentMode;
   }
-
-    public boolean isRollbackDeployment() {
-        return isRollbackDeployment;
-    }
 
   /**
    * Gets the {@link AutoDeploymentStrategy} for the provided mode. This method may be overridden to implement custom deployment strategies if required, but implementors should take care not to return
