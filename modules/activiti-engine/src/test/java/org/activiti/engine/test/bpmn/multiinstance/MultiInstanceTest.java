@@ -1357,6 +1357,16 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     List<ProcessInstance> instances = runtimeService.createProcessInstanceQuery().list();
     assertEquals(0, instances.size());
   }
+
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.parallelEmbeddedSubProcess.bpmn20.xml" })
+  public void testParallelEmbeddedSubProcess() {
+    String procId = runtimeService.startProcessInstanceByKey("mnt-23090").getId();
+    assertProcessEnded(procId);
+
+    final Map<String, Object> variablesLocal = runtimeService.getVariablesLocal(runtimeService.createExecutionQuery().parentId(procId).list().get(0).getId());
+    assertEquals(4, variablesLocal.get("nrOfInstances"));
+    assertEquals(4, variablesLocal.get("nrOfCompletedInstances"));
+  }
   
   /// HELPERS //////////////////
   
