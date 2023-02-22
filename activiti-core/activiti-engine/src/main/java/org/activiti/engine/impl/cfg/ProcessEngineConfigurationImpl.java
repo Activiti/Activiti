@@ -3715,7 +3715,11 @@ public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
       return isRollbackDeployment;
   }
 
-  public EventSubscriptionPayloadMappingProvider getEventSubscriptionPayloadMappingProvider() {
+  public void setRollbackDeployment(boolean rollbackDeployment) {
+      isRollbackDeployment = rollbackDeployment;
+  }
+
+    public EventSubscriptionPayloadMappingProvider getEventSubscriptionPayloadMappingProvider() {
     return eventSubscriptionPayloadMappingProvider;
   }
 
