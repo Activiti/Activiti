@@ -156,7 +156,6 @@ public class UserTaskTest extends PluggableActivitiTestCase {
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TestBusinessReviewSB");
         Task distributionTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-        taskService.claim(distributionTask.getId(), processInstance.getStartUserId());
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class).isThrownBy(
             ()->taskService.complete(distributionTask.getId())).isInstanceOf(ActivitiIllegalArgumentException.class).withMessage("Variable currentDistributionList is not found");
 
@@ -166,11 +165,18 @@ public class UserTaskTest extends PluggableActivitiTestCase {
         taskService.complete(distributionTask.getId());
         assertThatNoException();
 
-        Task distributionTaskEmptyVar = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskUnassigned().singleResult();
+        Task reviewTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+        taskService.complete(reviewTask.getId());
+        assertThatNoException();
+
+        Task rejectionTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+        taskService.complete(rejectionTask.getId());
+        assertThatNoException();
+
+        Task distributionTaskEmptyVar = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         variables = runtimeService.getVariables(processInstance.getId());
-        variables.put("currentDistributionList", Arrays.asList(""));
+        variables.put("currentDistributionList", Arrays.asList());
         runtimeService.setVariables(processInstance.getId(), variables);
-        taskService.claim(distributionTaskEmptyVar.getId(),processInstance.getStartUserId());
         taskService.complete(distributionTaskEmptyVar.getId());
         assertThatNoException();
 
