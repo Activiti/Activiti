@@ -123,9 +123,7 @@ public class ErrorPropagation {
     if (matchingEvent != null && parentExecution != null) {
       executeEventHandler(matchingEvent, parentExecution, currentExecution, errorId);
     }
-    else if (!isCallActivity(delegateExecution)) {
-      throw new ActivitiException("No matching parent execution for error code " + errorId + " found");
-    }
+
   }
 
     private static boolean isCallActivity(DelegateExecution delegateExecution) {
