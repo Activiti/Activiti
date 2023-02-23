@@ -26,6 +26,9 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
+import org.activiti.engine.impl.interceptor.TransactionCommandContextCloseListener;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.util.CollectionUtil;
@@ -54,6 +57,11 @@ public class ErrorPropagation {
 
     try {
         executeCatch(eventMap, execution, errorRef);
+
+        if (isCallActivity(execution)) {
+            eventMap.putAll(findCatchingEventsAndExecuteCatchForCallActivity(errorRef,
+                                                                             execution));
+        }
     } finally {
         if (eventMap.size() == 0) {
             throw new BpmnError(errorRef, "No catching boundary event found for error with errorCode '" + errorRef + "', neither in same process nor in parent process");
@@ -118,10 +126,7 @@ public class ErrorPropagation {
     if (matchingEvent != null && parentExecution != null) {
       executeEventHandler(matchingEvent, parentExecution, currentExecution, errorId);
     }
-    else if (isCallActivity(delegateExecution)) {
-      eventMap.putAll(findCatchingEventsAndExecuteCatchForCallActivity(errorId, delegateExecution));
-    }
-    else {
+    else if (!isCallActivity(delegateExecution)) {
       throw new ActivitiException("No matching parent execution for error code " + errorId + " found");
     }
   }
