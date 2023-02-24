@@ -50,23 +50,26 @@ public class ErrorPropagation {
   }
 
   public static void propagateError(String errorRef, DelegateExecution execution) {
-    Map<String, List<Event>> eventMap = findCatchingEventsForProcess(execution.getProcessDefinitionId(), errorRef);
+    boolean isCatchExecutedForProcess = false, isCatchExecutedForCallActivity = false;
 
     try {
-        executeCatch(eventMap, execution, errorRef);
+        Map<String, List<Event>> eventMap = findCatchingEventsForProcess(execution.getProcessDefinitionId(), errorRef);
+
+        if (!eventMap.isEmpty()) {
+            isCatchExecutedForProcess = executeCatch(eventMap, execution, errorRef);
+        }
 
         if (isCallActivity(execution)) {
-            eventMap.putAll(findCatchingEventsAndExecuteCatchForCallActivity(errorRef,
-                                                                             execution));
+            isCatchExecutedForCallActivity = findCatchingEventsAndExecuteCatchForCallActivity(errorRef, execution);
         }
     } finally {
-        if (eventMap.size() == 0) {
+        if (!isCatchExecutedForProcess && !isCatchExecutedForCallActivity) {
             throw new BpmnError(errorRef, "No catching boundary event found for error with errorCode '" + errorRef + "', neither in same process nor in parent process");
         }
     }
   }
 
-  protected static void executeCatch(Map<String, List<Event>> eventMap, DelegateExecution delegateExecution, String errorId) {
+  protected static boolean executeCatch(Map<String, List<Event>> eventMap, DelegateExecution delegateExecution, String errorId) {
     Event matchingEvent = null;
     ExecutionEntity currentExecution = (ExecutionEntity) delegateExecution;
     ExecutionEntity parentExecution = null;
@@ -122,6 +125,9 @@ public class ErrorPropagation {
 
     if (matchingEvent != null && parentExecution != null) {
       executeEventHandler(matchingEvent, parentExecution, currentExecution, errorId);
+      return true;
+    } else {
+      return false;
     }
 
   }
@@ -131,7 +137,7 @@ public class ErrorPropagation {
             .equals(delegateExecution.getRootProcessInstanceId());
     }
 
-    protected static Map<String, List<Event>> findCatchingEventsAndExecuteCatchForCallActivity(String errorRef, DelegateExecution execution) {
+    protected static boolean findCatchingEventsAndExecuteCatchForCallActivity(String errorRef, DelegateExecution execution) {
       ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
       ExecutionEntity processInstanceExecution = executionEntityManager.findById(execution.getProcessInstanceId());
 
@@ -149,7 +155,7 @@ public class ErrorPropagation {
                   for (String processInstanceId : toDeleteProcessInstanceIds) {
                       deleteProcessInstanceEntity(errorRef, execution, executionEntityManager, processInstanceId);
                   }
-                  executeCatch(eventMap, parentExecution, errorRef);
+                  return executeCatch(eventMap, parentExecution, errorRef);
               } else {
                   toDeleteProcessInstanceIds.add(parentExecution.getProcessInstanceId());
                   ExecutionEntity superExecution = parentExecution.getSuperExecution();
@@ -162,7 +168,7 @@ public class ErrorPropagation {
           }
       }
 
-      return eventMap;
+      return false;
   }
 
     private static void deleteProcessInstanceEntity(String errorRef, DelegateExecution execution,
