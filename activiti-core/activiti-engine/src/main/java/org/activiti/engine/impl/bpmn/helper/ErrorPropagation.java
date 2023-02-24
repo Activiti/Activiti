@@ -50,7 +50,8 @@ public class ErrorPropagation {
   }
 
   public static void propagateError(String errorRef, DelegateExecution execution) {
-    boolean isCatchExecutedForProcess = false, isCatchExecutedForCallActivity = false;
+    boolean isCatchExecutedForProcess = false;
+    boolean isCatchExecutedForCallActivity = false;
 
     try {
         Map<String, List<Event>> eventMap = findCatchingEventsForProcess(execution.getProcessDefinitionId(), errorRef);
