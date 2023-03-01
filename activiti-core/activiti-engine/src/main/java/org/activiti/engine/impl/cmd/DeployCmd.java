@@ -67,7 +67,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
         }
       } else {
         List<Deployment> deploymentList = commandContext.getProcessEngineConfiguration().getRepositoryService().createDeploymentQuery().deploymentName(deployment.getName())
-            .deploymentTenantId(deployment.getTenantId()).orderByDeploymentId().desc().list();
+            .deploymentTenantId(deployment.getTenantId()).orderByDeploymenTime().desc().list();
 
         if (!deploymentList.isEmpty()) {
           existingDeployments.addAll(deploymentList);
