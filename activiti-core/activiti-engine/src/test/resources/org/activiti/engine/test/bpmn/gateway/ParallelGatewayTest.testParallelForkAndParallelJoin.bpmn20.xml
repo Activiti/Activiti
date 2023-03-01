@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="parallelForkInclusiveJoin">
+
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="parallelFork" />
+
+    <parallelGateway id="parallelFork" />
+    <sequenceFlow id="ptosub1" sourceRef="parallelFork" targetRef="miSubProcess" />
+    <sequenceFlow id="ptosub2" sourceRef="parallelFork" targetRef="parallelJoin" />
+
+    <subProcess id="miSubProcess">
+      <multiInstanceLoopCharacteristics isSequential="true" activiti:collection="aList" activiti:elementVariable="anItem"/>
+
+      <startEvent id="subProcessStart" />
+
+      <sequenceFlow id="subFlow1" sourceRef="subProcessStart" targetRef="subProcessEnd" />
+
+      <endEvent id="subProcessEnd" />
+
+    </subProcess>
+
+    <sequenceFlow id="flow3" sourceRef="miSubProcess" targetRef="parallelJoin" />
+
+    <parallelGateway id="parallelJoin" />
+
+    <sequenceFlow id="flow4" sourceRef="parallelJoin" targetRef="finalTask" />
+
+    <userTask id="finalTask" name="Final Task" />
+
+    <sequenceFlow id="flow5" sourceRef="finalTask" targetRef="theEnd" />
+
+    <endEvent id="theEnd" />
+
+  </process>
+
+</definitions>

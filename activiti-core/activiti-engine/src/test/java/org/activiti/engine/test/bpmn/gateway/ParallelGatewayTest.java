@@ -26,6 +26,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
+
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -179,5 +181,17 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
       }
     }
   }
+
+    @Deployment
+    public void testParallelForkAndParallelJoin() {
+        runtimeService.startProcessInstanceByKey("parallelForkInclusiveJoin", singletonMap("aList", List.of())).getId();
+        assertThat(taskService.createTaskQuery().singleResult()).isNotNull();
+    }
+
+    @Deployment
+    public void testParallelForkAndInclusiveJoin() {
+        runtimeService.startProcessInstanceByKey("parallelForkInclusiveJoin", singletonMap("aList", List.of())).getId();
+        assertThat(taskService.createTaskQuery().singleResult()).isNotNull();
+    }
 
 }
