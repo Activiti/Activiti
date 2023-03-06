@@ -16,13 +16,6 @@
 
 package org.activiti.engine.impl.cmd;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -33,88 +26,145 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- */
+import java.io.Serializable;
+import java.util.*;
+
+
 public class DeployCmd<T> implements Command<Deployment>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected DeploymentBuilderImpl deploymentBuilder;
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeployCmd.class);
+    private static final long serialVersionUID = 1L;
+    protected DeploymentBuilderImpl deploymentBuilder;
 
-  public DeployCmd(DeploymentBuilderImpl deploymentBuilder) {
-    this.deploymentBuilder = deploymentBuilder;
-  }
+    public DeployCmd(DeploymentBuilderImpl deploymentBuilder) {
+        this.deploymentBuilder = deploymentBuilder;
+    }
 
-  public Deployment execute(CommandContext commandContext) {
-    return executeDeploy(commandContext);
-  }
+    public Deployment execute(CommandContext commandContext) {
+        return executeDeploy(commandContext);
+    }
 
-  protected Deployment executeDeploy(CommandContext commandContext) {
-    DeploymentEntity deployment = deploymentBuilder.getDeployment();
+    protected Deployment executeDeploy(CommandContext commandContext) {
 
-    deployment.setDeploymentTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
+        DeploymentEntity newDeployment = setUpNewDeploymentFromContext(commandContext);
 
-    setProjectReleaseVersion(deployment);
-    deployment.setVersion(1);
+        if (deploymentBuilder.isDuplicateFilterEnabled()) {
 
-    if (deploymentBuilder.isDuplicateFilterEnabled()) {
+            List<Deployment> existingDeployments = new ArrayList<>();
 
-      List<Deployment> existingDeployments = new ArrayList<Deployment>();
-      if (deployment.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(deployment.getTenantId())) {
-        DeploymentEntity existingDeployment = commandContext.getDeploymentEntityManager().findLatestDeploymentByName(deployment.getName());
-        if (existingDeployment != null) {
-          existingDeployments.add(existingDeployment);
+            if (newDeployment.getTenantId() == null ||
+                ProcessEngineConfiguration.NO_TENANT_ID.equals(newDeployment.getTenantId())) {
+
+                DeploymentEntity latestDeployment = getLatestDeployment(commandContext, newDeployment);
+
+                if (latestDeployment != null) {
+                    existingDeployments.add(latestDeployment);
+                }
+
+            } else {
+                List<Deployment> deploymentList = commandContext
+                    .getProcessEngineConfiguration()
+                    .getRepositoryService()
+                    .createDeploymentQuery()
+                    .deploymentName(newDeployment.getName())
+                    .deploymentTenantId(newDeployment.getTenantId())
+                    .orderByDeploymentId()
+                    .desc()
+                    .list();
+
+                if (!deploymentList.isEmpty()) {
+                    existingDeployments.addAll(deploymentList);
+                }
+            }
+
+            if (!existingDeployments.isEmpty()) {
+
+                DeploymentEntity existingDeployment = (DeploymentEntity) existingDeployments.get(0);
+
+                if (deploymentsDiffer(newDeployment, existingDeployment)) {
+                    applyUpgradeLogic(newDeployment, existingDeployment);
+                } else {
+                    LOGGER.info("An existing deployment of version {} matching the current one was found, no need to deploy again.",
+                        existingDeployment.getVersion());
+                    return existingDeployment;
+                }
+            }
         }
-      } else {
-        List<Deployment> deploymentList = commandContext.getProcessEngineConfiguration().getRepositoryService().createDeploymentQuery().deploymentName(deployment.getName())
-            .deploymentTenantId(deployment.getTenantId()).orderByDeploymentId().desc().list();
 
-        if (!deploymentList.isEmpty()) {
-          existingDeployments.addAll(deploymentList);
+        persistDeploymentInDatabase(commandContext, newDeployment);
+
+        Map<String, Object> deploymentSettings = new HashMap<>();
+        deploymentSettings.put(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED, deploymentBuilder.isBpmn20XsdValidationEnabled());
+        deploymentSettings.put(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED, deploymentBuilder.isProcessValidationEnabled());
+
+        LOGGER.info("Launching new deployment with version: " + newDeployment.getVersion());
+        commandContext.getProcessEngineConfiguration().getDeploymentManager().deploy(newDeployment, deploymentSettings);
+
+        if (deploymentBuilder.getProcessDefinitionsActivationDate() != null) {
+            scheduleProcessDefinitionActivation(commandContext, newDeployment);
         }
-      }
 
-      DeploymentEntity existingDeployment = null;
-      if (!existingDeployments.isEmpty()) {
-        existingDeployment = (DeploymentEntity) existingDeployments.get(0);
-      }
+        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, newDeployment));
+        }
 
-      if (existingDeployment != null) {
-          if(deploymentsDiffer(deployment, existingDeployment)){
-              applyUpgradeLogic(deployment, existingDeployment);
-          } else {
-              return existingDeployment;
-          }
+        return newDeployment;
+    }
+
+    private static void persistDeploymentInDatabase(CommandContext commandContext, DeploymentEntity newDeployment) {
+        commandContext.getDeploymentEntityManager().insert(newDeployment);
+
+        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, newDeployment));
         }
     }
 
-    deployment.setNew(true);
+    private DeploymentEntity getLatestDeployment(CommandContext commandContext, DeploymentEntity newDeployment) {
 
-      // Save the data
-    commandContext.getDeploymentEntityManager().insert(deployment);
+        DeploymentEntity latestDeployment = commandContext
+            .getDeploymentEntityManager()
+            .findLatestDeploymentByName(newDeployment.getName());
 
-    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, deployment));
+        if (latestDeployment != null) {
+            latestDeployment = checkForRollback(commandContext, latestDeployment);
+        }
+
+        return latestDeployment;
     }
 
-    // Deployment settings
-    Map<String, Object> deploymentSettings = new HashMap<String, Object>();
-    deploymentSettings.put(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED, deploymentBuilder.isBpmn20XsdValidationEnabled());
-    deploymentSettings.put(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED, deploymentBuilder.isProcessValidationEnabled());
+    private DeploymentEntity checkForRollback(CommandContext commandContext, DeploymentEntity latestDeployment) {
 
-    // Actually deploy
-    commandContext.getProcessEngineConfiguration().getDeploymentManager().deploy(deployment, deploymentSettings);
+        if (commandContext.getProcessEngineConfiguration().isRollbackDeployment() &&
+            latestDeployment.getVersion() > deploymentBuilder.getEnforcedAppVersion()) {
 
-    if (deploymentBuilder.getProcessDefinitionsActivationDate() != null) {
-      scheduleProcessDefinitionActivation(commandContext, deployment);
+            LOGGER.info("Rollback detected: Previous rolled back deployment will be deleted");
+            DeleteDeploymentCmd deleteDeploymentCmd = new DeleteDeploymentCmd(latestDeployment.getId(), false);
+            deleteDeploymentCmd.execute(commandContext);
+
+            return getDeploymentEntityForCurrentEnforcedAppVersion(commandContext);
+        } else {
+            return latestDeployment;
+        }
+
     }
 
-    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, deployment));
+    private DeploymentEntity getDeploymentEntityForCurrentEnforcedAppVersion(CommandContext commandContext) {
+        return commandContext
+            .getDeploymentEntityManager()
+            .findDeploymentByVersion(deploymentBuilder.getEnforcedAppVersion());
     }
 
-    return deployment;
-  }
+    private DeploymentEntity setUpNewDeploymentFromContext(CommandContext commandContext) {
+        DeploymentEntity deployment = deploymentBuilder.getDeployment();
+        deployment.setDeploymentTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
+        setProjectReleaseVersion(deployment);
+        deployment.setVersion(1);
+        deployment.setNew(true);
+        return deployment;
+    }
 
     private void setProjectReleaseVersion(DeploymentEntity deployment) {
         if (deploymentBuilder.hasProjectManifestSet()) {
@@ -122,79 +172,75 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
         }
     }
 
-  private void applyUpgradeLogic(DeploymentEntity deployment,
-                                 DeploymentEntity existingDeployment) {
-      if (deploymentBuilder.hasEnforcedAppVersion()) {
-          deployment.setVersion(deploymentBuilder.getEnforcedAppVersion());
-      } else if (deploymentBuilder.hasProjectManifestSet()) {
-          deployment.setVersion(existingDeployment.getVersion() + 1);
-      }
-  }
-
-  protected boolean deploymentsDiffer(DeploymentEntity deployment,
-                                      DeploymentEntity saved) {
-
-      if (deploymentBuilder.hasEnforcedAppVersion()) {
-          return deploymentsDifferWhenEnforcedAppVersionIsSet(saved);
-      } else if (deploymentBuilder.hasProjectManifestSet()) {
-          return deploymentsDifferWhenProjectManifestIsSet(deployment, saved);
-      } else {
-          return deploymentsDifferDefault(deployment, saved);
-      }
-  }
-
-  private boolean deploymentsDifferWhenEnforcedAppVersionIsSet(DeploymentEntity saved){
-      return !deploymentBuilder.getEnforcedAppVersion().equals(saved.getVersion());
-  }
-
-  private boolean deploymentsDifferWhenProjectManifestIsSet(DeploymentEntity deployment,
-                                                            DeploymentEntity saved){
-      return !deployment.getProjectReleaseVersion().equals(saved.getProjectReleaseVersion());
-  }
-
-  private boolean deploymentsDifferDefault(DeploymentEntity deployment, DeploymentEntity saved){
-      if (deployment.getResources() == null || saved.getResources() == null) {
-          return true;
-      }
-
-      Map<String, ResourceEntity> resources = deployment.getResources();
-      Map<String, ResourceEntity> savedResources = saved.getResources();
-
-      for (String resourceName : resources.keySet()) {
-          ResourceEntity savedResource = savedResources.get(resourceName);
-
-          if (savedResource == null) {
-              return true;
-          }
-
-          if (!savedResource.isGenerated()) {
-              ResourceEntity resource = resources.get(resourceName);
-
-              byte[] bytes = resource.getBytes();
-              byte[] savedBytes = savedResource.getBytes();
-              if (!Arrays.equals(bytes, savedBytes)) {
-                  return true;
-              }
-          }
-      }
-      return false;
-  }
-
-
-
-  protected void scheduleProcessDefinitionActivation(CommandContext commandContext, DeploymentEntity deployment) {
-    for (ProcessDefinitionEntity processDefinitionEntity : deployment.getDeployedArtifacts(ProcessDefinitionEntity.class)) {
-
-      // If activation date is set, we first suspend all the process
-      // definition
-      SuspendProcessDefinitionCmd suspendProcessDefinitionCmd = new SuspendProcessDefinitionCmd(processDefinitionEntity, false, null, deployment.getTenantId());
-      suspendProcessDefinitionCmd.execute(commandContext);
-
-      // And we schedule an activation at the provided date
-      ActivateProcessDefinitionCmd activateProcessDefinitionCmd = new ActivateProcessDefinitionCmd(processDefinitionEntity, false, deploymentBuilder.getProcessDefinitionsActivationDate(),
-          deployment.getTenantId());
-      activateProcessDefinitionCmd.execute(commandContext);
+    private void applyUpgradeLogic(DeploymentEntity deployment,
+                                   DeploymentEntity existingDeployment) {
+        if (deploymentBuilder.hasEnforcedAppVersion()) {
+            deployment.setVersion(deploymentBuilder.getEnforcedAppVersion());
+        } else if (deploymentBuilder.hasProjectManifestSet()) {
+            deployment.setVersion(existingDeployment.getVersion() + 1);
+        }
     }
-  }
+
+    protected boolean deploymentsDiffer(DeploymentEntity deployment,
+                                        DeploymentEntity saved) {
+        if (deploymentBuilder.hasEnforcedAppVersion()) {
+            return deploymentsDifferWhenEnforcedAppVersionIsSet(saved);
+        } else if (deploymentBuilder.hasProjectManifestSet()) {
+            return deploymentsDifferWhenProjectManifestIsSet(deployment, saved);
+        } else {
+            return deploymentsDifferDefault(deployment, saved);
+        }
+    }
+
+    private boolean deploymentsDifferWhenEnforcedAppVersionIsSet(DeploymentEntity saved) {
+        return !deploymentBuilder.getEnforcedAppVersion().equals(saved.getVersion());
+    }
+
+    private boolean deploymentsDifferWhenProjectManifestIsSet(DeploymentEntity deployment,
+                                                              DeploymentEntity saved) {
+        return !deployment.getProjectReleaseVersion().equals(saved.getProjectReleaseVersion());
+    }
+
+    private boolean deploymentsDifferDefault(DeploymentEntity deployment, DeploymentEntity saved) {
+        if (deployment.getResources() == null || saved.getResources() == null) {
+            return true;
+        }
+        Map<String, ResourceEntity> resources = deployment.getResources();
+        Map<String, ResourceEntity> savedResources = saved.getResources();
+
+        for (String resourceName : resources.keySet()) {
+            ResourceEntity savedResource = savedResources.get(resourceName);
+
+            if (savedResource == null) {
+                return true;
+            }
+
+            if (!savedResource.isGenerated()) {
+                ResourceEntity resource = resources.get(resourceName);
+
+                byte[] bytes = resource.getBytes();
+                byte[] savedBytes = savedResource.getBytes();
+                if (!Arrays.equals(bytes, savedBytes)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    protected void scheduleProcessDefinitionActivation(CommandContext commandContext, DeploymentEntity deployment) {
+        for (ProcessDefinitionEntity processDefinitionEntity : deployment.getDeployedArtifacts(ProcessDefinitionEntity.class)) {
+
+            // If activation date is set, we first suspend all the process
+            // definition
+            SuspendProcessDefinitionCmd suspendProcessDefinitionCmd = new SuspendProcessDefinitionCmd(processDefinitionEntity, false, null, deployment.getTenantId());
+            suspendProcessDefinitionCmd.execute(commandContext);
+
+            // And we schedule an activation at the provided date
+            ActivateProcessDefinitionCmd activateProcessDefinitionCmd = new ActivateProcessDefinitionCmd(processDefinitionEntity, false, deploymentBuilder.getProcessDefinitionsActivationDate(),
+                deployment.getTenantId());
+            activateProcessDefinitionCmd.execute(commandContext);
+        }
+    }
 
 }
