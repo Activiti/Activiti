@@ -760,6 +760,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected CommandContextFactory commandContextFactory;
   protected TransactionContextFactory transactionContextFactory;
 
+  protected boolean isRollbackDeployment;
+
   protected Map<Object, Object> beans;
 
   protected DelegateInterceptor delegateInterceptor;
@@ -3709,7 +3711,15 @@ public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
     return this;
   }
 
-  public EventSubscriptionPayloadMappingProvider getEventSubscriptionPayloadMappingProvider() {
+  public boolean isRollbackDeployment() {
+      return isRollbackDeployment;
+  }
+
+  public void setRollbackDeployment(boolean rollbackDeployment) {
+      isRollbackDeployment = rollbackDeployment;
+  }
+
+    public EventSubscriptionPayloadMappingProvider getEventSubscriptionPayloadMappingProvider() {
     return eventSubscriptionPayloadMappingProvider;
   }
 
