@@ -53,6 +53,7 @@ import org.activiti.engine.impl.persistence.entity.SuspendedJobEntityImpl;
 import org.activiti.engine.impl.persistence.entity.TaskEntityImpl;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntityImpl;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl;
+import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntityImpl;
 
 
 /**
@@ -170,6 +171,12 @@ public class EntityDependencyOrder {
 		 * FK to process definition
 		 */
 		DELETE_ORDER.add(TaskEntityImpl.class);
+
+        /*
+         * FK to Execution
+         * FK to process definition
+         */
+        DELETE_ORDER.add(IntegrationContextEntityImpl.class);
 
 		/*
 		 * FK from VariableInstance

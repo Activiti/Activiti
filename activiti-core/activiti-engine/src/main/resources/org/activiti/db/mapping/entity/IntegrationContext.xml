@@ -35,6 +35,26 @@
     )
   </insert>
 
+  <insert id="bulkInsertIntegrationContext" parameterType="java.util.List">
+    insert into ${prefix}ACT_RU_INTEGRATION (
+      ID_,
+      EXECUTION_ID_,
+      PROCESS_INSTANCE_ID_,
+      PROC_DEF_ID_,
+      FLOW_NODE_ID_,
+      CREATED_DATE_
+    )
+    values
+    <foreach collection="list" item="context" index="index" separator=",">
+        (#{context.id, jdbcType=VARCHAR},
+         #{context.executionId, jdbcType=VARCHAR},
+         #{context.processInstanceId, jdbcType=VARCHAR},
+         #{context.processDefinitionId, jdbcType=VARCHAR},
+         #{context.flowNodeId, jdbcType=VARCHAR},
+         #{context.createdDate, jdbcType=TIMESTAMP})
+    </foreach>
+  </insert>
+
   <!-- DELETE -->
 
   <delete id="deleteIntegrationContext" parameterType="org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntityImpl">
