@@ -26,6 +26,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.CommandInvoker;
 import org.activiti.engine.impl.interceptor.DebugCommandInvoker;
+import org.activiti.engine.impl.interceptor.RetryInterceptor;
 import org.activiti.engine.test.EnableVerboseExecutionTreeLogging;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,6 +109,24 @@ public abstract class PluggableActivitiTestCase extends AbstractActivitiTestCase
     } else {
       pluggableActivitiTestCaseLogger.warn("Not using " + CommandExecutorImpl.class + ", ignoring the "
           + EnableVerboseExecutionTreeLogging.class + " annotation");
+    }
+  }
+
+  protected void withRetryInterceptor(Runnable runnable) {
+    final CommandExecutorImpl commandExecutor = CommandExecutorImpl.class
+        .cast(processEngineConfiguration.getCommandExecutor());
+
+    final CommandInterceptor original = commandExecutor.getFirst();
+
+    try {
+        final RetryInterceptor retryInterceptor = new RetryInterceptor();
+
+        retryInterceptor.setNext(original);
+        commandExecutor.setFirst(retryInterceptor);
+
+        runnable.run();
+    } finally {
+        commandExecutor.setFirst(original);
     }
   }
 

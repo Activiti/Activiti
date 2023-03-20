@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.ExecutionListener;
@@ -57,14 +56,43 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   public static final String NR_OF_LOOPS_KEY = "nrOfLoops";
   public static final String LOOP_COUNTER_KEY = "loopCounter";
 
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.parallelEmbeddedSubProcess.bpmn20.xml" })
-  public void testParallelEmbeddedSubProcess() {
-      String procId = runtimeService.startProcessInstanceByKey("mnt-23090").getId();
-      assertProcessEnded(procId);
+  @Deployment(resources = {"org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.parallelEmbeddedSubProcessNonExclusive.bpmn20.xml"})
+  public void testParallelEmbeddedSubProcessAsyncNonExclusive() {
+    withRetryInterceptor(() -> checkParallelEmbeddedSubProcessAsync());
+  }
 
-      final Map<String, Object> variablesLocal = runtimeService.getVariablesLocal(runtimeService.createExecutionQuery().parentId(procId).list().get(0).getId());
-      assertThat(variablesLocal.get("nrOfInstances")).isEqualTo(4);
-      assertThat(variablesLocal.get("nrOfCompletedInstances")).isEqualTo(4);
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.parallelEmbeddedSubProcessExclusive.bpmn20.xml" })
+  public void testParallelEmbeddedSubProcessAsyncExclusive() {
+     checkParallelEmbeddedSubProcessAsync();
+  }
+
+  private void checkParallelEmbeddedSubProcessAsync() {
+      String procId = runtimeService.startProcessInstanceByKey("mnt-23090")
+          .getId();
+
+      Execution miRoot = runtimeService.createExecutionQuery()
+          .parentId(procId)
+          .singleResult();
+
+      List<Execution> miSubProcesses = runtimeService.createExecutionQuery()
+          .parentId(miRoot.getId())
+          .list();
+
+      assertThat(miSubProcesses).hasSize(4);
+
+      waitForJobExecutorToProcessAllJobs(5000L,
+          500L);
+
+      miSubProcesses = runtimeService.createExecutionQuery()
+          .parentId(miRoot.getId())
+          .list();
+
+      assertThat(miSubProcesses).hasSize(0);
+
+      Task task = taskService.createTaskQuery().singleResult();
+      taskService.complete(task.getId());
+
+      assertProcessEnded(procId);
   }
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.sequentialUserTasks.bpmn20.xml" })
@@ -1567,6 +1595,5 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   	}
 
   }
-
 
 }
