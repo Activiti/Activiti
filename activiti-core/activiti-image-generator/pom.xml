@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-core-dependencies</artifactId>
-    <version>7.9.1-alpha.1</version>
+    <version>7.9.1</version>
     <relativePath>../activiti-core-dependencies</relativePath>
   </parent>
   <artifactId>activiti-image-generator</artifactId>
