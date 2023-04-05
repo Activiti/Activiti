@@ -47,6 +47,7 @@ import static org.activiti.engine.impl.util.CollectionUtil.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -208,6 +209,12 @@ public class ExtensionsVariablesMappingProviderTest {
     @Test
     public void calculateOutputVariablesShouldPassAllVariablesWhenThereIsNoMapping() throws Exception {
         //given
+        ExpressionResolver expressionResolver = mock(ExpressionResolver.class);
+        given(expressionResolver.containsExpression(any())).willReturn(false);
+        ReflectionTestUtils.setField(variablesMappingProvider,
+            "expressionResolver",
+            expressionResolver);
+
         ObjectMapper objectMapper = new ObjectMapper();
         ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/task-variable-no-mapping-extensions.json"),
                                                                   ProcessExtensionModel.class);
@@ -426,14 +433,27 @@ public class ExtensionsVariablesMappingProviderTest {
     }
 
     @Test
-    public void should_returnTheOutputMappingValue_when_thereIsNoAvailableVariablesInTask() throws Exception {
+    public void should_throwActivitiIllegalArgumentException_when_expressionIsOutputMappingUsingMapAll() throws Exception {
+        DelegateExecution execution = initExpressionResolverTest("expression-in-mapping-all-output-value.json",
+            "Process_expressionMappingOutputValue");
+
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
+            .isThrownBy(() ->  variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+                map(
+                    "task_input_variable_name_1", "variable_value_1",
+                    "task_input_variable_name_2", "${expression}"
+                )));
+    }
+
+    @Test
+    public void should_returnResolveToNull_when_resolvingVariablesExpressionInTask() throws Exception {
         DelegateExecution execution = initExpressionResolverTest("expression-in-mapping-output-value.json",
             "Process_expressionMappingOutputValue");
 
-        Map<String, Object> outputMapping = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+        Map<String, Object> outputVariables = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
                                                                                               null);
 
-        assertThat(outputMapping).containsOnly(Map.entry("process_variable_4", "${task_input_variable_name_2}"));
+        assertThat(outputVariables).containsOnlyKeys("process_variable_4").containsValue(null);
     }
 
     @Test

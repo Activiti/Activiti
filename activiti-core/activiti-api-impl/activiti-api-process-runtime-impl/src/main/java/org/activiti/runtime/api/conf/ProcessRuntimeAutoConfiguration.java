@@ -255,11 +255,13 @@ public class ProcessRuntimeAutoConfiguration {
     public ProcessVariablesInitiator processVariablesInitiator(ProcessExtensionService processExtensionService,
                                                                VariableParsingService variableParsingService,
                                                                VariableValidationService variableValidationService,
-                                                               ExtensionsVariablesMappingProvider mappingProvider) {
+                                                               ExtensionsVariablesMappingProvider mappingProvider,
+                                                               ExpressionResolver expressionResolver) {
         return new ProcessVariablesInitiator(processExtensionService,
                                              variableParsingService,
                                              variableValidationService,
-                                             mappingProvider);
+                                             mappingProvider,
+                                             expressionResolver);
     }
 
     @Bean

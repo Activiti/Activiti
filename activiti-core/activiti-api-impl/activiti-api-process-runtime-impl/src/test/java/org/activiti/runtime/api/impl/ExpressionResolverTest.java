@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.activiti.engine.ActivitiException;
@@ -215,7 +216,7 @@ public class ExpressionResolverTest {
     }
 
     @Test
-    public void resolveExpressionsMap_should_keepExpressionContent_when_notAbleToResolveExpressionInString() {
+    public void resolveExpressionsMap_should_removeExpressionContent_when_notAbleToResolveExpressionInString() {
         //given
         Expression expression = buildExpression("${nonResolvableExpression}");
         given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willThrow(new ActivitiException("Invalid property"));
@@ -224,11 +225,11 @@ public class ExpressionResolverTest {
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
                                                                               singletonMap("result", "Welcome to ${nonResolvableExpression}!"));
         //then
-        assertThat(result).containsEntry("result", "Welcome to ${nonResolvableExpression}!");
+        assertThat(result).containsEntry("result", "Welcome to !");
     }
 
     @Test
-    public void resolveExpressionsMap_should_keepExpressionContent_when_notAbleToResolveIt() {
+    public void resolveExpressionsMap_should_removeExpressionContent_when_notAbleToResolveIt() {
         //given
         Expression expression = buildExpression("${nonResolvableExpression}");
         given(expressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor)).willThrow(new ActivitiException("Invalid property"));
@@ -237,8 +238,7 @@ public class ExpressionResolverTest {
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
                                                                               singletonMap("result", "${nonResolvableExpression}"));
         //then
-        assertThat(result).containsEntry("result",
-                                         "${nonResolvableExpression}");
+        assertThat(result).containsEntry("result", null);
 
     }
 
@@ -269,7 +269,7 @@ public class ExpressionResolverTest {
 
     @Test
     public void
-           resolveExpressionsMap_should_keepExpressionContent_when_ObjecNodeContainsAnExpressionUnableToBeResolved() throws IOException {
+           resolveExpressionsMap_should_removeExpressionContent_when_ObjecNodeContainsAnExpressionUnableToBeResolved() throws IOException {
         //given
         Expression nameExpression = buildExpression("${name}");
         given(expressionEvaluator.evaluate(nameExpression, expressionManager, delegateInterceptor)).willThrow(new ActivitiException("Invalid property"));
@@ -281,7 +281,7 @@ public class ExpressionResolverTest {
                                                                               singletonMap("node", node));
         //then
         assertThat(result).containsEntry("node", map(
-            "name", "${name}",
+            "name", null,
             "age", 30
         ));
     }
@@ -305,7 +305,7 @@ public class ExpressionResolverTest {
     }
 
     @Test
-    public void resolveExpressionsMap_should_keepExpressionContent_when_ListContainsAnExpressionUnableToBeResolved() {
+    public void resolveExpressionsMap_should_removeExpressionContent_when_ListContainsAnExpressionUnableToBeResolved() {
         //given
         Expression placeExpression = buildExpression("${place}");
         given(expressionEvaluator.evaluate(placeExpression, expressionManager, delegateInterceptor)).willThrow(new ActivitiException("Invalid property"));
@@ -318,7 +318,7 @@ public class ExpressionResolverTest {
                                                                                                                      "Berlin")));
         //then
         assertThat(result).containsEntry("places",
-                                         asList("${place}",
+                                         asList(null,
                                                        "Paris",
                                                        "Berlin"));
     }
@@ -349,7 +349,7 @@ public class ExpressionResolverTest {
     }
 
     @Test
-    public void resolveExpressionsMap_should_keepExpressionContent_when_MapContainsAnExpressionUnableToBeResolved() {
+    public void resolveExpressionsMap_should_removeExpressionContent_when_MapContainsAnExpressionUnableToBeResolved() {
         //given
 
         Expression playerExpression = buildExpression("${player}");
@@ -366,8 +366,11 @@ public class ExpressionResolverTest {
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(expressionEvaluator,
                                                                               singletonMap("players",players));
 
+        Map<String, Object> expectedResult = new HashMap<>(players);
+        expectedResult.put("Yellow", null);
+
         //then
-        assertThat(result).containsEntry("players", players);
+        assertThat(result).containsEntry("players", expectedResult);
     }
 
     private Expression buildExpression(String expressionContent) {

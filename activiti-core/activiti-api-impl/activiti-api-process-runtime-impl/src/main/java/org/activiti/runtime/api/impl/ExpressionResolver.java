@@ -114,9 +114,8 @@ public class ExpressionResolver {
             return expressionEvaluator.evaluate(expressionManager.createExpression(sourceString), expressionManager,
                 delegateInterceptor);
         } catch (final Exception e) {
-            logger.warn("Unable to resolve expression in variables, keeping original value",
-                        e);
-            return sourceString;
+            logger.warn("Unable to resolve expression in variables", e);
+            return null;
         }
     }
 
@@ -133,8 +132,8 @@ public class ExpressionResolver {
                 matcher.appendReplacement(sb,
                                           Objects.toString(value));
             } catch (final Exception e) {
-                logger.warn("Unable to resolve expression in variables, keeping original value",
-                            e);
+                logger.warn("Unable to resolve expression in variables", e);
+                matcher.appendReplacement(sb, "");
             }
         }
         matcher.appendTail(sb);

@@ -31,7 +31,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
+import org.activiti.runtime.api.impl.ExpressionResolver;
+import org.activiti.runtime.api.impl.SimpleMapExpressionEvaluator;
 import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.VariableParsingService;
@@ -47,14 +48,18 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
 
     private VariablesCalculator variablesCalculator;
 
+    private ExpressionResolver expressionResolver;
+
     public ProcessVariablesInitiator(ProcessExtensionService processExtensionService,
                                      VariableParsingService variableParsingService,
                                      VariableValidationService variableValidationService,
-                                     VariablesCalculator variablesCalculator) {
+                                     VariablesCalculator variablesCalculator,
+                                     ExpressionResolver expressionResolver) {
         this.processExtensionService = processExtensionService;
         this.variableParsingService = variableParsingService;
         this.variableValidationService = variableValidationService;
         this.variablesCalculator = variablesCalculator;
+        this.expressionResolver = expressionResolver;
     }
 
     public Map<String, Object> calculateVariablesFromExtensionFile(ProcessDefinition processDefinition,
@@ -104,11 +109,22 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
 
     private Map<String, Object> processVariables(Map<String, Object> variables, Map<String, VariableDefinition> variableDefinitionMap) {
         Map<String, Object> newVarsMap = new HashMap<>(Optional.ofNullable(variables).orElse(emptyMap()));
+        Map<String, Object> varsWithExpressions = new HashMap<>();
         variableDefinitionMap.forEach((k, v) -> {
             if (!newVarsMap.containsKey(v.getName()) && v.getValue() != null) {
-                newVarsMap.put(v.getName(), createDefaultVariableValue(v));
+                Object value = createDefaultVariableValue(v);
+                if (expressionResolver.containsExpression(value)) {
+                    varsWithExpressions.put(v.getName(), value);
+                } else {
+                    newVarsMap.put(v.getName(), value);
+                }
             }
         });
+
+        if (!varsWithExpressions.isEmpty()) {
+            newVarsMap.putAll(expressionResolver.resolveExpressionsMap(new SimpleMapExpressionEvaluator(newVarsMap), varsWithExpressions));
+        }
+
         return newVarsMap;
     }
 

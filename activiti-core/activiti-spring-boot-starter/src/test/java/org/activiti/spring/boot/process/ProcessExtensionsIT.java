@@ -45,6 +45,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class ProcessExtensionsIT {
 
     private static final String INITIAL_VARS_PROCESS = "Process_initialVarsProcess";
+    private static final String INITIAL_VARS_WITH_EXPRESSIONS_PROCESS = "initialVarsExpression";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -164,6 +165,39 @@ public class ProcessExtensionsIT {
                     .withVariable("birth","2007-10-01")
                     .build());
         }).withMessage("Variables fail type validation: subscribe, name, age");
+    }
+
+    @Test
+    public void should_resolveProcessInstanceInitialVariablesExpressions_when_defined() {
+        ProcessRuntimeConfiguration configuration = processRuntime.configuration();
+        assertThat(configuration).isNotNull();
+
+        ProcessInstance initialVarsProcess = processRuntime.start(ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey(INITIAL_VARS_WITH_EXPRESSIONS_PROCESS)
+            .withVariable("startVariable",
+                "startVariableValue")
+            .build());
+
+        assertThat(initialVarsProcess).isNotNull();
+        assertThat(initialVarsProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+
+        List<VariableInstance> variableInstances = processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(initialVarsProcess).build());
+
+        assertThat(variableInstances)
+            .isNotNull()
+            .hasSize(5)
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .containsOnly(
+                tuple("definedVar", "predefinedVarValue"),
+                tuple("startVariable", "startVariableValue"),
+                tuple("initVarWithExpressionInString", "start var is startVariableValue and defined var is predefinedVarValue and undefinedVar is "),
+                tuple("initVarWithExpression", "startVariableValue"),
+                tuple("initVarWithUnresolvableExpression", null)
+            );
+
+        // cleanup
+        processRuntime.delete(ProcessPayloadBuilder.delete(initialVarsProcess));
     }
 
     @Test

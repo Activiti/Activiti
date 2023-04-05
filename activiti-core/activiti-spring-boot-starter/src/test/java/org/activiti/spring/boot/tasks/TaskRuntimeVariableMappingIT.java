@@ -58,6 +58,7 @@ public class TaskRuntimeVariableMappingIT {
     private static final String TASK_ASSIGNEE_SEQUENTIAL_MAP_ALL = "taskAssigneeSequentialMapAll";
 
     private static final String TASK_ASSIGNEE_MULTI_INSTANCE_MAPPING = "taskMultiInstanceVariableMapping";
+    private static final String TASK_EXPRESSION_MAPPING = "taskExpressionMapping";
 
     private static final String ASSIGNEE_VARIABLE_NAME = "sys_task_assignee";
 
@@ -709,6 +710,39 @@ public class TaskRuntimeVariableMappingIT {
         assertThat(tasks).isNotEmpty();
         assertThat(tasks).hasSize(size);
         return tasks;
+    }
+
+    @Test
+    public void should_evaluateToNull_when_expressionIsNotResolvable() {
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_EXPRESSION_MAPPING);
+
+        Task task = checkTasks(processInstance.getId());
+
+        // input mapping
+        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(task.getId());
+        assertThat(taskVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .containsOnly(
+                tuple("inValue", "varValue"),
+                tuple("inNull", null)
+            );
+
+        taskBaseRuntime.completeTask(task, Map.of("mapped", "mappedValue"));
+
+        // output mapping
+        List<VariableInstance> procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
+        assertThat(procVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .containsOnly(
+                tuple("initVar", "varValue"),
+                tuple("outValue", "varValue"),
+                tuple("outNull", null),
+                tuple("outMapped", "mappedValue")
+            );
     }
 
 }
