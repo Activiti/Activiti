@@ -73,7 +73,9 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         }
 
         if (extensions.shouldMapAllInputs(execution.getCurrentActivityId())) {
-            return execution.getVariables();
+            Map<String, Object> variables = new HashMap<>(constants);
+            variables.putAll(execution.getVariables());
+            return variables;
         }
 
         Map<String, Object> inboundVariables = calculateInputVariables(execution, extensions);
