@@ -173,19 +173,25 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
                                                    Map<String, Object> availableVariables,
                                                    Map<String, Object> outboundVariables) {
         if (mappingExecutionContext.hasExecution()) {
-            if (availableVariables != null && !availableVariables.isEmpty()) {
-                return expressionResolver.resolveExpressionsMap(
-                    new CompositeVariableExpressionEvaluator(
-                        new SimpleMapExpressionEvaluator(availableVariables),
-                        new VariableScopeExpressionEvaluator(mappingExecutionContext.getExecution())),
-                        outboundVariables);
-            }
-            return expressionResolver.resolveExpressionsMap(
-                new VariableScopeExpressionEvaluator(mappingExecutionContext.getExecution()), outboundVariables);
+            return resolveExecutionExpressions(mappingExecutionContext, availableVariables, outboundVariables);
         } else {
             return expressionResolver.resolveExpressionsMap(
                 new SimpleMapExpressionEvaluator(availableVariables), outboundVariables);
         }
+    }
+
+    private Map<String, Object> resolveExecutionExpressions(MappingExecutionContext mappingExecutionContext,
+                                                            Map<String, Object> availableVariables,
+                                                            Map<String, Object> outboundVariables) {
+        if (availableVariables != null && !availableVariables.isEmpty()) {
+            return expressionResolver.resolveExpressionsMap(
+                new CompositeVariableExpressionEvaluator(
+                    new SimpleMapExpressionEvaluator(availableVariables),
+                    new VariableScopeExpressionEvaluator(mappingExecutionContext.getExecution())),
+                outboundVariables);
+        }
+        return expressionResolver.resolveExpressionsMap(
+            new VariableScopeExpressionEvaluator(mappingExecutionContext.getExecution()), outboundVariables);
     }
 
     private boolean isTargetProcessVariableDefined(Extension extensions,
