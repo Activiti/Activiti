@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
@@ -87,15 +86,14 @@ public class ProcessRuntimeVariableMappingTest {
 
         List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
 
-        String[] array = {"first", "${name}", "${surname}", "last"};
+        String[] array = {"first", "John", "Doe", "last"};
         List<String> list = asList(array);
 
-        Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put("age-in-months", "${age * 12}");
-        dataMap.put("full-name", "${name} ${surname}");
-        dataMap.put("demoString", "expressionResolved");
-        dataMap.put("list", list);
-        JsonNode data = mapper.convertValue(dataMap, JsonNode.class);
+        Map<String, Object> data = new HashMap<>();
+        data.put("age-in-months", 240);
+        data.put("full-name", "John Doe");
+        data.put("demoString", "expressionResolved");
+        data.put("list", list);
 
         assertThat(variables).extracting(VariableInstance::getName,
                                          VariableInstance::getValue)
@@ -105,11 +103,11 @@ public class ProcessRuntimeVariableMappingTest {
                                            tuple("surname", "Doe"),
                                            tuple("data", data),
                                            tuple("user-msg",
-                                                 "Hello ${name.concat(' ').concat(surname)}, today is your ${age}th birthday! It means ${age * 365.25} days of life"),
-                                           tuple("input-unmapped-variable-with-matching-name", "${surname}"),
+                                                 "Hello John Doe, today is your 20th birthday! It means 7305.0 days of life"),
+                                           tuple("input-unmapped-variable-with-matching-name", "Doe"),
                                            tuple("input-unmapped-variable-with-non-matching-connector-input-name",
                                                  "inTestExpression"),
-                                           tuple("variableToResolve", "${name}"),
+                                           tuple("variableToResolve", "John"),
                                            tuple("out-unmapped-variable-matching-name", "defaultExpression"),
                                            tuple("output-unmapped-variable-with-non-matching-connector-output-name",
                                                  "defaultExpression"),
