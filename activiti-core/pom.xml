@@ -24,6 +24,7 @@
     <mybatis.version>3.5.10</mybatis.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
     <xmlgraphics-commons.version>2.7</xmlgraphics-commons.version>
+    <js-scriptengine.version>22.2.0</js-scriptengine.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -170,6 +171,12 @@
         <groupId>joda-time</groupId>
         <artifactId>joda-time</artifactId>
         <version>${joda-time.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.graalvm.js</groupId>
+        <artifactId>js-scriptengine</artifactId>
+        <version>${js-scriptengine.version}</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
