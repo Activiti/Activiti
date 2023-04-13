@@ -103,8 +103,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.graalvm.js</groupId>
-      <artifactId>js-scriptengine</artifactId>
+      <groupId>org.openjdk.nashorn</groupId>
+      <artifactId>nashorn-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
