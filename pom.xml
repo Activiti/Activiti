@@ -563,7 +563,7 @@ limitations under the License.
             <configuration>
               <rules>
                 <requireJavaVersion>
-                  <version>${java.version}</version>
+                  <version>1.${java.version}</version>
                 </requireJavaVersion>
               </rules>
             </configuration>
