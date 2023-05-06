@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import javax.el.FunctionMapper;
+import jakarta.el.FunctionMapper;
 
 /**
  * Default implementation of a {@link FunctionMapper}.

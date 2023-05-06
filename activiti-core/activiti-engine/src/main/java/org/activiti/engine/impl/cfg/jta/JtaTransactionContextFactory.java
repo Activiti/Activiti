@@ -17,8 +17,7 @@
 
 package org.activiti.engine.impl.cfg.jta;
 
-import javax.transaction.TransactionManager;
-
+import jakarta.transaction.TransactionManager;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionContextFactory;
 import org.activiti.engine.impl.interceptor.CommandContext;

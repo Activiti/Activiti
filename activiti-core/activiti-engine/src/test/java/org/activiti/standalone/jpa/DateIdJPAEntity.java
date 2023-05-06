@@ -17,11 +17,12 @@
 
 package org.activiti.standalone.jpa;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
 
 /**
 
@@ -31,6 +32,7 @@ public class DateIdJPAEntity {
 
   @Id
   @Column(name = "ID_")
+  @Temporal(TemporalType.DATE)
   private Date dateId;
 
   public Date getDateId() {

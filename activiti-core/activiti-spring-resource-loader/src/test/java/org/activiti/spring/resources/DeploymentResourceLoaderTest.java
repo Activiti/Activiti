@@ -17,18 +17,17 @@ package org.activiti.spring.resources;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.util.IoUtil;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Predicate;
 
 public class DeploymentResourceLoaderTest {
 
@@ -68,7 +67,7 @@ public class DeploymentResourceLoaderTest {
         //then
         assertThat(loaded)
                 .hasSize(1)
-                .contains("a selected resource"+System.getProperty("line.separator"));
+                .contains("a selected resource\n");
 
     }
 }

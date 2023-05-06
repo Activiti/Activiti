@@ -17,9 +17,9 @@
 
 package org.activiti.engine.impl.el;
 
-import javax.el.ExpressionFactory;
+import com.sun.el.ExpressionFactoryImpl;
+import jakarta.el.ExpressionFactory;
 
-import de.odysseus.el.ExpressionFactoryImpl;
 
 /**
  * Class used to get hold of a {@link ExpressionFactory}.

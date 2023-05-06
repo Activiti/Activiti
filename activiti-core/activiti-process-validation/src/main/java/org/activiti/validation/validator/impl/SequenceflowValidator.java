@@ -16,10 +16,9 @@
 
 package org.activiti.validation.validator.impl;
 
+import com.sun.el.ExpressionFactoryImpl;
+import jakarta.el.StandardELContext;
 import java.util.List;
-
-import de.odysseus.el.ExpressionFactoryImpl;
-import de.odysseus.el.util.SimpleContext;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowElementsContainer;
@@ -29,10 +28,6 @@ import org.activiti.validation.ValidationError;
 import org.activiti.validation.validator.Problems;
 import org.activiti.validation.validator.ProcessLevelValidator;
 import org.apache.commons.lang3.StringUtils;
-
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
 
 /**
  *
@@ -87,8 +82,10 @@ public class SequenceflowValidator extends ProcessLevelValidator {
 
             if (conditionExpression != null) {
                 try {
-                    new ExpressionFactoryImpl()
-                        .createValueExpression(new SimpleContext(), conditionExpression.trim(), Object.class);
+                    ExpressionFactoryImpl expressionFactory = new ExpressionFactoryImpl();
+
+                    expressionFactory
+                        .createValueExpression(new StandardELContext(expressionFactory), conditionExpression.trim(), Object.class);
                 } catch (Exception e) {
                     addError(errors, Problems.SEQ_FLOW_INVALID_CONDITIONAL_EXPRESSION, process, sequenceFlow, "Conditional expression is not valid");
                 }

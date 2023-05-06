@@ -1,2 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-    org.activiti.api.task.conf.impl.TaskModelAutoConfiguration
