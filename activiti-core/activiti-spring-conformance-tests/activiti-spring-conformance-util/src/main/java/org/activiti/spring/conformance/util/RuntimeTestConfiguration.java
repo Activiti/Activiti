@@ -45,6 +45,7 @@ import org.activiti.core.common.spring.identity.ExtendedInMemoryUserDetailsManag
 import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -57,6 +58,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import java.util.ArrayList;
 import java.util.List;
 
+@AutoConfiguration
 @TestConfiguration
 public class RuntimeTestConfiguration {
 

@@ -17,19 +17,19 @@
 
 package org.activiti.engine.impl.el;
 
+import com.sun.el.ExpressionFactoryImpl;
+import jakarta.el.ArrayELResolver;
+import jakarta.el.BeanELResolver;
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ListELResolver;
+import jakarta.el.MapELResolver;
+import jakarta.el.ValueExpression;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import javax.el.ArrayELResolver;
-import javax.el.BeanELResolver;
-import javax.el.CompositeELResolver;
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.el.ListELResolver;
-import javax.el.MapELResolver;
-import javax.el.ValueExpression;
-import de.odysseus.el.ExpressionFactoryImpl;
 import org.activiti.core.el.ActivitiElContext;
 import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.core.el.ELContextBuilder;

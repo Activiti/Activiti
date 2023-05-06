@@ -87,11 +87,11 @@ import org.activiti.api.runtime.model.impl.StringToObjectValueConverter;
 import org.activiti.api.runtime.model.impl.StringToSetConverter;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.convert.ApplicationConversionService;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -109,8 +109,8 @@ import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
+@AutoConfiguration
 @AutoConfigureBefore({JacksonAutoConfiguration.class})
-@Configuration
 public class ProcessModelAutoConfiguration {
 
     @Autowired(required = false)

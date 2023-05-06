@@ -189,7 +189,7 @@
     <project.scm.repository>Activiti</project.scm.repository>
     <project.year>2020</project.year>
 
-    <java.release>${java.release}</java.release>
+    <java.release>${java.version}</java.release>
     <java.version>17</java.version>
     <maven.compiler.release>${java.release}</maven.compiler.release>
     <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -222,8 +222,10 @@
     <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
-    <spring-boot.version>2.7.6</spring-boot.version>
+    <spring-boot.version>3.0.6</spring-boot.version>
     <h2.version>1.4.200</h2.version>
+    <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
+    <expressly.version>5.0.0</expressly.version>
     <versions-maven-plugin.version>2.11.0</versions-maven-plugin.version>
 
     <!-- configuration properties for tests -->

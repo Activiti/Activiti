@@ -19,11 +19,9 @@ package org.activiti.engine.test.bpmn.event.error.mapError;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import jakarta.xml.bind.JAXBException;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.xml.bind.JAXBException;
-
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 import org.activiti.standalone.testing.helpers.ServiceTaskTestMock;

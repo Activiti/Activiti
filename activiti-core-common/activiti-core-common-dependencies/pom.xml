@@ -81,19 +81,14 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>de.odysseus.juel</groupId>
-        <artifactId>juel-api</artifactId>
-        <version>${juel.version}</version>
+        <groupId>jakarta.el</groupId>
+        <artifactId>jakarta.el-api</artifactId>
+        <version>${jakarta.el-api.version}</version>
       </dependency>
       <dependency>
-        <groupId>de.odysseus.juel</groupId>
-        <artifactId>juel-impl</artifactId>
-        <version>${juel.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>de.odysseus.juel</groupId>
-        <artifactId>juel-spi</artifactId>
-        <version>${juel.version}</version>
+        <groupId>org.glassfish.expressly</groupId>
+        <artifactId>expressly</artifactId>
+        <version>${expressly.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

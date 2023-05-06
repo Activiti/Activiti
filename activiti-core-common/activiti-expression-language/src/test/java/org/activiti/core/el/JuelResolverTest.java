@@ -19,14 +19,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+
+import jakarta.el.ELException;
+import jakarta.el.PropertyNotFoundException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.el.ELException;
-import javax.el.PropertyNotFoundException;
 import org.hamcrest.MatcherAssert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JuelResolverTest {
 
@@ -86,7 +87,7 @@ public class JuelResolverTest {
     public void should_throwException_when_unknownVariableIsReferenced() {
 
         //given
-        Map<String, Object> availableVariables = Collections.singletonMap("name", "jon doe");
+        Map<String, Object> availableVariables = Map.of("name", "jon doe");
         String expressionString = "${nameeee}";
         ExpressionResolver expressionResolver = new JuelExpressionResolver();
 
@@ -94,7 +95,7 @@ public class JuelResolverTest {
         assertThatExceptionOfType(PropertyNotFoundException.class)
             .as("Referencing an unknown variable")
             .isThrownBy(() -> expressionResolver.resolveExpression(expressionString, availableVariables, Object.class))
-            .withMessage("Cannot resolve identifier 'nameeee'");
+            .withMessage("ELResolver cannot handle a null base Object with identifier 'nameeee'");
     }
 
     @Test
@@ -120,13 +121,13 @@ public class JuelResolverTest {
         assertThatExceptionOfType(ELException.class)
             .as("Referencing an unknown function")
             .isThrownBy(() -> expressionResolver.resolveExpression(expressionString, Collections.emptyMap(), Date.class))
-            .withMessage("Could not resolve function 'current'");
+            .withMessage("Function 'current' not found");
     }
 
     @Test
     public void should_returnList_when_expressionIsListFunction() {
         //given
-        String expressionString = "${list(1,'item',3)}";
+        String expressionString = "${[1,'item',3]}";
         ExpressionResolver expressionResolver = new JuelExpressionResolver();
 
         //when

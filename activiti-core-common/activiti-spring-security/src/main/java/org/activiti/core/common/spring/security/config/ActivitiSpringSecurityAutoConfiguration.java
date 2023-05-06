@@ -31,11 +31,11 @@ import org.activiti.core.common.spring.security.LocalSpringSecurityManager;
 import org.activiti.core.common.spring.security.SimpleGrantedAuthoritiesGroupsMapper;
 import org.activiti.core.common.spring.security.SimpleGrantedAuthoritiesResolver;
 import org.activiti.core.common.spring.security.SimpleGrantedAuthoritiesRolesMapper;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@AutoConfiguration
 public class ActivitiSpringSecurityAutoConfiguration {
 
     @Bean

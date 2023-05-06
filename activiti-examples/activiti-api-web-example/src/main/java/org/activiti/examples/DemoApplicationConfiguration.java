@@ -16,82 +16,61 @@
 package org.activiti.examples;
 
 import static java.util.Arrays.asList;
+import static org.springframework.security.config.Customizer.withDefaults;
 
 import java.util.Arrays;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-public class DemoApplicationConfiguration extends WebSecurityConfigurerAdapter {
+public class DemoApplicationConfiguration {
 
-    private Logger logger = LoggerFactory.getLogger(DemoApplicationConfiguration.class);
+    private final Logger logger = LoggerFactory.getLogger(DemoApplicationConfiguration.class);
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService());
-    }
-
-	@Bean
-    @Override
-	public UserDetailsService userDetailsServiceBean() throws Exception {
-        return super.userDetailsServiceBean();
-    }
-
-    @Override
+    @Bean
     public UserDetailsService userDetailsService() {
 
         InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
 
         String[][] usersGroupsAndRoles = {
-                {"bob", "{bcrypt}password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
-                {"john", "{bcrypt}password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
-                {"hannah", "{bcrypt}password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
-                {"other", "{bcrypt}password", "ROLE_ACTIVITI_USER", "GROUP_otherTeam"},
-                {"admin", "{bcrypt}password", "ROLE_ACTIVITI_ADMIN"},
+                {"bob", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
+                {"john", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
+                {"hannah", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
+                {"other", "}password", "ROLE_ACTIVITI_USER", "GROUP_otherTeam"},
+                {"admin", "password", "ROLE_ACTIVITI_ADMIN"},
         };
-
-        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
         for (String[] user : usersGroupsAndRoles) {
             List<String> authoritiesStrings = asList(Arrays.copyOfRange(user, 2, user.length));
             logger.info("> Registering new user: " + user[0] + " with the following Authorities[" + authoritiesStrings + "]");
-            inMemoryUserDetailsManager.createUser(new User(user[0], passwordEncoder.encode(user[1]),
-                    authoritiesStrings.stream().map(s -> new SimpleGrantedAuthority(s)).collect(Collectors.toList())));
-        }
 
+            inMemoryUserDetailsManager.createUser(User.withDefaultPasswordEncoder()
+                .username(user[0])
+                .password(user[1])
+                .authorities(user[2])
+                .build());
+        }
 
         return inMemoryUserDetailsManager;
     }
 
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
-                .authorizeRequests()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .httpBasic();
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http
+            .csrf().disable()
+            .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+            .httpBasic(withDefaults())
+            .build();
     }
 
 }

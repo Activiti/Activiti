@@ -1,4 +1,2 @@
 # Activiti auto-configurations
 
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-    org.activiti.application.conf.ApplicationProcessAutoConfiguration
