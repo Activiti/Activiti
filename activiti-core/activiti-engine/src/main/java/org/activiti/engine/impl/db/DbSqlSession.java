@@ -66,6 +66,7 @@ import org.activiti.engine.impl.persistence.entity.Entity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.engine.impl.util.ProjectVersionUtils;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
@@ -1279,6 +1280,10 @@ public class DbSqlSession implements Session {
             byte[] bytes = IoUtil.readInputStream(inputStream,
                                                   resourceName);
             String ddlStatements = new String(bytes);
+            if (operation.equals("create") && component.equals("engine")) {
+                ddlStatements = ddlStatements.replaceFirst("act_version = '(.*?)'", "act_version = '" + ProjectVersionUtils.getVersion()+ "'")
+                .replaceFirst("act_version := '(.*?)'", "act_version := '" + ProjectVersionUtils.getVersion()+ "'");
+            }
 
             // Special DDL handling for certain databases
             try {
@@ -1301,12 +1306,13 @@ public class DbSqlSession implements Session {
             BufferedReader reader = new BufferedReader(new StringReader(ddlStatements));
             String line = readNextTrimmedLine(reader);
             boolean inOraclePlsqlBlock = false;
+            boolean inPostgrePlsqlBlock = false;
             while (line != null) {
                 if (line.startsWith("# ")) {
                     log.debug(line.substring(2));
                 } else if (line.startsWith("-- ")) {
                     log.debug(line.substring(3));
-                } else if (line.startsWith("execute java ")) {
+                } else if (line.toLowerCase().startsWith("execute java ")) {
                     String upgradestepClassName = line.substring(13).trim();
                     DbUpgradeStep dbUpgradeStep = null;
                     try {
@@ -1325,14 +1331,25 @@ public class DbSqlSession implements Session {
                     }
                 } else if (line.length() > 0) {
 
-                    if (isOracle() && line.startsWith("begin")) {
+                    if (isOracle() && (line.toLowerCase().startsWith("declare") || line.toLowerCase().startsWith("begin"))) {
                         inOraclePlsqlBlock = true;
                         sqlStatement = addSqlStatementPiece(sqlStatement,
                                                             line);
-                    } else if ((line.endsWith(";") && !inOraclePlsqlBlock) || (line.startsWith("/") && inOraclePlsqlBlock)) {
+                    } else if (isPostgres() && line.toLowerCase().startsWith("do $$")) {
+                        inPostgrePlsqlBlock = true;
+                        sqlStatement = addSqlStatementPiece(sqlStatement, line);
+                    } else if ((line.endsWith(";") && !inOraclePlsqlBlock && !inPostgrePlsqlBlock) || (line.startsWith("/") && inOraclePlsqlBlock) || (line.toLowerCase().startsWith("end $$") && inPostgrePlsqlBlock)) {
 
-                        if (inOraclePlsqlBlock) {
-                            inOraclePlsqlBlock = false;
+                        if (inOraclePlsqlBlock || inPostgrePlsqlBlock) {
+                            if (inOraclePlsqlBlock) {
+                                inOraclePlsqlBlock = false;
+                            }
+                            if (inPostgrePlsqlBlock) {
+                                inPostgrePlsqlBlock = false;
+                                sqlStatement = addSqlStatementPiece(sqlStatement,
+                                                                    line.substring(0,
+                                                                                   line.length() - 1));
+                            }
                         } else {
                             sqlStatement = addSqlStatementPiece(sqlStatement,
                                                                 line.substring(0,
@@ -1449,10 +1466,10 @@ public class DbSqlSession implements Session {
                 // ignore
             }
         }
-        if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP.equals(databaseSchemaUpdate)
+        if (ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP.equals(databaseSchemaUpdate)
                 || ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_DROP_CREATE.equals(databaseSchemaUpdate) || ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_CREATE.equals(databaseSchemaUpdate)) {
             dbSchemaCreate();
-        } else if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE.equals(databaseSchemaUpdate)) {
+        } else if (ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE.equals(databaseSchemaUpdate)) {
             dbSchemaCheckVersion();
         } else if (ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE.equals(databaseSchemaUpdate)) {
             dbSchemaUpdate();
@@ -1461,7 +1478,7 @@ public class DbSqlSession implements Session {
 
     public void performSchemaOperationsProcessEngineClose() {
         String databaseSchemaUpdate = Context.getProcessEngineConfiguration().getDatabaseSchemaUpdate();
-        if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP.equals(databaseSchemaUpdate)) {
+        if (ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP.equals(databaseSchemaUpdate)) {
             dbSchemaDrop();
         }
     }
@@ -1476,6 +1493,10 @@ public class DbSqlSession implements Session {
 
     public boolean isOracle() {
         return dbSqlSessionFactory.getDatabaseType().equals("oracle");
+    }
+
+    public boolean isPostgres() {
+        return dbSqlSessionFactory.getDatabaseType().equals("postgres");
     }
 
     // query factory methods

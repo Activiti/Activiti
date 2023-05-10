@@ -90,4 +90,72 @@ public class ProcessEngineInitializationTest extends AbstractTestCase {
     // closing the original process engine to drop the db tables
     processEngine.close();
   }
+
+  public void testAutoObtainedVersionMatchInDb2() {
+    ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/db2.notables.activiti.cfg.xml").setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP).buildProcessEngine();
+    DbSqlSessionFactory dbSqlSessionFactory = (DbSqlSessionFactory) processEngine.getProcessEngineConfiguration().getSessionFactories().get(DbSqlSession.class);
+    SqlSessionFactory sqlSessionFactory = dbSqlSessionFactory.getSqlSessionFactory();
+    SqlSession sqlSession = sqlSessionFactory.openSession();
+      compareVersionOfSchema_ProcessEngine(sqlSession);
+  }
+
+  public void testAutoObtainedVersionMatchInH2() {
+    ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/h2.notables.activiti.cfg.xml").setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP).buildProcessEngine();
+    DbSqlSessionFactory dbSqlSessionFactory = (DbSqlSessionFactory) processEngine.getProcessEngineConfiguration().getSessionFactories().get(DbSqlSession.class);
+    SqlSessionFactory sqlSessionFactory = dbSqlSessionFactory.getSqlSessionFactory();
+    SqlSession sqlSession = sqlSessionFactory.openSession();
+      compareVersionOfSchema_ProcessEngine(sqlSession);
+  }
+
+  public void testAutoObtainedVersionMatchInHsql() {
+    ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/hsql.notables.activiti.cfg.xml").setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP).buildProcessEngine();
+    DbSqlSessionFactory dbSqlSessionFactory = (DbSqlSessionFactory) processEngine.getProcessEngineConfiguration().getSessionFactories().get(DbSqlSession.class);
+    SqlSessionFactory sqlSessionFactory = dbSqlSessionFactory.getSqlSessionFactory();
+    SqlSession sqlSession = sqlSessionFactory.openSession();
+      compareVersionOfSchema_ProcessEngine(sqlSession);
+  }
+
+  public void testAutoObtainedVersionMatchInMssql() {
+    ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/mssql.notables.activiti.cfg.xml").setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP).buildProcessEngine();
+    DbSqlSessionFactory dbSqlSessionFactory = (DbSqlSessionFactory) processEngine.getProcessEngineConfiguration().getSessionFactories().get(DbSqlSession.class);
+    SqlSessionFactory sqlSessionFactory = dbSqlSessionFactory.getSqlSessionFactory();
+    SqlSession sqlSession = sqlSessionFactory.openSession();
+      compareVersionOfSchema_ProcessEngine(sqlSession);
+  }
+
+  public void testAutoObtainedVersionMatchInMysql() {
+    ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/mysql.notables.activiti.cfg.xml").setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP).buildProcessEngine();
+    DbSqlSessionFactory dbSqlSessionFactory = (DbSqlSessionFactory) processEngine.getProcessEngineConfiguration().getSessionFactories().get(DbSqlSession.class);
+    SqlSessionFactory sqlSessionFactory = dbSqlSessionFactory.getSqlSessionFactory();
+    SqlSession sqlSession = sqlSessionFactory.openSession();
+      compareVersionOfSchema_ProcessEngine(sqlSession);
+  }
+
+  public void testAutoObtainedVersionMatchInOracle() {
+    ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/oracle.notables.activiti.cfg.xml").setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP).buildProcessEngine();
+    DbSqlSessionFactory dbSqlSessionFactory = (DbSqlSessionFactory) processEngine.getProcessEngineConfiguration().getSessionFactories().get(DbSqlSession.class);
+    SqlSessionFactory sqlSessionFactory = dbSqlSessionFactory.getSqlSessionFactory();
+    SqlSession sqlSession = sqlSessionFactory.openSession();
+      compareVersionOfSchema_ProcessEngine(sqlSession);
+  }
+
+  public void testAutoObtainedVersionMatchInPostgres() {
+    ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/postgre.notables.activiti.cfg.xml").setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP).buildProcessEngine();
+    DbSqlSessionFactory dbSqlSessionFactory = (DbSqlSessionFactory) processEngine.getProcessEngineConfiguration().getSessionFactories().get(DbSqlSession.class);
+    SqlSessionFactory sqlSessionFactory = dbSqlSessionFactory.getSqlSessionFactory();
+    SqlSession sqlSession = sqlSessionFactory.openSession();
+      compareVersionOfSchema_ProcessEngine(sqlSession);
+  }
+
+  private void compareVersionOfSchema_ProcessEngine(SqlSession sqlSession) {
+    try {
+      Object schemaVersion = sqlSession.selectOne("selectDbSchemaVersion");
+      if (schemaVersion instanceof String) {
+        assertThat(schemaVersion).isEqualTo(ProcessEngine.VERSION);
+      }
+    } finally {
+      sqlSession.close();
+    }
+  }
+
 }

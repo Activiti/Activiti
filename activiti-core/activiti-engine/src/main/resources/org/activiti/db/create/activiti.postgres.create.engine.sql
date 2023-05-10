@@ -5,11 +5,17 @@ create table ACT_GE_PROPERTY (
     primary key (NAME_)
 );
 
-insert into ACT_GE_PROPERTY
-values ('schema.version', '7.1.0-M6', 1);
+do $$
+declare act_version varchar(300);
+begin
+act_version := '';
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(7.1.0-M6)', 1);
+values ('schema.version', act_version, 1);
+
+insert into ACT_GE_PROPERTY
+values ('schema.history', concat('create(', act_version, ')'), 1);
+end $$;
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
