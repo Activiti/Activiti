@@ -29,7 +29,7 @@ public class EndEventTestJavaDelegate implements JavaDelegate {
   public void execute(DelegateExecution execution) {
     timesCalled++;
     try {
-      Thread.sleep(3000L);
+      Thread.sleep(1000L);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }

@@ -134,7 +134,7 @@ public class MessageIntermediateEventTest extends PluggableActivitiTestCase {
 
     assertThat(managementService.createJobQuery().messages().count()).isEqualTo(1);
 
-    waitForJobExecutorToProcessAllJobs(8000L, 200L);
+    waitForJobExecutorToProcessAllJobs(8000L);
     assertThat(createEventSubscriptionQuery().count()).isEqualTo(0);
     assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
     assertThat(managementService.createJobQuery().count()).isEqualTo(0);

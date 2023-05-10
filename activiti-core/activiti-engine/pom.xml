@@ -163,6 +163,10 @@
       <artifactId>hibernate-core</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

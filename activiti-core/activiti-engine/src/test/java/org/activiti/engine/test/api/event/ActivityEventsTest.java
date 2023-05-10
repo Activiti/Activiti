@@ -486,7 +486,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     Calendar tomorrow = Calendar.getInstance();
     tomorrow.add(Calendar.DAY_OF_YEAR, 1);
     processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
-    waitForJobExecutorToProcessAllJobs(2000, 1000);
+    waitForJobExecutorToProcessAllJobs(2000);
 
     // Check timeout has been dispatched
     assertThat(listener.getEventsReceived()).hasSize(1);
@@ -506,7 +506,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     timeToFire.add(Calendar.HOUR, 2);
     timeToFire.add(Calendar.SECOND, 5);
     processEngineConfiguration.getClock().setCurrentTime(timeToFire.getTime());
-    waitForJobExecutorToProcessAllJobs(2000, 200);
+    waitForJobExecutorToProcessAllJobs(2000);
 
     // Check timeout-events have been dispatched
     assertThat(listener.getEventsReceived()).hasSize(4);
@@ -533,7 +533,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     timeToFire.add(Calendar.HOUR, 2);
     timeToFire.add(Calendar.MINUTE, 5);
     processEngineConfiguration.getClock().setCurrentTime(timeToFire.getTime());
-    waitForJobExecutorToProcessAllJobs(5000, 500);
+    waitForJobExecutorToProcessAllJobs(5000);
 
     // Check timeout-events have been dispatched
     assertThat(listener.getEventsReceived())

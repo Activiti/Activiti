@@ -103,7 +103,7 @@ public class ServiceTaskVariablesTest extends PluggableActivitiTestCase {
     // in this test, only the third service task is async
 
     runtimeService.startProcessInstanceByKey("process");
-    waitForJobExecutorToProcessAllJobs(10000, 500);
+    waitForJobExecutorToProcessAllJobs(10000);
 
     synchronized (ServiceTaskVariablesTest.class) {
       assertThat(isOkInDelegate2).isTrue();

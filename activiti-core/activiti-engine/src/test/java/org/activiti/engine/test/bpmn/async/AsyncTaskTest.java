@@ -50,7 +50,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     // the service was not invoked:
     assertThat(INVOCATION).isFalse();
 
-    waitForJobExecutorToProcessAllJobs(5000L, 100L);
+    waitForJobExecutorToProcessAllJobs(5000L);
 
     // the service was invoked
     assertThat(INVOCATION).isTrue();
@@ -65,7 +65,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     // the listener was not yet invoked:
     assertThat(runtimeService.getVariable(pid, "listener")).isNull();
 
-    waitForJobExecutorToProcessAllJobs(5000L, 100L);
+    waitForJobExecutorToProcessAllJobs(5000L);
 
     assertThat(managementService.createJobQuery().count()).isEqualTo(0);
   }
@@ -80,7 +80,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     // the service was not invoked:
     assertThat(INVOCATION).isFalse();
 
-    waitForJobExecutorToProcessAllJobs(5000L, 100L);
+    waitForJobExecutorToProcessAllJobs(5000L);
 
     // the service was invoked
     assertThat(INVOCATION).isTrue();
@@ -98,7 +98,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     // the service was not invoked:
     assertThat(INVOCATION).isFalse();
 
-    waitForJobExecutorToProcessAllJobs(5000L, 100L);
+    waitForJobExecutorToProcessAllJobs(5000L);
 
     // the service was invoked
     assertThat(INVOCATION).isTrue();
@@ -143,7 +143,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     assertThat(managementService.createJobQuery().count()).isEqualTo(2);
 
     // let 'max-retires' on the message be reached
-    waitForJobExecutorToProcessAllJobs(5000L, 100L);
+    waitForJobExecutorToProcessAllJobs(5000L);
 
     // the service failed: the execution is still sitting in the service
     // task:
@@ -157,7 +157,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
 
     // now the timer triggers:
     Context.getProcessEngineConfiguration().getClock().setCurrentTime(new Date(System.currentTimeMillis() + 10000));
-    waitForJobExecutorToProcessAllJobs(5000L, 100L);
+    waitForJobExecutorToProcessAllJobs(5000L);
 
     // and we are done:
     assertThat(runtimeService.createExecutionQuery().singleResult()).isNull();
@@ -177,7 +177,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     // the service was not invoked:
     assertThat(INVOCATION).isFalse();
 
-    waitForJobExecutorToProcessAllJobs(5000L, 200L);
+    waitForJobExecutorToProcessAllJobs(5000L);
 
     // the service was invoked
     assertThat(INVOCATION).isTrue();
@@ -193,7 +193,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
 
     assertThat(managementService.createJobQuery().count()).isEqualTo(1);
 
-    waitForJobExecutorToProcessAllJobs(5000L, 100L);
+    waitForJobExecutorToProcessAllJobs(5000L);
 
     // both the timer and the message are cancelled
     assertThat(managementService.createJobQuery().count()).isEqualTo(0);
@@ -235,7 +235,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     Object value = runtimeService.getVariable(processInstance.getId(), "variableSetInExecutionListener");
     assertThat(value).isNull();
 
-    waitForJobExecutorToProcessAllJobs(2000L, 200L);
+    waitForJobExecutorToProcessAllJobs(2000L);
 
     // the job is done
     assertThat(managementService.createJobQuery().count()).isEqualTo(0);
@@ -272,7 +272,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     }
     assertThat(runtimeService.getVariable(eid, "invoked")).isNull();
 
-    waitForJobExecutorToProcessAllJobs(5000L, 100L);
+    waitForJobExecutorToProcessAllJobs(5000L);
 
     // and the job is done
     assertThat(managementService.createJobQuery().count()).isEqualTo(0);
@@ -291,7 +291,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     // now there should be one job in the database:
     assertThat(managementService.createJobQuery().count()).isEqualTo(1);
 
-    waitForJobExecutorToProcessAllJobs(20000L, 250L);
+    waitForJobExecutorToProcessAllJobs(20000L);
 
     assertThat(managementService.createJobQuery().count()).isEqualTo(0);
     assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
@@ -301,7 +301,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
   public void testBasicAsyncCallActivity() {
     runtimeService.startProcessInstanceByKey("myProcess");
     assertThat(managementService.createJobQuery().count()).as("There should be one job available.").isEqualTo(1);
-    waitForJobExecutorToProcessAllJobs(5000L, 250L);
+    waitForJobExecutorToProcessAllJobs(5000L);
     assertThat(managementService.createJobQuery().count()).isEqualTo(0);
   }
 
@@ -318,7 +318,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     // there is no usertask
     assertThat(taskService.createTaskQuery().singleResult()).isNull();
 
-    waitForJobExecutorToProcessAllJobs(5000L, 250L);
+    waitForJobExecutorToProcessAllJobs(5000L);
     // the listener was now invoked:
     assertThat(runtimeService.getVariable(pid, "listener")).isNotNull();
     // the task listener was now invoked:

@@ -76,7 +76,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     // After setting the clock to time '1 hour and 5 seconds', the second
     // timer should fire
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
-    waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    waitForJobExecutorToProcessAllJobs(5000L);
     assertThat(jobQuery.count()).isEqualTo(0L);
 
     // which means that the third task is reached
@@ -123,7 +123,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     // After setting the clock to time '1 hour and 5 seconds', the second
     // timer should fire
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
-    waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    waitForJobExecutorToProcessAllJobs(5000L);
     assertThat(jobQuery.count()).isEqualTo(0L);
 
     // start execution listener is not executed
@@ -264,7 +264,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
     // just wait for 2 seconds to run any job if it's the case
     try {
-      waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000, 200);
+      waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000);
     } catch (Exception ex) {
       //expected exception because the boundary timer event created a timer job to be executed after 10 minutes
     }
@@ -284,7 +284,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     processEngineConfiguration.getClock().setCurrentTime(currentTime);
 
     try {
-      waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000, 200);
+      waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000);
     } catch (Exception ex) {
       //expected exception because the boundary timer event created a timer job to be executed after 10 minutes
     }
@@ -301,7 +301,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     processEngineConfiguration.getClock().setCurrentTime(currentTime);
 
     try {
-      waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000, 200);
+      waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000);
     } catch (Exception ex) {
       ex.getCause();
       //expected exception because a new job is prepared
@@ -330,7 +330,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
     // just wait for 2 seconds to run any job if it's the case
     try {
-      waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000, 200);
+      waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000);
     } catch (Exception ex) {
       //expected exception because the boundary timer event created a timer job to be executed after 10 minutes
     }
@@ -348,7 +348,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     processEngineConfiguration.getClock().setCurrentTime(currentTime);
 
     try {
-      waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000, 200);
+      waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000);
     } catch (Exception ex) {
       ex.getCause();
       //expected exception because a new job is prepared

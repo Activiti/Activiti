@@ -25,8 +25,8 @@
         <![CDATA[
           println ""
           println "[A] ----> ScriptA starting"
-          println "\tsleeping for 6 sec..."
-          Thread.sleep(6000)
+          println "\tsleeping for 1 sec..."
+          Thread.sleep(1000)
           println "done."
           println "AAAAAAAAAAAAAAAAAAAA"
           println "[A] ----> ScriptA ending"]]>
@@ -42,8 +42,8 @@
           <![CDATA[
           println ""
           println "[B] ----> ScriptB starting"
-          println "\tsleeping for 6 sec..."
-          Thread.sleep(6000)
+          println "\tsleeping for 1 sec..."
+          Thread.sleep(1000)
           println "BBBBBBBBBBBBBBBBBBBBBB"
           println "[B] ----> ScriptB ending"]]>
       </script>

@@ -38,7 +38,7 @@ public class ExclusiveTaskTest extends PluggableActivitiTestCase {
     assertThat(job).isNotNull();
     assertThat(((JobEntity) job).isExclusive()).isFalse();
 
-    waitForJobExecutorToProcessAllJobs(6000L, 100L);
+    waitForJobExecutorToProcessAllJobs(6000L);
 
     // all the jobs are done
     assertThat(managementService.createJobQuery().count()).isEqualTo(0);
@@ -53,7 +53,7 @@ public class ExclusiveTaskTest extends PluggableActivitiTestCase {
     assertThat(job).isNotNull();
     assertThat(((JobEntity) job).isExclusive()).isTrue();
 
-    waitForJobExecutorToProcessAllJobs(6000L, 100L);
+    waitForJobExecutorToProcessAllJobs(6000L);
 
     // all the jobs are done
     assertThat(managementService.createJobQuery().count()).isEqualTo(0);
@@ -66,7 +66,7 @@ public class ExclusiveTaskTest extends PluggableActivitiTestCase {
     // now there should be 3 exclusive jobs in the database:
     assertThat(managementService.createJobQuery().count()).isEqualTo(3);
 
-    waitForJobExecutorToProcessAllJobs(20000L, 400L);
+    waitForJobExecutorToProcessAllJobs(20000L);
 
     // all the jobs are done
     assertThat(managementService.createJobQuery().count()).isEqualTo(0);

@@ -156,7 +156,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     listener.clearEventsReceived();
 
     // no timer jobs will be fired
-    waitForJobExecutorToProcessAllJobs(2000, 200);
+    waitForJobExecutorToProcessAllJobs(2000);
     assertThat(listener.getEventsReceived()).hasSize(0);
     assertThat(managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(1);
     Job firstTimerInstance = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
@@ -166,7 +166,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     testClock.setCurrentTime(nowCalendar.getTime());
 
     // the timer job will be fired for the first time now
-    waitForJobExecutorToProcessAllJobs(2000, 200);
+    waitForJobExecutorToProcessAllJobs(2000);
 
     // a new timer should be created with the repeat
     assertThat(managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(1);
@@ -185,13 +185,13 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     testClock.setCurrentTime(nowCalendar.getTime());
 
     // the second timer job will be fired and no jobs should be remaining
-    waitForJobExecutorToProcessAllJobs(2000, 200);
+    waitForJobExecutorToProcessAllJobs(2000);
     assertThat(managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
 
     nowCalendar.add(Calendar.HOUR, 1);
     nowCalendar.add(Calendar.MINUTE, 5);
     testClock.setCurrentTime(nowCalendar.getTime());
-    waitForJobExecutorToProcessAllJobs(2000, 200);
+    waitForJobExecutorToProcessAllJobs(2000);
 
     assertThat(managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
 
@@ -296,7 +296,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     Calendar tomorrow = Calendar.getInstance();
     tomorrow.add(Calendar.DAY_OF_YEAR, 1);
     processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
-    waitForJobExecutorToProcessAllJobs(2000, 100);
+    waitForJobExecutorToProcessAllJobs(2000);
 
     // Check Timer fired event has been dispatched
     assertThat(listener.getEventsReceived()).hasSize(6);
@@ -326,7 +326,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     Calendar tomorrow = Calendar.getInstance();
     tomorrow.add(Calendar.DAY_OF_YEAR, 1);
     processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
-    waitForJobExecutorToProcessAllJobs(2000, 100);
+    waitForJobExecutorToProcessAllJobs(2000);
 
     checkEventCount(1, ActivitiEventType.TIMER_SCHEDULED);
     checkEventCount(0, ActivitiEventType.JOB_CANCELED);
@@ -424,7 +424,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     Calendar later = Calendar.getInstance();
     later.add(Calendar.YEAR, 1);
     processEngineConfiguration.getClock().setCurrentTime(later.getTime());
-    waitForJobExecutorToProcessAllJobs(2000, 100);
+    waitForJobExecutorToProcessAllJobs(2000);
 
     // Process Cancelled event should not be sent for the subprocess
     List<ActivitiEvent> eventsReceived = activitiEventListener.getEventsReceived();

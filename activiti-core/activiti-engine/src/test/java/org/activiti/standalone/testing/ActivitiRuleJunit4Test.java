@@ -68,7 +68,7 @@ public class ActivitiRuleJunit4Test {
     // now there should be one job in the database:
     assertThat(managementService.createJobQuery().count()).isEqualTo(1);
 
-    JobTestHelper.waitForJobExecutorToProcessAllJobs(activitiRule, 5000L, 500L);
+    JobTestHelper.waitForJobExecutorToProcessAllJobs(activitiRule, 5000L);
 
     // the job is done
     assertThat(managementService.createJobQuery().count()).isEqualTo(0);

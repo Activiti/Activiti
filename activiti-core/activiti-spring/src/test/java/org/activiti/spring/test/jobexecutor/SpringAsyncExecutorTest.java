@@ -16,10 +16,6 @@
 package org.activiti.spring.test.jobexecutor;
 
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -27,12 +23,19 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.spring.impl.test.CleanTestExecutionListener;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
+import org.awaitility.Awaitility;
+import org.awaitility.core.ConditionTimeoutException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  */
@@ -51,7 +54,7 @@ public class SpringAsyncExecutorTest extends SpringActivitiTestCase {
   protected TaskService taskService;
 
   @Test
-  public void testHappyJobExecutorPath() throws Exception {
+  public void testHappyJobExecutorPath() {
 
     ProcessInstance instance = runtimeService.startProcessInstanceByKey("process1");
     assertThat(instance).isNotNull();
@@ -62,31 +65,26 @@ public class SpringAsyncExecutorTest extends SpringActivitiTestCase {
   }
 
   @Test
-  public void testRollbackJobExecutorPath() throws Exception {
+  public void testRollbackJobExecutorPath() {
 
     ProcessInstance instance = runtimeService.startProcessInstanceByKey("errorProcess1");
     assertThat(instance).isNotNull();
-    waitForTasksToExpire();
+      try {
+          waitForTasksToExpire();
+      } catch (ConditionTimeoutException cte) {
+          // expected exception
+      }
 
     List<Task> activeTasks = taskService.createTaskQuery().processInstanceId(instance.getId()).list();
     assertThat(activeTasks.size() == 1).isTrue();
   }
 
-  private void waitForTasksToExpire() throws Exception {
-    boolean finished = false;
-    int nrOfSleeps = 0;
-    while (!finished) {
-      long jobCount = managementService.createJobQuery().count();
-      long timerCount = managementService.createTimerJobQuery().count();
-      if (jobCount == 0 && timerCount == 0) {
-        finished = true;
-      } else if (nrOfSleeps < 20){
-        nrOfSleeps++;
-        Thread.sleep(500L);
-      } else {
-        finished = true;
-      }
-    }
+  private void waitForTasksToExpire() {
+    Awaitility.await().atMost(4, TimeUnit.SECONDS).until(this::jobsFinished);
+  }
+
+  private boolean jobsFinished() {
+    return managementService.createJobQuery().count() == 0 && managementService.createTimerJobQuery().count() == 0;
   }
 
 }

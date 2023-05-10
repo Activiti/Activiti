@@ -24,8 +24,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
 import javax.sql.DataSource;
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.multitenant.ExecutorPerTenantAsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.multitenant.SharedExecutorServiceAsyncExecutor;
 import org.activiti.engine.impl.cfg.multitenant.MultiSchemaMultiTenantProcessEngineConfiguration;
@@ -36,6 +38,7 @@ import org.h2.jdbcx.JdbcDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import static org.awaitility.Awaitility.await;
 
 /**
 
@@ -83,11 +86,14 @@ public class MultiTenantProcessEngineTest {
 
     config.setAsyncExecutorActivate(true);
 
+      AsyncExecutor asyncExecutor;
     if (sharedExecutor) {
-      config.setAsyncExecutor(new SharedExecutorServiceAsyncExecutor(tenantInfoHolder));
+        asyncExecutor = new SharedExecutorServiceAsyncExecutor(tenantInfoHolder);
     } else {
-      config.setAsyncExecutor(new ExecutorPerTenantAsyncExecutor(tenantInfoHolder));
+        asyncExecutor = new ExecutorPerTenantAsyncExecutor(tenantInfoHolder);
     }
+      asyncExecutor.setDefaultTimerJobAcquireWaitTimeInMillis(500);
+      config.setAsyncExecutor(asyncExecutor);
 
     config.registerTenant("alfresco", createDataSource("jdbc:h2:mem:activiti-mt-alfresco;DB_CLOSE_DELAY=1000", "sa", ""));
     config.registerTenant("acme", createDataSource("jdbc:h2:mem:activiti-mt-acme;DB_CLOSE_DELAY=1000", "sa", ""));
@@ -145,7 +151,7 @@ public class MultiTenantProcessEngineTest {
     assertData("clark", 6, 2);
 
     moveClockToGetTimerFired();
-    await().atMost(15, TimeUnit.SECONDS).untilAsserted(() -> {
+    await().atMost(1L, TimeUnit.SECONDS).untilAsserted(() -> {
 
         assertData("joram", 9, 0);
         assertData("raphael", 2, 0);

@@ -50,8 +50,8 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
 
         // After setting the clock to time '50 minutes and 5 seconds', the second timer should fire
         processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
-        waitForJobExecutorToProcessAllJobs(5000L,
-                                           200L);
+        waitForJobExecutorToProcessAllJobs(5000L
+        );
 
         List<ProcessInstance> pi = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample").list();
         assertThat(pi).hasSize(1);
@@ -66,8 +66,8 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
         assertThat(jobQuery.count()).isEqualTo(1);
 
         processEngineConfiguration.getClock().setCurrentTime(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("15/11/2036 11:12:30"));
-        waitForJobExecutorToProcessAllJobs(5000L,
-                                           200L);
+        waitForJobExecutorToProcessAllJobs(5000L
+        );
 
         List<ProcessInstance> pi = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample").list();
         assertThat(pi).hasSize(1);
@@ -89,8 +89,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
 
         moveByMinutes(5);
         waitForJobExecutorOnCondition(10000,
-                                      500,
-                                      new Callable<Boolean>() {
+            new Callable<Boolean>() {
                                           public Boolean call() throws Exception {
                                               return 1 == piq.count();
                                           }
@@ -100,8 +99,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
 
         moveByMinutes(5);
         waitForJobExecutorOnCondition(10000,
-                                      500,
-                                      new Callable<Boolean>() {
+            new Callable<Boolean>() {
                                           public Boolean call() throws Exception {
                                               return 2 == piq.count();
                                           }
@@ -144,8 +142,8 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
         assertThat(jobQuery.count()).isEqualTo(1);
 
         processEngineConfiguration.getClock().setCurrentTime(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("15/11/2036 11:12:30"));
-        waitForJobExecutorToProcessAllJobs(5000L,
-                                           200L);
+        waitForJobExecutorToProcessAllJobs(5000L
+        );
 
         List<ProcessInstance> pi = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample").list();
         assertThat(pi).hasSize(1);
@@ -172,8 +170,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
 
         moveByMinutes(5);
         waitForJobExecutorOnCondition(10000,
-                                      500,
-                                      new Callable<Boolean>() {
+            new Callable<Boolean>() {
                                           public Boolean call() throws Exception {
                                               // we check that correct version was started
                                               ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample").singleResult();

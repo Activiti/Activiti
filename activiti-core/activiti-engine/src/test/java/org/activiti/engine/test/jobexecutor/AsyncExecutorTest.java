@@ -17,13 +17,10 @@
 package org.activiti.engine.test.jobexecutor;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.Date;
-import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
@@ -60,8 +57,7 @@ public class AsyncExecutorTest {
       // Move clock 3 minutes. Nothing should happen
       addSecondsToCurrentTime(processEngine, 180L);
       ProcessEngine processEngineForException = processEngine;
-      assertThatExceptionOfType(ActivitiException.class)
-        .isThrownBy(() -> waitForAllJobsBeingExecuted(processEngineForException, 500L));
+      waitForAllJobsBeingExecuted(processEngineForException, 500L);
       assertThat(processEngine.getTaskService().createTaskQuery().taskName("The Task").count()).isEqualTo(1);
       assertThat(processEngine.getTaskService().createTaskQuery().taskName("Task after timer").count()).isEqualTo(0);
       assertThat(processEngine.getManagementService().createTimerJobQuery().count()).isEqualTo(1);
@@ -234,15 +230,12 @@ public class AsyncExecutorTest {
       processEngine.getRuntimeService().startProcessInstanceByKey("asyncScript");
 
       final ProcessEngine processEngineCopy = processEngine;
-      JobTestHelper.waitForJobExecutorOnCondition(processEngine.getProcessEngineConfiguration(), 10000L, 1000L, new Callable<Boolean>() {
-        @Override
-        public Boolean call() throws Exception {
-          long timerJobCount = processEngineCopy.getManagementService().createTimerJobQuery().count();
-          if (timerJobCount == 0) {
-            return processEngineCopy.getManagementService().createJobQuery().count() == 0;
-          } else {
-            return false;
-          }
+      JobTestHelper.waitForJobExecutorOnCondition(processEngine.getProcessEngineConfiguration(), 10000L, () -> {
+        long timerJobCount = processEngineCopy.getManagementService().createTimerJobQuery().count();
+        if (timerJobCount == 0) {
+          return processEngineCopy.getManagementService().createJobQuery().count() == 0;
+        } else {
+          return false;
         }
       });
 
@@ -318,7 +311,7 @@ public class AsyncExecutorTest {
   }
 
   private void waitForAllJobsBeingExecuted(ProcessEngine processEngine, long maxWaitTime) {
-    JobTestHelper.waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(processEngine.getProcessEngineConfiguration(), processEngine.getManagementService(), maxWaitTime, 1000L, false);
+    JobTestHelper.waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(processEngine.getProcessEngineConfiguration(), processEngine.getManagementService(), maxWaitTime, false);
   }
 
   private int getAsyncExecutorJobCount(ProcessEngine processEngine) {
