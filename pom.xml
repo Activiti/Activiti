@@ -540,7 +540,7 @@ limitations under the License.
           <optimize>true</optimize>
           <compilerArgs>
             <arg>-parameters</arg>
-          </compilerArgs>          
+          </compilerArgs>
         </configuration>
       </plugin>
       <plugin>
