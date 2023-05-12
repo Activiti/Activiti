@@ -538,6 +538,9 @@ limitations under the License.
           <showDeprecation>true</showDeprecation>
           <showWarnings>true</showWarnings>
           <optimize>true</optimize>
+          <compilerArgs>
+            <arg>-parameters</arg>
+          </compilerArgs>          
         </configuration>
       </plugin>
       <plugin>
