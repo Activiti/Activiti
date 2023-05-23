@@ -39,7 +39,7 @@ public class NullPropertiesTest {
 	public void tesNullProperties() {
 		// create our factory which uses our customized builder
 		System.setProperty("jakarta.el.nullProperties", "true");
-		ExpressionFactory f = new ExpressionFactoryImpl(System.getProperties());
+        ExpressionFactory f = new ExpressionFactoryImpl(System.getProperties());
 
 		// create our context
 		ELContext context = new SimpleContext();
