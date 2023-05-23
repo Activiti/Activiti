@@ -17,7 +17,6 @@
 
 package org.activiti.engine.impl.el;
 
-import com.sun.el.ExpressionFactoryImpl;
 import jakarta.el.ArrayELResolver;
 import jakarta.el.BeanELResolver;
 import jakarta.el.CompositeELResolver;
@@ -35,6 +34,7 @@ import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.core.el.ELContextBuilder;
 import org.activiti.core.el.ELResolverReflectionBlockerDecorator;
 import org.activiti.core.el.ReadOnlyMapELResolver;
+import org.activiti.core.el.juel.ExpressionFactoryImpl;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;

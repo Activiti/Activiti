@@ -95,7 +95,7 @@ public class JuelResolverTest {
         assertThatExceptionOfType(PropertyNotFoundException.class)
             .as("Referencing an unknown variable")
             .isThrownBy(() -> expressionResolver.resolveExpression(expressionString, availableVariables, Object.class))
-            .withMessage("ELResolver cannot handle a null base Object with identifier 'nameeee'");
+            .withMessage("Cannot resolve identifier 'nameeee'");
     }
 
     @Test
@@ -121,13 +121,13 @@ public class JuelResolverTest {
         assertThatExceptionOfType(ELException.class)
             .as("Referencing an unknown function")
             .isThrownBy(() -> expressionResolver.resolveExpression(expressionString, Collections.emptyMap(), Date.class))
-            .withMessage("Function 'current' not found");
+            .withMessage("Could not resolve function 'current'");
     }
 
     @Test
     public void should_returnList_when_expressionIsListFunction() {
         //given
-        String expressionString = "${[1,'item',3]}";
+        String expressionString = "${list(1,'item',3)}";
         ExpressionResolver expressionResolver = new JuelExpressionResolver();
 
         //when

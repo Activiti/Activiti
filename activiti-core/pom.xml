@@ -95,11 +95,6 @@
         <version>${jakarta.el-api.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.glassfish.expressly</groupId>
-        <artifactId>expressly</artifactId>
-        <version>${expressly.version}</version>
-      </dependency>
-      <dependency>
         <groupId>com.github.h-thurow</groupId>
         <artifactId>simple-jndi</artifactId>
         <version>${simple-jndi.version}</version>

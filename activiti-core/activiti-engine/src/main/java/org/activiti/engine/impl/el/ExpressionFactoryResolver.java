@@ -17,8 +17,8 @@
 
 package org.activiti.engine.impl.el;
 
-import com.sun.el.ExpressionFactoryImpl;
 import jakarta.el.ExpressionFactory;
+import org.activiti.core.el.juel.ExpressionFactoryImpl;
 
 
 /**

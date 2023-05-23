@@ -10,9 +10,6 @@
   <artifactId>activiti-core-common-dependencies</artifactId>
   <packaging>pom</packaging>
   <name>Activiti :: Core :: Common :: Dependencies BOM (Bill Of Materials)</name>
-  <properties>
-    <juel.version>2.2.7</juel.version>
-  </properties>
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -81,14 +78,14 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-juel-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
         <groupId>jakarta.el</groupId>
         <artifactId>jakarta.el-api</artifactId>
         <version>${jakarta.el-api.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.glassfish.expressly</groupId>
-        <artifactId>expressly</artifactId>
-        <version>${expressly.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

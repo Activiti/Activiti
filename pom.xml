@@ -225,7 +225,6 @@
     <spring-boot.version>3.0.6</spring-boot.version>
     <h2.version>1.4.200</h2.version>
     <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
-    <expressly.version>5.0.0</expressly.version>
     <versions-maven-plugin.version>2.11.0</versions-maven-plugin.version>
 
     <!-- configuration properties for tests -->
@@ -628,13 +627,13 @@ limitations under the License.
                          properly exclude everything. There were no real issues with this so far as mostly the APIs
                          are just duplicates of the exactly same sources. In ideal world, this get eventually fixed,
                          but it may very well not be worth the effort. -->
-                    <ignoreClass>javax.servlet.*</ignoreClass>
-                    <!-- Classes in javax.annotation package are just marker annotations used to aid the programmers.
+                    <ignoreClass>jakarta.servlet.*</ignoreClass>
+                    <!-- Classes in jakarta.annotation package are just marker annotations used to aid the programmers.
                          These annotations do not influence the actual behavior of the code, so it's reasonable to
                          ignore them. Following dependencies contain these classes: 'com.google.code.findbugs:jsr305'
                          and 'com.google.code.findbugs:annotations'. -->
-                    <ignoreClass>javax.annotation.*</ignoreClass>
-                    <!-- Exactly the same case as for above 'javax.annotation.*' classes. Following dependencies contain
+                    <ignoreClass>jakarta.annotation.*</ignoreClass>
+                    <!-- Exactly the same case as for above 'jakarta.annotation.*' classes. Following dependencies contain
                          these classes: 'net.jcip:jcip-annotations' and 'com.google.code.findbugs:annotations'. -->
                     <ignoreClass>net.jcip.annotations.*</ignoreClass>
                   </ignoreClasses>
