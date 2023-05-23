@@ -34,7 +34,6 @@ import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.core.el.ELContextBuilder;
 import org.activiti.core.el.ELResolverReflectionBlockerDecorator;
 import org.activiti.core.el.ReadOnlyMapELResolver;
-import org.activiti.core.el.juel.ExpressionFactoryImpl;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
@@ -76,7 +75,7 @@ public class ExpressionManager {
         // Use the ExpressionFactoryImpl in activiti build in version of juel,
         // with parametrised method expressions enabled
         if (initFactory) {
-            expressionFactory = new ExpressionFactoryImpl();
+            expressionFactory = ExpressionFactory.newInstance();
         }
         this.beans = beans;
     }
