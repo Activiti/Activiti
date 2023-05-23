@@ -48,13 +48,12 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.el.CustomMapperJsonNodeELResolver;
 import org.activiti.engine.impl.el.DynamicBeanPropertyELResolver;
-import org.activiti.engine.impl.el.ExpressionFactoryResolver;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 /**
  * ScriptEngine that used JUEL for script evaluation and compilation (JSR-223).
  *
- * Uses EL 1.1 if available, to resolve expressions. Otherwise it reverts to EL 1.0, using {@link ExpressionFactoryResolver}.
+ * Uses EL 1.1 if available, to resolve expressions. Otherwise it reverts to EL 1.0, using {@link ExpressionFactory}.
  *
 
  */
@@ -66,7 +65,7 @@ public class JuelScriptEngine extends AbstractScriptEngine implements Compilable
   public JuelScriptEngine(ScriptEngineFactory scriptEngineFactory) {
     this.scriptEngineFactory = scriptEngineFactory;
     // Resolve the ExpressionFactory
-    expressionFactory = ExpressionFactoryResolver.resolveExpressionFactory();
+    expressionFactory = ExpressionFactory.newInstance();
   }
 
   public JuelScriptEngine() {
