@@ -21,13 +21,13 @@ import static org.activiti.core.el.CommonELResolversUtil.jsonNodeResolver;
 import static org.activiti.core.el.CommonELResolversUtil.listResolver;
 import static org.activiti.core.el.CommonELResolversUtil.mapResolver;
 
-import com.sun.el.ExpressionFactoryImpl;
 import jakarta.el.ELContext;
 import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.activiti.core.el.juel.ExpressionFactoryImpl;
 
 public class JuelExpressionResolver implements ExpressionResolver {
 

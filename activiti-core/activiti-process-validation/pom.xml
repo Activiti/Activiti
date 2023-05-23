@@ -20,8 +20,8 @@
       <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.glassfish.expressly</groupId>
-      <artifactId>expressly</artifactId>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-juel-impl</artifactId>
     </dependency>
     <dependency>
       <groupId>jakarta.el</groupId>
