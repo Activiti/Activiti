@@ -23,7 +23,6 @@ import jakarta.el.ELException;
 import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
 import java.lang.reflect.Method;
-import org.activiti.core.el.juel.ExpressionFactoryImpl;
 import org.activiti.core.el.juel.util.SimpleContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +38,7 @@ public class VarArgsTest {
 	public void testVarArgs() throws NoSuchMethodException {
 		// create our factory
         // varargs are enabled by default
-		ExpressionFactory f = new ExpressionFactoryImpl(System.getProperties());
+		ExpressionFactory f = ExpressionFactory.newInstance();
 
 		// create our context with function "vararg:format"
 		Method method = String.class.getMethod("format", new Class[]{String.class, Object[].class});

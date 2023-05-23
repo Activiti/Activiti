@@ -142,7 +142,7 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
 	 * is {@link Profile#JEE6} (features may be overridden in <code>el.properties</code>).
 	 */
 	public ExpressionFactoryImpl() {
-		this(Profile.JEE6);
+		this(Profile.JEE6, System.getProperties());
 	}
 
 	/**

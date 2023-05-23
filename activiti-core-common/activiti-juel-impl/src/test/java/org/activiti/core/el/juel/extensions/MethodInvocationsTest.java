@@ -24,7 +24,6 @@ import jakarta.el.CompositeELResolver;
 import jakarta.el.ELContext;
 import jakarta.el.ExpressionFactory;
 import jakarta.el.ValueExpression;
-import org.activiti.core.el.juel.ExpressionFactoryImpl;
 import org.activiti.core.el.juel.util.SimpleContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +39,7 @@ public class MethodInvocationsTest {
 	public void testMethodInvocations() {
 		// create our factory
         // method invocations are enabled by default
-		ExpressionFactory f = new ExpressionFactoryImpl(System.getProperties());
+		ExpressionFactory f = ExpressionFactory.newInstance();
 
 		// create our resolver
 		CompositeELResolver resolver = new CompositeELResolver();
