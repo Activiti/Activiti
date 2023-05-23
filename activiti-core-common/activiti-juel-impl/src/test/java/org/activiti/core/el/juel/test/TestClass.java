@@ -6,7 +6,7 @@ public class TestClass {
 			return 42;
 		}
 	}
-	
+
 	private TestInterface anonymousTestInterface = new TestInterface() {
 		public int fourtyTwo() {
 			return 42;
