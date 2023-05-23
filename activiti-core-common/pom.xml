@@ -44,5 +44,6 @@
     <module>activiti-spring-project</module>
     <module>activiti-common-util</module>
     <module>activiti-expression-language</module>
+    <module>activiti-juel-impl</module>
   </modules>
 </project>

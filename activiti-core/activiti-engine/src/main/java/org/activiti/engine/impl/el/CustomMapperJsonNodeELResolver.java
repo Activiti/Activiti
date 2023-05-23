@@ -15,9 +15,9 @@
  */
 package org.activiti.engine.impl.el;
 
-import javax.el.CompositeELResolver;
-import javax.el.ELResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELResolver;
 import org.activiti.core.el.JsonNodeELResolver;
 import org.activiti.engine.impl.context.Context;
 

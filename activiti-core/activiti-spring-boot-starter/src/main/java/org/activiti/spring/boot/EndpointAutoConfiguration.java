@@ -19,15 +19,15 @@ package org.activiti.spring.boot;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.spring.boot.actuate.endpoint.ProcessEngineEndpoint;
 import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnAvailableEndpoint;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * The idea behind this module is that Spring Security could
  * talk to the org.activiti.engine.IdentityService
  * as required.
  */
-@Configuration
+@AutoConfiguration
 public class EndpointAutoConfiguration {
 
     @Bean

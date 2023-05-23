@@ -21,8 +21,8 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import javax.el.ELContext;
-import javax.el.ELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
 
 /**
  * {@link ELResolverDecorator} that blocks invocations using reflection or native calls.

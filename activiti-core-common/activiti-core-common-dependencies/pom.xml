@@ -10,9 +10,6 @@
   <artifactId>activiti-core-common-dependencies</artifactId>
   <packaging>pom</packaging>
   <name>Activiti :: Core :: Common :: Dependencies BOM (Bill Of Materials)</name>
-  <properties>
-    <juel.version>2.2.7</juel.version>
-  </properties>
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -81,19 +78,14 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>de.odysseus.juel</groupId>
-        <artifactId>juel-api</artifactId>
-        <version>${juel.version}</version>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-juel-impl</artifactId>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>de.odysseus.juel</groupId>
-        <artifactId>juel-impl</artifactId>
-        <version>${juel.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>de.odysseus.juel</groupId>
-        <artifactId>juel-spi</artifactId>
-        <version>${juel.version}</version>
+        <groupId>jakarta.el</groupId>
+        <artifactId>jakarta.el-api</artifactId>
+        <version>${jakarta.el-api.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

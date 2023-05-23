@@ -59,18 +59,19 @@ import org.activiti.validation.ProcessValidatorImpl;
 import org.activiti.validation.validator.ValidatorSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 
-@Configuration
+@AutoConfiguration
 @AutoConfigureAfter(name = {"org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
         "org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration"})
 @EnableConfigurationProperties({ActivitiProperties.class, AsyncExecutorProperties.class})
@@ -85,6 +86,7 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
 
     @Bean
     @ConditionalOnMissingBean
+    @DependsOnDatabaseInitialization
     public SpringProcessEngineConfiguration springProcessEngineConfiguration(
             DataSource dataSource,
             PlatformTransactionManager transactionManager,

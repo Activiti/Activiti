@@ -17,11 +17,11 @@ package org.activiti.common.util.conf;
 
 import org.activiti.common.util.DateFormatterProvider;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@AutoConfiguration
 public class ActivitiCoreCommonUtilAutoConfiguration {
 
     @Bean

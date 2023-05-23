@@ -17,8 +17,8 @@ package org.activiti.core.el;
 
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
-import javax.el.ELContext;
-import javax.el.ELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
 
 /**
  * Generic Decorator for {@link ELResolver} implementations.

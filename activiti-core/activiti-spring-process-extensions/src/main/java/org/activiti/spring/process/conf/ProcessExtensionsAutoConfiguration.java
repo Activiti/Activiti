@@ -35,12 +35,12 @@ import org.activiti.spring.process.variable.types.JsonObjectVariableType;
 import org.activiti.spring.process.variable.types.VariableType;
 import org.activiti.spring.resources.DeploymentResourceLoader;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@AutoConfiguration
 @EnableCaching
 public class ProcessExtensionsAutoConfiguration {
 

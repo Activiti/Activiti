@@ -17,16 +17,15 @@ package org.activiti.core.el;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import java.util.Collections;
 import java.util.Map;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ELResolverReflectionBlockerDecoratorTest {
+class ELResolverReflectionBlockerDecoratorTest {
 
     @Test
-    public void should_resolveExpressionCorrectly_when_noReflectionOrNativeMethodsAreUsed() {
+    void should_resolveExpressionCorrectly_when_noReflectionOrNativeMethodsAreUsed() {
         //given
-        Map<String, Object> availableVariables = Collections.singletonMap("name", "jon doe");
+        Map<String, Object> availableVariables = Map.of("name", "jon doe");
         String expressionString = "${name.toString()}";
         ExpressionResolver expressionResolver = new JuelExpressionResolver();
 
@@ -38,10 +37,10 @@ public class ELResolverReflectionBlockerDecoratorTest {
     }
 
     @Test
-    public void should_throwException_when_nativeMethodIsUsed() {
+    void should_throwException_when_nativeMethodIsUsed() {
 
         //given
-        Map<String, Object> availableVariables = Collections.singletonMap("name", "jon doe");
+        Map<String, Object> availableVariables = Map.of("name", "jon doe");
         String expressionString = "${name.getClass().getName()}";
         ExpressionResolver expressionResolver = new JuelExpressionResolver();
 
@@ -53,10 +52,10 @@ public class ELResolverReflectionBlockerDecoratorTest {
     }
 
     @Test
-    public void should_throwException_when_reflectionIsUsed() {
+    void should_throwException_when_reflectionIsUsed() {
 
         //given
-        Map<String, Object> availableVariables = Collections.singletonMap("class", String.class);
+        Map<String, Object> availableVariables = Map.of("class", String.class);
         String expressionString = "${class.forName(\"java.lang.Runtime\").getMethods()[6].invoke()}";
         ExpressionResolver expressionResolver = new JuelExpressionResolver();
 

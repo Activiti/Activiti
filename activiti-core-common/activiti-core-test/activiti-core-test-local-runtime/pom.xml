@@ -11,6 +11,11 @@
   <name>Activiti :: Test Local Runtime</name>
   <dependencies>
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-core-test-assertions</artifactId>
     </dependency>

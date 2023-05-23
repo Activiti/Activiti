@@ -16,12 +16,12 @@
 package org.activiti.spring.resources.conf;
 
 import org.activiti.spring.resources.ResourceFinder;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
-@Configuration
+@AutoConfiguration
 public class ResourceFinderAutoConfiguration {
 
     @Bean

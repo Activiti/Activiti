@@ -16,13 +16,11 @@
 
 package org.activiti.engine.impl.el;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
-
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ELResolver;
-
 import org.activiti.engine.impl.util.ReflectUtil;
 
 /**

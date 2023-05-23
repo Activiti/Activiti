@@ -33,10 +33,10 @@ import org.activiti.runtime.api.impl.VariableNameValidator;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@AutoConfiguration
 public class CommonRuntimeAutoConfiguration {
 
     @Bean

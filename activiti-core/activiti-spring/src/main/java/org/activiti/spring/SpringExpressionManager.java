@@ -18,7 +18,7 @@
 package org.activiti.spring;
 
 import java.util.Map;
-import javax.el.CompositeELResolver;
+import jakarta.el.CompositeELResolver;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.core.el.ReadOnlyMapELResolver;
 import org.springframework.context.ApplicationContext;

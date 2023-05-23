@@ -19,14 +19,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+
+import jakarta.el.ELException;
+import jakarta.el.PropertyNotFoundException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.el.ELException;
-import javax.el.PropertyNotFoundException;
 import org.hamcrest.MatcherAssert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JuelResolverTest {
 
@@ -86,7 +87,7 @@ public class JuelResolverTest {
     public void should_throwException_when_unknownVariableIsReferenced() {
 
         //given
-        Map<String, Object> availableVariables = Collections.singletonMap("name", "jon doe");
+        Map<String, Object> availableVariables = Map.of("name", "jon doe");
         String expressionString = "${nameeee}";
         ExpressionResolver expressionResolver = new JuelExpressionResolver();
 

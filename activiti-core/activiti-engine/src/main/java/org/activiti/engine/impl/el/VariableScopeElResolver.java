@@ -17,12 +17,12 @@
 
 package org.activiti.engine.impl.el;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
 import java.beans.FeatureDescriptor;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import javax.el.ELContext;
-import javax.el.ELResolver;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.variable.AuthenticatedUserELResolver;

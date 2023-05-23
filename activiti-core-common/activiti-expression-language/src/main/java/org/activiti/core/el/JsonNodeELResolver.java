@@ -20,11 +20,11 @@ import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.el.CompositeELResolver;
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.el.PropertyNotWritableException;
+import jakarta.el.CompositeELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.PropertyNotWritableException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -339,22 +339,21 @@ public class JsonNodeELResolver extends ELResolver {
 		if (context == null) {
 			throw new NullPointerException("context is null");
 		}
-		if (base instanceof ObjectNode) {
+		if (base instanceof ObjectNode node) {
 			if (readOnly) {
 				throw new PropertyNotWritableException("resolver is read-only");
 			}
-			ObjectNode node = (ObjectNode) base;
-			if (value instanceof BigDecimal) {
-				node.put(property.toString(), (BigDecimal) value);
+			if (value instanceof BigDecimal decimal) {
+				node.put(property.toString(), decimal);
 
-			} else if (value instanceof Boolean) {
-				node.put(property.toString(), (Boolean) value);
+			} else if (value instanceof Boolean boolean1) {
+				node.put(property.toString(), boolean1);
 
-			} else if (value instanceof Long) {
-				node.put(property.toString(), (Long) value);
+			} else if (value instanceof Long long1) {
+				node.put(property.toString(), long1);
 
-			} else if (value instanceof Double) {
-				node.put(property.toString(), (Double) value);
+			} else if (value instanceof Double double1) {
+				node.put(property.toString(), double1);
 
 			} else if (value != null) {
 				node.put(property.toString(), value.toString());
