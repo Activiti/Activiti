@@ -26,24 +26,24 @@ import org.activiti.core.el.juel.tree.Tree;
 import org.activiti.core.el.juel.tree.impl.Builder;
 
 public abstract class TestCase {
-	protected static final Builder BUILDER = new Builder(Builder.Feature.METHOD_INVOCATIONS);
+    protected static final Builder BUILDER = new Builder(Builder.Feature.METHOD_INVOCATIONS);
 
-	protected static final Tree parse(String expression) {
-		return BUILDER.build(expression);
-	}
+    protected static final Tree parse(String expression) {
+        return BUILDER.build(expression);
+    }
 
 
-	protected static byte[] serialize(Object value) throws Exception {
-		ByteArrayOutputStream bout = new ByteArrayOutputStream();
-		ObjectOutput out = new ObjectOutputStream(bout);
-		out.writeObject(value);
-		out.close();
-		return bout.toByteArray();
-	}
+    protected static byte[] serialize(Object value) throws Exception {
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ObjectOutput out = new ObjectOutputStream(bout);
+        out.writeObject(value);
+        out.close();
+        return bout.toByteArray();
+    }
 
-	protected static Object deserialize(byte[] bytes) throws Exception {
-		ByteArrayInputStream bin = new ByteArrayInputStream(bytes);
-		ObjectInput in = new ObjectInputStream(bin);
-		return in.readObject();
-	}
+    protected static Object deserialize(byte[] bytes) throws Exception {
+        ByteArrayInputStream bin = new ByteArrayInputStream(bytes);
+        ObjectInput in = new ObjectInputStream(bin);
+        return in.readObject();
+    }
 }
