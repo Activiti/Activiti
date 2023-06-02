@@ -55,13 +55,13 @@ jobs:
           echo ${{steps.update-pom-to-next-version.outputs.next-prerelease}} > VERSION
 
       - name: Set preview version
-        if: ${{ github.event_name == 'pull_request' && (contains(github.head_ref, 'preview') || contains(github.event.pull_request.labels.*.name, 'preview')) }}
+        if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'preview') }}
         run: |
           GITHUB_PR_NUMBER=PR-${{ github.event.pull_request.number }}
           echo 0.0.1-${GITHUB_PR_NUMBER}-${GITHUB_RUN_NUMBER}-SNAPSHOT > VERSION
 
       - name: Set VERSION env variable
-        if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && (contains(github.head_ref, 'preview') || contains(github.event.pull_request.labels.*.name, 'preview'))) }}
+        if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'preview')) }}
         run: |
           VERSION=$(cat VERSION)
           echo set VERSION=$VERSION
@@ -82,7 +82,7 @@ jobs:
             echo "command=verify" >> $GITHUB_OUTPUT
           fi
         env:
-          DO_PUSH: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && (contains(github.head_ref, 'preview') || contains(github.event.pull_request.labels.*.name, 'preview'))) }}
+          DO_PUSH: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'preview')) }}
 
       - name: Build and Test with Maven (and maybe Deploy)
         shell: bash
