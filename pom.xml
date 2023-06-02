@@ -189,7 +189,7 @@
     <project.scm.repository>Activiti</project.scm.repository>
     <project.year>2020</project.year>
 
-    <java.release>${java.release}</java.release>
+    <java.release>${java.version}</java.release>
     <java.version>17</java.version>
     <maven.compiler.release>${java.release}</maven.compiler.release>
     <maven.compiler.source>${java.version}</maven.compiler.source>
