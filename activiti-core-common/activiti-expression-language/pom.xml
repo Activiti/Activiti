@@ -17,7 +17,7 @@
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
-      <artifactId>activiti-juel-impl</artifactId>
+      <artifactId>activiti-juel-jakarta</artifactId>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
