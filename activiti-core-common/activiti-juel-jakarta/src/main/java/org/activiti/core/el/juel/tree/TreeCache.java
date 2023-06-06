@@ -24,13 +24,13 @@ package org.activiti.core.el.juel.tree;
  * @author Christoph Beck
  */
 public interface TreeCache {
-	/**
-	 * Lookup tree
-	 */
-	public Tree get(String expression);
+    /**
+     * Lookup tree
+     */
+    public Tree get(String expression);
 
-	/**
-	 * Cache tree
-	 */
-	public void put(String expression, Tree tree);
+    /**
+     * Cache tree
+     */
+    public void put(String expression, Tree tree);
 }

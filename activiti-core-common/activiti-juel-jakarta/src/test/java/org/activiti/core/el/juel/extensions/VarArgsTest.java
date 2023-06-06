@@ -35,23 +35,31 @@ public class VarArgsTest {
     }
 
     @Test
-	public void testVarArgs() throws NoSuchMethodException {
-		// create our factory
+    public void testVarArgs() throws NoSuchMethodException {
+        // create our factory
         // varargs are enabled by default
-		ExpressionFactory f = ExpressionFactory.newInstance();
+        ExpressionFactory f = ExpressionFactory.newInstance();
 
-		// create our context with function "vararg:format"
-		Method method = String.class.getMethod("format", new Class[]{String.class, Object[].class});
-		SimpleContext context = new SimpleContext();
-		context.setFunction("varargs", "format", method);
+        // create our context with function "vararg:format"
+        Method method =
+            String.class.getMethod(
+                    "format",
+                    new Class[] { String.class, Object[].class }
+                );
+        SimpleContext context = new SimpleContext();
+        context.setFunction("varargs", "format", method);
 
-		// our expression we want to evaluate
-		String expression = "${varargs:format('Hey %s','Joe')}";
+        // our expression we want to evaluate
+        String expression = "${varargs:format('Hey %s','Joe')}";
 
-		// let's go...
-		ValueExpression e = f.createValueExpression(context, expression, String.class);
-		assertEquals(e.getValue(context), "Hey Joe"); // --> Hey Joe
-	}
+        // let's go...
+        ValueExpression e = f.createValueExpression(
+            context,
+            expression,
+            String.class
+        );
+        assertEquals(e.getValue(context), "Hey Joe"); // --> Hey Joe
+    }
 
     @Test
     public void testVarArgsDisabled() {
@@ -62,7 +70,10 @@ public class VarArgsTest {
             testVarArgs();
             fail("Varargs should be disabled.");
         } catch (ELException expected) {
-            assertEquals("Cannot coerce 'Joe' of class java.lang.String to class [Ljava.lang.Object; (incompatible type)", expected.getMessage());
+            assertEquals(
+                "Cannot coerce 'Joe' of class java.lang.String to class [Ljava.lang.Object; (incompatible type)",
+                expected.getMessage()
+            );
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

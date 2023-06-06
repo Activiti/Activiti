@@ -28,57 +28,67 @@ import org.activiti.core.el.juel.tree.Bindings;
 import org.junit.jupiter.api.Test;
 
 public class AstCompositeTest extends TestCase {
-	private Bindings bindings = new Bindings(null, null, null);
 
-	AstComposite parseNode(String expression) {
-		return (AstComposite)parse(expression).getRoot();
-	}
+    private Bindings bindings = new Bindings(null, null, null);
 
-	@Test
+    AstComposite parseNode(String expression) {
+        return (AstComposite) parse(expression).getRoot();
+    }
+
+    @Test
     public void testEval() {
-		assertEquals("101", parseNode("${1}0${1}").eval(bindings, null));
-	}
+        assertEquals("101", parseNode("${1}0${1}").eval(bindings, null));
+    }
 
-	@Test
+    @Test
     public void testAppendStructure() {
-		StringBuilder s = new StringBuilder();
-		parseNode("${1}0${1}").appendStructure(s, bindings);
-		assertEquals("${1}0${1}", s.toString());
-	}
+        StringBuilder s = new StringBuilder();
+        parseNode("${1}0${1}").appendStructure(s, bindings);
+        assertEquals("${1}0${1}", s.toString());
+    }
 
-	@Test
+    @Test
     public void testIsLiteralText() {
-		assertFalse(parseNode("${1}0${1}").isLiteralText());
-	}
+        assertFalse(parseNode("${1}0${1}").isLiteralText());
+    }
 
-	@Test
+    @Test
     public void testIsLeftValue() {
-		assertFalse(parseNode("${1}0${1}").isLeftValue());
-	}
+        assertFalse(parseNode("${1}0${1}").isLeftValue());
+    }
 
-	@Test
+    @Test
     public void testGetType() {
-		assertNull(parseNode("${1}0${1}").getType(bindings, null));
-	}
+        assertNull(parseNode("${1}0${1}").getType(bindings, null));
+    }
 
-	@Test
+    @Test
     public void testIsReadOnly() {
-		assertTrue(parseNode("${1}0${1}").isReadOnly(bindings, null));
-	}
+        assertTrue(parseNode("${1}0${1}").isReadOnly(bindings, null));
+    }
 
-	@Test
+    @Test
     public void testSetValue() {
-		try { parseNode("${1}0${1}").setValue(bindings, null, null); fail(); } catch (ELException e) {}
-	}
+        try {
+            parseNode("${1}0${1}").setValue(bindings, null, null);
+            fail();
+        } catch (ELException e) {}
+    }
 
-	@Test
+    @Test
     public void testGetValue() {
-		assertEquals("101", parseNode("${1}0${1}").getValue(bindings, null, null));
-		assertEquals(101l, parseNode("${1}0${1}").getValue(bindings, null, Long.class));
-	}
+        assertEquals(
+            "101",
+            parseNode("${1}0${1}").getValue(bindings, null, null)
+        );
+        assertEquals(
+            101l,
+            parseNode("${1}0${1}").getValue(bindings, null, Long.class)
+        );
+    }
 
-	@Test
+    @Test
     public void testGetValueReference() {
-		assertNull(parseNode("${1}0${1}").getValueReference(bindings, null));
-	}
+        assertNull(parseNode("${1}0${1}").getValueReference(bindings, null));
+    }
 }

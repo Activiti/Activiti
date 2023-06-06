@@ -32,116 +32,129 @@ import java.util.Map;
  * @author Christoph Beck
  */
 public class SimpleContext extends ELContext {
-	static class Functions extends FunctionMapper {
-		Map<String, Method> map = Collections.emptyMap();
 
-		@Override
-		public Method resolveFunction(String prefix, String localName) {
-			return map.get(prefix + ":" + localName);
-		}
+    static class Functions extends FunctionMapper {
 
-		public void setFunction(String prefix, String localName, Method method) {
-			if (map.isEmpty()) {
-				map = new HashMap<String, Method>();
-			}
-			map.put(prefix + ":" + localName, method);
-		}
-	}
+        Map<String, Method> map = Collections.emptyMap();
 
-	static class Variables extends VariableMapper {
-		Map<String, ValueExpression> map = Collections.emptyMap();
+        @Override
+        public Method resolveFunction(String prefix, String localName) {
+            return map.get(prefix + ":" + localName);
+        }
 
-		@Override
-		public ValueExpression resolveVariable(String variable) {
-			return map.get(variable);
-		}
+        public void setFunction(
+            String prefix,
+            String localName,
+            Method method
+        ) {
+            if (map.isEmpty()) {
+                map = new HashMap<String, Method>();
+            }
+            map.put(prefix + ":" + localName, method);
+        }
+    }
 
-		@Override
-		public ValueExpression setVariable(String variable, ValueExpression expression) {
-			if (map.isEmpty()) {
-				map = new HashMap<String, ValueExpression>();
-			}
-			return map.put(variable, expression);
-		}
-	}
+    static class Variables extends VariableMapper {
 
-	private Functions functions;
-	private Variables variables;
-	private ELResolver resolver;
+        Map<String, ValueExpression> map = Collections.emptyMap();
 
-	/**
-	 * Create a context.
-	 */
-	public SimpleContext() {
-		this(null);
-	}
+        @Override
+        public ValueExpression resolveVariable(String variable) {
+            return map.get(variable);
+        }
 
-	/**
-	 * Create a context, use the specified resolver.
-	 */
-	public SimpleContext(ELResolver resolver) {
-		this.resolver = resolver;
-	}
+        @Override
+        public ValueExpression setVariable(
+            String variable,
+            ValueExpression expression
+        ) {
+            if (map.isEmpty()) {
+                map = new HashMap<String, ValueExpression>();
+            }
+            return map.put(variable, expression);
+        }
+    }
 
-	/**
-	 * Define a function.
-	 */
-	public void setFunction(String prefix, String localName, Method method) {
-		if (functions == null) {
-			functions = new Functions();
-		}
-		functions.setFunction(prefix, localName, method);
-	}
+    private Functions functions;
+    private Variables variables;
+    private ELResolver resolver;
 
-	/**
-	 * Define a variable.
-	 */
-	public ValueExpression setVariable(String name, ValueExpression expression) {
-		if (variables == null) {
-			variables = new Variables();
-		}
-		return variables.setVariable(name, expression);
-	}
+    /**
+     * Create a context.
+     */
+    public SimpleContext() {
+        this(null);
+    }
 
-	/**
-	 * Get our function mapper.
-	 */
-	@Override
-	public FunctionMapper getFunctionMapper() {
-		if (functions == null) {
-			functions = new Functions();
-		}
-		return functions;
-	}
+    /**
+     * Create a context, use the specified resolver.
+     */
+    public SimpleContext(ELResolver resolver) {
+        this.resolver = resolver;
+    }
 
-	/**
-	 * Get our variable mapper.
-	 */
-	@Override
-	public VariableMapper getVariableMapper() {
-		if (variables == null) {
-			variables = new Variables();
-		}
-		return variables;
-	}
+    /**
+     * Define a function.
+     */
+    public void setFunction(String prefix, String localName, Method method) {
+        if (functions == null) {
+            functions = new Functions();
+        }
+        functions.setFunction(prefix, localName, method);
+    }
 
-	/**
-	 * Get our resolver. Lazy initialize to a {@link SimpleResolver} if necessary.
-	 */
-	@Override
-	public ELResolver getELResolver() {
-		if (resolver == null) {
-			resolver = new SimpleResolver();
-		}
-		return resolver;
-	}
+    /**
+     * Define a variable.
+     */
+    public ValueExpression setVariable(
+        String name,
+        ValueExpression expression
+    ) {
+        if (variables == null) {
+            variables = new Variables();
+        }
+        return variables.setVariable(name, expression);
+    }
 
-	/**
-	 * Set our resolver.
-	 *
-	 * @param resolver
-	 */
-	public void setELResolver(ELResolver resolver) {
-		this.resolver = resolver;
-	}
+    /**
+     * Get our function mapper.
+     */
+    @Override
+    public FunctionMapper getFunctionMapper() {
+        if (functions == null) {
+            functions = new Functions();
+        }
+        return functions;
+    }
+
+    /**
+     * Get our variable mapper.
+     */
+    @Override
+    public VariableMapper getVariableMapper() {
+        if (variables == null) {
+            variables = new Variables();
+        }
+        return variables;
+    }
+
+    /**
+     * Get our resolver. Lazy initialize to a {@link SimpleResolver} if necessary.
+     */
+    @Override
+    public ELResolver getELResolver() {
+        if (resolver == null) {
+            resolver = new SimpleResolver();
+        }
+        return resolver;
+    }
+
+    /**
+     * Set our resolver.
+     *
+     * @param resolver
+     */
+    public void setELResolver(ELResolver resolver) {
+        this.resolver = resolver;
+    }
 }

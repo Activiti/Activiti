@@ -31,54 +31,56 @@ import org.activiti.core.el.juel.tree.TreeCache;
  * @author Christoph Beck
  */
 public final class Cache implements TreeCache {
-	private final ConcurrentMap<String, Tree> map;
-	private final ConcurrentLinkedQueue<String> queue;
-	private final AtomicInteger size;
-	private final int capacity;
 
-	/**
-	 * Creates a new cache with the specified capacity
-	 * and default concurrency level (16).
-	 *
-	 * @param capacity
-	 *            Cache size. The actual size may exceed it temporarily.
-	 */
-	public Cache(int capacity) {
-		this(capacity, 16);
-	}
+    private final ConcurrentMap<String, Tree> map;
+    private final ConcurrentLinkedQueue<String> queue;
+    private final AtomicInteger size;
+    private final int capacity;
 
-	/**
-	 * Creates a new cache with the specified capacity and concurrency level.
-	 *
-	 * @param capacity
-	 *            Cache size. The actual map size may exceed it temporarily.
-	 * @param concurrencyLevel
-	 *            The estimated number of concurrently updating threads. The
-	 *            implementation performs internal sizing to try to accommodate
-	 *            this many threads.
-	 */
-	public Cache(int capacity, int concurrencyLevel) {
-		this.map = new ConcurrentHashMap<String, Tree>(16, 0.75f, concurrencyLevel);
-		this.queue = new ConcurrentLinkedQueue<String>();
-		this.size = new AtomicInteger();
-		this.capacity = capacity;
-	}
+    /**
+     * Creates a new cache with the specified capacity
+     * and default concurrency level (16).
+     *
+     * @param capacity
+     *            Cache size. The actual size may exceed it temporarily.
+     */
+    public Cache(int capacity) {
+        this(capacity, 16);
+    }
 
-	public int size() {
-		return size.get();
-	}
+    /**
+     * Creates a new cache with the specified capacity and concurrency level.
+     *
+     * @param capacity
+     *            Cache size. The actual map size may exceed it temporarily.
+     * @param concurrencyLevel
+     *            The estimated number of concurrently updating threads. The
+     *            implementation performs internal sizing to try to accommodate
+     *            this many threads.
+     */
+    public Cache(int capacity, int concurrencyLevel) {
+        this.map =
+            new ConcurrentHashMap<String, Tree>(16, 0.75f, concurrencyLevel);
+        this.queue = new ConcurrentLinkedQueue<String>();
+        this.size = new AtomicInteger();
+        this.capacity = capacity;
+    }
 
-	public Tree get(String expression) {
-		return map.get(expression);
-	}
+    public int size() {
+        return size.get();
+    }
 
-	public void put(String expression, Tree tree) {
-		if (map.putIfAbsent(expression, tree) == null) {
-			queue.offer(expression);
-			if (size.incrementAndGet() > capacity) {
-				size.decrementAndGet();
-				map.remove(queue.poll());
-			}
-		}
-	}
+    public Tree get(String expression) {
+        return map.get(expression);
+    }
+
+    public void put(String expression, Tree tree) {
+        if (map.putIfAbsent(expression, tree) == null) {
+            queue.offer(expression);
+            if (size.incrementAndGet() > capacity) {
+                size.decrementAndGet();
+                map.remove(queue.poll());
+            }
+        }
+    }
 }

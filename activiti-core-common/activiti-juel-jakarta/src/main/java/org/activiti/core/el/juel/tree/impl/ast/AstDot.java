@@ -21,35 +21,42 @@ import jakarta.el.ELException;
 import org.activiti.core.el.juel.tree.Bindings;
 
 public class AstDot extends AstProperty {
-	protected final String property;
 
-	public AstDot(AstNode base, String property, boolean lvalue) {
-		this(base, property, lvalue, false);
-	}
+    protected final String property;
 
-	public AstDot(AstNode base, String property, boolean lvalue, boolean ignoreReturnType) {
-		super(base, lvalue, true, ignoreReturnType);
-		this.property = property;
-	}
+    public AstDot(AstNode base, String property, boolean lvalue) {
+        this(base, property, lvalue, false);
+    }
 
-	@Override
-	protected String getProperty(Bindings bindings, ELContext context) throws ELException {
-		return property;
-	}
+    public AstDot(
+        AstNode base,
+        String property,
+        boolean lvalue,
+        boolean ignoreReturnType
+    ) {
+        super(base, lvalue, true, ignoreReturnType);
+        this.property = property;
+    }
 
-	@Override
-	public String toString() {
-		return ". " + property;
-	}
+    @Override
+    protected String getProperty(Bindings bindings, ELContext context)
+        throws ELException {
+        return property;
+    }
 
-	@Override
-	public void appendStructure(StringBuilder b, Bindings bindings) {
-		getChild(0).appendStructure(b, bindings);
-		b.append(".");
-		b.append(property);
-	}
+    @Override
+    public String toString() {
+        return ". " + property;
+    }
 
-	public int getCardinality() {
-		return 1;
-	}
+    @Override
+    public void appendStructure(StringBuilder b, Bindings bindings) {
+        getChild(0).appendStructure(b, bindings);
+        b.append(".");
+        b.append(property);
+    }
+
+    public int getCardinality() {
+        return 1;
+    }
 }

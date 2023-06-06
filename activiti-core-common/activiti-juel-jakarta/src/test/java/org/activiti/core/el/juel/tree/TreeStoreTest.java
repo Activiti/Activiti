@@ -24,13 +24,14 @@ import org.activiti.core.el.juel.tree.impl.Cache;
 import org.junit.jupiter.api.Test;
 
 public class TreeStoreTest extends TestCase {
-	@Test
-    public void test() {
-		TreeStore store = new TreeStore(BUILDER, new Cache(1));
-		assertSame(BUILDER, store.getBuilder());
 
-		Tree tree = store.get("1");
-		assertNotNull(tree);
-		assertSame(tree, store.get("1"));
-	}
+    @Test
+    public void test() {
+        TreeStore store = new TreeStore(BUILDER, new Cache(1));
+        assertSame(BUILDER, store.getBuilder());
+
+        Tree tree = store.get("1");
+        assertNotNull(tree);
+        assertSame(tree, store.get("1"));
+    }
 }

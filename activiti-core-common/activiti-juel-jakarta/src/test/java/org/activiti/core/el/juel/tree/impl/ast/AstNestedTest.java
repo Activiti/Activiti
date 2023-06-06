@@ -24,29 +24,30 @@ import org.activiti.core.el.juel.test.TestCase;
 import org.junit.jupiter.api.Test;
 
 public class AstNestedTest extends TestCase {
-	AstNested parseNode(String expression) {
-		return (AstNested)parse(expression).getRoot().getChild(0);
-	}
 
-	@Test
+    AstNested parseNode(String expression) {
+        return (AstNested) parse(expression).getRoot().getChild(0);
+    }
+
+    @Test
     public void testIsLeftValue() {
-		assertFalse(parseNode("${(a)}").isLeftValue());
-	}
+        assertFalse(parseNode("${(a)}").isLeftValue());
+    }
 
-	@Test
+    @Test
     public void testEval() {
-		assertEquals(1l, parseNode("${(1)}").eval(null, null));
-	}
+        assertEquals(1l, parseNode("${(1)}").eval(null, null));
+    }
 
-	@Test
+    @Test
     public void testAppendStructure() {
-		StringBuilder s = new StringBuilder();
-		parseNode("${(1)}").appendStructure(s, null);
-		assertEquals("(1)", s.toString());
-	}
+        StringBuilder s = new StringBuilder();
+        parseNode("${(1)}").appendStructure(s, null);
+        assertEquals("(1)", s.toString());
+    }
 
-	@Test
+    @Test
     public void testGetValueReference() {
-		assertNull(parseNode("${(1)}").getValueReference(null, null));
-	}
+        assertNull(parseNode("${(1)}").getValueReference(null, null));
+    }
 }

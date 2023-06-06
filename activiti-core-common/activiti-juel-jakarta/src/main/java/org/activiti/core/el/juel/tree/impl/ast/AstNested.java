@@ -20,34 +20,35 @@ import jakarta.el.ELContext;
 import org.activiti.core.el.juel.tree.Bindings;
 
 public final class AstNested extends AstRightValue {
-	private final AstNode child;
 
-	public AstNested(AstNode child) {
-		this.child = child;
-	}
+    private final AstNode child;
 
-	@Override
-	public Object eval(Bindings bindings, ELContext context) {
-		return child.eval(bindings, context);
-	}
+    public AstNested(AstNode child) {
+        this.child = child;
+    }
 
-	@Override
-	public String toString() {
-		return "(...)";
-	}
+    @Override
+    public Object eval(Bindings bindings, ELContext context) {
+        return child.eval(bindings, context);
+    }
 
-	@Override
-	public void appendStructure(StringBuilder b, Bindings bindings) {
-		b.append("(");
-		child.appendStructure(b, bindings);
-		b.append(")");
-	}
+    @Override
+    public String toString() {
+        return "(...)";
+    }
 
-	public int getCardinality() {
-		return 1;
-	}
+    @Override
+    public void appendStructure(StringBuilder b, Bindings bindings) {
+        b.append("(");
+        child.appendStructure(b, bindings);
+        b.append(")");
+    }
 
-	public AstNode getChild(int i) {
-		return i == 0 ? child : null;
-	}
+    public int getCardinality() {
+        return 1;
+    }
+
+    public AstNode getChild(int i) {
+        return i == 0 ? child : null;
+    }
 }

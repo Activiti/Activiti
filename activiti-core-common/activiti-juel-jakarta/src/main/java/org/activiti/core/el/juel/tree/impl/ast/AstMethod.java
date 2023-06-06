@@ -27,93 +27,136 @@ import org.activiti.core.el.juel.tree.Bindings;
 import org.activiti.core.el.juel.tree.Node;
 
 public class AstMethod extends AstNode {
-	private final AstProperty property;
-	private final AstParameters params;
 
-	public AstMethod(AstProperty property, AstParameters params) {
-		this.property = property;
-		this.params = params;
-	}
+    private final AstProperty property;
+    private final AstParameters params;
 
-	public boolean isLiteralText() {
-		return false;
-	}
+    public AstMethod(AstProperty property, AstParameters params) {
+        this.property = property;
+        this.params = params;
+    }
 
-	public Class<?> getType(Bindings bindings, ELContext context) {
-		return null;
-	}
+    public boolean isLiteralText() {
+        return false;
+    }
 
-	public boolean isReadOnly(Bindings bindings, ELContext context) {
-		return true;
-	}
+    public Class<?> getType(Bindings bindings, ELContext context) {
+        return null;
+    }
 
-	public void setValue(Bindings bindings, ELContext context, Object value) {
-		throw new ELException(LocalMessages.get("error.value.set.rvalue", getStructuralId(bindings)));
-	}
+    public boolean isReadOnly(Bindings bindings, ELContext context) {
+        return true;
+    }
 
-	public MethodInfo getMethodInfo(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes) {
-		return null;
-	}
+    public void setValue(Bindings bindings, ELContext context, Object value) {
+        throw new ELException(
+            LocalMessages.get(
+                "error.value.set.rvalue",
+                getStructuralId(bindings)
+            )
+        );
+    }
 
-	public boolean isLeftValue() {
-		return false;
-	}
+    public MethodInfo getMethodInfo(
+        Bindings bindings,
+        ELContext context,
+        Class<?> returnType,
+        Class<?>[] paramTypes
+    ) {
+        return null;
+    }
 
-	public boolean isMethodInvocation() {
-		return true;
-	}
+    public boolean isLeftValue() {
+        return false;
+    }
 
-	public final ValueReference getValueReference(Bindings bindings, ELContext context) {
-		return null;
-	}
+    public boolean isMethodInvocation() {
+        return true;
+    }
 
-	@Override
-	public void appendStructure(StringBuilder builder, Bindings bindings) {
-		property.appendStructure(builder, bindings);
-		params.appendStructure(builder, bindings);
-	}
+    public final ValueReference getValueReference(
+        Bindings bindings,
+        ELContext context
+    ) {
+        return null;
+    }
 
-	protected Object eval(Bindings bindings, ELContext context, boolean answerNullIfBaseIsNull) {
-		Object base = property.getPrefix().eval(bindings, context);
-		if (base == null) {
-			if (answerNullIfBaseIsNull) {
-				return null;
-			}
-			throw new PropertyNotFoundException(LocalMessages.get("error.property.base.null", property.getPrefix()));
-		}
-		Object method = property.getProperty(bindings, context);
-		if (method == null) {
-			throw new PropertyNotFoundException(LocalMessages.get("error.property.method.notfound", "null", base));
-		}
-		String name = bindings.convert(method, String.class);
+    @Override
+    public void appendStructure(StringBuilder builder, Bindings bindings) {
+        property.appendStructure(builder, bindings);
+        params.appendStructure(builder, bindings);
+    }
 
-		context.setPropertyResolved(false);
-		Object result = context.getELResolver().invoke(context, base, name, null, params.eval(bindings, context));
-		if (!context.isPropertyResolved()) {
-			throw new MethodNotFoundException(LocalMessages.get("error.property.method.notfound", name, base.getClass()));
-		}
-		return result;
-	}
+    protected Object eval(
+        Bindings bindings,
+        ELContext context,
+        boolean answerNullIfBaseIsNull
+    ) {
+        Object base = property.getPrefix().eval(bindings, context);
+        if (base == null) {
+            if (answerNullIfBaseIsNull) {
+                return null;
+            }
+            throw new PropertyNotFoundException(
+                LocalMessages.get(
+                    "error.property.base.null",
+                    property.getPrefix()
+                )
+            );
+        }
+        Object method = property.getProperty(bindings, context);
+        if (method == null) {
+            throw new PropertyNotFoundException(
+                LocalMessages.get(
+                    "error.property.method.notfound",
+                    "null",
+                    base
+                )
+            );
+        }
+        String name = bindings.convert(method, String.class);
 
-	@Override
-	public Object eval(Bindings bindings, ELContext context) {
-		return eval(bindings, context, true);
-	}
+        context.setPropertyResolved(false);
+        Object result = context
+            .getELResolver()
+            .invoke(context, base, name, null, params.eval(bindings, context));
+        if (!context.isPropertyResolved()) {
+            throw new MethodNotFoundException(
+                LocalMessages.get(
+                    "error.property.method.notfound",
+                    name,
+                    base.getClass()
+                )
+            );
+        }
+        return result;
+    }
 
-	public Object invoke(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes, Object[] paramValues) {
-		return eval(bindings, context, false);
-	}
+    @Override
+    public Object eval(Bindings bindings, ELContext context) {
+        return eval(bindings, context, true);
+    }
 
-	public int getCardinality() {
-		return 2;
-	}
+    public Object invoke(
+        Bindings bindings,
+        ELContext context,
+        Class<?> returnType,
+        Class<?>[] paramTypes,
+        Object[] paramValues
+    ) {
+        return eval(bindings, context, false);
+    }
 
-	public Node getChild(int i) {
-		return i == 0 ? property : i == 1 ? params : null;
-	}
+    public int getCardinality() {
+        return 2;
+    }
 
-	@Override
-	public String toString() {
-		return "<method>";
-	}
+    public Node getChild(int i) {
+        return i == 0 ? property : i == 1 ? params : null;
+    }
+
+    @Override
+    public String toString() {
+        return "<method>";
+    }
 }

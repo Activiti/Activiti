@@ -35,78 +35,91 @@ import org.activiti.core.el.juel.tree.Tree;
 import org.junit.jupiter.api.Test;
 
 public class CacheTest extends TestCase {
-	@Test
+
+    @Test
     public void testSingleThread() {
-		Cache cache = null;
+        Cache cache = null;
 
-		// check if caching works, cache size 1
-		cache = new Cache(1);
-		cache.put("1", parse("1"));
-		assertNotNull(cache.get("1"));
-		assertEquals(1, cache.size());
+        // check if caching works, cache size 1
+        cache = new Cache(1);
+        cache.put("1", parse("1"));
+        assertNotNull(cache.get("1"));
+        assertEquals(1, cache.size());
 
-		// check if removeEldest works, cache size 1
-		cache = new Cache(1);
-		cache.put("1", parse("1"));
-		cache.put("2", parse("2"));
-		assertNull(cache.get("1"));
-		assertEquals(1, cache.size());
+        // check if removeEldest works, cache size 1
+        cache = new Cache(1);
+        cache.put("1", parse("1"));
+        cache.put("2", parse("2"));
+        assertNull(cache.get("1"));
+        assertEquals(1, cache.size());
 
-		// check if removeEldest works, cache size 9
-		cache = new Cache(9);
-		for (int i = 1; i < 10; i++) {
-			cache.put("" + i, parse("" + i));
-			for (int j = 1; j <= i; j++) {
-				assertNotNull(cache.get("" + j));
-			}
-			assertEquals(i, cache.size());
-		}
-		cache.put("10", parse("10"));
-		assertNull(cache.get("1"));
-		assertNotNull(cache.get("10"));
-		assertEquals(9, cache.size());
-	}
+        // check if removeEldest works, cache size 9
+        cache = new Cache(9);
+        for (int i = 1; i < 10; i++) {
+            cache.put("" + i, parse("" + i));
+            for (int j = 1; j <= i; j++) {
+                assertNotNull(cache.get("" + j));
+            }
+            assertEquals(i, cache.size());
+        }
+        cache.put("10", parse("10"));
+        assertNull(cache.get("1"));
+        assertNotNull(cache.get("10"));
+        assertEquals(9, cache.size());
+    }
 
-	long testMultiThread(
-			final int cacheSize,
-			final int numberOfThreads,
-			final int numberOfLookups) throws InterruptedException, ExecutionException {
-		final Cache cache = new Cache(cacheSize, numberOfThreads);
-		final Builder builder = new Builder();
-		final Random random = new Random(7);
-		ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
-		Collection<Callable<Long>> tasks = new ArrayList<Callable<Long>>();
-		for (int i = 0; i < numberOfThreads; i++) {
-			tasks.add(new Callable<Long>() {
-				public Long call() throws Exception {
-					long time = System.currentTimeMillis();
-					for (int j = 0; j < numberOfLookups; j++) {
-						String expression = String.valueOf(Math.abs(random.nextInt()) % numberOfLookups);
-						Tree tree = cache.get(expression);
-						if (tree == null) {
-							cache.put(expression, builder.build(expression));
-						}
-					}
-					return System.currentTimeMillis() - time;
-				}
-			});
-		}
+    long testMultiThread(
+        final int cacheSize,
+        final int numberOfThreads,
+        final int numberOfLookups
+    ) throws InterruptedException, ExecutionException {
+        final Cache cache = new Cache(cacheSize, numberOfThreads);
+        final Builder builder = new Builder();
+        final Random random = new Random(7);
+        ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
+        Collection<Callable<Long>> tasks = new ArrayList<Callable<Long>>();
+        for (int i = 0; i < numberOfThreads; i++) {
+            tasks.add(
+                new Callable<Long>() {
+                    public Long call() throws Exception {
+                        long time = System.currentTimeMillis();
+                        for (int j = 0; j < numberOfLookups; j++) {
+                            String expression = String.valueOf(
+                                Math.abs(random.nextInt()) % numberOfLookups
+                            );
+                            Tree tree = cache.get(expression);
+                            if (tree == null) {
+                                cache.put(
+                                    expression,
+                                    builder.build(expression)
+                                );
+                            }
+                        }
+                        return System.currentTimeMillis() - time;
+                    }
+                }
+            );
+        }
 
-		long result = 0;
-		for (Future<Long> future : service.invokeAll(tasks, 10L, TimeUnit.SECONDS)) {
-			if (!future.isDone() || future.isCancelled()) {
-				fail();
-			}
-			result += future.get();
-		}
-		service.shutdown();
-		return result;
-	}
+        long result = 0;
+        for (Future<Long> future : service.invokeAll(
+            tasks,
+            10L,
+            TimeUnit.SECONDS
+        )) {
+            if (!future.isDone() || future.isCancelled()) {
+                fail();
+            }
+            result += future.get();
+        }
+        service.shutdown();
+        return result;
+    }
 
-	@Test
+    @Test
     public void testMultiThread() throws Exception {
-		testMultiThread(10000, 1, 100000);
-		testMultiThread(1000, 10, 10000);
-		testMultiThread(100, 100, 1000);
-	}
+        testMultiThread(10000, 1, 100000);
+        testMultiThread(1000, 10, 10000);
+        testMultiThread(100, 100, 1000);
+    }
 }

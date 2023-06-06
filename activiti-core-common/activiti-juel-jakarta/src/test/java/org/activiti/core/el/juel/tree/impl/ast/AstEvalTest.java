@@ -24,31 +24,32 @@ import org.activiti.core.el.juel.test.TestCase;
 import org.junit.jupiter.api.Test;
 
 public class AstEvalTest extends TestCase {
-	AstEval parseNode(String expression) {
-		return (AstEval)parse(expression).getRoot();
-	}
 
-	@Test
+    AstEval parseNode(String expression) {
+        return (AstEval) parse(expression).getRoot();
+    }
+
+    @Test
     public void testIsLeftValue() {
-		assertFalse(parseNode("${1}").isLeftValue());
-		assertTrue(parseNode("${foo.bar}").isLeftValue());
-	}
+        assertFalse(parseNode("${1}").isLeftValue());
+        assertTrue(parseNode("${foo.bar}").isLeftValue());
+    }
 
-	@Test
+    @Test
     public void testIsDeferred() {
-		assertTrue(parseNode("#{1}").isDeferred());
-		assertFalse(parseNode("${1}").isDeferred());
-	}
+        assertTrue(parseNode("#{1}").isDeferred());
+        assertFalse(parseNode("${1}").isDeferred());
+    }
 
-	@Test
+    @Test
     public void testEval() {
-		assertEquals(1l, parseNode("${1}").eval(null, null));
-	}
+        assertEquals(1l, parseNode("${1}").eval(null, null));
+    }
 
-	@Test
+    @Test
     public void testAppendStructure() {
-		StringBuilder s = new StringBuilder();
-		parseNode("${1}").appendStructure(s, null);
-		assertEquals("${1}", s.toString());
-	}
+        StringBuilder s = new StringBuilder();
+        parseNode("${1}").appendStructure(s, null);
+        assertEquals("${1}", s.toString());
+    }
 }

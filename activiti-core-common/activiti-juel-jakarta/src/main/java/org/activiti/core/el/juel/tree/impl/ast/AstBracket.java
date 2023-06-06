@@ -21,41 +21,54 @@ import jakarta.el.ELException;
 import org.activiti.core.el.juel.tree.Bindings;
 
 public class AstBracket extends AstProperty {
-	protected final AstNode property;
 
-	public AstBracket(AstNode base, AstNode property, boolean lvalue, boolean strict) {
-		this(base, property, lvalue, strict, false);
-	}
+    protected final AstNode property;
 
-	public AstBracket(AstNode base, AstNode property, boolean lvalue, boolean strict, boolean ignoreReturnType) {
-		super(base, lvalue, strict, ignoreReturnType);
-		this.property = property;
-	}
+    public AstBracket(
+        AstNode base,
+        AstNode property,
+        boolean lvalue,
+        boolean strict
+    ) {
+        this(base, property, lvalue, strict, false);
+    }
 
-	@Override
-	protected Object getProperty(Bindings bindings, ELContext context) throws ELException {
-		return property.eval(bindings, context);
-	}
+    public AstBracket(
+        AstNode base,
+        AstNode property,
+        boolean lvalue,
+        boolean strict,
+        boolean ignoreReturnType
+    ) {
+        super(base, lvalue, strict, ignoreReturnType);
+        this.property = property;
+    }
 
-	@Override
-	public String toString() {
-		return "[...]";
-	}
+    @Override
+    protected Object getProperty(Bindings bindings, ELContext context)
+        throws ELException {
+        return property.eval(bindings, context);
+    }
 
-	@Override
-	public void appendStructure(StringBuilder b, Bindings bindings) {
-		getChild(0).appendStructure(b, bindings);
-		b.append("[");
-		getChild(1).appendStructure(b, bindings);
-		b.append("]");
-	}
+    @Override
+    public String toString() {
+        return "[...]";
+    }
 
-	public int getCardinality() {
-		return 2;
-	}
+    @Override
+    public void appendStructure(StringBuilder b, Bindings bindings) {
+        getChild(0).appendStructure(b, bindings);
+        b.append("[");
+        getChild(1).appendStructure(b, bindings);
+        b.append("]");
+    }
 
-	@Override
-	public AstNode getChild(int i) {
-		return i == 1 ? property : super.getChild(i);
-	}
+    public int getCardinality() {
+        return 2;
+    }
+
+    @Override
+    public AstNode getChild(int i) {
+        return i == 1 ? property : super.getChild(i);
+    }
 }

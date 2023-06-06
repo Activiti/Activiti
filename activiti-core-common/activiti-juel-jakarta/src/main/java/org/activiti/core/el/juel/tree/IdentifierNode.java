@@ -22,13 +22,13 @@ package org.activiti.core.el.juel.tree;
  * @author Christoph Beck
  */
 public interface IdentifierNode extends Node {
-	/**
-	 * Get the identifier name
-	 */
-	public String getName();
+    /**
+     * Get the identifier name
+     */
+    public String getName();
 
-	/**
-	 * Get the unique index of this identifier in the expression (e.g. preorder index)
-	 */
-	public int getIndex();
+    /**
+     * Get the unique index of this identifier in the expression (e.g. preorder index)
+     */
+    public int getIndex();
 }

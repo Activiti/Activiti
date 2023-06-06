@@ -27,223 +27,236 @@ import org.activiti.core.el.juel.tree.impl.ast.AstBinary;
 import org.junit.jupiter.api.Test;
 
 public class ParserTest extends TestCase {
-	static Tree verifyLiteralExpression(String expression) {
-		Tree tree = parse(expression);
-		assertTrue(tree.getRoot().isLiteralText());
-		assertEquals(expression, tree.getRoot().getStructuralId(null));
-		return tree;
-	}
 
-	static Tree verifyEvalExpression(String canonical) {
-		Tree tree = parse(canonical);
-		assertFalse(tree.getRoot().isLiteralText());
-		assertEquals(canonical, tree.getRoot().getStructuralId(null));
-		return tree;
-	}
+    static Tree verifyLiteralExpression(String expression) {
+        Tree tree = parse(expression);
+        assertTrue(tree.getRoot().isLiteralText());
+        assertEquals(expression, tree.getRoot().getStructuralId(null));
+        return tree;
+    }
 
-	static Tree verifyEvalExpression(String canonical, String expression) {
-		Tree tree = parse(expression);
-		assertFalse(tree.getRoot().isLiteralText());
-		assertEquals(canonical, tree.getRoot().getStructuralId(null));
-		return verifyEvalExpression(canonical);
-	}
+    static Tree verifyEvalExpression(String canonical) {
+        Tree tree = parse(canonical);
+        assertFalse(tree.getRoot().isLiteralText());
+        assertEquals(canonical, tree.getRoot().getStructuralId(null));
+        return tree;
+    }
 
-	static Tree verifyEvalExpression(String canonical, String expression1, String expression2) {
-		Tree tree = parse(expression2);
-		assertFalse(tree.getRoot().isLiteralText());
-		assertEquals(canonical, tree.getRoot().getStructuralId(null));
-		return verifyEvalExpression(canonical, expression1);
-	}
+    static Tree verifyEvalExpression(String canonical, String expression) {
+        Tree tree = parse(expression);
+        assertFalse(tree.getRoot().isLiteralText());
+        assertEquals(canonical, tree.getRoot().getStructuralId(null));
+        return verifyEvalExpression(canonical);
+    }
 
-	static Tree verifyCompositeExpression(String canonical) {
-		Tree tree = parse(canonical);
-		assertFalse(tree.getRoot().isLiteralText());
-		assertEquals(canonical, tree.getRoot().getStructuralId(null));
-		return tree;
-	}
+    static Tree verifyEvalExpression(
+        String canonical,
+        String expression1,
+        String expression2
+    ) {
+        Tree tree = parse(expression2);
+        assertFalse(tree.getRoot().isLiteralText());
+        assertEquals(canonical, tree.getRoot().getStructuralId(null));
+        return verifyEvalExpression(canonical, expression1);
+    }
 
-	@Test
+    static Tree verifyCompositeExpression(String canonical) {
+        Tree tree = parse(canonical);
+        assertFalse(tree.getRoot().isLiteralText());
+        assertEquals(canonical, tree.getRoot().getStructuralId(null));
+        return tree;
+    }
+
+    @Test
     public void testLiteral() {
-		verifyLiteralExpression("");
-		verifyLiteralExpression("$");
-		verifyLiteralExpression("#");
-		verifyLiteralExpression("1");
-		verifyLiteralExpression("{1}");
-		verifyLiteralExpression("\\${1}");
-		verifyLiteralExpression("\\#{1}");
-		verifyLiteralExpression("\\${1}\\#{1}");
-		verifyLiteralExpression("\\");
-		verifyLiteralExpression("\\\\");
-		verifyLiteralExpression("foo");
-		verifyLiteralExpression("\\f\\o\\o\\");
-		verifyLiteralExpression("\"foo\"");
-		verifyLiteralExpression("'foo'");
-	}
+        verifyLiteralExpression("");
+        verifyLiteralExpression("$");
+        verifyLiteralExpression("#");
+        verifyLiteralExpression("1");
+        verifyLiteralExpression("{1}");
+        verifyLiteralExpression("\\${1}");
+        verifyLiteralExpression("\\#{1}");
+        verifyLiteralExpression("\\${1}\\#{1}");
+        verifyLiteralExpression("\\");
+        verifyLiteralExpression("\\\\");
+        verifyLiteralExpression("foo");
+        verifyLiteralExpression("\\f\\o\\o\\");
+        verifyLiteralExpression("\"foo\"");
+        verifyLiteralExpression("'foo'");
+    }
 
-	Tree verifyBinary(AstBinary.Operator op, String canonical) {
-		Tree tree = verifyEvalExpression(canonical);
-		assertTrue((tree.getRoot()).getChild(0) instanceof AstBinary);
-		assertEquals(op, ((AstBinary)tree.getRoot().getChild(0)).getOperator());
-		return tree;
-	}
+    Tree verifyBinary(AstBinary.Operator op, String canonical) {
+        Tree tree = verifyEvalExpression(canonical);
+        assertTrue((tree.getRoot()).getChild(0) instanceof AstBinary);
+        assertEquals(
+            op,
+            ((AstBinary) tree.getRoot().getChild(0)).getOperator()
+        );
+        return tree;
+    }
 
-	@Test
+    @Test
     public void testBinray() {
-		verifyEvalExpression("${a * a}");
-		verifyEvalExpression("${a / a}", "${a div a}");
-		verifyEvalExpression("${a % a}", "${a mod a}");
-		verifyEvalExpression("${a + a}");
-		verifyEvalExpression("${a - a}");
-		verifyEvalExpression("${a < a}", "${a lt a}");
-		verifyEvalExpression("${a > a}", "${a gt a}");
-		verifyEvalExpression("${a <= a}", "${a le a}");
-		verifyEvalExpression("${a >= a}", "${a ge a}");
-		verifyEvalExpression("${a == a}", "${a eq a}");
-		verifyEvalExpression("${a != a}", "${a ne a}");
-		verifyEvalExpression("${a && a}", "${a and a}");
-		verifyEvalExpression("${a || a}", "${a or a}");
+        verifyEvalExpression("${a * a}");
+        verifyEvalExpression("${a / a}", "${a div a}");
+        verifyEvalExpression("${a % a}", "${a mod a}");
+        verifyEvalExpression("${a + a}");
+        verifyEvalExpression("${a - a}");
+        verifyEvalExpression("${a < a}", "${a lt a}");
+        verifyEvalExpression("${a > a}", "${a gt a}");
+        verifyEvalExpression("${a <= a}", "${a le a}");
+        verifyEvalExpression("${a >= a}", "${a ge a}");
+        verifyEvalExpression("${a == a}", "${a eq a}");
+        verifyEvalExpression("${a != a}", "${a ne a}");
+        verifyEvalExpression("${a && a}", "${a and a}");
+        verifyEvalExpression("${a || a}", "${a or a}");
 
-		verifyBinary(AstBinary.DIV, "${a * a / a}");
-		verifyBinary(AstBinary.MUL, "${a / a * a}");
-		verifyBinary(AstBinary.MOD, "${a / a % a}");
-		verifyBinary(AstBinary.DIV, "${a % a / a}");
-		verifyBinary(AstBinary.ADD, "${a % a + a}");
-		verifyBinary(AstBinary.ADD, "${a + a % a}");
-		verifyBinary(AstBinary.SUB, "${a + a - a}");
-		verifyBinary(AstBinary.ADD, "${a - a + a}");
-		verifyBinary(AstBinary.LT, "${a - a < a}");
-		verifyBinary(AstBinary.LT, "${a < a - a}");
-		verifyBinary(AstBinary.GT, "${a < a > a}");
-		verifyBinary(AstBinary.LT, "${a > a < a}");
-		verifyBinary(AstBinary.LE, "${a > a <= a}");
-		verifyBinary(AstBinary.GT, "${a <= a > a}");
-		verifyBinary(AstBinary.GE, "${a <= a >= a}");
-		verifyBinary(AstBinary.LE, "${a >= a <= a}");
-		verifyBinary(AstBinary.EQ, "${a == a >= a}");
-		verifyBinary(AstBinary.EQ, "${a >= a == a}");
-		verifyBinary(AstBinary.NE, "${a == a != a}");
-		verifyBinary(AstBinary.EQ, "${a != a == a}");
-		verifyBinary(AstBinary.AND, "${a && a != a}");
-		verifyBinary(AstBinary.AND, "${a != a && a}");
-		verifyBinary(AstBinary.OR, "${a && a || a}");
-		verifyBinary(AstBinary.OR, "${a || a && a}");
-		verifyBinary(AstBinary.OR, "${! a || a}");
-	}
+        verifyBinary(AstBinary.DIV, "${a * a / a}");
+        verifyBinary(AstBinary.MUL, "${a / a * a}");
+        verifyBinary(AstBinary.MOD, "${a / a % a}");
+        verifyBinary(AstBinary.DIV, "${a % a / a}");
+        verifyBinary(AstBinary.ADD, "${a % a + a}");
+        verifyBinary(AstBinary.ADD, "${a + a % a}");
+        verifyBinary(AstBinary.SUB, "${a + a - a}");
+        verifyBinary(AstBinary.ADD, "${a - a + a}");
+        verifyBinary(AstBinary.LT, "${a - a < a}");
+        verifyBinary(AstBinary.LT, "${a < a - a}");
+        verifyBinary(AstBinary.GT, "${a < a > a}");
+        verifyBinary(AstBinary.LT, "${a > a < a}");
+        verifyBinary(AstBinary.LE, "${a > a <= a}");
+        verifyBinary(AstBinary.GT, "${a <= a > a}");
+        verifyBinary(AstBinary.GE, "${a <= a >= a}");
+        verifyBinary(AstBinary.LE, "${a >= a <= a}");
+        verifyBinary(AstBinary.EQ, "${a == a >= a}");
+        verifyBinary(AstBinary.EQ, "${a >= a == a}");
+        verifyBinary(AstBinary.NE, "${a == a != a}");
+        verifyBinary(AstBinary.EQ, "${a != a == a}");
+        verifyBinary(AstBinary.AND, "${a && a != a}");
+        verifyBinary(AstBinary.AND, "${a != a && a}");
+        verifyBinary(AstBinary.OR, "${a && a || a}");
+        verifyBinary(AstBinary.OR, "${a || a && a}");
+        verifyBinary(AstBinary.OR, "${! a || a}");
+    }
 
-	@Test
+    @Test
     public void testUnary() {
-		verifyEvalExpression("${- a}");
-		verifyEvalExpression("${- - a}");
-		verifyEvalExpression("${empty a}");
-		verifyEvalExpression("${empty empty a}");
-		verifyEvalExpression("${! a}", "${not a}");
-		verifyEvalExpression("${! ! a}", "${not not a}", "${not ! a}");
-	}
+        verifyEvalExpression("${- a}");
+        verifyEvalExpression("${- - a}");
+        verifyEvalExpression("${empty a}");
+        verifyEvalExpression("${empty empty a}");
+        verifyEvalExpression("${! a}", "${not a}");
+        verifyEvalExpression("${! ! a}", "${not not a}", "${not ! a}");
+    }
 
-	@Test
+    @Test
     public void testDeferredExpression() {
-		verifyEvalExpression("#{a}", "#{ a }");
-	}
+        verifyEvalExpression("#{a}", "#{ a }");
+    }
 
-
-	@Test
+    @Test
     public void testComposite() {
-		verifyCompositeExpression("a${a}a");
-		verifyCompositeExpression("a ${a} a");
-		verifyCompositeExpression("${a}${a}");
-		try { parse("#{a}${a}"); fail(); } catch (Exception e) {}
-	}
+        verifyCompositeExpression("a${a}a");
+        verifyCompositeExpression("a ${a} a");
+        verifyCompositeExpression("${a}${a}");
+        try {
+            parse("#{a}${a}");
+            fail();
+        } catch (Exception e) {}
+    }
 
-	@Test
+    @Test
     public void testInteger() {
-		verifyEvalExpression("${0}");
-	}
+        verifyEvalExpression("${0}");
+    }
 
-	@Test
+    @Test
     public void testBoolean() {
-		verifyEvalExpression("${true}");
-		verifyEvalExpression("${false}");
-	}
+        verifyEvalExpression("${true}");
+        verifyEvalExpression("${false}");
+    }
 
-	@Test
+    @Test
     public void testNull() {
-		verifyEvalExpression("${null}");
-	}
+        verifyEvalExpression("${null}");
+    }
 
-	@Test
+    @Test
     public void testString() {
-		verifyEvalExpression("${''}", "${\"\"}");
-		verifyEvalExpression("${'\\''}", "${\"'\"}");
-		verifyEvalExpression("${'\"'}", "${\"\\\"\"}");
-		verifyEvalExpression("${'a'}", "${\"a\"}");
-	}
+        verifyEvalExpression("${''}", "${\"\"}");
+        verifyEvalExpression("${'\\''}", "${\"'\"}");
+        verifyEvalExpression("${'\"'}", "${\"\\\"\"}");
+        verifyEvalExpression("${'a'}", "${\"a\"}");
+    }
 
-	@Test
+    @Test
     public void testFloat() {
-		verifyEvalExpression("${0.0}", "${0.0e0}");
-		verifyEvalExpression("${0.0}", "${0e0}", "${0E0}");
-		verifyEvalExpression("${0.0}", "${0.}", "${0.e0}");
-		verifyEvalExpression("${0.0}", "${.0}", "${.0e0}");
-		verifyEvalExpression("${0.0}", "${0e+0}", "${0e-0}");
-	}
+        verifyEvalExpression("${0.0}", "${0.0e0}");
+        verifyEvalExpression("${0.0}", "${0e0}", "${0E0}");
+        verifyEvalExpression("${0.0}", "${0.}", "${0.e0}");
+        verifyEvalExpression("${0.0}", "${.0}", "${.0e0}");
+        verifyEvalExpression("${0.0}", "${0e+0}", "${0e-0}");
+    }
 
-	@Test
+    @Test
     public void testChoice() {
-		verifyEvalExpression("${a ? a : a}", "${a?a:a}");
-		verifyEvalExpression("${a ? b ? b : b : a}", "${a?b?b:b:a}");
-		verifyEvalExpression("${a ? a : b ? b : b}", "${a?a:b?b:b}");
-		verifyEvalExpression("${c ? b : (f())}", "${c?b:(f())}");
-		verifyEvalExpression("${a ? f() : a}", "${a?f():a}");
-		verifyEvalExpression("${a ? a : a:f()}", "${a?a:a:f()}");
-		verifyEvalExpression("${a ? a:f() : a}", "${a?a:f():a}");
-		try { parse("${a?a:f()}"); fail(); } catch (Exception e) {}
-	}
+        verifyEvalExpression("${a ? a : a}", "${a?a:a}");
+        verifyEvalExpression("${a ? b ? b : b : a}", "${a?b?b:b:a}");
+        verifyEvalExpression("${a ? a : b ? b : b}", "${a?a:b?b:b}");
+        verifyEvalExpression("${c ? b : (f())}", "${c?b:(f())}");
+        verifyEvalExpression("${a ? f() : a}", "${a?f():a}");
+        verifyEvalExpression("${a ? a : a:f()}", "${a?a:a:f()}");
+        verifyEvalExpression("${a ? a:f() : a}", "${a?a:f():a}");
+        try {
+            parse("${a?a:f()}");
+            fail();
+        } catch (Exception e) {}
+    }
 
-	@Test
+    @Test
     public void testNested() {
-		verifyEvalExpression("${(a)}", "${ ( a ) }");
-		verifyEvalExpression("${((a))}");
-	}
+        verifyEvalExpression("${(a)}", "${ ( a ) }");
+        verifyEvalExpression("${((a))}");
+    }
 
-	@Test
+    @Test
     public void testIdentifier() {
-		verifyEvalExpression("${a}", "${ a}", "${a }");
-		assertTrue(parse("${a}").getRoot().isLeftValue());
-	}
+        verifyEvalExpression("${a}", "${ a}", "${a }");
+        assertTrue(parse("${a}").getRoot().isLeftValue());
+    }
 
-	@Test
+    @Test
     public void testFunction() {
-		verifyEvalExpression("${a()}");
-		verifyEvalExpression("${a(a)}");
-		verifyEvalExpression("${a(a, a)}");
-		verifyEvalExpression("${a:a()}");
-		verifyEvalExpression("${a:a(a)}");
-		verifyEvalExpression("${a:a(a, a)}");
-	}
+        verifyEvalExpression("${a()}");
+        verifyEvalExpression("${a(a)}");
+        verifyEvalExpression("${a(a, a)}");
+        verifyEvalExpression("${a:a()}");
+        verifyEvalExpression("${a:a(a)}");
+        verifyEvalExpression("${a:a(a, a)}");
+    }
 
-	@Test
+    @Test
     public void testProperty() {
-		verifyEvalExpression("${a.a}", "${ a . a }");
-		verifyEvalExpression("${a.a.a}");
-		verifyEvalExpression("${a[a]}", "${ a [ a ] }");
-		verifyEvalExpression("${a[a][a]}");
-		verifyEvalExpression("${a[a[a]]}");
+        verifyEvalExpression("${a.a}", "${ a . a }");
+        verifyEvalExpression("${a.a.a}");
+        verifyEvalExpression("${a[a]}", "${ a [ a ] }");
+        verifyEvalExpression("${a[a][a]}");
+        verifyEvalExpression("${a[a[a]]}");
 
-		assertTrue(parse("${a.a}").getRoot().isLeftValue());
-		assertFalse(parse("${1 . a}").getRoot().isLeftValue());
-		assertTrue(parse("${(1).a}").getRoot().isLeftValue());
+        assertTrue(parse("${a.a}").getRoot().isLeftValue());
+        assertFalse(parse("${1 . a}").getRoot().isLeftValue());
+        assertTrue(parse("${(1).a}").getRoot().isLeftValue());
 
-		assertTrue(parse("${a[a]}").getRoot().isLeftValue());
-		assertFalse(parse("${1[a]}").getRoot().isLeftValue());
-		assertTrue(parse("${(1)[a]}").getRoot().isLeftValue());
-	}
+        assertTrue(parse("${a[a]}").getRoot().isLeftValue());
+        assertFalse(parse("${1[a]}").getRoot().isLeftValue());
+        assertTrue(parse("${(1)[a]}").getRoot().isLeftValue());
+    }
 
-	@Test
+    @Test
     public void testIsDeferred() {
-		assertFalse(parse("foo").isDeferred());
-		assertFalse(parse("${foo}").isDeferred());
-		assertFalse(parse("${foo}bar${foo}").isDeferred());
-		assertTrue(parse("#{foo}").isDeferred());
-		assertTrue(parse("#{foo}bar#{foo}").isDeferred());
-	}
+        assertFalse(parse("foo").isDeferred());
+        assertFalse(parse("${foo}").isDeferred());
+        assertFalse(parse("${foo}bar${foo}").isDeferred());
+        assertTrue(parse("#{foo}").isDeferred());
+        assertTrue(parse("#{foo}bar#{foo}").isDeferred());
+    }
 }

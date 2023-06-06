@@ -36,30 +36,45 @@ public class MethodInvocationsTest {
     }
 
     @Test
-	public void testMethodInvocations() {
-		// create our factory
+    public void testMethodInvocations() {
+        // create our factory
         // method invocations are enabled by default
-		ExpressionFactory f = ExpressionFactory.newInstance();
+        ExpressionFactory f = ExpressionFactory.newInstance();
 
-		// create our resolver
-		CompositeELResolver resolver = new CompositeELResolver();
-		resolver.add(new BeanELResolver());
+        // create our resolver
+        CompositeELResolver resolver = new CompositeELResolver();
+        resolver.add(new BeanELResolver());
 
-		// create our context
-		ELContext context = new SimpleContext(resolver);
+        // create our context
+        ELContext context = new SimpleContext(resolver);
 
-		// let's go...
-		ValueExpression e = null;
+        // let's go...
+        ValueExpression e = null;
 
-		e = f.createValueExpression(context, "${'foo'.matches('foo|bar')}", boolean.class);
-		assertEquals(e.getValue(context), true); // --> true
+        e =
+            f.createValueExpression(
+                context,
+                "${'foo'.matches('foo|bar')}",
+                boolean.class
+            );
+        assertEquals(e.getValue(context), true); // --> true
 
-		e = f.createValueExpression(context, "${'bar'.toUpperCase()}", String.class);
-		assertEquals(e.getValue(context), "BAR"); // --> BAR
+        e =
+            f.createValueExpression(
+                context,
+                "${'bar'.toUpperCase()}",
+                String.class
+            );
+        assertEquals(e.getValue(context), "BAR"); // --> BAR
 
-		e = f.createValueExpression(context, "${'foobar '.trim().length()}", int.class);
-		assertEquals((Integer) e.getValue(context), 6); // --> 6
-	}
+        e =
+            f.createValueExpression(
+                context,
+                "${'foobar '.trim().length()}",
+                int.class
+            );
+        assertEquals((Integer) e.getValue(context), 6); // --> 6
+    }
 
     @Test
     public void testMethodInvocationsDisabled() {
@@ -69,7 +84,6 @@ public class MethodInvocationsTest {
         try {
             testMethodInvocations();
             fail("Method invocations should be disabled.");
-        } catch (Exception expected) {
-        }
+        } catch (Exception expected) {}
     }
 }

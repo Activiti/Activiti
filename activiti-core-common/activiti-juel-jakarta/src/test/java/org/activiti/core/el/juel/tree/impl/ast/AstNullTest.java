@@ -28,57 +28,64 @@ import org.activiti.core.el.juel.tree.Bindings;
 import org.junit.jupiter.api.Test;
 
 public class AstNullTest extends TestCase {
-	private Bindings bindings = new Bindings(null, null, null);
 
-	AstNull parseNode(String expression) {
-		return (AstNull)parse(expression).getRoot().getChild(0);
-	}
+    private Bindings bindings = new Bindings(null, null, null);
 
-	@Test
+    AstNull parseNode(String expression) {
+        return (AstNull) parse(expression).getRoot().getChild(0);
+    }
+
+    @Test
     public void testEval() {
-		assertNull(parseNode("${null}").eval(bindings, null));
-	}
+        assertNull(parseNode("${null}").eval(bindings, null));
+    }
 
-	@Test
+    @Test
     public void testAppendStructure() {
-		StringBuilder s = new StringBuilder();
-		parseNode("${null}").appendStructure(s, bindings);
-		assertEquals("null", s.toString());
-	}
+        StringBuilder s = new StringBuilder();
+        parseNode("${null}").appendStructure(s, bindings);
+        assertEquals("null", s.toString());
+    }
 
-	@Test
+    @Test
     public void testIsLiteralText() {
-		assertFalse(parseNode("${null}").isLiteralText());
-	}
+        assertFalse(parseNode("${null}").isLiteralText());
+    }
 
-	@Test
+    @Test
     public void testIsLeftValue() {
-		assertFalse(parseNode("${null}").isLeftValue());
-	}
+        assertFalse(parseNode("${null}").isLeftValue());
+    }
 
-	@Test
+    @Test
     public void testGetType() {
-		assertNull(parseNode("${null}").getType(bindings, null));
-	}
+        assertNull(parseNode("${null}").getType(bindings, null));
+    }
 
-	@Test
+    @Test
     public void testIsReadOnly() {
-		assertTrue(parseNode("${null}").isReadOnly(bindings, null));
-	}
+        assertTrue(parseNode("${null}").isReadOnly(bindings, null));
+    }
 
-	@Test
+    @Test
     public void testSetValue() {
-		try { parseNode("${null}").setValue(bindings, null, null); fail(); } catch (ELException e) {}
-	}
+        try {
+            parseNode("${null}").setValue(bindings, null, null);
+            fail();
+        } catch (ELException e) {}
+    }
 
-	@Test
+    @Test
     public void testGetValue() {
-		assertNull(parseNode("${null}").getValue(bindings, null, null));
-		assertEquals("", parseNode("${null}").getValue(bindings, null, String.class));
-	}
+        assertNull(parseNode("${null}").getValue(bindings, null, null));
+        assertEquals(
+            "",
+            parseNode("${null}").getValue(bindings, null, String.class)
+        );
+    }
 
-	@Test
+    @Test
     public void testGetValueReference() {
-		assertNull(parseNode("${null}").getValueReference(null, null));
-	}
+        assertNull(parseNode("${null}").getValueReference(null, null));
+    }
 }

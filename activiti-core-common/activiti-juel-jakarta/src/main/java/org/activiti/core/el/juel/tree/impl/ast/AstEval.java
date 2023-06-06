@@ -22,76 +22,97 @@ import jakarta.el.ValueReference;
 import org.activiti.core.el.juel.tree.Bindings;
 
 public final class AstEval extends AstNode {
-	private final AstNode child;
-	private final boolean deferred;
 
-	public AstEval(AstNode child, boolean deferred) {
-		this.child = child;
-		this.deferred = deferred;
-	}
+    private final AstNode child;
+    private final boolean deferred;
 
-	public boolean isDeferred() {
-		return deferred;
-	}
+    public AstEval(AstNode child, boolean deferred) {
+        this.child = child;
+        this.deferred = deferred;
+    }
 
-	public boolean isLeftValue() {
-		return getChild(0).isLeftValue();
-	}
+    public boolean isDeferred() {
+        return deferred;
+    }
 
-	public boolean isMethodInvocation() {
-		return getChild(0).isMethodInvocation();
-	}
+    public boolean isLeftValue() {
+        return getChild(0).isLeftValue();
+    }
 
-	public ValueReference getValueReference(Bindings bindings, ELContext context) {
-		return child.getValueReference(bindings, context);
-	}
+    public boolean isMethodInvocation() {
+        return getChild(0).isMethodInvocation();
+    }
 
-	@Override
-	public Object eval(Bindings bindings, ELContext context) {
-		return child.eval(bindings, context);
-	}
+    public ValueReference getValueReference(
+        Bindings bindings,
+        ELContext context
+    ) {
+        return child.getValueReference(bindings, context);
+    }
 
-	@Override
-	public String toString() {
-		return (deferred ? "#" : "$") +"{...}";
-	}
+    @Override
+    public Object eval(Bindings bindings, ELContext context) {
+        return child.eval(bindings, context);
+    }
 
-	@Override
-	public void appendStructure(StringBuilder b, Bindings bindings) {
-		b.append(deferred ? "#{" : "${");
-		child.appendStructure(b, bindings);
-		b.append("}");
-	}
+    @Override
+    public String toString() {
+        return (deferred ? "#" : "$") + "{...}";
+    }
 
-	public MethodInfo getMethodInfo(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes) {
-		return child.getMethodInfo(bindings, context, returnType, paramTypes);
-	}
+    @Override
+    public void appendStructure(StringBuilder b, Bindings bindings) {
+        b.append(deferred ? "#{" : "${");
+        child.appendStructure(b, bindings);
+        b.append("}");
+    }
 
-	public Object invoke(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes, Object[] paramValues) {
-		return child.invoke(bindings, context, returnType, paramTypes, paramValues);
-	}
+    public MethodInfo getMethodInfo(
+        Bindings bindings,
+        ELContext context,
+        Class<?> returnType,
+        Class<?>[] paramTypes
+    ) {
+        return child.getMethodInfo(bindings, context, returnType, paramTypes);
+    }
 
-	public Class<?> getType(Bindings bindings, ELContext context) {
-		return child.getType(bindings, context);
-	}
+    public Object invoke(
+        Bindings bindings,
+        ELContext context,
+        Class<?> returnType,
+        Class<?>[] paramTypes,
+        Object[] paramValues
+    ) {
+        return child.invoke(
+            bindings,
+            context,
+            returnType,
+            paramTypes,
+            paramValues
+        );
+    }
 
-	public boolean isLiteralText() {
-		return child.isLiteralText();
-	}
+    public Class<?> getType(Bindings bindings, ELContext context) {
+        return child.getType(bindings, context);
+    }
 
-	public boolean isReadOnly(Bindings bindings, ELContext context) {
-		return child.isReadOnly(bindings, context);
-	}
+    public boolean isLiteralText() {
+        return child.isLiteralText();
+    }
 
-	public void setValue(Bindings bindings, ELContext context, Object value) {
-		child.setValue(bindings, context, value);
-	}
+    public boolean isReadOnly(Bindings bindings, ELContext context) {
+        return child.isReadOnly(bindings, context);
+    }
 
-	public int getCardinality() {
-		return 1;
-	}
+    public void setValue(Bindings bindings, ELContext context, Object value) {
+        child.setValue(bindings, context, value);
+    }
 
-	public AstNode getChild(int i) {
-		return i == 0 ? child : null;
-	}
+    public int getCardinality() {
+        return 1;
+    }
+
+    public AstNode getChild(int i) {
+        return i == 0 ? child : null;
+    }
 }

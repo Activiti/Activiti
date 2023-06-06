@@ -20,24 +20,25 @@ import jakarta.el.ELContext;
 import org.activiti.core.el.juel.tree.Bindings;
 
 public final class AstBoolean extends AstLiteral {
-	private final boolean value;
 
-	public AstBoolean(boolean value) {
-		this.value = value;
-	}
+    private final boolean value;
 
-	@Override
-	public Object eval(Bindings bindings, ELContext context) {
-		return value;
-	}
+    public AstBoolean(boolean value) {
+        this.value = value;
+    }
 
-	@Override
-	public String toString() {
-		return String.valueOf(value);
-	}
+    @Override
+    public Object eval(Bindings bindings, ELContext context) {
+        return value;
+    }
 
-	@Override
-	public void appendStructure(StringBuilder b, Bindings bindings) {
-		b.append(value);
-	}
+    @Override
+    public String toString() {
+        return String.valueOf(value);
+    }
+
+    @Override
+    public void appendStructure(StringBuilder b, Bindings bindings) {
+        b.append(value);
+    }
 }

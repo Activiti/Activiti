@@ -20,24 +20,25 @@ import jakarta.el.ELContext;
 import org.activiti.core.el.juel.tree.Bindings;
 
 public final class AstNumber extends AstLiteral {
-	private final Number value;
 
-	public AstNumber(Number value) {
-		this.value = value;
-	}
+    private final Number value;
 
-	@Override
-	public Object eval(Bindings bindings, ELContext context) {
-		return value;
-	}
+    public AstNumber(Number value) {
+        this.value = value;
+    }
 
-	@Override
-	public String toString() {
-		return value.toString();
-	}
+    @Override
+    public Object eval(Bindings bindings, ELContext context) {
+        return value;
+    }
 
-	@Override
-	public void appendStructure(StringBuilder b, Bindings bindings) {
-		b.append(value);
-	}
+    @Override
+    public String toString() {
+        return value.toString();
+    }
+
+    @Override
+    public void appendStructure(StringBuilder b, Bindings bindings) {
+        b.append(value);
+    }
 }

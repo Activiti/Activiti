@@ -28,58 +28,68 @@ import org.activiti.core.el.juel.tree.Bindings;
 import org.junit.jupiter.api.Test;
 
 public class AstChoiceTest extends TestCase {
-	private Bindings bindings = new Bindings(null, null, null);
 
-	AstChoice parseNode(String expression) {
-		return (AstChoice)parse(expression).getRoot().getChild(0);
-	}
+    private Bindings bindings = new Bindings(null, null, null);
 
-	@Test
+    AstChoice parseNode(String expression) {
+        return (AstChoice) parse(expression).getRoot().getChild(0);
+    }
+
+    @Test
     public void testEval() {
-		assertEquals(1l, parseNode("${true?1:2}").eval(bindings, null));
-		assertEquals(2l, parseNode("${false?1:2}").eval(bindings, null));
-	}
+        assertEquals(1l, parseNode("${true?1:2}").eval(bindings, null));
+        assertEquals(2l, parseNode("${false?1:2}").eval(bindings, null));
+    }
 
-	@Test
+    @Test
     public void testAppendStructure() {
-		StringBuilder s = new StringBuilder();
-		parseNode("${a?b:c}").appendStructure(s, bindings);
-		assertEquals("a ? b : c", s.toString());
-	}
+        StringBuilder s = new StringBuilder();
+        parseNode("${a?b:c}").appendStructure(s, bindings);
+        assertEquals("a ? b : c", s.toString());
+    }
 
-	@Test
+    @Test
     public void testIsLiteralText() {
-		assertFalse(parseNode("${a?b:c}").isLiteralText());
-	}
+        assertFalse(parseNode("${a?b:c}").isLiteralText());
+    }
 
-	@Test
+    @Test
     public void testIsLeftValue() {
-		assertFalse(parseNode("${a?b:c}").isLeftValue());
-	}
+        assertFalse(parseNode("${a?b:c}").isLeftValue());
+    }
 
-	@Test
+    @Test
     public void testGetType() {
-		assertNull(parseNode("${a?b:c}").getType(bindings, null));
-	}
+        assertNull(parseNode("${a?b:c}").getType(bindings, null));
+    }
 
-	@Test
+    @Test
     public void testIsReadOnly() {
-		assertTrue(parseNode("${a?b:c}").isReadOnly(bindings, null));
-	}
+        assertTrue(parseNode("${a?b:c}").isReadOnly(bindings, null));
+    }
 
-	@Test
+    @Test
     public void testSetValue() {
-		try { parseNode("${a?b:c}").setValue(bindings, null, null); fail(); } catch (ELException e) {}
-	}
+        try {
+            parseNode("${a?b:c}").setValue(bindings, null, null);
+            fail();
+        } catch (ELException e) {}
+    }
 
-	@Test
+    @Test
     public void testGetValue() {
-		assertEquals(1l, parseNode("${true?1:2}").getValue(bindings, null, null));
-		assertEquals("1", parseNode("${true?1:2}").getValue(bindings, null, String.class));
-	}
+        assertEquals(
+            1l,
+            parseNode("${true?1:2}").getValue(bindings, null, null)
+        );
+        assertEquals(
+            "1",
+            parseNode("${true?1:2}").getValue(bindings, null, String.class)
+        );
+    }
 
-	@Test
+    @Test
     public void testGetValueReference() {
-		assertNull(parseNode("${true?1:2}").getValueReference(bindings, null));
-	}
+        assertNull(parseNode("${true?1:2}").getValueReference(bindings, null));
+    }
 }

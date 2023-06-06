@@ -20,18 +20,19 @@ import jakarta.el.ELContext;
 import org.activiti.core.el.juel.tree.Bindings;
 
 public final class AstNull extends AstLiteral {
-	@Override
-	public Object eval(Bindings bindings, ELContext context) {
-		return null;
-	}
 
-	@Override
-	public String toString() {
-		return "null";
-	}
+    @Override
+    public Object eval(Bindings bindings, ELContext context) {
+        return null;
+    }
 
-	@Override
-	public void appendStructure(StringBuilder b, Bindings bindings) {
-		b.append("null");
-	}
+    @Override
+    public String toString() {
+        return "null";
+    }
+
+    @Override
+    public void appendStructure(StringBuilder b, Bindings bindings) {
+        b.append("null");
+    }
 }

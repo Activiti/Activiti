@@ -21,38 +21,44 @@ import java.util.List;
 import org.activiti.core.el.juel.tree.Bindings;
 
 public class AstComposite extends AstRightValue {
-	private final List<AstNode> nodes;
 
-	public AstComposite(List<AstNode> nodes) {
-		this.nodes = nodes;
-	}
+    private final List<AstNode> nodes;
 
-	@Override
-	public Object eval(Bindings bindings, ELContext context) {
-		StringBuilder b = new StringBuilder(16);
-		for (int i = 0; i < getCardinality(); i++) {
-			b.append(bindings.convert(nodes.get(i).eval(bindings, context), String.class));
-		}
-		return b.toString();
-	}
+    public AstComposite(List<AstNode> nodes) {
+        this.nodes = nodes;
+    }
 
-	@Override
-	public String toString() {
-		return "composite";
-	}
+    @Override
+    public Object eval(Bindings bindings, ELContext context) {
+        StringBuilder b = new StringBuilder(16);
+        for (int i = 0; i < getCardinality(); i++) {
+            b.append(
+                bindings.convert(
+                    nodes.get(i).eval(bindings, context),
+                    String.class
+                )
+            );
+        }
+        return b.toString();
+    }
 
-	@Override
-	public void appendStructure(StringBuilder b, Bindings bindings) {
-		for (int i = 0; i < getCardinality(); i++) {
-			nodes.get(i).appendStructure(b, bindings);
-		}
-	}
+    @Override
+    public String toString() {
+        return "composite";
+    }
 
-	public int getCardinality() {
-		return nodes.size();
-	}
+    @Override
+    public void appendStructure(StringBuilder b, Bindings bindings) {
+        for (int i = 0; i < getCardinality(); i++) {
+            nodes.get(i).appendStructure(b, bindings);
+        }
+    }
 
-	public AstNode getChild(int i) {
-		return nodes.get(i);
-	}
+    public int getCardinality() {
+        return nodes.size();
+    }
+
+    public AstNode getChild(int i) {
+        return nodes.get(i);
+    }
 }

@@ -36,26 +36,29 @@ public class NullPropertiesTest {
     }
 
     @Test
-	public void tesNullProperties() {
-		// create our factory which uses our customized builder
-		System.setProperty("jakarta.el.nullProperties", "true");
+    public void tesNullProperties() {
+        // create our factory which uses our customized builder
+        System.setProperty("jakarta.el.nullProperties", "true");
         ExpressionFactory f = new ExpressionFactoryImpl(System.getProperties());
 
-		// create our context
-		ELContext context = new SimpleContext();
+        // create our context
+        ELContext context = new SimpleContext();
 
-		// create our expression we want to evaluate
-		ValueExpression e = f.createValueExpression(context, "${map[null]}", String.class);
+        // create our expression we want to evaluate
+        ValueExpression e = f.createValueExpression(
+            context,
+            "${map[null]}",
+            String.class
+        );
 
-		// create a map containing a value for key <code>null</code> and make it available
-		Map<String, String> map = new HashMap<String, String>();
-		map.put(null, "foo");
-		context.getELResolver().setValue(context, null, "map", map);
+        // create a map containing a value for key <code>null</code> and make it available
+        Map<String, String> map = new HashMap<String, String>();
+        map.put(null, "foo");
+        context.getELResolver().setValue(context, null, "map", map);
 
-		// let's go...
-		assertEquals(e.getValue(context), "foo"); // --> "foo"
-
-	}
+        // let's go...
+        assertEquals(e.getValue(context), "foo"); // --> "foo"
+    }
 
     @Test
     public void tesNullPropertiesDisabled() {
@@ -67,7 +70,11 @@ public class NullPropertiesTest {
         ELContext context = new SimpleContext();
 
         // create our expression we want to evaluate
-        ValueExpression e = f.createValueExpression(context, "${map[null]}", String.class);
+        ValueExpression e = f.createValueExpression(
+            context,
+            "${map[null]}",
+            String.class
+        );
 
         // create a map containing a value for key <code>null</code> and make it available
         Map<String, String> map = new HashMap<String, String>();

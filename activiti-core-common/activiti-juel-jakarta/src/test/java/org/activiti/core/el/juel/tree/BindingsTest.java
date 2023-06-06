@@ -29,60 +29,75 @@ import org.junit.jupiter.api.Test;
 
 public class BindingsTest extends TestCase {
 
-	public static int foo() {
-		return 0;
-	}
+    public static int foo() {
+        return 0;
+    }
 
-	public static int bar(int i) {
-		return i;
-	}
+    public static int bar(int i) {
+        return i;
+    }
 
-	private SimpleContext context;
+    private SimpleContext context;
 
-	@BeforeEach
-	protected void setUp() throws Exception {
-		context = new SimpleContext();
+    @BeforeEach
+    protected void setUp() throws Exception {
+        context = new SimpleContext();
 
-		// function ns:f()
-		context.setFunction("ns", "f", BindingsTest.class.getMethod("foo"));
+        // function ns:f()
+        context.setFunction("ns", "f", BindingsTest.class.getMethod("foo"));
 
-		// function g()
-		context.setFunction("", "g", BindingsTest.class.getMethod("bar", new Class[]{int.class}));
+        // function g()
+        context.setFunction(
+            "",
+            "g",
+            BindingsTest.class.getMethod("bar", new Class[] { int.class })
+        );
 
-		// variable v
-		context.setVariable("v", new ObjectValueExpression(TypeConverter.DEFAULT, new Long(0), long.class));
-	}
+        // variable v
+        context.setVariable(
+            "v",
+            new ObjectValueExpression(
+                TypeConverter.DEFAULT,
+                new Long(0),
+                long.class
+            )
+        );
+    }
 
-	@Test
+    @Test
     public void testSerialize() throws Exception {
-		Bindings bindings = null;
+        Bindings bindings = null;
 
-		bindings = new Bindings(null, null);
-		assertEquals(bindings, deserialize(serialize(bindings)));
+        bindings = new Bindings(null, null);
+        assertEquals(bindings, deserialize(serialize(bindings)));
 
-		bindings = parse("${ns:f()+v+g(1)+x}").bind(context.getFunctionMapper(), context.getVariableMapper());
-		assertEquals(bindings, deserialize(serialize(bindings)));
-	}
+        bindings =
+            parse("${ns:f()+v+g(1)+x}")
+                .bind(context.getFunctionMapper(), context.getVariableMapper());
+        assertEquals(bindings, deserialize(serialize(bindings)));
+    }
 
-	@Test
+    @Test
     public void testEqualsAndHashcode() throws Exception {
-		Bindings bindings1 = null;
-		Bindings bindings2 = null;
+        Bindings bindings1 = null;
+        Bindings bindings2 = null;
 
-		bindings1 = new Bindings(null, null);
-		bindings2 = new Bindings(null, null);
-		assertEquals(bindings1, bindings2);
-		assertEquals(bindings1.hashCode(), bindings2.hashCode());
+        bindings1 = new Bindings(null, null);
+        bindings2 = new Bindings(null, null);
+        assertEquals(bindings1, bindings2);
+        assertEquals(bindings1.hashCode(), bindings2.hashCode());
 
-		bindings1 = new Bindings(new Method[0], new ValueExpression[0]);
-		bindings2 = new Bindings(null, null);
-		assertEquals(bindings1, bindings2);
-		assertEquals(bindings1.hashCode(), bindings2.hashCode());
+        bindings1 = new Bindings(new Method[0], new ValueExpression[0]);
+        bindings2 = new Bindings(null, null);
+        assertEquals(bindings1, bindings2);
+        assertEquals(bindings1.hashCode(), bindings2.hashCode());
 
-		Tree tree = parse("${ns:f()+v+g(1)}+x");
-		bindings1 = tree.bind(context.getFunctionMapper(), context.getVariableMapper());
-		bindings2 = tree.bind(context.getFunctionMapper(), context.getVariableMapper());
-		assertEquals(bindings1, bindings2);
-		assertEquals(bindings1.hashCode(), bindings2.hashCode());
-	}
+        Tree tree = parse("${ns:f()+v+g(1)}+x");
+        bindings1 =
+            tree.bind(context.getFunctionMapper(), context.getVariableMapper());
+        bindings2 =
+            tree.bind(context.getFunctionMapper(), context.getVariableMapper());
+        assertEquals(bindings1, bindings2);
+        assertEquals(bindings1.hashCode(), bindings2.hashCode());
+    }
 }

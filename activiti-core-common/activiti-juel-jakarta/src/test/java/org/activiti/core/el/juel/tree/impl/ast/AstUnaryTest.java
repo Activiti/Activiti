@@ -28,69 +28,85 @@ import org.activiti.core.el.juel.tree.Bindings;
 import org.junit.jupiter.api.Test;
 
 public class AstUnaryTest extends TestCase {
-	private Bindings bindings = new Bindings(null, null, null);
 
-	AstUnary parseNode(String expression) {
-		return (AstUnary)parse(expression).getRoot().getChild(0);
-	}
+    private Bindings bindings = new Bindings(null, null, null);
 
-	@Test
+    AstUnary parseNode(String expression) {
+        return (AstUnary) parse(expression).getRoot().getChild(0);
+    }
+
+    @Test
     public void testEval() {
-		assertEquals(true, parseNode("${!false}").eval(bindings, null));
-		assertEquals(false, parseNode("${!true}").eval(bindings, null));
-		assertEquals(false, parseNode("${empty 1}").eval(bindings, null));
-		assertEquals(true, parseNode("${empty null}").eval(bindings, null));
-		assertEquals(-1l, parseNode("${-1}").eval(bindings, null));
-	}
+        assertEquals(true, parseNode("${!false}").eval(bindings, null));
+        assertEquals(false, parseNode("${!true}").eval(bindings, null));
+        assertEquals(false, parseNode("${empty 1}").eval(bindings, null));
+        assertEquals(true, parseNode("${empty null}").eval(bindings, null));
+        assertEquals(-1l, parseNode("${-1}").eval(bindings, null));
+    }
 
-	@Test
+    @Test
     public void testAppendStructure() {
-		StringBuilder s = new StringBuilder();
-		parseNode("${!1}").appendStructure(s, bindings);
-		parseNode("${empty 1}").appendStructure(s, bindings);
-		parseNode("${-1}").appendStructure(s, bindings);
-		assertEquals("! 1empty 1- 1", s.toString());
-	}
+        StringBuilder s = new StringBuilder();
+        parseNode("${!1}").appendStructure(s, bindings);
+        parseNode("${empty 1}").appendStructure(s, bindings);
+        parseNode("${-1}").appendStructure(s, bindings);
+        assertEquals("! 1empty 1- 1", s.toString());
+    }
 
-	@Test
+    @Test
     public void testIsLiteralText() {
-		assertFalse(parseNode("${-1}").isLiteralText());
-	}
+        assertFalse(parseNode("${-1}").isLiteralText());
+    }
 
-	@Test
+    @Test
     public void testIsLeftValue() {
-		assertFalse(parseNode("${-1}").isLeftValue());
-	}
+        assertFalse(parseNode("${-1}").isLeftValue());
+    }
 
-	@Test
+    @Test
     public void testGetType() {
-		assertNull(parseNode("${-1}").getType(bindings, null));
-	}
+        assertNull(parseNode("${-1}").getType(bindings, null));
+    }
 
-	@Test
+    @Test
     public void testIsReadOnly() {
-		assertTrue(parseNode("${-1}").isReadOnly(bindings, null));
-	}
+        assertTrue(parseNode("${-1}").isReadOnly(bindings, null));
+    }
 
-	@Test
+    @Test
     public void testSetValue() {
-		try { parseNode("${-1}").setValue(bindings, null, null); fail(); } catch (ELException e) {}
-	}
+        try {
+            parseNode("${-1}").setValue(bindings, null, null);
+            fail();
+        } catch (ELException e) {}
+    }
 
-	@Test
+    @Test
     public void testGetValue() {
-		assertEquals(Long.valueOf(-1l), parseNode("${-1}").getValue(bindings, null, null));
-		assertEquals("-1", parseNode("${-1}").getValue(bindings, null, String.class));
-	}
+        assertEquals(
+            Long.valueOf(-1l),
+            parseNode("${-1}").getValue(bindings, null, null)
+        );
+        assertEquals(
+            "-1",
+            parseNode("${-1}").getValue(bindings, null, String.class)
+        );
+    }
 
-	@Test
+    @Test
     public void testGetValueReference() {
-		assertNull(parseNode("${-1}").getValueReference(null, null));
-	}
+        assertNull(parseNode("${-1}").getValueReference(null, null));
+    }
 
-	@Test
+    @Test
     public void testOperators() {
-		assertFalse((Boolean)parseNode("${not true}").getValue(bindings, null, Boolean.class));
-		assertTrue((Boolean)parseNode("${not false}").getValue(bindings, null, Boolean.class));
-	}
+        assertFalse(
+            (Boolean) parseNode("${not true}")
+                .getValue(bindings, null, Boolean.class)
+        );
+        assertTrue(
+            (Boolean) parseNode("${not false}")
+                .getValue(bindings, null, Boolean.class)
+        );
+    }
 }

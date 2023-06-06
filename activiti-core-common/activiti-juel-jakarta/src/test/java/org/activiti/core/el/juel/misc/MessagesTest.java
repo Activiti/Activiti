@@ -22,27 +22,31 @@ import org.junit.jupiter.api.Test;
 
 public class MessagesTest {
 
-	/*
-	 * Test method for 'org.activiti.core.el.juel.Messages.get(String)'
-	 */
+    /*
+     * Test method for 'org.activiti.core.el.juel.Messages.get(String)'
+     */
     @Test
-	public void testGetString() {
-		assertTrue(LocalMessages.get("foo").matches(".*foo"));
-	}
+    public void testGetString() {
+        assertTrue(LocalMessages.get("foo").matches(".*foo"));
+    }
 
-	/*
-	 * Test method for 'org.activiti.core.el.juel.Messages.get(String, Object)'
-	 */
+    /*
+     * Test method for 'org.activiti.core.el.juel.Messages.get(String, Object)'
+     */
     @Test
-	public void testGetStringObject() {
-		assertTrue(LocalMessages.get("foo", "bar").matches(".*foo\\(bar\\)"));
-	}
+    public void testGetStringObject() {
+        assertTrue(LocalMessages.get("foo", "bar").matches(".*foo\\(bar\\)"));
+    }
 
-	/*
-	 * Test method for 'org.activiti.core.el.juel.Messages.get(String, Object, Object)'
-	 */
+    /*
+     * Test method for 'org.activiti.core.el.juel.Messages.get(String, Object, Object)'
+     */
     @Test
-	public void testGetStringObjectObject() {
-		assertTrue(LocalMessages.get("foo", "bar", "baz").matches(".*foo\\(bar,\\s*baz\\)"));
-	}
+    public void testGetStringObjectObject() {
+        assertTrue(
+            LocalMessages
+                .get("foo", "bar", "baz")
+                .matches(".*foo\\(bar,\\s*baz\\)")
+        );
+    }
 }
