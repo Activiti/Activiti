@@ -28,7 +28,7 @@ public class NumberOperationsTest extends TestCase {
 	private TypeConverter converter = TypeConverter.DEFAULT;
 
 	/*
-	 * Test method for 'de.odysseus.el.lang.NumberOperations.add(Object, Object)'
+	 * Test method for 'org.activiti.core.el.juel.NumberOperations.add(Object, Object)'
 	 */
     @Test
 	public void testAdd() {
@@ -80,7 +80,7 @@ public class NumberOperationsTest extends TestCase {
 	}
 
 	/*
-	 * Test method for 'de.odysseus.el.lang.NumberOperations.sub(Object, Object)'
+	 * Test method for 'org.activiti.core.el.juel.NumberOperations.sub(Object, Object)'
 	 */
     @Test
 	public void testSub() {
@@ -132,7 +132,7 @@ public class NumberOperationsTest extends TestCase {
 	}
 
 	/*
-	 * Test method for 'de.odysseus.el.lang.NumberOperations.mul(Object, Object)'
+	 * Test method for 'org.activiti.core.el.juel.NumberOperations.mul(Object, Object)'
 	 */
     @Test
 	public void testMul() {
@@ -184,7 +184,7 @@ public class NumberOperationsTest extends TestCase {
 	}
 
 	/*
-	 * Test method for 'de.odysseus.el.lang.NumberOperations.div(Object, Object)'
+	 * Test method for 'org.activiti.core.el.juel.NumberOperations.div(Object, Object)'
 	 */
     @Test
 	public void testDiv() {
@@ -225,7 +225,7 @@ public class NumberOperationsTest extends TestCase {
 	}
 
 	/*
-	 * Test method for 'de.odysseus.el.lang.NumberOperations.mod(Object, Object)'
+	 * Test method for 'org.activiti.core.el.juel.NumberOperations.mod(Object, Object)'
 	 */
     @Test
 	public void testMod() {
@@ -276,7 +276,7 @@ public class NumberOperationsTest extends TestCase {
 	}
 
 	/*
-	 * Test method for 'de.odysseus.el.lang.NumberOperations.neg(Object)'
+	 * Test method for 'org.activiti.core.el.juel.NumberOperations.neg(Object)'
 	 */
     @Test
 	public void testNeg() {

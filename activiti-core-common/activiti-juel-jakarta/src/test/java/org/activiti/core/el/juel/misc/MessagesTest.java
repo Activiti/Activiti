@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 public class MessagesTest {
 
 	/*
-	 * Test method for 'de.odysseus.el.lang.Messages.get(String)'
+	 * Test method for 'org.activiti.core.el.juel.Messages.get(String)'
 	 */
     @Test
 	public void testGetString() {
@@ -31,7 +31,7 @@ public class MessagesTest {
 	}
 
 	/*
-	 * Test method for 'de.odysseus.el.lang.Messages.get(String, Object)'
+	 * Test method for 'org.activiti.core.el.juel.Messages.get(String, Object)'
 	 */
     @Test
 	public void testGetStringObject() {
@@ -39,7 +39,7 @@ public class MessagesTest {
 	}
 
 	/*
-	 * Test method for 'de.odysseus.el.lang.Messages.get(String, Object, Object)'
+	 * Test method for 'org.activiti.core.el.juel.Messages.get(String, Object, Object)'
 	 */
     @Test
 	public void testGetStringObjectObject() {

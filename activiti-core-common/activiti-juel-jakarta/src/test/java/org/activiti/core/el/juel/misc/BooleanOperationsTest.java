@@ -37,7 +37,7 @@ public class BooleanOperationsTest extends TestCase {
 	private TypeConverter converter = TypeConverter.DEFAULT;
 
 	/*
-	 * Test method for 'de.odysseus.el.lang.BooleanOperations.lt(Object, Object)'
+	 * Test method for 'org.activiti.core.el.juel.BooleanOperations.lt(Object, Object)'
 	 */
     @Test
     public void testLt() {
@@ -89,7 +89,7 @@ public class BooleanOperationsTest extends TestCase {
 	}
 
 	/*
-	 * Test method for 'de.odysseus.el.lang.BooleanOperations.gt(Object, Object)'
+	 * Test method for 'org.activiti.core.el.juel.BooleanOperations.gt(Object, Object)'
 	 */
     @Test
 	public void testGt() {
@@ -141,7 +141,7 @@ public class BooleanOperationsTest extends TestCase {
 	}
 
 	/*
-	 * Test method for 'de.odysseus.el.lang.BooleanOperations.ge(Object, Object)'
+	 * Test method for 'org.activiti.core.el.juel.BooleanOperations.ge(Object, Object)'
 	 */
     @Test
 	public void testGe() {
@@ -193,7 +193,7 @@ public class BooleanOperationsTest extends TestCase {
 	}
 
 	/*
-	 * Test method for 'de.odysseus.el.lang.BooleanOperations.le(Object, Object)'
+	 * Test method for 'org.activiti.core.el.juel.BooleanOperations.le(Object, Object)'
 	 */
     @Test
 	public void testLe() {
@@ -245,7 +245,7 @@ public class BooleanOperationsTest extends TestCase {
 	}
 
 	/*
-	 * Test method for 'de.odysseus.el.lang.BooleanOperations.eq(Object, Object)'
+	 * Test method for 'org.activiti.core.el.juel.BooleanOperations.eq(Object, Object)'
 	 */
     @Test
 	public void testEq() {
@@ -301,7 +301,7 @@ public class BooleanOperationsTest extends TestCase {
 	}
 
 	/*
-	 * Test method for 'de.odysseus.el.lang.BooleanOperations.ne(Object, Object)'
+	 * Test method for 'org.activiti.core.el.juel.BooleanOperations.ne(Object, Object)'
 	 */
     @Test
 	public void testNe() {
@@ -357,7 +357,7 @@ public class BooleanOperationsTest extends TestCase {
 	}
 
 	/*
-	 * Test method for 'de.odysseus.el.lang.BooleanOperations.empty(Object)'
+	 * Test method for 'org.activiti.core.el.juel.BooleanOperations.empty(Object)'
 	 */
     @Test
 	public void testEmpty() {
