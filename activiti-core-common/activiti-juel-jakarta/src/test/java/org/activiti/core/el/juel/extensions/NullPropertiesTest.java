@@ -32,13 +32,13 @@ public class NullPropertiesTest {
 
     @AfterEach
     public void afterEach() {
-        System.clearProperty("jakarta.el.nullProperties");
+        System.clearProperty("activiti.juel.nullProperties");
     }
 
     @Test
     public void tesNullProperties() {
         // create our factory which uses our customized builder
-        System.setProperty("jakarta.el.nullProperties", "true");
+        System.setProperty("activiti.juel.nullProperties", "true");
         ExpressionFactory f = new ExpressionFactoryImpl(System.getProperties());
 
         // create our context
@@ -63,7 +63,7 @@ public class NullPropertiesTest {
     @Test
     public void tesNullPropertiesDisabled() {
         // create our factory
-        System.setProperty("jakarta.el.nullProperties", "false");
+        System.setProperty("activiti.juel.nullProperties", "false");
         ExpressionFactory f = new ExpressionFactoryImpl(System.getProperties());
 
         // create our context

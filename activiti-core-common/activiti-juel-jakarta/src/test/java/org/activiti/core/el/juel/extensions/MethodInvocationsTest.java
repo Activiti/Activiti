@@ -32,7 +32,7 @@ public class MethodInvocationsTest {
 
     @AfterEach
     public void afterEach() {
-        System.clearProperty("jakarta.el.methodInvocations");
+        System.clearProperty("activiti.juel.methodInvocations");
     }
 
     @Test
@@ -79,7 +79,7 @@ public class MethodInvocationsTest {
     @Test
     public void testMethodInvocationsDisabled() {
         // create our factory
-        System.setProperty("jakarta.el.methodInvocations", "false");
+        System.setProperty("activiti.juel.methodInvocations", "false");
 
         try {
             testMethodInvocations();

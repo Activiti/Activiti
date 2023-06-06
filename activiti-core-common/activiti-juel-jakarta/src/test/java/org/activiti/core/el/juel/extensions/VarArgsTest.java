@@ -31,7 +31,7 @@ public class VarArgsTest {
 
     @AfterEach
     public void afterEach() {
-        System.clearProperty("jakarta.el.varArgs");
+        System.clearProperty("activiti.juel.varArgs");
     }
 
     @Test
@@ -64,7 +64,7 @@ public class VarArgsTest {
     @Test
     public void testVarArgsDisabled() {
         // create our factory
-        System.setProperty("jakarta.el.varArgs", "false");
+        System.setProperty("activiti.juel.varArgs", "false");
 
         try {
             testVarArgs();

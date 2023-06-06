@@ -61,13 +61,13 @@ import org.activiti.core.el.juel.tree.impl.Cache;
  * <li>
  * <code>jakarta.el.cacheSize</code> - cache size (int, default is 1000)</li>
  * <li>
- * <code>jakarta.el.methodInvocations</code> - allow method invocations as in
+ * <code>activiti.juel.methodInvocations</code> - allow method invocations as in
  * <code>${foo.bar(baz)}</code> (boolean, default is <code>false</code>).</li>
  * <li>
- * <code>jakarta.el.nullProperties</code> - resolve <code>null</code> properties as in
+ * <code>activiti.juel.nullProperties</code> - resolve <code>null</code> properties as in
  * <code>${foo[null]}</code> (boolean, default is <code>false</code>).</li>
  * <li>
- * <code>jakarta.el.varArgs</code> - support function/method calls using varargs (boolean, default is
+ * <code>activiti.juel.varArgs</code> - support function/method calls using varargs (boolean, default is
  * <code>false</code>).</li>
  * </ul>
  *
@@ -77,8 +77,8 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
 
     /**
      * A profile provides a default set of language features that will define the builder's
-     * behavior. A profile can be adjusted using the <code>jakarta.el.methodInvocations</code>,
-     * <code>jakarta.el.varArgs</code> and <code>jakarta.el.nullProperties</code> properties.
+     * behavior. A profile can be adjusted using the <code>activiti.juel.methodInvocations</code>,
+     * <code>activiti.juel.varArgs</code> and <code>activiti.juel.nullProperties</code> properties.
      *
      * @since 2.2
      */
@@ -88,7 +88,7 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
          */
         JEE5(EnumSet.noneOf(Builder.Feature.class)),
         /**
-         * JEE6: <code>jakarta.el.methodInvocations</code>, <code>jakarta.el.varArgs</code>. This is the
+         * JEE6: <code>activiti.juel.methodInvocations</code>, <code>activiti.juel.varArgs</code>. This is the
          * default profile.
          */
         JEE6(
@@ -114,21 +114,21 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
     }
 
     /**
-     * <code>jakarta.el.methodInvocations</code>
+     * <code>activiti.juel.methodInvocations</code>
      */
     public static final String PROP_METHOD_INVOCATIONS =
-        "jakarta.el.methodInvocations";
+        "activiti.juel.methodInvocations";
 
     /**
-     * <code>jakarta.el.varArgs</code>
+     * <code>activiti.juel.varArgs</code>
      */
-    public static final String PROP_VAR_ARGS = "jakarta.el.varArgs";
+    public static final String PROP_VAR_ARGS = "activiti.juel.varArgs";
 
     /**
-     * <code>jakarta.el.nullProperties</code>
+     * <code>activiti.juel.nullProperties</code>
      */
     public static final String PROP_NULL_PROPERTIES =
-        "jakarta.el.nullProperties";
+        "activiti.juel.nullProperties";
 
     /**
      * <code>jakarta.el.ignoreReturnType</code>
