@@ -24,6 +24,7 @@
     <mybatis.version>3.5.10</mybatis.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
     <xmlgraphics-commons.version>2.7</xmlgraphics-commons.version>
+    <nashorn-core.version>15.4</nashorn-core.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -170,6 +171,11 @@
         <groupId>joda-time</groupId>
         <artifactId>joda-time</artifactId>
         <version>${joda-time.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openjdk.nashorn</groupId>
+        <artifactId>nashorn-core</artifactId>
+        <version>${nashorn-core.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

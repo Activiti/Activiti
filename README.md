@@ -19,10 +19,10 @@ If you want to read more about our Repositories structure you can read our [GitB
 
 ## Configuring IntelliJ
 
-- Force language level 11, to fail-fast when (accidentally) using features available only in newer Java versions.
+- Force language level 17, to fail-fast when (accidentally) using features available only in newer Java versions.
 
   - Open menu _File_, menu item _Project Structure_
-  - Click list item _Modules_, for each module, tab _Sources_, combobox _Language level_ should be automatically set to `11 ...`
+  - Click list item _Modules_, for each module, tab _Sources_, combobox _Language level_ should be automatically set to `17 ...`
 
 - Avoid that changes in some resources are ignored in the next run/debug (and you are forced to use mvn)
 
