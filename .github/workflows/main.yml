@@ -115,6 +115,14 @@ jobs:
         if: github.event_name == 'push'
         uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@v1.21.0
 
+      # updatebot requires JDK 11 to work
+      - name: Configure Java JDK for updatebot
+        if: github.event_name == 'push'
+        uses: actions/setup-java@de1bb2b0c5634f0fc4438d7aa9944e68f9bf86cc # 3.6.0
+        with:
+          java-version: 11
+          distribution: 'temurin'
+
       - name: Run updatebot
         if: github.event_name == 'push'
         run: |

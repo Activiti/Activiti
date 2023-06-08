@@ -29,11 +29,11 @@ import org.activiti.application.deployer.ApplicationEntryDeployer;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
-@Configuration
+@AutoConfiguration
 public class ApplicationAutoConfiguration {
 
     @Bean

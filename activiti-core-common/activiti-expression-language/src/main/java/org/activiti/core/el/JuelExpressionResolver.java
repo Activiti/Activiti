@@ -21,13 +21,12 @@ import static org.activiti.core.el.CommonELResolversUtil.jsonNodeResolver;
 import static org.activiti.core.el.CommonELResolversUtil.listResolver;
 import static org.activiti.core.el.CommonELResolversUtil.mapResolver;
 
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
-import de.odysseus.el.ExpressionFactoryImpl;
 
 public class JuelExpressionResolver implements ExpressionResolver {
 
@@ -35,7 +34,7 @@ public class JuelExpressionResolver implements ExpressionResolver {
     private final List<CustomFunctionProvider> customFunctionProviders;
 
     public JuelExpressionResolver() {
-        this(new ExpressionFactoryImpl());
+        this(ExpressionFactory.newInstance());
     }
 
     public JuelExpressionResolver(ExpressionFactory expressionFactory) {

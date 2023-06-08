@@ -19,6 +19,7 @@ package org.activiti.engine.impl.persistence.entity;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.unmodifiableMap;
 
+import jakarta.el.ELContext;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,9 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.el.ELContext;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.context.Context;
