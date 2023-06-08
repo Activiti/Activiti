@@ -17,8 +17,6 @@ package org.activiti.core.el;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 
 import jakarta.el.ELException;
 import jakarta.el.PropertyNotFoundException;
@@ -26,7 +24,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 
 public class JuelResolverTest {
@@ -108,7 +105,7 @@ public class JuelResolverTest {
         Date value = expressionResolver.resolveExpression(expressionString, Collections.emptyMap(), Date.class);
 
         //then
-        MatcherAssert.assertThat(value, is(notNullValue()));
+        assertThat(value).isNotNull();
     }
 
     @Test
@@ -131,7 +128,7 @@ public class JuelResolverTest {
         ExpressionResolver expressionResolver = new JuelExpressionResolver();
 
         //when
-        List result = expressionResolver.resolveExpression(expressionString, Collections.emptyMap(), List.class);
+        List<Object> result = expressionResolver.resolveExpression(expressionString, Collections.emptyMap(), List.class);
 
         //then
         assertThat(result).contains(1l, "item", 3l);
