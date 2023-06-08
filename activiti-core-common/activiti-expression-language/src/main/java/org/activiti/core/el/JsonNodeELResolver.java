@@ -346,14 +346,14 @@ public class JsonNodeELResolver extends ELResolver {
 			if (value instanceof BigDecimal decimal) {
 				node.put(property.toString(), decimal);
 
-			} else if (value instanceof Boolean boolean1) {
-				node.put(property.toString(), boolean1);
+			} else if (value instanceof Boolean booleanValue) {
+				node.put(property.toString(), booleanValue);
 
-			} else if (value instanceof Long long1) {
-				node.put(property.toString(), long1);
+			} else if (value instanceof Long longValue) {
+				node.put(property.toString(), longValue);
 
-			} else if (value instanceof Double double1) {
-				node.put(property.toString(), double1);
+			} else if (value instanceof Double doubleValue) {
+				node.put(property.toString(), doubleValue);
 
 			} else if (value != null) {
 				node.put(property.toString(), value.toString());
