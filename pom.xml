@@ -586,6 +586,17 @@ limitations under the License.
             </configuration>
           </execution>
           <execution>
+            <id>no-duplicate-declared-dependencies</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <banDuplicatePomDependencyVersions />
+              </rules>
+            </configuration>
+          </execution>
+          <execution>
             <id>ban-blacklisted-dependencies</id>
             <phase>validate</phase>
             <goals>
