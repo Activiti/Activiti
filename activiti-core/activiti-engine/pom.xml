@@ -75,10 +75,6 @@
       <artifactId>jakarta.persistence-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>jakarta.transaction</groupId>
-      <artifactId>jakarta.transaction-api</artifactId>
-    </dependency>
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>provided</scope>
