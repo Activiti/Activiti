@@ -76,6 +76,7 @@ public class DbSqlSession implements Session {
     private static final Logger log = LoggerFactory.getLogger(DbSqlSession.class);
 
     protected static final String LAST_V5_VERSION = "5.99.0.0";
+    protected static final String LAST_V7_VERSION = "7.99.0";
 
     protected static final List<ActivitiVersion> ACTIVITI_VERSIONS = new ArrayList<ActivitiVersion>();
 
@@ -139,6 +140,10 @@ public class DbSqlSession implements Session {
         // Version 7
         ACTIVITI_VERSIONS.add(new ActivitiVersion("7.0.0.0"));
         ACTIVITI_VERSIONS.add(new ActivitiVersion("7.1.0.0"));
+        ACTIVITI_VERSIONS.add(new ActivitiVersion("7.1.0-M6"));
+
+        // Ensure it's possible to upgrade schemas in 7x versions
+        ACTIVITI_VERSIONS.add(new ActivitiVersion(LAST_V7_VERSION));
 
         /* Current */
         ACTIVITI_VERSIONS.add(new ActivitiVersion(ProcessEngine.VERSION));
@@ -1056,15 +1061,16 @@ public class DbSqlSession implements Session {
             // Determine index in the sequence of Activiti releases
             matchingVersionIndex = findMatchingVersionIndex(dbVersion);
 
-            // If no match has been found, but the version starts with '5.x',
+            // If no match has been found, but the version starts with '5.x' or 7.x,
             // we assume it's the last version (see comment in the VERSIONS list)
-            if (matchingVersionIndex < 0 && dbVersion != null && dbVersion.startsWith("5.")) {
-                matchingVersionIndex = findMatchingVersionIndex(LAST_V5_VERSION);
-            }
-
-            // Exception when no match was found: unknown/unsupported version
             if (matchingVersionIndex < 0) {
-                throw new ActivitiException("Could not update Activiti database schema: unknown version from database: '" + dbVersion + "'");
+                if (dbVersion.startsWith("5.")) {
+                    matchingVersionIndex = findMatchingVersionIndex(LAST_V5_VERSION);
+                } else if (dbVersion.startsWith("7.")) {
+                    matchingVersionIndex = findMatchingVersionIndex(LAST_V7_VERSION);
+                } else {
+                    throw new ActivitiException("Could not update Activiti database schema: unknown version from database: '" + dbVersion + "'");
+                }
             }
 
             isUpgradeNeeded = (matchingVersionIndex != (ACTIVITI_VERSIONS.size() - 1));
