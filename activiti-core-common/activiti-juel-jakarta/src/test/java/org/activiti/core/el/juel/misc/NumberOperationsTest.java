@@ -32,20 +32,20 @@ public class NumberOperationsTest extends TestCase {
      */
     @Test
     public void testAdd() {
-        assertEquals(new Long(0), NumberOperations.add(converter, null, null));
+        assertEquals(Long.valueOf(0), NumberOperations.add(converter, null, null));
 
         BigDecimal bd1 = new BigDecimal(1);
-        Integer i1 = new Integer(1);
-        Long l1 = new Long(1);
-        Float f1 = new Float(1);
-        Double d1 = new Double(1);
+        Integer i1 = Integer.valueOf(1);
+        Long l1 = Long.valueOf(1);
+        Float f1 = Float.valueOf(1);
+        Double d1 = Double.valueOf(1);
         String e1 = "1e0";
         String s1 = "1";
         BigInteger bi1 = new BigInteger("1");
 
-        Long l2 = new Long(2);
+        Long l2 = Long.valueOf(2);
         BigDecimal bd2 = new BigDecimal(2);
-        Double d2 = new Double(2);
+        Double d2 = Double.valueOf(2);
         BigInteger bi2 = new BigInteger("2");
 
         assertEquals(bd2, NumberOperations.add(converter, l1, bd1));
@@ -84,20 +84,20 @@ public class NumberOperationsTest extends TestCase {
      */
     @Test
     public void testSub() {
-        assertEquals(new Long(0), NumberOperations.sub(converter, null, null));
+        assertEquals(Long.valueOf(0), NumberOperations.sub(converter, null, null));
 
         BigDecimal bd1 = new BigDecimal(1);
-        Integer i1 = new Integer(1);
-        Long l1 = new Long(1);
-        Float f1 = new Float(1);
-        Double d1 = new Double(1);
+        Integer i1 = Integer.valueOf(1);
+        Long l1 = Long.valueOf(1);
+        Float f1 = Float.valueOf(1);
+        Double d1 = Double.valueOf(1);
         String e1 = "1e0";
         String s1 = "1";
         BigInteger bi1 = new BigInteger("1");
 
-        Long l2 = new Long(0);
+        Long l2 = Long.valueOf(0);
         BigDecimal bd2 = new BigDecimal(0);
-        Double d2 = new Double(0);
+        Double d2 = Double.valueOf(0);
         BigInteger bi2 = new BigInteger("0");
 
         assertEquals(bd2, NumberOperations.sub(converter, l1, bd1));
@@ -136,20 +136,20 @@ public class NumberOperationsTest extends TestCase {
      */
     @Test
     public void testMul() {
-        assertEquals(new Long(0), NumberOperations.mul(converter, null, null));
+        assertEquals(Long.valueOf(0), NumberOperations.mul(converter, null, null));
 
         BigDecimal bd1 = new BigDecimal(1);
-        Integer i1 = new Integer(1);
-        Long l1 = new Long(1);
-        Float f1 = new Float(1);
-        Double d1 = new Double(1);
+        Integer i1 = Integer.valueOf(1);
+        Long l1 = Long.valueOf(1);
+        Float f1 = Float.valueOf(1);
+        Double d1 =  Double.valueOf(1);
         String e1 = "1e0";
         String s1 = "1";
         BigInteger bi1 = new BigInteger("1");
 
-        Long l2 = new Long(1);
+        Long l2 = Long.valueOf(1);
         BigDecimal bd2 = new BigDecimal(1);
-        Double d2 = new Double(1);
+        Double d2 = Double.valueOf(1);
         BigInteger bi2 = new BigInteger("1");
 
         assertEquals(bd2, NumberOperations.mul(converter, l1, bd1));
@@ -188,19 +188,19 @@ public class NumberOperationsTest extends TestCase {
      */
     @Test
     public void testDiv() {
-        assertEquals(new Long(0), NumberOperations.div(converter, null, null));
+        assertEquals(Long.valueOf(0), NumberOperations.div(converter, null, null));
 
         BigDecimal bd1 = new BigDecimal(1);
-        Integer i1 = new Integer(1);
-        Long l1 = new Long(1);
-        Float f1 = new Float(1);
-        Double d1 = new Double(1);
+        Integer i1 = Integer.valueOf(1);
+        Long l1 = Long.valueOf(1);
+        Float f1 = Float.valueOf(1);
+        Double d1 = Double.valueOf(1);
         String e1 = "1e0";
         String s1 = "1";
         BigInteger bi1 = new BigInteger("1");
 
         BigDecimal bd2 = new BigDecimal(1);
-        Double d2 = new Double(1);
+        Double d2 = Double.valueOf(1);
 
         assertEquals(bd2, NumberOperations.div(converter, l1, bd1));
         assertEquals(bd2, NumberOperations.div(converter, bd1, l1));
@@ -229,19 +229,19 @@ public class NumberOperationsTest extends TestCase {
      */
     @Test
     public void testMod() {
-        assertEquals(new Long(0), NumberOperations.mod(converter, null, null));
+        assertEquals(Long.valueOf(0), NumberOperations.mod(converter, null, null));
 
         BigDecimal bd1 = new BigDecimal(1);
-        Integer i1 = new Integer(1);
-        Long l1 = new Long(1);
-        Float f1 = new Float(1);
-        Double d1 = new Double(1);
+        Integer i1 = Integer.valueOf(1);
+        Long l1 = Long.valueOf(1);
+        Float f1 = Float.valueOf(1);
+        Double d1 = Double.valueOf(1);
         String e1 = "1e0";
         String s1 = "1";
         BigInteger bi1 = new BigInteger("1");
 
-        Long l2 = new Long(0);
-        Double d2 = new Double(0);
+        Long l2 = Long.valueOf(0);
+        Double d2 = Double.valueOf(0);
         BigInteger bi2 = new BigInteger("0");
 
         assertEquals(d2, NumberOperations.mod(converter, l1, bd1));
@@ -280,22 +280,22 @@ public class NumberOperationsTest extends TestCase {
      */
     @Test
     public void testNeg() {
-        assertEquals(new Long(0), NumberOperations.neg(converter, null));
+        assertEquals(Long.valueOf(0), NumberOperations.neg(converter, null));
 
         BigDecimal bd1 = new BigDecimal(1);
-        Integer i1 = new Integer(1);
-        Long l1 = new Long(1);
-        Float f1 = new Float(1);
-        Double d1 = new Double(1);
+        Integer i1 = Integer.valueOf(1);
+        Long l1 = Long.valueOf(1);
+        Float f1 = Float.valueOf(1);
+        Double d1 = Double.valueOf(1);
         String e1 = "1e0";
         String s1 = "1";
         BigInteger bi1 = new BigInteger("1");
 
         BigDecimal bd2 = new BigDecimal(-1);
-        Integer i2 = new Integer(-1);
-        Long l2 = new Long(-1);
-        Float f2 = new Float(-1);
-        Double d2 = new Double(-1);
+        Integer i2 = Integer.valueOf(-1);
+        Long l2 = Long.valueOf(-1);
+        Float f2 = Float.valueOf(-1);
+        Double d2 = Double.valueOf(-1);
         BigInteger bi2 = new BigInteger("-1");
 
         assertEquals(bd2, NumberOperations.neg(converter, bd1));

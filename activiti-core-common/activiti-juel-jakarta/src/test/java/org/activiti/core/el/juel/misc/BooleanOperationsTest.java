@@ -52,61 +52,61 @@ public class BooleanOperationsTest extends TestCase {
         assertTrue(BooleanOperations.lt(converter, "1", new BigDecimal("2")));
         assertFalse(BooleanOperations.lt(converter, new BigDecimal("1"), "1"));
         assertFalse(BooleanOperations.lt(converter, new BigDecimal("2"), "1"));
-        assertTrue(BooleanOperations.lt(converter, "1", new Float("2")));
-        assertFalse(BooleanOperations.lt(converter, new Float("1"), "1"));
-        assertFalse(BooleanOperations.lt(converter, new Float("2"), "1"));
-        assertTrue(BooleanOperations.lt(converter, "1", new Double("2")));
-        assertFalse(BooleanOperations.lt(converter, new Double("1"), "1"));
-        assertFalse(BooleanOperations.lt(converter, new Double("2"), "1"));
+        assertTrue(BooleanOperations.lt(converter, "1",  Float.valueOf("2")));
+        assertFalse(BooleanOperations.lt(converter, Float.valueOf("1"), "1"));
+        assertFalse(BooleanOperations.lt(converter, Float.valueOf("2"), "1"));
+        assertTrue(BooleanOperations.lt(converter, "1", Double.valueOf("2")));
+        assertFalse(BooleanOperations.lt(converter, Double.valueOf("1"), "1"));
+        assertFalse(BooleanOperations.lt(converter, Double.valueOf("2"), "1"));
         assertTrue(BooleanOperations.lt(converter, "1", new BigInteger("2")));
         assertFalse(BooleanOperations.lt(converter, new BigInteger("1"), "1"));
         assertFalse(BooleanOperations.lt(converter, new BigInteger("2"), "1"));
-        assertTrue(BooleanOperations.lt(converter, "1", new Byte("2")));
-        assertFalse(BooleanOperations.lt(converter, new Byte("1"), "1"));
-        assertFalse(BooleanOperations.lt(converter, new Byte("2"), "1"));
-        assertTrue(BooleanOperations.lt(converter, "1", new Short("2")));
-        assertFalse(BooleanOperations.lt(converter, new Short("1"), "1"));
-        assertFalse(BooleanOperations.lt(converter, new Short("2"), "1"));
+        assertTrue(BooleanOperations.lt(converter, "1", Byte.valueOf("2")));
+        assertFalse(BooleanOperations.lt(converter, Byte.valueOf("1"), "1"));
+        assertFalse(BooleanOperations.lt(converter, Byte.valueOf("2"), "1"));
+        assertTrue(BooleanOperations.lt(converter, "1", Short.valueOf("2")));
+        assertFalse(BooleanOperations.lt(converter, Short.valueOf("1"), "1"));
+        assertFalse(BooleanOperations.lt(converter, Short.valueOf("2"), "1"));
         assertTrue(
             BooleanOperations.lt(
                 converter,
-                new Character('a'),
-                new Character('b')
+                Character.valueOf('a'),
+                Character.valueOf('b')
             )
         );
         assertFalse(
             BooleanOperations.lt(
                 converter,
-                new Character('a'),
-                new Character('a')
+                Character.valueOf('a'),
+                Character.valueOf('a')
             )
         );
         assertFalse(
             BooleanOperations.lt(
                 converter,
-                new Character('b'),
-                new Character('a')
+                Character.valueOf('b'),
+                Character.valueOf('a')
             )
         );
-        assertTrue(BooleanOperations.lt(converter, "1", new Integer("2")));
-        assertFalse(BooleanOperations.lt(converter, new Integer("1"), "1"));
-        assertFalse(BooleanOperations.lt(converter, new Integer("2"), "1"));
-        assertTrue(BooleanOperations.lt(converter, "1", new Long("2")));
-        assertFalse(BooleanOperations.lt(converter, new Long("1"), "1"));
-        assertFalse(BooleanOperations.lt(converter, new Long("2"), "1"));
+        assertTrue(BooleanOperations.lt(converter, "1", Integer.valueOf("2")));
+        assertFalse(BooleanOperations.lt(converter, Integer.valueOf("1"), "1"));
+        assertFalse(BooleanOperations.lt(converter, Integer.valueOf("2"), "1"));
+        assertTrue(BooleanOperations.lt(converter, "1", Long.valueOf("2")));
+        assertFalse(BooleanOperations.lt(converter, Long.valueOf("1"), "1"));
+        assertFalse(BooleanOperations.lt(converter, Long.valueOf("2"), "1"));
         assertTrue(BooleanOperations.lt(converter, "a", "b"));
         assertFalse(BooleanOperations.lt(converter, "a", "a"));
         assertFalse(BooleanOperations.lt(converter, "b", "a"));
         try {
-            BooleanOperations.lt(converter, getClass(), new Character('a'));
+            BooleanOperations.lt(converter, getClass(), Character.valueOf('a'));
             fail();
         } catch (Exception e) {}
         try {
-            BooleanOperations.lt(converter, new Character('a'), getClass());
+            BooleanOperations.lt(converter, Character.valueOf('a'), getClass());
             fail();
         } catch (Exception e) {}
         try {
-            BooleanOperations.lt(converter, getClass(), new Long(0));
+            BooleanOperations.lt(converter, getClass(),Long.valueOf(0));
             fail();
         } catch (Exception e) {}
     }
@@ -124,61 +124,61 @@ public class BooleanOperationsTest extends TestCase {
         assertFalse(BooleanOperations.gt(converter, "1", new BigDecimal("2")));
         assertFalse(BooleanOperations.gt(converter, new BigDecimal("1"), "1"));
         assertTrue(BooleanOperations.gt(converter, new BigDecimal("2"), "1"));
-        assertFalse(BooleanOperations.gt(converter, "1", new Float("2")));
-        assertFalse(BooleanOperations.gt(converter, new Float("1"), "1"));
-        assertTrue(BooleanOperations.gt(converter, new Float("2"), "1"));
-        assertFalse(BooleanOperations.gt(converter, "1", new Double("2")));
-        assertFalse(BooleanOperations.gt(converter, new Double("1"), "1"));
-        assertTrue(BooleanOperations.gt(converter, new Double("2"), "1"));
+        assertFalse(BooleanOperations.gt(converter, "1", Float.valueOf("2")));
+        assertFalse(BooleanOperations.gt(converter, Float.valueOf("1"), "1"));
+        assertTrue(BooleanOperations.gt(converter, Float.valueOf("2"), "1"));
+        assertFalse(BooleanOperations.gt(converter, "1", Double.valueOf("2")));
+        assertFalse(BooleanOperations.gt(converter, Double.valueOf("1"), "1"));
+        assertTrue(BooleanOperations.gt(converter, Double.valueOf("2"), "1"));
         assertFalse(BooleanOperations.gt(converter, "1", new BigInteger("2")));
         assertFalse(BooleanOperations.gt(converter, new BigInteger("1"), "1"));
         assertTrue(BooleanOperations.gt(converter, new BigInteger("2"), "1"));
-        assertFalse(BooleanOperations.gt(converter, "1", new Byte("2")));
-        assertFalse(BooleanOperations.gt(converter, new Byte("1"), "1"));
-        assertTrue(BooleanOperations.gt(converter, new Byte("2"), "1"));
-        assertFalse(BooleanOperations.gt(converter, "1", new Short("2")));
-        assertFalse(BooleanOperations.gt(converter, new Short("1"), "1"));
-        assertTrue(BooleanOperations.gt(converter, new Short("2"), "1"));
+        assertFalse(BooleanOperations.gt(converter, "1", Byte.valueOf("2")));
+        assertFalse(BooleanOperations.gt(converter, Byte.valueOf("1"), "1"));
+        assertTrue(BooleanOperations.gt(converter, Byte.valueOf("2"), "1"));
+        assertFalse(BooleanOperations.gt(converter, "1",Short.valueOf("2")));
+        assertFalse(BooleanOperations.gt(converter, Short.valueOf("1"), "1"));
+        assertTrue(BooleanOperations.gt(converter, Short.valueOf("2"), "1"));
         assertFalse(
             BooleanOperations.gt(
                 converter,
-                new Character('a'),
-                new Character('b')
+                Character.valueOf('a'),
+                Character.valueOf('b')
             )
         );
         assertFalse(
             BooleanOperations.gt(
                 converter,
-                new Character('a'),
-                new Character('a')
+                Character.valueOf('a'),
+                Character.valueOf('a')
             )
         );
         assertTrue(
             BooleanOperations.gt(
                 converter,
-                new Character('b'),
-                new Character('a')
+                Character.valueOf('b'),
+                Character.valueOf('a')
             )
         );
-        assertFalse(BooleanOperations.gt(converter, "1", new Integer("2")));
-        assertFalse(BooleanOperations.gt(converter, new Integer("1"), "1"));
-        assertTrue(BooleanOperations.gt(converter, new Integer("2"), "1"));
-        assertFalse(BooleanOperations.gt(converter, "1", new Long("2")));
-        assertFalse(BooleanOperations.gt(converter, new Long("1"), "1"));
-        assertTrue(BooleanOperations.gt(converter, new Long("2"), "1"));
+        assertFalse(BooleanOperations.gt(converter, "1", Integer.valueOf("2")));
+        assertFalse(BooleanOperations.gt(converter, Integer.valueOf("1"), "1"));
+        assertTrue(BooleanOperations.gt(converter, Integer.valueOf("2"), "1"));
+        assertFalse(BooleanOperations.gt(converter, "1", Long.valueOf("2")));
+        assertFalse(BooleanOperations.gt(converter, Long.valueOf("1"), "1"));
+        assertTrue(BooleanOperations.gt(converter, Long.valueOf("2"), "1"));
         assertFalse(BooleanOperations.gt(converter, "a", "b"));
         assertFalse(BooleanOperations.gt(converter, "a", "a"));
         assertTrue(BooleanOperations.gt(converter, "b", "a"));
         try {
-            BooleanOperations.gt(converter, getClass(), new Character('a'));
+            BooleanOperations.gt(converter, getClass(), Character.valueOf('a'));
             fail();
         } catch (Exception e) {}
         try {
-            BooleanOperations.gt(converter, new Character('a'), getClass());
+            BooleanOperations.gt(converter, Character.valueOf('a'), getClass());
             fail();
         } catch (Exception e) {}
         try {
-            BooleanOperations.gt(converter, getClass(), new Long(0));
+            BooleanOperations.gt(converter, getClass(), Long.valueOf(0));
             fail();
         } catch (Exception e) {}
     }
@@ -194,61 +194,61 @@ public class BooleanOperationsTest extends TestCase {
         assertFalse(BooleanOperations.ge(converter, "1", new BigDecimal("2")));
         assertTrue(BooleanOperations.ge(converter, new BigDecimal("1"), "1"));
         assertTrue(BooleanOperations.ge(converter, new BigDecimal("2"), "1"));
-        assertFalse(BooleanOperations.ge(converter, "1", new Float("2")));
-        assertTrue(BooleanOperations.ge(converter, new Float("1"), "1"));
-        assertTrue(BooleanOperations.ge(converter, new Float("2"), "1"));
-        assertFalse(BooleanOperations.ge(converter, "1", new Double("2")));
-        assertTrue(BooleanOperations.ge(converter, new Double("1"), "1"));
-        assertTrue(BooleanOperations.ge(converter, new Double("2"), "1"));
+        assertFalse(BooleanOperations.ge(converter, "1", Float.valueOf("2")));
+        assertTrue(BooleanOperations.ge(converter, Float.valueOf("1"), "1"));
+        assertTrue(BooleanOperations.ge(converter, Float.valueOf("2"), "1"));
+        assertFalse(BooleanOperations.ge(converter, "1",  Double.valueOf("2")));
+        assertTrue(BooleanOperations.ge(converter, Double.valueOf("1"), "1"));
+        assertTrue(BooleanOperations.ge(converter, Double.valueOf("2"), "1"));
         assertFalse(BooleanOperations.ge(converter, "1", new BigInteger("2")));
         assertTrue(BooleanOperations.ge(converter, new BigInteger("1"), "1"));
         assertTrue(BooleanOperations.ge(converter, new BigInteger("2"), "1"));
-        assertFalse(BooleanOperations.ge(converter, "1", new Byte("2")));
-        assertTrue(BooleanOperations.ge(converter, new Byte("1"), "1"));
-        assertTrue(BooleanOperations.ge(converter, new Byte("2"), "1"));
-        assertFalse(BooleanOperations.ge(converter, "1", new Short("2")));
-        assertTrue(BooleanOperations.ge(converter, new Short("1"), "1"));
-        assertTrue(BooleanOperations.ge(converter, new Short("2"), "1"));
+        assertFalse(BooleanOperations.ge(converter, "1", Byte.valueOf("2")));
+        assertTrue(BooleanOperations.ge(converter, Byte.valueOf("1"), "1"));
+        assertTrue(BooleanOperations.ge(converter, Byte.valueOf("2"), "1"));
+        assertFalse(BooleanOperations.ge(converter, "1", Short.valueOf("2")));
+        assertTrue(BooleanOperations.ge(converter, Short.valueOf("1"), "1"));
+        assertTrue(BooleanOperations.ge(converter, Short.valueOf("2"), "1"));
         assertFalse(
             BooleanOperations.ge(
                 converter,
-                new Character('a'),
-                new Character('b')
+                Character.valueOf('a'),
+                Character.valueOf('b')
             )
         );
         assertTrue(
             BooleanOperations.ge(
                 converter,
-                new Character('a'),
-                new Character('a')
+                Character.valueOf('a'),
+                Character.valueOf('a')
             )
         );
         assertTrue(
             BooleanOperations.ge(
                 converter,
-                new Character('b'),
-                new Character('a')
+                Character.valueOf('b'),
+                Character.valueOf('a')
             )
         );
-        assertFalse(BooleanOperations.ge(converter, "1", new Integer("2")));
-        assertTrue(BooleanOperations.ge(converter, new Integer("1"), "1"));
-        assertTrue(BooleanOperations.ge(converter, new Integer("2"), "1"));
-        assertFalse(BooleanOperations.ge(converter, "1", new Long("2")));
-        assertTrue(BooleanOperations.ge(converter, new Long("1"), "1"));
-        assertTrue(BooleanOperations.ge(converter, new Long("2"), "1"));
+        assertFalse(BooleanOperations.ge(converter, "1", Integer.valueOf("2")));
+        assertTrue(BooleanOperations.ge(converter, Integer.valueOf("1"), "1"));
+        assertTrue(BooleanOperations.ge(converter, Integer.valueOf("2"), "1"));
+        assertFalse(BooleanOperations.ge(converter, "1",Long.valueOf("2")));
+        assertTrue(BooleanOperations.ge(converter, Long.valueOf("1"), "1"));
+        assertTrue(BooleanOperations.ge(converter, Long.valueOf("2"), "1"));
         assertFalse(BooleanOperations.ge(converter, "a", "b"));
         assertTrue(BooleanOperations.ge(converter, "a", "a"));
         assertTrue(BooleanOperations.ge(converter, "b", "a"));
         try {
-            BooleanOperations.ge(converter, getClass(), new Character('a'));
+            BooleanOperations.ge(converter, getClass(), Character.valueOf('a'));
             fail();
         } catch (Exception e) {}
         try {
-            BooleanOperations.ge(converter, new Character('a'), getClass());
+            BooleanOperations.ge(converter, Character.valueOf('a'), getClass());
             fail();
         } catch (Exception e) {}
         try {
-            BooleanOperations.ge(converter, getClass(), new Long(0));
+            BooleanOperations.ge(converter, getClass(), Long.valueOf(0));
             fail();
         } catch (Exception e) {}
     }
@@ -264,61 +264,61 @@ public class BooleanOperationsTest extends TestCase {
         assertTrue(BooleanOperations.le(converter, "1", new BigDecimal("2")));
         assertTrue(BooleanOperations.le(converter, new BigDecimal("1"), "1"));
         assertFalse(BooleanOperations.le(converter, new BigDecimal("2"), "1"));
-        assertTrue(BooleanOperations.le(converter, "1", new Float("2")));
-        assertTrue(BooleanOperations.le(converter, new Float("1"), "1"));
-        assertFalse(BooleanOperations.le(converter, new Float("2"), "1"));
-        assertTrue(BooleanOperations.le(converter, "1", new Double("2")));
-        assertTrue(BooleanOperations.le(converter, new Double("1"), "1"));
-        assertFalse(BooleanOperations.le(converter, new Double("2"), "1"));
+        assertTrue(BooleanOperations.le(converter, "1", Float.valueOf("2")));
+        assertTrue(BooleanOperations.le(converter, Float.valueOf("1"), "1"));
+        assertFalse(BooleanOperations.le(converter, Float.valueOf("2"), "1"));
+        assertTrue(BooleanOperations.le(converter, "1", Double.valueOf("2")));
+        assertTrue(BooleanOperations.le(converter, Double.valueOf("1"), "1"));
+        assertFalse(BooleanOperations.le(converter, Double.valueOf("2"), "1"));
         assertTrue(BooleanOperations.le(converter, "1", new BigInteger("2")));
         assertTrue(BooleanOperations.le(converter, new BigInteger("1"), "1"));
         assertFalse(BooleanOperations.le(converter, new BigInteger("2"), "1"));
-        assertTrue(BooleanOperations.le(converter, "1", new Byte("2")));
-        assertTrue(BooleanOperations.le(converter, new Byte("1"), "1"));
-        assertFalse(BooleanOperations.le(converter, new Byte("2"), "1"));
-        assertTrue(BooleanOperations.le(converter, "1", new Short("2")));
-        assertTrue(BooleanOperations.le(converter, new Short("1"), "1"));
-        assertFalse(BooleanOperations.le(converter, new Short("2"), "1"));
+        assertTrue(BooleanOperations.le(converter, "1", Byte.valueOf("2")));
+        assertTrue(BooleanOperations.le(converter, Byte.valueOf("1"), "1"));
+        assertFalse(BooleanOperations.le(converter, Byte.valueOf("2"), "1"));
+        assertTrue(BooleanOperations.le(converter, "1",  Short.valueOf("2")));
+        assertTrue(BooleanOperations.le(converter, Short.valueOf("1"), "1"));
+        assertFalse(BooleanOperations.le(converter, Short.valueOf("2"), "1"));
         assertTrue(
             BooleanOperations.le(
                 converter,
-                new Character('a'),
-                new Character('b')
+               Character.valueOf('a'),
+                 Character.valueOf('b')
             )
         );
         assertTrue(
             BooleanOperations.le(
                 converter,
-                new Character('a'),
-                new Character('a')
+               Character.valueOf('a'),
+                 Character.valueOf('a')
             )
         );
         assertFalse(
             BooleanOperations.le(
                 converter,
-                new Character('b'),
-                new Character('a')
+                Character.valueOf('b'),
+                 Character.valueOf('a')
             )
         );
-        assertTrue(BooleanOperations.le(converter, "1", new Integer("2")));
-        assertTrue(BooleanOperations.le(converter, new Integer("1"), "1"));
-        assertFalse(BooleanOperations.le(converter, new Integer("2"), "1"));
-        assertTrue(BooleanOperations.le(converter, "1", new Long("2")));
-        assertTrue(BooleanOperations.le(converter, new Long("1"), "1"));
-        assertFalse(BooleanOperations.le(converter, new Long("2"), "1"));
+        assertTrue(BooleanOperations.le(converter, "1", Integer.valueOf("2")));
+        assertTrue(BooleanOperations.le(converter, Integer.valueOf("1"), "1"));
+        assertFalse(BooleanOperations.le(converter, Integer.valueOf("2"), "1"));
+        assertTrue(BooleanOperations.le(converter, "1", Long.valueOf("2")));
+        assertTrue(BooleanOperations.le(converter, Long.valueOf("1"), "1"));
+        assertFalse(BooleanOperations.le(converter,Long.valueOf("2"), "1"));
         assertTrue(BooleanOperations.le(converter, "a", "b"));
         assertTrue(BooleanOperations.le(converter, "a", "a"));
         assertFalse(BooleanOperations.le(converter, "b", "a"));
         try {
-            BooleanOperations.le(converter, getClass(), new Character('a'));
+            BooleanOperations.le(converter, getClass(), Character.valueOf('a'));
             fail();
         } catch (Exception e) {}
         try {
-            BooleanOperations.le(converter, new Character('a'), getClass());
+            BooleanOperations.le(converter, Character.valueOf('a'), getClass());
             fail();
         } catch (Exception e) {}
         try {
-            BooleanOperations.le(converter, getClass(), new Long(0));
+            BooleanOperations.le(converter, getClass(), Long.valueOf(0));
             fail();
         } catch (Exception e) {}
     }
@@ -334,67 +334,67 @@ public class BooleanOperationsTest extends TestCase {
         assertFalse(BooleanOperations.eq(converter, "1", new BigDecimal("2")));
         assertTrue(BooleanOperations.eq(converter, new BigDecimal("1"), "1"));
         assertFalse(BooleanOperations.eq(converter, new BigDecimal("2"), "1"));
-        assertFalse(BooleanOperations.eq(converter, "1", new Float("2")));
-        assertTrue(BooleanOperations.eq(converter, new Float("1"), "1"));
-        assertFalse(BooleanOperations.eq(converter, new Float("2"), "1"));
-        assertFalse(BooleanOperations.eq(converter, "1", new Double("2")));
-        assertTrue(BooleanOperations.eq(converter, new Double("1"), "1"));
-        assertFalse(BooleanOperations.eq(converter, new Double("2"), "1"));
+        assertFalse(BooleanOperations.eq(converter, "1",  Float.valueOf("2")));
+        assertTrue(BooleanOperations.eq(converter, Float.valueOf("1"), "1"));
+        assertFalse(BooleanOperations.eq(converter, Float.valueOf("2"), "1"));
+        assertFalse(BooleanOperations.eq(converter, "1", Double.valueOf("2")));
+        assertTrue(BooleanOperations.eq(converter, Double.valueOf("1"), "1"));
+        assertFalse(BooleanOperations.eq(converter,  Double.valueOf("2"), "1"));
         assertFalse(BooleanOperations.eq(converter, "1", new BigInteger("2")));
         assertTrue(BooleanOperations.eq(converter, new BigInteger("1"), "1"));
         assertFalse(BooleanOperations.eq(converter, new BigInteger("2"), "1"));
-        assertFalse(BooleanOperations.eq(converter, "1", new Byte("2")));
-        assertTrue(BooleanOperations.eq(converter, new Byte("1"), "1"));
-        assertFalse(BooleanOperations.eq(converter, new Byte("2"), "1"));
-        assertFalse(BooleanOperations.eq(converter, "1", new Short("2")));
-        assertTrue(BooleanOperations.eq(converter, new Short("1"), "1"));
-        assertFalse(BooleanOperations.eq(converter, new Short("2"), "1"));
+        assertFalse(BooleanOperations.eq(converter, "1", Byte.valueOf("2")));
+        assertTrue(BooleanOperations.eq(converter, Byte.valueOf("1"), "1"));
+        assertFalse(BooleanOperations.eq(converter,  Byte.valueOf("2"), "1"));
+        assertFalse(BooleanOperations.eq(converter, "1",  Short.valueOf("2")));
+        assertTrue(BooleanOperations.eq(converter,  Short.valueOf("1"), "1"));
+        assertFalse(BooleanOperations.eq(converter,  Short.valueOf("2"), "1"));
         assertFalse(
             BooleanOperations.eq(
                 converter,
-                new Character('a'),
-                new Character('b')
+                Character.valueOf('a'),
+                 Character.valueOf('b')
             )
         );
         assertTrue(
             BooleanOperations.eq(
                 converter,
-                new Character('a'),
-                new Character('a')
+                 Character.valueOf('a'),
+                Character.valueOf('a')
             )
         );
         assertFalse(
             BooleanOperations.eq(
                 converter,
-                new Character('b'),
-                new Character('a')
+                 Character.valueOf('b'),
+                 Character.valueOf('a')
             )
         );
-        assertFalse(BooleanOperations.eq(converter, "1", new Integer("2")));
-        assertTrue(BooleanOperations.eq(converter, new Integer("1"), "1"));
-        assertFalse(BooleanOperations.eq(converter, new Integer("2"), "1"));
-        assertFalse(BooleanOperations.eq(converter, "1", new Long("2")));
-        assertTrue(BooleanOperations.eq(converter, new Long("1"), "1"));
-        assertFalse(BooleanOperations.eq(converter, new Long("2"), "1"));
+        assertFalse(BooleanOperations.eq(converter, "1", Integer.valueOf("2")));
+        assertTrue(BooleanOperations.eq(converter, Integer.valueOf("1"), "1"));
+        assertFalse(BooleanOperations.eq(converter, Integer.valueOf("2"), "1"));
+        assertFalse(BooleanOperations.eq(converter, "1",Long.valueOf("2")));
+        assertTrue(BooleanOperations.eq(converter,  Long.valueOf("1"), "1"));
+        assertFalse(BooleanOperations.eq(converter, Long.valueOf("2"), "1"));
         assertFalse(
             BooleanOperations.eq(
                 converter,
-                new Boolean(false),
-                new Boolean(true)
+                Boolean.FALSE,
+                Boolean.FALSE
             )
         );
         assertTrue(
             BooleanOperations.eq(
                 converter,
-                new Boolean(true),
-                new Boolean(true)
+                Boolean.TRUE,
+                Boolean.TRUE
             )
         );
         assertTrue(
             BooleanOperations.eq(
                 converter,
-                new Boolean(false),
-                new Boolean(false)
+                Boolean.FALSE,
+                Boolean.FALSE
             )
         );
         assertTrue(BooleanOperations.eq(converter, Foo.BAR, "BAR"));
@@ -408,13 +408,13 @@ public class BooleanOperationsTest extends TestCase {
         assertTrue(BooleanOperations.eq(converter, "a", "a"));
         assertFalse(BooleanOperations.eq(converter, "b", "a"));
         assertFalse(
-            BooleanOperations.eq(converter, getClass(), new Character('a'))
+            BooleanOperations.eq(converter, getClass(), Character.valueOf('a'))
         );
         assertFalse(
-            BooleanOperations.eq(converter, new Character('a'), getClass())
+            BooleanOperations.eq(converter, Character.valueOf('a'), getClass())
         );
         try {
-            BooleanOperations.eq(converter, getClass(), new Long(0)); // coercion fails
+            BooleanOperations.eq(converter, getClass(), Long.valueOf(0)); // coercion fails
             fail();
         } catch (Exception e) {}
     }
@@ -432,67 +432,67 @@ public class BooleanOperationsTest extends TestCase {
         assertTrue(BooleanOperations.ne(converter, "1", new BigDecimal("2")));
         assertFalse(BooleanOperations.ne(converter, new BigDecimal("1"), "1"));
         assertTrue(BooleanOperations.ne(converter, new BigDecimal("2"), "1"));
-        assertTrue(BooleanOperations.ne(converter, "1", new Float("2")));
-        assertFalse(BooleanOperations.ne(converter, new Float("1"), "1"));
-        assertTrue(BooleanOperations.ne(converter, new Float("2"), "1"));
-        assertTrue(BooleanOperations.ne(converter, "1", new Double("2")));
-        assertFalse(BooleanOperations.ne(converter, new Double("1"), "1"));
-        assertTrue(BooleanOperations.ne(converter, new Double("2"), "1"));
+        assertTrue(BooleanOperations.ne(converter, "1", Float.valueOf("2")));
+        assertFalse(BooleanOperations.ne(converter, Float.valueOf("1"), "1"));
+        assertTrue(BooleanOperations.ne(converter, Float.valueOf("2"), "1"));
+        assertTrue(BooleanOperations.ne(converter, "1", Double.valueOf("2")));
+        assertFalse(BooleanOperations.ne(converter, Double.valueOf("1"), "1"));
+        assertTrue(BooleanOperations.ne(converter, Double.valueOf("2"), "1"));
         assertTrue(BooleanOperations.ne(converter, "1", new BigInteger("2")));
         assertFalse(BooleanOperations.ne(converter, new BigInteger("1"), "1"));
         assertTrue(BooleanOperations.ne(converter, new BigInteger("2"), "1"));
-        assertTrue(BooleanOperations.ne(converter, "1", new Byte("2")));
-        assertFalse(BooleanOperations.ne(converter, new Byte("1"), "1"));
-        assertTrue(BooleanOperations.ne(converter, new Byte("2"), "1"));
-        assertTrue(BooleanOperations.ne(converter, "1", new Short("2")));
-        assertFalse(BooleanOperations.ne(converter, new Short("1"), "1"));
-        assertTrue(BooleanOperations.ne(converter, new Short("2"), "1"));
+        assertTrue(BooleanOperations.ne(converter, "1", Byte.valueOf("2")));
+        assertFalse(BooleanOperations.ne(converter, Byte.valueOf("1"), "1"));
+        assertTrue(BooleanOperations.ne(converter, Byte.valueOf("2"), "1"));
+        assertTrue(BooleanOperations.ne(converter, "1", Short.valueOf("2")));
+        assertFalse(BooleanOperations.ne(converter, Short.valueOf("1"), "1"));
+        assertTrue(BooleanOperations.ne(converter, Short.valueOf("2"), "1"));
         assertTrue(
             BooleanOperations.ne(
                 converter,
-                new Character('a'),
-                new Character('b')
+                Character.valueOf('a'),
+                Character.valueOf('b')
             )
         );
         assertFalse(
             BooleanOperations.ne(
                 converter,
-                new Character('a'),
-                new Character('a')
+                Character.valueOf('a'),
+                Character.valueOf('a')
             )
         );
         assertTrue(
             BooleanOperations.ne(
                 converter,
-                new Character('b'),
-                new Character('a')
+                Character.valueOf('b'),
+                 Character.valueOf('a')
             )
         );
-        assertTrue(BooleanOperations.ne(converter, "1", new Integer("2")));
-        assertFalse(BooleanOperations.ne(converter, new Integer("1"), "1"));
-        assertTrue(BooleanOperations.ne(converter, new Integer("2"), "1"));
-        assertTrue(BooleanOperations.ne(converter, "1", new Long("2")));
-        assertFalse(BooleanOperations.ne(converter, new Long("1"), "1"));
-        assertTrue(BooleanOperations.ne(converter, new Long("2"), "1"));
+        assertTrue(BooleanOperations.ne(converter, "1", Integer.valueOf("2")));
+        assertFalse(BooleanOperations.ne(converter, Integer.valueOf("1"), "1"));
+        assertTrue(BooleanOperations.ne(converter, Integer.valueOf("2"), "1"));
+        assertTrue(BooleanOperations.ne(converter, "1", Long.valueOf("2")));
+        assertFalse(BooleanOperations.ne(converter, Long.valueOf("1"), "1"));
+        assertTrue(BooleanOperations.ne(converter, Long.valueOf("2"), "1"));
         assertTrue(
             BooleanOperations.ne(
                 converter,
-                new Boolean(false),
-                new Boolean(true)
+                Boolean.FALSE,
+                Boolean.TRUE
             )
         );
         assertFalse(
             BooleanOperations.ne(
                 converter,
-                new Boolean(true),
-                new Boolean(true)
+                Boolean.TRUE,
+                Boolean.TRUE
             )
         );
         assertFalse(
             BooleanOperations.ne(
                 converter,
-                new Boolean(false),
-                new Boolean(false)
+                Boolean.FALSE,
+                Boolean.FALSE
             )
         );
         assertFalse(BooleanOperations.ne(converter, Foo.BAR, "BAR"));
@@ -506,13 +506,13 @@ public class BooleanOperationsTest extends TestCase {
         assertFalse(BooleanOperations.ne(converter, "a", "a"));
         assertTrue(BooleanOperations.ne(converter, "b", "a"));
         assertTrue(
-            BooleanOperations.ne(converter, getClass(), new Character('a'))
+            BooleanOperations.ne(converter, getClass(), Character.valueOf('a'))
         );
         assertTrue(
-            BooleanOperations.ne(converter, new Character('a'), getClass())
+            BooleanOperations.ne(converter, Character.valueOf('a'), getClass())
         );
         try {
-            BooleanOperations.ne(converter, getClass(), new Long(0)); // coercion fails
+            BooleanOperations.ne(converter, getClass(), Long.valueOf(0)); // coercion fails
             fail();
         } catch (Exception e) {}
     }

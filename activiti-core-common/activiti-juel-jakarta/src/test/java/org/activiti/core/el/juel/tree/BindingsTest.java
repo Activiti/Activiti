@@ -58,7 +58,7 @@ public class BindingsTest extends TestCase {
             "v",
             new ObjectValueExpression(
                 TypeConverter.DEFAULT,
-                new Long(0),
+               Long.valueOf(0),
                 long.class
             )
         );

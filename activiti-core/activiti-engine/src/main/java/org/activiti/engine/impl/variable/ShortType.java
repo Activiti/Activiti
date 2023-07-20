@@ -33,7 +33,7 @@ public class ShortType implements VariableType {
 
   public Object getValue(ValueFields valueFields) {
     if (valueFields.getLongValue() != null) {
-      return new Short(valueFields.getLongValue().shortValue());
+      return Short.valueOf(valueFields.getLongValue().shortValue());
     }
     return null;
   }
