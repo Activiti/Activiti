@@ -380,7 +380,7 @@ public class BooleanOperationsTest extends TestCase {
             BooleanOperations.eq(
                 converter,
                 Boolean.FALSE,
-                Boolean.FALSE
+                Boolean.TRUE
             )
         );
         assertTrue(
