@@ -10,6 +10,9 @@ on:
 
   # Allows to run this workflow manually from the Actions tab
   workflow_dispatch:
+  
+permissions:
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name || github.run_id }}
@@ -18,11 +21,16 @@ concurrency:
 jobs:
 
   pre-commit:
+    permissions:
+      pull-requests: read # for pre-commit
     runs-on: ubuntu-latest
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@v1.21.0
 
   build:
+    permissions:
+      actions: write  # for styfle/cancel-workflow-action to cancel/stop running workflows
+      contents: write # for git push
     runs-on: ubuntu-latest
     needs: pre-commit
     steps:
