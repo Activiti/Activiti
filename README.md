@@ -139,7 +139,11 @@ the site will be generated at: `target/staging/index.html`
 
 ## CI/CD
 
-Running on [GitHub Actions](https://github.com/features/actions), requires the following secrets to be set:
+Running on GH Actions.
+
+For Dependabot PRs to be validated by CI, the label "CI" should be added to the PR.
+
+Requires the following secrets to be set:
 
 | Name           | Description                        |
 | -------------- | ---------------------------------- |
