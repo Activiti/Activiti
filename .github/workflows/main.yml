@@ -7,6 +7,11 @@ on:
   pull_request:
     branches:
       - develop
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - labeled
 
   # Allows to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -17,8 +22,18 @@ concurrency:
 
 jobs:
 
+  check-bot-or-ext-build:
+    name: Check dependabot or external build
+    if: github.event.sender.login == 'dependabot[bot]' || github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        echo "This workflow run was triggered by dependabot or an external contributor. Validate the changes, then add the 'CI' label to the pull request to trigger this workflow."
+        exit 1
+
   pre-commit:
     runs-on: ubuntu-latest
+    if: (github.event.action != 'labeled' && (github.event.sender.login != 'dependabot[bot]' || github.event.pull_request.head.repo.full_name == github.repository)) || (github.event.action == 'labeled' && github.event.label.name == 'CI')
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@v1.21.0
 
