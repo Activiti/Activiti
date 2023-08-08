@@ -32,8 +32,8 @@ jobs:
         exit 1
 
   pre-commit:
-    runs-on: ubuntu-latest
     if: (github.event.action != 'labeled' && (github.event.sender.login != 'dependabot[bot]' || github.event.pull_request.head.repo.full_name == github.repository)) || (github.event.action == 'labeled' && github.event.label.name == 'CI')
+    runs-on: ubuntu-latest
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@v3.0.2
 
