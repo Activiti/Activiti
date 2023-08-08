@@ -122,7 +122,25 @@ public class ProcessInstanceHelper {
                     if (messageRef.equals(messageName)) {
                         initialFlowElement = flowElement;
                         break;
-                    } 
+                    }
+                }
+            }
+        }
+        if (initialFlowElement == null) {
+            for (FlowElement flowElement : process.getFlowElements()) {
+                if (flowElement instanceof StartEvent) {
+                    StartEvent startEvent = (StartEvent) flowElement;
+                    if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions()) && startEvent.getEventDefinitions().get(0) instanceof MessageEventDefinition) {
+
+                        MessageEventDefinition messageEventDefinition = (MessageEventDefinition) startEvent.getEventDefinitions().get(0);
+                        String messageRef = messageEventDefinition.getMessageRef();
+                        if (bpmnModel.containsMessageId(messageRef)) {
+                            Message message = bpmnModel.getMessage(messageRef);
+                            messageEventDefinition.setMessageRef(message.getName());
+                            initialFlowElement = flowElement;
+                            break;
+                        }
+                    }
                 }
             }
         }
