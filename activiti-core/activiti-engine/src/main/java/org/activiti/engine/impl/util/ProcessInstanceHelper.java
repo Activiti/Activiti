@@ -47,8 +47,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**
-
-
+ *
  */
 public class ProcessInstanceHelper {
 
@@ -127,6 +126,24 @@ public class ProcessInstanceHelper {
             }
         }
         if (initialFlowElement == null) {
+            for (FlowElement flowElement : process.getFlowElements()) {
+                if (flowElement instanceof StartEvent) {
+                    StartEvent startEvent = (StartEvent) flowElement;
+                    if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions()) && startEvent.getEventDefinitions().get(0) instanceof MessageEventDefinition) {
+
+                        MessageEventDefinition messageEventDefinition = (MessageEventDefinition) startEvent.getEventDefinitions().get(0);
+                        String messageRef = messageEventDefinition.getMessageRef();
+                        if (bpmnModel.containsMessageId(messageRef)) {
+                            Message message = bpmnModel.getMessage(messageRef);
+                            messageEventDefinition.setMessageRef(message.getName());
+                            initialFlowElement = flowElement;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (initialFlowElement == null) {
             throw new ActivitiException("No message start event found for process definition " + processDefinition.getId() + " and message name " + messageName);
         }
 
@@ -171,14 +188,14 @@ public class ProcessInstanceHelper {
         return processInstance;
     }
 
-    private void recordStartProcessInstance(CommandContext commandContext, FlowElement initialFlowElement, ExecutionEntity processInstance){
+    private void recordStartProcessInstance(CommandContext commandContext, FlowElement initialFlowElement, ExecutionEntity processInstance) {
         updateProcessInstanceStartDate(processInstance);
         commandContext.getHistoryManager().recordProcessInstanceStart(processInstance, initialFlowElement);
     }
 
     private void createProcessVariables(ExecutionEntity processInstance,
-        Map<String, Object> variables, Map<String, Object> transientVariables,
-        Process process){
+                                        Map<String, Object> variables, Map<String, Object> transientVariables,
+                                        Process process) {
         processInstance.setVariables(processDataObjects(process.getDataObjects()));
         // Set the variables passed into the start command
         if (variables != null) {
@@ -339,7 +356,7 @@ public class ProcessInstanceHelper {
         return processInstance;
     }
 
-    private void setProcessInstanceName(CommandContext commandContext, ExecutionEntity processInstance, String processInstanceName){
+    private void setProcessInstanceName(CommandContext commandContext, ExecutionEntity processInstance, String processInstanceName) {
         if (processInstanceName != null) {
             processInstance.setName(processInstanceName);
             commandContext.getHistoryManager()
