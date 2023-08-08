@@ -140,9 +140,11 @@ public class ProcessInstanceHelper {
                             break;
                         }
                     }
+                    }
+
                 }
             }
-        }
+
         if (initialFlowElement == null) {
             throw new ActivitiException("No message start event found for process definition " + processDefinition.getId() + " and message name " + messageName);
         }
