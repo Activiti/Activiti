@@ -1,4 +1,3 @@
-
 name: Check Ext build
 description: Checks if the build is a dependabot build or external contribution
 
