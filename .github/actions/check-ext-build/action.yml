@@ -1,3 +1,4 @@
+
 name: Check Ext build
 description: Checks if the build is a dependabot build or external contribution
 
@@ -10,16 +11,19 @@ runs:
         SENDER_LOGIN: ${{ github.event.sender.login }}
         EVENT_NAME: ${{ github.event_name }}
         LABEL: ${{ github.event.label.name }}
+        PR_REPO_NAME: ${{ github.event.pull_request.head.repo.full_name }}
+        REPO_NAME: ${{ github.repository }}
       shell: bash
       run: |
-        if [ $SENDER_LOGIN != 'dependabot[bot]' ]; then
+        if [[ $SENDER_LOGIN != 'dependabot[bot]' && $PR_REPO_NAME == $REPO_NAME ]]
+        then
           exit 0
         fi
 
         if [[ $EVENT_NAME == 'labeled' && $LABEL == 'CI' ]]
         then
-          echo "Dependabot build will run with actor who labeled the PR"
+          echo "This workflow will run with actor who labeled the PR"
         else
-          echo "This workflow run was triggered by dependabot. Validate the upgraded dependencies, then add the 'CI' label to the pull request to trigger this workflow."
+          echo "This workflow run was triggered by dependabot or an external contributor. Check and validate the changes, then add the 'CI' label to the pull request to trigger this workflow."
           exit 1
         fi
