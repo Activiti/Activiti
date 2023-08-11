@@ -14,7 +14,7 @@ runs:
         REPO_NAME: ${{ github.repository }}
       shell: bash
       run: |
-        if [[ $SENDER_LOGIN != 'dependabot[bot]' && $PR_REPO_NAME == $REPO_NAME ]]
+        if [[ $SENDER_LOGIN != 'dependabot[bot]' && (-z $PR_REPO_NAME || $PR_REPO_NAME == $REPO_NAME) ]]
         then
           exit 0
         fi
