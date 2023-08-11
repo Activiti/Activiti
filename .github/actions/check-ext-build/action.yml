@@ -22,9 +22,6 @@ runs:
         if [[ $EVENT_NAME == 'labeled' && $LABEL == 'CI' ]]
         then
           echo "This workflow will run with actor who labeled the PR"
-        elif [ $EVENT_NAME == 'push' ]
-        then
-          echo "This workflow will run with actor who merged the PR"
         else
           echo "This workflow run was triggered by dependabot or an external contributor. Check and validate the changes, then add the 'CI' label to the pull request to trigger this workflow."
           exit 1
