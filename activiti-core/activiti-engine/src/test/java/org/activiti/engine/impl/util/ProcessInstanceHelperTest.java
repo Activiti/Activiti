@@ -1,24 +1,17 @@
 package org.activiti.engine.impl.util;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
-import org.activiti.bpmn.converter.util.InputStreamProvider;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
-import org.activiti.engine.repository.ProcessDefinition;
-import org.assertj.core.util.xml.XmlStringPrettyFormatter;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.MockedStatic;
-
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -28,20 +21,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProcessInstanceHelperTest {
 
-    private BpmnModel bpmnModel1;
+    private ProcessInstanceHelper processInstancehelper;
 
-    private BpmnModel bpmnModel2;
+    private MockedStatic mockedStatic;
 
-   private Process process1;
-
-   private Process process2;
-
-   private ProcessInstanceHelper processInstancehelper;
-
-   private MockedStatic mockedStatic;
-
-   private BpmnXMLConverter converter;
-
+    private BpmnXMLConverter converter;
 
 
     @Before
@@ -52,7 +36,7 @@ public class ProcessInstanceHelperTest {
     }
 
     @After
-    public void clear(){
+    public void clear() {
         mockedStatic.close();
     }
 
@@ -64,8 +48,8 @@ public class ProcessInstanceHelperTest {
         XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(fin);
         BpmnModel bpmnModel = converter.convertToBpmnModel(reader);
         Process process = bpmnModel.getProcessById("Process_1");
-        mockedStatic.when(()->ProcessDefinitionUtil.getBpmnModel(any())).thenReturn(bpmnModel);
-        FlowElement initialFlowElementByMessage = processInstancehelper.getInitialFlowElementByMessage(process, new ProcessDefinitionEntityImpl(),MESSAGE_NAME);
+        mockedStatic.when(() -> ProcessDefinitionUtil.getBpmnModel(any())).thenReturn(bpmnModel);
+        FlowElement initialFlowElementByMessage = processInstancehelper.getInitialFlowElementByMessage(process, new ProcessDefinitionEntityImpl(), MESSAGE_NAME);
         assertThat(initialFlowElementByMessage).isNotNull();
         assertThat(initialFlowElementByMessage.getName()).isEqualTo("start1");
         reader.close();
@@ -79,8 +63,8 @@ public class ProcessInstanceHelperTest {
         XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(fin);
         BpmnModel bpmnModel = converter.convertToBpmnModel(reader);
         Process process = bpmnModel.getProcessById("Process_1");
-        mockedStatic.when(()->ProcessDefinitionUtil.getBpmnModel(any())).thenReturn(bpmnModel);
-        FlowElement initialFlowElementByMessage = processInstancehelper.getInitialFlowElementByMessage(process, new ProcessDefinitionEntityImpl(),"event2");
+        mockedStatic.when(() -> ProcessDefinitionUtil.getBpmnModel(any())).thenReturn(bpmnModel);
+        FlowElement initialFlowElementByMessage = processInstancehelper.getInitialFlowElementByMessage(process, new ProcessDefinitionEntityImpl(), MESSAGE_NAME);
         assertThat(initialFlowElementByMessage).isNotNull();
         assertThat(initialFlowElementByMessage.getName()).isEqualTo("start2");
         System.out.println(initialFlowElementByMessage.getName());
@@ -95,8 +79,8 @@ public class ProcessInstanceHelperTest {
         XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(fin);
         BpmnModel bpmnModel = converter.convertToBpmnModel(reader);
         Process process = bpmnModel.getProcessById("Process_1");
-        mockedStatic.when(()->ProcessDefinitionUtil.getBpmnModel(any())).thenReturn(bpmnModel);
-        FlowElement initialFlowElementByMessage = processInstancehelper.getInitialFlowElementByMessage(process, new ProcessDefinitionEntityImpl(),MESSAGE_NAME);
+        mockedStatic.when(() -> ProcessDefinitionUtil.getBpmnModel(any())).thenReturn(bpmnModel);
+        FlowElement initialFlowElementByMessage = processInstancehelper.getInitialFlowElementByMessage(process, new ProcessDefinitionEntityImpl(), MESSAGE_NAME);
         assertThat(initialFlowElementByMessage).isNotNull();
         assertThat(initialFlowElementByMessage.getName()).isEqualTo("start1");
     }
@@ -109,8 +93,8 @@ public class ProcessInstanceHelperTest {
         XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(fin);
         BpmnModel bpmnModel = converter.convertToBpmnModel(reader);
         Process process = bpmnModel.getProcessById("Process_No_Message");
-        mockedStatic.when(()->ProcessDefinitionUtil.getBpmnModel(any())).thenReturn(bpmnModel);
-        FlowElement initialFlowElementByMessage = processInstancehelper.getInitialFlowElementByMessage(process, new ProcessDefinitionEntityImpl(),"eventinvalid");
+        mockedStatic.when(() -> ProcessDefinitionUtil.getBpmnModel(any())).thenReturn(bpmnModel);
+        FlowElement initialFlowElementByMessage = processInstancehelper.getInitialFlowElementByMessage(process, new ProcessDefinitionEntityImpl(), MESSAGE_NAME);
         assertThat(initialFlowElementByMessage).isNull();
     }
 
@@ -123,13 +107,11 @@ public class ProcessInstanceHelperTest {
         XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(fin);
         BpmnModel bpmnModel = converter.convertToBpmnModel(reader);
         Process process = bpmnModel.getProcessById("Process_One_Message");
-        mockedStatic.when(()->ProcessDefinitionUtil.getBpmnModel(any())).thenReturn(bpmnModel);
-        FlowElement initialFlowElementByMessage = processInstancehelper.getInitialFlowElementByMessage(process, new ProcessDefinitionEntityImpl(),"eventinvalid");
+        mockedStatic.when(() -> ProcessDefinitionUtil.getBpmnModel(any())).thenReturn(bpmnModel);
+        FlowElement initialFlowElementByMessage = processInstancehelper.getInitialFlowElementByMessage(process, new ProcessDefinitionEntityImpl(), MESSAGE_NAME);
         assertThat(initialFlowElementByMessage).isNotNull();
         assertThat(initialFlowElementByMessage.getName()).isEqualTo("start2");
     }
-
-
 
 
 }
