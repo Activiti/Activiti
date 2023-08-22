@@ -77,7 +77,7 @@ public class ProcessInstanceHelper {
         return initialFlowElement;
     }
 
-    protected FlowElement getInitialFlowElementByMessage(Process process,ProcessDefinition processDefinition,String messageName){
+    protected FlowElement getInitialFlowElementByMessage(Process process, ProcessDefinition processDefinition, String messageName) {
         FlowElement initialFlowElement = null;
         BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processDefinition.getId());
         for (FlowElement flowElement : process.getFlowElements()) {
@@ -113,34 +113,10 @@ public class ProcessInstanceHelper {
 
             }
         }
-      return initialFlowElement;
-    }
-
-
-    protected FlowElement getInitialFlowElementByMessageOld(Process process , ProcessDefinition processDefinition,String messageName){
-        FlowElement initialFlowElement = null;
-        BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processDefinition.getId());
-        for (FlowElement flowElement : process.getFlowElements()) {
-            if (flowElement instanceof StartEvent) {
-                StartEvent startEvent = (StartEvent) flowElement;
-                if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions()) && startEvent.getEventDefinitions().get(0) instanceof MessageEventDefinition) {
-
-                    MessageEventDefinition messageEventDefinition = (MessageEventDefinition) startEvent.getEventDefinitions().get(0);
-                    String messageRef = messageEventDefinition.getMessageRef();
-                    if (messageRef.equals(messageName)) {
-                        initialFlowElement = flowElement;
-                        break;
-                    } else if (bpmnModel.containsMessageId(messageRef)) {
-                        Message message = bpmnModel.getMessage(messageRef);
-                        messageEventDefinition.setMessageRef(message.getName());
-                        initialFlowElement = flowElement;
-                        break;
-                    }
-                }
-            }
-        }
         return initialFlowElement;
     }
+
+
     protected ProcessInstance createAndStartProcessInstance(ProcessDefinition processDefinition,
                                                             String businessKey, String processInstanceName,
                                                             Map<String, Object> variables, Map<String, Object> transientVariables, boolean startProcessInstance) {
@@ -173,7 +149,7 @@ public class ProcessInstanceHelper {
 
         Process process = this.getActiveProcess(processDefinition);
 
-        FlowElement initialFlowElement = getInitialFlowElementByMessageOld(process,processDefinition,messageName);
+        FlowElement initialFlowElement = getInitialFlowElementByMessage(process, processDefinition, messageName);
         if (initialFlowElement == null) {
             throw new ActivitiException("No message start event found for process definition " + processDefinition.getId() + " and message name " + messageName);
         }
