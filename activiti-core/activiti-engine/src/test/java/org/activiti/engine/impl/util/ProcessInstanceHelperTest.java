@@ -5,7 +5,6 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
-import org.activiti.engine.impl.util.json.XML;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
