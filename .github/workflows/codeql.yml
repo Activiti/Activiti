@@ -19,10 +19,7 @@ on:
     branches: [ "develop" ]
   schedule:
     - cron: '0 1 * * FRI'
-env:
-  MAVEN_CLI_OPTS: >-
-    --settings settings.xml
-    -V --no-transfer-progress -Dspring.main.banner-mode=off
+
 jobs:
   analyze:
     name: Analyze
