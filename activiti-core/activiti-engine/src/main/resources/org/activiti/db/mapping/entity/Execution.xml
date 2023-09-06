@@ -742,6 +742,17 @@
       <if test="involvedUser != null">
         and EXISTS(select ID_ from ${prefix}ACT_RU_IDENTITYLINK I where I.PROC_INST_ID_ = RES.ID_ and I.USER_ID_ = #{involvedUser})
       </if>
+      <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
+        and
+        (
+        I.TYPE_ = 'participant'
+        and
+        I.GROUP_ID_ IN
+        <foreach item="group" index="index" collection="involvedGroups" open="(" separator="," close=")">
+          #{group}
+        </foreach>
+        )
+      </if>
       <!-- PLEASE NOTE: If you change anything have a look into the HistoricVariableInstance & HistoricProcessInstance, the same query object is used there! -->
       <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
         <if test="!queryVariableValue.local">

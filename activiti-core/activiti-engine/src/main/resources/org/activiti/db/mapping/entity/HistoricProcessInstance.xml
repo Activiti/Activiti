@@ -639,6 +639,16 @@
               exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where USER_ID_ = #{orQueryObject.involvedUser} and LINK.PROC_INST_ID_ = RES.ID_)
             )
           </if>
+          <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
+            or (
+            I_OR${orIndex}.TYPE_ = 'participant'
+            and
+            I_OR${orIndex}.GROUP_ID_ IN
+            <foreach item="group" index="index" collection="orQueryObject.involvedGroups" open="(" separator="," close=")">
+              #{group}
+            </foreach>
+            )
+          </if>
           <if test="orQueryObject.startedBy != null">
             or RES.START_USER_ID_ = #{orQueryObject.startedBy}
           </if>
