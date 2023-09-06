@@ -28,6 +28,7 @@ import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
@@ -133,6 +134,18 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
                      flowNode.getClass(),
                      flowNode.getId(),
                      flowNode.getOutgoingFlows().size());
+
+        // when leaving a BoundaryEvent, if it's attached to an userTask, we're triggering the EndExecutionListener of the userTask
+        if (flowNode instanceof BoundaryEvent) {
+            BoundaryEvent event = (BoundaryEvent) flowNode;
+            final Activity attachedToRef = event.getAttachedToRef();
+            if (attachedToRef instanceof UserTask) {
+                UserTask userTask = (UserTask) attachedToRef;
+                if (CollectionUtil.isNotEmpty(userTask.getExecutionListeners())) {
+                    executeExecutionListeners(userTask, ExecutionListener.EVENTNAME_END);
+                }
+            }
+        }
 
         // Get default sequence flow (if set)
         String defaultSequenceFlowId = null;
