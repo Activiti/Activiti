@@ -868,20 +868,20 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     this.startedBy = startedBy;
   }
 
-    public List<String> getInvolvedGroups() {
+  public List<String> getInvolvedGroups() {
         return involvedGroups;
-    }
+  }
 
   public ProcessInstanceQuery involvedGroupsIn(List<String> involvedGroups) {
-        if (involvedGroups == null || involvedGroups.isEmpty()) {
+    if (involvedGroups == null || involvedGroups.isEmpty()) {
             throw new ActivitiIllegalArgumentException("Involved groups list is null or empty.");
-        }
-
-        if (inOrStatement) {
-            this.currentOrQueryObject.involvedGroups = involvedGroups;
-        } else {
-            this.involvedGroups = involvedGroups;
-        }
-        return this;
     }
+
+    if (inOrStatement) {
+      this.currentOrQueryObject.involvedGroups = involvedGroups;
+    } else {
+      this.involvedGroups = involvedGroups;
+    }
+    return this;
+  }
 }

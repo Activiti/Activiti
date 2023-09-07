@@ -607,10 +607,10 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     this.startedBy = startedBy;
   }
 
-    public List<String> getInvolvedGroups() {
+  public List<String> getInvolvedGroups() {
         return involvedGroups;
-    }
-    public void setInvolvedGroups(List<String> involvedGroups) {
+  }
+  public void setInvolvedGroups(List<String> involvedGroups) {
         this.involvedGroups = involvedGroups;
-    }
+  }
 }

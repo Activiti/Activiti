@@ -39,7 +39,7 @@ public class HistoricProcessInstanceQueryGroupInvolvementTest extends PluggableA
         ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("groupInvolvementProcess");
         runtimeService.addParticipantUser(processInstance2.getId(), "kermit");
         List<Task> taskList = taskService.createTaskQuery().list();
-        for (Task task: taskList) {
+        for (Task task : taskList) {
             taskService.complete(task.getId());
         }
     }

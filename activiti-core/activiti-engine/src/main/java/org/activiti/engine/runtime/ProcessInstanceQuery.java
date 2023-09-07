@@ -342,5 +342,5 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
     /**
      * Select the process instances with which the given groups are involved.
      */
-    ProcessInstanceQuery involvedGroupsIn(List<String> involvedGroups);
+  ProcessInstanceQuery involvedGroupsIn(List<String> involvedGroups);
 }
