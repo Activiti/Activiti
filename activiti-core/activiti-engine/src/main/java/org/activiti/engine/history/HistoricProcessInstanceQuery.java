@@ -337,6 +337,5 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
     /**
      * Only select the historic process instances with which the given groups are involved.
      */
-
-    HistoricProcessInstanceQuery involvedGroupsIn(List<String> involvedGroups);
+  HistoricProcessInstanceQuery involvedGroupsIn(List<String> involvedGroups);
 }

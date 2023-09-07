@@ -23,45 +23,42 @@ import org.activiti.engine.task.Task;
 
 public class HistoricProcessInstanceQueryGroupInvolvementTest extends PluggableActivitiTestCase {
 
-    protected void setUp() throws Exception {
-        super.setUp();
-        repositoryService.createDeployment()
-            .addClasspathResource("org/activiti/engine/test/api/history/HistoricProcessInstanceQueryGroupInvolvementTest.bpmn20.xml")
-            .deploy();
+  protected void setUp() throws Exception {
+    super.setUp();
+    repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/history/HistoricProcessInstanceQueryGroupInvolvementTest.bpmn20.xml").deploy();
 
-        ProcessInstance processInstance0 = runtimeService.startProcessInstanceByKey("groupInvolvementProcess");
-        runtimeService.addParticipantGroup(processInstance0.getId(), "group1");
+    ProcessInstance processInstance0 = runtimeService.startProcessInstanceByKey("groupInvolvementProcess");
+    runtimeService.addParticipantGroup(processInstance0.getId(), "group1");
 
-        ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("groupInvolvementProcess");
-        runtimeService.addParticipantGroup(processInstance1.getId(), "group1");
-        runtimeService.addParticipantGroup(processInstance1.getId(), "group2");
+    ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("groupInvolvementProcess");
+    runtimeService.addParticipantGroup(processInstance1.getId(), "group1");
+    runtimeService.addParticipantGroup(processInstance1.getId(), "group2");
 
-        ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("groupInvolvementProcess");
-        runtimeService.addParticipantUser(processInstance2.getId(), "kermit");
-        List<Task> taskList = taskService.createTaskQuery().list();
-        for (Task task : taskList) {
-            taskService.complete(task.getId());
-        }
+    ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("groupInvolvementProcess");
+    runtimeService.addParticipantUser(processInstance2.getId(), "kermit");
+    List<Task> taskList = taskService.createTaskQuery().list();
+    for (Task task : taskList) {
+      taskService.complete(task.getId());
     }
+  }
 
-    protected void tearDown() throws Exception {
-        for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-            repositoryService.deleteDeployment(deployment.getId(), true);
-        }
-        super.tearDown();
+  protected void tearDown() throws Exception {
+    for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+      repositoryService.deleteDeployment(deployment.getId(), true);
     }
+    super.tearDown();
+  }
 
-    public void testGroupInvolvementWithProcessInstance() {
-        List<String> groupList = new ArrayList<String>();
-        groupList.add("group1");
-        groupList.add("group2");
-        //Assert group and user involvement query is working
-        assertEquals(3L, historyService.createHistoricProcessInstanceQuery().or().involvedUser("kermit")
-            .involvedGroupsIn(groupList).endOr().count());
-        //Assert group only involvement query working
-        assertEquals(2L, historyService.createHistoricProcessInstanceQuery().involvedGroupsIn(groupList).count());
-        //Assert user only involvement query working
-        assertEquals(1L, historyService.createHistoricProcessInstanceQuery().involvedUser("kermit").count());
-    }
+  public void testGroupInvolvementWithProcessInstance() {
+    List<String> groupList = new ArrayList<String>();
+    groupList.add("group1");
+    groupList.add("group2");
+    //Assert group and user involvement query is working
+    assertEquals(3L, historyService.createHistoricProcessInstanceQuery().or().involvedUser("kermit").involvedGroupsIn(groupList).endOr().count());
+    //Assert group only involvement query working
+    assertEquals(2L, historyService.createHistoricProcessInstanceQuery().involvedGroupsIn(groupList).count());
+    //Assert user only involvement query working
+    assertEquals(1L, historyService.createHistoricProcessInstanceQuery().involvedUser("kermit").count());
+  }
 
 }
