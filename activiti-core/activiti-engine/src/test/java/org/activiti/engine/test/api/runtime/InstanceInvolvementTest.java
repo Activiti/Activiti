@@ -27,7 +27,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-
+import java.util.ArrayList;
 /**
 
  */
@@ -152,5 +152,61 @@ public class InstanceInvolvementTest extends PluggableActivitiTestCase {
     }
     return false;
   }
+    /**
+     * Group Involvement Tests Start
+     */
 
+  @Deployment(resources={ "org/activiti/engine/test/api/runtime/groupInvolvementProcess.bpmn20.xml" })
+  public void testGroupInvolvementWithProcessInstance() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("groupInvolvementProcess");
+
+    // Add 2 links of a different type for the same user
+    runtimeService.addParticipantGroup(processInstance.getId(), "group1");
+    List<String> groupList = new ArrayList<String>();
+    groupList.add("group1");
+    groupList.add("group2");
+    groupList.add("group3");
+    assertThat( runtimeService.createProcessInstanceQuery().involvedGroupsIn(groupList).count()).isEqualTo(1L);
+  }
+
+  @Deployment(resources={ "org/activiti/engine/test/api/runtime/groupInvolvementProcess.bpmn20.xml" })
+  public void testMultipleGroupInvolvementWithProcessInstance() {
+    ProcessInstance processInstance0 = runtimeService.startProcessInstanceByKey("groupInvolvementProcess");
+    // Add 2 links of a different type for the same user
+    runtimeService.addParticipantGroup(processInstance0.getId(), "group1");
+    ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("groupInvolvementProcess");
+    runtimeService.addParticipantGroup(processInstance1.getId(), "group1");
+    runtimeService.addParticipantGroup(processInstance1.getId(), "group2");
+
+    ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("groupInvolvementProcess");
+    runtimeService.addParticipantGroup(processInstance2.getId(), "group3");
+    List<String> groupList = new ArrayList<String>();
+    groupList.add("group1");
+    groupList.add("group2");
+    groupList.add("group3");
+    assertThat( runtimeService.createProcessInstanceQuery().involvedGroupsIn(groupList).count()).isEqualTo(3L);
+  }
+
+  @Deployment(resources={ "org/activiti/engine/test/api/runtime/groupInvolvementProcess.bpmn20.xml" })
+  public void testMultipleGroupAndUserInvolvementWithProcessInstance() {
+  ProcessInstance processInstance0 = runtimeService.startProcessInstanceByKey("groupInvolvementProcess");
+  runtimeService.addParticipantGroup(processInstance0.getId(), "group1");
+
+  ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("groupInvolvementProcess");
+  runtimeService.addParticipantGroup(processInstance1.getId(), "group1");
+  runtimeService.addParticipantGroup(processInstance1.getId(), "group2");
+
+  ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("groupInvolvementProcess");
+  runtimeService.addParticipantUser(processInstance2.getId(), "kermit");
+  List<String> groupList = new ArrayList<String>();
+  groupList.add("group1");
+  groupList.add("group2");
+  assertThat( runtimeService.createProcessInstanceQuery().or().involvedUser("kermit").involvedGroupsIn(groupList).endOr().count()).isEqualTo(3L);
+  assertThat( runtimeService.createProcessInstanceQuery().involvedGroupsIn(groupList).count()).isEqualTo(2L);
+  assertThat( runtimeService.createProcessInstanceQuery().involvedUser("kermit").count()).isEqualTo(1L);
+  }
+
+    /**
+     * Group Involvement Tests End
+     */
 }
