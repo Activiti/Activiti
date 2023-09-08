@@ -166,7 +166,7 @@ public class InstanceInvolvementTest extends PluggableActivitiTestCase {
     groupList.add("group1");
     groupList.add("group2");
     groupList.add("group3");
-    assertEquals(1L, runtimeService.createProcessInstanceQuery().involvedGroupsIn(groupList).count());
+    assertThat( runtimeService.createProcessInstanceQuery().involvedGroupsIn(groupList).count()).isEqualTo(1L);
   }
 
   @Deployment(resources={ "org/activiti/engine/test/api/runtime/groupInvolvementProcess.bpmn20.xml" })
