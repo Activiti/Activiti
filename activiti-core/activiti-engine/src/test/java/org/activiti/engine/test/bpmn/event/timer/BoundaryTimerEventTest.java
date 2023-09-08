@@ -55,8 +55,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
   }
 
     @Override
-    protected void setUp() throws Exception
-    {
+    protected void setUp() throws Exception {
         super.setUp();
         listenerExecutedStartEvent = false;
         listenerExecutedEndEvent = false;
