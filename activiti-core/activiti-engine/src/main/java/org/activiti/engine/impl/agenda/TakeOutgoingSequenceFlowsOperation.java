@@ -34,7 +34,6 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.Condition;
-import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.context.Context;
@@ -110,6 +109,8 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         // hence the check for NOT being a process instance
         if (!execution.isProcessInstanceType()) {
 
+            handleBoundaryEvent(flowNode);
+
             if (CollectionUtil.isNotEmpty(flowNode.getExecutionListeners())) {
                 executeExecutionListeners(flowNode,
                                           ExecutionListener.EVENTNAME_END);
@@ -133,6 +134,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
                      flowNode.getClass(),
                      flowNode.getId(),
                      flowNode.getOutgoingFlows().size());
+
 
         // Get default sequence flow (if set)
         String defaultSequenceFlowId = null;
@@ -373,5 +375,15 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
             }
         }
         return true;
+    }
+
+    private void handleBoundaryEvent(FlowNode flowNode) {
+        if (flowNode instanceof BoundaryEvent) {
+            BoundaryEvent event = (BoundaryEvent) flowNode;
+            final Activity activity = event.getAttachedToRef();
+            if (CollectionUtil.isNotEmpty(activity.getExecutionListeners())) {
+                executeExecutionListeners(activity, ExecutionListener.EVENTNAME_END);
+            }
+        }
     }
 }

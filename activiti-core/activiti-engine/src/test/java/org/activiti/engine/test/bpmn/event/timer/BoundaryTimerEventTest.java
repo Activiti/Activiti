@@ -54,6 +54,13 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     }
   }
 
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        listenerExecutedStartEvent = false;
+        listenerExecutedEndEvent = false;
+    }
+
   /*
    * Test for when multiple boundary timer events are defined on the same user task
    *
@@ -103,6 +110,67 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
     Task task = taskService.createTaskQuery().singleResult();
     assertThat(task.getName()).isEqualTo("task outside subprocess");
+  }
+
+    @Deployment(resources = {"org/activiti/engine/test/bpmn/event/timer/BoundaryTimerEventTest.testTimerOnUserTask.bpmn20.xml"})
+    public void testExpressionOnTimerWithExecutionListeners_completeUserTask() {
+        // Set the clock fixed
+        Date startTime = new Date();
+
+        HashMap<String, Object> variables = new HashMap<String, Object>();
+        variables.put("duration", "PT1H");
+
+        // After process start, there should be a timer created
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("testExpressionOnTimerWithExecutionListeners", variables);
+
+        TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
+        List<Job> jobs = jobQuery.list();
+        assertThat(jobs).hasSize(1);
+
+        Task task = taskService.createTaskQuery().singleResult();
+        taskService.complete(task.getId());
+
+        // After setting the clock to time '1 hour and 5 seconds', the second
+        // timer should fire
+        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+        waitForJobExecutorToProcessAllJobs(5000L, 25L);
+        assertThat(jobQuery.count()).isEqualTo(0L);
+
+        // start execution listener is not executed
+        assertThat(listenerExecutedStartEvent).isFalse();
+        assertThat(listenerExecutedEndEvent).isTrue();
+
+        // which means the process has ended
+        assertProcessEnded(pi.getId());
+    }
+
+    @Deployment(resources = {"org/activiti/engine/test/bpmn/event/timer/BoundaryTimerEventTest.testTimerOnUserTask.bpmn20.xml"})
+    public void testExpressionOnTimerWithExecutionListeners_expiredTimerEvent() {
+      // Set the clock fixed
+      Date startTime = new Date();
+
+      HashMap<String, Object> variables = new HashMap<String, Object>();
+      variables.put("duration", "PT1H");
+
+      // After process start, there should be a timer created
+      ProcessInstance pi = runtimeService.startProcessInstanceByKey("testExpressionOnTimerWithExecutionListeners", variables);
+
+      TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
+      List<Job> jobs = jobQuery.list();
+      assertThat(jobs).hasSize(1);
+
+      // After setting the clock to time '1 hour and 5 seconds', the second
+      // timer should fire
+      processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+      waitForJobExecutorToProcessAllJobs(5000L, 25L);
+      assertThat(jobQuery.count()).isEqualTo(0L);
+
+      // start execution listener is not executed
+      assertThat(listenerExecutedStartEvent).isFalse();
+      assertThat(listenerExecutedEndEvent).isTrue();
+
+      // which means the process has ended
+      assertProcessEnded(pi.getId());
   }
 
   @Deployment
