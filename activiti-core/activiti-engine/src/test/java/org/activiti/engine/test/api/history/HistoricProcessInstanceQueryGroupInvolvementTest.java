@@ -21,6 +21,9 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+
 public class HistoricProcessInstanceQueryGroupInvolvementTest extends PluggableActivitiTestCase {
 
   protected void setUp() throws Exception {
@@ -54,11 +57,11 @@ public class HistoricProcessInstanceQueryGroupInvolvementTest extends PluggableA
     groupList.add("group1");
     groupList.add("group2");
     //Assert group and user involvement query is working
-    assertEquals(3L, historyService.createHistoricProcessInstanceQuery().or().involvedUser("kermit").involvedGroupsIn(groupList).endOr().count());
+    assertThat(historyService.createHistoricProcessInstanceQuery().or().involvedUser("kermit").involvedGroupsIn(groupList).endOr().count()).isEqualTo(3L);
     //Assert group only involvement query working
-    assertEquals(2L, historyService.createHistoricProcessInstanceQuery().involvedGroupsIn(groupList).count());
+    assertThat( historyService.createHistoricProcessInstanceQuery().involvedGroupsIn(groupList).count()).isEqualTo(2L);
     //Assert user only involvement query working
-    assertEquals(1L, historyService.createHistoricProcessInstanceQuery().involvedUser("kermit").count());
+    assertThat( historyService.createHistoricProcessInstanceQuery().involvedUser("kermit").count()).isEqualTo(1L);
   }
 
 }

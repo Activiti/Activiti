@@ -184,7 +184,7 @@ public class InstanceInvolvementTest extends PluggableActivitiTestCase {
     groupList.add("group1");
     groupList.add("group2");
     groupList.add("group3");
-    assertEquals(3L, runtimeService.createProcessInstanceQuery().involvedGroupsIn(groupList).count());
+    assertThat( runtimeService.createProcessInstanceQuery().involvedGroupsIn(groupList).count()).isEqualTo(3L);
   }
 
   @Deployment(resources={ "org/activiti/engine/test/api/runtime/groupInvolvementProcess.bpmn20.xml" })
@@ -201,9 +201,9 @@ public class InstanceInvolvementTest extends PluggableActivitiTestCase {
   List<String> groupList = new ArrayList<String>();
   groupList.add("group1");
   groupList.add("group2");
-  assertEquals(3L, runtimeService.createProcessInstanceQuery().or().involvedUser("kermit").involvedGroupsIn(groupList).endOr().count());
-  assertEquals(2L, runtimeService.createProcessInstanceQuery().involvedGroupsIn(groupList).count());
-  assertEquals(1L, runtimeService.createProcessInstanceQuery().involvedUser("kermit").count());
+  assertThat( runtimeService.createProcessInstanceQuery().or().involvedUser("kermit").involvedGroupsIn(groupList).endOr().count()).isEqualTo(3L);
+  assertThat( runtimeService.createProcessInstanceQuery().involvedGroupsIn(groupList).count()).isEqualTo(2L);
+  assertThat( runtimeService.createProcessInstanceQuery().involvedUser("kermit").count()).isEqualTo(1L);
   }
 
     /**
