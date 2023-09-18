@@ -1161,6 +1161,14 @@ public class DbSqlSession implements Session {
                 schema = dbSqlSessionFactory.getDatabaseSchema();
             }
 
+            if (schema == null || schema.length() == 0) {
+                schema = connection.getSchema();
+            }
+
+            if (catalog == null || catalog.length() == 0) {
+                catalog = connection.getCatalog();
+            }
+
             String databaseType = dbSqlSessionFactory.getDatabaseType();
 
             if ("postgres".equals(databaseType)) {
