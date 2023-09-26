@@ -333,4 +333,9 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
    * Instruct localization to fallback to more general locales including the default locale of the JVM if the specified locale is not found.
    */
   HistoricProcessInstanceQuery withLocalizationFallback();
+
+    /**
+     * Only select the historic process instances with which the given groups are involved.
+     */
+  HistoricProcessInstanceQuery involvedGroupsIn(List<String> involvedGroups);
 }

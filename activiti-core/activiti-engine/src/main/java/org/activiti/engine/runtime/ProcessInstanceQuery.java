@@ -338,4 +338,9 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}).
    */
   ProcessInstanceQuery orderByTenantId();
+
+    /**
+     * Select the process instances with which the given groups are involved.
+     */
+  ProcessInstanceQuery involvedGroupsIn(List<String> involvedGroups);
 }
