@@ -33,6 +33,7 @@ public class FieldAccessJPAEntity {
   @Column(name = "ID_")
   private Long id;
 
+  @Column(name = "\"value\"")
   private String value;
 
   public FieldAccessJPAEntity() {
