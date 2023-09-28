@@ -12,7 +12,7 @@
   <packaging>pom</packaging>
   <name>Activiti :: Core :: Parent</name>
   <properties>
-    <batik.version>1.16</batik.version>
+    <batik.version>1.17</batik.version>
     <commons-email.version>1.5</commons-email.version>
     <commons-io.version>2.11.0</commons-io.version>
     <jakarta-enterprise-concurrent.version>1.1.2</jakarta-enterprise-concurrent.version>
