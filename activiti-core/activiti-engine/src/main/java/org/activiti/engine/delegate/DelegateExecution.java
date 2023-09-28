@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.FlowElement;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.context.Context;
 
 /**
@@ -184,7 +184,7 @@ public interface DelegateExecution extends VariableScope {
    */
   void setMultiInstanceRoot(boolean isMultiInstanceRoot);
 
-  default ProcessEngineConfigurationImpl getEngineServices() {
+  default ProcessEngineConfiguration getEngineServices() {
       return Context.getProcessEngineConfiguration();
   }
 
