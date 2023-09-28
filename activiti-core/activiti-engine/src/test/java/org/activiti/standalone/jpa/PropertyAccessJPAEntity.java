@@ -31,7 +31,6 @@ public class PropertyAccessJPAEntity {
 
   private Long id;
 
-  @Column(name = "\"value\"")
   private String value;
 
   public PropertyAccessJPAEntity() {
