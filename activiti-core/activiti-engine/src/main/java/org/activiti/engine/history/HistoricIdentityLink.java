@@ -52,4 +52,9 @@ public interface HistoricIdentityLink {
    * The id of the process instance associated with this identity link.
    */
   String getProcessInstanceId();
+
+  /**
+   * The details associated with the identity link, JWT sub
+   */
+  byte[] getDetails();
 }

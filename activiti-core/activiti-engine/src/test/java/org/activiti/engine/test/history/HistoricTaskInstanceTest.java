@@ -28,7 +28,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricIdentityLink;
@@ -583,6 +582,62 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
                     foundAssignee = true;
                 } else if (link.getType().equals("customUseridentityLink")) {
                     assertThat(link.getUserId()).isEqualTo("gonzo");
+                    foundCustom = true;
+                }
+            }
+        }
+
+        assertThat(foundAssignee).isTrue();
+        assertThat(foundCandidateGroup).isTrue();
+        assertThat(foundCandidateUser).isTrue();
+        assertThat(foundCustom).isTrue();
+
+        // Now complete the task and check if links are still there
+        taskService.complete(task.getId());
+        assertThat(historyService.getHistoricIdentityLinksForTask(task.getId())).hasSize(4);
+
+        // After deleting historic task, exception should be thrown when trying to get links
+        historyService.deleteHistoricTaskInstance(task.getId());
+
+        assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+            .isThrownBy(() -> historyService.getHistoricIdentityLinksForTask(task.getId()).size())
+            .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(HistoricTaskInstance.class));
+    }
+
+    @Deployment(resources = {"org/activiti/engine/test/history/HistoricTaskInstanceTest.testHistoricIdentityLinksOnTask.bpmn20.xml"})
+    public void testHistoricIdentityLinksOnTaskWithDetails() throws Exception {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("historicIdentityLinks");
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+        assertThat(task).isNotNull();
+
+        // Set additional identity-link not coming from process
+        taskService.addUserIdentityLink(task.getId(),
+            "gonzo",
+            "actor",
+            "details".getBytes());
+        assertThat(taskService.getIdentityLinksForTask(task.getId()).size()).isEqualTo(4);
+
+        // Check historic identity-links when task is still active
+        List<HistoricIdentityLink> historicIdentityLinks = historyService.getHistoricIdentityLinksForTask(task.getId());
+        assertThat(historicIdentityLinks).hasSize(4);
+
+        // Validate all links
+        boolean foundCandidateUser = false, foundCandidateGroup = false, foundAssignee = false, foundCustom = false;
+        for (HistoricIdentityLink link : historicIdentityLinks) {
+            assertThat(link.getTaskId()).isEqualTo(task.getId());
+            if (link.getGroupId() != null) {
+                assertThat(link.getGroupId()).isEqualTo("sales");
+                foundCandidateGroup = true;
+            } else {
+                if (link.getType().equals("candidate")) {
+                    assertThat(link.getUserId()).isEqualTo("fozzie");
+                    foundCandidateUser = true;
+                } else if (link.getType().equals("assignee")) {
+                    assertThat(link.getUserId()).isEqualTo("kermit");
+                    foundAssignee = true;
+                } else if (link.getType().equals("actor")) {
+                    assertThat(link.getUserId()).isEqualTo("gonzo");
+                    assertThat(link.getDetails()).isEqualTo("details".getBytes());
                     foundCustom = true;
                 }
             }

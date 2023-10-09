@@ -223,6 +223,7 @@ create table ACT_RU_IDENTITYLINK (
     TASK_ID_ varchar(64),
     PROC_INST_ID_ varchar(64),
     PROC_DEF_ID_ varchar (64),
+    DETAILS_ bytea,
     primary key (ID_)
 );
 
