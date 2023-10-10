@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '8.0.0', 1);
+values ('schema.version', '8.1.0', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(8.0.0)', 1);
+values ('schema.history', 'create(8.1.0)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);

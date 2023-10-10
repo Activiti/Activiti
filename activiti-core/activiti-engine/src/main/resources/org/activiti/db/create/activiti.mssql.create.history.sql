@@ -132,6 +132,7 @@ create table ACT_HI_IDENTITYLINK (
     USER_ID_ nvarchar(255),
     TASK_ID_ nvarchar(64),
     PROC_INST_ID_ nvarchar(64),
+    DETAILS_ varbinary(max),
     primary key (ID_)
 );
 
