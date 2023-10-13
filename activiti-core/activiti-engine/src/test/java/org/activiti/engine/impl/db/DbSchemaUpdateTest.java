@@ -15,6 +15,8 @@
  */
 package org.activiti.engine.impl.db;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.nio.file.Path;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
@@ -67,7 +69,7 @@ public class DbSchemaUpdateTest extends AbstractTestCase {
                 .selectById(PropertyEntity.class,"schema.version"));
 
         // then
-        assertEquals(ProcessEngine.VERSION, schemaVersion.getValue());
+        assertThat(schemaVersion.getValue()).isEqualTo(ProcessEngine.VERSION);
 
         // and when
         PropertyEntity schemaHistory = commandExecutor.execute(config,
@@ -75,7 +77,7 @@ public class DbSchemaUpdateTest extends AbstractTestCase {
                 .selectById(PropertyEntity.class,"schema.history"));
 
         // then
-        assertTextPresent(ProcessEngine.VERSION, schemaHistory.getValue());
+        assertThat(schemaHistory.getValue()).contains(ProcessEngine.VERSION);
 
         processEngine.close();
     }
