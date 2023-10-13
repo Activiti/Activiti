@@ -13,6 +13,10 @@
   <artifactId>activiti-engine</artifactId>
   <name>Activiti :: Engine</name>
 
+  <properties>
+    <activiti-engine.unpack.version>7.2.0</activiti-engine.unpack.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
@@ -232,7 +236,7 @@
                 <artifactItem>
                   <groupId>org.activiti</groupId>
                   <artifactId>activiti-engine</artifactId>
-                  <version>7.2.0</version>
+                  <version>${activiti-engine.unpack.version}</version>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}/activiti-engine</outputDirectory>
                 </artifactItem>
