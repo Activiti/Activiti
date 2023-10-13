@@ -19,7 +19,6 @@ package org.activiti.engine.impl.persistence.entity;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
@@ -40,6 +39,7 @@ public class IdentityLinkEntityImpl extends AbstractEntityNoRevision implements 
   protected TaskEntity task;
   protected ExecutionEntity processInstance;
   protected ProcessDefinitionEntity processDef;
+  protected byte[] details;
 
   public IdentityLinkEntityImpl() {
 
@@ -68,6 +68,10 @@ public class IdentityLinkEntityImpl extends AbstractEntityNoRevision implements 
 
     if (this.processDefId != null) {
       persistentState.put("processDefId", this.processDefId);
+    }
+
+    if (this.details != null) {
+      persistentState.put("details", this.details);
     }
 
     return persistentState;
@@ -176,6 +180,14 @@ public class IdentityLinkEntityImpl extends AbstractEntityNoRevision implements 
     return this.processDefId;
   }
 
+  public void setDetails(byte[] details) {
+      this.details = details;
+  }
+
+  public byte[] getDetails() {
+      return this.details;
+  }
+
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
@@ -195,6 +207,9 @@ public class IdentityLinkEntityImpl extends AbstractEntityNoRevision implements 
     }
     if (processDefId != null) {
       sb.append(", processDefId=").append(processDefId);
+    }
+    if (details != null) {
+        sb.append(", details=").append(new String(details));
     }
     sb.append("]");
     return sb.toString();

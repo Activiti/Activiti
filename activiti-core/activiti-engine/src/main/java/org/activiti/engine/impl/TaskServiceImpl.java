@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -155,6 +154,10 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
   public void addUserIdentityLink(String taskId, String userId, String identityLinkType) {
     commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, AddIdentityLinkCmd.IDENTITY_USER, identityLinkType));
+  }
+
+  public void addUserIdentityLink(String taskId, String userId, String identityLinkType, byte[] details) {
+    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, AddIdentityLinkCmd.IDENTITY_USER, identityLinkType, details));
   }
 
   public void addGroupIdentityLink(String taskId, String groupId, String identityLinkType) {

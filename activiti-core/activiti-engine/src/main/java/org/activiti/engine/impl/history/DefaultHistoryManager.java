@@ -19,7 +19,6 @@ package org.activiti.engine.impl.history;
 
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SequenceFlow;
@@ -820,6 +819,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       historicIdentityLinkEntity.setTaskId(identityLink.getTaskId());
       historicIdentityLinkEntity.setType(identityLink.getType());
       historicIdentityLinkEntity.setUserId(identityLink.getUserId());
+      historicIdentityLinkEntity.setDetails(identityLink.getDetails());
       getHistoricIdentityLinkEntityManager().insert(historicIdentityLinkEntity, false);
     }
   }

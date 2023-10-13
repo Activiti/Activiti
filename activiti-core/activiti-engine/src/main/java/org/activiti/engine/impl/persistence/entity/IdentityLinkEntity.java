@@ -57,4 +57,5 @@ public interface IdentityLinkEntity extends IdentityLink, Entity {
 
   String getProcessDefinitionId();
 
+  void setDetails(byte[] details);
 }

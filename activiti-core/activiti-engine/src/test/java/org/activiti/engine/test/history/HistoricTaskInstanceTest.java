@@ -19,6 +19,7 @@ package org.activiti.engine.test.history;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.tuple;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,7 +29,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricIdentityLink;
@@ -592,6 +592,46 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
         assertThat(foundCandidateGroup).isTrue();
         assertThat(foundCandidateUser).isTrue();
         assertThat(foundCustom).isTrue();
+
+        // Now complete the task and check if links are still there
+        taskService.complete(task.getId());
+        assertThat(historyService.getHistoricIdentityLinksForTask(task.getId())).hasSize(4);
+
+        // After deleting historic task, exception should be thrown when trying to get links
+        historyService.deleteHistoricTaskInstance(task.getId());
+
+        assertThatExceptionOfType(ActivitiObjectNotFoundException.class)
+            .isThrownBy(() -> historyService.getHistoricIdentityLinksForTask(task.getId()).size())
+            .satisfies(ae -> assertThat(ae.getObjectClass()).isEqualTo(HistoricTaskInstance.class));
+    }
+
+    @Deployment(resources = {"org/activiti/engine/test/history/HistoricTaskInstanceTest.testHistoricIdentityLinksOnTask.bpmn20.xml"})
+    public void testHistoricIdentityLinksOnTaskWithDetails() throws Exception {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("historicIdentityLinks");
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+        assertThat(task).isNotNull();
+
+        // Set additional identity-link not coming from process
+        taskService.addUserIdentityLink(task.getId(),
+            "gonzo",
+            "actor",
+            "details".getBytes());
+        assertThat(taskService.getIdentityLinksForTask(task.getId()).size()).isEqualTo(4);
+
+        // Check historic identity-links when task is still active
+        List<HistoricIdentityLink> historicIdentityLinks = historyService.getHistoricIdentityLinksForTask(task.getId());
+        assertThat(historicIdentityLinks)
+            .extracting(
+                HistoricIdentityLink::getType,
+                HistoricIdentityLink::getGroupId,
+                HistoricIdentityLink::getUserId,
+                HistoricIdentityLink::getDetails)
+            .containsExactlyInAnyOrder(
+                tuple("candidate", "sales", null, null),
+                tuple("candidate", null, "fozzie", null),
+                tuple("assignee", null, "kermit", null),
+                tuple("actor", null, "gonzo", "details".getBytes())
+            );
 
         // Now complete the task and check if links are still there
         taskService.complete(task.getId());

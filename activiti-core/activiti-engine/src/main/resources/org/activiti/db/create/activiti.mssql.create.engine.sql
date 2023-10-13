@@ -19,7 +19,7 @@ create table ACT_GE_BYTEARRAY (
     REV_ int,
     NAME_ nvarchar(255),
     DEPLOYMENT_ID_ nvarchar(64),
-    BYTES_  varbinary(max),
+    BYTES_ varbinary(max),
     GENERATED_ tinyint,
     primary key (ID_)
 );
@@ -223,6 +223,7 @@ create table ACT_RU_IDENTITYLINK (
     TASK_ID_ nvarchar(64),
     PROC_INST_ID_ nvarchar(64),
     PROC_DEF_ID_ nvarchar(64),
+    DETAILS_ varbinary(max),
     primary key (ID_)
 );
 

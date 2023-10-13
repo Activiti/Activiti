@@ -36,14 +36,20 @@ public class AddIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
   protected int identityIdType;
 
   protected String identityType;
+  protected byte[] details;
 
   public AddIdentityLinkCmd(String taskId, String identityId, int identityIdType, String identityType) {
+    this(taskId, identityId, identityIdType, identityType, null);
+  }
+
+  public AddIdentityLinkCmd(String taskId, String identityId, int identityIdType, String identityType, byte[] details) {
     super(taskId);
     validateParams(taskId, identityId, identityIdType, identityType);
     this.taskId = taskId;
     this.identityId = identityId;
     this.identityIdType = identityIdType;
     this.identityType = identityType;
+    this.details = details;
   }
 
   protected void validateParams(String taskId, String identityId, int identityIdType, String identityType) {
@@ -75,7 +81,7 @@ public class AddIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
     } else if (IdentityLinkType.OWNER.equals(identityType)) {
       commandContext.getTaskEntityManager().changeTaskOwner(task, identityId);
     } else if (IDENTITY_USER == identityIdType) {
-      task.addUserIdentityLink(identityId, identityType);
+      task.addUserIdentityLink(identityId, identityType, details);
     } else if (IDENTITY_GROUP == identityIdType) {
       task.addGroupIdentityLink(identityId, identityType);
     }

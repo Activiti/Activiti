@@ -59,4 +59,9 @@ public interface IdentityLink {
    */
   String getProcessInstanceId();
 
+  /**
+   * The details associated with the identity link, JWT sub uuid
+   */
+  byte[] getDetails();
+
 }

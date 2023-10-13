@@ -25,7 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
@@ -240,6 +239,11 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   @Override
   public void addUserIdentityLink(String userId, String identityLinkType) {
     Context.getCommandContext().getIdentityLinkEntityManager().addUserIdentityLink(this, userId, identityLinkType);
+  }
+
+  @Override
+  public void addUserIdentityLink(String userId, String identityLinkType, byte[] details) {
+    Context.getCommandContext().getIdentityLinkEntityManager().addUserIdentityLink(this, userId, identityLinkType, details);
   }
 
   @Override

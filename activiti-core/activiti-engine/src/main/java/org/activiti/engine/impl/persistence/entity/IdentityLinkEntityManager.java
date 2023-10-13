@@ -16,10 +16,9 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import org.activiti.engine.api.internal.Internal;
-
 import java.util.Collection;
 import java.util.List;
+import org.activiti.engine.api.internal.Internal;
 
 /**
 
@@ -42,7 +41,11 @@ public interface IdentityLinkEntityManager extends EntityManager<IdentityLinkEnt
 
   IdentityLinkEntity addIdentityLink(ExecutionEntity executionEntity, String userId, String groupId, String type);
 
+  IdentityLinkEntity addIdentityLink(ExecutionEntity executionEntity, String userId, String groupId, String type, byte[] details);
+
   IdentityLinkEntity addIdentityLink(TaskEntity taskEntity, String userId, String groupId, String type);
+
+  IdentityLinkEntity addIdentityLink(TaskEntity taskEntity, String userId, String groupId, String type, byte[] details);
 
   IdentityLinkEntity addIdentityLink(ProcessDefinitionEntity processDefinitionEntity, String userId, String groupId);
 
@@ -64,6 +67,7 @@ public interface IdentityLinkEntityManager extends EntityManager<IdentityLinkEnt
 
   void addUserIdentityLink(TaskEntity taskEntity, String userId, String identityLinkType);
 
+  void addUserIdentityLink(TaskEntity taskEntity, String userId, String identityLinkType, byte[] details);
 
   void deleteIdentityLink(IdentityLinkEntity identityLink, boolean cascadeHistory);
 

@@ -13,6 +13,10 @@
   <artifactId>activiti-engine</artifactId>
   <name>Activiti :: Engine</name>
 
+  <properties>
+    <activiti-engine.unpack.version>7.2.0</activiti-engine.unpack.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
@@ -177,6 +181,21 @@
       <artifactId>hibernate-core</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -200,6 +219,33 @@
             <exclude>**/CronExpression.java</exclude>
           </excludes>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.1.1</version>
+        <executions>
+          <execution>
+            <id>resource-dependencies</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.activiti</groupId>
+                  <artifactId>activiti-engine</artifactId>
+                  <version>${activiti-engine.unpack.version}</version>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/activiti-engine</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+              <includes>org/activiti/db/create/**</includes>
+              <outputDirectory>${project.build.directory}/activiti-engine</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

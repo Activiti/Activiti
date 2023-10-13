@@ -20,9 +20,7 @@ package org.activiti.engine.test.api.task;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import junit.framework.AssertionFailedError;
-
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Event;
@@ -136,6 +134,32 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
 
     assertThat(taskService.getIdentityLinksForTask(taskId)).hasSize(0);
   }
+
+    @Deployment(resources = "org/activiti/engine/test/api/task/IdentityLinksProcess.bpmn20.xml")
+    public void testCustomTypeUserLinkWithDetails() {
+        String details = "{\"sub\":\"guid\"}";
+        runtimeService.startProcessInstanceByKey("IdentityLinksProcess");
+
+        String taskId = taskService.createTaskQuery().singleResult().getId();
+
+        taskService.addUserIdentityLink(taskId, "kermit", "actor", details.getBytes());
+
+        List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
+        IdentityLink identityLink = identityLinks.get(0);
+
+        assertThat(identityLink.getGroupId()).isNull();
+        assertThat(identityLink.getUserId()).isEqualTo("kermit");
+        assertThat(identityLink.getType()).isEqualTo("actor");
+        assertThat(identityLink.getTaskId()).isEqualTo(taskId);
+        assertThat(identityLink.getDetails()).isEqualTo(details.getBytes());
+
+        assertThat(identityLinks).hasSize(1);
+
+        taskService.deleteUserIdentityLink(taskId, "kermit", "actor");
+
+        assertThat(taskService.getIdentityLinksForTask(taskId)).hasSize(0);
+    }
+
 
   @Deployment(resources = "org/activiti/engine/test/api/task/IdentityLinksProcess.bpmn20.xml")
   public void testCustomLinkGroupLink() {
