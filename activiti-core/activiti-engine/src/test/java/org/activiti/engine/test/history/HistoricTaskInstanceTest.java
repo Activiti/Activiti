@@ -619,34 +619,18 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
 
         // Check historic identity-links when task is still active
         List<HistoricIdentityLink> historicIdentityLinks = historyService.getHistoricIdentityLinksForTask(task.getId());
-        assertThat(historicIdentityLinks).hasSize(4);
-
-        // Validate all links
-        boolean foundCandidateUser = false, foundCandidateGroup = false, foundAssignee = false, foundCustom = false;
-        for (HistoricIdentityLink link : historicIdentityLinks) {
-            assertThat(link.getTaskId()).isEqualTo(task.getId());
-            if (link.getGroupId() != null) {
-                assertThat(link.getGroupId()).isEqualTo("sales");
-                foundCandidateGroup = true;
-            } else {
-                if (link.getType().equals("candidate")) {
-                    assertThat(link.getUserId()).isEqualTo("fozzie");
-                    foundCandidateUser = true;
-                } else if (link.getType().equals("assignee")) {
-                    assertThat(link.getUserId()).isEqualTo("kermit");
-                    foundAssignee = true;
-                } else if (link.getType().equals("actor")) {
-                    assertThat(link.getUserId()).isEqualTo("gonzo");
-                    assertThat(link.getDetails()).isEqualTo("details".getBytes());
-                    foundCustom = true;
-                }
-            }
-        }
-
-        assertThat(foundAssignee).isTrue();
-        assertThat(foundCandidateGroup).isTrue();
-        assertThat(foundCandidateUser).isTrue();
-        assertThat(foundCustom).isTrue();
+        assertThat(historicIdentityLinks)
+            .extracting(
+                HistoricIdentityLink::getType,
+                HistoricIdentityLink::getGroupId,
+                HistoricIdentityLink::getUserId,
+                HistoricIdentityLink::getDetails)
+            .containsExactlyInAnyOrder(
+                tuple("candidate", "sales", null, null),
+                tuple("candidate", null, "fozzie", null),
+                tuple("assignee", null, "kermit", null),
+                tuple("actor", null, "gonzo", "details".getBytes())
+            );
 
         // Now complete the task and check if links are still there
         taskService.complete(task.getId());
