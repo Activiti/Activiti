@@ -34,7 +34,7 @@
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
         <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver" />
-        <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:mem:activiti-jpa;DB_CLOSE_DELAY=1000" />
+        <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:mem:activiti-jpa;DB_CLOSE_DELAY=1000;NON_KEYWORDS=VALUE" />
         <property name="jakarta.persistence.jdbc.user" value="sa" />
         <property name="jakarta.persistence.jdbc.password" value="" />
         <property name="hibernate.show_sql" value="true" />
