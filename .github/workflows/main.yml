@@ -97,6 +97,9 @@ jobs:
         env:
           DO_PUSH: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'preview')) }}
 
+      - name: Collect Workflow Telemetry
+        uses: runforesight/workflow-telemetry-action@v1
+
       - name: Build and Test with Maven (and maybe Deploy)
         shell: bash
         run: mvn ${{ steps.define_maven_command.outputs.command }} ${{ env.MAVEN_CLI_OPTS}}
