@@ -225,7 +225,7 @@
     <spring-boot.version>3.1.2</spring-boot.version>
     <h2.version>2.2.224</h2.version>
     <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
-    <versions-maven-plugin.version>2.11.0</versions-maven-plugin.version>
+    <versions-maven-plugin.version>2.16.1</versions-maven-plugin.version>
 
     <!-- configuration properties for tests -->
     <generated-assertions-folder>
