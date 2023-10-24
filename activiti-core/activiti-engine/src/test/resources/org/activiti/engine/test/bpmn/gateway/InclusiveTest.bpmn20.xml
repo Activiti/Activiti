@@ -150,14 +150,14 @@
         <modeler:conditionDefinition modeler:index="0" modeler:outcomeFormId="51" modeler:outcomeFormName="inclusiveForm" modeler:rightOutcomeName="A" modeler:operator="=="/>
         <modeler:editor-resource-id><![CDATA[sid-6A57E9BF-8AA6-473F-9888-D7342C7B208A]]></modeler:editor-resource-id>
       </extensionElements>
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${(activiti_flowConditionsBean.exists(execution, 'form51outcome') && form51outcome == 'A')}]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${execution.getVariable('form51outcome') == 'A'}]]></conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:sequenceFlow id="sid-B2713A11-090B-4346-9EEA-5BD4E4DB59AC" sourceRef="sid-87D6FE80-B57F-4213-90E9-765728F07B18" targetRef="sid-18ECEC38-9A40-4CE0-ACE7-B98C5B7F06D2">
       <extensionElements>
         <modeler:conditionDefinition modeler:index="0" modeler:outcomeFormId="51" modeler:outcomeFormName="inclusiveForm" modeler:rightOutcomeName="B" modeler:operator="=="/>
         <modeler:editor-resource-id><![CDATA[sid-B2713A11-090B-4346-9EEA-5BD4E4DB59AC]]></modeler:editor-resource-id>
       </extensionElements>
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${(activiti_flowConditionsBean.exists(execution, 'form51outcome') && form51outcome == 'B')}]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${execution.getVariable('form51outcome') == 'B'}]]></conditionExpression>
     </bpmn2:sequenceFlow>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_InclusiveTest">
