@@ -132,7 +132,7 @@ public class TaskRuntimeClaimReleaseTest {
         );
         assertThat(thrown)
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessage("You cannot release a task that is not claimed");;
+                .hasMessage("You cannot release a task that is not claimed");
     }
 
     @Test
@@ -231,7 +231,31 @@ public class TaskRuntimeClaimReleaseTest {
         //then
         assertThat(throwable)
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessage("You cannot release a task where you are not the assignee");;
+                .hasMessage("You cannot release a task where you are not the assignee");
+    }
+
+    @Test
+    public void should_throwIllegalStateException_when_releaseTaskWithNoCandidateUsersOrGroups() {
+        securityUtil.logInAs("garth");
+
+        Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
+            .withName("group task")
+                .withAssignee("garth")
+            .build());
+
+
+        assertThat(standAloneTask.getCandidateGroups()).isNull();
+        assertThat(standAloneTask.getCandidateUsers()).isNull();
+        assertThat(standAloneTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+
+        Throwable thrown = catchThrowable(() -> {
+                // UnAuthorized release, task  has no candidates
+                taskRuntime.release(TaskPayloadBuilder.release().withTaskId(standAloneTask.getId()).build());
+            }
+        );
+        assertThat(thrown)
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("You cannot release a task that has not candidate users or groups");
     }
 
 }

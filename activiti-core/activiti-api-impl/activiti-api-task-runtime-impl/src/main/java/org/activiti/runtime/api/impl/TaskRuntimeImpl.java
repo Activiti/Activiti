@@ -474,14 +474,27 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     private void assertCanReleaseTask(String taskId) {
         Task task = task(taskId);
+        String assignee = task.getAssignee();
+        List<String> candidateUser = task.getCandidateUsers();
+        List<String> candidateGroups = task.getCandidateGroups();
 
-        if (task.getAssignee() == null || task.getAssignee().isEmpty()) {
+        if (assignee == null || assignee.isEmpty()) {
             throw new IllegalStateException("You cannot release a task that is not claimed");
         }
+
+        if (!hasTaskCandidates(candidateUser, candidateGroups)) {
+            throw new IllegalStateException("You cannot release a task that has not candidate users or groups");
+        }
+
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
-        if (!task.getAssignee().equals(authenticatedUserId)) {
+        if (!assignee.equals(authenticatedUserId)) {
             throw new IllegalStateException("You cannot release a task where you are not the assignee");
         }
+    }
+
+    private boolean hasTaskCandidates(List<String> candidateUsers, List<String> candidateGroups) {
+        return (candidateUsers != null && !candidateUsers.isEmpty()) ||
+            (candidateGroups != null && !candidateGroups.isEmpty());
     }
 
 }
