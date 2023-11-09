@@ -15,7 +15,6 @@
  */
 package org.activiti.runtime.api.impl;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.activiti.api.runtime.shared.security.SecurityManager;
@@ -116,10 +115,11 @@ public class TaskRuntimeImplTest {
                 .withTaskId(taskId)
                 .withAssignee(newAssignee)
                 .build();
-        List<String> userCandidates = Arrays.asList(newAssignee);
+        List<String> userCandidates = List.of(newAssignee);
         doReturn(userCandidates).when(taskRuntime).userCandidates(taskId);
         TaskImpl task =  mock(TaskImpl.class);
         given(task.getAssignee()).willReturn("user");
+        given(task.getCandidateUsers()).willReturn(List.of(newAssignee));
         doReturn(task).when(taskConverter).fromWithCandidates(any());
 
         taskRuntime.assign(assignTaskPayload);
