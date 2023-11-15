@@ -214,9 +214,31 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
 
     @Deployment(resources = { "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnCallActivity-parent.bpmn20.xml",
         "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.subprocess2ndLevelThrowsError.bpmn20.xml" })
-    public void testCatchErrorOnCallActivityWithSubprocess() {
+    public void testCatchSpecificErrorOnCallActivityWithSubprocess() {
         String procId = runtimeService.startProcessInstanceByKey("catchErrorOnCallActivity").getId();
+
         Task task = taskService.createTaskQuery().singleResult();
+        assertThat(task.getName()).isEqualTo("Child Error Task");
+        taskService.complete(task.getId());
+
+        task = taskService.createTaskQuery().singleResult();
+        assertThat(task.getName()).isEqualTo("Escalated Task");
+
+        // Completing the task will end the process instance
+        taskService.complete(task.getId());
+        assertProcessEnded(procId);
+    }
+
+    @Deployment(resources = { "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnCallActivity-parentWithGenericErrorRef.bpmn20.xml",
+        "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.subprocess2ndLevelThrowsError.bpmn20.xml" })
+    public void testCatchGenericErrorOnCallActivityWithSubprocess() {
+        String procId = runtimeService.startProcessInstanceByKey("catchErrorOnCallActivity").getId();
+
+        Task task = taskService.createTaskQuery().singleResult();
+        assertThat(task.getName()).isEqualTo("Child Error Task");
+        taskService.complete(task.getId());
+
+        task = taskService.createTaskQuery().singleResult();
         assertThat(task.getName()).isEqualTo("Escalated Task");
 
         // Completing the task will end the process instance
