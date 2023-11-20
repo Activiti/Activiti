@@ -60,7 +60,7 @@ public class ErrorPropagation {
             isCatchExecutedForProcess = executeCatch(eventMap, execution, errorRef);
         }
 
-        if (isCallActivity(execution) && !isCatchExecutedForProcess) {
+        if (!isCatchExecutedForProcess && isCallActivity(execution)) {
             isCatchExecutedForCallActivity = findCatchingEventsAndExecuteCatchForCallActivity(errorRef, execution);
         }
     } finally {
