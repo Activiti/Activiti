@@ -22,30 +22,30 @@ concurrency:
 
 jobs:
 
-  check-ext-build:
-    name: Check dependabot/external build
+  pre-checks:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/check-ext-build
-
-  pre-commit:
-    needs: check-ext-build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@v3.0.2
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Check dependabot build
+        uses: ./.github/actions/check-ext-build
+      - name: pre-commit
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@8c2a3691aa49cd105f62c2983cda3089b82afe89 # v4.0.0
+        with:
+          skip_checkout: true
+      - name: Ensure SHA pinned actions
+        uses: zgosalvez/github-actions-ensure-sha-pinned-actions@b35f285b9bb7e80de0967367cee66d3b6d50ceca # v3.0.1
 
   build:
     runs-on: ubuntu-latest
-    needs: pre-commit
+    needs: pre-checks
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -58,7 +58,7 @@ jobs:
           java-version: 17
           distribution: 'temurin'
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@v3.0.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@9fd78f71c1ccbad03b79b81db541693cd9cfc89b # v3.0.2
         id: update-pom-to-next-version
         if: github.event_name == 'push'
 
@@ -126,7 +126,7 @@ jobs:
 
       - name: Install updatebot
         if: github.event_name == 'push'
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@v3.0.2
+        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@9fd78f71c1ccbad03b79b81db541693cd9cfc89b # v3.0.2
 
       # updatebot requires JDK 11 to work
       - name: Configure Java JDK for updatebot
@@ -155,7 +155,7 @@ jobs:
     if: always() && failure() && github.event_name == 'push'
     steps:
       - name: Slack Notification
-        uses: Alfresco/alfresco-build-tools/.github/actions/send-slack-notification@v3.0.2
+        uses: Alfresco/alfresco-build-tools/.github/actions/send-slack-notification@9fd78f71c1ccbad03b79b81db541693cd9cfc89b # v3.0.2
         with:
           channel-id: 'eng-hxp-studio-activiti-gh-notifs'
           token: ${{ secrets.SLACK_NOTIFICATION_BOT_TOKEN }}

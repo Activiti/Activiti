@@ -5,9 +5,14 @@ updates:
   - package-ecosystem: "maven"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/check-ext-build"
+    schedule:
+      interval: "weekly"
