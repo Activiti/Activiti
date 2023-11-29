@@ -29,7 +29,7 @@ jobs:
       - name: Check dependabot build
         uses: ./.github/actions/check-ext-build
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@8c2a3691aa49cd105f62c2983cda3089b82afe89 # v4.0.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@042fc28b3e308e1d1159dfee61bc46c5940ed7b6 # v5.4.0
         with:
           skip_checkout: true
       - name: Ensure SHA pinned actions
@@ -58,7 +58,7 @@ jobs:
           java-version: 17
           distribution: 'temurin'
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@8c2a3691aa49cd105f62c2983cda3089b82afe89 # v4.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@042fc28b3e308e1d1159dfee61bc46c5940ed7b6 # v5.4.0
         id: update-pom-to-next-version
         if: github.event_name == 'push'
 
@@ -126,7 +126,7 @@ jobs:
 
       - name: Install updatebot
         if: github.event_name == 'push'
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@8c2a3691aa49cd105f62c2983cda3089b82afe89 # v4.0.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@042fc28b3e308e1d1159dfee61bc46c5940ed7b6 # v5.4.0
 
       # updatebot requires JDK 11 to work
       - name: Configure Java JDK for updatebot
@@ -155,7 +155,7 @@ jobs:
     if: always() && failure() && github.event_name == 'push'
     steps:
       - name: Slack Notification
-        uses: Alfresco/alfresco-build-tools/.github/actions/send-slack-notification@8c2a3691aa49cd105f62c2983cda3089b82afe89 # v4.0.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/send-slack-notification@042fc28b3e308e1d1159dfee61bc46c5940ed7b6 # v5.4.0
         with:
           channel-id: 'eng-hxp-studio-activiti-gh-notifs'
           token: ${{ secrets.SLACK_NOTIFICATION_BOT_TOKEN }}
