@@ -190,7 +190,7 @@
     <project.year>2020</project.year>
 
     <java.release>${java.version}</java.release>
-    <java.version>17</java.version>
+    <java.version>21</java.version>
     <maven.compiler.release>${java.release}</maven.compiler.release>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
