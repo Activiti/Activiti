@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>8.1.0-SNAPSHOT</version>
+    <version>8.2.0-SNAPSHOT</version>
   </parent>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-core</artifactId>
@@ -25,7 +25,7 @@
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
     <xmlgraphics-commons.version>2.9</xmlgraphics-commons.version>
     <nashorn-core.version>15.4</nashorn-core.version>
-    <groovy.version>3.0.13</groovy.version>
+    <groovy.version>3.0.19</groovy.version>
     <simple-jndi.version>0.23.0</simple-jndi.version>
   </properties>
   <dependencyManagement>
