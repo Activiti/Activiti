@@ -53,7 +53,7 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Setup Java JDK 17
-        uses: actions/setup-java@0ab4596768b603586c0de567f2430c30f5b0d2b0 # 3.13.0
+        uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93 # 4.0.0
         with:
           java-version: 17
           distribution: 'temurin'
@@ -131,7 +131,7 @@ jobs:
       # updatebot requires JDK 11 to work
       - name: Configure Java JDK for updatebot
         if: github.event_name == 'push'
-        uses: actions/setup-java@0ab4596768b603586c0de567f2430c30f5b0d2b0 # 3.13.0
+        uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93 # 4.0.0
         with:
           java-version: 11
           distribution: 'temurin'
