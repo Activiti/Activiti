@@ -31,6 +31,7 @@ import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionInfoCacheObject;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntityManager;
 
@@ -56,7 +57,12 @@ public class CachingAndArtifactsManager {
       BpmnModel bpmnModel = parsedDeployment.getBpmnModelForProcessDefinition(processDefinition);
       Process process = parsedDeployment.getProcessModelForProcessDefinition(processDefinition);
       ProcessDefinitionCacheEntry cacheEntry = new ProcessDefinitionCacheEntry(processDefinition, bpmnModel, process);
-      processDefinitionCache.add(processDefinition.getId(), cacheEntry);
+
+      // only updates the cache if there's nothing there or it's with the same Activiti version (Activiti-5 uses a different class from Activiti-7)
+      final ProcessDefinitionCacheEntry processDefinitionCacheEntry = processDefinitionCache.get(processDefinition.getId());
+      if (processDefinitionCacheEntry==null || processDefinitionCacheEntry.getProcessDefinition().getClass().isAssignableFrom(ProcessDefinitionEntityImpl.class)) {
+          processDefinitionCache.add(processDefinition.getId(), cacheEntry);
+      }
       addDefinitionInfoToCache(processDefinition, processEngineConfiguration, commandContext);
 
       // Add to deployment for further usage
