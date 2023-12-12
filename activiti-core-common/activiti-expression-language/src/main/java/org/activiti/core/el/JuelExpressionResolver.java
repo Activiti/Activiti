@@ -17,6 +17,7 @@ package org.activiti.core.el;
 
 import static org.activiti.core.el.CommonELResolversUtil.arrayResolver;
 import static org.activiti.core.el.CommonELResolversUtil.beanResolver;
+import static org.activiti.core.el.CommonELResolversUtil.contentResolver;
 import static org.activiti.core.el.CommonELResolversUtil.jsonNodeResolver;
 import static org.activiti.core.el.CommonELResolversUtil.listResolver;
 import static org.activiti.core.el.CommonELResolversUtil.mapResolver;
@@ -61,6 +62,7 @@ public class JuelExpressionResolver implements ExpressionResolver {
             .withResolvers(
                 arrayResolver(),
                 listResolver(),
+                contentResolver(),
                 mapResolver(),
                 jsonNodeResolver(),
                 beanResolver()

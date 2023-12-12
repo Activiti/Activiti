@@ -133,4 +133,32 @@ public class JuelResolverTest {
         //then
         assertThat(result).contains(1l, "item", 3l);
     }
+
+    @Test
+    public void should_returnObject_when_expressionReferencesContentRetroCompatibilityObjectAndPropertyIsUsed() {
+        //given
+        String expressionString = "${content.id}";
+        ExpressionResolver expressionResolver = new JuelExpressionResolver();
+        Map<String, Object> vars = Map.of("content", Map.of("id",1,"0",Map.of("id",1)));
+
+        //when
+        Integer result = expressionResolver.resolveExpression(expressionString, vars, Integer.class);
+
+        //then
+        assertThat(result).isEqualTo(1);
+    }
+
+    @Test
+    public void should_returnObject_when_expressionReferencesContentRetroCompatibilityObjectAndIndexIsUsed() {
+        //given
+        String expressionString = "${content[0].id}";
+        ExpressionResolver expressionResolver = new JuelExpressionResolver();
+        Map<String, Object> vars = Map.of("content", Map.of("id",1,"0",Map.of("id",1)));
+
+        //when
+        Integer result = expressionResolver.resolveExpression(expressionString, vars, Integer.class);
+
+        //then
+        assertThat(result).isEqualTo(1);
+    }
 }

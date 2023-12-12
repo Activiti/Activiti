@@ -39,6 +39,10 @@ public final class CommonELResolversUtil {
         return new ListELResolver();
     }
 
+    public static ELResolver contentResolver() {
+        return new ContentELResolver();
+    }
+
     public static ELResolver mapResolver() {
         return new MapELResolver();
     }

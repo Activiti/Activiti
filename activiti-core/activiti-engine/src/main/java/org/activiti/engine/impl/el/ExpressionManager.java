@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.activiti.core.el.ActivitiElContext;
+import org.activiti.core.el.ContentELResolver;
 import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.core.el.ELContextBuilder;
 import org.activiti.core.el.ELResolverReflectionBlockerDecorator;
@@ -141,6 +142,7 @@ public class ExpressionManager {
     private void addBaseResolvers(CompositeELResolver elResolver) {
         elResolver.add(new ArrayELResolver());
         elResolver.add(new ListELResolver());
+        elResolver.add(new ContentELResolver());
         elResolver.add(new MapELResolver());
         elResolver.add(new CustomMapperJsonNodeELResolver());
         elResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class,
