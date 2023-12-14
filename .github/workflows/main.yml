@@ -52,10 +52,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Setup Java JDK 17
+      - name: Setup Java JDK 21
         uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93 # 4.0.0
         with:
-          java-version: 17
+          java-version: 21
           distribution: 'temurin'
 
       - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@042fc28b3e308e1d1159dfee61bc46c5940ed7b6 # v5.4.0
