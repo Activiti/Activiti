@@ -19,6 +19,8 @@ runs:
           exit 0
         fi
 
+        echo "Event PR action -> ${{ github.event.pull_request.action }}"
+
         if [[ $EVENT_NAME == 'labeled' && $LABEL == 'CI' ]]
         then
           echo "This workflow will run with actor who labeled the PR"
