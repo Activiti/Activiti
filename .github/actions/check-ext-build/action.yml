@@ -19,7 +19,7 @@ runs:
           exit 0
         fi
 
-        echo "Event PR action -> ${{ toJson(github.event.pull_request.action) }}"
+        echo "Event PR action -> ${{ toJson(github.event.pull_request) }}"
 
         if [[ $EVENT_NAME == 'labeled' && $LABEL == 'CI' ]]
         then
