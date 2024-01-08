@@ -8,7 +8,7 @@ runs:
     - name: Check build
       env:
         SENDER_LOGIN: ${{ github.event.sender.login }}
-        EVENT_NAME: ${{ github.event_name }}
+        EVENT_NAME: ${{ github.event.action }}
         LABEL: ${{ github.event.label.name }}
         PR_REPO_NAME: ${{ github.event.pull_request.head.repo.full_name }}
         REPO_NAME: ${{ github.repository }}
