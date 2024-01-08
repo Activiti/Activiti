@@ -12,7 +12,6 @@ runs:
         LABEL: ${{ github.event.label.name }}
         PR_REPO_NAME: ${{ github.event.pull_request.head.repo.full_name }}
         REPO_NAME: ${{ github.repository }}
-        ACTION_: ${{ github.event.pull_request.action }}
       shell: bash
       run: |
         if [[ $SENDER_LOGIN != 'dependabot[bot]' && (-z $PR_REPO_NAME || $PR_REPO_NAME == $REPO_NAME) ]]
@@ -20,9 +19,7 @@ runs:
           exit 0
         fi
 
-        echo "Event PR action -> $ACTION_"
-        echo ${{ github.event.pull_request.action }}
-        echo $ACTION_
+        echo "Event PR action -> ${{ github.event.pull_request.action }}"
 
         if [[ $EVENT_NAME == 'labeled' && $LABEL == 'CI' ]]
         then
