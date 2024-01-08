@@ -53,7 +53,7 @@ If you want to read more about our Repositories structure you can read our [GitB
   - Click tree item _Code Style_, tree item _General_
     - Combobox _Line separator (for new files)_: `Unix`
   - Click tree item _File Encodings_
-    - Combobox _IDE Encoding_: `UTF-8`
+    - Combobox _Global Encoding_: `UTF-8`
     - Combobox _Default encoding for properties files_: `ISO-8859-1`
       - Note: normal i18n properties files must be in `ISO-8859-1` as specified by the java `ResourceBundle` contract.
 
