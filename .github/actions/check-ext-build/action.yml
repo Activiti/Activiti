@@ -8,7 +8,7 @@ runs:
     - name: Check build
       env:
         SENDER_LOGIN: ${{ github.event.sender.login }}
-        EVENT_NAME: ${{ github.event.action }}
+        EVENT_ACTION: ${{ github.event.action }}
         LABEL: ${{ github.event.label.name }}
         PR_REPO_NAME: ${{ github.event.pull_request.head.repo.full_name }}
         REPO_NAME: ${{ github.repository }}
@@ -19,7 +19,7 @@ runs:
           exit 0
         fi
 
-        if [[ $EVENT_NAME == 'labeled' && $LABEL == 'CI' ]]
+        if [[ $EVENT_ACTION == 'labeled' && $LABEL == 'CI' ]]
         then
           echo "This workflow will run with actor who labeled the PR"
         else
