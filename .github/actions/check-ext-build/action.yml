@@ -20,6 +20,7 @@ runs:
         fi
 
         echo "Event PR action -> ${{ github.event.pull_request.action }}"
+        echo "Event PR action -> ${{ github.event.pull_request }}"
 
         if [[ $EVENT_NAME == 'labeled' && $LABEL == 'CI' ]]
         then
