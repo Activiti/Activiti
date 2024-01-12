@@ -4,14 +4,6 @@ on:
   push:
     branches:
       - develop
-  pull_request:
-    branches:
-      - develop
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - labeled
 
   # Allows to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -60,46 +52,20 @@ jobs:
 
       - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@f2259c2bb5ff4a5579d1a425cb130175a6459665 # v5.10.0
         id: update-pom-to-next-version
-        if: github.event_name == 'push'
 
       - name: Update VERSION file
-        if: github.event_name == 'push'
         run: |
           echo ${{steps.update-pom-to-next-version.outputs.next-prerelease}} > VERSION
 
-      - name: Set preview version
-        if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'preview') }}
-        run: |
-          GITHUB_PR_NUMBER=PR-${{ github.event.pull_request.number }}
-          echo 0.0.1-${GITHUB_PR_NUMBER}-${GITHUB_RUN_NUMBER}-SNAPSHOT > VERSION
-
       - name: Set VERSION env variable
-        if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'preview')) }}
         run: |
           VERSION=$(cat VERSION)
           echo set VERSION=$VERSION
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Update pom files to the new version
-        if: ${{ github.event_name == 'pull_request' && (contains(github.head_ref, 'preview') || contains(github.event.pull_request.labels.*.name, 'preview')) }}
-        run: mvn -B versions:set -DnewVersion=$VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
-
-      - name: Define Maven Command
-        id: define_maven_command
-        shell: bash
-        run: |
-          if [ $DO_PUSH == 'true' ]
-          then
-            echo "command=deploy" >> $GITHUB_OUTPUT
-          else
-            echo "command=verify" >> $GITHUB_OUTPUT
-          fi
-        env:
-          DO_PUSH: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'preview')) }}
-
       - name: Build and Test with Maven (and maybe Deploy)
         shell: bash
-        run: mvn ${{ steps.define_maven_command.outputs.command }} ${{ env.MAVEN_CLI_OPTS}}
+        run: mvn deploy ${{ env.MAVEN_CLI_OPTS}}
         env:
           MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
@@ -110,7 +76,6 @@ jobs:
         run: find . -name TEST-*.xml -exec grep -h testcase {} \; | awk -F '"' '{printf("%s#%s() - %.3f s\n", $4, $2, $6); }' | sort -n -k 3 | tail -20
 
       - name: Configure git user
-        if: github.event_name == 'push'
         run: |
           git config --global user.name $GITHUB_USERNAME
           git config --global user.email $GITHUB_USERNAME@users.noreply.github.com
@@ -118,26 +83,22 @@ jobs:
           GITHUB_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
 
       - name: Create release tag
-        if: github.event_name == 'push'
         run: |
           git commit -am "Release $VERSION" --allow-empty
           git tag -fa $VERSION -m "Release version $VERSION"
           git push -f -q origin $VERSION
 
       - name: Install updatebot
-        if: github.event_name == 'push'
         uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@f2259c2bb5ff4a5579d1a425cb130175a6459665 # v5.10.0
 
       # updatebot requires JDK 11 to work
       - name: Configure Java JDK for updatebot
-        if: github.event_name == 'push'
         uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93 # 4.0.0
         with:
           java-version: 11
           distribution: 'temurin'
 
       - name: Run updatebot
-        if: github.event_name == 'push'
         run: |
           echo -e "https://$GITHUB_USERNAME:$GITHUB_TOKEN@github.com" >>  ~/.git-credentials
           updatebot push-version --kind maven \
@@ -152,7 +113,7 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     needs: build
-    if: always() && failure() && github.event_name == 'push'
+    if: always() && failure()
     steps:
       - name: Slack Notification
         uses: Alfresco/alfresco-build-tools/.github/actions/send-slack-notification@f2259c2bb5ff4a5579d1a425cb130175a6459665 # v5.10.0

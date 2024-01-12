@@ -1,0 +1,106 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - develop
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - labeled
+
+  # Allows to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+
+  pre-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Check dependabot build
+        uses: ./.github/actions/check-ext-build
+      - name: pre-commit
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@f2259c2bb5ff4a5579d1a425cb130175a6459665 # v5.10.0
+        with:
+          skip_checkout: true
+      - name: Ensure SHA pinned actions
+        uses: zgosalvez/github-actions-ensure-sha-pinned-actions@ba37328d4ea95eaf8b3bd6c6cef308f709a5f2ec # v3.0.3
+
+  build:
+    runs-on: ubuntu-latest
+    needs: pre-checks
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+
+      - uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Setup Java JDK 21
+        uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93 # 4.0.0
+        with:
+          java-version: 21
+          distribution: 'temurin'
+
+      - name: Set preview version
+        if: ${{ contains(github.event.pull_request.labels.*.name, 'preview') }}
+        run: |
+          GITHUB_PR_NUMBER=PR-${{ github.event.pull_request.number }}
+          echo 0.0.1-${GITHUB_PR_NUMBER}-${GITHUB_RUN_NUMBER}-SNAPSHOT > VERSION
+
+      - name: Set VERSION env variable
+        if: ${{ contains(github.event.pull_request.labels.*.name, 'preview') }}
+        run: |
+          VERSION=$(cat VERSION)
+          echo set VERSION=$VERSION
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Update pom files to the new version
+        if: ${{ contains(github.head_ref, 'preview') || contains(github.event.pull_request.labels.*.name, 'preview') }}
+        run: mvn -B versions:set -DnewVersion=$VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
+
+      - name: Define Maven Command
+        id: define_maven_command
+        shell: bash
+        run: |
+          if [ $DO_PUSH == 'true' ]
+          then
+            echo "command=deploy" >> $GITHUB_OUTPUT
+          else
+            echo "command=verify" >> $GITHUB_OUTPUT
+          fi
+        env:
+          DO_PUSH: ${{ contains(github.event.pull_request.labels.*.name, 'preview') }}
+
+      - name: Build and Test with Maven (and maybe Deploy)
+        if: github.repository == 'Activiti/Activiti'
+        shell: bash
+        run: mvn ${{ steps.define_maven_command.outputs.command }} ${{ env.MAVEN_CLI_OPTS}}
+        env:
+          MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+
+      - name: Build and Test with Maven for external contributors
+        if: github.repository != 'Activiti/Activiti'
+        shell: bash
+        run: mvn verify ${{ env.MAVEN_CLI_OPTS}}
+        env:
+          MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
+
+      - name: Echo Longest Tests run
+        shell: bash
+        run: find . -name TEST-*.xml -exec grep -h testcase {} \; | awk -F '"' '{printf("%s#%s() - %.3f s\n", $4, $2, $6); }' | sort -n -k 3 | tail -20
