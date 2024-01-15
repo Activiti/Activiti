@@ -86,7 +86,7 @@ jobs:
           DO_PUSH: ${{ contains(github.event.pull_request.labels.*.name, 'preview') }}
 
       - name: Build and Test with Maven (and maybe Deploy)
-        if: github.repository == 'Activiti/Activiti'
+        if: github.event.pull_request.head.repo.full_name == 'Activiti/Activiti'
         shell: bash
         run: mvn ${{ steps.define_maven_command.outputs.command }} ${{ env.MAVEN_CLI_OPTS}}
         env:
@@ -95,7 +95,7 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
       - name: Build and Test with Maven for external contributors
-        if: github.repository != 'Activiti/Activiti'
+        if: github.event.pull_request.head.repo.full_name != 'Activiti/Activiti'
         shell: bash
         run: mvn verify ${{ env.MAVEN_CLI_OPTS}}
         env:
