@@ -5,7 +5,7 @@ permissions: read-all
 on:
   pull_request:
     branches:
-      - AAE-19314-test-ext-contrib-ci
+      - develop
     types:
       - opened
       - reopened
@@ -90,7 +90,7 @@ jobs:
         shell: bash
         run: mvn ${{ steps.define_maven_command.outputs.command }} ${{ env.MAVEN_CLI_OPTS}}
         env:
-          MAVEN_CLI_OPTS: -DskipTests --show-version --no-transfer-progress --settings settings.xml
+          MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
@@ -99,7 +99,7 @@ jobs:
         shell: bash
         run: mvn verify ${{ env.MAVEN_CLI_OPTS}}
         env:
-          MAVEN_CLI_OPTS: -DskipTests --show-version --no-transfer-progress --settings settings.xml
+          MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
 
       - name: Echo Longest Tests run
         shell: bash
