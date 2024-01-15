@@ -1,6 +1,9 @@
 name: Push - Validate, Build and Release
 
-permissions: write-all
+permissions:
+  actions: write
+  checks: write
+  contents: write
 
 on:
   push:
