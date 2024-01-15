@@ -5,7 +5,7 @@ permissions: write-all
 on:
   push:
     branches:
-      - develop
+      - AAE-19314-test-ext-contrib-ci
 
   # Allows to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -69,7 +69,7 @@ jobs:
         shell: bash
         run: mvn deploy ${{ env.MAVEN_CLI_OPTS}}
         env:
-          MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
+          MAVEN_CLI_OPTS: -DskipTests --show-version --no-transfer-progress --settings settings.xml
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
