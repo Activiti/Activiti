@@ -5,7 +5,7 @@ permissions: read-all
 on:
   pull_request:
     branches:
-      - develop
+      - TEMP-AAE-19314-test-new-ci
     types:
       - opened
       - reopened
