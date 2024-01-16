@@ -1,0 +1,30 @@
+name: "Dependency Graph Submission of Transitive Dependencies"
+
+on:
+  push:
+    branches: [ "develop", "7.*.x" ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ "develop" ]
+  schedule:
+    - cron: '0 1 * * FRI'
+jobs:
+  submit:
+    name: Submit
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+    - uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
+      with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+    - name: Set up JDK 21
+      uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93 # v4.0.0
+      with:
+         java-version: '21'
+         distribution: 'temurin'
+    - name: Submit Dependency Graph
+      uses: advanced-security/maven-dependency-submission-action@fcd7eab6b6d22946badc98d1e62665cdee93e0ae # v3.0.3
