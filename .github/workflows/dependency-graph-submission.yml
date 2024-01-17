@@ -3,11 +3,6 @@ name: "Dependency Graph Submission of Transitive Dependencies"
 on:
   push:
     branches: [ "develop", "7.*.x" ]
-  pull_request:
-    # The branches below must be a subset of the branches above
-    branches: [ "develop" ]
-  schedule:
-    - cron: '0 1 * * FRI'
 jobs:
   submit:
     name: Submit
