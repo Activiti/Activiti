@@ -24,6 +24,8 @@ import java.util.List;
 
 public class BigDecimalVariableType extends VariableType {
 
+    public static final String VALIDATION_ERROR_FORMAT = "%s is not a numeric type";
+
     private static final Logger logger = LoggerFactory.getLogger(BigDecimalVariableType.class);
 
     @Override
@@ -34,7 +36,7 @@ public class BigDecimalVariableType extends VariableType {
     @Override
     public void validate(Object var, List<ActivitiException> errors) {
         if(!Number.class.isAssignableFrom(var.getClass())){
-            String message = var.getClass() + "is not a numeric type";
+            String message = String.format(VALIDATION_ERROR_FORMAT, var.getClass());
             errors.add(new ActivitiException(message));
             logger.error(message);
         }

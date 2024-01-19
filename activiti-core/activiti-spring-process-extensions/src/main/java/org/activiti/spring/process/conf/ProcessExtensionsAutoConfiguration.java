@@ -83,7 +83,7 @@ public class ProcessExtensionsAutoConfiguration {
         variableTypeMap.put("boolean", new JavaObjectVariableType(Boolean.class));
         variableTypeMap.put("string", new JavaObjectVariableType(String.class));
         variableTypeMap.put("integer", new JavaObjectVariableType(Integer.class));
-        variableTypeMap.put("decimal", new BigDecimalVariableType());
+        variableTypeMap.put("bigdecimal", new BigDecimalVariableType());
         variableTypeMap.put("json", new JsonObjectVariableType(objectMapper));
         variableTypeMap.put("file", new JsonObjectVariableType(objectMapper));
         variableTypeMap.put("folder", new JsonObjectVariableType(objectMapper));

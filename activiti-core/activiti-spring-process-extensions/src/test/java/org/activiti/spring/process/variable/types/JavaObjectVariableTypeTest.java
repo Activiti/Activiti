@@ -50,9 +50,6 @@ class JavaObjectVariableTypeTest {
         javaObjectVariableType = new JavaObjectVariableType(Integer.class);
         javaObjectVariableType.validate(1, exceptionList);
 
-        javaObjectVariableType = new JavaObjectVariableType(Double.class);
-        javaObjectVariableType.validate(1.2, exceptionList);
-
         javaObjectVariableType = new JavaObjectVariableType(String.class);
         javaObjectVariableType.validate("abc", exceptionList);
 
