@@ -12,7 +12,7 @@
       "height-meters-id": {
         "id": "height-meters-id",
         "name": "height-meters",
-        "type": "decimal",
+        "type": "bigdecimal",
         "value": 1.93
       },
       "name-id": {
