@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@f2259c2bb5ff4a5579d1a425cb130175a6459665 # v5.10.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@bdb06e257241e89e25a0e88653095fdb5a1fc4b6 # v5.12.0
         with:
           skip_checkout: true
       - name: Ensure SHA pinned actions
@@ -53,7 +53,7 @@ jobs:
           java-version: 21
           distribution: 'temurin'
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@f2259c2bb5ff4a5579d1a425cb130175a6459665 # v5.10.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@bdb06e257241e89e25a0e88653095fdb5a1fc4b6 # v5.12.0
         id: update-pom-to-next-version
 
       - name: Update VERSION file
@@ -91,7 +91,7 @@ jobs:
           git push -f -q origin $VERSION
 
       - name: Install updatebot
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@f2259c2bb5ff4a5579d1a425cb130175a6459665 # v5.10.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@bdb06e257241e89e25a0e88653095fdb5a1fc4b6 # v5.12.0
 
       # updatebot requires JDK 11 to work
       - name: Configure Java JDK for updatebot
@@ -118,7 +118,7 @@ jobs:
     if: always() && failure()
     steps:
       - name: Slack Notification
-        uses: Alfresco/alfresco-build-tools/.github/actions/send-slack-notification@f2259c2bb5ff4a5579d1a425cb130175a6459665 # v5.10.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/send-slack-notification@bdb06e257241e89e25a0e88653095fdb5a1fc4b6 # v5.12.0
         with:
           channel-id: 'eng-hxp-studio-activiti-gh-notifs'
           token: ${{ secrets.SLACK_NOTIFICATION_BOT_TOKEN }}
