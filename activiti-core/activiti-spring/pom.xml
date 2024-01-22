@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-core-dependencies</artifactId>
-    <version>8.2.0</version>
+    <version>8.2.1-SNAPSHOT</version>
     <relativePath>../activiti-core-dependencies</relativePath>
   </parent>
   <artifactId>activiti-spring</artifactId>
