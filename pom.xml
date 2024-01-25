@@ -945,6 +945,17 @@ limitations under the License.
         <enabled>false</enabled>
       </snapshots>
     </repository>
+<!--    Added below repository as a temporary measure,
+        It can be removed once commons-email2-* dependencies are added to our repo-->
+    <repository>
+      <id>apache central</id>
+      <name>Central Repository</name>
+      <layout>default</layout>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <url>https://repository.apache.org/content/repositories/snapshots/</url>
+    </repository>
     <repository>
       <id>activiti-releases</id>
       <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases</url>
