@@ -156,6 +156,32 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
   }
 
   @Deployment
+  public void testTerminateWithSubProcessWithUserTaskWithBoundaryEvent() throws Exception {
+      // GIVEN a process that has a subprocess with an end-terminate-event and an userTask with a boundary-event
+      // WHEN starting the process
+      ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
+
+      // THEN the subprocess should terminate as deleted
+      HistoricActivityInstance subprocess11 = historyService.createHistoricActivityInstanceQuery().activityId("subprocess_1").singleResult();
+      assertThat(subprocess11.getDeleteReason().startsWith(DeleteReason.TERMINATE_END_EVENT)).isTrue();
+
+      // THEN the userTask (with boundary-event) on the subprocess should terminate as deleted
+      HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery()
+          .taskDefinitionKey("userTask_2").singleResult();
+      assertThat(historicTaskInstance.getDeleteReason().startsWith(DeleteReason.TERMINATE_END_EVENT)).isTrue();
+
+      // THEN the execution should continue on the process
+      ProcessInstance processInstance = processEngine.getRuntimeService().createProcessInstanceQuery().processInstanceId(pi.getId()).singleResult();
+      assertThat(processInstance).isNotNull();
+
+      // THEN when completing the last user task, the process should be terminated
+      Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("userTask_1").singleResult();
+      taskService.complete(task.getId());
+
+      assertProcessEnded(pi.getId());
+  }
+
+  @Deployment
   public void testTerminateWithSubProcessTerminateAll() throws Exception {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
 

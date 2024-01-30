@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20240126124647034" modeler:modelId="102" modeler:modelVersion="2" modeler:modelLastUpdated="1706273202968">
+  <message id="SUSPEND" name="SUSPEND"/>
+  <process id="terminateEndEventExample" name="terminateEndEventExample" isExecutable="true">
+    <startEvent id="startEvent_1">
+      <outgoing>flow_1_1</outgoing>
+    </startEvent>
+    <subProcess id="subprocess_1">
+      <startEvent id="startEvent_2">
+        <outgoing>flow_2_1</outgoing>
+      </startEvent>
+      <scriptTask id="scripTask_2" scriptFormat="groovy">
+        <incoming>flow_2_5</incoming>
+        <outgoing>flow_2_6</outgoing>
+        <script><![CDATA[System.out.println("I am in submit flow");]]></script>
+      </scriptTask>
+      <sequenceFlow id="flow_2_6" sourceRef="scripTask_2" targetRef="endEvent_2_3"/>
+      <endEvent id="endEvent_2_3" name="Terminate">
+        <incoming>flow_2_6</incoming>
+        <terminateEventDefinition/>
+      </endEvent>
+      <parallelGateway id="parallelGateway_2">
+        <incoming>flow_2_1</incoming>
+        <outgoing>flow_2_5</outgoing>
+        <outgoing>flow_2_5</outgoing>
+      </parallelGateway>
+      <userTask id="userTask_2">
+        <incoming>flow_2_2</incoming>
+        <outgoing>flow_2_3</outgoing>
+      </userTask>
+      <boundaryEvent id="boundaryEvent_2" attachedToRef="userTask_2" cancelActivity="true">
+        <outgoing>flow_2_4</outgoing>
+        <messageEventDefinition messageRef="SUSPEND"/>
+      </boundaryEvent>
+      <endEvent id="endEvent_2_2">
+        <incoming>flow_2_4</incoming>
+      </endEvent>
+      <sequenceFlow id="flow_2_4" sourceRef="boundaryEvent_2" targetRef="endEvent_2_2">
+      </sequenceFlow>
+      <endEvent id="endEvent_2_1">
+        <incoming>flow_2_3</incoming>
+      </endEvent>
+      <sequenceFlow id="flow_2_3" sourceRef="userTask_2" targetRef="endEvent_2_1"/>
+      <sequenceFlow id="flow_2_1" sourceRef="startEvent_2" targetRef="parallelGateway_2"/>
+      <sequenceFlow id="flow_2_2" sourceRef="parallelGateway_2" targetRef="userTask_2"/>
+      <sequenceFlow id="flow_2_5" sourceRef="parallelGateway_2" targetRef="scripTask_2"/>
+    </subProcess>
+    <endEvent id="endEvent_1">
+      <incoming>flow_1_3</incoming>
+    </endEvent>
+    <userTask id="userTask_1">
+      <incoming>flow_1_2</incoming>
+      <outgoing>flow_1_3</outgoing>
+    </userTask>
+    <sequenceFlow id="flow_1_2" sourceRef="subprocess_1" targetRef="userTask_1"/>
+    <sequenceFlow id="flow_1_3" sourceRef="userTask_1" targetRef="endEvent_1"/>
+    <sequenceFlow id="flow_1_1" sourceRef="startEvent_1" targetRef="subprocess_1"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_terminateEndEventExample">
+    <bpmndi:BPMNPlane bpmnElement="terminateEndEventExample" id="BPMNPlane_terminateEndEventExample">
+      <bpmndi:BPMNShape bpmnElement="startEvent_1" id="BPMNShape_startEvent_1">
+        <omgdc:Bounds height="30.0" width="30.0" x="89.9999986588955" y="149.99999776482585"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subprocess_1" id="BPMNShape_subprocess_1">
+        <omgdc:Bounds height="270.00000211325573" width="608.0000152154413" x="180.00000253590687" y="124.99999727579697"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent_1" id="BPMNShape_endEvent_1">
+        <omgdc:Bounds height="28.0" width="28.0" x="988.0000219778597" y="341.0000037664721"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask_1" id="BPMNShape_userTask_1">
+        <omgdc:Bounds height="80.0" width="100.0" x="838.0000245137667" y="315.00000552751857"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startEvent_2" id="BPMNShape_startEvent_2">
+        <omgdc:Bounds height="30.0" width="30.0" x="300.00000422651146" y="237.99999696043432"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scripTask_2" id="BPMNShape_scripTask_2">
+        <omgdc:Bounds height="79.99999999999997" width="100.00000000000003" x="480.00001098892983" y="274.99999938905273"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent_2_3" id="BPMNShape_endEvent_2_3">
+        <omgdc:Bounds height="28.0" width="27.99999999999997" x="720.0000177513482" y="301.0000043340712"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelGateway_2" id="BPMNShape_parallelGateway_2">
+        <omgdc:Bounds height="40.0" width="40.00000000000003" x="396.8999929023063" y="232.99999536844837"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask_2" id="BPMNShape_userTask_2">
+        <omgdc:Bounds height="80.00000000000001" width="99.99999999999997" x="480.00000676241837" y="139.9999972636051"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryEvent_2" id="BPMNShape_boundaryEvent_2">
+        <omgdc:Bounds height="30.0" width="30.50000000000003" x="565.1280377104514" y="168.9486827887633"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent_2_2" id="BPMNShape_endEvent_2_2">
+        <omgdc:Bounds height="27.999999999999986" width="27.99999999999997" x="631.2500152330518" y="193.4861851635435"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent_2_1" id="BPMNShape_endEvent_2_1">
+        <omgdc:Bounds height="28.0" width="27.99999999999997" x="720.0000101436275" y="165.99999784122835"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow_1_1" id="BPMNEdge_flow_1_1">
+        <omgdi:waypoint x="119.9999986588955" y="164.99999770614238"/>
+        <omgdi:waypoint x="180.00000253590687" y="164.9999974714085"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow_1_3" id="BPMNEdge_flow_1_3">
+        <omgdi:waypoint x="938.0000245137667" y="355.00000475512974"/>
+        <omgdi:waypoint x="988.0000219778597" y="355.00000398274096"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow_1_2" id="BPMNEdge_flow_1_2">
+        <omgdi:waypoint x="788.0000177513482" y="355.0000014352079"/>
+        <omgdi:waypoint x="838.0000245137667" y="355.00000348136336"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow_2_6" id="BPMNEdge_flow_2_6">
+        <omgdi:waypoint x="580.0000109889298" y="315.00000060106703"/>
+        <omgdi:waypoint x="720.0000177513482" y="315.0000039947072"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow_2_3" id="BPMNEdge_flow_2_3">
+        <omgdi:waypoint x="580.0000067624184" y="179.99999740517944"/>
+        <omgdi:waypoint x="720.0000101436275" y="179.99999780158754"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow_2_1" id="BPMNEdge_flow_2_1">
+        <omgdi:waypoint x="330.00000422651146" y="252.99999672608897"/>
+        <omgdi:waypoint x="396.89999321476677" y="252.99999568090885"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow_2_2" id="BPMNEdge_flow_2_2">
+        <omgdi:waypoint x="407.3900589406331" y="242.50992933012157"/>
+        <omgdi:waypoint x="417.3999929023063" y="179.9999972636051"/>
+        <omgdi:waypoint x="480.00000676241837" y="158.6397801974147"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow_2_5" id="BPMNEdge_flow_2_5">
+        <omgdi:waypoint x="402.09586872487444" y="247.8041195458802"/>
+        <omgdi:waypoint x="417.3999929023063" y="314.99999938905273"/>
+        <omgdi:waypoint x="480.00001098892983" y="293.6397826314036"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow_2_4" id="BPMNEdge_flow_2_4">
+        <omgdi:waypoint x="594.713596181609" y="189.15005408103073"/>
+        <omgdi:waypoint x="632.0895025382187" y="202.71115578047832"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
