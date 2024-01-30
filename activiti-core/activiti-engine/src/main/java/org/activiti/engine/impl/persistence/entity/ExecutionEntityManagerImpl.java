@@ -723,7 +723,9 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
 
   private void deleteDataForExecution(ExecutionEntity executionEntity, String deleteReason) {
       deleteExecutionEntity(executionEntity,deleteReason);
-      deleteChildExecutions(executionEntity,deleteReason);
+      if (deleteReason!=null && deleteReason.startsWith(DeleteReason.TERMINATE_END_EVENT)) {
+          deleteChildExecutions(executionEntity, deleteReason);
+      }
       deleteUserTask(executionEntity, deleteReason);
   }
 
