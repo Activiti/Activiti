@@ -132,7 +132,7 @@ create table ACT_HI_IDENTITYLINK (
     USER_ID_ varchar(255),
     TASK_ID_ varchar(64),
     PROC_INST_ID_ varchar(64),
-    DETAILS_ varbinary(max),
+    DETAILS_ LONGBLOB,
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
