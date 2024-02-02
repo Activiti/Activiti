@@ -37,6 +37,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.stream.Collectors;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
@@ -62,9 +64,7 @@ import org.activiti.engine.impl.db.upgrade.DbUpgradeStep;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.cache.CachedEntity;
 import org.activiti.engine.impl.persistence.cache.EntityCache;
-import org.activiti.engine.impl.persistence.entity.Entity;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.PropertyEntity;
+import org.activiti.engine.impl.persistence.entity.*;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.apache.ibatis.session.SqlSession;
@@ -536,7 +536,7 @@ public class DbSqlSession implements Session {
         for (Class<? extends Entity> entityClass : deletedObjects.keySet()) {
 
             // Collect ids of deleted entities + remove duplicates
-            Set<String> ids = new HashSet<String>();
+            Set<String> ids = new ConcurrentSkipListSet<>();
             Iterator<Entity> entitiesToDeleteIterator = deletedObjects.get(entityClass).values().iterator();
             while (entitiesToDeleteIterator.hasNext()) {
                 Entity entityToDelete = entitiesToDeleteIterator.next();
@@ -544,6 +544,21 @@ public class DbSqlSession implements Session {
                     ids.add(entityToDelete.getId());
                 } else {
                     entitiesToDeleteIterator.remove(); // Removing duplicate deletes
+                }
+            }
+
+            // Collect ids from child-executions/message-subscriptions, when applicable
+            if( ExecutionEntity.class.isAssignableFrom(entityClass) ) {
+                for (String id : ids) {
+                    ExecutionEntity execution = (ExecutionEntity) insertedObjects.get(entityClass).get(id);
+                    List<String> childExecutions = execution.getExecutions().stream().map(ExecutionEntity::getId).collect(Collectors.toList());
+                    ids.addAll( childExecutions );
+
+                    List<EventSubscriptionEntity> eventSubscriptions = execution.getEventSubscriptions();
+                    // TODO: we should delete messageSubscriptions as well
+                    // the problem is "deleteObjects" have classNames as key, having a relationship between ExecutionEntities and EventSubscriptionEntities
+                    // IMO, this is becoming too complicated
+                    // Even using ExecutionEntityManagerImpl.deleteChildExecutions, we're dealing with different abstract layers
                 }
             }
 
