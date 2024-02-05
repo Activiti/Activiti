@@ -948,12 +948,15 @@ limitations under the License.
 <!--    Added below repository as a temporary measure,
         It can be removed once commons-email2-* dependencies are added to our repo-->
     <repository>
-      <id>apache central</id>
-      <name>Central Repository</name>
+      <id>apache central snapshots</id>
+      <name>Central Repository Snapshots</name>
       <layout>default</layout>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
       <url>https://repository.apache.org/content/repositories/snapshots/</url>
     </repository>
     <repository>
