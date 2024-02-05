@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.io.File;
@@ -21,8 +23,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.activation.DataSource;
+
+import jakarta.activation.DataSource;
 import javax.naming.NamingException;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.cfg.MailServerInfo;
@@ -30,11 +34,11 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
-import org.apache.commons.mail.Email;
-import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.HtmlEmail;
-import org.apache.commons.mail.MultiPartEmail;
-import org.apache.commons.mail.SimpleEmail;
+import org.apache.commons.mail2.jakarta.Email;
+import org.apache.commons.mail2.core.EmailException;
+import org.apache.commons.mail2.jakarta.HtmlEmail;
+import org.apache.commons.mail2.jakarta.MultiPartEmail;
+import org.apache.commons.mail2.jakarta.SimpleEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +59,7 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
         String.class,
         String[].class,
         DataSource.class,
-        DataSource[].class,
+        DataSource[].class
     };
 
     protected Expression to;
