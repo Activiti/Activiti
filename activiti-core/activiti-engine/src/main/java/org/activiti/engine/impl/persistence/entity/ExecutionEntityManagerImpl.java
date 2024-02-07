@@ -25,9 +25,13 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.activiti.bpmn.model.HasExecutionListeners;
+import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiProcessCancelledEvent;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -41,6 +45,8 @@ import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.ExecutionDataManager;
+import org.activiti.engine.impl.util.CollectionUtil;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -419,7 +425,16 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
       return;
     }
 
-    List<ExecutionEntity> childExecutions = collectChildren(execution.getProcessInstance());
+      Process process = ProcessDefinitionUtil.getProcess(processInstanceExecutionEntity.getProcessDefinitionId());
+
+      // Execute execution listeners for process end.
+      if (CollectionUtil.isNotEmpty(process.getExecutionListeners())) {
+          executeExecutionListeners(process,
+              processInstanceExecutionEntity,
+              ExecutionListener.EVENTNAME_END);
+      }
+
+      List<ExecutionEntity> childExecutions = collectChildren(execution.getProcessInstance());
     for (int i=childExecutions.size()-1; i>=0; i--) {
       ExecutionEntity childExecutionEntity = childExecutions.get(i);
       deleteExecutionAndRelatedData(childExecutionEntity, deleteReason);
@@ -442,6 +457,16 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
                 .createProcessCancelledEvent(processInstance, deleteReason);
             getEventDispatcher().dispatchEvent(processCancelledEvent);
         }
+    }
+
+    /**
+     * Executes the execution listeners defined on the given element, with the given event type,
+     * and passing the provided execution to the {@link ExecutionListener} instances.
+     */
+    protected void executeExecutionListeners(HasExecutionListeners elementWithExecutionListeners,
+                                             ExecutionEntity executionEntity, String eventType) {
+        getProcessEngineConfiguration().getListenerNotificationHelper()
+            .executeExecutionListeners(elementWithExecutionListeners, executionEntity, eventType);
     }
 
     @Override
