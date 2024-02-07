@@ -92,6 +92,8 @@ jobs:
 
       - name: Propagate
         uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@469ed8f7c8198c4f8476392d944b2568e4043c5a # v5.13.1
+        env:
+          DEVELOPMENT_BRANCH: ${{ github.ref_name }}
         with:
           version: ${{ env.VERSION }}
           auto-merge: 'true'
