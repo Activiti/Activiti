@@ -90,27 +90,16 @@ jobs:
           git tag -fa $VERSION -m "Release version $VERSION"
           git push -f -q origin $VERSION
 
-      - name: Install updatebot
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-updatebot@469ed8f7c8198c4f8476392d944b2568e4043c5a # v5.13.1
-
-      # updatebot requires JDK 11 to work
-      - name: Configure Java JDK for updatebot
-        uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93 # 4.0.0
+      - name: Propagate
+        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@469ed8f7c8198c4f8476392d944b2568e4043c5a # v5.13.1
         with:
-          java-version: 11
-          distribution: 'temurin'
-
-      - name: Run updatebot
-        run: |
-          echo -e "https://$GITHUB_USERNAME:$GITHUB_TOKEN@github.com" >>  ~/.git-credentials
-          updatebot push-version --kind maven \
-            org.activiti:activiti-dependencies $VERSION \
-            org.activiti:activiti-api-dependencies $VERSION \
-            org.activiti:activiti-core-dependencies $VERSION \
-            org.activiti:activiti-core-common-dependencies $VERSION
-        env:
-          GITHUB_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
-          GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+          version: ${{ env.VERSION }}
+          auto-merge: 'true'
+          labels: ${{ env.DEVELOPMENT_BRANCH }}
+          base-branch-name: ${{ env.DEVELOPMENT_BRANCH }}
+          git-username: ${{ secrets.BOT_GITHUB_USERNAME }}
+          git-token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          git-author-name: ${{ secrets.BOT_GITHUB_USERNAME }}
 
   notify:
     runs-on: ubuntu-latest
