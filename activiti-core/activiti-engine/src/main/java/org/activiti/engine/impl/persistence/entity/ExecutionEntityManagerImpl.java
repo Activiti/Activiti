@@ -425,9 +425,8 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
       return;
     }
 
-      Process process = ProcessDefinitionUtil.getProcess(processInstanceExecutionEntity.getProcessDefinitionId());
-
       // Execute execution listeners for process end.
+      Process process = ProcessDefinitionUtil.getProcess(processInstanceExecutionEntity.getProcessDefinitionId());
       if (CollectionUtil.isNotEmpty(process.getExecutionListeners())) {
           executeExecutionListeners(process,
               processInstanceExecutionEntity,
