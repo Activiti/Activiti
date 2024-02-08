@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-core-dependencies</artifactId>
-    <version>8.1.1-SNAPSHOT</version>
+    <version>8.1.1-alpha.6</version>
     <relativePath>../activiti-core-dependencies</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
