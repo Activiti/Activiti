@@ -90,8 +90,12 @@ jobs:
           git tag -fa $VERSION -m "Release version $VERSION"
           git push -f -q origin $VERSION
 
+      - name: Get branch name
+        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@469ed8f7c8198c4f8476392d944b2568e4043c5a # v5.13.1
+
       - name: Propagate
         uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@469ed8f7c8198c4f8476392d944b2568e4043c5a # v5.13.1
+        if: ${{ env.BRANCH_NAME == 'develop' }}
         env:
           DEVELOPMENT_BRANCH: ${{ github.ref_name }}
         with:
