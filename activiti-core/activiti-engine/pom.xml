@@ -113,7 +113,6 @@
     <dependency>
       <groupId>org.openjdk.nashorn</groupId>
       <artifactId>nashorn-core</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>jakarta.transaction</groupId>
