@@ -324,7 +324,7 @@ limitations under the License.
                 <excludedScopes>provided,test</excludedScopes>
                 <excludedGroups>^(org\.alfresco|com\.alfresco|org\.activiti|org\.gytheio).*</excludedGroups>
                 <failIfWarning>true</failIfWarning>
-                <includedLicenses>https://raw.githubusercontent.com/Alfresco/third-party-license-overrides/master/includedLicenses.txt</includedLicenses>
+                <includedLicenses>https://raw.githubusercontent.com/Alfresco/third-party-license-overrides/master/includedLicensesPlusNashorn.txt</includedLicenses>
                 <licenseMergesUrl>https://raw.githubusercontent.com/Alfresco/third-party-license-overrides/master/licenseMerges.txt</licenseMergesUrl>
                 <overrideUrl>https://raw.githubusercontent.com/Alfresco/third-party-license-overrides/master/override-THIRD-PARTY.properties</overrideUrl>
               </configuration>
