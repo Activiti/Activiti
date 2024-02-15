@@ -161,7 +161,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
         taskRuntimeHelper.handleCompleteTaskPayload(completeTaskPayload);
 
         taskService.complete(completeTaskPayload.getTaskId(),
-                completeTaskPayload.getVariables(), true);
+                completeTaskPayload.getVariables(), false);
 
 
         ((TaskImpl) task).setCompletedBy(authenticatedUserId);
