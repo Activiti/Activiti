@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" targetNamespace="Examples">
+
+    <process id="calledElementExpression">
+
+        <startEvent id="theStart"/>
+        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="firstTask"/>
+        <userTask id="firstTask" name="First task"/>
+        <sequenceFlow id="flow2" sourceRef="firstTask" targetRef="callActivity"/>
+        <callActivity id="callActivity" calledElement="${subProcessDefId}"/>
+        <sequenceFlow id="flow3" sourceRef="callActivity" targetRef="lastTask"/>
+        <userTask id="lastTask" name="Last task"/>
+        <sequenceFlow id="flow4" sourceRef="lastTask" targetRef="theEnd"/>
+        <endEvent id="theEnd"/>
+
+    </process>
+
+</definitions>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             targetNamespace="Examples">
+
+    <process id="startInclusiveGwProcess">
+
+        <startEvent id="theStart"/>
+        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="taskBefore"/>
+
+        <userTask id="taskBefore" name="Task before sub process"/>
+        <sequenceFlow id="flow2" sourceRef="taskBefore" targetRef="gwFork"/>
+
+        <inclusiveGateway id="gwFork"/>
+
+        <sequenceFlow id="gwFlow1" sourceRef="gwFork" targetRef="task1">
+            <conditionExpression>${true}</conditionExpression>
+        </sequenceFlow>
+        <userTask id="task1"/>
+        <sequenceFlow id="gwFlow2" sourceRef="gwFork" targetRef="task2">
+            <conditionExpression>${true}</conditionExpression>
+        </sequenceFlow>
+        <userTask id="task2"/>
+
+        <sequenceFlow id="gwFlow3" sourceRef="task1" targetRef="gwJoin"/>
+        <sequenceFlow id="gwFlow4" sourceRef="task2" targetRef="gwJoin"/>
+
+        <inclusiveGateway id="gwJoin"/>
+
+        <sequenceFlow id="flow3" sourceRef="gwJoin" targetRef="taskAfter"/>
+        <userTask id="taskAfter" name="Task after sub process"/>
+
+        <sequenceFlow id="flow4" sourceRef="taskAfter" targetRef="theEnd"/>
+        <endEvent id="theEnd"/>
+
+    </process>
+
+</definitions>

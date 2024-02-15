@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             targetNamespace="Examples">
+
+    <signal id="mySignal" name="eventSignal"/>
+
+    <process id="changeStateForEventSubProcess">
+
+        <startEvent id="theStart"/>
+        <sequenceFlow sourceRef="theStart" targetRef="processTask"/>
+        <userTask id="processTask"/>
+        <sequenceFlow sourceRef="processTask" targetRef="theEnd"/>
+        <endEvent id="theEnd"/>
+
+        <subProcess id="eventSubProcess" triggeredByEvent="true">
+            <startEvent id="eventSubProcessStart" isInterrupting="true">
+                <signalEventDefinition signalRef="mySignal" />
+            </startEvent>
+            <sequenceFlow sourceRef="eventSubProcessStart" targetRef="eventSubProcessTask" />
+            <userTask id="eventSubProcessTask"/>
+            <sequenceFlow sourceRef="eventSubProcessTask" targetRef="eventSubProcessEnd" />
+            <endEvent id="eventSubProcessEnd" />
+        </subProcess>
+    </process>
+
+</definitions>

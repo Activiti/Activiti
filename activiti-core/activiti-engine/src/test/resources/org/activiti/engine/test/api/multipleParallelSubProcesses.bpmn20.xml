@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+    xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+
+  <process id="startParallelProcess">
+
+    <startEvent id="theStart" />
+
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="taskBefore" />
+
+    <userTask id="taskBefore" name="Task before sub process" />
+
+    <sequenceFlow id="flow2" sourceRef="taskBefore" targetRef="inclusiveFork" />
+
+    <inclusiveGateway id="inclusiveFork" />
+
+    <sequenceFlow id="flow3" sourceRef="inclusiveFork" targetRef="taskInclusive1">
+        <conditionExpression xsi:type="tFormalExpression">
+            <![CDATA[${var1 != 'test'}]]>
+        </conditionExpression>
+    </sequenceFlow>
+
+    <sequenceFlow id="flow4" sourceRef="inclusiveFork" targetRef="taskInclusive2">
+        <conditionExpression xsi:type="tFormalExpression">
+            <![CDATA[${var1 == 'test'}]]>
+        </conditionExpression>
+    </sequenceFlow>
+
+    <sequenceFlow id="flow5" sourceRef="inclusiveFork" targetRef="taskInclusive3">
+        <conditionExpression xsi:type="tFormalExpression">
+            <![CDATA[${var1 == 'test2'}]]>
+        </conditionExpression>
+    </sequenceFlow>
+
+    <userTask id="taskInclusive1" />
+
+    <userTask id="taskInclusive2" />
+
+    <userTask id="taskInclusive3" />
+
+    <sequenceFlow id="flow6" sourceRef="taskInclusive1" targetRef="parallelFork" />
+
+    <parallelGateway id="parallelFork" />
+
+    <sequenceFlow id="flow7" sourceRef="parallelFork" targetRef="subProcess1" />
+
+    <subProcess id="subProcess1">
+
+      <startEvent id="theSubProcessStart" />
+
+      <sequenceFlow id="subflow1" sourceRef="theSubProcessStart" targetRef="subtask" />
+
+      <userTask id="subtask" />
+
+      <sequenceFlow id="subflow2" sourceRef="subtask" targetRef="subtask2" />
+
+      <userTask id="subtask2" />
+
+      <sequenceFlow id="subflow3" sourceRef="subtask2" targetRef="theSubProcessEnd" />
+
+      <endEvent id="theSubProcessEnd" />
+
+    </subProcess>
+
+    <sequenceFlow id="flow8" sourceRef="parallelFork" targetRef="subProcess2" />
+
+    <subProcess id="subProcess2">
+
+      <startEvent id="theSubProcessStart2" />
+
+      <sequenceFlow id="subflow4" sourceRef="theSubProcessStart2" targetRef="subtask3" />
+
+      <userTask id="subtask3" name="Task in subprocess" />
+
+      <sequenceFlow id="subflow5" sourceRef="subtask3" targetRef="theSubProcessEnd2" />
+
+      <endEvent id="theSubProcessEnd2" />
+
+    </subProcess>
+
+    <sequenceFlow id="flow9" sourceRef="subProcess1" targetRef="parallelJoin" />
+
+    <sequenceFlow id="flow10" sourceRef="subProcess2" targetRef="parallelJoin" />
+
+    <parallelGateway id="parallelJoin" />
+
+    <sequenceFlow id="flow11" sourceRef="parallelJoin" targetRef="inclusiveJoin" />
+
+    <sequenceFlow id="flow12" sourceRef="taskInclusive2" targetRef="inclusiveJoin" />
+
+    <sequenceFlow id="flow13" sourceRef="taskInclusive3" targetRef="inclusiveJoin" />
+
+    <inclusiveGateway id="inclusiveJoin" />
+
+    <sequenceFlow id="flow14" sourceRef="inclusiveJoin" targetRef="taskAfter" />
+
+    <userTask id="taskAfter" name="Task after sub process" />
+
+    <sequenceFlow id="flow15" sourceRef="taskAfter" targetRef="theEnd" />
+
+    <endEvent id="theEnd" />
+
+  </process>
+
+</definitions>
