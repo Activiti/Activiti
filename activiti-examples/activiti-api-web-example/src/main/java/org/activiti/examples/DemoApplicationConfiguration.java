@@ -67,7 +67,6 @@ public class DemoApplicationConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-            .csrf().disable()
             .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
             .httpBasic(withDefaults())
             .build();
