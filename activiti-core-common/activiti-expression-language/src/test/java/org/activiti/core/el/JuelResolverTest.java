@@ -20,6 +20,8 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import jakarta.el.ELException;
 import jakarta.el.PropertyNotFoundException;
+
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -132,5 +134,25 @@ public class JuelResolverTest {
 
         //then
         assertThat(result).contains(1l, "item", 3l);
+    }
+
+    @Test
+    public void should_resolveExpression_withBigDecimalVariables() {
+        //given
+        String expressionString = "${bigDecimal1 + bigDecimal2}";
+        ExpressionResolver expressionResolver = new JuelExpressionResolver();
+
+        BigDecimal bigDecimal1 = new BigDecimal("1.2");
+        BigDecimal bigDecimal2 = new BigDecimal("2.3");
+        Map<String, Object> variables = Map.of(
+            "bigDecimal1", bigDecimal1,
+            "bigDecimal2", bigDecimal2
+        );
+
+        //when
+        BigDecimal result = expressionResolver.resolveExpression(expressionString, variables, BigDecimal.class);
+
+        //then
+        assertThat(result).isEqualTo(bigDecimal1.add(bigDecimal2));
     }
 }

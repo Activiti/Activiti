@@ -1,1 +1,1 @@
-alter table ACT_HI_IDENTITYLINK add column DETAILS_ varbinary(max);
+alter table ACT_RU_IDENTITYLINK add DETAILS_ varbinary(max);

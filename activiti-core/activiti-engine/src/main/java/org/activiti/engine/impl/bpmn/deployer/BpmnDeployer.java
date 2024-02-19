@@ -279,6 +279,7 @@ public class BpmnDeployer implements Deployer {
                 processDefinition.setVersion(persistedProcessDefinition.getVersion());
                 processDefinition.setAppVersion(persistedProcessDefinition.getAppVersion());
                 processDefinition.setSuspensionState(persistedProcessDefinition.getSuspensionState());
+                processDefinition.setEngineVersion(persistedProcessDefinition.getEngineVersion());
             }
         }
     }

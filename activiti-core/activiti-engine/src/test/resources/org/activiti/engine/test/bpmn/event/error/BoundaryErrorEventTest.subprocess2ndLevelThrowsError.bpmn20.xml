@@ -22,7 +22,11 @@
     <boundaryEvent id="catchEvent" attachedToRef="subprocessThrowsError">
       <errorEventDefinition errorRef="myError" />
     </boundaryEvent>
-    <sequenceFlow id="flow3" sourceRef="catchEvent" targetRef="theErrorEnd"/>
+
+    <!-- with userTask after catchEvent -->
+    <userTask id="childErrorUserTask" name="Child Error Task"/>
+    <sequenceFlow id="flow3" sourceRef="catchEvent" targetRef="childErrorUserTask"/>
+    <sequenceFlow id="flow4" sourceRef="childErrorUserTask" targetRef="theErrorEnd"/>
 
     <endEvent id="theErrorEnd">
       <errorEventDefinition errorRef="myError" />
