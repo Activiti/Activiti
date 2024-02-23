@@ -119,7 +119,7 @@ public abstract class Activity extends FlowNode {
       }
     }
 
-    dataOutputAssociations = new ArrayList<DataAssociation>();
+    dataOutputAssociations = new ArrayList<>();
 
     if (otherActivity.getDataOutputAssociations() != null &&
       !otherActivity.getDataOutputAssociations().isEmpty()) {

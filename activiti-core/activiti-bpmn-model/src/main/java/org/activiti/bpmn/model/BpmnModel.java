@@ -27,12 +27,12 @@ import java.util.Map;
 
 public class BpmnModel {
 
-  protected Map<String, List<ExtensionAttribute>> definitionsAttributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
+  protected Map<String, List<ExtensionAttribute>> definitionsAttributes = new LinkedHashMap<>();
   protected List<Process> processes = new ArrayList<>();
   protected Map<String, GraphicInfo> locationMap = new LinkedHashMap<>();
   protected Map<String, GraphicInfo> labelLocationMap = new LinkedHashMap<>();
   protected Map<String, List<GraphicInfo>> flowLocationMap = new LinkedHashMap<>();
-  protected List<Signal> signals = new ArrayList<Signal>();
+  protected List<Signal> signals = new ArrayList<>();
   protected Map<String, MessageFlow> messageFlowMap = new LinkedHashMap<>();
   protected Map<String, Message> messageMap = new LinkedHashMap<>();
   protected Map<String, Error> errorMap = new LinkedHashMap<>();
@@ -212,8 +212,8 @@ public class BpmnModel {
 
     if (foundArtifact == null) {
       for (Process process : processes) {
-        for (FlowElement flowElement : process.findFlowElementsOfType(SubProcess.class)) {
-          foundArtifact = getArtifactInSubProcess(id, (SubProcess) flowElement);
+        for (SubProcess flowElement : process.findFlowElementsOfType(SubProcess.class)) {
+          foundArtifact = getArtifactInSubProcess(id, flowElement);
           if (foundArtifact != null) {
             break;
           }

@@ -24,7 +24,7 @@ public class ActivitiListener extends BaseElement {
   protected String event;
   protected String implementationType;
   protected String implementation;
-  protected List<FieldExtension> fieldExtensions = new ArrayList<FieldExtension>();
+  protected List<FieldExtension> fieldExtensions = new ArrayList<>();
   protected String onTransaction;
   protected String customPropertiesResolverImplementationType;
   protected String customPropertiesResolverImplementation;

@@ -117,8 +117,8 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
   protected static final String BPMN_XSD = "org/activiti/impl/bpmn/parser/BPMN20.xsd";
   protected static final String DEFAULT_ENCODING = "UTF-8";
 
-  protected static Map<String, BaseBpmnXMLConverter> convertersToBpmnMap = new HashMap<String, BaseBpmnXMLConverter>();
-  protected static Map<Class<? extends BaseElement>, BaseBpmnXMLConverter> convertersToXMLMap = new HashMap<Class<? extends BaseElement>, BaseBpmnXMLConverter>();
+  protected static Map<String, BaseBpmnXMLConverter> convertersToBpmnMap = new HashMap<>();
+  protected static Map<Class<? extends BaseElement>, BaseBpmnXMLConverter> convertersToXMLMap = new HashMap<>();
 
   protected ClassLoader classloader;
   protected List<String> userTaskFormTypes;
@@ -311,7 +311,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     model.setUserTaskFormTypes(userTaskFormTypes);
     try {
       Process activeProcess = null;
-      List<SubProcess> activeSubProcessList = new ArrayList<SubProcess>();
+      List<SubProcess> activeSubProcessList = new ArrayList<>();
       while (xtr.hasNext()) {
         try {
           xtr.next();
@@ -386,7 +386,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 
           BaseElement parentElement = null;
           if (!activeSubProcessList.isEmpty()) {
-            parentElement = activeSubProcessList.get(activeSubProcessList.size() - 1);
+            parentElement = activeSubProcessList.getLast();
           } else if (activeProcess != null) {
             parentElement = activeProcess;
           }
@@ -412,10 +412,9 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 
         } else if (ELEMENT_COMPLETION_CONDITION.equals(xtr.getLocalName())) {
           if (!activeSubProcessList.isEmpty()) {
-            SubProcess subProcess = activeSubProcessList.get(activeSubProcessList.size() - 1);
-            if (subProcess instanceof AdhocSubProcess) {
-              AdhocSubProcess adhocSubProcess = (AdhocSubProcess) subProcess;
-              adhocSubProcess.setCompletionCondition(xtr.getElementText());
+            SubProcess subProcess = activeSubProcessList.getLast();
+            if (subProcess instanceof AdhocSubProcess adhocSubProcess) {
+                adhocSubProcess.setCompletionCondition(xtr.getElementText());
             }
           }
 
@@ -429,7 +428,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 
           if (!activeSubProcessList.isEmpty() && ELEMENT_MULTIINSTANCE.equalsIgnoreCase(xtr.getLocalName())) {
 
-            multiInstanceParser.parseChildElement(xtr, activeSubProcessList.get(activeSubProcessList.size() - 1), model);
+            multiInstanceParser.parseChildElement(xtr, activeSubProcessList.getLast(), model);
 
           } else if (convertersToBpmnMap.containsKey(xtr.getLocalName())) {
             if (activeProcess != null) {
