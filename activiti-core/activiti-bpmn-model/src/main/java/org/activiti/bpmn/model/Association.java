@@ -53,11 +53,14 @@ public class Association extends Artifact {
 
   public void setValues(Association otherElement) {
     super.setValues(otherElement);
+
     setSourceRef(otherElement.getSourceRef());
     setTargetRef(otherElement.getTargetRef());
 
-    if (otherElement.getAssociationDirection() != null) {
-      setAssociationDirection(otherElement.getAssociationDirection());
+    if (otherElement.getAssociationDirection() == null) {
+      return;
     }
+
+    setAssociationDirection(otherElement.getAssociationDirection());
   }
 }

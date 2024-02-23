@@ -18,7 +18,7 @@ package org.activiti.bpmn.model;
 public class AdhocSubProcess extends SubProcess {
 
   public static final String ORDERING_PARALLEL = "Parallel";
-  public static final String ORDERING_SEQUENTIALL = "Sequential";
+  public static final String ORDERING_SEQUENTIAL = "Sequential";
 
   protected String completionCondition;
   protected String ordering = ORDERING_PARALLEL;
@@ -40,12 +40,8 @@ public class AdhocSubProcess extends SubProcess {
     this.ordering = ordering;
   }
 
-  public boolean hasParallelOrdering() {
-    return !ORDERING_SEQUENTIALL.equals(ordering);
-  }
-
   public boolean hasSequentialOrdering() {
-    return ORDERING_SEQUENTIALL.equals(ordering);
+    return ORDERING_SEQUENTIAL.equals(ordering);
   }
 
   public boolean isCancelRemainingInstances() {

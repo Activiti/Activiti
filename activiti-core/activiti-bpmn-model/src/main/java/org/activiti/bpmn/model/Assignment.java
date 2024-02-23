@@ -37,7 +37,7 @@ public class Assignment extends BaseElement {
   }
 
   public Assignment clone() {
-    Assignment clone = new Assignment();
+    var clone = new Assignment();
     clone.setValues(this);
     return clone;
   }

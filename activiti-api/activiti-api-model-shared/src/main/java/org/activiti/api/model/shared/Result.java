@@ -15,10 +15,12 @@
  */
 package org.activiti.api.model.shared;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public abstract class Result<T> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private Payload payload;

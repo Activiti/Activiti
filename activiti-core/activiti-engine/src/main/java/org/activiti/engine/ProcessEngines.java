@@ -56,15 +56,15 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class ProcessEngines {
 
-  private static Logger log = LoggerFactory.getLogger(ProcessEngines.class);
+  private static final Logger log = LoggerFactory.getLogger(ProcessEngines.class);
 
   public static final String NAME_DEFAULT = "default";
 
   protected static boolean isInitialized;
-  protected static Map<String, ProcessEngine> processEngines = new HashMap<String, ProcessEngine>();
-  protected static Map<String, ProcessEngineInfo> processEngineInfosByName = new HashMap<String, ProcessEngineInfo>();
-  protected static Map<String, ProcessEngineInfo> processEngineInfosByResourceUrl = new HashMap<String, ProcessEngineInfo>();
-  protected static List<ProcessEngineInfo> processEngineInfos = new ArrayList<ProcessEngineInfo>();
+  protected static Map<String, ProcessEngine> processEngines = new HashMap<>();
+  protected static Map<String, ProcessEngineInfo> processEngineInfosByName = new HashMap<>();
+  protected static Map<String, ProcessEngineInfo> processEngineInfosByResourceUrl = new HashMap<>();
+  protected static List<ProcessEngineInfo> processEngineInfos = new ArrayList<>();
 
   /**
    * Initializes all process engines that can be found on the classpath for resources <code>activiti.cfg.xml</code> (plain Activiti style configuration) and for resources
@@ -75,10 +75,10 @@ public abstract class ProcessEngines {
       if (processEngines == null) {
         // Create new map to store process-engines if current map is
         // null
-        processEngines = new HashMap<String, ProcessEngine>();
+        processEngines = new HashMap<>();
       }
       ClassLoader classLoader = ReflectUtil.getClassLoader();
-      Enumeration<URL> resources = null;
+      Enumeration<URL> resources;
       try {
         resources = classLoader.getResources("activiti.cfg.xml");
       } catch (IOException e) {
@@ -88,15 +88,14 @@ public abstract class ProcessEngines {
       // Remove duplicated configuration URL's using set. Some
       // classloaders may return identical URL's twice, causing duplicate
       // startups
-      Set<URL> configUrls = new HashSet<URL>();
+      var configUrls = new HashSet<URL>();
       while (resources.hasMoreElements()) {
         configUrls.add(resources.nextElement());
       }
-      for (Iterator<URL> iterator = configUrls.iterator(); iterator.hasNext();) {
-        URL resource = iterator.next();
-        log.info("Initializing process engine using configuration '{}'", resource.toString());
-        initProcessEngineFromResource(resource);
-      }
+        for (URL resource : configUrls) {
+            log.info("Initializing process engine using configuration '{}'", resource.toString());
+            initProcessEngineFromResource(resource);
+        }
 
       try {
         resources = classLoader.getResources("activiti-context.xml");
@@ -118,7 +117,8 @@ public abstract class ProcessEngines {
   protected static void initProcessEngineFromSpringResource(URL resource) {
     try {
       Class<?> springConfigurationHelperClass = ReflectUtil.loadClass("org.activiti.spring.SpringConfigurationHelper");
-      Method method = springConfigurationHelperClass.getDeclaredMethod("buildProcessEngine", new Class<?>[] { URL.class });
+      Method method = springConfigurationHelperClass.getDeclaredMethod("buildProcessEngine",
+          URL.class);
       ProcessEngine processEngine = (ProcessEngine) method.invoke(null, new Object[] { resource });
 
       String processEngineName = processEngine.getName();
@@ -199,19 +199,6 @@ public abstract class ProcessEngines {
     }
   }
 
-  /** Get initialization results. */
-  public static List<ProcessEngineInfo> getProcessEngineInfos() {
-    return processEngineInfos;
-  }
-
-  /**
-   * Get initialization results. Only info will we available for process engines which were added in the {@link ProcessEngines#init()}. No {@link ProcessEngineInfo} is available for engines which were
-   * registered programatically.
-   */
-  public static ProcessEngineInfo getProcessEngineInfo(String processEngineName) {
-    return processEngineInfosByName.get(processEngineName);
-  }
-
   public static ProcessEngine getDefaultProcessEngine() {
     return getProcessEngine(NAME_DEFAULT);
   }
@@ -230,31 +217,12 @@ public abstract class ProcessEngines {
   }
 
   /**
-   * retries to initialize a process engine that previously failed.
-   */
-  public static ProcessEngineInfo retry(String resourceUrl) {
-    log.debug("retying initializing of resource {}", resourceUrl);
-    try {
-      return initProcessEngineFromResource(new URL(resourceUrl));
-    } catch (MalformedURLException e) {
-      throw new ActivitiIllegalArgumentException("invalid url: " + resourceUrl, e);
-    }
-  }
-
-  /**
-   * provides access to process engine to application clients in a managed server environment.
-   */
-  public static Map<String, ProcessEngine> getProcessEngines() {
-    return processEngines;
-  }
-
-  /**
    * closes all process engines. This method should be called when the server shuts down.
    */
   public synchronized static void destroy() {
     if (isInitialized()) {
-      Map<String, ProcessEngine> engines = new HashMap<String, ProcessEngine>(processEngines);
-      processEngines = new HashMap<String, ProcessEngine>();
+      Map<String, ProcessEngine> engines = new HashMap<>(processEngines);
+      processEngines = new HashMap<>();
 
       for (String processEngineName : engines.keySet()) {
         ProcessEngine processEngine = engines.get(processEngineName);

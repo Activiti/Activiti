@@ -15,10 +15,9 @@
  */
 package org.activiti.bpmn.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class ActivitiListener extends BaseElement {
 
@@ -61,10 +60,6 @@ public class ActivitiListener extends BaseElement {
     return fieldExtensions;
   }
 
-  public void setFieldExtensions(List<FieldExtension> fieldExtensions) {
-    this.fieldExtensions = fieldExtensions;
-  }
-
   public String getOnTransaction() {
     return onTransaction;
   }
@@ -77,7 +72,8 @@ public class ActivitiListener extends BaseElement {
     return customPropertiesResolverImplementationType;
   }
 
-  public void setCustomPropertiesResolverImplementationType(String customPropertiesResolverImplementationType) {
+  public void setCustomPropertiesResolverImplementationType(
+    String customPropertiesResolverImplementationType) {
     this.customPropertiesResolverImplementationType = customPropertiesResolverImplementationType;
   }
 
@@ -85,7 +81,8 @@ public class ActivitiListener extends BaseElement {
     return customPropertiesResolverImplementation;
   }
 
-  public void setCustomPropertiesResolverImplementation(String customPropertiesResolverImplementation) {
+  public void setCustomPropertiesResolverImplementation(
+    String customPropertiesResolverImplementation) {
     this.customPropertiesResolverImplementation = customPropertiesResolverImplementation;
   }
 
@@ -98,7 +95,7 @@ public class ActivitiListener extends BaseElement {
   }
 
   public ActivitiListener clone() {
-    ActivitiListener clone = new ActivitiListener();
+    var clone = new ActivitiListener();
     clone.setValues(this);
     return clone;
   }
@@ -108,11 +105,16 @@ public class ActivitiListener extends BaseElement {
     setImplementation(otherListener.getImplementation());
     setImplementationType(otherListener.getImplementationType());
 
-    fieldExtensions = new ArrayList<FieldExtension>();
-    if (otherListener.getFieldExtensions() != null && !otherListener.getFieldExtensions().isEmpty()) {
-      for (FieldExtension extension : otherListener.getFieldExtensions()) {
-        fieldExtensions.add(extension.clone());
-      }
+    fieldExtensions = new ArrayList<>();
+
+    if (otherListener.getFieldExtensions() == null || otherListener.getFieldExtensions()
+      .isEmpty()) {
+
+      return;
+    }
+
+    for (FieldExtension extension : otherListener.getFieldExtensions()) {
+      fieldExtensions.add(extension.clone());
     }
   }
 }

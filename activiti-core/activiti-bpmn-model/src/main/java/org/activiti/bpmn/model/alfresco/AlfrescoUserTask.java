@@ -19,8 +19,6 @@ import org.activiti.bpmn.model.UserTask;
 
 public class AlfrescoUserTask extends UserTask {
 
-  public static final String ALFRESCO_SCRIPT_TASK_LISTENER = "org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener";
-
   protected String runAs;
   protected String scriptProcessor;
 

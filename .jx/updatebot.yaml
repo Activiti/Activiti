@@ -1,4 +1,5 @@
-apiVersion: updatebot.jenkins-x.io/v1alpha1
+# nonk8s
+apiVersion: update.jenkins-x.io/v1alpha1
 kind: UpdateConfig
 spec:
   rules:
