@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext;
@@ -113,7 +114,7 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
         variableDefinitionMap.forEach((k, v) -> {
             if (!newVarsMap.containsKey(v.getName()) && v.getValue() != null) {
                 Object value = createDefaultVariableValue(v);
-                if (expressionResolver.containsExpression(value)) {
+                if (expressionResolver.containsExpression(value) || value instanceof ObjectNode) {
                     varsWithExpressions.put(v.getName(), value);
                 } else {
                     newVarsMap.put(v.getName(), value);
