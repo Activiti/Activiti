@@ -17,7 +17,9 @@ package org.activiti.spring.process;
 
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.assertj.core.api.Assertions.entry;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -166,7 +168,7 @@ public class ProcessVariablesInitiatorIT {
     }
 
     @Test
-    public void calculateVariablesFromExtensionFileShouldReturnMapWhen() throws Exception {
+    public void calculateVariablesFromExtensionFileShouldReturnMapWhenVariableIsJson() throws Exception {
         try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("processes/variable-mapping-all-extensions.json")) {
 
             ProcessExtensionModel extension = reader.read(inputStream);
