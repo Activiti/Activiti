@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-examples</artifactId>
-    <version>8.3.0-alpha.12</version>
+    <version>8.3.0-mock</version>
   </parent>
   <artifactId>activiti-api-web-example</artifactId>
   <name>Activiti :: Examples :: API Web Example</name>
