@@ -30,7 +30,18 @@ public class BigDecimalVariableType extends VariableType {
 
     @Override
     public Object parseFromValue(Object value) throws ActivitiException {
-        return BigDecimal.valueOf(((Number) value).doubleValue());
+
+        if(value instanceof BigDecimal) {
+            return value;
+        }
+        try {
+            if (value instanceof String) {
+                return new BigDecimal((String) value);
+            }
+            return BigDecimal.valueOf(((Number) value).doubleValue());
+        } catch (ClassCastException | NumberFormatException e) {
+            throw new ActivitiException("Error parsing bigdecimal value from " + value + ": " + e.getMessage(), e);
+        }
     }
 
     @Override
