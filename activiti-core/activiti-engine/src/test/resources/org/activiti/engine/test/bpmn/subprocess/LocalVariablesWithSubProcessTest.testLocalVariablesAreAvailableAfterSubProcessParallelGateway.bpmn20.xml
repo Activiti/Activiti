@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20240216110429549" modeler:modelId="2" modeler:modelVersion="2" modeler:modelLastUpdated="1708081436130">
+  <process id="simplerProcess" name="simplerProcess" isExecutable="true">
+    <startEvent id="startEvent">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[startEvent1]]></modeler:editor-resource-id>
+      </extensionElements>
+    </startEvent>
+    <sequenceFlow id="startEvent_gateway" sourceRef="startEvent" targetRef="gatewayEntry"/>
+
+    <parallelGateway id="gatewayEntry"/>
+
+    <!-- branch A -->
+    <sequenceFlow id="gatewayEntry_scriptA" sourceRef="gatewayEntry" targetRef="scriptA"/>
+    <scriptTask id="scriptA" name="scriptA" scriptFormat="javascript">
+      <script><![CDATA[
+      execution.setVariableLocal("commonLocalVar","A1");
+      execution.setVariableLocal("uniqueLocalVarA","A2");
+      ]]></script>
+    </scriptTask>
+    <sequenceFlow id="scriptA_subProcessA" sourceRef="scriptA" targetRef="subProcessA"/>
+    <subProcess id="subProcessA" name="subProcessA">
+      <startEvent id="subProcessA-startEvent"/>
+      <endEvent id="subProcessA-endEvent"/>
+      <sequenceFlow id="subProcessA-startEvent_endEvent" sourceRef="subProcessA-startEvent" targetRef="subProcessA-endEvent"/>
+    </subProcess>
+    <sequenceFlow id="subProcessA_usertaskA" sourceRef="subProcessA" targetRef="userTaskA"/>
+    <userTask id="userTaskA" name="user task A"/>
+    <sequenceFlow id="userTaskA_gatewayExit" sourceRef="userTaskA" targetRef="gatewayExit"/>
+
+    <!-- branch B -->
+    <sequenceFlow id="gatewayEntry_scriptB" sourceRef="gatewayEntry" targetRef="scriptB"/>
+    <scriptTask id="scriptB" name="scriptB" scriptFormat="javascript">
+      <script><![CDATA[
+      execution.setVariableLocal("commonLocalVar","B1");
+      execution.setVariableLocal("uniqueLocalVarB","B2");
+      ]]></script>
+    </scriptTask>
+    <sequenceFlow id="scriptB_subProcessB" sourceRef="scriptB" targetRef="subProcessB"/>
+    <subProcess id="subProcessB" name="subProcessB">
+      <startEvent id="subProcessB-startEvent"/>
+      <endEvent id="subProcessB-endEvent"/>
+      <sequenceFlow id="subProcessB-startEvent_endEvent" sourceRef="subProcessB-startEvent" targetRef="subProcessB-endEvent"/>
+    </subProcess>
+    <sequenceFlow id="subProcessB_usertaskB" sourceRef="subProcessB" targetRef="userTaskB"/>
+    <userTask id="userTaskB" name="user task B"/>
+    <sequenceFlow id="userTaskB_gatewayExit" sourceRef="userTaskB" targetRef="gatewayExit"/>
+
+    <parallelGateway id="gatewayExit"/>
+
+    <sequenceFlow id="gatewayExit_endEvent" sourceRef="gatewayExit" targetRef="endEvent"/>
+    <endEvent id="endEvent"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_simplerProcess">
+    <bpmndi:BPMNPlane bpmnElement="simplerProcess" id="BPMNPlane_simplerProcess">
+      <bpmndi:BPMNShape bpmnElement="startEvent" id="BPMNShape_startEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="210.0" y="157.00000221187435"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scriptA" id="BPMNShape_scriptA">
+        <omgdc:Bounds height="80.0" width="100.0" x="315.00000443783705" y="132.00001373616288"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scriptB" id="BPMNShape_scriptB">
+        <omgdc:Bounds height="80.0" width="100.0" x="315.00000443783705" y="132.00001373616288"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subProcessA" id="BPMNShape_subProcessA">
+        <omgdc:Bounds height="233.0" width="243.0" x="495.0000069737439" y="132.00001559582813"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subProcessB" id="BPMNShape_subProcessB">
+        <omgdc:Bounds height="233.0" width="243.0" x="495.0000069737439" y="132.00001559582813"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="gatewayEntry" id="BPMNShape_gatewayEntry">
+        <omgdc:Bounds height="40.0" width="40.0" x="803.0000092983253" y="305.0000040010975"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="gatewayExit" id="BPMNShape_gatewayExit">
+        <omgdc:Bounds height="40.0" width="40.0" x="803.0000092983253" y="305.0000040010975"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTaskA" id="BPMNShape_userTaskA">
+        <omgdc:Bounds height="80.0" width="100.0" x="893.0000105662787" y="285.00001745549343"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTaskB" id="BPMNShape_userTaskB">
+        <omgdc:Bounds height="80.0" width="100.0" x="893.0000105662787" y="285.00001745549343"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent" id="BPMNShape_endEvent">
+        <omgdc:Bounds height="28.0" width="28.0" x="809.0000186811809" y="393.00001352483696"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subProcessA-startEvent" id="BPMNShape_subProcessA-startEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="595.0000069737439" y="295.00001559582813"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subProcessB-startEvent" id="BPMNShape_subProcessB-startEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="595.0000069737439" y="295.00001559582813"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subProcessA-endEvent" id="BPMNShape_subProcessA-endEvent">
+        <omgdc:Bounds height="28.0" width="28.0" x="670.0000069737439" y="296.00001559582813"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subProcessB-endEvent" id="BPMNShape_subProcessB-endEvent">
+        <omgdc:Bounds height="28.0" width="28.0" x="670.0000069737439" y="296.00001559582813"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="scriptA_subProcessA" id="BPMNEdge_scriptA_subProcessA">
+        <omgdi:waypoint x="415.00000443783705" y="172.00001425273655"/>
+        <omgdi:waypoint x="495.0000069737439" y="172.00001507925447"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="scriptB_subProcessB" id="BPMNEdge_scriptB_subProcessB">
+        <omgdi:waypoint x="415.00000443783705" y="172.00001425273655"/>
+        <omgdi:waypoint x="495.0000069737439" y="172.00001507925447"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="gatewayEntry_scriptA" id="BPMNEdge_gatewayEntry_scriptA">
+        <omgdi:waypoint x="842.5798390730412" y="325.4201742263816"/>
+        <omgdi:waypoint x="893.0000105662787" y="325.2092168447399"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="gatewayEntry_scriptB" id="BPMNEdge_gatewayEntry_scriptB">
+        <omgdi:waypoint x="842.5798390730412" y="325.4201742263816"/>
+        <omgdi:waypoint x="893.0000105662787" y="325.2092168447399"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="gatewayExit_endEvent" id="BPMNEdge_gatewayExit_endEvent">
+        <omgdi:waypoint x="823.382727576" y="344.6172857234228"/>
+        <omgdi:waypoint x="823.0859050137055" y="393.00027697239125"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="userTaskA_gatewayExit" id="BPMNEdge_userTaskA_gatewayExit">
+        <omgdi:waypoint x="993.0000105662787" y="325.00001227337503"/>
+        <omgdi:waypoint x="1058.00001289086" y="325.00000553662096"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="userTaskB_gatewayExit" id="BPMNEdge_userTaskB_gatewayExit">
+        <omgdi:waypoint x="993.0000105662787" y="325.00001227337503"/>
+        <omgdi:waypoint x="1058.00001289086" y="325.00000553662096"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="startEvent_gateway" id="BPMNEdge_startEvent_gateway">
+        <omgdi:waypoint x="239.99999999999994" y="172.0000034466195"/>
+        <omgdi:waypoint x="315.00000443783705" y="172.00000962034568"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="subProcessA-startEvent_endEvent" id="BPMNEdge_subProcessA-startEvent_endEvent">
+        <omgdi:waypoint x="625.0000069737439" y="310.00001559582813"/>
+        <omgdi:waypoint x="670.0000069737439" y="310.00001559582813"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="subProcessB-startEvent_endEvent" id="BPMNEdge_subProcessB-startEvent_endEvent">
+        <omgdi:waypoint x="625.0000069737439" y="310.00001559582813"/>
+        <omgdi:waypoint x="670.0000069737439" y="310.00001559582813"/>
+      </bpmndi:BPMNEdge>
+
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

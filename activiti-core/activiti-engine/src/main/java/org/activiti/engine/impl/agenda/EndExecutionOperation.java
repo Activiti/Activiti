@@ -30,6 +30,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
+import org.activiti.engine.impl.bpmn.helper.SubProcessVariableSnapshotter;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
@@ -44,6 +45,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This operations ends an execution and follows the typical BPMN rules to continue the process (if possible).
@@ -220,6 +222,25 @@ public class EndExecutionOperation extends AbstractOperation {
         }
     }
 
+    private List<ExecutionEntity> getExecutionsBeforeCallingSubProcess(final ExecutionEntity parentExecution, final ExecutionEntity executionToContinue) {
+        // since parent process execution before calling the subprocess is marked for deletion,
+        // {@code executionEntityManager.findChildExecutionsByParentExecutionId()} will not return that execution
+        return parentExecution.getParent().getExecutions().stream()
+            .filter(executionEntity -> {
+                // scoped execution of the current subprocess should not be considered
+                return !executionEntity.getId().equals(parentExecution.getId());
+            })
+            .filter(executionEntity -> {
+                // only executions of the current subProcess should be considered
+                return executionEntity.getActivityId().equals(parentExecution.getActivityId());
+            })
+            .filter(executionEntity -> {
+                // execution-to-continue should not be considered (we want the execution before calling the subprocess)
+                return !executionEntity.getId().equals(executionToContinue.getId());
+            })
+            .collect(Collectors.toList());
+    }
+
     protected ExecutionEntity handleSubProcessEnd(ExecutionEntityManager executionEntityManager,
                                                   ExecutionEntity parentExecution,
                                                   SubProcess subProcess) {
@@ -228,6 +249,13 @@ public class EndExecutionOperation extends AbstractOperation {
         // create a new execution to take the outgoing sequence flows
         executionToContinue = executionEntityManager.createChildExecution(parentExecution.getParent());
         executionToContinue.setCurrentFlowElement(subProcess);
+
+        // if there's a parent process running (given by parentExecution.getParent()),
+        // copies local variables from the execution before subprocess
+        List<ExecutionEntity> executionsBeforeCallingSubProcess = getExecutionsBeforeCallingSubProcess(parentExecution, executionToContinue);
+        if( executionsBeforeCallingSubProcess.size() == 1 ) {
+            new SubProcessVariableSnapshotter().setVariablesSnapshots(executionsBeforeCallingSubProcess.get(0), executionToContinue);
+        }
 
         boolean hasCompensation = false;
         if (subProcess instanceof Transaction) {

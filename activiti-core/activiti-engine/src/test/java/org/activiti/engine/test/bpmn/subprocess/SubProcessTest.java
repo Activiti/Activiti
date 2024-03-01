@@ -29,6 +29,7 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -443,4 +444,40 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     taskService.complete(currentTask.getId());
     assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(pi.getId()).singleResult()).isNull();
   }
+
+  @Deployment
+  public void testLocalVariablesAreAvailableAfterSubProcess() {
+      // GIVEN a process that creates a local variable, calls a subprocess and evaluates the initial local variable
+
+      // WHEN process starts
+      runtimeService.startProcessInstanceByKey("simplerProcess");
+
+      // THEN after completing the subprocess, evaluation of the local variable is possible and flow reaches a user task
+      TaskQuery taskQuery = taskService.createTaskQuery();
+      Task taskBeforeSubProcess = taskQuery.singleResult();
+      assertThat(taskBeforeSubProcess.getName()).isEqualTo("user task");
+  }
+
+    @Deployment
+    public void testLocalVariablesAreAvailableAfterSubProcessParallelGateway() {
+        // GIVEN a process that creates a local variable, calls a subprocess and evaluates the initial local variable
+
+        // WHEN process starts
+        runtimeService.startProcessInstanceByKey("simplerProcess");
+
+        // THEN after completing the subprocess, evaluation of the local variable is possible and flow reaches a user task
+        TaskQuery taskQuery = taskService.createTaskQuery();
+        List<Task> tasks = taskQuery.list();
+        assertThat(tasks).hasSize(2);
+
+        Task taskA = tasks.stream().filter(task1 -> task1.getName().equals("user task A")).findFirst().orElseThrow();
+        Task taskB = tasks.stream().filter(task1 -> task1.getName().equals("user task B")).findFirst().orElseThrow();
+
+        List<Execution> listA = runtimeService.createExecutionQuery().executionId(taskA.getExecutionId()).list();
+        List<Execution> listB = runtimeService.createExecutionQuery().executionId(taskB.getExecutionId()).list();
+        System.out.println("ff");
+
+//        assertThat(taskBeforeSubProcess.getName()).isEqualTo("user task");
+    }
+
 }

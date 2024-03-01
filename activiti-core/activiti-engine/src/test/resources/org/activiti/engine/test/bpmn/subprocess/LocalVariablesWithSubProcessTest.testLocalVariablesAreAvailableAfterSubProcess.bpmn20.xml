@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20240216110429549" modeler:modelId="2" modeler:modelVersion="2" modeler:modelLastUpdated="1708081436130">
+  <process id="simplerProcess" name="simplerProcess" isExecutable="true">
+    <startEvent id="startEvent">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[startEvent1]]></modeler:editor-resource-id>
+      </extensionElements>
+    </startEvent>
+    <scriptTask id="script" name="script" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script><![CDATA[execution.setVariableLocal("httpStatus",500);]]></script>
+    </scriptTask>
+    <subProcess id="subprocess" name="subProcess">
+      <startEvent id="subprocess-startEvent"/>
+      <endEvent id="subprocess-endEvent"/>
+      <sequenceFlow id="subprocess-startEvent_endEvent" sourceRef="subprocess-startEvent" targetRef="subprocess-endEvent"/>
+    </subProcess>
+    <exclusiveGateway id="gateway" default="gateway_endEvent"/>
+    <userTask id="userTask" name="user task" activiti:assignee="$INITIATOR"/>
+    <endEvent id="endEvent2"/>
+    <endEvent id="endEvent1"/>
+    <sequenceFlow id="startEvent_script" sourceRef="startEvent" targetRef="script"/>
+    <sequenceFlow id="subProcess_gateway" sourceRef="subprocess" targetRef="gateway"/>
+    <sequenceFlow id="script_subProcess" sourceRef="script" targetRef="subprocess"/>
+    <sequenceFlow id="userTask_endEvent" sourceRef="userTask" targetRef="endEvent1"/>
+    <sequenceFlow id="gateway_userTask" sourceRef="gateway" targetRef="userTask">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${(httpStatus!=200)}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="gateway_endEvent" sourceRef="gateway" targetRef="endEvent2"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_simplerProcess">
+    <bpmndi:BPMNPlane bpmnElement="simplerProcess" id="BPMNPlane_simplerProcess">
+      <bpmndi:BPMNShape bpmnElement="startEvent" id="BPMNShape_startEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="210.0" y="157.00000221187435"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="script" id="BPMNShape_script">
+        <omgdc:Bounds height="80.0" width="100.0" x="315.00000443783705" y="132.00001373616288"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subprocess" id="BPMNShape_subprocess">
+        <omgdc:Bounds height="233.0" width="243.0" x="495.0000069737439" y="132.00001559582813"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="gateway" id="BPMNShape_gateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="803.0000092983253" y="305.0000040010975"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask" id="BPMNShape_userTask">
+        <omgdc:Bounds height="80.0" width="100.0" x="893.0000105662787" y="285.00001745549343"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent2" id="BPMNShape_endEvent2">
+        <omgdc:Bounds height="28.0" width="28.0" x="809.0000186811809" y="393.00001352483696"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent1" id="BPMNShape_endEvent1">
+        <omgdc:Bounds height="28.0" width="28.0" x="1058.00001289086" y="311.0000040856278"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subprocess-startEvent" id="BPMNShape_subprocess-startEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="595.0000069737439" y="295.00001559582813"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subprocess-endEvent" id="BPMNShape_subprocess-endEvent">
+        <omgdc:Bounds height="28.0" width="28.0" x="670.0000069737439" y="296.00001559582813"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="script_subProcess" id="BPMNEdge_script_subProcess">
+        <omgdi:waypoint x="415.00000443783705" y="172.00001425273655"/>
+        <omgdi:waypoint x="495.0000069737439" y="172.00001507925447"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="gateway_userTask" id="BPMNEdge_gateway_userTask">
+        <omgdi:waypoint x="842.5798390730412" y="325.4201742263816"/>
+        <omgdi:waypoint x="893.0000105662787" y="325.2092168447399"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="gateway_endEvent" id="BPMNEdge_gateway_endEvent">
+        <omgdi:waypoint x="823.382727576" y="344.6172857234228"/>
+        <omgdi:waypoint x="823.0859050137055" y="393.00027697239125"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="userTask_endEvent" id="BPMNEdge_userTask_endEvent">
+        <omgdi:waypoint x="993.0000105662787" y="325.00001227337503"/>
+        <omgdi:waypoint x="1058.00001289086" y="325.00000553662096"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="startEvent_script" id="BPMNEdge_startEvent_script">
+        <omgdi:waypoint x="239.99999999999994" y="172.0000034466195"/>
+        <omgdi:waypoint x="315.00000443783705" y="172.00000962034568"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="subProcess_gateway" id="BPMNEdge_subProcess_gateway">
+        <omgdi:waypoint x="738.0000069737439" y="325.00001130148354"/>
+        <omgdi:waypoint x="803.0000110160629" y="325.0000057188352"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="subprocess-startEvent_endEvent" id="BPMNEdge_subprocess-startEvent_endEvent">
+        <omgdi:waypoint x="625.0000069737439" y="310.00001559582813"/>
+        <omgdi:waypoint x="670.0000069737439" y="310.00001559582813"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
