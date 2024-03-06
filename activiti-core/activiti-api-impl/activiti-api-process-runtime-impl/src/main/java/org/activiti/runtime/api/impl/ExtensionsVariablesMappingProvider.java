@@ -17,9 +17,13 @@
 package org.activiti.runtime.api.impl;
 
 import static java.util.Collections.emptyMap;
+
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistry;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext;
@@ -30,6 +34,9 @@ import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.Mapping;
 import org.activiti.spring.process.model.ProcessConstantsMapping;
 import org.activiti.spring.process.model.ProcessVariablesMapping;
+import org.activiti.spring.process.model.VariableDefinition;
+import org.activiti.spring.process.variable.VariableParsingService;
+import org.springframework.core.convert.ConversionService;
 
 public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
@@ -37,10 +44,14 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
     private ExpressionResolver expressionResolver;
 
+    private VariableParsingService variableParsingService;
+
     public ExtensionsVariablesMappingProvider(ProcessExtensionService processExtensionService,
-                                    ExpressionResolver expressionResolver) {
+                                    ExpressionResolver expressionResolver,
+                                              VariableParsingService variableParsingService) {
         this.processExtensionService = processExtensionService;
         this.expressionResolver = expressionResolver;
+        this.variableParsingService = variableParsingService;
     }
 
     protected Optional<Object> calculateMappedValue(Mapping inputMapping,
@@ -162,7 +173,14 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
             if (isTargetProcessVariableDefined(extensions, mappingExecutionContext.getExecution(), name)) {
                 calculateOutPutMappedValue(mapping.getValue(), availableVariables).ifPresent(
-                    value -> outboundVariables.put(mapping.getKey(), value));
+                    value -> {
+                        extensions.getProperties().values().stream().filter(v -> v.getName().equals(mapping.getKey())).findAny().ifPresentOrElse(
+                            v -> outboundVariables.put(mapping.getKey(), variableParsingService.parse(new VariableDefinition(v.getType(), value))),
+                            () -> outboundVariables.put(mapping.getKey(), value)
+                        );
+
+
+                    });
             }
         }
 

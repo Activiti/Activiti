@@ -28,6 +28,7 @@ import org.activiti.runtime.api.connector.IntegrationContextBuilder;
 import org.activiti.runtime.api.impl.ExpressionResolver;
 import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
 import org.activiti.spring.process.ProcessExtensionService;
+import org.activiti.spring.process.variable.VariableParsingService;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
@@ -72,8 +73,9 @@ public class ConnectorsAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public ExtensionsVariablesMappingProvider variablesMappingProvider(ProcessExtensionService processExtensionService,
-                                                             ExpressionResolver expressionResolver) {
-        return new ExtensionsVariablesMappingProvider(processExtensionService, expressionResolver);
+                                                                       ExpressionResolver expressionResolver,
+                                                                       VariableParsingService variableParsingService) {
+        return new ExtensionsVariablesMappingProvider(processExtensionService, expressionResolver, variableParsingService);
     }
 
     @Bean
