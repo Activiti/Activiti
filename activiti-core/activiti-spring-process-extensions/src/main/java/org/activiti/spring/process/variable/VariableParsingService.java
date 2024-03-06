@@ -36,7 +36,7 @@ public class VariableParsingService {
 
     private Map<String, VariableType> variableTypeMap;
 
-    public Object parse(VariableDefinition variableDefinition) throws ActivitiException{
+    public Object parse(VariableDefinition variableDefinition) throws ActivitiException {
 
 
         if(variableDefinition.getType()!=null) {
