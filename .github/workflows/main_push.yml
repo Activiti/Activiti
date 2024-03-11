@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@469ed8f7c8198c4f8476392d944b2568e4043c5a # v5.13.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@9451f6b3f97da882d0e18e1c44696fe07adfa6c8 # v5.19.0
         with:
           skip_checkout: true
       - name: Ensure SHA pinned actions
@@ -53,7 +53,7 @@ jobs:
           java-version: 21
           distribution: 'temurin'
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@469ed8f7c8198c4f8476392d944b2568e4043c5a # v5.13.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@9451f6b3f97da882d0e18e1c44696fe07adfa6c8 # v5.19.0
         id: update-pom-to-next-version
 
       - name: Update VERSION file
@@ -91,10 +91,10 @@ jobs:
           git push -f -q origin $VERSION
 
       - name: Get branch name
-        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@469ed8f7c8198c4f8476392d944b2568e4043c5a # v5.13.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@9451f6b3f97da882d0e18e1c44696fe07adfa6c8 # v5.19.0
 
       - name: Propagate
-        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@469ed8f7c8198c4f8476392d944b2568e4043c5a # v5.13.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@9451f6b3f97da882d0e18e1c44696fe07adfa6c8 # v5.19.0
         if: ${{ env.BRANCH_NAME == 'develop' }}
         env:
           DEVELOPMENT_BRANCH: ${{ github.ref_name }}
@@ -113,7 +113,7 @@ jobs:
     if: always() && failure()
     steps:
       - name: Slack Notification
-        uses: Alfresco/alfresco-build-tools/.github/actions/send-slack-notification@469ed8f7c8198c4f8476392d944b2568e4043c5a # v5.13.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/send-slack-notification@9451f6b3f97da882d0e18e1c44696fe07adfa6c8 # v5.19.0
         with:
           channel-id: 'eng-hxp-studio-activiti-gh-notifs'
           token: ${{ secrets.SLACK_NOTIFICATION_BOT_TOKEN }}
