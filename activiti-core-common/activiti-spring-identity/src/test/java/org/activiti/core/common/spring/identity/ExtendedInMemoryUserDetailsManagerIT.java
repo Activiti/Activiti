@@ -45,4 +45,13 @@ public class ExtendedInMemoryUserDetailsManagerIT {
         String adminUser = users.stream().filter(x -> x.equals("admin")).findFirst().get();
         assertThat(adminUser).isNotNull();
     }
+
+    @Test
+    public void getGroups(){
+        final List<String> groups = extendedInMemoryUserDetailsManager.getGroups();
+        assertThat(groups).isNotNull();
+        assertThat(groups.size() > 1).isTrue();
+        assertThat(groups.contains("GROUP_ACTIVITI_USER")).isTrue();
+        assertThat(groups.contains("GROUP_ACTIVITI_ADMIN")).isTrue();
+    }
 }
