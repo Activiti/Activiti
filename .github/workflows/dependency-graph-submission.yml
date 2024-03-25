@@ -22,4 +22,4 @@ jobs:
          java-version: '21'
          distribution: 'temurin'
     - name: Submit Dependency Graph
-      uses: advanced-security/maven-dependency-submission-action@fcd7eab6b6d22946badc98d1e62665cdee93e0ae # v3.0.3
+      uses: advanced-security/maven-dependency-submission-action@bfd2106013da0957cdede0b6c39fb5ca25ae375e # v4.0.2
