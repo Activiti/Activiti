@@ -20,20 +20,24 @@ import org.activiti.bpmn.model.Pool;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CollaborationExtensionElementsConverterTest extends AbstractConverterTest {
 
   @Test
   public void convertXMLToModel() throws Exception {
-    BpmnModel bpmnModel = readXMLFile();
-    Assertions.assertNotNull(bpmnModel);
+    var bpmnModel = readXMLFile();
+    assertNotNull(bpmnModel);
     assertThat(bpmnModel.getPools()).isNotEmpty();
-    Pool pool1 = bpmnModel.getPool("BP01");
-    Assertions.assertNotNull(pool1);
-    Assertions.assertEquals("Pool", pool1.getName());
-    Pool pool2 = bpmnModel.getPool("BP02");
-    Assertions.assertNotNull(pool2);
-    Assertions.assertEquals("Pool2", pool2.getName());
+
+    var pool1 = bpmnModel.getPool("BP01");
+    assertNotNull(pool1);
+    assertEquals("Pool", pool1.getName());
+
+    var pool2 = bpmnModel.getPool("BP02");
+    assertNotNull(pool2);
+    assertEquals("Pool2", pool2.getName());
   }
 
   protected String getResource() {

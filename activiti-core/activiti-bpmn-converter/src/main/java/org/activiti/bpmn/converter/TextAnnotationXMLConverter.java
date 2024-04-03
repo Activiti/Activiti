@@ -29,9 +29,6 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.TextAnnotation;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
- */
 public class TextAnnotationXMLConverter extends BaseBpmnXMLConverter {
 
   protected Map<String, BaseChildElementParser> childParserMap = new HashMap<String, BaseChildElementParser>();

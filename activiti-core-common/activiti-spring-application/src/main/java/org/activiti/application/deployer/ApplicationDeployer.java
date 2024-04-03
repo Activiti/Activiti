@@ -33,9 +33,11 @@ public class ApplicationDeployer {
     }
 
     public void deploy() {
-        List<ApplicationContent> applications = applicationLoader.loadApplications();
-        for (ApplicationContent application : applications) {
-            for (ApplicationEntryDeployer deployer : deployers) {
+        var applications = applicationLoader.loadApplications();
+
+        for (var application : applications) {
+
+            for (var deployer : deployers) {
                 deployer.deployEntries(application);
             }
         }

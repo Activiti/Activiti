@@ -49,7 +49,7 @@ public class AttachmentEntityImpl extends AbstractEntity implements AttachmentEn
   }
 
   public Object getPersistentState() {
-    Map<String, Object> persistentState = new HashMap<String, Object>();
+    Map<String, Object> persistentState = new HashMap<>();
     persistentState.put("name", name);
     persistentState.put("description", description);
     return persistentState;

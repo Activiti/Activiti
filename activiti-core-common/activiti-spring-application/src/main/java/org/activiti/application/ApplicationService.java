@@ -19,33 +19,35 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.core.io.Resource;
 
 public class ApplicationService {
 
-    private ApplicationDiscovery applicationDiscovery;
-    private ApplicationReader applicationReader;
+  private final ApplicationDiscovery applicationDiscovery;
+  private final ApplicationReader applicationReader;
 
-    public ApplicationService(ApplicationDiscovery applicationDiscovery,
-                              ApplicationReader applicationReader) {
-        this.applicationDiscovery = applicationDiscovery;
-        this.applicationReader = applicationReader;
-    }
+  public ApplicationService(ApplicationDiscovery applicationDiscovery,
+    ApplicationReader applicationReader) {
+    this.applicationDiscovery = applicationDiscovery;
+    this.applicationReader = applicationReader;
+  }
 
-    public List<ApplicationContent> loadApplications() {
-        List<ApplicationContent> applications = new ArrayList<>();
-        List<Resource> applicationResources = applicationDiscovery.discoverApplications();
-        try {
-            for (Resource applicationResource : applicationResources) {
-                try (InputStream inputStream = applicationResource.getInputStream()) {
-                    applications.add(applicationReader.read(inputStream));
-                }
-            }
-        } catch (IOException e) {
-            throw new ApplicationLoadException("Unable to load application resource", e);
+  public List<ApplicationContent> loadApplications() {
+    try {
+
+      var applications = new ArrayList<ApplicationContent>();
+      var applicationResources = applicationDiscovery.discoverApplications();
+
+      for (var applicationResource : applicationResources) {
+        try (var inputStream = applicationResource.getInputStream()) {
+          applications.add(applicationReader.read(inputStream));
         }
-        return applications;
-    }
+      }
 
+      return applications;
+
+    } catch (IOException e) {
+      throw new ApplicationLoadException("Unable to load application resource", e);
+    }
+  }
 }

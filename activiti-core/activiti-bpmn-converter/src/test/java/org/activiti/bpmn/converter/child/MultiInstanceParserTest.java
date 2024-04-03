@@ -29,62 +29,63 @@ import org.junit.jupiter.api.Test;
 
 public class MultiInstanceParserTest {
 
-    private MultiInstanceParser parser = new MultiInstanceParser();
-    private XMLInputFactory xif = XMLInputFactory.newInstance();
+  private final MultiInstanceParser parser = new MultiInstanceParser();
+  private final XMLInputFactory xif = XMLInputFactory.newInstance();
 
-    @Test
-    public void parseChildElement_should_setLoopCharacteristicsProperties() throws Exception {
-        try (InputStream xmlStream = this.getClass().getClassLoader()
-            .getResourceAsStream("multi-instance-loop-characteristics.xml")) {
-            XMLStreamReader xtr = xif.createXMLStreamReader(xmlStream, "UTF-8");
-            xtr.next();
+  @Test
+  public void parseChildElement_should_setLoopCharacteristicsProperties() throws Exception {
+    try (InputStream xmlStream = this.getClass().getClassLoader()
+      .getResourceAsStream("multi-instance-loop-characteristics.xml")) {
+      XMLStreamReader xtr = xif.createXMLStreamReader(xmlStream, "UTF-8");
+      xtr.next();
 
-            UserTask userTask = new UserTask();
-            parser.parseChildElement(xtr, userTask, null);
+      UserTask userTask = new UserTask();
+      parser.parseChildElement(xtr, userTask, null);
 
-            MultiInstanceLoopCharacteristics loopCharacteristics = userTask
-                .getLoopCharacteristics();
+      MultiInstanceLoopCharacteristics loopCharacteristics = userTask
+        .getLoopCharacteristics();
 
-            assertThat(loopCharacteristics).isNotNull();
-            assertThat(loopCharacteristics.isSequential()).isFalse();
-            assertThat(loopCharacteristics.getInputDataItem()).isEqualTo("assigneeList");
-            assertThat(loopCharacteristics.getElementVariable()).isEqualTo("assignee");
-            assertThat(loopCharacteristics.getCompletionCondition()).isEqualTo("${nrOfCompletedInstances/nrOfInstances >= 0.6 }");
-            assertThat(loopCharacteristics.getLoopDataOutputRef()).isEqualTo("meals");
-            assertThat(loopCharacteristics.getOutputDataItem()).isEqualTo("meal");
-        }
-
+      assertThat(loopCharacteristics).isNotNull();
+      assertThat(loopCharacteristics.isSequential()).isFalse();
+      assertThat(loopCharacteristics.getInputDataItem()).isEqualTo("assigneeList");
+      assertThat(loopCharacteristics.getElementVariable()).isEqualTo("assignee");
+      assertThat(loopCharacteristics.getCompletionCondition()).isEqualTo(
+        "${nrOfCompletedInstances/nrOfInstances >= 0.6 }");
+      assertThat(loopCharacteristics.getLoopDataOutputRef()).isEqualTo("meals");
+      assertThat(loopCharacteristics.getOutputDataItem()).isEqualTo("meal");
     }
 
-    @Test
-    public void parseChildElement_should_setActivitiExtensionsElements() throws Exception {
-        try (InputStream xmlStream = this.getClass().getClassLoader()
-            .getResourceAsStream("multi-instance-loop-characteristics-extensions.xml")) {
-            XMLStreamReader xtr = xif.createXMLStreamReader(xmlStream, "UTF-8");
-            moveReaderToMultiInstanceLine(xtr);
+  }
 
-            UserTask userTask = new UserTask();
-            parser.parseChildElement(xtr, userTask, null);
+  @Test
+  public void parseChildElement_should_setActivitiExtensionsElements() throws Exception {
+    try (InputStream xmlStream = this.getClass().getClassLoader()
+      .getResourceAsStream("multi-instance-loop-characteristics-extensions.xml")) {
+      XMLStreamReader xtr = xif.createXMLStreamReader(xmlStream, "UTF-8");
+      moveReaderToMultiInstanceLine(xtr);
 
-            MultiInstanceLoopCharacteristics loopCharacteristics = userTask
-                .getLoopCharacteristics();
+      UserTask userTask = new UserTask();
+      parser.parseChildElement(xtr, userTask, null);
 
-            assertThat(loopCharacteristics).isNotNull();
-            assertThat(loopCharacteristics.isSequential()).isTrue();
-            assertThat(loopCharacteristics.getInputDataItem()).isEqualTo("assigneeList");
-            assertThat(loopCharacteristics.getElementVariable()).isEqualTo("assignee");
-            assertThat(loopCharacteristics.getElementIndexVariable()).isEqualTo("loopValueIndex");
-        }
+      MultiInstanceLoopCharacteristics loopCharacteristics = userTask
+        .getLoopCharacteristics();
 
+      assertThat(loopCharacteristics).isNotNull();
+      assertThat(loopCharacteristics.isSequential()).isTrue();
+      assertThat(loopCharacteristics.getInputDataItem()).isEqualTo("assigneeList");
+      assertThat(loopCharacteristics.getElementVariable()).isEqualTo("assignee");
+      assertThat(loopCharacteristics.getElementIndexVariable()).isEqualTo("loopValueIndex");
     }
 
-    private void moveReaderToMultiInstanceLine(XMLStreamReader xtr) throws XMLStreamException {
-        do {
-            xtr.next();
-        } while (!isMultiInstance(xtr) && xtr.hasNext());
-    }
+  }
 
-    private boolean isMultiInstance(XMLStreamReader xtr) {
-        return xtr.isStartElement() && xtr.getLocalName().equals(ELEMENT_MULTIINSTANCE);
-    }
+  private void moveReaderToMultiInstanceLine(XMLStreamReader xtr) throws XMLStreamException {
+    do {
+      xtr.next();
+    } while (!isMultiInstance(xtr) && xtr.hasNext());
+  }
+
+  private boolean isMultiInstance(XMLStreamReader xtr) {
+    return xtr.isStartElement() && xtr.getLocalName().equals(ELEMENT_MULTIINSTANCE);
+  }
 }

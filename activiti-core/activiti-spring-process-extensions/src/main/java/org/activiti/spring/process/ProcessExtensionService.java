@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.process;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.model.Extension;
@@ -28,67 +28,71 @@ import org.activiti.spring.resources.DeploymentResourceLoader;
 
 public class ProcessExtensionService {
 
-    private DeploymentResourceLoader<ProcessExtensionModel> processExtensionLoader;
-    private ProcessExtensionResourceReader processExtensionReader;
-    private RepositoryService repositoryService;
+  private final DeploymentResourceLoader<ProcessExtensionModel> processExtensionLoader;
+  private final ProcessExtensionResourceReader processExtensionReader;
+  private RepositoryService repositoryService;
 
-    private static final Extension EMPTY_EXTENSIONS = new Extension();
-    private Map<String, Map<String, Extension>> processExtensionModelDeploymentMap = new HashMap<>();
+  private static final Extension EMPTY_EXTENSIONS = new Extension();
+  private final Map<String, Map<String, Extension>> processExtensionModelDeploymentMap = new HashMap<>();
 
-    public ProcessExtensionService(DeploymentResourceLoader<ProcessExtensionModel> processExtensionLoader,
-                                   ProcessExtensionResourceReader processExtensionReader) {
+  public ProcessExtensionService(
+    DeploymentResourceLoader<ProcessExtensionModel> processExtensionLoader,
+    ProcessExtensionResourceReader processExtensionReader) {
+    this.processExtensionLoader = processExtensionLoader;
+    this.processExtensionReader = processExtensionReader;
+  }
 
-        this.processExtensionLoader = processExtensionLoader;
-        this.processExtensionReader = processExtensionReader;
+  private Map<String, Extension> getProcessExtensionsForDeploymentId(String deploymentId) {
+
+    var processExtensionModelMap = processExtensionModelDeploymentMap.get(deploymentId);
+    if (processExtensionModelMap != null) {
+      return processExtensionModelMap;
     }
 
-    private Map<String, Extension> getProcessExtensionsForDeploymentId(String deploymentId) {
-        Map<String, Extension> processExtensionModelMap = processExtensionModelDeploymentMap.get(deploymentId);
-        if (processExtensionModelMap != null) {
-            return processExtensionModelMap;
-        }
+    var processExtensionModels = processExtensionLoader.loadResourcesForDeployment(deploymentId,
+      processExtensionReader);
 
-        List<ProcessExtensionModel> processExtensionModels = processExtensionLoader.loadResourcesForDeployment(deploymentId,
-                processExtensionReader);
+    processExtensionModelMap = buildProcessDefinitionAndExtensionMap(processExtensionModels);
 
-        processExtensionModelMap = buildProcessDefinitionAndExtensionMap(processExtensionModels);
-        processExtensionModelDeploymentMap.put(deploymentId, processExtensionModelMap);
-        return processExtensionModelMap;
+    processExtensionModelDeploymentMap.put(deploymentId, processExtensionModelMap);
+
+    return processExtensionModelMap;
+  }
+
+  private Map<String, Extension> buildProcessDefinitionAndExtensionMap(
+    List<ProcessExtensionModel> processExtensionModels) {
+
+    var buildProcessExtensionMap = new HashMap<String, Extension>();
+
+    for (var processExtensionModel : processExtensionModels) {
+      buildProcessExtensionMap.putAll(processExtensionModel.getAllExtensions());
     }
 
-    private Map<String, Extension> buildProcessDefinitionAndExtensionMap(List<ProcessExtensionModel> processExtensionModels) {
-        Map<String, Extension> buildProcessExtensionMap = new HashMap<>();
-        for (ProcessExtensionModel processExtensionModel:processExtensionModels ) {
-            buildProcessExtensionMap.putAll(processExtensionModel.getAllExtensions());
-        }
+    return buildProcessExtensionMap;
+  }
 
-        return buildProcessExtensionMap;
-    }
+  public Extension getExtensionsFor(ProcessDefinition processDefinition) {
+    var processExtensionModelMap =
+      getProcessExtensionsForDeploymentId(processDefinition.getDeploymentId());
 
-    public boolean hasExtensionsFor(ProcessDefinition processDefinition) {
-        return !EMPTY_EXTENSIONS.equals(getExtensionsFor(processDefinition));
-    }
+    return Optional.ofNullable(processExtensionModelMap.get(processDefinition.getKey()))
+      .orElse(EMPTY_EXTENSIONS);
+  }
 
-    public boolean hasExtensionsFor(String processDefinitionId) {
-        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
-        return hasExtensionsFor(processDefinition);
-    }
+  public boolean hasExtensionsFor(ProcessDefinition processDefinition) {
+    return !EMPTY_EXTENSIONS.equals(getExtensionsFor(processDefinition));
+  }
 
-    public Extension getExtensionsFor(ProcessDefinition processDefinition) {
-        Map<String, Extension> processExtensionModelMap = getProcessExtensionsForDeploymentId(processDefinition.getDeploymentId());
-        Extension extension = processExtensionModelMap.get(processDefinition.getKey());
+  public Extension getExtensionsForId(String processDefinitionId) {
+    var processDefinition =
+      repositoryService.getProcessDefinition(processDefinitionId);
 
-        return extension != null ? extension : EMPTY_EXTENSIONS;
-    }
+    return Optional.ofNullable(getExtensionsFor(processDefinition))
+      .orElse(EMPTY_EXTENSIONS);
+  }
 
-    public Extension getExtensionsForId(String processDefinitionId) {
-        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
+  public void setRepositoryService(RepositoryService repositoryService) {
+    this.repositoryService = repositoryService;
+  }
 
-        Extension processExtension = getExtensionsFor(processDefinition);
-        return processExtension != null ? processExtension : EMPTY_EXTENSIONS;
-    }
-
-    public void setRepositoryService(RepositoryService repositoryService) {
-        this.repositoryService = repositoryService;
-    }
 }

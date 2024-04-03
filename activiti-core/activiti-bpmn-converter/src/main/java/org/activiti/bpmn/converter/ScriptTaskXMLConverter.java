@@ -17,10 +17,8 @@ package org.activiti.bpmn.converter;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.converter.child.BaseChildElementParser;
 import org.activiti.bpmn.converter.child.ScriptTextParser;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
@@ -29,9 +27,6 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ScriptTask;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
- */
 public class ScriptTaskXMLConverter extends BaseBpmnXMLConverter {
 
   protected Map<String, BaseChildElementParser> childParserMap = new HashMap<String, BaseChildElementParser>();
@@ -52,31 +47,38 @@ public class ScriptTaskXMLConverter extends BaseBpmnXMLConverter {
 
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
-    ScriptTask scriptTask = new ScriptTask();
+    var scriptTask = new ScriptTask();
     BpmnXMLUtil.addXMLLocation(scriptTask, xtr);
     scriptTask.setScriptFormat(xtr.getAttributeValue(null, ATTRIBUTE_TASK_SCRIPT_FORMAT));
-    scriptTask.setResultVariable(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_SCRIPT_RESULTVARIABLE));
+    scriptTask.setResultVariable(
+      xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_SCRIPT_RESULTVARIABLE));
     if (StringUtils.isEmpty(scriptTask.getResultVariable())) {
-      scriptTask.setResultVariable(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_SERVICE_RESULTVARIABLE));
+      scriptTask.setResultVariable(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
+        ATTRIBUTE_TASK_SERVICE_RESULTVARIABLE));
     }
-    String autoStoreVariables = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_SCRIPT_AUTO_STORE_VARIABLE);
+    String autoStoreVariables = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
+      ATTRIBUTE_TASK_SCRIPT_AUTO_STORE_VARIABLE);
     if (StringUtils.isNotEmpty(autoStoreVariables)) {
-      scriptTask.setAutoStoreVariables(Boolean.valueOf(autoStoreVariables));
+      scriptTask.setAutoStoreVariables(Boolean.parseBoolean(autoStoreVariables));
     }
     parseChildElements(getXMLElementName(), scriptTask, childParserMap, model, xtr);
     return scriptTask;
   }
 
   @Override
-  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model,
+    XMLStreamWriter xtw) throws Exception {
     ScriptTask scriptTask = (ScriptTask) element;
     writeDefaultAttribute(ATTRIBUTE_TASK_SCRIPT_FORMAT, scriptTask.getScriptFormat(), xtw);
-    writeQualifiedAttribute(ATTRIBUTE_TASK_SCRIPT_RESULTVARIABLE, scriptTask.getResultVariable(), xtw);
-    writeQualifiedAttribute(ATTRIBUTE_TASK_SCRIPT_AUTO_STORE_VARIABLE, String.valueOf(scriptTask.isAutoStoreVariables()), xtw);
+    writeQualifiedAttribute(ATTRIBUTE_TASK_SCRIPT_RESULTVARIABLE, scriptTask.getResultVariable(),
+      xtw);
+    writeQualifiedAttribute(ATTRIBUTE_TASK_SCRIPT_AUTO_STORE_VARIABLE,
+      String.valueOf(scriptTask.isAutoStoreVariables()), xtw);
   }
 
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model,
+    XMLStreamWriter xtw) throws Exception {
     ScriptTask scriptTask = (ScriptTask) element;
     if (StringUtils.isNotEmpty(scriptTask.getScript())) {
       xtw.writeStartElement(ATTRIBUTE_TASK_SCRIPT_TEXT);

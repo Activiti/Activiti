@@ -16,9 +16,7 @@
 package org.activiti.bpmn.converter.parser;
 
 import java.util.List;
-
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.export.ProcessExport;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
@@ -26,9 +24,6 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
- */
 public class ProcessParser implements BpmnXMLConstants {
 
   public Process parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
@@ -40,21 +35,24 @@ public class ProcessParser implements BpmnXMLConstants {
       BpmnXMLUtil.addXMLLocation(process, xtr);
       process.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
       if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_PROCESS_EXECUTABLE))) {
-        process.setExecutable(Boolean.parseBoolean(xtr.getAttributeValue(null, ATTRIBUTE_PROCESS_EXECUTABLE)));
+        process.setExecutable(
+          Boolean.parseBoolean(xtr.getAttributeValue(null, ATTRIBUTE_PROCESS_EXECUTABLE)));
       }
 
-      String candidateUsersString = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_PROCESS_CANDIDATE_USERS);
+      String candidateUsersString = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
+        ATTRIBUTE_PROCESS_CANDIDATE_USERS);
       if (candidateUsersString != null) {
-          process.setCandidateStarterUsersDefined(true);
+        process.setCandidateStarterUsersDefined(true);
       }
       if (StringUtils.isNotEmpty(candidateUsersString)) {
         List<String> candidateUsers = BpmnXMLUtil.parseDelimitedList(candidateUsersString);
         process.setCandidateStarterUsers(candidateUsers);
       }
 
-      String candidateGroupsString = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_PROCESS_CANDIDATE_GROUPS);
+      String candidateGroupsString = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
+        ATTRIBUTE_PROCESS_CANDIDATE_GROUPS);
       if (candidateGroupsString != null) {
-          process.setCandidateStarterGroupsDefined(true);
+        process.setCandidateStarterGroupsDefined(true);
       }
       if (StringUtils.isNotEmpty(candidateGroupsString)) {
         List<String> candidateGroups = BpmnXMLUtil.parseDelimitedList(candidateGroupsString);

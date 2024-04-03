@@ -17,14 +17,13 @@ package org.activiti.bpmn.converter;
 
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EndEvent;
 
 /**
-
+ *
  */
 public class EndEventXMLConverter extends BaseBpmnXMLConverter {
 
@@ -47,11 +46,13 @@ public class EndEventXMLConverter extends BaseBpmnXMLConverter {
   }
 
   @Override
-  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model,
+    XMLStreamWriter xtw) throws Exception {
   }
 
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model,
+    XMLStreamWriter xtw) throws Exception {
     EndEvent endEvent = (EndEvent) element;
     writeEventDefinitions(endEvent, endEvent.getEventDefinitions(), model, xtw);
   }

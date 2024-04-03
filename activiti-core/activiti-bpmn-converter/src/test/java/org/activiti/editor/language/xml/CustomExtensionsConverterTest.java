@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
@@ -37,14 +36,14 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
 
   @Test
   public void convertXMLToModel() throws Exception {
-    BpmnModel bpmnModel = readXMLFile();
+    var bpmnModel = readXMLFile();
     validateModel(bpmnModel);
   }
 
   @Test
   public void convertModelToXML() throws Exception {
-    BpmnModel bpmnModel = readXMLFile();
-    BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
+    var bpmnModel = readXMLFile();
+    var parsedModel = exportAndReadXMLFile(bpmnModel);
     validateModel(parsedModel);
     deployProcess(parsedModel);
   }
@@ -54,13 +53,15 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
   }
 
   private void validateModel(BpmnModel model) {
-    Process process = model.getMainProcess();
+    var process = model.getMainProcess();
     assertThat(process.getAttributes()).isNotNull();
     assertThat(process.getAttributes()).hasSize(1);
-    List<ExtensionAttribute> attributes = process.getAttributes().get("version");
+
+    var attributes = process.getAttributes().get("version");
     assertThat(attributes).isNotNull();
     assertThat(attributes).hasSize(1);
-    ExtensionAttribute attribute = attributes.get(0);
+
+    var attribute = attributes.getFirst();
     // custom:version = "9"
     assertThat(attribute).isNotNull();
     assertThat(attribute.getNamespace()).isEqualTo("http://custom.org/bpmn");
@@ -68,25 +69,27 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
     assertThat(attribute.getName()).isEqualTo("version");
     assertThat(attribute.getValue()).isEqualTo("9");
 
-    List<ActivitiListener> listeners = model.getMainProcess().getExecutionListeners();
+    var listeners = model.getMainProcess().getExecutionListeners();
     validateExecutionListeners(listeners);
-    Map<String, List<ExtensionElement>> extensionElementMap = model.getMainProcess().getExtensionElements();
+    var extensionElementMap = model.getMainProcess()
+      .getExtensionElements();
     validateExtensionElements(extensionElementMap);
 
-    FlowElement flowElement = model.getMainProcess().getFlowElement("servicetask");
+    var flowElement = model.getMainProcess().getFlowElement("servicetask");
     assertThat(flowElement).isNotNull();
     assertThat(flowElement).isInstanceOf(ServiceTask.class);
     assertThat(flowElement.getId()).isEqualTo("servicetask");
-    ServiceTask serviceTask = (ServiceTask) flowElement;
+
+    var serviceTask = (ServiceTask) flowElement;
     assertThat(serviceTask.getId()).isEqualTo("servicetask");
     assertThat(serviceTask.getName()).isEqualTo("Service task");
 
-    List<FieldExtension> fields = serviceTask.getFieldExtensions();
+    var fields = serviceTask.getFieldExtensions();
     assertThat(fields).hasSize(2);
-    FieldExtension field = (FieldExtension) fields.get(0);
+    FieldExtension field = fields.getFirst();
     assertThat(field.getFieldName()).isEqualTo("testField");
     assertThat(field.getStringValue()).isEqualTo("test");
-    field = (FieldExtension) fields.get(1);
+    field = fields.get(1);
     assertThat(field.getFieldName()).isEqualTo("testField2");
     assertThat(field.getExpression()).isEqualTo("${test}");
 
@@ -97,44 +100,51 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
     validateExtensionElements(extensionElementMap);
 
     assertThat(serviceTask.getBoundaryEvents()).hasSize(1);
-    BoundaryEvent boundaryEvent = serviceTask.getBoundaryEvents().get(0);
+    BoundaryEvent boundaryEvent = serviceTask.getBoundaryEvents().getFirst();
     assertThat(boundaryEvent.getId()).isEqualTo("timerEvent");
     assertThat(boundaryEvent.getEventDefinitions()).hasSize(1);
-    assertThat(boundaryEvent.getEventDefinitions().get(0)).isInstanceOf(TimerEventDefinition.class);
-    extensionElementMap = boundaryEvent.getEventDefinitions().get(0).getExtensionElements();
+    assertThat(boundaryEvent.getEventDefinitions().getFirst()).isInstanceOf(TimerEventDefinition.class);
+    extensionElementMap = boundaryEvent.getEventDefinitions().getFirst().getExtensionElements();
     validateExtensionElements(extensionElementMap);
   }
 
   protected void validateExecutionListeners(List<ActivitiListener> listeners) {
     assertThat(listeners).hasSize(3);
-    ActivitiListener listener = (ActivitiListener) listeners.get(0);
-    assertThat(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())).isTrue();
+    ActivitiListener listener = listeners.getFirst();
+    assertThat(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(
+      listener.getImplementationType())).isTrue();
     assertThat(listener.getImplementation()).isEqualTo("org.test.TestClass");
     assertThat(listener.getEvent()).isEqualTo("start");
     assertThat(listener.getOnTransaction()).isEqualTo("before-commit");
-    assertThat(listener.getCustomPropertiesResolverImplementation()).isEqualTo("org.test.TestResolverClass");
-    listener = (ActivitiListener) listeners.get(1);
-    assertThat(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getImplementationType())).isTrue();
+    assertThat(listener.getCustomPropertiesResolverImplementation()).isEqualTo(
+      "org.test.TestResolverClass");
+    listener = listeners.get(1);
+    assertThat(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(
+      listener.getImplementationType())).isTrue();
     assertThat(listener.getImplementation()).isEqualTo("${testExpression}");
     assertThat(listener.getEvent()).isEqualTo("end");
     assertThat(listener.getOnTransaction()).isEqualTo("committed");
-    assertThat(listener.getCustomPropertiesResolverImplementation()).isEqualTo("${testResolverExpression}");
-    listener = (ActivitiListener) listeners.get(2);
-    assertThat(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType())).isTrue();
+    assertThat(listener.getCustomPropertiesResolverImplementation()).isEqualTo(
+      "${testResolverExpression}");
+    listener = listeners.get(2);
+    assertThat(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(
+      listener.getImplementationType())).isTrue();
     assertThat(listener.getImplementation()).isEqualTo("${delegateExpression}");
     assertThat(listener.getEvent()).isEqualTo("start");
     assertThat(listener.getOnTransaction()).isEqualTo("rolled-back");
-    assertThat(listener.getCustomPropertiesResolverImplementation()).isEqualTo("${delegateResolverExpression}");
+    assertThat(listener.getCustomPropertiesResolverImplementation()).isEqualTo(
+      "${delegateResolverExpression}");
 
   }
 
-  protected void validateExtensionElements(Map<String, List<ExtensionElement>> extensionElementMap) {
+  protected void validateExtensionElements(
+    Map<String, List<ExtensionElement>> extensionElementMap) {
     assertThat(extensionElementMap).hasSize(1);
 
     List<ExtensionElement> extensionElements = extensionElementMap.get("test");
     assertThat(extensionElements).hasSize(2);
 
-    ExtensionElement extensionElement = extensionElements.get(0);
+    ExtensionElement extensionElement = extensionElements.getFirst();
     assertThat(extensionElement).isNotNull();
     assertThat(extensionElement.getName()).isEqualTo("test");
     assertThat(extensionElement.getNamespacePrefix()).isEqualTo("custom");
@@ -143,7 +153,7 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
 
     List<ExtensionAttribute> attributes = extensionElement.getAttributes().get("id");
     assertThat(attributes).hasSize(1);
-    ExtensionAttribute attribute = attributes.get(0);
+    ExtensionAttribute attribute = attributes.getFirst();
     assertThat(attribute).isNotNull();
     assertThat(attribute.getName()).isEqualTo("id");
     assertThat(attribute.getValue()).isEqualTo("test");
@@ -161,7 +171,7 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
     List<ExtensionElement> childExtensions = extensionElement.getChildElements().get("name");
     assertThat(childExtensions).hasSize(2);
 
-    ExtensionElement childExtension = childExtensions.get(0);
+    ExtensionElement childExtension = childExtensions.getFirst();
     assertThat(childExtension).isNotNull();
     assertThat(childExtension.getName()).isEqualTo("name");
     assertThat(childExtension.getNamespacePrefix()).isEqualTo("custom");
@@ -172,7 +182,7 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
     List<ExtensionElement> subChildExtensions = childExtension.getChildElements().get("test");
     assertThat(subChildExtensions).hasSize(1);
 
-    childExtension = subChildExtensions.get(0);
+    childExtension = subChildExtensions.getFirst();
     assertThat(childExtension).isNotNull();
     assertThat(childExtension.getName()).isEqualTo("test");
     assertThat(childExtension.getNamespacePrefix()).isEqualTo("custom");
@@ -183,12 +193,12 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
 
     childExtensions = extensionElement.getChildElements().get("description");
     assertThat(childExtensions).hasSize(1);
-    childExtension = childExtensions.get(0);
+    childExtension = childExtensions.getFirst();
     assertThat(childExtension).isNotNull();
     assertThat(childExtension.getName()).isEqualTo("description");
     assertThat(childExtension.getAttributes()).hasSize(1);
     attributes = childExtension.getAttributes().get("id");
-    attribute = attributes.get(0);
+    attribute = attributes.getFirst();
     assertThat(attribute).isNotNull();
     assertThat(attribute.getName()).isEqualTo("id");
     assertThat(attribute.getValue()).isEqualTo("test");
@@ -213,7 +223,7 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
 
     attributes = extensionElement.getAttributes().get("name");
     assertThat(attributes).hasSize(1);
-    attribute = attributes.get(0);
+    attribute = attributes.getFirst();
     assertThat(attribute).isNotNull();
     assertThat(attribute.getName()).isEqualTo("name");
     assertThat(attribute.getValue()).isEqualTo("test2");

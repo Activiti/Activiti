@@ -20,29 +20,29 @@ import java.util.List;
 
 public class CommaSplitter {
 
-    // split the given spring using commas if they are not inside an expression
-    public static List<String> splitCommas(String st) {
-        List<String> result = new ArrayList<String>();
-        int offset = 0;
+  // split the given spring using commas if they are not inside an expression
+  public static List<String> splitCommas(String st) {
+    List<String> result = new ArrayList<>();
+    int offset = 0;
 
-        boolean inExpression = false;
-        for (int i = 0; i < st.length(); i++) {
-            if (!inExpression && st.charAt(i) == ',') {
-                if ((i - offset) > 1) {
-                    result.add(st.substring(offset,
-                                            i));
-                }
-                offset = i + 1;
-            } else if ((st.charAt(i) == '$' || st.charAt(i) == '#') && st.charAt(i + 1) == '{') {
-                inExpression = true;
-            } else if (st.charAt(i) == '}') {
-                inExpression = false;
-            }
+    boolean inExpression = false;
+    for (int i = 0; i < st.length(); i++) {
+      if (!inExpression && st.charAt(i) == ',') {
+        if ((i - offset) > 1) {
+          result.add(st.substring(offset,
+            i));
         }
-
-        if ((st.length() - offset) > 1) {
-            result.add(st.substring(offset));
-        }
-        return result;
+        offset = i + 1;
+      } else if ((st.charAt(i) == '$' || st.charAt(i) == '#') && st.charAt(i + 1) == '{') {
+        inExpression = true;
+      } else if (st.charAt(i) == '}') {
+        inExpression = false;
+      }
     }
+
+    if ((st.length() - offset) > 1) {
+      result.add(st.substring(offset));
+    }
+    return result;
+  }
 }

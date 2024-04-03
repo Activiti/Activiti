@@ -22,10 +22,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.converter.export.BPMNDIExport;
 import org.activiti.bpmn.converter.export.CollaborationExport;
 import org.activiti.bpmn.converter.export.DataStoreExport;
@@ -44,9 +41,6 @@ import org.activiti.bpmn.model.SubProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
- */
 public class SubprocessXMLConverter extends BpmnXMLConverter {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(SubprocessXMLConverter.class);
@@ -55,13 +49,13 @@ public class SubprocessXMLConverter extends BpmnXMLConverter {
   public byte[] convertToXML(BpmnModel model, String encoding) {
     try {
 
-      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      var outputStream = new ByteArrayOutputStream();
 
-      XMLOutputFactory xof = XMLOutputFactory.newInstance();
-      OutputStreamWriter out = new OutputStreamWriter(outputStream, encoding);
+      var xof = XMLOutputFactory.newInstance();
+      var out = new OutputStreamWriter(outputStream, encoding);
 
-      XMLStreamWriter writer = xof.createXMLStreamWriter(out);
-      XMLStreamWriter xtw = new IndentingXMLStreamWriter(writer);
+      var writer = xof.createXMLStreamWriter(out);
+      var xtw = new IndentingXMLStreamWriter(writer);
 
       DefinitionsRootExport.writeRootElement(model, xtw, encoding);
       CollaborationExport.writePools(model, xtw);
@@ -120,20 +114,18 @@ public class SubprocessXMLConverter extends BpmnXMLConverter {
 
     // find all subprocesses
     Collection<FlowElement> flowElements = model.getMainProcess().getFlowElements();
-    Map<String, GraphicInfo> locations = new HashMap<String, GraphicInfo>();
-    Map<String, List<GraphicInfo>> flowLocations = new HashMap<String, List<GraphicInfo>>();
-    Map<String, GraphicInfo> labelLocations = new HashMap<String, GraphicInfo>();
 
-    locations.putAll(model.getLocationMap());
-    flowLocations.putAll(model.getFlowLocationMap());
-    labelLocations.putAll(model.getLabelLocationMap());
+    var locations = new HashMap<>(model.getLocationMap());
+    var flowLocations = new HashMap<>(model.getFlowLocationMap());
+    var labelLocations = new HashMap<>(model.getLabelLocationMap());
 
     // include main process as separate model
-    BpmnModel mainModel = new BpmnModel();
+    var mainModel = new BpmnModel();
+
     // set main process in submodel to subprocess
     mainModel.addProcess(model.getMainProcess());
 
-    String elementId = null;
+    String elementId;
     for (FlowElement element : flowElements) {
       elementId = element.getId();
       if (element instanceof SubProcess) {
@@ -162,18 +154,18 @@ public class SubprocessXMLConverter extends BpmnXMLConverter {
   }
 
   private List<BpmnModel> parseSubModels(FlowElement subElement, Map<String, GraphicInfo> locations,
-                                         Map<String, List<GraphicInfo>> flowLocations, Map<String, GraphicInfo> labelLocations) {
-    List<BpmnModel> subModels = new ArrayList<BpmnModel>();
+    Map<String, List<GraphicInfo>> flowLocations, Map<String, GraphicInfo> labelLocations) {
+    List<BpmnModel> subModels = new ArrayList<>();
     BpmnModel subModel = new BpmnModel();
-    String elementId = null;
+    String elementId;
 
     // find nested subprocess models
-    Collection<FlowElement> subFlowElements = ((SubProcess)subElement).getFlowElements();
+    Collection<FlowElement> subFlowElements = ((SubProcess) subElement).getFlowElements();
     // set main process in submodel to subprocess
     Process newMainProcess = new Process();
     newMainProcess.setId(subElement.getId());
     newMainProcess.getFlowElements().addAll(subFlowElements);
-    newMainProcess.getArtifacts().addAll(((SubProcess)subElement).getArtifacts());
+    newMainProcess.getArtifacts().addAll(((SubProcess) subElement).getArtifacts());
     subModel.addProcess(newMainProcess);
 
     for (FlowElement element : subFlowElements) {

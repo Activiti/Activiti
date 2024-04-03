@@ -17,19 +17,15 @@ package org.activiti.bpmn.converter;
 
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ParallelGateway;
 
-/**
-
- */
 public class ParallelGatewayXMLConverter extends BaseBpmnXMLConverter {
 
   @Override
-public Class<? extends BaseElement> getBpmnElementType() {
+  public Class<? extends BaseElement> getBpmnElementType() {
     return ParallelGateway.class;
   }
 
@@ -40,17 +36,19 @@ public Class<? extends BaseElement> getBpmnElementType() {
 
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
-    ParallelGateway gateway = new ParallelGateway();
+    var gateway = new ParallelGateway();
     BpmnXMLUtil.addXMLLocation(gateway, xtr);
     parseChildElements(getXMLElementName(), gateway, model, xtr);
     return gateway;
   }
 
   @Override
-  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model,
+    XMLStreamWriter xtw) throws Exception {
   }
 
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model,
+    XMLStreamWriter xtw) throws Exception {
   }
 }

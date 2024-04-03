@@ -16,7 +16,6 @@
 package org.activiti.bpmn.converter.parser;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BpmnModel;
@@ -25,7 +24,7 @@ import org.activiti.bpmn.model.Resource;
 import org.activiti.bpmn.model.UserTask;
 
 /**
-
+ *
  */
 public class ResourceParser implements BpmnXMLConstants {
 
@@ -40,7 +39,7 @@ public class ResourceParser implements BpmnXMLConstants {
       for (org.activiti.bpmn.model.Process process : model.getProcesses()) {
         for (FlowElement fe : process.getFlowElements()) {
           if (fe instanceof UserTask
-              && ((UserTask) fe).getCandidateGroups().contains(resourceId)) {
+            && ((UserTask) fe).getCandidateGroups().contains(resourceId)) {
             ((UserTask) fe).getCandidateGroups().remove(resourceId);
             ((UserTask) fe).getCandidateGroups().add(resourceName);
           }

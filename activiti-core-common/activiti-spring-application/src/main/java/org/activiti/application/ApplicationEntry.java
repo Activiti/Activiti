@@ -17,9 +17,9 @@ package org.activiti.application;
 
 public class ApplicationEntry {
 
-    private String type;
+    private final String type;
 
-    private FileContent fileContent;
+    private final FileContent fileContent;
 
     public ApplicationEntry(String type,
                             FileContent fileContent) {

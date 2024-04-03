@@ -15,11 +15,14 @@
  */
 package org.activiti.bpmn.exceptions;
 
+import java.io.Serial;
+
 /**
 
  */
 public class XMLException extends RuntimeException {
 
+  @Serial
   private static final long serialVersionUID = 1L;
 
   public XMLException(String message) {

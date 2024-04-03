@@ -16,9 +16,7 @@
 package org.activiti.bpmn.converter.parser;
 
 import java.util.List;
-
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.AdhocSubProcess;
@@ -28,13 +26,11 @@ import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Transaction;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
- */
 public class SubProcessParser implements BpmnXMLConstants {
 
-  public void parse(XMLStreamReader xtr, List<SubProcess> activeSubProcessList, Process activeProcess) {
-    SubProcess subProcess = null;
+  public void parse(XMLStreamReader xtr, List<SubProcess> activeSubProcessList,
+    Process activeProcess) {
+    SubProcess subProcess;
     if (ELEMENT_TRANSACTION.equalsIgnoreCase(xtr.getLocalName())) {
       subProcess = new Transaction();
 
@@ -45,13 +41,15 @@ public class SubProcessParser implements BpmnXMLConstants {
         adhocSubProcess.setOrdering(orderingAttributeValue);
       }
 
-      if (ATTRIBUTE_VALUE_FALSE.equalsIgnoreCase(xtr.getAttributeValue(null, ATTRIBUTE_CANCEL_REMAINING_INSTANCES))) {
+      if (ATTRIBUTE_VALUE_FALSE.equalsIgnoreCase(
+        xtr.getAttributeValue(null, ATTRIBUTE_CANCEL_REMAINING_INSTANCES))) {
         adhocSubProcess.setCancelRemainingInstances(false);
       }
 
       subProcess = adhocSubProcess;
 
-    } else if (ATTRIBUTE_VALUE_TRUE.equalsIgnoreCase(xtr.getAttributeValue(null, ATTRIBUTE_TRIGGERED_BY))) {
+    } else if (ATTRIBUTE_VALUE_TRUE.equalsIgnoreCase(
+      xtr.getAttributeValue(null, ATTRIBUTE_TRIGGERED_BY))) {
       subProcess = new EventSubProcess();
 
     } else {
@@ -65,13 +63,15 @@ public class SubProcessParser implements BpmnXMLConstants {
     subProcess.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
 
     boolean async = false;
-    String asyncString = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ASYNCHRONOUS);
+    String asyncString = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
+      ATTRIBUTE_ACTIVITY_ASYNCHRONOUS);
     if (ATTRIBUTE_VALUE_TRUE.equalsIgnoreCase(asyncString)) {
       async = true;
     }
 
     boolean notExclusive = false;
-    String exclusiveString = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_EXCLUSIVE);
+    String exclusiveString = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
+      ATTRIBUTE_ACTIVITY_EXCLUSIVE);
     if (ATTRIBUTE_VALUE_FALSE.equalsIgnoreCase(exclusiveString)) {
       notExclusive = true;
     }

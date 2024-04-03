@@ -28,6 +28,7 @@ public interface ProcessDiagramGenerator {
     /**
      * Generates a diagram of the given process definition, using the diagram interchange information of the process.
      * If there is no interchange information available, an ActivitiInterchangeInfoNotFoundException is thrown.
+     *
      * @param bpmnModel bpmn model to get diagram for
      * @param highLightedActivities activities to highlight
      * @param highLightedFlows flows to highlight
@@ -44,6 +45,7 @@ public interface ProcessDiagramGenerator {
     /**
      * Generates a diagram of the given process definition, using the diagram interchange information of the process,
      * or the default diagram image, if generateDefaultDiagram param is true.
+     *
      * @param bpmnModel bpmn model to get diagram for
      * @param highLightedActivities activities to highlight
      * @param highLightedFlows flows to highlight
@@ -62,6 +64,7 @@ public interface ProcessDiagramGenerator {
     /**
      * Generates a diagram of the given process definition, using the diagram interchange information of the process,
      * or the default diagram image, if generateDefaultDiagram param is true.
+     *
      * @param bpmnModel bpmn model to get diagram for
      * @param highLightedActivities activities to highlight
      * @param highLightedFlows flows to highlight
@@ -86,6 +89,7 @@ public interface ProcessDiagramGenerator {
     /**
      * Generates a diagram of the given process definition, using the diagram interchange information of the process.
      * If there is no interchange information available, an ActivitiInterchangeInfoNotFoundException is thrown.
+     *
      * @param bpmnModel bpmn model to get diagram for
      * @param highLightedActivities activities to highlight
      * @param highLightedFlows flows to highlight

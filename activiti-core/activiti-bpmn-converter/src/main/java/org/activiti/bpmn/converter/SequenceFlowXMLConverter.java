@@ -17,16 +17,12 @@ package org.activiti.bpmn.converter;
 
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
- */
 public class SequenceFlowXMLConverter extends BaseBpmnXMLConverter {
 
   public Class<? extends BaseElement> getBpmnElementType() {
@@ -40,7 +36,7 @@ public class SequenceFlowXMLConverter extends BaseBpmnXMLConverter {
 
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
-    SequenceFlow sequenceFlow = new SequenceFlow();
+    var sequenceFlow = new SequenceFlow();
     BpmnXMLUtil.addXMLLocation(sequenceFlow, xtr);
     sequenceFlow.setSourceRef(xtr.getAttributeValue(null, ATTRIBUTE_FLOW_SOURCE_REF));
     sequenceFlow.setTargetRef(xtr.getAttributeValue(null, ATTRIBUTE_FLOW_TARGET_REF));
@@ -53,8 +49,9 @@ public class SequenceFlowXMLConverter extends BaseBpmnXMLConverter {
   }
 
   @Override
-  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-    SequenceFlow sequenceFlow = (SequenceFlow) element;
+  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model,
+    XMLStreamWriter xtw) throws Exception {
+    var sequenceFlow = (SequenceFlow) element;
     writeDefaultAttribute(ATTRIBUTE_FLOW_SOURCE_REF, sequenceFlow.getSourceRef(), xtw);
     writeDefaultAttribute(ATTRIBUTE_FLOW_TARGET_REF, sequenceFlow.getTargetRef(), xtw);
     if (StringUtils.isNotEmpty(sequenceFlow.getSkipExpression())) {
@@ -63,8 +60,9 @@ public class SequenceFlowXMLConverter extends BaseBpmnXMLConverter {
   }
 
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-    SequenceFlow sequenceFlow = (SequenceFlow) element;
+  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model,
+    XMLStreamWriter xtw) throws Exception {
+    var sequenceFlow = (SequenceFlow) element;
 
     if (StringUtils.isNotEmpty(sequenceFlow.getConditionExpression())) {
       xtw.writeStartElement(ELEMENT_FLOW_CONDITION);

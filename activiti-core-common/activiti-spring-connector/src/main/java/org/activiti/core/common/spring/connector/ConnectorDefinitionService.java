@@ -15,78 +15,87 @@
  */
 package org.activiti.core.common.spring.connector;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.core.common.model.connector.ConnectorDefinition;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 public class ConnectorDefinitionService {
 
-    private String connectorRoot;
+  private final String connectorRoot;
 
-    private final ObjectMapper objectMapper;
+  private final ObjectMapper objectMapper;
 
-    private ResourcePatternResolver resourceLoader;
+  private final ResourcePatternResolver resourceLoader;
 
-    public ConnectorDefinitionService(String connectorRoot, ObjectMapper objectMapper, ResourcePatternResolver resourceLoader) {
-        this.connectorRoot = connectorRoot;
-        this.objectMapper = objectMapper;
-        this.resourceLoader = resourceLoader;
+  public ConnectorDefinitionService(
+    String connectorRoot,
+    ObjectMapper objectMapper,
+    ResourcePatternResolver resourceLoader) {
+
+    this.connectorRoot = connectorRoot;
+    this.objectMapper = objectMapper;
+    this.resourceLoader = resourceLoader;
+  }
+
+  private Optional<Resource[]> retrieveResources() throws IOException {
+    var connectorRootPath = resourceLoader.getResource(connectorRoot);
+
+    if (!connectorRootPath.exists()) {
+      return Optional.empty();
     }
 
-    private Optional<Resource[]> retrieveResources() throws IOException {
+    return Optional.of(resourceLoader.getResources(connectorRoot + "**.json"));
+  }
 
-        Optional<Resource[]> resources = Optional.empty();
+  private ConnectorDefinition read(InputStream inputStream) throws IOException {
+    return objectMapper.readValue(inputStream, ConnectorDefinition.class);
+  }
 
-        Resource connectorRootPath = resourceLoader.getResource(connectorRoot);
-        if (connectorRootPath.exists()) {
-            return Optional.ofNullable(resourceLoader.getResources(connectorRoot + "**.json"));
-        }
-        return resources;
+  public List<ConnectorDefinition> get() throws IOException {
+    var connectorDefinitions = new ArrayList<ConnectorDefinition>();
+    var resourcesOptional = retrieveResources();
+
+    if (resourcesOptional.isPresent()) {
+      for (var resource : resourcesOptional.get()) {
+        connectorDefinitions.add(read(resource.getInputStream()));
+      }
+
+      validate(connectorDefinitions);
     }
 
-    private ConnectorDefinition read(InputStream inputStream) throws IOException {
-        return objectMapper.readValue(inputStream,
-                ConnectorDefinition.class);
+    return connectorDefinitions;
+  }
+
+  protected void validate(List<ConnectorDefinition> connectorDefinitions) {
+    if (connectorDefinitions.isEmpty()) {
+      return;
     }
 
-    public List<ConnectorDefinition> get() throws IOException {
+    var processedNames = new HashSet<String>();
 
-        List<ConnectorDefinition> connectorDefinitions = new ArrayList<>();
-        Optional<Resource[]> resourcesOptional = retrieveResources();
-        if (resourcesOptional.isPresent()) {
-            for (Resource resource : resourcesOptional.get()) {
-                connectorDefinitions.add(read(resource.getInputStream()));
-            }
-            validate(connectorDefinitions);
-        }
-        return connectorDefinitions;
+    for (var connectorDefinition : connectorDefinitions) {
+      var name = connectorDefinition.getName();
+
+      if (name == null || name.isEmpty()) {
+        throw new IllegalStateException("connectorDefinition name cannot be null or empty");
+      }
+
+      if (name.contains(".")) {
+        throw new IllegalStateException("connectorDefinition name cannot have '.' character");
+      }
+
+      if (!processedNames.add(name)) {
+        throw new IllegalStateException(
+          "More than one connectorDefinition with name '" + name
+            + "' was found. Names must be unique.");
+      }
     }
-
-    protected void validate(List<ConnectorDefinition> connectorDefinitions) {
-        if (!connectorDefinitions.isEmpty()) {
-            Set<String> processedNames = new HashSet<>();
-
-            for (ConnectorDefinition connectorDefinition : connectorDefinitions) {
-                String name = connectorDefinition.getName();
-                if (name == null || name.isEmpty()) {
-                    throw new IllegalStateException("connectorDefinition name cannot be null or empty");
-                }
-                if (name.contains(".")) {
-                    throw new IllegalStateException("connectorDefinition name cannot have '.' character");
-                }
-                if (!processedNames.add(name)) {
-                    throw new IllegalStateException("More than one connectorDefinition with name '" + name + "' was found. Names must be unique.");
-                }
-            }
-        }
-    }
+  }
 }

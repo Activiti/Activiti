@@ -26,9 +26,6 @@ import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.EventDefinition;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
- */
 public class BoundaryEventXMLConverter extends BaseBpmnXMLConverter {
 
   public Class<? extends BaseElement> getBpmnElementType() {
@@ -55,7 +52,7 @@ public class BoundaryEventXMLConverter extends BaseBpmnXMLConverter {
 
     // Explicitly set cancel activity to false for error boundary events
     if (boundaryEvent.getEventDefinitions().size() == 1) {
-      EventDefinition eventDef = boundaryEvent.getEventDefinitions().get(0);
+      EventDefinition eventDef = boundaryEvent.getEventDefinitions().getFirst();
 
       if (eventDef instanceof ErrorEventDefinition) {
         boundaryEvent.setCancelActivity(false);
@@ -73,9 +70,9 @@ public class BoundaryEventXMLConverter extends BaseBpmnXMLConverter {
     }
 
     if (boundaryEvent.getEventDefinitions().size() == 1) {
-      EventDefinition eventDef = boundaryEvent.getEventDefinitions().get(0);
+      EventDefinition eventDef = boundaryEvent.getEventDefinitions().getFirst();
 
-      if (eventDef instanceof ErrorEventDefinition == false) {
+      if (!(eventDef instanceof ErrorEventDefinition)) {
         writeDefaultAttribute(ATTRIBUTE_BOUNDARY_CANCELACTIVITY, String.valueOf(boundaryEvent.isCancelActivity()).toLowerCase(), xtw);
       }
     }

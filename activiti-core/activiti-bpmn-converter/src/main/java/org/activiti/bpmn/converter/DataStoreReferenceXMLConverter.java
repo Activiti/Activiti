@@ -15,9 +15,10 @@
  */
 package org.activiti.bpmn.converter;
 
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
@@ -25,7 +26,7 @@ import org.activiti.bpmn.model.DataStoreReference;
 import org.apache.commons.lang3.StringUtils;
 
 /**
-
+ *
  */
 public class DataStoreReferenceXMLConverter extends BaseBpmnXMLConverter {
 
@@ -39,29 +40,40 @@ public class DataStoreReferenceXMLConverter extends BaseBpmnXMLConverter {
   }
 
   @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
-    DataStoreReference dataStoreRef = new DataStoreReference();
+  protected BaseElement convertXMLToElement(
+    XMLStreamReader xtr,
+    BpmnModel model) throws Exception {
+
+    var dataStoreRef = new DataStoreReference();
     BpmnXMLUtil.addXMLLocation(dataStoreRef, xtr);
     parseChildElements(getXMLElementName(), dataStoreRef, model, xtr);
     return dataStoreRef;
   }
 
   @Override
-  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-    DataStoreReference dataStoreRef = (DataStoreReference) element;
-    if (StringUtils.isNotEmpty(dataStoreRef.getDataStoreRef())) {
+  protected void writeAdditionalAttributes(
+    BaseElement element,
+    BpmnModel model,
+    XMLStreamWriter xtw) throws Exception {
+
+    var dataStoreRef = (DataStoreReference) element;
+    if (isNotEmpty(dataStoreRef.getDataStoreRef())) {
       xtw.writeAttribute(ATTRIBUTE_DATA_STORE_REF, dataStoreRef.getDataStoreRef());
     }
 
-    if (StringUtils.isNotEmpty(dataStoreRef.getItemSubjectRef())) {
+    if (isNotEmpty(dataStoreRef.getItemSubjectRef())) {
       xtw.writeAttribute(ATTRIBUTE_ITEM_SUBJECT_REF, dataStoreRef.getItemSubjectRef());
     }
   }
 
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-    DataStoreReference dataStoreRef = (DataStoreReference) element;
-    if (StringUtils.isNotEmpty(dataStoreRef.getDataState())) {
+  protected void writeAdditionalChildElements(
+    BaseElement element,
+    BpmnModel model,
+    XMLStreamWriter xtw) throws Exception {
+
+    var dataStoreRef = (DataStoreReference) element;
+    if (isNotEmpty(dataStoreRef.getDataState())) {
       xtw.writeStartElement(ELEMENT_DATA_STATE);
       xtw.writeCharacters(dataStoreRef.getDataState());
       xtw.writeEndElement();

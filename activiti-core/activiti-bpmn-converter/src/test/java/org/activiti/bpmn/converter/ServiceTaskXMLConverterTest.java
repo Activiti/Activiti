@@ -15,9 +15,14 @@
  */
 package org.activiti.bpmn.converter;
 
+import static org.activiti.bpmn.constants.BpmnXMLConstants.ATTRIBUTE_TASK_IMPLEMENTATION;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
+
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
@@ -29,54 +34,50 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.activiti.bpmn.constants.BpmnXMLConstants.ATTRIBUTE_TASK_IMPLEMENTATION;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class ServiceTaskXMLConverterTest {
 
-    private ServiceTaskXMLConverter converter = new ServiceTaskXMLConverter();
+  private final ServiceTaskXMLConverter converter = new ServiceTaskXMLConverter();
 
-    @Mock(answer = Answers.RETURNS_MOCKS)
-    private XMLStreamReader reader;
+  @Mock(answer = Answers.RETURNS_MOCKS)
+  private XMLStreamReader reader;
 
-    @Spy
-    private XMLStreamWriter writer;
+  @Spy
+  private XMLStreamWriter writer;
 
-    @Mock
-    private BpmnModel bpmnModel;
+  @Mock
+  private BpmnModel bpmnModel;
 
-    @Mock
-    private ServiceTask serviceTask;
+  @Mock
+  private ServiceTask serviceTask;
 
-    @Test
-    public void convertXMLToElementShouldSetTheImplementationFromXMLImplementationAttribute() throws Exception {
-        //given
-        given(reader.getAttributeValue(BpmnXMLConstants.ACTIVITI_EXTENSIONS_NAMESPACE,
-                                       BpmnXMLConstants.ATTRIBUTE_TASK_SERVICE_CLASS)).willReturn("myConnector");
+  @Test
+  public void convertXMLToElementShouldSetTheImplementationFromXMLImplementationAttribute()
+    throws Exception {
+    //given
+    given(reader.getAttributeValue(BpmnXMLConstants.ACTIVITI_EXTENSIONS_NAMESPACE,
+      BpmnXMLConstants.ATTRIBUTE_TASK_SERVICE_CLASS)).willReturn("myConnector");
 
-        //when
-        BaseElement element = converter.convertXMLToElement(reader,
-                                                            new BpmnModel());
+    //when
+    BaseElement element = converter.convertXMLToElement(reader,
+      new BpmnModel());
 
-        //then
-        assertThat(((ServiceTask) element).getImplementation()).isEqualTo("myConnector");
-    }
+    //then
+    assertThat(((ServiceTask) element).getImplementation()).isEqualTo("myConnector");
+  }
 
-    @Test
-    public void convertServiceTaskElementToXMLShouldWriteTheImplementionAttribute() throws Exception {
-        //given
-        given(serviceTask.getImplementation()).willReturn("myConnectorImplementation");
+  @Test
+  public void convertServiceTaskElementToXMLShouldWriteTheImplementionAttribute() throws Exception {
+    //given
+    given(serviceTask.getImplementation()).willReturn("myConnectorImplementation");
 
-        //when
-        converter.writeAdditionalAttributes(serviceTask,
-                                            bpmnModel,
-                                            writer);
+    //when
+    converter.writeAdditionalAttributes(serviceTask,
+      bpmnModel,
+      writer);
 
-        //then
-        verify(writer).writeAttribute(eq(ATTRIBUTE_TASK_IMPLEMENTATION),
-                                      eq("myConnectorImplementation"));
-    }
+    //then
+    verify(writer).writeAttribute(eq(ATTRIBUTE_TASK_IMPLEMENTATION),
+      eq("myConnectorImplementation"));
+  }
 }

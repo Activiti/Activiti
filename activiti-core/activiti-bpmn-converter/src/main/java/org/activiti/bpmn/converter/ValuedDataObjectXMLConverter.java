@@ -18,10 +18,8 @@ package org.activiti.bpmn.converter;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.regex.Pattern;
-
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BooleanDataObject;
@@ -36,14 +34,10 @@ import org.activiti.bpmn.model.StringDataObject;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
-
- */
 public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
 
   private final Pattern xmlChars = Pattern.compile("[<>&]");
-  private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+  private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
   protected boolean didWriteExtensionStartElement = false;
 
   public Class<? extends BaseElement> getBpmnElementType() {
@@ -77,7 +71,8 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
       } else if (dataType.equals("datetime")) {
         dataObject = new DateDataObject();
       } else {
-        LOGGER.error("Error converting {}, invalid data type: " + dataType, xtr.getAttributeValue(null, ATTRIBUTE_DATA_NAME));
+        LOGGER.error("Error converting {}, invalid data type: " + dataType,
+          xtr.getAttributeValue(null, ATTRIBUTE_DATA_NAME));
       }
 
     } else {
@@ -105,7 +100,7 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
             try {
               dataObject.setValue(sdf.parse(valueElement.getElementText()));
             } catch (Exception e) {
-              LOGGER.error("Error converting {}", dataObject.getName(), e.getMessage());
+              LOGGER.error("Error converting {} {}", dataObject.getName(), e.getMessage());
             }
           } else {
             dataObject.setValue(valueElement.getElementText());
@@ -121,15 +116,19 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
   }
 
   @Override
-  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model,
+    XMLStreamWriter xtw) throws Exception {
     ValuedDataObject dataObject = (ValuedDataObject) element;
-    if (dataObject.getItemSubjectRef() != null && StringUtils.isNotEmpty(dataObject.getItemSubjectRef().getStructureRef())) {
-      writeDefaultAttribute(ATTRIBUTE_DATA_ITEM_REF, dataObject.getItemSubjectRef().getStructureRef(), xtw);
+    if (dataObject.getItemSubjectRef() != null && StringUtils.isNotEmpty(
+      dataObject.getItemSubjectRef().getStructureRef())) {
+      writeDefaultAttribute(ATTRIBUTE_DATA_ITEM_REF,
+        dataObject.getItemSubjectRef().getStructureRef(), xtw);
     }
   }
 
   @Override
-  protected boolean writeExtensionChildElements(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
+  protected boolean writeExtensionChildElements(BaseElement element,
+    boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
     ValuedDataObject dataObject = (ValuedDataObject) element;
 
     if (StringUtils.isNotEmpty(dataObject.getId()) && dataObject.getValue() != null) {
@@ -139,7 +138,8 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
         didWriteExtensionStartElement = true;
       }
 
-      xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, ELEMENT_DATA_VALUE, ACTIVITI_EXTENSIONS_NAMESPACE);
+      xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, ELEMENT_DATA_VALUE,
+        ACTIVITI_EXTENSIONS_NAMESPACE);
       if (dataObject.getValue() != null) {
         String value = null;
         if (dataObject instanceof DateDataObject) {
@@ -161,6 +161,7 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
   }
 
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model,
+    XMLStreamWriter xtw) throws Exception {
   }
 }

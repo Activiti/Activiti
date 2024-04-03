@@ -16,7 +16,6 @@
 package org.activiti.bpmn.converter.parser;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BpmnModel;
@@ -24,13 +23,14 @@ import org.activiti.bpmn.model.ItemDefinition;
 import org.apache.commons.lang3.StringUtils;
 
 /**
-
+ *
  */
 public class ItemDefinitionParser implements BpmnXMLConstants {
 
   public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
     if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_ID))) {
-      String itemDefinitionId = model.getTargetNamespace() + ":" + xtr.getAttributeValue(null, ATTRIBUTE_ID);
+      String itemDefinitionId =
+        model.getTargetNamespace() + ":" + xtr.getAttributeValue(null, ATTRIBUTE_ID);
       String structureRef = xtr.getAttributeValue(null, ATTRIBUTE_STRUCTURE_REF);
       if (StringUtils.isNotEmpty(structureRef)) {
         ItemDefinition item = new ItemDefinition();

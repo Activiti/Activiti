@@ -15,33 +15,37 @@
  */
 package org.activiti.core.common.spring.identity;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 public class ExtendedInMemoryUserDetailsManager extends InMemoryUserDetailsManager {
 
-    private List<String> users = new ArrayList<>();
-    private List<String> groups = new ArrayList<>();
+  private final List<String> users = new ArrayList<>();
 
-    @Override
-    public void createUser(UserDetails user) {
-        super.createUser(user);
-        users.add(user.getUsername());
-        groups = user.getAuthorities().stream()
-                .filter(x -> (x.getAuthority().contains("GROUP")))
-                .map(x -> (x.getAuthority()))
-                .collect(Collectors.toList());
-    }
+  private List<String> groups = new ArrayList<>();
 
-    public List<String> getUsers() {
-        return users;
-    }
+  public List<String> getUsers() {
+    return users;
+  }
 
-    public List<String> getGroups() {
-        return groups;
-    }
+  public List<String> getGroups() {
+    return groups;
+  }
+
+  @Override
+  public void createUser(UserDetails user) {
+    super.createUser(user);
+
+    users.add(user.getUsername());
+    groups = user.getAuthorities().stream()
+      .map(GrantedAuthority::getAuthority)
+      .filter(authority -> (authority.contains("GROUP")))
+      .collect(toList());
+  }
+
 }

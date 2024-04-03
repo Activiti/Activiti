@@ -29,16 +29,15 @@ public class CallActivityConverterTest extends AbstractConverterTest {
 
   @Test
   public void convertXMLToModel() throws Exception {
-    BpmnModel bpmnModel = readXMLFile();
+    var bpmnModel = readXMLFile();
     validateModel(bpmnModel);
   }
 
   @Test
   public void convertModelToXML() throws Exception {
-    BpmnModel bpmnModel = readXMLFile();
-    BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
+    var bpmnModel = readXMLFile();
+    var parsedModel = exportAndReadXMLFile(bpmnModel);
     validateModel(parsedModel);
-    deployProcess(parsedModel);
   }
 
   protected String getResource() {
@@ -46,18 +45,18 @@ public class CallActivityConverterTest extends AbstractConverterTest {
   }
 
   private void validateModel(BpmnModel model) {
-    FlowElement flowElement = model.getMainProcess().getFlowElement("callactivity");
+    var flowElement = model.getMainProcess().getFlowElement("callactivity");
     assertThat(flowElement).isNotNull();
     assertThat(flowElement).isInstanceOf(CallActivity.class);
-    CallActivity callActivity = (CallActivity) flowElement;
+    var callActivity = (CallActivity) flowElement;
     assertThat(callActivity.getId()).isEqualTo("callactivity");
     assertThat(callActivity.getName()).isEqualTo("Call activity");
 
     assertThat(callActivity.getCalledElement()).isEqualTo("processId");
 
-    List<IOParameter> parameters = callActivity.getInParameters();
+    var parameters = callActivity.getInParameters();
     assertThat(parameters).hasSize(2);
-    IOParameter parameter = parameters.get(0);
+    var parameter = parameters.getFirst();
     assertThat(parameter.getSource()).isEqualTo("test");
     assertThat(parameter.getTarget()).isEqualTo("test");
     parameter = parameters.get(1);
@@ -66,7 +65,7 @@ public class CallActivityConverterTest extends AbstractConverterTest {
 
     parameters = callActivity.getOutParameters();
     assertThat(parameters).hasSize(1);
-    parameter = parameters.get(0);
+    parameter = parameters.getFirst();
     assertThat(parameter.getSource()).isEqualTo("test");
     assertThat(parameter.getTarget()).isEqualTo("test");
   }

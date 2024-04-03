@@ -142,7 +142,7 @@ public class BpmnModel {
     }
 
     return pools.stream()
-      .filter(p->id.equals(p.getId()))
+      .filter(p -> id.equals(p.getId()))
       .findFirst()
       .orElse(null);
   }
@@ -154,8 +154,8 @@ public class BpmnModel {
     }
 
     return processes.stream()
-      .flatMap(p-> p.getLanes().stream())
-      .filter(l-> id.equals(l.getId()))
+      .flatMap(p -> p.getLanes().stream())
+      .filter(l -> id.equals(l.getId()))
       .findFirst()
       .orElse(null);
   }
@@ -187,7 +187,7 @@ public class BpmnModel {
   }
 
   protected FlowElement getFlowElementInSubProcess(String id, SubProcess subProcess) {
-    FlowElement foundFlowElement = subProcess.getFlowElement(id);
+    var foundFlowElement = subProcess.getFlowElement(id);
     if (foundFlowElement == null) {
       for (FlowElement flowElement : subProcess.getFlowElements()) {
         if (flowElement instanceof SubProcess) {
@@ -376,7 +376,7 @@ public class BpmnModel {
   }
 
   public Message getMessage(String id) {
-    Message result = messageMap.get(id);
+    var result = messageMap.get(id);
     if (result == null) {
       int indexOfNS = id.indexOf(":");
       if (indexOfNS > 0) {
@@ -402,9 +402,7 @@ public class BpmnModel {
     this.errorMap = errorMap;
   }
 
-  public void addError(String errorRef,
-    String errorName,
-    String errorCode) {
+  public void addError(String errorRef, String errorName, String errorCode) {
     if (isNotEmpty(errorRef)) {
       errorMap.put(errorRef, new Error(errorRef, errorName, errorCode));
     }

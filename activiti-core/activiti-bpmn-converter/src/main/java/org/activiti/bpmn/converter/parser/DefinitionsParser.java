@@ -18,9 +18,7 @@ package org.activiti.bpmn.converter.parser;
 import static java.util.Arrays.asList;
 
 import java.util.List;
-
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BpmnModel;
@@ -28,11 +26,14 @@ import org.activiti.bpmn.model.ExtensionAttribute;
 import org.apache.commons.lang3.StringUtils;
 
 /**
+ *
  */
 public class DefinitionsParser implements BpmnXMLConstants {
 
-  protected static final List<ExtensionAttribute> defaultAttributes = asList(new ExtensionAttribute(TYPE_LANGUAGE_ATTRIBUTE), new ExtensionAttribute(EXPRESSION_LANGUAGE_ATTRIBUTE),
-      new ExtensionAttribute(TARGET_NAMESPACE_ATTRIBUTE));
+  protected static final List<ExtensionAttribute> defaultAttributes = asList(
+    new ExtensionAttribute(TYPE_LANGUAGE_ATTRIBUTE),
+    new ExtensionAttribute(EXPRESSION_LANGUAGE_ATTRIBUTE),
+    new ExtensionAttribute(TARGET_NAMESPACE_ATTRIBUTE));
 
   @SuppressWarnings("unchecked")
   public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {

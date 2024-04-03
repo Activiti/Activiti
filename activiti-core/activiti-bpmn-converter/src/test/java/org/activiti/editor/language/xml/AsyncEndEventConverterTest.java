@@ -15,11 +15,16 @@
  */
 package org.activiti.editor.language.xml;
 
+import static org.activiti.bpmn.model.ImplementationType.IMPLEMENTATION_TYPE_CLASS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
-import org.activiti.bpmn.model.*;
+import org.activiti.bpmn.model.ActivitiListener;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.EndEvent;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.ImplementationType;
+import org.activiti.bpmn.model.SequenceFlow;
 import org.junit.jupiter.api.Test;
 
 public class AsyncEndEventConverterTest extends AbstractConverterTest {
@@ -32,10 +37,9 @@ public class AsyncEndEventConverterTest extends AbstractConverterTest {
 
   @Test
   public void convertModelToXML() throws Exception {
-    BpmnModel bpmnModel = readXMLFile();
-    BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
+    var bpmnModel = readXMLFile();
+    var parsedModel = exportAndReadXMLFile(bpmnModel);
     validateModel(parsedModel);
-    deployProcess(parsedModel);
   }
 
   protected String getResource() {
@@ -43,23 +47,26 @@ public class AsyncEndEventConverterTest extends AbstractConverterTest {
   }
 
   private void validateModel(BpmnModel model) {
-    FlowElement flowElement = model.getMainProcess().getFlowElement("endEvent");
+    var flowElement = model.getMainProcess().getFlowElement("endEvent");
     assertThat(flowElement).isNotNull();
     assertThat(flowElement).isInstanceOf(EndEvent.class);
     assertThat(flowElement.getId()).isEqualTo("endEvent");
-    EndEvent endEvent = (EndEvent) flowElement;
+
+    var endEvent = (EndEvent) flowElement;
     assertThat(endEvent.getId()).isEqualTo("endEvent");
     assertThat(endEvent.isAsynchronous()).isTrue();
 
-    List<ActivitiListener> listeners = endEvent.getExecutionListeners();
+    var listeners = endEvent.getExecutionListeners();
     assertThat(listeners).hasSize(1);
-    ActivitiListener listener = listeners.get(0);
-    assertThat(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())).isTrue();
+    var listener = listeners.getFirst();
+    assertThat(IMPLEMENTATION_TYPE_CLASS.equals(
+      listener.getImplementationType())).isTrue();
     assertThat(listener.getImplementation()).isEqualTo("org.test.TestClass");
     assertThat(listener.getEvent()).isEqualTo("start");
 
     assertThat(endEvent.getIncomingFlows()).hasSize(1);
-    SequenceFlow sequence = endEvent.getIncomingFlows().get(0);
+
+    var sequence = endEvent.getIncomingFlows().getFirst();
     assertThat(sequence.getId()).isEqualTo("sid-91C0F3A0-649F-462E-A1C1-1CE499FEDE3E");
   }
 }

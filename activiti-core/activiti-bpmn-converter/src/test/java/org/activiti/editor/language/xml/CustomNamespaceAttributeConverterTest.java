@@ -54,7 +54,7 @@ public class CustomNamespaceAttributeConverterTest extends AbstractConverterTest
     List<ExtensionAttribute> attributes = process.getAttributes().get("version");
     assertThat(attributes).isNotNull();
     assertThat(attributes).hasSize(1);
-    ExtensionAttribute attribute = attributes.get(0);
+    ExtensionAttribute attribute = attributes.getFirst();
     // custom:version = "9"
     assertThat(attribute).isNotNull();
     assertThat(attribute.getNamespace()).isEqualTo("http://custom.org/bpmn");

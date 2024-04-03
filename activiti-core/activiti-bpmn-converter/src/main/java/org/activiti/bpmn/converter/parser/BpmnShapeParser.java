@@ -23,10 +23,6 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.GraphicInfo;
 
-/**
-
-
- */
 public class BpmnShapeParser implements BpmnXMLConstants {
 
   public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
@@ -43,10 +39,10 @@ public class BpmnShapeParser implements BpmnXMLConstants {
     while (xtr.hasNext()) {
       xtr.next();
       if (xtr.isStartElement() && ELEMENT_DI_BOUNDS.equalsIgnoreCase(xtr.getLocalName())) {
-        graphicInfo.setX(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_X)));
-        graphicInfo.setY(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_Y)));
-        graphicInfo.setWidth(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_WIDTH)));
-        graphicInfo.setHeight(Double.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_DI_HEIGHT)));
+        graphicInfo.setX(Double.parseDouble(xtr.getAttributeValue(null, ATTRIBUTE_DI_X)));
+        graphicInfo.setY(Double.parseDouble(xtr.getAttributeValue(null, ATTRIBUTE_DI_Y)));
+        graphicInfo.setWidth(Double.parseDouble(xtr.getAttributeValue(null, ATTRIBUTE_DI_WIDTH)));
+        graphicInfo.setHeight(Double.parseDouble(xtr.getAttributeValue(null, ATTRIBUTE_DI_HEIGHT)));
 
         model.addGraphicInfo(id, graphicInfo);
         break;
@@ -54,9 +50,5 @@ public class BpmnShapeParser implements BpmnXMLConstants {
         break;
       }
     }
-  }
-
-  public BaseElement parseElement() {
-    return null;
   }
 }
