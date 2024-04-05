@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-api-impl</artifactId>
-    <version>8.4.0-alpha.7</version>
+    <version>8.4.0-mock</version>
   </parent>
   <artifactId>activiti-api-task-model-impl</artifactId>
   <name>Activiti :: API :: Task Model Implementation</name>
