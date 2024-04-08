@@ -20,6 +20,8 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.time.DateTimeException;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 
@@ -78,6 +80,26 @@ public class DateFormatterProviderTest {
         Date date = provider.toDate(initialDate);
 
         assertThat(date).isEqualTo(initialDate);
+    }
+
+    @Test
+    public void should_returnDate_when_localDateIsProvided() {
+
+        LocalDate localDate = LocalDate.now();
+
+        Date date = provider.toDate(localDate);
+
+        assertThat(date).isEqualTo(Date.from(localDate.atStartOfDay(provider.getZoneId()).toInstant()));
+    }
+
+    @Test
+    public void should_returnDate_when_localDateTimeIsProvided() {
+
+        LocalDateTime localDateTime = LocalDateTime.now();
+
+        Date date = provider.toDate(localDateTime);
+
+        assertThat(date).isEqualTo(Date.from(localDateTime.atZone(provider.getZoneId()).toInstant()));
     }
 
     @Test
