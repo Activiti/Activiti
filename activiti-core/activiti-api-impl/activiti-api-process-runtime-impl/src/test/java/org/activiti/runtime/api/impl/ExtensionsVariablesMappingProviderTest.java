@@ -29,7 +29,6 @@ import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.ProcessVariablesMapping;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.assertj.core.api.InstanceOfAssertFactories;
-import org.assertj.core.api.InstanceOfAssertFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -44,7 +43,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -341,6 +344,81 @@ public class ExtensionsVariablesMappingProviderTest {
         //then
         assertThat(outPutVariables.get(processVariableName)).asInstanceOf(InstanceOfAssertFactories.BIG_DECIMAL).isEqualByComparingTo(bigDecimalValue);
     }
+
+    @Test
+    public void calculateOutputVariablesShouldConvertLocalDateToDate() {
+        //given
+        String taskId = "task-id";
+        String processVariableId = "process-variable-id";
+        String processVariableName = "localdate-process-variable";
+        String integerOutputName = "date-output";
+
+        Extension extension = new Extension();
+        DelegateExecution execution = buildExecution(extension, taskId);
+
+        VariableDefinition localDateProcessVariable = new VariableDefinition();
+        localDateProcessVariable.setType("date");
+        localDateProcessVariable.setName(processVariableName);
+        localDateProcessVariable.setId(processVariableId);
+        extension.setProperties(Map.of(processVariableId, localDateProcessVariable));
+
+        ProcessVariablesMapping mappings = new ProcessVariablesMapping();
+        Mapping mapping = new Mapping();
+        mapping.setType(Mapping.SourceMappingType.VARIABLE);
+        mapping.setValue(integerOutputName);
+        mappings.setOutputs(Map.of(processVariableName, mapping));
+        extension.setMappings(Map.of(taskId, mappings));
+
+        LocalDate localDateValue = LocalDate.now();
+        Date dateValue = Date.from(localDateValue.atStartOfDay(ZoneOffset.UTC).toInstant());
+
+        Map<String, Object> availableVariables = singletonMap(integerOutputName, localDateValue);
+
+        //when
+        Map<String, Object> outPutVariables = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+            availableVariables);
+
+        //then
+        assertThat(outPutVariables.get(processVariableName)).asInstanceOf(InstanceOfAssertFactories.DATE).isEqualTo(dateValue);
+    }
+
+    @Test
+    public void calculateOutputVariablesShouldConvertLocalDateTimeToDate() {
+        //given
+        String taskId = "task-id";
+        String processVariableId = "process-variable-id";
+        String processVariableName = "localdate-process-variable";
+        String integerOutputName = "date-output";
+
+        Extension extension = new Extension();
+        DelegateExecution execution = buildExecution(extension, taskId);
+
+        VariableDefinition localDateProcessVariable = new VariableDefinition();
+        localDateProcessVariable.setType("date");
+        localDateProcessVariable.setName(processVariableName);
+        localDateProcessVariable.setId(processVariableId);
+        extension.setProperties(Map.of(processVariableId, localDateProcessVariable));
+
+        ProcessVariablesMapping mappings = new ProcessVariablesMapping();
+        Mapping mapping = new Mapping();
+        mapping.setType(Mapping.SourceMappingType.VARIABLE);
+        mapping.setValue(integerOutputName);
+        mappings.setOutputs(Map.of(processVariableName, mapping));
+        extension.setMappings(Map.of(taskId, mappings));
+
+        LocalDateTime localDateTimeValue = LocalDateTime.now();
+        Date dateValue = Date.from(localDateTimeValue.atZone(ZoneOffset.UTC).toInstant());
+
+        Map<String, Object> availableVariables = singletonMap(integerOutputName, localDateTimeValue);
+
+        //when
+        Map<String, Object> outPutVariables = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+            availableVariables);
+
+        //then
+        assertThat(outPutVariables.get(processVariableName)).asInstanceOf(InstanceOfAssertFactories.DATE).isEqualTo(dateValue);
+    }
+
 
     @Test
     public void calculateOutputVariablesShouldConvertValueFromStringToBigDecimal() {

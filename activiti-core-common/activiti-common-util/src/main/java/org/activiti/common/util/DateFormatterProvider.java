@@ -73,6 +73,14 @@ public class DateFormatterProvider  {
             return new Date((long)value);
         }
 
+        if (value instanceof LocalDate) {
+            return Date.from(((LocalDate)value).atStartOfDay(getZoneId()).toInstant());
+        }
+
+        if (value instanceof LocalDateTime) {
+            return Date.from(((LocalDateTime)value).atZone(getZoneId()).toInstant());
+        }
+
         throw new DateTimeException(MessageFormat.format("Error while parsing date. Type: {0}, value: {1}", value.getClass().getName(), value));
     }
 }
