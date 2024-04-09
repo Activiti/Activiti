@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-api-impl</artifactId>
-    <version>8.4.0</version>
+    <version>8.4.1-SNAPSHOT</version>
   </parent>
   <artifactId>activiti-api-process-runtime-impl</artifactId>
   <name>Activiti :: API :: Process Runtime Implementation</name>
