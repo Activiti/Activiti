@@ -362,7 +362,7 @@
     <include refid="commonSelectHistoricTaskInstancesByQueryCriteriaSql"/>
   </sql>
 
-  <sql id="commonSelectHistoricTaskInstancesByQueryCriteriaSql">
+  <sql id="commonJoins">
     <if test="candidateUser != null || candidateGroups != null || involvedGroups != null">
       inner join ${prefix}ACT_HI_IDENTITYLINK HI on HI.TASK_ID_ = RES.ID_
     </if>
@@ -391,7 +391,7 @@
           <when test="orQueryObject.involvedGroups != null">left</when>
           <otherwise>inner</otherwise>
         </choose>
-         join ${prefix}ACT_HI_IDENTITYLINK HI_OR${orIndex} on HI_OR${orIndex}.TASK_ID_ = RES.ID_
+        join ${prefix}ACT_HI_IDENTITYLINK HI_OR${orIndex} on HI_OR${orIndex}.TASK_ID_ = RES.ID_
       </if>
       <if test="orQueryObject.processFinished || orQueryObject.processUnfinished || orQueryObject.processInstanceBusinessKey != null || orQueryObject.processInstanceBusinessKeyLike != null || orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null">
         inner join ${prefix}ACT_HI_PROCINST HPI_OR${orIndex} ON RES.PROC_INST_ID_ = HPI_OR${orIndex}.ID_
@@ -411,6 +411,10 @@
         </if>
       </if>
     </foreach>
+  </sql>
+
+  <sql id="commonSelectHistoricTaskInstancesByQueryCriteriaSql">
+    <include refid="commonJoins"/>
     <where>
       <if test="taskId != null">
         RES.ID_ = #{taskId}
@@ -1079,54 +1083,7 @@
   </select>
 
   <sql id="OLDcommonSelectHistoricTaskInstancesByQueryCriteriaSql">
-    <if test="candidateUser != null || candidateGroups != null || involvedGroups != null">
-      inner join ${prefix}ACT_HI_IDENTITYLINK HI on HI.TASK_ID_ = RES.ID_
-    </if>
-    <if test="processFinished || processUnfinished || processInstanceBusinessKey != null || processInstanceBusinessKeyLike != null || processInstanceBusinessKeyLikeIgnoreCase != null">
-      inner join ${prefix}ACT_HI_PROCINST HPI ON RES.PROC_INST_ID_ = HPI.ID_
-    </if>
-    <if test="processDefinitionKey != null || processDefinitionKeyLike != null || processDefinitionKeyLikeIgnoreCase != null || processDefinitionName != null || processDefinitionNameLike != null || (processCategoryInList != null &amp;&amp; processCategoryInList.size() &gt; 0) || (processCategoryNotInList != null &amp;&amp; processCategoryNotInList.size() &gt; 0) || (processDefinitionKeys != null &amp;&amp; processDefinitionKeys.size() &gt; 0)">
-      inner join ${prefix}ACT_RE_PROCDEF D on RES.PROC_DEF_ID_ = D.ID_
-    </if>
-    <if test="deploymentId != null || (deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0)">
-      left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P ON RES.PROC_DEF_ID_ = DEPLOY_P.ID_
-    </if>
-    <foreach collection="queryVariableValues" index="index" item="var">
-      <choose>
-        <when test="var.local">
-          inner join ${prefix}ACT_HI_VARINST A${index} on RES.ID_ = A${index}.TASK_ID_
-        </when>
-        <otherwise>
-          inner join ${prefix}ACT_HI_VARINST A${index} on RES.PROC_INST_ID_ = A${index}.PROC_INST_ID_
-        </otherwise>
-      </choose>
-    </foreach>
-    <foreach collection="orQueryObjects" index="orIndex" item="orQueryObject">
-      <if test="orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null || orQueryObject.involvedGroups != null">
-        <choose>
-          <when test="orQueryObject.involvedGroups != null">left</when>
-          <otherwise>inner</otherwise>
-        </choose>
-        join ${prefix}ACT_HI_IDENTITYLINK HI_OR${orIndex} on HI_OR${orIndex}.TASK_ID_ = RES.ID_
-      </if>
-      <if test="orQueryObject.processFinished || orQueryObject.processUnfinished || orQueryObject.processInstanceBusinessKey != null || orQueryObject.processInstanceBusinessKeyLike != null || orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null">
-        inner join ${prefix}ACT_HI_PROCINST HPI_OR${orIndex} ON RES.PROC_INST_ID_ = HPI_OR${orIndex}.ID_
-      </if>
-      <if test="orQueryObject.processDefinitionKey != null || orQueryObject.processDefinitionKeyLike != null || orQueryObject.processDefinitionKeyLikeIgnoreCase != null || orQueryObject.processDefinitionName != null || orQueryObject.processDefinitionNameLike != null || (orQueryObject.processCategoryInList != null &amp;&amp; orQueryObject.processCategoryInList.size() &gt; 0) || (orQueryObject.processCategoryNotInList != null &amp;&amp; orQueryObject.processCategoryNotInList.size() &gt; 0) || (orQueryObject.processDefinitionKeys != null &amp;&amp; orQueryObject.processDefinitionKeys.size() &gt; 0)">
-        left outer join ${prefix}ACT_RE_PROCDEF D_OR${orIndex} on RES.PROC_DEF_ID_ = D_OR${orIndex}.ID_
-      </if>
-      <if test="orQueryObject.deploymentId != null || (orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0)">
-        left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P_OR${orIndex} ON RES.PROC_DEF_ID_ = DEPLOY_P_OR${orIndex}.ID_
-      </if>
-      <if test="orQueryObject.queryVariableValues.size() &gt; 0">
-        <if test="orQueryObject.hasLocalQueryVariableValue()">
-          left outer join ${prefix}ACT_HI_VARINST A_L_OR${orIndex} on RES.ID_ = A_L_OR${orIndex}.TASK_ID_
-        </if>
-        <if test="orQueryObject.hasNonLocalQueryVariableValue()">
-          left outer join ${prefix}ACT_HI_VARINST A_OR${orIndex} on RES.PROC_INST_ID_ = A_OR${orIndex}.PROC_INST_ID_
-        </if>
-      </if>
-    </foreach>
+    <include refid="commonJoins"/>
     <where>
       <if test="taskId != null">
         RES.ID_ = #{taskId}
