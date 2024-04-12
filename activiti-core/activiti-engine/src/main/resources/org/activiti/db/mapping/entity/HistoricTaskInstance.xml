@@ -289,14 +289,22 @@
     <include refid="OLDselectHistoricTaskInstancesByQueryCriteriaSql"/>
   </select>
 
-  <sql id="OLDselectHistoricTaskInstancesByQueryCriteriaSql">
+  <sql id="selectHistoricTaskInstancesByQueryCriteriaSql_inner">
     from ${prefix}ACT_HI_TASKINST RES
-    <include refid="OLDcommonSelectHistoricTaskInstancesByQueryCriteriaSql"/>
+  </sql>
+
+  <sql id="OLDselectHistoricTaskInstancesByQueryCriteriaSql">
+    <include refid="selectHistoricTaskInstancesByQueryCriteriaSql_inner"/>
+    <include refid="OLDcommonSelectHistoricTaskInstancesByQueryCriteriaSql">
+      <property name="from" value="selectHistoricTaskInstancesByQueryCriteriaSql_inner"/>
+    </include>
   </sql>
 
   <sql id="selectHistoricTaskInstancesByQueryCriteriaSql">
-    from ${prefix}ACT_HI_TASKINST RES
-    <include refid="commonSelectHistoricTaskInstancesByQueryCriteriaSql"/>
+    <include refid="selectHistoricTaskInstancesByQueryCriteriaSql_inner"/>
+    <include refid="commonSelectHistoricTaskInstancesByQueryCriteriaSql">
+      <property name="from" value="selectHistoricTaskInstancesByQueryCriteriaSql_inner"/>
+    </include>
   </sql>
 
   <select id="selectHistoricTaskInstancesWithVariablesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultMap="historicTaskInstanceAndVariablesResultMap">
