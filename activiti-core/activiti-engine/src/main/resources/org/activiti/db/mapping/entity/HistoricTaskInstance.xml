@@ -952,20 +952,9 @@
           <if test="orQueryObject.involvedUser != null">
             or
             (
-              exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where USER_ID_ = #{orQueryObject.involvedUser} and LINK.TASK_ID_ = RES.ID_)
+              HI_OR${orIndex}.USER_ID_ = #{orQueryObject.involvedUser}
               or RES.ASSIGNEE_ = #{orQueryObject.involvedUser}
               or RES.OWNER_ = #{orQueryObject.involvedUser}
-            )
-          </if>
-          <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
-            or
-            (
-              HI_OR${orIndex}.TYPE_ = 'participant'
-              and
-              HI_OR${orIndex}.GROUP_ID_ IN
-              <foreach item="group" index="index" collection="orQueryObject.involvedGroups" open="(" separator="," close=")">
-                #{group}
-              </foreach>
             )
           </if>
           <foreach item="queryVar" collection="orQueryObject.queryVariableValues" index="index">
@@ -1042,6 +1031,23 @@
             </trim>
           </foreach>
         </trim>
+        <!-- -->
+        UNION ALL
+        select distinct RES.*
+        from ACT_HI_TASKINST RES
+        left join ACT_HI_IDENTITYLINK HI_OR${orIndex} on HI_OR${orIndex}.TASK_ID_ = RES.ID_
+        WHERE RES.END_TIME_ is not null
+        and (
+        <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
+          (
+          HI_OR${orIndex}.TYPE_ = 'participant'
+          and HI_OR${orIndex}.GROUP_ID_ IN
+          <foreach item="group" index="index" collection="orQueryObject.involvedGroups" open="(" separator="," close=")">
+            #{group}
+          </foreach>
+          )
+        </if>
+        )
       </foreach>
     </where>
   </sql>
