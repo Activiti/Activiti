@@ -1062,7 +1062,8 @@
           UNION ALL
           <!--this should be refactored -->
           select distinct RES.*
-          <include refid="${from}"/>
+          from ACT_HI_TASKINST RES
+          left join ACT_HI_IDENTITYLINK HI_OR${orIndex} on HI_OR${orIndex}.TASK_ID_ = RES.ID_
           WHERE RES.END_TIME_ is not null
           and (
             HI_OR${orIndex}.TYPE_ = 'participant'
