@@ -1064,7 +1064,7 @@
           select distinct RES.*
           from ACT_HI_TASKINST RES
           left join ACT_HI_IDENTITYLINK HI_OR${orIndex} on HI_OR${orIndex}.TASK_ID_ = RES.ID_
-          WHERE RES.END_TIME_ is not null
+          <include refid="commonWhere"/>
           and (
             HI_OR${orIndex}.TYPE_ = 'participant'
             and HI_OR${orIndex}.GROUP_ID_ IN
