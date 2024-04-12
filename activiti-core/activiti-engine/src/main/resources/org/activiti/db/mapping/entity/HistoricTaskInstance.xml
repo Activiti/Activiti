@@ -352,7 +352,7 @@
    </if>
   </sql>
 
-  <sql id="selectHistoricTaskInstancesWithVariablesByQueryCriteriaSql">
+  <sql id="selectHistoricTaskInstancesWithVariablesByQueryCriteriaSql_inner">
     from ${prefix}ACT_HI_TASKINST RES
     <choose>
       <when test="includeTaskLocalVariables &amp;&amp; includeProcessVariables">
@@ -367,7 +367,13 @@
         </if>
       </otherwise>
     </choose>
-    <include refid="commonSelectHistoricTaskInstancesByQueryCriteriaSql"/>
+  </sql>
+
+  <sql id="selectHistoricTaskInstancesWithVariablesByQueryCriteriaSql">
+    <include refid="selectHistoricTaskInstancesWithVariablesByQueryCriteriaSql_inner"/>
+    <include refid="commonSelectHistoricTaskInstancesByQueryCriteriaSql">
+      <property name="from" value="selectHistoricTaskInstancesWithVariablesByQueryCriteriaSql_inner"/>
+    </include>
   </sql>
 
   <sql id="commonJoins">
@@ -1056,8 +1062,7 @@
           UNION ALL
           <!--this should be refactored -->
           select distinct RES.*
-          from ACT_HI_TASKINST RES
-          left join ACT_HI_IDENTITYLINK HI_OR${orIndex} on HI_OR${orIndex}.TASK_ID_ = RES.ID_
+          <include refid="${from}"/>
           WHERE RES.END_TIME_ is not null
           and (
             HI_OR${orIndex}.TYPE_ = 'participant'
