@@ -376,6 +376,14 @@
     </include>
   </sql>
 
+  <sql id="joinIdentityLink">
+    <choose>
+      <when test="orQueryObject.involvedGroups != null">left</when>
+      <otherwise>inner</otherwise>
+    </choose>
+    join ${prefix}ACT_HI_IDENTITYLINK HI_OR${orIndex} on HI_OR${orIndex}.TASK_ID_ = RES.ID_
+  </sql>
+
   <sql id="commonJoins">
     <if test="candidateUser != null || candidateGroups != null || involvedGroups != null">
       inner join ${prefix}ACT_HI_IDENTITYLINK HI on HI.TASK_ID_ = RES.ID_
@@ -401,11 +409,7 @@
     </foreach>
     <foreach collection="orQueryObjects" index="orIndex" item="orQueryObject">
       <if test="orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null || orQueryObject.involvedGroups != null">
-        <choose>
-          <when test="orQueryObject.involvedGroups != null">left</when>
-          <otherwise>inner</otherwise>
-        </choose>
-        join ${prefix}ACT_HI_IDENTITYLINK HI_OR${orIndex} on HI_OR${orIndex}.TASK_ID_ = RES.ID_
+        <include refid="joinIdentityLink"/>
       </if>
       <if test="orQueryObject.processFinished || orQueryObject.processUnfinished || orQueryObject.processInstanceBusinessKey != null || orQueryObject.processInstanceBusinessKeyLike != null || orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null">
         inner join ${prefix}ACT_HI_PROCINST HPI_OR${orIndex} ON RES.PROC_INST_ID_ = HPI_OR${orIndex}.ID_
@@ -1067,11 +1071,12 @@
           </foreach>
         </trim>
         <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
+          <!-- WITH UNION ALL -->
           UNION ALL
           <!--this should be refactored -->
           select distinct RES.*
-          from ACT_HI_TASKINST RES
-          left join ACT_HI_IDENTITYLINK HI_OR${orIndex} on HI_OR${orIndex}.TASK_ID_ = RES.ID_
+          <include refid="${from}"/>
+          <include refid="joinIdentityLink"/>
           <include refid="commonWhere"/>
           and (
             <include refid="orQueryObject_involvedGroups"/>
@@ -1409,6 +1414,7 @@
             or RES.OWNER_ = #{orQueryObject.involvedUser}
             )
           </if>
+          <!-- WITHOUT UNION ALL -->
           <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
             or (
             <include refid="orQueryObject_involvedGroups"/>
