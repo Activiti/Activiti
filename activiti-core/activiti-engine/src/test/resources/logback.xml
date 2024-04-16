@@ -5,9 +5,9 @@
       <pattern>%d{hh:mm:ss,SSS} [%t] %-5p %c %X - %m%n</pattern>
     </encoder>
   </appender>
-  <logger name="org.apache.ibatis.level" level="INFO"/>
+  <logger name="org.apache.ibatis.level" level="TRACE"/>
   <logger name="javax.activation.level" level="INFO"/>
-  <root level="INFO">
+  <root level="TRACE">
     <appender-ref ref="CA"/>
   </root>
 </configuration>
