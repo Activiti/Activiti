@@ -990,15 +990,7 @@
           </choose>
 
           <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
-            or
-            (
-              HI_OR${orIndex}.TYPE_ = 'participant'
-              and
-              HI_OR${orIndex}.GROUP_ID_ IN
-              <foreach item="group" index="index" collection="orQueryObject.involvedGroups" open="(" separator="," close=")">
-                #{group}
-              </foreach>
-            )
+            or ( <include refid="orQueryObject_involvedGroups"/> )
           </if>
           <foreach item="queryVar" collection="orQueryObject.queryVariableValues" index="index">
             or
@@ -1074,7 +1066,7 @@
             </trim>
           </foreach>
         </trim>
-        <!-- we're using UNION ALL for every situation that doesn't COUNT -->
+        <!-- we're using UNION for every situation that doesn't COUNT -->
         <if test="'${selectCount}' != 'yes'">
           <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
             UNION
@@ -1082,17 +1074,19 @@
             from ACT_HI_TASKINST RES
             left join ACT_HI_IDENTITYLINK HI_OR${orIndex} on HI_OR${orIndex}.TASK_ID_ = RES.ID_
             WHERE RES.END_TIME_ is not null
-            AND (
-            HI_OR${orIndex}.TYPE_ = 'participant'
-            and HI_OR${orIndex}.GROUP_ID_ IN
-            <foreach item="group" index="index" collection="orQueryObject.involvedGroups" open="(" separator="," close=")">
-              #{group}
-            </foreach>
-            )
+            AND ( <include refid="orQueryObject_involvedGroups"/> )
           </if>
         </if>
       </foreach>
     </where>
+  </sql>
+
+  <sql id="orQueryObject_involvedGroups">
+    HI_OR${orIndex}.TYPE_ = 'participant'
+    and HI_OR${orIndex}.GROUP_ID_ IN
+    <foreach item="group" index="index" collection="orQueryObject.involvedGroups" open="(" separator="," close=")">
+      #{group}
+    </foreach>
   </sql>
 
   <sql id="executionVariableOperator">
