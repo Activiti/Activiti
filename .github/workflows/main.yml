@@ -3,9 +3,11 @@ on:
   push:
     branches:
       - 7.11.x
+      - fix/MNT-24335-performance_issue_WF_tests_withUnitTests
   pull_request:
     branches:
       - 7.11.x
+      - fix/MNT-24335-performance_issue_WF_tests_withUnitTests
   # Allows to run this workflow manually from the Actions tab
   workflow_dispatch:
 concurrency:
