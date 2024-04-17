@@ -45,9 +45,9 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
 
   private static final Logger log = LoggerFactory.getLogger(HistoricTaskInstanceQueryImpl.class);
 
-  private static final HistoricTaskInstanceQueryProperty POSTGRESQL_START_QUERY_PROPERTY =
+  private static final HistoricTaskInstanceQueryProperty START_QUERY_PROPERTY_WITHOUT_ALIAS =
       new HistoricTaskInstanceQueryProperty(
-          getPostgresqlPropertyName(HistoricTaskInstanceQueryProperty.START.getName())
+          removeAliasFromPropertyName(HistoricTaskInstanceQueryProperty.START.getName())
       );
 
   protected String processDefinitionId;
@@ -1224,10 +1224,17 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
 
+  private boolean isPostgresqlDatabase() {
+      return ProcessEngineConfigurationImpl.DATABASE_TYPE_POSTGRES.equals(databaseType);
+  }
+  private boolean isH2Database() {
+      return ProcessEngineConfigurationImpl.DATABASE_TYPE_H2.equals(databaseType);
+  }
+
   public HistoricTaskInstanceQuery orderByHistoricTaskInstanceStartTime() {
       QueryProperty queryProperty;
-      if( ProcessEngineConfigurationImpl.DATABASE_TYPE_POSTGRES.equals(databaseType) ) {
-          queryProperty = POSTGRESQL_START_QUERY_PROPERTY;
+      if( isPostgresqlDatabase() || isH2Database() ) {
+          queryProperty = START_QUERY_PROPERTY_WITHOUT_ALIAS;
       } else {
         queryProperty = HistoricTaskInstanceQueryProperty.START;
       }
@@ -1312,7 +1319,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return specialOrderBy;
   }
 
-  public static String getPostgresqlPropertyName(String propertyName) {
+  public static String removeAliasFromPropertyName(String propertyName) {
       String specialPropertyName = propertyName;
       if (specialPropertyName != null && specialPropertyName.length() > 0) {
           specialPropertyName = specialPropertyName.replace("RES.", "");
