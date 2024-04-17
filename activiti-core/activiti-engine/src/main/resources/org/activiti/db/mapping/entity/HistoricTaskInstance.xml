@@ -362,7 +362,7 @@
   <sql id="commonSelectHistoricTaskInstancesByQueryCriteriaSql">
     <if test="candidateUser != null || candidateGroups != null || involvedGroups != null || involvedUser != null">
       <choose>
-        <when test="involvedUser != null">left</when>
+        <when test="involvedGroups != null || involvedUser != null">left</when>
         <otherwise>inner</otherwise>
       </choose>
       join ${prefix}ACT_HI_IDENTITYLINK HI on HI.TASK_ID_ = RES.ID_
@@ -389,7 +389,7 @@
     <foreach collection="orQueryObjects" index="orIndex" item="orQueryObject">
       <if test="orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null || orQueryObject.involvedGroups != null || orQueryObject.involvedUser != null">
         <choose>
-          <when test="orQueryObject.involvedGroups != null">left</when>
+          <when test="orQueryObject.involvedGroups != null || orQueryObject.involvedUser != null">left</when>
           <otherwise>inner</otherwise>
         </choose>
          join ${prefix}ACT_HI_IDENTITYLINK HI_OR${orIndex} on HI_OR${orIndex}.TASK_ID_ = RES.ID_
