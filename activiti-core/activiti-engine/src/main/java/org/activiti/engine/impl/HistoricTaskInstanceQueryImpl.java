@@ -1231,9 +1231,13 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
       return ProcessEngineConfigurationImpl.DATABASE_TYPE_H2.equals(databaseType);
   }
 
+  private boolean isMysqlDatabase() {
+      return ProcessEngineConfigurationImpl.DATABASE_TYPE_MYSQL.equals(databaseType);
+  }
+
   public HistoricTaskInstanceQuery orderByHistoricTaskInstanceStartTime() {
       QueryProperty queryProperty;
-      if( isPostgresqlDatabase() || isH2Database() ) {
+      if( isPostgresqlDatabase() || isH2Database() || isMysqlDatabase() ) {
           queryProperty = START_QUERY_PROPERTY_WITHOUT_ALIAS;
       } else {
         queryProperty = HistoricTaskInstanceQueryProperty.START;
