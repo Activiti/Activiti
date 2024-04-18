@@ -1077,7 +1077,13 @@
             select distinct RES.*
             from ACT_HI_TASKINST RES
             left join ACT_HI_IDENTITYLINK HI_OR${orIndex} on HI_OR${orIndex}.TASK_ID_ = RES.ID_
-            WHERE RES.END_TIME_ is not null
+            WHERE
+            <if test="taskId != null">
+              RES.ID_ = #{taskId}
+            </if>
+            <if test="unfinished">
+              AND RES.END_TIME_ is not null
+            </if>
             AND ( <include refid="orQueryObject_involvedGroups"/> )
           </if>
         </if>
