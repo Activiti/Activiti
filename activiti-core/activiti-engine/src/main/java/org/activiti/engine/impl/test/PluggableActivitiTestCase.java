@@ -51,8 +51,9 @@ public abstract class PluggableActivitiTestCase extends AbstractActivitiTestCase
     public static MSSQLServerContainer mssqlserver;
 
     static {
-        mssqlserver = new MSSQLServerContainer()
+        mssqlserver = new MSSQLServerContainer("mcr.microsoft.com/mssql/server:2019-CU9-ubuntu-16.04")
             .acceptLicense();
+        mssqlserver.addEnv("MSSQL_COLLATION", "LATIN1_GENERAL_100_CS_AS_SC_UTF8");
         mssqlserver.start();
     }
 
