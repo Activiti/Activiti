@@ -28,8 +28,10 @@ import org.activiti.engine.impl.interceptor.CommandInvoker;
 import org.activiti.engine.impl.interceptor.DebugCommandInvoker;
 import org.activiti.engine.impl.interceptor.RetryInterceptor;
 import org.activiti.engine.test.EnableVerboseExecutionTreeLogging;
+import org.junit.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testcontainers.containers.MSSQLServerContainer;
 
 /**
  * Base class for the activiti test cases.
@@ -44,6 +46,43 @@ import org.slf4j.LoggerFactory;
 public abstract class PluggableActivitiTestCase extends AbstractActivitiTestCase {
 
   private static Logger pluggableActivitiTestCaseLogger = LoggerFactory.getLogger(PluggableActivitiTestCase.class);
+
+    @Rule
+    public static MSSQLServerContainer mssqlserver;
+
+    static {
+        mssqlserver = new MSSQLServerContainer()
+            .acceptLicense();
+        mssqlserver.start();
+    }
+
+    public static class JDBCProperties {
+
+        private JDBCProperties() {
+        }
+
+        public static String getUrl() {
+            return mssqlserver.getJdbcUrl();
+        }
+
+        public static String getUsername() {
+            return mssqlserver.getUsername();
+        }
+
+        public static String getPassword() {
+            return mssqlserver.getPassword();
+        }
+
+        public static String getDriver() {
+            return mssqlserver.getDriverClassName();
+        }
+
+        public static JDBCProperties getInstance() {
+            return new JDBCProperties();
+        }
+
+    }
+
 
   protected static ProcessEngine cachedProcessEngine;
 
