@@ -31,7 +31,12 @@ import org.activiti.engine.test.EnableVerboseExecutionTreeLogging;
 import org.junit.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.MSSQLServerContainer;
+import org.testcontainers.containers.MariaDBContainer;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.containers.OracleContainer;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 /**
  * Base class for the activiti test cases.
@@ -47,15 +52,9 @@ public abstract class PluggableActivitiTestCase extends AbstractActivitiTestCase
 
   private static Logger pluggableActivitiTestCaseLogger = LoggerFactory.getLogger(PluggableActivitiTestCase.class);
 
-    @Rule
-    public static MSSQLServerContainer mssqlserver;
 
-    static {
-        mssqlserver = new MSSQLServerContainer("mcr.microsoft.com/mssql/server:2019-CU9-ubuntu-16.04")
-            .acceptLicense();
-        mssqlserver.addEnv("MSSQL_COLLATION", "LATIN1_GENERAL_100_CS_AS_SC_UTF8");
-        mssqlserver.start();
-    }
+    @Rule
+    public static JdbcDatabaseContainer databaseContainer = Database.getInstance().startNewJdbcDatabaseContainer();
 
     public static class JDBCProperties {
 
@@ -63,19 +62,23 @@ public abstract class PluggableActivitiTestCase extends AbstractActivitiTestCase
         }
 
         public static String getUrl() {
-            return mssqlserver.getJdbcUrl();
+            if (databaseContainer == null) return "jdbc:h2:mem:activiti;DB_CLOSE_DELAY=-1";
+            return databaseContainer.getJdbcUrl();
         }
 
         public static String getUsername() {
-            return mssqlserver.getUsername();
+            if (databaseContainer == null) return "sa";
+            return databaseContainer.getUsername();
         }
 
         public static String getPassword() {
-            return mssqlserver.getPassword();
+            if (databaseContainer == null) return "";
+            return databaseContainer.getPassword();
         }
 
         public static String getDriver() {
-            return mssqlserver.getDriverClassName();
+            if (databaseContainer == null) return "org.h2.Driver";
+            return databaseContainer.getDriverClassName();
         }
 
         public static JDBCProperties getInstance() {
@@ -169,5 +172,80 @@ public abstract class PluggableActivitiTestCase extends AbstractActivitiTestCase
         commandExecutor.setFirst(original);
     }
   }
+
+    public enum Database {
+        POSTGRES {
+            @Override
+            protected JdbcDatabaseContainer startNewJdbcDatabaseContainer() {
+                PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:13.7");
+                postgreSQLContainer.start();
+                return postgreSQLContainer;
+            }
+        },
+        ORACLE {
+            @Override
+            protected JdbcDatabaseContainer startNewJdbcDatabaseContainer() {
+                OracleContainer oracleContainer = new OracleContainer(
+                    "gvenzl/oracle-xe:21-slim-faststart")
+                    .withDatabaseName("testDB")
+                    .withUsername("testUser")
+                    .withPassword("testPassword");
+
+                oracleContainer.start();
+                return oracleContainer;
+            }
+
+        },
+        MYSQL {
+            @Override
+            protected JdbcDatabaseContainer startNewJdbcDatabaseContainer() {
+                MySQLContainer mySQLContainer = new MySQLContainer("mysql:8.0");
+                mySQLContainer.start();
+                return mySQLContainer;
+            }
+        },
+        MARIADB {
+            @Override
+            protected JdbcDatabaseContainer startNewJdbcDatabaseContainer() {
+                MariaDBContainer mariaDBContainer = new MariaDBContainer("mariadb:10.6.16");
+                mariaDBContainer.start();
+                return mariaDBContainer;
+            }
+        },
+        MSSQL {
+            @Override
+            protected JdbcDatabaseContainer startNewJdbcDatabaseContainer() {
+                MSSQLServerContainer mssqlserver = new MSSQLServerContainer("mcr.microsoft.com/mssql/server:2019-CU9-ubuntu-16.04")
+                    .acceptLicense();
+                mssqlserver.addEnv("MSSQL_COLLATION", "LATIN1_GENERAL_100_CS_AS_SC_UTF8");
+                mssqlserver.start();
+                return mssqlserver;
+            }
+
+        },
+        NONE {
+            @Override
+            protected JdbcDatabaseContainer startNewJdbcDatabaseContainer() {
+                return null;
+            }
+        };
+
+        protected JdbcDatabaseContainer startNewJdbcDatabaseContainer() {
+            throw new UnsupportedOperationException(
+                String.format(
+                    "The [%s] database was not configured to use Testcontainers!",
+                    name()
+                )
+            );
+        }
+
+        public static Database getInstance() {
+            String database = System.getProperty("db");
+            database = database == null ? "NONE" : database.toUpperCase();
+            pluggableActivitiTestCaseLogger.info("Initiating " + database + " container");
+            return valueOf(database);
+        }
+
+    }
 
 }
