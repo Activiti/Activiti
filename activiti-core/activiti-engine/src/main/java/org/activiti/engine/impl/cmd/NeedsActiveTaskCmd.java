@@ -72,4 +72,8 @@ public abstract class NeedsActiveTaskCmd<T> implements Command<T>, Serializable 
     return "Cannot execute operation: task is suspended";
   }
 
+  // This getter is necessary to check if the task is part of an "activiti-5" process or not
+  public String getTaskId() {
+      return taskId;
+  }
 }
