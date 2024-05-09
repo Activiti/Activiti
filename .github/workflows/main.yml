@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: pre-commit
     strategy:
+      fail-fast: false
       matrix:
         database: [ none, mssql, mysql, postgres, mariadb, oracle ]
     steps:
