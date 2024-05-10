@@ -100,6 +100,7 @@ public interface Problems {
   String THROW_EVENT_INVALID_EVENTDEFINITION = "activiti-throw-event-invalid-eventdefinition";
 
   String MULTI_INSTANCE_MISSING_COLLECTION = "activiti-multi-instance-missing-collection";
+    String MULTI_INSTANCE_HIGHER_CARDINALITY = "activiti-multi-instance-cardinality-greater-than-200";
 
   String MESSAGE_MISSING_NAME = "activiti-message-missing-name";
   String MESSAGE_INVALID_ITEM_REF = "activiti-message-invalid-item-ref";

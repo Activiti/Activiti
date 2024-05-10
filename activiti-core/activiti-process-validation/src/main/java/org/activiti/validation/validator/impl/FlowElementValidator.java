@@ -71,6 +71,14 @@ public class FlowElementValidator extends ProcessLevelValidator {
 			  addError(errors, Problems.MULTI_INSTANCE_MISSING_COLLECTION, process, activity,
 	    			"Either loopCardinality or loopDataInputRef/activiti:collection must been set");
 	    }
+            if(!StringUtils.isEmpty(multiInstanceLoopCharacteristics.getLoopCardinality())){
+                int loopCardinality = Integer.parseInt(multiInstanceLoopCharacteristics.getLoopCardinality());
+                if(loopCardinality >200){
+                    addError(errors, Problems.MULTI_INSTANCE_HIGHER_CARDINALITY, process, activity,
+                            "Because you set a parallel cardinality greater than 200 for a task, the operation could be slow or does not terminate successfully");
+                }
+
+            }
 
 		}
 	}
