@@ -17,13 +17,12 @@
 package org.activiti.engine.impl.interceptor;
 
 import org.activiti.engine.api.internal.Internal;
-import org.activiti.engine.impl.cmd.Activiti5Compatible;
 
 /**
 
  */
 @Internal
-public interface Command<T> extends Activiti5Compatible {
+public interface Command<T> {
 
   T execute(CommandContext commandContext);
 
