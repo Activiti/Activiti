@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.activiti.engine.impl.cmd;
 
-package org.activiti.engine.impl.interceptor;
+import org.activiti.engine.impl.interceptor.CommandContext;
 
-import org.activiti.engine.api.internal.Internal;
-import org.activiti.engine.impl.cmd.Activiti5Compatible;
+public interface Activiti5Compatible {
 
-/**
-
- */
-@Internal
-public interface Command<T> extends Activiti5Compatible {
-
-  T execute(CommandContext commandContext);
-
+    /**
+     * Indicates if it requires some custom code to be compatible with Activiti5
+     *
+     * @param commandContext to query the necessary information
+     * @return <code>true</code> if there's the need to run custom code to execute Activiti5 entity or <code>false</code> otherwise
+     */
+    default boolean requiresCompatibility(CommandContext commandContext) {
+        return false;
+    }
 }
