@@ -97,9 +97,4 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
     }
     return variablesMap;
   }
-
-  // This getter is necessary to check if the processDefinition is an "activiti-5" definition or not
-  public String getProcessDefinitionId() {
-      return processDefinitionId;
-  }
 }
