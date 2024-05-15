@@ -75,7 +75,7 @@ public class MybatisHistoricTaskInstanceDataManager extends AbstractDataManager<
   @Override
   @SuppressWarnings("unchecked")
   public List<HistoricTaskInstance> findHistoricTaskInstancesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
-    return getDbSqlSession().selectList("selectHistoricTaskInstancesByQueryCriteria", historicTaskInstanceQuery);
+    return getDbSqlSession().selectList("monty_selectHistoricTaskInstancesByQueryCriteria", historicTaskInstanceQuery);
   }
 
   @Override
