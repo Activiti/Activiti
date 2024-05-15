@@ -1066,4 +1066,50 @@
   <select id="selectHistoricTaskInstanceCountByNativeQuery" parameterType="java.util.Map" resultType="long">
     ${sql}
   </select>
+
+  <!-- MONTY script -->
+  <select id="monty_selectHistoricTaskInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultMap="historicTaskInstanceResultMap">
+    SELECT *
+    FROM (
+        SELECT RES.*,
+            row_number() OVER (ORDER BY RES.START_TIME_ DESC) rnk
+        FROM ACT_HI_TASKINST RES
+        <where>
+            RES.END_TIME_ IS NOT NULL
+            <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
+                AND
+                <trim prefix="(" prefixOverrides="OR" suffix=")">
+                    <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
+                      EXISTS (
+                          SELECT 1
+                          FROM {prefix}ACT_HI_IDENTITYLINK HI_OR${orIndex}
+                          WHERE
+                              HI_OR${orIndex}.TASK_ID_ = RES.ID_ AND HI_OR${orIndex}.TYPE_ = 'participant'
+                              AND
+                              HI_OR${orIndex}.GROUP_ID_ IN
+                              <foreach item="group" index="index" collection="orQueryObject.involvedGroups" open="(" separator="," close=")">
+                                #{group}
+                              </foreach>
+                      )
+                    </if>
+                    <if test="orQueryObject.involvedUser != null">
+                      OR (
+                          EXISTS (
+                              SELECT 1
+                              FROM ${prefix}ACT_HI_IDENTITYLINK HI_OR${orIndex}
+                              WHERE
+                                  HI_OR${orIndex}.TASK_ID_ = RES.ID_
+                                  AND HI_OR${orIndex}.USER_ID_ = #{orQueryObject.involvedUser}
+                          )
+                          OR RES.ASSIGNEE_ = #{orQueryObject.involvedUser}
+                          OR RES.OWNER_ = #{orQueryObject.involvedUser}
+                      )
+                    </if>
+                </trim>
+            </foreach>
+        </where>
+    ) SUB
+    WHERE rnk BETWEEN #{firstRow} AND #{lastRow}
+    ORDER BY rnk
+  </select>
 </mapper>
