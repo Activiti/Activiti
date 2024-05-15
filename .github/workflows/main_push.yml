@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@b3aa3308ae1c2e2140c8a6d12f3001cd644313f7 # v5.23.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@553490b6434e1ec43ced9b321a04fadb91535d4c # v5.25.0
         with:
           skip_checkout: true
       - name: Ensure SHA pinned actions
@@ -53,7 +53,7 @@ jobs:
           java-version: 21
           distribution: 'temurin'
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@b3aa3308ae1c2e2140c8a6d12f3001cd644313f7 # v5.23.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@553490b6434e1ec43ced9b321a04fadb91535d4c # v5.25.0
         id: update-pom-to-next-version
 
       - name: Update VERSION file
@@ -91,10 +91,10 @@ jobs:
           git push -f -q origin $VERSION
 
       - name: Get branch name
-        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@b3aa3308ae1c2e2140c8a6d12f3001cd644313f7 # v5.23.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@553490b6434e1ec43ced9b321a04fadb91535d4c # v5.25.0
 
       - name: Propagate
-        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@b3aa3308ae1c2e2140c8a6d12f3001cd644313f7 # v5.23.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@553490b6434e1ec43ced9b321a04fadb91535d4c # v5.25.0
         if: ${{ env.BRANCH_NAME == 'develop' }}
         env:
           DEVELOPMENT_BRANCH: ${{ github.ref_name }}
@@ -113,7 +113,7 @@ jobs:
     if: always() && failure()
     steps:
       - name: Slack Notification
-        uses: Alfresco/alfresco-build-tools/.github/actions/send-slack-notification@b3aa3308ae1c2e2140c8a6d12f3001cd644313f7 # v5.23.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/send-slack-notification@553490b6434e1ec43ced9b321a04fadb91535d4c # v5.25.0
         with:
           channel-id: 'eng-hxp-studio-activiti-gh-notifs'
           token: ${{ secrets.SLACK_NOTIFICATION_BOT_TOKEN }}
