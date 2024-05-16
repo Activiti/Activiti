@@ -31,10 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 
-/**
-
-
- */
 public class HandleFailedJobCmd implements Command<Object>, Serializable {
 
   private static final long serialVersionUID = 1L;
