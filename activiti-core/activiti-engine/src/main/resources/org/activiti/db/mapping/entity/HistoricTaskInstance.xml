@@ -1082,7 +1082,7 @@
                     <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
                       EXISTS (
                           SELECT 1
-                          FROM {prefix}ACT_HI_IDENTITYLINK HI_OR${orIndex}
+                          FROM ${prefix}ACT_HI_IDENTITYLINK HI_OR${orIndex}
                           WHERE
                               HI_OR${orIndex}.TASK_ID_ = RES.ID_ AND HI_OR${orIndex}.TYPE_ = 'participant'
                               AND
