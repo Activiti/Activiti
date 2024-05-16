@@ -17,17 +17,14 @@
 package org.activiti.engine.impl.asyncexecutor;
 
 import org.activiti.engine.ActivitiOptimisticLockingException;
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cmd.ExecuteAsyncJobCmd;
+import org.activiti.engine.impl.cmd.HandleFailedJobCmd;
 import org.activiti.engine.impl.cmd.LockExclusiveJobCmd;
 import org.activiti.engine.impl.cmd.UnlockExclusiveJobCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
@@ -160,32 +157,9 @@ public class ExecuteAsyncRunnable implements Runnable {
   }
 
   protected void handleFailedJob(final Throwable exception) {
-    processEngineConfiguration.getCommandExecutor().execute(new Command<Void>() {
-
-      @Override
-      public Void execute(CommandContext commandContext) {
-
-        CommandConfig commandConfig = processEngineConfiguration.getCommandExecutor().getDefaultConfig().transactionRequiresNew();
-        FailedJobCommandFactory failedJobCommandFactory = commandContext.getFailedJobCommandFactory();
-        Command<Object> cmd = failedJobCommandFactory.getCommand(job.getId(), exception);
-
-        log.trace("Using FailedJobCommandFactory '" + failedJobCommandFactory.getClass() + "' and command of type '" + cmd.getClass() + "'");
-        processEngineConfiguration.getCommandExecutor().execute(commandConfig, cmd);
-
-        // Dispatch an event, indicating job execution failed in a
-        // try-catch block, to prevent the original exception to be swallowed
-        if (commandContext.getEventDispatcher().isEnabled()) {
-          try {
-            commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityExceptionEvent(ActivitiEventType.JOB_EXECUTION_FAILURE, job, exception));
-          } catch (Throwable ignore) {
-            log.warn("Exception occurred while dispatching job failure event, ignoring.", ignore);
-          }
-        }
-
-        return null;
-      }
-
-    });
+    processEngineConfiguration.getCommandExecutor().execute(
+        new HandleFailedJobCmd(jobId, processEngineConfiguration, exception)
+    );
   }
 
 }
