@@ -1080,16 +1080,6 @@
             </if>
             <if test="unfinished">and RES.END_TIME_ IS NULL</if>
             <if test="finished">and RES.END_TIME_ IS NOT NULL</if>
-            <if test="processInstanceId != null">
-              and RES.PROC_INST_ID_ = #{processInstanceId}
-            </if>
-            <if test="processInstanceIds != null &amp;&amp; processInstanceIds.size() &gt; 0">
-              and RES.PROC_INST_ID_ IN
-              <foreach item="processInstance" index="index" collection="processInstanceIds"
-                       open="(" separator="," close=")">
-                #{processInstance}
-              </foreach>
-            </if>
             <if test="candidateUser != null || candidateGroups != null">
               EXISTS (
                   SELECT 1
@@ -1116,11 +1106,98 @@
                       )
               )
             </if>
-            <if test="taskAssignee != null">
-            and RES.ASSIGNEE_ = #{taskAssignee}
+            <if test="processDefinitionKeyLike != null">
+                exists (
+                    SELECT 1
+                    FROM ${prefix}ACT_RE_PROCDEF D
+                    where
+                        RES.PROC_DEF_ID_ = D.ID_
+                        and D.KEY_ like #{processDefinitionKeyLike}${wildcardEscapeClause}
+                )
+            </if>
+            <if test="processDefinitionKeyLikeIgnoreCase != null">
+              <include refid="monty_selectExists">
+                <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D"/>
+                <property name="join" value="RES.PROC_DEF_ID_ = D.ID_"/>
+                <property name="where" value="lower(D.KEY_) like #{processDefinitionKeyLikeIgnoreCase}${wildcardEscapeClause}"/>
+              </include>
+            </if>
+            <if test="processInstanceId != null">
+              and RES.PROC_INST_ID_ = #{processInstanceId}
+            </if>
+            <if test="processInstanceIds != null &amp;&amp; processInstanceIds.size() &gt; 0">
+              and RES.PROC_INST_ID_ IN
+              <foreach item="processInstance" index="index" collection="processInstanceIds"
+                       open="(" separator="," close=")">
+                #{processInstance}
+              </foreach>
+            </if>
+            <if test="processDefinitionNameLike != null">
+              <include refid="monty_selectExists">
+                <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D"/>
+                <property name="join" value="RES.PROC_DEF_ID_ = D.ID_"/>
+                <property name="where" value="D.NAME_ like #{processDefinitionNameLike}${wildcardEscapeClause}"/>
+              </include>
+            </if>
+          <if test="processInstanceBusinessKey != null">
+            <include refid="monty_selectExists">
+              <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI"/>
+              <property name="join" value="RES.PROC_INST_ID_ = HPI.ID_"/>
+              <property name="where" value="HPI.BUSINESS_KEY_ = #{processInstanceBusinessKey}"/>
+            </include>
           </if>
-            <if test="taskAssigneeLike != null">
-            and RES.ASSIGNEE_ like #{taskAssigneeLike}${wildcardEscapeClause}
+          <if test="processInstanceBusinessKeyLike != null">
+            <include refid="monty_selectExists">
+              <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI"/>
+              <property name="join" value="RES.PROC_INST_ID_ = HPI.ID_"/>
+              <property name="where" value="HPI.BUSINESS_KEY_ like #{processInstanceBusinessKeyLike}${wildcardEscapeClause}"/>
+            </include>
+          </if>
+          <if test="processInstanceBusinessKeyLikeIgnoreCase != null">
+            <include refid="monty_selectExists">
+              <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI"/>
+              <property name="join" value="RES.PROC_INST_ID_ = HPI.ID_"/>
+              <property name="where" value="lower(HPI.BUSINESS_KEY_) like #{processInstanceBusinessKeyLikeIgnoreCase}${wildcardEscapeClause}"/>
+            </include>
+          </if>
+          <if test="taskAssignee != null">
+              and RES.ASSIGNEE_ = #{taskAssignee}
+            </if>
+          <if test="taskAssigneeLike != null">
+          and RES.ASSIGNEE_ like #{taskAssigneeLike}${wildcardEscapeClause}
+        </if>
+          <if test="taskAssigneeLikeIgnoreCase != null">
+              and lower(RES.ASSIGNEE_) like #{taskAssigneeLikeIgnoreCase}${wildcardEscapeClause}
+          </if>
+          <if test="taskDefinitionKeyLike != null">
+            and RES.TASK_DEF_KEY_ like #{taskDefinitionKeyLike}${wildcardEscapeClause}
+          </if>
+          <if test="taskDeleteReason != null">
+            and RES.DELETE_REASON_ = #{taskDeleteReason}
+          </if>
+          <if test="taskDeleteReasonLike != null">
+            and RES.DELETE_REASON_ like #{taskDeleteReasonLike}${wildcardEscapeClause}
+          </if>
+          <if test="taskDescriptionLike != null">
+            and RES.DESCRIPTION_ like #{taskDescriptionLike}${wildcardEscapeClause}
+          </if>
+          <if test="taskDescriptionLikeIgnoreCase != null">
+            and lower(RES.DESCRIPTION_) like #{taskDescriptionLikeIgnoreCase}${wildcardEscapeClause}
+          </if>
+          <if test="taskNameLike != null">
+            and RES.NAME_ like #{taskNameLike}${wildcardEscapeClause}
+          </if>
+            <if test="taskNameLikeIgnoreCase != null">
+              and lower(RES.NAME_) like #{taskNameLikeIgnoreCase}${wildcardEscapeClause}
+            </if>
+            <if test="taskOwnerLike != null">
+              and RES.OWNER_ like #{taskOwnerLike}${wildcardEscapeClause}
+            </if>
+            <if test="taskOwnerLikeIgnoreCase != null">
+              and lower(RES.OWNER_) like #{taskOwnerLikeIgnoreCase}${wildcardEscapeClause}
+            </if>
+          <if test="tenantIdLike != null">
+            and RES.TENANT_ID_ like #{tenantIdLike}${wildcardEscapeClause}
           </if>
             <if test="queryVariableValues != null &amp;&amp; queryVariableValues.size() &gt; 0">
               and
@@ -1204,6 +1281,28 @@
             </if>
             <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
                 <trim prefix="(" prefixOverrides="OR" suffix=")">
+                    <if test="orQueryObject.deploymentId != null">
+                        exists (
+                            select 1
+                            from ${prefix}ACT_RE_PROCDEF DEPLOY_P_OR${orIndex}
+                            where
+                                RES.PROC_DEF_ID_ = DEPLOY_P_OR${orIndex}.ID_
+                                and DEPLOY_P_OR${orIndex}.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
+                        )
+                    </if>
+                    <if test="orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0">
+                        exists (
+                            select 1
+                            from ${prefix}ACT_RE_PROCDEF DEPLOY_P_OR${orIndex}
+                            where
+                                RES.PROC_DEF_ID_ = DEPLOY_P_OR${orIndex}.ID_
+                                and DEPLOY_P_OR${orIndex}.DEPLOYMENT_ID_ IN
+                                <foreach item="deployment" index="index" collection="orQueryObject.deploymentIds"
+                                         open="(" separator="," close=")">
+                                  #{deployment}
+                                </foreach>
+                        )
+                    </if>
                     <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
                       EXISTS (
                           SELECT 1
@@ -1217,18 +1316,63 @@
                               </foreach>
                       )
                     </if>
+                    <if test="orQueryObject.processDefinitionKeyLike != null">
+                        exists (
+                            select 1
+                            from ${prefix}ACT_RE_PROCDEF D_OR${orIndex}
+                            where
+                                RES.PROC_DEF_ID_ = D_OR${orIndex}.ID_
+                                and D_OR${orIndex}.KEY_ like #{orQueryObject.processDefinitionKeyLike}${wildcardEscapeClause}
+                        )
+                    </if>
+                    <if test="orQueryObject.processDefinitionKeyLikeIgnoreCase != null">
+                      <include refid="monty_selectExists">
+                        <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D_OR${orIndex}"/>
+                        <property name="join" value="RES.PROC_DEF_ID_ = D_OR${orIndex}.ID_"/>
+                        <property name="where" value="lower(D_OR${orIndex}.KEY_) like #{orQueryObject.processDefinitionKeyLikeIgnoreCase}${wildcardEscapeClause}"/>
+                      </include>
+                    </if>
+                    <if test="orQueryObject.processDefinitionNameLike != null">
+                      <include refid="monty_selectExists">
+                        <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D_OR${orIndex}"/>
+                        <property name="join" value="RES.PROC_DEF_ID_ = D_OR${orIndex}.ID_"/>
+                        <property name="where" value="D_OR${orIndex}.NAME_ like #{orQueryObject.processDefinitionNameLike}${wildcardEscapeClause}"/>
+                      </include>
+                    </if>
+                    <if test="orQueryObject.processInstanceBusinessKey != null">
+                      <include refid="monty_selectExists">
+                        <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI_OR${orIndex}"/>
+                        <property name="join" value="RES.PROC_INST_ID_ = HPI_OR${orIndex}.ID_"/>
+                        <property name="where" value="HPI_OR${orIndex}.BUSINESS_KEY_ = #{orQueryObject.processInstanceBusinessKey}"/>
+                      </include>
+                    </if>
+                    <if test="orQueryObject.processInstanceBusinessKeyLike != null">
+                      <include refid="monty_selectExists">
+                        <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI_OR${orIndex}"/>
+                        <property name="join" value="RES.PROC_INST_ID_ = HPI_OR${orIndex}.ID_"/>
+                        <property name="where" value="HPI_OR${orIndex}.BUSINESS_KEY_ like #{orQueryObject.processInstanceBusinessKeyLike}${wildcardEscapeClause}"/>
+                      </include>
+                    </if>
+                    <if test="orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null">
+                      <include refid="monty_selectExists">
+                        <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI_OR${orIndex}"/>
+                        <property name="join" value="RES.PROC_INST_ID_ = HPI_OR${orIndex}.ID_"/>
+                        <property name="where" value="lower(HPI_OR${orIndex}.BUSINESS_KEY_) like #{orQueryObject.processInstanceBusinessKeyLikeIgnoreCase}${wildcardEscapeClause}"/>
+                      </include>
+                    </if>
                     <if test="orQueryObject.involvedUser != null">
-                      OR (
-                          EXISTS (
-                              SELECT 1
-                              FROM ${prefix}ACT_HI_IDENTITYLINK HI_OR${orIndex}
-                              WHERE
-                                  HI_OR${orIndex}.TASK_ID_ = RES.ID_
-                                  AND HI_OR${orIndex}.USER_ID_ = #{orQueryObject.involvedUser}
-                          )
+                        OR (
+                          <include refid="monty_selectExists">
+                            <property name="externalTable" value="${prefix}ACT_HI_IDENTITYLINK HI_OR${orIndex}"/>
+                            <property name="join" value="HI_OR${orIndex}.TASK_ID_ = RES.ID_"/>
+                            <property name="where" value="HI_OR${orIndex}.USER_ID_ = #{orQueryObject.involvedUser}"/>
+                          </include>
                           OR RES.ASSIGNEE_ = #{orQueryObject.involvedUser}
                           OR RES.OWNER_ = #{orQueryObject.involvedUser}
-                      )
+                        )
+                      </if>
+                    <if test="orQueryObject.taskAssigneeLikeIgnoreCase != null">
+                      or RES.ASSIGNEE_ like #{orQueryObject.taskAssigneeLikeIgnoreCase}${wildcardEscapeClause}
                     </if>
                     <if test="orQueryObject.taskAssignee != null">
                       or RES.ASSIGNEE_ = #{orQueryObject.taskAssignee}
@@ -1236,6 +1380,36 @@
                     <if test="orQueryObject.taskAssigneeLike != null">
                       or RES.ASSIGNEE_ like #{orQueryObject.taskAssigneeLike}${wildcardEscapeClause}
                     </if>
+                    <if test="orQueryObject.taskDeleteReason != null">
+                      or RES.DELETE_REASON_ = #{orQueryObject.taskDeleteReason}
+                    </if>
+                    <if test="orQueryObject.taskDeleteReasonLike != null">
+                      or RES.DELETE_REASON_ like #{orQueryObject.taskDeleteReasonLike}${wildcardEscapeClause}
+                    </if>
+                    <if test="orQueryObject.taskDescriptionLike != null">
+                      or RES.DESCRIPTION_ like #{orQueryObject.taskDescriptionLike}${wildcardEscapeClause}
+                    </if>
+                    <if test="orQueryObject.taskDescriptionLikeIgnoreCase != null">
+                    or lower(RES.DESCRIPTION_) like #{orQueryObject.taskDescriptionLikeIgnoreCase}${wildcardEscapeClause}
+                  </if>
+                    <if test="orQueryObject.taskDefinitionKeyLike != null">
+                      or RES.TASK_DEF_KEY_ like #{orQueryObject.taskDefinitionKeyLike}${wildcardEscapeClause}
+                    </if>
+                    <if test="orQueryObject.taskNameLike != null">
+                      or RES.NAME_ like #{orQueryObject.taskNameLike}${wildcardEscapeClause}
+                    </if>
+                    <if test="orQueryObject.taskNameLikeIgnoreCase != null">
+                      or lower(RES.NAME_) like #{orQueryObject.taskNameLikeIgnoreCase}${wildcardEscapeClause}
+                    </if>
+                    <if test="orQueryObject.taskOwnerLike != null">
+                        or RES.OWNER_ like #{orQueryObject.taskOwnerLike}${wildcardEscapeClause}
+                    </if>
+                    <if test="orQueryObject.taskOwnerLikeIgnoreCase != null">
+                        or lower(RES.OWNER_) like #{orQueryObject.taskOwnerLikeIgnoreCase}${wildcardEscapeClause}
+                    </if>
+                    <if test="orQueryObject.tenantIdLike != null">
+                    or RES.TENANT_ID_ like #{orQueryObject.tenantIdLike}${wildcardEscapeClause}
+                  </if>
                 </trim>
             </foreach>
         </where>
@@ -1243,4 +1417,15 @@
     WHERE rnk BETWEEN #{firstRow} AND #{lastRow}
     ORDER BY rnk
   </select>
+
+  <sql id="monty_selectExists">
+    exists (
+      select 1
+      from ${externalTable}
+      where
+        ${join}
+        and ${where}
+    )
+  </sql>
+
 </mapper>
