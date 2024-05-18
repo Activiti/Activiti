@@ -1485,6 +1485,9 @@
                     or (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
                   </if>
                   <if test="orQueryObject.queryVariableValues.size() &gt; 0">
+                    <!-- original script uses LEFT OUTER JOIN,
+                         which Monty's script will not work
+                    -->
                     and
                     <!--
                       This part replicates "monty_selectExists" script.
