@@ -1354,10 +1354,11 @@
                               </foreach>
                       )
                     </if>
-                  <if test="orQueryObject.processDefinitionId != null">
+                    <if test="orQueryObject.processDefinitionId != null">
                     or RES.PROC_DEF_ID_ = #{orQueryObject.processDefinitionId}
                   </if>
                     <if test="orQueryObject.processDefinitionKeyLike != null">
+                      or
                         exists (
                             select 1
                             from ${prefix}ACT_RE_PROCDEF D_OR${orIndex}
