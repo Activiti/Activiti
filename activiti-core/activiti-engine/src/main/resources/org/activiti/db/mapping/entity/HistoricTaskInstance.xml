@@ -1146,6 +1146,22 @@
               <property name="where" value="HPI.BUSINESS_KEY_ = #{processInstanceBusinessKey}"/>
             </include>
           </if>
+          <if test="processFinished">
+            <include refid="monty_selectExists">
+              <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI"/>
+              <property name="join" value="RES.PROC_INST_ID_ = HPI.ID_"/>
+              <property name="where" value="HPI.END_TIME_ is not null"/>
+            </include>
+          </if>
+          <if test="processUnfinished">
+            <include refid="monty_selectExists">
+              <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI"/>
+              <property name="join" value="RES.PROC_INST_ID_ = HPI.ID_"/>
+              <property name="where" value="HPI.END_TIME_ is null"/>
+            </include>
+          </if>
+
+
           <if test="processInstanceBusinessKeyLike != null">
             <include refid="monty_selectExists">
               <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI"/>
@@ -1183,6 +1199,9 @@
           </if>
           <if test="taskDescriptionLikeIgnoreCase != null">
             and lower(RES.DESCRIPTION_) like #{taskDescriptionLikeIgnoreCase}${wildcardEscapeClause}
+          </if>
+          <if test="taskName != null">
+            and RES.NAME_ = #{taskName}
           </if>
           <if test="taskNameLike != null">
             and RES.NAME_ like #{taskNameLike}${wildcardEscapeClause}
@@ -1360,7 +1379,24 @@
                         <property name="where" value="lower(HPI_OR${orIndex}.BUSINESS_KEY_) like #{orQueryObject.processInstanceBusinessKeyLikeIgnoreCase}${wildcardEscapeClause}"/>
                       </include>
                     </if>
-                    <if test="orQueryObject.involvedUser != null">
+
+                  <if test="orQueryObject.processFinished">
+                    <include refid="monty_selectExists">
+                      <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI_OR${orIndex}"/>
+                      <property name="join" value="RES.PROC_INST_ID_ = HPI_OR${orIndex}.ID_"/>
+                      <property name="where" value="HPI_OR${orIndex}.END_TIME_ is not null"/>
+                    </include>
+                  </if>
+                  <if test="orQueryObject.processUnfinished">
+                    <include refid="monty_selectExists">
+                      <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI_OR${orIndex}"/>
+                      <property name="join" value="RES.PROC_INST_ID_ = HPI_OR${orIndex}.ID_"/>
+                      <property name="where" value="HPI_OR${orIndex}.END_TIME_ is null"/>
+                    </include>
+                  </if>
+
+
+                  <if test="orQueryObject.involvedUser != null">
                         OR (
                           <include refid="monty_selectExists">
                             <property name="externalTable" value="${prefix}ACT_HI_IDENTITYLINK HI_OR${orIndex}"/>
@@ -1395,7 +1431,11 @@
                     <if test="orQueryObject.taskDefinitionKeyLike != null">
                       or RES.TASK_DEF_KEY_ like #{orQueryObject.taskDefinitionKeyLike}${wildcardEscapeClause}
                     </if>
-                    <if test="orQueryObject.taskNameLike != null">
+                  <if test="orQueryObject.taskName != null">
+                    or RES.NAME_ = #{orQueryObject.taskName}
+                  </if>
+
+                  <if test="orQueryObject.taskNameLike != null">
                       or RES.NAME_ like #{orQueryObject.taskNameLike}${wildcardEscapeClause}
                     </if>
                     <if test="orQueryObject.taskNameLikeIgnoreCase != null">
