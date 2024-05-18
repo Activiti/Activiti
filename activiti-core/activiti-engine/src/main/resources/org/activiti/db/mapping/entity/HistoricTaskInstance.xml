@@ -1160,8 +1160,6 @@
               <property name="where" value="HPI.END_TIME_ is null"/>
             </include>
           </if>
-
-
           <if test="processInstanceBusinessKeyLike != null">
             <include refid="monty_selectExists">
               <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI"/>
@@ -1215,6 +1213,9 @@
             <if test="taskOwnerLikeIgnoreCase != null">
               and lower(RES.OWNER_) like #{taskOwnerLikeIgnoreCase}${wildcardEscapeClause}
             </if>
+          <if test="taskParentTaskId != null">
+            and RES.PARENT_TASK_ID_ = #{taskParentTaskId}
+          </if>
           <if test="tenantIdLike != null">
             and RES.TENANT_ID_ like #{tenantIdLike}${wildcardEscapeClause}
           </if>
@@ -1379,7 +1380,6 @@
                         <property name="where" value="lower(HPI_OR${orIndex}.BUSINESS_KEY_) like #{orQueryObject.processInstanceBusinessKeyLikeIgnoreCase}${wildcardEscapeClause}"/>
                       </include>
                     </if>
-
                   <if test="orQueryObject.processFinished">
                     <include refid="monty_selectExists">
                       <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI_OR${orIndex}"/>
@@ -1394,8 +1394,6 @@
                       <property name="where" value="HPI_OR${orIndex}.END_TIME_ is null"/>
                     </include>
                   </if>
-
-
                   <if test="orQueryObject.involvedUser != null">
                         OR (
                           <include refid="monty_selectExists">
@@ -1434,7 +1432,6 @@
                   <if test="orQueryObject.taskName != null">
                     or RES.NAME_ = #{orQueryObject.taskName}
                   </if>
-
                   <if test="orQueryObject.taskNameLike != null">
                       or RES.NAME_ like #{orQueryObject.taskNameLike}${wildcardEscapeClause}
                     </if>
@@ -1447,7 +1444,10 @@
                     <if test="orQueryObject.taskOwnerLikeIgnoreCase != null">
                         or lower(RES.OWNER_) like #{orQueryObject.taskOwnerLikeIgnoreCase}${wildcardEscapeClause}
                     </if>
-                    <if test="orQueryObject.tenantIdLike != null">
+                  <if test="orQueryObject.taskParentTaskId != null">
+                    or RES.PARENT_TASK_ID_ = #{orQueryObject.taskParentTaskId}
+                  </if>
+                  <if test="orQueryObject.tenantIdLike != null">
                     or RES.TENANT_ID_ like #{orQueryObject.tenantIdLike}${wildcardEscapeClause}
                   </if>
                 </trim>
