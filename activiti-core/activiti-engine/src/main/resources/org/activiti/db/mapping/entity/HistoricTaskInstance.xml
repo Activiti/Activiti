@@ -1186,6 +1186,9 @@
           <if test="taskAssigneeLikeIgnoreCase != null">
               and lower(RES.ASSIGNEE_) like #{taskAssigneeLikeIgnoreCase}${wildcardEscapeClause}
           </if>
+          <if test="taskDefinitionKey != null">
+            and RES.TASK_DEF_KEY_ = #{taskDefinitionKey}
+          </if>
           <if test="taskDefinitionKeyLike != null">
             and RES.TASK_DEF_KEY_ like #{taskDefinitionKeyLike}${wildcardEscapeClause}
           </if>
@@ -1443,6 +1446,9 @@
                     </if>
                     <if test="orQueryObject.taskDescriptionLikeIgnoreCase != null">
                     or lower(RES.DESCRIPTION_) like #{orQueryObject.taskDescriptionLikeIgnoreCase}${wildcardEscapeClause}
+                  </if>
+                  <if test="orQueryObject.taskDefinitionKey != null">
+                    or RES.TASK_DEF_KEY_ = #{orQueryObject.taskDefinitionKey}
                   </if>
                     <if test="orQueryObject.taskDefinitionKeyLike != null">
                       or RES.TASK_DEF_KEY_ like #{orQueryObject.taskDefinitionKeyLike}${wildcardEscapeClause}
