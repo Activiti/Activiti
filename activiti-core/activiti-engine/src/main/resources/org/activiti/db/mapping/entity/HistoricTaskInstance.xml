@@ -1106,6 +1106,9 @@
                       )
               )
             </if>
+            <if test="processDefinitionId != null">
+              and RES.PROC_DEF_ID_ = #{processDefinitionId}
+            </if>
             <if test="processDefinitionKeyLike != null">
                 exists (
                     SELECT 1
@@ -1197,6 +1200,15 @@
           </if>
           <if test="taskDescriptionLikeIgnoreCase != null">
             and lower(RES.DESCRIPTION_) like #{taskDescriptionLikeIgnoreCase}${wildcardEscapeClause}
+          </if>
+          <if test="tenantId != null">
+            and RES.TENANT_ID_ = #{tenantId}
+          </if>
+          <if test="tenantIdLike != null">
+            and RES.TENANT_ID_ like #{tenantIdLike}${wildcardEscapeClause}
+          </if>
+          <if test="withoutTenantId">
+            and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
           </if>
           <if test="dueAfter != null">
             and RES.DUE_DATE_ &gt; #{dueAfter}
@@ -1339,6 +1351,9 @@
                               </foreach>
                       )
                     </if>
+                  <if test="orQueryObject.processDefinitionId != null">
+                    or RES.PROC_DEF_ID_ = #{orQueryObject.processDefinitionId}
+                  </if>
                     <if test="orQueryObject.processDefinitionKeyLike != null">
                         exists (
                             select 1
@@ -1453,8 +1468,14 @@
                   <if test="orQueryObject.taskParentTaskId != null">
                     or RES.PARENT_TASK_ID_ = #{orQueryObject.taskParentTaskId}
                   </if>
+                  <if test="orQueryObject.tenantId != null">
+                    or RES.TENANT_ID_ = #{orQueryObject.tenantId}
+                  </if>
                   <if test="orQueryObject.tenantIdLike != null">
                     or RES.TENANT_ID_ like #{orQueryObject.tenantIdLike}${wildcardEscapeClause}
+                  </if>
+                  <if test="orQueryObject.withoutTenantId">
+                    or (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
                   </if>
                 </trim>
             </foreach>
