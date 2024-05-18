@@ -1198,6 +1198,9 @@
           <if test="taskDescriptionLikeIgnoreCase != null">
             and lower(RES.DESCRIPTION_) like #{taskDescriptionLikeIgnoreCase}${wildcardEscapeClause}
           </if>
+          <if test="dueAfter != null">
+            and RES.DUE_DATE_ &gt; #{dueAfter}
+          </if>
           <if test="taskName != null">
             and RES.NAME_ = #{taskName}
           </if>
@@ -1429,6 +1432,9 @@
                     <if test="orQueryObject.taskDefinitionKeyLike != null">
                       or RES.TASK_DEF_KEY_ like #{orQueryObject.taskDefinitionKeyLike}${wildcardEscapeClause}
                     </if>
+                  <if test="orQueryObject.dueAfter != null">
+                    or RES.DUE_DATE_ &gt; #{orQueryObject.dueAfter}
+                  </if>
                   <if test="orQueryObject.taskName != null">
                     or RES.NAME_ = #{orQueryObject.taskName}
                   </if>
