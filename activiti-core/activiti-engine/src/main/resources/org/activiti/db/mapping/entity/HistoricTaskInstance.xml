@@ -1072,7 +1072,7 @@
     SELECT *
     FROM (
         SELECT RES.*,
-            row_number() OVER (ORDER BY RES.START_TIME_ DESC) rnk
+            row_number() OVER (${orderBy}) rnk
         FROM ACT_HI_TASKINST RES
         <where>
             <if test="taskId != null">
