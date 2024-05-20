@@ -1503,17 +1503,32 @@
                   <if test="orQueryObject.finished">
                     or RES.END_TIME_ is not null
                   </if>
+                  <if test="orQueryObject.involvedUser != null">
+                    or (
+                      exists (
+                        select 1
+                        from ${prefix}ACT_HI_IDENTITYLINK HI_OR${orIndex}
+                        where
+                          HI_OR${orIndex}.TASK_ID_ = RES.ID_
+                          and HI_OR${orIndex}.USER_ID_ = #{orQueryObject.involvedUser}
+                      )
+                      or RES.ASSIGNEE_ = #{orQueryObject.involvedUser}
+                      or RES.OWNER_ = #{orQueryObject.involvedUser}
+                    )
+                  </if>
                   <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
-                    EXISTS (
-                        SELECT 1
-                        FROM ${prefix}ACT_HI_IDENTITYLINK HI_OR${orIndex}
-                        WHERE
-                            HI_OR${orIndex}.TASK_ID_ = RES.ID_ AND HI_OR${orIndex}.TYPE_ = 'participant'
-                            AND
-                            HI_OR${orIndex}.GROUP_ID_ IN
-                            <foreach item="group" index="index" collection="orQueryObject.involvedGroups" open="(" separator="," close=")">
-                              #{group}
-                            </foreach>
+                    or (
+                      EXISTS (
+                          SELECT 1
+                          FROM ${prefix}ACT_HI_IDENTITYLINK HI_OR${orIndex}
+                          WHERE
+                              HI_OR${orIndex}.TASK_ID_ = RES.ID_ AND HI_OR${orIndex}.TYPE_ = 'participant'
+                              AND
+                              HI_OR${orIndex}.GROUP_ID_ IN
+                              <foreach item="group" index="index" collection="orQueryObject.involvedGroups" open="(" separator="," close=")">
+                                #{group}
+                              </foreach>
+                      )
                     )
                   </if>
                   <if test="orQueryObject.processDefinitionId != null">
