@@ -29,11 +29,13 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.variable.VariableTypes;
+import org.activiti.engine.query.QueryProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +44,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   private static final long serialVersionUID = 1L;
 
   private static final Logger log = LoggerFactory.getLogger(HistoricTaskInstanceQueryImpl.class);
+
+  private static final HistoricTaskInstanceQueryProperty START_QUERY_PROPERTY_WITHOUT_ALIAS =
+      new HistoricTaskInstanceQueryProperty(
+          removeAliasFromPropertyName(HistoricTaskInstanceQueryProperty.START.getName())
+      );
 
   protected String processDefinitionId;
   protected String processDefinitionKey;
@@ -1217,8 +1224,25 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
 
+  private boolean isPostgresqlDatabase() {
+      return ProcessEngineConfigurationImpl.DATABASE_TYPE_POSTGRES.equals(databaseType);
+  }
+  private boolean isH2Database() {
+      return ProcessEngineConfigurationImpl.DATABASE_TYPE_H2.equals(databaseType);
+  }
+
+  private boolean isMysqlDatabase() {
+      return ProcessEngineConfigurationImpl.DATABASE_TYPE_MYSQL.equals(databaseType);
+  }
+
   public HistoricTaskInstanceQuery orderByHistoricTaskInstanceStartTime() {
-    orderBy(HistoricTaskInstanceQueryProperty.START);
+      QueryProperty queryProperty;
+      if( isPostgresqlDatabase() || isH2Database() || isMysqlDatabase() ) {
+          queryProperty = START_QUERY_PROPERTY_WITHOUT_ALIAS;
+      } else {
+        queryProperty = HistoricTaskInstanceQueryProperty.START;
+      }
+    orderBy(queryProperty);
     return this;
   }
 
@@ -1297,6 +1321,14 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
       specialOrderBy = specialOrderBy.replace("VAR.", "TEMPVAR_");
     }
     return specialOrderBy;
+  }
+
+  public static String removeAliasFromPropertyName(String propertyName) {
+      String specialPropertyName = propertyName;
+      if (specialPropertyName != null && specialPropertyName.length() > 0) {
+          specialPropertyName = specialPropertyName.replace("RES.", "");
+      }
+      return specialPropertyName;
   }
 
   public List<String> getCandidateGroups() {
