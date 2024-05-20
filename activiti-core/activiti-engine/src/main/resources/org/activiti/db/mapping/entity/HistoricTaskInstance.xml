@@ -1088,6 +1088,9 @@
           <if test="taskId != null">
               RES.ID_ = #{taskId}
           </if>
+          <if test="category != null">
+            and RES.CATEGORY_ = #{category}
+          </if>
           <if test="creationDate != null">
             and RES.START_TIME_ = #{creationDate}
           </if>
@@ -1124,7 +1127,7 @@
           <if test="unfinished">and RES.END_TIME_ IS NULL</if>
           <if test="finished">and RES.END_TIME_ IS NOT NULL</if>
           <if test="candidateUser != null || candidateGroups != null">
-            EXISTS (
+            and EXISTS (
                 SELECT 1
                 FROM ${prefix}ACT_HI_IDENTITYLINK HI
                 WHERE
@@ -1147,6 +1150,32 @@
                           </foreach>
                         </if>
                     )
+            )
+          </if>
+          <if test="involvedUser != null">
+            and (
+              exists (
+                select 1
+                from ${prefix}ACT_HI_IDENTITYLINK HI
+                where
+                  HI.TASK_ID_ = RES.ID_
+                  and HI.USER_ID_ = #{involvedUser}
+              )
+              or RES.ASSIGNEE_ = #{involvedUser}
+              or RES.OWNER_ = #{involvedUser}
+            )
+          </if>
+          <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
+            and exists (
+              select 1
+              from ACT_HI_IDENTITYLINK HI
+              where
+                HI.TASK_ID_ = RES.ID_
+                and HI.TYPE_ = 'participant'
+                and HI.GROUP_ID_ IN
+                  <foreach item="group" index="index" collection="involvedGroups" open="(" separator="," close=")">
+                    #{group}
+                  </foreach>
             )
           </if>
           <if test="executionId != null">
@@ -1252,6 +1281,13 @@
         </if>
           <if test="taskAssigneeLikeIgnoreCase != null">
               and lower(RES.ASSIGNEE_) like #{taskAssigneeLikeIgnoreCase}${wildcardEscapeClause}
+          </if>
+          <if test="taskAssigneeIds != null &amp;&amp; taskAssigneeIds.size() &gt; 0">
+            and RES.ASSIGNEE_ IN
+            <foreach item="assigneeId" index="index" collection="taskAssigneeIds"
+                     open="(" separator="," close=")">
+              #{assigneeId}
+            </foreach>
           </if>
           <if test="taskDefinitionKey != null">
             and RES.TASK_DEF_KEY_ = #{taskDefinitionKey}
@@ -1437,6 +1473,9 @@
                       <property name="collection" value="orQueryObject.deploymentIds"/>
                     </include>
                   </if>
+                  <if test="orQueryObject.category != null">
+                    or RES.CATEGORY_ = #{orQueryObject.category}
+                  </if>
                   <if test="orQueryObject.creationDate != null">
                     or RES.START_TIME_ = #{orQueryObject.creationDate}
                   </if>
@@ -1587,6 +1626,13 @@
                   </if>
                   <if test="orQueryObject.taskAssigneeLike != null">
                     or RES.ASSIGNEE_ like #{orQueryObject.taskAssigneeLike}${wildcardEscapeClause}
+                  </if>
+                  <if test="orQueryObject.taskAssigneeIds != null &amp;&amp; orQueryObject.taskAssigneeIds.size() &gt; 0">
+                    or RES.ASSIGNEE_ IN
+                    <foreach item="assigneeId" index="index" collection="orQueryObject.taskAssigneeIds"
+                             open="(" separator="," close=")">
+                      #{assigneeId}
+                    </foreach>
                   </if>
                   <if test="orQueryObject.taskDeleteReason != null">
                     or RES.DELETE_REASON_ = #{orQueryObject.taskDeleteReason}
