@@ -1082,7 +1082,7 @@
   <sql id="monty_selectHistoricTaskInstancesByQueryCriteriaSql">
     FROM (
         SELECT RES.*,
-            row_number() OVER (${orderBy}) rnk
+            row_number() OVER (ORDER BY ${orderByColumns}) rnk
         FROM ACT_HI_TASKINST RES
         <where>
           <if test="taskId != null">
