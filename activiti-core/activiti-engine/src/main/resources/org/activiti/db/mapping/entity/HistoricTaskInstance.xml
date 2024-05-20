@@ -1106,6 +1106,21 @@
           <if test="completedAfterDate != null">
             and RES.END_TIME_ &gt; #{completedAfterDate}
           </if>
+          <if test="deploymentId != null">
+            and <include refid="monty_selectExists">
+              <property name="externalTable" value="${prefix}ACT_RE_PROCDEF DEPLOY_P"/>
+              <property name="join" value="RES.PROC_DEF_ID_ = DEPLOY_P.ID_"/>
+              <property name="where" value="DEPLOY_P.DEPLOYMENT_ID_ = #{deploymentId}"/>
+            </include>
+          </if>
+          <if test="deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0">
+            and <include refid="monty_selectExistsIn">
+              <property name="externalTable" value="${prefix}ACT_RE_PROCDEF DEPLOY_P"/>
+              <property name="join" value="RES.PROC_DEF_ID_ = DEPLOY_P.ID_"/>
+              <property name="field" value="DEPLOY_P.DEPLOYMENT_ID_"/>
+              <property name="collection" value="deploymentIds"/>
+            </include>
+          </if>
           <if test="unfinished">and RES.END_TIME_ IS NULL</if>
           <if test="finished">and RES.END_TIME_ IS NOT NULL</if>
           <if test="candidateUser != null || candidateGroups != null">
