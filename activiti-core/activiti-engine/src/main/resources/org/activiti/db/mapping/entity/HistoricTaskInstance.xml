@@ -1247,6 +1247,9 @@
           <if test="tenantIdLike != null">
             and RES.TENANT_ID_ like #{tenantIdLike}${wildcardEscapeClause}
           </if>
+          <if test="withoutDueDate">
+            and RES.DUE_DATE_ is null
+          </if>
             <if test="queryVariableValues != null &amp;&amp; queryVariableValues.size() &gt; 0">
               and
             </if>
@@ -1490,6 +1493,9 @@
                   </if>
                   <if test="orQueryObject.tenantIdLike != null">
                     or RES.TENANT_ID_ like #{orQueryObject.tenantIdLike}${wildcardEscapeClause}
+                  </if>
+                  <if test="orQueryObject.withoutDueDate">
+                    or RES.DUE_DATE_ is null
                   </if>
                   <if test="orQueryObject.withoutTenantId">
                     or (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
