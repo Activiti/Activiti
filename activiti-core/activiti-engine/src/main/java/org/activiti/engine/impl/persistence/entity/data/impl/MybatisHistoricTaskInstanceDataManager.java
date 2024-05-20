@@ -69,7 +69,7 @@ public class MybatisHistoricTaskInstanceDataManager extends AbstractDataManager<
 
   @Override
   public long findHistoricTaskInstanceCountByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
-    return (Long) getDbSqlSession().selectOne("selectHistoricTaskInstanceCountByQueryCriteria", historicTaskInstanceQuery);
+    return (Long) getDbSqlSession().selectOne("monty_selectHistoricTaskInstanceCountByQueryCriteria", historicTaskInstanceQuery);
   }
 
   @Override
