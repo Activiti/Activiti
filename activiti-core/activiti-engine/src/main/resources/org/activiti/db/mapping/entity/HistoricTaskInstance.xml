@@ -1360,6 +1360,9 @@
               #{taskName}
             </foreach>
           </if>
+          <if test="taskOwner != null">
+            and RES.OWNER_ = #{taskOwner}
+          </if>
           <if test="taskOwnerLike != null">
             and RES.OWNER_ like #{taskOwnerLike}${wildcardEscapeClause}
           </if>
@@ -1379,7 +1382,8 @@
               and
             </if>
             <foreach item="queryVar" collection="queryVariableValues" index="index">
-                <trim prefix="(" prefixOverrides="AND|(" suffix=")">
+                or
+                <trim prefix="(" prefixOverrides="AND" suffix=")">
                   EXISTS (
                       SELECT 1
                       FROM ${prefix}ACT_HI_VARINST A${index}
@@ -1710,6 +1714,9 @@
                              open="(" separator="," close=")">
                       #{taskName}
                     </foreach>
+                  </if>
+                  <if test="orQueryObject.taskOwner != null">
+                    or RES.OWNER_ = #{orQueryObject.taskOwner}
                   </if>
                   <if test="orQueryObject.taskOwnerLike != null">
                       or RES.OWNER_ like #{orQueryObject.taskOwnerLike}${wildcardEscapeClause}
