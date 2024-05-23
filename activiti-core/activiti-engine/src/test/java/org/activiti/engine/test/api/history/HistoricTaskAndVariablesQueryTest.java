@@ -69,7 +69,7 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
     }
 
     @Deployment
-    public void doNotTestQuery() {
+    public void testQuery() {
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             HistoricTaskInstance task = historyService.createHistoricTaskInstanceQuery().includeTaskLocalVariables().taskAssignee(GONZO).singleResult();
             Map<String, Object> variableMap = task.getTaskLocalVariables();
