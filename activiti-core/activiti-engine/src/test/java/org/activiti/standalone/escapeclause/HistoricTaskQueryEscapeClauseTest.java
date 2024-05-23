@@ -27,7 +27,6 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
@@ -660,8 +659,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
   }
 
   @Test
-  @Ignore("QueryVariableValue don't work with monty script since it uses LEFT OUTER JOIN")
-  public void doNotTestQueryLikeByQueryVariableValue() {
+  public void testQueryLikeByQueryVariableValue() {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
         // variableValueLike
         List<HistoricTaskInstance> list = historyService.createHistoricTaskInstanceQuery().taskVariableValueLike("var1", "%\\%%").orderByHistoricTaskInstanceStartTime().asc().list();
@@ -699,8 +697,7 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
     }
   }
 
-  @Ignore("QueryVariableValue don't work with monty script since it uses LEFT OUTER JOIN")
-  public void doNotTestQueryLikeIgnoreCaseByQueryVariableValue() {
+  public void testQueryLikeIgnoreCaseByQueryVariableValue() {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
         // variableValueLikeIgnoreCase
         List<HistoricTaskInstance> list = historyService.createHistoricTaskInstanceQuery().taskVariableValueLikeIgnoreCase("var1", "%\\%%").orderByHistoricTaskInstanceStartTime().asc().list();
