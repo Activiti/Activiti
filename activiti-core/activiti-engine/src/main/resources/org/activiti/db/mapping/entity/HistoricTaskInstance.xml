@@ -1378,87 +1378,84 @@
           <if test="withoutDueDate">
             and RES.DUE_DATE_ is null
           </if>
-            <if test="queryVariableValues != null &amp;&amp; queryVariableValues.size() &gt; 0">
-              and
-            </if>
-            <foreach item="queryVar" collection="queryVariableValues" index="index">
-                or
-                <trim prefix="(" prefixOverrides="AND" suffix=")">
-                  EXISTS (
-                      SELECT 1
-                      FROM ${prefix}ACT_HI_VARINST A${index}
-                      WHERE
-                          <!-- When process instance variable is queried for, taskId should be null -->
-                          <if test="!queryVar.local">
-                            A${index}.PROC_INST_ID_ = RES.PROC_INST_ID_ and A${index}.TASK_ID_ is null
-                          </if>
-                          <if test="queryVar.local">
-                            RES.ID_ = A${index}.TASK_ID_
-                          </if>
-                          <!-- Match-all variable-names when name is null -->
-                          <if test="queryVar.name != null">
-                            and A${index}.NAME_ = #{queryVar.name}
-                          </if>
-                          <if test="!queryVar.type.equals('null')">
-                            and A${index}.VAR_TYPE_ = #{queryVar.type}
-                          </if>
-                          <!-- Variable value -->
-                          <if test="queryVar.textValue != null &amp;&amp; queryVar.longValue == null &amp;&amp; queryVar.doubleValue == null">
-                            <choose>
-                              <when test="queryVar.operator.equals('EQUALS_IGNORE_CASE') || queryVar.operator.equals('NOT_EQUALS_IGNORE_CASE') || queryVar.operator.equals('LIKE_IGNORE_CASE')">
-                                and lower(A${index}.TEXT_)
-                              </when>
-                              <otherwise>
-                                and A${index}.TEXT_
-                              </otherwise>
-                            </choose>
-                            <choose>
-                              <when test="queryVar.operator.equals('LIKE') || queryVar.operator.equals('LIKE_IGNORE_CASE')">LIKE</when>
-                              <otherwise><include refid="executionVariableOperator" /></otherwise>
-                            </choose>
-                            #{queryVar.textValue}
-                            <choose>
-                              <when test="queryVar.operator.equals('LIKE') || queryVar.operator.equals('LIKE_IGNORE_CASE')">${wildcardEscapeClause}</when>
-                            </choose>
-                          </if>
-                          <if test="queryVar.textValue2 != null">
-                            and A${index}.TEXT2_
-                            <choose>
-                              <when test="queryVar.operator.equals('LIKE')">LIKE</when>
-                              <otherwise><include refid="executionVariableOperator" /></otherwise>
-                            </choose>
-                            #{queryVar.textValue2}
-                            <choose>
-                              <when test="queryVar.operator.equals('LIKE')">${wildcardEscapeClause}</when>
-                            </choose>
-                          </if>
-                          <if test="queryVar.longValue != null">
-                            and A${index}.LONG_
-                            <include refid="executionVariableOperator" />
-                            #{queryVar.longValue}
-                          </if>
-                          <if test="queryVar.doubleValue != null">
-                            and A${index}.DOUBLE_
-                            <include refid="executionVariableOperator" />
-                            #{queryVar.doubleValue}
-                          </if>
-                          <!-- Null variable type -->
-                          <if test="queryVar.textValue == null &amp;&amp; queryVar.textValue2 == null &amp;&amp; queryVar.longValue == null &amp;&amp; queryVar.doubleValue == null">
-                            <choose>
-                              <when test="queryVar.operator.equals('NOT_EQUALS')">
-                                and (A${index}.TEXT_ is not null or A${index}.TEXT2_ is not null or A${index}.LONG_ is not null or A${index}.DOUBLE_ is not null or A${index}.BYTEARRAY_ID_ is not null)
-                              </when>
-                              <otherwise>
-                                and A${index}.TEXT_ is null and A${index}.TEXT2_ is null and A${index}.LONG_ is null and A${index}.DOUBLE_ is null and A${index}.BYTEARRAY_ID_ is null
-                              </otherwise>
-                            </choose>
-                          </if>
-                  )
-                </trim>
-            </foreach>
-            <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
+          <foreach item="queryVar" collection="queryVariableValues" index="index">
+              or
+              <trim prefix="(" prefixOverrides="AND" suffix=")">
+                EXISTS (
+                    SELECT 1
+                    FROM ${prefix}ACT_HI_VARINST A${index}
+                    WHERE
+                        <!-- When process instance variable is queried for, taskId should be null -->
+                        <if test="!queryVar.local">
+                          A${index}.PROC_INST_ID_ = RES.PROC_INST_ID_ and A${index}.TASK_ID_ is null
+                        </if>
+                        <if test="queryVar.local">
+                          RES.ID_ = A${index}.TASK_ID_
+                        </if>
+                        <!-- Match-all variable-names when name is null -->
+                        <if test="queryVar.name != null">
+                          and A${index}.NAME_ = #{queryVar.name}
+                        </if>
+                        <if test="!queryVar.type.equals('null')">
+                          and A${index}.VAR_TYPE_ = #{queryVar.type}
+                        </if>
+                        <!-- Variable value -->
+                        <if test="queryVar.textValue != null &amp;&amp; queryVar.longValue == null &amp;&amp; queryVar.doubleValue == null">
+                          <choose>
+                            <when test="queryVar.operator.equals('EQUALS_IGNORE_CASE') || queryVar.operator.equals('NOT_EQUALS_IGNORE_CASE') || queryVar.operator.equals('LIKE_IGNORE_CASE')">
+                              and lower(A${index}.TEXT_)
+                            </when>
+                            <otherwise>
+                              and A${index}.TEXT_
+                            </otherwise>
+                          </choose>
+                          <choose>
+                            <when test="queryVar.operator.equals('LIKE') || queryVar.operator.equals('LIKE_IGNORE_CASE')">LIKE</when>
+                            <otherwise><include refid="executionVariableOperator" /></otherwise>
+                          </choose>
+                          #{queryVar.textValue}
+                          <choose>
+                            <when test="queryVar.operator.equals('LIKE') || queryVar.operator.equals('LIKE_IGNORE_CASE')">${wildcardEscapeClause}</when>
+                          </choose>
+                        </if>
+                        <if test="queryVar.textValue2 != null">
+                          and A${index}.TEXT2_
+                          <choose>
+                            <when test="queryVar.operator.equals('LIKE')">LIKE</when>
+                            <otherwise><include refid="executionVariableOperator" /></otherwise>
+                          </choose>
+                          #{queryVar.textValue2}
+                          <choose>
+                            <when test="queryVar.operator.equals('LIKE')">${wildcardEscapeClause}</when>
+                          </choose>
+                        </if>
+                        <if test="queryVar.longValue != null">
+                          and A${index}.LONG_
+                          <include refid="executionVariableOperator" />
+                          #{queryVar.longValue}
+                        </if>
+                        <if test="queryVar.doubleValue != null">
+                          and A${index}.DOUBLE_
+                          <include refid="executionVariableOperator" />
+                          #{queryVar.doubleValue}
+                        </if>
+                        <!-- Null variable type -->
+                        <if test="queryVar.textValue == null &amp;&amp; queryVar.textValue2 == null &amp;&amp; queryVar.longValue == null &amp;&amp; queryVar.doubleValue == null">
+                          <choose>
+                            <when test="queryVar.operator.equals('NOT_EQUALS')">
+                              and (A${index}.TEXT_ is not null or A${index}.TEXT2_ is not null or A${index}.LONG_ is not null or A${index}.DOUBLE_ is not null or A${index}.BYTEARRAY_ID_ is not null)
+                            </when>
+                            <otherwise>
+                              and A${index}.TEXT_ is null and A${index}.TEXT2_ is null and A${index}.LONG_ is null and A${index}.DOUBLE_ is null and A${index}.BYTEARRAY_ID_ is null
+                            </otherwise>
+                          </choose>
+                        </if>
+                )
+              </trim>
+          </foreach>
+          <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
               AND
-                <trim prefix="(" prefixOverrides="OR" suffix=")">
+              <trim prefix="(" prefixOverrides="OR" suffix=")">
                   <if test="orQueryObject.taskId != null">
                     RES.ID_ = #{orQueryObject.taskId}
                   </if>
@@ -1740,10 +1737,7 @@
                     or (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
                   </if>
                   <if test="orQueryObject.queryVariableValues.size() &gt; 0">
-                    <!-- original script uses LEFT OUTER JOIN,
-                         which Monty's script will not work
-                    -->
-                    and
+                    or
                     <!--
                       This part replicates "monty_selectExists" script.
                       Because ONGL doesn't allow double evaluation of expressions,
@@ -1771,7 +1765,7 @@
                           </otherwise>
                         </choose>
                         <foreach item="queryVar" collection="orQueryObject.queryVariableValues" index="index">
-                          or
+                          and
                           <trim prefix="(" prefixOverrides="AND" suffix=")">
                             <if test="!queryVar.local">
                                 <!-- When process instance variable is queried for, taskId should be null -->
