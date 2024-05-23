@@ -700,7 +700,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     }
 
     @Deployment
-    public void doNotTestHistoricTaskInstanceQueryTaskVariableValueEquals() throws Exception {
+    public void testHistoricTaskInstanceQueryTaskVariableValueEquals() throws Exception {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest");
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 
@@ -802,7 +802,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     }
 
     @Deployment
-    public void doNotTestHistoricTaskInstanceQueryProcessVariableValueEquals() throws Exception {
+    public void testHistoricTaskInstanceQueryProcessVariableValueEquals() throws Exception {
         // Set some variables on the process instance
         Map<String, Object> variables = new HashMap<String, Object>();
         variables.put("longVar",
