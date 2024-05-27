@@ -1199,19 +1199,18 @@
             </include>
           </if>
           <if test="processDefinitionKeyLikeIgnoreCase != null">
-            <include refid="monty_selectExists">
+            and <include refid="monty_selectExists">
               <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D"/>
               <property name="join" value="RES.PROC_DEF_ID_ = D.ID_"/>
               <property name="where" value="lower(D.KEY_) like #{processDefinitionKeyLikeIgnoreCase}${wildcardEscapeClause}"/>
             </include>
           </if>
           <if test="processDefinitionKeys != null &amp;&amp; processDefinitionKeys.size() &gt; 0">
-            <include refid="monty_selectExistsIn">
+            and <include refid="monty_selectExistsIn">
               <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D"/>
               <property name="join" value="RES.PROC_DEF_ID_ = D.ID_"/>
               <property name="field" value="D.KEY_"/>
               <property name="collection" value="processDefinitionKeys"/>
-              <property name="where" value="lower(D.KEY_) like #{processDefinitionKeyLikeIgnoreCase}${wildcardEscapeClause}"/>
             </include>
           </if>
           <if test="processInstanceId != null">
@@ -1225,49 +1224,49 @@
             </foreach>
           </if>
           <if test="processDefinitionName != null">
-            <include refid="monty_selectExists">
+            and <include refid="monty_selectExists">
               <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D"/>
               <property name="join" value="RES.PROC_DEF_ID_ = D.ID_"/>
               <property name="where" value="D.NAME_ = #{processDefinitionName}"/>
             </include>
           </if>
           <if test="processDefinitionNameLike != null">
-              <include refid="monty_selectExists">
+            and <include refid="monty_selectExists">
                 <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D"/>
                 <property name="join" value="RES.PROC_DEF_ID_ = D.ID_"/>
                 <property name="where" value="D.NAME_ like #{processDefinitionNameLike}${wildcardEscapeClause}"/>
               </include>
-            </if>
+          </if>
           <if test="processInstanceBusinessKey != null">
-            <include refid="monty_selectExists">
+            and <include refid="monty_selectExists">
               <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI"/>
               <property name="join" value="RES.PROC_INST_ID_ = HPI.ID_"/>
               <property name="where" value="HPI.BUSINESS_KEY_ = #{processInstanceBusinessKey}"/>
             </include>
           </if>
           <if test="processFinished">
-            <include refid="monty_selectExists">
+            and <include refid="monty_selectExists">
               <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI"/>
               <property name="join" value="RES.PROC_INST_ID_ = HPI.ID_"/>
               <property name="where" value="HPI.END_TIME_ is not null"/>
             </include>
           </if>
           <if test="processUnfinished">
-            <include refid="monty_selectExists">
+            and <include refid="monty_selectExists">
               <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI"/>
               <property name="join" value="RES.PROC_INST_ID_ = HPI.ID_"/>
               <property name="where" value="HPI.END_TIME_ is null"/>
             </include>
           </if>
           <if test="processInstanceBusinessKeyLike != null">
-            <include refid="monty_selectExists">
+            and <include refid="monty_selectExists">
               <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI"/>
               <property name="join" value="RES.PROC_INST_ID_ = HPI.ID_"/>
               <property name="where" value="HPI.BUSINESS_KEY_ like #{processInstanceBusinessKeyLike}${wildcardEscapeClause}"/>
             </include>
           </if>
           <if test="processInstanceBusinessKeyLikeIgnoreCase != null">
-            <include refid="monty_selectExists">
+            and <include refid="monty_selectExists">
               <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI"/>
               <property name="join" value="RES.PROC_INST_ID_ = HPI.ID_"/>
               <property name="where" value="lower(HPI.BUSINESS_KEY_) like #{processInstanceBusinessKeyLikeIgnoreCase}${wildcardEscapeClause}"/>
