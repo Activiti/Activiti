@@ -1378,7 +1378,7 @@
             and RES.DUE_DATE_ is null
           </if>
           <foreach item="queryVar" collection="queryVariableValues" index="index">
-              or
+              and
               <trim prefix="(" prefixOverrides="AND" suffix=")">
                 EXISTS (
                     SELECT 1
