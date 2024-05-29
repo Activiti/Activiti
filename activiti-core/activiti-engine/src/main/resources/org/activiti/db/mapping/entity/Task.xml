@@ -1126,11 +1126,12 @@
     <include refid="monty_selectTaskByQueryCriteriaSql"/>
     <choose>
       <when test="'${limitAfter}' != null">
-      ${limitAfter}
+        ORDER BY rnk
+        ${limitAfter}
       </when>
       <otherwise>
-      WHERE rnk BETWEEN #{firstRow} AND #{lastRow}
-      ORDER BY rnk
+        WHERE rnk BETWEEN #{firstRow} AND #{lastRow}
+        ORDER BY rnk
       </otherwise>
     </choose>
   </select>
