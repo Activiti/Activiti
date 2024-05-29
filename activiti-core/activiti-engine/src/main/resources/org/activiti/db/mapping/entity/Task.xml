@@ -1125,7 +1125,7 @@
     select *
     <include refid="monty_selectTaskByQueryCriteriaSql"/>
     <choose>
-      <when test="${limitAfter} != null">
+      <when test="'${limitAfter}' != null">
       ${limitAfter}
       </when>
       <otherwise>
