@@ -40,7 +40,8 @@ import org.springframework.beans.factory.annotation.Value;
 public class FlowElementValidator extends ProcessLevelValidator {
 
     protected static final int ID_MAX_LENGTH = 255;
-    @Value("${loop.cardinality.threshold}")
+
+    @Value("${loop.cardinality.threshold:200}")
     private int loopCardinalityThreshold;
 
     @Override
