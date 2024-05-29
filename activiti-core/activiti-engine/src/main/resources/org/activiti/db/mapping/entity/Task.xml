@@ -1124,9 +1124,15 @@
   <select id="monty_selectTaskByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskResultMap">
     select *
     <include refid="monty_selectTaskByQueryCriteriaSql"/>
-    WHERE rnk BETWEEN #{firstRow} AND #{lastRow}
-    ORDER BY rnk
-    ${limitAfter}
+    <choose>
+      <when test="${limitAfter} != null">
+      ${limitAfter}
+      </when>
+      <otherwise>
+      WHERE rnk BETWEEN #{firstRow} AND #{lastRow}
+      ORDER BY rnk
+      </otherwise>
+    </choose>
   </select>
   <sql id="monty_selectTaskByQueryCriteriaSql">
     FROM (
