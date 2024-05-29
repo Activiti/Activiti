@@ -1932,7 +1932,7 @@
                             and (${alias}${orIndex}.TEXT_ is not null or ${alias}${orIndex}.TEXT2_ is not null or ${alias}${orIndex}.LONG_ is not null or ${alias}${orIndex}.DOUBLE_ is not null or ${alias}${orIndex}.BYTEARRAY_ID_ is not null)
                           </when>
                           <otherwise>
-                            and ${alias}${orIndex}.TEXT_ is null and ${alias}${orIndex}.TEXT2_ is null and A_${orLocal}OR${orIndex}.LONG_ is null and A_${orLocal}OR${orIndex}.DOUBLE_ is null and A_${orLocal}OR${orIndex}.BYTEARRAY_ID_ is null
+                            and ${alias}${orIndex}.TEXT_ is null and ${alias}${orIndex}.TEXT2_ is null and ${alias}${orIndex}.LONG_ is null and ${alias}${orIndex}.DOUBLE_ is null and ${alias}${orIndex}.BYTEARRAY_ID_ is null
                           </otherwise>
                         </choose>
                       </if>
