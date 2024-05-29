@@ -1533,26 +1533,25 @@
               </if>
               <!-- if dbIdentityUsed set false in process engine configuration of using custom session factory of GroupIdentityManager -->
               <if test="candidateGroups != null">
-                <!-- TODO -->
-                <!--
-                and (
-                  RES.ASSIGNEE_ = #{userIdForCandidateAndAssignee}
-                  or (
-                    RES.ASSIGNEE_ is null
+                and RES.ASSIGNEE_ = #{userIdForCandidateAndAssignee}
+                or exists (
+                  select 1
+                  from ${prefix}ACT_RU_IDENTITYLINK I
+                  where
+                    I.TASK_ID_ = RES.ID_
+                    and RES.ASSIGNEE_ is null
                     and I.TYPE_ = 'candidate'
                     and (
                       I.USER_ID_ = #{userIdForCandidateAndAssignee}
                       <if test="candidateGroups.size() &gt; 0">
-                        or I.GROUP_ID_ IN
-                        <foreach item="group" index="index" collection="candidateGroups"
+                      or I.GROUP_ID_ IN
+                      <foreach item="group" index="index" collection="candidateGroups"
                            open="(" separator="," close=")">
                     #{group}
                   </foreach>
                       </if>
                     )
-                  )
                 )
-                -->
               </if>
           </when>
         </choose>
@@ -1974,26 +1973,25 @@
                     </if>
                     <!-- if dbIdentityUsed set false in process engine configuration of using custom session factory of GroupIdentityManager -->
                     <if test="orQueryObject.candidateGroups != null">
-                      <!-- TODO -->
-                      <!--
-                      and (
-                        RES.ASSIGNEE_ = #{orQueryObject.userIdForCandidateAndAssignee}
-                        or (
-                          RES.ASSIGNEE_ is null
+                      or RES.ASSIGNEE_ = #{orQueryObject.userIdForCandidateAndAssignee}
+                      or exists (
+                        select 1
+                        from ${prefix}ACT_RU_IDENTITYLINK I_OR${orIndex}
+                        where
+                          I_OR${orIndex}.TASK_ID_ = RES.ID_
+                          and RES.ASSIGNEE_ is null
                           and I_OR${orIndex}.TYPE_ = 'candidate'
                           and (
                             I_OR${orIndex}.USER_ID_ = #{orQueryObject.userIdForCandidateAndAssignee}
                             <if test="orQueryObject.candidateGroups.size() &gt; 0">
                               or I_OR${orIndex}.GROUP_ID_ IN
                               <foreach item="group" index="index" collection="orQueryObject.candidateGroups"
-                                   open="(" separator="," close=")">
-                            #{group}
-                          </foreach>
+                                       open="(" separator="," close=")">
+                                #{group}
+                              </foreach>
                             </if>
-                        )
+                          )
                       )
-                    )
-                    -->
                     </if>
               </when>
             </choose>
