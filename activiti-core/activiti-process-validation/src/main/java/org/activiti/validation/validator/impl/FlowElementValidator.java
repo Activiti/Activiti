@@ -28,6 +28,8 @@ import org.activiti.validation.ValidationError;
 import org.activiti.validation.validator.Problems;
 import org.activiti.validation.validator.ProcessLevelValidator;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+
 
 /**
  * A validator for stuff that is shared across all flow elements
@@ -38,6 +40,8 @@ import org.apache.commons.lang3.StringUtils;
 public class FlowElementValidator extends ProcessLevelValidator {
 
     protected static final int ID_MAX_LENGTH = 255;
+    @Value("${loop.cardinality.threshold}")
+    private int loopCardinalityThreshold;
 
     @Override
     protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
@@ -74,9 +78,9 @@ public class FlowElementValidator extends ProcessLevelValidator {
             if(!StringUtils.isEmpty(multiInstanceLoopCharacteristics.getLoopCardinality())){
                 try {
                     int loopCardinality=  Integer.parseInt(multiInstanceLoopCharacteristics.getLoopCardinality());
-                    if(loopCardinality >200){
-                        addWarning(errors, Problems.MULTI_INSTANCE_HIGHER_CARDINALITY, process, activity,
-                            "Because you set a parallel cardinality greater than 200 for a task, the operation could be slow or does not terminate successfully");
+                    if(loopCardinality >loopCardinalityThreshold){
+                        String message = String.format("Because you set a parallel cardinality greater than %d for a task, the operation could be slow or does not terminate successfully", loopCardinalityThreshold);
+                        addWarning(errors, Problems.MULTI_INSTANCE_HIGHER_CARDINALITY, process, activity, message);
                     }
                 } catch (NumberFormatException e) {
                     System.out.println("LoopCardinality should be a number");
