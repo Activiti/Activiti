@@ -1855,7 +1855,7 @@
               </if>
               exists (
                 select 1
-                from ${prefix}ACT_HI_VARINST ${alias}${orIndex}
+                from ${prefix}ACT_RU_VARIABLE ${alias}${orIndex}
                 where
                   <!-- join -->
                   <choose>
@@ -1867,7 +1867,7 @@
                     </otherwise>
                   </choose>
                   <foreach item="var" collection="orQueryObject.queryVariableValues" index="index">
-                    or
+                    and
                     <trim prefix="(" prefixOverrides="AND" suffix=")">
                       <if test="!var.local">
                         <!-- When process instance variable is queried for, taskId should be null -->
