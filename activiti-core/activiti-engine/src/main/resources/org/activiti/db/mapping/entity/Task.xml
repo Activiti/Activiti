@@ -1126,11 +1126,11 @@
     <include refid="monty_selectTaskByQueryCriteriaSql"/>
     <choose>
       <!--
-        ${limitAfter} on mssql has more than just "order by" statement
+        ${limitAfter} on mssql/oracle has more than just "order by" statement
         Because that property is applied to several SQL statements,
           we need to make a workaround here
       -->
-      <when test="'${limitAfter}' != null and _databaseId != 'mssql'">
+      <when test="'${limitAfter}' != null and _databaseId != 'mssql' and _databaseId != 'oracle'">
         ORDER BY rnk
         ${limitAfter}
       </when>
