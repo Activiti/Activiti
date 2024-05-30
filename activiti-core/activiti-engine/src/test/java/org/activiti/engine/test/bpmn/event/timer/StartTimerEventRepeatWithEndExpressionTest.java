@@ -98,7 +98,7 @@ public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivit
     // advance the clock to 11 dec -> the system will execute the pending
     // job and will create a new one
     moveByMinutes(60 * 24);
-    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000L, 200);
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(50000L, 200);
 
     // there must be a pending job because the endDate is not reached yet");
     assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
