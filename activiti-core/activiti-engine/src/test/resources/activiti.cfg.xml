@@ -5,11 +5,18 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
 
   <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration">
-
-    <property name="jdbcUrl" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=-1" />
-    <property name="jdbcDriver" value="org.h2.Driver" />
-    <property name="jdbcUsername" value="sa" />
-    <property name="jdbcPassword" value="" />
+    <property name="jdbcUrl">
+      <bean factory-method="getUrl" class="org.activiti.engine.impl.test.PluggableActivitiTestCase.JDBCProperties" />
+    </property>
+    <property name="jdbcDriver">
+      <bean factory-method="getDriver" class="org.activiti.engine.impl.test.PluggableActivitiTestCase.JDBCProperties" />
+    </property>
+    <property name="jdbcUsername">
+      <bean factory-method="getUsername" class="org.activiti.engine.impl.test.PluggableActivitiTestCase.JDBCProperties" />
+    </property>
+    <property name="jdbcPassword">
+      <bean factory-method="getPassword" class="org.activiti.engine.impl.test.PluggableActivitiTestCase.JDBCProperties" />
+    </property>
 
     <!-- Database configurations -->
     <property name="databaseSchemaUpdate" value="drop-create" />
