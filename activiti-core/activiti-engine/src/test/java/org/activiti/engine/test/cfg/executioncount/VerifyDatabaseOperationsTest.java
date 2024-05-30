@@ -234,7 +234,7 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
 
     // Task Query
     assertDatabaseSelects("org.activiti.engine.impl.TaskQueryImpl",
-        "selectTaskByQueryCriteria", 1L);
+        "monty_selectTaskByQueryCriteria", 1L);
     assertNoInserts("org.activiti.engine.impl.TaskQueryImpl");
     assertNoUpdates("org.activiti.engine.impl.TaskQueryImpl");
     assertNoDeletes("org.activiti.engine.impl.TaskQueryImpl");
