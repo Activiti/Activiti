@@ -204,6 +204,14 @@ public abstract class PluggableActivitiTestCase extends AbstractActivitiTestCase
                 return mySQLContainer;
             }
         },
+        MYSQL5 {
+            @Override
+            protected JdbcDatabaseContainer startNewJdbcDatabaseContainer() {
+                MySQLContainer mySQLContainer = new MySQLContainer("mysql:5.7.23");
+                mySQLContainer.withUrlParam("useSSL", "false").start();
+                return mySQLContainer;
+            }
+        },
         MARIADB {
             @Override
             protected JdbcDatabaseContainer startNewJdbcDatabaseContainer() {
