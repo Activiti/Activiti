@@ -1135,7 +1135,7 @@
         ${limitAfter}
       </when>
       <otherwise>
-        WHERE rnk BETWEEN #{firstRow} AND #{lastRow}
+        WHERE rnk &gt;= #{firstRow} AND rnk &lt; #{lastRow}
         ORDER BY rnk
       </otherwise>
     </choose>
