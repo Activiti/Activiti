@@ -1838,40 +1838,31 @@
               )
             </if>
             <if test="orQueryObject.queryVariableValues.size() &gt; 0">
-              or
-              <!--
-                This part replicates "monty_selectExists" script.
-                Because ONGL doesn't allow double evaluation of expressions,
-                    we can't use <bind value="${}"> and use that to pass as parameter
-                    to <include>
-              -->
-              <!-- setup -->
-              <if test="orQueryObject.hasLocalQueryVariableValue()">
-                <bind name="alias" value="'A_L_OR'"/>
-              </if>
-              <if test="orQueryObject.hasNonLocalQueryVariableValue()">
-                <bind name="alias" value="'A_OR'"/>
-              </if>
-              exists (
-                select 1
-                from ${prefix}ACT_RU_VARIABLE ${alias}${orIndex}
-                where
-                  <!-- join -->
-                  <choose>
-                    <when test="orQueryObject.hasLocalQueryVariableValue()">
-                      RES.ID_ = ${alias}${orIndex}.TASK_ID_
-                    </when>
-                    <otherwise>
-                      RES.PROC_INST_ID_ = ${alias}${orIndex}.PROC_INST_ID_
-                    </otherwise>
-                  </choose>
-                  <foreach item="var" collection="orQueryObject.queryVariableValues" index="index">
-                    and
-                    <trim prefix="(" prefixOverrides="AND" suffix=")">
-                      <if test="!var.local">
+              <foreach item="var" collection="orQueryObject.queryVariableValues" index="index">
+                <choose>
+                  <when test="var.local">
+                    <bind name="alias" value="'A_L_OR'"/>
+                  </when>
+                  <otherwise>
+                    <bind name="alias" value="'A_OR'"/>
+                  </otherwise>
+                </choose>
+                or exists (
+                  select 1
+                  from ${prefix}ACT_RU_VARIABLE ${alias}${orIndex}
+                  where
+                    <choose>
+                      <when test="var.local">
+                        RES.ID_ = ${alias}${orIndex}.TASK_ID_
+                      </when>
+                      <otherwise>
+                        RES.PROC_INST_ID_ = ${alias}${orIndex}.PROC_INST_ID_
                         <!-- When process instance variable is queried for, taskId should be null -->
                         and ${alias}${orIndex}.TASK_ID_ is null
-                      </if>
+                      </otherwise>
+                    </choose>
+                    and
+                    <trim prefix="(" prefixOverrides="AND" suffix=")">
                       <if test="var.name != null">
                         <!-- Match-all variable-names when name is null -->
                         and ${alias}${orIndex}.NAME_= #{var.name}
@@ -1935,8 +1926,8 @@
                         </choose>
                       </if>
                     </trim>
-                  </foreach>
-              )
+                )
+              </foreach>
             </if>
             <if test="orQueryObject.suspensionState != null">
               <if test="orQueryObject.suspensionState.stateCode == 1">
