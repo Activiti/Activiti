@@ -1130,9 +1130,9 @@
         Because that property is applied to several SQL statements,
           we need to make a workaround here
       -->
-      <when test="#{maxResults} != null and #{firstResult} != null">
+      <when test="'${limitAfter}' != null and _databaseId != 'mssql'">
         ORDER BY rnk
-        LIMIT #{maxResults} OFFSET #{firstResult}
+        ${limitAfter}
       </when>
       <otherwise>
         WHERE rnk BETWEEN #{firstRow} AND #{lastRow}
