@@ -643,10 +643,10 @@
           and A${index}.TASK_ID_ is null
         </if>
         <if test="var.name != null">
-          <!-- Match-all variable-names when name is null -->
           and A${index}.NAME_= #{var.name}
         </if>
         <if test="var.name == null">
+          <!-- Match-all variable-names when name is null -->
           and A${index}.NAME_ is not null
         </if>
         <if test="!var.type.equals('null')">
