@@ -1075,8 +1075,21 @@
   <select id="monty_selectHistoricTaskInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultMap="historicTaskInstanceResultMap">
     select *
     <include refid="monty_selectHistoricTaskInstancesByQueryCriteriaSql"/>
-    WHERE rnk BETWEEN #{firstRow} AND #{lastRow}
-    ORDER BY rnk
+    <choose>
+      <!--
+        ${limitAfter} on mssql/oracle has more than just "order by" statement
+        Because that property is applied to several SQL statements,
+          we need to make a workaround here
+      -->
+      <when test="'${limitAfter}' != null and _databaseId != 'mssql' and _databaseId != 'oracle'">
+        ORDER BY rnk
+        ${limitAfter}
+      </when>
+      <otherwise>
+        WHERE rnk &gt;= #{firstRow} AND rnk &lt; #{lastRow}
+        ORDER BY rnk
+      </otherwise>
+    </choose>
   </select>
 
   <sql id="monty_selectHistoricTaskInstancesByQueryCriteriaSql">
