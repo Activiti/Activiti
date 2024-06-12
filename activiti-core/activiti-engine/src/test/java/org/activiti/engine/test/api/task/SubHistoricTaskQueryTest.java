@@ -47,6 +47,9 @@ public class SubHistoricTaskQueryTest extends PluggableActivitiTestCase {
 
     /**
      * test for task inclusion/exclusion when additional filter is specified (like assignee), ordered.
+     *
+     *   it's an adaptation of @{link SubTaskQueryTest#generateTestSubTasks}, in order to test
+     *     the pagination results for completed tasks instead of running tasks
      */
     public void testQueryByAssigneeOrderedAndPaginated() throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
