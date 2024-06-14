@@ -1471,7 +1471,11 @@ public class DbSqlSession implements Session {
     }
 
     public boolean isMysql() {
-        return dbSqlSessionFactory.getDatabaseType().equals("mysql");
+        return dbSqlSessionFactory.getDatabaseType().startsWith("mysql");
+    }
+
+    public boolean isMariaDb() {
+        return dbSqlSessionFactory.getDatabaseType().equals("mariadb");
     }
 
     public boolean isOracle() {
