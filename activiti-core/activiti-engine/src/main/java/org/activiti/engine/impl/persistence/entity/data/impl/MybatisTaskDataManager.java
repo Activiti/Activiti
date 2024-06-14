@@ -67,7 +67,7 @@ public class MybatisTaskDataManager extends AbstractDataManager<TaskEntity> impl
   @Override
   @SuppressWarnings("unchecked")
   public List<Task> findTasksByQueryCriteria(TaskQueryImpl taskQuery) {
-    final String query = "monty_selectTaskByQueryCriteria";
+    final String query = "selectTaskByQueryCriteria";
     return getDbSqlSession().selectList(query, taskQuery);
   }
 
@@ -112,7 +112,7 @@ public class MybatisTaskDataManager extends AbstractDataManager<TaskEntity> impl
 
   @Override
   public long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery) {
-    return (Long) getDbSqlSession().selectOne("monty_selectTaskCountByQueryCriteria", taskQuery);
+    return (Long) getDbSqlSession().selectOne("selectTaskCountByQueryCriteria", taskQuery);
   }
 
   @Override

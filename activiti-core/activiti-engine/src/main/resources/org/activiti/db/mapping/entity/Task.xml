@@ -271,21 +271,51 @@
     where T.PROC_INST_ID_ = #{parameter}
   </select>
 
-  <!-- Using distinct here because a task can appear multiple times in a resultset when -->
+  <!-- select-clause broker (between withJoins and withoutJoins sql scripts) -->
   <select id="selectTaskByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskResultMap">
+    <choose>
+      <when test="_databaseId == 'mysql5' || _databaseId == 'mariadb'">
+        <!--
+          mysql5 doesn't recognize the "withoutJoins" sql scripts
+          mariadb has performance penalty when using "withoutJoins" sql scripts
+        -->
+        <include refid="withJoins_selectTaskByQueryCriteria"/>
+      </when>
+      <otherwise>
+        <include refid="withoutJoins_selectTaskByQueryCriteria"/>
+      </otherwise>
+    </choose>
+  </select>
+  <select id="selectTaskCountByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultType="long">
+    <choose>
+      <when test="_databaseId == 'mysql5' || _databaseId == 'mariadb'">
+        <!--
+          mysql5 doesn't recognize the "withoutJoins" sql scripts
+          mariadb has performance penalty when using "withoutJoins" sql scripts
+        -->
+        <include refid="withJoins_selectTaskCountByQueryCriteria"/>
+      </when>
+      <otherwise>
+        <include refid="withoutJoins_selectTaskCountByQueryCriteria"/>
+      </otherwise>
+    </choose>
+  </select>
+
+  <!-- Using distinct here because a task can appear multiple times in a resultset when -->
+  <sql id="withJoins_selectTaskByQueryCriteria">
     ${limitBefore}
     select distinct RES.* ${limitBetween}
-    <include refid="selectTaskByQueryCriteriaSql"/>
+    <include refid="withJoins_selectTaskByQueryCriteriaSql"/>
     ${orderBy}
     ${limitAfter}
-  </select>
+  </sql>
 
-  <select id="selectTaskCountByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultType="long">
+  <sql id="withJoins_selectTaskCountByQueryCriteria">
     select count(distinct RES.ID_)
-    <include refid="selectTaskByQueryCriteriaSql"/>
-  </select>
+    <include refid="withJoins_selectTaskByQueryCriteriaSql"/>
+  </sql>
 
-  <sql id="selectTaskByQueryCriteriaSql">
+  <sql id="withJoins_selectTaskByQueryCriteriaSql">
     from ${prefix}ACT_RU_TASK RES
     <include refid="commonSelectTaskByQueryCriteriaSql"/>
   </sql>
@@ -1116,14 +1146,14 @@
      ${sql}
   </select>
 
-  <!-- MONTY script -->
-  <select id="monty_selectTaskCountByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultType="long">
+  <!-- optimized script (without joins) -->
+  <sql id="withoutJoins_selectTaskCountByQueryCriteria">
     select count(SUB.ID_)
-    <include refid="monty_selectTaskByQueryCriteriaSql"/>
-  </select>
-  <select id="monty_selectTaskByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskResultMap">
+    <include refid="withoutJoins_selectTaskByQueryCriteriaSql"/>
+  </sql>
+  <sql id="withoutJoins_selectTaskByQueryCriteria">
     select *
-    <include refid="monty_selectTaskByQueryCriteriaSql"/>
+    <include refid="withoutJoins_selectTaskByQueryCriteriaSql"/>
     <choose>
       <!--
         ${limitAfter} on mssql/oracle has more than just "order by" statement
@@ -1139,8 +1169,8 @@
         ORDER BY rnk
       </otherwise>
     </choose>
-  </select>
-  <sql id="monty_selectTaskByQueryCriteriaSql">
+  </sql>
+  <sql id="withoutJoins_selectTaskByQueryCriteriaSql">
     FROM (
       SELECT RES.*, row_number() OVER (ORDER BY ${orderByColumns}) rnk
       FROM ACT_RU_TASK RES
@@ -1237,21 +1267,21 @@
           </foreach>
         </if>
         <if test="processInstanceBusinessKey != null">
-          and <include refid="monty_selectExists">
+          and <include refid="withoutJoins_selectExists">
           <property name="externalTable" value="${prefix}ACT_RU_EXECUTION E"/>
           <property name="join" value="RES.PROC_INST_ID_ = E.ID_"/>
           <property name="where" value="E.BUSINESS_KEY_ = #{processInstanceBusinessKey}"/>
         </include>
         </if>
         <if test="processInstanceBusinessKeyLike != null">
-          and <include refid="monty_selectExists">
+          and <include refid="withoutJoins_selectExists">
           <property name="externalTable" value="${prefix}ACT_RU_EXECUTION E"/>
           <property name="join" value="RES.PROC_INST_ID_ = E.ID_"/>
           <property name="where" value="E.BUSINESS_KEY_ like #{processInstanceBusinessKeyLike}${wildcardEscapeClause}"/>
         </include>
         </if>
         <if test="processInstanceBusinessKeyLikeIgnoreCase != null">
-          and <include refid="monty_selectExists">
+          and <include refid="withoutJoins_selectExists">
           <property name="externalTable" value="${prefix}ACT_RU_EXECUTION E"/>
           <property name="join" value="RES.PROC_INST_ID_ = E.ID_"/>
           <property name="where" value="lower(E.BUSINESS_KEY_) like #{processInstanceBusinessKeyLikeIgnoreCase}${wildcardEscapeClause}"/>
@@ -1279,28 +1309,28 @@
           and RES.PROC_DEF_ID_ = #{processDefinitionId}
         </if>
         <if test="processDefinitionKey != null">
-          and <include refid="monty_selectExists">
+          and <include refid="withoutJoins_selectExists">
             <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D"/>
             <property name="join" value="RES.PROC_DEF_ID_ = D.ID_"/>
             <property name="where" value="D.KEY_ = #{processDefinitionKey}"/>
           </include>
         </if>
         <if test="processDefinitionKeyLike != null">
-          and <include refid="monty_selectExists">
+          and <include refid="withoutJoins_selectExists">
             <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D"/>
             <property name="join" value="RES.PROC_DEF_ID_ = D.ID_"/>
             <property name="where" value="D.KEY_ like #{processDefinitionKeyLike}${wildcardEscapeClause}"/>
           </include>
         </if>
         <if test="processDefinitionKeyLikeIgnoreCase != null">
-          and <include refid="monty_selectExists">
+          and <include refid="withoutJoins_selectExists">
             <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D"/>
             <property name="join" value="RES.PROC_DEF_ID_ = D.ID_"/>
             <property name="where" value="lower(D.KEY_) like #{processDefinitionKeyLikeIgnoreCase}${wildcardEscapeClause}"/>
           </include>
         </if>
         <if test="processDefinitionKeys != null &amp;&amp; processDefinitionKeys.size() &gt; 0">
-          and <include refid="monty_selectExistsIn">
+          and <include refid="withoutJoins_selectExistsIn">
             <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D"/>
             <property name="join" value="RES.PROC_DEF_ID_ = D.ID_"/>
             <property name="field" value="D.KEY_"/>
@@ -1308,21 +1338,21 @@
           </include>
         </if>
         <if test="processDefinitionName != null">
-          and <include refid="monty_selectExists">
+          and <include refid="withoutJoins_selectExists">
             <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D"/>
             <property name="join" value="RES.PROC_DEF_ID_ = D.ID_"/>
             <property name="where" value="D.NAME_ = #{processDefinitionName}"/>
           </include>
         </if>
         <if test="processDefinitionNameLike != null">
-          and <include refid="monty_selectExists">
+          and <include refid="withoutJoins_selectExists">
             <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D"/>
             <property name="join" value="RES.PROC_DEF_ID_ = D.ID_"/>
             <property name="where" value="D.NAME_ like #{processDefinitionNameLike}${wildcardEscapeClause}"/>
           </include>
         </if>
         <if test="processCategoryInList != null &amp;&amp; processCategoryInList.size() &gt; 0">
-          and <include refid="monty_selectExistsIn">
+          and <include refid="withoutJoins_selectExistsIn">
             <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D"/>
             <property name="join" value="RES.PROC_DEF_ID_ = D.ID_"/>
             <property name="field" value="D.CATEGORY_"/>
@@ -1330,7 +1360,7 @@
           </include>
         </if>
         <if test="processCategoryNotInList != null &amp;&amp; processCategoryNotInList.size() &gt; 0">
-          and <include refid="monty_selectExistsNotIn">
+          and <include refid="withoutJoins_selectExistsNotIn">
             <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D"/>
             <property name="join" value="RES.PROC_DEF_ID_ = D.ID_"/>
             <property name="field" value="D.CATEGORY_"/>
@@ -1338,14 +1368,14 @@
           </include>
         </if>
         <if test="deploymentId != null">
-          and <include refid="monty_selectExists">
+          and <include refid="withoutJoins_selectExists">
             <property name="externalTable" value="${prefix}ACT_RE_PROCDEF DEPLOY_P"/>
             <property name="join" value="RES.PROC_DEF_ID_ = DEPLOY_P.ID_"/>
             <property name="where" value="DEPLOY_P.DEPLOYMENT_ID_ = #{deploymentId}"/>
           </include>
         </if>
         <if test="deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0">
-          and <include refid="monty_selectExistsIn">
+          and <include refid="withoutJoins_selectExistsIn">
             <property name="externalTable" value="${prefix}ACT_RE_PROCDEF DEPLOY_P"/>
             <property name="join" value="RES.PROC_DEF_ID_ = DEPLOY_P.ID_"/>
             <property name="field" value="DEPLOY_P.DEPLOYMENT_ID_"/>
@@ -1655,14 +1685,14 @@
               </foreach>
             </if>
             <if test="orQueryObject.processInstanceBusinessKey != null">
-              or <include refid="monty_selectExists">
+              or <include refid="withoutJoins_selectExists">
               <property name="externalTable" value="${prefix}ACT_RU_EXECUTION E_OR${orIndex}"/>
               <property name="join" value="RES.PROC_INST_ID_ = E_OR${orIndex}.ID_"/>
               <property name="where" value="E_OR${orIndex}.BUSINESS_KEY_ = #{orQueryObject.processInstanceBusinessKey}"/>
             </include>
             </if>
             <if test="orQueryObject.processInstanceBusinessKeyLike != null">
-              or <include refid="monty_selectExists">
+              or <include refid="withoutJoins_selectExists">
               <property name="externalTable" value="${prefix}ACT_RU_EXECUTION E_OR${orIndex}"/>
               <property name="join" value="RES.PROC_INST_ID_ = E_OR${orIndex}.ID_"/>
               <property name="where" value="E_OR${orIndex}.BUSINESS_KEY_ like #{orQueryObject.processInstanceBusinessKeyLike}${wildcardEscapeClause}"/>
@@ -1670,7 +1700,7 @@
             </if>
             <!-- TODO: original "orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null" had a bug -->
             <if test="orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null">
-              or <include refid="monty_selectExists">
+              or <include refid="withoutJoins_selectExists">
               <property name="externalTable" value="${prefix}ACT_RU_EXECUTION E_OR${orIndex}"/>
               <property name="join" value="RES.PROC_INST_ID_ = E_OR${orIndex}.ID_"/>
               <property name="where" value="lower(E_OR$.BUSINESS_KEY_) like #{orQueryObject.processInstanceBusinessKeyLikeIgnoreCase}${wildcardEscapeClause}"/>
@@ -1698,28 +1728,28 @@
               or RES.PROC_DEF_ID_ = #{orQueryObject.processDefinitionId}
             </if>
             <if test="orQueryObject.processDefinitionKey != null">
-              or <include refid="monty_selectExists">
+              or <include refid="withoutJoins_selectExists">
                 <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D_OR${orIndex}"/>
                 <property name="join" value="RES.PROC_DEF_ID_ = D_OR${orIndex}.ID_"/>
                 <property name="where" value="D_OR${orIndex}.KEY_ = #{orQueryObject.processDefinitionKey}"/>
               </include>
             </if>
             <if test="orQueryObject.processDefinitionKeyLike != null">
-              or <include refid="monty_selectExists">
+              or <include refid="withoutJoins_selectExists">
                 <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D_OR${orIndex}"/>
                 <property name="join" value="RES.PROC_DEF_ID_ = D_OR${orIndex}.ID_"/>
                 <property name="where" value="D_OR${orIndex}.KEY_ like #{orQueryObject.processDefinitionKeyLike}${wildcardEscapeClause}"/>
               </include>
             </if>
             <if test="orQueryObject.processDefinitionKeyLikeIgnoreCase != null">
-              or <include refid="monty_selectExists">
+              or <include refid="withoutJoins_selectExists">
                 <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D_OR${orIndex}"/>
                 <property name="join" value="RES.PROC_DEF_ID_ = D_OR${orIndex}.ID_"/>
                 <property name="where" value="lower(D_OR${orIndex}.KEY_) like #{orQueryObject.processDefinitionKeyLikeIgnoreCase}${wildcardEscapeClause}"/>
               </include>
             </if>
             <if test="orQueryObject.processDefinitionKeys != null &amp;&amp; orQueryObject.processDefinitionKeys.size() &gt; 0">
-              or <include refid="monty_selectExistsIn">
+              or <include refid="withoutJoins_selectExistsIn">
                 <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D_OR${orIndex}"/>
                 <property name="join" value="RES.PROC_DEF_ID_ = D_OR${orIndex}.ID_"/>
                 <property name="field" value="D_OR${orIndex}.KEY_"/>
@@ -1727,21 +1757,21 @@
               </include>
             </if>
             <if test="orQueryObject.processDefinitionName != null">
-              or <include refid="monty_selectExists">
+              or <include refid="withoutJoins_selectExists">
                 <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D_OR${orIndex}"/>
                 <property name="join" value="RES.PROC_DEF_ID_ = D_OR${orIndex}.ID_"/>
                 <property name="where" value="D_OR${orIndex}.NAME_ = #{orQueryObject.processDefinitionName}"/>
               </include>
             </if>
             <if test="orQueryObject.processDefinitionNameLike != null">
-              or <include refid="monty_selectExists">
+              or <include refid="withoutJoins_selectExists">
                 <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D_OR${orIndex}"/>
                 <property name="join" value="RES.PROC_DEF_ID_ = D_OR${orIndex}.ID_"/>
                 <property name="where" value="D_OR${orIndex}.NAME_ like #{orQueryObject.processDefinitionNameLike}${wildcardEscapeClause}"/>
               </include>
             </if>
             <if test="orQueryObject.processCategoryInList != null &amp;&amp; orQueryObject.processCategoryInList.size() &gt; 0">
-              or <include refid="monty_selectExistsIn">
+              or <include refid="withoutJoins_selectExistsIn">
                 <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D_OR${orIndex}"/>
                 <property name="join" value="RES.PROC_DEF_ID_ = D_OR${orIndex}.ID_"/>
                 <property name="field" value="D_OR${orIndex}.CATEGORY_"/>
@@ -1749,7 +1779,7 @@
               </include>
             </if>
             <if test="orQueryObject.processCategoryNotInList != null &amp;&amp; orQueryObject.processCategoryNotInList.size() &gt; 0">
-              or <include refid="monty_selectExistsNotIn">
+              or <include refid="withoutJoins_selectExistsNotIn">
                 <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D_OR${orIndex}"/>
                 <property name="join" value="RES.PROC_DEF_ID_ = D_OR${orIndex}.ID_"/>
                 <property name="field" value="D_OR${orIndex}.CATEGORY_"/>
@@ -1757,14 +1787,14 @@
               </include>
             </if>
             <if test="orQueryObject.deploymentId != null">
-              or <include refid="monty_selectExists">
+              or <include refid="withoutJoins_selectExists">
               <property name="externalTable" value="${prefix}ACT_RE_PROCDEF DEPLOY_P_OR${orIndex}"/>
               <property name="join" value="RES.PROC_DEF_ID_ = DEPLOY_P_OR${orIndex}.ID_"/>
               <property name="where" value="DEPLOY_P_OR${orIndex}.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}"/>
             </include>
             </if>
             <if test="orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0">
-              or <include refid="monty_selectExistsIn">
+              or <include refid="withoutJoins_selectExistsIn">
               <property name="externalTable" value="${prefix}ACT_RE_PROCDEF DEPLOY_P_OR${orIndex}"/>
               <property name="join" value="RES.PROC_DEF_ID_ = DEPLOY_P_OR${orIndex}.ID_"/>
               <property name="field" value="DEPLOY_P_OR${orIndex}.DEPLOYMENT_ID_"/>
@@ -1997,7 +2027,7 @@
     ) SUB
   </sql>
 
-  <sql id="monty_selectExists">
+  <sql id="withoutJoins_selectExists">
     exists (
       select 1
       from ${externalTable}
@@ -2007,7 +2037,7 @@
     )
   </sql>
 
-  <sql id="monty_selectExistsIn">
+  <sql id="withoutJoins_selectExistsIn">
     exists (
       select 1
       from ${externalTable}
@@ -2020,7 +2050,7 @@
     )
   </sql>
 
-  <sql id="monty_selectExistsNotIn">
+  <sql id="withoutJoins_selectExistsNotIn">
     exists (
       select 1
       from ${externalTable}
