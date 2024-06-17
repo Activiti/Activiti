@@ -147,7 +147,7 @@
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
 
-  <update id="updateExecutionTenantIdForDeployment" parameterMap="java.util.Map">
+  <update id="updateExecutionTenantIdForDeployment" parameterType="java.util.Map">
     <choose>
       <when test="_databaseId == 'mysql' || _databaseId == 'mysql5'">
         <!-- See http://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause
