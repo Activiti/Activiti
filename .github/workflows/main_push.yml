@@ -22,7 +22,7 @@ jobs:
   pre-checks:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: pre-commit
         uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@5d69aa4df0b14964338b43535fadb318b4ff337b # v5.28.0
         with:
@@ -36,7 +36,7 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
