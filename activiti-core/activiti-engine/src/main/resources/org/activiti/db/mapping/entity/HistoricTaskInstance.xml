@@ -325,7 +325,6 @@
     <include refid="withJoins_commonSelectHistoricTaskInstancesByQueryCriteriaSql"/>
   </sql>
 
-  <!-- TODO: this only has withJoins, we should have also the withoutJoins version-->
   <select id="selectHistoricTaskInstancesWithVariablesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultMap="historicTaskInstanceAndVariablesResultMap">
     <include refid="withJoins_selectHistoricTaskInstancesWithVariablesByQueryCriteriaColumns"/>
     <include refid="withJoins_selectHistoricTaskInstancesWithVariablesByQueryCriteriaSql"/>
