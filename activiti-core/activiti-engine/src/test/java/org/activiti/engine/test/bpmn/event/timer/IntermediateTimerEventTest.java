@@ -118,6 +118,7 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
     assertThat(managementService.createTimerJobQuery().processInstanceId(pi2.getId()).count()).isEqualTo(1);
 
     // After setting the clock to one second in the future the timers should fire
+    addSecondsToClock(1);
     List<Job> jobs = managementService.createTimerJobQuery().executable().list();
     assertThat(jobs).hasSize(2);
     for (Job job : jobs) {
@@ -158,6 +159,14 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
     }
 
     assertProcessEnded(processInstance.getId());
+  }
+
+  private void addSecondsToClock(int seconds) {
+      Date currentTime = processEngineConfiguration.getClock().getCurrentTime();
+      long secondsInMillis = seconds * 1000L;
+
+      currentTime = new Date(currentTime.getTime() + secondsInMillis);
+      processEngineConfiguration.getClock().setCurrentTime(currentTime);
   }
 
 }
