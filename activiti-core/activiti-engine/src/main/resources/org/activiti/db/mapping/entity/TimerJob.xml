@@ -285,35 +285,35 @@
 
 	<!-- JOB UPDATE STATEMENTS -->
 	<update id="updateTimerJobTenantIdForDeployment" parameterType="java.util.Map">
-		update ${prefix}ACT_RU_TIMER_JOB set
-		TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
-		where
-		ID_ in (
-			SELECT J.ID_ from ${prefix}ACT_RU_TIMER_JOB J
-			inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_ = P.ID_
-			inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_
-			where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
-		)
+    <choose>
+      <when test="_databaseId == 'mysql' || _databaseId == 'mysql5'">
+        <!-- See http://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause
+		    Tested this on MySQL 5.6: does NOT use a temporary table (so good, performance) -->
+        update ${prefix}ACT_RU_TIMER_JOB set
+          TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+        where
+          ID_ in (
+            SELECT tempTask.tempId
+            FROM (
+              SELECT J.ID_ as tempId
+              FROM ${prefix}ACT_RU_TIMER_JOB J
+                inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_ = P.ID_
+                inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_
+              where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
+            ) AS tempTask
+          )
+      </when>
+      <otherwise>
+        update ${prefix}ACT_RU_TIMER_JOB set
+          TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+        where
+          ID_ in (
+            SELECT J.ID_ from ${prefix}ACT_RU_TIMER_JOB J
+            inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_ = P.ID_
+            inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_
+            where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
+          )
+      </otherwise>
+    </choose>
 	</update>
-
-	<!-- See http://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause
-		Tested this on MySQL 5.6: does NOT use a temporary table (so good, performance) -->
-	<update id="updateTimerJobTenantIdForDeployment" databaseId="mysql" parameterType="java.util.Map">
-		update ${prefix}ACT_RU_TIMER_JOB set
-		TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
-		where
-		ID_ in (
-
-			SELECT tempTask.tempId
-			FROM (
-				SELECT J.ID_ as tempId
-				FROM ${prefix}ACT_RU_TIMER_JOB J
-				inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_ = P.ID_
-				inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_
-				where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
-
-			) AS tempTask
-		)
-	</update>
-
 </mapper>
