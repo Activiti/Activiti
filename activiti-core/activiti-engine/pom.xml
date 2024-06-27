@@ -45,12 +45,12 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-email2-jakarta</artifactId>
-      <version>2.0.0-M1-20240118.130716-5</version>
+      <version>2.0.0-M1-20240613.154711-7</version>
       </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-email2-core</artifactId>
-      <version>2.0.0-M1-20240118.130716-4</version>
+      <version>2.0.0-M1-20240613.154711-6</version>
      </dependency>
 <!-- jakarta.mail is transitive dependency commons-email2-jakarta,
       Hence jakarta.mail dependency can be removed from here, when commons-email2-jakarta is available in maven central -->
