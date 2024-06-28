@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>8.3.0-alpha.12</version>
+    <version>8.3.2</version>
   </parent>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-dependencies</artifactId>
