@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -325,11 +326,17 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
 
         Object dateIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "dateIdJPAEntity");
         assertThat(dateIdResult).isInstanceOf(DateIdJPAEntity.class);
-        assertThat(((DateIdJPAEntity) dateIdResult).getDateId()).isEqualTo(dateIdJPAEntity.getDateId());
+        assertThat(dateIdJPAEntity.getDateId()).isInstanceOf(java.util.Date.class);
+        assertThat(((DateIdJPAEntity) dateIdResult).getDateId()).isInstanceOf(java.sql.Date.class);
+
+        assertThat(((DateIdJPAEntity) dateIdResult).getDateId()).isInSameDayAs(dateIdJPAEntity.getDateId());
 
         Object sqlDateIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "sqlDateIdJPAEntity");
         assertThat(sqlDateIdResult).isInstanceOf(SQLDateIdJPAEntity.class);
-        assertThat(((SQLDateIdJPAEntity) sqlDateIdResult).getDateId()).isEqualTo(sqlDateIdJPAEntity.getDateId());
+        assertThat(sqlDateIdJPAEntity.getDateId()).isInstanceOf(java.util.Date.class);
+        assertThat(((SQLDateIdJPAEntity) sqlDateIdResult).getDateId()).isInstanceOf(java.sql.Date.class);
+
+        assertThat(((SQLDateIdJPAEntity) sqlDateIdResult).getDateId()).isInSameDayAs(sqlDateIdJPAEntity.getDateId());
 
         Object bigDecimalIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "bigDecimalIdJPAEntity");
         assertThat(bigDecimalIdResult).isInstanceOf(BigDecimalIdJPAEntity.class);
