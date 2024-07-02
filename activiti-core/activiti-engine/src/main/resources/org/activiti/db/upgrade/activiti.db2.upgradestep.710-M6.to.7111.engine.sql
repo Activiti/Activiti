@@ -1,4 +1,4 @@
-update ACT_GE_PROPERTY set VALUE_ = '7.11.1-A3' where NAME_ = 'schema.version';
+update ACT_GE_PROPERTY set VALUE_ = '7.11.1' where NAME_ = 'schema.version';
 
 create index ACT_IDX_HI_IDENT_LNK_GROUP on ACT_HI_IDENTITYLINK(GROUP_ID_);
 
