@@ -1095,7 +1095,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  protected static Properties databaseVendorMappings = getDefaultDatabaseVendorMappings();
+  protected static Properties databaseVendorMappings = getDefaultDatabaseTypeMappings();
 
   public static final String DATABASE_TYPE_H2 = "h2";
   public static final String DATABASE_TYPE_HSQL = "hsql";
@@ -1107,7 +1107,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public static final String DATABASE_TYPE_MARIADB = "mariadb";
   public static final String DATABASE_TYPE_DB2 = "db2";
 
-  public static Properties getDefaultDatabaseVendorMappings() {
+  public static Properties getDefaultDatabaseTypeMappings() {
     Properties databaseTypeMappings = new Properties();
     databaseTypeMappings.setProperty("H2", DATABASE_TYPE_H2);
     databaseTypeMappings.setProperty("HSQL Database Engine", DATABASE_TYPE_HSQL);
