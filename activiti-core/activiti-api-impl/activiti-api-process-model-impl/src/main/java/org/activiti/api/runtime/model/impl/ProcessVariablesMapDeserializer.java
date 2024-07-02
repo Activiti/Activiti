@@ -15,6 +15,7 @@
  */
 package org.activiti.api.runtime.model.impl;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import java.io.IOException;
 
 import org.slf4j.Logger;
@@ -45,7 +46,16 @@ public class ProcessVariablesMapDeserializer extends JsonDeserializer<ProcessVar
                                                                                                               JsonProcessingException {
         ProcessVariablesMap<String, Object> map = new ProcessVariablesMap<>();
 
-        JsonNode node = jp.getCodec().readTree(jp);
+        ObjectMapper codec = (ObjectMapper) jp.getCodec();
+        var failOnTrailingTokensEnabled = false;
+        if (codec.isEnabled(DeserializationFeature.FAIL_ON_TRAILING_TOKENS)) {
+            failOnTrailingTokensEnabled = true;
+            codec.disable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
+        }
+        JsonNode node = codec.readTree(jp);
+        if (failOnTrailingTokensEnabled) {
+            codec.enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
+        }
 
         node.fields().forEachRemaining(entry -> {
             String name = entry.getKey();
