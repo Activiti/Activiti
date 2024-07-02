@@ -2,7 +2,7 @@ create table ACT_RU_TIMER_JOB (
     ID_ varchar(64) NOT NULL,
     REV_ integer,
     TYPE_ varchar(255) NOT NULL,
-    LOCK_EXP_TIME_ timestamp NULL,
+    LOCK_EXP_TIME_ timestamp(3) NULL,
     LOCK_OWNER_ varchar(255),
     EXCLUSIVE_ boolean,
     EXECUTION_ID_ varchar(64),
@@ -11,7 +11,7 @@ create table ACT_RU_TIMER_JOB (
     RETRIES_ integer,
     EXCEPTION_STACK_ID_ varchar(64),
     EXCEPTION_MSG_ varchar(4000),
-    DUEDATE_ timestamp NULL,
+    DUEDATE_ timestamp(3) NULL,
     REPEAT_ varchar(255),
     HANDLER_TYPE_ varchar(255),
     HANDLER_CFG_ varchar(4000),
@@ -30,7 +30,7 @@ create table ACT_RU_SUSPENDED_JOB (
     RETRIES_ integer,
     EXCEPTION_STACK_ID_ varchar(64),
     EXCEPTION_MSG_ varchar(4000),
-    DUEDATE_ timestamp NULL,
+    DUEDATE_ timestamp(3) NULL,
     REPEAT_ varchar(255),
     HANDLER_TYPE_ varchar(255),
     HANDLER_CFG_ varchar(4000),
@@ -48,7 +48,7 @@ create table ACT_RU_DEADLETTER_JOB (
     PROC_DEF_ID_ varchar(64),
     EXCEPTION_STACK_ID_ varchar(64),
     EXCEPTION_MSG_ varchar(4000),
-    DUEDATE_ timestamp NULL,
+    DUEDATE_ timestamp(3) NULL,
     REPEAT_ varchar(255),
     HANDLER_TYPE_ varchar(255),
     HANDLER_CFG_ varchar(4000),
@@ -131,6 +131,7 @@ alter table ACT_RU_DEADLETTER_JOB
     foreign key (EXCEPTION_STACK_ID_)
     references ACT_GE_BYTEARRAY (ID_);
 
+
 -- Moving jobs with retries <= 0 to ACT_RU_DEADLETTER_JOB
 
 INSERT INTO ACT_RU_DEADLETTER_JOB (ID_, REV_, TYPE_, EXCLUSIVE_, EXECUTION_ID_, PROCESS_INSTANCE_ID_, PROC_DEF_ID_,
@@ -174,9 +175,9 @@ WHERE (HANDLER_TYPE_ = 'activate-processdefinition'
 and LOCK_EXP_TIME_ is null;
 
 
-alter table ACT_RU_EXECUTION add column START_TIME_ datetime;
+alter table ACT_RU_EXECUTION add column START_TIME_ datetime(3);
 alter table ACT_RU_EXECUTION add column START_USER_ID_ varchar(255);
-alter table ACT_RU_TASK add column CLAIM_TIME_ datetime;
+alter table ACT_RU_TASK add column CLAIM_TIME_ datetime(3);
 
 alter table ACT_RE_DEPLOYMENT add column KEY_ varchar(255);
 
