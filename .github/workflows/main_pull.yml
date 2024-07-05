@@ -1,26 +1,20 @@
 name: PR - Validate and Build
-
 permissions: read-all
-
 on:
   pull_request:
     branches:
-      - develop
+      - 8.6.x
     types:
       - opened
       - reopened
       - synchronize
       - labeled
-
   # Allows to run this workflow manually from the Actions tab
   workflow_dispatch:
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref }}
   cancel-in-progress: true
-
 jobs:
-
   pre-checks:
     runs-on: ubuntu-latest
     steps:
@@ -33,45 +27,37 @@ jobs:
           skip_checkout: true
       - name: Ensure SHA pinned actions
         uses: zgosalvez/github-actions-ensure-sha-pinned-actions@08d8d3cf383a5d9b02986e9fa05b7c4e85e1d495 # v3.0.8
-
   build:
     runs-on: ubuntu-latest
     needs: pre-checks
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-
       - uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-
       - name: Setup Java JDK 21
         uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # 4.2.1
         with:
           java-version: 21
           distribution: 'temurin'
-
       - name: Set preview version
         if: ${{ contains(github.event.pull_request.labels.*.name, 'preview') }}
         run: |
           GITHUB_PR_NUMBER=PR-${{ github.event.pull_request.number }}
           echo 0.0.1-${GITHUB_PR_NUMBER}-${GITHUB_RUN_NUMBER}-SNAPSHOT > VERSION
-
       - name: Set VERSION env variable
         if: ${{ contains(github.event.pull_request.labels.*.name, 'preview') }}
         run: |
           VERSION=$(cat VERSION)
           echo set VERSION=$VERSION
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-
       - name: Update pom files to the new version
         if: ${{ contains(github.head_ref, 'preview') || contains(github.event.pull_request.labels.*.name, 'preview') }}
         run: mvn -B versions:set -DnewVersion=$VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
-
       - name: Define Maven Command
         id: define_maven_command
         shell: bash
@@ -84,7 +70,6 @@ jobs:
           fi
         env:
           DO_PUSH: ${{ contains(github.event.pull_request.labels.*.name, 'preview') }}
-
       - name: Build and Test with Maven (and maybe Deploy)
         shell: bash
         run: mvn ${{ steps.define_maven_command.outputs.command }} ${{ env.MAVEN_CLI_OPTS}}
@@ -92,6 +77,5 @@ jobs:
           MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-
       - name: Echo Longest Test Run
         uses: ./.github/actions/echo-longest-run
