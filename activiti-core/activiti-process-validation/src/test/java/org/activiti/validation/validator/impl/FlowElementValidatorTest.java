@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.activiti.bpmn.model.Process;
 import java.util.ArrayList;
 import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 
@@ -47,7 +48,7 @@ public class FlowElementValidatorTest {
         List<ValidationError> errors = new ArrayList<>();
         flowElementValidator.executeValidation(null, process, errors);
 
-        assert(errors.size() == 1);
+        assertThat(errors).hasSize(1);
   }
     @Test
     public void testExecuteValidationofProcessWithCardinality() {
@@ -65,7 +66,7 @@ public class FlowElementValidatorTest {
         List<ValidationError> errors = new ArrayList<>();
         flowElementValidator.executeValidation(null, process, errors);
 
-        assert(errors.size() == 0);
+        assertThat(errors).isEmpty();
     }
     @Test
     public void testExecuteValidationofProcessHavingSubProcessWithCardinality() {
@@ -87,7 +88,7 @@ public class FlowElementValidatorTest {
         List<ValidationError> errors = new ArrayList<>();
         flowElementValidator.executeValidation(null, process, errors);
 
-        assert(errors.size() == 0);
+        assertThat(errors).isEmpty();
     }
     @Test
     public void testExecuteValidationofProcessHavingSubProcessWithOutCardinality() {
@@ -109,6 +110,6 @@ public class FlowElementValidatorTest {
         List<ValidationError> errors = new ArrayList<>();
         flowElementValidator.executeValidation(null, process, errors);
 
-        assert(errors.size() == 1);
+        assertThat(errors).hasSize(1);
     }
 }
