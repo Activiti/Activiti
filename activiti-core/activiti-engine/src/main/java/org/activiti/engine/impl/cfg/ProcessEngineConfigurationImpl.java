@@ -1100,7 +1100,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public static final String DATABASE_TYPE_H2 = "h2";
   public static final String DATABASE_TYPE_HSQL = "hsql";
   public static final String DATABASE_TYPE_MYSQL = "mysql";
-    public static final String DATABASE_TYPE_MYSQL5 = "mysql5";
   public static final String DATABASE_TYPE_ORACLE = "oracle";
   public static final String DATABASE_TYPE_POSTGRES = "postgres";
   public static final String DATABASE_TYPE_MSSQL = "mssql";
@@ -1158,13 +1157,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       switch (databaseVendor) {
           case DATABASE_TYPE_MYSQL:
               String databaseProductVersion = databaseMetaData.getDatabaseProductVersion();
-              // Special care for MYSQL 5.x, doesn't accept some SQL scripts (but MYSQL 8.x does)
-              // example of MySql 5.7.4
-              //    input: vendor=MySQL, version=5.7.4
-              //    output: databaseType=mysql5
-              if (databaseProductVersion.startsWith("5") && !databaseProductVersion.contains("MariaDB")) {
-                  databaseType = DATABASE_TYPE_MYSQL5;
-              }
               // MariaDB has performance penalty when using "withoutJoins" SQL scripts
               // example of MariaDB 10.5.4
               //     input: vendor=MySQL, version=5.5.5-10.5.24-MariaDB-1:10.5.24+maria~ubu2004
