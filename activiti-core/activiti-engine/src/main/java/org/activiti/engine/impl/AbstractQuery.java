@@ -263,7 +263,6 @@ public abstract class AbstractQuery<T extends Query<?, ?>, U> extends ListQueryP
   private boolean isMysqlOrCompatible(String databaseType) {
       return
           ProcessEngineConfigurationImpl.DATABASE_TYPE_MYSQL.equals(databaseType) ||
-          ProcessEngineConfigurationImpl.DATABASE_TYPE_MYSQL5.equals(databaseType) ||
           ProcessEngineConfigurationImpl.DATABASE_TYPE_MARIADB.equals(databaseType);
   }
 

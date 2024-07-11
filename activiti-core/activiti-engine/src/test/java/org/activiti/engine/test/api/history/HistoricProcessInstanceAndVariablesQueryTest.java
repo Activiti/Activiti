@@ -403,9 +403,6 @@ public class HistoricProcessInstanceAndVariablesQueryTest extends PluggableActiv
 
         HistoricProcessInstanceQuery historicprocessInstanceQuery = historyService.createHistoricProcessInstanceQuery().includeProcessVariables()
                 .or().variableValueEquals("anothertest", "invalid").deploymentId(deploymentId).endOr();
-        // MYSQL-5.x and MYSQL-8.x will return results with a different order, which breaks this test.
-        // We order the results to make sure that both databases will return results with the same order
-        historicprocessInstanceQuery.orderByProcessInstanceId().asc();
 
         assertThat(historicprocessInstanceQuery.list()).hasSize(6);
         assertThat(historicprocessInstanceQuery.count()).isEqualTo(6);
