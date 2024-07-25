@@ -153,7 +153,8 @@ public class CommandContext {
             //reduce log level, because this may have been caused by the application termination
             log.warn("Error while closing command context", exception);
         } else {
-            log.error("Error while closing command context", exception);
+            log.warn("Error while closing command context",
+                      exception);
         }
     }
 
