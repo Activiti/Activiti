@@ -24,6 +24,8 @@ import static org.awaitility.Awaitility.await;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.model.shared.model.VariableInstance;
@@ -43,6 +45,7 @@ import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.events.TaskAssignedEvent;
 import org.activiti.api.task.runtime.events.TaskCreatedEvent;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.activiti.spring.boot.process.ProcessBaseRuntime;
 import org.activiti.spring.boot.process.ProcessRuntimeBPMNTimerIT;
 import org.activiti.spring.boot.security.util.SecurityUtil;
@@ -51,12 +54,16 @@ import org.activiti.test.LocalEventSource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles(ProcessRuntimeBPMNTimerIT.PROCESS_RUNTIME_BPMN_TIMER_IT)
 public class TaskRuntimeMultiInstanceIT {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskRuntimeMultiInstanceIT.class);
 
     @Autowired
     private ProcessBaseRuntime processBaseRuntime;
@@ -75,6 +82,9 @@ public class TaskRuntimeMultiInstanceIT {
 
     @Autowired
     private SecurityUtil securityUtil;
+
+    @Autowired
+    RuntimeTestConfiguration runtimeTestConfiguration;
 
     @BeforeEach
     public void setUp() {
@@ -1590,5 +1600,57 @@ public class TaskRuntimeMultiInstanceIT {
                     Map.of("meal", "pasta", "size", "medium"))));
     }
 
+    @Test
+    void should_beAbleToExecuteMultiInstanceServiceTasksAndNotMultiInstantiatedServiceTasksWithoutRaceConditions() throws Exception {
+        //given
+        CompletableFuture<ProcessInstance> singleInstanceCompletableFuture = CompletableFuture.supplyAsync(() -> processBaseRuntime
+            .startProcessWithProcessDefinitionKey("serviceTaskSingleInstanceRaceConditionWithOtherProcessWithMultiInstance"));
+
+        CompletableFuture<ProcessInstance> multiInstanceCompletableFuture = CompletableFuture.supplyAsync(() -> {
+            waitForSingleInstanceServiceTaskToStart();
+
+            ProcessInstance processWithMultiInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("miSequentialServiceTaskRaceCondition");
+            waitForFirstMultiInstanceToComplete(processWithMultiInstance);
+
+            //when
+            resumeExecutionOfSingleInstanceServiceTask();
+            return processWithMultiInstance;
+        });
+
+        //then
+        ProcessInstance singleProcessInstance = singleInstanceCompletableFuture.get(10, TimeUnit.SECONDS);
+        ProcessInstance multiInstanceProcess = multiInstanceCompletableFuture.get(10, TimeUnit.SECONDS);
+        await().untilAsserted(() ->
+            assertThat(localEventSource.getEvents(ProcessCompletedEvent.class))
+                .extracting(RuntimeEvent::getProcessInstanceId)
+                .contains(singleProcessInstance.getId(), multiInstanceProcess.getId())
+        );
+
+    }
+
+    private void resumeExecutionOfSingleInstanceServiceTask() {
+        runtimeTestConfiguration.getMultiInstanceLatch().countDown();
+        LOGGER.info("Multi-instance latch counted down . Thread: {}", Thread.currentThread().threadId());
+    }
+
+    private void waitForFirstMultiInstanceToComplete(ProcessInstance processWithMultiInstance) {
+        LOGGER.info("Waiting for the first multi instance to complete before counting down multi-instance latch... Thread: {}", Thread.currentThread().threadId());
+        await().untilAsserted(() ->
+            assertThat(localEventSource.getEvents(BPMNActivityCompletedEvent.class))
+                .extracting(event -> event.getEntity().getProcessInstanceId(), event -> event.getEntity().getElementId())
+                .contains(tuple(processWithMultiInstance.getId(), "miServiceTask"))
+        );
+    }
+
+    private void waitForSingleInstanceServiceTaskToStart() {
+        try {
+            LOGGER.info("Waiting for single instance latch to be counted down... Thread: {}", Thread.currentThread().threadId());
+            boolean conditionReached = runtimeTestConfiguration.getSingleInstanceLatch().await(5, TimeUnit.SECONDS);
+            assertThat(conditionReached).isTrue();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
+        }
+    }
 
 }
