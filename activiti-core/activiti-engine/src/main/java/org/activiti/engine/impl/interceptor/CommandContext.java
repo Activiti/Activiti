@@ -29,6 +29,7 @@ import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
 import org.activiti.engine.ApplicationStatusHolder;
 import org.activiti.engine.JobNotFoundException;
+import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.impl.asyncexecutor.JobManager;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -149,11 +150,16 @@ public class CommandContext {
         } else if (exception instanceof ActivitiOptimisticLockingException) {
             // reduce log level, as normally we're not interested in logging this exception
             log.debug("Optimistic locking exception : " + exception);
-        } else if(ApplicationStatusHolder.isShutdownInProgress()) {
+        }
+       else if(ApplicationStatusHolder.isShutdownInProgress()) {
             //reduce log level, because this may have been caused by the application termination
             log.warn("Error while closing command context", exception);
-        } else {
-            log.error("Error while closing command context", exception);
+        } else if(exception instanceof BpmnError){
+            log.warn("Error while closing command context", exception);
+        }
+        else {
+            log.error("Error while closing command context",
+                      exception);
         }
     }
 
