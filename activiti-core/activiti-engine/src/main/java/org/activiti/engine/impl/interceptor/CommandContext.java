@@ -155,7 +155,7 @@ public class CommandContext {
             //reduce log level, because this may have been caused by the application termination
             log.warn("Error while closing command context", exception);
         } else if(exception instanceof BpmnError){
-            log.warn("Bpmn error : " + exception);
+            log.warn("Error while closing command context", exception);
         }
         else {
             log.error("Error while closing command context",
