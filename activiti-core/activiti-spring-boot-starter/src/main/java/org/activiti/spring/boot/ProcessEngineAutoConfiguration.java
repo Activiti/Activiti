@@ -85,6 +85,11 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
     }
 
     @Bean
+    public ShutdownListener shutdownListener() {
+        return new ShutdownListener();
+    }
+
+    @Bean
     @ConditionalOnMissingBean
     @DependsOnDatabaseInitialization
     public SpringProcessEngineConfiguration springProcessEngineConfiguration(
