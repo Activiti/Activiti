@@ -20,6 +20,6 @@ public enum DelegateExecutionOutcome {
 
     LEAVE_EXECUTION,
 
-    DO_NOTHING
+    WAIT_FOR_TRIGGER
 
 }
