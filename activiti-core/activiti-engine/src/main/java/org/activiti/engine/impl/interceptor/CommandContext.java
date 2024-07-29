@@ -154,7 +154,7 @@ public class CommandContext {
        else if(ApplicationStatusHolder.isShutdownInProgress()) {
             //reduce log level, because this may have been caused by the application termination
             log.warn("Error while closing command context", exception);
-        } else if(exception instanceof BpmnError){
+        } else if(exception instanceof BpmnError || exception instanceof ActivitiException) {
             log.warn("Error while closing command context", exception);
         }
         else {
