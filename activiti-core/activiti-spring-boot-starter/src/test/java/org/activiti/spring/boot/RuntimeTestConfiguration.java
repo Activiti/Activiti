@@ -170,7 +170,10 @@ public class RuntimeTestConfiguration {
 
     @Bean
     public Connector testRaceConditionMultipleInstances() {
-        return integrationContext -> integrationContext;
+        return integrationContext -> {
+            LOGGER.info("executing multi-instance execution");
+            return integrationContext;
+        };
     }
 
     @Bean

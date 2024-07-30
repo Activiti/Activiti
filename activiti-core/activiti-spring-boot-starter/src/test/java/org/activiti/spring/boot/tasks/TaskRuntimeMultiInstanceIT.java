@@ -1628,6 +1628,43 @@ public class TaskRuntimeMultiInstanceIT {
 
     }
 
+    @Test
+    void should_beAbleToExecuteMultiInstanceServiceTasksAndNotMultiInstantiatedServiceTasksWithoutRaceConditions_multiFirst() throws Exception {
+        //given
+        CompletableFuture<ProcessInstance> multiInstanceCompletableFuture = CompletableFuture.supplyAsync(() ->
+            processBaseRuntime
+            .startProcessWithProcessDefinitionKey("serviceTaskMultiInstanceRaceConditionWithOtherProcessWithSingleInstance"));
+
+        CompletableFuture<ProcessInstance> singleInstanceCompletableFuture = CompletableFuture.supplyAsync(() -> {
+            waitForSingleInstanceServiceTaskToStart();
+
+            ProcessInstance singleInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("singleServiceTaskRaceConditionWithMultiInstance");
+            waitForFirstMultiInstanceToComplete(singleInstance);
+
+            //when
+            resumeExecutionOfSingleInstanceServiceTask();
+            return singleInstance;
+        });
+
+        //then
+        ProcessInstance multiInstance = multiInstanceCompletableFuture.get(10, TimeUnit.SECONDS);
+        ProcessInstance singleInstance = singleInstanceCompletableFuture.get(10, TimeUnit.SECONDS);
+        await().untilAsserted(() ->
+            assertThat(localEventSource.getEvents(ProcessCompletedEvent.class))
+                .extracting(RuntimeEvent::getProcessInstanceId)
+                .contains(multiInstance.getId(), singleInstance.getId())
+        );
+        await().untilAsserted(() ->
+            assertThat(localEventSource.getEvents(BPMNActivityCompletedEvent.class))
+                .filteredOn(event -> event.getEntity().getProcessInstanceId().equals(multiInstance.getId()))
+                .extracting(event -> event.getEntity().getProcessInstanceId(), event -> event.getEntity().getElementId())
+//                .containsSequence(tuple(multiInstance.getId(), "serviceTask"), tuple(multiInstance.getId(), "serviceTask"))
+                .containsExactly(tuple(multiInstance.getId(), "serviceTask"), tuple(multiInstance.getId(), "serviceTask"))
+        );
+
+    }
+
+
     private void resumeExecutionOfSingleInstanceServiceTask() {
         runtimeTestConfiguration.getMultiInstanceLatch().countDown();
         LOGGER.info("Multi-instance latch counted down . Thread: {}", Thread.currentThread().threadId());
