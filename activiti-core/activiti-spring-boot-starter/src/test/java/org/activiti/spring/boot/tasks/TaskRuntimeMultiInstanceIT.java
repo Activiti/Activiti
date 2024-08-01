@@ -45,6 +45,7 @@ import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.events.TaskAssignedEvent;
 import org.activiti.api.task.runtime.events.TaskCreatedEvent;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.RuntimeService;
 import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.activiti.spring.boot.process.ProcessBaseRuntime;
 import org.activiti.spring.boot.process.ProcessRuntimeBPMNTimerIT;
@@ -1658,8 +1659,7 @@ public class TaskRuntimeMultiInstanceIT {
             assertThat(localEventSource.getEvents(BPMNActivityCompletedEvent.class))
                 .filteredOn(event -> event.getEntity().getProcessInstanceId().equals(multiInstance.getId()))
                 .extracting(event -> event.getEntity().getProcessInstanceId(), event -> event.getEntity().getElementId())
-//                .containsSequence(tuple(multiInstance.getId(), "serviceTask"), tuple(multiInstance.getId(), "serviceTask"))
-                .containsExactly(tuple(multiInstance.getId(), "serviceTask"), tuple(multiInstance.getId(), "serviceTask"))
+                .containsSequence(tuple(multiInstance.getId(), "serviceTask"), tuple(multiInstance.getId(), "serviceTask"))
         );
 
     }

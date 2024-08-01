@@ -15,8 +15,16 @@
           </multiInstanceLoopCharacteristics>
         </serviceTask>
 
+        <boundaryEvent id="boundary" attachedToRef="serviceTask">
+          <outgoing>flow4</outgoing>
+          <errorEventDefinition id="error1" />
+        </boundaryEvent>
+
         <sequenceFlow id="flow3" name="" sourceRef="serviceTask" targetRef="theEnd"></sequenceFlow>
-        <endEvent id="theEnd"></endEvent>
+        <endEvent id="theEnd"/>
+        <sequenceFlow id="flow4" name="" sourceRef="boundary" targetRef="endExceptionFlow"></sequenceFlow>
+        <endEvent id="endExceptionFlow"/>
+
     </process>
 
 </definitions>
