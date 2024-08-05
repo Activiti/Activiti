@@ -45,7 +45,9 @@ public class DbSchemaUpdateTest extends AbstractTestCase {
 
     @Override
     protected void tearDown() throws Exception {
-        databaseContainer.stop();
+        if (databaseContainer!=null) {
+            databaseContainer.stop();
+        }
     }
 
     public void testDbSchemaUpdateToLatestEngineVersion() {
