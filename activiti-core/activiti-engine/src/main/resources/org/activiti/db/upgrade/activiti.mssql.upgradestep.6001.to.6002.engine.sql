@@ -219,4 +219,3 @@ INNER JOIN
 (
      select START_USER_ID_, PROC_INST_ID_ from ACT_HI_PROCINST
 ) innerTable ON outerTable.PROC_INST_ID_ = innerTable.PROC_INST_ID_;
-
