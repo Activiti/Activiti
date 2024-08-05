@@ -57,7 +57,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     assertThat(assigneeIndex).isGreaterThanOrEqualTo(0);
     assertThat(createTimeIndex).isGreaterThanOrEqualTo(0);
 
-    assertThat(tableMetaData.getColumnTypes().get(assigneeIndex)).isIn("CHARACTER VARYING");
+    assertThat(tableMetaData.getColumnTypes().get(assigneeIndex)).isIn("VARCHAR", "NVARCHAR2", "nvarchar", "NVARCHAR","CHARACTER VARYING");
     assertThat(tableMetaData.getColumnTypes().get(createTimeIndex)).isIn("TIMESTAMP", "TIMESTAMP(6)", "datetime", "DATETIME");
   }
 
