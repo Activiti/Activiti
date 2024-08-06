@@ -212,15 +212,3 @@ alter table ACT_RU_EXECUTION add column ID_LINK_COUNT_ integer;
 update ACT_GE_PROPERTY set VALUE_ = '6.0.0.2' where NAME_ = 'schema.version';
 
 update ACT_RU_EXECUTION as exe set START_USER_ID_ = (select START_USER_ID_ from ACT_HI_PROCINST where PROC_INST_ID_=exe.PROC_INST_ID_);
-
-UPDATE ACT_RU_EXECUTION SET IS_SCOPE_ = false
-WHERE ID_ = ( SELECT EXECUTION_ID_ FROM ACT_RU_TIMER_JOB WHERE EXECUTION_ID_ = ACT_RU_EXECUTION.ID_ AND HANDLER_TYPE_ = 'timer-intermediate-transition');
-UPDATE ACT_RU_EXECUTION SET IS_SCOPE_ = false
-WHERE ID_ = ( SELECT EXECUTION_ID_ FROM ACT_RU_SUSPENDED_JOB WHERE EXECUTION_ID_ = ACT_RU_EXECUTION.ID_ AND HANDLER_TYPE_ = 'timer-intermediate-transition');
-UPDATE ACT_RU_EXECUTION SET IS_SCOPE_ = false
-WHERE ID_ = ( SELECT EXECUTION_ID_ FROM ACT_RU_DEADLETTER_JOB WHERE EXECUTION_ID_ = ACT_RU_EXECUTION.ID_ AND HANDLER_TYPE_ = 'timer-intermediate-transition');
-
-
-update ACT_RU_TIMER_JOB set HANDLER_TYPE_ = 'trigger-timer' where HANDLER_TYPE_ = 'timer-intermediate-transition';
-update ACT_RU_SUSPENDED_JOB set HANDLER_TYPE_ = 'trigger-timer' where HANDLER_TYPE_ = 'timer-intermediate-transition';
-update ACT_RU_DEADLETTER_JOB set HANDLER_TYPE_ = 'trigger-timer' where HANDLER_TYPE_ = 'timer-intermediate-transition';
