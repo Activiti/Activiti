@@ -85,6 +85,7 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
     }
 
     @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     public ShutdownListener shutdownListener() {
         return new ShutdownListener();
     }
