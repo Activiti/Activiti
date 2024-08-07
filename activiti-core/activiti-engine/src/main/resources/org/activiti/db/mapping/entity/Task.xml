@@ -274,9 +274,8 @@
   <!-- select-clause broker (between withJoins and withoutJoins sql scripts) -->
   <select id="selectTaskByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskResultMap">
     <choose>
-      <when test="_databaseId == 'mysql5' || _databaseId == 'mariadb'">
+      <when test="_databaseId == 'mariadb'">
         <!--
-          mysql5 doesn't recognize the "withoutJoins" sql scripts
           mariadb has performance penalty when using "withoutJoins" sql scripts
         -->
         <include refid="withJoins_selectTaskByQueryCriteria"/>
@@ -288,9 +287,8 @@
   </select>
   <select id="selectTaskCountByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultType="long">
     <choose>
-      <when test="_databaseId == 'mysql5' || _databaseId == 'mariadb'">
+      <when test="_databaseId == 'mariadb'">
         <!--
-          mysql5 doesn't recognize the "withoutJoins" sql scripts
           mariadb has performance penalty when using "withoutJoins" sql scripts
         -->
         <include refid="withJoins_selectTaskCountByQueryCriteria"/>
