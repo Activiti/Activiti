@@ -1161,7 +1161,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
               // example of MariaDB 10.5.4
               //     input: vendor=MySQL, version=5.5.5-10.5.24-MariaDB-1:10.5.24+maria~ubu2004
               //     output: databaseType=mariadb
-              if (databaseProductVersion.contains("MariaDB")) {
+              if (databaseProductVersion.toLowerCase().contains("mariadb")) {
                   databaseType = DATABASE_TYPE_MARIADB;
               }
               break;
