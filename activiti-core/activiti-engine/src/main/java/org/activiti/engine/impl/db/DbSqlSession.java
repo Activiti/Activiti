@@ -140,6 +140,7 @@ public class DbSqlSession implements Session {
         ACTIVITI_VERSIONS.add(new ActivitiVersion("7.0.0.0"));
         ACTIVITI_VERSIONS.add(new ActivitiVersion("7.1.0.0"));
         ACTIVITI_VERSIONS.add(new ActivitiVersion("7.1.0-M6"));
+        ACTIVITI_VERSIONS.add(new ActivitiVersion("7.11.1"));
 
         // Ensure it's possible to upgrade schemas in 7x versions
         ACTIVITI_VERSIONS.add(new ActivitiVersion(LAST_V7_VERSION));
@@ -1478,6 +1479,10 @@ public class DbSqlSession implements Session {
 
     public boolean isMysql() {
         return dbSqlSessionFactory.getDatabaseType().equals("mysql");
+    }
+
+    public boolean isMariaDb() {
+        return dbSqlSessionFactory.getDatabaseType().equals("mariadb");
     }
 
     public boolean isOracle() {

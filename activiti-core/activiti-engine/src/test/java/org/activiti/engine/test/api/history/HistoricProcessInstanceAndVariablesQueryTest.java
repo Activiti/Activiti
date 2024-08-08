@@ -400,8 +400,10 @@ public class HistoricProcessInstanceAndVariablesQueryTest extends PluggableActiv
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
         // DeploymentId
         String deploymentId = repositoryService.createDeploymentQuery().list().get(0).getId();
+
         HistoricProcessInstanceQuery historicprocessInstanceQuery = historyService.createHistoricProcessInstanceQuery().includeProcessVariables()
                 .or().variableValueEquals("anothertest", "invalid").deploymentId(deploymentId).endOr();
+
         assertThat(historicprocessInstanceQuery.list()).hasSize(6);
         assertThat(historicprocessInstanceQuery.count()).isEqualTo(6);
         Map<String, Object> variableMap = historicprocessInstanceQuery.list().get(4).getProcessVariables();
