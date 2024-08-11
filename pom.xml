@@ -235,6 +235,12 @@
   </properties>
   <dependencyManagement>
     <dependencies>
+
+      <dependency>
+        <groupId>org.hibernate.orm</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>6.6.0.Final</version>
+      </dependency>
       <!-- Temporary Security fix  -->
       <dependency>
         <groupId>org.xmlunit</groupId>
