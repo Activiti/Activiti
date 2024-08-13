@@ -43,6 +43,8 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
 
 /**
@@ -578,6 +580,31 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     // asc - desc not called -> exception
     assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
       .isThrownBy(() -> runtimeService.createProcessInstanceQuery().orderByProcessDefinitionId().list());
+  }
+
+  @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcessWithCandidateUsersAndGroups.bpmn20.xml"})
+  public void testQueryCandidateUsersAndGroups() {
+      // given a simple process with a user task
+      // and starting two process instances
+      final ProcessInstance firstSimpleProcess = runtimeService.startProcessInstanceByKey("SimpleProcess");
+      assertThat(firstSimpleProcess).isNotNull();
+
+      final ProcessInstance secondSimpleProcess = runtimeService.startProcessInstanceByKey("SimpleProcess");
+      assertThat(secondSimpleProcess).isNotNull();
+
+      // when asked for a first task with candidate users/groups
+      final List<Task> taskList = taskService.createTaskQuery().taskName("Perform action").orderByTaskCreateTime().asc().list();
+      assertThat(taskList).hasSize(2);
+
+      Task task = taskList.get(0);
+
+      final TaskQuery taskQuery = taskService.createTaskQuery()
+          .taskId(task.getId())
+          .taskCandidateOrAssigned("hruser")
+          .taskCandidateGroupIn(List.of("hr"));
+
+      // then it should return only the requested taskId
+      assertThat(taskQuery.singleResult()).isNotNull();
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
