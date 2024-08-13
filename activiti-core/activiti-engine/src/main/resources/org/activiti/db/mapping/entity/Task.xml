@@ -1566,15 +1566,15 @@
               </if>
               <!-- if dbIdentityUsed set false in process engine configuration of using custom session factory of GroupIdentityManager -->
               <if test="candidateGroups != null">
-                and exists (
-                  select 1
-                  from ${prefix}ACT_RU_IDENTITYLINK I
-                  where
-                    I.TASK_ID_ = RES.ID_
-                    and (
-                      RES.ASSIGNEE_ = #{userIdForCandidateAndAssignee}
-                      or (
-                        RES.ASSIGNEE_ is null
+                and (
+                  RES.ASSIGNEE_ = #{userIdForCandidateAndAssignee}
+                  OR (
+                    RES.ASSIGNEE_ is null
+                    AND EXISTS (
+                      SELECT 1
+                      from ${prefix}ACT_RU_IDENTITYLINK I
+                      where
+                        I.TASK_ID_ = RES.ID_
                         and I.TYPE_ = 'candidate'
                         and (
                           I.USER_ID_ = #{userIdForCandidateAndAssignee}
@@ -1585,8 +1585,8 @@
                             </foreach>
                           </if>
                         )
-                      )
                     )
+                  )
                 )
               </if>
           </when>

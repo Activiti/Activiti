@@ -605,7 +605,36 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
 
       // then it should return only the requested taskId
       assertThat(taskQuery.singleResult()).isNotNull();
+
+
+
   }
+
+  public void testQueryCandidateOrAssignedUser() {
+      // given a new task with an assigned user
+      String taskId = "test";
+
+      Task createdTask = taskService.newTask(taskId);
+      createdTask.setName("test task description");
+      createdTask.setPriority(0);
+      createdTask.setAssignee("hruser");
+      taskService.saveTask(createdTask);
+
+      // when the task is queried by candidate or assigned user
+      final Task queriedTask = taskService.createTaskQuery()
+          .taskId(taskId)
+          .taskCandidateGroupIn(List.of("hr"))
+          .taskCandidateOrAssigned("hruser")
+          .singleResult();
+
+      // then both created and queried task should be similar
+      assertThat(queriedTask).isNotNull();
+      assertThat(queriedTask.getId()).isEqualTo(createdTask.getId());
+      assertThat(queriedTask.getName()).isEqualTo(createdTask.getName());
+      assertThat(queriedTask.getPriority()).isEqualTo(createdTask.getPriority());
+      assertThat(queriedTask.getAssignee()).isEqualTo(createdTask.getAssignee());
+  }
+
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testQueryStringVariable() {
