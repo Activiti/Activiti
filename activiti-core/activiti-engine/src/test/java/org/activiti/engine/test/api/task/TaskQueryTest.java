@@ -2661,6 +2661,33 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertThat(task.getDescription()).isEqualTo("My 'en' localized description");
   }
 
+    public void testQueryCandidateOrAssignedUser() {
+        // given a new task with an assigned user
+        String taskId = "test";
+
+        Task createdTask = taskService.newTask(taskId);
+        createdTask.setName("test task description");
+        createdTask.setPriority(0);
+        createdTask.setAssignee("hruser");
+        taskService.saveTask(createdTask);
+
+        // when the task is queried by candidate or assigned user
+        final Task queriedTask = taskService.createTaskQuery()
+            .taskId(taskId)
+            .taskCandidateGroupIn(List.of("hr"))
+            .taskCandidateOrAssigned("hruser")
+            .singleResult();
+
+        // then both created and queried task should be similar
+        assertThat(queriedTask).isNotNull();
+        assertThat(queriedTask.getId()).isEqualTo(createdTask.getId());
+        assertThat(queriedTask.getName()).isEqualTo(createdTask.getName());
+        assertThat(queriedTask.getPriority()).isEqualTo(createdTask.getPriority());
+        assertThat(queriedTask.getAssignee()).isEqualTo(createdTask.getAssignee());
+
+        taskIds.add(taskId);
+    }
+
   /**
    * Generates some test tasks. - 6 tasks where kermit is a candidate - 1 tasks where gonzo is assignee - 2 tasks assigned to management group - 2 tasks assigned to accountancy group - 1 task assigned
    * to both the management and accountancy group
