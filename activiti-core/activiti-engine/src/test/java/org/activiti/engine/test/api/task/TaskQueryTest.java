@@ -2662,8 +2662,9 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
   }
 
     public void testQueryCandidateOrAssignedUser() {
-        // given a new task with an assigned user
+        // given two new tasks assigned to the same user
         String taskId = "test";
+        String task2Id = "test 2";
 
         Task createdTask = taskService.newTask(taskId);
         createdTask.setName("test task description");
@@ -2671,14 +2672,20 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
         createdTask.setAssignee("hruser");
         taskService.saveTask(createdTask);
 
-        // when the task is queried by candidate or assigned user
+        Task created2Task = taskService.newTask(task2Id);
+        created2Task.setName("test task description");
+        created2Task.setPriority(0);
+        created2Task.setAssignee("hruser");
+        taskService.saveTask(created2Task);
+
+        // when the first created task is queried by candidate or assigned user
         final Task queriedTask = taskService.createTaskQuery()
             .taskId(taskId)
             .taskCandidateGroupIn(List.of("hr"))
             .taskCandidateOrAssigned("hruser")
             .singleResult();
 
-        // then both created and queried task should be similar
+        // then first created task and queried task should be similar
         assertThat(queriedTask).isNotNull();
         assertThat(queriedTask.getId()).isEqualTo(createdTask.getId());
         assertThat(queriedTask.getName()).isEqualTo(createdTask.getName());
@@ -2686,6 +2693,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
         assertThat(queriedTask.getAssignee()).isEqualTo(createdTask.getAssignee());
 
         taskIds.add(taskId);
+        taskIds.add(task2Id);
     }
 
   /**
