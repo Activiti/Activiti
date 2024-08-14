@@ -1555,37 +1555,45 @@
               <!-- if dbIdentityUsed set true in process engine configuration -->
               <if test="userIdForCandidateAndAssignee != null">
                 <if test="candidateGroups == null">
-                  and RES.ASSIGNEE_ = #{userIdForCandidateAndAssignee}
-                  or exists (
-                    select 1
+                  and (
+                    RES.ASSIGNEE_ = #{userIdForCandidateAndAssignee}
+                    OR (
+                      RES.ASSIGNEE_ is null
+                      AND EXISTS (
+                        SELECT 1
                     from ${prefix}ACT_RU_IDENTITYLINK I
                     where
                       I.TASK_ID_ = RES.ID_
-                      and RES.ASSIGNEE_ is null
+                          and I.TYPE_ = 'candidate'
                       and I.USER_ID_ = #{userIdForCandidateAndAssignee}
+                  )
+                    )
                   )
                 </if>
               </if>
               <!-- if dbIdentityUsed set false in process engine configuration of using custom session factory of GroupIdentityManager -->
               <if test="candidateGroups != null">
-                and RES.ASSIGNEE_ = #{userIdForCandidateAndAssignee}
-                or exists (
-                  select 1
+                and (
+                  RES.ASSIGNEE_ = #{userIdForCandidateAndAssignee}
+                  OR (
+                    RES.ASSIGNEE_ is null
+                    AND EXISTS (
+                      SELECT 1
                   from ${prefix}ACT_RU_IDENTITYLINK I
                   where
                     I.TASK_ID_ = RES.ID_
-                    and RES.ASSIGNEE_ is null
                     and I.TYPE_ = 'candidate'
                     and (
                       I.USER_ID_ = #{userIdForCandidateAndAssignee}
                       <if test="candidateGroups.size() &gt; 0">
                       or I.GROUP_ID_ IN
-                      <foreach item="group" index="index" collection="candidateGroups"
-                           open="(" separator="," close=")">
+                            <foreach item="group" index="index" collection="candidateGroups" open="(" separator="," close=")">
                     #{group}
                   </foreach>
                       </if>
                     )
+                )
+                  )
                 )
               </if>
           </when>
@@ -1999,24 +2007,27 @@
                     </if>
                     <!-- if dbIdentityUsed set false in process engine configuration of using custom session factory of GroupIdentityManager -->
                     <if test="orQueryObject.candidateGroups != null">
-                      or RES.ASSIGNEE_ = #{orQueryObject.userIdForCandidateAndAssignee}
-                      or exists (
-                        select 1
+                      or (
+                        RES.ASSIGNEE_ = #{orQueryObject.userIdForCandidateAndAssignee}
+                        OR (
+                          RES.ASSIGNEE_ is null
+                          AND EXISTS (
+                            SELECT 1
                         from ${prefix}ACT_RU_IDENTITYLINK I_OR${orIndex}
                         where
                           I_OR${orIndex}.TASK_ID_ = RES.ID_
-                          and RES.ASSIGNEE_ is null
                           and I_OR${orIndex}.TYPE_ = 'candidate'
                           and (
                             I_OR${orIndex}.USER_ID_ = #{orQueryObject.userIdForCandidateAndAssignee}
                             <if test="orQueryObject.candidateGroups.size() &gt; 0">
                               or I_OR${orIndex}.GROUP_ID_ IN
-                              <foreach item="group" index="index" collection="orQueryObject.candidateGroups"
-                                       open="(" separator="," close=")">
+                                  <foreach item="group" index="index" collection="orQueryObject.candidateGroups" open="(" separator="," close=")">
                                 #{group}
                               </foreach>
                             </if>
                           )
+                      )
+                        )
                       )
                     </if>
               </when>
