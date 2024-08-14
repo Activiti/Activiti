@@ -2669,14 +2669,16 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
         Task createdTask = taskService.newTask(taskId);
         createdTask.setName("test task description");
         createdTask.setPriority(0);
-        createdTask.setAssignee("hruser");
         taskService.saveTask(createdTask);
+        taskService.addCandidateUser(taskId, "hruser");
+        taskService.addCandidateGroup(taskId, "hr");
 
         Task created2Task = taskService.newTask(task2Id);
         created2Task.setName("test task description");
         created2Task.setPriority(0);
-        created2Task.setAssignee("hruser");
         taskService.saveTask(created2Task);
+        taskService.addCandidateUser(task2Id, "hruser");
+        taskService.addCandidateGroup(task2Id, "hr");
 
         // when the first created task is queried by candidate or assigned user
         final Task queriedTask = taskService.createTaskQuery()
