@@ -2661,6 +2661,79 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertThat(task.getDescription()).isEqualTo("My 'en' localized description");
   }
 
+    public void testQueryCandidateOrAssignedUserAndCandidateGroupsIn() {
+        // given two new tasks assigned to the same user
+        String taskId = "test";
+        String task2Id = "test 2";
+
+        Task createdTask = taskService.newTask(taskId);
+        createdTask.setName("test task description");
+        createdTask.setPriority(0);
+        taskService.saveTask(createdTask);
+        taskService.addCandidateUser(taskId, "hruser");
+        taskService.addCandidateGroup(taskId, "hr");
+
+        Task created2Task = taskService.newTask(task2Id);
+        created2Task.setName("test task description");
+        created2Task.setPriority(0);
+        taskService.saveTask(created2Task);
+        taskService.addCandidateUser(task2Id, "hruser");
+        taskService.addCandidateGroup(task2Id, "hr");
+
+        // when the first created task is queried by candidate or assigned user
+        final Task queriedTask = taskService.createTaskQuery()
+            .taskId(taskId)
+            .taskCandidateGroupIn(List.of("hr"))
+            .taskCandidateOrAssigned("hruser")
+            .singleResult();
+
+        // then first created task and queried task should be similar
+        assertThat(queriedTask).isNotNull();
+        assertThat(queriedTask.getId()).isEqualTo(createdTask.getId());
+        assertThat(queriedTask.getName()).isEqualTo(createdTask.getName());
+        assertThat(queriedTask.getPriority()).isEqualTo(createdTask.getPriority());
+        assertThat(queriedTask.getAssignee()).isEqualTo(createdTask.getAssignee());
+
+        taskIds.add(taskId);
+        taskIds.add(task2Id);
+    }
+
+    public void testQueryCandidateOrAssignedUser() {
+        // given two new tasks assigned to the same user
+        String taskId = "test";
+        String task2Id = "test 2";
+
+        Task createdTask = taskService.newTask(taskId);
+        createdTask.setName("test task description");
+        createdTask.setPriority(0);
+        taskService.saveTask(createdTask);
+        taskService.addCandidateUser(taskId, "hruser");
+
+        Task created2Task = taskService.newTask(task2Id);
+        created2Task.setName("test task description");
+        created2Task.setPriority(0);
+        taskService.saveTask(created2Task);
+        taskService.addCandidateUser(task2Id, "hruser");
+
+        // when the first created task is queried by candidate or assigned user
+        final Task queriedTask = taskService.createTaskQuery()
+            .taskId(taskId)
+            .taskCandidateOrAssigned("hruser")
+            .singleResult();
+
+        // then first created task and queried task should be similar
+        assertThat(queriedTask).isNotNull();
+        assertThat(queriedTask.getId()).isEqualTo(createdTask.getId());
+        assertThat(queriedTask.getName()).isEqualTo(createdTask.getName());
+        assertThat(queriedTask.getPriority()).isEqualTo(createdTask.getPriority());
+        assertThat(queriedTask.getAssignee()).isEqualTo(createdTask.getAssignee());
+
+        taskIds.add(taskId);
+        taskIds.add(task2Id);
+    }
+
+
+
   /**
    * Generates some test tasks. - 6 tasks where kermit is a candidate - 1 tasks where gonzo is assignee - 2 tasks assigned to management group - 2 tasks assigned to accountancy group - 1 task assigned
    * to both the management and accountancy group
