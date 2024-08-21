@@ -1,1 +1,1 @@
-alter table ACT_RU_IDENTITYLINK add column DETAILS_ BLOB;
+alter table ACT_RU_IDENTITYLINK add DETAILS_ BLOB;
