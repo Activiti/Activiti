@@ -52,8 +52,7 @@ public class ServiceTaskValidator extends ExternalInvocationTaskValidator {
         && !ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE.equalsIgnoreCase(serviceTask.getImplementationType())
             && StringUtils.isEmpty(serviceTask.getType())
             && StringUtils.isEmpty(serviceTask.getImplementation())) {
-      addError(errors, Problems.SERVICE_TASK_MISSING_IMPLEMENTATION, process, serviceTask,
-          "One of the attributes 'implementation', 'class', 'delegateExpression', 'type', 'operation', or 'expression' is mandatory on serviceTask.");
+      addError(errors, Problems.SERVICE_TASK_MISSING_IMPLEMENTATION, process, serviceTask);
     }
   }
 
@@ -63,7 +62,7 @@ public class ServiceTaskValidator extends ExternalInvocationTaskValidator {
       if (!serviceTask.getType().equalsIgnoreCase("mail") && !serviceTask.getType().equalsIgnoreCase("mule") && !serviceTask.getType().equalsIgnoreCase("camel")
           && !serviceTask.getType().equalsIgnoreCase("shell") && !serviceTask.getType().equalsIgnoreCase("dmn")) {
 
-        addError(errors, Problems.SERVICE_TASK_INVALID_TYPE, process, serviceTask, "Invalid or unsupported service task type");
+        addError(errors, Problems.SERVICE_TASK_INVALID_TYPE, process, serviceTask);
       }
 
       if (serviceTask.getType().equalsIgnoreCase("mail")) {
@@ -81,7 +80,7 @@ public class ServiceTaskValidator extends ExternalInvocationTaskValidator {
     if (StringUtils.isNotEmpty(serviceTask.getResultVariableName())
         && (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(serviceTask.getImplementationType()) || ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(serviceTask
             .getImplementationType()))) {
-      addError(errors, Problems.SERVICE_TASK_RESULT_VAR_NAME_WITH_DELEGATE, process, serviceTask, "'resultVariableName' not supported for service tasks using 'class' or 'delegateExpression");
+      addError(errors, Problems.SERVICE_TASK_RESULT_VAR_NAME_WITH_DELEGATE, process, serviceTask);
     }
   }
 
@@ -102,7 +101,7 @@ public class ServiceTaskValidator extends ExternalInvocationTaskValidator {
       }
 
       if (!operationFound) {
-        addError(errors, Problems.SERVICE_TASK_WEBSERVICE_INVALID_OPERATION_REF, process, serviceTask, "Invalid operation reference");
+        addError(errors, Problems.SERVICE_TASK_WEBSERVICE_INVALID_OPERATION_REF, process, serviceTask);
       }
 
     }

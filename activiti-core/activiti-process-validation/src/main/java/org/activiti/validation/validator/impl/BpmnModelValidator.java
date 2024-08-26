@@ -17,6 +17,7 @@
 package org.activiti.validation.validator.impl;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,8 +40,7 @@ public class BpmnModelValidator extends ValidatorImpl {
 
     List<Process> processesDuplicated = getProcessesWithSameId(bpmnModel.getProcesses());
     if(! processesDuplicated.isEmpty() ) {
-        addError(errors, Problems.PROCESS_DEFINITION_ID_NOT_UNIQUE, processesDuplicated.get(0),
-            "The id of the process definition must be unique");
+        addError(errors, Problems.PROCESS_DEFINITION_ID_NOT_UNIQUE, processesDuplicated.get(0));
     }
 
     // If all process definitions of this bpmnModel are not executable, raise an error
@@ -50,8 +50,7 @@ public class BpmnModelValidator extends ValidatorImpl {
     if (isAtLeastOneExecutable) {
       for (Process process : bpmnModel.getProcesses()) {
         if (!process.isExecutable()) {
-          addWarning(errors, Problems.PROCESS_DEFINITION_NOT_EXECUTABLE, process, process,
-              "Process definition is not executable. Please verify that this is intentional.");
+          addWarning(errors, Problems.PROCESS_DEFINITION_NOT_EXECUTABLE, process, process);
         }
         handleProcessConstraints(bpmnModel, process, errors);
       }
@@ -61,23 +60,27 @@ public class BpmnModelValidator extends ValidatorImpl {
 
   protected void handleProcessConstraints(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
     if (process.getId() != null && process.getId().length() > Constraints.PROCESS_DEFINITION_ID_MAX_LENGTH) {
-      addError(errors, Problems.PROCESS_DEFINITION_ID_TOO_LONG, process,
-          "The id of the process definition must not contain more than " + Constraints.PROCESS_DEFINITION_ID_MAX_LENGTH + " characters");
+      Map<String, String> params = new HashMap<>();
+      params.put("maxLength", String.valueOf(Constraints.PROCESS_DEFINITION_ID_MAX_LENGTH));
+      addError(errors, Problems.PROCESS_DEFINITION_ID_TOO_LONG, process, params);
     }
     if (process.getName() != null && process.getName().length() > Constraints.PROCESS_DEFINITION_NAME_MAX_LENGTH) {
-      addError(errors, Problems.PROCESS_DEFINITION_NAME_TOO_LONG, process,
-          "The name of the process definition must not contain more than " + Constraints.PROCESS_DEFINITION_NAME_MAX_LENGTH + " characters");
+      Map<String, String> params = new HashMap<>();
+      params.put("maxLength", String.valueOf(Constraints.PROCESS_DEFINITION_NAME_MAX_LENGTH));
+      addError(errors, Problems.PROCESS_DEFINITION_NAME_TOO_LONG, process, params);
     }
     if (process.getDocumentation() != null && process.getDocumentation().length() > Constraints.PROCESS_DEFINITION_DOCUMENTATION_MAX_LENGTH) {
-      addError(errors, Problems.PROCESS_DEFINITION_DOCUMENTATION_TOO_LONG, process,
-          "The documentation of the process definition must not contain more than " + Constraints.PROCESS_DEFINITION_DOCUMENTATION_MAX_LENGTH + " characters");
+      Map<String, String> params = new HashMap<>();
+      params.put("maxLength", String.valueOf(Constraints.PROCESS_DEFINITION_DOCUMENTATION_MAX_LENGTH));
+      addError(errors, Problems.PROCESS_DEFINITION_DOCUMENTATION_TOO_LONG, process, params);
     }
   }
 
   protected void handleBPMNModelConstraints(BpmnModel bpmnModel, List<ValidationError> errors) {
     if (bpmnModel.getTargetNamespace() != null && bpmnModel.getTargetNamespace().length() > Constraints.BPMN_MODEL_TARGET_NAMESPACE_MAX_LENGTH) {
-      addError(errors, Problems.BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG,
-          "The targetNamespace of the bpmn model must not contain more than " + Constraints.BPMN_MODEL_TARGET_NAMESPACE_MAX_LENGTH + " characters");
+      Map<String, String> params = new HashMap<>();
+      params.put("maxLength", String.valueOf(Constraints.BPMN_MODEL_TARGET_NAMESPACE_MAX_LENGTH));
+      addError(errors, Problems.BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG, params);
     }
   }
 
@@ -93,8 +96,7 @@ public class BpmnModelValidator extends ValidatorImpl {
 		}
 
 		if (nrOfExecutableDefinitions == 0) {
-			addError(errors, Problems.ALL_PROCESS_DEFINITIONS_NOT_EXECUTABLE,
-					"All process definition are set to be non-executable (property 'isExecutable' on process). This is not allowed.");
+			addError(errors, Problems.ALL_PROCESS_DEFINITIONS_NOT_EXECUTABLE);
 		}
 
 		return nrOfExecutableDefinitions > 0;

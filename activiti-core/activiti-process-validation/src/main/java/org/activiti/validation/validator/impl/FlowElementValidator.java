@@ -16,8 +16,10 @@
 
 package org.activiti.validation.validator.impl;
 
+import java.util.HashMap;
 import java.util.List;
 
+import java.util.Map;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.DataAssociation;
@@ -68,8 +70,9 @@ public class FlowElementValidator extends ProcessLevelValidator {
 
 	protected void handleConstraints(Process process, Activity activity, List<ValidationError> errors) {
 		if (activity.getId() != null && activity.getId().length() > ID_MAX_LENGTH) {
-			addError(errors, Problems.FLOW_ELEMENT_ID_TOO_LONG, process, activity,
-					"The id of a flow element must not contain more than " + ID_MAX_LENGTH + " characters");
+			Map<String, String> params = new HashMap<>();
+			params.put("maxLength", String.valueOf(ID_MAX_LENGTH));
+			addError(errors, Problems.FLOW_ELEMENT_ID_TOO_LONG, process, activity, params);
 		}
 	}
 
@@ -80,8 +83,7 @@ public class FlowElementValidator extends ProcessLevelValidator {
 			if (StringUtils.isEmpty(multiInstanceLoopCharacteristics.getLoopCardinality())
 	    		&& StringUtils.isEmpty(multiInstanceLoopCharacteristics.getInputDataItem())) {
 
-			  addError(errors, Problems.MULTI_INSTANCE_MISSING_COLLECTION, process, activity,
-	    			"Either loopCardinality or loopDataInputRef/activiti:collection must been set");
+			  addError(errors, Problems.MULTI_INSTANCE_MISSING_COLLECTION, process, activity);
 	    }
 
 		}
@@ -91,16 +93,14 @@ public class FlowElementValidator extends ProcessLevelValidator {
 	  if (activity.getDataInputAssociations() != null) {
 	  	for (DataAssociation dataAssociation : activity.getDataInputAssociations()) {
 	  		if (StringUtils.isEmpty(dataAssociation.getTargetRef())) {
-	  			 addError(errors, Problems.DATA_ASSOCIATION_MISSING_TARGETREF, process, activity,
-	  					 "Targetref is required on a data association");
+	  			 addError(errors, Problems.DATA_ASSOCIATION_MISSING_TARGETREF, process, activity);
 	  	    }
 	  	}
 	  }
 	  if (activity.getDataOutputAssociations() != null) {
 	  	for (DataAssociation dataAssociation : activity.getDataOutputAssociations()) {
 	  		if (StringUtils.isEmpty(dataAssociation.getTargetRef())) {
-	  			 addError(errors, Problems.DATA_ASSOCIATION_MISSING_TARGETREF, process, activity,
-	  					 "Targetref is required on a data association");
+	  			 addError(errors, Problems.DATA_ASSOCIATION_MISSING_TARGETREF, process, activity);
 	  	    }
 	  	}
 	  }

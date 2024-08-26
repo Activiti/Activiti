@@ -17,11 +17,9 @@
 package org.activiti.validation.validator.impl;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.Error;
 import org.activiti.validation.ValidationError;
 import org.activiti.validation.validator.Problems;
 import org.activiti.validation.validator.ValidatorImpl;
@@ -41,8 +39,8 @@ public class ErrorValidator extends ValidatorImpl {
                                        .forEach(error -> addError(errors,
                                                                   Problems.ERROR_MISSING_ERROR_CODE,
                                                                   null,
-                                                                  error.getId(),
-                                                                  "Invalid error code: empty errorCode")));
+                                                                  error.getId()
+                                       )));
   }
 
 }

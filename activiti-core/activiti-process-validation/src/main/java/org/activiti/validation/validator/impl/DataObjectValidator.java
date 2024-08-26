@@ -47,7 +47,7 @@ public class DataObjectValidator extends ProcessLevelValidator {
     // Validate
     for (ValuedDataObject dataObject : allDataObjects) {
       if (StringUtils.isEmpty(dataObject.getName())) {
-        addError(errors, Problems.DATA_OBJECT_MISSING_NAME, process, dataObject, "Name is mandatory for a data object");
+        addError(errors, Problems.DATA_OBJECT_MISSING_NAME, process, dataObject);
       }
     }
 

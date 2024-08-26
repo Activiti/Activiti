@@ -15,19 +15,27 @@
  */
 package org.activiti.validation.validator.impl;
 
-import java.util.ArrayList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.ServiceTask;
-import org.activiti.validation.ValidationError;
+import org.activiti.validation.ProcessValidatorImpl;
+import org.activiti.validation.validator.ValidatorSet;
+import org.activiti.validation.validator.ValidatorSetNames;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class ServiceTaskValidatorTest {
 
-    private ServiceTaskValidator validator = new ServiceTaskValidator();
+    ValidatorSet validatorSet = new ValidatorSet(ValidatorSetNames.ACTIVITI_EXECUTABLE_PROCESS);
+    ProcessValidatorImpl validator = new ProcessValidatorImpl();
+
+    @BeforeEach
+    void setUp() {
+        validatorSet.addValidator(new ServiceTaskValidator());
+        validator.addValidatorSet(validatorSet);
+    }
 
     @Test
     public void executeValidationShouldRiseErrorsForEmptyServiceTask() {
@@ -35,11 +43,10 @@ public class ServiceTaskValidatorTest {
         Process process = new Process();
         process.addFlowElement(new ServiceTask());
         BpmnModel bpmnModel = new BpmnModel();
-        ArrayList<ValidationError> errors = new ArrayList<>();
+        bpmnModel.addProcess(process);
 
         //when
-        validator.executeValidation(bpmnModel, process,
-                                    errors);
+        var errors = validator.validate(bpmnModel);
 
         //then
         assertThat(errors).hasSize(1);
@@ -58,11 +65,10 @@ public class ServiceTaskValidatorTest {
         serviceTask.setImplementation("myImpl");
         process.addFlowElement(serviceTask);
         BpmnModel bpmnModel = new BpmnModel();
-        ArrayList<ValidationError> errors = new ArrayList<>();
+        bpmnModel.addProcess(process);
 
         //when
-        validator.executeValidation(bpmnModel, process,
-                                    errors);
+        var errors = validator.validate(bpmnModel);
 
         //then
         assertThat(errors)
