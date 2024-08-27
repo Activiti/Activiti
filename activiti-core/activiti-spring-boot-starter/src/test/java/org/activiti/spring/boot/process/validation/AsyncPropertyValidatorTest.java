@@ -15,20 +15,29 @@
  */
 package org.activiti.spring.boot.process.validation;
 
-import java.util.ArrayList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.impl.util.io.InputStreamSource;
+import org.activiti.validation.ProcessValidatorImpl;
 import org.activiti.validation.ValidationError;
+import org.activiti.validation.validator.ValidatorSet;
+import org.activiti.validation.validator.ValidatorSetNames;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 
 public class AsyncPropertyValidatorTest {
 
-    private AsyncPropertyValidator asyncPropertyValidator = new AsyncPropertyValidator();
+    ValidatorSet validatorSet = new ValidatorSet(ValidatorSetNames.ACTIVITI_EXECUTABLE_PROCESS);
+    ProcessValidatorImpl validator = new ProcessValidatorImpl();
+
+    @BeforeEach
+    void setUp() {
+        validatorSet.addValidator(new AsyncPropertyValidator());
+        validator.addValidatorSet(validatorSet);
+    }
 
     @Test
     public void shouldCheckAsyncPropertyWhenAsyncExecutorIsDisabled() {
@@ -42,9 +51,7 @@ public class AsyncPropertyValidatorTest {
 
 
         //when
-        ArrayList<ValidationError> validationErrors = new ArrayList<>();
-        asyncPropertyValidator.validate(bpmnModel,
-                                        validationErrors);
+        var validationErrors = validator.validate(bpmnModel);
 
         //then
         assertThat(validationErrors)
