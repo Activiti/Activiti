@@ -1,0 +1,302 @@
+{
+  "ALL_PROCESS_DEFINITIONS_NOT_EXECUTABLE": {
+    "problem": "activiti-process-definition-not-executable",
+    "description": "All process definition are set to be non-executable (property 'isExecutable' on process). This is not allowed."
+  },
+  "PROCESS_DEFINITION_NOT_EXECUTABLE": {
+    "problem": "activiti-specific-process-definition-not-executable",
+    "description": "Process definition is not executable. Please verify that this is intentional."
+  },
+  "ASSOCIATION_INVALID_SOURCE_REFERENCE": {
+    "problem": "activiti-asscociation-invalid-source-reference",
+    "description": "association element missing attribute 'sourceRef'"
+  },
+  "ASSOCIATION_INVALID_TARGET_REFERENCE": {
+    "problem": "activiti-asscociation-invalid-target-reference",
+    "description": "association element missing attribute 'targetRef'"
+  },
+  "EXECUTION_LISTENER_IMPLEMENTATION_MISSING": {
+    "problem": "activiti-execution-listener-implementation-missing",
+    "description": "Element 'class' or 'expression' is mandatory on executionListener"
+  },
+  "EXECUTION_LISTENER_INVALID_IMPLEMENTATION_TYPE": {
+    "problem": "activiti-execution-listener-invalid-implementation-type",
+    "description": "Expression cannot be used when using 'onTransaction'"
+  },
+  "EVENT_LISTENER_IMPLEMENTATION_MISSING": {
+    "problem": "activiti-event-listener-implementation-missing",
+    "description": "Element 'class', 'delegateExpression' or 'throwEvent' is mandatory on eventListener"
+  },
+  "EVENT_LISTENER_INVALID_IMPLEMENTATION": {
+    "problem": "activiti-event-listener-invalid-implementation",
+    "description": "Unsupported implementation type for event listener"
+  },
+  "EVENT_LISTENER_INVALID_THROW_EVENT_TYPE": {
+    "problem": "activiti-event-listener-invalid-throw-event-type",
+    "description": "Invalid or unsupported throw event type on event listener"
+  },
+  "START_EVENT_MULTIPLE_FOUND": {
+    "problem": "activiti-start-event-multiple-found",
+    "description": "Multiple none start events are not supported"
+  },
+  "START_EVENT_INVALID_EVENT_DEFINITION": {
+    "problem": "activiti-start-event-invalid-event-definition",
+    "description": "Unsupported event definition on start event"
+  },
+  "SEQ_FLOW_INVALID_SRC": {
+    "problem": "activiti-seq-flow-invalid-src",
+    "description": "Invalid source for sequenceflow"
+  },
+  "SEQ_FLOW_INVALID_TARGET": {
+    "problem": "activiti-seq-flow-invalid-target",
+    "description": "Invalid target for sequenceflow"
+  },
+  "SEQ_FLOW_INVALID_TARGET_DIFFERENT_SCOPE": {
+    "problem": "activiti-seq-flow-invalid-target",
+    "description": "Invalid target for sequenceflow, the target isn't defined in the same scope as the source"
+  },
+  "SEQ_FLOW_INVALID_CONDITIONAL_EXPRESSION": {
+    "problem": "activiti-seq-flow-invalid-conditional-expression",
+    "description": "Conditional expression is not valid"
+  },
+  "USER_TASK_LISTENER_IMPLEMENTATION_MISSING": {
+    "problem": "activiti-usertask-listener-implementation-missing",
+    "description": "Element 'class' or 'expression' is mandatory on executionListener"
+  },
+  "SERVICE_TASK_INVALID_TYPE": {
+    "problem": "activiti-servicetask-invalid-type",
+    "description": "Invalid or unsupported service task type"
+  },
+  "SERVICE_TASK_RESULT_VAR_NAME_WITH_DELEGATE": {
+    "problem": "activiti-servicetask-result-var-name-with-delegate",
+    "description": "'resultVariableName' not supported for service tasks using 'class' or 'delegateExpression"
+  },
+  "SERVICE_TASK_MISSING_IMPLEMENTATION": {
+    "problem": "activiti-servicetask-missing-implementation",
+    "description": "One of the attributes 'implementation', 'class', 'delegateExpression', 'type', 'operation', or 'expression' is mandatory on serviceTask."
+  },
+  "SERVICE_TASK_WEBSERVICE_INVALID_OPERATION_REF": {
+    "problem": "activiti-servicetask-webservice-invalid-operation-ref",
+    "description": "Invalid operation reference"
+  },
+  "SEND_TASK_INVALID_IMPLEMENTATION": {
+    "problem": "activiti-sendtask-invalid-implementation",
+    "description": "One of the attributes 'type' or 'operation' is mandatory on sendTask"
+  },
+  "SEND_TASK_INVALID_TYPE": {
+    "problem": "activiti-sendtask-invalid-type",
+    "description": "Invalid or unsupported type for send task"
+  },
+  "SEND_TASK_WEBSERVICE_INVALID_OPERATION_REF": {
+    "problem": "activiti-send-webservice-invalid-operation-ref",
+    "description": "Invalid operation reference for send task"
+  },
+  "SCRIPT_TASK_MISSING_SCRIPT": {
+    "problem": "activiti-scripttask-missing-script",
+    "description": "No script provided for script task"
+  },
+  "MAIL_TASK_NO_RECIPIENT": {
+    "problem": "activiti-mailtask-no-recipient",
+    "description": "No recipient is defined on the mail activity"
+  },
+  "MAIL_TASK_NO_CONTENT": {
+    "problem": "activiti-mailtask-no-content",
+    "description": "Text, html, textVar or htmlVar field should be provided"
+  },
+  "SHELL_TASK_NO_COMMAND": {
+    "problem": "activiti-shelltask-no-command",
+    "description": "No shell command is defined on the shell activity"
+  },
+  "SHELL_TASK_INVALID_PARAM": {
+    "problem": "activiti-shelltask-invalid-param",
+    "description": "Undefined parameter value for shell field"
+  },
+  "DMN_TASK_NO_KEY": {
+    "problem": "activiti-dmntask-no-decision-table-key",
+    "description": "No decision table reference key is defined on the dmn activity"
+  },
+  "EXCLUSIVE_GATEWAY_NO_OUTGOING_SEQ_FLOW": {
+    "problem": "activiti-exclusive-gateway-no-outgoing-seq-flow",
+    "description": "Exclusive gateway has no outgoing sequence flow"
+  },
+  "EXCLUSIVE_GATEWAY_CONDITION_NOT_ALLOWED_ON_SINGLE_SEQ_FLOW": {
+    "problem": "activiti-exclusive-gateway-condition-not-allowed-on-single-seq-flow",
+    "description": "Exclusive gateway has only one outgoing sequence flow. This is not allowed to have a condition."
+  },
+  "EXCLUSIVE_GATEWAY_CONDITION_ON_DEFAULT_SEQ_FLOW": {
+    "problem": "activiti-exclusive-gateway-condition-on-seq-flow",
+    "description": "Default sequenceflow has a condition, which is not allowed"
+  },
+  "EXCLUSIVE_GATEWAY_SEQ_FLOW_WITHOUT_CONDITIONS": {
+    "problem": "activiti-exclusive-gateway-seq-flow-without-conditions",
+    "description": "Exclusive gateway has at least one outgoing sequence flow without a condition (which isn't the default one)"
+  },
+  "EVENT_GATEWAY_ONLY_CONNECTED_TO_INTERMEDIATE_EVENTS": {
+    "problem": "activiti-event-gateway-only-connected-to-intermediate-events",
+    "description": "Event based gateway can only be connected to elements of type intermediateCatchEvent"
+  },
+  "BPMN_MODEL_TARGET_NAMESPACE_TOO_LONG": {
+    "problem": "activiti-bpmn-model-target-namespace-too-long",
+    "description": "The targetNamespace of the bpmn model must not contain more than {{maxLength}} characters"
+  },
+  "PROCESS_DEFINITION_ID_NOT_UNIQUE": {
+    "problem": "activiti-process-definition-id-duplicated",
+    "description": "The id of the process definition must be unique"
+  },
+  "PROCESS_DEFINITION_ID_TOO_LONG": {
+    "problem": "activiti-process-definition-id-too-long",
+    "description": "The id of the process definition must not contain more than {{maxLength}} characters"
+  },
+  "PROCESS_DEFINITION_NAME_TOO_LONG": {
+    "problem": "activiti-process-definition-name-too-long",
+    "description": "The name of the process definition must not contain more than {{maxLength}} characters"
+  },
+  "PROCESS_DEFINITION_DOCUMENTATION_TOO_LONG": {
+    "problem": "activiti-process-definition-documentation-too-long",
+    "description": "The documentation of the process definition must not contain more than {{maxLength}} characters"
+  },
+  "FLOW_ELEMENT_ID_TOO_LONG": {
+    "problem": "activiti-flow-element-id-too-long",
+    "description": "The id of a flow element must not contain more than {{maxLength}} characters"
+  },
+  "SUBPROCESS_MULTIPLE_START_EVENTS": {
+    "problem": "activiti-subprocess-multiple-start-event",
+    "description": "Multiple start events not supported for subprocess"
+  },
+  "SUBPROCESS_START_EVENT_EVENT_DEFINITION_NOT_ALLOWED": {
+    "problem": "activiti-subprocess-start-event-event-definition-not-allowed",
+    "description": "event definitions only allowed on start event if subprocess is an event subprocess"
+  },
+  "EVENT_SUBPROCESS_INVALID_START_EVENT_DEFINITION": {
+    "problem": "activiti-event-subprocess-invalid-start-event-definition",
+    "description": "start event of event subprocess must be of type 'error', 'message' or 'signal'"
+  },
+  "BOUNDARY_EVENT_NO_EVENT_DEFINITION": {
+    "problem": "activiti-boundary-event-no-event-definition",
+    "description": "Event definition is missing from boundary event"
+  },
+  "BOUNDARY_EVENT_INVALID_EVENT_DEFINITION": {
+    "problem": "activiti-boundary-event-invalid-event-definition",
+    "description": "Invalid or unsupported event definition"
+  },
+  "BOUNDARY_EVENT_CANCEL_ONLY_ON_TRANSACTION": {
+    "problem": "activiti-boundary-event-cancel-only-on-transaction",
+    "description": "boundary event with cancelEventDefinition only supported on transaction subprocesses"
+  },
+  "BOUNDARY_EVENT_MULTIPLE_CANCEL_ON_TRANSACTION": {
+    "problem": "activiti-boundary-event-multiple-cancel-on-transaction",
+    "description": "multiple boundary events with cancelEventDefinition not supported on same transaction subprocess."
+  },
+  "INTERMEDIATE_CATCH_EVENT_NO_EVENTDEFINITION": {
+    "problem": "activiti-intermediate-catch-event-no-eventdefinition",
+    "description": "No event definition for intermediate catch event"
+  },
+  "INTERMEDIATE_CATCH_EVENT_INVALID_EVENTDEFINITION": {
+    "problem": "activiti-intermediate-catch-event-invalid-eventdefinition",
+    "description": "Unsupported intermediate catch event type"
+  },
+  "ERROR_MISSING_ERROR_CODE": {
+    "problem": "activiti-error-missing-error-code",
+    "description": "Invalid error code: empty errorCode"
+  },
+  "EVENT_TIMER_MISSING_CONFIGURATION": {
+    "problem": "activiti-event-timer-missing-configuration",
+    "description": "Timer needs configuration (either timeDate, timeCycle or timeDuration is needed)"
+  },
+  "THROW_EVENT_INVALID_EVENTDEFINITION": {
+    "problem": "activiti-throw-event-invalid-eventdefinition",
+    "description": "Unsupported intermediate throw event type"
+  },
+  "MULTI_INSTANCE_MISSING_COLLECTION": {
+    "problem": "activiti-multi-instance-missing-collection",
+    "description": "Either loopCardinality or loopDataInputRef/activiti:collection must been set"
+  },
+  "MESSAGE_INVALID_ITEM_REF": {
+    "problem": "activiti-message-invalid-item-ref",
+    "description": "Item reference is invalid: not found"
+  },
+  "MESSAGE_EVENT_MISSING_MESSAGE_REF": {
+    "problem": "activiti-message-event-missing-message-ref",
+    "description": "attribute 'messageRef' is required"
+  },
+  "MESSAGE_EVENT_INVALID_MESSAGE_REF": {
+    "problem": "activiti-message-event-invalid-message-ref",
+    "description": "Invalid 'messageRef': no message with that id can be found in the model"
+  },
+  "MESSAGE_EVENT_MULTIPLE_ON_BOUNDARY_SAME_MESSAGE_ID": {
+    "problem": "activiti-message-event-multiple-on-boundary-same-message-id",
+    "description": "Multiple message events with same message id not supported"
+  },
+  "OPERATION_INVALID_IN_MESSAGE_REFERENCE": {
+    "problem": "activiti-operation-invalid-in-message-reference",
+    "description": "Invalid inMessageRef for operation"
+  },
+  "SIGNAL_EVENT_MISSING_SIGNAL_REF": {
+    "problem": "activiti-signal-event-missing-signal-ref",
+    "description": "signalEventDefinition does not have mandatory property 'signalRef'"
+  },
+  "SIGNAL_EVENT_INVALID_SIGNAL_REF": {
+    "problem": "activiti-signal-event-invalid-signal-ref",
+    "description": "Invalid 'signalRef': no signal with that id can be found in the model"
+  },
+  "COMPENSATE_EVENT_INVALID_ACTIVITY_REF": {
+    "problem": "activiti-compensate-event-invalid-activity-ref",
+    "description": "Invalid attribute value for 'activityRef': no activity with the given id"
+  },
+  "COMPENSATE_EVENT_MULTIPLE_ON_BOUNDARY": {
+    "problem": "activiti-compensate-event-multiple-on-boundary",
+    "description": "Multiple boundary events of type 'compensate' is invalid"
+  },
+  "SIGNAL_MISSING_ID": {
+    "problem": "activiti-signal-missing-id",
+    "description": "Signal must have an id"
+  },
+  "SIGNAL_MISSING_NAME": {
+    "problem": "activiti-signal-missing-name",
+    "description": "Signal must have a name"
+  },
+  "SIGNAL_DUPLICATE_NAME": {
+    "problem": "activiti-signal-duplicate-name",
+    "description": "Duplicate signal name found"
+  },
+  "SIGNAL_INVALID_SCOPE": {
+    "problem": "activiti-signal-invalid-scope",
+    "description": "Invalid value for 'scope'. Only values 'global' and 'processInstance' are supported"
+  },
+  "DATA_ASSOCIATION_MISSING_TARGETREF": {
+    "problem": "activiti-data-association-missing-targetref",
+    "description": "Targetref is required on a data association"
+  },
+  "DATA_OBJECT_MISSING_NAME": {
+    "problem": "activiti-data-object-missing-name",
+    "description": "Name is mandatory for a data object"
+  },
+  "END_EVENT_CANCEL_ONLY_INSIDE_TRANSACTION": {
+    "problem": "activiti-end-event-cancel-only-inside-transaction",
+    "description": "end event with cancelEventDefinition only supported inside transaction subprocess"
+  },
+  "DI_INVALID_REFERENCE": {
+    "problem": "activiti-di-invalid-reference",
+    "description": "Invalid reference in diagram interchange definition: could not find {{bpmnReference}}"
+  },
+  "DI_DOES_NOT_REFERENCE_FLOWNODE": {
+    "problem": "activiti-di-does-not-reference-flownode",
+    "description": "Invalid reference in diagram interchange definition: {{bpmnReference}} does not reference a flow node"
+  },
+  "DI_DOES_NOT_REFERENCE_SEQ_FLOW": {
+    "problem": "activiti-di-does-not-reference-seq-flow",
+    "description": "Invalid reference in diagram interchange definition: {{bpmnReference}} does not reference a sequence flow"
+  },
+  "FLOW_ELEMENT_ASYNC_NOT_AVAILABLE": {
+    "problem": "activiti-flow-element-async-not-available",
+    "description": "Async property is not available when asyncExecutor is disabled."
+  },
+  "EVENT_TIMER_ASYNC_NOT_AVAILABLE": {
+    "problem": "activiti-event-timer-async-not-available",
+    "description": "Timer event is not available when asyncExecutor is disabled."
+  },
+  "SIGNAL_ASYNC_NOT_AVAILABLE": {
+    "problem": "activiti-signal-async-not-available",
+    "description": "Async property is not available when asyncExecutor is disabled."
+  }
+}

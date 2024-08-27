@@ -16,21 +16,31 @@
 
 package org.activiti.validation.validator.impl;
 
-import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
-import org.activiti.bpmn.model.SubProcess;
-import org.activiti.bpmn.model.UserTask;
-import org.activiti.validation.ValidationError;
-import org.junit.jupiter.api.Test;
-import org.activiti.bpmn.model.Process;
-import java.util.ArrayList;
-import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
+import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.UserTask;
+import org.activiti.validation.ProcessValidatorImpl;
+import org.activiti.validation.ValidationError;
+import org.activiti.validation.validator.ValidatorSet;
+import org.activiti.validation.validator.ValidatorSetNames;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
 public class FlowElementValidatorTest {
 
-    private FlowElementValidator flowElementValidator = new FlowElementValidator();
+  ValidatorSet validatorSet = new ValidatorSet(ValidatorSetNames.ACTIVITI_EXECUTABLE_PROCESS);
+  ProcessValidatorImpl validator = new ProcessValidatorImpl();
+
+  @BeforeEach
+  void setUp() {
+    validatorSet.addValidator(new FlowElementValidator());
+    validator.addValidatorSet(validatorSet);
+  }
 
     @Test
     public void testExecuteValidationofProcessWithoutCardinality() {
@@ -45,11 +55,17 @@ public class FlowElementValidatorTest {
         multiInstanceLoopCharacteristics.setSequential(false);
         userTask.setLoopCharacteristics(multiInstanceLoopCharacteristics);
         process.addFlowElement(userTask);
-        List<ValidationError> errors = new ArrayList<>();
-        flowElementValidator.executeValidation(null, process, errors);
+        BpmnModel bpmnModel = new BpmnModel();
+        bpmnModel.addProcess(process);
 
-        assertThat(errors).hasSize(1);
-  }
+        var errors = validator.validate(bpmnModel);
+
+        assertThat(errors).hasSize(1).first()
+            .extracting(ValidationError::getProblem, ValidationError::getDefaultDescription)
+            .containsExactly("activiti-multi-instance-missing-collection",
+              "Either loopCardinality or loopDataInputRef/activiti:collection must been set");
+    }
+
     @Test
     public void testExecuteValidationofProcessWithCardinality() {
         Process process = new Process();
@@ -63,11 +79,14 @@ public class FlowElementValidatorTest {
         multiInstanceLoopCharacteristics.setSequential(false);
         userTask.setLoopCharacteristics(multiInstanceLoopCharacteristics);
         process.addFlowElement(userTask);
-        List<ValidationError> errors = new ArrayList<>();
-        flowElementValidator.executeValidation(null, process, errors);
+        BpmnModel bpmnModel = new BpmnModel();
+        bpmnModel.addProcess(process);
+
+        var errors = validator.validate(bpmnModel);
 
         assertThat(errors).isEmpty();
     }
+
     @Test
     public void testExecuteValidationofProcessHavingSubProcessWithCardinality() {
         Process process = new Process();
@@ -85,11 +104,14 @@ public class FlowElementValidatorTest {
         multiInstanceLoopCharacteristics.setSequential(false);
         subProcess.setLoopCharacteristics(multiInstanceLoopCharacteristics);
         process.addFlowElement(subProcess);
-        List<ValidationError> errors = new ArrayList<>();
-        flowElementValidator.executeValidation(null, process, errors);
+        BpmnModel bpmnModel = new BpmnModel();
+        bpmnModel.addProcess(process);
+
+        var errors = validator.validate(bpmnModel);
 
         assertThat(errors).isEmpty();
     }
+
     @Test
     public void testExecuteValidationofProcessHavingSubProcessWithOutCardinality() {
         Process process = new Process();
@@ -107,9 +129,14 @@ public class FlowElementValidatorTest {
         multiInstanceLoopCharacteristics.setSequential(false);
         userTask.setLoopCharacteristics(multiInstanceLoopCharacteristics);
         process.addFlowElement(subProcess);
-        List<ValidationError> errors = new ArrayList<>();
-        flowElementValidator.executeValidation(null, process, errors);
+        BpmnModel bpmnModel = new BpmnModel();
+        bpmnModel.addProcess(process);
 
-        assertThat(errors).hasSize(1);
+        var errors = validator.validate(bpmnModel);
+
+      assertThat(errors).hasSize(1).first()
+          .extracting(ValidationError::getProblem, ValidationError::getDefaultDescription)
+          .containsExactly("activiti-multi-instance-missing-collection",
+              "Either loopCardinality or loopDataInputRef/activiti:collection must been set");
     }
 }

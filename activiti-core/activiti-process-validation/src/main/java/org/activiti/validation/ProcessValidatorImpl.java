@@ -18,17 +18,19 @@ package org.activiti.validation;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.validation.validator.ValidationErrorDecorator;
 import org.activiti.validation.validator.Validator;
 import org.activiti.validation.validator.ValidatorSet;
 
-/**
-
- */
 public class ProcessValidatorImpl implements ProcessValidator {
 
   protected List<ValidatorSet> validatorSets;
+  protected ValidationErrorDecorator validationErrorDecorator;
+
+  public ProcessValidatorImpl() {
+    this.validationErrorDecorator = new ValidationErrorDecorator();
+  }
 
   @Override
   public List<ValidationError> validate(BpmnModel bpmnModel) {
@@ -42,6 +44,7 @@ public class ProcessValidatorImpl implements ProcessValidator {
         if (!validatorErrors.isEmpty()) {
           for (ValidationError error : validatorErrors) {
             error.setValidatorSetName(validatorSet.getName());
+            validationErrorDecorator.decorate(error);
           }
           allErrors.addAll(validatorErrors);
         }

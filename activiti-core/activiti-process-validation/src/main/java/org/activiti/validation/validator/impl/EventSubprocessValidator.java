@@ -44,7 +44,7 @@ public class EventSubprocessValidator extends ProcessLevelValidator {
         if (startEvent.getEventDefinitions() != null && !startEvent.getEventDefinitions().isEmpty()) {
           EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
           if (!(eventDefinition instanceof org.activiti.bpmn.model.ErrorEventDefinition) && !(eventDefinition instanceof MessageEventDefinition) && !(eventDefinition instanceof SignalEventDefinition)) {
-            addError(errors, Problems.EVENT_SUBPROCESS_INVALID_START_EVENT_DEFINITION, process, eventSubprocess, "start event of event subprocess must be of type 'error', 'message' or 'signal'");
+            addError(errors, Problems.EVENT_SUBPROCESS_INVALID_START_EVENT_DEFINITION, process, eventSubprocess);
           }
         }
       }

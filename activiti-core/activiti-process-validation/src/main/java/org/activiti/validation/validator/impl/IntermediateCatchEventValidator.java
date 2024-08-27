@@ -44,10 +44,10 @@ public class IntermediateCatchEventValidator extends ProcessLevelValidator {
       }
 
       if (eventDefinition == null) {
-        addError(errors, Problems.INTERMEDIATE_CATCH_EVENT_NO_EVENTDEFINITION, process, intermediateCatchEvent, "No event definition for intermediate catch event ");
+        addError(errors, Problems.INTERMEDIATE_CATCH_EVENT_NO_EVENTDEFINITION, process, intermediateCatchEvent);
       } else {
         if (!(eventDefinition instanceof TimerEventDefinition) && !(eventDefinition instanceof SignalEventDefinition) && !(eventDefinition instanceof MessageEventDefinition)) {
-          addError(errors, Problems.INTERMEDIATE_CATCH_EVENT_INVALID_EVENTDEFINITION, process, intermediateCatchEvent, "Unsupported intermediate catch event type");
+          addError(errors, Problems.INTERMEDIATE_CATCH_EVENT_INVALID_EVENTDEFINITION, process, intermediateCatchEvent);
         }
       }
     }

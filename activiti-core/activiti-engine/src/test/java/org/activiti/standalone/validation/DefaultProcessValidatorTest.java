@@ -36,7 +36,6 @@ import org.activiti.validation.ProcessValidatorFactory;
 import org.activiti.validation.ValidationError;
 import org.activiti.validation.validator.Problems;
 import org.activiti.validation.validator.ValidatorSetNames;
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -112,7 +111,9 @@ public class DefaultProcessValidatorTest {
     // Sequence flow
     problems = findErrors(allErrors, setName, Problems.SEQ_FLOW_INVALID_SRC, 1);
     assertCommonProblemFieldForActivity(problems.get(0));
-    problems = findErrors(allErrors, setName, Problems.SEQ_FLOW_INVALID_TARGET, 2);
+    problems = findErrors(allErrors, setName, Problems.SEQ_FLOW_INVALID_TARGET, 1);
+    assertCommonProblemFieldForActivity(problems.get(0));
+    problems = findErrors(allErrors, setName, Problems.SEQ_FLOW_INVALID_TARGET_DIFFERENT_SCOPE, 1);
     assertCommonProblemFieldForActivity(problems.get(0));
 
     // User task
@@ -308,7 +309,7 @@ public class DefaultProcessValidatorTest {
 
         List<ValidationError> errors = processValidator.validate(bpmnModel);
         assertThat(errors).hasSize(1);
-        assertThat(errors.get(0).getProblem()).isEqualTo(Problems.PROCESS_DEFINITION_ID_NOT_UNIQUE);
+        assertThat(errors.get(0).getProblem()).isEqualTo("activiti-process-definition-id-duplicated");
   }
 
     @Test
@@ -363,21 +364,21 @@ public class DefaultProcessValidatorTest {
   }
 
   private List<ValidationError> findErrors(List<ValidationError> errors, String validatorSetName,
-      String problemName, int expectedNrOfProblems) {
-    List<ValidationError> results = findErrors(errors, validatorSetName, problemName);
+      String problemKey, int expectedNrOfProblems) {
+    List<ValidationError> results = findErrors(errors, validatorSetName, problemKey);
     assertThat(results).hasSize(expectedNrOfProblems);
     for (ValidationError result : results) {
       assertThat(result.getValidatorSetName()).isEqualTo(validatorSetName);
-      assertThat(result.getProblem()).isEqualTo(problemName);
+      assertThat(result.getKey()).isEqualTo(problemKey);
     }
     return results;
   }
 
   private List<ValidationError> findErrors(List<ValidationError> errors, String validatorSetName,
-      String problemName) {
+      String problemKey) {
     List<ValidationError> results = new ArrayList<>();
     for (ValidationError error : errors) {
-      if (error.getValidatorSetName().equals(validatorSetName) && error.getProblem().equals(problemName)) {
+      if (error.getValidatorSetName().equals(validatorSetName) && error.getKey().equals(problemKey)) {
         results.add(error);
       }
     }

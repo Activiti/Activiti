@@ -38,7 +38,7 @@ public class UserTaskValidator extends ProcessLevelValidator {
       if (userTask.getTaskListeners() != null) {
         for (ActivitiListener listener : userTask.getTaskListeners()) {
           if (listener.getImplementation() == null || listener.getImplementationType() == null) {
-            addError(errors, Problems.USER_TASK_LISTENER_IMPLEMENTATION_MISSING, process, userTask, "Element 'class' or 'expression' is mandatory on executionListener");
+            addError(errors, Problems.USER_TASK_LISTENER_IMPLEMENTATION_MISSING, process, userTask);
           }
         }
       }

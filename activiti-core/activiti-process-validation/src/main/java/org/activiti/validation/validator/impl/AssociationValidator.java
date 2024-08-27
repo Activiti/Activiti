@@ -60,10 +60,10 @@ public class AssociationValidator extends ValidatorImpl {
 
   protected void validate(Process process, Association association, List<ValidationError> errors) {
     if (StringUtils.isEmpty(association.getSourceRef())) {
-      addError(errors, Problems.ASSOCIATION_INVALID_SOURCE_REFERENCE, process, association, "association element missing attribute 'sourceRef'");
+      addError(errors, Problems.ASSOCIATION_INVALID_SOURCE_REFERENCE, process, association);
     }
     if (StringUtils.isEmpty(association.getTargetRef())) {
-      addError(errors, Problems.ASSOCIATION_INVALID_TARGET_REFERENCE, process, association, "association element missing attribute 'targetRef'");
+      addError(errors, Problems.ASSOCIATION_INVALID_TARGET_REFERENCE, process, association);
     }
   }
 

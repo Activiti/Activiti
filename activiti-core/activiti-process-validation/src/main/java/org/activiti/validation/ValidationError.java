@@ -16,6 +16,9 @@
 
 package org.activiti.validation;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ValidationError {
 
   protected String validatorSetName;
@@ -40,6 +43,10 @@ public class ValidationError {
   protected String activityName;
 
   protected boolean isWarning;
+
+  protected String key;
+
+  protected Map<String, String> params = new HashMap<>();
 
   public String getValidatorSetName() {
     return validatorSetName;
@@ -121,7 +128,23 @@ public class ValidationError {
     this.isWarning = isWarning;
   }
 
-  @Override
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public Map<String, String> getParams() {
+        return params;
+    }
+
+    public void setParams(Map<String, String> params) {
+        this.params = params;
+    }
+
+    @Override
   public String toString() {
     StringBuilder strb = new StringBuilder();
     strb.append("[Validation set: '" + validatorSetName + "' | Problem: '" + problem + "'] : ");
@@ -153,10 +176,28 @@ public class ValidationError {
       strb.append("activityName = " + activityName + " | ");
       extraInfoAlreadyPresent = true;
     }
-    strb.append("]");
     if (xmlLineNumber > 0 && xmlColumnNumber > 0) {
       strb.append(" ( line: " + xmlLineNumber + ", column: " + xmlColumnNumber + ")");
     }
+    if (key != null) {
+        if (extraInfoAlreadyPresent) {
+            strb.append(" | ");
+        }
+        strb.append(" ( key: " + key + " )");
+        extraInfoAlreadyPresent = true;
+    }
+    if (params != null && !params.isEmpty()) {
+        if (extraInfoAlreadyPresent) {
+            strb.append(" | ");
+        }
+        strb.append(" ( ");
+        for (Map.Entry<String, String> param : params.entrySet()) {
+            strb.append(param.getKey() + " = " + param.getValue() + " | ");
+        }
+        strb.append(")");
+        extraInfoAlreadyPresent = true;
+    }
+    strb.append("]");
     return strb.toString();
   }
 
