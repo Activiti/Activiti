@@ -59,8 +59,11 @@ public class MultiInstanceExport implements BpmnXMLConstants {
               xtw.writeCharacters(multiInstanceObject.getCompletionCondition());
               xtw.writeEndElement();
           }
-          xtw.writeEndElement();
       }
+      else{
+          xtw.writeStartElement(ELEMENT_MULTIINSTANCE);
+      }
+        xtw.writeEndElement();
     }
   }
 
