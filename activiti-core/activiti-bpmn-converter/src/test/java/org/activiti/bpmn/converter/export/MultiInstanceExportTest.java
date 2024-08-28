@@ -22,8 +22,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 
+import java.io.StringWriter;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -46,11 +50,16 @@ public class MultiInstanceExportTest {
         MultiInstanceLoopCharacteristics multiInstance = new MultiInstanceLoopCharacteristics();
         when(activity.getLoopCharacteristics()).thenReturn(multiInstance);
 
+        StringWriter stringWriter = new StringWriter();
+        XMLStreamWriter xtw = XMLOutputFactory.newInstance().createXMLStreamWriter(stringWriter);
 
         MultiInstanceExport.writeMultiInstance(activity, xtw);
 
+        String generatedXml = stringWriter.toString();
 
-        verify(xtw).writeStartElement("multiInstanceLoopCharacteristics");
+
+        assertTrue(generatedXml.contains("<multiInstanceLoopCharacteristics isSequential=\"false\"></multiInstanceLoopCharacteristics>"));
+
     }
     @Test
     public void shouldWriteStartElementWhenMultiInstanceLoopCharacteristicsHasCardinality() throws Exception {
@@ -62,10 +71,15 @@ public class MultiInstanceExportTest {
         when(activity.getLoopCharacteristics()).thenReturn(multiInstance);
 
 
+        StringWriter stringWriter = new StringWriter();
+        XMLStreamWriter xtw = XMLOutputFactory.newInstance().createXMLStreamWriter(stringWriter);
+
         MultiInstanceExport.writeMultiInstance(activity, xtw);
 
+        String generatedXml = stringWriter.toString();
 
-        verify(xtw).writeStartElement("multiInstanceLoopCharacteristics");
+
+        assertTrue(generatedXml.contains("<multiInstanceLoopCharacteristics isSequential=\"true\"><loopCardinality>100</loopCardinality></multiInstanceLoopCharacteristics>"));
     }
     @Test
     public void shouldNotWriteStartElementWhenMultiInstanceLoopCharacteristicsIsNull() throws Exception {
