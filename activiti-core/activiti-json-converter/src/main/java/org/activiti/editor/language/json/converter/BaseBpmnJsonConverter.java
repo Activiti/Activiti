@@ -170,8 +170,8 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
             if (activity.getLoopCharacteristics() != null) {
                 MultiInstanceLoopCharacteristics loopDef = activity.getLoopCharacteristics();
                 if (StringUtils.isNotEmpty(loopDef.getLoopCardinality()) || StringUtils.isNotEmpty(loopDef.getInputDataItem()) || StringUtils.isNotEmpty(loopDef.getCompletionCondition())) {
-
-                    if (!loopDef.isSequential()) {
+                    Boolean isSequential = loopDef.isSequential();
+                    if (isSequential != null && !isSequential) {
                         propertiesNode.put(PROPERTY_MULTIINSTANCE_TYPE,
                                            "Parallel");
                     } else {

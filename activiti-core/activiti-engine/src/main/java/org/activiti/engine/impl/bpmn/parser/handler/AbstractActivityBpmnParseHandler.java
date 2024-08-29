@@ -94,8 +94,8 @@ public abstract class AbstractActivityBpmnParseHandler<T extends FlowNode> exten
     private MultiInstanceActivityBehavior createMultiInstanceActivityBehavior(BpmnParse bpmnParse,
         Activity modelActivity, MultiInstanceLoopCharacteristics loopCharacteristics) {
         MultiInstanceActivityBehavior miActivityBehavior = null;
-
-        if (loopCharacteristics.isSequential()) {
+        Boolean isSequential = loopCharacteristics.isSequential();
+        if (isSequential == null || isSequential) {
           miActivityBehavior = bpmnParse.getActivityBehaviorFactory().createSequentialMultiInstanceBehavior(modelActivity, (AbstractBpmnActivityBehavior) modelActivity.getBehavior());
         } else {
           miActivityBehavior = bpmnParse.getActivityBehaviorFactory().createParallelMultiInstanceBehavior(modelActivity, (AbstractBpmnActivityBehavior) modelActivity.getBehavior());
