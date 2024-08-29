@@ -880,13 +880,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                 Activity activity = (Activity) flowNode;
                 MultiInstanceLoopCharacteristics multiInstanceLoopCharacteristics = activity.getLoopCharacteristics();
                 if (multiInstanceLoopCharacteristics != null) {
-                    Boolean isSequential = multiInstanceLoopCharacteristics.isSequential();
-                    if(isSequential==null){
-                        multiInstanceSequential = false;
-                    }
-                    else{
-                        multiInstanceSequential = isSequential;
-                    }
+                    multiInstanceSequential = multiInstanceLoopCharacteristics.isSequential();
                     multiInstanceParallel = !multiInstanceSequential;
                 }
             }
