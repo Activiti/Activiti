@@ -22,7 +22,7 @@ public class MultiInstanceLoopCharacteristics extends BaseElement {
   private String completionCondition;
   private String elementVariable;
   private String elementIndexVariable;
-  private Boolean sequential;
+  private boolean sequential;
   private String loopDataOutputRef;
   private String outputDataItem;
 
@@ -66,8 +66,8 @@ public class MultiInstanceLoopCharacteristics extends BaseElement {
     this.elementIndexVariable = elementIndexVariable;
   }
 
-  public Boolean isSequential() {
-      return sequential != null ? sequential : false;
+  public boolean isSequential() {
+    return sequential;
   }
 
   public void setSequential(boolean sequential) {
