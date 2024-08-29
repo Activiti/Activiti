@@ -67,7 +67,7 @@ public class MultiInstanceLoopCharacteristics extends BaseElement {
   }
 
   public Boolean isSequential() {
-      return sequential;
+      return sequential != null ? sequential : false;
   }
 
   public void setSequential(boolean sequential) {
