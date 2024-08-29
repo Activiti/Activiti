@@ -58,7 +58,7 @@ public class MultiInstanceExportTest {
         String generatedXml = stringWriter.toString();
 
 
-        assertTrue(generatedXml.contains("<multiInstanceLoopCharacteristics isSequential=\"false\"></multiInstanceLoopCharacteristics>"));
+        assertTrue(generatedXml.contains("<multiInstanceLoopCharacteristics></multiInstanceLoopCharacteristics>"));
 
     }
     @Test
