@@ -28,6 +28,7 @@
     <nashorn-core.version>15.4</nashorn-core.version>
     <groovy.version>3.0.19</groovy.version>
     <simple-jndi.version>0.23.0</simple-jndi.version>
+    <zjsonpatch.version>0.4.16</zjsonpatch.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -219,6 +220,11 @@
       <artifactId>activiti-core-common-dependencies</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>com.flipkart.zjsonpatch</groupId>
+      <artifactId>zjsonpatch</artifactId>
+      <version>${zjsonpatch.version}</version>
     </dependency>
   </dependencies>
   <modules>

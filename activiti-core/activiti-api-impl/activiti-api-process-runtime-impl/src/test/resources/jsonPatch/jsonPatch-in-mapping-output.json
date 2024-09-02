@@ -1,0 +1,92 @@
+{
+  "id": "taskVarMapping",
+  "extensions": {
+    "Process_jsonPatchMappingOutput": {
+      "properties": {
+        "variable-name-id": {
+          "id": "variable-name-id",
+          "name": "process_variable_name",
+          "type": "string",
+          "required": true,
+          "value": "John"
+        },
+        "variable-person-id": {
+          "id": "variable-person-id",
+          "name": "process_variable_person",
+          "type": "json",
+          "required": false,
+          "value": {
+            "firstname": "Bob"
+          }
+        },
+        "variable-empty-json-id": {
+          "id": "variable-empty-json-id",
+          "name": "process_variable_empty_json",
+          "type": "json",
+          "required": false
+        },
+        "variable-lastname-id": {
+          "id": "variable-lastname-id",
+          "name": "process_variable_lastname",
+          "type": "string",
+          "required": true,
+          "value": "Miracle"
+        },
+        "variable-address-id": {
+          "id": "variable-address-id",
+          "name": "process_variable_address",
+          "type": "json",
+          "required": true,
+          "value": {
+            "address": {
+              "street": "Ha-Ha Road"
+            }
+          }
+        }
+      },
+      "mappings": {
+        "simpleTask": {
+          "inputs": {
+            "task_input_variable_name_1": {
+              "type": "VARIABLE",
+              "value": "process_variable_name"
+            },
+            "task_input_variable_name_2": {
+              "type": "VALUE",
+              "value": "static_value_1"
+            }
+          },
+          "outputs": {
+            "process_variable_person": {
+              "type": "JSONPATCH",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/lastname",
+                  "value": "${process_variable_lastname}"
+                }
+              ]
+            },
+            "process_variable_empty_json": {
+              "type": "JSONPATCH",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/address/street",
+                  "value": "${process_variable_address.address.street}"
+                },
+                {
+                  "op": "add",
+                  "path": "/firstname",
+                  "value": "${process_variable_name}"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "constants": {
+      }
+    }
+  }
+}

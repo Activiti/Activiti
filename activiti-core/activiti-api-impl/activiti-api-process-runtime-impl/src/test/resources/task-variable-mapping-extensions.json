@@ -36,6 +36,12 @@
           "name": "property-with-no-default-value",
           "type": "string",
           "required": false
+        },
+        "process-variable-with-jsonpatch-type-id": {
+          "id": "process-variable-with-jsonpatch-type-id",
+          "name": "process-variable-with-jsonpatch-type",
+          "type": "json",
+          "required": true
         }
       },
       "mappings": {
@@ -62,6 +68,12 @@
             "property-with-no-default-value": {
               "type": "VARIABLE",
               "value": "not-set-variable"
+            },
+            "process-variable-with-jsonpatch-type": {
+              "type": "JSONPATCH",
+              "value": [
+                { "op": "add", "path": "/firstProperty/secondProperty", "value": "${task_output_variable_name_1}" }
+              ]
             }
           }
         }
