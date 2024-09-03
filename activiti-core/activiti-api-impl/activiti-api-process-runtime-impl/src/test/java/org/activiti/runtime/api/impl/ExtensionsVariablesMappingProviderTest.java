@@ -16,6 +16,7 @@
 package org.activiti.runtime.api.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.NullNode;
 import org.activiti.core.el.ActivitiElContext;
 import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -60,8 +61,10 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -470,6 +473,22 @@ public class ExtensionsVariablesMappingProviderTest {
     @Test
     public void calculateOutputVariablesShouldMapJsonPatchVariables() throws IOException {
         DelegateExecution execution = initExpressionResolverTest(JSONPATCH_TEST_FILES_PATH, "jsonPatch-in-mapping-output.json","Process_jsonPatchMappingOutput");
+
+        Map<String, Object> outputVariables = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+            map(
+                "task_input_variable_name_1", "variable_value_1",
+                "task_input_variable_name_2", Map.of("firstname", "Bob")));
+
+        assertThat(outputVariables).isNotEmpty();
+        assertThat(outputVariables.entrySet()).extracting(Map.Entry::getKey, Map.Entry::getValue)
+            .containsOnly(tuple("process_variable_person", Map.of("firstname", "Bob", "lastname", "Miracle")),
+                tuple("process_variable_empty_json", Map.of("firstname", "John", "address", Map.of("street","Ha-Ha Road"))));
+    }
+
+    @Test
+    public void calculateOutputVariablesShouldMapJsonPatchVariablesWhenNullNode() throws IOException {
+        DelegateExecution execution = initExpressionResolverTest(JSONPATCH_TEST_FILES_PATH, "jsonPatch-in-mapping-output.json","Process_jsonPatchMappingOutput");
+        when(execution.getVariable(eq("process_variable_empty_json"))).thenReturn(NullNode.getInstance());
 
         Map<String, Object> outputVariables = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
             map(

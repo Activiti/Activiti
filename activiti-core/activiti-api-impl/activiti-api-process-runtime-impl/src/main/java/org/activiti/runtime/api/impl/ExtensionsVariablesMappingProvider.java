@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.flipkart.zjsonpatch.JsonPatch;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -148,9 +149,12 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
     private Optional<Object> patchVariable(Object changesToApply, Object processVariableCurrentValue) {
         try {
-            JsonNode oldNode = processVariableCurrentValue != null
-                ? objectMapper.convertValue(processVariableCurrentValue, JsonNode.class)
-                : objectMapper.createObjectNode();
+            JsonNode oldNode;
+            if (isProcessVariableNull(processVariableCurrentValue)) {
+                oldNode = objectMapper.createObjectNode();
+            } else {
+                oldNode = objectMapper.convertValue(processVariableCurrentValue, JsonNode.class);
+            }
 
             JsonNode patchNode = objectMapper.convertValue(changesToApply, JsonNode.class);
             ensurePathExists(oldNode, patchNode);
@@ -235,7 +239,11 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
     }
 
     private Object calculateProcessVariableCurrentValue(Object executionVariableValue, VariableDefinition propertyVariableDefinition) {
-        return executionVariableValue != null ? executionVariableValue : propertyVariableDefinition.getValue();
+        return !isProcessVariableNull(executionVariableValue) ? executionVariableValue : propertyVariableDefinition.getValue();
+    }
+
+    private boolean isProcessVariableNull(Object variable)  {
+        return variable == null || NullNode.getInstance().equals(variable);
     }
 
     private Map<String, Object> resolveExpressions(MappingExecutionContext mappingExecutionContext,
