@@ -16,6 +16,7 @@
 package org.activiti.runtime.api.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.NullNode;
 import org.activiti.core.el.ActivitiElContext;
 import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -58,14 +59,21 @@ import static org.activiti.engine.impl.util.CollectionUtil.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 @SpringBootTest
 public class ExtensionsVariablesMappingProviderTest {
+
+    private final static String EXPRESSION_TEST_FILES_PATH = "src/test/resources/expressions/";
+
+    private final static String JSONPATCH_TEST_FILES_PATH = "src/test/resources/jsonPatch/";
 
     @InjectMocks
     @Autowired
@@ -462,14 +470,65 @@ public class ExtensionsVariablesMappingProviderTest {
         assertThat(outPutVariables.get(processVariableName)).asInstanceOf(InstanceOfAssertFactories.BIG_DECIMAL).isEqualByComparingTo(stringValue);
     }
 
+    @Test
+    public void calculateOutputVariablesShouldMapJsonPatchVariables() throws IOException {
+        DelegateExecution execution = initExpressionResolverTest(JSONPATCH_TEST_FILES_PATH, "jsonPatch-in-mapping-output.json","Process_jsonPatchMappingOutput");
+
+        Map<String, Object> outputVariables = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+            map(
+                "task_input_variable_name_1", "variable_value_1",
+                "task_input_variable_name_2", Map.of("firstname", "Bob")));
+
+        assertThat(outputVariables).isNotEmpty();
+        assertThat(outputVariables.entrySet()).extracting(Map.Entry::getKey, Map.Entry::getValue)
+            .containsOnly(tuple("process_variable_person", Map.of("firstname", "Bob", "lastname", "Miracle")),
+                tuple("process_variable_empty_json", Map.of("firstname", "John", "address", Map.of("street","Ha-Ha Road"))));
+    }
+
+    @Test
+    public void calculateOutputVariablesShouldMapJsonPatchVariablesWhenNullNode() throws IOException {
+        DelegateExecution execution = initExpressionResolverTest(JSONPATCH_TEST_FILES_PATH, "jsonPatch-in-mapping-output.json","Process_jsonPatchMappingOutput");
+        when(execution.getVariable(eq("process_variable_empty_json"))).thenReturn(NullNode.getInstance());
+
+        Map<String, Object> outputVariables = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+            map(
+                "task_input_variable_name_1", "variable_value_1",
+                "task_input_variable_name_2", Map.of("firstname", "Bob")));
+
+        assertThat(outputVariables).isNotEmpty();
+        assertThat(outputVariables.entrySet()).extracting(Map.Entry::getKey, Map.Entry::getValue)
+            .containsOnly(tuple("process_variable_person", Map.of("firstname", "Bob", "lastname", "Miracle")),
+                tuple("process_variable_empty_json", Map.of("firstname", "John", "address", Map.of("street","Ha-Ha Road"))));
+    }
+
+
+    @Test
+    public void calculateOutputVariablesShouldThrowActivitiIllegalArgumentExceptionWhenJsonPatchDefinitionIsInvalid() throws IOException {
+        DelegateExecution execution = initExpressionResolverTest(JSONPATCH_TEST_FILES_PATH, "invalid-jsonPatch-in-mapping-output.json","Process_jsonPatchMappingOutput");
+        ActivitiIllegalArgumentException exception = assertThrows(ActivitiIllegalArgumentException.class, () -> variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+            null));
+
+        assertThat("Invalid jsonPatch variable mapping").isEqualTo(exception.getMessage());
+    }
+
     private DelegateExecution initExpressionResolverTest(String fileName, String processDefinitionKey) throws IOException {
         return initExpressionResolverTest(fileName, processDefinitionKey, new ArrayList<>());
     }
 
+    private DelegateExecution initExpressionResolverTest(String filePath, String fileName, String processDefinitionKey) throws IOException {
+        return initExpressionResolverTest(filePath, fileName, processDefinitionKey, new ArrayList<>());
+    }
+
     private DelegateExecution initExpressionResolverTest(String fileName, String processDefinitionKey,
                                                          List<CustomFunctionProvider> customFunctionProviders) throws IOException {
+        return initExpressionResolverTest(EXPRESSION_TEST_FILES_PATH, fileName, processDefinitionKey, customFunctionProviders);
+    }
+
+
+    private DelegateExecution initExpressionResolverTest(String filePath, String fileName, String processDefinitionKey,
+                                                         List<CustomFunctionProvider> customFunctionProviders) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/expressions/" + fileName),
+        ProcessExtensionModel extensions = objectMapper.readValue(new File(filePath + fileName),
                                                                   ProcessExtensionModel.class);
 
         DelegateExecution execution = buildExecution(extensions.getExtensions(processDefinitionKey));
