@@ -39,10 +39,14 @@ import org.activiti.spring.process.model.ProcessConstantsMapping;
 import org.activiti.spring.process.model.ProcessVariablesMapping;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.VariableParsingService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionsVariablesMappingProvider.class);
 
     private ProcessExtensionService processExtensionService;
 
@@ -134,7 +138,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         if (mapping != null) {
             if (Mapping.SourceMappingType.VALUE.equals(mapping.getType())) {
                 return Optional.of(mapping.getValue());
-            }else if(Mapping.SourceMappingType.JSONPATCH.equals(mapping.getType())) {
+            } else if(Mapping.SourceMappingType.JSONPATCH.equals(mapping.getType())) {
                 return patchVariable(mapping.getValue(), processVariableCurrentValue);
             } else {
                 if (Mapping.SourceMappingType.VARIABLE.equals(mapping.getType())) {
@@ -164,6 +168,8 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
             Object updatedObject = objectMapper.treeToValue(patchedNode, Object.class);
             return Optional.ofNullable(updatedObject);
         } catch (Exception e) {
+            LOGGER.error("Error patching variable. Changes to apply: {}, Process variable current value: {}",
+                changesToApply, processVariableCurrentValue, e);
             throw new ActivitiIllegalArgumentException("Invalid jsonPatch variable mapping", e);
         }
     }
