@@ -1,5 +1,6 @@
 package org.activiti.spring.boot;
 
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,17 +20,20 @@ public class ShutdownListenerIT {
     @Autowired
     private ProcessEngineConfigurationImpl processEngineConfiguration;
 
+    private AsyncExecutor asyncExecutor;
+
     @BeforeEach
     public void setUp() {
-        processEngineConfiguration.getAsyncExecutor().start();
+        asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+        asyncExecutor.start();
     }
 
     @Test
     public void should_shutdownAsyncExecutor_when_shutdownApplication() {
-        assertThat(processEngineConfiguration.getAsyncExecutor().isActive()).isTrue();
+        assertThat(asyncExecutor.isActive()).isTrue();
         // Trigger the shutdown event
         applicationContext.publishEvent(new ContextClosedEvent(applicationContext));
-        assertThat(processEngineConfiguration.getAsyncExecutor().isActive()).isFalse();
+        assertThat(asyncExecutor.isActive()).isFalse();
     }
 
 }
