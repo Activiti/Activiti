@@ -38,6 +38,7 @@ import org.activiti.engine.ManagementService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.cfg.ProcessEngineConfigurator;
 import org.activiti.engine.impl.bpmn.behavior.VariablesPropagator;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
 import org.activiti.engine.impl.persistence.StrongUuidGenerator;
 import org.activiti.runtime.api.event.impl.StartMessageSubscriptionConverter;
@@ -85,8 +86,8 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
     }
 
     @Bean
-    public ShutdownListener shutdownListener() {
-        return new ShutdownListener();
+    public ShutdownListener shutdownListener(ProcessEngineConfigurationImpl processEngineConfiguration) {
+        return new ShutdownListener(processEngineConfiguration);
     }
 
     @Bean

@@ -16,20 +16,33 @@
 package org.activiti.spring.boot;
 
 import org.activiti.engine.ApplicationStatusHolder;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.core.Ordered;
 
-public class ShutdownListener implements ApplicationListener<ContextClosedEvent> {
+public class ShutdownListener implements ApplicationListener<ContextClosedEvent>, Ordered {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ShutdownListener.class);
+
+    private final ProcessEngineConfigurationImpl processEngineConfiguration;
+
+    public ShutdownListener(ProcessEngineConfigurationImpl processEngineConfiguration) {
+        this.processEngineConfiguration = processEngineConfiguration;
+    }
 
     @Override
     public void onApplicationEvent(ContextClosedEvent event) {
         if (event.getApplicationContext().getParent() == null) {
             LOGGER.info("Starting application shutdown...");
+            processEngineConfiguration.getAsyncExecutor().shutdown();
             ApplicationStatusHolder.shutdown();
         }
+    }
+    @Override
+    public int getOrder() {
+        return HIGHEST_PRECEDENCE;
     }
 }
