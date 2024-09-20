@@ -235,6 +235,14 @@
   </properties>
   <dependencyManagement>
     <dependencies>
+      <!-- Temporary Security fix  -->
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-core</artifactId>
+        <version>2.10.0</version>
+        <scope>test</scope>
+      </dependency>
+      <!-- Temporary Security fix  -->
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-dependency-check</artifactId>
