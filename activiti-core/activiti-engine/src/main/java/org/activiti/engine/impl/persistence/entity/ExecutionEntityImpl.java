@@ -958,17 +958,17 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
     } else {
       StringBuilder strb = new StringBuilder();
       if (isScope) {
-        strb.append("Scoped execution[ id '" + getId() + "' ]");
+        strb.append("Scoped execution[ id '").append(getId()).append("' ]");
       } else if(isMultiInstanceRoot) {
-        strb.append("Multi instance root execution[ id '" + getId() + "' ]");
+        strb.append("Multi instance root execution[ id '").append(getId()).append("' ]");
       } else {
-        strb.append("Execution[ id '" + getId() + "' ]");
+        strb.append("Execution[ id '").append(getId()).append("' ]");
       }
       if (activityId != null) {
-        strb.append(" - activity '" + activityId);
+        strb.append(" - activity '").append(activityId).append("'");
       }
       if (parentId != null) {
-        strb.append(" - parent '" + parentId + "'");
+        strb.append(" - parent '").append(parentId).append("'");
       }
       return strb.toString();
     }
