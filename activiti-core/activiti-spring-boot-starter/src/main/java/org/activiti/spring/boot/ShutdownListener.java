@@ -22,8 +22,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.Ordered;
+import org.springframework.core.PriorityOrdered;
 
-public class ShutdownListener implements ApplicationListener<ContextClosedEvent>, Ordered {
+public class ShutdownListener implements ApplicationListener<ContextClosedEvent>, PriorityOrdered {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ShutdownListener.class);
 
@@ -36,7 +37,7 @@ public class ShutdownListener implements ApplicationListener<ContextClosedEvent>
     @Override
     public void onApplicationEvent(ContextClosedEvent event) {
         if (event.getApplicationContext().getParent() == null) {
-            LOGGER.info("Starting application shutdown...");
+            LOGGER.info("Setting application status to shutdown");
             processEngineConfiguration.getAsyncExecutor().shutdown();
             ApplicationStatusHolder.shutdown();
         }
