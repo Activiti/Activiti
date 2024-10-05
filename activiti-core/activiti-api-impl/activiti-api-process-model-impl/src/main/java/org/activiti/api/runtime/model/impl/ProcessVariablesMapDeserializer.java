@@ -15,7 +15,6 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import java.io.IOException;
 
 import org.slf4j.Logger;
