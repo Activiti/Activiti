@@ -52,4 +52,5 @@ public interface ProcessDefinitionEntityManager extends EntityManager<ProcessDef
 
   void deleteProcessDefinitionsByDeploymentId(String deploymentId);
 
+  List<ProcessDefinitionEntity> findAllProcessDefinitions();
 }

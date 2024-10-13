@@ -149,23 +149,37 @@ public class BpmnDeploymentHelper  {
    * Updates all timers and events for the process definition.  This removes obsolete message and signal
    * subscriptions and timers, and adds new ones.
    */
-  public void updateTimersAndEvents(ProcessDefinitionEntity processDefinition,
-      ProcessDefinitionEntity previousProcessDefinition, ParsedDeployment parsedDeployment) {
+  public void updateTimersAndEvents(ProcessDefinitionEntity processDefinition, ParsedDeployment parsedDeployment) {
 
     Process process = parsedDeployment.getProcessModelForProcessDefinition(processDefinition);
     BpmnModel bpmnModel = parsedDeployment.getBpmnModelForProcessDefinition(processDefinition);
 
-    eventSubscriptionManager.removeObsoleteMessageEventSubscriptions(previousProcessDefinition);
     eventSubscriptionManager.addMessageEventSubscriptions(processDefinition, process, bpmnModel);
 
-    eventSubscriptionManager.removeObsoleteSignalEventSubScription(previousProcessDefinition);
     eventSubscriptionManager.addSignalEventSubscriptions(Context.getCommandContext(), processDefinition, process, bpmnModel);
 
-    timerManager.removeObsoleteTimers(processDefinition);
     timerManager.scheduleTimers(processDefinition, process);
   }
 
-  protected enum ExpressionType {
+    /**
+     * Disables all timers and events for the process definition.  This removes all message and signal
+     * @param processDefinition
+     */
+    public void disableTimersAndEventsFromOldProcessDefinitions(ProcessDefinitionEntity processDefinition) {
+        eventSubscriptionManager.removeObsoleteMessageEventSubscriptions(processDefinition);
+        eventSubscriptionManager.removeObsoleteSignalEventSubScription(processDefinition);
+        timerManager.removeObsoleteTimers(processDefinition);
+    }
+
+    /**
+     * Returns all process definitions in the system.
+     */
+    public List<ProcessDefinitionEntity> getAllProcessDefinitions() {
+        ProcessDefinitionEntityManager processDefinitionEntityManager = Context.getCommandContext().getProcessEngineConfiguration().getProcessDefinitionEntityManager();
+      return  processDefinitionEntityManager.findAllProcessDefinitions();
+    }
+
+    protected enum ExpressionType {
     USER, GROUP
   }
 

@@ -87,8 +87,9 @@ public class BpmnDeployer implements Deployer {
             setProcessDefinitionAppVersion(parsedDeployment);
 
             persistProcessDefinitionsAndAuthorizations(parsedDeployment);
-            updateTimersAndEvents(parsedDeployment,
-                                  mapOfNewProcessDefinitionToPreviousVersion);
+            List<ProcessDefinitionEntity> processDefinitionEntityList=getAllProcessDefinitions();
+            disableTimersAndEventsFromAllProcessDefinitions(processDefinitionEntityList);
+            updateTimersAndEvents(parsedDeployment);
             dispatchProcessDefinitionEntityInitializedEvent(parsedDeployment);
         } else {
             makeProcessDefinitionsConsistentWithPersistedVersions(parsedDeployment);
@@ -166,6 +167,15 @@ public class BpmnDeployer implements Deployer {
     }
 
     /**
+     * Returns all process definitions in the database.
+     */
+    protected List<ProcessDefinitionEntity> getAllProcessDefinitions()
+    {
+       List<ProcessDefinitionEntity> processDefinitionEntities= bpmnDeploymentHelper.getAllProcessDefinitions();
+         return processDefinitionEntities;
+    }
+
+    /**
      * Sets the version on each process definition entity, and the identifier.  If the map contains
      * an older version for a process definition, then the version is set to that older entity's
      * version plus one; otherwise it is set to 1.  Also dispatches an ENTITY_CREATED event.
@@ -224,13 +234,19 @@ public class BpmnDeployer implements Deployer {
         }
     }
 
-    protected void updateTimersAndEvents(ParsedDeployment parsedDeployment,
-                                         Map<ProcessDefinitionEntity, ProcessDefinitionEntity> mapNewToOldProcessDefinitions) {
+    protected void updateTimersAndEvents(ParsedDeployment parsedDeployment) {
 
         for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
             bpmnDeploymentHelper.updateTimersAndEvents(processDefinition,
-                                                       mapNewToOldProcessDefinitions.get(processDefinition),
                                                        parsedDeployment);
+        }
+    }
+
+    protected void disableTimersAndEventsFromAllProcessDefinitions(List<ProcessDefinitionEntity> processDefinitionEntities)
+    {
+        for(ProcessDefinitionEntity processDefinition: processDefinitionEntities)
+        {
+            bpmnDeploymentHelper.disableTimersAndEventsFromOldProcessDefinitions(processDefinition);
         }
     }
 
