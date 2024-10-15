@@ -56,7 +56,7 @@ import org.activiti.engine.runtime.Clock;
  * </p>
  *
  * <p>
- * The second option is great for testing: {@link #createStandalonInMemeProcessEngineConfiguration()}
+ * The second option is great for testing: {@link #createStandaloneInMemProcessEngineConfiguration()}
  *
  * <pre>
  * ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration().buildProcessEngine();
