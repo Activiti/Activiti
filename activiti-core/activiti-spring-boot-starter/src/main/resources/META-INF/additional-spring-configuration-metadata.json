@@ -1,0 +1,70 @@
+{
+  "properties": [
+    {
+      "name": "spring.activiti.database-schema-update",
+      "type": "java.lang.String",
+      "description": "An absolute path to the Astra secure connect bundle to use.",
+      "sourceType": "org.activiti.spring.boot.ActivitiProperties",
+      "defaultValue": "true"
+    },
+    {
+      "name": "spring.activiti.deployment-mode",
+      "type": "java.lang.String",
+      "description": "A strategy is capable of handling deployments corresponding to a certain indicated deployment mode.",
+      "sourceType": "org.activiti.spring.boot.ActivitiProperties",
+      "defaultValue": "default"
+    }
+  ],
+  "hints": [
+    {
+      "name": "spring.activiti.database-schema-update",
+      "values": [
+        {
+          "value": "true",
+          "description": "Upon building of the process engine, a check is performed and an update of the schema is performed if it is necessary."
+        },
+        {
+          "value": "false",
+          "description": "Checks the version of the DB schema against the library when the process engine is being created and throws an exception if the versions don't match."
+        },
+        {
+          "value": "create-drop",
+          "description": "Creates the schema when the process engine is being created and drops the schema when the process engine is being closed."
+        },
+        {
+          "value": "drop-create",
+          "description": "Drops the schema when the process engine is being created and creates the schema."
+        },
+        {
+          "value": "create",
+          "description": "Creates the schema when the process engine is being created."
+        }
+      ]
+    },
+    {
+      "name": "spring.activiti.deployment-mode",
+      "values": [
+        {
+          "value": "default",
+          "description": "Default implementation of {@link AutoDeploymentStrategy} that groups all {@link Resource}s into a single deployment. This implementation is equivalent to the previously used implementation."
+        },
+        {
+          "value": "fail-on-no-process",
+          "description": "."
+        },
+        {
+          "value": "never-fail",
+          "description": "."
+        },
+        {
+          "value": "resource-parent-folder",
+          "description": "Implementation of {@link AutoDeploymentStrategy} that performs a separate deployment for each set of {@link Resource}s that share the same parent folder. The namehint is used to prefix the names of deployments. If the parent folder for a {@link Resource} cannot be determined, the resource's name is used."
+        },
+        {
+          "value": "single-resource",
+          "description": "Implementation of {@link AutoDeploymentStrategy} that performs a separate deployment for each resource by name."
+        }
+      ]
+    }
+  ]
+}
