@@ -162,7 +162,12 @@ public class MybatisProcessDefinitionDataManager extends AbstractDataManager<Pro
 
     @Override
     public List<ProcessDefinitionEntity> findAllProcessDefinitions() {
-      return   getDbSqlSession().selectList("selectAllProcessDefinitions");
+      return  getDbSqlSession().selectList("selectAllProcessDefinitions");
+    }
+
+    @Override
+    public List<ProcessDefinitionEntity> findProcessDefinitionsForAllTenants() {
+        return   getDbSqlSession().selectList("selectProcessDefinitionsForAllTenants");
     }
 
 }

@@ -85,9 +85,8 @@ public class BpmnDeployer implements Deployer {
             setProcessDefinitionVersionsAndIds(parsedDeployment,
                                                mapOfNewProcessDefinitionToPreviousVersion);
             setProcessDefinitionAppVersion(parsedDeployment);
-
             persistProcessDefinitionsAndAuthorizations(parsedDeployment);
-            List<ProcessDefinitionEntity> processDefinitionEntityList=getAllProcessDefinitions();
+            List<ProcessDefinitionEntity> processDefinitionEntityList=getAllProcessDefinitions(deployment.getTenantId());
             disableTimersAndEventsFromAllProcessDefinitions(processDefinitionEntityList);
             updateTimersAndEvents(parsedDeployment);
             dispatchProcessDefinitionEntityInitializedEvent(parsedDeployment);
@@ -169,9 +168,9 @@ public class BpmnDeployer implements Deployer {
     /**
      * Returns all process definitions in the database.
      */
-    protected List<ProcessDefinitionEntity> getAllProcessDefinitions()
+    protected List<ProcessDefinitionEntity> getAllProcessDefinitions(String tenantId)
     {
-       List<ProcessDefinitionEntity> processDefinitionEntities= bpmnDeploymentHelper.getAllProcessDefinitions();
+       List<ProcessDefinitionEntity> processDefinitionEntities= bpmnDeploymentHelper.getAllProcessDefinitions(tenantId);
          return processDefinitionEntities;
     }
 

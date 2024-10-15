@@ -104,7 +104,7 @@ public class BpmnDeploymentHelper  {
    * If none is found, returns null.  This method assumes that the tenant and key are properly
    * set on the process definition entity.
    */
-  public ProcessDefinitionEntity getMostRecentVersionOfProcessDefinition(ProcessDefinitionEntity processDefinition) {
+  public ProcessDefinitionEntity  getMostRecentVersionOfProcessDefinition(ProcessDefinitionEntity processDefinition) {
     String key = processDefinition.getKey();
     String tenantId = processDefinition.getTenantId();
     ProcessDefinitionEntityManager processDefinitionManager
@@ -174,8 +174,13 @@ public class BpmnDeploymentHelper  {
     /**
      * Returns all process definitions in the system.
      */
-    public List<ProcessDefinitionEntity> getAllProcessDefinitions() {
+    public List<ProcessDefinitionEntity> getAllProcessDefinitions(String tenantId) {
         ProcessDefinitionEntityManager processDefinitionEntityManager = Context.getCommandContext().getProcessEngineConfiguration().getProcessDefinitionEntityManager();
+
+        if(tenantId!=null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID))
+        {
+            return processDefinitionEntityManager.findProcessDefinitionsForAllTenants();
+        }
       return  processDefinitionEntityManager.findAllProcessDefinitions();
     }
 

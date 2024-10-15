@@ -69,6 +69,11 @@ public class ProcessDefinitionEntityManagerImpl extends AbstractEntityManager<Pr
     }
 
     @Override
+    public List<ProcessDefinitionEntity> findProcessDefinitionsForAllTenants() {
+        return processDefinitionDataManager.findProcessDefinitionsForAllTenants();
+    }
+
+    @Override
   public List<ProcessDefinition> findProcessDefinitionsByQueryCriteria(ProcessDefinitionQueryImpl processDefinitionQuery, Page page) {
    return processDefinitionDataManager.findProcessDefinitionsByQueryCriteria(processDefinitionQuery, page);
   }
