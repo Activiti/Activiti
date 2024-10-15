@@ -53,6 +53,8 @@ public class ContinueProcessOperation extends AbstractOperation {
 
     private static Logger logger = LoggerFactory.getLogger(ContinueProcessOperation.class);
 
+    private static ExecutionEntityCache executionEntityCache = new ExecutionEntityCacheImpl();
+
     protected boolean forceSynchronousOperation;
     protected boolean inCompensation;
 
@@ -139,6 +141,7 @@ public class ContinueProcessOperation extends AbstractOperation {
         subProcessExecution.setCurrentFlowElement(subProcess);
         subProcessExecution.setScope(true);
 
+        executionEntityCache.put(subProcess, execution);
         commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(execution, null);
         execution = subProcessExecution;
     }
