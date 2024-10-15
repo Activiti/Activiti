@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -57,6 +58,9 @@ import java.util.stream.Collectors;
 public class EndExecutionOperation extends AbstractOperation {
 
     private static final Logger logger = LoggerFactory.getLogger(EndExecutionOperation.class);
+
+    private static ExecutionEntityCache executionEntityCache = new ExecutionEntityCacheImpl();
+
 
     public EndExecutionOperation(CommandContext commandContext,
                                  ExecutionEntity execution) {
@@ -222,25 +226,6 @@ public class EndExecutionOperation extends AbstractOperation {
         }
     }
 
-    private List<ExecutionEntity> getExecutionsBeforeCallingSubProcess(final ExecutionEntity parentExecution, final ExecutionEntity executionToContinue) {
-        // since parent process execution before calling the subprocess is marked for deletion,
-        // {@code executionEntityManager.findChildExecutionsByParentExecutionId()} will not return that execution
-        return parentExecution.getParent().getExecutions().stream()
-            .filter(executionEntity -> {
-                // scoped execution of the current subprocess should not be considered
-                return !executionEntity.getId().equals(parentExecution.getId());
-            })
-            .filter(executionEntity -> {
-                // only executions of the current subProcess should be considered
-                return executionEntity.getActivityId().equals(parentExecution.getActivityId());
-            })
-            .filter(executionEntity -> {
-                // execution-to-continue should not be considered (we want the execution before calling the subprocess)
-                return !executionEntity.getId().equals(executionToContinue.getId());
-            })
-            .collect(Collectors.toList());
-    }
-
     protected ExecutionEntity handleSubProcessEnd(ExecutionEntityManager executionEntityManager,
                                                   ExecutionEntity parentExecution,
                                                   SubProcess subProcess) {
@@ -250,11 +235,12 @@ public class EndExecutionOperation extends AbstractOperation {
         executionToContinue = executionEntityManager.createChildExecution(parentExecution.getParent());
         executionToContinue.setCurrentFlowElement(subProcess);
 
-        // if there's a parent process running (given by parentExecution.getParent()),
-        // copies local variables from the execution before subprocess
-        List<ExecutionEntity> executionsBeforeCallingSubProcess = getExecutionsBeforeCallingSubProcess(parentExecution, executionToContinue);
-        if( executionsBeforeCallingSubProcess.size() == 1 ) {
-            new SubProcessVariableSnapshotter().setVariablesSnapshots(executionsBeforeCallingSubProcess.get(0), executionToContinue);
+        // copies cached local variables
+        // - from execution before entering the subProcess
+        // - to next execution ater the subProcess
+        final Map<String, Object> variablesLocal = executionEntityCache.getVariablesLocal(subProcess);
+        if( variablesLocal!=null ) {
+            executionToContinue.setVariablesLocal(variablesLocal);
         }
 
         boolean hasCompensation = false;
