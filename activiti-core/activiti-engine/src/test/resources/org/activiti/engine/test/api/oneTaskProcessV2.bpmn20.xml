@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             targetNamespace="ExamplesCategory">
+
+    <process id="oneTaskProcess" name="The One Task Process V2">
+        <documentation>This is a process for testing purposes</documentation>
+
+        <startEvent id="theStart"/>
+        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTaskV2"/>
+        <userTask id="theTaskV2" name="my task"/>
+        <sequenceFlow id="flow2" sourceRef="theTaskV2" targetRef="theEnd"/>
+        <endEvent id="theEnd"/>
+
+    </process>
+
+</definitions>

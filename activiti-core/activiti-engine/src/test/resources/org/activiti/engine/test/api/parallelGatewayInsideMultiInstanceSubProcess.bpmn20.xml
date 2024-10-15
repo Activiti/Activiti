@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             targetNamespace="Examples">
+
+    <process id="parallelGatewayInsideMultiInstanceSubProcess">
+
+        <startEvent id="theStart"/>
+        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="parallelSubProcess"/>
+
+        <subProcess id="parallelSubProcess">
+            <multiInstanceLoopCharacteristics isSequential="false">
+                <loopCardinality>3</loopCardinality>
+            </multiInstanceLoopCharacteristics>
+
+            <startEvent id="theSubProcessStart"/>
+            <sequenceFlow id="subFlow1" sourceRef="theSubProcessStart" targetRef="preForkTask"/>
+            <userTask id="preForkTask"/>
+            <sequenceFlow id="subFlow2" sourceRef="preForkTask" targetRef="parallelFork"/>
+
+            <parallelGateway id="parallelFork"/>
+            <sequenceFlow id="forkFlow1" sourceRef="parallelFork" targetRef="forkTask1"/>
+            <userTask id="forkTask1"/>
+            <sequenceFlow id="forkFlow2" sourceRef="parallelFork" targetRef="forkTask2"/>
+            <userTask id="forkTask2"/>
+            <sequenceFlow id="forkFlow3" sourceRef="forkTask1" targetRef="parallelJoin"/>
+            <sequenceFlow id="forkFlow4" sourceRef="forkTask2" targetRef="parallelJoin"/>
+            <parallelGateway id="parallelJoin"/>
+
+            <sequenceFlow id="subflow2" sourceRef="parallelJoin" targetRef="postForkTask"/>
+            <userTask id="postForkTask"/>
+            <sequenceFlow id="subflow3" sourceRef="postForkTask" targetRef="theSubProcessEnd"/>
+            <endEvent id="theSubProcessEnd"/>
+        </subProcess>
+
+        <sequenceFlow id="flow2" sourceRef="parallelSubProcess" targetRef="lastTask"/>
+        <userTask id="lastTask"/>
+        <sequenceFlow id="flow3" sourceRef="lastTask" targetRef="theEnd"/>
+        <endEvent id="theEnd"/>
+
+    </process>
+
+</definitions>
