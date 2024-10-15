@@ -31,10 +31,10 @@ public class ExtendedInMemoryUserDetailsManager extends InMemoryUserDetailsManag
     public void createUser(UserDetails user) {
         super.createUser(user);
         users.add(user.getUsername());
-        groups = user.getAuthorities().stream()
+        groups.addAll(user.getAuthorities().stream()
                 .filter(x -> (x.getAuthority().contains("GROUP")))
                 .map(x -> (x.getAuthority()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     public List<String> getUsers() {
