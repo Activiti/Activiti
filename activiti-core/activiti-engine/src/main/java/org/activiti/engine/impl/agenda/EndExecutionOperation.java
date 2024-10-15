@@ -44,6 +44,8 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * This operations ends an execution and follows the typical BPMN rules to continue the process (if possible).
@@ -55,6 +57,9 @@ import java.util.List;
 public class EndExecutionOperation extends AbstractOperation {
 
     private static final Logger logger = LoggerFactory.getLogger(EndExecutionOperation.class);
+
+    private static ExecutionEntityCache executionEntityCache = new ExecutionEntityCacheImpl();
+
 
     public EndExecutionOperation(CommandContext commandContext,
                                  ExecutionEntity execution) {
@@ -228,6 +233,14 @@ public class EndExecutionOperation extends AbstractOperation {
         // create a new execution to take the outgoing sequence flows
         executionToContinue = executionEntityManager.createChildExecution(parentExecution.getParent());
         executionToContinue.setCurrentFlowElement(subProcess);
+
+        // copies cached local variables
+        // - from execution before entering the subProcess
+        // - to next execution ater the subProcess
+        final Map<String, Object> variablesLocal = executionEntityCache.getVariablesLocal(subProcess);
+        if( variablesLocal!=null ) {
+            executionToContinue.setVariablesLocal(variablesLocal);
+        }
 
         boolean hasCompensation = false;
         if (subProcess instanceof Transaction) {
