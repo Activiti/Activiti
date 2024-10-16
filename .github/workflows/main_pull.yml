@@ -24,11 +24,11 @@ jobs:
   pre-checks:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
       - name: Check dependabot build
         uses: ./.github/actions/check-ext-build
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@9d00215f539f669b41c7fabf7b88ccc8f316926c # v6.0.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@21fb2cdff9e78dae9d11604252d778c2f1af8a43 # v7.1.1
         with:
           skip_checkout: true
       - name: Ensure SHA pinned actions
@@ -40,7 +40,7 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
 
       - uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:

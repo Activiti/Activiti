@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
     - uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
       with:
           path: ~/.m2/repository
@@ -22,4 +22,4 @@ jobs:
          java-version: '21'
          distribution: 'temurin'
     - name: Submit Dependency Graph
-      uses: advanced-security/maven-dependency-submission-action@bb3f7338b5bd0e3b225d8082e26b7b6289e17ef3 # v4.1.0
+      uses: advanced-security/maven-dependency-submission-action@4f64ddab9d742a4806eeb588d238e4c311a8397d # v4.1.1
