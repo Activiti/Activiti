@@ -53,4 +53,7 @@ public interface ProcessDefinitionDataManager extends DataManager<ProcessDefinit
 
   void updateProcessDefinitionTenantIdForDeployment(String deploymentId, String newTenantId);
 
+  List<ProcessDefinitionEntity> findAllProcessDefinitions();
+
+  List<ProcessDefinitionEntity> findProcessDefinitionsForAllTenants();
 }
