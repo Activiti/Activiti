@@ -122,7 +122,7 @@ public class ProcessModelAutoConfiguration {
     //this bean will be automatically injected inside boot's ObjectMapper
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public Module customizeProcessModelObjectMapper(ObjectProvider<ConversionService> conversionServiceProvider) {
+    public Module customizeProcessModelObjectMapper() {
         SimpleModule module = new SimpleModule("mapProcessModelInterfaces",
                                                Version.unknownVersion());
         SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver() {
@@ -204,7 +204,7 @@ public class ProcessModelAutoConfiguration {
                                               MessageEventPayload.class.getSimpleName()));
         module.setAbstractTypes(resolver);
 
-        ConversionService conversionService = conversionServiceProvider.getIfUnique(this::conversionService);
+        ConversionService conversionService = this.conversionService();
 
         module.addSerializer(new ProcessVariablesMapSerializer(conversionService));
 
