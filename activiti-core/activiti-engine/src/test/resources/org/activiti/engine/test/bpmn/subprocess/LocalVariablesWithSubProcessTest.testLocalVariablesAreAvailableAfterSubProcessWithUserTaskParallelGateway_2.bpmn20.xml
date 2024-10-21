@@ -1,0 +1,344 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<bpmn2:definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20241017135857736" modeler:modelId="51" modeler:modelVersion="3" modeler:modelLastUpdated="1729098623825">
+  <bpmn2:process id="MNT-24219" name="MNT-24219" isExecutable="true">
+    <extensionElements>
+      <modeler:deleteallvariables xmlns:modeler="http://activiti.com/modeler" modeler:deleteallvariables="false"/>
+    </extensionElements>
+    <bpmn2:startEvent id="startEvent">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[startEvent1]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:outgoing>sid-0E4A155F-3355-4BEB-B2D8-BDD81FE2CA9F</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="sid-0E4A155F-3355-4BEB-B2D8-BDD81FE2CA9F" sourceRef="startEvent" targetRef="forkGateway">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-0E4A155F-3355-4BEB-B2D8-BDD81FE2CA9F]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:parallelGateway id="forkGateway">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-12FC2D97-4830-4053-9989-DD087A65C7CD]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:incoming>sid-0E4A155F-3355-4BEB-B2D8-BDD81FE2CA9F</bpmn2:incoming>
+      <bpmn2:outgoing>sid-409FA056-6E7B-4850-A2D6-9EFEC96155BA</bpmn2:outgoing>
+      <bpmn2:outgoing>sid-EBF513A7-6D84-4345-A34A-1CDB4B0A6ADC</bpmn2:outgoing>
+    </bpmn2:parallelGateway>
+    <bpmn2:sequenceFlow id="sid-409FA056-6E7B-4850-A2D6-9EFEC96155BA" sourceRef="forkGateway" targetRef="scriptA">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-409FA056-6E7B-4850-A2D6-9EFEC96155BA]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:scriptTask id="scriptA" name="scriptA" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-C6C94E3B-F6D0-4CA4-9146-AB5280A1EEEB]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:incoming>sid-409FA056-6E7B-4850-A2D6-9EFEC96155BA</bpmn2:incoming>
+      <bpmn2:outgoing>sid-D0E493AE-B8DA-4D88-9E45-13C5AC08B7B2</bpmn2:outgoing>
+      <script><![CDATA[execution.setVariableLocal("commonLocalVar","A1");
+execution.setVariableLocal("uniqueLocalVarA","A2");]]></script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="sid-EBF513A7-6D84-4345-A34A-1CDB4B0A6ADC" sourceRef="forkGateway" targetRef="scriptB">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-EBF513A7-6D84-4345-A34A-1CDB4B0A6ADC]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:scriptTask id="scriptB" name="scriptB" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-8CD02B9E-D2BB-49E3-8AC9-31A8ABFAC854]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:incoming>sid-EBF513A7-6D84-4345-A34A-1CDB4B0A6ADC</bpmn2:incoming>
+      <bpmn2:outgoing>sid-A5DE16B1-E3EE-4AFD-899A-532773FF6946</bpmn2:outgoing>
+      <script><![CDATA[execution.setVariableLocal("commonLocalVar","B1");
+execution.setVariableLocal("uniqueLocalVarB","B2");]]></script>
+    </bpmn2:scriptTask>
+    <bpmn2:userTask id="beforeSubprocessA_usertask" name="before subProcessA" activiti:assignee="$INITIATOR">
+      <extensionElements>
+        <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:editor-resource-id><![CDATA[sid-6D752600-31C7-4AE1-BDC6-60C4ABF562B2]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:incoming>sid-D0E493AE-B8DA-4D88-9E45-13C5AC08B7B2</bpmn2:incoming>
+      <bpmn2:outgoing>sid-189C6DAD-D02B-4E4A-864C-D5A2E6B47243</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="sid-D0E493AE-B8DA-4D88-9E45-13C5AC08B7B2" sourceRef="scriptA" targetRef="beforeSubprocessA_usertask">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-D0E493AE-B8DA-4D88-9E45-13C5AC08B7B2]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:userTask id="beforeSubprocessB_usertask" name="before subProcessB" activiti:assignee="$INITIATOR">
+      <extensionElements>
+        <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:editor-resource-id><![CDATA[sid-B1F25B20-04AD-4F23-A2E8-579E846B8678]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:incoming>sid-A5DE16B1-E3EE-4AFD-899A-532773FF6946</bpmn2:incoming>
+      <bpmn2:outgoing>sid-919A82D3-40F7-4B1A-A48D-74503834BFF1</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="sid-A5DE16B1-E3EE-4AFD-899A-532773FF6946" sourceRef="scriptB" targetRef="beforeSubprocessB_usertask">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-A5DE16B1-E3EE-4AFD-899A-532773FF6946]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:subProcess id="subprocessB" name="subProcessB">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-FA204AB8-31A8-4C8D-8D5B-33DECB9A5F41]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:startEvent id="subprocessB_startEvent">
+        <extensionElements>
+          <modeler:editor-resource-id><![CDATA[sid-E7BE4901-6911-4380-9891-86EF52B4DCEE]]></modeler:editor-resource-id>
+        </extensionElements>
+        <bpmn2:outgoing>sid-30AC689D-50A0-4A6B-9C94-CE3611B2EA0B</bpmn2:outgoing>
+      </bpmn2:startEvent>
+      <bpmn2:userTask id="subprocessB_userTask" name="userTaskB" activiti:assignee="$INITIATOR">
+        <extensionElements>
+          <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+          <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+          <modeler:editor-resource-id><![CDATA[sid-018816C8-5F55-4F64-B9E0-82FC0C8FA2AF]]></modeler:editor-resource-id>
+        </extensionElements>
+        <bpmn2:incoming>sid-30AC689D-50A0-4A6B-9C94-CE3611B2EA0B</bpmn2:incoming>
+        <bpmn2:outgoing>sid-A6CC56F3-5855-4350-9000-59EF6F9A5EB6</bpmn2:outgoing>
+      </bpmn2:userTask>
+      <bpmn2:endEvent id="subprocessB_endEvent">
+        <extensionElements>
+          <modeler:editor-resource-id><![CDATA[sid-B133563B-BC99-4B0C-8029-04C1745A0C44]]></modeler:editor-resource-id>
+        </extensionElements>
+        <bpmn2:incoming>sid-A6CC56F3-5855-4350-9000-59EF6F9A5EB6</bpmn2:incoming>
+      </bpmn2:endEvent>
+      <bpmn2:sequenceFlow id="sid-30AC689D-50A0-4A6B-9C94-CE3611B2EA0B" sourceRef="subprocessB_startEvent" targetRef="subprocessB_userTask">
+        <extensionElements>
+          <modeler:editor-resource-id><![CDATA[sid-30AC689D-50A0-4A6B-9C94-CE3611B2EA0B]]></modeler:editor-resource-id>
+        </extensionElements>
+      </bpmn2:sequenceFlow>
+      <bpmn2:sequenceFlow id="sid-A6CC56F3-5855-4350-9000-59EF6F9A5EB6" sourceRef="subprocessB_userTask" targetRef="subprocessB_endEvent">
+        <extensionElements>
+          <modeler:editor-resource-id><![CDATA[sid-A6CC56F3-5855-4350-9000-59EF6F9A5EB6]]></modeler:editor-resource-id>
+        </extensionElements>
+      </bpmn2:sequenceFlow>
+    </bpmn2:subProcess>
+    <bpmn2:subProcess id="subprocessA" name="subProcessA">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-C584D5D2-DCCD-4903-9459-86C7D104DAD7]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:startEvent id="subprocessA_startEvent">
+        <extensionElements>
+          <modeler:editor-resource-id><![CDATA[sid-E27FDE68-7A96-4191-8B81-A42C6438AC0B]]></modeler:editor-resource-id>
+        </extensionElements>
+        <bpmn2:outgoing>sid-DC6FBDF1-66CD-4601-AC9C-C2AFC1634AA2</bpmn2:outgoing>
+      </bpmn2:startEvent>
+      <bpmn2:userTask id="subprocessA_userTask" name="userTaskA" activiti:assignee="$INITIATOR">
+        <extensionElements>
+          <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+          <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+          <modeler:editor-resource-id><![CDATA[sid-3C35FB04-D481-44A9-8B76-532AF74659EF]]></modeler:editor-resource-id>
+        </extensionElements>
+        <bpmn2:incoming>sid-DC6FBDF1-66CD-4601-AC9C-C2AFC1634AA2</bpmn2:incoming>
+        <bpmn2:outgoing>sid-631641BC-F04D-4A9F-88E8-946171179E44</bpmn2:outgoing>
+      </bpmn2:userTask>
+      <bpmn2:endEvent id="subprocessA_endEvent">
+        <extensionElements>
+          <modeler:editor-resource-id><![CDATA[sid-A77877BD-45C6-42C0-9C13-65A415D9DEDC]]></modeler:editor-resource-id>
+        </extensionElements>
+        <bpmn2:incoming>sid-631641BC-F04D-4A9F-88E8-946171179E44</bpmn2:incoming>
+      </bpmn2:endEvent>
+      <bpmn2:sequenceFlow id="sid-DC6FBDF1-66CD-4601-AC9C-C2AFC1634AA2" sourceRef="subprocessA_startEvent" targetRef="subprocessA_userTask">
+        <extensionElements>
+          <modeler:editor-resource-id><![CDATA[sid-DC6FBDF1-66CD-4601-AC9C-C2AFC1634AA2]]></modeler:editor-resource-id>
+        </extensionElements>
+      </bpmn2:sequenceFlow>
+      <bpmn2:sequenceFlow id="sid-631641BC-F04D-4A9F-88E8-946171179E44" sourceRef="subprocessA_userTask" targetRef="subprocessA_endEvent">
+        <extensionElements>
+          <modeler:editor-resource-id><![CDATA[sid-631641BC-F04D-4A9F-88E8-946171179E44]]></modeler:editor-resource-id>
+        </extensionElements>
+      </bpmn2:sequenceFlow>
+    </bpmn2:subProcess>
+    <bpmn2:sequenceFlow id="sid-189C6DAD-D02B-4E4A-864C-D5A2E6B47243" sourceRef="beforeSubprocessA_usertask" targetRef="subprocessA">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-189C6DAD-D02B-4E4A-864C-D5A2E6B47243]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="sid-919A82D3-40F7-4B1A-A48D-74503834BFF1" sourceRef="beforeSubprocessB_usertask" targetRef="subprocessB">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-919A82D3-40F7-4B1A-A48D-74503834BFF1]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:parallelGateway id="joinGateway">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-B0672BE2-6418-440F-8115-D49FDF67BBC6]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:incoming>sid-C2C64C44-C6A0-4143-AF65-433CCCB387BD</bpmn2:incoming>
+      <bpmn2:incoming>sid-4C948D86-BDD5-4121-9EFB-AA469D9CEED6</bpmn2:incoming>
+      <bpmn2:outgoing>sid-6C17C0E1-99F3-4A64-953C-2C73AF7A629A</bpmn2:outgoing>
+    </bpmn2:parallelGateway>
+    <bpmn2:userTask id="afterSubprocessA_usertask" name="after subProcessA" activiti:assignee="$INITIATOR">
+      <extensionElements>
+        <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:editor-resource-id><![CDATA[sid-D3824C3F-456F-4783-B68E-36233B21EDD9]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:incoming>sid-2919AB8B-06F0-494F-8972-615DFB398008</bpmn2:incoming>
+      <bpmn2:outgoing>sid-C2C64C44-C6A0-4143-AF65-433CCCB387BD</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="sid-2919AB8B-06F0-494F-8972-615DFB398008" sourceRef="subprocessA" targetRef="afterSubprocessA_usertask">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-2919AB8B-06F0-494F-8972-615DFB398008]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:userTask id="afterSubprocessB_usertask" name="after subProcessB" activiti:assignee="$INITIATOR">
+      <extensionElements>
+        <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:editor-resource-id><![CDATA[sid-08F29320-6D14-4F99-B4AE-A4DD52DB60B7]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:incoming>sid-1E0B5897-00B6-4C0A-BAC3-A4172ACEC718</bpmn2:incoming>
+      <bpmn2:outgoing>sid-4C948D86-BDD5-4121-9EFB-AA469D9CEED6</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="sid-1E0B5897-00B6-4C0A-BAC3-A4172ACEC718" sourceRef="subprocessB" targetRef="afterSubprocessB_usertask">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-1E0B5897-00B6-4C0A-BAC3-A4172ACEC718]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="sid-C2C64C44-C6A0-4143-AF65-433CCCB387BD" sourceRef="afterSubprocessA_usertask" targetRef="joinGateway">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-C2C64C44-C6A0-4143-AF65-433CCCB387BD]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="sid-4C948D86-BDD5-4121-9EFB-AA469D9CEED6" sourceRef="afterSubprocessB_usertask" targetRef="joinGateway">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-4C948D86-BDD5-4121-9EFB-AA469D9CEED6]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:endEvent id="endEvent">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-D97B22E4-2B34-4E10-970E-7086D21F565B]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:incoming>sid-6C17C0E1-99F3-4A64-953C-2C73AF7A629A</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="sid-6C17C0E1-99F3-4A64-953C-2C73AF7A629A" sourceRef="joinGateway" targetRef="endEvent">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-6C17C0E1-99F3-4A64-953C-2C73AF7A629A]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_MNT-24219">
+    <bpmndi:BPMNPlane bpmnElement="MNT-24219" id="BPMNPlane_MNT-24219">
+      <bpmndi:BPMNShape bpmnElement="startEvent" id="BPMNShape_startEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="165.0" y="365.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="forkGateway" id="BPMNShape_forkGateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="290.0" y="360.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scriptA" id="BPMNShape_scriptA">
+        <omgdc:Bounds height="80.0" width="100.0" x="260.0" y="215.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scriptB" id="BPMNShape_scriptB">
+        <omgdc:Bounds height="80.0" width="100.0" x="260.0" y="455.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="beforeSubprocessA_usertask" id="BPMNShape_beforeSubprocessA_usertask">
+        <omgdc:Bounds height="80.0" width="100.0" x="405.0" y="215.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="beforeSubprocessB_usertask" id="BPMNShape_beforeSubprocessB_usertask">
+        <omgdc:Bounds height="80.0" width="100.0" x="405.0" y="455.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subprocessB" id="BPMNShape_subprocessB">
+        <omgdc:Bounds height="157.0" width="324.0" x="585.0" y="415.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subprocessB_startEvent" id="BPMNShape_subprocessB_startEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="615.0" y="478.5"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subprocessB_userTask" id="BPMNShape_subprocessB_userTask">
+        <omgdc:Bounds height="80.0" width="100.0" x="690.0" y="453.5"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subprocessB_endEvent" id="BPMNShape_subprocessB_endEvent">
+        <omgdc:Bounds height="28.0" width="28.0" x="835.0" y="479.5"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subprocessA" id="BPMNShape_subprocessA">
+        <omgdc:Bounds height="169.0" width="332.0" x="585.0" y="175.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subprocessA_startEvent" id="BPMNShape_subprocessA_startEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="615.0" y="240.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subprocessA_userTask" id="BPMNShape_subprocessA_userTask">
+        <omgdc:Bounds height="80.0" width="100.0" x="690.0" y="215.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subprocessA_endEvent" id="BPMNShape_subprocessA_endEvent">
+        <omgdc:Bounds height="28.0" width="28.0" x="835.0" y="241.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="joinGateway" id="BPMNShape_joinGateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="992.0" y="358.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="afterSubprocessA_usertask" id="BPMNShape_afterSubprocessA_usertask">
+        <omgdc:Bounds height="80.0" width="100.0" x="962.0" y="219.5"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="afterSubprocessB_usertask" id="BPMNShape_afterSubprocessB_usertask">
+        <omgdc:Bounds height="80.0" width="100.0" x="962.0" y="453.5"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent" id="BPMNShape_endEvent">
+        <omgdc:Bounds height="28.0" width="28.0" x="1077.0" y="364.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-189C6DAD-D02B-4E4A-864C-D5A2E6B47243" id="BPMNEdge_sid-189C6DAD-D02B-4E4A-864C-D5A2E6B47243">
+        <omgdi:waypoint x="505.0" y="255.76013513513513"/>
+        <omgdi:waypoint x="585.0" y="256.97635135135135"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-A6CC56F3-5855-4350-9000-59EF6F9A5EB6" id="BPMNEdge_sid-A6CC56F3-5855-4350-9000-59EF6F9A5EB6">
+        <omgdi:waypoint x="790.0" y="493.5"/>
+        <omgdi:waypoint x="835.0" y="493.5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-D0E493AE-B8DA-4D88-9E45-13C5AC08B7B2" id="BPMNEdge_sid-D0E493AE-B8DA-4D88-9E45-13C5AC08B7B2">
+        <omgdi:waypoint x="360.0" y="255.0"/>
+        <omgdi:waypoint x="405.0" y="255.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-631641BC-F04D-4A9F-88E8-946171179E44" id="BPMNEdge_sid-631641BC-F04D-4A9F-88E8-946171179E44">
+        <omgdi:waypoint x="790.0" y="255.0"/>
+        <omgdi:waypoint x="835.0" y="255.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-DC6FBDF1-66CD-4601-AC9C-C2AFC1634AA2" id="BPMNEdge_sid-DC6FBDF1-66CD-4601-AC9C-C2AFC1634AA2">
+        <omgdi:waypoint x="645.0" y="255.0"/>
+        <omgdi:waypoint x="690.0" y="255.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-6C17C0E1-99F3-4A64-953C-2C73AF7A629A" id="BPMNEdge_sid-6C17C0E1-99F3-4A64-953C-2C73AF7A629A">
+        <omgdi:waypoint x="1031.621794871795" y="378.37820512820514"/>
+        <omgdi:waypoint x="1077.0002839785393" y="378.0891701657418"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-409FA056-6E7B-4850-A2D6-9EFEC96155BA" id="BPMNEdge_sid-409FA056-6E7B-4850-A2D6-9EFEC96155BA">
+        <omgdi:waypoint x="310.42" y="360.42"/>
+        <omgdi:waypoint x="310.1593625498008" y="295.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-30AC689D-50A0-4A6B-9C94-CE3611B2EA0B" id="BPMNEdge_sid-30AC689D-50A0-4A6B-9C94-CE3611B2EA0B">
+        <omgdi:waypoint x="645.0" y="493.5"/>
+        <omgdi:waypoint x="690.0" y="493.5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-2919AB8B-06F0-494F-8972-615DFB398008" id="BPMNEdge_sid-2919AB8B-06F0-494F-8972-615DFB398008">
+        <omgdi:waypoint x="917.0" y="259.5"/>
+        <omgdi:waypoint x="962.0" y="259.5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-1E0B5897-00B6-4C0A-BAC3-A4172ACEC718" id="BPMNEdge_sid-1E0B5897-00B6-4C0A-BAC3-A4172ACEC718">
+        <omgdi:waypoint x="909.0" y="493.5"/>
+        <omgdi:waypoint x="962.0" y="493.5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-EBF513A7-6D84-4345-A34A-1CDB4B0A6ADC" id="BPMNEdge_sid-EBF513A7-6D84-4345-A34A-1CDB4B0A6ADC">
+        <omgdi:waypoint x="310.4166666666667" y="399.5833333333333"/>
+        <omgdi:waypoint x="310.174672489083" y="455.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-A5DE16B1-E3EE-4AFD-899A-532773FF6946" id="BPMNEdge_sid-A5DE16B1-E3EE-4AFD-899A-532773FF6946">
+        <omgdi:waypoint x="360.0" y="495.0"/>
+        <omgdi:waypoint x="405.0" y="495.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-0E4A155F-3355-4BEB-B2D8-BDD81FE2CA9F" id="BPMNEdge_sid-0E4A155F-3355-4BEB-B2D8-BDD81FE2CA9F">
+        <omgdi:waypoint x="194.99988990300454" y="380.0574708425402"/>
+        <omgdi:waypoint x="290.4230769230769" y="380.4230769230769"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-919A82D3-40F7-4B1A-A48D-74503834BFF1" id="BPMNEdge_sid-919A82D3-40F7-4B1A-A48D-74503834BFF1">
+        <omgdi:waypoint x="505.0" y="494.7431506849315"/>
+        <omgdi:waypoint x="585.0" y="494.3321917808219"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-4C948D86-BDD5-4121-9EFB-AA469D9CEED6" id="BPMNEdge_sid-4C948D86-BDD5-4121-9EFB-AA469D9CEED6">
+        <omgdi:waypoint x="1012.0" y="453.5"/>
+        <omgdi:waypoint x="1012.0" y="398.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-C2C64C44-C6A0-4143-AF65-433CCCB387BD" id="BPMNEdge_sid-C2C64C44-C6A0-4143-AF65-433CCCB387BD">
+        <omgdi:waypoint x="1012.0" y="299.5"/>
+        <omgdi:waypoint x="1012.0" y="358.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

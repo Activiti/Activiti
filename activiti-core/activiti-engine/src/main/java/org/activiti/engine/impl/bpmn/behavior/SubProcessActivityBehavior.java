@@ -23,6 +23,7 @@ import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.agenda.ExecutionIdReusage;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.CollectionUtil;
@@ -74,6 +75,9 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {
     ExecutionEntity startSubProcessExecution = Context.getCommandContext().getExecutionEntityManager()
         .createChildExecution(executionEntity);
     startSubProcessExecution.setCurrentFlowElement(startElement);
+    // Copy the executionId of the parent execution to the subProcess execution
+    ExecutionIdReusage.copyExecutionIdReusage(executionEntity, startSubProcessExecution);
+
     Context.getAgenda().planContinueProcessOperation(startSubProcessExecution);
   }
 

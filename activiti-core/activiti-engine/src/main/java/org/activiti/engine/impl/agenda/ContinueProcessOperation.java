@@ -134,10 +134,11 @@ public class ContinueProcessOperation extends AbstractOperation {
         // Create the sub process execution that can be used to set variables
         // We create a new execution and delete the incoming one to have a proper scope that
         // does not conflict anything with any existing scopes
-
         ExecutionEntity subProcessExecution = commandContext.getExecutionEntityManager().createChildExecution(parentScopeExecution);
         subProcessExecution.setCurrentFlowElement(subProcess);
         subProcessExecution.setScope(true);
+        // Created execution will have the executionId of the parent execution (on a local variable)
+        ExecutionIdReusage.setExecutionIdReusage(subProcessExecution, execution.getId());
 
         commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(execution, null);
         execution = subProcessExecution;
