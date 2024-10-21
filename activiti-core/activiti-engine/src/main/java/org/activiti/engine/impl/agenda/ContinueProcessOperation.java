@@ -17,6 +17,7 @@ package org.activiti.engine.impl.agenda;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
@@ -30,11 +31,15 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.impl.HistoricVariableInstanceQueryImpl;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
@@ -136,12 +141,12 @@ public class ContinueProcessOperation extends AbstractOperation {
         // Create the sub process execution that can be used to set variables
         // We create a new execution and delete the incoming one to have a proper scope that
         // does not conflict anything with any existing scopes
-
         ExecutionEntity subProcessExecution = commandContext.getExecutionEntityManager().createChildExecution(parentScopeExecution);
         subProcessExecution.setCurrentFlowElement(subProcess);
         subProcessExecution.setScope(true);
+        // Created execution will have the executionId of the parent execution (on a local variable)
+        ExecutionIdReusage.setExecutionIdReusage(subProcessExecution, execution.getId());
 
-        executionEntityCache.put(subProcess, execution);
         commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(execution, null);
         execution = subProcessExecution;
     }

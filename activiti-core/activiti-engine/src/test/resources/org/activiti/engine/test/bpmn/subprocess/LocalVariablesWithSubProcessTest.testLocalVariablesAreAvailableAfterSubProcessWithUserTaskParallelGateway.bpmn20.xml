@@ -99,6 +99,14 @@
       <bpmndi:BPMNShape bpmnElement="subProcessB-endEvent" id="BPMNShape_subProcessB-endEvent">
         <omgdc:Bounds height="28.0" width="28.0" x="670.0000069737439" y="296.00001559582813"/>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="subProcessA-userTask" id="BPMNEdge_subProcessA-userTask">
+        <omgdi:waypoint x="415.00000443783705" y="172.00001425273655"/>
+        <omgdi:waypoint x="495.0000069737439" y="172.00001507925447"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="subProcessB-userTask" id="BPMNEdge_subProcessB-userTask">
+        <omgdi:waypoint x="415.00000443783705" y="172.00001425273655"/>
+        <omgdi:waypoint x="495.0000069737439" y="172.00001507925447"/>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="scriptA_subProcessA" id="BPMNEdge_scriptA_subProcessA">
         <omgdi:waypoint x="415.00000443783705" y="172.00001425273655"/>
         <omgdi:waypoint x="495.0000069737439" y="172.00001507925447"/>

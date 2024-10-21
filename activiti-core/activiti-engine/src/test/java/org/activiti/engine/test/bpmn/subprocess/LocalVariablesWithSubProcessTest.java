@@ -17,6 +17,7 @@
 
 package org.activiti.engine.test.bpmn.subprocess;
 
+import org.activiti.engine.impl.agenda.ExecutionIdReusage;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -34,6 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class LocalVariablesWithSubProcessTest extends PluggableActivitiTestCase {
 
+  // TODO: this test is failing because there's no new transaction on the subprocess and no local-variables are stored in DB
   @Deployment
   public void testLocalVariablesAreAvailableAfterSubProcess() {
       // GIVEN a process that creates a local variable, calls a subprocess and evaluates the initial local variable
@@ -52,6 +54,7 @@ public class LocalVariablesWithSubProcessTest extends PluggableActivitiTestCase 
       assertThat(variablesLocal.get("httpStatus")).isEqualTo(500);
   }
 
+    // TODO: this test is failing because there's no new transaction on the subprocess and no local-variables are stored in DB
     @Deployment
     public void testLocalVariablesAreAvailableAfterSubProcessParallelGateway() {
         // GIVEN a process with two parallel flows
@@ -95,12 +98,14 @@ public class LocalVariablesWithSubProcessTest extends PluggableActivitiTestCase 
 
         Task subProcessAUserTask = subProcessUserTasks.stream().filter(task1 -> task1.getName().equals("subProcessA userTask")).findFirst().orElseThrow();
         final Map<String, Object> variablesLocal_subprocessAUsertask = runtimeService.getVariablesLocal(subProcessAUserTask.getExecutionId());
-        assertThat(variablesLocal_subprocessAUsertask).hasSize(0);
+        // TODO: existe aqui uma variável a mais ( ExecutionReusage )
+        assertThat(variablesLocal_subprocessAUsertask).hasSize(1);
         taskService.complete(subProcessAUserTask.getId());
 
         Task subProcessBUserTask = subProcessUserTasks.stream().filter(task1 -> task1.getName().equals("subProcessB userTask")).findFirst().orElseThrow();
         final Map<String, Object> variablesLocal_subprocessBUsertask = runtimeService.getVariablesLocal(subProcessBUserTask.getExecutionId());
-        assertThat(variablesLocal_subprocessBUsertask).hasSize(0);
+        // TODO: existe aqui uma variável a mais ( ExecutionReusage )
+        assertThat(variablesLocal_subprocessBUsertask).hasSize(1);
         taskService.complete(subProcessBUserTask.getId());
 
         // THEN we reach the user tasks on the main process
@@ -123,6 +128,71 @@ public class LocalVariablesWithSubProcessTest extends PluggableActivitiTestCase 
         assertThat(variablesLocalB.get("uniqueLocalVarB")).isEqualTo("B2");
     }
 
+    @Deployment
+    public void testLocalVariablesAreAvailableAfterSubProcessWithUserTaskParallelGateway_2() {
+        // GIVEN a process with two parallel flows
+        // GIVEN each flow sets local variables, calls a subprocess (with an user task) and ends with a user task
+
+        // WHEN process starts
+        final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("MNT-24219");
+
+        // WHEN and we complete the user tasks inside each subprocess
+        TaskQuery taskQuery = taskService.createTaskQuery();
+        List<Task> subProcessUserTasks = taskQuery.list();
+        assertThat(subProcessUserTasks).hasSize(2);
+
+        Task beforeSubprocessA = subProcessUserTasks.stream().filter(task1 -> task1.getName().equals("before subProcessA")).findFirst().orElseThrow();
+        final Map<String, Object> beforeSubprocessA_variables = runtimeService.getVariablesLocal(beforeSubprocessA.getExecutionId());
+        assertThat(beforeSubprocessA_variables).hasSize(2);
+        assertThat(beforeSubprocessA_variables.get("commonLocalVar")).isEqualTo("A1");
+        assertThat(beforeSubprocessA_variables.get("uniqueLocalVarA")).isEqualTo("A2");
+        taskService.complete(beforeSubprocessA.getId());
+
+        Task beforeSubprocessB = subProcessUserTasks.stream().filter(task1 -> task1.getName().equals("before subProcessB")).findFirst().orElseThrow();
+        final Map<String, Object> beforeSubprocessB_variables = runtimeService.getVariablesLocal(beforeSubprocessB.getExecutionId());
+        assertThat(beforeSubprocessB_variables).hasSize(2);
+        assertThat(beforeSubprocessB_variables.get("commonLocalVar")).isEqualTo("B1");
+        assertThat(beforeSubprocessB_variables.get("uniqueLocalVarB")).isEqualTo("B2");
+        taskService.complete(beforeSubprocessB.getId());
+
+        // THEN we reach the user tasks inside the subprocesses
+        taskQuery = taskService.createTaskQuery();
+        List<Task> subprocesses = taskQuery.list();
+        assertThat(subprocesses).hasSize(2);
+
+        Task subprocessA = subprocesses.stream().filter(task -> task.getName().equals("userTaskA")).findFirst().orElseThrow();
+        Map<String, Object> variablesLocalA = runtimeService.getVariablesLocal(subprocessA.getExecutionId());
+        assertThat(variablesLocalA).hasSize(1);
+        // TODO: existe aqui uma variável a mais (ExecutionReusage)
+        taskService.complete(subprocessA.getId());
+
+        Task subprocessB = subprocesses.stream().filter(task -> task.getName().equals("userTaskB")).findFirst().orElseThrow();
+        Map<String, Object> variablesLocalB = runtimeService.getVariablesLocal(subprocessB.getExecutionId());
+        assertThat(variablesLocalB).hasSize(1);
+        // TODO: existe aqui uma variável a mais (ExecutionReusage)
+        taskService.complete(subprocessB.getId());
+
+        // THEN we reach the user tasks on the main process
+        taskQuery = taskService.createTaskQuery();
+        List<Task> mainProcessUserTasks = taskQuery.list();
+        assertThat(mainProcessUserTasks).hasSize(2);
+
+        // THEN when reaching userTaskA (flow A), we have 2 local variables
+        Task mainProcessAUserTask = mainProcessUserTasks.stream().filter(task -> task.getName().equals("after subProcessA")).findFirst().orElseThrow();
+        Map<String, Object> afterSubprocessA_variables = runtimeService.getVariablesLocal(mainProcessAUserTask.getExecutionId());
+        assertThat(afterSubprocessA_variables).hasSize(2);
+        assertThat(afterSubprocessA_variables.get("commonLocalVar")).isEqualTo("A1");
+        assertThat(afterSubprocessA_variables.get("uniqueLocalVarA")).isEqualTo("A2");
+
+        // THEN when reaching userTaskB (flow B), we have 2 local variables
+        Task mainProcessBUserTask = mainProcessUserTasks.stream().filter(task -> task.getName().equals("after subProcessB")).findFirst().orElseThrow();
+        Map<String, Object> afterSubprocessB_variables = runtimeService.getVariablesLocal(mainProcessBUserTask.getExecutionId());
+        assertThat(afterSubprocessB_variables).hasSize(2);
+        assertThat(afterSubprocessB_variables.get("commonLocalVar")).isEqualTo("B1");
+        assertThat(afterSubprocessB_variables.get("uniqueLocalVarB")).isEqualTo("B2");
+    }
+
+
     @Deployment(resources = {
         "org/activiti/engine/test/bpmn/subprocess/LocalVariablesWithSubProcessTest.testLocalVariablesAreAvailableAfterSubProcessWithUserTaskParallelGateway.bpmn20.xml",
         "org/activiti/engine/test/bpmn/subprocess/LocalVariablesWithSubProcessTest.testLocalVariablesAreAvailableAfterSubProcessWithUserTaskParallelGatewayProcess2.bpmn20.xml"
@@ -144,11 +214,21 @@ public class LocalVariablesWithSubProcessTest extends PluggableActivitiTestCase 
         // THEN "simplerProcess": userTask on each subprocess doesn't have any local variables
         final Task simplerProcess_subProcessA_userTask = getUserTask(simplerProcess_userTasks, SUBPROCESS_A_USER_TASK);
         final Map<String, Object> simplerProcess_subProcessA_variablesLocal = getVariablesLocal(simplerProcess_subProcessA_userTask);
-        assertThat(simplerProcess_subProcessA_variablesLocal).hasSize(0);
+
+        assertThat(simplerProcess_subProcessA_variablesLocal).hasSize(1);
+        String simplerProcess_subProcessA_executionIdReusage = (String) simplerProcess_subProcessA_variablesLocal.get(ExecutionIdReusage.EXECUTION_ID_REUSAGE_VARIABLE_NAME);
+        assertThat(simplerProcess_subProcessA_executionIdReusage).isNotEmpty();
+
 
         final Task simplerProcess_subProcessB_userTask = getUserTask(simplerProcess_userTasks, SUBPROCESS_B_USER_TASK);
         final Map<String, Object> simplerProcess_subProcessB_variablesLocal = getVariablesLocal(simplerProcess_subProcessB_userTask);
-        assertThat(simplerProcess_subProcessB_variablesLocal).hasSize(0);
+
+        assertThat(simplerProcess_subProcessB_variablesLocal).hasSize(1);
+        String simplerProcess_subProcessB_executionIdReusage = (String) simplerProcess_subProcessB_variablesLocal.get(ExecutionIdReusage.EXECUTION_ID_REUSAGE_VARIABLE_NAME);
+        assertThat(simplerProcess_subProcessB_executionIdReusage).isNotEmpty();
+        assertThat(simplerProcess_subProcessB_executionIdReusage).isNotEqualTo(simplerProcess_subProcessA_executionIdReusage);
+
+        assertThat(simplerProcess_subProcessB_variablesLocal.get(ExecutionIdReusage.EXECUTION_ID_REUSAGE_VARIABLE_NAME)).isNotNull();
 
         // THEN "simplerProcess2": we have two usertasks, one for each subprocess
         List<Task> simplerProcess2_userTasks = getUserTasks(simplerProcess2);
@@ -157,11 +237,18 @@ public class LocalVariablesWithSubProcessTest extends PluggableActivitiTestCase 
         // THEN "simplerProcess2": userTask on each subprocess doesn't have any local variables
         final Task simplerProcess2_subProcessA_userTask = getUserTask(simplerProcess2_userTasks, SUBPROCESS_A_USER_TASK);
         final Map<String, Object> simplerProcess2_subProcessA_variablesLocal = getVariablesLocal(simplerProcess2_subProcessA_userTask);
-        assertThat(simplerProcess2_subProcessA_variablesLocal).hasSize(0);
+
+        assertThat(simplerProcess2_subProcessA_variablesLocal).hasSize(1);
+        String simplerProcess2_subProcessA_executionIdReusage = (String) simplerProcess2_subProcessA_variablesLocal.get(ExecutionIdReusage.EXECUTION_ID_REUSAGE_VARIABLE_NAME);
+        assertThat(simplerProcess2_subProcessA_executionIdReusage).isNotEmpty();
+
 
         final Task simplerProcess2_subProcessB_userTask = getUserTask(simplerProcess2_userTasks, SUBPROCESS_B_USER_TASK);
         final Map<String, Object> simplerProcess2_subProcessB_variablesLocal = getVariablesLocal(simplerProcess2_subProcessB_userTask);
-        assertThat(simplerProcess2_subProcessB_variablesLocal).hasSize(0);
+        assertThat(simplerProcess2_subProcessB_variablesLocal).hasSize(1);
+        String simplerProcess2_subProcessB_executionIdReusage = (String) simplerProcess2_subProcessB_variablesLocal.get(ExecutionIdReusage.EXECUTION_ID_REUSAGE_VARIABLE_NAME);
+        assertThat(simplerProcess2_subProcessB_executionIdReusage).isNotEmpty();
+        assertThat(simplerProcess2_subProcessB_executionIdReusage).isNotEqualTo(simplerProcess2_subProcessA_executionIdReusage);
 
         // WHEN "simplerProcess": we complete the usertask on each subprocess
         taskService.complete(simplerProcess_subProcessA_userTask.getId());
@@ -178,7 +265,7 @@ public class LocalVariablesWithSubProcessTest extends PluggableActivitiTestCase 
         final Task simplerProcess_branchA_userTask = getUserTask(simplerProcess_userTasks, BRANCH_A_USER_TASK);
         final Map<String, Object> simplerProcess_branchA_variablesLocal = getVariablesLocal(simplerProcess_branchA_userTask);
         assertThat(simplerProcess_branchA_variablesLocal.get("commonLocalVar")).isEqualTo("A1");
-        assertThat(simplerProcess_branchA_variablesLocal.get("uniqueLocalVarB")).isEqualTo("A2");
+        assertThat(simplerProcess_branchA_variablesLocal.get("uniqueLocalVarA")).isEqualTo("A2");
 
         final Task simplerProcess_branchB_userTask = getUserTask(simplerProcess_userTasks, BRANCH_B_USER_TASK);
         final Map<String, Object> simplerProcess_branchB_variablesLocal = getVariablesLocal(simplerProcess_branchB_userTask);
@@ -192,7 +279,7 @@ public class LocalVariablesWithSubProcessTest extends PluggableActivitiTestCase 
         final Task simplerProcess2_branchA_userTask = getUserTask(simplerProcess2_userTasks, BRANCH_A_USER_TASK);
         final Map<String, Object> simplerProcess2_branchA_variablesLocal = getVariablesLocal(simplerProcess2_branchA_userTask);
         assertThat(simplerProcess2_branchA_variablesLocal.get("commonLocalVar")).isEqualTo("C1");
-        assertThat(simplerProcess2_branchA_variablesLocal.get("uniqueLocalVarB")).isEqualTo("C2");
+        assertThat(simplerProcess2_branchA_variablesLocal.get("uniqueLocalVarA")).isEqualTo("C2");
 
         final Task simplerProcess2_branchB_userTask = getUserTask(simplerProcess2_userTasks, BRANCH_B_USER_TASK);
         final Map<String, Object> simplerProcess2_branchB_variablesLocal = getVariablesLocal(simplerProcess2_branchB_userTask);

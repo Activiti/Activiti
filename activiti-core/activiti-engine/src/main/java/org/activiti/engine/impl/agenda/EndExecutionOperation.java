@@ -45,7 +45,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * This operations ends an execution and follows the typical BPMN rules to continue the process (if possible).
@@ -57,8 +56,6 @@ import java.util.stream.Collectors;
 public class EndExecutionOperation extends AbstractOperation {
 
     private static final Logger logger = LoggerFactory.getLogger(EndExecutionOperation.class);
-
-    private static ExecutionEntityCache executionEntityCache = new ExecutionEntityCacheImpl();
 
 
     public EndExecutionOperation(CommandContext commandContext,
@@ -234,12 +231,13 @@ public class EndExecutionOperation extends AbstractOperation {
         executionToContinue = executionEntityManager.createChildExecution(parentExecution.getParent());
         executionToContinue.setCurrentFlowElement(subProcess);
 
-        // copies cached local variables
+        // copies historical local variables
         // - from execution before entering the subProcess
         // - to next execution ater the subProcess
-        final Map<String, Object> variablesLocal = executionEntityCache.getVariablesLocal(subProcess);
-        if( variablesLocal!=null ) {
-            executionToContinue.setVariablesLocal(variablesLocal);
+        String reusageExecutionId = ExecutionIdReusage.getExecutionIdReusage(execution);
+        if( reusageExecutionId!=null ) {
+            final Map<String, Object> variables = ExecutionIdReusage.getHistoricVariableInstances(commandContext, reusageExecutionId);
+            executionToContinue.setVariablesLocal(variables);
         }
 
         boolean hasCompensation = false;
