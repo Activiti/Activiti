@@ -25,37 +25,41 @@ import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 import org.activiti.engine.impl.test.AbstractTestCase;
+import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.containers.MSSQLServerContainer;
+import org.testcontainers.containers.MariaDBContainer;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.containers.OracleContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.MountableFile;
 
 public class DbSchemaUpdateTest extends AbstractTestCase {
 
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine")
-        .withCopyFileToContainer(MountableFile.forHostPath(
-                Path.of("target/activiti-engine/org/activiti/db/create/activiti.postgres.create.engine.sql")),
-            "/docker-entrypoint-initdb.d/engine.sql"
-        )
-        .withCopyFileToContainer(MountableFile.forHostPath(
-                Path.of("target/activiti-engine/org/activiti/db/create/activiti.postgres.create.history.sql")),
-            "/docker-entrypoint-initdb.d/history.sql"
-        );
+
+    JdbcDatabaseContainer databaseContainer;
 
     @Override
     protected void setUp() throws Exception {
-        postgres.start();
+        databaseContainer = Database.getInstance().startNewJdbcDatabaseContainer();
     }
 
     @Override
     protected void tearDown() throws Exception {
-        postgres.stop();
+        if (databaseContainer!=null) {
+            databaseContainer.stop();
+        }
     }
 
     public void testDbSchemaUpdateToLatestEngineVersion() {
+        if (databaseContainer==null) {
+            return;
+        }
+
         // given
         ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngineConfiguration.createStandaloneProcessEngineConfiguration()
-            .setJdbcUrl(postgres.getJdbcUrl())
-            .setJdbcUsername(postgres.getUsername())
-            .setJdbcPassword(postgres.getPassword())
+            .setJdbcUrl(databaseContainer.getJdbcUrl())
+            .setJdbcUsername(databaseContainer.getUsername())
+            .setJdbcPassword(databaseContainer.getPassword())
             .setDbHistoryUsed(true)
             .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE)
             .buildProcessEngine();
@@ -81,4 +85,120 @@ public class DbSchemaUpdateTest extends AbstractTestCase {
 
         processEngine.close();
     }
+
+
+    public enum Database {
+        POSTGRES {
+            @Override
+            protected JdbcDatabaseContainer startNewJdbcDatabaseContainer() {
+                PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:13.7");
+                postgreSQLContainer.withCopyFileToContainer(MountableFile.forHostPath(
+                            Path.of("target/activiti-engine/org/activiti/db/create/activiti.postgres.create.engine.sql")),
+                        "/docker-entrypoint-initdb.d/engine.sql"
+                    )
+                    .withCopyFileToContainer(MountableFile.forHostPath(
+                            Path.of("target/activiti-engine/org/activiti/db/create/activiti.postgres.create.history.sql")),
+                        "/docker-entrypoint-initdb.d/history.sql"
+                    );
+                postgreSQLContainer.start();
+                return postgreSQLContainer;
+            }
+        },
+        ORACLE {
+            @Override
+            protected JdbcDatabaseContainer startNewJdbcDatabaseContainer() {
+                OracleContainer oracleContainer = new OracleContainer(
+                    "gvenzl/oracle-xe:21-slim-faststart")
+                    .withDatabaseName("testDB")
+                    .withUsername("testUser")
+                    .withPassword("testPassword");
+                oracleContainer.withCopyFileToContainer(MountableFile.forHostPath(
+                            Path.of("target/activiti-engine/org/activiti/db/create/activiti.oracle.create.engine.sql")),
+                        "/docker-entrypoint-initdb.d/engine.sql"
+                    )
+                    .withCopyFileToContainer(MountableFile.forHostPath(
+                            Path.of("target/activiti-engine/org/activiti/db/create/activiti.oracle.create.history.sql")),
+                        "/docker-entrypoint-initdb.d/history.sql"
+                    );
+                oracleContainer.start();
+                return oracleContainer;
+            }
+
+        },
+        MYSQL {
+            @Override
+            protected JdbcDatabaseContainer startNewJdbcDatabaseContainer() {
+                MySQLContainer mySQLContainer = new MySQLContainer("mysql:8");
+                mySQLContainer.withCopyFileToContainer(MountableFile.forHostPath(
+                            Path.of("target/activiti-engine/org/activiti/db/create/activiti.mysql.create.engine.sql")),
+                        "/docker-entrypoint-initdb.d/engine.sql"
+                    )
+                    .withCopyFileToContainer(MountableFile.forHostPath(
+                            Path.of("target/activiti-engine/org/activiti/db/create/activiti.mysql.create.history.sql")),
+                        "/docker-entrypoint-initdb.d/history.sql"
+                    );
+                mySQLContainer.start();
+                return mySQLContainer;
+            }
+        },
+        MARIADB {
+            @Override
+            protected JdbcDatabaseContainer startNewJdbcDatabaseContainer() {
+                MariaDBContainer mariaDBContainer = new MariaDBContainer("mariadb:10.6.16");
+                mariaDBContainer.withCopyFileToContainer(MountableFile.forHostPath(
+                            Path.of("target/activiti-engine/org/activiti/db/create/activiti.mariadb.create.engine.sql")),
+                        "/docker-entrypoint-initdb.d/engine.sql"
+                    )
+                    .withCopyFileToContainer(MountableFile.forHostPath(
+                            Path.of("target/activiti-engine/org/activiti/db/create/activiti.mariadb.create.history.sql")),
+                        "/docker-entrypoint-initdb.d/history.sql"
+                    );
+                mariaDBContainer.start();
+                return mariaDBContainer;
+            }
+        },
+        MSSQL {
+            @Override
+            protected JdbcDatabaseContainer startNewJdbcDatabaseContainer() {
+                MSSQLServerContainer mssqlserver = new MSSQLServerContainer("mcr.microsoft.com/mssql/server:2019-CU9-ubuntu-16.04")
+                    .acceptLicense();
+                mssqlserver.addEnv("MSSQL_COLLATION", "LATIN1_GENERAL_100_CS_AS_SC_UTF8");
+                mssqlserver.withCopyFileToContainer(MountableFile.forHostPath(
+                            Path.of("target/activiti-engine/org/activiti/db/create/activiti.mssql.create.engine.sql")),
+                        "/docker-entrypoint-initdb.d/engine.sql"
+                    )
+                    .withCopyFileToContainer(MountableFile.forHostPath(
+                            Path.of("target/activiti-engine/org/activiti/db/create/activiti.mssql.create.history.sql")),
+                        "/docker-entrypoint-initdb.d/history.sql"
+                    );
+                mssqlserver.start();
+                return mssqlserver;
+            }
+
+        },
+        NONE {
+            @Override
+            protected JdbcDatabaseContainer startNewJdbcDatabaseContainer() {
+                return null;
+            }
+        };
+
+        protected JdbcDatabaseContainer startNewJdbcDatabaseContainer() {
+            throw new UnsupportedOperationException(
+                String.format(
+                    "The [%s] database was not configured to use Testcontainers!",
+                    name()
+                )
+            );
+        }
+
+        public static Database getInstance() {
+            String database = System.getProperty("db");
+            database = database == null ? "NONE" : database.toUpperCase();
+            return valueOf(database);
+        }
+
+    }
+
+
 }
