@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             targetNamespace="Examples">
+
+    <process id="inclusiveGatewayInsideMultiInstanceSubProcess">
+
+        <startEvent id="theStart"/>
+        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="parallelSubProcess"/>
+
+        <subProcess id="parallelSubProcess">
+            <multiInstanceLoopCharacteristics isSequential="false">
+                <loopCardinality>3</loopCardinality>
+            </multiInstanceLoopCharacteristics>
+
+            <startEvent id="theSubProcessStart"/>
+            <sequenceFlow id="subFlow1" sourceRef="theSubProcessStart" targetRef="inclusiveFork"/>
+
+            <inclusiveGateway id="inclusiveFork"/>
+
+            <sequenceFlow id="subFlow2" sourceRef="inclusiveFork" targetRef="taskInclusive1">
+                <conditionExpression>${true}</conditionExpression>
+            </sequenceFlow>
+
+            <sequenceFlow id="subFlow3" sourceRef="inclusiveFork" targetRef="taskInclusive2">
+                <conditionExpression>${true}</conditionExpression>
+            </sequenceFlow>
+
+            <sequenceFlow id="subFlow4" sourceRef="inclusiveFork" targetRef="taskInclusive3">
+                <conditionExpression>${true}</conditionExpression>
+            </sequenceFlow>
+
+            <userTask id="taskInclusive1"/>
+            <userTask id="taskInclusive2"/>
+            <userTask id="taskInclusive3"/>
+
+            <sequenceFlow id="subFlow5" sourceRef="taskInclusive1" targetRef="inclusiveJoin"/>
+            <sequenceFlow id="subFlow6" sourceRef="taskInclusive2" targetRef="inclusiveJoin"/>
+            <sequenceFlow id="subFlow7" sourceRef="taskInclusive3" targetRef="inclusiveJoin"/>
+
+            <inclusiveGateway id="inclusiveJoin"/>
+
+            <sequenceFlow id="subflow8" sourceRef="inclusiveJoin" targetRef="postForkTask"/>
+            <userTask id="postForkTask"/>
+            <sequenceFlow id="subflow3" sourceRef="postForkTask" targetRef="theSubProcessEnd"/>
+            <endEvent id="theSubProcessEnd"/>
+        </subProcess>
+
+        <sequenceFlow id="flow2" sourceRef="parallelSubProcess" targetRef="lastTask"/>
+        <userTask id="lastTask"/>
+        <sequenceFlow id="flow3" sourceRef="lastTask" targetRef="theEnd"/>
+        <endEvent id="theEnd"/>
+
+    </process>
+
+</definitions>

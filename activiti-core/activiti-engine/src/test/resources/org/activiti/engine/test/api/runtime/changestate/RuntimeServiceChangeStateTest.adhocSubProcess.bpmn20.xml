@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:activiti="http://activiti.org/bpmn"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             typeLanguage="http://www.w3.org/2001/XMLSchema"
+             expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.activiti.org/processdef">
+  <process id="ADHOC" name="AdHoc SubProcess" isExecutable="true">
+    <startEvent id="startEvent1"></startEvent>
+    <adHocSubProcess id="adhocSubProcess" name="Adhoc SubProcess" cancelRemainingInstances="true" ordering="Parallel">
+      <userTask id="userTask1" name="User Task 1" activiti:assignee="$INITIATOR">
+        <extensionElements>
+          <modeler:activiti-idm-initiator xmlns:modeler="http://activiti.org/modeler"><![CDATA[true]]></modeler:activiti-idm-initiator>
+        </extensionElements>
+      </userTask>
+      <userTask id="userTask2" name="User Task 2" activiti:assignee="$INITIATOR">
+        <extensionElements>
+          <modeler:activiti-idm-initiator xmlns:modeler="http://activiti.org/modeler"><![CDATA[true]]></modeler:activiti-idm-initiator>
+        </extensionElements>
+      </userTask>
+    </adHocSubProcess>
+    <userTask id="beforeSubProcess" name="Before SubProcess" activiti:assignee="$INITIATOR">
+      <extensionElements>
+        <modeler:activiti-idm-initiator xmlns:modeler="http://activiti.org/modeler"><![CDATA[true]]></modeler:activiti-idm-initiator>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-78725DB3-A0F2-4361-99AB-B6260DD8367B" sourceRef="startEvent1" targetRef="beforeSubProcess"></sequenceFlow>
+    <sequenceFlow id="sid-D1F5CC13-9F19-41BD-AA2A-9C4F9E27F08B" sourceRef="beforeSubProcess" targetRef="adhocSubProcess"></sequenceFlow>
+    <userTask id="afterSubProcess" name="After SubProcess" activiti:assignee="$INITIATOR">
+      <extensionElements>
+        <modeler:activiti-idm-initiator xmlns:modeler="http://activiti.org/modeler"><![CDATA[true]]></modeler:activiti-idm-initiator>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-E8DB026C-66A4-4A46-8E72-DCB2F01503B2" sourceRef="adhocSubProcess" targetRef="afterSubProcess"></sequenceFlow>
+    <endEvent id="sid-0EE89BBB-8B7C-4056-A5BA-B32B0EA51B9D"></endEvent>
+    <sequenceFlow id="sid-46ADB491-4794-4B58-80AA-9AA8EC50CBD4" sourceRef="afterSubProcess" targetRef="sid-0EE89BBB-8B7C-4056-A5BA-B32B0EA51B9D"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_ADHOC">
+    <bpmndi:BPMNPlane bpmnElement="ADHOC" id="BPMNPlane_ADHOC">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="30.0" y="195.5"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="adhocSubProcess" id="BPMNShape_adhocSubProcess">
+        <omgdc:Bounds height="265.0" width="187.5" x="270.0" y="78.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask1" id="BPMNShape_userTask1">
+        <omgdc:Bounds height="80.0" width="100.0" x="313.75" y="118.5"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask2" id="BPMNShape_userTask2">
+        <omgdc:Bounds height="80.0" width="100.0" x="313.75" y="228.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="beforeSubProcess" id="BPMNShape_beforeSubProcess">
+        <omgdc:Bounds height="80.0" width="100.0" x="105.0" y="170.5"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="afterSubProcess" id="BPMNShape_afterSubProcess">
+        <omgdc:Bounds height="80.0" width="100.0" x="502.5" y="170.5"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-0EE89BBB-8B7C-4056-A5BA-B32B0EA51B9D" id="BPMNShape_sid-0EE89BBB-8B7C-4056-A5BA-B32B0EA51B9D">
+        <omgdc:Bounds height="28.0" width="28.0" x="647.5" y="196.5"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-D1F5CC13-9F19-41BD-AA2A-9C4F9E27F08B" id="BPMNEdge_sid-D1F5CC13-9F19-41BD-AA2A-9C4F9E27F08B">
+        <omgdi:waypoint x="204.94999999989614" y="210.5"></omgdi:waypoint>
+        <omgdi:waypoint x="269.99999999995384" y="210.5"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-E8DB026C-66A4-4A46-8E72-DCB2F01503B2" id="BPMNEdge_sid-E8DB026C-66A4-4A46-8E72-DCB2F01503B2">
+        <omgdi:waypoint x="457.45000000000005" y="210.5"></omgdi:waypoint>
+        <omgdi:waypoint x="502.5" y="210.5"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-78725DB3-A0F2-4361-99AB-B6260DD8367B" id="BPMNEdge_sid-78725DB3-A0F2-4361-99AB-B6260DD8367B">
+        <omgdi:waypoint x="59.9499984899576" y="210.5"></omgdi:waypoint>
+        <omgdi:waypoint x="104.9999999999917" y="210.5"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-46ADB491-4794-4B58-80AA-9AA8EC50CBD4" id="BPMNEdge_sid-46ADB491-4794-4B58-80AA-9AA8EC50CBD4">
+        <omgdi:waypoint x="602.449999999996" y="210.5"></omgdi:waypoint>
+        <omgdi:waypoint x="647.5" y="210.5"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

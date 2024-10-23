@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             targetNamespace="Examples">
+    <message id="message" name="myMessage"/>
+
+    <process id="TAES" name="Timer and Event SubProcess" isExecutable="true">
+        <startEvent id="processStart"/>
+        <userTask id="processTask" name="processTask"/>
+        <boundaryEvent id="spawnParallelTask" attachedToRef="processTask" cancelActivity="false">
+            <timerEventDefinition>
+                <timeDuration>PT15M</timeDuration>
+            </timerEventDefinition>
+        </boundaryEvent>
+        <sequenceFlow id="sid-010924B1-4782-404F-AB7B-8961589B113B" sourceRef="spawnParallelTask" targetRef="parallelTask"></sequenceFlow>
+        <sequenceFlow id="sid-F8AF2DCF-E4A9-4165-8979-B5080DF20A7D" sourceRef="processStart" targetRef="processTask"/>
+        <endEvent id="processEnd"/>
+        <subProcess id="eventSubProcess" name="subProcess" triggeredByEvent="true">
+            <startEvent id="eventSubProcessStart" isInterrupting="false">
+                <messageEventDefinition messageRef="message"/>
+            </startEvent>
+            <userTask id="eventSubProcessTask" name="eventSubProcessTask"/>
+            <endEvent id="eventSubProcessEnd"/>
+            <sequenceFlow id="sid-7A53BFC1-8770-4940-BF44-3379C5F7B460" sourceRef="eventSubProcessStart" targetRef="eventSubProcessTask"/>
+            <sequenceFlow id="sid-9717A6A0-3729-4E23-9641-E1A97663EA1D" sourceRef="eventSubProcessTask" targetRef="eventSubProcessEnd"/>
+        </subProcess>
+        <userTask id="parallelTask" name="parallelTask"/>
+        <sequenceFlow id="sid-4C32419F-EC7F-4221-922D-B5C2422AF854" sourceRef="processTask" targetRef="processEnd"/>
+        <sequenceFlow id="sid-181731D6-3B7A-49C8-898E-0E6B716EA008" sourceRef="parallelTask" targetRef="processEnd"/>
+
+    </process>
+
+</definitions>

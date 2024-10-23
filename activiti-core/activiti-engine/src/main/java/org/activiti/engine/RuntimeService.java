@@ -29,14 +29,7 @@ import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
-import org.activiti.engine.runtime.DataObject;
-import org.activiti.engine.runtime.Execution;
-import org.activiti.engine.runtime.ExecutionQuery;
-import org.activiti.engine.runtime.NativeExecutionQuery;
-import org.activiti.engine.runtime.NativeProcessInstanceQuery;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.runtime.ProcessInstanceBuilder;
-import org.activiti.engine.runtime.ProcessInstanceQuery;
+import org.activiti.engine.runtime.*;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
@@ -1248,6 +1241,11 @@ public interface RuntimeService {
    *          id of the execution that has an ad-hoc sub process as current flow element
    */
   void completeAdhocSubProcess(String executionId);
+
+    /**
+     * Create a {@link ChangeActivityStateBuilder}, that allows to set various options for changing the state of a process instance.
+     */
+    ChangeActivityStateBuilder createChangeActivityStateBuilder();
 
   /** The all events related to the given Process Instance. */
   List<Event> getProcessInstanceEvents(String processInstanceId);

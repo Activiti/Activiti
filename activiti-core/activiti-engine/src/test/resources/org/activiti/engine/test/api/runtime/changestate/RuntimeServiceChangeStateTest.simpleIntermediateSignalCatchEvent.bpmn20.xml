@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             targetNamespace="Examples">
+
+    <signal id="mySignal" name="someSignal"/>
+
+    <process id="changeStateForSimpleIntermediateEvent">
+
+        <startEvent id="theStart"/>
+
+        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="beforeCatchEvent"/>
+        <userTask id="beforeCatchEvent"/>
+
+        <sequenceFlow id="flow2" sourceRef="beforeCatchEvent" targetRef="intermediateCatchEvent"/>
+        <intermediateCatchEvent id="intermediateCatchEvent">
+            <signalEventDefinition signalRef="mySignal"/>
+        </intermediateCatchEvent>
+
+        <sequenceFlow id="flow3" sourceRef="intermediateCatchEvent" targetRef="afterCatchEvent"/>
+        <userTask id="afterCatchEvent"/>
+
+        <sequenceFlow id="flow4" sourceRef="afterCatchEvent" targetRef="theEnd"/>
+        <endEvent id="theEnd"/>
+
+    </process>
+
+</definitions>

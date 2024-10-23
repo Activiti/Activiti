@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             targetNamespace="Examples">
+
+    <process id="startSimpleSubProcess">
+
+        <startEvent id="theStart"/>
+
+        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="taskBefore"/>
+
+        <userTask id="taskBefore" name="Task before sub process"/>
+
+        <sequenceFlow id="flow2" sourceRef="taskBefore" targetRef="subProcess"/>
+
+        <subProcess id="subProcess">
+
+            <startEvent id="theSubProcessStart"/>
+
+            <sequenceFlow id="subflow1" sourceRef="theSubProcessStart" targetRef="subTask"/>
+
+            <userTask id="subTask" name="Task in subProcess"/>
+
+            <boundaryEvent id="boundaryTimerEvent" attachedToRef="subTask">
+                <timerEventDefinition>
+                    <timeDuration>PT1H</timeDuration>
+                </timerEventDefinition>
+            </boundaryEvent>
+
+            <sequenceFlow id="subflow2" sourceRef="boundaryTimerEvent" targetRef="theSubProcessEnd"/>
+
+            <sequenceFlow id="subflow3" sourceRef="subTask" targetRef="subTask2"/>
+
+            <userTask id="subTask2"/>
+
+            <sequenceFlow id="subflow4" sourceRef="subTask2" targetRef="theSubProcessEnd"/>
+
+            <endEvent id="theSubProcessEnd"/>
+
+        </subProcess>
+
+        <sequenceFlow id="flow4" sourceRef="subProcess" targetRef="taskAfter"/>
+
+        <userTask id="taskAfter" name="Task after sub process"/>
+
+        <sequenceFlow id="flow5" sourceRef="taskAfter" targetRef="theEnd"/>
+
+        <endEvent id="theEnd"/>
+
+    </process>
+
+</definitions>

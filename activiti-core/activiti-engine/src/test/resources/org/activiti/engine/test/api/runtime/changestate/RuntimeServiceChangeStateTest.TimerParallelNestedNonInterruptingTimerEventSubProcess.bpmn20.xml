@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             targetNamespace="Examples">
+
+    <process id="changeStateForEventSubProcess">
+
+        <startEvent id="theStart"/>
+        <sequenceFlow sourceRef="theStart" targetRef="processTask"/>
+        <userTask id="processTask" name="processTask"/>
+        <sequenceFlow sourceRef="processTask" targetRef="subProcess"/>
+        <boundaryEvent id="spawnParallelTask" attachedToRef="processTask" cancelActivity="false">
+            <timerEventDefinition>
+                <timeDuration>PT15M</timeDuration>
+            </timerEventDefinition>
+        </boundaryEvent>
+        <sequenceFlow sourceRef="spawnParallelTask" targetRef="parallelTask"/>
+        <userTask id="parallelTask" name="parallelTask"/>
+        <sequenceFlow sourceRef="parallelTask" targetRef="theEnd"/>
+        <endEvent id="theEnd"/>
+
+        <subProcess id="subProcess">
+            <startEvent id="subProcessStart"/>
+            <sequenceFlow sourceRef="subProcessStart" targetRef="subProcessTask"/>
+            <userTask id="subProcessTask"/>
+            <sequenceFlow sourceRef="subProcessTask" targetRef="subProcessEnd"/>
+            <endEvent id="subProcessEnd"/>
+            <subProcess id="timerEventSubProcess" triggeredByEvent="true">
+                <startEvent id="timerEventSubProcessStart" isInterrupting="false">
+                    <timerEventDefinition>
+                        <timeCycle>R/PT15M</timeCycle>
+                    </timerEventDefinition>
+                </startEvent>
+                <sequenceFlow sourceRef="timerEventSubProcessStart" targetRef="timerEventSubProcessTask"/>
+                <userTask id="timerEventSubProcessTask"/>
+                <sequenceFlow sourceRef="timerEventSubProcessTask" targetRef="eventSubProcessEnd"/>
+                <endEvent id="eventSubProcessEnd"/>
+            </subProcess>
+        </subProcess>
+    </process>
+
+</definitions>

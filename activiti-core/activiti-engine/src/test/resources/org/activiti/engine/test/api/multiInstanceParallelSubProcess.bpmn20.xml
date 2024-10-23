@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             targetNamespace="Examples">
+
+    <process id="parallelMultiInstanceSubProcess">
+
+        <startEvent id="theStart"/>
+        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="parallelSubProcess"/>
+
+        <subProcess id="parallelSubProcess">
+            <multiInstanceLoopCharacteristics isSequential="false">
+                <loopCardinality>${nrOfLoops}</loopCardinality>
+            </multiInstanceLoopCharacteristics>
+            <startEvent id="theSubProcessStart" />
+            <sequenceFlow id="subflow1" sourceRef="theSubProcessStart" targetRef="subTask1" />
+            <userTask id="subTask1" />
+            <sequenceFlow id="subflow2" sourceRef="subTask1" targetRef="subTask2" />
+            <userTask id="subTask2" />
+            <sequenceFlow id="subflow3" sourceRef="subTask2" targetRef="theSubProcessEnd" />
+            <endEvent id="theSubProcessEnd" />
+        </subProcess>
+
+        <sequenceFlow id="flow2" sourceRef="parallelSubProcess" targetRef="lastTask"/>
+        <userTask id="lastTask" name="last task"/>
+        <sequenceFlow id="flow3" sourceRef="lastTask" targetRef="theEnd"/>
+        <endEvent id="theEnd"/>
+
+    </process>
+
+</definitions>
