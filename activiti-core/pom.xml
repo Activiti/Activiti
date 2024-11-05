@@ -26,7 +26,7 @@
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
     <xmlgraphics-commons.version>2.9</xmlgraphics-commons.version>
     <nashorn-core.version>15.4</nashorn-core.version>
-    <groovy.version>3.0.19</groovy.version>
+    <groovy.version>3.0.22</groovy.version>
     <simple-jndi.version>0.23.0</simple-jndi.version>
     <zjsonpatch.version>0.4.16</zjsonpatch.version>
   </properties>
