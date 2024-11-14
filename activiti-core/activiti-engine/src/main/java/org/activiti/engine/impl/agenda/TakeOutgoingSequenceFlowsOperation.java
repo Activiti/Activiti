@@ -15,12 +15,6 @@
  */
 package org.activiti.engine.impl.agenda;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.AdhocSubProcess;
 import org.activiti.bpmn.model.BoundaryEvent;
@@ -39,8 +33,6 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.Condition;
-import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchLinkEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowLinkEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.context.Context;
@@ -52,6 +44,10 @@ import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.condition.ConditionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -142,7 +138,6 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
             flowNode.getClass(),
             flowNode.getId(),
             flowNode.getOutgoingFlows().size());
-        System.out.println("Flow node id Getting executed: " + flowNode.getId() );
         // Get default sequence flow (if set)
         String defaultSequenceFlowId = null;
         if (flowNode instanceof Activity) {
@@ -186,7 +181,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         }
 
         // No outgoing found. Ending the execution
-        if (outgoingSequenceFlows.size() == 0 && !isLinkThrowEvent(flowNode)) {
+        if (outgoingSequenceFlows.size() == 0 && !flowNode.isLinkThrowEvent()) {
             if (flowNode.getOutgoingFlows() == null || flowNode.getOutgoingFlows().size() == 0) {
                 logger.debug("No outgoing sequence flow found for flow node '{}'.",
                     flowNode.getId());
@@ -197,20 +192,20 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         } else {
             // Leave, and reuse the incoming sequence flow, make executions for all the others (if applicable)
             ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-            List<ExecutionEntity> outgoingExecutions = new ArrayList<ExecutionEntity>(flowNode.getOutgoingFlows().size());
+            List<ExecutionEntity> outgoingExecutions = new ArrayList<>(flowNode.getOutgoingFlows().size());
 
-            // In case of a link event, we need to find the matching catch event and set the outgoing sequence flow to that one
-            if (flowNode instanceof ThrowEvent && isLinkThrowEvent(flowNode)) {
-                System.out.println("Link throw event "+ flowNode.getId()+ " "+ flowNode.getName());
-                outgoingSequenceFlows = findOutgoingSequenceFlowsForLinkEvent((ThrowEvent) flowNode);
+            if (flowNode.isLinkThrowEvent()) {
+                FlowNode node = findRelatedIntermediateCatchEventForLinkEvent((ThrowEvent) flowNode);
+                execution.setCurrentFlowElement(node);
+                Context.getAgenda().planTriggerExecutionOperation(execution);
+
+            } else {
+               SequenceFlow sequenceFlow = outgoingSequenceFlows.get(0);
+                // Reuse existing one
+                execution.setCurrentFlowElement(sequenceFlow);
+                execution.setActive(true);
+                outgoingExecutions.add(execution);
             }
-
-            SequenceFlow sequenceFlow = outgoingSequenceFlows.get(0);
-
-            // Reuse existing one
-            execution.setCurrentFlowElement(sequenceFlow);
-            execution.setActive(true);
-            outgoingExecutions.add((ExecutionEntity) execution);
 
             // Executions for all the other one
             if (outgoingSequenceFlows.size() > 1) {
@@ -227,39 +222,32 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
                 }
             }
 
+
             // Leave (only done when all executions have been made, since some queries depend on this)
             for (ExecutionEntity outgoingExecution : outgoingExecutions) {
                 Context.getAgenda().planContinueProcessOperation(outgoingExecution);
             }
         }
+
     }
 
-    private boolean isLinkThrowEvent(FlowNode flowNode) {
-        return flowNode.getBehavior() instanceof IntermediateThrowLinkEventActivityBehavior;
-    }
-    private boolean isLinkCatchEvent(FlowNode flowNode) {
-        return flowNode.getBehavior() instanceof IntermediateCatchLinkEventActivityBehavior;
-    }
-    private List<SequenceFlow> findOutgoingSequenceFlowsForLinkEvent(ThrowEvent throwEvent) {
-        String linkEventName = ((LinkEventDefinition) throwEvent.getEventDefinitions().get(0)).getName();
-        Map<String, IntermediateCatchEvent> linkEventMap = new HashMap<>();
+    private FlowNode findRelatedIntermediateCatchEventForLinkEvent(ThrowEvent throwEvent) {
+        String linkEventTarget = ((LinkEventDefinition) throwEvent.getEventDefinitions().get(0)).getTarget();
         Collection<FlowElement> allFlowElements = throwEvent.getParentContainer().getFlowElements();
-        System.out.println("Link Event Definition name: "+ linkEventName);
-
         for (FlowElement flowElement : allFlowElements) {
-            if (flowElement instanceof IntermediateCatchEvent && isLinkCatchEvent((FlowNode) flowElement)) {
-                LinkEventDefinition destinationEvent = (LinkEventDefinition) ((IntermediateCatchEvent) flowElement).getEventDefinitions().get(0);
-                linkEventMap.put(destinationEvent.getName(), (IntermediateCatchEvent) flowElement);
+            if (flowElement instanceof IntermediateCatchEvent) {
+                IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) flowElement;
+                if (catchEvent.isLinkCatchEvent()) {
+                    LinkEventDefinition destinationEvent = (LinkEventDefinition) catchEvent.getEventDefinitions().get(0);
+                    if (destinationEvent.getId().equals(linkEventTarget)) {
+                        return catchEvent;
+                    }
+                }
             }
         }
-        IntermediateCatchEvent targetCatchEvent = linkEventMap.get(linkEventName);
-        if (targetCatchEvent != null) {
-            System.out.println("Target Catch Event: "+ targetCatchEvent.getId());
-            return targetCatchEvent.getOutgoingFlows();
-        } else {
-            return new ArrayList<>();
-        }
+        return null;
     }
+
 
     protected void handleAdhocSubProcess(FlowNode flowNode) {
         boolean completeAdhocSubProcess = false;

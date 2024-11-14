@@ -15,10 +15,10 @@
  */
 package org.activiti.bpmn.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public abstract class FlowNode extends FlowElement {
 
@@ -87,4 +87,26 @@ public abstract class FlowNode extends FlowElement {
     setAsynchronous(otherNode.isAsynchronous());
     setNotExclusive(otherNode.isNotExclusive());
   }
+  public boolean isLinkCatchEvent(){
+      if( this instanceof IntermediateCatchEvent intermediateCatchEvent){
+        if(intermediateCatchEvent.getEventDefinitions().size() == 1) {
+            return intermediateCatchEvent.getEventDefinitions().getFirst() instanceof LinkEventDefinition;}
+      }
+        return false;
+  }
+
+    public boolean isLinkThrowEvent() {
+        if (this instanceof ThrowEvent throwEvent) {
+            if (throwEvent.getEventDefinitions().size() == 1) {
+                return throwEvent.getEventDefinitions().getFirst() instanceof LinkEventDefinition;
+            }
+        }
+        return false;
+    }
+
+    public boolean isInitialFlowNode(){
+     return (this.getIncomingFlows() != null
+          && this.getIncomingFlows().isEmpty()
+          && this.getSubProcess() == null && !this.isLinkCatchEvent());
+    }
 }

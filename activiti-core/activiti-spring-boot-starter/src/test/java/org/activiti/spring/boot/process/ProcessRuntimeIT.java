@@ -77,12 +77,8 @@ public class ProcessRuntimeIT {
     private static final String CATEGORIZE_HUMAN_PROCESS = "categorizeHumanProcess";
     private static final String SINGLE_TASK_PROCESS = "SingleTaskProcess";
     private static final String ONE_STEP_PROCESS = "OneStepProcess";
-    //private static final String LINK_PROCESS="Process__fesWNxq"; //multiple throw catch
-    private static final String LINK_PROCESS="Process_RN9eecZN"; //simple
-    //private static final String LINK_PROCESS="Process_1oBEk8E-"; //long
-    //private static final String LINK_PROCESS= "Process_ZzBoFGJ5"; //loop
-    //private static final String LINK_PROCESS= "Process_rkNiQDSI"; //other-events
 
+    private static final String LINK_PROCESS="linkProcess"; //simple
     private static final String SUB_PROCESS = "subProcess";
     private static final String SUPER_PROCESS = "superProcess";
     private static final String TWO_TASKS_PROCESS = "twoTaskProcess";
@@ -285,7 +281,6 @@ public class ProcessRuntimeIT {
             .build());
 
         assertThat(RuntimeTestConfiguration.completedProcesses).contains(linkProcess.getId());
-        //then
     }
 
     @Test

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="model-601ad433-884d-4161-ba39-48987f1e3384" name="proces1" targetNamespace="" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
-  <bpmn2:process id="Process_RN9eecZN" name="proces1" isExecutable="true">
+  <bpmn2:process id="linkProcess" name="proces1" isExecutable="true">
     <bpmn2:documentation />
     <bpmn2:startEvent id="Event_1">
       <bpmn2:outgoing>Flow_1q3e3s6</bpmn2:outgoing>
@@ -24,7 +24,7 @@
     <bpmn2:sequenceFlow id="Flow_18i0p6z" sourceRef="Event_06gnkhq" targetRef="Event_1a1nuvw" />
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_RN9eecZN">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="linkProcess">
       <bpmndi:BPMNShape id="_BPMNShape_Event_2" bpmnElement="Event_1">
         <dc:Bounds x="322" y="240" width="36" height="36" />
       </bpmndi:BPMNShape>
