@@ -82,8 +82,7 @@ class TaskAdminRuntimeIT {
         //complete task and provide a value that causes a loop back
         taskAdminRuntime.complete(new CompleteTaskPayload(task1.getId(), singletonMap("formInput", "provided-it1")));
 
-        Task task2 = taskAdminRuntime.lastCreatedTaskByProcessInstanceIdAndTaskDefinitionKey(processInstance.getId(), taskDefinitionKey);//when the task completes with a variable value not causing a loop back
-
+        Task task2 = taskAdminRuntime.lastCreatedTaskByProcessInstanceIdAndTaskDefinitionKey(processInstance.getId(), taskDefinitionKey);
         assertThat(task2).satisfies(t -> {
             assertThat(t.getId()).isNotEqualTo(task1.getId());
             assertThat(t.getProcessInstanceId()).isEqualTo(processInstance.getId());
