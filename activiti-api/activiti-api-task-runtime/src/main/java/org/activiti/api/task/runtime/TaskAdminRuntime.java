@@ -57,10 +57,10 @@ public interface TaskAdminRuntime {
     Page<Task> tasks(Pageable pageable);
 
     /**
-     * Finds a task by process instance id and task definition key
+     * Finds the last created task by process instance id and task definition key
      */
-    Task taskByProcessInstanceIdAndTaskDefinitionKey(String processInstanceId,
-                                                     String taskDefinitionKey);
+    Task lastCreatedTaskByProcessInstanceIdAndTaskDefinitionKey(String processInstanceId,
+                                                                String taskDefinitionKey);
 
     /**
      * Get all tasks with payload filters

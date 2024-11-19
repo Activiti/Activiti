@@ -106,10 +106,11 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
     }
 
     @Override
-    public Task taskByProcessInstanceIdAndTaskDefinitionKey(String processInstanceId, String taskDefinitionKey) {
+    public Task lastCreatedTaskByProcessInstanceIdAndTaskDefinitionKey(String processInstanceId, String taskDefinitionKey) {
         TaskQuery taskQuery = taskService.createTaskQuery()
                 .processInstanceId(processInstanceId)
-                .taskDefinitionKey(taskDefinitionKey);
+                .taskDefinitionKey(taskDefinitionKey)
+            .orderByTaskCreateTime().desc();
         org.activiti.engine.task.Task task = taskQuery.singleResult();
         if (task == null) {
             throw new NotFoundException("Unable to find task by given processInstanceId: " + processInstanceId + " and taskDefinitionKey: " + taskDefinitionKey);
