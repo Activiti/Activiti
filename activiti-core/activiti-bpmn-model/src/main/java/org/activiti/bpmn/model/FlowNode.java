@@ -16,8 +16,10 @@
 package org.activiti.bpmn.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class FlowNode extends FlowElement {
@@ -82,11 +84,17 @@ public abstract class FlowNode extends FlowElement {
     this.outgoingFlows = outgoingFlows;
   }
 
+
   public void setValues(FlowNode otherNode) {
     super.setValues(otherNode);
     setAsynchronous(otherNode.isAsynchronous());
     setNotExclusive(otherNode.isNotExclusive());
   }
+
+  public boolean hasIncomingFlows(){return (CollectionUtils.isNotEmpty(this.incomingFlows));};
+
+  public boolean hasOutgoingFlows(){return (CollectionUtils.isNotEmpty(this.outgoingFlows));};
+
   public boolean isLinkCatchEvent(){
       if( this instanceof IntermediateCatchEvent intermediateCatchEvent){
         if(intermediateCatchEvent.getEventDefinitions().size() == 1) {

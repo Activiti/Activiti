@@ -17,6 +17,8 @@ package org.activiti.bpmn.model;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FlowNodeTest{
@@ -70,5 +72,36 @@ public class FlowNodeTest{
         intermediateCatchEvent.addEventDefinition(linkEventDefinition);
 
         assertThat(intermediateCatchEvent.isInitialFlowNode()).isFalse();
+    }
+
+    @Test
+    public void hasOutgoingFlows_should_returnTrue_when_outgoingFlowsArePresent() {
+        IntermediateCatchEvent intermediateCatchEvent = new IntermediateCatchEvent();
+        SequenceFlow sequenceFlow = new SequenceFlow();
+        intermediateCatchEvent.setOutgoingFlows(Arrays.asList(sequenceFlow));
+        assertThat(intermediateCatchEvent.hasOutgoingFlows()).isTrue();
+    }
+
+    @Test
+    public void hasIncomingFlows_should_returnTrue_when_incomingFlowsArePresent() {
+        ThrowEvent throwEvent = new ThrowEvent();
+        SequenceFlow sequenceFlow = new SequenceFlow();
+        throwEvent.setIncomingFlows(Arrays.asList(sequenceFlow));
+        assertThat(throwEvent.hasIncomingFlows()).isTrue();
+    }
+
+
+    @Test
+    public void hasOutgoingFlows_should_returnFalse_when_outgoingFlowsAreNotPresent() {
+        IntermediateCatchEvent intermediateCatchEvent = new IntermediateCatchEvent();
+        intermediateCatchEvent.setOutgoingFlows(null);
+        assertThat(intermediateCatchEvent.hasOutgoingFlows()).isFalse();
+    }
+
+    @Test
+    public void hasIncomingFlows_should_returnFalse_when_incomingFlowsAreNotPresent() {
+        ThrowEvent throwEvent = new ThrowEvent();
+        throwEvent.setIncomingFlows(null);
+        assertThat(throwEvent.hasIncomingFlows()).isFalse();
     }
 }
