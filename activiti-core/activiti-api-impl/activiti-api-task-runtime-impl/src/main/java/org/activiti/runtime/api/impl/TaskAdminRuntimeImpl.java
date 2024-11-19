@@ -16,6 +16,7 @@
 package org.activiti.runtime.api.impl;
 
 import org.activiti.api.model.shared.model.VariableInstance;
+import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.runtime.shared.security.SecurityManager;
@@ -102,6 +103,18 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
                 pageable.getMaxItems()));
         return new PageImpl<>(tasks,
                 Math.toIntExact(taskQuery.count()));
+    }
+
+    @Override
+    public Task taskByProcessInstanceIdAndTaskDefinitionKey(String processInstanceId, String taskDefinitionKey) {
+        TaskQuery taskQuery = taskService.createTaskQuery()
+                .processInstanceId(processInstanceId)
+                .taskDefinitionKey(taskDefinitionKey);
+        org.activiti.engine.task.Task task = taskQuery.singleResult();
+        if (task == null) {
+            throw new NotFoundException("Unable to find task by given processInstanceId: " + processInstanceId + " and taskDefinitionKey: " + taskDefinitionKey);
+        }
+        return taskConverter.from(task);
     }
 
     @Override
