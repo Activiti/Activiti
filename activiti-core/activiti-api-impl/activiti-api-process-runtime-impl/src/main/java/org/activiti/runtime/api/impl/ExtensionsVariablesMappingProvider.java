@@ -154,10 +154,10 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
     private Optional<Object> patchVariable(Object changesToApply, Object processVariableCurrentValue) {
         try {
             JsonNode oldNode;
-            if (isProcessVariableNull(processVariableCurrentValue)) {
-                oldNode = objectMapper.createObjectNode();
-            } else {
+            if (isObjectVariable(processVariableCurrentValue)) {
                 oldNode = objectMapper.convertValue(processVariableCurrentValue, JsonNode.class);
+            } else {
+                oldNode = objectMapper.createObjectNode();
             }
 
             JsonNode patchNode = objectMapper.convertValue(changesToApply, JsonNode.class);
@@ -174,6 +174,9 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         }
     }
 
+    private boolean isObjectVariable(Object variable) {
+        return variable instanceof ObjectNode || variable instanceof Map;
+    }
 
     private void ensurePathExists(JsonNode oldNode, JsonNode patchNode) {
         for (JsonNode patch : patchNode) {
