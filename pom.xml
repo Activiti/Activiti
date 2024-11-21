@@ -197,7 +197,7 @@
 
     <!-- versions -->
     <asm.version>9.7.1</asm.version>
-    <build-helper-maven-plugin.version>3.5.0</build-helper-maven-plugin.version>
+    <build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>
     <dependency-check-maven.version>8.4.3</dependency-check-maven.version>
     <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
     <extra-enforcer-rules.version>1.6.1</extra-enforcer-rules.version>
