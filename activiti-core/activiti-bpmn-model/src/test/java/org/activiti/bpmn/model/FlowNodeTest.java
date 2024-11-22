@@ -18,6 +18,7 @@ package org.activiti.bpmn.model;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -102,6 +103,22 @@ public class FlowNodeTest{
     public void hasIncomingFlows_should_returnFalse_when_incomingFlowsAreNotPresent() {
         ThrowEvent throwEvent = new ThrowEvent();
         throwEvent.setIncomingFlows(null);
+        assertThat(throwEvent.hasIncomingFlows()).isFalse();
+    }
+
+    @Test
+    public void hasOutgoingFlows_should_returnFalse_when_outgoingFlowsAreEmpty() {
+        IntermediateCatchEvent intermediateCatchEvent = new IntermediateCatchEvent();
+        List<SequenceFlow> sequenceFlows = Arrays.asList();
+        intermediateCatchEvent.setOutgoingFlows(sequenceFlows);
+        assertThat(intermediateCatchEvent.hasOutgoingFlows()).isFalse();
+    }
+
+    @Test
+    public void hasIncomingFlows_should_returnFalse_when_incomingFlowsAreEmpty() {
+        ThrowEvent throwEvent = new ThrowEvent();
+        List<SequenceFlow> sequenceFlows = Arrays.asList();
+        throwEvent.setIncomingFlows(sequenceFlows);
         assertThat(throwEvent.hasIncomingFlows()).isFalse();
     }
 }

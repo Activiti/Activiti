@@ -15,6 +15,7 @@
  */
 package org.activiti.bpmn.converter.child;
 
+import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.LinkEventDefinition;
 import org.activiti.bpmn.model.ThrowEvent;
@@ -23,6 +24,8 @@ import org.junit.jupiter.api.Test;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,8 +43,9 @@ public class LinkEventDefinitionParserTest {
             ThrowEvent intermediateThrowEvent = new ThrowEvent();
             parser.parseChildElement(xtr, intermediateThrowEvent, null);
 
-            LinkEventDefinition linkEventDefinition = (LinkEventDefinition) intermediateThrowEvent.getEventDefinitions().get(0);
-
+           List<EventDefinition> eventDefinitionList =  intermediateThrowEvent.getEventDefinitions();
+            assertThat(eventDefinitionList).isNotEmpty();
+            LinkEventDefinition linkEventDefinition = (LinkEventDefinition) eventDefinitionList.get(0);
             assertThat(linkEventDefinition).isNotNull();
             assertThat(linkEventDefinition.getId()).isEqualTo("LinkEventDefinition_03bs3ae");
             assertThat(linkEventDefinition.getName()).isEqualTo("a");
@@ -60,7 +64,9 @@ public class LinkEventDefinitionParserTest {
             IntermediateCatchEvent intermediateCatchEvent = new IntermediateCatchEvent();
             parser.parseChildElement(xtr, intermediateCatchEvent, null);
 
-            LinkEventDefinition linkEventDefinition = (LinkEventDefinition) intermediateCatchEvent.getEventDefinitions().get(0);
+                List<EventDefinition> eventDefinitionList =  intermediateCatchEvent.getEventDefinitions();
+                assertThat(eventDefinitionList).isNotEmpty();
+                LinkEventDefinition linkEventDefinition = (LinkEventDefinition) eventDefinitionList.get(0);
 
             assertThat(linkEventDefinition).isNotNull();
             assertThat(linkEventDefinition.getId()).isEqualTo("LinkEventDefinition_1smqlx0");

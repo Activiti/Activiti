@@ -30,9 +30,8 @@ public class LinkEventTargetParser extends BaseChildElementParser {
     }
 
     public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-        if(parentElement instanceof LinkEventDefinition) {
-            LinkEventDefinition eventDefinition = (LinkEventDefinition) parentElement;
-            eventDefinition.setTarget(xtr.getElementText());
+        if(parentElement instanceof LinkEventDefinition linkEventDefinition) {
+            linkEventDefinition.setTarget(xtr.getElementText());
         }
     }
 }

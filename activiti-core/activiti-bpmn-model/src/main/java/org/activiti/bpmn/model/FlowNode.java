@@ -95,10 +95,11 @@ public abstract class FlowNode extends FlowElement {
 
   public boolean hasOutgoingFlows(){return (CollectionUtils.isNotEmpty(this.outgoingFlows));};
 
-  public boolean isLinkCatchEvent(){
+  public boolean isLinkCatchEvent() {
       if( this instanceof IntermediateCatchEvent intermediateCatchEvent){
         if(intermediateCatchEvent.getEventDefinitions().size() == 1) {
-            return intermediateCatchEvent.getEventDefinitions().getFirst() instanceof LinkEventDefinition;}
+            return intermediateCatchEvent.getEventDefinitions().getFirst() instanceof LinkEventDefinition;
+        }
       }
         return false;
   }

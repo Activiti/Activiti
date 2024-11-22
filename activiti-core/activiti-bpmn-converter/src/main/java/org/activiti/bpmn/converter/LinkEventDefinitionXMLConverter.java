@@ -19,6 +19,7 @@ import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.LinkEventDefinition;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import static org.activiti.bpmn.constants.BpmnXMLConstants.ATTRIBUTE_ID;
@@ -30,26 +31,30 @@ public class LinkEventDefinitionXMLConverter {
     public static final String ATTRIBUTE_LINK_SOURCE = "source";
     public static final String ATTRIBUTE_LINK_TARGET = "target";
 
-    protected void writeLinkDefinition(Event parentEvent, LinkEventDefinition eventDefinition, XMLStreamWriter xtw) throws Exception {
+    public void writeLinkDefinition(Event parentEvent, LinkEventDefinition eventDefinition, XMLStreamWriter xtw) throws Exception {
         xtw.writeStartElement(ELEMENT_EVENT_LINK_DEFINITION);
-        if(StringUtils.isNotEmpty(eventDefinition.getId())) {
-            xtw.writeAttribute(ATTRIBUTE_ID, eventDefinition.getId());
-        }
-        if(StringUtils.isNotEmpty(eventDefinition.getName())) {
-            xtw.writeAttribute(ATTRIBUTE_NAME, eventDefinition.getName());
-        }
-        if (StringUtils.isNotEmpty(eventDefinition.getTarget())) {
-            xtw.writeStartElement(ATTRIBUTE_LINK_TARGET);
-            xtw.writeCharacters(eventDefinition.getTarget());
-            xtw.writeEndElement();
-        }
-        if(eventDefinition.getSources()!=null) {
-            for (int i = 0; i < eventDefinition.getSources().size(); i++) {
-                xtw.writeStartElement(ATTRIBUTE_LINK_SOURCE);
-                xtw.writeCharacters(eventDefinition.getSources().get(i));
-                xtw.writeEndElement();
+         writeAttribute(xtw, ATTRIBUTE_ID, eventDefinition.getId());
+         writeAttribute(xtw, ATTRIBUTE_NAME, eventDefinition.getName());
+         writeElement(xtw, ATTRIBUTE_LINK_TARGET, eventDefinition.getTarget());
+        if(eventDefinition.getSources() != null) {
+           for(String source : eventDefinition.getSources()) {
+                writeElement(xtw, ATTRIBUTE_LINK_SOURCE, source);
             }
         }
         xtw.writeEndElement();
+    }
+
+    private void writeAttribute(XMLStreamWriter xtw, String attributeName, String attributeValue) throws XMLStreamException {
+        if (StringUtils.isNotEmpty(attributeValue)) {
+            xtw.writeAttribute(attributeName, attributeValue);
+        }
+    }
+
+    private void writeElement( XMLStreamWriter xtw, String elementName, String elementValue) throws XMLStreamException {
+        if (StringUtils.isNotEmpty(elementValue)) {
+            xtw.writeStartElement(elementName);
+            xtw.writeCharacters(elementValue);
+            xtw.writeEndElement();
+        }
     }
 }

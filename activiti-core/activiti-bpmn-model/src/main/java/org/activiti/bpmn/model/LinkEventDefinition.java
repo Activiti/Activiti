@@ -15,30 +15,21 @@
  */
 package org.activiti.bpmn.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LinkEventDefinition extends EventDefinition{
 
-    protected String id;
+    private String name;
 
-    protected String name;
+    private String target;
 
-    protected String target;
-
-    protected List<String> sources;
+    private List<String> sources;
 
     public LinkEventDefinition clone() {
         LinkEventDefinition clone = new LinkEventDefinition();
         clone.setValues(this);
         return clone;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -65,9 +56,15 @@ public class LinkEventDefinition extends EventDefinition{
         this.sources = sources;
     }
 
+    public void addSource(String source) {
+        if (sources == null) {
+            sources = new ArrayList<>();
+        }
+        sources.add(source);
+    }
+
     public void setValues(LinkEventDefinition otherDefinition) {
         super.setValues(otherDefinition);
-        setId(otherDefinition.getId());
         setName(otherDefinition.getName());
         setTarget(otherDefinition.getTarget());
         setSources(otherDefinition.getSources());

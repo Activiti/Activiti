@@ -45,7 +45,10 @@ public class LinkEventDefinitionParser extends BaseChildElementParser {
                 xtr,
                 model);
 
-            ((Event) parentElement).getEventDefinitions().add(eventDefinition);
+            if( parentElement instanceof Event event)
+            {
+                event.addEventDefinition(eventDefinition);
+            }
         }
     }
     }

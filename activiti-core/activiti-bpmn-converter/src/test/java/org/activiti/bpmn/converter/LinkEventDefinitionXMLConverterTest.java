@@ -21,6 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.xmlunit.assertj3.XmlAssert;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
@@ -57,8 +58,16 @@ public class LinkEventDefinitionXMLConverterTest {
 
        //Assert
         String generatedXml = stringWriter.toString();
-        assertTrue(generatedXml.contains("<linkEventDefinition id=\"id\" name=\"name\">" +
-                "<target>target</target></linkEventDefinition>"));
+        String expectedXml = """
+            <linkEventDefinition id="id" name="name">
+                <target>target</target>
+             </linkEventDefinition>
+            """;
+        XmlAssert
+            .assertThat(generatedXml)
+            .and(expectedXml)
+            .ignoreWhitespace()
+            .areIdentical();
     }
 
     @Test
@@ -67,13 +76,11 @@ public class LinkEventDefinitionXMLConverterTest {
         Event parentEvent = mock(Event.class);
         LinkEventDefinition eventDefinition = new LinkEventDefinition();
 
-        List<String> sources= new ArrayList<>();
-        sources.add("source1");
-        sources.add("source2");
 
         eventDefinition.setName("name");
         eventDefinition.setId("id");
-        eventDefinition.setSources(sources);
+        eventDefinition.addSource("source1");
+        eventDefinition.addSource("source2");
 
         StringWriter stringWriter = new StringWriter();
         XMLStreamWriter xtw = XMLOutputFactory.newInstance().createXMLStreamWriter(stringWriter);
@@ -83,7 +90,16 @@ public class LinkEventDefinitionXMLConverterTest {
 
         //Assert
         String generatedXml = stringWriter.toString();
-        assertTrue(generatedXml.contains("<linkEventDefinition id=\"id\" name=\"name\">" +
-                "<source>source1</source><source>source2</source></linkEventDefinition>"));
+        String expectedXml = """
+    <linkEventDefinition id="id" name="name">
+        <source>source1</source>
+        <source>source2</source>
+    </linkEventDefinition>
+    """;
+        XmlAssert
+            .assertThat(generatedXml)
+            .and(expectedXml)
+            .ignoreWhitespace()
+            .areIdentical();
     }
 }

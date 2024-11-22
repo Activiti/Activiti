@@ -27,18 +27,16 @@ import static org.activiti.bpmn.converter.LinkEventDefinitionXMLConverter.ATTRIB
 
 public class LinkEventSourceParser extends BaseChildElementParser{
 
-    private List<String> sources = new ArrayList<>();
-
     public String getElementName() {
         return ATTRIBUTE_LINK_SOURCE;
     }
 
     public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
 
-        if(parentElement instanceof LinkEventDefinition) {
-            LinkEventDefinition eventDefinition = (LinkEventDefinition) parentElement;
-            sources.add(xtr.getElementText());
-            eventDefinition.setSources(sources);
+        if(parentElement instanceof LinkEventDefinition linkEventDefinition) {
+            linkEventDefinition.addSource(xtr.getElementText());
         }
     }
 }
+
+
