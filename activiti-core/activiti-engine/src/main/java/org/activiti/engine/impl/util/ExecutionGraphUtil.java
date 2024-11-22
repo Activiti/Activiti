@@ -16,6 +16,17 @@
 
 package org.activiti.engine.impl.util;
 
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowElementsContainer;
+import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.LinkThrowEventFlowNodeHelper;
+import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.ThrowEvent;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,20 +34,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.FlowElementsContainer;
-import org.activiti.bpmn.model.FlowNode;
-import org.activiti.bpmn.model.Process;
-import org.activiti.bpmn.model.SequenceFlow;
-import org.activiti.bpmn.model.SubProcess;
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-
 public class ExecutionGraphUtil {
 
   /**
    * Takes in a collection of executions belonging to the same process instance. Orders the executions in a list, first elements are the leaf, last element is the root elements.
    */
+
   public static List<ExecutionEntity> orderFromRootToLeaf(Collection<ExecutionEntity> executions) {
     List<ExecutionEntity> orderedList = new ArrayList<ExecutionEntity>(executions.size());
 
@@ -78,11 +81,13 @@ public class ExecutionGraphUtil {
 
     FlowElement sourceFlowElement = process.getFlowElement(sourceElementId, true);
     FlowNode sourceElement = null;
+
     if (sourceFlowElement instanceof FlowNode) {
       sourceElement = (FlowNode) sourceFlowElement;
     } else if (sourceFlowElement instanceof SequenceFlow) {
       sourceElement = (FlowNode) ((SequenceFlow) sourceFlowElement).getTargetFlowElement();
     }
+
 
     FlowElement targetFlowElement = process.getFlowElement(targetElementId, true);
     FlowNode targetElement = null;
@@ -108,14 +113,19 @@ public class ExecutionGraphUtil {
     // No outgoing seq flow: could be the end of eg . the process or an embedded subprocess
     if (sourceElement.getOutgoingFlows().size() == 0) {
       visitedElements.add(sourceElement.getId());
-
       FlowElementsContainer parentElement = process.findParent(sourceElement);
       if (parentElement instanceof SubProcess) {
         sourceElement = (SubProcess) parentElement;
-      } else {
+      }
+      if(sourceElement.isLinkThrowEvent())
+      {
+          sourceElement = LinkThrowEventFlowNodeHelper.findRelatedIntermediateCatchEventForLinkEvent((ThrowEvent) sourceElement);
+      }
+      else {
         return false;
       }
     }
+
 
     if (sourceElement.getId().equals(targetElement.getId())) {
       return true;

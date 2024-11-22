@@ -24,6 +24,7 @@ import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.LinkEventDefinition;
+import org.activiti.bpmn.model.LinkThrowEventFlowNodeHelper;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.ThrowEvent;
@@ -195,10 +196,9 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
             List<ExecutionEntity> outgoingExecutions = new ArrayList<>(flowNode.getOutgoingFlows().size());
 
             if (flowNode.isLinkThrowEvent()) {
-                FlowNode node = findRelatedIntermediateCatchEventForLinkEvent((ThrowEvent) flowNode);
+                FlowNode node = LinkThrowEventFlowNodeHelper.findRelatedIntermediateCatchEventForLinkEvent((ThrowEvent) flowNode);
                 execution.setCurrentFlowElement(node);
                 Context.getAgenda().planTriggerExecutionOperation(execution);
-
             } else {
                SequenceFlow sequenceFlow = outgoingSequenceFlows.get(0);
                 // Reuse existing one
@@ -230,24 +230,6 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         }
 
     }
-
-    private FlowNode findRelatedIntermediateCatchEventForLinkEvent(ThrowEvent throwEvent) {
-        String linkEventTarget = ((LinkEventDefinition) throwEvent.getEventDefinitions().get(0)).getTarget();
-        Collection<FlowElement> allFlowElements = throwEvent.getParentContainer().getFlowElements();
-        for (FlowElement flowElement : allFlowElements) {
-            if (flowElement instanceof IntermediateCatchEvent) {
-                IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) flowElement;
-                if (catchEvent.isLinkCatchEvent()) {
-                    LinkEventDefinition destinationEvent = (LinkEventDefinition) catchEvent.getEventDefinitions().get(0);
-                    if (destinationEvent.getId().equals(linkEventTarget)) {
-                        return catchEvent;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
 
     protected void handleAdhocSubProcess(FlowNode flowNode) {
         boolean completeAdhocSubProcess = false;
