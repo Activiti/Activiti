@@ -482,7 +482,8 @@ public class ExtensionsVariablesMappingProviderTest {
         assertThat(outputVariables).isNotEmpty();
         assertThat(outputVariables.entrySet()).extracting(Map.Entry::getKey, Map.Entry::getValue)
             .containsOnly(tuple("process_variable_person", Map.of("firstname", "Bob", "lastname", "Miracle")),
-                tuple("process_variable_empty_json", Map.of("firstname", "John", "address", Map.of("street","Ha-Ha Road"))));
+                tuple("process_variable_empty_json", Map.of("firstname", "John", "address", Map.of("street","Ha-Ha Road"))),
+                    tuple("variable_invalid_object", Map.of("street2", "Ha-Ha Road")));
     }
 
     @Test
@@ -498,9 +499,9 @@ public class ExtensionsVariablesMappingProviderTest {
         assertThat(outputVariables).isNotEmpty();
         assertThat(outputVariables.entrySet()).extracting(Map.Entry::getKey, Map.Entry::getValue)
             .containsOnly(tuple("process_variable_person", Map.of("firstname", "Bob", "lastname", "Miracle")),
-                tuple("process_variable_empty_json", Map.of("firstname", "John", "address", Map.of("street","Ha-Ha Road"))));
+                tuple("process_variable_empty_json", Map.of("firstname", "John", "address", Map.of("street","Ha-Ha Road"))),
+                tuple("variable_invalid_object", Map.of("street2", "Ha-Ha Road")));
     }
-
 
     @Test
     public void calculateOutputVariablesShouldThrowActivitiIllegalArgumentExceptionWhenJsonPatchDefinitionIsInvalid() throws IOException {
