@@ -38,5 +38,3 @@ public class LinkEventSourceParser extends BaseChildElementParser{
         }
     }
 }
-
-
