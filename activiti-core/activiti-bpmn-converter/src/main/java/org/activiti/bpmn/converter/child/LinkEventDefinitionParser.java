@@ -32,7 +32,7 @@ public class LinkEventDefinitionParser extends BaseChildElementParser {
     }
 
     public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-        if (parentElement instanceof Event) {
+        if (parentElement instanceof Event event) {
             LinkEventDefinition eventDefinition = new LinkEventDefinition();
             BpmnXMLUtil.addXMLLocation(eventDefinition,
                 xtr);
@@ -45,10 +45,8 @@ public class LinkEventDefinitionParser extends BaseChildElementParser {
                 xtr,
                 model);
 
-            if( parentElement instanceof Event event)
-            {
-                event.addEventDefinition(eventDefinition);
-            }
+            event.addEventDefinition(eventDefinition);
+
         }
     }
-    }
+}

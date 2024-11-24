@@ -43,7 +43,7 @@ public class LinkEventDefinitionParserTest {
             ThrowEvent intermediateThrowEvent = new ThrowEvent();
             parser.parseChildElement(xtr, intermediateThrowEvent, null);
 
-           List<EventDefinition> eventDefinitionList =  intermediateThrowEvent.getEventDefinitions();
+            List<EventDefinition> eventDefinitionList = intermediateThrowEvent.getEventDefinitions();
             assertThat(eventDefinitionList).isNotEmpty();
             LinkEventDefinition linkEventDefinition = (LinkEventDefinition) eventDefinitionList.get(0);
             assertThat(linkEventDefinition).isNotNull();
@@ -53,26 +53,24 @@ public class LinkEventDefinitionParserTest {
         }
     }
 
-         @Test
-        public void parseChildElement_should_setLinkEventDefinitionProperties_forCatchEvent() throws Exception
-        {
-            try (InputStream xmlStream = this.getClass().getClassLoader()
-                .getResourceAsStream("link-event-definition-with-source.xml")) {
-                XMLStreamReader xtr = xif.createXMLStreamReader(xmlStream, "UTF-8");
-                xtr.next();
+    @Test
+    public void parseChildElement_should_setLinkEventDefinitionProperties_forCatchEvent() throws Exception {
+        try (InputStream xmlStream = this.getClass().getClassLoader()
+            .getResourceAsStream("link-event-definition-with-source.xml")) {
+            XMLStreamReader xtr = xif.createXMLStreamReader(xmlStream, "UTF-8");
+            xtr.next();
 
             IntermediateCatchEvent intermediateCatchEvent = new IntermediateCatchEvent();
             parser.parseChildElement(xtr, intermediateCatchEvent, null);
 
-                List<EventDefinition> eventDefinitionList =  intermediateCatchEvent.getEventDefinitions();
-                assertThat(eventDefinitionList).isNotEmpty();
-                LinkEventDefinition linkEventDefinition = (LinkEventDefinition) eventDefinitionList.get(0);
-
+            List<EventDefinition> eventDefinitionList = intermediateCatchEvent.getEventDefinitions();
+            assertThat(eventDefinitionList).isNotEmpty();
+            LinkEventDefinition linkEventDefinition = (LinkEventDefinition) eventDefinitionList.get(0);
             assertThat(linkEventDefinition).isNotNull();
             assertThat(linkEventDefinition.getId()).isEqualTo("LinkEventDefinition_1smqlx0");
             assertThat(linkEventDefinition.getName()).isEqualTo("a");
             assertThat(linkEventDefinition.getSources().get(0)).isEqualTo("LinkEventDefinition_03bs3ae");
             assertThat(linkEventDefinition.getSources().get(1)).isEqualTo("test");
         }
-        }
     }
+}

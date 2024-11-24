@@ -22,7 +22,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FlowNodeTest{
+public class FlowNodeTest {
 
     @Test
     public void isLinkCatchEvent_should_returnTrue_when_intermediateCatch_withLinkEventDefinition() {

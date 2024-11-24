@@ -20,12 +20,10 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.LinkEventDefinition;
 
 import javax.xml.stream.XMLStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.activiti.bpmn.converter.LinkEventDefinitionXMLConverter.ATTRIBUTE_LINK_SOURCE;
 
-public class LinkEventSourceParser extends BaseChildElementParser{
+public class LinkEventSourceParser extends BaseChildElementParser {
 
     public String getElementName() {
         return ATTRIBUTE_LINK_SOURCE;
@@ -33,7 +31,7 @@ public class LinkEventSourceParser extends BaseChildElementParser{
 
     public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
 
-        if(parentElement instanceof LinkEventDefinition linkEventDefinition) {
+        if (parentElement instanceof LinkEventDefinition linkEventDefinition) {
             linkEventDefinition.addSource(xtr.getElementText());
         }
     }

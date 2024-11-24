@@ -15,10 +15,8 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import org.activiti.bpmn.model.LinkEventDefinition;
-
-public class IntermediateCatchLinkEventActivityBehavior extends IntermediateCatchEventActivityBehavior{
-    public IntermediateCatchLinkEventActivityBehavior(LinkEventDefinition linkEventDefinition) {
+public class IntermediateCatchLinkEventActivityBehavior extends FlowNodeActivityBehavior {
+    public IntermediateCatchLinkEventActivityBehavior() {
         super();
     }
 }

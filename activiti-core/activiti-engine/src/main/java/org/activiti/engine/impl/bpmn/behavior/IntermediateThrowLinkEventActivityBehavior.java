@@ -15,18 +15,14 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import org.activiti.bpmn.model.LinkEventDefinition;
 import org.activiti.bpmn.model.ThrowEvent;
 
-public class IntermediateThrowLinkEventActivityBehavior extends AbstractThrowLinkEventActivityBehavior{
+public class IntermediateThrowLinkEventActivityBehavior extends FlowNodeActivityBehavior {
     private static final long serialVersionUID = 1L;
 
     private final ThrowEvent throwEvent;
 
-    public IntermediateThrowLinkEventActivityBehavior(ThrowEvent throwEvent,
-                                                      LinkEventDefinition linkEventDefinition) {
-        super(linkEventDefinition);
-
+    public IntermediateThrowLinkEventActivityBehavior(ThrowEvent throwEvent) {
         this.throwEvent = throwEvent;
     }
 

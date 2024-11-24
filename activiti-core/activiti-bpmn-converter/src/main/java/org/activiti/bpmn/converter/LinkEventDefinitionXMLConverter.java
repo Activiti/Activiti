@@ -31,13 +31,13 @@ public class LinkEventDefinitionXMLConverter {
     public static final String ATTRIBUTE_LINK_SOURCE = "source";
     public static final String ATTRIBUTE_LINK_TARGET = "target";
 
-    public void writeLinkDefinition(Event parentEvent, LinkEventDefinition eventDefinition, XMLStreamWriter xtw) throws Exception {
+    public void writeLinkDefinition(LinkEventDefinition eventDefinition, XMLStreamWriter xtw) throws Exception {
         xtw.writeStartElement(ELEMENT_EVENT_LINK_DEFINITION);
-         writeAttribute(xtw, ATTRIBUTE_ID, eventDefinition.getId());
-         writeAttribute(xtw, ATTRIBUTE_NAME, eventDefinition.getName());
-         writeElement(xtw, ATTRIBUTE_LINK_TARGET, eventDefinition.getTarget());
-        if(eventDefinition.getSources() != null) {
-           for(String source : eventDefinition.getSources()) {
+        writeAttribute(xtw, ATTRIBUTE_ID, eventDefinition.getId());
+        writeAttribute(xtw, ATTRIBUTE_NAME, eventDefinition.getName());
+        writeElement(xtw, ATTRIBUTE_LINK_TARGET, eventDefinition.getTarget());
+        if (eventDefinition.getSources() != null) {
+            for (String source : eventDefinition.getSources()) {
                 writeElement(xtw, ATTRIBUTE_LINK_SOURCE, source);
             }
         }
@@ -50,7 +50,7 @@ public class LinkEventDefinitionXMLConverter {
         }
     }
 
-    private void writeElement( XMLStreamWriter xtw, String elementName, String elementValue) throws XMLStreamException {
+    private void writeElement(XMLStreamWriter xtw, String elementName, String elementValue) throws XMLStreamException {
         if (StringUtils.isNotEmpty(elementValue)) {
             xtw.writeStartElement(elementName);
             xtw.writeCharacters(elementValue);

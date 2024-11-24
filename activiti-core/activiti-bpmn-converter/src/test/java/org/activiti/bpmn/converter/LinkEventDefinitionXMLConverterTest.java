@@ -26,16 +26,13 @@ import org.xmlunit.assertj3.XmlAssert;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
 
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 public class LinkEventDefinitionXMLConverterTest {
     @Mock
     private XMLStreamWriter xtw;
+
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -54,9 +51,9 @@ public class LinkEventDefinitionXMLConverterTest {
         XMLStreamWriter xtw = XMLOutputFactory.newInstance().createXMLStreamWriter(stringWriter);
         LinkEventDefinitionXMLConverter linkEventDefinitionXMLConverter = new LinkEventDefinitionXMLConverter();
         // Act
-        linkEventDefinitionXMLConverter.writeLinkDefinition(parentEvent, eventDefinition, xtw);
+        linkEventDefinitionXMLConverter.writeLinkDefinition(eventDefinition, xtw);
 
-       //Assert
+        //Assert
         String generatedXml = stringWriter.toString();
         String expectedXml = """
             <linkEventDefinition id="id" name="name">
@@ -86,16 +83,16 @@ public class LinkEventDefinitionXMLConverterTest {
         XMLStreamWriter xtw = XMLOutputFactory.newInstance().createXMLStreamWriter(stringWriter);
         LinkEventDefinitionXMLConverter linkEventDefinitionXMLConverter = new LinkEventDefinitionXMLConverter();
         // Act
-        linkEventDefinitionXMLConverter.writeLinkDefinition(parentEvent, eventDefinition, xtw);
+        linkEventDefinitionXMLConverter.writeLinkDefinition(eventDefinition, xtw);
 
         //Assert
         String generatedXml = stringWriter.toString();
         String expectedXml = """
-    <linkEventDefinition id="id" name="name">
-        <source>source1</source>
-        <source>source2</source>
-    </linkEventDefinition>
-    """;
+            <linkEventDefinition id="id" name="name">
+                <source>source1</source>
+                <source>source2</source>
+            </linkEventDefinition>
+            """;
         XmlAssert
             .assertThat(generatedXml)
             .and(expectedXml)

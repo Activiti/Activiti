@@ -18,7 +18,7 @@ package org.activiti.bpmn.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LinkEventDefinition extends EventDefinition{
+public class LinkEventDefinition extends EventDefinition {
 
     private String name;
 

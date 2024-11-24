@@ -476,7 +476,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     }
 
     public IntermediateCatchLinkEventActivityBehavior createIntermediateCatchLinkEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent, LinkEventDefinition linkEventDefinition) {
-        return new IntermediateCatchLinkEventActivityBehavior(linkEventDefinition);
+        return new IntermediateCatchLinkEventActivityBehavior();
     }
 
     public IntermediateCatchTimerEventActivityBehavior createIntermediateCatchTimerEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent,
@@ -600,7 +600,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     }
 
     public IntermediateThrowLinkEventActivityBehavior createThrowLinkEventActivityBehavior(ThrowEvent throwEvent, LinkEventDefinition linkEventDefinition) {
-        return new IntermediateThrowLinkEventActivityBehavior(throwEvent, linkEventDefinition);
+        return new IntermediateThrowLinkEventActivityBehavior(throwEvent);
     }
 
     @Override
