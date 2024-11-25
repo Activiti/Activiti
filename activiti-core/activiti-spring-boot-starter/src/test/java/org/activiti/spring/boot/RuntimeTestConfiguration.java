@@ -29,9 +29,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
+import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
 import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.api.process.runtime.events.ProcessCancelledEvent;
 import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
+import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.task.runtime.events.TaskCandidateGroupAddedEvent;
 import org.activiti.api.task.runtime.events.TaskCandidateGroupRemovedEvent;
@@ -67,6 +70,8 @@ public class RuntimeTestConfiguration {
     public static Set<String> updatedTasks = new HashSet<>();
 
     public static Set<String> completedProcesses = new HashSet<>();
+
+    public static Set<String> completedEvents = new HashSet<>();
 
     public static Set<String> completedTasks = new HashSet<>();
 
@@ -265,6 +270,11 @@ public class RuntimeTestConfiguration {
     @Bean
     public ProcessRuntimeEventListener<ProcessCompletedEvent> processCompletedListener() {
         return processCompleted -> completedProcesses.add(processCompleted.getEntity().getId());
+    }
+
+    @Bean
+    public BPMNElementEventListener<BPMNActivityCompletedEvent> eventsCompletedListener() {
+        return eventsCompleted -> completedEvents.add(eventsCompleted.getEntity().getActivityType());
     }
 
     @Bean

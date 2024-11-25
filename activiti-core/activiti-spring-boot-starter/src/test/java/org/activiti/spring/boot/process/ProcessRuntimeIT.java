@@ -15,6 +15,7 @@
  */
 package org.activiti.spring.boot.process;
 
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -45,6 +46,7 @@ import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskRuntime;
+import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.core.common.spring.security.policies.ActivitiForbiddenException;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -295,6 +297,7 @@ public class ProcessRuntimeIT {
 
         //then
         assertThat(RuntimeTestConfiguration.completedProcesses).contains(linkProcess.getId());
+        assertThat(RuntimeTestConfiguration.completedEvents).contains("throwEvent","intermediateCatchEvent");
     }
 
     @Test
