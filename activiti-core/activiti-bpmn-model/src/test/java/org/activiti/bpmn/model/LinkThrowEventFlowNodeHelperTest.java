@@ -15,12 +15,11 @@
  */
 package org.activiti.bpmn.model;
 
-import org.activiti.bpmn.model.helper.LinkThrowEventFlowNodeHelper;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.InvocationTargetException;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.activiti.bpmn.model.helper.LinkThrowEventFlowNodeHelper;
+import org.junit.Test;
 
 public class LinkThrowEventFlowNodeHelperTest {
 
@@ -44,11 +43,10 @@ public class LinkThrowEventFlowNodeHelperTest {
         FlowNode node = LinkThrowEventFlowNodeHelper.findRelatedIntermediateCatchEventForLinkEvent(throwEvent);
 
         assertThat(node).isEqualTo(catchEvent);
-
     }
 
     @Test
-    public void findRelatedIntermediateCatchEventForLinkEvent_shouldReturnCorrectFlowNode_when_targetEventIsGiven_noMatchIsFound() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+    public void findRelatedIntermediateCatchEventForLinkEvent_shouldReturnCorrectFlowNode_when_targetEventIsGiven_noMatchIsFound() {
         Process process = new Process();
         process.setId("processId");
 
@@ -68,5 +66,4 @@ public class LinkThrowEventFlowNodeHelperTest {
 
         assertThat(node).isNull();
     }
-
 }
