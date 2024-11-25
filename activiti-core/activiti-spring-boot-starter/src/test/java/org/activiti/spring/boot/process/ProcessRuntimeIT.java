@@ -280,7 +280,11 @@ public class ProcessRuntimeIT {
 
         //then
         assertThat(RuntimeTestConfiguration.completedProcesses).contains(linkProcess.getId());
-        assertThat(RuntimeTestConfiguration.completedEvents).contains("throwEvent","intermediateCatchEvent");
+        assertThat(RuntimeTestConfiguration.completedBpmnActivities)
+            .extracting(org.activiti.api.process.model.BPMNActivity::getActivityName, org.activiti.api.process.model.BPMNActivity::getActivityType)
+            .contains(
+                tuple("a", "throwEvent") ,
+                tuple("a", "intermediateCatchEvent"));
     }
 
     @Test
@@ -292,8 +296,6 @@ public class ProcessRuntimeIT {
 
         TaskQuery query = taskService.createTaskQuery().orderByTaskName().asc();
         var tasks = query.list();
-
-        assertThat(tasks).hasSize(2);
         assertThat(tasks)
             .extracting(org.activiti.engine.task.Task::getName)
             .containsExactly("task 1", "task 2");
@@ -301,7 +303,6 @@ public class ProcessRuntimeIT {
         taskService.complete(tasks.get(1).getId());
 
         tasks = query.list();
-        assertThat(tasks).hasSize(1);
         assertThat(tasks)
             .extracting(org.activiti.engine.task.Task::getName)
             .containsExactly("task 1");
@@ -309,7 +310,6 @@ public class ProcessRuntimeIT {
         taskService.complete(tasks.get(0).getId());
 
         tasks = query.list();
-        assertThat(tasks).hasSize(1);
         assertThat(tasks)
             .extracting(org.activiti.engine.task.Task::getName)
             .containsExactly("task 3");
@@ -317,7 +317,11 @@ public class ProcessRuntimeIT {
         taskService.complete(tasks.get(0).getId());
 
         assertThat(RuntimeTestConfiguration.completedProcesses).contains(linkProcess.getId());
-        assertThat(RuntimeTestConfiguration.completedEvents).contains("throwEvent","intermediateCatchEvent");
+        assertThat(RuntimeTestConfiguration.completedBpmnActivities)
+            .extracting(org.activiti.api.process.model.BPMNActivity::getActivityName, org.activiti.api.process.model.BPMNActivity::getActivityType)
+            .contains(
+                tuple("a", "throwEvent") ,
+                tuple("a", "intermediateCatchEvent"));
     }
 
     @Test

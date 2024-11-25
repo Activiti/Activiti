@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.activiti.api.process.model.BPMNActivity;
 import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
 import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.api.process.runtime.events.ProcessCancelledEvent;
@@ -71,7 +72,7 @@ public class RuntimeTestConfiguration {
 
     public static Set<String> completedProcesses = new HashSet<>();
 
-    public static Set<String> completedEvents = new HashSet<>();
+    public static Set<BPMNActivity> completedBpmnActivities = new HashSet<>();
 
     public static Set<String> completedTasks = new HashSet<>();
 
@@ -274,7 +275,7 @@ public class RuntimeTestConfiguration {
 
     @Bean
     public BPMNElementEventListener<BPMNActivityCompletedEvent> eventsCompletedListener() {
-        return eventsCompleted -> completedEvents.add(eventsCompleted.getEntity().getActivityType());
+        return eventsCompleted -> completedBpmnActivities.add(eventsCompleted.getEntity());
     }
 
     @Bean
