@@ -15,11 +15,11 @@
  */
 package org.activiti.bpmn.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.apache.commons.collections4.CollectionUtils;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.collections4.CollectionUtils;
 
 public abstract class FlowNode extends FlowElement {
 

@@ -15,6 +15,10 @@
  */
 package org.activiti.engine.impl.agenda;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.AdhocSubProcess;
 import org.activiti.bpmn.model.BoundaryEvent;
@@ -43,11 +47,6 @@ import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.condition.ConditionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 
 /**
  * Operation that leaves the {@link FlowElement} where the {@link ExecutionEntity} is currently at

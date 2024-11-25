@@ -15,50 +15,6 @@
  */
 package org.activiti.bpmn.converter.util;
 
-import org.activiti.bpmn.constants.BpmnXMLConstants;
-import org.activiti.bpmn.converter.child.ActivitiEventListenerParser;
-import org.activiti.bpmn.converter.child.ActivitiFailedjobRetryParser;
-import org.activiti.bpmn.converter.child.ActivitiMapExceptionParser;
-import org.activiti.bpmn.converter.child.BaseChildElementParser;
-import org.activiti.bpmn.converter.child.CancelEventDefinitionParser;
-import org.activiti.bpmn.converter.child.CompensateEventDefinitionParser;
-import org.activiti.bpmn.converter.child.ConditionExpressionParser;
-import org.activiti.bpmn.converter.child.DataInputAssociationParser;
-import org.activiti.bpmn.converter.child.DataOutputAssociationParser;
-import org.activiti.bpmn.converter.child.DataStateParser;
-import org.activiti.bpmn.converter.child.DocumentationParser;
-import org.activiti.bpmn.converter.child.ErrorEventDefinitionParser;
-import org.activiti.bpmn.converter.child.ExecutionListenerParser;
-import org.activiti.bpmn.converter.child.FieldExtensionParser;
-import org.activiti.bpmn.converter.child.FlowNodeRefParser;
-import org.activiti.bpmn.converter.child.FormPropertyParser;
-import org.activiti.bpmn.converter.child.IOSpecificationParser;
-import org.activiti.bpmn.converter.child.LinkEventDefinitionParser;
-import org.activiti.bpmn.converter.child.LinkEventSourceParser;
-import org.activiti.bpmn.converter.child.LinkEventTargetParser;
-import org.activiti.bpmn.converter.child.MessageEventDefinitionParser;
-import org.activiti.bpmn.converter.child.SignalEventDefinitionParser;
-import org.activiti.bpmn.converter.child.TaskListenerParser;
-import org.activiti.bpmn.converter.child.TerminateEventDefinitionParser;
-import org.activiti.bpmn.converter.child.TimeCycleParser;
-import org.activiti.bpmn.converter.child.TimeDateParser;
-import org.activiti.bpmn.converter.child.TimeDurationParser;
-import org.activiti.bpmn.converter.child.TimerEventDefinitionParser;
-import org.activiti.bpmn.converter.child.multi.instance.MultiInstanceParser;
-import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.ExtensionAttribute;
-import org.activiti.bpmn.model.ExtensionElement;
-import org.activiti.bpmn.model.FlowNode;
-import org.activiti.bpmn.model.GraphicInfo;
-import org.activiti.bpmn.model.SequenceFlow;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.xml.stream.Location;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
 import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,6 +22,18 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.stream.Location;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+
+import org.activiti.bpmn.constants.BpmnXMLConstants;
+import org.activiti.bpmn.converter.child.*;
+import org.activiti.bpmn.converter.child.MessageEventDefinitionParser;
+import org.activiti.bpmn.converter.child.multi.instance.MultiInstanceParser;
+import org.activiti.bpmn.model.*;
+import org.apache.commons.lang3.StringUtils;
 
 public class BpmnXMLUtil implements BpmnXMLConstants {
 

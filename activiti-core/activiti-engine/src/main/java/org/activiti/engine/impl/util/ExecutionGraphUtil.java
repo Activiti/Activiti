@@ -16,6 +16,13 @@
 
 package org.activiti.engine.impl.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowElementsContainer;
 import org.activiti.bpmn.model.FlowNode;
@@ -26,13 +33,6 @@ import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.bpmn.model.helper.LinkThrowEventFlowNodeHelper;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class ExecutionGraphUtil {
 

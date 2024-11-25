@@ -16,6 +16,12 @@
 
 package org.activiti.engine.impl.bpmn.parser.factory;
 
+import static java.util.Collections.emptyList;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BusinessRuleTask;
@@ -113,12 +119,6 @@ import org.activiti.engine.impl.delegate.ThrowMessageJavaDelegate;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static java.util.Collections.emptyList;
 
 /**
  * Default implementation of the {@link ActivityBehaviorFactory}. Used when no custom {@link ActivityBehaviorFactory} is injected on the {@link ProcessEngineConfigurationImpl}.
