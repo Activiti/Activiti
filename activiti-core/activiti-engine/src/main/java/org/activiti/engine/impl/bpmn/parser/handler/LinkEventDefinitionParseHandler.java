@@ -27,8 +27,7 @@ public class LinkEventDefinitionParseHandler extends AbstractBpmnParseHandler<Li
     }
 
     protected void executeParse(BpmnParse bpmnParse, LinkEventDefinition element) {
-        if (bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent) {
-            IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) bpmnParse.getCurrentFlowElement();
+        if (bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent intermediateCatchEvent) {
             intermediateCatchEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateCatchLinkEventActivityBehavior(intermediateCatchEvent,element));
         }
     }
