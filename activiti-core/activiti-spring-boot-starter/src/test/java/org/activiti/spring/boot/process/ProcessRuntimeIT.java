@@ -281,10 +281,13 @@ public class ProcessRuntimeIT {
         //then
         assertThat(RuntimeTestConfiguration.completedProcesses).contains(linkProcess.getId());
         assertThat(RuntimeTestConfiguration.completedBpmnActivities)
-            .extracting(org.activiti.api.process.model.BPMNActivity::getActivityName, org.activiti.api.process.model.BPMNActivity::getActivityType)
+            .extracting(
+                org.activiti.api.process.model.BPMNActivity::getActivityName,
+                org.activiti.api.process.model.BPMNActivity::getActivityType,
+                org.activiti.api.process.model.BPMNActivity::getProcessInstanceId)
             .contains(
-                tuple("a", "throwEvent") ,
-                tuple("a", "intermediateCatchEvent"));
+                tuple("a", "throwEvent", linkProcess.getId()),
+                tuple("a", "intermediateCatchEvent", linkProcess.getId()));
     }
 
     @Test
@@ -307,21 +310,23 @@ public class ProcessRuntimeIT {
             .extracting(org.activiti.engine.task.Task::getName)
             .containsExactly("task 1");
 
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
 
         tasks = query.list();
         assertThat(tasks)
             .extracting(org.activiti.engine.task.Task::getName)
             .containsExactly("task 3");
 
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
 
         assertThat(RuntimeTestConfiguration.completedProcesses).contains(linkProcess.getId());
         assertThat(RuntimeTestConfiguration.completedBpmnActivities)
-            .extracting(org.activiti.api.process.model.BPMNActivity::getActivityName, org.activiti.api.process.model.BPMNActivity::getActivityType)
+            .extracting(org.activiti.api.process.model.BPMNActivity::getActivityName,
+                org.activiti.api.process.model.BPMNActivity::getActivityType,
+                org.activiti.api.process.model.BPMNActivity::getProcessInstanceId)
             .contains(
-                tuple("a", "throwEvent") ,
-                tuple("a", "intermediateCatchEvent"));
+                tuple("a", "throwEvent", linkProcess.getId()) ,
+                tuple("a", "intermediateCatchEvent", linkProcess.getId()));
     }
 
     @Test
