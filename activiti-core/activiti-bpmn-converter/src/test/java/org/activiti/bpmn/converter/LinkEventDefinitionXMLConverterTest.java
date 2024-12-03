@@ -15,7 +15,6 @@
  */
 package org.activiti.bpmn.converter;
 
-import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.LinkEventDefinition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,12 +26,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.StringWriter;
 
-import static org.mockito.Mockito.mock;
-
 public class LinkEventDefinitionXMLConverterTest {
-    @Mock
-    private XMLStreamWriter xtw;
-
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -41,7 +35,6 @@ public class LinkEventDefinitionXMLConverterTest {
     @Test
     public void should_writeLinkDefinition_whenEventDefinitionHasTarget() throws Exception {
         // Arrange
-        Event parentEvent = mock(Event.class);
         LinkEventDefinition eventDefinition = new LinkEventDefinition();
         eventDefinition.setTarget("target");
         eventDefinition.setName("name");
@@ -70,9 +63,7 @@ public class LinkEventDefinitionXMLConverterTest {
     @Test
     public void should_writeLinkDefinition_whenEventDefinitionHasSources() throws Exception {
         // Arrange
-        Event parentEvent = mock(Event.class);
         LinkEventDefinition eventDefinition = new LinkEventDefinition();
-
 
         eventDefinition.setName("name");
         eventDefinition.setId("id");
@@ -91,6 +82,34 @@ public class LinkEventDefinitionXMLConverterTest {
             <linkEventDefinition id="id" name="name">
                 <source>source1</source>
                 <source>source2</source>
+            </linkEventDefinition>
+            """;
+        XmlAssert
+            .assertThat(generatedXml)
+            .and(expectedXml)
+            .ignoreWhitespace()
+            .areIdentical();
+    }
+    @Test
+    public void should_writeLinkDefinition_whenEventDefinitionNameIsEmpty() throws Exception {
+        // Arrange
+        LinkEventDefinition eventDefinition = new LinkEventDefinition();
+
+        eventDefinition.setName("");
+        eventDefinition.setId("id");
+        eventDefinition.addSource("source1");
+
+        StringWriter stringWriter = new StringWriter();
+        XMLStreamWriter xtw = XMLOutputFactory.newInstance().createXMLStreamWriter(stringWriter);
+        LinkEventDefinitionXMLConverter linkEventDefinitionXMLConverter = new LinkEventDefinitionXMLConverter();
+        // Act
+        linkEventDefinitionXMLConverter.writeLinkDefinition(eventDefinition, xtw);
+
+        //Assert
+        String generatedXml = stringWriter.toString();
+        String expectedXml = """
+            <linkEventDefinition id="id" name="">
+                <source>source1</source>
             </linkEventDefinition>
             """;
         XmlAssert

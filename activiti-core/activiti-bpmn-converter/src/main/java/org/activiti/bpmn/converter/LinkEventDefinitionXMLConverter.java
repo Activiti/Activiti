@@ -15,7 +15,6 @@
  */
 package org.activiti.bpmn.converter;
 
-import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.LinkEventDefinition;
 import org.apache.commons.lang3.StringUtils;
 
@@ -45,7 +44,7 @@ public class LinkEventDefinitionXMLConverter {
     }
 
     private void writeAttribute(XMLStreamWriter xtw, String attributeName, String attributeValue) throws XMLStreamException {
-        if (StringUtils.isNotEmpty(attributeValue)) {
+        if (attributeValue != null) {
             xtw.writeAttribute(attributeName, attributeValue);
         }
     }
