@@ -16,21 +16,15 @@
 package org.activiti.bpmn.converter;
 
 import org.activiti.bpmn.model.LinkEventDefinition;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.xmlunit.assertj3.XmlAssert;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.StringWriter;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 public class LinkEventDefinitionXMLConverterTest {
-    @BeforeEach
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void should_writeLinkDefinition_whenEventDefinitionHasTarget() throws Exception {
@@ -49,15 +43,11 @@ public class LinkEventDefinitionXMLConverterTest {
         //Assert
         String generatedXml = stringWriter.toString();
         String expectedXml = """
-            <linkEventDefinition id="id" name="name">
-                <target>target</target>
-             </linkEventDefinition>
+            <bpmn2:linkEventDefinition id="id" name="name">
+                <bpmn2:target>target</bpmn2:target>
+             </bpmn2:linkEventDefinition>
             """;
-        XmlAssert
-            .assertThat(generatedXml)
-            .and(expectedXml)
-            .ignoreWhitespace()
-            .areIdentical();
+        assertThat(generatedXml).isEqualToIgnoringWhitespace(expectedXml);
     }
 
     @Test
@@ -79,17 +69,14 @@ public class LinkEventDefinitionXMLConverterTest {
         //Assert
         String generatedXml = stringWriter.toString();
         String expectedXml = """
-            <linkEventDefinition id="id" name="name">
-                <source>source1</source>
-                <source>source2</source>
-            </linkEventDefinition>
+            <bpmn2:linkEventDefinition id="id" name="name">
+                <bpmn2:source>source1</bpmn2:source>
+                <bpmn2:source>source2</bpmn2:source>
+            </bpmn2:linkEventDefinition>
             """;
-        XmlAssert
-            .assertThat(generatedXml)
-            .and(expectedXml)
-            .ignoreWhitespace()
-            .areIdentical();
+        assertThat(generatedXml).isEqualToIgnoringWhitespace(expectedXml);
     }
+
     @Test
     public void should_writeLinkDefinition_whenEventDefinitionNameIsEmpty() throws Exception {
         // Arrange
@@ -108,14 +95,10 @@ public class LinkEventDefinitionXMLConverterTest {
         //Assert
         String generatedXml = stringWriter.toString();
         String expectedXml = """
-            <linkEventDefinition id="id" name="">
-                <source>source1</source>
-            </linkEventDefinition>
+            <bpmn2:linkEventDefinition id="id" name="">
+                <bpmn2:source>source1</bpmn2:source>
+            </bpmn2:linkEventDefinition>
             """;
-        XmlAssert
-            .assertThat(generatedXml)
-            .and(expectedXml)
-            .ignoreWhitespace()
-            .areIdentical();
+        assertThat(generatedXml).isEqualToIgnoringWhitespace(expectedXml);
     }
 }
