@@ -22,6 +22,8 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.LinkEventDefinition;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SignalEventDefinition;
@@ -53,8 +55,9 @@ public class EventValidator extends ProcessLevelValidator {
             handleTimerEventDefinition(process, event, eventDefinition, errors);
           } else if (eventDefinition instanceof CompensateEventDefinition) {
             handleCompensationEventDefinition(bpmnModel, process, event, eventDefinition, errors);
+          } else if (eventDefinition instanceof LinkEventDefinition linkEventDefinition) {
+              handleLinkEventDefinition(process, event, linkEventDefinition, errors);
           }
-
         }
       }
     }
@@ -105,6 +108,17 @@ public class EventValidator extends ProcessLevelValidator {
     if ((StringUtils.isNotEmpty(compensateEventDefinition.getActivityRef()) && process.getFlowElement(compensateEventDefinition.getActivityRef(), true) == null)) {
       addError(errors, Problems.COMPENSATE_EVENT_INVALID_ACTIVITY_REF, process, event);
     }
+  }
+
+  private void handleLinkEventDefinition(Process process, Event event, LinkEventDefinition linkEventDefinition, List<ValidationError> errors) {
+      FlowNode flowNode = ((FlowNode) process.getFlowElement(event.getId()));
+
+      if (flowNode.isLinkThrowEvent() && linkEventDefinition.getTarget() == null) {
+          addError(errors, Problems.LINK_EVENT_DEFINITION_MISSING_TARGET, process, event);
+      }
+      if (flowNode.isLinkCatchEvent() && linkEventDefinition.getSources() == null) {
+          addError(errors, Problems.LINK_EVENT_DEFINITION_MISSING_SOURCE, process, event);
+      }
   }
 
 }

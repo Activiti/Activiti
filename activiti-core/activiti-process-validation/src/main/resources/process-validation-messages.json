@@ -298,5 +298,13 @@
   "SIGNAL_ASYNC_NOT_AVAILABLE": {
     "problem": "activiti-signal-async-not-available",
     "description": "Async property is not available when asyncExecutor is disabled."
+  },
+  "LINK_EVENT_DEFINITION_MISSING_TARGET": {
+    "problem": "activiti-link-event-definition-missing-target",
+    "description": "linkEventDefinition does not have mandatory property 'target'"
+  },
+  "LINK_EVENT_DEFINITION_MISSING_SOURCE": {
+    "problem": "activiti-link-event-definition-missing-source",
+    "description": "linkEventDefinition does not have mandatory property 'source'"
   }
 }
