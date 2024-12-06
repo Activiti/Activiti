@@ -8,7 +8,7 @@
 
 		<startEvent id="start" />
 
-		<sequenceFlow sourceRef="start" targetRef="linkCatch" />
+		<sequenceFlow sourceRef="start" targetRef="linkThrow" />
 
 		<intermediateThrowEvent id="linkThrow" name="Alert">
 			<linkEventDefinition id="throw" name="">
