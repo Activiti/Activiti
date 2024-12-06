@@ -22,7 +22,7 @@
     <jgraphx.version>4.2.2</jgraphx.version>
     <joda-time.version>2.12.0</joda-time.version>
     <json-unit.version>3.2.7</json-unit.version>
-    <mybatis.version>3.5.10</mybatis.version>
+    <mybatis.version>3.5.17</mybatis.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
     <xmlgraphics-commons.version>2.9</xmlgraphics-commons.version>
     <nashorn-core.version>15.4</nashorn-core.version>
