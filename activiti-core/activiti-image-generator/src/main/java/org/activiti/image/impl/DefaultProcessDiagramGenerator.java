@@ -42,6 +42,7 @@ import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.InclusiveGateway;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.Lane;
+import org.activiti.bpmn.model.LinkEventDefinition;
 import org.activiti.bpmn.model.ManualTask;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
@@ -175,7 +176,13 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                                                       flowNode.getName(),
                                                                       graphicInfo,
                                                                       true);
+                    } else if(intermediateCatchEvent.getEventDefinitions().get(0) instanceof LinkEventDefinition) {
+                        processDiagramCanvas.drawCatchingLinkEvent(flowNode.getId(),
+                                                                   flowNode.getName(),
+                                                                   graphicInfo,
+                                                                   true);
                     }
+
                 }
             }
         });
@@ -197,7 +204,11 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                     } else if (throwEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
                         processDiagramCanvas.drawThrowingCompensateEvent(flowNode.getId(),
                                                                          graphicInfo);
-                    } else {
+                    } else if(throwEvent.getEventDefinitions().get(0) instanceof LinkEventDefinition) {
+                        processDiagramCanvas.drawThrowingLinkEvent(flowNode.getId(),
+                                                                   graphicInfo);
+                    }
+                    else {
                         processDiagramCanvas.drawThrowingNoneEvent(flowNode.getId(),
                                                                    graphicInfo);
                     }
