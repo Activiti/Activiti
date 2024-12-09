@@ -301,10 +301,10 @@
   },
   "LINK_EVENT_DEFINITION_MISSING_TARGET": {
     "problem": "activiti-link-event-definition-missing-target",
-    "description": "linkEventDefinition does not have mandatory property 'target'"
+    "description": "Link Intermediate Throw Event does not have mandatory property 'target' on related Link Event Definition"
   },
   "LINK_EVENT_DEFINITION_MISSING_SOURCE": {
     "problem": "activiti-link-event-definition-missing-source",
-    "description": "linkEventDefinition does not have mandatory property 'source'"
+    "description": "Link Intermediate Catch Event does not have mandatory property 'source' on related Link Event Definition"
   }
 }
