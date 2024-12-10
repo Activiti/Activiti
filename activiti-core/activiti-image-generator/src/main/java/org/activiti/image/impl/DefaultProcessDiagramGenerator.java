@@ -128,22 +128,28 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                     EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
                     if (eventDefinition instanceof TimerEventDefinition) {
                         processDiagramCanvas.drawTimerStartEvent(flowNode.getId(),
+                                                                 flowNode.getName(),
                                                                  graphicInfo);
                     } else if (eventDefinition instanceof ErrorEventDefinition) {
                         processDiagramCanvas.drawErrorStartEvent(flowNode.getId(),
+                                                                 flowNode.getName(),
                                                                  graphicInfo);
                     } else if (eventDefinition instanceof SignalEventDefinition) {
                         processDiagramCanvas.drawSignalStartEvent(flowNode.getId(),
+                                                                  flowNode.getName(),
                                                                   graphicInfo);
                     } else if (eventDefinition instanceof MessageEventDefinition) {
                         processDiagramCanvas.drawMessageStartEvent(flowNode.getId(),
+                                                                   flowNode.getName(),
                                                                    graphicInfo);
                     } else {
                         processDiagramCanvas.drawNoneStartEvent(flowNode.getId(),
+                                                                flowNode.getName(),
                                                                 graphicInfo);
                     }
                 } else {
                     processDiagramCanvas.drawNoneStartEvent(flowNode.getId(),
+                                                            flowNode.getName(),
                                                             graphicInfo);
                 }
             }
@@ -200,20 +206,25 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                 if (throwEvent.getEventDefinitions() != null && !throwEvent.getEventDefinitions().isEmpty()) {
                     if (throwEvent.getEventDefinitions().get(0) instanceof SignalEventDefinition) {
                         processDiagramCanvas.drawThrowingSignalEvent(flowNode.getId(),
+                                                                     flowNode.getName(),
                                                                      graphicInfo);
                     } else if (throwEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
                         processDiagramCanvas.drawThrowingCompensateEvent(flowNode.getId(),
+                                                                         flowNode.getName(),
                                                                          graphicInfo);
                     } else if(throwEvent.getEventDefinitions().get(0) instanceof LinkEventDefinition) {
                         processDiagramCanvas.drawThrowingLinkEvent(flowNode.getId(),
+                                                                   flowNode.getName(),
                                                                    graphicInfo);
                     }
                     else {
                         processDiagramCanvas.drawThrowingNoneEvent(flowNode.getId(),
+                                                                   flowNode.getName(),
                                                                    graphicInfo);
                     }
                 } else {
                     processDiagramCanvas.drawThrowingNoneEvent(flowNode.getId(),
+                                                               flowNode.getName(),
                                                                graphicInfo);
                 }
             }

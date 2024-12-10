@@ -19,7 +19,7 @@ import org.activiti.image.impl.ProcessDiagramSVGGraphics2D;
 import org.apache.batik.svggen.SVGGraphics2D;
 import org.w3c.dom.Element;
 
-public class LinkCatchIconType extends IconType{
+public class LinkCatchIconType extends IconType {
     @Override
     public String getFillValue() {
         return "none";
@@ -32,7 +32,7 @@ public class LinkCatchIconType extends IconType{
 
     @Override
     public String getDValue() {
-        return "M 0 0 L 0 0 M 4 4 L 8 4 L 8 3 L 10 5 L 8 7 L 8 6 L 4 6 L 4 4 z";
+        return "m 3 3 l 0 0 m 8 8 l 8 0 l 0 -2 l 4 4 l -4 4 l 0 -2 l -8 0 l 0 -4 z";
     }
 
     public void drawIcon(final int imageX,
