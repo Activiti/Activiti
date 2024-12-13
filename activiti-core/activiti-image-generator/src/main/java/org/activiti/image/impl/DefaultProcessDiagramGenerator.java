@@ -175,7 +175,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                                                       flowNode.getName(),
                                                                       graphicInfo,
                                                                       true);
-                    } else if(intermediateCatchEvent.isLinkCatchEvent()) {
+                    } else if(intermediateCatchEvent.isLinkEvent()) {
                         processDiagramCanvas.drawCatchingLinkEvent(flowNode.getId(),
                                                                    flowNode.getName(),
                                                                    graphicInfo,
@@ -203,7 +203,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                     } else if (throwEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
                         processDiagramCanvas.drawThrowingCompensateEvent(flowNode.getId(),
                                                                          graphicInfo);
-                    } else if(throwEvent.isLinkThrowEvent()) {
+                    } else if(throwEvent.isLinkEvent()) {
                         processDiagramCanvas.drawThrowingLinkEvent(flowNode.getId(),
                                                                    graphicInfo);
                     }
