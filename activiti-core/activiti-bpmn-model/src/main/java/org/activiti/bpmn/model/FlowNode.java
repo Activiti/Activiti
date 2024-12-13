@@ -99,18 +99,14 @@ public abstract class FlowNode extends FlowElement {
 
   public boolean isLinkCatchEvent() {
     if (this instanceof IntermediateCatchEvent intermediateCatchEvent) {
-        if (intermediateCatchEvent.getEventDefinitions().size() == 1) {
-            return intermediateCatchEvent.getEventDefinitions().getFirst() instanceof LinkEventDefinition;
-        }
+        return intermediateCatchEvent.isLinkEvent();
     }
     return false;
   }
 
   public boolean isLinkThrowEvent() {
     if (this instanceof ThrowEvent throwEvent) {
-        if (throwEvent.getEventDefinitions().size() == 1) {
-            return throwEvent.getEventDefinitions().getFirst() instanceof LinkEventDefinition;
-        }
+        return throwEvent.isLinkEvent();
     }
     return false;
   }
