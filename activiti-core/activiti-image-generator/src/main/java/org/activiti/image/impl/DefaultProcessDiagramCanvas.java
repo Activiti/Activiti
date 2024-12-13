@@ -357,42 +357,31 @@ public class DefaultProcessDiagramCanvas {
     }
 
     public void drawNoneStartEvent(String id,
-                                   String name,
                                    GraphicInfo graphicInfo) {
         drawStartEvent(id,
                        graphicInfo,
                        null);
-        drawLabel(name,
-            graphicInfo);
     }
 
     public void drawTimerStartEvent(String id,
-                                    String name,
                                     GraphicInfo graphicInfo) {
         drawStartEvent(id,
                        graphicInfo,
                        TIMER_IMAGE);
-        drawLabel(name,
-            graphicInfo);
     }
 
     public void drawSignalStartEvent(String id,
-                                     String name,
                                      GraphicInfo graphicInfo) {
         drawStartEvent(id,
                        graphicInfo,
                        SIGNAL_CATCH_IMAGE);
-        drawLabel(name,
-            graphicInfo);
     }
 
     public void drawMessageStartEvent(String id,
-                                      String name,
                                       GraphicInfo graphicInfo) {
         drawStartEvent(id,
                        graphicInfo,
                        MESSAGE_CATCH_IMAGE);
-        drawLabel(name,graphicInfo);
     }
 
     public void drawStartEvent(String id,
@@ -465,10 +454,8 @@ public class DefaultProcessDiagramCanvas {
     }
 
     public void drawErrorStartEvent(String id,
-                                    String name,
                                     GraphicInfo graphicInfo) {
         drawNoneStartEvent(id,
-                           name,
                            graphicInfo);
 
         int imageX = (int) (graphicInfo.getX() + (graphicInfo.getWidth() / 4));
@@ -478,9 +465,6 @@ public class DefaultProcessDiagramCanvas {
                                    imageY,
                                    ICON_PADDING,
                                    g);
-        drawLabel(name,
-                  graphicInfo);
-
     }
 
     public void drawCatchingEvent(String id,
@@ -663,52 +647,39 @@ public class DefaultProcessDiagramCanvas {
     }
 
     public void drawThrowingCompensateEvent(String id,
-                                            String name,
                                             GraphicInfo graphicInfo) {
         drawCatchingEvent(id,
                           graphicInfo,
                           true,
                           COMPENSATE_THROW_IMAGE,
                           "compensate");
-        drawLabel(name,
-                  graphicInfo);
     }
 
     public void drawThrowingSignalEvent(String id,
-                                        String name,
                                         GraphicInfo graphicInfo) {
         drawCatchingEvent(id,
                           graphicInfo,
                           true,
                           SIGNAL_THROW_IMAGE,
                           "signal");
-        drawLabel(name,
-                  graphicInfo);
     }
 
     public void drawThrowingLinkEvent(String id,
-                                      String name,
                                       GraphicInfo graphicInfo) {
         drawCatchingEvent(id,
             graphicInfo,
             true,
             LINK_THROW_IMAGE,
             "link");
-
-        drawLabel(name,
-            graphicInfo);
     }
 
     public void drawThrowingNoneEvent(String id,
-                                      String name,
                                       GraphicInfo graphicInfo) {
         drawCatchingEvent(id,
                           graphicInfo,
                           true,
                           null,
                           "none");
-        drawLabel(name,
-                  graphicInfo);
     }
 
     public void drawSequenceflow(int srcX,
