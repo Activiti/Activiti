@@ -31,7 +31,9 @@ import org.activiti.validation.validator.ProcessLevelValidator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Validates rules that apply to all events (start event, boundary event, etc.)
@@ -112,11 +114,31 @@ public class EventValidator extends ProcessLevelValidator {
 
   private void handleLinkEventDefinition(Process process, Event event, LinkEventDefinition linkEventDefinition, List<ValidationError> errors) {
       if (event.isLinkThrowEvent() && StringUtils.isEmpty(linkEventDefinition.getTarget())) {
-          addError(errors, Problems.LINK_EVENT_DEFINITION_MISSING_TARGET, process, event);
+          Map<String, String> params = new HashMap<>();
+          params.put("eventId", event.getId());
+
+          if(StringUtils.isNotEmpty(event.getName())){
+              params.put("eventName", event.getName());
+              addError(errors, Problems.LINK_EVENT_DEFINITION_MISSING_TARGET, process, event, params);
+          }
+          else {
+              addError(errors, Problems.LINK_EVENT_DEFINITION_MISSING_TARGET_EMPTY_NAME, process, event, params);
+          }
       }
+
       if (event.isLinkCatchEvent() && CollectionUtils.isEmpty(linkEventDefinition.getSources())) {
-          addError(errors, Problems.LINK_EVENT_DEFINITION_MISSING_SOURCE, process, event);
+          Map<String, String> params = new HashMap<>();
+          params.put("eventId", event.getId());
+
+            if(StringUtils.isNotEmpty(event.getName())){
+                params.put("eventName", event.getName());
+                addError(errors, Problems.LINK_EVENT_DEFINITION_MISSING_SOURCE, process, event, params);
+            }
+           else {
+                addError(errors, Problems.LINK_EVENT_DEFINITION_MISSING_SOURCE_EMPTY_NAME, process, event, params);
+            }
       }
+
   }
 
 }
