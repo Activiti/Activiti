@@ -43,7 +43,7 @@ import org.springframework.context.annotation.Bean;
         "activiti.spring.cache-manager.caches.bar.enabled=false",
         "activiti.spring.cache-manager.caches.bar.caffeine.spec=initialCapacity=100, maximumSize=1000, expireAfterAccess=60s, recordStats",
 })
-public class ActivitiSpringCaffeineCacheManagerTests {
+class ActivitiSpringCaffeineCacheManagerTests {
 
     private static final List<Caffeine<Object,Object>> caffeineCacheConfigurers = new ArrayList<>();
 

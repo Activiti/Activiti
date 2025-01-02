@@ -35,7 +35,7 @@ import org.springframework.cache.support.NoOpCacheManager;
         "activiti.spring.cache-manager.caches.foo.enabled=true",
         "activiti.spring.cache-manager.caches.bar.enabled=false"
 })
-public class ActivitiSpringNoopCacheManagerTests {
+class ActivitiSpringNoopCacheManagerTests {
 
     @SpringBootApplication
     static class TestApplication {}

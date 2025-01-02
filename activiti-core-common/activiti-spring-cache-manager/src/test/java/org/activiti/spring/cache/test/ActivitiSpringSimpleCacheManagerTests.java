@@ -36,7 +36,7 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
         "activiti.spring.cache-manager.caches.foo.enabled=true",
         "activiti.spring.cache-manager.caches.bar.enabled=false",
 })
-public class ActivitiSpringSimpleCacheManagerTests {
+class ActivitiSpringSimpleCacheManagerTests {
 
     @SpringBootApplication
     static class TestApplication {}
