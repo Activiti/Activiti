@@ -93,5 +93,15 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
+      - name: SonarCloud scan
+        if: github.actor != 'dependabot[bot]'
+        id: sonar-cloud-scanner
+        uses: Alfresco/alfresco-build-tools/.github/actions/sonar-scanner@c5d38b0847c6373f345a6c695a2d7fadf66a8748 # v8.7.0
+        with:
+          aggregate-report-path: ${{ github.workspace }}/target/site/jacoco-aggregate/jacoco.xml
+          project-key: 'Activiti_Activiti'
+          sonar-organization: 'activiti'
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
+
       - name: Echo Longest Test Run
         uses: ./.github/actions/echo-longest-run
