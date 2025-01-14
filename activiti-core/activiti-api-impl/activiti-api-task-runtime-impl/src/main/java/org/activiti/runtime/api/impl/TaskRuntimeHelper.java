@@ -189,8 +189,9 @@ public class TaskRuntimeHelper {
 
             List<String> userRoles = securityManager.getAuthenticatedUserRoles();
             List<String> userGroups = securityManager.getAuthenticatedUserGroups();
-            var taskQuery = taskService.createTaskQuery()
-                .or()
+            var taskQuery = taskService.createTaskQuery();
+
+            taskQuery.or()
                     .taskCandidateUser(authenticatedUserId)
                     .taskAssignee(authenticatedUserId)
                     .taskOwner(authenticatedUserId);
