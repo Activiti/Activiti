@@ -165,7 +165,9 @@ public class TaskRuntimeHelperTest {
         given(securityManager.getAuthenticatedUserGroups()).willReturn(groups);
 
         TaskQuery taskQuery = mock(TaskQuery.class);
-        given(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, groups)).willReturn(taskQuery);
+        given(taskQuery.taskCandidateUser(AUTHENTICATED_USER)).willReturn(taskQuery);
+        given(taskQuery.taskCandidateGroupIn(groups)).willReturn(taskQuery);
+        given(taskQuery.taskAssignee(AUTHENTICATED_USER)).willReturn(taskQuery);
         given(taskQuery.taskOwner(AUTHENTICATED_USER)).willReturn(taskQuery);
         given(taskQuery.or()).willReturn(taskQuery);
         given(taskQuery.endOr()).willReturn(taskQuery);
@@ -190,7 +192,9 @@ public class TaskRuntimeHelperTest {
         given(securityManager.getAuthenticatedUserGroups()).willReturn(groups);
 
         TaskQuery taskQuery = mock(TaskQuery.class);
-        given(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER, groups)).willReturn(taskQuery);
+        given(taskQuery.taskCandidateUser(AUTHENTICATED_USER)).willReturn(taskQuery);
+        given(taskQuery.taskCandidateGroupIn(groups)).willReturn(taskQuery);
+        given(taskQuery.taskAssignee(AUTHENTICATED_USER)).willReturn(taskQuery);
         given(taskQuery.taskOwner(AUTHENTICATED_USER)).willReturn(taskQuery);
         given(taskQuery.or()).willReturn(taskQuery);
         given(taskQuery.endOr()).willReturn(taskQuery);

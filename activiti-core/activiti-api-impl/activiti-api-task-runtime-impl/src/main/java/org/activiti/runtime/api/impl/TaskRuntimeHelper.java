@@ -18,7 +18,6 @@ package org.activiti.runtime.api.impl;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.Task;
@@ -188,8 +187,10 @@ public class TaskRuntimeHelper {
             List<String> userGroups = securityManager.getAuthenticatedUserGroups();
             org.activiti.engine.task.Task task = taskService.createTaskQuery()
                                                          .or()
-                                                         .taskCandidateOrAssigned(authenticatedUserId, userGroups)
-                                                         .taskOwner(authenticatedUserId)
+                                                            .taskCandidateGroupIn(userGroups)
+                                                            .taskCandidateUser(authenticatedUserId)
+                                                            .taskAssignee(authenticatedUserId)
+                                                            .taskOwner(authenticatedUserId)
                                                          .endOr()
                                                          .taskId(taskId)
                                                          .singleResult();
