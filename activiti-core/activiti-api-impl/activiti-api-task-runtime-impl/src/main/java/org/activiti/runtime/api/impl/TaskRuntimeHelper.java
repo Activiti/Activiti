@@ -15,13 +15,9 @@
  */
 package org.activiti.runtime.api.impl;
 
-import static java.util.function.Predicate.not;
-
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.Task;
@@ -189,19 +185,14 @@ public class TaskRuntimeHelper {
 
             List<String> userRoles = securityManager.getAuthenticatedUserRoles();
             List<String> userGroups = securityManager.getAuthenticatedUserGroups();
-            var taskQuery = taskService.createTaskQuery();
-
-            taskQuery.or()
-                    .taskCandidateUser(authenticatedUserId)
-                    .taskAssignee(authenticatedUserId)
-                    .taskOwner(authenticatedUserId);
-
-            Optional.ofNullable(userGroups)
-                .filter(not(Collection::isEmpty))
-                .ifPresent(taskQuery::taskCandidateGroupIn);
-
-            taskQuery.endOr()
-                .taskId(taskId);
+            var taskQuery = taskService
+                .createTaskQuery()
+                    .taskId(taskId)
+                    .or()
+                        .taskCandidateOrAssigned(authenticatedUserId, userGroups)
+                        .taskOwner(authenticatedUserId)
+                        .taskInvolvedUser(authenticatedUserId)
+                    .endOr();
 
             org.activiti.engine.task.Task task = taskQuery.singleResult();
 
