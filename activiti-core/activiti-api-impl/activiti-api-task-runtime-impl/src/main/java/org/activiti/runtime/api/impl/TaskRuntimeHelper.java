@@ -190,7 +190,6 @@ public class TaskRuntimeHelper {
             List<String> userRoles = securityManager.getAuthenticatedUserRoles();
             List<String> userGroups = securityManager.getAuthenticatedUserGroups();
             var taskQuery = taskService.createTaskQuery()
-                .taskId(taskId)
                 .or()
                     .taskCandidateUser(authenticatedUserId)
                     .taskAssignee(authenticatedUserId)
@@ -200,7 +199,8 @@ public class TaskRuntimeHelper {
                 .filter(not(Collection::isEmpty))
                 .ifPresent(taskQuery::taskCandidateGroupIn);
 
-            taskQuery.endOr();
+            taskQuery.endOr()
+                .taskId(taskId);
 
             org.activiti.engine.task.Task task = taskQuery.singleResult();
 
