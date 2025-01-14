@@ -15,9 +15,13 @@
  */
 package org.activiti.runtime.api.impl;
 
+import static java.util.function.Predicate.not;
+
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.Task;
@@ -185,15 +189,21 @@ public class TaskRuntimeHelper {
 
             List<String> userRoles = securityManager.getAuthenticatedUserRoles();
             List<String> userGroups = securityManager.getAuthenticatedUserGroups();
-            org.activiti.engine.task.Task task = taskService.createTaskQuery()
-                                                         .or()
-                                                            .taskCandidateGroupIn(userGroups)
-                                                            .taskCandidateUser(authenticatedUserId)
-                                                            .taskAssignee(authenticatedUserId)
-                                                            .taskOwner(authenticatedUserId)
-                                                         .endOr()
-                                                         .taskId(taskId)
-                                                         .singleResult();
+            var taskQuery = taskService.createTaskQuery()
+                .taskId(taskId)
+                .or()
+                    .taskCandidateUser(authenticatedUserId)
+                    .taskAssignee(authenticatedUserId)
+                    .taskOwner(authenticatedUserId);
+
+            Optional.ofNullable(userGroups)
+                .filter(not(Collection::isEmpty))
+                .ifPresent(taskQuery::taskCandidateGroupIn);
+
+            taskQuery.endOr();
+
+            org.activiti.engine.task.Task task = taskQuery.singleResult();
+
             if (task == null) {
                 throw new NotFoundException("Unable to find task for the given id: " + taskId + " for user: " + authenticatedUserId + " (with groups: " + userGroups + " & with roles: " + userRoles + ")");
             }
