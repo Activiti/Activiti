@@ -66,23 +66,19 @@ jobs:
           echo set VERSION=$VERSION
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
+      - name: Set SONAR_SCANNER_OPTS
+        shell: bash
+        run: |
+          echo "JACOCO_REPORT_PATH=${{ github.workspace }}/activiti-coverage/target/site/jacoco-aggregate/jacoco.xml" >> $GITHUB_ENV
+          echo "SONAR_SCANNER_OPTS=sonar:sonar -Dsonar.host.url='https://sonarcloud.io' -Dsonar.organization='activiti' -Dsonar.projectKey='Activiti_Activiti' -Dsonar.coverage.jacoco.xmlReportPaths=${{ JACOCO_REPORT_PATH }}" >> $GITHUB_ENV
+
       - name: Build and Test with Maven (and maybe Deploy)
         shell: bash
-        run: mvn deploy ${{ env.MAVEN_CLI_OPTS}}
+        run: mvn deploy ${{ env.MAVEN_CLI_OPTS}} ${{ env.SONAR_SCANNER_OPTS }}
         env:
           MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-
-      - name: SonarCloud scan
-        if: github.actor != 'dependabot[bot]'
-        id: sonar-cloud-scanner
-        uses: Alfresco/alfresco-build-tools/.github/actions/sonar-scanner@c5d38b0847c6373f345a6c695a2d7fadf66a8748 # v8.7.0
-        with:
-          aggregate-report-path: ${{ github.workspace }}/target/site/jacoco-aggregate/jacoco.xml
-          project-key: 'Activiti_Activiti'
-          sonar-organization: 'activiti'
-          sonar-token: ${{ secrets.SONAR_TOKEN }}
 
       - name: Echo Longest Test Run
         uses: ./.github/actions/echo-longest-run

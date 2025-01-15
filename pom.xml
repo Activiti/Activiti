@@ -156,6 +156,7 @@
     <module>activiti-core</module>
     <module>activiti-dependencies</module>
     <module>activiti-examples</module>
+    <module>activiti-coverage</module>
   </modules>
   <scm>
     <url>http://github.com/${project.scm.organization}/${project.scm.repository}</url>
@@ -713,16 +714,6 @@ limitations under the License.
             <goals>
               <goal>report-integration</goal>
             </goals>
-          </execution>
-          <execution>
-            <id>report-aggregate</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>report-aggregate</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/site/jacoco-aggregate</outputDirectory>
-            </configuration>
           </execution>
         </executions>
       </plugin>
