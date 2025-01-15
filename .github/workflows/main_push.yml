@@ -79,6 +79,7 @@ jobs:
           MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Echo Longest Test Run
         uses: ./.github/actions/echo-longest-run
