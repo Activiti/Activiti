@@ -70,7 +70,7 @@ jobs:
         shell: bash
         run: |
           echo "JACOCO_REPORT_PATH=${{ github.workspace }}/activiti-coverage/target/site/jacoco-aggregate/jacoco.xml" >> $GITHUB_ENV
-          echo "SONAR_SCANNER_OPTS=sonar:sonar -Dsonar.host.url='https://sonarcloud.io' -Dsonar.organization='activiti' -Dsonar.projectKey='Activiti_Activiti' -Dsonar.coverage.jacoco.xmlReportPaths=${{ JACOCO_REPORT_PATH }}" >> $GITHUB_ENV
+          echo "SONAR_SCANNER_OPTS=sonar:sonar -Dsonar.host.url='https://sonarcloud.io' -Dsonar.organization='activiti' -Dsonar.projectKey='Activiti_Activiti' -Dsonar.coverage.jacoco.xmlReportPaths=${{ env.JACOCO_REPORT_PATH }}" >> $GITHUB_ENV
 
       - name: Build and Test with Maven (and maybe Deploy)
         shell: bash
