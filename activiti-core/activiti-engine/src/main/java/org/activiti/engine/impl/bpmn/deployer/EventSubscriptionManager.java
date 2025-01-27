@@ -66,11 +66,29 @@ public class EventSubscriptionManager {
         }
     }
 
+    protected void removeObsoleteMessageStartEventSubscriptions()
+    {
+        EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
+        List<SignalEventSubscriptionEntity> subscriptionsToDelete = eventSubscriptionEntityManager.findSignalStartEventSubscriptions();
+        for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDelete) {
+            eventSubscriptionEntityManager.delete(eventSubscriptionEntity);
+        }
+    }
+
     protected void removeObsoleteSignalEventSubScription(ProcessDefinitionEntity previousProcessDefinition) {
         // remove all subscriptions for the previous version
         if (previousProcessDefinition != null) {
             removeObsoleteEventSubscriptionsImpl(previousProcessDefinition,
                                                  SignalEventHandler.EVENT_HANDLER_TYPE);
+        }
+    }
+
+    protected void removeObsoleteSignalStartEventSubscriptions()
+    {
+        EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
+        List<MessageEventSubscriptionEntity> subscriptionsToDelete = eventSubscriptionEntityManager.findMessageStartEventSubscriptions();
+        for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDelete) {
+            eventSubscriptionEntityManager.delete(eventSubscriptionEntity);
         }
     }
 

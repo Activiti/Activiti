@@ -46,6 +46,13 @@ public interface TimerJobEntityManager extends EntityManager<TimerJobEntity> {
    */
   List<TimerJobEntity> findTimerJobsToExecute(Page page);
 
+    /**
+     * Returns the {@link TimerJobEntity} representing the timer start events.
+     *
+     */
+  List<TimerJobEntity> findTimerStartEvents();
+
+
   /**
    * Returns the {@link TimerJobEntity} for a given process definition.
    *
@@ -99,5 +106,6 @@ public interface TimerJobEntityManager extends EntityManager<TimerJobEntity> {
    * Changes the tenantId for all jobs related to a given {@link DeploymentEntity}.
    */
   void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
+
 
 }

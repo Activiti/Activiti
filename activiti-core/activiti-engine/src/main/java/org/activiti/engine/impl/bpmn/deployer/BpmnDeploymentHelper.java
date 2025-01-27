@@ -161,14 +161,11 @@ public class BpmnDeploymentHelper  {
     timerManager.scheduleTimers(processDefinition, process);
   }
 
-    /**
-     * Disables all timers and events for the process definition.  This removes all message and signal
-     * @param processDefinition
-     */
-    public void disableTimersAndEventsFromOldProcessDefinitions(ProcessDefinitionEntity processDefinition) {
-        eventSubscriptionManager.removeObsoleteMessageEventSubscriptions(processDefinition);
-        eventSubscriptionManager.removeObsoleteSignalEventSubScription(processDefinition);
-        timerManager.removeObsoleteTimers(processDefinition);
+
+    public void disableTimerMessageAndSignalStartEvents() {
+        timerManager.removeObsoleteTimerStartEvents();
+        eventSubscriptionManager.removeObsoleteSignalStartEventSubscriptions();
+        eventSubscriptionManager.removeObsoleteMessageStartEventSubscriptions();
     }
 
     /**

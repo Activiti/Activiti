@@ -185,12 +185,17 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
     return eventSubscriptionDataManager.findEventSubscriptionsByQueryCriteria(eventSubscriptionQueryImpl, page);
   }
 
-  @Override
+    @Override
   public List<MessageEventSubscriptionEntity> findMessageEventSubscriptionsByProcessInstanceAndEventName(String processInstanceId, String eventName) {
     return eventSubscriptionDataManager.findMessageEventSubscriptionsByProcessInstanceAndEventName(processInstanceId, eventName);
   }
 
-  @Override
+    @Override
+    public List<MessageEventSubscriptionEntity> findMessageStartEventSubscriptions() {
+        return eventSubscriptionDataManager.findMessageStartEventSubscriptions();
+    }
+
+    @Override
   public List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByEventName(String eventName, String tenantId) {
     return eventSubscriptionDataManager.findSignalEventSubscriptionsByEventName(eventName, tenantId);
   }
@@ -205,7 +210,12 @@ public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<Ev
     return eventSubscriptionDataManager.findSignalEventSubscriptionsByNameAndExecution(name, executionId);
   }
 
-  @Override
+    @Override
+    public List<SignalEventSubscriptionEntity> findSignalStartEventSubscriptions() {
+        return eventSubscriptionDataManager.findSignalStartEventSubscriptions();
+    }
+
+    @Override
   public List<EventSubscriptionEntity> findEventSubscriptionsByExecutionAndType(final String executionId, final String type) {
     return eventSubscriptionDataManager.findEventSubscriptionsByExecutionAndType(executionId, type);
   }

@@ -51,6 +51,7 @@ public class BpmnDeployer implements Deployer {
 
     private static final Logger log = LoggerFactory.getLogger(BpmnDeployer.class);
 
+
     protected IdGenerator idGenerator;
     protected ParsedDeploymentBuilderFactory parsedDeploymentBuilderFactory;
     protected BpmnDeploymentHelper bpmnDeploymentHelper;
@@ -86,8 +87,7 @@ public class BpmnDeployer implements Deployer {
                                                mapOfNewProcessDefinitionToPreviousVersion);
             setProcessDefinitionAppVersion(parsedDeployment);
             persistProcessDefinitionsAndAuthorizations(parsedDeployment);
-            List<ProcessDefinitionEntity> processDefinitionEntityList=getAllProcessDefinitions(deployment.getTenantId());
-            disableTimersAndEventsFromAllProcessDefinitions(processDefinitionEntityList);
+            bpmnDeploymentHelper.disableTimerMessageAndSignalStartEvents();
             updateTimersAndEvents(parsedDeployment);
             dispatchProcessDefinitionEntityInitializedEvent(parsedDeployment);
         } else {
@@ -238,14 +238,6 @@ public class BpmnDeployer implements Deployer {
         for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
             bpmnDeploymentHelper.updateTimersAndEvents(processDefinition,
                                                        parsedDeployment);
-        }
-    }
-
-    protected void disableTimersAndEventsFromAllProcessDefinitions(List<ProcessDefinitionEntity> processDefinitionEntities)
-    {
-        for(ProcessDefinitionEntity processDefinition: processDefinitionEntities)
-        {
-            bpmnDeploymentHelper.disableTimersAndEventsFromOldProcessDefinitions(processDefinition);
         }
     }
 

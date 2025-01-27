@@ -73,7 +73,12 @@ public class MybatisTimerJobDataManager extends AbstractDataManager<TimerJobEnti
     return getDbSqlSession().selectList("selectTimerJobsToExecute", now, page);
   }
 
-  @Override
+    @Override
+    public List<TimerJobEntity> findTimerStartEvents() {
+        return  getDbSqlSession().selectList("selectTimerStartEvents");
+    }
+
+    @Override
   @SuppressWarnings("unchecked")
   public List<TimerJobEntity> findJobsByTypeAndProcessDefinitionId(String jobHandlerType, String processDefinitionId) {
     Map<String, String> params = new HashMap<String, String>(2);
