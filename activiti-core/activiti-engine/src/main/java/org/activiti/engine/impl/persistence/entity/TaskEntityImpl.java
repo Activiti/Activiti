@@ -31,6 +31,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.history.HistoryLevel;
@@ -295,9 +296,13 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   public void setName(String taskName) {
     this.name = taskName;
-    if (getId()!=null && Context.getProcessEngineConfiguration().getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-      Context.getCommandContext().getTaskEntityManager().recordTaskNameChange(this);
-    }
+
+      final ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+      if (processEngineConfiguration!=null) {
+          if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+              Context.getCommandContext().getTaskEntityManager().recordTaskNameChange(this);
+          }
+      }
   }
 
   public void setDescription(String description) {
