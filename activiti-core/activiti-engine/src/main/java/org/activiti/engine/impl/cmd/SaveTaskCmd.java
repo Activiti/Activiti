@@ -61,15 +61,7 @@ public class SaveTaskCmd implements Command<Task>, Serializable {
       }
 
     } else {
-
-      TaskInfo originalTaskEntity = null;
-      if (commandContext.getProcessEngineConfiguration().getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-        originalTaskEntity = commandContext.getHistoricTaskInstanceEntityManager().findById(task.getId());
-      }
-
-      if (originalTaskEntity == null) {
-        originalTaskEntity = commandContext.getTaskEntityManager().findById(task.getId());
-      }
+        final TaskInfo originalTaskEntity = commandContext.getTaskEntityManager().getHistoricTask(task);
 
       String originalName = originalTaskEntity.getName();
       String originalAssignee = originalTaskEntity.getAssignee();

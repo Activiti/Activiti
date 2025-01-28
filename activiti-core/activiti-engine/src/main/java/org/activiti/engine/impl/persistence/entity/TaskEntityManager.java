@@ -22,6 +22,8 @@ import java.util.Map;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskInfo;
+
 @Internal
 public interface TaskEntityManager extends EntityManager<TaskEntity> {
 
@@ -59,4 +61,7 @@ public interface TaskEntityManager extends EntityManager<TaskEntity> {
 
   void deleteTask(TaskEntity task, String deleteReason, boolean cascade, boolean cancel);
 
+  TaskInfo getHistoricTask(TaskEntity task);
+
+  void recordTaskNameChange(TaskEntity task);
 }

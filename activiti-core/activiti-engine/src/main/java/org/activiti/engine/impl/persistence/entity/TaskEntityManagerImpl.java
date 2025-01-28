@@ -26,11 +26,14 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.TaskDataManager;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskInfo;
+import org.apache.commons.lang3.StringUtils;
 
 /**
 
@@ -323,4 +326,29 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
     this.taskDataManager = taskDataManager;
   }
 
+    public TaskInfo getHistoricTask(TaskEntity task) {
+        TaskInfo originalTaskEntity = null;
+        if (getProcessEngineConfiguration().getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+            originalTaskEntity = getHistoricTaskInstanceEntityManager().findById(task.getId());
+        }
+
+        if (originalTaskEntity == null) {
+            originalTaskEntity = getTaskEntityManager().findById(task.getId());
+        }
+        return originalTaskEntity;
+    }
+
+    @Override
+    public void recordTaskNameChange(TaskEntity updatedTask) {
+        TaskInfo originalTask = getHistoricTask(updatedTask);
+        recordTaskChanges(originalTask, updatedTask);
+    }
+
+    private void recordTaskChanges(TaskInfo originalTask, TaskInfo updatedTask) {
+      if (originalTask!=null) {
+          if (!StringUtils.equals(originalTask.getName(), updatedTask.getName())) {
+              getHistoryManager().recordTaskNameChange(updatedTask.getId(), updatedTask.getName());
+          }
+      }
+    }
 }
