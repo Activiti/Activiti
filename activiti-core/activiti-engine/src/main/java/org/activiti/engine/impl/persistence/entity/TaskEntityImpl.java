@@ -295,9 +295,9 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   public void setName(String taskName) {
     this.name = taskName;
-      if (Context.getProcessEngineConfiguration().getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-          Context.getCommandContext().getTaskEntityManager().recordTaskNameChange(this);
-      }
+    if (getId()!=null && Context.getProcessEngineConfiguration().getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      Context.getCommandContext().getTaskEntityManager().recordTaskNameChange(this);
+    }
   }
 
   public void setDescription(String description) {
