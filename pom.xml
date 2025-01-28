@@ -223,7 +223,7 @@
     <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
-    <spring-boot.version>3.3.5</spring-boot.version>
+    <spring-boot.version>3.4.2</spring-boot.version>
     <h2.version>2.2.224</h2.version>
     <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
     <versions-maven-plugin.version>2.16.1</versions-maven-plugin.version>
