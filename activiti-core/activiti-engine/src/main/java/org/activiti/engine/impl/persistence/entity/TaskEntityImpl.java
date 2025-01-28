@@ -297,12 +297,14 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   public void setName(String taskName) {
     this.name = taskName;
 
-      final ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
-      if (processEngineConfiguration!=null) {
-          if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-              Context.getCommandContext().getTaskEntityManager().recordTaskNameChange(this);
-          }
-      }
+    try {
+        if (Context.getProcessEngineConfiguration().getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+            Context.getCommandContext().getTaskEntityManager().recordTaskNameChange(this);
+        }
+    } catch (Exception exception) {
+        // because it's possible not to know what level the history is configured,
+        // we're silently ignore the exception (task name is updated but correspondent historic task is not)
+    }
   }
 
   public void setDescription(String description) {
