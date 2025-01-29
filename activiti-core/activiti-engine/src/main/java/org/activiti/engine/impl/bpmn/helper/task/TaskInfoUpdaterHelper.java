@@ -1,0 +1,73 @@
+package org.activiti.engine.impl.bpmn.helper.task;
+
+import org.activiti.engine.delegate.TaskListener;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.task.IdentityLinkType;
+import org.activiti.engine.task.TaskInfo;
+
+public class TaskInfoUpdaterHelper implements TaskUpdaterHelper<TaskInfo>{
+
+    private final CommandContext commandContext;
+
+    public TaskInfoUpdaterHelper(CommandContext commandContext) {
+        this.commandContext = commandContext;
+    }
+    public void updateTask(TaskInfo originalTask, TaskInfo task) {
+        TaskComparator taskComparator = new TaskInfoComparator();
+        taskComparator.setOriginalTask(originalTask);
+
+        // Only update history if history is enabled
+        if (commandContext.getProcessEngineConfiguration().getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+            if (taskComparator.hasTaskNameChanged(task)) {
+                commandContext.getHistoryManager().recordTaskNameChange(task.getId(), task.getName());
+            }
+            if (taskComparator.hasTaskDescriptionChanged(task)) {
+                commandContext.getHistoryManager().recordTaskDescriptionChange(task.getId(), task.getDescription());
+            }
+            if (taskComparator.hasTaskDueDateChanged(task)) {
+                commandContext.getHistoryManager().recordTaskDueDateChange(task.getId(), task.getDueDate());
+            }
+            if (taskComparator.hasTaskPriorityChanged(task)) {
+                commandContext.getHistoryManager().recordTaskPriorityChange(task.getId(), task.getPriority());
+            }
+            if (taskComparator.hasTaskCategoryChanged(task)) {
+                commandContext.getHistoryManager().recordTaskCategoryChange(task.getId(), task.getCategory());
+            }
+            if (taskComparator.hasTaskFormKeyChanged(task)) {
+                commandContext.getHistoryManager().recordTaskFormKeyChange(task.getId(), task.getFormKey());
+            }
+            if (taskComparator.hasTaskParentIdChanged(task)) {
+                commandContext.getHistoryManager().recordTaskParentTaskIdChange(task.getId(), task.getParentTaskId());
+            }
+            if (taskComparator.hasTaskDefinitionKeyChanged(task)) {
+                commandContext.getHistoryManager().recordTaskDefinitionKeyChange(task.getId(), task.getTaskDefinitionKey());
+            }
+        }
+
+        TaskEntity taskEntity = (TaskEntity) task;
+        if (taskComparator.hasTaskOwnerChanged(task)) {
+            if (task.getProcessInstanceId() != null) {
+                commandContext.getIdentityLinkEntityManager().involveUser(taskEntity.getProcessInstance(), task.getOwner(), IdentityLinkType.PARTICIPANT);
+            }
+            commandContext.getHistoryManager().recordTaskOwnerChange(task.getId(), task.getOwner());
+        }
+        if (taskComparator.hasTaskAssigneeChanged(task)) {
+            if (task.getProcessInstanceId() != null) {
+                commandContext.getIdentityLinkEntityManager().involveUser(taskEntity.getProcessInstance(), task.getAssignee(), IdentityLinkType.PARTICIPANT);
+            }
+            commandContext.getHistoryManager().recordTaskAssigneeChange(task.getId(), task.getAssignee());
+
+            commandContext.getProcessEngineConfiguration().getListenerNotificationHelper().executeTaskListeners(taskEntity, TaskListener.EVENTNAME_ASSIGNMENT);
+            commandContext.getHistoryManager().recordTaskAssignment(taskEntity);
+
+            if (commandContext.getEventDispatcher().isEnabled()) {
+                commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_ASSIGNED, task));
+            }
+
+        }
+    }
+}
