@@ -19,6 +19,7 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
+import org.activiti.bpmn.model.LinkEventDefinition;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.TimerEventDefinition;
@@ -48,10 +49,8 @@ public class IntermediateCatchEventParseHandler extends AbstractFlowNodeBpmnPars
       event.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateCatchEventActivityBehavior(event));
 
     } else {
-      if (eventDefinition instanceof TimerEventDefinition || eventDefinition instanceof SignalEventDefinition || eventDefinition instanceof MessageEventDefinition) {
-
+      if (eventDefinition instanceof TimerEventDefinition || eventDefinition instanceof SignalEventDefinition || eventDefinition instanceof MessageEventDefinition || eventDefinition instanceof LinkEventDefinition) {
         bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
-
       } else {
         logger.warn("Unsupported intermediate catch event type for event " + event.getId());
       }

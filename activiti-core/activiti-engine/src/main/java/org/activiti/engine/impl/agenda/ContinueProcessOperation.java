@@ -96,12 +96,7 @@ public class ContinueProcessOperation extends AbstractOperation {
 
     protected void continueThroughFlowNode(FlowNode flowNode) {
 
-        // Check if it's the initial flow element. If so, we must fire the execution listeners for the process too
-        if (flowNode.getIncomingFlows() != null
-                && flowNode.getIncomingFlows().size() == 0
-                && flowNode.getSubProcess() == null) {
-            executeProcessStartExecutionListeners();
-        }
+        triggerProcessStartExecutionListener(flowNode);
 
         // For a subprocess, a new child execution is created that will visit the steps of the subprocess
         // The original execution that arrived here will wait until the subprocess is finished
@@ -117,6 +112,12 @@ public class ContinueProcessOperation extends AbstractOperation {
             executeSynchronous(flowNode);
         } else {
             executeAsynchronous(flowNode);
+        }
+    }
+
+    private void triggerProcessStartExecutionListener(FlowNode flowNode) {
+        if (flowNode.isInitialFlowNode()) {
+            executeProcessStartExecutionListeners();
         }
     }
 

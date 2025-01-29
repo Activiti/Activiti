@@ -28,6 +28,8 @@ import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.ThrowEvent;
+import org.activiti.bpmn.model.helper.LinkThrowEventFlowNodeHelper;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
@@ -178,25 +180,27 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         }
 
         // No outgoing found. Ending the execution
-        if (outgoingSequenceFlows.size() == 0) {
+        if (outgoingSequenceFlows.size() == 0 && !flowNode.isLinkThrowEvent()) {
             if (flowNode.getOutgoingFlows() == null || flowNode.getOutgoingFlows().size() == 0) {
                 logger.debug("No outgoing sequence flow found for flow node '{}'.",
-                             flowNode.getId());
+                    flowNode.getId());
                 Context.getAgenda().planEndExecutionOperation(execution);
             } else {
                 throw new ActivitiException("No outgoing sequence flow of element '" + flowNode.getId() + "' could be selected for continuing the process");
             }
         } else {
-
             // Leave, and reuse the incoming sequence flow, make executions for all the others (if applicable)
-
             ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-            List<ExecutionEntity> outgoingExecutions = new ArrayList<ExecutionEntity>(flowNode.getOutgoingFlows().size());
+            List<ExecutionEntity> outgoingExecutions = new ArrayList<>(flowNode.getOutgoingFlows().size());
 
-            SequenceFlow sequenceFlow = outgoingSequenceFlows.get(0);
-
-            // Reuse existing one
-            execution.setCurrentFlowElement(sequenceFlow);
+            if (flowNode.isLinkThrowEvent()) {
+                FlowNode node = LinkThrowEventFlowNodeHelper.findRelatedIntermediateCatchEventForLinkEvent((ThrowEvent) flowNode);
+                execution.setCurrentFlowElement(node);
+            } else {
+                SequenceFlow sequenceFlow = outgoingSequenceFlows.get(0);
+                // Reuse existing one
+                execution.setCurrentFlowElement(sequenceFlow);
+            }
             execution.setActive(true);
             outgoingExecutions.add((ExecutionEntity) execution);
 

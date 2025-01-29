@@ -17,9 +17,12 @@
 
 package org.activiti.engine.impl.persistence.deploy;
 
+import static org.activiti.engine.impl.cmd.DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED;
+import static org.activiti.engine.impl.cmd.DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED;
+import static org.activiti.engine.impl.cmd.DeploymentSettings.RESOURCE_NAMES;
+
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -128,15 +131,17 @@ public class DeploymentManager {
   }
 
   protected ProcessDefinitionCacheEntry resolveProcessDefinitionInternal(CommandContext commandContext,ProcessDefinition processDefinition,String deploymentId, String processDefinitionId){
-        DeploymentEntity deployment = deploymentEntityManager.findById(deploymentId);
-        deployment.setNew(false);
-        deploy(deployment, null);
-        ProcessDefinitionCacheEntry cachedProcessDefinition = processDefinitionCache.get(processDefinitionId);
+    DeploymentEntity deployment = deploymentEntityManager.findById(deploymentId);
+    var deploymentOptions = Map.of(RESOURCE_NAMES, List.of(processDefinition.getResourceName()), IS_PROCESS_VALIDATION_ENABLED, false, IS_BPMN20_XSD_VALIDATION_ENABLED, false);
+    deployment.setNew(false);
+    deploy(deployment, deploymentOptions);
 
-        if (cachedProcessDefinition == null) {
-            throw new ActivitiException("deployment '" + deploymentId + "' didn't put process definition '" + processDefinitionId + "' in the cache");
-        }
-        return cachedProcessDefinition;
+    return deployment
+        .getDeployedArtifacts(ProcessDefinitionCacheEntry.class)
+        .stream()
+        .filter(it -> processDefinitionId.equals(it.getProcessDefinition().getId()))
+        .findFirst()
+        .orElseThrow(() -> new ActivitiException("deployment '" + deploymentId + "' didn't put process definition '" + processDefinitionId + "' in the cache"));
   }
 
   public void removeDeployment(String deploymentId, boolean cascade) {

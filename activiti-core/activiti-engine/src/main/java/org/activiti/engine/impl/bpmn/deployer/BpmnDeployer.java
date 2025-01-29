@@ -16,13 +16,12 @@
 
 package org.activiti.engine.impl.bpmn.deployer;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ExtensionElement;
@@ -43,6 +42,7 @@ import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,7 +99,7 @@ public class BpmnDeployer implements Deployer {
 
         for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
             BpmnModel bpmnModel = parsedDeployment.getBpmnModelForProcessDefinition(processDefinition);
-            createLocalizationValues(processDefinition.getId(),
+            createLocalizationValues(processDefinition,
                                      bpmnModel.getProcessById(processDefinition.getKey()));
         }
     }
@@ -283,7 +283,7 @@ public class BpmnDeployer implements Deployer {
         }
     }
 
-    protected void createLocalizationValues(String processDefinitionId,
+    protected void createLocalizationValues(ProcessDefinition processDefinition,
                                             Process process) {
         if (process == null) {
             return;
@@ -291,7 +291,7 @@ public class BpmnDeployer implements Deployer {
 
         CommandContext commandContext = Context.getCommandContext();
         DynamicBpmnService dynamicBpmnService = commandContext.getProcessEngineConfiguration().getDynamicBpmnService();
-        ObjectNode infoNode = dynamicBpmnService.getProcessDefinitionInfo(processDefinitionId);
+        ObjectNode infoNode = dynamicBpmnService.getProcessDefinitionInfo(processDefinition);
 
         boolean localizationValuesChanged = false;
         List<ExtensionElement> localizationElements = process.getExtensionElements().get("localization");
@@ -350,7 +350,7 @@ public class BpmnDeployer implements Deployer {
         }
 
         if (localizationValuesChanged) {
-            dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId,
+            dynamicBpmnService.saveProcessDefinitionInfo(processDefinition.getId(),
                                                          infoNode);
         }
     }

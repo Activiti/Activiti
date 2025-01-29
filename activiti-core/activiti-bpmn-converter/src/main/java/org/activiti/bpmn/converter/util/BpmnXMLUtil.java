@@ -65,6 +65,9 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
     addGenericParser(new FlowNodeRefParser());
     addGenericParser(new ActivitiFailedjobRetryParser());
     addGenericParser(new ActivitiMapExceptionParser());
+    addGenericParser(new LinkEventDefinitionParser());
+    addGenericParser(new LinkEventTargetParser());
+    addGenericParser(new LinkEventSourceParser());
   }
 
   private static void addGenericParser(BaseChildElementParser parser) {

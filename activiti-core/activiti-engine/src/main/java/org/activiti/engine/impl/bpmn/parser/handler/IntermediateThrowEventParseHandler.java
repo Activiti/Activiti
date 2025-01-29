@@ -20,6 +20,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.LinkEventDefinition;
 import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.SignalEventDefinition;
@@ -70,6 +71,11 @@ public class IntermediateThrowEventParseHandler extends AbstractActivityBpmnPars
                                                .createThrowMessageEventActivityBehavior(intermediateEvent,
                                                                                         messageEventDefinition,
                                                                                         message));
+    } else if (eventDefinition instanceof LinkEventDefinition linkEventDefinition) {
+        intermediateEvent.setBehavior(bpmnParse.getActivityBehaviorFactory()
+            .createThrowLinkEventActivityBehavior(intermediateEvent,
+                linkEventDefinition
+            ));
     } else if (eventDefinition == null) {
       intermediateEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowNoneEventActivityBehavior(intermediateEvent));
     } else {

@@ -18,7 +18,6 @@ package org.activiti.engine.impl.bpmn.deployer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
@@ -61,6 +60,7 @@ public class CachingAndArtifactsManager {
 
       // Add to deployment for further usage
       deployment.addDeployedArtifact(processDefinition);
+      deployment.addDeployedArtifact(cacheEntry);
     }
   }
 

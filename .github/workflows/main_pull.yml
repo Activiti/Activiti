@@ -24,15 +24,15 @@ jobs:
   pre-checks:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Check dependabot build
         uses: ./.github/actions/check-ext-build
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@9d00215f539f669b41c7fabf7b88ccc8f316926c # v6.0.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@1713976b6d7dc48dfe74f441c9bf1ae9481cbb45 # v8.6.1
         with:
           skip_checkout: true
       - name: Ensure SHA pinned actions
-        uses: zgosalvez/github-actions-ensure-sha-pinned-actions@b8f9a25a51fe633d9215ac7734854dc11cd299cb # v3.0.13
+        uses: zgosalvez/github-actions-ensure-sha-pinned-actions@c3a2b64f69b7a1542a68f44d9edbd9ec3fc1455e # v3.0.20
 
   build:
     runs-on: ubuntu-latest
@@ -40,9 +40,9 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+      - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -50,7 +50,7 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Setup Java JDK 21
-        uses: actions/setup-java@b36c23c0d998641eff861008f374ee103c25ac73 # 4.4.0
+        uses: actions/setup-java@7a6d8a8234af8eb26422e24e3006232cccaa061b # 4.6.0
         with:
           java-version: 21
           distribution: 'temurin'
@@ -85,13 +85,20 @@ jobs:
         env:
           DO_PUSH: ${{ contains(github.event.pull_request.labels.*.name, 'preview') }}
 
+      - name: Set SONAR_SCANNER_OPTS
+        shell: bash
+        run: |
+          echo "JACOCO_REPORT_PATH=${{ github.workspace }}/activiti-coverage/target/site/jacoco-aggregate/jacoco.xml" >> $GITHUB_ENV
+          echo "SONAR_SCANNER_OPTS=sonar:sonar -Dsonar.host.url='https://sonarcloud.io' -Dsonar.organization='activiti' -Dsonar.projectKey='Activiti_Activiti' -Dsonar.coverage.jacoco.xmlReportPaths=${{ env.JACOCO_REPORT_PATH }}" >> $GITHUB_ENV
+
       - name: Build and Test with Maven (and maybe Deploy)
         shell: bash
-        run: mvn ${{ steps.define_maven_command.outputs.command }} ${{ env.MAVEN_CLI_OPTS}}
+        run: mvn ${{ steps.define_maven_command.outputs.command }} ${{ env.MAVEN_CLI_OPTS}} ${{ env.SONAR_SCANNER_OPTS }}
         env:
           MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Echo Longest Test Run
         uses: ./.github/actions/echo-longest-run

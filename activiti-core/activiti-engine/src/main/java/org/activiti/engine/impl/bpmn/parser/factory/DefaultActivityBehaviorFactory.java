@@ -37,6 +37,7 @@ import org.activiti.bpmn.model.ExtensionAttribute;
 import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.InclusiveGateway;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
+import org.activiti.bpmn.model.LinkEventDefinition;
 import org.activiti.bpmn.model.ManualTask;
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.bpmn.model.Message;
@@ -77,10 +78,12 @@ import org.activiti.engine.impl.bpmn.behavior.EventSubProcessMessageStartEventAc
 import org.activiti.engine.impl.bpmn.behavior.ExclusiveGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.InclusiveGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchLinkEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchMessageEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchSignalEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchTimerEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowCompensationEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowLinkEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowMessageEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowNoneEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowSignalEventActivityBehavior;
@@ -472,6 +475,11 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
                                                                  messageExecutionContext);
     }
 
+    public IntermediateCatchLinkEventActivityBehavior createIntermediateCatchLinkEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent,
+                                                                                                       LinkEventDefinition linkEventDefinition) {
+        return new IntermediateCatchLinkEventActivityBehavior();
+    }
+
     public IntermediateCatchTimerEventActivityBehavior createIntermediateCatchTimerEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent,
                                                                                                          TimerEventDefinition timerEventDefinition) {
         return new IntermediateCatchTimerEventActivityBehavior(timerEventDefinition);
@@ -590,6 +598,11 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
                                                                  messageEventDefinition,
                                                                  throwMessageDelegate,
                                                                  messageExecutionContext);
+    }
+
+    public IntermediateThrowLinkEventActivityBehavior createThrowLinkEventActivityBehavior(ThrowEvent throwEvent,
+                                                                                           LinkEventDefinition linkEventDefinition) {
+        return new IntermediateThrowLinkEventActivityBehavior(throwEvent);
     }
 
     @Override

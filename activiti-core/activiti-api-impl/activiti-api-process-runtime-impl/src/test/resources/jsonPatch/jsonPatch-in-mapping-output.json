@@ -25,6 +25,13 @@
           "type": "json",
           "required": false
         },
+        "variable-invalid-object": {
+          "id": "variable-invalid-object",
+          "name": "variable_invalid_object",
+          "type": "json",
+          "required": false,
+          "value": ""
+        },
         "variable-lastname-id": {
           "id": "variable-lastname-id",
           "name": "process_variable_lastname",
@@ -79,6 +86,16 @@
                   "op": "add",
                   "path": "/firstname",
                   "value": "${process_variable_name}"
+                }
+              ]
+            },
+            "variable_invalid_object": {
+              "type": "JSONPATCH",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/street2",
+                  "value": "${process_variable_address.address.street}"
                 }
               ]
             }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn"
+	targetNamespace="Examples">
+
+	<process id="testLinkEventsWithoutTargetEmptyName">
+
+		<startEvent id="start" />
+
+		<sequenceFlow sourceRef="start" targetRef="linkThrow" />
+
+		<intermediateThrowEvent id="linkThrow" name="">
+			<linkEventDefinition id="throw" name="">
+      </linkEventDefinition>
+		</intermediateThrowEvent>
+
+    <intermediateCatchEvent id="linkCatch" name="Alert">
+      <linkEventDefinition id="catch" name="">
+        <source>linkThrow</source>
+      </linkEventDefinition>
+    </intermediateCatchEvent>
+
+		<sequenceFlow sourceRef="linkCatch" targetRef="end" />
+
+		<endEvent id="end" />
+
+	</process>
+
+</definitions>

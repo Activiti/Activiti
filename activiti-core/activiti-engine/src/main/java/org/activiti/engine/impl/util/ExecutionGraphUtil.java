@@ -29,6 +29,8 @@ import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.ThrowEvent;
+import org.activiti.bpmn.model.helper.LinkThrowEventFlowNodeHelper;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
@@ -112,7 +114,11 @@ public class ExecutionGraphUtil {
       FlowElementsContainer parentElement = process.findParent(sourceElement);
       if (parentElement instanceof SubProcess) {
         sourceElement = (SubProcess) parentElement;
-      } else {
+      }
+      if (sourceElement.isLinkThrowEvent()) {
+        sourceElement = LinkThrowEventFlowNodeHelper.findRelatedIntermediateCatchEventForLinkEvent((ThrowEvent) sourceElement);
+      }
+      else {
         return false;
       }
     }

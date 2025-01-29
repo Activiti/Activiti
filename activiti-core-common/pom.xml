@@ -45,5 +45,6 @@
     <module>activiti-common-util</module>
     <module>activiti-expression-language</module>
     <module>activiti-juel-jakarta</module>
+    <module>activiti-spring-cache-manager</module>
   </modules>
 </project>

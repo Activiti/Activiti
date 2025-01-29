@@ -21,6 +21,7 @@ import java.util.List;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.LinkEventDefinition;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SignalEventDefinition;
@@ -46,7 +47,8 @@ public class IntermediateThrowEventValidator extends ProcessLevelValidator {
       if (eventDefinition != null
           && !(eventDefinition instanceof SignalEventDefinition)
           && !(eventDefinition instanceof CompensateEventDefinition)
-          && !(eventDefinition instanceof MessageEventDefinition)) {
+          && !(eventDefinition instanceof MessageEventDefinition)
+          && !(eventDefinition instanceof LinkEventDefinition)) {
         addError(errors, Problems.THROW_EVENT_INVALID_EVENTDEFINITION, process, throwEvent);
       }
     }

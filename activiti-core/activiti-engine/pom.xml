@@ -15,7 +15,7 @@
 
   <properties>
     <activiti-engine.unpack.version>7.2.0</activiti-engine.unpack.version>
-    <postgresql.version>42.7.2</postgresql.version>
+    <postgresql.version>42.7.4</postgresql.version>
   </properties>
 
   <dependencies>
@@ -224,7 +224,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.6.1</version>
+        <version>3.8.1</version>
         <executions>
           <execution>
             <id>resource-dependencies</id>

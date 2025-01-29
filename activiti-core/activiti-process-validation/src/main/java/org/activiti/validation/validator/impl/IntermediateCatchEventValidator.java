@@ -21,6 +21,7 @@ import java.util.List;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
+import org.activiti.bpmn.model.LinkEventDefinition;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SignalEventDefinition;
@@ -46,7 +47,7 @@ public class IntermediateCatchEventValidator extends ProcessLevelValidator {
       if (eventDefinition == null) {
         addError(errors, Problems.INTERMEDIATE_CATCH_EVENT_NO_EVENTDEFINITION, process, intermediateCatchEvent);
       } else {
-        if (!(eventDefinition instanceof TimerEventDefinition) && !(eventDefinition instanceof SignalEventDefinition) && !(eventDefinition instanceof MessageEventDefinition)) {
+        if (!(eventDefinition instanceof TimerEventDefinition) && !(eventDefinition instanceof SignalEventDefinition) && !(eventDefinition instanceof MessageEventDefinition) && !(eventDefinition instanceof LinkEventDefinition) ) {
           addError(errors, Problems.INTERMEDIATE_CATCH_EVENT_INVALID_EVENTDEFINITION, process, intermediateCatchEvent);
         }
       }

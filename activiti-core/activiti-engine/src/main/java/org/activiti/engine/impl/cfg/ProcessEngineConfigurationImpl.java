@@ -104,6 +104,7 @@ import org.activiti.engine.impl.bpmn.parser.handler.ExclusiveGatewayParseHandler
 import org.activiti.engine.impl.bpmn.parser.handler.InclusiveGatewayParseHandler;
 import org.activiti.engine.impl.bpmn.parser.handler.IntermediateCatchEventParseHandler;
 import org.activiti.engine.impl.bpmn.parser.handler.IntermediateThrowEventParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.LinkEventDefinitionParseHandler;
 import org.activiti.engine.impl.bpmn.parser.handler.ManualTaskParseHandler;
 import org.activiti.engine.impl.bpmn.parser.handler.MessageEventDefinitionParseHandler;
 import org.activiti.engine.impl.bpmn.parser.handler.ParallelGatewayParseHandler;
@@ -1780,6 +1781,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     bpmnParserHandlers.add(new IntermediateThrowEventParseHandler());
     bpmnParserHandlers.add(new ManualTaskParseHandler());
     bpmnParserHandlers.add(new MessageEventDefinitionParseHandler());
+    bpmnParserHandlers.add(new LinkEventDefinitionParseHandler());
     bpmnParserHandlers.add(new ParallelGatewayParseHandler());
     bpmnParserHandlers.add(new ProcessParseHandler());
     bpmnParserHandlers.add(new ReceiveTaskParseHandler());

@@ -16,12 +16,11 @@
 
 package org.activiti.validation.validator.impl;
 
-import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.LinkEventDefinition;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SignalEventDefinition;
@@ -29,7 +28,12 @@ import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.validation.ValidationError;
 import org.activiti.validation.validator.Problems;
 import org.activiti.validation.validator.ProcessLevelValidator;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Validates rules that apply to all events (start event, boundary event, etc.)
@@ -53,8 +57,9 @@ public class EventValidator extends ProcessLevelValidator {
             handleTimerEventDefinition(process, event, eventDefinition, errors);
           } else if (eventDefinition instanceof CompensateEventDefinition) {
             handleCompensationEventDefinition(bpmnModel, process, event, eventDefinition, errors);
+          } else if (eventDefinition instanceof LinkEventDefinition linkEventDefinition) {
+              handleLinkEventDefinition(process, event, linkEventDefinition, errors);
           }
-
         }
       }
     }
@@ -105,6 +110,35 @@ public class EventValidator extends ProcessLevelValidator {
     if ((StringUtils.isNotEmpty(compensateEventDefinition.getActivityRef()) && process.getFlowElement(compensateEventDefinition.getActivityRef(), true) == null)) {
       addError(errors, Problems.COMPENSATE_EVENT_INVALID_ACTIVITY_REF, process, event);
     }
+  }
+
+  private void handleLinkEventDefinition(Process process, Event event, LinkEventDefinition linkEventDefinition, List<ValidationError> errors) {
+      if (event.isLinkThrowEvent() && StringUtils.isEmpty(linkEventDefinition.getTarget())) {
+          Map<String, String> params = new HashMap<>();
+          params.put("eventId", event.getId());
+
+          if(StringUtils.isNotEmpty(event.getName())){
+              params.put("eventName", event.getName());
+              addError(errors, Problems.LINK_EVENT_DEFINITION_MISSING_TARGET, process, event, params);
+          }
+          else {
+              addError(errors, Problems.LINK_EVENT_DEFINITION_MISSING_TARGET_EMPTY_NAME, process, event, params);
+          }
+      }
+
+      if (event.isLinkCatchEvent() && CollectionUtils.isEmpty(linkEventDefinition.getSources())) {
+          Map<String, String> params = new HashMap<>();
+          params.put("eventId", event.getId());
+
+            if(StringUtils.isNotEmpty(event.getName())){
+                params.put("eventName", event.getName());
+                addError(errors, Problems.LINK_EVENT_DEFINITION_MISSING_SOURCE, process, event, params);
+            }
+           else {
+                addError(errors, Problems.LINK_EVENT_DEFINITION_MISSING_SOURCE_EMPTY_NAME, process, event, params);
+            }
+      }
+
   }
 
 }

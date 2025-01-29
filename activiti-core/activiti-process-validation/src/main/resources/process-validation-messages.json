@@ -298,5 +298,21 @@
   "SIGNAL_ASYNC_NOT_AVAILABLE": {
     "problem": "activiti-signal-async-not-available",
     "description": "Async property is not available when asyncExecutor is disabled."
+  },
+  "LINK_EVENT_DEFINITION_MISSING_TARGET_EMPTY_NAME": {
+    "problem": "activiti-link-event-definition-missing-target-empty-name",
+    "description": "Link Intermediate Throw Event [id: '{{eventId}}'] does not have mandatory property 'target' on related Link Event Definition"
+  },
+  "LINK_EVENT_DEFINITION_MISSING_TARGET": {
+    "problem": "activiti-link-event-definition-missing-target",
+    "description": "Link Intermediate Throw Event [name: '{{eventName}}', id: '{{eventId}}'] does not have mandatory property 'target' on related Link Event Definition"
+  },
+  "LINK_EVENT_DEFINITION_MISSING_SOURCE_EMPTY_NAME": {
+    "problem": "activiti-link-event-definition-missing-source-empty-name",
+    "description": "Link Intermediate Catch Event [id: '{{eventId}}'] does not have mandatory property 'source' on related Link Event Definition"
+  },
+  "LINK_EVENT_DEFINITION_MISSING_SOURCE": {
+    "problem": "activiti-link-event-definition-missing-source",
+    "description": "Link Intermediate Catch Event [name: '{{eventName}}', id: '{{eventId}}'] does not have mandatory property 'source' on related Link Event Definition"
   }
 }

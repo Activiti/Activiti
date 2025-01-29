@@ -50,6 +50,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.task.TaskQuery;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessVariablesPayloadValidator;
@@ -76,6 +77,8 @@ public class ProcessRuntimeIT {
     private static final String SINGLE_TASK_PROCESS = "SingleTaskProcess";
     private static final String ONE_STEP_PROCESS = "OneStepProcess";
 
+    private static final String LINK_PROCESS = "linkProcess";
+    private static final String LINK_PROCESS_WITH_GATEWAY = "Process_frjVEXg6";
     private static final String SUB_PROCESS = "subProcess";
     private static final String SUPER_PROCESS = "superProcess";
     private static final String TWO_TASKS_PROCESS = "twoTaskProcess";
@@ -266,6 +269,64 @@ public class ProcessRuntimeIT {
         assertThat(RuntimeTestConfiguration.processImageConnectorExecuted).isEqualTo(true);
         assertThat(RuntimeTestConfiguration.tagImageConnectorExecuted).isEqualTo(true);
         assertThat(RuntimeTestConfiguration.discardImageConnectorExecuted).isEqualTo(false);
+    }
+
+    @Test
+    public void createLinkEventProcessInstanceAndValidateHappyPath() {
+        //when
+        ProcessInstance linkProcess = processRuntime.start(ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey(LINK_PROCESS)
+            .build());
+
+        //then
+        assertThat(RuntimeTestConfiguration.completedProcesses).contains(linkProcess.getId());
+        assertThat(RuntimeTestConfiguration.completedBpmnActivities)
+            .extracting(
+                org.activiti.api.process.model.BPMNActivity::getActivityName,
+                org.activiti.api.process.model.BPMNActivity::getActivityType,
+                org.activiti.api.process.model.BPMNActivity::getProcessInstanceId)
+            .contains(
+                tuple("a", "throwEvent", linkProcess.getId()),
+                tuple("a", "intermediateCatchEvent", linkProcess.getId()));
+    }
+
+    @Test
+    public void createLinkEventProcessInstanceWithInclusiveGatewayAndValidateHappyPath() {
+        //when
+        ProcessInstance linkProcess = processRuntime.start(ProcessPayloadBuilder.start()
+            .withProcessDefinitionKey(LINK_PROCESS_WITH_GATEWAY)
+            .build());
+
+        TaskQuery query = taskService.createTaskQuery().orderByTaskName().asc();
+        var tasks = query.list();
+        assertThat(tasks)
+            .extracting(org.activiti.engine.task.Task::getName)
+            .containsExactly("task 1", "task 2");
+
+        taskService.complete(tasks.get(1).getId());
+
+        tasks = query.list();
+        assertThat(tasks)
+            .extracting(org.activiti.engine.task.Task::getName)
+            .containsExactly("task 1");
+
+        taskService.complete(tasks.getFirst().getId());
+
+        tasks = query.list();
+        assertThat(tasks)
+            .extracting(org.activiti.engine.task.Task::getName)
+            .containsExactly("task 3");
+
+        taskService.complete(tasks.getFirst().getId());
+
+        assertThat(RuntimeTestConfiguration.completedProcesses).contains(linkProcess.getId());
+        assertThat(RuntimeTestConfiguration.completedBpmnActivities)
+            .extracting(org.activiti.api.process.model.BPMNActivity::getActivityName,
+                org.activiti.api.process.model.BPMNActivity::getActivityType,
+                org.activiti.api.process.model.BPMNActivity::getProcessInstanceId)
+            .contains(
+                tuple("a", "throwEvent", linkProcess.getId()) ,
+                tuple("a", "intermediateCatchEvent", linkProcess.getId()));
     }
 
     @Test

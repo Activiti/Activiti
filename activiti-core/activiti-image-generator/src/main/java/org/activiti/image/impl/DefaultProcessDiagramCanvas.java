@@ -59,6 +59,8 @@ import org.activiti.image.impl.icon.CompensateThrowIconType;
 import org.activiti.image.impl.icon.ErrorIconType;
 import org.activiti.image.impl.icon.ErrorThrowIconType;
 import org.activiti.image.impl.icon.IconType;
+import org.activiti.image.impl.icon.LinkCatchIconType;
+import org.activiti.image.impl.icon.LinkThrowIconType;
 import org.activiti.image.impl.icon.ManualTaskIconType;
 import org.activiti.image.impl.icon.MessageIconType;
 import org.activiti.image.impl.icon.ReceiveTaskIconType;
@@ -189,6 +191,8 @@ public class DefaultProcessDiagramCanvas {
     protected static IconType MESSAGE_CATCH_IMAGE;
     protected static IconType SIGNAL_CATCH_IMAGE;
     protected static IconType SIGNAL_THROW_IMAGE;
+    protected static IconType LINK_CATCH_IMAGE;
+    protected static IconType LINK_THROW_IMAGE;
 
     protected int canvasWidth = -1;
     protected int canvasHeight = -1;
@@ -314,6 +318,8 @@ public class DefaultProcessDiagramCanvas {
         MESSAGE_CATCH_IMAGE = new MessageIconType();
         SIGNAL_THROW_IMAGE = new SignalThrowIconType();
         SIGNAL_CATCH_IMAGE = new SignalIconType();
+        LINK_THROW_IMAGE = new LinkThrowIconType();
+        LINK_CATCH_IMAGE = new LinkCatchIconType();
     }
 
     /**
@@ -626,6 +632,20 @@ public class DefaultProcessDiagramCanvas {
                   graphicInfo);
     }
 
+    public void drawCatchingLinkEvent(String id,
+                                      String name,
+                                      GraphicInfo graphicInfo,
+                                      boolean isInterrupting) {
+        drawCatchingEvent(id,
+            graphicInfo,
+            isInterrupting,
+            LINK_CATCH_IMAGE,
+            "link");
+
+        drawLabel(name,
+            graphicInfo);
+    }
+
     public void drawThrowingCompensateEvent(String id,
                                             GraphicInfo graphicInfo) {
         drawCatchingEvent(id,
@@ -642,6 +662,15 @@ public class DefaultProcessDiagramCanvas {
                           true,
                           SIGNAL_THROW_IMAGE,
                           "signal");
+    }
+
+    public void drawThrowingLinkEvent(String id,
+                                      GraphicInfo graphicInfo) {
+        drawCatchingEvent(id,
+            graphicInfo,
+            true,
+            LINK_THROW_IMAGE,
+            "link");
     }
 
     public void drawThrowingNoneEvent(String id,

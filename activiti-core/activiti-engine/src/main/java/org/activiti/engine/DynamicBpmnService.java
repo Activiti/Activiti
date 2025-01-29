@@ -18,6 +18,7 @@
 package org.activiti.engine;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.activiti.engine.repository.ProcessDefinition;
 
 /** Service providing access to the repository of process definitions and deployments.
  *
@@ -26,6 +27,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public interface DynamicBpmnService {
 
   ObjectNode getProcessDefinitionInfo(String processDefinitionId);
+
+  ObjectNode getProcessDefinitionInfo(ProcessDefinition processDefinition);
 
   void saveProcessDefinitionInfo(String processDefinitionId, ObjectNode infoNode);
 
