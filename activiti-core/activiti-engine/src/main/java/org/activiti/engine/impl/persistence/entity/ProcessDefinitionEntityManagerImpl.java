@@ -63,17 +63,7 @@ public class ProcessDefinitionEntityManagerImpl extends AbstractEntityManager<Pr
     processDefinitionDataManager.deleteProcessDefinitionsByDeploymentId(deploymentId);
   }
 
-    @Override
-    public List<ProcessDefinitionEntity> findAllProcessDefinitions() {
-        return processDefinitionDataManager.findAllProcessDefinitions();
-    }
-
-    @Override
-    public List<ProcessDefinitionEntity> findProcessDefinitionsForAllTenants() {
-        return processDefinitionDataManager.findProcessDefinitionsForAllTenants();
-    }
-
-    @Override
+  @Override
   public List<ProcessDefinition> findProcessDefinitionsByQueryCriteria(ProcessDefinitionQueryImpl processDefinitionQuery, Page page) {
    return processDefinitionDataManager.findProcessDefinitionsByQueryCriteria(processDefinitionQuery, page);
   }
