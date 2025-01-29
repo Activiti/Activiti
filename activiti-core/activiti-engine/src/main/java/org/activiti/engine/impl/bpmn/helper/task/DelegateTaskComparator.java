@@ -36,6 +36,13 @@ public class DelegateTaskComparator implements TaskComparator<DelegateTask>{
         initialDelegateTask = new TaskEntityImpl();
         if (originalTask !=null) {
             initialDelegateTask.setName(originalTask.getName());
+            initialDelegateTask.setDueDate(originalTask.getDueDate());
+            initialDelegateTask.setDescription(originalTask.getDescription());
+            initialDelegateTask.setOwner(originalTask.getOwner());
+            initialDelegateTask.setPriority(originalTask.getPriority());
+            initialDelegateTask.setCategory(originalTask.getCategory());
+            initialDelegateTask.setFormKey(originalTask.getFormKey());
+            initialDelegateTask.setAssignee(originalTask.getAssignee());
         }
     }
 

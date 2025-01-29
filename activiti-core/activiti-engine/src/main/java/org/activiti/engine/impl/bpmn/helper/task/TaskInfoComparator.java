@@ -36,6 +36,13 @@ public class TaskInfoComparator implements TaskComparator<TaskInfo>{
         initialTaskInfo = new TaskEntityImpl();
         if (originalTask !=null) {
             initialTaskInfo.setName(originalTask.getName());
+            initialTaskInfo.setDueDate(originalTask.getDueDate());
+            initialTaskInfo.setDescription(originalTask.getDescription());
+            initialTaskInfo.setOwner(originalTask.getOwner());
+            initialTaskInfo.setPriority(originalTask.getPriority());
+            initialTaskInfo.setCategory(originalTask.getCategory());
+            initialTaskInfo.setFormKey(originalTask.getFormKey());
+            initialTaskInfo.setAssignee(originalTask.getAssignee());
         }
     }
 
