@@ -49,13 +49,12 @@ import org.slf4j.LoggerFactory;
 
 public class BpmnDeployer implements Deployer {
 
-    private static final Logger log = LoggerFactory.getLogger(BpmnDeployer.class);
-
-
+    private static final Logger log = LoggerFactory.getLogger(BpmnDeployer.class);;
     protected IdGenerator idGenerator;
     protected ParsedDeploymentBuilderFactory parsedDeploymentBuilderFactory;
     protected BpmnDeploymentHelper bpmnDeploymentHelper;
     protected CachingAndArtifactsManager cachingAndArtifactsManager;
+    private boolean disableAllStartEvents;
 
     @Override
     public void deploy(DeploymentEntity deployment,
@@ -87,7 +86,9 @@ public class BpmnDeployer implements Deployer {
                                                mapOfNewProcessDefinitionToPreviousVersion);
             setProcessDefinitionAppVersion(parsedDeployment);
             persistProcessDefinitionsAndAuthorizations(parsedDeployment);
-            bpmnDeploymentHelper.disableTimerMessageAndSignalStartEvents();
+            if(isDisableAllStartEvents()){
+                bpmnDeploymentHelper.disableTimerMessageAndSignalStartEvents();
+            }
             updateTimersAndEvents(parsedDeployment);
             dispatchProcessDefinitionEntityInitializedEvent(parsedDeployment);
         } else {
@@ -163,15 +164,6 @@ public class BpmnDeployer implements Deployer {
         }
 
         return result;
-    }
-
-    /**
-     * Returns all process definitions in the database.
-     */
-    protected List<ProcessDefinitionEntity> getAllProcessDefinitions(String tenantId)
-    {
-       List<ProcessDefinitionEntity> processDefinitionEntities= bpmnDeploymentHelper.getAllProcessDefinitions(tenantId);
-         return processDefinitionEntities;
     }
 
     /**
@@ -548,5 +540,13 @@ public class BpmnDeployer implements Deployer {
 
     public void setCachingAndArtifactsManager(CachingAndArtifactsManager manager) {
         this.cachingAndArtifactsManager = manager;
+    }
+
+    public void setDisableAllStartEvents(boolean disableAllStartEvents) {
+        this.disableAllStartEvents = disableAllStartEvents;
+    }
+
+    public boolean isDisableAllStartEvents() {
+        return disableAllStartEvents;
     }
 }

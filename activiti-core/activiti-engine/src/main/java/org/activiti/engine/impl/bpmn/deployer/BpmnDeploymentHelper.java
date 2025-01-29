@@ -168,19 +168,6 @@ public class BpmnDeploymentHelper  {
         eventSubscriptionManager.removeObsoleteMessageStartEventSubscriptions();
     }
 
-    /**
-     * Returns all process definitions in the system.
-     */
-    public List<ProcessDefinitionEntity> getAllProcessDefinitions(String tenantId) {
-        ProcessDefinitionEntityManager processDefinitionEntityManager = Context.getCommandContext().getProcessEngineConfiguration().getProcessDefinitionEntityManager();
-
-        if(tenantId!=null && !tenantId.equals(ProcessEngineConfiguration.NO_TENANT_ID))
-        {
-            return processDefinitionEntityManager.findProcessDefinitionsForAllTenants();
-        }
-      return  processDefinitionEntityManager.findAllProcessDefinitions();
-    }
-
     protected enum ExpressionType {
     USER, GROUP
   }

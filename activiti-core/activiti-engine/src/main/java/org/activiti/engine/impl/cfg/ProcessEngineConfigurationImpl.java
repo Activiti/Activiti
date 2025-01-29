@@ -1709,6 +1709,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     bpmnDeployer.setParsedDeploymentBuilderFactory(parsedDeploymentBuilderFactory);
     bpmnDeployer.setBpmnDeploymentHelper(bpmnDeploymentHelper);
     bpmnDeployer.setCachingAndArtifactsManager(cachingAndArtifactsManager);
+    bpmnDeployer.setDisableAllStartEvents(true);
 
     defaultDeployers.add(bpmnDeployer);
     return defaultDeployers;
