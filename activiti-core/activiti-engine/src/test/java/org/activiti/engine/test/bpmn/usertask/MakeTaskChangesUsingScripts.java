@@ -17,18 +17,11 @@
 
 package org.activiti.engine.test.bpmn.usertask;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.IdentityLink;
-import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,9 +29,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
 
  */
-public class DynamicTaskNameTest extends PluggableActivitiTestCase {
+public class MakeTaskChangesUsingScripts extends PluggableActivitiTestCase {
 
-  @Deployment(resources={"org/activiti/engine/test/bpmn/usertask/DynamicTaskNameTest.setTaskName.bpmn20.xml"})
+  @Deployment(resources={"org/activiti/engine/test/bpmn/usertask/MakeTaskChangesUsingScripts.setTaskName.bpmn20.xml"})
   public void testDynamicallySetTaskName() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("dynamicTaskName");
     String processInstanceId = processInstance.getId();
@@ -48,6 +41,10 @@ public class DynamicTaskNameTest extends PluggableActivitiTestCase {
 
     assertThat(task.getName()).startsWith("Dynamic task");
     assertThat(task.getName()).isEqualTo(historicTask.getName());
+
+      assertThat(task.getDescription()).startsWith("Dynamic task");
+      assertThat(task.getDescription()).isEqualTo(historicTask.getDescription());
+
   }
 
 }
