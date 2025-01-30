@@ -325,16 +325,4 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
   public void setTaskDataManager(TaskDataManager taskDataManager) {
     this.taskDataManager = taskDataManager;
   }
-
-    public TaskInfo getHistoricTask(TaskEntity task) {
-        TaskInfo originalTaskEntity = null;
-        if (getProcessEngineConfiguration().getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-            originalTaskEntity = getHistoricTaskInstanceEntityManager().findById(task.getId());
-        }
-
-        if (originalTaskEntity == null) {
-            originalTaskEntity = getTaskEntityManager().findById(task.getId());
-        }
-        return originalTaskEntity;
-    }
 }
