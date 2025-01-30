@@ -149,15 +149,19 @@ public class BpmnDeploymentHelper  {
    * Updates all timers and events for the process definition.  This removes obsolete message and signal
    * subscriptions and timers, and adds new ones.
    */
-  public void updateTimersAndEvents(ProcessDefinitionEntity processDefinition, ParsedDeployment parsedDeployment) {
+  public void updateTimersAndEvents(ProcessDefinitionEntity processDefinition,
+      ProcessDefinitionEntity previousProcessDefinition, ParsedDeployment parsedDeployment) {
 
     Process process = parsedDeployment.getProcessModelForProcessDefinition(processDefinition);
     BpmnModel bpmnModel = parsedDeployment.getBpmnModelForProcessDefinition(processDefinition);
 
+    eventSubscriptionManager.removeObsoleteMessageEventSubscriptions(previousProcessDefinition);
     eventSubscriptionManager.addMessageEventSubscriptions(processDefinition, process, bpmnModel);
 
+    eventSubscriptionManager.removeObsoleteSignalEventSubScription(previousProcessDefinition);
     eventSubscriptionManager.addSignalEventSubscriptions(Context.getCommandContext(), processDefinition, process, bpmnModel);
 
+    timerManager.removeObsoleteTimers(processDefinition);
     timerManager.scheduleTimers(processDefinition, process);
   }
 

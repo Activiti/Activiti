@@ -89,7 +89,7 @@ public class BpmnDeployer implements Deployer {
             if(isDisableAllStartEvents()){
                 bpmnDeploymentHelper.disableTimerMessageAndSignalStartEvents();
             }
-            updateTimersAndEvents(parsedDeployment);
+            updateTimersAndEvents(parsedDeployment,mapOfNewProcessDefinitionToPreviousVersion);
             dispatchProcessDefinitionEntityInitializedEvent(parsedDeployment);
         } else {
             makeProcessDefinitionsConsistentWithPersistedVersions(parsedDeployment);
@@ -225,10 +225,11 @@ public class BpmnDeployer implements Deployer {
         }
     }
 
-    protected void updateTimersAndEvents(ParsedDeployment parsedDeployment) {
+    protected void updateTimersAndEvents(ParsedDeployment parsedDeployment,Map<ProcessDefinitionEntity, ProcessDefinitionEntity> mapNewToOldProcessDefinitions) {
 
         for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
             bpmnDeploymentHelper.updateTimersAndEvents(processDefinition,
+                                                       mapNewToOldProcessDefinitions.get(processDefinition),
                                                        parsedDeployment);
         }
     }
