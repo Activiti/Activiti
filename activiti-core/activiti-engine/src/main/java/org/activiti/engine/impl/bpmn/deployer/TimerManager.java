@@ -64,7 +64,7 @@ public class TimerManager {
       if (timerStartJobs != null && timerStartJobs.size() > 0) {
 
           for (TimerJobEntity timerStartJob : timerStartJobs) {
-              Context.getCommandContext().getTimerJobEntityManager().delete(timerStartJob);
+              new CancelJobsCmd(timerStartJob.getId()).execute(Context.getCommandContext());
           }
       }
   }

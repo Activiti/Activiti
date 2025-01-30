@@ -135,6 +135,8 @@ public abstract class ProcessEngineConfiguration {
   protected DataSource dataSource;
   protected boolean transactionsExternallyManaged;
 
+  protected boolean disableAllPreviousStartEvents;
+
   protected String jpaPersistenceUnitName;
   protected Object jpaEntityManagerFactory;
   protected boolean jpaHandleTransaction;
@@ -142,6 +144,7 @@ public abstract class ProcessEngineConfiguration {
 
   protected Clock clock;
   protected AsyncExecutor asyncExecutor;
+
   /**
    * Define the default lock time for an async job in seconds. The lock time is used when creating an async job and when it expires the async executor assumes that the job has failed. It will be
    * retried again.
@@ -458,6 +461,16 @@ public abstract class ProcessEngineConfiguration {
     this.transactionsExternallyManaged = transactionsExternallyManaged;
     return this;
   }
+
+  public ProcessEngineConfiguration setDisableAllPreviousStartEvents(boolean disableAllPreviousStartEvents)
+  {
+    this.disableAllPreviousStartEvents = disableAllPreviousStartEvents;
+    return this;
+  }
+
+  public boolean isDisableAllPreviousStartEvents(){
+      return disableAllPreviousStartEvents;
+    }
 
   public HistoryLevel getHistoryLevel() {
     return historyLevel;

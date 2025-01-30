@@ -52,6 +52,7 @@ public class ActivitiProperties {
   private String javaClassFieldForJackson = JsonTypeInfo.Id.CLASS.getDefaultPropertyName();
   private Integer processDefinitionCacheLimit;
   private String processDefinitionCacheName;
+  private boolean disableAllPreviousStartEvents = false;
 
   public boolean isAsyncExecutorActivate() {
     return asyncExecutorActivate;
@@ -253,5 +254,13 @@ public class ActivitiProperties {
 
     public void setProcessDefinitionCacheName(String processDefinitionCacheName) {
         this.processDefinitionCacheName = processDefinitionCacheName;
+    }
+
+    public void setDisableAllPreviousStartEvents(boolean disableAllPreviousStartEvents) {
+        this.disableAllPreviousStartEvents = disableAllPreviousStartEvents;
+    }
+
+    public boolean isDisableAllPreviousStartEvents() {
+        return disableAllPreviousStartEvents;
     }
 }
