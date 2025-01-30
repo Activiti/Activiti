@@ -337,18 +337,4 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
         }
         return originalTaskEntity;
     }
-
-    @Override
-    public void recordTaskNameChange(TaskEntity updatedTask) {
-        TaskInfo originalTask = getHistoricTask(updatedTask);
-        recordTaskChanges(originalTask, updatedTask);
-    }
-
-    private void recordTaskChanges(TaskInfo originalTask, TaskInfo updatedTask) {
-      if (originalTask!=null) {
-          if (!StringUtils.equals(originalTask.getName(), updatedTask.getName())) {
-              getHistoryManager().recordTaskNameChange(updatedTask.getId(), updatedTask.getName());
-          }
-      }
-    }
 }

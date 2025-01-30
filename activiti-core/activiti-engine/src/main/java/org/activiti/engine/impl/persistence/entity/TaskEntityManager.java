@@ -60,8 +60,4 @@ public interface TaskEntityManager extends EntityManager<TaskEntity> {
   void deleteTasksByProcessInstanceId(String processInstanceId, String deleteReason, boolean cascade);
 
   void deleteTask(TaskEntity task, String deleteReason, boolean cascade, boolean cancel);
-
-  TaskInfo getHistoricTask(TaskEntity task);
-
-  void recordTaskNameChange(TaskEntity task);
 }
