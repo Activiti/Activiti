@@ -68,7 +68,7 @@ public class SaveTaskCmd implements Command<Task>, Serializable {
         }
 
         TaskUpdater taskUpdater = new TaskUpdater(commandContext);
-        taskUpdater.updateTask(new ComparableTask(originalTaskEntity), (TaskInfo)task);
+        taskUpdater.updateTask(new ComparableTask(originalTaskEntity), task);
       return commandContext.getTaskEntityManager().update(task);
     }
 

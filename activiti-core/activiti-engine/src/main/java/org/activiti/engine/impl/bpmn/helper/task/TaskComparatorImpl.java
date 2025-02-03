@@ -15,7 +15,6 @@
  */
 package org.activiti.engine.impl.bpmn.helper.task;
 
-import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.task.TaskInfo;
 import org.apache.commons.lang3.StringUtils;
 
@@ -27,20 +26,11 @@ public class TaskComparatorImpl implements TaskComparator {
     private ComparableTask originalTask;
     private ComparableTask updatedTask;
 
-    public void setOriginalTask(DelegateTask task) {
-        this.originalTask = new ComparableTask(task);
-    }
     public void setOriginalTask(TaskInfo task) {
         this.originalTask = new ComparableTask(task);
     }
     public void setOriginalTask(ComparableTask comparableTask) {
         this.originalTask = comparableTask;
-    }
-    public void setUpdatedTask(DelegateTask task) {
-        if (originalTask==null || !DelegateTask.class.equals(originalTask.getOriginalTaskClass())) {
-            throw new IllegalArgumentException("task needs to be of class "+DelegateTask.class);
-        }
-        this.updatedTask = new ComparableTask(task);
     }
     public void setUpdatedTask(TaskInfo task) {
         if (originalTask==null || !TaskInfo.class.equals(originalTask.getOriginalTaskClass())) {
@@ -50,7 +40,7 @@ public class TaskComparatorImpl implements TaskComparator {
     }
     public void setUpdatedTask(ComparableTask comparableTask) {
         if (originalTask==null || !comparableTask.getOriginalTaskClass().getClass().equals(originalTask.getOriginalTaskClass())) {
-            throw new IllegalArgumentException("task needs to be of class "+TaskInfo.class);
+            throw new IllegalArgumentException("task needs to be of class "+ComparableTask.class);
         }
         this.updatedTask = comparableTask;
     }
@@ -94,13 +84,7 @@ public class TaskComparatorImpl implements TaskComparator {
         return hasStringFieldChanged(ComparableTask::getFormKey);
     }
     public boolean hasTaskParentIdChanged() {
-        if (updatedTask!=null) {
-            if (TaskInfo.class.equals(updatedTask.getOriginalTaskClass())) {
-                return hasStringFieldChanged(ComparableTask::getParentTaskId);
-            }
-        }
-        // DelegateTask doesn't have 'parentId' field to check against
-        return false;
+        return hasStringFieldChanged(ComparableTask::getParentTaskId);
     }
 
     private boolean hasStringFieldChanged(Function<ComparableTask, String> comparableTaskGetter) {

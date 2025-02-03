@@ -15,7 +15,6 @@
  */
 package org.activiti.engine.impl.bpmn.helper.task;
 
-import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -40,7 +39,6 @@ public class TaskUpdater {
 
         recordTaskUpdated(taskComparator);
 
-        // Only applied to TaskInfo (since DelegateTask doesn't have ProcessInstance/ExecutionEntity
         TaskEntity taskEntity = (TaskEntity) task;
         if (taskComparator.hasTaskOwnerChanged()) {
             if (task.getProcessInstanceId() != null) {
@@ -61,13 +59,6 @@ public class TaskUpdater {
                 commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_ASSIGNED, task));
             }
         }
-    }
-    public void updateTask(ComparableTask originalTask, DelegateTask task) {
-        TaskComparatorImpl taskComparator = new TaskComparatorImpl();
-        taskComparator.setOriginalTask(originalTask);
-        taskComparator.setUpdatedTask(task);
-
-        recordTaskUpdated(taskComparator);
     }
 
     private void recordTaskUpdated(TaskComparatorImpl taskComparator) {
