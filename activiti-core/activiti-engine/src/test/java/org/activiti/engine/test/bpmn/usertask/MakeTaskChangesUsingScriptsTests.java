@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
 
  */
-public class MakeTaskChangesUsingScripts extends PluggableActivitiTestCase {
+public class MakeTaskChangesUsingScriptsTests extends PluggableActivitiTestCase {
 
   @Deployment(resources={"org/activiti/engine/test/bpmn/usertask/MakeTaskChangesUsingScripts.bpmn20.xml"})
   public void testTaskChangesUsingTaskListeners() {
