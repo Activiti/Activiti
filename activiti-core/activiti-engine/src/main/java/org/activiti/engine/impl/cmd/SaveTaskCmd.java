@@ -19,7 +19,8 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.bpmn.helper.task.TaskInfoUpdaterHelper;
+import org.activiti.engine.impl.bpmn.helper.task.ComparableTask;
+import org.activiti.engine.impl.bpmn.helper.task.TaskUpdater;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -66,9 +67,8 @@ public class SaveTaskCmd implements Command<Task>, Serializable {
             originalTaskEntity = commandContext.getTaskEntityManager().findById(task.getId());
         }
 
-        TaskInfoUpdaterHelper updateHelper = new TaskInfoUpdaterHelper(commandContext);
-        updateHelper.updateTask(originalTaskEntity, task);
-
+        TaskUpdater taskUpdater = new TaskUpdater(commandContext);
+        taskUpdater.updateTask(new ComparableTask(originalTaskEntity), (TaskInfo)task);
       return commandContext.getTaskEntityManager().update(task);
     }
 
