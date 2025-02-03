@@ -15,33 +15,33 @@
  */
 package org.activiti.engine.impl.bpmn.helper.task;
 
-public interface TaskComparator<Entity> {
+public interface TaskComparator {
 
-    void setOriginalTask(Entity originalTask);
-    Entity getOriginalTask();
+    ComparableTask getOriginalTask();
+    ComparableTask getUpdatedTask();
 
-    boolean hasTaskNameChanged(Entity newTask);
-    boolean hasTaskDescriptionChanged(Entity newTask);
-    boolean hasTaskOwnerChanged(Entity newTask);
-    boolean hasTaskPriorityChanged(Entity newTask);
-    boolean hasTaskCategoryChanged(Entity newTask);
-    boolean hasTaskFormKeyChanged(Entity newTask);
-    boolean hasTaskParentIdChanged(Entity newTask);
-    boolean hasTaskDefinitionKeyChanged(Entity newTask);
-    boolean hasTaskAssigneeChanged(Entity newTask);
-    boolean hasTaskDueDateChanged(Entity newTask);
+    boolean hasTaskNameChanged();
+    boolean hasTaskDescriptionChanged();
+    boolean hasTaskOwnerChanged();
+    boolean hasTaskPriorityChanged();
+    boolean hasTaskCategoryChanged();
+    boolean hasTaskFormKeyChanged();
+    boolean hasTaskParentIdChanged();
+    boolean hasTaskDefinitionKeyChanged();
+    boolean hasTaskAssigneeChanged();
+    boolean hasTaskDueDateChanged();
 
-    default boolean hasTaskChanged(Entity newTask) {
-        return hasTaskNameChanged(newTask)
-            || hasTaskDescriptionChanged(newTask)
-            || hasTaskOwnerChanged(newTask)
-            || hasTaskPriorityChanged(newTask)
-            || hasTaskCategoryChanged(newTask)
-            || hasTaskFormKeyChanged(newTask)
-            || hasTaskParentIdChanged(newTask)
-            || hasTaskDefinitionKeyChanged(newTask)
-            || hasTaskAssigneeChanged(newTask)
-            || hasTaskDueDateChanged(newTask);
+    default boolean hasTaskChanged() {
+        return hasTaskNameChanged()
+            || hasTaskDescriptionChanged()
+            || hasTaskOwnerChanged()
+            || hasTaskPriorityChanged()
+            || hasTaskCategoryChanged()
+            || hasTaskFormKeyChanged()
+            || hasTaskParentIdChanged()
+            || hasTaskDefinitionKeyChanged()
+            || hasTaskAssigneeChanged()
+            || hasTaskDueDateChanged();
     }
 
 }
