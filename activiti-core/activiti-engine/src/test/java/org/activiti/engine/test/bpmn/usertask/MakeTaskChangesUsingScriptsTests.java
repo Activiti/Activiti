@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.test.bpmn.usertask;
 
 import org.activiti.engine.history.HistoricTaskInstance;
@@ -66,8 +64,8 @@ public class MakeTaskChangesUsingScriptsTests extends PluggableActivitiTestCase 
     taskService.saveTask(task);
 
     // WHEN: fetching the information from the current task (both runtime and historical)
-    task = taskService.createTaskQuery().processInstanceId(processInstanceId).active().singleResult();
-    historicTask = historyService.createHistoricTaskInstanceQuery().unfinished().singleResult();
+    task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
+    historicTask = historyService.createHistoricTaskInstanceQuery().singleResult();
 
     // THEN: runtime-task should have the correct values and should be in-sync with historical-task
       assertThat(task.getName()).isEqualTo(historicTask.getName()).isEqualTo("UserTask.name2");
