@@ -22,10 +22,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-
 import javax.sql.DataSource;
-
 import org.activiti.api.process.model.events.ApplicationDeployedEvent;
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
 import org.activiti.api.process.model.events.StartMessageDeployedEvent;
@@ -41,6 +40,8 @@ import org.activiti.engine.impl.bpmn.behavior.VariablesPropagator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
 import org.activiti.engine.impl.persistence.StrongUuidGenerator;
+import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.runtime.api.event.impl.StartMessageSubscriptionConverter;
 import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
@@ -52,19 +53,23 @@ import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.StartMessageDeployedEventProducer;
 import org.activiti.spring.boot.process.validation.AsyncPropertyValidator;
+import org.activiti.spring.cache.SpringProcessDefinitionCache;
 import org.activiti.spring.process.ProcessExtensionResourceFinderDescriptor;
 import org.activiti.spring.process.ProcessVariablesInitiator;
 import org.activiti.spring.resources.ResourceFinder;
 import org.activiti.spring.resources.ResourceFinderDescriptor;
 import org.activiti.validation.ProcessValidatorImpl;
 import org.activiti.validation.validator.ValidatorSet;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
@@ -102,11 +107,14 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
             List<ResourceFinderDescriptor> resourceFinderDescriptors,
             ApplicationUpgradeContextService applicationUpgradeContextService,
             @Autowired(required = false) List<ProcessEngineConfigurationConfigurer> processEngineConfigurationConfigurers,
-            @Autowired(required = false) List<ProcessEngineConfigurator> processEngineConfigurators) throws IOException {
+            @Autowired(required = false) List<ProcessEngineConfigurator> processEngineConfigurators,
+            ObjectProvider<DeploymentCache<ProcessDefinitionCacheEntry>> processDefinitionCacheProvider
+        ) throws IOException {
 
         SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration(applicationUpgradeContextService);
         conf.setConfigurators(processEngineConfigurators);
 
+        processDefinitionCacheProvider.ifAvailable(conf::setProcessDefinitionCache);
 
         configureResources(resourceFinder, resourceFinderDescriptors, conf);
 
@@ -163,6 +171,11 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
                 processEngineConfigurationConfigurer.configure(conf);
             }
         }
+
+        if (activitiProperties.getProcessDefinitionCacheLimit() != null) {
+            conf.setProcessDefinitionCacheLimit(activitiProperties.getProcessDefinitionCacheLimit());
+        }
+
         springAsyncExecutor.applyConfig(conf);
         return conf;
     }
@@ -310,5 +323,15 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
     public CandidateStartersDeploymentConfigurer candidateStartersDeploymentConfigurer() {
         return new CandidateStartersDeploymentConfigurer();
     }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty("spring.activiti.process-definition-cache-name")
+    public DeploymentCache<ProcessDefinitionCacheEntry> springProcessDefinitionCache(ActivitiProperties properties, CacheManager cacheManager) {
+        var delegate = cacheManager.getCache(properties.getProcessDefinitionCacheName());
+
+        return new SpringProcessDefinitionCache(Objects.requireNonNull(delegate));
+    }
+
 
 }

@@ -28,11 +28,11 @@ jobs:
       - name: Check dependabot build
         uses: ./.github/actions/check-ext-build
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@1713976b6d7dc48dfe74f441c9bf1ae9481cbb45 # v8.6.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@4b0ea0ccff236b931a3cb94f4e8640525439361a # v8.12.1
         with:
           skip_checkout: true
       - name: Ensure SHA pinned actions
-        uses: zgosalvez/github-actions-ensure-sha-pinned-actions@5d6ac37a4cef8b8df67f482a8e384987766f0213 # v3.0.17
+        uses: zgosalvez/github-actions-ensure-sha-pinned-actions@c3a2b64f69b7a1542a68f44d9edbd9ec3fc1455e # v3.0.20
 
   build:
     runs-on: ubuntu-latest
@@ -50,7 +50,7 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Setup Java JDK 21
-        uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b # 4.5.0
+        uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12 # 4.7.0
         with:
           java-version: 21
           distribution: 'temurin'
@@ -85,13 +85,20 @@ jobs:
         env:
           DO_PUSH: ${{ contains(github.event.pull_request.labels.*.name, 'preview') }}
 
+      - name: Set SONAR_SCANNER_OPTS
+        shell: bash
+        run: |
+          echo "JACOCO_REPORT_PATH=${{ github.workspace }}/activiti-coverage/target/site/jacoco-aggregate/jacoco.xml" >> $GITHUB_ENV
+          echo "SONAR_SCANNER_OPTS=sonar:sonar -Dsonar.host.url='https://sonarcloud.io' -Dsonar.organization='activiti' -Dsonar.projectKey='Activiti_Activiti' -Dsonar.coverage.jacoco.xmlReportPaths=${{ env.JACOCO_REPORT_PATH }}" >> $GITHUB_ENV
+
       - name: Build and Test with Maven (and maybe Deploy)
         shell: bash
-        run: mvn ${{ steps.define_maven_command.outputs.command }} ${{ env.MAVEN_CLI_OPTS}}
+        run: mvn ${{ steps.define_maven_command.outputs.command }} ${{ env.MAVEN_CLI_OPTS}} ${{ env.SONAR_SCANNER_OPTS }}
         env:
           MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Echo Longest Test Run
         uses: ./.github/actions/echo-longest-run

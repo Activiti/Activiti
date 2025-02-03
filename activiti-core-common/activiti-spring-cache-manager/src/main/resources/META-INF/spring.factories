@@ -1,0 +1,2 @@
+org.springframework.boot.env.EnvironmentPostProcessor=\
+  org.activiti.spring.cache.config.ActivitiSpringCacheManagerEnvironmentPostProcessor

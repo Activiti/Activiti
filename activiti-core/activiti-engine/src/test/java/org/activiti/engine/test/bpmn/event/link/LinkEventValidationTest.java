@@ -30,6 +30,14 @@ public class LinkEventValidationTest extends PluggableActivitiTestCase {
             .withMessageContaining(Problems.LINK_EVENT_DEFINITION_MISSING_TARGET);
     }
 
+    public void testLinkEventsWithoutTargetEmptyName() {
+        assertThatExceptionOfType(Exception.class)
+            .isThrownBy(() -> repositoryService.createDeployment()
+                .addClasspathResource("org/activiti/engine/test/bpmn/event/link/LinkEventTests.noTarget.noName.bpmn20.xml")
+                .deploy())
+            .withMessageContaining(Problems.LINK_EVENT_DEFINITION_MISSING_TARGET_EMPTY_NAME);
+    }
+
     public void testLinkEventsWithoutSource() {
         assertThatExceptionOfType(Exception.class)
             .isThrownBy(() -> repositoryService.createDeployment()
@@ -38,12 +46,28 @@ public class LinkEventValidationTest extends PluggableActivitiTestCase {
             .withMessageContaining(Problems.LINK_EVENT_DEFINITION_MISSING_SOURCE);
     }
 
+    public void testLinkEventsWithoutSourceEmptyName() {
+        assertThatExceptionOfType(Exception.class)
+            .isThrownBy(() -> repositoryService.createDeployment()
+                .addClasspathResource("org/activiti/engine/test/bpmn/event/link/LinkEventTests.noSource.noName.bpmn20.xml")
+                .deploy())
+            .withMessageContaining(Problems.LINK_EVENT_DEFINITION_MISSING_SOURCE_EMPTY_NAME);
+    }
+
     public void testLinkEventsWithoutSourceAndTarget() {
         assertThatExceptionOfType(Exception.class)
             .isThrownBy(() -> repositoryService.createDeployment()
                 .addClasspathResource("org/activiti/engine/test/bpmn/event/link/LinkEventTests.noSourceAndTarget.bpmn20.xml")
                 .deploy())
             .withMessageContaining(Problems.LINK_EVENT_DEFINITION_MISSING_TARGET, Problems.LINK_EVENT_DEFINITION_MISSING_SOURCE);
+    }
+
+    public void testLinkEventsWithoutSourceAndTargetEmptyName() {
+        assertThatExceptionOfType(Exception.class)
+            .isThrownBy(() -> repositoryService.createDeployment()
+                .addClasspathResource("org/activiti/engine/test/bpmn/event/link/LinkEventTests.noSourceAndTarget.noName.bpmn20.xml")
+                .deploy())
+            .withMessageContaining(Problems.LINK_EVENT_DEFINITION_MISSING_TARGET_EMPTY_NAME, Problems.LINK_EVENT_DEFINITION_MISSING_SOURCE_EMPTY_NAME);
     }
 
 }

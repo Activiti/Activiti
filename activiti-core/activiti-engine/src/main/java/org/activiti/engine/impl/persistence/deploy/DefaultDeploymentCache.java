@@ -21,7 +21,6 @@ import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +52,7 @@ public class DefaultDeploymentCache<T> implements DeploymentCache<T> {
           protected boolean removeEldestEntry(Map.Entry<String, T> eldest) {
             boolean removeEldest = size() > limit;
             if (removeEldest && logger.isTraceEnabled()) {
-              logger.trace("Cache limit is reached, {} will be evicted", eldest.getKey());
+              logger.trace("Cache limit {} is reached, {} will be evicted", limit, eldest.getKey());
             }
             return removeEldest;
           }
