@@ -55,7 +55,7 @@ public class ScriptTaskListener implements TaskListener {
       delegateTask.setVariable(resultVariable.getExpressionText(), result);
     }
 
-    TaskUpdater taskUpdater = new TaskUpdater(Context.getCommandContext());
+    TaskUpdater taskUpdater = new TaskUpdater(Context.getCommandContext(), false);
     taskUpdater.updateTask(taskComparator.getOriginalTask(), (TaskInfo) delegateTask);
   }
 

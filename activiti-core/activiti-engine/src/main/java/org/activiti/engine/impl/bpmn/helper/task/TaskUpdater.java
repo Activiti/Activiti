@@ -27,9 +27,15 @@ import org.activiti.engine.task.TaskInfo;
 public class TaskUpdater {
 
     private final CommandContext commandContext;
+    private boolean broadcastEvents;
 
     public TaskUpdater(CommandContext commandContext) {
+        this(commandContext, true);
+    }
+
+    public TaskUpdater(CommandContext commandContext, boolean broadcastEvents) {
         this.commandContext = commandContext;
+        this.broadcastEvents = broadcastEvents;
     }
 
     public void updateTask(ComparableTask originalTask, TaskInfo task) {
@@ -52,10 +58,12 @@ public class TaskUpdater {
             }
             commandContext.getHistoryManager().recordTaskAssigneeChange(task.getId(), task.getAssignee());
 
-            commandContext.getProcessEngineConfiguration().getListenerNotificationHelper().executeTaskListeners(taskEntity, TaskListener.EVENTNAME_ASSIGNMENT);
+            if (broadcastEvents) {
+                commandContext.getProcessEngineConfiguration().getListenerNotificationHelper().executeTaskListeners(taskEntity, TaskListener.EVENTNAME_ASSIGNMENT);
+            }
             commandContext.getHistoryManager().recordTaskAssignment(taskEntity);
 
-            if (commandContext.getEventDispatcher().isEnabled()) {
+            if (broadcastEvents && commandContext.getEventDispatcher().isEnabled()) {
                 commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_ASSIGNED, task));
             }
         }
