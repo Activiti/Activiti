@@ -111,6 +111,7 @@ public class TaskComparatorImpl implements TaskComparator {
             duplicatedTask.setName(task.getName());
             duplicatedTask.setDueDate(task.getDueDate());
             duplicatedTask.setDescription(task.getDescription());
+            duplicatedTask.setId(task.getId());
             duplicatedTask.setOwner(task.getOwner());
             duplicatedTask.setPriority(task.getPriority());
             duplicatedTask.setCategory(task.getCategory());
