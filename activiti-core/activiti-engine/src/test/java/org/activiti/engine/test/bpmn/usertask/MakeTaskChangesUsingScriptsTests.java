@@ -51,6 +51,7 @@ public class MakeTaskChangesUsingScriptsTests extends PluggableActivitiTestCase 
     assertThat(task.getPriority()).isEqualTo(historicTask.getPriority()).isEqualTo(1);
     assertThat(task.getDueDate()).isEqualTo(historicTask.getDueDate()).isEqualTo(new Date(1));
 
+    // WHEN: changing the values of the task and saving the task
     task.setName("UserTask.name2");
     task.setOwner("UserTask.owner2");
     task.setDescription("UserTask.description2");
@@ -59,8 +60,6 @@ public class MakeTaskChangesUsingScriptsTests extends PluggableActivitiTestCase 
     task.setAssignee("UserTask.assignee2");
     task.setPriority(2);
     task.setDueDate(new Date(2));
-
-    // WHEN: saving the task
     taskService.saveTask(task);
 
     // WHEN: fetching the information from the current task (both runtime and historical)
@@ -68,14 +67,14 @@ public class MakeTaskChangesUsingScriptsTests extends PluggableActivitiTestCase 
     historicTask = historyService.createHistoricTaskInstanceQuery().singleResult();
 
     // THEN: runtime-task should have the correct values and should be in-sync with historical-task
-      assertThat(task.getName()).isEqualTo(historicTask.getName()).isEqualTo("UserTask.name2");
-      assertThat(task.getDescription()).isEqualTo(historicTask.getDescription()).isEqualTo("UserTask.description2");
-      assertThat(task.getCategory()).isEqualTo(historicTask.getCategory()).isEqualTo("UserTask.category2");
-      assertThat(task.getFormKey()).isEqualTo(historicTask.getFormKey()).isEqualTo("UserTask.formKey2");
-      assertThat(task.getAssignee()).isEqualTo(historicTask.getAssignee()).isEqualTo("UserTask.assignee2");
-      assertThat(task.getOwner()).isEqualTo(historicTask.getOwner()).isEqualTo("UserTask.owner2");
-      assertThat(task.getPriority()).isEqualTo(historicTask.getPriority()).isEqualTo(2);
-      assertThat(task.getDueDate()).isEqualTo(historicTask.getDueDate()).isEqualTo(new Date(2));
+    assertThat(task.getName()).isEqualTo(historicTask.getName()).isEqualTo("UserTask.name2");
+    assertThat(task.getDescription()).isEqualTo(historicTask.getDescription()).isEqualTo("UserTask.description2");
+    assertThat(task.getCategory()).isEqualTo(historicTask.getCategory()).isEqualTo("UserTask.category2");
+    assertThat(task.getFormKey()).isEqualTo(historicTask.getFormKey()).isEqualTo("UserTask.formKey2");
+    assertThat(task.getAssignee()).isEqualTo(historicTask.getAssignee()).isEqualTo("UserTask.assignee2");
+    assertThat(task.getOwner()).isEqualTo(historicTask.getOwner()).isEqualTo("UserTask.owner2");
+    assertThat(task.getPriority()).isEqualTo(historicTask.getPriority()).isEqualTo(2);
+    assertThat(task.getDueDate()).isEqualTo(historicTask.getDueDate()).isEqualTo(new Date(2));
   }
 
 }
