@@ -27,7 +27,7 @@ import org.activiti.engine.task.TaskInfo;
 public class TaskUpdater {
 
     private final CommandContext commandContext;
-    private boolean broadcastEvents;
+    private final boolean broadcastEvents;
 
     public TaskUpdater(CommandContext commandContext) {
         this(commandContext, true);
@@ -38,7 +38,7 @@ public class TaskUpdater {
         this.broadcastEvents = broadcastEvents;
     }
 
-    public void updateTask(ComparableTask originalTask, TaskInfo task) {
+    public void updateTask(TaskInfo originalTask, TaskInfo task) {
         TaskComparatorImpl taskComparator = new TaskComparatorImpl();
         taskComparator.setOriginalTask(originalTask);
         taskComparator.setUpdatedTask(task);
@@ -72,7 +72,7 @@ public class TaskUpdater {
     private void recordTaskUpdated(TaskComparatorImpl taskComparator) {
         // Only update history if history is enabled
         if (commandContext.getProcessEngineConfiguration().getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-            ComparableTask updatedTask = taskComparator.getUpdatedTask();
+            TaskInfo updatedTask = taskComparator.getUpdatedTask();
             if (taskComparator.hasTaskNameChanged()) {
                 commandContext.getHistoryManager().recordTaskNameChange(updatedTask.getId(), updatedTask.getName());
             }

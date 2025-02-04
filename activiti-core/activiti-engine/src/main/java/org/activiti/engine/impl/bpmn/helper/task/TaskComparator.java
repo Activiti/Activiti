@@ -15,10 +15,12 @@
  */
 package org.activiti.engine.impl.bpmn.helper.task;
 
+import org.activiti.engine.task.TaskInfo;
+
 public interface TaskComparator {
 
-    ComparableTask getOriginalTask();
-    ComparableTask getUpdatedTask();
+    TaskInfo getOriginalTask();
+    TaskInfo getUpdatedTask();
 
     boolean hasTaskNameChanged();
     boolean hasTaskDescriptionChanged();
