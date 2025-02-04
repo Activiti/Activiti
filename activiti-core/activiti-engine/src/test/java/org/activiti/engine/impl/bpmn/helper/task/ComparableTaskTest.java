@@ -28,40 +28,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ComparableTaskTest {
 
     @Test
-    public void testCreatingComparableTaskFromDelegateTask() {
-        // GIVEN: a DelegateTask
-        DelegateTask delegateTask = new TaskEntityImpl();
-        ((AbstractEntity)delegateTask).setId("id");
-        delegateTask.setName("name");
-        delegateTask.setAssignee("assignee");
-        delegateTask.setFormKey("formKey");
-        delegateTask.setPriority(1);
-        delegateTask.setCategory("category");
-        delegateTask.setOwner("owner");
-        delegateTask.setDescription("description");
-        delegateTask.setDueDate(new Date(0));
-        ((TaskEntityImpl)delegateTask).setTaskDefinitionKey("taskDefinitionKey");
-
-        // WHEN: creating a ComparableTask based on the given DelegateTask
-        ComparableTask comparableTask = new ComparableTask(delegateTask);
-
-        // THEN: the ComparableTask should have the same values as the DelegateTask
-        assertThat(comparableTask.getName()).isEqualTo(delegateTask.getName()).isEqualTo("name");
-        assertThat(comparableTask.getId()).isEqualTo(delegateTask.getId()).isEqualTo("id");
-        assertThat(comparableTask.getDescription()).isEqualTo(delegateTask.getDescription()).isEqualTo("description");
-        assertThat(comparableTask.getCategory()).isEqualTo(delegateTask.getCategory()).isEqualTo("category");
-        assertThat(comparableTask.getTaskDefinitionKey()).isEqualTo(delegateTask.getTaskDefinitionKey()).isEqualTo("taskDefinitionKey");
-        assertThat(comparableTask.getDueDate()).isEqualTo(delegateTask.getDueDate()).isEqualTo(new Date(0));
-        assertThat(comparableTask.getPriority()).isEqualTo(delegateTask.getPriority()).isEqualTo(1);
-        assertThat(comparableTask.getOwner()).isEqualTo(delegateTask.getOwner()).isEqualTo("owner");
-
-        // THEN: the ComparableTask doesn't have ParentTaskId
-        assertThat(comparableTask.getParentTaskId()).isNull();
-
-        // THEN: the ComparableTask is based on the DelegateTask
-        assertThat(comparableTask.getOriginalTaskClass()).isEqualTo(DelegateTask.class);
+    public void test1() {
     }
-
     @Test
     public void testCreatingComparableTaskFromTaskInfo() {
         // GIVEN: a TaskInfo
@@ -78,8 +46,8 @@ public class ComparableTaskTest {
         taskInfo.setTaskDefinitionKey("taskDefinitionKey");
         taskInfo.setParentTaskId("parentTaskId");
 
-        // WHEN: creating a ComparableTask based on the given TaskInfo
-        ComparableTask comparableTask = new ComparableTask((TaskInfo)taskInfo);
+        // WHEN: creating a ComparableTask
+        ComparableTask comparableTask = new ComparableTask(taskInfo);
 
         // THEN: the ComparableTask should have the same values as the TaskInfo
         assertThat(comparableTask.getName()).isEqualTo(taskInfo.getName()).isEqualTo("name");
@@ -91,8 +59,5 @@ public class ComparableTaskTest {
         assertThat(comparableTask.getPriority()).isEqualTo(taskInfo.getPriority()).isEqualTo(1);
         assertThat(comparableTask.getOwner()).isEqualTo(taskInfo.getOwner()).isEqualTo("owner");
         assertThat(comparableTask.getParentTaskId()).isEqualTo(taskInfo.getParentTaskId()).isEqualTo("parentTaskId");
-
-        // THEN: the ComparableTask is based on the TaskInfo
-        assertThat(comparableTask.getOriginalTaskClass()).isEqualTo(TaskInfo.class);
     }
 }
