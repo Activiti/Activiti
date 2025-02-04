@@ -33,14 +33,14 @@ public class TaskComparatorImpl implements TaskComparator {
         this.originalTask = comparableTask;
     }
     public void setUpdatedTask(TaskInfo task) {
-        if (originalTask==null || !TaskInfo.class.equals(originalTask.getOriginalTaskClass())) {
-            throw new IllegalArgumentException("task needs to be of class "+TaskInfo.class);
+        if (originalTask==null) {
+            throw new IllegalArgumentException("an originalTask is needed before setting an updatedTask");
         }
         this.updatedTask = new ComparableTask(task);
     }
     public void setUpdatedTask(ComparableTask comparableTask) {
-        if (originalTask==null || !comparableTask.getOriginalTaskClass().getClass().equals(originalTask.getOriginalTaskClass())) {
-            throw new IllegalArgumentException("task needs to be of class "+ComparableTask.class);
+        if (originalTask==null) {
+            throw new IllegalArgumentException("an originalTask is needed before setting an updatedTask");
         }
         this.updatedTask = comparableTask;
     }

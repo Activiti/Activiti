@@ -22,7 +22,6 @@ import java.util.Date;
 
 public class ComparableTask {
 
-    private Class<?> originalTaskClass;
     private String id;
     private String name;
     private Date dueDate;
@@ -35,26 +34,8 @@ public class ComparableTask {
     private String taskDefinitionKey;
     private String parentTaskId;
 
-    public ComparableTask(DelegateTask task) {
-        if (task!=null) {
-            this.originalTaskClass = DelegateTask.class;
-            this.id = task.getId();
-            this.name = task.getName();
-            this.dueDate = task.getDueDate();
-            this.description = task.getDescription();
-            this.owner = task.getOwner();
-            this.priority = task.getPriority();
-            this.category = task.getCategory();
-            this.formKey = task.getFormKey();
-            this.assignee = task.getAssignee();
-            this.taskDefinitionKey = task.getTaskDefinitionKey();
-            this.parentTaskId = null;  // DelegateTask doesn't have ParentTaskId
-        }
-    }
-
     public ComparableTask(TaskInfo task) {
         if (task!=null) {
-            this.originalTaskClass = TaskInfo.class;
             this.id = task.getId();
             this.name = task.getName();
             this.dueDate = task.getDueDate();
@@ -67,10 +48,6 @@ public class ComparableTask {
             this.taskDefinitionKey = task.getTaskDefinitionKey();
             this.parentTaskId = task.getParentTaskId();
         }
-    }
-
-    public Class<?> getOriginalTaskClass() {
-        return originalTaskClass;
     }
 
     public String getId() {
