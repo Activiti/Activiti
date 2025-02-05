@@ -20,6 +20,7 @@ import org.activiti.engine.task.TaskInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.function.Function;
 
 public class TaskComparatorImpl implements TaskComparator {
@@ -87,7 +88,7 @@ public class TaskComparatorImpl implements TaskComparator {
     }
     private boolean hasIntegerFieldChanged(Function<TaskInfo, Integer> comparableTaskGetter) {
         if (originalTask!=null && updatedTask!=null) {
-            return comparableTaskGetter.apply(originalTask) != comparableTaskGetter.apply(updatedTask);
+            return !Objects.equals(comparableTaskGetter.apply(originalTask), comparableTaskGetter.apply(updatedTask));
         }
         return false;
     }
