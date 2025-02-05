@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<bpmn2:definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20250114142629714" modeler:modelId="18" modeler:modelVersion="3" modeler:modelLastUpdated="1736863496427">
+  <bpmn2:process id="dynamicTaskChanges" name="dynamicTaskChanges" isExecutable="true">
+    <extensionElements>
+      <modeler:deleteallvariables xmlns:modeler="http://activiti.com/modeler" modeler:deleteallvariables=""/>
+    </extensionElements>
+    <bpmn2:startEvent id="startEvent">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[startEvent]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:outgoing>startEvent-userTask1</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="startEvent-userTask1" sourceRef="startEvent" targetRef="userTask1">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[startEvent-userTask1]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:userTask id="userTask1" name="Task1" activiti:assignee="$INITIATOR">
+      <extensionElements>
+        <activiti:taskListener event="assignment" class="org.activiti.engine.impl.bpmn.listener.ScriptTaskListener">
+          <activiti:field name="script">
+            <activiti:string><![CDATA[task.name = "name from script"; task.description = "description from script"; task.owner = "owner from script"; task.priority = 1; task.category = "category from script"; task.formKey = "formKey from script"; task.assignee = "assignee from script"; task.dueDate = new java.util.Date(1);]]></activiti:string>
+          </activiti:field>
+          <activiti:field name="language">
+            <activiti:string><![CDATA[JavaScript]]></activiti:string>
+          </activiti:field>
+        </activiti:taskListener>
+        <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:initiator-can-complete><![CDATA[false]]></modeler:initiator-can-complete>
+        <modeler:deactivate-user-task-reassignment><![CDATA[false]]></modeler:deactivate-user-task-reassignment>
+        <modeler:editor-resource-id><![CDATA[userTask]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:incoming>startEvent-userTask1</bpmn2:incoming>
+      <bpmn2:outgoing>userTask1-endEvent</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="userTask1-endEvent" sourceRef="userTask1" targetRef="endEvent">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[userTask1-endEvent]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:endEvent id="endEvent">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[endEvent]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:incoming>userTask1-endEvent</bpmn2:incoming>
+    </bpmn2:endEvent>
+
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_dynamicTaskChanges">
+    <bpmndi:BPMNPlane bpmnElement="dynamicTaskChanges" id="BPMNPlane_dynamicTaskChanges">
+      <bpmndi:BPMNShape bpmnElement="startEvent" id="BPMNShape_startEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="163.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask1" id="BPMNShape_userTask1">
+        <omgdc:Bounds height="80.0" width="100.0" x="175.0" y="138.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent" id="BPMNShape_endEvent">
+        <omgdc:Bounds height="28.0" width="28.0" x="320.0" y="164.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="userTask1-endEvent" id="BPMNEdge_userTask1-endEvent">
+        <omgdi:waypoint x="275.0" y="178.0"/>
+        <omgdi:waypoint x="320.0" y="178.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="startEvent-userTask1" id="BPMNEdge_startEvent-userTask1">
+        <omgdi:waypoint x="130.0" y="178.0"/>
+        <omgdi:waypoint x="175.0" y="178.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

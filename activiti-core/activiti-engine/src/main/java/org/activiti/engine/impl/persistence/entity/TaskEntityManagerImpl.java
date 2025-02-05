@@ -26,11 +26,14 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.TaskDataManager;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskInfo;
+import org.apache.commons.lang3.StringUtils;
 
 /**
 
@@ -322,5 +325,4 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
   public void setTaskDataManager(TaskDataManager taskDataManager) {
     this.taskDataManager = taskDataManager;
   }
-
 }
