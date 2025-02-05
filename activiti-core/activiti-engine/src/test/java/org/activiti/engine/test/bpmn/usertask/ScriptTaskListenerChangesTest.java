@@ -26,9 +26,9 @@ import java.util.Date;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class MakeTaskChangesUsingScriptsTests extends PluggableActivitiTestCase {
+public class ScriptTaskListenerChangesTest extends PluggableActivitiTestCase {
 
-  @Deployment(resources={"org/activiti/engine/test/bpmn/usertask/MakeTaskChangesUsingScripts.bpmn20.xml"})
+  @Deployment(resources={"org/activiti/engine/test/bpmn/usertask/ScriptTaskListenerChangesTest.bpmn20.xml"})
   public void testTaskChangesUsingTaskListeners() {
     // GIVEN: a process with an usertask, with a TaskListener to set values on the task using javascript
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("dynamicTaskChanges");
@@ -49,7 +49,7 @@ public class MakeTaskChangesUsingScriptsTests extends PluggableActivitiTestCase 
     assertThat(task.getDueDate()).isEqualTo(historicTask.getDueDate()).isEqualTo(new Date(1));
   }
 
-    @Deployment(resources={"org/activiti/engine/test/bpmn/usertask/MakeTaskChangesUsingScripts.bpmn20.xml"})
+    @Deployment(resources={"org/activiti/engine/test/bpmn/usertask/ScriptTaskListenerChangesTest.bpmn20.xml"})
     public void testTaskChangesUsingTaskListenersOnSave() {
       // GIVEN: a process with an usertask, with a TaskListener to set values on the task using javascript
       ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("dynamicTaskChanges");
