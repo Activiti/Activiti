@@ -195,7 +195,7 @@ public class TaskComparatorTest {
         assertThat((Boolean)hasChangedMethod.invoke(taskComparator, null)).isTrue();
 
         final List<Method> remainingMethods = Arrays.stream(TaskComparator.class.getDeclaredMethods())
-            .filter(method -> method.getReturnType().getName().equals("boolean"))
+            .filter(method -> method.getReturnType().isAssignableFrom(Boolean.class))
             .filter(method -> !method.getName().equals("hasTaskChanged"))
             .filter( method -> !method.equals(hasChangedMethod))
             .collect(Collectors.toList());
