@@ -66,7 +66,7 @@ public class EventSubscriptionManager {
         }
     }
 
-    protected void removeObsoleteMessageStartEventSubscriptions()
+    protected void removeObsoleteSignalStartEventSubscriptions()
     {
         EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
         List<SignalEventSubscriptionEntity> subscriptionsToDelete = eventSubscriptionEntityManager.findSignalStartEventSubscriptions();
@@ -83,7 +83,7 @@ public class EventSubscriptionManager {
         }
     }
 
-    protected void removeObsoleteSignalStartEventSubscriptions()
+    protected void removeObsoleteMessageStartEventSubscriptions()
     {
         EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
         List<MessageEventSubscriptionEntity> subscriptionsToDelete = eventSubscriptionEntityManager.findMessageStartEventSubscriptions();

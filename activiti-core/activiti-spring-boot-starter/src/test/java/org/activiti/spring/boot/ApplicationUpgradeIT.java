@@ -26,9 +26,11 @@ import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.core.common.project.model.ProjectManifest;
+import org.activiti.engine.ManagementService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
+import org.activiti.engine.runtime.Job;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,6 +51,9 @@ public class ApplicationUpgradeIT {
     private static final String ANOTHER_PROCESS_FROM_CUSTOM_DEPLOYMENT_KEY = "AnotherProcessFromCustomDeployment";
 
     @Autowired
+    private ActivitiProperties activitiProperties;
+
+    @Autowired
     private RepositoryService repositoryService;
 
     @Autowired
@@ -56,6 +61,9 @@ public class ApplicationUpgradeIT {
 
     @Autowired
     private ProcessAdminRuntime processAdminRuntime;
+
+    @Autowired
+    ManagementService managementService;
 
     @Autowired
     private SecurityUtil securityUtil;
@@ -337,6 +345,38 @@ public class ApplicationUpgradeIT {
 
     private Deployment deployProcessesWithoutProjectManifest(String deploymentName, String ... processPaths) {
         return deployProcesses(deploymentName, null, processPaths);
+    }
+
+    @Test
+    public void disableAllPreviousStartEvents_shouldBeFalse_when_notSet() {
+        assert !activitiProperties.isDisableAllPreviousStartEvents();
+    }
+
+    @Test
+    public void should_notDeletePreviousTimerStartEvents_when_projectIsUpgraded_when_disableStartEventsIsFalse() {
+        String deploymentName = "startEventDeployment";
+        Deployment oldDeployment = repositoryService.createDeployment()
+            .addClasspathResource("processes/ProcessWithTimerStartEvent.bpmn20.xml").
+            name(deploymentName).
+            deploy();
+        deploymentIds.add(oldDeployment.getId());
+
+        org.activiti.engine.repository.ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(oldDeployment.getId()).list().getFirst();
+        List<Job> list = managementService.createTimerJobQuery().processDefinitionId(processDefinition.getId()).list();
+        for (Job job : managementService.createTimerJobQuery().list()) {
+            if (job.getProcessDefinitionId().equals(processDefinition.getId())) {
+                assertThat(job.getProcessDefinitionId()).isEqualTo(processDefinition.getId());
+            }
+        }
+        assertThat(list).hasSize(1);
+
+        Deployment newDeployment = repositoryService.createDeployment()
+            .addClasspathResource("processes/ProcessWithoutTimerStartEvent.bpmn20.xml").
+            name(deploymentName).deploy();
+        deploymentIds.add(newDeployment.getId());
+        assertThat(list).hasSize(1)
+            .extracting(Job::getProcessDefinitionId)
+            .isEqualTo(Arrays.asList(processDefinition.getId()));
     }
 
 }
