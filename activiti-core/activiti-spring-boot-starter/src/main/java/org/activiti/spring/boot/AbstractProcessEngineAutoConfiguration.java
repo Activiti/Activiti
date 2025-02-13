@@ -26,6 +26,7 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextManager;
 import org.activiti.engine.integration.IntegrationContextService;
 import org.activiti.spring.ProcessEngineFactoryBean;
@@ -127,4 +128,11 @@ public abstract class AbstractProcessEngineAutoConfiguration
   public IntegrationContextService integrationContextServiceBean(ProcessEngine processEngine) {
     return super.integrationContextServiceBean(processEngine);
   }
+
+  @Bean
+  @ConditionalOnMissingBean
+  @Override
+    public EventSubscriptionEntityManager eventSubscriptionEntityManagerBean(ProcessEngine processEngine) {
+        return super.eventSubscriptionEntityManagerBean(processEngine);
+    }
 }

@@ -2271,6 +2271,7 @@ public ManagementService getManagementService() {
     return this;
   }
 
+
   public DynamicBpmnService getDynamicBpmnService() {
     return dynamicBpmnService;
   }
@@ -3086,6 +3087,10 @@ public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
   }
 
   public EventSubscriptionDataManager getEventSubscriptionDataManager() {
+      if(eventSubscriptionDataManager == null)
+      {
+            eventSubscriptionDataManager = new MybatisEventSubscriptionDataManager(this);
+      }
     return eventSubscriptionDataManager;
   }
 
@@ -3315,9 +3320,15 @@ public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
     return this;
   }
 
+  @Override
   public EventSubscriptionEntityManager getEventSubscriptionEntityManager() {
+      if(eventSubscriptionEntityManager==null)
+      {
+          eventSubscriptionEntityManager = new EventSubscriptionEntityManagerImpl(this,getEventSubscriptionDataManager());
+      }
     return eventSubscriptionEntityManager;
   }
+
 
   public ProcessEngineConfigurationImpl setEventSubscriptionEntityManager(EventSubscriptionEntityManager eventSubscriptionEntityManager) {
     this.eventSubscriptionEntityManager = eventSubscriptionEntityManager;

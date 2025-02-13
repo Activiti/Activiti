@@ -28,6 +28,7 @@ import org.activiti.engine.impl.cfg.BeansConfigurationHelper;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextManager;
 import org.activiti.engine.integration.IntegrationContextService;
 import org.activiti.engine.runtime.Clock;
@@ -262,6 +263,7 @@ public abstract class ProcessEngineConfiguration {
 
   public abstract IntegrationContextManager getIntegrationContextManager();
 
+  public abstract EventSubscriptionEntityManager getEventSubscriptionEntityManager();
   // getters and setters
   // //////////////////////////////////////////////////////
 
