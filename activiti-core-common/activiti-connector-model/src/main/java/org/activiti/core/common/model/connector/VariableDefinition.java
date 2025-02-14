@@ -33,6 +33,8 @@ public class VariableDefinition {
 
     private boolean analytics;
 
+    private boolean ephemeral;
+
     public String getId() {
         return id;
     }
@@ -96,4 +98,15 @@ public class VariableDefinition {
     public void setAnalytics(boolean analytics) {
         this.analytics = analytics;
     }
+
+    public void setEphemeral(boolean ephemeral) {
+        this.ephemeral = ephemeral;
+    }
+
+    public boolean isEphemeral() {
+        return ephemeral;
+    }
+
+
+
 }
