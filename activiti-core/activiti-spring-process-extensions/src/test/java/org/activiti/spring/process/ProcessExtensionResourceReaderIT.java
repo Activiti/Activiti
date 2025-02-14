@@ -191,6 +191,7 @@ public class ProcessExtensionResourceReaderIT {
                     .containsOnly("notTrackedId", false);
         }
     }
+
     @Test
     void should_read_propertyEphemeral_fromExtensions_when_present() throws Exception {
         try (InputStream inputStream = Thread.currentThread().getContextClassLoader()
@@ -206,6 +207,7 @@ public class ProcessExtensionResourceReaderIT {
 
         }
     }
+
     @Test
     void shouldBeFalse_propertyEphemeral_when_notPresent() throws Exception {
         try (InputStream inputStream = Thread.currentThread().getContextClassLoader()

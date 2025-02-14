@@ -106,7 +106,4 @@ public class VariableDefinition {
     public boolean isEphemeral() {
         return ephemeral;
     }
-
-
-
 }
