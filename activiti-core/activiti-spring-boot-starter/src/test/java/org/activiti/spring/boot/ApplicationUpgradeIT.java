@@ -27,7 +27,11 @@ import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.core.common.project.model.ProjectManifest;
 import org.activiti.engine.ManagementService;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.impl.EventSubscriptionQueryImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.runtime.Job;
@@ -66,7 +70,12 @@ public class ApplicationUpgradeIT {
     ManagementService managementService;
 
     @Autowired
+    private ProcessEngineConfigurationImpl processEngineConfigurationImpl;
+
+    @Autowired
     private SecurityUtil securityUtil;
+
+    private EventSubscriptionQueryImpl eventSubscriptionQuery;
 
     private List<String> deploymentIds;
 
@@ -74,6 +83,7 @@ public class ApplicationUpgradeIT {
     public void setUp() {
         deploymentIds = new ArrayList<>();
         securityUtil.logInAs("user");
+        eventSubscriptionQuery = new EventSubscriptionQueryImpl(processEngineConfigurationImpl.getCommandExecutor());
     }
 
     @AfterEach
@@ -353,7 +363,7 @@ public class ApplicationUpgradeIT {
     }
 
     @Test
-    public void should_notDeletePreviousTimerStartEvents_when_projectIsUpgraded_when_disableStartEventsIsFalse() {
+    public void should_notDeletePreviousTimerStartEvents_when_projectIsUpgraded_and_disableStartEventsIsFalse() {
         String deploymentName = "startEventDeployment";
         Deployment oldDeployment = repositoryService.createDeployment()
             .addClasspathResource("processes/ProcessWithTimerStartEvent.bpmn20.xml").
@@ -377,6 +387,45 @@ public class ApplicationUpgradeIT {
         assertThat(list).hasSize(1)
             .extracting(Job::getProcessDefinitionId)
             .isEqualTo(Arrays.asList(processDefinition.getId()));
+    }
+
+    @Test
+    public void should_notdDeletePreviousMessageStartEvents_when_projectIsUpgraded_and_disableStartEventsIsFalse() {
+        String deploymentName = "testDeployment";
+        Deployment oldDeployment = repositoryService.createDeployment()
+            .addClasspathResource("processes/ProcessWithMessageStartEvent.bpmn20.xml").
+            name(deploymentName).deploy();
+        deploymentIds.add(oldDeployment.getId());
+
+        List<EventSubscriptionEntity> messageSubscriptions = eventSubscriptionQuery.eventType("message").activityId("Event_1").list();
+        assertThat(messageSubscriptions).hasSize(1);
+        Deployment newDeployment = repositoryService.createDeployment()
+            .addClasspathResource("processes/ProcessWithoutMessageStartEvent.bpmn20.xml").
+            name(deploymentName).deploy();
+        deploymentIds.add(newDeployment.getId());
+
+        messageSubscriptions = eventSubscriptionQuery.eventType("message").activityId("Event_1").list();
+        assertThat(messageSubscriptions).hasSize(1);
+    }
+
+    @Test
+    public void should_deletePreviousSignalStartEvents_when_projectIsUpgraded_and_disableStartEventsIsFalse() {
+        String deploymentName = "signalDeployment";
+        Deployment oldDeployment = repositoryService.createDeployment()
+            .addClasspathResource("processes/ProcessWithSignalStartEvent.bpmn20.xml").
+            name(deploymentName).deploy();
+        deploymentIds.add(oldDeployment.getId());
+
+        List<EventSubscriptionEntity> signalSubscriptions = eventSubscriptionQuery.eventType("signal").activityId("Event_1").list();
+        assertThat(signalSubscriptions).hasSize(1);
+
+        Deployment newDeployment = repositoryService.createDeployment()
+            .addClasspathResource("processes/ProcessWithoutSignalStartEvent.bpmn20.xml").
+            name(deploymentName).deploy();
+        deploymentIds.add(newDeployment.getId());
+
+        signalSubscriptions = eventSubscriptionQuery.eventType("signal").activityId("Event_1").list();
+        assertThat(signalSubscriptions).hasSize(1);
     }
 
 }
