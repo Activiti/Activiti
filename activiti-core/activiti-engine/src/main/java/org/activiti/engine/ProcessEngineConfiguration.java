@@ -263,7 +263,6 @@ public abstract class ProcessEngineConfiguration {
 
   public abstract IntegrationContextManager getIntegrationContextManager();
 
-  public abstract EventSubscriptionEntityManager getEventSubscriptionEntityManager();
   // getters and setters
   // //////////////////////////////////////////////////////
 
