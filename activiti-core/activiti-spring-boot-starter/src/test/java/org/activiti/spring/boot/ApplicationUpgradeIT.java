@@ -309,8 +309,6 @@ public class ApplicationUpgradeIT {
         deploymentIds.add(deployment2.getId());
         assertThat(deployment2.getVersion()).isEqualTo(5);
         assertThat(deployment2.getProjectReleaseVersion()).isEqualTo("17");
-
-
     }
 
     @Test
@@ -365,7 +363,7 @@ public class ApplicationUpgradeIT {
     public void should_notDeletePreviousTimerStartEvents_when_projectIsUpgraded_and_disableStartEventsIsFalse() {
         String deploymentName = "startEventDeployment";
 
-        String deploymentId = deployProcess(deploymentName,"processes/ProcessWithTimerStartEvent.bpmn20.xml");
+        String deploymentId = deployProcess(deploymentName, "processes/ProcessWithTimerStartEvent.bpmn20.xml");
 
         org.activiti.engine.repository.ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId).list().getFirst();
         List<Job> list = managementService.createTimerJobQuery().processDefinitionId(processDefinition.getId()).list();
@@ -374,8 +372,8 @@ public class ApplicationUpgradeIT {
             .extracting(Job::getProcessDefinitionId)
             .isEqualTo(Arrays.asList(processDefinition.getId()));
 
-       deployProcess(deploymentName,"processes/ProcessWithoutTimerStartEvent.bpmn20.xml");
-       
+        deployProcess(deploymentName, "processes/ProcessWithoutTimerStartEvent.bpmn20.xml");
+
         assertThat(list).hasSize(1)
             .extracting(Job::getProcessDefinitionId)
             .isEqualTo(Arrays.asList(processDefinition.getId()));
@@ -384,35 +382,33 @@ public class ApplicationUpgradeIT {
     @Test
     public void should_notDeletePreviousMessageStartEvents_when_projectIsUpgraded_and_disableStartEventsIsFalse() {
         String deploymentName = "testDeployment";
-        deployProcess(deploymentName,"processes/ProcessWithMessageStartEvent.bpmn20.xml");
+        deployProcess(deploymentName, "processes/ProcessWithMessageStartEvent.bpmn20.xml");
 
         List<EventSubscriptionEntity> messageSubscriptions = eventSubscriptionQuery.eventType("message").activityId("Event_1").list();
         assertThat(messageSubscriptions).hasSize(1);
 
-        deployProcess(deploymentName,"processes/ProcessWithoutMessageStartEvent.bpmn20.xml");
+        deployProcess(deploymentName, "processes/ProcessWithoutMessageStartEvent.bpmn20.xml");
 
         messageSubscriptions = eventSubscriptionQuery.eventType("message").activityId("Event_1").list();
         assertThat(messageSubscriptions).hasSize(1);
     }
 
-
-
     @Test
     public void should_deletePreviousSignalStartEvents_when_projectIsUpgraded_and_disableStartEventsIsFalse() {
         String deploymentName = "signalDeployment";
 
-        deployProcess(deploymentName,"processes/ProcessWithSignalStartEvent.bpmn20.xml");
+        deployProcess(deploymentName, "processes/ProcessWithSignalStartEvent.bpmn20.xml");
 
         List<EventSubscriptionEntity> signalSubscriptions = eventSubscriptionQuery.eventType("signal").activityId("Event_1").list();
         assertThat(signalSubscriptions).hasSize(1);
 
-        deployProcess(deploymentName,"processes/ProcessWithoutSignalStartEvent.bpmn20.xml");
+        deployProcess(deploymentName, "processes/ProcessWithoutSignalStartEvent.bpmn20.xml");
 
         signalSubscriptions = eventSubscriptionQuery.eventType("signal").activityId("Event_1").list();
         assertThat(signalSubscriptions).hasSize(1);
     }
 
-    private String deployProcess(String deploymentName,String processPath) {
+    private String deployProcess(String deploymentName, String processPath) {
         Deployment deployment = repositoryService.createDeployment()
             .addClasspathResource(processPath).
             name(deploymentName).deploy();
