@@ -191,4 +191,37 @@ public class ProcessExtensionResourceReaderIT {
                     .containsOnly("notTrackedId", false);
         }
     }
+
+    @Test
+    void should_read_propertyEphemeral_fromExtensions_when_present() throws Exception {
+        try (InputStream inputStream = Thread.currentThread().getContextClassLoader()
+            .getResourceAsStream("processes/vars-extensions.json")) {
+            ProcessExtensionModel processExtensionModel = reader.read(inputStream);
+            assertThat(processExtensionModel).isNotNull();
+            assertThat(processExtensionModel.getId()).isEqualTo("varsProcess");
+            assertThat(
+                processExtensionModel.getExtensions("Process_varsProcess").getProperties())
+                .extracting(stringVariableDefinitionMap -> stringVariableDefinitionMap.get("ea640de8-4683-4298-84a5-1e2d59c7219a"))
+                .extracting(VariableDefinition::getName, VariableDefinition::isEphemeral)
+                .containsOnly("testVariable", true);
+
+        }
+    }
+
+    @Test
+    void shouldBeFalse_propertyEphemeral_when_notPresent() throws Exception {
+        try (InputStream inputStream = Thread.currentThread().getContextClassLoader()
+            .getResourceAsStream("processes/vars-extensions.json")) {
+            ProcessExtensionModel processExtensionModel = reader.read(inputStream);
+            assertThat(processExtensionModel).isNotNull();
+            assertThat(processExtensionModel.getId()).isEqualTo("varsProcess");
+            assertThat(
+                processExtensionModel.getExtensions("Process_varsProcess").getProperties())
+                .extracting(stringVariableDefinitionMap -> stringVariableDefinitionMap.get("f04b8b72-26ca-411e-8b2b-729a059bb06a"))
+                .extracting(VariableDefinition::getName, VariableDefinition::isEphemeral)
+                .containsOnly("testVariable2", false);
+
+        }
+    }
+
 }
