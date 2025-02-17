@@ -52,7 +52,6 @@ public interface TimerJobEntityManager extends EntityManager<TimerJobEntity> {
      */
   List<TimerJobEntity> findTimerStartEvents();
 
-
   /**
    * Returns the {@link TimerJobEntity} for a given process definition.
    *

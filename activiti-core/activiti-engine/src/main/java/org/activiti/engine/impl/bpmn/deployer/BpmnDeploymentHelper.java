@@ -104,7 +104,7 @@ public class BpmnDeploymentHelper  {
    * If none is found, returns null.  This method assumes that the tenant and key are properly
    * set on the process definition entity.
    */
-  public ProcessDefinitionEntity  getMostRecentVersionOfProcessDefinition(ProcessDefinitionEntity processDefinition) {
+  public ProcessDefinitionEntity getMostRecentVersionOfProcessDefinition(ProcessDefinitionEntity processDefinition) {
     String key = processDefinition.getKey();
     String tenantId = processDefinition.getTenantId();
     ProcessDefinitionEntityManager processDefinitionManager
@@ -164,7 +164,6 @@ public class BpmnDeploymentHelper  {
     timerManager.removeObsoleteTimers(processDefinition);
     timerManager.scheduleTimers(processDefinition, process);
   }
-
 
     public void disableTimerMessageAndSignalStartEvents() {
         timerManager.removeObsoleteTimerStartEvents();

@@ -28,7 +28,6 @@ import org.activiti.engine.impl.cfg.BeansConfigurationHelper;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.history.HistoryLevel;
-import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextManager;
 import org.activiti.engine.integration.IntegrationContextService;
 import org.activiti.engine.runtime.Clock;
@@ -136,8 +135,6 @@ public abstract class ProcessEngineConfiguration {
   protected DataSource dataSource;
   protected boolean transactionsExternallyManaged;
 
-  protected boolean disableAllPreviousStartEvents;
-
   protected String jpaPersistenceUnitName;
   protected Object jpaEntityManagerFactory;
   protected boolean jpaHandleTransaction;
@@ -145,8 +142,9 @@ public abstract class ProcessEngineConfiguration {
 
   protected Clock clock;
   protected AsyncExecutor asyncExecutor;
+  protected boolean disableAllPreviousStartEvents;
 
-  /**
+    /**
    * Define the default lock time for an async job in seconds. The lock time is used when creating an async job and when it expires the async executor assumes that the job has failed. It will be
    * retried again.
    */

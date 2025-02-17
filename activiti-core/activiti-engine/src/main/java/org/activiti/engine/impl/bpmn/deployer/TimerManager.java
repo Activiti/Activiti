@@ -57,16 +57,14 @@ public class TimerManager {
     }
   }
 
-  protected void removeObsoleteTimerStartEvents()
-  {
-      List<TimerJobEntity> timerStartJobs = Context.getCommandContext().getTimerJobEntityManager().
-         findTimerStartEvents();
-      if (timerStartJobs != null && timerStartJobs.size() > 0) {
-
-          for (TimerJobEntity timerStartJob : timerStartJobs) {
-              new CancelJobsCmd(timerStartJob.getId()).execute(Context.getCommandContext());
-          }
-      }
+  protected void removeObsoleteTimerStartEvents() {
+    List<TimerJobEntity> timerStartJobs = Context.getCommandContext().getTimerJobEntityManager().
+        findTimerStartEvents();
+    if (timerStartJobs != null && timerStartJobs.size() > 0) {
+        for (TimerJobEntity timerStartJob : timerStartJobs) {
+            new CancelJobsCmd(timerStartJob.getId()).execute(Context.getCommandContext());
+        }
+    }
   }
 
   protected void scheduleTimers(ProcessDefinitionEntity processDefinition, Process process) {

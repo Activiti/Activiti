@@ -66,7 +66,7 @@ public interface EventSubscriptionDataManager extends DataManager<EventSubscript
 
   List<MessageEventSubscriptionEntity> findMessageStartEventSubscriptions();
 
-    void updateEventSubscriptionTenantId(String oldTenantId, String newTenantId);
+  void updateEventSubscriptionTenantId(String oldTenantId, String newTenantId);
 
   void deleteEventSubscriptionsForProcessDefinition(String processDefinitionId);
 

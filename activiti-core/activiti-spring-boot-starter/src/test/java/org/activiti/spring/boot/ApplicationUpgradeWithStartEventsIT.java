@@ -35,7 +35,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,properties = {"spring.activiti.disable-all-previous-start-events=true"})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, properties = {"spring.activiti.disable-all-previous-start-events=true"})
 public class ApplicationUpgradeWithStartEventsIT {
 
     @Autowired
@@ -78,16 +78,13 @@ public class ApplicationUpgradeWithStartEventsIT {
     @Test
     public void should_deletePreviousTimerStartEvents_when_projectIsUpgraded() {
         String deploymentName = "testDeployment";
-        Deployment oldDeployment = repositoryService.createDeployment()
-            .addClasspathResource("processes/ProcessWithTimerStartEvent.bpmn20.xml").
-            name(deploymentName).deploy();
-        deploymentIds.add(oldDeployment.getId());
+        deployProcess(deploymentName, "processes/ProcessWithTimerStartEvent.bpmn20.xml");
+
         List<Job> list = managementService.createTimerJobQuery().list();
         assertThat(list).hasSize(1);
-        Deployment newDeployment = repositoryService.createDeployment()
-            .addClasspathResource("processes/ProcessWithoutTimerStartEvent.bpmn20.xml").
-            name(deploymentName).deploy();
-        deploymentIds.add(newDeployment.getId());
+
+        deployProcess(deploymentName, "processes/ProcessWithoutTimerStartEvent.bpmn20.xml");
+
         list = managementService.createTimerJobQuery().list();
         assertThat(list).hasSize(0);
     }
@@ -95,39 +92,38 @@ public class ApplicationUpgradeWithStartEventsIT {
     @Test
     public void should_deletePreviousMessageStartEvents_when_projectIsUpgraded() {
         String deploymentName = "testDeployment";
-        Deployment oldDeployment = repositoryService.createDeployment()
-            .addClasspathResource("processes/ProcessWithMessageStartEvent.bpmn20.xml").
-            name(deploymentName).deploy();
-        deploymentIds.add(oldDeployment.getId());
+
+        deployProcess(deploymentName, "processes/ProcessWithMessageStartEvent.bpmn20.xml");
 
         List<EventSubscriptionEntity> messageSubscriptions = eventSubscriptionQuery.eventType("message").activityId("Event_1").list();
         assertThat(messageSubscriptions).hasSize(1);
-        Deployment newDeployment = repositoryService.createDeployment()
-            .addClasspathResource("processes/ProcessWithoutMessageStartEvent.bpmn20.xml").
-            name(deploymentName).deploy();
-        deploymentIds.add(newDeployment.getId());
+
+        deployProcess(deploymentName, "processes/ProcessWithoutMessageStartEvent.bpmn20.xml");
 
         messageSubscriptions = eventSubscriptionQuery.eventType("message").activityId("Event_1").list();
         assertThat(messageSubscriptions).hasSize(0);
     }
 
-        @Test
-        public void should_deletePreviousSignalStartEvents_when_projectIsUpgraded() {
-            String deploymentName = "signalDeployment";
-            Deployment oldDeployment = repositoryService.createDeployment()
-                .addClasspathResource("processes/ProcessWithSignalStartEvent.bpmn20.xml").
-                name(deploymentName).deploy();
-           deploymentIds.add(oldDeployment.getId());
+    @Test
+    public void should_deletePreviousSignalStartEvents_when_projectIsUpgraded() {
+        String deploymentName = "signalDeployment";
 
-            List<EventSubscriptionEntity> signalSubscriptions = eventSubscriptionQuery.eventType("signal").activityId("Event_1").list();
-            assertThat(signalSubscriptions).hasSize(1);
+        deployProcess(deploymentName, "processes/ProcessWithSignalStartEvent.bpmn20.xml");
 
-            Deployment newDeployment = repositoryService.createDeployment()
-                .addClasspathResource("processes/ProcessWithoutSignalStartEvent.bpmn20.xml").
-                name(deploymentName).deploy();
-            deploymentIds.add(newDeployment.getId());
+        List<EventSubscriptionEntity> signalSubscriptions = eventSubscriptionQuery.eventType("signal").activityId("Event_1").list();
+        assertThat(signalSubscriptions).hasSize(1);
 
-            signalSubscriptions = eventSubscriptionQuery.eventType("signal").activityId("Event_1").list();
-            assertThat(signalSubscriptions).hasSize(0);
-        }
+        deployProcess(deploymentName, "processes/ProcessWithoutSignalStartEvent.bpmn20.xml");
+
+        signalSubscriptions = eventSubscriptionQuery.eventType("signal").activityId("Event_1").list();
+        assertThat(signalSubscriptions).hasSize(0);
+    }
+
+    private String deployProcess(String deploymentName, String processPath) {
+        Deployment deployment = repositoryService.createDeployment()
+            .addClasspathResource(processPath).
+            name(deploymentName).deploy();
+        deploymentIds.add(deployment.getId());
+        return deployment.getId();
+    }
 }

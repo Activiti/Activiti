@@ -90,6 +90,7 @@ public interface EventSubscriptionEntityManager extends EntityManager<EventSubsc
   List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByNameAndExecution(String name, String executionId);
 
   List<SignalEventSubscriptionEntity> findSignalStartEventSubscriptions();
+
   /* Find (message) */
 
   MessageEventSubscriptionEntity findMessageStartEventSubscriptionByName(String messageName, String tenantId);

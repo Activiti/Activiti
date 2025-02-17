@@ -49,7 +49,8 @@ import org.slf4j.LoggerFactory;
 
 public class BpmnDeployer implements Deployer {
 
-    private static final Logger log = LoggerFactory.getLogger(BpmnDeployer.class);;
+    private static final Logger log = LoggerFactory.getLogger(BpmnDeployer.class);
+
     protected IdGenerator idGenerator;
     protected ParsedDeploymentBuilderFactory parsedDeploymentBuilderFactory;
     protected BpmnDeploymentHelper bpmnDeploymentHelper;
@@ -225,7 +226,8 @@ public class BpmnDeployer implements Deployer {
         }
     }
 
-    protected void updateTimersAndEvents(ParsedDeployment parsedDeployment,Map<ProcessDefinitionEntity, ProcessDefinitionEntity> mapNewToOldProcessDefinitions) {
+    protected void updateTimersAndEvents(ParsedDeployment parsedDeployment,
+                                         Map<ProcessDefinitionEntity, ProcessDefinitionEntity> mapNewToOldProcessDefinitions) {
 
         for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
             bpmnDeploymentHelper.updateTimersAndEvents(processDefinition,
