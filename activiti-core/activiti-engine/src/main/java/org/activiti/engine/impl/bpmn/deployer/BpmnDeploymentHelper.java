@@ -169,7 +169,7 @@ public class BpmnDeploymentHelper  {
     timerManager.removeExistingTimerStartEventJobs();
     eventSubscriptionManager.removeExistingSignalStartEventSubscriptions();
     eventSubscriptionManager.removeExistingMessageStartEventSubscriptions();
-    }
+  }
 
   protected enum ExpressionType {
     USER, GROUP
