@@ -356,7 +356,7 @@ public class ApplicationUpgradeIT {
 
     @Test
     public void disableAllPreviousStartEvents_shouldBeFalse_when_notSet() {
-        assertThat(activitiProperties.shouldDisableAllPreviousStartEvents()).isFalse();
+        assertThat(activitiProperties.shouldDisableExistingStartEventSubscriptions()).isFalse();
     }
 
     @Test

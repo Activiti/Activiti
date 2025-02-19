@@ -35,7 +35,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, properties = {"spring.activiti.disable-all-previous-start-events=true"})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, properties = {"spring.activiti.disable-existing-start-event-subscriptions=true"})
 public class ApplicationUpgradeWithStartEventsIT {
 
     @Autowired
@@ -72,7 +72,7 @@ public class ApplicationUpgradeWithStartEventsIT {
 
     @Test
     public void testDisableAllPreviousStartEvents() {
-        assertThat(activitiProperties.shouldDisableAllPreviousStartEvents()).isTrue();
+        assertThat(activitiProperties.shouldDisableExistingStartEventSubscriptions()).isTrue();
     }
 
     @Test
