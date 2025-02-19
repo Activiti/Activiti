@@ -15,7 +15,6 @@
       <bpmn2:outgoing>Flow_01rdqtp</bpmn2:outgoing>
     </bpmn2:startEvent>
   </bpmn2:process>
-  <bpmn2:message id="Message_08rsbt0" name="Message_08rsbt0" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_XPyUlfrs">
       <bpmndi:BPMNShape id="Activity_1sl56l9_di" bpmnElement="Activity_1sl56l9">

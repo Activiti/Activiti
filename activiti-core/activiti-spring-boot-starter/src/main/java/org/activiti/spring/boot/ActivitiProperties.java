@@ -260,7 +260,7 @@ public class ActivitiProperties {
         this.disableAllPreviousStartEvents = disableAllPreviousStartEvents;
     }
 
-    public boolean isDisableAllPreviousStartEvents() {
+    public boolean shouldDisableAllPreviousStartEvents() {
         return disableAllPreviousStartEvents;
     }
 }

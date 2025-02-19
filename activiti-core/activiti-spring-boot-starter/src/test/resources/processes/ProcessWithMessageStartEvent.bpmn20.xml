@@ -6,12 +6,12 @@
       <bpmn2:incoming>Flow_01rdqtp</bpmn2:incoming>
       <bpmn2:outgoing>Flow_0gd6msg</bpmn2:outgoing>
     </bpmn2:userTask>
-    <bpmn2:sequenceFlow id="Flow_01rdqtp" sourceRef="Event_1" targetRef="Activity_1sl56l9" />
+    <bpmn2:sequenceFlow id="Flow_01rdqtp" sourceRef="MessageStartEvent" targetRef="Activity_1sl56l9" />
     <bpmn2:endEvent id="Event_0ukn0y4">
       <bpmn2:incoming>Flow_0gd6msg</bpmn2:incoming>
     </bpmn2:endEvent>
     <bpmn2:sequenceFlow id="Flow_0gd6msg" sourceRef="Activity_1sl56l9" targetRef="Event_0ukn0y4" />
-    <bpmn2:startEvent id="Event_1" name="messageEvent">
+    <bpmn2:startEvent id="MessageStartEvent" name="messageEvent">
       <bpmn2:outgoing>Flow_01rdqtp</bpmn2:outgoing>
       <bpmn2:messageEventDefinition id="MessageEventDefinition_1gt35k0" messageRef="Message_08rsbt0" />
     </bpmn2:startEvent>

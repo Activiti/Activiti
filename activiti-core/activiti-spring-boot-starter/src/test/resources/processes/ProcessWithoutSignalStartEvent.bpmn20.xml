@@ -22,7 +22,6 @@
     </bpmn2:startEvent>
   </bpmn2:process>
   <bpmn2:signal id="Signal_1fcvkon" name="Signal_1fcvkon" />
-  <bpmn2:signal id="Signal_0vq9okx" name="Signal_0vq9okx" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_m6jfChO-">
       <bpmndi:BPMNShape id="Activity_0ptke4v_di" bpmnElement="Activity_0ptke4v">

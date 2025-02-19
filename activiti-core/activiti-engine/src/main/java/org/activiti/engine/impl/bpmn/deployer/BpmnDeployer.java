@@ -55,7 +55,7 @@ public class BpmnDeployer implements Deployer {
     protected ParsedDeploymentBuilderFactory parsedDeploymentBuilderFactory;
     protected BpmnDeploymentHelper bpmnDeploymentHelper;
     protected CachingAndArtifactsManager cachingAndArtifactsManager;
-    private boolean disableAllStartEvents;
+    private boolean disableExistingStartEventSubscriptions;
 
     @Override
     public void deploy(DeploymentEntity deployment,
@@ -87,8 +87,8 @@ public class BpmnDeployer implements Deployer {
                                                mapOfNewProcessDefinitionToPreviousVersion);
             setProcessDefinitionAppVersion(parsedDeployment);
             persistProcessDefinitionsAndAuthorizations(parsedDeployment);
-            if(isDisableAllStartEvents()){
-                bpmnDeploymentHelper.disableTimerMessageAndSignalStartEvents();
+            if(shouldDisableExistingStartEventSubscriptions()){
+                bpmnDeploymentHelper.disableExistingStartEventSubscriptions();
             }
             updateTimersAndEvents(parsedDeployment,mapOfNewProcessDefinitionToPreviousVersion);
             dispatchProcessDefinitionEntityInitializedEvent(parsedDeployment);
@@ -545,11 +545,11 @@ public class BpmnDeployer implements Deployer {
         this.cachingAndArtifactsManager = manager;
     }
 
-    public void setDisableAllStartEvents(boolean disableAllStartEvents) {
-        this.disableAllStartEvents = disableAllStartEvents;
+    public void setDisableExistingStartEventSubscriptions(boolean disableExistingStartEventSubscriptions) {
+        this.disableExistingStartEventSubscriptions = disableExistingStartEventSubscriptions;
     }
 
-    public boolean isDisableAllStartEvents() {
-        return disableAllStartEvents;
+    public boolean shouldDisableExistingStartEventSubscriptions() {
+        return disableExistingStartEventSubscriptions;
     }
 }

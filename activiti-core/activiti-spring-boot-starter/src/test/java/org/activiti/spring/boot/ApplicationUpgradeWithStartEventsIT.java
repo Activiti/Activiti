@@ -45,7 +45,7 @@ public class ApplicationUpgradeWithStartEventsIT {
     private RepositoryService repositoryService;
 
     @Autowired
-    ManagementService managementService;
+    private ManagementService managementService;
 
     @Autowired
     private SecurityUtil securityUtil;
@@ -72,7 +72,7 @@ public class ApplicationUpgradeWithStartEventsIT {
 
     @Test
     public void testDisableAllPreviousStartEvents() {
-        assert activitiProperties.isDisableAllPreviousStartEvents();
+        assertThat(activitiProperties.shouldDisableAllPreviousStartEvents()).isTrue();
     }
 
     @Test
@@ -95,12 +95,12 @@ public class ApplicationUpgradeWithStartEventsIT {
 
         deployProcess(deploymentName, "processes/ProcessWithMessageStartEvent.bpmn20.xml");
 
-        List<EventSubscriptionEntity> messageSubscriptions = eventSubscriptionQuery.eventType("message").activityId("Event_1").list();
+        List<EventSubscriptionEntity> messageSubscriptions = eventSubscriptionQuery.eventType("message").activityId("MessageStartEvent").list();
         assertThat(messageSubscriptions).hasSize(1);
 
         deployProcess(deploymentName, "processes/ProcessWithoutMessageStartEvent.bpmn20.xml");
 
-        messageSubscriptions = eventSubscriptionQuery.eventType("message").activityId("Event_1").list();
+        messageSubscriptions = eventSubscriptionQuery.eventType("message").activityId("MessageStartEvent").list();
         assertThat(messageSubscriptions).hasSize(0);
     }
 
@@ -110,12 +110,12 @@ public class ApplicationUpgradeWithStartEventsIT {
 
         deployProcess(deploymentName, "processes/ProcessWithSignalStartEvent.bpmn20.xml");
 
-        List<EventSubscriptionEntity> signalSubscriptions = eventSubscriptionQuery.eventType("signal").activityId("Event_1").list();
+        List<EventSubscriptionEntity> signalSubscriptions = eventSubscriptionQuery.eventType("signal").activityId("SignalStartEvent").list();
         assertThat(signalSubscriptions).hasSize(1);
 
         deployProcess(deploymentName, "processes/ProcessWithoutSignalStartEvent.bpmn20.xml");
 
-        signalSubscriptions = eventSubscriptionQuery.eventType("signal").activityId("Event_1").list();
+        signalSubscriptions = eventSubscriptionQuery.eventType("signal").activityId("SignalStartEvent").list();
         assertThat(signalSubscriptions).hasSize(0);
     }
 

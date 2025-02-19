@@ -57,10 +57,10 @@ public class TimerManager {
     }
   }
 
-  protected void removeObsoleteTimerStartEvents() {
+  protected void removeExistingTimerStartEventJobs() {
     List<TimerJobEntity> timerStartJobs = Context.getCommandContext().getTimerJobEntityManager().
         findTimerStartEvents();
-    if (timerStartJobs != null && timerStartJobs.size() > 0) {
+    if (timerStartJobs != null) {
         for (TimerJobEntity timerStartJob : timerStartJobs) {
             new CancelJobsCmd(timerStartJob.getId()).execute(Context.getCommandContext());
         }

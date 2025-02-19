@@ -2,7 +2,7 @@
 <bpmn2:definitions xmlns:activiti="http://activiti.org/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="model-b059c0d2-7a1d-4cba-acc9-3495eafd8f97" name="signalProcess" targetNamespace="" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="ProcessWithSignalStartEvent" name="ProcessWithSignalStartEvent" isExecutable="true">
     <bpmn2:documentation />
-    <bpmn2:startEvent id="Event_1" name="signalStart">
+    <bpmn2:startEvent id="SignalStartEvent" name="signalStart">
       <bpmn2:outgoing>Flow_1v76jj8</bpmn2:outgoing>
       <bpmn2:signalEventDefinition id="SignalEventDefinition_15pzwhe" signalRef="Signal_0vq9okx" />
     </bpmn2:startEvent>
@@ -10,7 +10,7 @@
       <bpmn2:incoming>Flow_1v76jj8</bpmn2:incoming>
       <bpmn2:outgoing>Flow_1cik5hx</bpmn2:outgoing>
     </bpmn2:userTask>
-    <bpmn2:sequenceFlow id="Flow_1v76jj8" sourceRef="Event_1" targetRef="Activity_0ptke4v" />
+    <bpmn2:sequenceFlow id="Flow_1v76jj8" sourceRef="SignalStartEvent" targetRef="Activity_0ptke4v" />
     <bpmn2:sequenceFlow id="Flow_1cik5hx" sourceRef="Activity_0ptke4v" targetRef="Event_00py9wg" />
     <bpmn2:intermediateCatchEvent id="Event_00py9wg" name="signalIntermediate">
       <bpmn2:incoming>Flow_1cik5hx</bpmn2:incoming>
