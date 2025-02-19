@@ -171,7 +171,7 @@ public class BpmnDeploymentHelper  {
     eventSubscriptionManager.removeExistingMessageStartEventSubscriptions();
     }
 
-protected enum ExpressionType {
+  protected enum ExpressionType {
     USER, GROUP
   }
 
