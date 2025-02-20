@@ -31,6 +31,7 @@ import org.activiti.runtime.api.event.internal.VariableEventFilter;
 import org.activiti.runtime.api.event.internal.VariableUpdatedListenerDelegate;
 import org.activiti.runtime.api.impl.VariableNameValidator;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
+import org.activiti.spring.process.ProcessExtensionService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -51,12 +52,12 @@ public class CommonRuntimeAutoConfiguration {
 
     @Bean
     public InitializingBean registerVariableCreatedListenerDelegate(RuntimeService runtimeService,
-        @Autowired(required = false) List<VariableEventListener<VariableCreatedEvent>> listeners,
-        VariableEventFilter variableEventFilter) {
+                                                                    @Autowired(required = false) List<VariableEventListener<VariableCreatedEvent>> listeners,
+                                                                    VariableEventFilter variableEventFilter, ProcessExtensionService processExtensionService) {
         return () -> runtimeService.addEventListener(
             new VariableCreatedListenerDelegate(getInitializedListeners(listeners),
                 new ToVariableCreatedConverter(),
-                variableEventFilter), ActivitiEventType.VARIABLE_CREATED);
+                variableEventFilter,processExtensionService), ActivitiEventType.VARIABLE_CREATED);
     }
 
     private <T> List<T> getInitializedListeners(List<T> eventListeners) {
