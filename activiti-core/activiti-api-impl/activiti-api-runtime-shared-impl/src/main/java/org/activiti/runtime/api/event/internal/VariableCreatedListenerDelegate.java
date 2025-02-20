@@ -56,7 +56,10 @@ public class VariableCreatedListenerDelegate implements ActivitiEventListener {
             ActivitiVariableEvent internalEvent = (ActivitiVariableEvent) event;
             Extension extension = processExtensionService.getExtensionsForId(internalEvent.getProcessDefinitionId());
             if (variableEventFilter.shouldEmmitEvent(internalEvent)) {
-                VariableDefinition extensionPropertyByName = extension.getPropertyByName(internalEvent.getVariableName());
+                VariableDefinition extensionPropertyByName=null;
+                if(extension!=null) {
+                    extensionPropertyByName = extension.getPropertyByName(internalEvent.getVariableName());
+                }
                 boolean isEphemeral = extension != null && (extensionPropertyByName!=null && extensionPropertyByName.isEphemeral());
                    getIfPresent(converter.from(internalEvent, isEphemeral));
 

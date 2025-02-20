@@ -69,7 +69,7 @@ public class VariableCreatedListenerDelegateTest {
             ActivitiEventType.VARIABLE_CREATED);
         given(variableEventFilter.shouldEmmitEvent(internalEvent)).willReturn(true);
         VariableCreatedEvent apiEvent = mock(VariableCreatedEvent.class);
-        given(converter.from(internalEvent)).willReturn(Optional.of(
+        given(converter.from(internalEvent,false)).willReturn(Optional.of(
             apiEvent));
 
         //when
