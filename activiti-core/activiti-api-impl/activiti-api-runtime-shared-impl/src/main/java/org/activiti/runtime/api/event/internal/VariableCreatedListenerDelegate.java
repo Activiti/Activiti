@@ -24,6 +24,7 @@ import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti.runtime.api.event.impl.ToVariableCreatedConverter;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.Extension;
+import org.activiti.spring.process.model.VariableDefinition;
 
 import java.util.List;
 import java.util.Optional;
@@ -55,15 +56,9 @@ public class VariableCreatedListenerDelegate implements ActivitiEventListener {
             ActivitiVariableEvent internalEvent = (ActivitiVariableEvent) event;
             Extension extension = processExtensionService.getExtensionsForId(internalEvent.getProcessDefinitionId());
             if (variableEventFilter.shouldEmmitEvent(internalEvent)) {
-                if(extension!=null && extension.getPropertyByName(internalEvent.getVariableName()).isEphemeral())
-                {
-                   getIfPresent(converter.from(internalEvent, true));
-
-                }
-                else
-                {
-                    getIfPresent(converter.from(internalEvent));
-                }
+                VariableDefinition extensionPropertyByName = extension.getPropertyByName(internalEvent.getVariableName());
+                boolean isEphemeral = extension != null && (extensionPropertyByName!=null && extensionPropertyByName.isEphemeral());
+                   getIfPresent(converter.from(internalEvent, isEphemeral));
 
             }
         }

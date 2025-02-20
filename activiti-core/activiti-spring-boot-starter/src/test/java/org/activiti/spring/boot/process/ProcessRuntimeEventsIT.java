@@ -35,6 +35,7 @@ import org.activiti.api.task.runtime.events.TaskCreatedEvent;
 import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
+import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.test.LocalEventSource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,6 +64,9 @@ public class ProcessRuntimeEventsIT {
 
     @Autowired
     private LocalEventSource localEventSource;
+
+    @Autowired
+    private ProcessExtensionService processExtensionService;
 
     @BeforeEach
     public void init() {
