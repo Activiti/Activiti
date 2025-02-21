@@ -85,6 +85,7 @@ class ToVariableUpdatedConverterTest {
         ActivitiVariableUpdatedEventImpl internalEvent = new ActivitiVariableUpdatedEventImpl();
         internalEvent.setVariableName("variableName");
         internalEvent.setProcessInstanceId("processInstanceId");
+        internalEvent.setProcessDefinitionId("processDefinitionId");
         internalEvent.setTaskId("taskId");
         VariableType variableType = new IntegerType();
         internalEvent.setVariableType(variableType);

@@ -78,6 +78,7 @@ class ToVariableDeletedConverterTest {
         ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_DELETED);
         internalEvent.setVariableName("variableName");
         internalEvent.setProcessInstanceId("processInstanceId");
+        internalEvent.setProcessDefinitionId("processDefinitionId");
         internalEvent.setTaskId("taskId");
         VariableType variableType = new BooleanType();
         internalEvent.setVariableType(variableType);
