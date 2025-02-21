@@ -56,8 +56,8 @@ public class CommonRuntimeAutoConfiguration {
                                                                     VariableEventFilter variableEventFilter, ProcessExtensionService processExtensionService) {
         return () -> runtimeService.addEventListener(
             new VariableCreatedListenerDelegate(getInitializedListeners(listeners),
-                new ToVariableCreatedConverter(),
-                variableEventFilter,processExtensionService), ActivitiEventType.VARIABLE_CREATED);
+                new ToVariableCreatedConverter(processExtensionService),
+                variableEventFilter), ActivitiEventType.VARIABLE_CREATED);
     }
 
     private <T> List<T> getInitializedListeners(List<T> eventListeners) {

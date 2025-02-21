@@ -17,6 +17,7 @@ package org.activiti.runtime.api.event.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 import org.activiti.api.model.shared.event.VariableCreatedEvent;
@@ -26,12 +27,15 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiVariableEventImpl;
 import org.activiti.engine.impl.variable.StringType;
 import org.activiti.engine.impl.variable.VariableType;
+import org.activiti.spring.process.ProcessExtensionService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 class ToVariableCreatedConverterTest {
 
-    private ToVariableCreatedConverter converter = new ToVariableCreatedConverter();
+    ProcessExtensionService processExtensionService = Mockito.mock(ProcessExtensionService.class);
 
+    ToVariableCreatedConverter converter = new ToVariableCreatedConverter(processExtensionService);
 
     @Test
     void should_convertToVariableCreatedEvent() {
@@ -62,7 +66,7 @@ class ToVariableCreatedConverterTest {
     }
 
     @Test
-    void should_convertToVariableCreatedEvent_withEmptyValue_when_variableIsEphemeral() {
+    void should_convertToVariableCreatedEvent_withNullValue_when_variableIsEphemeral() {
         ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_CREATED);
         internalEvent.setVariableName("variableName");
         internalEvent.setProcessInstanceId("processInstanceId");
@@ -70,10 +74,11 @@ class ToVariableCreatedConverterTest {
         internalEvent.setTaskId("taskId");
         VariableType variableType = new StringType(100);
         internalEvent.setVariableType(variableType);
-        Object value = mock(Object.class);
-        internalEvent.setVariableValue(value);
+        internalEvent.setVariableValue("value");
 
-        Optional<VariableCreatedEvent> result = converter.from(internalEvent,true);
+        when(processExtensionService.hasEphemeralVariable("processDefinitionId", "variableName")).thenReturn(true);
+
+        Optional<VariableCreatedEvent> result = converter.from(internalEvent);
 
         assertThat(result).isPresent();
         VariableCreatedEvent actualEvent = result.get();
