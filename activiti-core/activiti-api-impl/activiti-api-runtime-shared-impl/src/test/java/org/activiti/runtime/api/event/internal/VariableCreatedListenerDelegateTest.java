@@ -59,7 +59,7 @@ public class VariableCreatedListenerDelegateTest {
     @BeforeEach
     public void setUp() {
         variableCreatedListenerDelegate = new VariableCreatedListenerDelegate(
-            Arrays.asList(firstListener, secondListener), converter, variableEventFilter,processExtensionService);
+            Arrays.asList(firstListener, secondListener), converter, variableEventFilter);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class VariableCreatedListenerDelegateTest {
             ActivitiEventType.VARIABLE_CREATED);
         given(variableEventFilter.shouldEmmitEvent(internalEvent)).willReturn(true);
         VariableCreatedEvent apiEvent = mock(VariableCreatedEvent.class);
-        given(converter.from(internalEvent,false)).willReturn(Optional.of(
+        given(converter.from(internalEvent)).willReturn(Optional.of(
             apiEvent));
 
         //when

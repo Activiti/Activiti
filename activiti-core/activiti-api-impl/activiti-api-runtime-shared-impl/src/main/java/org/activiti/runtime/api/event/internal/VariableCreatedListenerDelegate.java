@@ -22,12 +22,8 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti.runtime.api.event.impl.ToVariableCreatedConverter;
-import org.activiti.spring.process.ProcessExtensionService;
-import org.activiti.spring.process.model.Extension;
-import org.activiti.spring.process.model.VariableDefinition;
 
 import java.util.List;
-import java.util.Optional;
 
 public class VariableCreatedListenerDelegate implements ActivitiEventListener {
 
@@ -37,45 +33,30 @@ public class VariableCreatedListenerDelegate implements ActivitiEventListener {
 
     private final VariableEventFilter variableEventFilter;
 
-    private final ProcessExtensionService processExtensionService;
-
-
     public VariableCreatedListenerDelegate(
         List<VariableEventListener<VariableCreatedEvent>> listeners,
         ToVariableCreatedConverter converter,
-        VariableEventFilter variableEventFilter, ProcessExtensionService processExtensionService) {
+        VariableEventFilter variableEventFilter) {
         this.listeners = listeners;
         this.converter = converter;
         this.variableEventFilter = variableEventFilter;
-        this.processExtensionService = processExtensionService;
     }
 
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiVariableEvent) {
             ActivitiVariableEvent internalEvent = (ActivitiVariableEvent) event;
-            Extension extension = processExtensionService.getExtensionsForId(internalEvent.getProcessDefinitionId());
             if (variableEventFilter.shouldEmmitEvent(internalEvent)) {
-                VariableDefinition extensionPropertyByName=null;
-                if(extension!=null) {
-                    extensionPropertyByName = extension.getPropertyByName(internalEvent.getVariableName());
-                }
-                boolean isEphemeral = extension != null && (extensionPropertyByName!=null && extensionPropertyByName.isEphemeral());
-                   getIfPresent(converter.from(internalEvent, isEphemeral));
-
+                converter.from(internalEvent)
+                    .ifPresent(convertedEvent -> {
+                        if (listeners != null) {
+                            for (VariableEventListener<VariableCreatedEvent> listener : listeners) {
+                                listener.onEvent(convertedEvent);
+                            }
+                        }
+                    });
             }
         }
-    }
-
-    private void getIfPresent(Optional<VariableCreatedEvent> result) {
-        result
-            .ifPresent(convertedEvent -> {
-                if (listeners != null) {
-                    for (VariableEventListener<VariableCreatedEvent> listener : listeners) {
-                        listener.onEvent(convertedEvent);
-                    }
-                }
-            });
     }
 
     @Override
