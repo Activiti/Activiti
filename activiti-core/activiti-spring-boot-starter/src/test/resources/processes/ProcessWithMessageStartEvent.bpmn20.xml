@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:activiti="http://activiti.org/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="model-3149b126-cc61-4f40-ad79-339d0fcaf54a" name="messageStartEvent" targetNamespace="" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <bpmn2:process id="ProcessWithMessageStartEvent" name="ProcessWithMessageStartEvent" isExecutable="true">
+    <bpmn2:documentation />
+    <bpmn2:userTask id="Activity_1sl56l9" activiti:assignee="${initiator}" activiti:priority="0">
+      <bpmn2:incoming>Flow_01rdqtp</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0gd6msg</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="Flow_01rdqtp" sourceRef="MessageStartEvent" targetRef="Activity_1sl56l9" />
+    <bpmn2:endEvent id="Event_0ukn0y4">
+      <bpmn2:incoming>Flow_0gd6msg</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="Flow_0gd6msg" sourceRef="Activity_1sl56l9" targetRef="Event_0ukn0y4" />
+    <bpmn2:startEvent id="MessageStartEvent" name="messageEvent">
+      <bpmn2:outgoing>Flow_01rdqtp</bpmn2:outgoing>
+      <bpmn2:messageEventDefinition id="MessageEventDefinition_1gt35k0" messageRef="Message_08rsbt0" />
+    </bpmn2:startEvent>
+  </bpmn2:process>
+  <bpmn2:message id="Message_08rsbt0" name="Message_08rsbt0" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_XPyUlfrs">
+      <bpmndi:BPMNShape id="Activity_1sl56l9_di" bpmnElement="Activity_1sl56l9">
+        <dc:Bounds x="470" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ukn0y4_di" bpmnElement="Event_0ukn0y4">
+        <dc:Bounds x="642" y="252" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_11srbh5_di" bpmnElement="Event_1">
+        <dc:Bounds x="362" y="240" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="345" y="283" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_01rdqtp_di" bpmnElement="Flow_01rdqtp">
+        <di:waypoint x="398" y="258" />
+        <di:waypoint x="434" y="258" />
+        <di:waypoint x="434" y="270" />
+        <di:waypoint x="470" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gd6msg_di" bpmnElement="Flow_0gd6msg">
+        <di:waypoint x="570" y="270" />
+        <di:waypoint x="642" y="270" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

@@ -52,5 +52,4 @@ public interface ProcessDefinitionDataManager extends DataManager<ProcessDefinit
   long findProcessDefinitionCountByNativeQuery(Map<String, Object> parameterMap);
 
   void updateProcessDefinitionTenantIdForDeployment(String deploymentId, String newTenantId);
-
 }

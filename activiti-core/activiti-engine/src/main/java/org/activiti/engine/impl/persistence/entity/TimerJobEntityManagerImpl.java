@@ -75,6 +75,11 @@ public class TimerJobEntityManagerImpl extends AbstractEntityManager<TimerJobEnt
     }
 
     @Override
+    public List<TimerJobEntity> findTimerStartEvents() {
+        return jobDataManager.findTimerStartEvents();
+    }
+
+    @Override
     public List<TimerJobEntity> findJobsByTypeAndProcessDefinitionId(String jobHandlerType,
                                                                      String processDefinitionId) {
         return jobDataManager.findJobsByTypeAndProcessDefinitionId(jobHandlerType,

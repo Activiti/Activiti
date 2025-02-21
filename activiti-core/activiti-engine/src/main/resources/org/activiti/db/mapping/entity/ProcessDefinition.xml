@@ -317,7 +317,6 @@
           TENANT_ID_ = #{tenantId} and
           VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_PROCDEF where KEY_ = #{processDefinitionKey} and TENANT_ID_ = #{tenantId})
   </select>
-
   <!-- mysql specific sql -->
   <select id="selectProcessDefinitionsByQueryCriteria" databaseId="mysql" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultMap="processDefinitionResultMap">
   	${limitBefore}
