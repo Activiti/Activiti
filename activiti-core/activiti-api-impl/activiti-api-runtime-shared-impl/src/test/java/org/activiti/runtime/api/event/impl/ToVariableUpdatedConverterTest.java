@@ -16,7 +16,6 @@
 package org.activiti.runtime.api.event.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -37,45 +36,25 @@ class ToVariableUpdatedConverterTest {
 
     @Test
     void should_convertToVariableUpdatedEvent() {
-        ActivitiVariableUpdatedEventImpl internalEvent = new ActivitiVariableUpdatedEventImpl();
-        internalEvent.setVariableName("variableName");
-        internalEvent.setProcessInstanceId("processInstanceId");
-        internalEvent.setTaskId("taskId");
-        VariableType variableType = new IntegerType();
-        internalEvent.setVariableType(variableType);
-        Object value = mock(Object.class);
-        internalEvent.setVariableValue(value);
-        Object previousValue = mock(Object.class);
-        internalEvent.setVariablePreviousValue(previousValue);
+        ActivitiVariableUpdatedEventImpl internalEvent = getActivitiVariableUpdatedEvent();
 
         Optional<VariableUpdatedEvent> result = converter.from(internalEvent);
 
         assertThat(result).isPresent();
         VariableUpdatedEvent actualEvent = result.get();
-        assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_UPDATED);
-        VariableInstance actualEntity = actualEvent.getEntity();
-        assertThat(actualEntity.getName()).isEqualTo("variableName");
-        assertThat(actualEntity.getProcessInstanceId()).isEqualTo("processInstanceId");
-        assertThat(actualEntity.getTaskId()).isEqualTo("taskId");
-        assertThat(actualEntity.getType()).isEqualTo("integer");
+
+        VariableInstance actualEntity = assertVariableUpdatedEvent(actualEvent);
+
         Object actualValue = actualEntity.getValue();
         Object actualPreviousValue = actualEvent.getPreviousValue();
-        assertThat(actualPreviousValue).isSameAs(previousValue);
-        assertThat(actualValue).isSameAs(value);
-        assertThat(previousValue).isNotSameAs(value);
+        assertThat(actualPreviousValue).isSameAs(100);
+        assertThat(actualValue).isSameAs(50);
+        assertThat(actualValue).isNotSameAs(100);
     }
 
     @Test
     void should_convertToVariableUpdatedEvent_withNullValue_when_variableIsEphemeral() {
-        ActivitiVariableUpdatedEventImpl internalEvent = new ActivitiVariableUpdatedEventImpl();
-        internalEvent.setVariableName("variableName");
-        internalEvent.setProcessInstanceId("processInstanceId");
-        internalEvent.setProcessDefinitionId("processDefinitionId");
-        internalEvent.setTaskId("taskId");
-        VariableType variableType = new IntegerType();
-        internalEvent.setVariableType(variableType);
-        internalEvent.setVariableValue(50);
-        internalEvent.setVariablePreviousValue(100);
+        ActivitiVariableUpdatedEventImpl internalEvent = getActivitiVariableUpdatedEvent();
 
         when(processExtensionService.hasEphemeralVariable("processDefinitionId", "variableName")).thenReturn(true);
 
@@ -83,15 +62,34 @@ class ToVariableUpdatedConverterTest {
 
         assertThat(result).isPresent();
         VariableUpdatedEvent actualEvent = result.get();
+
+        VariableInstance actualEntity = assertVariableUpdatedEvent(actualEvent);
+
+        Object actualValue = actualEntity.getValue();
+        Object actualPreviousValue = actualEvent.getPreviousValue();
+        assertThat(actualPreviousValue).isEqualTo(100);
+        assertThat(actualValue).isNull();
+    }
+
+    private static VariableInstance assertVariableUpdatedEvent(VariableUpdatedEvent actualEvent) {
         assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_UPDATED);
         VariableInstance actualEntity = actualEvent.getEntity();
         assertThat(actualEntity.getName()).isEqualTo("variableName");
         assertThat(actualEntity.getProcessInstanceId()).isEqualTo("processInstanceId");
         assertThat(actualEntity.getTaskId()).isEqualTo("taskId");
         assertThat(actualEntity.getType()).isEqualTo("integer");
-        Object actualValue = actualEntity.getValue();
-        Object actualPreviousValue = actualEvent.getPreviousValue();
-        assertThat(actualPreviousValue).isEqualTo(100);
-        assertThat(actualValue).isNull();
+        return actualEntity;
+    }
+
+    private static ActivitiVariableUpdatedEventImpl getActivitiVariableUpdatedEvent() {
+        ActivitiVariableUpdatedEventImpl internalEvent = new ActivitiVariableUpdatedEventImpl();
+        internalEvent.setVariableName("variableName");
+        internalEvent.setProcessInstanceId("processInstanceId");
+        internalEvent.setTaskId("taskId");
+        VariableType variableType = new IntegerType();
+        internalEvent.setVariableType(variableType);
+        internalEvent.setVariableValue(50);
+        internalEvent.setVariablePreviousValue(100);
+        return internalEvent;
     }
 }

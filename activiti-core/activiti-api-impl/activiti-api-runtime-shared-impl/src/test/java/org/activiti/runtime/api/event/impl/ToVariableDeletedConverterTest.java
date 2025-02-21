@@ -40,45 +40,29 @@ class ToVariableDeletedConverterTest {
 
     @Test
     void should_convertToVariableDeletedEvent() {
-        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_DELETED);
-        internalEvent.setVariableName("variableName");
-        internalEvent.setProcessInstanceId("processInstanceId");
-        internalEvent.setTaskId("taskId");
-        VariableType variableType = new BooleanType();
-        internalEvent.setVariableType(variableType);
-        Object value = mock(Object.class);
-        internalEvent.setVariableValue(value);
+        ActivitiVariableEventImpl internalEvent = getActivitiVariableEvent();
 
         Optional<VariableDeletedEvent> result = converter.from(internalEvent);
 
-        assertThat(result).isPresent();
-        VariableDeletedEvent actualEvent = result.get();
-        assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_DELETED);
-        VariableInstance actualEntity = actualEvent.getEntity();
-        assertThat(actualEntity.getName()).isEqualTo("variableName");
-        assertThat(actualEntity.getProcessInstanceId()).isEqualTo("processInstanceId");
-        assertThat(actualEntity.getTaskId()).isEqualTo("taskId");
-        assertThat(actualEntity.getType()).isEqualTo("boolean");
+        VariableInstance actualEntity = assertVariableDeleted(result);
         Object actualValue = actualEntity.getValue();
-        assertThat(actualValue).isSameAs(value);
+        assertThat(actualValue).isSameAs(true);
     }
 
     @Test
     void should_convertToVariableDeletedEvent_withNullValue_when_variableIsEphemeral() {
-        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_DELETED);
-        internalEvent.setVariableName("variableName");
-        internalEvent.setProcessInstanceId("processInstanceId");
-        internalEvent.setProcessDefinitionId("processDefinitionId");
-        internalEvent.setTaskId("taskId");
-        VariableType variableType = new BooleanType();
-        internalEvent.setVariableType(variableType);
-        Object value = mock(Object.class);
-        internalEvent.setVariableValue(value);
+        ActivitiVariableEventImpl internalEvent = getActivitiVariableEvent();
 
         when(processExtensionService.hasEphemeralVariable("processDefinitionId", "variableName")).thenReturn(true);
 
         Optional<VariableDeletedEvent> result = converter.from(internalEvent);
 
+        VariableInstance actualEntity = assertVariableDeleted(result);
+        Object actualValue = actualEntity.getValue();
+        assertThat(actualValue).isNull();
+    }
+
+    private static VariableInstance assertVariableDeleted(Optional<VariableDeletedEvent> result) {
         assertThat(result).isPresent();
         VariableDeletedEvent actualEvent = result.get();
         assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_DELETED);
@@ -87,8 +71,19 @@ class ToVariableDeletedConverterTest {
         assertThat(actualEntity.getProcessInstanceId()).isEqualTo("processInstanceId");
         assertThat(actualEntity.getTaskId()).isEqualTo("taskId");
         assertThat(actualEntity.getType()).isEqualTo("boolean");
-        Object actualValue = actualEntity.getValue();
-        assertThat(actualValue).isNull();
+        return actualEntity;
     }
+
+    private static ActivitiVariableEventImpl getActivitiVariableEvent() {
+        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_DELETED);
+        internalEvent.setVariableName("variableName");
+        internalEvent.setProcessInstanceId("processInstanceId");
+        internalEvent.setTaskId("taskId");
+        VariableType variableType = new BooleanType();
+        internalEvent.setVariableType(variableType);
+        internalEvent.setVariableValue(true);
+        return internalEvent;
+    }
+
 
 }
