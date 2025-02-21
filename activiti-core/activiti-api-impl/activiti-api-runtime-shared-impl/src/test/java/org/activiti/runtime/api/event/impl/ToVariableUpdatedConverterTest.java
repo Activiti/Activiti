@@ -74,12 +74,12 @@ class ToVariableUpdatedConverterTest {
         internalEvent.setTaskId("taskId");
         VariableType variableType = new IntegerType();
         internalEvent.setVariableType(variableType);
-        internalEvent.setVariableValue("value");
-        internalEvent.setVariablePreviousValue("previousValue");
-
-        Optional<VariableUpdatedEvent> result = converter.from(internalEvent);
+        internalEvent.setVariableValue(50);
+        internalEvent.setVariablePreviousValue(100);
 
         when(processExtensionService.hasEphemeralVariable("processDefinitionId", "variableName")).thenReturn(true);
+
+        Optional<VariableUpdatedEvent> result = converter.from(internalEvent);
 
         assertThat(result).isPresent();
         VariableUpdatedEvent actualEvent = result.get();
@@ -91,7 +91,7 @@ class ToVariableUpdatedConverterTest {
         assertThat(actualEntity.getType()).isEqualTo("integer");
         Object actualValue = actualEntity.getValue();
         Object actualPreviousValue = actualEvent.getPreviousValue();
-        assertThat(actualPreviousValue).isEqualTo("previousValue");
+        assertThat(actualPreviousValue).isEqualTo(100);
         assertThat(actualValue).isNull();
     }
 }
