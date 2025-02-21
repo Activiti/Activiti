@@ -65,9 +65,6 @@ public class ProcessRuntimeEventsIT {
     @Autowired
     private LocalEventSource localEventSource;
 
-    @Autowired
-    private ProcessExtensionService processExtensionService;
-
     @BeforeEach
     public void init() {
         //Reset test variables

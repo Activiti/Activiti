@@ -53,9 +53,6 @@ public class VariableCreatedListenerDelegateTest {
     @Mock
     private VariableEventFilter variableEventFilter;
 
-    @Mock
-    private ProcessExtensionService processExtensionService;
-
     @BeforeEach
     public void setUp() {
         variableCreatedListenerDelegate = new VariableCreatedListenerDelegate(
