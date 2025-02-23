@@ -52,8 +52,8 @@ public class CommonRuntimeAutoConfiguration {
 
     @Bean
     public InitializingBean registerVariableCreatedListenerDelegate(RuntimeService runtimeService,
-                                                                    @Autowired(required = false) List<VariableEventListener<VariableCreatedEvent>> listeners,
-                                                                    VariableEventFilter variableEventFilter, ProcessExtensionService processExtensionService) {
+        @Autowired(required = false) List<VariableEventListener<VariableCreatedEvent>> listeners,
+        VariableEventFilter variableEventFilter, ProcessExtensionService processExtensionService) {
         return () -> runtimeService.addEventListener(
             new VariableCreatedListenerDelegate(getInitializedListeners(listeners),
                 new ToVariableCreatedConverter(processExtensionService),

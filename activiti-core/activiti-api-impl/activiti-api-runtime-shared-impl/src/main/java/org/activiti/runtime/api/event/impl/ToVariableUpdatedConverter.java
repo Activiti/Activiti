@@ -34,7 +34,7 @@ public class ToVariableUpdatedConverter implements EventConverter<VariableUpdate
     @Override
     public Optional<VariableUpdatedEvent> from(ActivitiVariableUpdatedEvent internalEvent) {
         boolean isEphemeral = processExtensionService.hasEphemeralVariable(internalEvent.getProcessDefinitionId(),
-                                                                          internalEvent.getVariableName());
+            internalEvent.getVariableName());
 
         VariableInstanceImpl<Object> variableInstance = new VariableInstanceImpl<>(
             internalEvent.getVariableName(),

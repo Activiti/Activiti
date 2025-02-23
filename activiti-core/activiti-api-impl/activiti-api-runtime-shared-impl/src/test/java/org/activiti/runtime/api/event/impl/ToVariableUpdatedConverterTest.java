@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+
 import org.activiti.api.model.shared.event.VariableEvent.VariableEvents;
 import org.activiti.api.model.shared.event.VariableUpdatedEvent;
 import org.activiti.api.model.shared.model.VariableInstance;
@@ -49,7 +50,7 @@ class ToVariableUpdatedConverterTest {
         Object actualPreviousValue = actualEvent.getPreviousValue();
         assertThat(actualPreviousValue).isSameAs(100);
         assertThat(actualValue).isSameAs(50);
-        assertThat(actualValue).isNotSameAs(100);
+        assertThat(actualValue).isNotSameAs(actualPreviousValue);
     }
 
     @Test

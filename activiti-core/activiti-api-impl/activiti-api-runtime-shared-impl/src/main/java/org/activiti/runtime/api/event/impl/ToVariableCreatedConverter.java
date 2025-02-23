@@ -33,10 +33,10 @@ public class ToVariableCreatedConverter implements EventConverter<VariableCreate
 
     @Override
     public Optional<VariableCreatedEvent> from(ActivitiVariableEvent internalEvent) {
-            boolean isEphemeral = processExtensionService.hasEphemeralVariable(internalEvent.getProcessDefinitionId(),
-                internalEvent.getVariableName());
+        boolean isEphemeral = processExtensionService.hasEphemeralVariable(internalEvent.getProcessDefinitionId(),
+            internalEvent.getVariableName());
 
-            VariableInstanceImpl<Object> variableInstance = new VariableInstanceImpl<>(
+        VariableInstanceImpl<Object> variableInstance = new VariableInstanceImpl<>(
             internalEvent.getVariableName(),
             internalEvent.getVariableType().getTypeName(),
             isEphemeral ? null : internalEvent.getVariableValue(),

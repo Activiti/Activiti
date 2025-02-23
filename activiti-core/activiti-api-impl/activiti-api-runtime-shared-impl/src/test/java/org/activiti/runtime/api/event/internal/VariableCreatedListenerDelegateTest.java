@@ -29,7 +29,6 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiVariableEventImpl;
 import org.activiti.runtime.api.event.impl.ToVariableCreatedConverter;
-import org.activiti.spring.process.ProcessExtensionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
