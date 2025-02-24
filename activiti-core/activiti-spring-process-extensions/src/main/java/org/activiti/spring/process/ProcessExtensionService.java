@@ -22,6 +22,8 @@ import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.springframework.lang.NonNull;
 
+import java.util.Optional;
+
 public class ProcessExtensionService {
 
     private final static Extension EMPTY_EXTENSION = new Extension();
@@ -50,8 +52,10 @@ public class ProcessExtensionService {
     public boolean hasEphemeralVariable(@NonNull String processDefinitionId,
                                         @NonNull String variableName) {
         Extension extension = this.getExtensionsForId(processDefinitionId);
-        VariableDefinition extensionPropertyByName = (extension != null) ? extension.getPropertyByName(variableName) : null;
-        return extensionPropertyByName!=null && extensionPropertyByName.isEphemeral();
+        return Optional.ofNullable(extension)
+            .map(ext -> ext.getPropertyByName(variableName))
+            .map(VariableDefinition::isEphemeral)
+            .orElse(false);
 
     }
 }
