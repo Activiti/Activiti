@@ -42,6 +42,6 @@ public class ToVariableDeletedConverter implements EventConverter<VariableDelete
             internalEvent.getProcessInstanceId(),
             internalEvent.getTaskId()
         );
-        return Optional.of(new VariableDeletedEventImpl(variableInstance));
+        return Optional.of(new VariableDeletedEventImpl(variableInstance, isEphemeral));
     }
 }

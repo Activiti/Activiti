@@ -44,6 +44,6 @@ public class ToVariableUpdatedConverter implements EventConverter<VariableUpdate
             internalEvent.getTaskId()
         );
 
-        return Optional.of(new VariableUpdatedEventImpl<>(variableInstance, internalEvent.getVariablePreviousValue()));
+        return Optional.of(new VariableUpdatedEventImpl<>(variableInstance, internalEvent.getVariablePreviousValue(), isEphemeral));
     }
 }

@@ -44,6 +44,6 @@ public class ToVariableCreatedConverter implements EventConverter<VariableCreate
             internalEvent.getTaskId()
         );
 
-        return Optional.of(new VariableCreatedEventImpl(variableInstance, internalEvent.getProcessDefinitionId()));
+        return Optional.of(new VariableCreatedEventImpl(variableInstance, internalEvent.getProcessDefinitionId(), isEphemeral));
     }
 }
