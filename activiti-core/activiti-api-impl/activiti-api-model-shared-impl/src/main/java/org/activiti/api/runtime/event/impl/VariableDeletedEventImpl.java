@@ -37,6 +37,6 @@ public class VariableDeletedEventImpl extends VariableEventImpl implements Varia
 
     @Override
     public boolean isEphemeralVariable() {
-        return false;
+        return this.isEphemeralVariable;
     }
 }
