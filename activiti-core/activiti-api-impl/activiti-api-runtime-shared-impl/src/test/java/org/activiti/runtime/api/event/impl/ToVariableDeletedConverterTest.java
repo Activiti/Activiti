@@ -43,8 +43,11 @@ class ToVariableDeletedConverterTest {
         ActivitiVariableEventImpl internalEvent = getActivitiVariableEvent();
 
         Optional<VariableDeletedEvent> result = converter.from(internalEvent);
+        assertThat(result).isPresent();
+        VariableDeletedEvent actualEvent = result.get();
+        assertThat(actualEvent.isEphemeralVariable()).isFalse();
 
-        VariableInstance actualEntity = assertVariableDeleted(result);
+        VariableInstance actualEntity = assertVariableDeleted(actualEvent);
         Object actualValue = actualEntity.getValue();
         assertThat(actualValue).isSameAs(true);
     }
@@ -56,15 +59,16 @@ class ToVariableDeletedConverterTest {
         when(processExtensionService.hasEphemeralVariable("processDefinitionId", "variableName")).thenReturn(true);
 
         Optional<VariableDeletedEvent> result = converter.from(internalEvent);
+        assertThat(result).isPresent();
+        VariableDeletedEvent actualEvent = result.get();
+        assertThat(actualEvent.isEphemeralVariable()).isTrue();
 
-        VariableInstance actualEntity = assertVariableDeleted(result);
+        VariableInstance actualEntity = assertVariableDeleted(actualEvent);
         Object actualValue = actualEntity.getValue();
         assertThat(actualValue).isNull();
     }
 
-    private static VariableInstance assertVariableDeleted(Optional<VariableDeletedEvent> result) {
-        assertThat(result).isPresent();
-        VariableDeletedEvent actualEvent = result.get();
+    private VariableInstance assertVariableDeleted(VariableDeletedEvent actualEvent) {
         assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_DELETED);
         VariableInstance actualEntity = actualEvent.getEntity();
         assertThat(actualEntity.getName()).isEqualTo("variableName");
@@ -74,7 +78,7 @@ class ToVariableDeletedConverterTest {
         return actualEntity;
     }
 
-    private static ActivitiVariableEventImpl getActivitiVariableEvent() {
+    private ActivitiVariableEventImpl getActivitiVariableEvent() {
         ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_DELETED);
         internalEvent.setVariableName("variableName");
         internalEvent.setProcessInstanceId("processInstanceId");

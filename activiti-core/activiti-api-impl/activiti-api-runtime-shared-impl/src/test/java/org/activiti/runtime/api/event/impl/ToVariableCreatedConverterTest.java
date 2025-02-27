@@ -43,7 +43,11 @@ class ToVariableCreatedConverterTest {
 
         Optional<VariableCreatedEvent> result = converter.from(internalEvent);
 
-        VariableInstance actualEntity = assertVariableCreatedEvent(result);
+        assertThat(result).isPresent();
+        VariableCreatedEvent actualEvent = result.get();
+        assertThat(actualEvent.isEphemeralVariable()).isFalse();
+
+        VariableInstance actualEntity = assertVariableCreatedEvent(actualEvent);
         Object actualValue = actualEntity.getValue();
         assertThat(actualValue).isEqualTo("value");
     }
@@ -56,14 +60,16 @@ class ToVariableCreatedConverterTest {
 
         Optional<VariableCreatedEvent> result = converter.from(internalEvent);
 
-        VariableInstance actualEntity = assertVariableCreatedEvent(result);
+        assertThat(result).isPresent();
+        VariableCreatedEvent actualEvent = result.get();
+        assertThat(actualEvent.isEphemeralVariable()).isTrue();
+
+        VariableInstance actualEntity = assertVariableCreatedEvent(actualEvent);
         Object actualValue = actualEntity.getValue();
         assertThat(actualValue).isNull();
     }
 
-    private static VariableInstance assertVariableCreatedEvent(Optional<VariableCreatedEvent> result) {
-        assertThat(result).isPresent();
-        VariableCreatedEvent actualEvent = result.get();
+    private VariableInstance assertVariableCreatedEvent(VariableCreatedEvent actualEvent) {
         assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_CREATED);
         assertThat(actualEvent.getProcessInstanceId()).isEqualTo("processInstanceId");
         assertThat(actualEvent.getProcessDefinitionId()).isEqualTo("processDefinitionId");
@@ -75,7 +81,7 @@ class ToVariableCreatedConverterTest {
         return actualEntity;
     }
 
-    private static ActivitiVariableEventImpl getActivitiVariableEvent() {
+    private ActivitiVariableEventImpl getActivitiVariableEvent() {
         ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_CREATED);
         internalEvent.setVariableName("variableName");
         internalEvent.setProcessInstanceId("processInstanceId");

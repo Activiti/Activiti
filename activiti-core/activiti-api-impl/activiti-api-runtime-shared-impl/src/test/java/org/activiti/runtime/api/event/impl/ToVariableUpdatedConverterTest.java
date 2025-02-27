@@ -42,6 +42,7 @@ class ToVariableUpdatedConverterTest {
 
         assertThat(result).isPresent();
         VariableUpdatedEvent actualEvent = result.get();
+        assertThat(actualEvent.isEphemeralVariable()).isFalse();
 
         VariableInstance actualEntity = assertVariableUpdatedEvent(actualEvent);
 
@@ -62,6 +63,7 @@ class ToVariableUpdatedConverterTest {
 
         assertThat(result).isPresent();
         VariableUpdatedEvent actualEvent = result.get();
+        assertThat(actualEvent.isEphemeralVariable()).isTrue();
 
         VariableInstance actualEntity = assertVariableUpdatedEvent(actualEvent);
 
@@ -71,7 +73,7 @@ class ToVariableUpdatedConverterTest {
         assertThat(actualValue).isNull();
     }
 
-    private static VariableInstance assertVariableUpdatedEvent(VariableUpdatedEvent actualEvent) {
+    private VariableInstance assertVariableUpdatedEvent(VariableUpdatedEvent actualEvent) {
         assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_UPDATED);
         VariableInstance actualEntity = actualEvent.getEntity();
         assertThat(actualEntity.getName()).isEqualTo("variableName");
@@ -81,7 +83,7 @@ class ToVariableUpdatedConverterTest {
         return actualEntity;
     }
 
-    private static ActivitiVariableUpdatedEventImpl getActivitiVariableUpdatedEvent() {
+    private ActivitiVariableUpdatedEventImpl getActivitiVariableUpdatedEvent() {
         ActivitiVariableUpdatedEventImpl internalEvent = new ActivitiVariableUpdatedEventImpl();
         internalEvent.setVariableName("variableName");
         internalEvent.setProcessInstanceId("processInstanceId");
