@@ -38,6 +38,6 @@ public class ToVariableDeletedConverter implements EventConverter<VariableDelete
 
         VariableInstanceImpl<Object> variableInstance = createVariableInstance(internalEvent, isEphemeral);
 
-        return Optional.of(new VariableDeletedEventImpl(variableInstance));
+        return Optional.of(new VariableDeletedEventImpl(variableInstance, isEphemeral));
     }
 }

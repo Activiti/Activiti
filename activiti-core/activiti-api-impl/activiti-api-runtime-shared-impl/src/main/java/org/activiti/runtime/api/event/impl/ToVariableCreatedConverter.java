@@ -38,6 +38,6 @@ public class ToVariableCreatedConverter implements EventConverter<VariableCreate
 
         VariableInstanceImpl<Object> variableInstance = createVariableInstance(internalEvent, isEphemeral);
 
-        return Optional.of(new VariableCreatedEventImpl(variableInstance, internalEvent.getProcessDefinitionId()));
+        return Optional.of(new VariableCreatedEventImpl(variableInstance, internalEvent.getProcessDefinitionId(), isEphemeral));
     }
 }

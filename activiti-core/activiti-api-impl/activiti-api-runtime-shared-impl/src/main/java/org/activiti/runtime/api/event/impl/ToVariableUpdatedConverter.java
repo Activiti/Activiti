@@ -38,6 +38,6 @@ public class ToVariableUpdatedConverter implements EventConverter<VariableUpdate
 
         VariableInstanceImpl<Object> variableInstance = createVariableInstance(internalEvent, isEphemeral);
 
-        return Optional.of(new VariableUpdatedEventImpl<>(variableInstance, internalEvent.getVariablePreviousValue()));
+        return Optional.of(new VariableUpdatedEventImpl<>(variableInstance, internalEvent.getVariablePreviousValue(), isEphemeral));
     }
 }

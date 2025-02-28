@@ -43,6 +43,7 @@ class ToVariableUpdatedConverterTest {
 
         assertThat(result).isPresent();
         VariableUpdatedEvent actualEvent = result.get();
+        assertThat(actualEvent.isEphemeralVariable()).isFalse();
 
         VariableInstance actualEntity = assertVariableUpdatedEvent(actualEvent);
 
@@ -63,6 +64,7 @@ class ToVariableUpdatedConverterTest {
 
         assertThat(result).isPresent();
         VariableUpdatedEvent actualEvent = result.get();
+        assertThat(actualEvent.isEphemeralVariable()).isTrue();
 
         VariableInstance actualEntity = assertVariableUpdatedEvent(actualEvent);
 

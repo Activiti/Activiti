@@ -42,8 +42,11 @@ class ToVariableCreatedConverterTest {
         ActivitiVariableEventImpl internalEvent = getActivitiVariableEvent();
 
         Optional<VariableCreatedEvent> result = converter.from(internalEvent);
+        assertThat(result).isPresent();
+        VariableCreatedEvent actualEvent = result.get();
+        assertThat(actualEvent.isEphemeralVariable()).isFalse();
 
-        VariableInstance actualEntity = assertVariableCreatedEvent(result);
+        VariableInstance actualEntity = assertVariableCreatedEvent(actualEvent);
         Object actualValue = actualEntity.getValue();
         assertThat(actualValue).isEqualTo("value");
     }
@@ -55,15 +58,15 @@ class ToVariableCreatedConverterTest {
         when(processExtensionService.hasEphemeralVariable("processDefinitionId", "variableName")).thenReturn(true);
 
         Optional<VariableCreatedEvent> result = converter.from(internalEvent);
+        VariableCreatedEvent actualEvent = result.get();
+        assertThat(actualEvent.isEphemeralVariable()).isTrue();
 
-        VariableInstance actualEntity = assertVariableCreatedEvent(result);
+        VariableInstance actualEntity = assertVariableCreatedEvent(actualEvent);
         Object actualValue = actualEntity.getValue();
         assertThat(actualValue).isNull();
     }
 
-    private VariableInstance assertVariableCreatedEvent(Optional<VariableCreatedEvent> result) {
-        assertThat(result).isPresent();
-        VariableCreatedEvent actualEvent = result.get();
+    private VariableInstance assertVariableCreatedEvent(VariableCreatedEvent actualEvent) {
         assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_CREATED);
         assertThat(actualEvent.getProcessInstanceId()).isEqualTo("processInstanceId");
         assertThat(actualEvent.getProcessDefinitionId()).isEqualTo("processDefinitionId");
