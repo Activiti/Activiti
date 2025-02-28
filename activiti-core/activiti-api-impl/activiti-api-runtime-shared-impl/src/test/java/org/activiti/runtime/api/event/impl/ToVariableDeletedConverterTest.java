@@ -61,7 +61,7 @@ class ToVariableDeletedConverterTest {
         assertThat(actualValue).isNull();
     }
 
-    private static VariableInstance assertVariableDeleted(Optional<VariableDeletedEvent> result) {
+    private VariableInstance assertVariableDeleted(Optional<VariableDeletedEvent> result) {
         assertThat(result).isPresent();
         VariableDeletedEvent actualEvent = result.get();
         assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_DELETED);
@@ -73,7 +73,7 @@ class ToVariableDeletedConverterTest {
         return actualEntity;
     }
 
-    private static ActivitiVariableEventImpl getActivitiVariableEvent() {
+    private ActivitiVariableEventImpl getActivitiVariableEvent() {
         ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_DELETED);
         internalEvent.setVariableName("variableName");
         internalEvent.setProcessInstanceId("processInstanceId");

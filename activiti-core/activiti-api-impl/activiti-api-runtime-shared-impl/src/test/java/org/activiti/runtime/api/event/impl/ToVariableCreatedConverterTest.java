@@ -61,7 +61,7 @@ class ToVariableCreatedConverterTest {
         assertThat(actualValue).isNull();
     }
 
-    private static VariableInstance assertVariableCreatedEvent(Optional<VariableCreatedEvent> result) {
+    private VariableInstance assertVariableCreatedEvent(Optional<VariableCreatedEvent> result) {
         assertThat(result).isPresent();
         VariableCreatedEvent actualEvent = result.get();
         assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_CREATED);
@@ -75,7 +75,7 @@ class ToVariableCreatedConverterTest {
         return actualEntity;
     }
 
-    private static ActivitiVariableEventImpl getActivitiVariableEvent() {
+    private ActivitiVariableEventImpl getActivitiVariableEvent() {
         ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_CREATED);
         internalEvent.setVariableName("variableName");
         internalEvent.setProcessInstanceId("processInstanceId");

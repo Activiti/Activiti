@@ -36,13 +36,7 @@ public class ToVariableDeletedConverter implements EventConverter<VariableDelete
         boolean isEphemeral = processExtensionService.hasEphemeralVariable(internalEvent.getProcessDefinitionId(),
             internalEvent.getVariableName());
 
-        VariableInstanceImpl<Object> variableInstance = new VariableInstanceImpl<>(
-            internalEvent.getVariableName(),
-            internalEvent.getVariableType().getTypeName(),
-            isEphemeral ? null : internalEvent.getVariableValue(),
-            internalEvent.getProcessInstanceId(),
-            internalEvent.getTaskId()
-        );
+        VariableInstanceImpl<Object> variableInstance = createVariableInstance(internalEvent, isEphemeral);
 
         return Optional.of(new VariableDeletedEventImpl(variableInstance));
     }
