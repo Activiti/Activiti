@@ -244,6 +244,13 @@
         <scope>test</scope>
       </dependency>
       <!-- Temporary Security fix  -->
+      <!-- temporary security fix AAE-32649 -->
+      <dependency>
+        <groupId>net.minidev</groupId>
+        <artifactId>json-smart</artifactId>
+        <version>2.5.2</version>
+      </dependency>
+      <!-- temporary security fix -->
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-dependency-check</artifactId>
