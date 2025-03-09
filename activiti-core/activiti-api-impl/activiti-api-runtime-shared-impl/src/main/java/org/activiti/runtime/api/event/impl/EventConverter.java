@@ -16,7 +16,9 @@
 package org.activiti.runtime.api.event.impl;
 
 import org.activiti.api.model.shared.event.RuntimeEvent;
+import org.activiti.api.runtime.model.impl.VariableInstanceImpl;
 import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 
 import java.util.Optional;
 
@@ -24,4 +26,12 @@ public interface EventConverter<ApiEventTypeT extends RuntimeEvent<?, ?>, Intern
 
     Optional<ApiEventTypeT> from(InternalApiTypeT internalEvent);
 
+    default VariableInstanceImpl<Object> createVariableInstance(ActivitiVariableEvent internalEvent,
+                                                                boolean isEphemeral) {
+        return new VariableInstanceImpl<>(internalEvent.getVariableName(),
+                                         internalEvent.getVariableType().getTypeName(),
+                                         isEphemeral ? null : internalEvent.getVariableValue(),
+                                         internalEvent.getProcessInstanceId(),
+                                         internalEvent.getTaskId());
+    }
 }

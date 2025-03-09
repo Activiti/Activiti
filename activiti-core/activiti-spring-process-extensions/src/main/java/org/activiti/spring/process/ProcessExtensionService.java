@@ -19,7 +19,10 @@ package org.activiti.spring.process;
 
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.model.Extension;
+import org.activiti.spring.process.model.VariableDefinition;
 import org.springframework.lang.NonNull;
+
+import java.util.Optional;
 
 public class ProcessExtensionService {
 
@@ -45,5 +48,14 @@ public class ProcessExtensionService {
 
     public Extension getExtensionsForId(@NonNull String processDefinitionId) {
         return processExtensionRepository.getExtensionsForId(processDefinitionId).orElse(EMPTY_EXTENSION);
+    }
+    public boolean hasEphemeralVariable(@NonNull String processDefinitionId,
+                                        @NonNull String variableName) {
+        Extension extension = this.getExtensionsForId(processDefinitionId);
+        return Optional.ofNullable(extension)
+            .map(ext -> ext.getPropertyByName(variableName))
+            .map(VariableDefinition::isEphemeral)
+            .orElse(false);
+
     }
 }

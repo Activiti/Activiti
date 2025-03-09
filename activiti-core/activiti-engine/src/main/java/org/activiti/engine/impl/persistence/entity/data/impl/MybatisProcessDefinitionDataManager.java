@@ -159,5 +159,4 @@ public class MybatisProcessDefinitionDataManager extends AbstractDataManager<Pro
     params.put("tenantId", newTenantId);
     getDbSqlSession().update("updateProcessDefinitionTenantIdForDeploymentId", params);
   }
-
 }

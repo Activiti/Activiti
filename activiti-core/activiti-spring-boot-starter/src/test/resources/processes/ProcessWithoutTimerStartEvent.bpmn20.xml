@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="model-3806bd96-928a-4261-9ee3-fb6bf59d97c2" name="myTimerProcess" targetNamespace="" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <bpmn2:process id="ProcessWithoutTimerStartEvent" name="ProcessWithoutTimerStartEvent" isExecutable="true">
+    <bpmn2:documentation />
+    <bpmn2:endEvent id="Event_11v5btb">
+      <bpmn2:incoming>Flow_0t1tyoe</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="Flow_0t1tyoe" sourceRef="Event_1" targetRef="Event_11v5btb" />
+    <bpmn2:startEvent id="Event_1">
+      <bpmn2:outgoing>Flow_0t1tyoe</bpmn2:outgoing>
+    </bpmn2:startEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_E9sWeYAQ">
+      <bpmndi:BPMNShape id="Event_11v5btb_di" bpmnElement="Event_11v5btb">
+        <dc:Bounds x="542" y="240" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_19hhk4b_di" bpmnElement="Event_1">
+        <dc:Bounds x="402" y="240" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0t1tyoe_di" bpmnElement="Flow_0t1tyoe">
+        <di:waypoint x="438" y="258" />
+        <di:waypoint x="542" y="258" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

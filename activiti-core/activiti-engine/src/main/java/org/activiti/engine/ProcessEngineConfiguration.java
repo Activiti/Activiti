@@ -142,7 +142,9 @@ public abstract class ProcessEngineConfiguration {
 
   protected Clock clock;
   protected AsyncExecutor asyncExecutor;
-  /**
+  protected boolean disableExistingStartEventSubscriptions;
+
+    /**
    * Define the default lock time for an async job in seconds. The lock time is used when creating an async job and when it expires the async executor assumes that the job has failed. It will be
    * retried again.
    */
@@ -458,6 +460,16 @@ public abstract class ProcessEngineConfiguration {
     this.transactionsExternallyManaged = transactionsExternallyManaged;
     return this;
   }
+
+  public ProcessEngineConfiguration setDisableExistingStartEventSubscriptions(boolean disableAllPreviousStartEvents)
+  {
+    this.disableExistingStartEventSubscriptions = disableAllPreviousStartEvents;
+    return this;
+  }
+
+  public boolean shouldDisableExistingStartEventSubscriptions(){
+      return disableExistingStartEventSubscriptions;
+    }
 
   public HistoryLevel getHistoryLevel() {
     return historyLevel;

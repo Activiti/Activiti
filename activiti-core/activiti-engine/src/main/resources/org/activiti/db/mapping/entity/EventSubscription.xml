@@ -145,6 +145,20 @@
     	and (EVENT_NAME_ = #{parameter.eventName})
   </select>
 
+  <select id="selectSignalStartEventSubscriptions" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
+    select *
+    from ${prefix}ACT_RU_EVENT_SUBSCR
+    where (EVENT_TYPE_ = 'signal')
+    	and (EXECUTION_ID_ is null) and (PROC_INST_ID_ is null)
+  </select>
+
+  <select id="selectMessageStartEventSubscriptions" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
+    select *
+    from ${prefix}ACT_RU_EVENT_SUBSCR
+    where (EVENT_TYPE_ = 'message')
+    and (EXECUTION_ID_ is null) and (PROC_INST_ID_ is null)
+  </select>
+
   <select id="selectEventSubscriptionsByExecution" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
     select *
     from ${prefix}ACT_RU_EVENT_SUBSCR

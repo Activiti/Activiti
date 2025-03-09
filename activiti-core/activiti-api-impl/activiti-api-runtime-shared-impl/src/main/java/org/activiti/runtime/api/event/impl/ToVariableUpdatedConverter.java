@@ -19,18 +19,25 @@ import org.activiti.api.model.shared.event.VariableUpdatedEvent;
 import org.activiti.api.runtime.event.impl.VariableUpdatedEventImpl;
 import org.activiti.api.runtime.model.impl.VariableInstanceImpl;
 import org.activiti.engine.delegate.event.ActivitiVariableUpdatedEvent;
+import org.activiti.spring.process.ProcessExtensionService;
 
 import java.util.Optional;
 
 public class ToVariableUpdatedConverter implements EventConverter<VariableUpdatedEvent, ActivitiVariableUpdatedEvent> {
 
+    private final ProcessExtensionService processExtensionService;
+
+    public ToVariableUpdatedConverter(ProcessExtensionService processExtensionService) {
+        this.processExtensionService = processExtensionService;
+    }
+
     @Override
     public Optional<VariableUpdatedEvent> from(ActivitiVariableUpdatedEvent internalEvent) {
-        VariableInstanceImpl<Object> variableInstance = new VariableInstanceImpl<>(internalEvent.getVariableName(),
-                                                                                   internalEvent.getVariableType().getTypeName(),
-                                                                                   internalEvent.getVariableValue(),
-                                                                                   internalEvent.getProcessInstanceId(),
-                                                                                   internalEvent.getTaskId());
+        boolean isEphemeral = processExtensionService.hasEphemeralVariable(internalEvent.getProcessDefinitionId(),
+            internalEvent.getVariableName());
+
+        VariableInstanceImpl<Object> variableInstance = createVariableInstance(internalEvent, isEphemeral);
+
         return Optional.of(new VariableUpdatedEventImpl<>(variableInstance, internalEvent.getVariablePreviousValue()));
     }
 }

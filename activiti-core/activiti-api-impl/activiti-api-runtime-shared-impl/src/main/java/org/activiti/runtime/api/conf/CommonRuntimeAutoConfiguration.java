@@ -31,6 +31,7 @@ import org.activiti.runtime.api.event.internal.VariableEventFilter;
 import org.activiti.runtime.api.event.internal.VariableUpdatedListenerDelegate;
 import org.activiti.runtime.api.impl.VariableNameValidator;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
+import org.activiti.spring.process.ProcessExtensionService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -52,10 +53,10 @@ public class CommonRuntimeAutoConfiguration {
     @Bean
     public InitializingBean registerVariableCreatedListenerDelegate(RuntimeService runtimeService,
         @Autowired(required = false) List<VariableEventListener<VariableCreatedEvent>> listeners,
-        VariableEventFilter variableEventFilter) {
+        VariableEventFilter variableEventFilter, ProcessExtensionService processExtensionService) {
         return () -> runtimeService.addEventListener(
             new VariableCreatedListenerDelegate(getInitializedListeners(listeners),
-                new ToVariableCreatedConverter(),
+                new ToVariableCreatedConverter(processExtensionService),
                 variableEventFilter), ActivitiEventType.VARIABLE_CREATED);
     }
 
@@ -66,10 +67,10 @@ public class CommonRuntimeAutoConfiguration {
     @Bean
     public InitializingBean registerVariableUpdatedListenerDelegate(RuntimeService runtimeService,
         @Autowired(required = false) List<VariableEventListener<VariableUpdatedEvent>> listeners,
-        VariableEventFilter variableEventFilter) {
+        VariableEventFilter variableEventFilter, ProcessExtensionService processExtensionService) {
         return () -> runtimeService.addEventListener(
             new VariableUpdatedListenerDelegate(getInitializedListeners(listeners),
-                new ToVariableUpdatedConverter(),
+                new ToVariableUpdatedConverter(processExtensionService),
                 variableEventFilter), ActivitiEventType.VARIABLE_UPDATED);
     }
 
