@@ -90,4 +90,11 @@ class ProcessExtensionServiceTest {
         assertThat(result).isFalse();
     }
 
+    @Test
+    void should_returnFalse_when_processDefinitionId_isNull() {
+        String variableName = "variableName";
+        boolean result = processExtensionService.hasEphemeralVariable(null, variableName);
+        assertThat(result).isFalse();
+    }
+
 }
