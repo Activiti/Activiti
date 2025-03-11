@@ -49,8 +49,11 @@ public class ProcessExtensionService {
     public Extension getExtensionsForId(@NonNull String processDefinitionId) {
         return processExtensionRepository.getExtensionsForId(processDefinitionId).orElse(EMPTY_EXTENSION);
     }
-    public boolean hasEphemeralVariable(@NonNull String processDefinitionId,
+    public boolean hasEphemeralVariable(String processDefinitionId,
                                         @NonNull String variableName) {
+        if(processDefinitionId == null) {
+            return false;
+        }
         Extension extension = this.getExtensionsForId(processDefinitionId);
         return Optional.ofNullable(extension)
             .map(ext -> ext.getPropertyByName(variableName))
