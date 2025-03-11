@@ -19,6 +19,7 @@ import org.activiti.api.model.shared.event.VariableUpdatedEvent;
 import org.activiti.api.runtime.event.impl.VariableUpdatedEventImpl;
 import org.activiti.api.runtime.model.impl.VariableInstanceImpl;
 import org.activiti.engine.delegate.event.ActivitiVariableUpdatedEvent;
+import org.activiti.engine.delegate.event.impl.ActivitiVariableUpdatedEventImpl;
 import org.activiti.spring.process.ProcessExtensionService;
 
 import java.util.Optional;
@@ -37,6 +38,10 @@ public class ToVariableUpdatedConverter implements EventConverter<VariableUpdate
             internalEvent.getVariableName());
 
         VariableInstanceImpl<Object> variableInstance = createVariableInstance(internalEvent, isEphemeral);
+
+        if(isEphemeral) {
+            ((ActivitiVariableUpdatedEventImpl) internalEvent).setVariablePreviousValue(null);
+        }
 
         return Optional.of(new VariableUpdatedEventImpl<>(variableInstance, internalEvent.getVariablePreviousValue()));
     }
