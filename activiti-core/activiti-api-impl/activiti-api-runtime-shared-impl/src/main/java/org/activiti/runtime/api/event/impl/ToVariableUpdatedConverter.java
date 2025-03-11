@@ -39,10 +39,8 @@ public class ToVariableUpdatedConverter implements EventConverter<VariableUpdate
 
         VariableInstanceImpl<Object> variableInstance = createVariableInstance(internalEvent, isEphemeral);
 
-        if(isEphemeral) {
-            ((ActivitiVariableUpdatedEventImpl) internalEvent).setVariablePreviousValue(null);
-        }
+        Object previousValue = isEphemeral? null : internalEvent.getVariablePreviousValue();
 
-        return Optional.of(new VariableUpdatedEventImpl<>(variableInstance, internalEvent.getVariablePreviousValue()));
+        return Optional.of(new VariableUpdatedEventImpl<>(variableInstance, previousValue));
     }
 }
