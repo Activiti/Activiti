@@ -70,7 +70,7 @@ class ToVariableUpdatedConverterTest {
 
         Object actualValue = actualEntity.getValue();
         Object actualPreviousValue = actualEvent.getPreviousValue();
-        assertThat(actualPreviousValue).isEqualTo(100);
+        assertThat(actualPreviousValue).isNull();
         assertThat(actualValue).isNull();
     }
 
