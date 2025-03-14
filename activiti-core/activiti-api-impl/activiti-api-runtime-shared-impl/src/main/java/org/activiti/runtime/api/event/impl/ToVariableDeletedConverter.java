@@ -19,22 +19,20 @@ import org.activiti.api.model.shared.event.VariableDeletedEvent;
 import org.activiti.api.runtime.event.impl.VariableDeletedEventImpl;
 import org.activiti.api.runtime.model.impl.VariableInstanceImpl;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
-import org.activiti.spring.process.ProcessExtensionService;
 
 import java.util.Optional;
 
 public class ToVariableDeletedConverter implements EventConverter<VariableDeletedEvent, ActivitiVariableEvent> {
 
-    private final ProcessExtensionService processExtensionService;
+    private final EphemeralVariableResolver ephemeralVariableResolver;
 
-    public ToVariableDeletedConverter(ProcessExtensionService processExtensionService) {
-        this.processExtensionService = processExtensionService;
+    public ToVariableDeletedConverter(EphemeralVariableResolver ephemeralVariableResolver) {
+        this.ephemeralVariableResolver = ephemeralVariableResolver;
     }
 
     @Override
     public Optional<VariableDeletedEvent> from(ActivitiVariableEvent internalEvent) {
-        boolean isEphemeral = processExtensionService.hasEphemeralVariable(internalEvent.getProcessDefinitionId(),
-            internalEvent.getVariableName());
+        boolean isEphemeral = ephemeralVariableResolver.isEphemeralVariable(internalEvent);
 
         VariableInstanceImpl<Object> variableInstance = createVariableInstance(internalEvent, isEphemeral);
 

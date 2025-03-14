@@ -19,22 +19,20 @@ import org.activiti.api.model.shared.event.VariableCreatedEvent;
 import org.activiti.api.runtime.event.impl.VariableCreatedEventImpl;
 import org.activiti.api.runtime.model.impl.VariableInstanceImpl;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
-import org.activiti.spring.process.ProcessExtensionService;
 
 import java.util.Optional;
 
 public class ToVariableCreatedConverter implements EventConverter<VariableCreatedEvent, ActivitiVariableEvent> {
 
-    private final ProcessExtensionService processExtensionService;
+    private final EphemeralVariableResolver ephemeralVariableResolver;
 
-    public ToVariableCreatedConverter(ProcessExtensionService processExtensionService) {
-        this.processExtensionService = processExtensionService;
+    public ToVariableCreatedConverter(EphemeralVariableResolver ephemeralVariableResolver) {
+        this.ephemeralVariableResolver = ephemeralVariableResolver;
     }
 
     @Override
     public Optional<VariableCreatedEvent> from(ActivitiVariableEvent internalEvent) {
-        boolean isEphemeral = processExtensionService.hasEphemeralVariable(internalEvent.getProcessDefinitionId(),
-            internalEvent.getVariableName());
+        boolean isEphemeral = ephemeralVariableResolver.isEphemeralVariable(internalEvent);
 
         VariableInstanceImpl<Object> variableInstance = createVariableInstance(internalEvent, isEphemeral);
 
