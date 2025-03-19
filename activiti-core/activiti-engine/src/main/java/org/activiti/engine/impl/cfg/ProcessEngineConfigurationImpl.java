@@ -1138,6 +1138,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     databaseTypeMappings.setProperty("DB2 UDB AS400", DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("MariaDB", DATABASE_TYPE_MYSQL);
     databaseTypeMappings.setProperty("XuGu SQL Server", DATABASE_TYPE_XUGU);
+    databaseTypeMappings.setProperty("XuguDB", DATABASE_TYPE_XUGU);
     return databaseTypeMappings;
   }
 
