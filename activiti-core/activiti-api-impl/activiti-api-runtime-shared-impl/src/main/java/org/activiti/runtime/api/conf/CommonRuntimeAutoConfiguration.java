@@ -24,6 +24,7 @@ import org.activiti.api.model.shared.event.VariableUpdatedEvent;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.runtime.api.event.impl.EphemeralVariableResolver;
 import org.activiti.runtime.api.event.impl.ToVariableCreatedConverter;
 import org.activiti.runtime.api.event.impl.ToVariableUpdatedConverter;
 import org.activiti.runtime.api.event.internal.VariableCreatedListenerDelegate;
@@ -35,6 +36,7 @@ import org.activiti.spring.process.ProcessExtensionService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 
 @AutoConfiguration
@@ -51,12 +53,18 @@ public class CommonRuntimeAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean
+    public EphemeralVariableResolver ephemeralVariableResolver(ProcessExtensionService processExtensionService) {
+        return new EphemeralVariableResolver(processExtensionService);
+    }
+
+    @Bean
     public InitializingBean registerVariableCreatedListenerDelegate(RuntimeService runtimeService,
         @Autowired(required = false) List<VariableEventListener<VariableCreatedEvent>> listeners,
-        VariableEventFilter variableEventFilter, ProcessExtensionService processExtensionService) {
+        VariableEventFilter variableEventFilter, EphemeralVariableResolver ephemeralVariableResolver) {
         return () -> runtimeService.addEventListener(
             new VariableCreatedListenerDelegate(getInitializedListeners(listeners),
-                new ToVariableCreatedConverter(processExtensionService),
+                new ToVariableCreatedConverter(ephemeralVariableResolver),
                 variableEventFilter), ActivitiEventType.VARIABLE_CREATED);
     }
 
@@ -67,10 +75,10 @@ public class CommonRuntimeAutoConfiguration {
     @Bean
     public InitializingBean registerVariableUpdatedListenerDelegate(RuntimeService runtimeService,
         @Autowired(required = false) List<VariableEventListener<VariableUpdatedEvent>> listeners,
-        VariableEventFilter variableEventFilter, ProcessExtensionService processExtensionService) {
+        VariableEventFilter variableEventFilter, EphemeralVariableResolver ephemeralVariableResolver) {
         return () -> runtimeService.addEventListener(
             new VariableUpdatedListenerDelegate(getInitializedListeners(listeners),
-                new ToVariableUpdatedConverter(processExtensionService),
+                new ToVariableUpdatedConverter(ephemeralVariableResolver),
                 variableEventFilter), ActivitiEventType.VARIABLE_UPDATED);
     }
 
