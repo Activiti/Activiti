@@ -28,7 +28,7 @@ jobs:
       - name: Check dependabot build
         uses: ./.github/actions/check-ext-build
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@c1236aee36bb9b35c5972819fcf8a4d07572e6cd # v8.16.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@800d7f17549f77367edfb0ad788cf627bc3defe0 # v8.17.0
         with:
           skip_checkout: true
       - name: Ensure SHA pinned actions
@@ -42,7 +42,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
+      - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
