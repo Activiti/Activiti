@@ -25,7 +25,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Optional;
 import org.activiti.bpmn.model.HasExecutionListeners;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
@@ -303,6 +303,15 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     return childExecution;
   }
 
+  private String getStartUserId(ExecutionEntity executionEntity) {
+    return Optional.ofNullable(executionEntity)
+      .map(ExecutionEntity::getStartUserId)
+      .or(() -> Optional.ofNullable(executionEntity)
+         .map(ExecutionEntity::getSuperExecution)
+         .map(this::getStartUserId))
+      .orElse(null);
+  }
+
   @Override
   public ExecutionEntity createSubprocessInstance(ProcessDefinition processDefinition, ExecutionEntity superExecutionEntity, String businessKey) {
     ExecutionEntity subProcessInstance = executionDataManager.create();
@@ -317,7 +326,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     subProcessInstance.setScope(true); // process instance is always a scope for all child executions
     subProcessInstance.setBusinessKey(businessKey);
     subProcessInstance.setAppVersion(processDefinition.getAppVersion());
-    String authenticatedUserId = Authentication.getAuthenticatedUserId();
+    String authenticatedUserId = Optional.ofNullable(Authentication.getAuthenticatedUserId()).orElseGet(() -> getStartUserId(superExecutionEntity));
     subProcessInstance.setStartUserId(authenticatedUserId);
 
     // Store in database
