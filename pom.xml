@@ -204,7 +204,7 @@
     <extra-enforcer-rules.version>1.9.0</extra-enforcer-rules.version>
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
     <license-maven-plugin.version>5.0.0</license-maven-plugin.version>
-    <third-party-license-maven-plugin.version>2.0.1.alfresco-2</third-party-license-maven-plugin.version>
+    <third-party-license-maven-plugin.version>2.5.0</third-party-license-maven-plugin.version>
     <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.3.2</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
