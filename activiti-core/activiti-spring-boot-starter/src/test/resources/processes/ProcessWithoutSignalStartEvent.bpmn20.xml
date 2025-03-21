@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:activiti="http://activiti.org/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="model-b059c0d2-7a1d-4cba-acc9-3495eafd8f97" name="signalProcess" targetNamespace="" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <bpmn2:process id="ProcessWithoutSignalStartEvent" name="ProcessWithoutSignalStartEvent" isExecutable="true">
+    <bpmn2:documentation />
+    <bpmn2:userTask id="Activity_0ptke4v" activiti:assignee="${initiator}" activiti:priority="0">
+      <bpmn2:incoming>Flow_1v76jj8</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1cik5hx</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="Flow_1v76jj8" sourceRef="Event_1" targetRef="Activity_0ptke4v" />
+    <bpmn2:sequenceFlow id="Flow_1cik5hx" sourceRef="Activity_0ptke4v" targetRef="Event_00py9wg" />
+    <bpmn2:intermediateCatchEvent id="Event_00py9wg" name="signalIntermediate">
+      <bpmn2:incoming>Flow_1cik5hx</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0av98cd</bpmn2:outgoing>
+      <bpmn2:signalEventDefinition id="SignalEventDefinition_0b7rikh" signalRef="Signal_1fcvkon" />
+    </bpmn2:intermediateCatchEvent>
+    <bpmn2:endEvent id="Event_1jbyob0">
+      <bpmn2:incoming>Flow_0av98cd</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="Flow_0av98cd" sourceRef="Event_00py9wg" targetRef="Event_1jbyob0" />
+    <bpmn2:startEvent id="Event_1" name="signalStart">
+      <bpmn2:outgoing>Flow_1v76jj8</bpmn2:outgoing>
+    </bpmn2:startEvent>
+  </bpmn2:process>
+  <bpmn2:signal id="Signal_1fcvkon" name="Signal_1fcvkon" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_m6jfChO-">
+      <bpmndi:BPMNShape id="Activity_0ptke4v_di" bpmnElement="Activity_0ptke4v">
+        <dc:Bounds x="510" y="218" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1fuillq_di" bpmnElement="Event_00py9wg">
+        <dc:Bounds x="682" y="240" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="659" y="283" width="90" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1jbyob0_di" bpmnElement="Event_1jbyob0">
+        <dc:Bounds x="792" y="240" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0hmu33m_di" bpmnElement="Event_1">
+        <dc:Bounds x="412" y="240" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="406" y="283" width="52" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1v76jj8_di" bpmnElement="Flow_1v76jj8">
+        <di:waypoint x="448" y="258" />
+        <di:waypoint x="510" y="258" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cik5hx_di" bpmnElement="Flow_1cik5hx">
+        <di:waypoint x="610" y="258" />
+        <di:waypoint x="682" y="258" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0av98cd_di" bpmnElement="Flow_0av98cd">
+        <di:waypoint x="718" y="258" />
+        <di:waypoint x="792" y="258" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

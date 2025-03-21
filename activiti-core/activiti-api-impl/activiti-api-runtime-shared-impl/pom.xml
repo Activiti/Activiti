@@ -63,5 +63,9 @@
       <artifactId>mockito-junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
+      <dependency>
+          <groupId>org.activiti</groupId>
+          <artifactId>activiti-spring-process-extensions</artifactId>
+      </dependency>
   </dependencies>
 </project>

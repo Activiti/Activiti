@@ -15,49 +15,71 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import static org.activiti.runtime.api.event.impl.VariableBuilder.buildVariableEvent;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+
 import org.activiti.api.model.shared.event.VariableCreatedEvent;
 import org.activiti.api.model.shared.event.VariableEvent.VariableEvents;
 import org.activiti.api.model.shared.model.VariableInstance;
-import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiVariableEventImpl;
-import org.activiti.engine.impl.variable.StringType;
-import org.activiti.engine.impl.variable.VariableType;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class ToVariableCreatedConverterTest {
 
-    private ToVariableCreatedConverter converter = new ToVariableCreatedConverter();
+    @Mock
+    private EphemeralVariableResolver ephemeralVariableResolver;
+
+    @InjectMocks
+    private ToVariableCreatedConverter converter;
 
     @Test
     void should_convertToVariableCreatedEvent() {
-        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_CREATED);
-        internalEvent.setVariableName("variableName");
-        internalEvent.setProcessInstanceId("processInstanceId");
-        internalEvent.setProcessDefinitionId("processDefinitionId");
-        internalEvent.setTaskId("taskId");
-        VariableType variableType = new StringType(100);
-        internalEvent.setVariableType(variableType);
-        Object value = mock(Object.class);
-        internalEvent.setVariableValue(value);
+        ActivitiVariableEventImpl internalEvent = buildVariableEvent();
 
         Optional<VariableCreatedEvent> result = converter.from(internalEvent);
-
         assertThat(result).isPresent();
         VariableCreatedEvent actualEvent = result.get();
-        assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_CREATED);
-        assertThat(actualEvent.getProcessInstanceId()).isEqualTo("processInstanceId");
-        assertThat(actualEvent.getProcessDefinitionId()).isEqualTo("processDefinitionId");
-        VariableInstance actualEntity = actualEvent.getEntity();
-        assertThat(actualEntity.getName()).isEqualTo("variableName");
-        assertThat(actualEntity.getProcessInstanceId()).isEqualTo("processInstanceId");
-        assertThat(actualEntity.getTaskId()).isEqualTo("taskId");
-        assertThat(actualEntity.getType()).isEqualTo("string");
+        assertThat(actualEvent.isEphemeralVariable()).isFalse();
+
+        VariableInstance actualEntity = assertVariableCreatedEvent(actualEvent, internalEvent);
         Object actualValue = actualEntity.getValue();
-        assertThat(actualValue).isSameAs(value);
+        assertThat(actualValue).isEqualTo(internalEvent.getVariableValue());
+    }
+
+    @Test
+    void should_convertToVariableCreatedEvent_withNullValue_when_variableIsEphemeral() {
+        ActivitiVariableEventImpl internalEvent = buildVariableEvent();
+
+        when(ephemeralVariableResolver.isEphemeralVariable(internalEvent)).thenReturn(true);
+
+        Optional<VariableCreatedEvent> result = converter.from(internalEvent);
+        assertThat(result).isPresent();
+        VariableCreatedEvent actualEvent = result.get();
+        assertThat(actualEvent.isEphemeralVariable()).isTrue();
+
+        VariableInstance actualEntity = assertVariableCreatedEvent(actualEvent, internalEvent);
+        Object actualValue = actualEntity.getValue();
+        assertThat(actualValue).isNull();
+    }
+
+    private VariableInstance assertVariableCreatedEvent(VariableCreatedEvent actualEvent, ActivitiVariableEventImpl internalEvent) {
+        assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_CREATED);
+        assertThat(actualEvent.getProcessInstanceId()).isEqualTo(internalEvent.getProcessInstanceId());
+        assertThat(actualEvent.getProcessDefinitionId()).isEqualTo(internalEvent.getProcessDefinitionId());
+        VariableInstance actualEntity = actualEvent.getEntity();
+        assertThat(actualEntity.getName()).isEqualTo(internalEvent.getVariableName());
+        assertThat(actualEntity.getProcessInstanceId()).isEqualTo(internalEvent.getProcessInstanceId());
+        assertThat(actualEntity.getTaskId()).isEqualTo(actualEvent.getEntity().getTaskId());
+        assertThat(actualEntity.getType()).isEqualTo(internalEvent.getVariableType().getTypeName());
+        return actualEntity;
     }
 
 }

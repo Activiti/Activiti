@@ -51,4 +51,7 @@ public interface ActivitiVariableEvent extends ActivitiEvent {
    * @return the id of the task the variable has been set on.
    */
   String getTaskId();
+
+  boolean isTaskVariable();
+
 }
