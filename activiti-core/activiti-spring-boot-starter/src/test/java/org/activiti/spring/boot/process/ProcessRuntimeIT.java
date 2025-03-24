@@ -694,7 +694,7 @@ public class ProcessRuntimeIT {
         securityUtil.logInAs("admin");
 
         Page<ProcessDefinition> processDefinitionPage = processAdminRuntime.processDefinitions(Pageable.of(0,
-                50));
+                200));
         assertThat(processDefinitionPage.getContent()).isNotNull();
         assertThat(processDefinitionPage.getContent()).extracting(ProcessDefinition::getKey)
                 .contains(CATEGORIZE_HUMAN_PROCESS);
@@ -1072,7 +1072,7 @@ public class ProcessRuntimeIT {
         securityUtil.logInAs("manager");
 
         Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0,
-            50));
+            200));
 
         assertThat(processInstancePage).isNotNull();
     }
