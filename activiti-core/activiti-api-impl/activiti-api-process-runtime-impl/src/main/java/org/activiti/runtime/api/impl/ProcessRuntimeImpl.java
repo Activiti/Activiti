@@ -217,7 +217,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());
         }
 
-        return new PageImpl<>(processDefinitionConverter.from(processDefinitionQuery.list()),
+        return new PageImpl<>(processDefinitionConverter.from(processDefinitionQuery.listPage(pageable.getStartIndex(), pageable.getMaxItems())),
                               Math.toIntExact(processDefinitionQuery.count()));
     }
 
