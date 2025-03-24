@@ -81,7 +81,7 @@ public class TaskVariablesLocalCopiesTest {
         securityUtil.logInAs("user");
         //when
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
-                                                                                                      50));
+                                                                                                      200));
         //then
         assertThat(processDefinitionPage.getContent()).isNotNull();
         assertThat(processDefinitionPage.getContent())
