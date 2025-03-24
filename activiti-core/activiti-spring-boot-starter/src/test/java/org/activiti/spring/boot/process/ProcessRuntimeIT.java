@@ -83,7 +83,7 @@ public class ProcessRuntimeIT {
     private static final String SUPER_PROCESS = "superProcess";
     private static final String TWO_TASKS_PROCESS = "twoTaskProcess";
     private static final Pageable PAGEABLE = Pageable.of(0,
-        50);
+        200);
     public static final String CATEGORIZE_HUMAN_PROCESS_CATEGORY = "test-category";
 
     @Autowired

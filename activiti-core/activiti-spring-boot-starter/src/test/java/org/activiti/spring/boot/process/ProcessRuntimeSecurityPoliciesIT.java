@@ -69,7 +69,7 @@ public class ProcessRuntimeSecurityPoliciesIT {
         securityUtil.logInAs("admin");
 
         Page<ProcessDefinition> processDefinitionPage = processAdminRuntime.processDefinitions(Pageable.of(0,
-                50));
+                200));
         assertThat(processDefinitionPage.getContent()).isNotNull();
         assertThat(processDefinitionPage.getContent())
                 .extracting(ProcessDefinition::getKey)

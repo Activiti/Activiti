@@ -61,7 +61,7 @@ public class ProcessRuntimeCandidateStartersIT {
         loginAsCandidateStarterUser();
 
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
-                                                                                                      50));
+                                                                                                      200));
         assertThat(processDefinitionPage.getContent()).isNotNull();
         assertThat(processDefinitionPage.getContent()) // All processes except UnstartableProcess
             .hasSize((int) repositoryService.createProcessDefinitionQuery().count() -1);
@@ -72,7 +72,7 @@ public class ProcessRuntimeCandidateStartersIT {
         loginAsGroupMemberCandidateStarter();
 
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
-            50));
+            200));
         assertThat(processDefinitionPage.getContent()).isNotNull();
         assertThat(processDefinitionPage.getContent()) // All processes except UnstartableProcess
             .hasSize((int) repositoryService.createProcessDefinitionQuery().count() -1);
@@ -83,7 +83,7 @@ public class ProcessRuntimeCandidateStartersIT {
         loginAsANonCandidateStarter();
 
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
-            50));
+            200));
         assertThat(processDefinitionPage.getContent()).isNotNull();
         // All processes except SingleTaskProcessRestricted and UnstartableProcess
         assertThat(processDefinitionPage.getContent())
