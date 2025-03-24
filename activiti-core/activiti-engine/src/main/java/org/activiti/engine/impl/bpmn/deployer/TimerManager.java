@@ -16,9 +16,6 @@
 
 package org.activiti.engine.impl.bpmn.deployer;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
@@ -33,6 +30,9 @@ import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti.engine.impl.util.CollectionUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Manages timers for newly-deployed process definitions and their previous versions.
@@ -54,6 +54,16 @@ public class TimerManager {
       for (TimerJobEntity job :jobsToDelete) {
         new CancelJobsCmd(job.getId()).execute(Context.getCommandContext());
       }
+    }
+  }
+
+  protected void removeExistingTimerStartEventJobs() {
+    List<TimerJobEntity> timerStartJobs = Context.getCommandContext().getTimerJobEntityManager().
+        findTimerStartEvents();
+    if (timerStartJobs != null) {
+        for (TimerJobEntity timerStartJob : timerStartJobs) {
+            new CancelJobsCmd(timerStartJob.getId()).execute(Context.getCommandContext());
+        }
     }
   }
 

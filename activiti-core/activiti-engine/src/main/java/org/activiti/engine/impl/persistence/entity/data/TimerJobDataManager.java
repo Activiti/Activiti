@@ -31,6 +31,8 @@ public interface TimerJobDataManager extends DataManager<TimerJobEntity> {
 
   List<TimerJobEntity> findTimerJobsToExecute(Page page);
 
+  List<TimerJobEntity> findTimerStartEvents();
+
   List<TimerJobEntity> findJobsByTypeAndProcessDefinitionId(String jobHandlerType, String processDefinitionId);
 
   List<TimerJobEntity> findJobsByTypeAndProcessDefinitionKeyNoTenantId(String jobHandlerType, String processDefinitionKey);

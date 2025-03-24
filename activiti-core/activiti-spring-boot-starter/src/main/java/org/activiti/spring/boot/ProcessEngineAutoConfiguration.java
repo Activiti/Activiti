@@ -136,6 +136,7 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
         conf.setMailServerDefaultFrom(activitiProperties.getMailServerDefaultFrom());
         conf.setMailServerUseSSL(activitiProperties.isMailServerUseSsl());
         conf.setMailServerUseTLS(activitiProperties.isMailServerUseTls());
+        conf.setDisableExistingStartEventSubscriptions(activitiProperties.shouldDisableExistingStartEventSubscriptions());
 
         if (userGroupManager != null) {
             conf.setUserGroupManager(userGroupManager);
