@@ -89,5 +89,8 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
     this.taskVariables = taskVariables;
   }
 
+  public String getTaskId() {
+    return taskId;
+  }
 
 }
