@@ -307,7 +307,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     return Optional.ofNullable(executionEntity)
       .map(ExecutionEntity::getStartUserId)
       .or(() -> Optional.ofNullable(executionEntity)
-         .map(ExecutionEntity::getSuperExecution)
+         .map(ExecutionEntity::getParent)
          .map(this::getStartUserId))
       .orElse(null);
   }

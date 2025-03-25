@@ -207,7 +207,7 @@ public class ExecutionEntityManagerImplTest {
         initiatorExecution.setStartUserId("initiator");
 
         ExecutionEntityImpl superExecution = new ExecutionEntityImpl();
-        superExecution.setSuperExecution(initiatorExecution);
+        superExecution.setParent(initiatorExecution);
         superExecution.executions = new ArrayList<>();
         superExecution.setSubProcessInstance(null);
         superExecution.setRootProcessInstanceId("rootProcessInstanceId");
