@@ -115,7 +115,7 @@ public class ProcessRuntimeCallActivityIT {
         assertThat(subProcessInstanceList).isNotEmpty();
         ProcessInstance subProcessInstance = subProcessInstanceList.get(0);
 
-        assertThat(parentProcessInstance.getProcessDefinitionKey()).isEqualTo(SUB_PROCESS_CALL_ACTIVITY);
+        assertThat(subProcessInstance.getProcessDefinitionKey()).isEqualTo(SUB_PROCESS_CALL_ACTIVITY);
         assertThat(subProcessInstance.getRootProcessInstanceId()).isEqualTo(processInstance.getId());
     }
 
