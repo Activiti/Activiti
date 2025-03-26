@@ -64,11 +64,7 @@ public class ProcessRuntimeCallActivityIT {
 
         ProcessInstance processInstance = startProcess(PARENT_PROCESS_CALL_ACTIVITY);
 
-        List<ProcessInstance> subProcessInstanceList = getProcessInstances(processInstance);
-
-        assertThat(subProcessInstanceList).isNotEmpty();
-
-        ProcessInstance subProcessInstance = subProcessInstanceList.get(0);
+        ProcessInstance subProcessInstance = getFirstChildProcessInstance(processInstance);
 
         assertThat(subProcessInstance).isNotNull();
         assertThat(subProcessInstance.getParentId()).isEqualTo(processInstance.getId());
@@ -95,28 +91,31 @@ public class ProcessRuntimeCallActivityIT {
 
         securityUtil.logInAs("user");
 
-        ProcessInstance processInstance = startProcess(MAIN_PROCESS_CALL_ACTIVITY);
+        ProcessInstance rootProcessInstance = startProcess(MAIN_PROCESS_CALL_ACTIVITY);
 
-        assertThat(processInstance).isNotNull();
+        assertThat(rootProcessInstance).isNotNull();
 
-        List<ProcessInstance> parentProcessInstanceList = getProcessInstances(processInstance);
+        ProcessInstance parentProcessInstance = getFirstChildProcessInstance(rootProcessInstance);
+
+        assertThat(parentProcessInstance).isNotNull();
+        assertThat(parentProcessInstance.getParentId()).isEqualTo(rootProcessInstance.getId());
+        assertThat(parentProcessInstance.getProcessDefinitionKey()).isEqualTo(PARENT_PROCESS_CALL_ACTIVITY);
+        assertThat(parentProcessInstance.getRootProcessInstanceId()).isEqualTo(rootProcessInstance .getId());
+
+        ProcessInstance subProcessInstance = getFirstChildProcessInstance(parentProcessInstance);
+
+        assertThat(subProcessInstance.getProcessDefinitionKey()).isEqualTo(SUB_PROCESS_CALL_ACTIVITY);
+        assertThat(subProcessInstance.getRootProcessInstanceId()).isEqualTo(rootProcessInstance.getId());
+    }
+
+    private ProcessInstance getFirstChildProcessInstance(ProcessInstance rootProcessInstance) {
+        List<ProcessInstance> parentProcessInstanceList = getChildProcessInstances(rootProcessInstance);
 
         assertThat(parentProcessInstanceList).isNotEmpty();
 
         ProcessInstance parentProcessInstance = parentProcessInstanceList.get(0);
 
-        assertThat(parentProcessInstance).isNotNull();
-        assertThat(parentProcessInstance.getParentId()).isEqualTo(processInstance.getId());
-        assertThat(parentProcessInstance.getProcessDefinitionKey()).isEqualTo(PARENT_PROCESS_CALL_ACTIVITY);
-        assertThat(parentProcessInstance.getRootProcessInstanceId()).isEqualTo(processInstance.getId());
-
-        List<ProcessInstance> subProcessInstanceList = getProcessInstances(parentProcessInstance);
-
-        assertThat(subProcessInstanceList).isNotEmpty();
-        ProcessInstance subProcessInstance = subProcessInstanceList.get(0);
-
-        assertThat(subProcessInstance.getProcessDefinitionKey()).isEqualTo(SUB_PROCESS_CALL_ACTIVITY);
-        assertThat(subProcessInstance.getRootProcessInstanceId()).isEqualTo(processInstance.getId());
+        return parentProcessInstance;
     }
 
     private ProcessInstance startProcess(String processDefinitionKey) {
@@ -127,7 +126,7 @@ public class ProcessRuntimeCallActivityIT {
                 .build());
     }
 
-    private List<ProcessInstance> getProcessInstances(ProcessInstance processInstance) {
+    private List<ProcessInstance> getChildProcessInstances(ProcessInstance processInstance) {
         return processRuntime.processInstances(
                 Pageable.of(0, 50),
                 ProcessPayloadBuilder
