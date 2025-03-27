@@ -16,7 +16,15 @@
           "type": "json",
           "required": false,
           "value": {
-            "firstname": "Bob"
+            "firstname": "Bob",
+            "addresses": [
+              {
+                "street": "123 Main St"
+              },
+              {
+                "street": "456 Elm St"
+              }
+            ]
           }
         },
         "variable-empty-json-id": {
@@ -71,6 +79,21 @@
                   "op": "add",
                   "path": "/lastname",
                   "value": "${process_variable_lastname}"
+                },
+                {
+                  "op": "add",
+                  "path": "/addresses/1/street",
+                  "value": "${process_variable_address.address.street}"
+                },
+                {
+                  "op": "add",
+                  "path": "/addresses/1/new-field",
+                  "value": "${process_variable_name}"
+                },
+                {
+                  "op": "add",
+                  "path": "/addresses/2",
+                  "value": "${process_variable_address}"
                 }
               ]
             },

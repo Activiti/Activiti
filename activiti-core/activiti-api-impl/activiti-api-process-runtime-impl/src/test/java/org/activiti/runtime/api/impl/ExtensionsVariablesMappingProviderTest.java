@@ -472,34 +472,41 @@ public class ExtensionsVariablesMappingProviderTest {
 
     @Test
     public void calculateOutputVariablesShouldMapJsonPatchVariables() throws IOException {
-        DelegateExecution execution = initExpressionResolverTest(JSONPATCH_TEST_FILES_PATH, "jsonPatch-in-mapping-output.json","Process_jsonPatchMappingOutput");
+        DelegateExecution execution = initExpressionResolverTest(JSONPATCH_TEST_FILES_PATH, "jsonPatch-in-mapping-output.json", "Process_jsonPatchMappingOutput");
 
-        Map<String, Object> outputVariables = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
-            map(
-                "task_input_variable_name_1", "variable_value_1",
-                "task_input_variable_name_2", Map.of("firstname", "Bob")));
+        Map<String, Object> outputVariables = executeCalculateOutputVariables(execution);
 
-        assertThat(outputVariables).isNotEmpty();
-        assertThat(outputVariables.entrySet()).extracting(Map.Entry::getKey, Map.Entry::getValue)
-            .containsOnly(tuple("process_variable_person", Map.of("firstname", "Bob", "lastname", "Miracle")),
-                tuple("process_variable_empty_json", Map.of("firstname", "John", "address", Map.of("street","Ha-Ha Road"))),
-                    tuple("variable_invalid_object", Map.of("street2", "Ha-Ha Road")));
+        assertOutputVariables(outputVariables);
     }
 
     @Test
     public void calculateOutputVariablesShouldMapJsonPatchVariablesWhenNullNode() throws IOException {
-        DelegateExecution execution = initExpressionResolverTest(JSONPATCH_TEST_FILES_PATH, "jsonPatch-in-mapping-output.json","Process_jsonPatchMappingOutput");
+        DelegateExecution execution = initExpressionResolverTest(JSONPATCH_TEST_FILES_PATH, "jsonPatch-in-mapping-output.json", "Process_jsonPatchMappingOutput");
         when(execution.getVariable(eq("process_variable_empty_json"))).thenReturn(NullNode.getInstance());
 
-        Map<String, Object> outputVariables = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+        Map<String, Object> outputVariables = executeCalculateOutputVariables(execution);
+
+        assertOutputVariables(outputVariables);
+    }
+
+    private Map<String, Object> executeCalculateOutputVariables(DelegateExecution execution) {
+        return variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
             map(
                 "task_input_variable_name_1", "variable_value_1",
                 "task_input_variable_name_2", Map.of("firstname", "Bob")));
+    }
+
+    private void assertOutputVariables(Map<String, Object> outputVariables) {
+        Map<String, Object> expectedAddress0 = Map.of("street", "123 Main St");
+        Map<String, Object> expectedAddress1 = Map.of("street", "Ha-Ha Road", "new-field", "John");
+        Map<String, Object> expectedAddress2 = Map.of("address", Map.of("street", "Ha-Ha Road"));
 
         assertThat(outputVariables).isNotEmpty();
         assertThat(outputVariables.entrySet()).extracting(Map.Entry::getKey, Map.Entry::getValue)
-            .containsOnly(tuple("process_variable_person", Map.of("firstname", "Bob", "lastname", "Miracle")),
-                tuple("process_variable_empty_json", Map.of("firstname", "John", "address", Map.of("street","Ha-Ha Road"))),
+            .containsOnly(
+                tuple("process_variable_person", Map.of("firstname", "Bob", "lastname", "Miracle",
+                    "addresses", List.of(expectedAddress0, expectedAddress1, expectedAddress2))),
+                tuple("process_variable_empty_json", Map.of("firstname", "John", "address", Map.of("street", "Ha-Ha Road"))),
                 tuple("variable_invalid_object", Map.of("street2", "Ha-Ha Road")));
     }
 

@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.flipkart.zjsonpatch.JsonPatch;
@@ -187,14 +188,34 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
             for (int i = 1; i < properties.length - 1; i++) {
                 String property = properties[i];
-
-                if (!currentNode.has(property) || !currentNode.get(property).isObject()) {
-                    ((ObjectNode) currentNode).set(property, objectMapper.createObjectNode());
+                if (isArrayProperty(currentNode, property)) {
+                    currentNode = handleArrayPath(property, currentNode);
+                } else {
+                    if (!currentNode.has(property) || !currentNode.get(property).isObject()) {
+                        ((ObjectNode) currentNode).set(property, objectMapper.createObjectNode());
+                    }
+                    currentNode = currentNode.get(property);
                 }
-
-                currentNode = currentNode.get(property);
             }
         }
+    }
+
+    private boolean isArrayProperty(JsonNode node, String property) {
+        return !node.isEmpty() && (node.isArray() || (node.has(property) && node.get(property).isArray()) || property.matches("\\d+"));
+    }
+
+    private JsonNode handleArrayPath(String property, JsonNode currentNode) {
+        if (!currentNode.isArray()) {
+            return currentNode.get(property);
+        }
+        int index = Integer.parseInt(property);
+        ArrayNode arrayNode = (ArrayNode) currentNode;
+
+        while (arrayNode.size() <= index) {
+            arrayNode.add(objectMapper.createObjectNode());
+        }
+
+        return arrayNode.get(index);
     }
 
     public Map<String, Object> calculateOutPutVariables(MappingExecutionContext mappingExecutionContext,
