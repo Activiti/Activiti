@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
+  <!-- TASK UPDATE -->
+
+  <update id="updateTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
+    update ${prefix}ACT_RU_TASK
+    <set>
+      REV_ = #{revisionNext, jdbcType=INTEGER},
+      NAME_ = #{name, jdbcType=VARCHAR},
+      BUSINESS_KEY_ = #{businessKey, jdbcType=VARCHAR},
+      PARENT_TASK_ID_ = #{parentTaskId, jdbcType=VARCHAR},
+      PRIORITY_ = #{priority, jdbcType=INTEGER},
+      CREATE_TIME_ = #{createTime, jdbcType=TIMESTAMP},
+      OWNER_ = #{owner, jdbcType=VARCHAR},
+      ASSIGNEE_ = #{assignee, jdbcType=VARCHAR},
+      DELEGATION_ = #{delegationStateString, jdbcType=VARCHAR},
+      EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
+      PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
+      DESCRIPTION_ = #{description, jdbcType=VARCHAR},
+      DUE_DATE_ = #{dueDate, jdbcType=TIMESTAMP},
+      CATEGORY_ = #{category, jdbcType=VARCHAR},
+      SUSPENSION_STATE_ = #{suspensionState, jdbcType=INTEGER},
+      FORM_KEY_ = #{formKey, jdbcType=INTEGER},
+      CLAIM_TIME_ = #{claimTime, jdbcType=TIMESTAMP}
+    </set>
+    where ID_= #{id, jdbcType=VARCHAR}
+      and REV_ = #{revision, jdbcType=INTEGER}
+  </update>
+
+  <update id="updateTaskTenantIdForDeployment" parameterType="java.util.Map">
+    update ${prefix}ACT_RU_TASK set
+      TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+    where
+      ID_ in (
+        SELECT T.ID_ from ${prefix}ACT_RU_TASK T
+        inner join ${prefix}ACT_RE_PROCDEF P on T.PROC_DEF_ID_  = P.ID_
+        inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_
+        where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
+      )
+  </update>
+
+    <!-- See http://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause
+       Tested this on MySQL 5.6: does NOT use a temporary table (so good, performance0 -->
+  <update id="updateTaskTenantIdForDeployment" databaseId="mysql" parameterType="java.util.Map">
+    update ${prefix}ACT_RU_TASK set
+      TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+    where
+      ID_ in (
+
+          SELECT tempTask.tempId
+          FROM (
+                SELECT T.ID_ as tempId
+                FROM  ${prefix}ACT_RU_TASK T
+                inner join ${prefix}ACT_RE_PROCDEF P on T.PROC_DEF_ID_  = P.ID_
+                inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_
+                where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
+
+        ) AS tempTask
+
+    )
+  </update>
+</mapper>

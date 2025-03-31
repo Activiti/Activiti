@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
+
+  <!-- TASK INSERT -->
+
+  <insert id="insertTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
+    insert into ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, BUSINESS_KEY_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
+                      ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_, SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_, APP_VERSION_)
+    values (#{id, jdbcType=VARCHAR},
+            1,
+            #{name, jdbcType=VARCHAR},
+            #{businessKey, jdbcType=VARCHAR},
+            #{parentTaskId, jdbcType=VARCHAR},
+            #{description, jdbcType=VARCHAR},
+            #{priority, jdbcType=INTEGER},
+            #{createTime, jdbcType=TIMESTAMP},
+            #{owner, jdbcType=VARCHAR},
+            #{assignee, jdbcType=VARCHAR},
+            #{delegationStateString, jdbcType=VARCHAR},
+            #{executionId, jdbcType=VARCHAR},
+            #{processInstanceId, jdbcType=VARCHAR},
+            #{processDefinitionId, jdbcType=VARCHAR},
+            #{taskDefinitionKey, jdbcType=VARCHAR},
+            #{dueDate, jdbcType=TIMESTAMP},
+            #{category, jdbcType=VARCHAR},
+            #{suspensionState, jdbcType=INTEGER},
+            #{tenantId, jdbcType=VARCHAR},
+            #{formKey, jdbcType=VARCHAR},
+            #{claimTime, jdbcType=TIMESTAMP},
+            #{appVersion, jdbcType=INTEGER}
+           )
+  </insert>
+
+  <insert id="bulkInsertTask" parameterType="java.util.List">
+    INSERT INTO ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, BUSINESS_KEY_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
+                      ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_, SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_, APP_VERSION_)
+    VALUES
+      <foreach collection="list" item="task" index="index" separator=",">
+        (#{task.id, jdbcType=VARCHAR},
+         1,
+         #{task.name, jdbcType=VARCHAR},
+         #{task.businessKey, jdbcType=VARCHAR},
+         #{task.parentTaskId, jdbcType=VARCHAR},
+         #{task.description, jdbcType=VARCHAR},
+         #{task.priority, jdbcType=INTEGER},
+         #{task.createTime, jdbcType=TIMESTAMP},
+         #{task.owner, jdbcType=VARCHAR},
+         #{task.assignee, jdbcType=VARCHAR},
+         #{task.delegationStateString, jdbcType=VARCHAR},
+         #{task.executionId, jdbcType=VARCHAR},
+         #{task.processInstanceId, jdbcType=VARCHAR},
+         #{task.processDefinitionId, jdbcType=VARCHAR},
+         #{task.taskDefinitionKey, jdbcType=VARCHAR},
+         #{task.dueDate, jdbcType=TIMESTAMP},
+         #{task.category, jdbcType=VARCHAR},
+         #{task.suspensionState, jdbcType=INTEGER},
+         #{task.tenantId, jdbcType=VARCHAR},
+         #{task.formKey, jdbcType=VARCHAR},
+         #{task.claimTime, jdbcType=TIMESTAMP},
+         #{task.appVersion, jdbcType=INTEGER})
+    </foreach>
+  </insert>
+
+  <insert id="bulkInsertTask" databaseId="oracle" parameterType="java.util.List">
+    INSERT ALL
+      <foreach collection="list" item="task" index="index">
+        INTO ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, BUSINESS_KEY_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
+             ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_,
+             SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_, APP_VERSION_) VALUES
+        (#{task.id, jdbcType=VARCHAR},
+         1,
+         #{task.name, jdbcType=VARCHAR},
+         #{task.businessKey, jdbcType=VARCHAR},
+         #{task.parentTaskId, jdbcType=VARCHAR},
+         #{task.description, jdbcType=VARCHAR},
+         #{task.priority, jdbcType=INTEGER},
+         #{task.createTime, jdbcType=TIMESTAMP},
+         #{task.owner, jdbcType=VARCHAR},
+         #{task.assignee, jdbcType=VARCHAR},
+         #{task.delegationStateString, jdbcType=VARCHAR},
+         #{task.executionId, jdbcType=VARCHAR},
+         #{task.processInstanceId, jdbcType=VARCHAR},
+         #{task.processDefinitionId, jdbcType=VARCHAR},
+         #{task.taskDefinitionKey, jdbcType=VARCHAR},
+         #{task.dueDate, jdbcType=TIMESTAMP},
+         #{task.category, jdbcType=VARCHAR},
+         #{task.suspensionState, jdbcType=INTEGER},
+         #{task.tenantId, jdbcType=VARCHAR},
+         #{task.formKey, jdbcType=VARCHAR},
+         #{task.claimTime, jdbcType=TIMESTAMP},
+         #{task.appVersion, jdbcType=INTEGER})
+    </foreach>
+    SELECT * FROM dual
+  </insert>
+
+</mapper>
