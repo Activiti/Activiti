@@ -75,7 +75,7 @@
         left join (
           select task_id_
           from ${prefix}act_ru_identitylink
-          where (
+          <where>
             <if test="orQueryObject.involvedUser != null">
               user_id_ = #{orQueryObject.involvedUser}
             </if>
@@ -88,24 +88,26 @@
                 </foreach>
               )
             </if>
-          )
+          </where>
         ) i_or_user_group ON i_or_user_group.task_id_ = res.id_
       </if>
     </foreach>
-    where
-      (
+    <where>
       <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
-        <if test="orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0">
-          deploy_p_or${orIndex}.deployment_id_ in
-          <foreach item="deployment" index="index" collection="orQueryObject.deploymentIds" open="(" separator="," close=")">
-            #{deployment}
-          </foreach>
-        </if>
-        <if test="orQueryObject.category != null">
-          or res.category_ = #{orQueryObject.category}
+        <if test="orQueryObject.category != null || (orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0)">
+          (
+          <if test="orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0">
+            deploy_p_or${orIndex}.deployment_id_ in
+            <foreach item="deployment" index="index" collection="orQueryObject.deploymentIds" open="(" separator="," close=")">
+              #{deployment}
+            </foreach>
+          </if>
+          <if test="orQueryObject.category != null">
+            or res.category_ = #{orQueryObject.category}
+          </if>
+          )
         </if>
       </foreach>
-      )
       <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
             <if test="orQueryObject.involvedUser != null">
               and (
@@ -115,6 +117,7 @@
               )
             </if>
       </foreach>
+    </where>
   </sql>
 
   <!-- other SQL queries are in Task-Select.xml file -->
