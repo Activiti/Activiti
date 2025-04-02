@@ -1216,7 +1216,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         //set default properties
         properties.put("limitBefore" , "");
         properties.put("limitAfter" , "");
+        properties.put("limitAfterWithoutFrom", "");
         properties.put("limitBetween" , "");
+        properties.put("limitBetweenWithoutFrom" , "");
         properties.put("limitOuterJoinBetween" , "");
         properties.put("limitBeforeNativeQuery" , "");
         properties.put("orderBy" , "order by ${orderByColumns}");

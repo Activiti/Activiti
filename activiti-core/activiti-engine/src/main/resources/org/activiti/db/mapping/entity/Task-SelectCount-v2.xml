@@ -67,6 +67,26 @@
   <sql id="optimised_v2_selectTaskCountByQueryCriteria">
     select count(res.id_)
     from ${prefix}act_ru_task res
+    <if test="involvedUser != null || (involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0)">
+      left join (
+        select task_id_
+        from ${prefix}act_ru_identitylink
+        <where>
+          <if test="involvedUser != null">
+            user_id_ = #{involvedUser}
+          </if>
+          <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
+            or (
+              type_ = 'participant'
+              and group_id_ IN
+              <foreach item="group" index="index" collection="involvedGroups" open="(" separator="," close=")">
+                #{group}
+              </foreach>
+            )
+          </if>
+        </where>
+      ) i_user_group ON i_user_group.task_id_ = res.id_
+    </if>
     <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
       <if test="orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0">
         left join ${prefix}act_re_procdef deploy_p_or${orIndex} on res.proc_def_id_ = deploy_p_or${orIndex}.id_
@@ -89,10 +109,30 @@
               )
             </if>
           </where>
-        ) i_or_user_group ON i_or_user_group.task_id_ = res.id_
+        ) i_or${orIndex}_user_group ON i_or${orIndex}_user_group.task_id_ = res.id_
       </if>
     </foreach>
     <where>
+      <if test="processInstanceId != null">
+        and res.proc_inst_id_ = #{processInstanceId}
+      </if>
+      <if test="suspensionState != null">
+        <if test="suspensionState.stateCode == 1">
+          and res.suspension_state_ = 1
+        </if>
+        <if test="suspensionState.stateCode == 2">
+          and res.suspension_state_ = 2
+        </if>
+      </if>
+      <if test="involvedUser != null || (involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0)">
+        and (
+          i_user_group.task_id_ is not null
+          <if test="involvedUser != null">
+            or res.assignee_ = #{involvedUser}
+            or res.owner_ = #{involvedUser}
+          </if>
+        )
+      </if>
       <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
         <if test="orQueryObject.category != null || (orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0)">
           (
@@ -109,13 +149,15 @@
         </if>
       </foreach>
       <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
+        <if test="orQueryObject.involvedUser != null || (orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0)">
+          and (
+            i_or${orIndex}_user_group.task_id_ is not null
             <if test="orQueryObject.involvedUser != null">
-              and (
-                i_or_user_group.task_id_ is not null
                 or res.assignee_ = #{orQueryObject.involvedUser}
                 or res.owner_ = #{orQueryObject.involvedUser}
-              )
             </if>
+          )
+        </if>
       </foreach>
     </where>
   </sql>
