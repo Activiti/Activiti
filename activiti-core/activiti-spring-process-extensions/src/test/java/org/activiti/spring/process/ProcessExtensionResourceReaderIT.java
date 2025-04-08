@@ -24,7 +24,7 @@ import org.activiti.spring.process.model.TemplatesDefinition;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.io.InputStream;
 
@@ -40,7 +40,7 @@ public class ProcessExtensionResourceReaderIT {
 
     private static String FROM = "no-reply@activiti.org";
 
-    @MockBean
+    @MockitoBean
     private RepositoryService repositoryService;
 
     @Autowired
