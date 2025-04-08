@@ -44,11 +44,21 @@
     </if>
 
     <choose>
+      <!-- if it's a count, only "res.id_" is needed -->
       <when test="${isCount} == true">
         select ${distinctMode} RES.id_ as uniqueId
       </when>
       <otherwise>
-        select ${distinctMode} RES.id_ as uniqueId, RES.* ${limitBetweenWithoutFrom}
+        <choose>
+          <!-- if it's not a count and there's a distinct, we need to remove duplicated based on res.id_ -->
+          <when test="distinctMode == 'distinct'">
+            select ${distinctMode} RES.id_ as uniqueId, RES.* ${limitBetweenWithoutFrom}
+          </when>
+          <!-- if it's not a count nor distinct, we don't need explicit res.id_ -->
+          <otherwise>
+            select RES.* ${limitBetweenWithoutFrom}
+          </otherwise>
+        </choose>
       </otherwise>
     </choose>
   </sql>
