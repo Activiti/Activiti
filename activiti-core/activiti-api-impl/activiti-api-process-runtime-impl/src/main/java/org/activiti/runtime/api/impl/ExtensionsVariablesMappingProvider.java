@@ -21,6 +21,8 @@ import static java.util.Collections.emptyMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,6 +34,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext;
 import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
+import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.ConstantDefinition;
 import org.activiti.spring.process.model.Extension;
@@ -42,6 +45,7 @@ import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.VariableParsingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
@@ -54,6 +58,11 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
     private ExpressionResolver expressionResolver;
 
     private VariableParsingService variableParsingService;
+
+    private static final Pattern VARIABLE_PATTERN = Pattern.compile("/\\$(\\w+)");
+
+    @Value("${activiti.enable.jsonpatch.path.variables:false}")
+    private boolean enableJsonPathVariable;
 
     public ExtensionsVariablesMappingProvider(ProcessExtensionService processExtensionService,
                                     ExpressionResolver expressionResolver,
@@ -140,7 +149,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
             if (Mapping.SourceMappingType.VALUE.equals(mapping.getType())) {
                 return Optional.of(mapping.getValue());
             } else if(Mapping.SourceMappingType.JSONPATCH.equals(mapping.getType())) {
-                return patchVariable(mapping.getValue(), processVariableCurrentValue);
+                return resolvePatchMapping(mapping.getValue(), processVariableCurrentValue);
             } else {
                 if (Mapping.SourceMappingType.VARIABLE.equals(mapping.getType())) {
                     String name = mapping.getValue().toString();
@@ -152,7 +161,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         return Optional.empty();
     }
 
-    private Optional<Object> patchVariable(Object changesToApply, Object processVariableCurrentValue) {
+    private Optional<Object> resolvePatchMapping(Object changesToApply, Object processVariableCurrentValue) {
         try {
             JsonNode oldNode;
             if (isObjectVariable(processVariableCurrentValue)) {
@@ -162,7 +171,63 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
             }
 
             JsonNode patchNode = objectMapper.convertValue(changesToApply, JsonNode.class);
-            ensurePathExists(oldNode, patchNode);
+            initializePath(oldNode, patchNode);
+
+            JsonNode patchedNode = JsonPatch.apply(patchNode, oldNode);
+
+            Object updatedObject = objectMapper.treeToValue(patchedNode, Object.class);
+            return Optional.ofNullable(updatedObject);
+        } catch (Exception e) {
+            LOGGER.error("Error patching variable. Changes to apply: {}, Process variable current value: {}",
+                changesToApply, processVariableCurrentValue, e);
+            throw new ActivitiIllegalArgumentException("Invalid jsonPatch variable mapping", e);
+        }
+    }
+
+    private Optional<Object> calculateOutPutMappedValue_withJsonPathVariablesEnabled(Map.Entry<String, Mapping> mappingEntry,
+                                                                                     Map<String, Object> currentContextVariables,
+                                                                                     DelegateExecution execution,
+                                                                                     Extension extensions) {
+        Mapping mapping = mappingEntry.getValue();
+        if (mapping == null || mapping.getType() == null) {
+            return Optional.empty();
+        }
+
+        switch (mapping.getType()) {
+            case VALUE:
+                return Optional.of(mapping.getValue());
+
+            case JSONPATCH:
+                return resolvePatchMapping_withJsonPathVariablesEnabled(
+                    mappingEntry.getKey(), mapping.getValue(), execution, extensions
+                );
+            case VARIABLE:
+                if (currentContextVariables != null) {
+                    return Optional.ofNullable(currentContextVariables.get(mapping.getValue().toString()));
+                }
+            default:
+                return Optional.empty();
+        }
+    }
+
+    private Optional<Object> resolvePatchMapping_withJsonPathVariablesEnabled(String outputVariableName, Object changesToApply, DelegateExecution execution,
+                                                                              Extension extensions) {
+
+        Object executionVariableValue = execution != null ? execution.getVariable(outputVariableName) : null;
+        Object processVariableCurrentValue = calculateProcessVariableCurrentValue(executionVariableValue, extensions.getPropertyByName(outputVariableName));
+
+        try {
+            JsonNode oldNode;
+            if (isObjectVariable(processVariableCurrentValue)) {
+                oldNode = objectMapper.convertValue(processVariableCurrentValue, JsonNode.class);
+            } else {
+                oldNode = objectMapper.createObjectNode();
+            }
+
+            JsonNode patchNode = objectMapper.convertValue(changesToApply, JsonNode.class);
+
+            replaceVariablesInJsonPath(patchNode, execution, extensions);
+            initializePath(oldNode, patchNode);
 
             JsonNode patchedNode = JsonPatch.apply(patchNode, oldNode);
 
@@ -179,7 +244,70 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         return variable instanceof ObjectNode || variable instanceof Map;
     }
 
-    private void ensurePathExists(JsonNode oldNode, JsonNode patchNode) {
+    private void replaceVariablesInJsonPath(JsonNode patchNode, DelegateExecution execution, Extension extensions) {
+        for (JsonNode patch : patchNode) {
+            if (patch.has("path")) {
+                String path = patch.get("path").asText();
+                String updatedPath = resolvePath(path, execution, extensions);
+
+                // Only update if there was a variable in the path
+                if (!path.equals(updatedPath) && patch instanceof ObjectNode) {
+                    ((ObjectNode) patch).put("path", updatedPath);
+                }
+            }
+        }
+    }
+
+    private String resolvePath(String path, DelegateExecution execution, Extension extensions) {
+        Matcher matcher = VARIABLE_PATTERN.matcher(path);
+        StringBuilder updatedPath = new StringBuilder();
+
+        while (matcher.find()) {
+            String variableName = matcher.group(1); // Extract variable name without `$`
+            String replacedValue = replacePathVariables(variableName, execution, extensions);
+            if(!variableName.equals(replacedValue)) {
+                matcher.appendReplacement(updatedPath, "/" + replacedValue);
+            }
+        }
+
+        matcher.appendTail(updatedPath);
+        return updatedPath.toString();
+    }
+
+    private String replacePathVariables(String variableName, DelegateExecution execution, Extension extensions) {
+        if (!isTargetProcessVariableDefined(extensions, execution, variableName)) {
+            return variableName;
+        }
+
+        VariableInstance variableInstance = execution != null ? execution.getVariableInstance(variableName) : null;
+        if (variableInstance != null) {
+            return replaceVariableIfSupported(variableInstance.getValue(), variableInstance.getTypeName(), variableName);
+        }
+
+        VariableDefinition propertyObj = extensions.getPropertyByName(variableName);
+        if (propertyObj == null) {
+            return variableName;
+        }
+
+        return replaceVariableIfSupported(propertyObj.getValue(), propertyObj.getType(), variableName);
+    }
+
+    private String replaceVariableIfSupported(Object value, String type, String originalProperty) {
+        if (value == null) {
+            return originalProperty;
+        }
+
+        String typeLowerCase = type.toLowerCase();
+        if ("string".equals(typeLowerCase) || "integer".equals(typeLowerCase)) {
+            return value.toString();
+        }
+
+        throw new ActivitiIllegalArgumentException(
+            String.format("Variable %s of type '%s' is not allowed in JsonPatch mapping. Only string and integer types are allowed", originalProperty, type));
+    }
+
+
+    private void initializePath(JsonNode oldNode, JsonNode patchNode) {
         for (JsonNode patch : patchNode) {
             String path = patch.get("path").asText();
             String[] properties = path.split("/");
@@ -247,21 +375,34 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         Map<String, Mapping> outputMappings = processVariablesMapping.getOutputs();
         DelegateExecution execution = mappingExecutionContext.getExecution();
 
-        for (Map.Entry<String, Mapping> mapping : outputMappings.entrySet()) {
-            String name = mapping.getKey();
+        for (Map.Entry<String, Mapping> mappingEntry : outputMappings.entrySet()) {
+            String name = mappingEntry.getKey();
 
             if (isTargetProcessVariableDefined(extensions, execution, name)) {
-                Object executionVariableValue = execution != null ? execution.getVariable(name) : null;
-                Object processVariableCurrentValue = calculateProcessVariableCurrentValue(executionVariableValue, extensions.getPropertyByName(name));
-                calculateOutPutMappedValue(mapping.getValue(), availableVariables, processVariableCurrentValue).ifPresent(
-                    value -> {
-                        extensions.getProperties().values().stream().filter(v -> v.getName().equals(name)).findAny().ifPresentOrElse(
-                            v -> outboundVariables.put(name, variableParsingService.parse(new VariableDefinition(v.getType(), value))),
-                            () -> outboundVariables.put(name, value)
-                        );
+                if(enableJsonPathVariable) {
+                    calculateOutPutMappedValue_withJsonPathVariablesEnabled(mappingEntry, availableVariables, execution, extensions).ifPresent(
+                        value -> {
+                            extensions.getProperties().values().stream().filter(v -> v.getName().equals(name)).findAny().ifPresentOrElse(
+                                v -> outboundVariables.put(name, variableParsingService.parse(new VariableDefinition(v.getType(), value))),
+                                () -> outboundVariables.put(name, value)
+                            );
 
 
-                    });
+                        });
+                } else {
+                    // CODE TO BE REMOVED
+                    Object executionVariableValue = execution != null ? execution.getVariable(name) : null;
+                    Object processVariableCurrentValue = calculateProcessVariableCurrentValue(executionVariableValue, extensions.getPropertyByName(name));
+                    calculateOutPutMappedValue(mappingEntry.getValue(), availableVariables, processVariableCurrentValue).ifPresent(
+                        value -> {
+                            extensions.getProperties().values().stream().filter(v -> v.getName().equals(name)).findAny().ifPresentOrElse(
+                                v -> outboundVariables.put(name, variableParsingService.parse(new VariableDefinition(v.getType(), value))),
+                                () -> outboundVariables.put(name, value)
+                            );
+
+
+                        });
+                }
             }
         }
 
