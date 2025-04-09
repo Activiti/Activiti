@@ -43,6 +43,7 @@ import org.activiti.spring.process.model.ProcessConstantsMapping;
 import org.activiti.spring.process.model.ProcessVariablesMapping;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.VariableParsingService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,6 +61,8 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
     private VariableParsingService variableParsingService;
 
     private static final Pattern VARIABLE_PATTERN = Pattern.compile("/\\$(\\w+)");
+
+    public final static String JSON_PATCH_MAPPING_ERROR = "Invalid jsonPatch variable mapping";
 
     @Value("${activiti.enable.jsonpatch.path.variables:false}")
     private boolean enableJsonPathVariable;
@@ -180,7 +183,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         } catch (Exception e) {
             LOGGER.error("Error patching variable. Changes to apply: {}, Process variable current value: {}",
                 changesToApply, processVariableCurrentValue, e);
-            throw new ActivitiIllegalArgumentException("Invalid jsonPatch variable mapping", e);
+            throw new ActivitiIllegalArgumentException(JSON_PATCH_MAPPING_ERROR, e);
         }
     }
 
@@ -236,7 +239,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         } catch (Exception e) {
             LOGGER.error("Error patching variable. Changes to apply: {}, Process variable current value: {}",
                 changesToApply, processVariableCurrentValue, e);
-            throw new ActivitiIllegalArgumentException("Invalid jsonPatch variable mapping", e);
+            throw new ActivitiIllegalArgumentException(JSON_PATCH_MAPPING_ERROR, e);
         }
     }
 
@@ -276,7 +279,8 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
     private String replacePathVariables(String variableName, DelegateExecution execution, Extension extensions) {
         if (!isTargetProcessVariableDefined(extensions, execution, variableName)) {
-            return variableName;
+            throw new ActivitiIllegalArgumentException(
+                String.format("Path variable $%s used in JsonPatch mapping is not defined for the current process", variableName));
         }
 
         VariableInstance variableInstance = execution != null ? execution.getVariableInstance(variableName) : null;
@@ -285,16 +289,13 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         }
 
         VariableDefinition propertyObj = extensions.getPropertyByName(variableName);
-        if (propertyObj == null) {
-            return variableName;
-        }
-
         return replaceVariableIfSupported(propertyObj.getValue(), propertyObj.getType(), variableName);
     }
 
     private String replaceVariableIfSupported(Object value, String type, String originalProperty) {
-        if (value == null) {
-            return originalProperty;
+        if (value == null || StringUtils.isBlank(value.toString())) {
+            throw new ActivitiIllegalArgumentException(
+                String.format("Path variable $%s used in JsonPatch mapping should not be empty", originalProperty));
         }
 
         String typeLowerCase = type.toLowerCase();

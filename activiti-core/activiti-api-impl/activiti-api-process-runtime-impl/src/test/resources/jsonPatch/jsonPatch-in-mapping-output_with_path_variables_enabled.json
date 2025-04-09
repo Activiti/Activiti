@@ -174,11 +174,6 @@
                 },
                 {
                   "op": "add",
-                  "path": "/$not_existing_variable",
-                  "value": "${process_variable_lastname}"
-                },
-                {
-                  "op": "add",
                   "path": "/addresses/0/$process_variable_property_path",
                   "value": "${process_variable_street_name}"
                 },

@@ -57,6 +57,7 @@ import static java.util.Arrays.asList;
 import static org.activiti.engine.impl.bpmn.behavior.MappingExecutionContext.buildMappingExecutionContext;
 import static org.activiti.engine.impl.util.CollectionUtil.map;
 import static org.activiti.engine.impl.util.CollectionUtil.singletonMap;
+import static org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider.JSON_PATCH_MAPPING_ERROR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.tuple;
@@ -473,7 +474,7 @@ public class ExtensionsVariablesMappingProviderTest_withJsonPatchPathVariablesEn
     }
 
     @Test
-    public void calculateOutputVariablesShouldMapJsonPatchVariables() throws IOException {
+    public void should_calculateOutputVariables_when_usingJsonPatchVariablesMapping() throws IOException {
         DelegateExecution execution = initExpressionResolverTest(JSONPATCH_TEST_FILES_PATH, "jsonPatch-in-mapping-output_with_path_variables_enabled.json", "Process_jsonPatchMappingOutput");
 
         Map<String, Object> outputVariables = executeCalculateOutputVariables(execution);
@@ -482,7 +483,7 @@ public class ExtensionsVariablesMappingProviderTest_withJsonPatchPathVariablesEn
     }
 
     @Test
-    public void calculateOutputVariablesShouldMapJsonPatchVariablesWhenNullNode() throws IOException {
+    public void should_calculateOutputVariables_when_JsonPatchOriginalVariableIsEmptyJson() throws IOException {
         DelegateExecution execution = initExpressionResolverTest(JSONPATCH_TEST_FILES_PATH, "jsonPatch-in-mapping-output_with_path_variables_enabled.json", "Process_jsonPatchMappingOutput");
         when(execution.getVariable(eq("process_variable_empty_json"))).thenReturn(NullNode.getInstance());
 
@@ -515,28 +516,48 @@ public class ExtensionsVariablesMappingProviderTest_withJsonPatchPathVariablesEn
                 tuple("variable_invalid_object", Map.of("street2", "Ha-Ha Road")),
                 tuple("process_variable_person_array_cases", Map.of("firstname", "Bob",
                     "addresses", List.of(expectedAddress0, expectedAddress2, expectedAddress3))),
-                tuple("process_variable_person_variable_cases", Map.of("firstname", "Bob", "propertyFromVariable", "Miracle", "$not_existing_variable", "Miracle",
+                tuple("process_variable_person_variable_cases", Map.of("firstname", "Bob", "propertyFromVariable", "Miracle",
                     "addresses", List.of(expectedAddress5, expectedAddress6, expectedAddress3)))
             );
     }
 
     @Test
-    public void calculateOutputVariablesShouldThrowActivitiIllegalArgumentExceptionWhenJsonPatchDefinitionIsInvalid() throws IOException {
+    public void should_throwActivitiIllegalArgumentException_when_JsonPatchDefinitionIsInvalid() throws IOException {
         DelegateExecution execution = initExpressionResolverTest(JSONPATCH_TEST_FILES_PATH, "invalid-jsonPatch-in-mapping-output.json","Process_jsonPatchMappingOutput");
         ActivitiIllegalArgumentException exception = assertThrows(ActivitiIllegalArgumentException.class, () -> variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
             null));
 
-        assertThat("Invalid jsonPatch variable mapping").isEqualTo(exception.getMessage());
+        assertThat(JSON_PATCH_MAPPING_ERROR).isEqualTo(exception.getMessage());
     }
 
     @Test
-    public void calculateOutputVariablesShouldThrowActivitiIllegalArgumentExceptionWhenJsonPatchPathVariableIsNotPrimitive() throws IOException {
-        DelegateExecution execution = initExpressionResolverTest(JSONPATCH_TEST_FILES_PATH, "jsonPatch-invalid-path-variable.json","Process_jsonPatchMappingOutput");
+    public void should_throwActivitiIllegalArgumentException_when_jsonPatchMappingContainsInvalidPathVariableType() throws IOException {
+        DelegateExecution execution = initExpressionResolverTest(JSONPATCH_TEST_FILES_PATH, "jsonPatch-invalid-path-variable-type.json","Process_jsonPatchMappingOutput");
         ActivitiIllegalArgumentException exception = assertThrows(ActivitiIllegalArgumentException.class, () -> variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
             null));
 
-        assertThat("Invalid jsonPatch variable mapping").isEqualTo(exception.getMessage());
+        assertThat(JSON_PATCH_MAPPING_ERROR).isEqualTo(exception.getMessage());
         assertThat("Variable process_variable_json of type 'json' is not allowed in JsonPatch mapping. Only string and integer types are allowed").isEqualTo(exception.getCause().getMessage());
+    }
+
+    @Test
+    public void should_throwActivitiIllegalArgumentException_when_jsonPatchMappingContainsEmptyPathVariable() throws IOException {
+        DelegateExecution execution = initExpressionResolverTest(JSONPATCH_TEST_FILES_PATH, "jsonPatch-invalid-path-variable-empty.json","Process_jsonPatchMappingOutput");
+        ActivitiIllegalArgumentException exception = assertThrows(ActivitiIllegalArgumentException.class, () -> variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+            null));
+
+        assertThat(JSON_PATCH_MAPPING_ERROR).isEqualTo(exception.getMessage());
+        assertThat("Path variable $process_variable_empty used in JsonPatch mapping should not be empty").isEqualTo(exception.getCause().getMessage());
+    }
+
+    @Test
+    public void should_throwActivitiIllegalArgumentException_when_jsonPatchMappingContainsUndefinedPathVariable() throws IOException {
+        DelegateExecution execution = initExpressionResolverTest(JSONPATCH_TEST_FILES_PATH, "jsonPatch-invalid-path-variable-undefined.json","Process_jsonPatchMappingOutput");
+        ActivitiIllegalArgumentException exception = assertThrows(ActivitiIllegalArgumentException.class, () -> variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+            null));
+
+        assertThat(JSON_PATCH_MAPPING_ERROR).isEqualTo(exception.getMessage());
+        assertThat("Path variable $undefined used in JsonPatch mapping is not defined for the current process").isEqualTo(exception.getCause().getMessage());
     }
 
     private DelegateExecution initExpressionResolverTest(String fileName, String processDefinitionKey) throws IOException {
