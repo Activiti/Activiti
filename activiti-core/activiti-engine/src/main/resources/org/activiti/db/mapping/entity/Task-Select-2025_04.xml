@@ -257,6 +257,11 @@
     <if test="processDefinitionName != null">
       left join ${prefix}act_re_procdef deploy on res.proc_def_id_ = deploy.id_ and deploy.name_ = #{processDefinitionName}
     </if>
+    <if test="processDefinitionNameLike != null">
+      left join ${prefix}act_re_procdef deploy
+        on res.proc_def_id_ = deploy.id_
+        and deploy.name_ like #{processDefinitionNameLike}${wildcardEscapeClause}
+    </if>
     <if test="processInstanceBusinessKey != null">
       left join ${prefix}act_ru_execution exec on res.proc_inst_id_ = exec.PROC_INST_ID_ and exec.business_key_ = #{processInstanceBusinessKey}
     </if>
@@ -381,6 +386,9 @@
       <if test="orQueryObject.processDefinitionName != null">
         left join ${prefix}act_re_procdef deploy_p_or${orIndex} on res.proc_def_id_ = deploy_p_or${orIndex}.id_ and deploy_p_or${orIndex}.name_ = #{orQueryObject.processDefinitionName}
       </if>
+      <if test="orQueryObject.processDefinitionNameLike != null">
+        left join ${prefix}act_re_procdef deploy_p_or${orIndex} on res.proc_def_id_ = deploy_p_or${orIndex}.id_ and deploy_p_or${orIndex}.name_ like #{orQueryObject.processDefinitionNameLike}${wildcardEscapeClause}
+      </if>
       <if test="orQueryObject.processInstanceBusinessKey != null">
         left join ${prefix}act_ru_execution exec_or${orIndex} on res.proc_inst_id_ = exec_or${orIndex}.PROC_INST_ID_ and exec_or${orIndex}.business_key_ = #{orQueryObject.processInstanceBusinessKey}
       </if>
@@ -444,6 +452,9 @@
                  open="(" separator="," close=")">
           #{assigneeId}
         </foreach>
+      </if>
+      <if test="category != null">
+        and RES.CATEGORY_ = #{category}
       </if>
       <if test="createTime != null">
         and res.create_time_ = #{createTime}
@@ -531,6 +542,9 @@
         and deploy.key_ is not null
       </if>
       <if test="processDefinitionName != null">
+        and deploy.name_ is not null
+      </if>
+      <if test="processDefinitionNameLike != null">
         and deploy.name_ is not null
       </if>
       <if test="processInstanceId != null">
@@ -666,6 +680,9 @@
               #{processInstanceId}
             </foreach>
           </if>
+          <if test="orQueryObject.category != null">
+            or RES.CATEGORY_ = #{orQueryObject.category}
+          </if>
           <if test="orQueryObject.createTime != null">
             or res.create_time_ = #{orQueryObject.createTime}
           </if>
@@ -772,6 +789,9 @@
             or deploy_p_or${orIndex}.id_ is not null
           </if>
           <if test="orQueryObject.processDefinitionName != null">
+            or deploy_p_or${orIndex}.id_ is not null
+          </if>
+          <if test="orQueryObject.processDefinitionNameLike != null">
             or deploy_p_or${orIndex}.id_ is not null
           </if>
           <if test="orQueryObject.processInstanceBusinessKey != null">
