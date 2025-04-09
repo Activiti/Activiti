@@ -35,9 +35,15 @@
     <if test="candidateGroups != null &amp;&amp; candidateGroups.size() &gt; 0">
       <bind name="distinctMode" value="'distinct'"/>
     </if>
+    <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
+      <bind name="distinctMode" value="'distinct'"/>
+    </if>
     <if test="orQueryObjects != null &amp;&amp; orQueryObjects.size() &gt; 0">
       <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
         <if test="orQueryObject.candidateGroups != null &amp;&amp; orQueryObject.candidateGroups.size()>0">
+          <bind name="distinctMode" value="'distinct'"/>
+        </if>
+        <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
           <bind name="distinctMode" value="'distinct'"/>
         </if>
       </foreach>
@@ -203,7 +209,7 @@
           <if test="candidateUser != null">
             link.user_id_ = #{candidateUser}
           </if>
-          <if test="candidateGroups != null">
+          <if test="candidateGroups != null &amp;&amp; candidateGroups.size() &gt; 0">
             or link.group_id_ in
             <foreach item="group" index="index" collection="candidateGroups"
                      open="(" separator="," close=")">
@@ -213,7 +219,24 @@
         </trim>
     </if>
     <if test="involvedUser != null">
-      left join ${prefix}act_ru_identitylink link on res.id_ = link.task_id_ and (link.user_id_ = #{involvedUser} or res.assignee_ = #{involvedUser} or res.owner_ = #{involvedUser})
+      left join ${prefix}act_ru_identitylink link_user
+        on res.id_ = link_user.task_id_
+        and (
+          link_user.user_id_ = #{involvedUser}
+          or res.assignee_ = #{involvedUser}
+          or res.owner_ = #{involvedUser}
+        )
+    </if>
+    <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
+      left join ${prefix}act_ru_identitylink link_groups
+        on res.id_ = link_groups.task_id_
+        and (
+          link_groups.type_ = 'participant'
+          and link_groups.group_id_ in
+          <foreach item="group" index="index" collection="involvedGroups" open="(" separator="," close=")">
+            #{group}
+          </foreach>
+        )
     </if>
     <if test="processDefinitionKey != null">
       left join ${prefix}act_re_procdef deploy on res.proc_def_id_ = deploy.id_ and deploy.key_ = #{processDefinitionKey}
@@ -314,7 +337,7 @@
           <if test="orQueryObject.candidateUser != null">
             link_or${orIndex}.user_id_ = #{orQueryObject.candidateUser}
           </if>
-          <if test="orQueryObject.candidateGroups != null">
+          <if test="orQueryObject.candidateGroups != null &amp;&amp; orQueryObject.candidateGroups.size() &gt; 0">
             or link_or${orIndex}.group_id_ in
             <foreach item="group" index="index" collection="orQueryObject.candidateGroups"
                      open="(" separator="," close=")">
@@ -324,7 +347,20 @@
         </trim>
       </if>
       <if test="orQueryObject.involvedUser != null">
-        left join ${prefix}act_ru_identitylink link_or${orIndex} on res.id_ = link_or${orIndex}.task_id_ and (link_or${orIndex}.user_id_ = #{orQueryObject.involvedUser} or res.assignee_ = #{orQueryObject.involvedUser} or res.owner_ = #{orQueryObject.involvedUser})
+        left join ${prefix}act_ru_identitylink link_user_or${orIndex}
+          on res.id_ = link_user_or${orIndex}.task_id_
+          and link_user_or${orIndex}.user_id_ = #{orQueryObject.involvedUser}
+      </if>
+      <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
+        left join ${prefix}act_ru_identitylink link_groups_or${orIndex}
+        on res.id_ = link_groups_or${orIndex}.task_id_
+        and (
+          link_groups_or${orIndex}.type_ = 'participant'
+          and link_groups_or${orIndex}.group_id_ in
+          <foreach item="group" index="index" collection="orQueryObject.involvedGroups" open="(" separator="," close=")">
+            #{group}
+          </foreach>
+        )
       </if>
       <if test="orQueryObject.processDefinitionKey != null">
         left join ${prefix}act_re_procdef deploy_p_or${orIndex} on res.proc_def_id_ = deploy_p_or${orIndex}.id_ and deploy_p_or${orIndex}.key_ = #{orQueryObject.processDefinitionKey}
@@ -471,7 +507,10 @@
         </if>
       </if>
       <if test="involvedUser != null">
-        and link.id_ is not null
+        and link_user.id_ is not null
+      </if>
+      <if test="involvedGroups!=null &amp;&amp; involvedGroups.size() &gt; 0">
+        and link_groups.id_ is not null
       </if>
       <if test="key != null">
         and res.TASK_DEF_KEY_ = #{key}
@@ -570,6 +609,29 @@
       <if test="unassigned">
         and RES.ASSIGNEE_ is null
       </if>
+      <if test="suspensionState != null">
+        <if test="suspensionState.stateCode == 1">
+          and RES.SUSPENSION_STATE_ = 1
+        </if>
+        <if test="suspensionState.stateCode == 2">
+          and RES.SUSPENSION_STATE_ = 2
+        </if>
+      </if>
+      <if test="excludeSubtasks">
+        and res.parent_task_id_ is null
+      </if>
+      <if test="taskParentTaskId != null">
+        and res.parent_task_id_ = #{taskParentTaskId}
+      </if>
+      <if test="tenantId != null">
+        and res.tenant_id_ = #{tenantId}
+      </if>
+      <if test="tenantIdLike != null">
+        and res.tenant_id_ like #{tenantIdLike}${wildcardEscapeClause}
+      </if>
+      <if test="withoutTenantId">
+        and (res.tenant_id_ = '' or res.tenant_id_ is null)
+      </if>
       <!-- or query for "act_ru_task" table -->
       <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
         and
@@ -653,7 +715,12 @@
             or link_or${orIndex}.id_ is not null
           </if>
           <if test="orQueryObject.involvedUser != null">
-            or link_or${orIndex}.id_ is not null
+            or link_user_or${orIndex}.id_ is not null
+            or res.assignee_ = #{orQueryObject.involvedUser}
+            or res.owner_ = #{orQueryObject.involvedUser}
+          </if>
+          <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
+            or link_groups_or${orIndex}.id_ is not null
           </if>
           <if test="orQueryObject.nameLike != null">
             or res.name_ like #{orQueryObject.nameLike}${wildcardEscapeClause}
@@ -754,6 +821,21 @@
                 )
               )
             </if>
+          </if>
+          <if test="orQueryObject.excludeSubtasks">
+            or res.parent_task_id_ is null
+          </if>
+          <if test="orQueryObject.taskParentTaskId != null">
+            or res.parent_task_id_ = #{orQueryObject.taskParentTaskId}
+          </if>
+          <if test="orQueryObject.tenantId != null">
+            or res.tenant_id_ = #{orQueryObject.tenantId}
+          </if>
+          <if test="orQueryObject.tenantIdLike != null">
+            or res.tenant_id_ like #{orQueryObject.tenantIdLike}${wildcardEscapeClause}
+          </if>
+          <if test="orQueryObject.withoutTenantId">
+            or (res.tenant_id_ = '' or res.tenant_id_ is null)
           </if>
         </trim>
       </foreach>
