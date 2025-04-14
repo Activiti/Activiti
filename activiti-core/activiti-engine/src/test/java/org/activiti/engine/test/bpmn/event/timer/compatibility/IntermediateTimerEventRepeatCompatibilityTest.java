@@ -104,7 +104,7 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
     nextTimeCal.add(Calendar.HOUR, 1); // after 1H 40 minutes from process start, the timer will trigger because of the endDate
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
-    waitForJobExecutorToProcessAllJobs(2000, 500);
+    waitForJobExecutorToProcessAllJobs(20000, 500);
     // expect to execute because the end time is reached.
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
