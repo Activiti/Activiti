@@ -100,7 +100,7 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
     // the system will execute the pending job and will create a new one (day by day)
     moveByMinutes((9 * 60 * 24));
     // because the poll for new jobs is done once per minute, we're going to wait the whole 10 seconds
-    executeJobExecutorForTime(10000, 10000);
+    executeJobExecutorForTime(15000, 1000);
 
     // there must be a pending job because the endDate is not reached yet
     assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);

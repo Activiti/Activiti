@@ -19,7 +19,8 @@
       <extensionElements>
         <activiti:taskListener event="assignment" class="org.activiti.engine.impl.bpmn.listener.ScriptTaskListener">
           <activiti:field name="script">
-            <activiti:string><![CDATA[task.name = "name from script"; task.description = "description from script"; task.owner = "owner from script"; task.priority = 1; task.category = "category from script"; task.formKey = "formKey from script"; task.assignee = "assignee from script"; task.dueDate = new java.util.Date(1);]]></activiti:string>
+            <!-- mssql and mariadb have problems with "new Date(1)". Please check unit-test for more information -->
+            <activiti:string><![CDATA[task.name = "name from script"; task.description = "description from script"; task.owner = "owner from script"; task.priority = 1; task.category = "category from script"; task.formKey = "formKey from script"; task.assignee = "assignee from script"; task.dueDate = new java.sql.Timestamp(1000);]]></activiti:string>
           </activiti:field>
           <activiti:field name="language">
             <activiti:string><![CDATA[JavaScript]]></activiti:string>
