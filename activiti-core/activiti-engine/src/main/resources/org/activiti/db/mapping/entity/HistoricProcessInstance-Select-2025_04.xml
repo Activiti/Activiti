@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityImpl">
+
+  <sql id="202504_selectColumnsSql">
+    <!--
+    candidateGroups will join two tables, act_ru_task and ACT_RU_IDENTITYLINK (task.ID_ = identitylink.TASK_ID_)
+      * if a task is assigned to two candidate groups, on "ACT_RU_IDENTITYLINK" table we'll have two rows with
+        the same "task_id_" value
+      * since "task_id_" might be non-unique on identitylink, it should be on task table.
+      * therefore, a distinct is necessary in those situations
+    -->
+
+    <!-- default distinctMode is to not have distinct -->
+    <bind name="distinctMode" value="''"/>
+    <bind name="columns" value="'RES.*, DEF.KEY_ as PROC_DEF_KEY_, DEF.NAME_ as PROC_DEF_NAME_, DEF.VERSION_ as PROC_DEF_VERSION_, DEF.DEPLOYMENT_ID_ as DEPLOYMENT_ID_'"/>
+
+    <!-- situations where distinct is necessary -->
+    <if test="withJobException">
+      <bind name="distinctMode" value="'distinct'"/>
+    </if>
+    <if test="orQueryObjects != null &amp;&amp; orQueryObjects.size() &gt; 0">
+      <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
+        <if test="orQueryObject.withJobException">
+          <bind name="distinctMode" value="'distinct'"/>
+        </if>
+      </foreach>
+    </if>
+
+    <choose>
+      <!-- if it's a count, only "RES.ID_" is needed -->
+      <when test="${isCount} == true">
+        select ${distinctMode} RES.ID_ as uniqueId
+      </when>
+      <otherwise>
+        <choose>
+          <!-- if it's not a count and there's a distinct, we need to remove duplicated based on RES.ID_ -->
+          <when test="distinctMode == 'distinct'">
+            select RES.* ${202504_limitBetween}
+            from (
+              select ${distinctMode} RES.ID_ as uniqueId, ${columns}
+          </when>
+          <!-- if it's not a count nor distinct, we don't need explicit RES.ID_ -->
+          <otherwise>
+            select RES.* ${202504_limitBetween}
+            from (
+              select ${columns}
+          </otherwise>
+        </choose>
+      </otherwise>
+    </choose>
+  </sql>
+
+  <sql id="202504_leftJoinWithProcessDefinition">
+    left join ${prefix}ACT_RE_PROCDEF ${externalTableAlias}
+    on RES.PROC_DEF_ID_ = ${externalTableAlias}.ID_
+    <if test="${collection} != null">
+      and ${externalTableAlias}.${field} in
+      <foreach item="item" index="index" collection="${collection}" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+  </sql>
+  <sql id="202504_leftJoinVariables_processes">
+    <foreach index="varIndex" item="varObject" collection="${collection}">
+      left join ${prefix}ACT_HI_VARINST ${externalTableAlias}_${varIndex}
+      on RES.PROC_INST_ID_ = ${externalTableAlias}_${varIndex}.PROC_INST_ID_
+      <if test="varObject.name != null">
+        and ${externalTableAlias}_${varIndex}.NAME_ = #{varObject.name}
+      </if>
+      <if test="!varObject.type.equals('null')">
+        <!-- When operator is not-equals or type of value is null, type doesn't matter! -->
+        and ${externalTableAlias}_${varIndex}.VAR_TYPE_ = #{varObject.type}
+      </if>
+      <if test="varObject.textValue != null &amp;&amp; varObject.longValue == null &amp;&amp; varObject.doubleValue == null">
+        <choose>
+          <when test="varObject.operator.equals('EQUALS_IGNORE_CASE') || varObject.operator.equals('NOT_EQUALS_IGNORE_CASE') || varObject.operator.equals('LIKE_IGNORE_CASE')">
+            and lower(${externalTableAlias}_${varIndex}.TEXT_)
+          </when>
+          <otherwise>
+            and ${externalTableAlias}_${varIndex}.TEXT_
+          </otherwise>
+        </choose>
+        <choose>
+          <when test="varObject.operator.equals('LIKE') || varObject.operator.equals('LIKE_IGNORE_CASE')">LIKE</when>
+          <otherwise><include refid="202504_executionVariableOperator" /></otherwise>
+        </choose>
+        #{varObject.textValue}
+        <choose>
+          <when test="varObject.operator.equals('LIKE') || varObject.operator.equals('LIKE_IGNORE_CASE')">${wildcardEscapeClause}</when>
+        </choose>
+      </if>
+      <if test="varObject.textValue2 != null">
+        and ${externalTableAlias}_${varIndex}.TEXT2_
+        <choose>
+          <when test="varObject.operator.equals('LIKE')">LIKE</when>
+          <otherwise><include refid="202504_executionVariableOperator" /></otherwise>
+        </choose>
+        #{varObject.textValue2}
+        <choose>
+          <when test="varObject.operator.equals('LIKE')">${wildcardEscapeClause}</when>
+        </choose>
+      </if>
+      <if test="varObject.longValue != null">
+        and ${externalTableAlias}_${varIndex}.LONG_
+        <include refid="202504_executionVariableOperator" />
+        #{varObject.longValue}
+      </if>
+      <if test="varObject.doubleValue != null">
+        and ${externalTableAlias}_${varIndex}.DOUBLE_
+        <include refid="202504_executionVariableOperator" />
+        #{varObject.doubleValue}
+      </if>
+      <!-- Null variable type -->
+      <if test="varObject.textValue == null &amp;&amp; varObject.textValue2 == null &amp;&amp; varObject.longValue == null &amp;&amp; varObject.doubleValue == null">
+      <choose>
+        <when test="varObject.operator.equals('NOT_EQUALS')">
+          and (
+            ${externalTableAlias}_${varIndex}.TEXT_ is not null
+            or ${externalTableAlias}_${varIndex}.TEXT2_ is not null
+            or ${externalTableAlias}_${varIndex}.LONG_ is not null
+            or ${externalTableAlias}_${varIndex}.DOUBLE_ is not null
+            or ${externalTableAlias}_${varIndex}.BYTEARRAY_ID_ is not null
+          )
+        </when>
+        <otherwise>
+          and (
+            ${externalTableAlias}_${varIndex}.TEXT_ is null
+            and ${externalTableAlias}_${varIndex}.TEXT2_ is null
+            and ${externalTableAlias}_${varIndex}.LONG_ is null
+            and ${externalTableAlias}_${varIndex}.DOUBLE_ is null
+            and ${externalTableAlias}_${varIndex}.BYTEARRAY_ID_ is null
+          )
+        </otherwise>
+      </choose>
+    </if>
+    </foreach>
+  </sql>
+
+
+  <sql id="202504_selectHistoricProcessInstancesByQueryCriteria">
+    ${202504_limitBefore}
+    <include refid="202504_selectHistoricProcessInstancesByQueryCriteriaSql"/>
+    <choose>
+      <when test="'${202504_limitAfter}' != null and _databaseId != 'mssql' and _databaseId != 'oracle'">
+        ${orderBy}
+        ${202504_limitAfter}
+      </when>
+      <otherwise>
+        ${202504_limitAfter}
+        ORDER BY rnk
+      </otherwise>
+    </choose>
+  </sql>
+
+  <sql id="202504_selectHistoricProcessInstancesByQueryCriteriaSql">
+    <include refid="202504_selectColumnsSql">
+      <property name="isCount" value="false"/>
+    </include>
+    from ${prefix}ACT_HI_PROCINST RES
+      left join ${prefix}ACT_RE_PROCDEF DEF
+        on RES.PROC_DEF_ID_ = DEF.ID_
+    <include refid="202504_commonSelectHistoricProcessInstancesByQueryCriteriaSql"/>
+  </sql>
+
+  <sql id="202504_commonSelectHistoricProcessInstancesByQueryCriteriaSql">
+    <!-- left joins -->
+    <if test="deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0">
+      <include refid="202504_leftJoinWithProcessDefinition"> <!-- from task-select-2025_04 -->
+        <property name="externalTableAlias" value="deploy_p"/>
+        <property name="field" value="DEPLOYMENT_ID_"/>
+        <property name="collection" value="deploymentIds"/>
+      </include>
+    </if>
+    <if test="withJobException">
+      left join ${prefix}ACT_RU_TIMER_JOB JOB
+        on RES.PROC_INST_ID_ = JOB.PROCESS_INSTANCE_ID_
+        and (
+          JOB.EXCEPTION_MSG_ is not null
+          or JOB.EXCEPTION_STACK_ID_ is not null
+        )
+    </if>
+    <!-- left joins for variables -->
+    <if test="queryVariableValues != null &amp;&amp; queryVariableValues.size() &gt; 0">
+      <include refid="202504_leftJoinVariables_processes">
+        <property name="externalTableAlias" value="A"/>
+        <property name="collection" value="queryVariableValues"/>
+      </include>
+    </if>
+    <!-- left joins for orQueries -->
+    <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
+      <if test="orQueryObject.involvedUser != null">
+        left join ${prefix}ACT_RU_IDENTITYLINK link_user_or${orIndex}
+          on RES.ID_ = link_user_or${orIndex}.PROC_INST_ID_
+          and link_user_or${orIndex}.user_id_ = #{orQueryObject.involvedUser}
+      </if>
+      <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
+        left join ${prefix}ACT_RU_IDENTITYLINK link_groups_or${orIndex}
+          on RES.ID_ = link_groups_or${orIndex}.PROC_INST_ID_
+          and (
+            link_groups_or${orIndex}.TYPE_ = 'participant'
+            and link_groups_or${orIndex}.GROUP_ID_ in
+            <foreach item="group" index="index" collection="orQueryObject.involvedGroups" open="(" separator="," close=")">
+          #{group}
+        </foreach>
+          )
+      </if>
+      <if test="orQueryObject.processDefinitionName != null">
+        left join ${prefix}ACT_RE_PROCDEF DEF_OR${orIndex}
+          on RES.PROC_DEF_ID_ = DEF_OR${orIndex}.ID_
+          and DEF_OR${orIndex}.NAME_ = #{orQueryObject.processDefinitionName}
+      </if>
+      <if test="orQueryObject.processDefinitionVersion != null">
+        left join ${prefix}ACT_RE_PROCDEF DEF_OR${orIndex}
+          on RES.PROC_DEF_ID_ = DEF_OR${orIndex}.ID_
+          and DEF_OR${orIndex}.VERSION_ = #{orQueryObject.processDefinitionVersion}
+      </if>
+      <if test="orQueryObject.processKeyNotIn != null &amp;&amp; orQueryObject.processKeyNotIn.size() &gt; 0">
+        left join ${prefix}ACT_RE_PROCDEF DEF_OR${orIndex}
+          on RES.PROC_DEF_ID_ = DEF_or${orIndex}.ID_
+      </if>
+      <if test="orQueryObject.queryVariableValues != null &amp;&amp; orQueryObject.queryVariableValues.size() &gt; 0">
+        <include refid="202504_leftJoinVariables_processes">
+          <property name="externalTableAlias" value="A_OR${orIndex}"/>
+          <property name="collection" value="orQueryObject.queryVariableValues"/>
+        </include>
+      </if>
+      <if test="orQueryObject.withJobException">
+        left join ${prefix}ACT_RU_TIMER_JOB JOB_OR${orIndex}
+          on RES.PROC_INST_ID_ = JOB_OR${orIndex}.PROCESS_INSTANCE_ID_
+          and (
+            JOB_OR${orIndex}.EXCEPTION_MSG_ is not null
+            or JOB_OR${orIndex}.EXCEPTION_STACK_ID_ is not null
+          )
+      </if>
+    </foreach>
+
+    <!-- where -->
+    <where>
+      <if test="processInstanceId != null">
+        and RES.PROC_INST_ID_ = #{processInstanceId}
+      </if>
+      <if test="processInstanceIds != null and !processInstanceIds.isEmpty()">
+        and RES.PROC_INST_ID_ in
+        <foreach item="item" index="index" collection="processInstanceIds" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="superProcessInstanceId != null">
+        and RES.SUPER_PROCESS_INSTANCE_ID_ = #{superProcessInstanceId}
+      </if>
+      <if test="processDefinitionId != null">
+        and RES.PROC_DEF_ID_ = #{processDefinitionId}
+      </if>
+      <if test="processDefinitionKey != null">
+        and DEF.KEY_ = #{processDefinitionKey}
+      </if>
+      <if test="processDefinitionVersion != null">
+        and DEF.VERSION_ = #{processDefinitionVersion}
+      </if>
+      <if test="processKeyNotIn != null &amp;&amp; processKeyNotIn.size() &gt; 0">
+        <foreach collection="processKeyNotIn" index="index" item="procDefKey">
+          and DEF.KEY_ not like #{procDefKey}${wildcardEscapeClause}
+        </foreach>
+      </if>
+      <if test="processDefinitionCategory != null">
+        and DEF.CATEGORY_ = #{processDefinitionCategory}
+      </if>
+      <if test="processDefinitionName != null">
+        and DEF.NAME_ = #{processDefinitionName}
+      </if>
+      <if test="name != null">
+        and RES.NAME_ = #{name}
+      </if>
+      <if test="nameLike != null">
+        and RES.NAME_ like #{nameLike}${wildcardEscapeClause}
+      </if>
+      <if test="nameLikeIgnoreCase != null">
+        and lower(RES.NAME_) like #{nameLikeIgnoreCase}${wildcardEscapeClause}
+      </if>
+      <if test="unfinished">
+        and RES.END_TIME_ IS NULL
+      </if>
+      <if test="finished">
+        and RES.END_TIME_ is not NULL
+      </if>
+      <if test="tenantId != null">
+        and RES.TENANT_ID_ = #{tenantId}
+      </if>
+      <if test="tenantIdLike != null">
+        and RES.TENANT_ID_ like #{tenantIdLike}${wildcardEscapeClause}
+      </if>
+      <if test="withoutTenantId">
+        and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
+      </if>
+      <if test="deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0">
+        and deploy_p.ID_ is not null
+      </if>
+      <if test="excludeSubprocesses">
+        and RES.SUPER_PROCESS_INSTANCE_ID_ is null
+      </if>
+      <if test="withJobException">
+        and JOB.ID_ is not null
+      </if>
+      <!-- variable values -->
+      <if test="queryVariableValues != null &amp;&amp; queryVariableValues.size() &gt; 0">
+        <foreach index="varIndex" item="varObject" collection="queryVariableValues">
+          and A_${varIndex}.ID_ is not null
+        </foreach>
+      </if>
+      <!-- orQueries -->
+      <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
+        and
+        <trim prefix="(" prefixOverrides="OR" suffix=")">
+          <if test="orQueryObject.processInstanceId != null">
+            or RES.PROC_INST_ID_ = #{orQueryObject.processInstanceId}
+          </if>
+          <if test="orQueryObject.processInstanceIds != null and !orQueryObject.processInstanceIds.isEmpty()">
+            or RES.PROC_INST_ID_ in
+            <foreach item="item" index="index" collection="orQueryObject.processInstanceIds" open="(" separator="," close=")">
+              #{item}
+            </foreach>
+          </if>
+          <if test="orQueryObject.superProcessInstanceId != null">
+            or RES.SUPER_PROCESS_INSTANCE_ID_ = #{orQueryObject.superProcessInstanceId}
+          </if>
+          <if test="orQueryObject.processDefinitionId != null">
+            or RES.PROC_DEF_ID_ = #{orQueryObject.processDefinitionId}
+          </if>
+          <if test="orQueryObject.processDefinitionKey != null">
+            or DEF_OR${orIndex}.KEY_ = #{orQueryObject.processDefinitionKey}
+          </if>
+          <if test="orQueryObject.processDefinitionVersion != null">
+            or DEF_OR${orIndex}.ID_ is not null
+          </if>
+          <if test="orQueryObject.processKeyNotIn != null &amp;&amp; orQueryObject.processKeyNotIn.size() &gt; 0">
+            or
+            <trim prefix="(" prefixOverrides="AND" suffix=")">
+              <foreach collection="orQueryObject.processKeyNotIn" index="index" item="procDefKey">
+                and DEF_OR${orIndex}.KEY_ not like #{procDefKey}${wildcardEscapeClause}
+              </foreach>
+            </trim>
+          </if>
+          <if test="orQueryObject.processDefinitionCategory != null">
+            or DEF.CATEGORY_ = #{orQueryObject.processDefinitionCategory}
+          </if>
+          <if test="orQueryObject.processDefinitionName != null">
+            or DEF_OR${orIndex}.ID_ is not null
+          </if>
+          <if test="orQueryObject.name != null">
+            or RES.NAME_ = #{orQueryObject.name}
+          </if>
+          <if test="orQueryObject.nameLike != null">
+            or RES.NAME_ like #{orQueryObject.nameLike}${wildcardEscapeClause}
+          </if>
+          <if test="orQueryObject.nameLikeIgnoreCase != null">
+            or lower(RES.NAME_) like #{orQueryObject.nameLikeIgnoreCase}${wildcardEscapeClause}
+          </if>
+          <if test="orQueryObject.unfinished">
+            or RES.END_TIME_ IS NULL
+          </if>
+          <if test="orQueryObject.finished">
+            ord RES.END_TIME_ is not NULL
+          </if>
+          <if test="orQueryObject.involvedUser != null">
+            or link_user_or${orIndex}.ID_ is not null
+          </if>
+          <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
+            or link_groups_or${orIndex}.ID_ is not null
+          </if>
+          <if test="orQueryObject.excludeSubprocesses">
+            or RES.SUPER_PROCESS_INSTANCE_ID_ is null
+          </if>
+          <if test="orQueryObject.tenantId != null">
+            or RES.TENANT_ID_ = #{orQueryObject.tenantId}
+          </if>
+          <if test="orQueryObject.tenantIdLike != null">
+            or RES.TENANT_ID_ like #{orQueryObject.tenantIdLike}${wildcardEscapeClause}
+          </if>
+          <if test="orQueryObject.withoutTenantId">
+            or (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
+          </if>
+          <if test="orQueryObject.withJobException">
+            or JOB_OR${orIndex}.ID_ is not null
+          </if>
+          <!-- variables values -->
+          <if test="orQueryObject.queryVariableValues != null &amp;&amp; orQueryObject.queryVariableValues.size() &gt; 0">
+            <foreach index="varIndex" item="varObject" collection="orQueryObject.queryVariableValues">
+              or A_OR${orIndex}_${varIndex}.ID_ is not null
+            </foreach>
+          </if>
+        </trim>
+      </foreach>
+    </where>
+  </sql>
+
+  <sql id="202504_executionVariableOperator">
+    <choose>
+      <when test="varObject.operator.equals('EQUALS')">=</when>
+      <when test="varObject.operator.equals('EQUALS_IGNORE_CASE')">=</when>
+      <when test="varObject.operator.equals('NOT_EQUALS')">&lt;&gt;</when>
+      <when test="varObject.operator.equals('NOT_EQUALS_IGNORE_CASE')">&lt;&gt;</when>
+      <when test="varObject.operator.equals('GREATER_THAN')">&gt;</when>
+      <when test="varObject.operator.equals('GREATER_THAN_OR_EQUAL')">&gt;=</when>
+      <when test="varObject.operator.equals('LESS_THAN')">&lt;</when>
+      <when test="varObject.operator.equals('LESS_THAN_OR_EQUAL')">&lt;=</when>
+    </choose>
+  </sql>
+
+</mapper>

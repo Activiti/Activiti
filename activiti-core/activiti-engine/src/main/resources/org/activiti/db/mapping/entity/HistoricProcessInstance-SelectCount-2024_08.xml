@@ -19,8 +19,9 @@
 <mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityImpl">
 
   <!-- HISTORIC PROCESS INSTANCE SELECT -->
-  <select id="selectHistoricProcessInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultMap="historicProcessInstanceResultMap">
-    <include refid="202504_selectHistoricProcessInstancesByQueryCriteria"/>
-  </select>
+  <sql id="selectHistoricProcessInstanceCountByQueryCriteria">
+    select count(distinct RES.ID_)
+    <include refid="selectHistoricProcessInstancesByQueryCriteriaSql"/>
+  </sql>
 
 </mapper>
