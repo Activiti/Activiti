@@ -45,7 +45,7 @@
               "value": [
                 {
                   "op": "add",
-                  "path": "/$process_variable_empty",
+                  "path": "/${process_variable_empty}",
                   "value": "${process_variable_lastname}"
                 }
               ]

@@ -38,7 +38,7 @@
               "value": [
                 {
                   "op": "add",
-                  "path": "/$undefined",
+                  "path": "/${undefined}",
                   "value": "${process_variable_lastname}"
                 }
               ]

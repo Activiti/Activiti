@@ -49,7 +49,7 @@
               "value": [
                 {
                   "op": "add",
-                  "path": "/$process_variable_json",
+                  "path": "/${process_variable_json}",
                   "value": "${process_variable_lastname}"
                 }
               ]

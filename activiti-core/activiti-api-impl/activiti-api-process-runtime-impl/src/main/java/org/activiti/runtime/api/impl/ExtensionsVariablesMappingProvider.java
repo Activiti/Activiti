@@ -60,7 +60,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
     private VariableParsingService variableParsingService;
 
-    private static final Pattern VARIABLE_PATTERN = Pattern.compile("/\\$(\\w+)");
+    private static final Pattern VARIABLE_PATTERN = Pattern.compile("/\\$\\{(\\w+)}");
 
     public final static String JSON_PATCH_MAPPING_ERROR = "Invalid jsonPatch variable mapping";
 
@@ -266,7 +266,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         StringBuilder updatedPath = new StringBuilder();
 
         while (matcher.find()) {
-            String variableName = matcher.group(1); // Extract variable name without `$`
+            String variableName = matcher.group(1); // Extract variable name without `${..}`
             String replacedValue = replacePathVariables(variableName, execution, extensions);
             if(!variableName.equals(replacedValue)) {
                 matcher.appendReplacement(updatedPath, "/" + replacedValue);

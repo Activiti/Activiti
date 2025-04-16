@@ -169,22 +169,22 @@
               "value": [
                 {
                   "op": "add",
-                  "path": "/$process_variable_property_path",
+                  "path": "/${process_variable_property_path}",
                   "value": "${process_variable_lastname}"
                 },
                 {
                   "op": "add",
-                  "path": "/addresses/0/$process_variable_property_path",
+                  "path": "/addresses/0/${process_variable_property_path}",
                   "value": "${process_variable_street_name}"
                 },
                 {
                   "op": "add",
-                  "path": "/addresses/$process_variable_index_1/$process_variable_property_path",
+                  "path": "/addresses/${process_variable_index_1}/${process_variable_property_path}",
                   "value": "${process_variable_street_name}"
                 },
                 {
                   "op": "add",
-                  "path": "/addresses/$process_variable_index_2",
+                  "path": "/addresses/${process_variable_index_2}",
                   "value": "${process_variable_address}"
                 }
               ]
