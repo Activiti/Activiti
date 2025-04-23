@@ -24,7 +24,7 @@
       <include refid="202504_selectTaskByQueryCriteriaSql">
         <property name="isCount" value="true"/>
       </include>
-    ) as sub
+    ) sub
   </select>
 
 </mapper>
