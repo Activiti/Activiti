@@ -20,8 +20,8 @@
 
   <sql id="202504_selectColumnsSql">
     <!--
-    candidateGroups will join two tables, act_ru_task and ACT_RU_IDENTITYLINK (task.ID_ = identitylink.TASK_ID_)
-      * if a task is assigned to two candidate groups, on "ACT_RU_IDENTITYLINK" table we'll have two rows with
+    candidateGroups will join two tables, act_ru_task and ACT_HI_IDENTITYLINK (task.ID_ = identitylink.TASK_ID_)
+      * if a task is assigned to two candidate groups, on "ACT_HI_IDENTITYLINK" table we'll have two rows with
         the same "task_id_" value
       * since "task_id_" might be non-unique on identitylink, it should be on task table.
       * therefore, a distinct is necessary in those situations
@@ -32,12 +32,12 @@
     <bind name="columns" value="'RES.*, DEF.KEY_ as PROC_DEF_KEY_, DEF.NAME_ as PROC_DEF_NAME_, DEF.VERSION_ as PROC_DEF_VERSION_, DEF.DEPLOYMENT_ID_ as DEPLOYMENT_ID_'"/>
 
     <!-- situations where distinct is necessary -->
-    <if test="withJobException">
+    <if test="withException">
       <bind name="distinctMode" value="'distinct'"/>
     </if>
     <if test="orQueryObjects != null &amp;&amp; orQueryObjects.size() &gt; 0">
       <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
-        <if test="orQueryObject.withJobException">
+        <if test="orQueryObject.withException">
           <bind name="distinctMode" value="'distinct'"/>
         </if>
       </foreach>
@@ -188,7 +188,7 @@
         <property name="collection" value="deploymentIds"/>
       </include>
     </if>
-    <if test="withJobException">
+    <if test="withException">
       left join ${prefix}ACT_RU_TIMER_JOB JOB
         on RES.PROC_INST_ID_ = JOB.PROCESS_INSTANCE_ID_
         and (
@@ -206,12 +206,12 @@
     <!-- left joins for orQueries -->
     <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
       <if test="orQueryObject.involvedUser != null">
-        left join ${prefix}ACT_RU_IDENTITYLINK link_user_or${orIndex}
+        left join ${prefix}ACT_HI_IDENTITYLINK link_user_or${orIndex}
           on RES.ID_ = link_user_or${orIndex}.PROC_INST_ID_
           and link_user_or${orIndex}.user_id_ = #{orQueryObject.involvedUser}
       </if>
       <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
-        left join ${prefix}ACT_RU_IDENTITYLINK link_groups_or${orIndex}
+        left join ${prefix}ACT_HI_IDENTITYLINK link_groups_or${orIndex}
           on RES.ID_ = link_groups_or${orIndex}.PROC_INST_ID_
           and (
             link_groups_or${orIndex}.TYPE_ = 'participant'
@@ -241,7 +241,7 @@
           <property name="collection" value="orQueryObject.queryVariableValues"/>
         </include>
       </if>
-      <if test="orQueryObject.withJobException">
+      <if test="orQueryObject.withException">
         left join ${prefix}ACT_RU_TIMER_JOB JOB_OR${orIndex}
           on RES.PROC_INST_ID_ = JOB_OR${orIndex}.PROCESS_INSTANCE_ID_
           and (
@@ -315,7 +315,7 @@
       <if test="excludeSubprocesses">
         and RES.SUPER_PROCESS_INSTANCE_ID_ is null
       </if>
-      <if test="withJobException">
+      <if test="withException">
         and JOB.ID_ is not null
       </if>
       <!-- variable values -->
@@ -396,7 +396,7 @@
           <if test="orQueryObject.withoutTenantId">
             or (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
           </if>
-          <if test="orQueryObject.withJobException">
+          <if test="orQueryObject.withException">
             or JOB_OR${orIndex}.ID_ is not null
           </if>
           <!-- variables values -->
