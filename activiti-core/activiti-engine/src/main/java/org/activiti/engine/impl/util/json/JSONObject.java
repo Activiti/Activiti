@@ -1035,7 +1035,7 @@ public class JSONObject {
    *          A String
    * @return A String correctly formatted for insertion in a JSON text.
    */
-  public static String quote(String string) {
+  public static String quote(String string, boolean escapeHtml) {
     if (string == null || string.length() == 0) {
       return "\"\"";
     }
@@ -1083,23 +1083,37 @@ public class JSONObject {
           t = "000" + Integer.toHexString(c);
           sb.append("\\u" + t.substring(t.length() - 4));
         } else {
-          sb.append(c);
+          if (escapeHtml) {
+            switch (c) {
+              case '<':
+                sb.append("&lt;");
+                break;
+              case '>':
+                sb.append("&gt;");
+                break;
+              case '&':
+                sb.append("&amp;");
+                break;
+              case '"':
+                sb.append("&quot;");
+                break;
+              case '\'':
+                sb.append("&#x27;");
+                break;
+              case '/':
+                sb.append("&#x2F;");
+                break;
+              default:
+                sb.append(c);
+            }
+          } else {
+            sb.append(c);
+          }
         }
       }
     }
     sb.append('"');
     return sb.toString();
-  }
-
-  /**
-   * Remove a name and its value, if present.
-   *
-   * @param key
-   *          The name to be removed.
-   * @return The value that was associated with the name, or null if there was no value.
-   */
-  public Object remove(String key) {
-    return this.map.remove(key);
   }
 
   /**
