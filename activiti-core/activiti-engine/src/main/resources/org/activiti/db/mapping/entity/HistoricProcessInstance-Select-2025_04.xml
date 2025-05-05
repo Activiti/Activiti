@@ -271,19 +271,29 @@
       <if test="processDefinitionKey != null">
         and DEF.KEY_ = #{processDefinitionKey}
       </if>
+      <if test="processDefinitionKeyIn != null &amp;&amp; processDefinitionKeyIn.size() &gt; 0">
+        and DEF.KEY_ IN
+        <foreach item="definition" index="index" collection="processDefinitionKeyIn"
+                 open="(" separator="," close=")">
+          #{definition}
+        </foreach>
+      </if>
       <if test="processDefinitionVersion != null">
         and DEF.VERSION_ = #{processDefinitionVersion}
-      </if>
-      <if test="processKeyNotIn != null &amp;&amp; processKeyNotIn.size() &gt; 0">
-        <foreach collection="processKeyNotIn" index="index" item="procDefKey">
-          and DEF.KEY_ not like #{procDefKey}${wildcardEscapeClause}
-        </foreach>
       </if>
       <if test="processDefinitionCategory != null">
         and DEF.CATEGORY_ = #{processDefinitionCategory}
       </if>
       <if test="processDefinitionName != null">
         and DEF.NAME_ = #{processDefinitionName}
+      </if>
+      <if test="processKeyNotIn != null &amp;&amp; processKeyNotIn.size() &gt; 0">
+        <foreach collection="processKeyNotIn" index="index" item="procDefKey">
+          and DEF.KEY_ not like #{procDefKey}${wildcardEscapeClause}
+        </foreach>
+      </if>
+      <if test="businessKey != null">
+        and RES.BUSINESS_KEY_ = #{businessKey}
       </if>
       <if test="name != null">
         and RES.NAME_ = #{name}
@@ -299,6 +309,15 @@
       </if>
       <if test="finished">
         and RES.END_TIME_ is not NULL
+      </if>
+      <if test="notDeleted">
+        and RES.DELETE_REASON_ IS NULL
+      </if>
+      <if test="deleted">
+        and RES.DELETE_REASON_ IS NOT NULL
+      </if>
+      <if test="startedBy != null">
+        and RES.START_USER_ID_ = #{startedBy}
       </if>
       <if test="tenantId != null">
         and RES.TENANT_ID_ = #{tenantId}
@@ -346,6 +365,13 @@
           <if test="orQueryObject.processDefinitionKey != null">
             or DEF_OR${orIndex}.KEY_ = #{orQueryObject.processDefinitionKey}
           </if>
+          <if test="orQueryObject.processDefinitionKeyIn != null &amp;&amp; orQueryObject.processDefinitionKeyIn.size() &gt; 0">
+            or DEF_OR${orIndex}.KEY_ IN
+            <foreach item="definition" index="index" collection="orQueryObject.processDefinitionKeyIn"
+                     open="(" separator="," close=")">
+              #{definition}
+            </foreach>
+          </if>
           <if test="orQueryObject.processDefinitionVersion != null">
             or DEF_OR${orIndex}.ID_ is not null
           </if>
@@ -363,6 +389,9 @@
           <if test="orQueryObject.processDefinitionName != null">
             or DEF_OR${orIndex}.ID_ is not null
           </if>
+          <if test="orQueryObject.businessKey != null">
+            or RES.BUSINESS_KEY_ = #{orQueryObject.businessKey}
+          </if>
           <if test="orQueryObject.name != null">
             or RES.NAME_ = #{orQueryObject.name}
           </if>
@@ -376,7 +405,16 @@
             or RES.END_TIME_ IS NULL
           </if>
           <if test="orQueryObject.finished">
-            ord RES.END_TIME_ is not NULL
+            or RES.END_TIME_ is not NULL
+          </if>
+          <if test="orQueryObject.notDeleted">
+            or RES.DELETE_REASON_ IS NULL
+          </if>
+          <if test="orQueryObject.deleted">
+            or RES.DELETE_REASON_ IS NOT NULL
+          </if>
+          <if test="orQueryObject.startedBy != null">
+            or RES.START_USER_ID_ = #{orQueryObject.startedBy}
           </if>
           <if test="orQueryObject.involvedUser != null">
             or link_user_or${orIndex}.ID_ is not null
