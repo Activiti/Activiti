@@ -503,6 +503,9 @@
       <if test="withoutDueDate">
         and RES.DUE_DATE_ is null
       </if>
+      <if test="executionId != null">
+        and RES.EXECUTION_ID_ = #{executionId}
+      </if>
       <if test="!bothCandidateAndAssigned &amp;&amp; (candidateUser != null || candidateGroups != null)">
         and link.ID_ is not null
       </if>
@@ -726,6 +729,9 @@
           </if>
           <if test="orQueryObject.dueAfter != null">
             or RES.DUE_DATE_ &gt; #{orQueryObject.dueAfter}
+          </if>
+          <if test="orQueryObject.executionId != null">
+            or RES.EXECUTION_ID_ = #{orQueryObject.executionId}
           </if>
           <if test="orQueryObject.key != null">
             or RES.TASK_DEF_KEY_ = #{orQueryObject.key}
