@@ -257,6 +257,11 @@
         <artifactId>spring-security-crypto</artifactId>
         <version>6.4.4</version>
       </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-core</artifactId>
+        <version>6.4.4</version>
+      </dependency>
       <!-- temporary security fix -->
       <dependency>
         <groupId>org.activiti</groupId>
