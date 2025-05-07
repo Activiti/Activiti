@@ -859,6 +859,14 @@
               )
             </if>
           </if>
+          <if test="orQueryObject.suspensionState != null">
+            <if test="orQueryObject.suspensionState.stateCode == 1">
+              or RES.SUSPENSION_STATE_ = 1
+            </if>
+            <if test="orQueryObject.suspensionState.stateCode == 2">
+              or RES.SUSPENSION_STATE_ = 2
+            </if>
+          </if>
           <if test="orQueryObject.excludeSubtasks">
             or RES.PARENT_TASK_ID_ is null
           </if>
