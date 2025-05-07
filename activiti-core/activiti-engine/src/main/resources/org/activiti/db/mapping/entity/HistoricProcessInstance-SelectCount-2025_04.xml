@@ -17,14 +17,14 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
+<mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityImpl">
   <!-- HISTORIC PROCESS INSTANCE SELECT COUNT -->
-  <sql id="2025_04selectHistoricProcessInstanceCountByQueryCriteria">
+  <select id="selectHistoricProcessInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultType="long">
     select count(uniqueId) from (
     <include refid="202504_selectHistoricProcessInstancesByQueryCriteriaSql">
       <property name="isCount" value="true"/>
     </include>
     ) sub
-  </sql>
+  </select>
 
 </mapper>

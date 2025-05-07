@@ -156,7 +156,9 @@
 
   <sql id="202504_selectHistoricProcessInstancesByQueryCriteria">
     ${202504_limitBefore}
-    <include refid="202504_selectHistoricProcessInstancesByQueryCriteriaSql"/>
+    <include refid="202504_selectHistoricProcessInstancesByQueryCriteriaSql">
+      <property name="isCount" value="false"/>
+    </include>
     <choose>
       <when test="'${202504_limitAfter}' != null and _databaseId != 'mssql' and _databaseId != 'oracle'">
         ${orderBy}
@@ -171,7 +173,7 @@
 
   <sql id="202504_selectHistoricProcessInstancesByQueryCriteriaSql">
     <include refid="202504_selectColumnsSql">
-      <property name="isCount" value="false"/>
+      <property name="isCount" value="${isCount}"/>
     </include>
     from ${prefix}ACT_HI_PROCINST RES
       left join ${prefix}ACT_RE_PROCDEF DEF
@@ -181,6 +183,12 @@
 
   <sql id="202504_commonSelectHistoricProcessInstancesByQueryCriteriaSql">
     <!-- left joins -->
+    <if test="deploymentId != null">
+      <include refid="202504_leftJoinWithProcessDefinition"> <!-- from task-select-2025_04 -->
+        <property name="externalTableAlias" value="deploy"/>
+      </include>
+      and deploy_or${orIndex}.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
+    </if>
     <if test="deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0">
       <include refid="202504_leftJoinWithProcessDefinition"> <!-- from task-select-2025_04 -->
         <property name="externalTableAlias" value="deploy_p"/>
@@ -196,6 +204,11 @@
           or JOB.EXCEPTION_STACK_ID_ is not null
         )
     </if>
+    <if test="involvedUser != null">
+      left join ${prefix}ACT_HI_IDENTITYLINK link_user
+      on RES.ID_ = link_user.PROC_INST_ID_
+      and link_user.user_id_ = #{involvedUser}
+    </if>
     <!-- left joins for variables -->
     <if test="queryVariableValues != null &amp;&amp; queryVariableValues.size() &gt; 0">
       <include refid="202504_leftJoinVariables_processes">
@@ -205,6 +218,12 @@
     </if>
     <!-- left joins for orQueries -->
     <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
+      <if test="orQueryObject.deploymentId != null">
+        <include refid="202504_leftJoinWithProcessDefinition"> <!-- from task-select-2025_04 -->
+          <property name="externalTableAlias" value="deploy_or${orIndex}"/>
+        </include>
+        and deploy_or${orIndex}.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
+      </if>
       <if test="orQueryObject.involvedUser != null">
         left join ${prefix}ACT_HI_IDENTITYLINK link_user_or${orIndex}
           on RES.ID_ = link_user_or${orIndex}.PROC_INST_ID_
@@ -225,6 +244,15 @@
         left join ${prefix}ACT_RE_PROCDEF DEF_OR${orIndex}
           on RES.PROC_DEF_ID_ = DEF_OR${orIndex}.ID_
           and DEF_OR${orIndex}.NAME_ = #{orQueryObject.processDefinitionName}
+      </if>
+      <if test="orQueryObject.processDefinitionKey != null">
+        left join ${prefix}ACT_RE_PROCDEF DEF_OR${orIndex}
+        on RES.PROC_DEF_ID_ = DEF_OR${orIndex}.ID_
+        and DEF_OR${orIndex}.KEY_ = #{orQueryObject.processDefinitionKey}
+      </if>
+      <if test="orQueryObject.processDefinitionKeyIn != null">
+        left join ${prefix}ACT_RE_PROCDEF DEF_OR${orIndex}
+        on RES.PROC_DEF_ID_ = DEF_OR${orIndex}.ID_
       </if>
       <if test="orQueryObject.processDefinitionVersion != null">
         left join ${prefix}ACT_RE_PROCDEF DEF_OR${orIndex}
@@ -319,6 +347,18 @@
       <if test="startedBy != null">
         and RES.START_USER_ID_ = #{startedBy}
       </if>
+      <if test="startedBefore != null">
+        and RES.START_TIME_ &lt;= #{startedBefore}
+      </if>
+      <if test="startedAfter != null">
+        and RES.START_TIME_ &gt;= #{startedAfter}
+      </if>
+      <if test="finishedBefore != null">
+        and RES.END_TIME_ &lt;= #{finishedBefore}
+      </if>
+      <if test="finishedAfter != null">
+        and RES.END_TIME_ &gt;= #{finishedAfter}
+      </if>
       <if test="tenantId != null">
         and RES.TENANT_ID_ = #{tenantId}
       </if>
@@ -328,6 +368,9 @@
       <if test="withoutTenantId">
         and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
       </if>
+      <if test="deploymentId != null">
+        and deploy.ID_ is not null
+      </if>
       <if test="deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0">
         and deploy_p.ID_ is not null
       </if>
@@ -336,6 +379,9 @@
       </if>
       <if test="withException">
         and JOB.ID_ is not null
+      </if>
+      <if test="involvedUser != null">
+        and link_user.ID_ is not null
       </if>
       <!-- variable values -->
       <if test="queryVariableValues != null &amp;&amp; queryVariableValues.size() &gt; 0">
@@ -415,6 +461,18 @@
           </if>
           <if test="orQueryObject.startedBy != null">
             or RES.START_USER_ID_ = #{orQueryObject.startedBy}
+          </if>
+          <if test="orQueryObject.startedBefore != null">
+            or RES.START_TIME_ &lt;= #{orQueryObject.startedBefore}
+          </if>
+          <if test="orQueryObject.startedAfter != null">
+            or RES.START_TIME_ &gt;= #{orQueryObject.startedAfter}
+          </if>
+          <if test="orQueryObject.finishedBefore != null">
+            or RES.END_TIME_ &lt;= #{orQueryObject.finishedBefore}
+          </if>
+          <if test="orQueryObject.finishedAfter != null">
+            or RES.END_TIME_ &gt;= #{orQueryObject.finishedAfter}
           </if>
           <if test="orQueryObject.involvedUser != null">
             or link_user_or${orIndex}.ID_ is not null
