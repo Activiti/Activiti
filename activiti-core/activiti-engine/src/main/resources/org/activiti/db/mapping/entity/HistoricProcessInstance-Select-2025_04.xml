@@ -18,6 +18,10 @@
 
 <mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityImpl">
 
+  <sql id="202504_selectHistoricProcessInstancesWithVariablesByQueryCriteria">
+    <include refid="202504_selectHistoricProcessInstancesByQueryCriteria"/>
+  </sql>
+
   <sql id="202504_selectColumnsSql">
     <!--
     candidateGroups will join two tables, act_ru_task and ACT_HI_IDENTITYLINK (task.ID_ = identitylink.TASK_ID_)
@@ -27,9 +31,32 @@
       * therefore, a distinct is necessary in those situations
     -->
 
+    <!-- constants -->
+    <bind name="PROCESS_VARIABLES_COLUMNS_1" value="',VAR.ID_ as VAR_ID_,
+    VAR.NAME_ as VAR_NAME_,
+    VAR.VAR_TYPE_ as VAR_TYPE_,
+    VAR.REV_ as VAR_REV_,
+    VAR.PROC_INST_ID_ as VAR_PROC_INST_ID_,
+    VAR.EXECUTION_ID_ as VAR_EXECUTION_ID_,
+    VAR.TASK_ID_ as VAR_TASK_ID_,
+    VAR.BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_,
+    VAR.DOUBLE_ as VAR_DOUBLE_,
+    VAR.TEXT_ as VAR_TEXT_,
+    VAR.TEXT2_ as VAR_TEXT2_,
+    VAR.LAST_UPDATED_TIME_ as VAR_LAST_UPDATED_TIME_,
+    VAR.LONG_ as VAR_LONG_'"/>
+
     <!-- default distinctMode is to not have distinct -->
     <bind name="distinctMode" value="''"/>
     <bind name="columns" value="'RES.*, DEF.KEY_ as PROC_DEF_KEY_, DEF.NAME_ as PROC_DEF_NAME_, DEF.VERSION_ as PROC_DEF_VERSION_, DEF.DEPLOYMENT_ID_ as DEPLOYMENT_ID_'"/>
+    <bind name="processVariablesColumns" value="''"/>
+
+    <!-- situations where we need to have additional columns for process variables -->
+    <if test="includeProcessVariables">
+      <if test="_databaseId != 'db2' and _databaseId != 'mssql'">
+        <bind name="processVariablesColumns" value="PROCESS_VARIABLES_COLUMNS_1"/>
+      </if>
+    </if>
 
     <!-- situations where distinct is necessary -->
     <if test="withException">
@@ -41,6 +68,9 @@
           <bind name="distinctMode" value="'distinct'"/>
         </if>
       </foreach>
+    </if>
+    <if test="${isCount} &amp;&amp; includeProcessVariables">
+      <bind name="distinctMode" value="'distinct'"/>
     </if>
 
     <choose>
@@ -54,28 +84,26 @@
           <when test="distinctMode == 'distinct'">
             select RES.* ${202504_limitBetween}
             from (
-              select ${distinctMode} RES.ID_ as uniqueId, ${columns}
+              select ${distinctMode} RES.ID_ as uniqueId, ${columns} ${processVariablesColumns}
           </when>
           <!-- if it's not a count nor distinct, we don't need explicit RES.ID_ -->
           <otherwise>
             select RES.* ${202504_limitBetween}
             from (
-              select ${columns}
+              select ${columns} ${processVariablesColumns}
           </otherwise>
         </choose>
       </otherwise>
     </choose>
   </sql>
 
-  <sql id="202504_leftJoinWithProcessDefinition">
+  <sql id="202504_leftJoinWithProcessDefinitionAndCollection">
     left join ${prefix}ACT_RE_PROCDEF ${externalTableAlias}
-    on RES.PROC_DEF_ID_ = ${externalTableAlias}.ID_
-    <if test="${collection} != null">
+      on RES.PROC_DEF_ID_ = ${externalTableAlias}.ID_
       and ${externalTableAlias}.${field} in
       <foreach item="item" index="index" collection="${collection}" open="(" separator="," close=")">
         #{item}
       </foreach>
-    </if>
   </sql>
   <sql id="202504_leftJoinVariables_processes">
     <foreach index="varIndex" item="varObject" collection="${collection}">
@@ -182,15 +210,20 @@
   </sql>
 
   <sql id="202504_commonSelectHistoricProcessInstancesByQueryCriteriaSql">
+    <if test="includeProcessVariables">
+      left join ${prefix}ACT_HI_VARINST VAR
+        ON RES.PROC_INST_ID_ = VAR.EXECUTION_ID_
+        and VAR.TASK_ID_ is null
+    </if>
+
     <!-- left joins -->
     <if test="deploymentId != null">
-      <include refid="202504_leftJoinWithProcessDefinition"> <!-- from task-select-2025_04 -->
-        <property name="externalTableAlias" value="deploy"/>
-      </include>
-      and deploy_or${orIndex}.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
+      left join ${prefix}ACT_RE_PROCDEF deploy
+        on RES.PROC_DEF_ID_ = deploy.ID_
+        and deploy_or${orIndex}.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
     </if>
     <if test="deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0">
-      <include refid="202504_leftJoinWithProcessDefinition"> <!-- from task-select-2025_04 -->
+      <include refid="202504_leftJoinWithProcessDefinitionAndCollection"> <!-- from task-select-2025_04 -->
         <property name="externalTableAlias" value="deploy_p"/>
         <property name="field" value="DEPLOYMENT_ID_"/>
         <property name="collection" value="deploymentIds"/>
@@ -219,10 +252,9 @@
     <!-- left joins for orQueries -->
     <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
       <if test="orQueryObject.deploymentId != null">
-        <include refid="202504_leftJoinWithProcessDefinition"> <!-- from task-select-2025_04 -->
-          <property name="externalTableAlias" value="deploy_or${orIndex}"/>
-        </include>
-        and deploy_or${orIndex}.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
+        left join ${prefix}ACT_RE_PROCDEF deploy_or${orIndex}
+          on RES.PROC_DEF_ID_ = deploy_or${orIndex}.ID_
+          and deploy_or${orIndex}.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
       </if>
       <if test="orQueryObject.involvedUser != null">
         left join ${prefix}ACT_HI_IDENTITYLINK link_user_or${orIndex}
@@ -393,6 +425,9 @@
       <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
         and
         <trim prefix="(" prefixOverrides="OR" suffix=")">
+          <if test="orQueryObject.deploymentId != null">
+            OR deploy_or${orIndex}.ID_ IS NOT null
+          </if>
           <if test="orQueryObject.processInstanceId != null">
             or RES.PROC_INST_ID_ = #{orQueryObject.processInstanceId}
           </if>

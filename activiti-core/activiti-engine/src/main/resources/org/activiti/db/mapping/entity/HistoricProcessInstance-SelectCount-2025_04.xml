@@ -21,9 +21,9 @@
   <!-- HISTORIC PROCESS INSTANCE SELECT COUNT -->
   <select id="selectHistoricProcessInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultType="long">
     select count(uniqueId) from (
-    <include refid="202504_selectHistoricProcessInstancesByQueryCriteriaSql">
-      <property name="isCount" value="true"/>
-    </include>
+        <include refid="202504_selectHistoricProcessInstancesByQueryCriteriaSql">
+          <property name="isCount" value="true"/>
+        </include>
     ) sub
   </select>
 

@@ -23,4 +23,8 @@
     <include refid="202504_selectHistoricProcessInstancesByQueryCriteria"/>
   </select>
 
+  <select id="selectHistoricProcessInstancesWithVariablesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultMap="historicProcessInstanceAndVariablesResultMap">
+    <include refid="202504_selectHistoricProcessInstancesWithVariablesByQueryCriteria"/>
+  </select>
+
 </mapper>
