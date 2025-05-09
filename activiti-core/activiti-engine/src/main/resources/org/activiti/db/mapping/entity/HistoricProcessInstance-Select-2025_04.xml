@@ -62,12 +62,26 @@
     <if test="withException">
       <bind name="distinctMode" value="'distinct'"/>
     </if>
+    <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
+      <bind name="distinctMode" value="'distinct'"/>
+    </if>
     <if test="orQueryObjects != null &amp;&amp; orQueryObjects.size() &gt; 0">
       <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
         <if test="orQueryObject.withException">
           <bind name="distinctMode" value="'distinct'"/>
         </if>
+        <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
+          <bind name="distinctMode" value="'distinct'"/>
+        </if>
+        <if test="orQueryObject.queryVariableValues != null &amp;&amp; orQueryObject.queryVariableValues.size() &gt; 0">
+          <bind name="distinctMode" value="'distinct'"/>
+        </if>
+
       </foreach>
+    </if>
+    <!-- because we can have the same variable on the same process-instance but on different executions, we need to have distinct -->
+    <if test="queryVariableValues != null &amp;&amp; queryVariableValues.size() &gt; 0">
+      <bind name="distinctMode" value="'distinct'"/>
     </if>
     <if test="${isCount} &amp;&amp; includeProcessVariables">
       <bind name="distinctMode" value="'distinct'"/>
@@ -220,7 +234,7 @@
     <if test="deploymentId != null">
       left join ${prefix}ACT_RE_PROCDEF deploy
         on RES.PROC_DEF_ID_ = deploy.ID_
-        and deploy_or${orIndex}.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
+        and deploy.DEPLOYMENT_ID_ = #{deploymentId}
     </if>
     <if test="deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0">
       <include refid="202504_leftJoinWithProcessDefinitionAndCollection"> <!-- from task-select-2025_04 -->
@@ -241,6 +255,17 @@
       left join ${prefix}ACT_HI_IDENTITYLINK link_user
       on RES.ID_ = link_user.PROC_INST_ID_
       and link_user.user_id_ = #{involvedUser}
+    </if>
+    <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
+      left join ${prefix}ACT_HI_IDENTITYLINK link_groups
+        on RES.ID_ = link_groups.PROC_INST_ID_
+        and (
+          link_groups.TYPE_ = 'participant'
+          and link_groups.GROUP_ID_ in
+          <foreach item="group" index="index" collection="involvedGroups" open="(" separator="," close=")">
+            #{group}
+          </foreach>
+        )
     </if>
     <!-- left joins for variables -->
     <if test="queryVariableValues != null &amp;&amp; queryVariableValues.size() &gt; 0">
@@ -277,14 +302,9 @@
           on RES.PROC_DEF_ID_ = DEF_OR${orIndex}.ID_
           and DEF_OR${orIndex}.NAME_ = #{orQueryObject.processDefinitionName}
       </if>
-      <if test="orQueryObject.processDefinitionKey != null">
+      <if test="orQueryObject.processDefinitionKey != null || (orQueryObject.processDefinitionKeyIn != null &amp;&amp; orQueryObject.processDefinitionKeyIn.size() &gt; 0)">
         left join ${prefix}ACT_RE_PROCDEF DEF_OR${orIndex}
-        on RES.PROC_DEF_ID_ = DEF_OR${orIndex}.ID_
-        and DEF_OR${orIndex}.KEY_ = #{orQueryObject.processDefinitionKey}
-      </if>
-      <if test="orQueryObject.processDefinitionKeyIn != null">
-        left join ${prefix}ACT_RE_PROCDEF DEF_OR${orIndex}
-        on RES.PROC_DEF_ID_ = DEF_OR${orIndex}.ID_
+          on RES.PROC_DEF_ID_ = DEF_OR${orIndex}.ID_
       </if>
       <if test="orQueryObject.processDefinitionVersion != null">
         left join ${prefix}ACT_RE_PROCDEF DEF_OR${orIndex}
@@ -414,6 +434,9 @@
       </if>
       <if test="involvedUser != null">
         and link_user.ID_ is not null
+      </if>
+      <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
+        and link_groups.ID_ is not null
       </if>
       <!-- variable values -->
       <if test="queryVariableValues != null &amp;&amp; queryVariableValues.size() &gt; 0">
