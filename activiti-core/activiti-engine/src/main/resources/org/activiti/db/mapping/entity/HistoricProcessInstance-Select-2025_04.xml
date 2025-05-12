@@ -313,7 +313,7 @@
       </if>
       <if test="orQueryObject.processKeyNotIn != null &amp;&amp; orQueryObject.processKeyNotIn.size() &gt; 0">
         left join ${prefix}ACT_RE_PROCDEF DEF_OR${orIndex}
-          on RES.PROC_DEF_ID_ = DEF_or${orIndex}.ID_
+          on RES.PROC_DEF_ID_ = DEF_OR${orIndex}.ID_
       </if>
       <if test="orQueryObject.queryVariableValues != null &amp;&amp; orQueryObject.queryVariableValues.size() &gt; 0">
         <include refid="202504_leftJoinVariables_processes">
