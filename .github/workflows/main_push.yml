@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@a3d5beb67a8b8d96398435e01686a9a9185380ab # v8.18.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@8cd8c3798c79d10540e2876ad7cf2a5311cbd1ae # v8.20.0
         with:
           skip_checkout: true
       - name: Ensure SHA pinned actions
@@ -53,7 +53,7 @@ jobs:
           java-version: 21
           distribution: 'temurin'
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@a3d5beb67a8b8d96398435e01686a9a9185380ab # v8.18.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@8cd8c3798c79d10540e2876ad7cf2a5311cbd1ae # v8.20.0
         id: update-pom-to-next-version
 
       - name: Update VERSION file
@@ -98,10 +98,10 @@ jobs:
           git push -f -q origin $VERSION
 
       - name: Get branch name
-        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@a3d5beb67a8b8d96398435e01686a9a9185380ab # v8.18.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@8cd8c3798c79d10540e2876ad7cf2a5311cbd1ae # v8.20.0
 
       - name: Propagate
-        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@a3d5beb67a8b8d96398435e01686a9a9185380ab # v8.18.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@8cd8c3798c79d10540e2876ad7cf2a5311cbd1ae # v8.20.0
         if: ${{ env.BRANCH_NAME == 'develop' }}
         env:
           DEVELOPMENT_BRANCH: ${{ github.ref_name }}
@@ -120,6 +120,6 @@ jobs:
     if: always() && failure()
     steps:
       - name: Teams Notification
-        uses: Alfresco/alfresco-build-tools/.github/actions/send-teams-notification@a3d5beb67a8b8d96398435e01686a9a9185380ab # v8.18.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/send-teams-notification@8cd8c3798c79d10540e2876ad7cf2a5311cbd1ae # v8.20.0
         with:
           webhook-url: ${{ secrets.TEAMS_NOTIFICATION_WEBHOOK }}
