@@ -56,6 +56,9 @@
       <if test="_databaseId != 'db2' and _databaseId != 'mssql'">
         <bind name="processVariablesColumns" value="PROCESS_VARIABLES_COLUMNS_1"/>
       </if>
+      <if test="_databaseId == 'mssql' || _databaseId == 'db2'">
+        <bind name="processVariablesColumns" value="PROCESS_VARIABLES_COLUMNS_1"/>
+      </if>
     </if>
 
     <!-- situations where distinct is necessary -->
