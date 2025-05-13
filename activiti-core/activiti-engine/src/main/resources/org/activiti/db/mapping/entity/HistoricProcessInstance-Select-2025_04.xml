@@ -32,7 +32,7 @@
     -->
 
     <!-- constants -->
-    <bind name="PROCESS_VARIABLES_COLUMNS_1" value="',VAR.ID_ as VAR_ID_,
+    <bind name="PROCESS_VARIABLES_COLUMNS" value="',VAR.ID_ as VAR_ID_,
     VAR.NAME_ as VAR_NAME_,
     VAR.VAR_TYPE_ as VAR_TYPE_,
     VAR.REV_ as VAR_REV_,
@@ -53,12 +53,7 @@
 
     <!-- situations where we need to have additional columns for process variables -->
     <if test="includeProcessVariables">
-      <if test="_databaseId != 'db2' and _databaseId != 'mssql'">
-        <bind name="processVariablesColumns" value="PROCESS_VARIABLES_COLUMNS_1"/>
-      </if>
-      <if test="_databaseId == 'mssql' || _databaseId == 'db2'">
-        <bind name="processVariablesColumns" value="PROCESS_VARIABLES_COLUMNS_1"/>
-      </if>
+        <bind name="processVariablesColumns" value="PROCESS_VARIABLES_COLUMNS"/>
     </if>
 
     <!-- situations where distinct is necessary -->
