@@ -257,7 +257,7 @@
     <if test="involvedUser != null">
       left join ${prefix}ACT_HI_IDENTITYLINK link_user
       on RES.ID_ = link_user.PROC_INST_ID_
-      and link_user.user_id_ = #{involvedUser}
+      and link_user.USER_ID_ = #{involvedUser}
     </if>
     <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
       left join ${prefix}ACT_HI_IDENTITYLINK link_groups
@@ -287,7 +287,7 @@
       <if test="orQueryObject.involvedUser != null">
         left join ${prefix}ACT_HI_IDENTITYLINK link_user_or${orIndex}
           on RES.ID_ = link_user_or${orIndex}.PROC_INST_ID_
-          and link_user_or${orIndex}.user_id_ = #{orQueryObject.involvedUser}
+          and link_user_or${orIndex}.USER_ID_ = #{orQueryObject.involvedUser}
       </if>
       <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
         left join ${prefix}ACT_HI_IDENTITYLINK link_groups_or${orIndex}
