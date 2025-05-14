@@ -220,9 +220,7 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
         while (matcher.find()) {
             String variableName = matcher.group(1); // Extract variable name without `${..}`
             String replacedValue = replacePathVariables(variableName, execution, extensions);
-            if(!variableName.equals(replacedValue)) {
-                matcher.appendReplacement(updatedPath, "/" + replacedValue);
-            }
+            matcher.appendReplacement(updatedPath, "/" + replacedValue);
         }
 
         matcher.appendTail(updatedPath);

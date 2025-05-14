@@ -514,7 +514,7 @@ public class ExtensionsVariablesMappingProviderTest {
                 tuple("variable_invalid_object", Map.of("street2", "Ha-Ha Road")),
                 tuple("process_variable_person_array_cases", Map.of("firstname", "Bob",
                     "addresses", List.of(expectedAddress0, expectedAddress2, expectedAddress3))),
-                tuple("process_variable_person_variable_cases", Map.of("firstname", "Bob", "propertyFromVariable", "Miracle",
+                tuple("process_variable_person_variable_cases", Map.of("firstname", "Bob", "propertyFromVariable", "Miracle", "process_variable_name_equals_value", "Miracle",
                     "addresses", List.of(expectedAddress5, expectedAddress6, expectedAddress3)))
             );
     }

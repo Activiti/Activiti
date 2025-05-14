@@ -119,6 +119,13 @@
           "type": "string",
           "required": true,
           "value": "Street Name"
+        },
+        "variable-name-equals-value": {
+          "id": "variable-name-equals-value",
+          "name": "process_variable_name_equals_value",
+          "type": "string",
+          "required": true,
+          "value": "process_variable_name_equals_value"
         }
       },
       "mappings": {
@@ -170,6 +177,11 @@
                 {
                   "op": "add",
                   "path": "/${process_variable_property_path}",
+                  "value": "${process_variable_lastname}"
+                },
+                {
+                  "op": "add",
+                  "path": "/${process_variable_name_equals_value}",
                   "value": "${process_variable_lastname}"
                 },
                 {
