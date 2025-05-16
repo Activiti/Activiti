@@ -26,7 +26,6 @@ runs:
       shell: bash
       run: |
         LABELS=$(gh api /repos/$GITHUB_REPOSITORY/commits/$SHA/pulls | jq -r '.[].labels.[].name')
-        echo "GITHUB_ACTOR: $GITHUB_ACTOR"
         echo "Labels found: $LABELS"
         if [[ "$GITHUB_ACTOR" == "dependabot[bot]" && "$LABELS" == *"$FOUND_LABEL"* ]]
         then
