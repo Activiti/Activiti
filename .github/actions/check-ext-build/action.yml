@@ -17,7 +17,7 @@ runs:
     - name: Check build
       id: check_build
       env:
-        GH_TOKEN: ${{ github.token }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SENDER_LOGIN: ${{ github.event.sender.login }}
         EVENT_ACTION: ${{ github.event.action }}
         LABEL: ${{ github.event.label.name }}
