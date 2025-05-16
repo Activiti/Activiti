@@ -34,7 +34,7 @@ jobs:
       - name: Check dependabot build
         id: check
         env:
-          SHA: ${{ github.event.pull_request.head.sha }}
+          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
           SENDER_LOGIN: ${{ github.event.sender.login }}
           GH_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
         run: |
@@ -46,8 +46,6 @@ jobs:
             echo "PR opened by dependabot and with gh_action we can skip the build"
             echo "SKIP=true" >> $GITHUB_OUTPUT
           fi
-          echo "SKIP=true" >> $GITHUB_OUTPUT
-
   analyze:
     name: Analyze
     needs: pre-checks
