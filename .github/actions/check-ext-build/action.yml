@@ -2,12 +2,13 @@ name: Check Ext build
 description: Checks if the build is a dependabot build or external contribution
 
 outputs:
-  SKIP_BUILD: ${{ steps.check_build.outputs.SKIP_BUILD }}
+  skip-build:
+    description: "Skip the build"
+    value: ${{ steps.check_build.outputs.SKIP_BUILD }}
 
 runs:
   using: composite
   steps:
-
     - name: Check build
       id: check_build
       env:
