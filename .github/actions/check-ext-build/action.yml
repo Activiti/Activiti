@@ -1,15 +1,20 @@
 name: Check Ext build
 description: Checks if the build is a dependabot build or external contribution
 
+outputs:
+  SKIP_BUILD: ${{ steps.check_build.outputs.SKIP_BUILD }}
+
 runs:
   using: composite
   steps:
 
     - name: Check build
+      id: check_build
       env:
         SENDER_LOGIN: ${{ github.event.sender.login }}
         EVENT_ACTION: ${{ github.event.action }}
         LABEL: ${{ github.event.label.name }}
+        HAS_GH_ACTION_LABEL: ${{ contains(toJson(github.event.pull_request.labels.*.name), 'gh_actions') }}
         PR_REPO_NAME: ${{ github.event.pull_request.head.repo.full_name }}
         REPO_NAME: ${{ github.repository }}
       shell: bash
@@ -22,6 +27,9 @@ runs:
         if [[ $EVENT_ACTION == 'labeled' && $LABEL == 'CI' ]]
         then
           echo "This workflow will run with actor who labeled the PR"
+          if [ "$GITHUB_ACTOR" == "mauriziovitale" ] && [ $HAS_GH_ACTION_LABEL == "true" ]
+            echo "SKIP_BUILD=true" >> $GITHUB_OUTPUT
+          fi
         else
           echo "This workflow run was triggered by dependabot or an external contributor. Check and validate the changes, then add the 'CI' label to the pull request to trigger this workflow."
           exit 1
