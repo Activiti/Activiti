@@ -31,6 +31,23 @@ runs:
         GITHUB_PR_NUMBER: ${{github.event.pull_request.number}}
       shell: bash
       run: |
-        GH_ACTION_LABEL=$(gh api /repos/$GITHUB_REPOSITORY/issues/$GITHUB_PR_NUMBER/labels --jq '.[].name')
-        echo "Found labels $GH_ACTION_LABEL"
+        LABELS=$(gh api /repos/$GITHUB_REPOSITORY/issues/$GITHUB_PR_NUMBER/labels --jq '.[].name')
+        echo "Found labels $LABELS"
+
+        if [[ $SENDER_LOGIN != 'dependabot[bot]' && (-z $PR_REPO_NAME || $PR_REPO_NAME == $REPO_NAME) ]]
+        then
+          exit 0
+        fi
+
+        if [[ $EVENT_ACTION == 'labeled' && "$LABELS" == *"CI"* ]]
+        then
+          echo "This workflow will run with actor who labeled the PR"
+          if [ "$GITHUB_ACTOR" == "mauriziovitale" ] && [ "$LABELS" == *"gh_action"* ]
+            echo "PR opened by dependabot and with gh_action we can skip the build"
+            echo "SKIP_BUILD=true" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "This workflow run was triggered by dependabot or an external contributor. Check and validate the changes, then add the 'CI' label to the pull request to trigger this workflow."
+          exit 1
+        fi
 
