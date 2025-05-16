@@ -33,13 +33,14 @@ runs:
       run: |
         LABELS=$(gh api /repos/$GITHUB_REPOSITORY/issues/$GITHUB_PR_NUMBER/labels --jq '.[].name')
         echo "Found labels $LABELS"
+        echo "GITHUB_ACTOR $GITHUB_ACTOR"
 
         if [[ $SENDER_LOGIN != 'dependabot[bot]' && (-z $PR_REPO_NAME || $PR_REPO_NAME == $REPO_NAME) ]]
         then
           exit 0
         fi
 
-        if [[ $EVENT_ACTION == 'labeled' && "$LABELS" == *"CI"* ]]
+        if [[ $EVENT_ACTION == 'labeled' && $LABEL == "CI" ]]
         then
           echo "This workflow will run with actor who labeled the PR"
           if [ "$GITHUB_ACTOR" == "mauriziovitale" ] && [ "$LABELS" == *"gh_action"* ]
