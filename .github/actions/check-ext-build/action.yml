@@ -34,7 +34,7 @@ runs:
         LABELS=$(gh api /repos/$GITHUB_REPOSITORY/issues/$GITHUB_PR_NUMBER/labels --jq '.[].name')
         echo "Found labels $LABELS"
         echo "GITHUB_ACTOR $GITHUB_ACTOR"
-
+        SENDER_LOGIN=dependabot[bot]
         if [[ $SENDER_LOGIN != 'dependabot[bot]' && (-z $PR_REPO_NAME || $PR_REPO_NAME == $REPO_NAME) ]]
         then
           exit 0
