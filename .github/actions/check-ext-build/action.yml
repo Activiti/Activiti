@@ -1,6 +1,11 @@
 name: Check Ext build
 description: Checks if the build is a dependabot build or external contribution
 
+inputs:
+  gh-token:
+    description: 'GitHub token'
+    required: true
+
 outputs:
   skip-build:
     description: "Skip the build"
@@ -17,7 +22,7 @@ runs:
     - name: Check build
       id: check_build
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ inputs.gh-token }}
         SENDER_LOGIN: ${{ github.event.sender.login }}
         EVENT_ACTION: ${{ github.event.action }}
         LABEL: ${{ github.event.label.name }}

@@ -30,6 +30,8 @@ jobs:
       - name: Check dependabot build
         id: check_ext_build
         uses: ./.github/actions/check-ext-build
+        with:
+          gh-token: ${{ secrets.BOT_GITHUB_TOKEN }}
       - name: pre-commit
         uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@8cd8c3798c79d10540e2876ad7cf2a5311cbd1ae # v8.20.0
         with:
