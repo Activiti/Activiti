@@ -28,7 +28,7 @@ jobs:
   pre-checks:
     runs-on: ubuntu-latest
     outputs:
-      skip_build: ${{ steps.check.outputs.SKIP_BUILD }}
+      skip_build: ${{ steps.check.outputs.SKIP }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Check dependabot build
@@ -39,12 +39,14 @@ jobs:
           GH_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
         run: |
           LABELS=$(gh api /repos/$GITHUB_REPOSITORY/commits/$SHA/pulls | jq -r '.[].labels.[].name')
+          echo "GITHUB_ACTOR $GITHUB_ACTOR"
+          echo "Labels $LABELS"
           if [[ "$GITHUB_ACTOR" == "mauriziovitale" && "$LABELS" == *"github_actions"* ]]
           then
             echo "PR opened by dependabot and with gh_action we can skip the build"
-            echo "SKIP_BUILD=true" >> $GITHUB_OUTPUT
+            echo "SKIP=true" >> $GITHUB_OUTPUT
           fi
-          echo "SKIP_BUILD=true" >> $GITHUB_OUTPUT
+          echo "SKIP=true" >> $GITHUB_OUTPUT
 
   analyze:
     name: Analyze
