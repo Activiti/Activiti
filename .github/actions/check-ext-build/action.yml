@@ -11,11 +11,6 @@ outputs:
     description: "Skip the build"
     value: ${{ steps.check_build.outputs.SKIP_BUILD }}
 
-permissions:
-  contents: read
-  actions: read
-  checks: write
-
 runs:
   using: composite
   steps:
@@ -51,4 +46,3 @@ runs:
           echo "This workflow run was triggered by dependabot or an external contributor. Check and validate the changes, then add the 'CI' label to the pull request to trigger this workflow."
           exit 1
         fi
-
