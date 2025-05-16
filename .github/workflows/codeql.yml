@@ -34,7 +34,7 @@ jobs:
       - name: Check dependabot build
         id: check
         env:
-          SHA: ${{ github.sha }}
+          SHA: ${{ github.event.pull_request.head.sha }}
           SENDER_LOGIN: ${{ github.event.sender.login }}
           GH_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
         run: |
