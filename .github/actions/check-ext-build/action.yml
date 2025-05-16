@@ -26,7 +26,7 @@ runs:
         GITHUB_PR_NUMBER: ${{github.event.pull_request.number}}
       shell: bash
       run: |
-        HAS_GH_ACTION_LABEL= gh api /repos/$GITHUB_REPOSITORY/issues/$GITHUB_PR_NUMBER/labels -f "labels[]=gh_actions"
+        HAS_GH_ACTION_LABEL= gh api /repos/$GITHUB_REPOSITORY/issues/$GITHUB_PR_NUMBER/labels
         echo $HAS_GH_ACTION_LABEL
         if [[ $SENDER_LOGIN != 'dependabot[bot]' && (-z $PR_REPO_NAME || $PR_REPO_NAME == $REPO_NAME) ]]
         then
