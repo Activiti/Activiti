@@ -23,11 +23,10 @@ runs:
         LABEL: ${{ github.event.label.name }}
         PR_REPO_NAME: ${{ github.event.pull_request.head.repo.full_name }}
         REPO_NAME: ${{ github.repository }}
-        GITHUB_PR_NUMBER: ${{github.event.pull_request.number}}
+        SHA: ${{ github.event.pull_request.head.sha }}
       shell: bash
       run: |
-        LABELS=$(gh api /repos/$GITHUB_REPOSITORY/issues/$GITHUB_PR_NUMBER/labels --jq '.[].name')
-        echo "Found labels $LABELS"
+        LABELS=$(gh api /repos/$GITHUB_REPOSITORY/commits/$SHA/pulls | jq -r '.[].labels.[].name')
         echo "GITHUB_ACTOR $GITHUB_ACTOR"
         if [[ $SENDER_LOGIN != 'dependabot[bot]' && (-z $PR_REPO_NAME || $PR_REPO_NAME == $REPO_NAME) ]]
         then
