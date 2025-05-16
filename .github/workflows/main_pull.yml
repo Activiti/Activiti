@@ -28,10 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Check dependabot build
-        id: check_ext_build
         uses: ./.github/actions/check-ext-build
-        with:
-          gh-token: ${{ secrets.BOT_GITHUB_TOKEN }}
       - name: dependabot check
         id: dependabot
         uses: ./.github/actions/dependabot-check

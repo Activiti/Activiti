@@ -6,12 +6,10 @@ runs:
   steps:
 
     - name: Check build
-      id: check_build
       env:
         SENDER_LOGIN: ${{ github.event.sender.login }}
         EVENT_ACTION: ${{ github.event.action }}
         LABEL: ${{ github.event.label.name }}
-        HAS_GH_ACTION_LABEL: ${{ contains(toJson(github.event.pull_request.labels.*.name), 'gh_actions') }}
         PR_REPO_NAME: ${{ github.event.pull_request.head.repo.full_name }}
         REPO_NAME: ${{ github.repository }}
       shell: bash
