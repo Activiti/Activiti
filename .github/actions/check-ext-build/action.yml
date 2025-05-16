@@ -32,7 +32,7 @@ runs:
       shell: bash
       run: |
         GH_ACTION_LABEL=$(gh api /repos/$GITHUB_REPOSITORY/issues/$GITHUB_PR_NUMBER/labels --jq '.[].name' | grep -q "gh_action")
-        echo $HAS_GH_ACTION_LABEL
+        echo $GH_ACTION_LABEL
         if [[ $SENDER_LOGIN != 'dependabot[bot]' && (-z $PR_REPO_NAME || $PR_REPO_NAME == $REPO_NAME) ]]
         then
           exit 0
