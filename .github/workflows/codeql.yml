@@ -56,6 +56,7 @@ jobs:
       env:
         SHA: ${{ github.sha }}
         SENDER_LOGIN: ${{ github.event.sender.login }}
+        GH_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
       run: |
         LABELS=$(gh api /repos/$GITHUB_REPOSITORY/commits/$SHA/pulls | jq -r '.[].labels.[].name')
         if [[ "$GITHUB_ACTOR" == "mauriziovitale" && "$LABELS" == *"github_actions"* ]]

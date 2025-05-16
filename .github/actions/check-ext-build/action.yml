@@ -23,11 +23,10 @@ runs:
         LABEL: ${{ github.event.label.name }}
         PR_REPO_NAME: ${{ github.event.pull_request.head.repo.full_name }}
         REPO_NAME: ${{ github.repository }}
-        SHA: ${{ github.event.pull_request.head.sha }}
+        SHA: ${{ github.sha }}
       shell: bash
       run: |
         LABELS=$(gh api /repos/$GITHUB_REPOSITORY/commits/$SHA/pulls | jq -r '.[].labels.[].name')
-        echo "GITHUB_ACTOR $GITHUB_ACTOR"
         if [[ $SENDER_LOGIN != 'dependabot[bot]' && (-z $PR_REPO_NAME || $PR_REPO_NAME == $REPO_NAME) ]]
         then
           exit 0
