@@ -24,7 +24,7 @@ jobs:
   pre-checks:
     runs-on: ubuntu-latest
     outputs:
-      skip_build: ${{ steps.check_ext_build.outputs.SKIP_BUILD }}
+      skip_build: ${{ steps.check_ext_build.outputs.skip-build }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Check dependabot build
