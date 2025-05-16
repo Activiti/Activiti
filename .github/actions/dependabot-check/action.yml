@@ -6,7 +6,7 @@ inputs:
     description: 'GitHub token'
     required: true
   label:
-    description: 'Label to check if part of PR'
+    description: 'Check if the commit contains this label '
     required: true
 
 outputs:
