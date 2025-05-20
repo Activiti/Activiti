@@ -32,11 +32,11 @@ jobs:
           gh-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           label: github_actions
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@8cd8c3798c79d10540e2876ad7cf2a5311cbd1ae # v8.20.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@95f68dc050fba62b3331d9b47bc659526cdfb343 # v8.21.1
         with:
           skip_checkout: true
       - name: Ensure SHA pinned actions
-        uses: zgosalvez/github-actions-ensure-sha-pinned-actions@2d6823da4039243036c86d76f503c84e2ded2517 # v3.0.24
+        uses: zgosalvez/github-actions-ensure-sha-pinned-actions@fc87bb5b5a97953d987372e74478de634726b3e5 # v3.0.25
 
   build:
     runs-on: ubuntu-latest
@@ -62,7 +62,7 @@ jobs:
           java-version: 21
           distribution: 'temurin'
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@8cd8c3798c79d10540e2876ad7cf2a5311cbd1ae # v8.20.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@95f68dc050fba62b3331d9b47bc659526cdfb343 # v8.21.1
         id: update-pom-to-next-version
 
       - name: Update VERSION file
@@ -107,10 +107,10 @@ jobs:
           git push -f -q origin $VERSION
 
       - name: Get branch name
-        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@8cd8c3798c79d10540e2876ad7cf2a5311cbd1ae # v8.20.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@95f68dc050fba62b3331d9b47bc659526cdfb343 # v8.21.1
 
       - name: Propagate
-        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@8cd8c3798c79d10540e2876ad7cf2a5311cbd1ae # v8.20.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@95f68dc050fba62b3331d9b47bc659526cdfb343 # v8.21.1
         if: ${{ env.BRANCH_NAME == 'develop' }}
         env:
           DEVELOPMENT_BRANCH: ${{ github.ref_name }}
