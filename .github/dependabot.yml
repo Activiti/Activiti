@@ -14,3 +14,10 @@ updates:
       - "/.github/actions/*"
     schedule:
       interval: "weekly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
