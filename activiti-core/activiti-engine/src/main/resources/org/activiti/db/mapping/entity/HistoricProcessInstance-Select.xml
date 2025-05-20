@@ -20,11 +20,15 @@
 
   <!-- HISTORIC PROCESS INSTANCE SELECT -->
   <select id="selectHistoricProcessInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultMap="historicProcessInstanceResultMap">
-    <include refid="202504_selectHistoricProcessInstancesByQueryCriteria"/>
+    <include refid="202505_selectHistoricProcessInstancesByQueryCriteria">
+      <property name="isCount" value="false"/>
+    </include>
   </select>
 
   <select id="selectHistoricProcessInstancesWithVariablesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultMap="historicProcessInstanceAndVariablesResultMap">
-    <include refid="202504_selectHistoricProcessInstancesWithVariablesByQueryCriteria"/>
+    <include refid="202505_selectHistoricProcessInstancesWithVariablesByQueryCriteria">
+      <property name="isCount" value="false"/>
+    </include>
   </select>
 
 </mapper>

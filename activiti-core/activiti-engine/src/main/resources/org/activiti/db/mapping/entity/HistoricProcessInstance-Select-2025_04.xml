@@ -18,8 +18,135 @@
 
 <mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityImpl">
 
-  <sql id="202504_selectHistoricProcessInstancesWithVariablesByQueryCriteria">
-    <include refid="202504_selectHistoricProcessInstancesByQueryCriteria"/>
+  <sql id="202505_selectHistoricProcessInstancesWithVariablesByQueryCriteria">
+    <include refid="202505_selectHistoricProcessInstancesByQueryCriteria">
+      <property name="isCount" value="false"/>
+    </include>
+  </sql>
+
+  <sql id="202505_orderBy">
+    <choose>
+      <when test="'${202505_limitAfter}' != null and _databaseId != 'mssql' and _databaseId != 'oracle' and _databaseId != 'h2'">
+        ${orderBy}
+        ${202505_limitAfter}
+      </when>
+      <otherwise>
+        ${202505_limitAfter}
+        <if test="${isCount} != true">
+          ORDER BY rnk
+        </if>
+      </otherwise>
+    </choose>
+  </sql>
+
+
+  <sql id="202505_selectHistoricProcessInstancesByQueryCriteria">
+    <!-- constants -->
+    <bind name="columns" value="'RES.*, DEF.KEY_ as PROC_DEF_KEY_, DEF.NAME_ as PROC_DEF_NAME_, DEF.VERSION_ as PROC_DEF_VERSION_, DEF.DEPLOYMENT_ID_ as DEPLOYMENT_ID_'"/>
+
+    <!-- distinct management -->
+    <bind name="distinctMode" value="''"/>
+    <bind name="partitionBy" value="'RES.ID_'"/> <!-- default value -->
+    <if test="withException">
+      <bind name="distinctMode" value="'distinct'"/>
+    </if>
+    <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
+      <bind name="distinctMode" value="'distinct'"/>
+    </if>
+    <if test="orQueryObjects != null &amp;&amp; orQueryObjects.size() &gt; 0">
+      <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
+        <if test="orQueryObject.withException">
+          <bind name="distinctMode" value="'distinct'"/>
+        </if>
+        <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
+          <bind name="distinctMode" value="'distinct'"/>
+        </if>
+        <if test="orQueryObject.queryVariableValues != null &amp;&amp; orQueryObject.queryVariableValues.size() &gt; 0">
+          <bind name="distinctMode" value="'distinct'"/>
+        </if>
+      </foreach>
+    </if>
+    <!-- because we can have the same variable on the same process-instance but on different executions, we need to have distinct -->
+    <if test="queryVariableValues != null &amp;&amp; queryVariableValues.size() &gt; 0">
+      <bind name="distinctMode" value="'distinct'"/>
+    </if>
+
+    <if test="includeProcessVariables">
+      <bind name="distinctMode" value="'distinct'"/>
+      <bind name="partitionBy" value="'RES.ID_, VAR_ID_'"/>
+    </if>
+
+    <!-- process variables management -->
+    <bind name="PROCESS_VARIABLES_COLUMNS" value="',VAR.ID_ as VAR_ID_,
+    VAR.NAME_ as VAR_NAME_,
+    VAR.VAR_TYPE_ as VAR_TYPE_,
+    VAR.REV_ as VAR_REV_,
+    VAR.PROC_INST_ID_ as VAR_PROC_INST_ID_,
+    VAR.EXECUTION_ID_ as VAR_EXECUTION_ID_,
+    VAR.TASK_ID_ as VAR_TASK_ID_,
+    VAR.BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_,
+    VAR.DOUBLE_ as VAR_DOUBLE_,
+    VAR.TEXT_ as VAR_TEXT_,
+    VAR.TEXT2_ as VAR_TEXT2_,
+    VAR.LAST_UPDATED_TIME_ as VAR_LAST_UPDATED_TIME_,
+    VAR.LONG_ as VAR_LONG_'"/>
+    <choose>
+      <when test="includeProcessVariables">
+        <bind name="processVariablesColumns" value="PROCESS_VARIABLES_COLUMNS"/>
+      </when>
+      <otherwise>
+        <bind name="processVariablesColumns" value="''"/>
+      </otherwise>
+    </choose>
+
+    <choose>
+      <when test="${isCount}">
+        <bind name="columnsCount" value="'COUNT(ID_)'"/>
+      </when>
+      <otherwise>
+        <bind name="columnsCount" value="'*'"/>
+      </otherwise>
+    </choose>
+
+    <choose>
+      <!-- distinct -->
+      <when test="distinctMode == 'distinct'">
+        SELECT ${columnsCount}
+        FROM ( -- final results
+          SELECT ranked_rows.*, ROW_NUMBER() OVER (ORDER BY ranked_rows.START_TIME_ DESC) AS rnk
+          FROM ( -- ranked results
+            SELECT *
+            FROM ( -- deduplication
+              SELECT RES.*, ROW_NUMBER() OVER (PARTITION BY ${partitionBy} ORDER BY RES.START_TIME_ DESC) as rn
+              FROM ( -- resources
+                SELECT ${columns} ${processVariablesColumns}
+                FROM ACT_HI_PROCINST RES
+                  LEFT JOIN ACT_RE_PROCDEF DEF
+                    ON RES.PROC_DEF_ID_ = DEF.ID_
+                <include refid="202504_commonSelectHistoricProcessInstancesByQueryCriteriaSql"/>
+              ) RES
+            ) deduped
+            WHERE deduped.rn = 1
+          ) ranked_rows
+        ) final_results
+        <include refid="202505_orderBy"/>
+      </when>
+      <!-- no distinct -->
+      <otherwise>
+        SELECT ${columnsCount}
+        FROM ( -- ranked results (final results)
+          SELECT RES.*, ROW_NUMBER() OVER (ORDER BY RES.START_TIME_ DESC) as rnk
+          FROM ( -- resources
+            SELECT ${columns} ${processVariablesColumns}
+            from ACT_HI_PROCINST RES
+              left join ACT_RE_PROCDEF DEF
+                on RES.PROC_DEF_ID_ = DEF.ID_
+            <include refid="202504_commonSelectHistoricProcessInstancesByQueryCriteriaSql"/>
+          ) RES
+        ) final_results
+        <include refid="202505_orderBy"/>
+      </otherwise>
+    </choose>
   </sql>
 
   <sql id="202504_selectColumnsSql">
@@ -60,17 +187,21 @@
     <if test="withException">
       <bind name="distinctMode" value="'distinct'"/>
     </if>
+    <!--
     <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
       <bind name="distinctMode" value="'distinct'"/>
     </if>
+    -->
     <if test="orQueryObjects != null &amp;&amp; orQueryObjects.size() &gt; 0">
       <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
         <if test="orQueryObject.withException">
           <bind name="distinctMode" value="'distinct'"/>
         </if>
+        <!--
         <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
           <bind name="distinctMode" value="'distinct'"/>
         </if>
+        -->
         <if test="orQueryObject.queryVariableValues != null &amp;&amp; orQueryObject.queryVariableValues.size() &gt; 0">
           <bind name="distinctMode" value="'distinct'"/>
         </if>
