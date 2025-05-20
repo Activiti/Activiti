@@ -27,16 +27,9 @@ concurrency:
 jobs:
   pre-checks:
     runs-on: ubuntu-latest
-    outputs:
-      skip: ${{ steps.dependabot.outputs.result }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - name: dependabot check
-        id: dependabot
-        uses: ./.github/actions/dependabot-check
-        with:
-          gh-token: ${{ secrets.BOT_GITHUB_TOKEN }}
-          label: github_actions
+
   analyze:
     name: Analyze
     needs: pre-checks
