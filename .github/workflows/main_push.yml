@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: dependabot check
         id: dependabot
-        uses: ./.github/actions/dependabot-check
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-dependabot-check@improvement/AAE-34998-pr-dependabot
         with:
           gh-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           label: github_actions
