@@ -114,7 +114,14 @@ ORDER BY rnk
 
     <choose>
       <when test="${isCount}">
-        <bind name="columnsCount" value="'COUNT(ID_)'"/>
+        <choose>
+          <when test="distinctMode == 'distinct'">
+            <bind name="columnsCount" value="'COUNT(DISTINCT uniqueId)'"/>
+          </when>
+          <otherwise>
+            <bind name="columnsCount" value="'COUNT(ID_)'"/>
+          </otherwise>
+        </choose>
       </when>
       <otherwise>
         <bind name="columnsCount" value="'*'"/>
@@ -126,7 +133,7 @@ ORDER BY rnk
       <when test="distinctMode == 'distinct'">
         SELECT ${columnsCount}
         FROM (
-          SELECT RES.*, ROW_NUMBER() OVER (ORDER BY RES.START_TIME_ DESC) AS rnk
+          SELECT RES.*, ROW_NUMBER() OVER (ORDER BY ${orderByColumns}) AS rnk
           FROM (
             SELECT distinct RES.ID_ as uniqueId, ${columns} ${processVariablesColumns}
             from ACT_HI_PROCINST RES
@@ -139,7 +146,7 @@ ORDER BY rnk
       <otherwise>
         SELECT ${columnsCount}
         FROM (
-          SELECT RES.*, ROW_NUMBER() OVER (ORDER BY RES.START_TIME_ DESC) as rnk
+          SELECT RES.*, ROW_NUMBER() OVER (ORDER BY ${orderByColumns}) as rnk
           FROM (
             SELECT ${columns} ${processVariablesColumns}
             from ACT_HI_PROCINST RES
@@ -362,7 +369,15 @@ ORDER BY rnk
     </if>
 
     <!-- deployment joins -->
-    join ${prefix}ACT_RE_PROCDEF DEF
+    <choose>
+      <!-- TODO: this is weird: because we can query ACT_HI_PROCINST with values non-existing on ACT_RE_PROCDEF, we need to have a left join to allow nulls -->
+      <when test="processInstanceId != null">
+        left join ${prefix}ACT_RE_PROCDEF DEF
+      </when>
+      <otherwise>
+        join ${prefix}ACT_RE_PROCDEF DEF
+      </otherwise>
+    </choose>
       on RES.PROC_DEF_ID_ = DEF.ID_
     <if test="deploymentId != null">
       and DEF.DEPLOYMENT_ID_ = #{deploymentId}
