@@ -50,35 +50,18 @@ ORDER BY rnk
 
 <mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityImpl">
 
+  <!-- entry points -->
   <sql id="202505_selectHistoricProcessInstancesWithVariablesByQueryCriteria">
     <include refid="202505_selectHistoricProcessInstancesByQueryCriteria">
       <property name="isCount" value="false"/>
     </include>
   </sql>
-
-  <sql id="202505_orderBy">
-    <choose>
-      <when test="'${202505_limitAfter}' != null and _databaseId != 'mssql' and _databaseId != 'oracle' and _databaseId != 'h2'">
-        ${orderBy}
-        ${202505_limitAfter}
-      </when>
-      <otherwise>
-        ${202505_limitAfter}
-        <if test="${isCount} != true">
-          ORDER BY rnk
-        </if>
-      </otherwise>
-    </choose>
-  </sql>
-
-
   <sql id="202505_selectHistoricProcessInstancesByQueryCriteria">
     <!-- constants -->
     <bind name="columns" value="'RES.*, DEF.KEY_ as PROC_DEF_KEY_, DEF.NAME_ as PROC_DEF_NAME_, DEF.VERSION_ as PROC_DEF_VERSION_, DEF.DEPLOYMENT_ID_ as DEPLOYMENT_ID_'"/>
 
     <!-- distinct management -->
     <bind name="distinctMode" value="''"/>
-    <bind name="partitionBy" value="'RES.ID_'"/> <!-- default value -->
     <if test="withException">
       <bind name="distinctMode" value="'distinct'"/>
     </if>
@@ -102,10 +85,8 @@ ORDER BY rnk
     <if test="queryVariableValues != null &amp;&amp; queryVariableValues.size() &gt; 0">
       <bind name="distinctMode" value="'distinct'"/>
     </if>
-
     <if test="includeProcessVariables">
       <bind name="distinctMode" value="'distinct'"/>
-      <bind name="partitionBy" value="'RES.ID_, VAR_ID_'"/>
     </if>
 
     <!-- process variables management -->
@@ -722,5 +703,21 @@ ORDER BY rnk
       <when test="varObject.operator.equals('LESS_THAN_OR_EQUAL')">&lt;=</when>
     </choose>
   </sql>
+
+  <sql id="202505_orderBy">
+    <choose>
+      <when test="'${202505_limitAfter}' != null and _databaseId != 'mssql' and _databaseId != 'oracle' and _databaseId != 'h2'">
+        ${orderBy}
+        ${202505_limitAfter}
+      </when>
+      <otherwise>
+        ${202505_limitAfter}
+        <if test="${isCount} != true">
+          ORDER BY rnk
+        </if>
+      </otherwise>
+    </choose>
+  </sql>
+
 
 </mapper>
