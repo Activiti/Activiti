@@ -35,6 +35,6 @@ runs:
         fi
         if [[ "$GITHUB_ACTOR" == "dependabot[bot]" && "$LABELS" == *"$FOUND_LABEL"* ]]
         then
-            echo "PR opened by dependabot and with gh_action. The result is true"
-            echo "SKIP=true" >> $GITHUB_OUTPUT
+          echo "PR opened by dependabot and with gh_action. The result is true"
+          echo "SKIP=true" >> $GITHUB_OUTPUT
         fi
