@@ -746,7 +746,7 @@ ORDER BY rnk
 
   <sql id="202505_orderBy">
     <choose>
-      <when test="'${202505_limitAfter}' != null and _databaseId != 'mssql' and _databaseId != 'oracle' and _databaseId != 'h2'">
+      <when test="'${202505_limitAfter}' != null and _databaseId != 'mssql' and _databaseId != 'oracle' and _databaseId != 'h2' and _databaseId != 'mariadb'">
         ${orderBy}
         ${202505_limitAfter}
       </when>
