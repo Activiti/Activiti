@@ -745,8 +745,16 @@ ORDER BY rnk
   </sql>
 
   <sql id="202505_orderBy">
+    <if test="'${202505_limitAfter}' != null">
+      ${202505_limitAfter}
+      <if test="${isCount} != true">
+        ORDER BY rnk
+      </if>
+    </if>
+    <!-- TODO: delete deadcode below this line -->
+    <!--
     <choose>
-      <when test="'${202505_limitAfter}' != null and _databaseId != 'mssql' and _databaseId != 'oracle' and _databaseId != 'h2' and _databaseId != 'mariadb'">
+      <when test=" and _databaseId != 'mssql' and _databaseId != 'oracle' and _databaseId != 'h2' and _databaseId != 'mariadb'">
         ${orderBy}
         ${202505_limitAfter}
       </when>
@@ -757,6 +765,7 @@ ORDER BY rnk
         </if>
       </otherwise>
     </choose>
+    -->
   </sql>
 
 
