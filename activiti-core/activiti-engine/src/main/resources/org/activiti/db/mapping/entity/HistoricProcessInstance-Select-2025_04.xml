@@ -113,6 +113,27 @@ ORDER BY rnk
     </choose>
 
     <choose>
+      <!-- TODO: problem when dealing with returning variables
+           Unit-test: HistoricProcessInstanceAndVariablesQueryTest.testOrQueryByprocessDefinition()
+        - workflow
+          - sql query joins process-instances with variables (in the example, it returns 10 records)
+          - after sql-query, there's a java code that joins variables into process-instances (in the example, ends with 6 results)
+        - problem
+          - count only act on the DB layer, therefore it counts 10 records instead of 6
+        - solution
+          - added a use-case where we count distincts ids
+        - why this is not a good solution?
+          - the processing of list is splited between db and java layer
+          - the processing of count is just on the db layer
+          - the processing should be done at the same layers
+      -->
+      <!-- TODO: original solution, doesn't work because it counts all rows -->
+<!--
+      <when test="${isCount}">
+      <bind name="columnsCount" value="'COUNT(ID_)'"/>
+      </when>
+-->
+      <!-- WORKAROUND: consider counting distinct IDS -->
       <when test="${isCount}">
         <choose>
           <when test="distinctMode == 'distinct'">
@@ -370,7 +391,11 @@ ORDER BY rnk
 
     <!-- deployment joins -->
     <choose>
-      <!-- TODO: this is weird: because we can query ACT_HI_PROCINST with values non-existing on ACT_RE_PROCDEF, we need to have a left join to allow nulls -->
+      <!-- TODO:
+        - because we can query ACT_HI_PROCINST with values non-existing on ACT_RE_PROCDEF, we need to have a left join to allow nulls
+        - this is possible because ACT_RE_PROCDEF have the processes currently deployed and ACT_HI_PROCINST is a historical table
+        - problem with this approach: we need to enumerate all possible similar situations
+      -->
       <when test="processInstanceId != null">
         left join ${prefix}ACT_RE_PROCDEF DEF
       </when>
