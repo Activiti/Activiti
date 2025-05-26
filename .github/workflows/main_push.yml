@@ -27,9 +27,10 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: dependabot check
         id: dependabot
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-dependabot-check@improvement/AAE-34998-pr-dependabot
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-pr-check-metadata@improvement/AAE-34998-pr-dependabot
         with:
           gh-token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          actor: 'dependabot[bot]'
           label: github_actions
       - name: pre-commit
         uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@95f68dc050fba62b3331d9b47bc659526cdfb343 # v8.21.1
