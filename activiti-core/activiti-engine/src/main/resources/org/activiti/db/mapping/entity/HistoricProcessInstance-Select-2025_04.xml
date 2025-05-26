@@ -256,16 +256,19 @@
         ON RES.PROC_INST_ID_ = VAR.EXECUTION_ID_
         and VAR.TASK_ID_ is null
     </if>
-    <!-- join: deployment -->
+    <!-- join: deployment/process-definitions -->
     <include refid="202505_join_ACT_RE_PROCDEF"><property name="tableAlias" value="DEF"/></include>
     <if test="deploymentId != null">
       AND DEF.DEPLOYMENT_ID_ = #{deploymentId}
     </if>
-    <if test="deploymentIds!=null &amp;&amp; deploymentIds.isEmpty()==false">
+    <if test="deploymentIds != null &amp;&amp; deploymentIds.isEmpty() == false">
       AND DEF.DEPLOYMENT_ID_ IN
       <foreach item="item" index="index" collection="deploymentIds" open="(" separator="," close=")">
         #{item}
       </foreach>
+    </if>
+    <if test="processDefinitionName != null">
+      and DEF.NAME_ = #{processDefinitionName}
     </if>
     <!-- join: jobs with exception -->
     <if test="withException">
@@ -304,6 +307,13 @@
         <include refid="202505_join_ACT_RE_PROCDEF"><property name="tableAlias" value="DEF_OR${orIndex}"/></include>
           and DEF_OR${orIndex}.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
       </if>
+      <if test="orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentsIds.isEmpty() == false">
+        <include refid="202505_join_ACT_RE_PROCDEF"><property name="tableAlias" value="DEF_OR${orIndex}"/></include>
+        and DEF_OR${orIndex}.DEPLOYMENT_ID_ IN
+        <foreach item="deployment" index="index" collection="#{orQueryObject.deploymentId}" open="(" separator="," close=")">
+          #{deployment}
+        </foreach>
+      </if>
       <if test="orQueryObject.involvedUser != null">
         <include refid="202505_join_ACT_HI_IDENTITYLINK"><property name="tableAlias" value="link_user_or${orIndex}"/></include>
           and link_user_or${orIndex}.USER_ID_ = #{orQueryObject.involvedUser}
@@ -325,6 +335,10 @@
       <if test="orQueryObject.processDefinitionKey != null || (orQueryObject.processDefinitionKeyIn != null &amp;&amp; orQueryObject.processDefinitionKeyIn.size() &gt; 0)">
         <include refid="202505_join_ACT_RE_PROCDEF"><property name="tableAlias" value="DEF_OR${orIndex}"/></include>
         <!-- TODO: don't understand why this doesn't have any AND statement inside -->
+      </if>
+      <if test="orQueryObject.processDefinitionCategory != null ">
+        <include refid="202505_join_ACT_RE_PROCDEF"><property name="tableAlias" value="DEF_OR${orIndex}"/></include>
+        AND DEF_OR${orIndex}.CATEGORY_ = #{orQueryObject.processDefinitionCategory}
       </if>
       <if test="orQueryObject.processDefinitionVersion != null">
         <include refid="202505_join_ACT_RE_PROCDEF"><property name="tableAlias" value="DEF_OR${orIndex}"/></include>
@@ -383,7 +397,7 @@
         and DEF.CATEGORY_ = #{processDefinitionCategory}
       </if>
       <if test="processDefinitionName != null">
-        and DEF.NAME_ = #{processDefinitionName}
+        and DEF.ID_ is not null
       </if>
       <if test="processKeyNotIn != null &amp;&amp; processKeyNotIn.size() &gt; 0">
         <foreach collection="processKeyNotIn" index="index" item="procDefKey">
@@ -506,7 +520,7 @@
             </trim>
           </if>
           <if test="orQueryObject.processDefinitionCategory != null">
-            or DEF.CATEGORY_ = #{orQueryObject.processDefinitionCategory}
+            or DEF_OR${orIndex}.ID_ is not null
           </if>
           <if test="orQueryObject.processDefinitionName != null">
             or DEF_OR${orIndex}.ID_ is not null
