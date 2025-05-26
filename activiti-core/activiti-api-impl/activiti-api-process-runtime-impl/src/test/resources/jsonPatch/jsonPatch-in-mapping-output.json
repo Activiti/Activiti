@@ -126,6 +126,15 @@
           "type": "string",
           "required": true,
           "value": "process_variable_name_equals_value"
+        },
+        "variable-empty-inner-array": {
+          "id": "variable-empty-inner-array",
+          "name": "process_variable_empty_inner_array",
+          "type": "json",
+          "required": false,
+          "value": {
+            "people": []
+          }
         }
       },
       "mappings": {
@@ -223,6 +232,16 @@
                   "op": "add",
                   "path": "/street2",
                   "value": "${process_variable_address.address.street}"
+                }
+              ]
+            },
+            "process_variable_empty_inner_array": {
+              "type": "JSONPATCH",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/people/0/name",
+                  "value": "${process_variable_name}"
                 }
               ]
             }
