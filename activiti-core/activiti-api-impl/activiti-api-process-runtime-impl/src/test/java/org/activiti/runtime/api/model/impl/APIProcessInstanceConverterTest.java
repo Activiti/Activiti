@@ -41,6 +41,7 @@ public class APIProcessInstanceConverterTest {
     private static final String APP_VERSION_STRING = "1";
     private static final Date START_TIME = new Date();
     private static final String PROCESS_DEFINITION_NAME = "processDefinitionName";
+    private static final String ROOT_PROCESS_INSTANCE_ID = "rootProcessInstanceId";
 
     private APIProcessInstanceConverter subject = new APIProcessInstanceConverter();
 
@@ -115,6 +116,7 @@ public class APIProcessInstanceConverterTest {
         assertThat(result.getStartDate()).isEqualTo(START_TIME);
         assertThat(result.getAppVersion()).isEqualTo(appVersionString);
         assertThat(result.getProcessDefinitionName()).isEqualTo(PROCESS_DEFINITION_NAME);
+        assertThat(result.getRootProcessInstanceId()).isEqualTo(ROOT_PROCESS_INSTANCE_ID);
     }
 
     private ExecutionEntity anInternalProcessInstance(Integer appVersion) {
@@ -133,6 +135,7 @@ public class APIProcessInstanceConverterTest {
         internalProcessInstance.setActive(true);
         internalProcessInstance.setAppVersion(appVersion);
         internalProcessInstance.setProcessDefinitionName(PROCESS_DEFINITION_NAME);
+        internalProcessInstance.setRootProcessInstanceId(ROOT_PROCESS_INSTANCE_ID);
 
         return internalProcessInstance;
     }

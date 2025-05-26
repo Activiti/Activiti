@@ -28,11 +28,11 @@ jobs:
       - name: Check dependabot build
         uses: ./.github/actions/check-ext-build
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@a3d5beb67a8b8d96398435e01686a9a9185380ab # v8.18.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@95f68dc050fba62b3331d9b47bc659526cdfb343 # v8.21.1
         with:
           skip_checkout: true
       - name: Ensure SHA pinned actions
-        uses: zgosalvez/github-actions-ensure-sha-pinned-actions@25ed13d0628a1601b4b44048e63cc4328ed03633 # v3.0.22
+        uses: zgosalvez/github-actions-ensure-sha-pinned-actions@fc87bb5b5a97953d987372e74478de634726b3e5 # v3.0.25
 
   build:
     runs-on: ubuntu-latest
@@ -50,7 +50,7 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Setup Java JDK 21
-        uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12 # 4.7.0
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # 4.7.1
         with:
           java-version: 21
           distribution: 'temurin'

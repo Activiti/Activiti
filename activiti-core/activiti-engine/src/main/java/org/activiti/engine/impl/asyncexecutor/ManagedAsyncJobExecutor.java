@@ -20,14 +20,13 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import javax.enterprise.concurrent.ManagedThreadFactory;
+import jakarta.enterprise.concurrent.ManagedThreadFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Simple JSR-236 async job executor to allocate threads through {@link ManagedThreadFactory}. Falls back to {@link AsyncExecutor} when a thread factory was not referenced in configuration.
- *
  * In Java EE 7, all application servers should provide access to a {@link ManagedThreadFactory}.
  *
  */
