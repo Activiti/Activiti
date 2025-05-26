@@ -354,7 +354,6 @@ ORDER BY rnk
     </foreach>
   </sql>
 
-
   <sql id="202504_selectHistoricProcessInstancesByQueryCriteria">
     ${202504_limitBefore}
     <include refid="202504_selectHistoricProcessInstancesByQueryCriteriaSql">
@@ -377,9 +376,7 @@ ORDER BY rnk
       <property name="isCount" value="${isCount}"/>
     </include>
     from ${prefix}ACT_HI_PROCINST RES
-      left join ${prefix}ACT_RE_PROCDEF DEF
-        on RES.PROC_DEF_ID_ = DEF.ID_
-    <include refid="202504_commonSelectHistoricProcessInstancesByQueryCriteriaSql"/>
+      <include refid="202504_commonSelectHistoricProcessInstancesByQueryCriteriaSql"/>
   </sql>
 
   <sql id="202504_commonSelectHistoricProcessInstancesByQueryCriteriaSql">
@@ -390,25 +387,13 @@ ORDER BY rnk
     </if>
 
     <!-- deployment joins -->
-    <choose>
-      <!-- TODO:
-        - because we can query ACT_HI_PROCINST with values non-existing on ACT_RE_PROCDEF, we need to have a left join to allow nulls
-        - this is possible because ACT_RE_PROCDEF have the processes currently deployed and ACT_HI_PROCINST is a historical table
-        - problem with this approach: we need to enumerate all possible similar situations
-      -->
-      <when test="processInstanceId != null">
-        left join ${prefix}ACT_RE_PROCDEF DEF
-      </when>
-      <otherwise>
-        join ${prefix}ACT_RE_PROCDEF DEF
-      </otherwise>
-    </choose>
-      on RES.PROC_DEF_ID_ = DEF.ID_
+    left join ${prefix}ACT_RE_PROCDEF DEF
+    on RES.PROC_DEF_ID_ = DEF.ID_
     <if test="deploymentId != null">
-      and DEF.DEPLOYMENT_ID_ = #{deploymentId}
+      AND DEF.DEPLOYMENT_ID_ = #{deploymentId}
     </if>
-    <if test="deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0">
-      and DEF.DEPLOYMENT_ID_ in
+    <if test="deploymentIds!=null &amp;&amp; deploymentIds.isEmpty()==false">
+      AND DEF.DEPLOYMENT_ID_ IN
       <foreach item="item" index="index" collection="deploymentIds" open="(" separator="," close=")">
         #{item}
       </foreach>
@@ -592,7 +577,12 @@ ORDER BY rnk
       <if test="withoutTenantId">
         and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
       </if>
-      <!-- deploymentId and deploymentIds will not be specified in "where" since they are already specified on the "join" clause -->
+      <if test="deploymentId != null">
+        AND DEF.ID_ is not null
+      </if>
+      <if test="deploymentIds != null &amp;&amp; deploymentIds.isEmpty()==false">
+        AND DEF.ID_ is not null
+      </if>
       <if test="excludeSubprocesses">
         and RES.SUPER_PROCESS_INSTANCE_ID_ is null
       </if>
@@ -767,6 +757,4 @@ ORDER BY rnk
     </choose>
     -->
   </sql>
-
-
 </mapper>
