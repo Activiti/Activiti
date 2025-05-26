@@ -251,6 +251,18 @@
         <version>2.5.2</version>
       </dependency>
       <!-- temporary security fix -->
+      <!-- temporary security fix AAE-33092 -->
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-crypto</artifactId>
+        <version>6.4.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-core</artifactId>
+        <version>6.4.4</version>
+      </dependency>
+      <!-- temporary security fix -->
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-dependency-check</artifactId>
