@@ -1,0 +1,34 @@
+name: Dependabot check
+description: Checks if author is dependabot and if specific label is added to PR
+
+inputs:
+  gh-token:
+    description: 'GitHub token'
+    required: true
+  label:
+    description: 'Check if the commit contains this label '
+    required: true
+
+outputs:
+  result:
+    description: "Result of the check"
+    value: ${{ steps.check.outputs.SKIP }}
+
+runs:
+  using: composite
+  steps:
+    - name: Check
+      id: check
+      env:
+        GH_TOKEN: ${{ inputs.gh-token }}
+        SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        FOUND_LABEL: ${{ inputs.label }}
+      shell: bash
+      run: |
+        LABELS=$(gh api /repos/$GITHUB_REPOSITORY/commits/$SHA/pulls | jq -r '.[].labels.[].name')
+        echo "Labels found: $LABELS"
+        if [[ "$GITHUB_ACTOR" == "dependabot[bot]" && "$LABELS" == *"$FOUND_LABEL"* ]]
+        then
+          echo "PR opened by dependabot and with gh_action. The result is true"
+          echo "SKIP=true" >> $GITHUB_OUTPUT
+        fi
