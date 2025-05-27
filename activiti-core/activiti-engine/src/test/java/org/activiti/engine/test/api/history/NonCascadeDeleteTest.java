@@ -69,6 +69,12 @@ public class NonCascadeDeleteTest extends PluggableActivitiTestCase {
         assertThat(processInstanceAfterDelete.getProcessDefinitionName()).isNull();
         assertThat(processInstanceAfterDelete.getProcessDefinitionVersion()).isNull();
 
+        // Historic process instance remains (by querying processDefinitionId)
+        processInstanceAfterDelete = historyService.createHistoricProcessInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).singleResult();
+        assertThat(processInstanceAfterDelete.getProcessDefinitionKey()).isNull();
+        assertThat(processInstanceAfterDelete.getProcessDefinitionName()).isNull();
+        assertThat(processInstanceAfterDelete.getProcessDefinitionVersion()).isNull();
+
         // clean
         historyService.deleteHistoricProcessInstance(processInstanceId);
     }

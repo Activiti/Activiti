@@ -125,7 +125,7 @@
           SELECT RES.*, ROW_NUMBER() OVER (ORDER BY ${orderByColumns}) AS rnk
           FROM (
             SELECT distinct RES.ID_ as uniqueId, ${columns} ${processVariablesColumns}
-            from ACT_HI_PROCINST RES
+            from ${prefix}ACT_HI_PROCINST RES
               <include refid="202504_commonSelectHistoricProcessInstancesByQueryCriteriaSql"/>
           ) RES
         ) ranked_rows
@@ -138,7 +138,7 @@
           SELECT RES.*, ROW_NUMBER() OVER (ORDER BY ${orderByColumns}) as rnk
           FROM (
             SELECT ${columns} ${processVariablesColumns}
-            from ACT_HI_PROCINST RES
+            from ${prefix}ACT_HI_PROCINST RES
               <include refid="202504_commonSelectHistoricProcessInstancesByQueryCriteriaSql"/>
           ) RES
         ) ranked_rows
@@ -288,10 +288,7 @@
       <include refid="202505_join_ACT_HI_IDENTITYLINK"><property name="tableAlias" value="link_groups"/></include>
         and (
           link_groups.TYPE_ = 'participant'
-          and link_groups.GROUP_ID_ in
-          <foreach item="group" index="index" collection="involvedGroups" open="(" separator="," close=")">
-            #{group}
-          </foreach>
+          and link_groups.GROUP_ID_ in <include refid="202505_collection"><property name="collection" value="involvedGroups"/></include>
         )
     </if>
     <!-- join: variables -->
@@ -369,10 +366,7 @@
         and RES.PROC_INST_ID_ = #{processInstanceId}
       </if>
       <if test="processInstanceIds != null and !processInstanceIds.isEmpty()">
-        and RES.PROC_INST_ID_ in
-        <foreach item="item" index="index" collection="processInstanceIds" open="(" separator="," close=")">
-          #{item}
-        </foreach>
+        and RES.PROC_INST_ID_ in <include refid="202505_collection"><property name="collection" value="processInstanceIds"/></include>
       </if>
       <if test="superProcessInstanceId != null">
         and RES.SUPER_PROCESS_INSTANCE_ID_ = #{superProcessInstanceId}
@@ -384,11 +378,7 @@
         and DEF.KEY_ = #{processDefinitionKey}
       </if>
       <if test="processDefinitionKeyIn != null &amp;&amp; processDefinitionKeyIn.size() &gt; 0">
-        and DEF.KEY_ IN
-        <foreach item="definition" index="index" collection="processDefinitionKeyIn"
-                 open="(" separator="," close=")">
-          #{definition}
-        </foreach>
+        and DEF.KEY_ IN <include refid="202505_collection"><property name="collection" value="processDefinitionKeyIn"/></include>
       </if>
       <if test="processDefinitionVersion != null">
         and DEF.VERSION_ = #{processDefinitionVersion}
@@ -502,11 +492,7 @@
             or DEF_OR${orIndex}.KEY_ = #{orQueryObject.processDefinitionKey}
           </if>
           <if test="orQueryObject.processDefinitionKeyIn != null &amp;&amp; orQueryObject.processDefinitionKeyIn.size() &gt; 0">
-            or DEF_OR${orIndex}.KEY_ IN
-            <foreach item="definition" index="index" collection="orQueryObject.processDefinitionKeyIn"
-                     open="(" separator="," close=")">
-              #{definition}
-            </foreach>
+            or DEF_OR${orIndex}.KEY_ IN <include refid="202505_collection"><property name="collection" value="orQueryObject.processDefinitionKeyIn"/></include>
           </if>
           <if test="orQueryObject.processDefinitionVersion != null">
             or DEF_OR${orIndex}.ID_ is not null
@@ -722,6 +708,11 @@
   <sql id="202505_join_ACT_RU_TIMER_JOB">
     left join ${prefix}ACT_RU_TIMER_JOB ${tableAlias}
     on RES.PROC_INST_ID_ = ${tableAlias}.PROCESS_INSTANCE_ID_
+  </sql>
+  <sql id="202505_collection">
+    <foreach item="item" index="index" collection="${collection}" open="(" separator="," close=")">
+      #{item}
+    </foreach>
   </sql>
 
 </mapper>
