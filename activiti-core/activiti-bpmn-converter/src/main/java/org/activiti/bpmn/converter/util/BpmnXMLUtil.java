@@ -133,6 +133,8 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
   public static ExtensionElement parseExtensionElement(XMLStreamReader xtr) throws Exception {
     ExtensionElement extensionElement = new ExtensionElement();
     extensionElement.setName(xtr.getLocalName());
+    extensionElement.setXmlRowNumber(xtr.getLocation().getLineNumber());
+    extensionElement.setXmlColumnNumber(xtr.getLocation().getColumnNumber());
     if (StringUtils.isNotEmpty(xtr.getNamespaceURI())) {
       extensionElement.setNamespace(xtr.getNamespaceURI());
     }
