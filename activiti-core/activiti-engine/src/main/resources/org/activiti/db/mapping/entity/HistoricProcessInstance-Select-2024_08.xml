@@ -18,23 +18,7 @@
 
 <mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityImpl">
 
-  <!-- HISTORIC PROCESS INSTANCE SELECT -->
 
-  <select id="selectHistoricProcessInstance" resultMap="historicProcessInstanceResultMap">
-    select * from ${prefix}ACT_HI_PROCINST where PROC_INST_ID_ = #{processInstanceId, jdbcType=VARCHAR}
-  </select>
-
-  <select id="selectHistoricProcessInstanceIdsByProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultType="string">
-    select ID_
-    from ${prefix}ACT_HI_PROCINST
-    where PROC_DEF_ID_ = #{parameter}
-  </select>
-
-    <select id="selectHistoricProcessInstanceIdsBySuperProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicProcessInstanceResultMap">
-    select *
-    from ${prefix}ACT_HI_PROCINST
-    where SUPER_PROCESS_INSTANCE_ID_ = #{parameter}
-  </select>
 
 
   <select id="202408_selectHistoricProcessInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultMap="historicProcessInstanceResultMap">
@@ -553,24 +537,6 @@
     </where>
   </sql>
 
-  <sql id="executionVariableOperator">
-    <choose>
-      <when test="queryVariableValue.operator.equals('EQUALS')">=</when>
-      <when test="queryVariableValue.operator.equals('EQUALS_IGNORE_CASE')">=</when>
-      <when test="queryVariableValue.operator.equals('NOT_EQUALS')">&lt;&gt;</when>
-      <when test="queryVariableValue.operator.equals('NOT_EQUALS_IGNORE_CASE')">&lt;&gt;</when>
-      <when test="queryVariableValue.operator.equals('GREATER_THAN')">&gt;</when>
-      <when test="queryVariableValue.operator.equals('GREATER_THAN_OR_EQUAL')">&gt;=</when>
-      <when test="queryVariableValue.operator.equals('LESS_THAN')">&lt;</when>
-      <when test="queryVariableValue.operator.equals('LESS_THAN_OR_EQUAL')">&lt;=</when>
-   </choose>
-  </sql>
 
-   <select id="selectHistoricProcessInstanceByNativeQuery" parameterType="java.util.Map" resultMap="historicProcessInstanceResultMap">
-   	<include refid="org.activiti.engine.db.common.selectByNativeQuery"/>
-  </select>
 
-  <select id="selectHistoricProcessInstanceCountByNativeQuery" parameterType="java.util.Map" resultType="long">
-    ${sql}
-  </select>
 </mapper>

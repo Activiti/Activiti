@@ -20,20 +20,6 @@
 <mapper namespace="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
   <!-- TASK SELECT -->
 
-  <!-- Using distinct here because a task can appear multiple times in a resultset when -->
-  <sql id="withJoins_selectTaskByQueryCriteria">
-    ${limitBefore}
-    select distinct RES.* ${limitBetween}
-    <include refid="withJoins_selectTaskByQueryCriteriaSql"/>
-    ${orderBy}
-    ${limitAfter}
-  </sql>
-
-  <sql id="withJoins_selectTaskByQueryCriteriaSql">
-    from ${prefix}ACT_RU_TASK RES
-    <include refid="commonSelectTaskByQueryCriteriaSql"/>
-  </sql>
-
   <select id="selectTaskWithVariablesByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskAndVariablesResultMap">
     <include refid="selectTaskWithVariablesByQueryCriteriaColumns"/>
     <include refid="selectTaskWithVariablesByQueryCriteriaSql"/>

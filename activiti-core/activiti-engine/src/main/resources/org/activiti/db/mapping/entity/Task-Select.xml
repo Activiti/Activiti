@@ -62,25 +62,18 @@
   </sql>
 
 
-  <!-- select-clause broker (between withJoins and withoutJoins sql scripts) -->
   <select id="selectTaskByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskResultMap">
-    <choose>
-      <when test="_databaseId == 'mariadb'">
-        <!--
-          mariadb has performance penalty when using "withoutJoins" sql scripts
-        -->
-        <include refid="withJoins_selectTaskByQueryCriteria"/>
-      </when>
-      <otherwise>
-        <!--
-          2024_01 - withJoins_selectTaskByQueryCriteria
-          2024_08 - withoutJoins_selectTaskByQueryCriteria
-          2025_04 - 202504_selectTaskByQueryCriteria
-        -->
-        <include refid="202504_selectTaskByQueryCriteria"/>
-      </otherwise>
-    </choose>
+    <include refid="202504_selectTaskByQueryCriteria"/>
   </select>
 
+
+  <!-- TASK SELECT COUNT -->
+  <select id="selectTaskCountByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultType="long">
+    select count(uniqueId) from (
+    <include refid="202504_selectTaskByQueryCriteriaSql">
+      <property name="isCount" value="true"/>
+    </include>
+    ) sub
+  </select>
 
 </mapper>
