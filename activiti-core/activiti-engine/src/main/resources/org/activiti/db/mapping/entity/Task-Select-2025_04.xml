@@ -79,7 +79,7 @@
         <choose>
           <!-- if it's not a count and there's a distinct, we need to remove duplicated based on RES.ID_ -->
           <when test="distinctMode == 'distinct'">
-            select RES.* ${variablesColumns} ${202504_limitBetween}
+            select RES.* ${202504_limitBetween}
             from (
               select ${distinctMode} RES.ID_ as uniqueId, RES.* ${variablesColumns}
             <!--select ${distinctMode} RES.ID_ as uniqueId, RES.* ${202504_limitBetween}-->
