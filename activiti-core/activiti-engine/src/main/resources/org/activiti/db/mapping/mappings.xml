@@ -46,8 +46,6 @@
     <mapper resource="org/activiti/db/mapping/entity/Task-Insert.xml" />
     <mapper resource="org/activiti/db/mapping/entity/Task-Update.xml" />
     <mapper resource="org/activiti/db/mapping/entity/Task-Select.xml" />
-    <!--<mapper resource="org/activiti/db/mapping/entity/Task-Select-2024_01.xml" />-->
-    <mapper resource="org/activiti/db/mapping/entity/Task-Select-2025_04.xml" />
     <mapper resource="org/activiti/db/mapping/entity/TimerJob.xml" />
     <mapper resource="org/activiti/db/mapping/entity/VariableInstance.xml" />
     <mapper resource="org/activiti/db/mapping/entity/EventSubscription.xml" />
