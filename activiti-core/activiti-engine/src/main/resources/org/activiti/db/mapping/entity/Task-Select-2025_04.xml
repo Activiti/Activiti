@@ -28,6 +28,29 @@
       * therefore, a distinct is necessary in those situations
     -->
 
+    <!-- variables management -->
+    <bind name="VARIABLES_COLUMNS" value="',VAR.ID_ as VAR_ID_,
+    VAR.NAME_ as VAR_NAME_,
+    VAR.TYPE_ as VAR_TYPE_,
+    VAR.REV_ as VAR_REV_,
+    VAR.PROC_INST_ID_ as VAR_PROC_INST_ID_,
+    VAR.EXECUTION_ID_ as VAR_EXECUTION_ID_,
+    VAR.TASK_ID_ as VAR_TASK_ID_,
+    VAR.BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_,
+    VAR.DOUBLE_ as VAR_DOUBLE_,
+    VAR.TEXT_ as VAR_TEXT_,
+    VAR.TEXT2_ as VAR_TEXT2_,
+    VAR.LONG_ as VAR_LONG_'"/>
+    <choose>
+      <when test="includeTaskLocalVariables || includeProcessVariables">
+        <bind name="variablesColumns" value="VARIABLES_COLUMNS"/>
+      </when>
+      <otherwise>
+        <bind name="variablesColumns" value="''"/>
+      </otherwise>
+    </choose>
+
+
     <!-- default distinctMode is to not have distinct -->
     <bind name="distinctMode" value="''"/>
 
@@ -56,16 +79,16 @@
         <choose>
           <!-- if it's not a count and there's a distinct, we need to remove duplicated based on RES.ID_ -->
           <when test="distinctMode == 'distinct'">
-            select RES.* ${202504_limitBetween}
+            select RES.* ${variablesColumns} ${202504_limitBetween}
             from (
-              select ${distinctMode} RES.ID_ as uniqueId, RES.*
+              select ${distinctMode} RES.ID_ as uniqueId, RES.* ${variablesColumns}
             <!--select ${distinctMode} RES.ID_ as uniqueId, RES.* ${202504_limitBetween}-->
           </when>
           <!-- if it's not a count nor distinct, we don't need explicit RES.ID_ -->
           <otherwise>
-            select RES.* ${202504_limitBetween}
+            select * ${202504_limitBetween}
             from (
-              select RES.*
+              select RES.* ${variablesColumns}
           </otherwise>
         </choose>
       </otherwise>
@@ -183,6 +206,20 @@
   </sql>
 
   <sql id="202504_commonSelectTaskByQueryCriteriaSql">
+    <!-- variables -->
+    <choose>
+      <when test="includeTaskLocalVariables &amp;&amp; includeProcessVariables">
+        left join ${prefix}ACT_RU_VARIABLE VAR ON RES.ID_ = VAR.TASK_ID_ or RES.PROC_INST_ID_ = VAR.EXECUTION_ID_
+      </when>
+      <otherwise>
+        <if test="includeTaskLocalVariables">
+          left join ${prefix}ACT_RU_VARIABLE VAR ON RES.ID_ = VAR.TASK_ID_
+        </if>
+        <if test="includeProcessVariables">
+          left join ${prefix}ACT_RU_VARIABLE VAR ON RES.PROC_INST_ID_ = VAR.EXECUTION_ID_ and VAR.TASK_ID_ is null
+        </if>
+      </otherwise>
+    </choose>
     <!-- left joins -->
     <if test="bothCandidateAndAssigned">
       <!-- if dbIdentityUsed set true in process engine configuration -->
@@ -888,6 +925,17 @@
         or a_${varIndex}.ID_ is not null
       </foreach>
     </where>
+  </sql>
+
+  <select id="selectTaskWithVariablesByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskAndVariablesResultMap">
+    <include refid="202505_selectTaskWithVariablesByQueryCriteria">
+      <property name="isCount" value="false"/>
+    </include>
+  </select>
+  <sql id="202505_selectTaskWithVariablesByQueryCriteria">
+    <include refid="202504_selectTaskByQueryCriteria">
+      <property name="isCount" value="false"/>
+    </include>
   </sql>
 
 </mapper>
