@@ -1157,10 +1157,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       switch (databaseVendor) {
           case DATABASE_TYPE_MYSQL:
               String databaseProductVersion = databaseMetaData.getDatabaseProductVersion();
-              // MariaDB has performance penalty when using "withoutJoins" SQL scripts
-              // example of MariaDB 10.5.4
-              //     input: vendor=MySQL, version=5.5.5-10.5.24-MariaDB-1:10.5.24+maria~ubu2004
-              //     output: databaseType=mariadb
               if (databaseProductVersion.toLowerCase().contains(DATABASE_TYPE_MARIADB)) {
                   databaseType = DATABASE_TYPE_MARIADB;
               }
@@ -1216,9 +1212,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         //set default properties
         properties.put("limitBefore" , "");
         properties.put("limitAfter" , "");
-        properties.put("limitAfterWithoutFrom", "");
         properties.put("limitBetween" , "");
-        properties.put("limitBetweenWithoutFrom" , "");
         properties.put("limitOuterJoinBetween" , "");
         properties.put("limitBeforeNativeQuery" , "");
         properties.put("orderBy" , "order by ${orderByColumns}");
