@@ -10,6 +10,9 @@
   </parent>
   <artifactId>activiti-spring-boot-starter</artifactId>
   <name>Activiti :: Spring Boot Starter</name>
+  <properties>
+    <system.stubs.jupiter.version>2.0.2</system.stubs.jupiter.version>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
@@ -161,6 +164,12 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-core-test-local-runtime</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>uk.org.webcompere</groupId>
+      <artifactId>system-stubs-jupiter</artifactId>
+      <version>${system.stubs.jupiter.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -37,6 +37,7 @@ import org.activiti.core.el.ReadOnlyMapELResolver;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
+import org.activiti.core.el.EnvironmentVariableELResolver;
 import org.activiti.engine.impl.persistence.entity.VariableScopeImpl;
 
 /**
@@ -124,6 +125,7 @@ public class ExpressionManager {
     protected ELResolver createElResolver(VariableScope variableScope) {
         CompositeELResolver elResolver = new CompositeELResolver();
         elResolver.add(new VariableScopeElResolver(variableScope));
+        elResolver.add(new EnvironmentVariableELResolver());
         addBeansResolver(elResolver);
         addBaseResolvers(elResolver);
         return elResolver;

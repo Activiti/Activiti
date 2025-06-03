@@ -52,6 +52,7 @@ public class ELContextBuilder {
 
     public ELContext build() {
         CompositeELResolver elResolver = createCompositeResolver();
+        elResolver.add(new EnvironmentVariableELResolver());
         return new ActivitiElContext(elResolver);
     }
 

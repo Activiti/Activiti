@@ -35,10 +35,14 @@ import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
+import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@ExtendWith(SystemStubsExtension.class)
 public class TaskRuntimeVariableMappingIT {
 
     private static final String TASK_EXPRESSION_MAPPING_ALL = "taskExpressionMappingAll";
@@ -61,6 +65,7 @@ public class TaskRuntimeVariableMappingIT {
     private static final String TASK_ASSIGNEE_MULTI_INSTANCE_MAPPING = "taskMultiInstanceVariableMapping";
     private static final String TASK_EXPRESSION_MAPPING = "taskExpressionMapping";
 
+    private static final String TASK_EXPRESSION_MAPPING_ENV_VARS = "taskExpressionMappingEnvVars";
     private static final String ASSIGNEE_VARIABLE_NAME = "sys_task_assignee";
 
     @Autowired
@@ -778,6 +783,30 @@ public class TaskRuntimeVariableMappingIT {
                 tuple("_constant_value_", "myConstantValue"),
                 tuple("sys_task_assignee", "user")
             );
+    }
+
+    @Test
+    public void should_mapTaskVariables_when_inputMappingWithExpression_andExpressionHasEnvironmentVariables() throws Exception {
+        EnvironmentVariables environmentVariables = new EnvironmentVariables("vars.MY_ENV_VAR", "test-value");;
+        environmentVariables.setup();
+
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_EXPRESSION_MAPPING_ENV_VARS);
+
+        Task task = checkTasks(processInstance.getId());
+
+        // input mapping
+        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(task.getId());
+        assertThat(taskVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .containsOnly(
+                tuple("inValue", "varValue"),
+                tuple("envVar","test-value"),
+                tuple("inNull", null)
+            );
+
+        environmentVariables.teardown();
     }
 
 }

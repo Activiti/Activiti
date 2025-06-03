@@ -1,0 +1,50 @@
+{
+  "id":"taskExpressionMappingModelEnvVars",
+  "type":"PROCESS",
+  "name":"Task Expression Mapping with EnvVars",
+  "extensions":{
+    "taskExpressionMappingEnvVars":{
+      "mappings":{
+        "Task_0z87dw7":{
+          "inputs": {
+            "inNull": {
+              "type": "VALUE",
+              "value": "${notDefined}"
+            },
+            "inValue": {
+            "type": "VALUE",
+            "value": "${initVar}"
+            },
+            "envVar": {
+              "type": "VALUE",
+              "value": "${vars.MY_ENV_VAR}"
+            }
+          },
+          "outputs": {
+            "outNull": {
+              "type": "VALUE",
+              "value": "${notDefined}"
+            },
+            "outValue": {
+              "type": "VALUE",
+              "value": "${initVar}"
+            },
+            "outMapped": {
+              "type": "VALUE",
+              "value": "${mapped}"
+            }
+          }
+        }
+      },
+      "properties":{
+        "81d12b0c-a95a-4879-a36c-7d40f121cef1":{
+          "id":"81d12b0c-a95a-4879-a36c-7d40f121cef1",
+          "name":"initVar",
+          "type":"string",
+          "required":false,
+          "value": "varValue"
+        }
+      }
+    }
+  }
+}
