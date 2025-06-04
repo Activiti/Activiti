@@ -263,6 +263,13 @@
         <version>6.4.4</version>
       </dependency>
       <!-- temporary security fix -->
+      <!-- temporary security fix AAE-35515-->
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>1.26.0</version>
+      </dependency>
+      <!-- temporary security fix -->
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-dependency-check</artifactId>
