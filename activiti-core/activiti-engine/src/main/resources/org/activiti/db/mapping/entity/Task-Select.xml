@@ -63,21 +63,21 @@
 
 
   <select id="selectTaskByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskResultMap">
-    <include refid="202504_selectTaskByQueryCriteria"/>
+    <include refid="selectTaskByQueryCriteria"/>
   </select>
 
 
   <!-- TASK SELECT COUNT -->
   <select id="selectTaskCountByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultType="long">
     select count(uniqueId) from (
-    <include refid="202504_selectTaskByQueryCriteriaSql">
+    <include refid="selectTaskByQueryCriteriaSql">
       <property name="isCount" value="true"/>
     </include>
     ) sub
   </select>
 
   <!-- TASK SELECT -->
-  <sql id="202504_selectColumnsSql">
+  <sql id="selectColumnsSql">
     <!--
     candidateGroups will join two tables, act_ru_task and ACT_RU_IDENTITYLINK (task.ID_ = identitylink.TASK_ID_)
       * if a task is assigned to two candidate groups, on "ACT_RU_IDENTITYLINK" table we'll have two rows with
@@ -137,14 +137,13 @@
         <choose>
           <!-- if it's not a count and there's a distinct, we need to remove duplicated based on RES.ID_ -->
           <when test="distinctMode == 'distinct'">
-            select RES.* ${202504_limitBetween}
+            select RES.* ${v3_limitBetween}
             from (
             select ${distinctMode} RES.ID_ as uniqueId, RES.* ${variablesColumns}
-            <!--select ${distinctMode} RES.ID_ as uniqueId, RES.* ${202504_limitBetween}-->
           </when>
           <!-- if it's not a count nor distinct, we don't need explicit RES.ID_ -->
           <otherwise>
-            select * ${202504_limitBetween}
+            select * ${v3_limitBetween}
             from (
             select RES.* ${variablesColumns}
           </otherwise>
@@ -153,32 +152,32 @@
     </choose>
   </sql>
 
-  <sql id="202504_selectTaskByQueryCriteria">
-    ${202504_limitBefore}
-    <include refid="202504_selectTaskByQueryCriteriaSql">
+  <sql id="selectTaskByQueryCriteria">
+    ${v3_limitBefore}
+    <include refid="selectTaskByQueryCriteriaSql">
       <property name="isCount" value="false"/>
     </include>
     <choose>
-      <when test="'${202504_limitAfter}' != null and _databaseId != 'mssql' and _databaseId != 'oracle'">
+      <when test="'${v3_limitAfter}' != null and _databaseId != 'mssql' and _databaseId != 'oracle'">
         ${orderBy}
-        ${202504_limitAfter}
+        ) RES ) ${v3_limitAfter}
       </when>
       <otherwise>
-        ${202504_limitAfter}
+        ) RES ) ${v3_limitAfter}
         ORDER BY rnk
       </otherwise>
     </choose>
   </sql>
 
-  <sql id="202504_selectTaskByQueryCriteriaSql">
-    <include refid="202504_selectColumnsSql">
+  <sql id="selectTaskByQueryCriteriaSql">
+    <include refid="selectColumnsSql">
       <property name="isCount" value="${isCount}"/>
     </include>
     from ${prefix}ACT_RU_TASK RES
-    <include refid="202504_commonSelectTaskByQueryCriteriaSql"/>
+    <include refid="commonSelectTaskByQueryCriteriaSql"/>
   </sql>
 
-  <sql id="202504_leftJoinWithProcessDefinition">
+  <sql id="leftJoinWithProcessDefinition">
     left join ${prefix}ACT_RE_PROCDEF ${externalTableAlias}
     on RES.PROC_DEF_ID_ = ${externalTableAlias}.ID_
     <if test="${collection} != null">
@@ -188,7 +187,7 @@
       </foreach>
     </if>
   </sql>
-  <sql id="202504_leftJoinVariables">
+  <sql id="leftJoinVariables">
     <foreach item="var" index="varIndex" collection="${collection}" >
       left join ${prefix}ACT_RU_VARIABLE ${externalTableAlias}_${varIndex}
       <!-- process variable -->
@@ -263,7 +262,7 @@
     </foreach>
   </sql>
 
-  <sql id="202504_commonSelectTaskByQueryCriteriaSql">
+  <sql id="commonSelectTaskByQueryCriteriaSql">
     <!-- variables -->
     <choose>
       <when test="includeTaskLocalVariables &amp;&amp; includeProcessVariables">
@@ -354,7 +353,7 @@
       left join ${prefix}ACT_RE_PROCDEF deploy on RES.PROC_DEF_ID_ = deploy.ID_ and lower(deploy.KEY_) like #{processDefinitionKeyLikeIgnoreCase}${wildcardEscapeClause}
     </if>
     <if test="processDefinitionKeys != null &amp;&amp; processDefinitionKeys.size() &gt; 0">
-      <include refid="202504_leftJoinWithProcessDefinition">
+      <include refid="leftJoinWithProcessDefinition">
         <property name="externalTableAlias" value="deploy_p"/>
         <property name="field" value="KEY_"/>
         <property name="collection" value="processDefinitionKeys"/>
@@ -381,14 +380,14 @@
       left join ${prefix}ACT_RE_PROCDEF deploy on RES.PROC_DEF_ID_ = deploy.ID_ and deploy.DEPLOYMENT_ID_ = #{deploymentId}
     </if>
     <if test="deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0">
-      <include refid="202504_leftJoinWithProcessDefinition">
+      <include refid="leftJoinWithProcessDefinition">
         <property name="externalTableAlias" value="deploy_p"/>
         <property name="field" value="DEPLOYMENT_ID_"/>
         <property name="collection" value="deploymentIds"/>
       </include>
     </if>
     <if test="processCategoryInList != null &amp;&amp; processCategoryInList.size() &gt; 0">
-      <include refid="202504_leftJoinWithProcessDefinition">
+      <include refid="leftJoinWithProcessDefinition">
         <property name="externalTableAlias" value="deploy_p"/>
         <property name="field" value="CATEGORY_"/>
         <property name="collection" value="processCategoryInList"/>
@@ -405,7 +404,7 @@
     </if>
     <!-- left joins for variables -->
     <if test="queryVariableValues != null &amp;&amp; queryVariableValues.size() &gt; 0">
-      <include refid="202504_leftJoinVariables">
+      <include refid="leftJoinVariables">
         <property name="externalTableAlias" value="a"/>
         <property name="collection" value="queryVariableValues"/>
       </include>
@@ -483,7 +482,7 @@
         left join ${prefix}ACT_RE_PROCDEF deploy_p_or${orIndex} on RES.PROC_DEF_ID_ = deploy_p_or${orIndex}.ID_ and lower(deploy_p_or${orIndex}.KEY_) like #{orQueryObject.processDefinitionKeyLikeIgnoreCase}${wildcardEscapeClause}
       </if>
       <if test="orQueryObject.processDefinitionKeys != null &amp;&amp; orQueryObject.processDefinitionKeys.size() &gt; 0">
-        <include refid="202504_leftJoinWithProcessDefinition">
+        <include refid="leftJoinWithProcessDefinition">
           <property name="externalTableAlias" value="deploy_p_or${orIndex}"/>
           <property name="field" value="KEY_"/>
           <property name="collection" value="orQueryObject.processDefinitionKeys"/>
@@ -508,14 +507,14 @@
         left join ${prefix}ACT_RE_PROCDEF deploy_p_or${orIndex} on RES.PROC_DEF_ID_ = deploy_p_or${orIndex}.ID_ and deploy_p_or${orIndex}.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
       </if>
       <if test="orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0">
-        <include refid="202504_leftJoinWithProcessDefinition">
+        <include refid="leftJoinWithProcessDefinition">
           <property name="externalTableAlias" value="deploy_p_or${orIndex}"/>
           <property name="field" value="DEPLOYMENT_ID_"/>
           <property name="collection" value="orQueryObject.deploymentIds"/>
         </include>
       </if>
       <if test="orQueryObject.processCategoryInList != null &amp;&amp; orQueryObject.processCategoryInList.size() &gt; 0">
-        <include refid="202504_leftJoinWithProcessDefinition">
+        <include refid="leftJoinWithProcessDefinition">
           <property name="externalTableAlias" value="deploy_p_or${orIndex}"/>
           <property name="field" value="CATEGORY_"/>
           <property name="collection" value="orQueryObject.processCategoryInList"/>
@@ -531,7 +530,7 @@
         </foreach>
       </if>
       <if test="orQueryObject.queryVariableValues != null &amp;&amp; orQueryObject.queryVariableValues.size() &gt; 0">
-        <include refid="202504_leftJoinVariables">
+        <include refid="leftJoinVariables">
           <property name="externalTableAlias" value="a_or${orIndex}"/>
           <property name="collection" value="orQueryObject.queryVariableValues"/>
         </include>
@@ -986,12 +985,12 @@
   </sql>
 
   <select id="selectTaskWithVariablesByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskAndVariablesResultMap">
-    <include refid="202505_selectTaskWithVariablesByQueryCriteria">
+    <include refid="selectTaskWithVariablesByQueryCriteria">
       <property name="isCount" value="false"/>
     </include>
   </select>
-  <sql id="202505_selectTaskWithVariablesByQueryCriteria">
-    <include refid="202504_selectTaskByQueryCriteria">
+  <sql id="selectTaskWithVariablesByQueryCriteria">
+    <include refid="selectTaskByQueryCriteria">
       <property name="isCount" value="false"/>
     </include>
   </sql>

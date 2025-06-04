@@ -20,13 +20,13 @@
 
   <!-- HISTORIC PROCESS INSTANCE SELECT -->
   <select id="selectHistoricProcessInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultMap="historicProcessInstanceResultMap">
-    <include refid="202505_selectHistoricProcessInstancesByQueryCriteria">
+    <include refid="selectHistoricProcessInstancesByQueryCriteria">
       <property name="isCount" value="false"/>
     </include>
   </select>
 
   <select id="selectHistoricProcessInstancesWithVariablesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultMap="historicProcessInstanceAndVariablesResultMap">
-    <include refid="202505_selectHistoricProcessInstancesWithVariablesByQueryCriteria">
+    <include refid="selectHistoricProcessInstancesWithVariablesByQueryCriteria">
       <property name="isCount" value="false"/>
     </include>
   </select>
@@ -51,7 +51,7 @@
     ${sql}
   </select>
 
-  <sql id="202505_selectHistoricProcessInstancesByQueryCriteria">
+  <sql id="selectHistoricProcessInstancesByQueryCriteria">
     <!-- constants -->
     <bind name="columns" value="'RES.*, DEF.KEY_ as PROC_DEF_KEY_, DEF.NAME_ as PROC_DEF_NAME_, DEF.VERSION_ as PROC_DEF_VERSION_, DEF.DEPLOYMENT_ID_ as DEPLOYMENT_ID_'"/>
 
@@ -153,10 +153,10 @@
         FROM (
         SELECT distinct RES.ID_ as uniqueId, ${columns} ${processVariablesColumns}
         from ${prefix}ACT_HI_PROCINST RES
-        <include refid="202504_commonSelectHistoricProcessInstancesByQueryCriteriaSql"/>
+        <include refid="commonSelectHistoricProcessInstancesByQueryCriteriaSql"/>
         ) RES
         ) ranked_rows
-        <include refid="202505_orderBy"/>
+        <include refid="orderBy"/>
       </when>
       <!-- no distinct -->
       <otherwise>
@@ -166,16 +166,16 @@
         FROM (
         SELECT ${columns} ${processVariablesColumns}
         from ${prefix}ACT_HI_PROCINST RES
-        <include refid="202504_commonSelectHistoricProcessInstancesByQueryCriteriaSql"/>
+        <include refid="commonSelectHistoricProcessInstancesByQueryCriteriaSql"/>
         ) RES
         ) ranked_rows
-        <include refid="202505_orderBy"/>
+        <include refid="orderBy"/>
       </otherwise>
     </choose>
   </sql>
 
-  <sql id="202505_selectHistoricProcessInstancesWithVariablesByQueryCriteria">
-    <include refid="202505_selectHistoricProcessInstancesByQueryCriteria">
+  <sql id="selectHistoricProcessInstancesWithVariablesByQueryCriteria">
+    <include refid="selectHistoricProcessInstancesByQueryCriteria">
       <property name="isCount" value="false"/>
     </include>
   </sql>
@@ -183,14 +183,14 @@
 
   <sql id="executionVariableOperator">
     <choose>
-      <when test="queryVariableValue.operator.equals('EQUALS')">=</when>
-      <when test="queryVariableValue.operator.equals('EQUALS_IGNORE_CASE')">=</when>
-      <when test="queryVariableValue.operator.equals('NOT_EQUALS')">&lt;&gt;</when>
-      <when test="queryVariableValue.operator.equals('NOT_EQUALS_IGNORE_CASE')">&lt;&gt;</when>
-      <when test="queryVariableValue.operator.equals('GREATER_THAN')">&gt;</when>
-      <when test="queryVariableValue.operator.equals('GREATER_THAN_OR_EQUAL')">&gt;=</when>
-      <when test="queryVariableValue.operator.equals('LESS_THAN')">&lt;</when>
-      <when test="queryVariableValue.operator.equals('LESS_THAN_OR_EQUAL')">&lt;=</when>
+      <when test="varObject.operator.equals('EQUALS')">=</when>
+      <when test="varObject.operator.equals('EQUALS_IGNORE_CASE')">=</when>
+      <when test="varObject.operator.equals('NOT_EQUALS')">&lt;&gt;</when>
+      <when test="varObject.operator.equals('NOT_EQUALS_IGNORE_CASE')">&lt;&gt;</when>
+      <when test="varObject.operator.equals('GREATER_THAN')">&gt;</when>
+      <when test="varObject.operator.equals('GREATER_THAN_OR_EQUAL')">&gt;=</when>
+      <when test="varObject.operator.equals('LESS_THAN')">&lt;</when>
+      <when test="varObject.operator.equals('LESS_THAN_OR_EQUAL')">&lt;=</when>
     </choose>
   </sql>
 
@@ -201,12 +201,12 @@
 
   <!-- HISTORIC PROCESS INSTANCE SELECT COUNT -->
   <select id="selectHistoricProcessInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultType="long">
-    <include refid="202505_selectHistoricProcessInstancesByQueryCriteria">
+    <include refid="selectHistoricProcessInstancesByQueryCriteria">
       <property name="isCount" value="true"/>
     </include>
   </select>
 
-  <sql id="202504_commonSelectHistoricProcessInstancesByQueryCriteriaSql">
+  <sql id="commonSelectHistoricProcessInstancesByQueryCriteriaSql">
     <!-- joins -->
 
     <!-- join: process variables -->
@@ -217,7 +217,7 @@
       and VAR.TASK_ID_ is null
     </if>
     <!-- join: deployment/process-definitions -->
-    <include refid="202505_join_ACT_RE_PROCDEF"><property name="tableAlias" value="DEF"/></include>
+    <include refid="join_ACT_RE_PROCDEF"><property name="tableAlias" value="DEF"/></include>
     <if test="deploymentId != null">
       AND DEF.DEPLOYMENT_ID_ = #{deploymentId}
     </if>
@@ -232,7 +232,7 @@
     </if>
     <!-- join: jobs with exception -->
     <if test="withException">
-      <include refid="202505_join_ACT_RU_TIMER_JOB"><property name="tableAlias" value="JOB"/></include>
+      <include refid="join_ACT_RU_TIMER_JOB"><property name="tableAlias" value="JOB"/></include>
       and (
       JOB.EXCEPTION_MSG_ is not null
       or JOB.EXCEPTION_STACK_ID_ is not null
@@ -240,20 +240,20 @@
     </if>
     <!-- join: involved user -->
     <if test="involvedUser != null">
-      <include refid="202505_join_ACT_HI_IDENTITYLINK"><property name="tableAlias" value="link_user"/></include>
+      <include refid="join_ACT_HI_IDENTITYLINK"><property name="tableAlias" value="link_user"/></include>
       and link_user.USER_ID_ = #{involvedUser}
     </if>
     <!-- join: involved groups -->
     <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
-      <include refid="202505_join_ACT_HI_IDENTITYLINK"><property name="tableAlias" value="link_groups"/></include>
+      <include refid="join_ACT_HI_IDENTITYLINK"><property name="tableAlias" value="link_groups"/></include>
       and (
       link_groups.TYPE_ = 'participant'
-      and link_groups.GROUP_ID_ in <include refid="202505_collection"><property name="collection" value="involvedGroups"/></include>
+      and link_groups.GROUP_ID_ in <include refid="collection"><property name="collection" value="involvedGroups"/></include>
       )
     </if>
     <!-- join: variables -->
     <if test="queryVariableValues != null &amp;&amp; queryVariableValues.size() &gt; 0">
-      <include refid="202504_leftJoinVariables_processes">
+      <include refid="leftJoinVariables_processes">
         <property name="externalTableAlias" value="A"/>
         <property name="collection" value="queryVariableValues"/>
       </include>
@@ -261,22 +261,22 @@
     <!-- join: orQueries -->
     <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
       <if test="orQueryObject.deploymentId != null">
-        <include refid="202505_join_ACT_RE_PROCDEF"><property name="tableAlias" value="DEF_OR${orIndex}"/></include>
+        <include refid="join_ACT_RE_PROCDEF"><property name="tableAlias" value="DEF_OR${orIndex}"/></include>
         and DEF_OR${orIndex}.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
       </if>
       <if test="orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentsIds.isEmpty() == false">
-        <include refid="202505_join_ACT_RE_PROCDEF"><property name="tableAlias" value="DEF_OR${orIndex}"/></include>
+        <include refid="join_ACT_RE_PROCDEF"><property name="tableAlias" value="DEF_OR${orIndex}"/></include>
         and DEF_OR${orIndex}.DEPLOYMENT_ID_ IN
         <foreach item="deployment" index="index" collection="#{orQueryObject.deploymentId}" open="(" separator="," close=")">
           #{deployment}
         </foreach>
       </if>
       <if test="orQueryObject.involvedUser != null">
-        <include refid="202505_join_ACT_HI_IDENTITYLINK"><property name="tableAlias" value="link_user_or${orIndex}"/></include>
+        <include refid="join_ACT_HI_IDENTITYLINK"><property name="tableAlias" value="link_user_or${orIndex}"/></include>
         and link_user_or${orIndex}.USER_ID_ = #{orQueryObject.involvedUser}
       </if>
       <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
-        <include refid="202505_join_ACT_HI_IDENTITYLINK"><property name="tableAlias" value="link_groups_or${orIndex}"/></include>
+        <include refid="join_ACT_HI_IDENTITYLINK"><property name="tableAlias" value="link_groups_or${orIndex}"/></include>
         and (
         link_groups_or${orIndex}.TYPE_ = 'participant'
         and link_groups_or${orIndex}.GROUP_ID_ in
@@ -286,33 +286,33 @@
         )
       </if>
       <if test="orQueryObject.processDefinitionName != null">
-        <include refid="202505_join_ACT_RE_PROCDEF"><property name="tableAlias" value="DEF_OR${orIndex}"/></include>
+        <include refid="join_ACT_RE_PROCDEF"><property name="tableAlias" value="DEF_OR${orIndex}"/></include>
         and DEF_OR${orIndex}.NAME_ = #{orQueryObject.processDefinitionName}
       </if>
       <if test="orQueryObject.processDefinitionKey != null || (orQueryObject.processDefinitionKeyIn != null &amp;&amp; orQueryObject.processDefinitionKeyIn.size() &gt; 0)">
-        <include refid="202505_join_ACT_RE_PROCDEF"><property name="tableAlias" value="DEF_OR${orIndex}"/></include>
+        <include refid="join_ACT_RE_PROCDEF"><property name="tableAlias" value="DEF_OR${orIndex}"/></include>
         <!-- TODO: don't understand why this doesn't have any AND statement inside -->
       </if>
       <if test="orQueryObject.processDefinitionCategory != null ">
-        <include refid="202505_join_ACT_RE_PROCDEF"><property name="tableAlias" value="DEF_OR${orIndex}"/></include>
+        <include refid="join_ACT_RE_PROCDEF"><property name="tableAlias" value="DEF_OR${orIndex}"/></include>
         AND DEF_OR${orIndex}.CATEGORY_ = #{orQueryObject.processDefinitionCategory}
       </if>
       <if test="orQueryObject.processDefinitionVersion != null">
-        <include refid="202505_join_ACT_RE_PROCDEF"><property name="tableAlias" value="DEF_OR${orIndex}"/></include>
+        <include refid="join_ACT_RE_PROCDEF"><property name="tableAlias" value="DEF_OR${orIndex}"/></include>
         and DEF_OR${orIndex}.VERSION_ = #{orQueryObject.processDefinitionVersion}
       </if>
       <if test="orQueryObject.processKeyNotIn != null &amp;&amp; orQueryObject.processKeyNotIn.size() &gt; 0">
-        <include refid="202505_join_ACT_RE_PROCDEF"><property name="tableAlias" value="DEF_OR${orIndex}"/></include>
+        <include refid="join_ACT_RE_PROCDEF"><property name="tableAlias" value="DEF_OR${orIndex}"/></include>
         <!-- TODO: don't understand why this doesn't have any AND statement inside -->
       </if>
       <if test="orQueryObject.queryVariableValues != null &amp;&amp; orQueryObject.queryVariableValues.size() &gt; 0">
-        <include refid="202504_leftJoinVariables_processes">
+        <include refid="leftJoinVariables_processes">
           <property name="externalTableAlias" value="A_OR${orIndex}"/>
           <property name="collection" value="orQueryObject.queryVariableValues"/>
         </include>
       </if>
       <if test="orQueryObject.withException">
-        <include refid="202505_join_ACT_RU_TIMER_JOB"><property name="tableAlias" value="JOB_OR${orIndex}"/></include>
+        <include refid="join_ACT_RU_TIMER_JOB"><property name="tableAlias" value="JOB_OR${orIndex}"/></include>
         and (
         JOB_OR${orIndex}.EXCEPTION_MSG_ is not null
         or JOB_OR${orIndex}.EXCEPTION_STACK_ID_ is not null
@@ -326,7 +326,7 @@
         and RES.PROC_INST_ID_ = #{processInstanceId}
       </if>
       <if test="processInstanceIds != null and !processInstanceIds.isEmpty()">
-        and RES.PROC_INST_ID_ in <include refid="202505_collection"><property name="collection" value="processInstanceIds"/></include>
+        and RES.PROC_INST_ID_ in <include refid="collection"><property name="collection" value="processInstanceIds"/></include>
       </if>
       <if test="superProcessInstanceId != null">
         and RES.SUPER_PROCESS_INSTANCE_ID_ = #{superProcessInstanceId}
@@ -338,7 +338,7 @@
         and DEF.KEY_ = #{processDefinitionKey}
       </if>
       <if test="processDefinitionKeyIn != null &amp;&amp; processDefinitionKeyIn.size() &gt; 0">
-        and DEF.KEY_ IN <include refid="202505_collection"><property name="collection" value="processDefinitionKeyIn"/></include>
+        and DEF.KEY_ IN <include refid="collection"><property name="collection" value="processDefinitionKeyIn"/></include>
       </if>
       <if test="processDefinitionVersion != null">
         and DEF.VERSION_ = #{processDefinitionVersion}
@@ -452,7 +452,7 @@
             or DEF_OR${orIndex}.KEY_ = #{orQueryObject.processDefinitionKey}
           </if>
           <if test="orQueryObject.processDefinitionKeyIn != null &amp;&amp; orQueryObject.processDefinitionKeyIn.size() &gt; 0">
-            or DEF_OR${orIndex}.KEY_ IN <include refid="202505_collection"><property name="collection" value="orQueryObject.processDefinitionKeyIn"/></include>
+            or DEF_OR${orIndex}.KEY_ IN <include refid="collection"><property name="collection" value="orQueryObject.processDefinitionKeyIn"/></include>
           </if>
           <if test="orQueryObject.processDefinitionVersion != null">
             or DEF_OR${orIndex}.ID_ is not null
@@ -543,25 +543,25 @@
   </sql>
 
   <!-- how to join tables -->
-  <sql id="202505_join_ACT_RE_PROCDEF">
+  <sql id="join_ACT_RE_PROCDEF">
     left join ${prefix}ACT_RE_PROCDEF ${tableAlias}
     on RES.PROC_DEF_ID_ = ${tableAlias}.ID_
   </sql>
-  <sql id="202505_join_ACT_HI_IDENTITYLINK">
+  <sql id="join_ACT_HI_IDENTITYLINK">
     left join ${prefix}ACT_HI_IDENTITYLINK ${tableAlias}
     on RES.ID_ = ${tableAlias}.PROC_INST_ID_
   </sql>
-  <sql id="202505_join_ACT_RU_TIMER_JOB">
+  <sql id="join_ACT_RU_TIMER_JOB">
     left join ${prefix}ACT_RU_TIMER_JOB ${tableAlias}
     on RES.PROC_INST_ID_ = ${tableAlias}.PROCESS_INSTANCE_ID_
   </sql>
-  <sql id="202505_collection">
+  <sql id="collection">
     <foreach item="item" index="index" collection="${collection}" open="(" separator="," close=")">
       #{item}
     </foreach>
   </sql>
 
-  <sql id="202504_leftJoinVariables_processes">
+  <sql id="leftJoinVariables_processes">
     <foreach index="varIndex" item="varObject" collection="${collection}">
       left join ${prefix}ACT_HI_VARINST ${externalTableAlias}_${varIndex}
       <!-- TODO: this "foreign key" is different from the other ACT_HI_VARINST use-case -->
@@ -584,7 +584,7 @@
         </choose>
         <choose>
           <when test="varObject.operator.equals('LIKE') || varObject.operator.equals('LIKE_IGNORE_CASE')">LIKE</when>
-          <otherwise><include refid="202504_executionVariableOperator" /></otherwise>
+          <otherwise><include refid="executionVariableOperator" /></otherwise>
         </choose>
         #{varObject.textValue}
         <choose>
@@ -595,7 +595,7 @@
         and ${externalTableAlias}_${varIndex}.TEXT2_
         <choose>
           <when test="varObject.operator.equals('LIKE')">LIKE</when>
-          <otherwise><include refid="202504_executionVariableOperator" /></otherwise>
+          <otherwise><include refid="executionVariableOperator" /></otherwise>
         </choose>
         #{varObject.textValue2}
         <choose>
@@ -604,12 +604,12 @@
       </if>
       <if test="varObject.longValue != null">
         and ${externalTableAlias}_${varIndex}.LONG_
-        <include refid="202504_executionVariableOperator" />
+        <include refid="executionVariableOperator" />
         #{varObject.longValue}
       </if>
       <if test="varObject.doubleValue != null">
         and ${externalTableAlias}_${varIndex}.DOUBLE_
-        <include refid="202504_executionVariableOperator" />
+        <include refid="executionVariableOperator" />
         #{varObject.doubleValue}
       </if>
       <!-- Null variable type -->
@@ -638,41 +638,13 @@
     </foreach>
   </sql>
 
-  <sql id="202504_executionVariableOperator">
-    <choose>
-      <when test="varObject.operator.equals('EQUALS')">=</when>
-      <when test="varObject.operator.equals('EQUALS_IGNORE_CASE')">=</when>
-      <when test="varObject.operator.equals('NOT_EQUALS')">&lt;&gt;</when>
-      <when test="varObject.operator.equals('NOT_EQUALS_IGNORE_CASE')">&lt;&gt;</when>
-      <when test="varObject.operator.equals('GREATER_THAN')">&gt;</when>
-      <when test="varObject.operator.equals('GREATER_THAN_OR_EQUAL')">&gt;=</when>
-      <when test="varObject.operator.equals('LESS_THAN')">&lt;</when>
-      <when test="varObject.operator.equals('LESS_THAN_OR_EQUAL')">&lt;=</when>
-    </choose>
-  </sql>
-
-  <sql id="202505_orderBy">
-    <if test="'${202505_limitAfter}' != null">
-      ${202505_limitAfter}
+  <sql id="orderBy">
+    <if test="'${v3_limitAfter}' != null">
+      ${v3_limitAfter}
       <if test="${isCount} != true">
         ORDER BY rnk
       </if>
     </if>
-    <!-- TODO: delete deadcode below this line -->
-    <!--
-    <choose>
-      <when test=" and _databaseId != 'mssql' and _databaseId != 'oracle' and _databaseId != 'h2' and _databaseId != 'mariadb'">
-        ${orderBy}
-        ${202505_limitAfter}
-      </when>
-      <otherwise>
-        ${202505_limitAfter}
-        <if test="${isCount} != true">
-          ORDER BY rnk
-        </if>
-      </otherwise>
-    </choose>
-    -->
   </sql>
 
 </mapper>
