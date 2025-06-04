@@ -12,9 +12,9 @@
   <packaging>pom</packaging>
   <name>Activiti :: Core :: Parent</name>
   <properties>
-    <batik.version>1.18</batik.version>
+    <batik.version>1.19</batik.version>
     <commons-email.version>1.6.0</commons-email.version>
-    <commons-io.version>2.14.0</commons-io.version>
+    <commons-io.version>2.19.0</commons-io.version>
     <commons-text.version>1.13.0</commons-text.version>
     <jakarta-enterprise-concurrent.version>3.1.1</jakarta-enterprise-concurrent.version>
     <java-uuid-generator.version>5.1.0</java-uuid-generator.version>
@@ -24,9 +24,9 @@
     <json-unit.version>4.1.0</json-unit.version>
     <mybatis.version>3.5.17</mybatis.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
-    <xmlgraphics-commons.version>2.9</xmlgraphics-commons.version>
+    <xmlgraphics-commons.version>2.11</xmlgraphics-commons.version>
     <nashorn-core.version>15.4</nashorn-core.version>
-    <groovy.version>3.0.22</groovy.version>
+    <groovy.version>3.0.25</groovy.version>
     <simple-jndi.version>0.23.0</simple-jndi.version>
     <zjsonpatch.version>0.4.16</zjsonpatch.version>
   </properties>
