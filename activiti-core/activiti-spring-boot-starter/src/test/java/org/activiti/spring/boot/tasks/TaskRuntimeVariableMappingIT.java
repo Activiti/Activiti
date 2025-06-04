@@ -39,6 +39,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
+import uk.org.webcompere.systemstubs.jupiter.SystemStub;
 import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -85,6 +86,9 @@ public class TaskRuntimeVariableMappingIT {
 
     @Autowired
     private DateFormatterProvider dateFormatterProvider;
+
+    @SystemStub
+    private EnvironmentVariables environmentVariables = new EnvironmentVariables("vars.MY_ENV_VAR", "test-value");
 
     @AfterEach
     public void cleanUp() {
@@ -787,9 +791,6 @@ public class TaskRuntimeVariableMappingIT {
 
     @Test
     public void should_mapTaskVariables_when_inputMappingWithExpression_andExpressionHasEnvironmentVariables() throws Exception {
-        EnvironmentVariables environmentVariables = new EnvironmentVariables("vars.MY_ENV_VAR", "test-value");;
-        environmentVariables.setup();
-
         ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_EXPRESSION_MAPPING_ENV_VARS);
 
         Task task = checkTasks(processInstance.getId());
