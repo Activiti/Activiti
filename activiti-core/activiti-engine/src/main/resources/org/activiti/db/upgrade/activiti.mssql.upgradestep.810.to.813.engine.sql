@@ -1,3 +1,5 @@
+update ACT_GE_PROPERTY set VALUE_ = '8.1.3' where NAME_ = 'schema.version';
+
 drop index ACT_RU_IDENTITYLINK.ACT_IDX_IDENT_LNK_TASK;
 create index ACT_IDX_IDENT_LNK_TASK on ACT_RU_IDENTITYLINK(TASK_ID_ ASC) INCLUDE (ID_, USER_ID_, TYPE_, GROUP_ID_);
 
