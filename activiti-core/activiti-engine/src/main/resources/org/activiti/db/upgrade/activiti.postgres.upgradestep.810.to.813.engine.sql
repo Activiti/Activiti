@@ -1,6 +1,7 @@
 update ACT_GE_PROPERTY set VALUE_ = '8.1.3' where NAME_ = 'schema.version';
 
-drop index ACT_RU_IDENTITYLINK.ACT_IDX_IDENT_LNK_TASK;
+drop index if exists ACT_RU_IDENTITYLINK.ACT_IDX_IDENT_LNK_TASK;
+-- this "INCLUDE" statement only works for Postgresql 11+
 create index ACT_IDX_IDENT_LNK_TASK on ACT_RU_IDENTITYLINK(TASK_ID_ ASC) INCLUDE (ID_, USER_ID_, TYPE_, GROUP_ID_);
 
 create index ACT_IDX_RE_PROCDEF_DEPLOYMENT_ID on ACT_RE_PROCDEF(DEPLOYMENT_ID_ ASC, ID_ ASC);
