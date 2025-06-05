@@ -154,8 +154,6 @@
         SELECT distinct RES.ID_ as uniqueId, ${columns} ${processVariablesColumns}
         from ${prefix}ACT_HI_PROCINST RES
         <include refid="commonSelectHistoricProcessInstancesByQueryCriteriaSql"/>
-        ) RES
-        ) ranked_rows
         <include refid="orderBy"/>
       </when>
       <!-- no distinct -->
@@ -167,8 +165,6 @@
         SELECT ${columns} ${processVariablesColumns}
         from ${prefix}ACT_HI_PROCINST RES
         <include refid="commonSelectHistoricProcessInstancesByQueryCriteriaSql"/>
-        ) RES
-        ) ranked_rows
         <include refid="orderBy"/>
       </otherwise>
     </choose>

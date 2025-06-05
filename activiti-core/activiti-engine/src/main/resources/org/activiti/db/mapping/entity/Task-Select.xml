@@ -160,10 +160,10 @@
     <choose>
       <when test="'${v3_limitAfter}' != null and _databaseId != 'mssql' and _databaseId != 'oracle'">
         ${orderBy}
-        ) RES ) ${v3_limitAfter}
+        ${v3_limitAfter}
       </when>
       <otherwise>
-        ) RES ) ${v3_limitAfter}
+        ${v3_limitAfter}
         ORDER BY rnk
       </otherwise>
     </choose>
