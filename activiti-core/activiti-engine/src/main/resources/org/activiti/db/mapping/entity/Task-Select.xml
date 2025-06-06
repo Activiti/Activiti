@@ -143,7 +143,7 @@
           </when>
           <!-- if it's not a count nor distinct, we don't need explicit RES.ID_ -->
           <otherwise>
-            select * ${v3_limitBetween}
+            select RES.* ${v3_limitBetween}
             from (
             select RES.* ${variablesColumns}
           </otherwise>
