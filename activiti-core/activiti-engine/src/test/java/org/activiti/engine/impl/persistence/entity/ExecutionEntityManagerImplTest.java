@@ -29,8 +29,13 @@ import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.impl.cfg.PerformanceSettings;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.identity.Authentication;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.persistence.entity.data.ExecutionDataManager;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Clock;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,11 +65,57 @@ public class ExecutionEntityManagerImplTest {
     @Mock
     private IdentityLinkEntityManager identityLinkEntityManager;
 
+    @Mock
+    CommandContext commandContext;
+
+    @Mock
+    private TaskEntityManager taskEntityManager;
+
+    @Mock
+    private DeploymentManager deploymentManager;
+
+    @Mock
+    private HistoryManager historyManager;
+
+    @Mock
+    private PerformanceSettings performanceSettings;
+
+    @Mock
+    private TimerJobEntityManager timerJobEntityManager;
+
+    @Mock
+    private JobEntityManager jobEntityManager;
+
+    @Mock
+    private SuspendedJobEntityManager suspendedJobEntityManager;
+
+    @Mock
+    private DeadLetterJobEntityManager deadLetterJobEntityManager;
+
+    @Mock
+    private EventSubscriptionEntityManager eventSubscriptionEntityManager;
+
+    @Mock
+    private HistoricProcessInstanceEntityManager historicProcessInstanceEntityManager;
+
     @Before
     public void setUp() throws Exception {
         given(processEngineConfiguration.getClock()).willReturn(clock);
         given(processEngineConfiguration.getEventDispatcher()).willReturn(eventDispatcher);
         given(processEngineConfiguration.getIdentityLinkEntityManager()).willReturn(identityLinkEntityManager);
+        given(processEngineConfiguration.getTaskEntityManager()).willReturn(taskEntityManager);
+        given(processEngineConfiguration.getDeploymentManager()).willReturn(deploymentManager);
+        given(processEngineConfiguration.getHistoryManager()).willReturn(historyManager);
+        given(processEngineConfiguration.getPerformanceSettings()).willReturn(performanceSettings);
+        given(processEngineConfiguration.getIdentityLinkEntityManager()).willReturn(identityLinkEntityManager);
+        given(processEngineConfiguration.getTimerJobEntityManager()).willReturn(timerJobEntityManager);
+        given(processEngineConfiguration.getJobEntityManager()).willReturn(jobEntityManager);
+        given(processEngineConfiguration.getSuspendedJobEntityManager()).willReturn(suspendedJobEntityManager);
+        given(processEngineConfiguration.getDeadLetterJobEntityManager()).willReturn(deadLetterJobEntityManager);
+        given(processEngineConfiguration.getEventSubscriptionEntityManager()).willReturn(eventSubscriptionEntityManager);
+        given(processEngineConfiguration.getHistoricProcessInstanceEntityManager()).willReturn(historicProcessInstanceEntityManager);
+        given(commandContext.getExecutionEntityManager()).willReturn(executionEntityManager);
+        Context.setCommandContext(commandContext);
         Context.setProcessEngineConfiguration(processEngineConfiguration);
     }
 
@@ -283,5 +334,93 @@ public class ExecutionEntityManagerImplTest {
         } finally {
            Authentication.setAuthenticatedUserId(null);
         }
+    }
+
+    /**
+     * Execution Tree:
+     *
+     * |- exec1 (execution)
+     * |--- exec2 (subExecution)
+     * |----- exec3_1 (miExecution)
+     * |------- exec4_1 (miSubExecution)
+     * |--------- subProcessInstance4_1 (subProcessInstance)
+     * |----- exec3_2 (miExecution)
+     * |------- exec4_2 (miSubExecution)
+     * |--------- subProcessInstance4_2 (subProcessInstance)
+     *
+     */
+    @Test
+    public void should_deleteProcessInstanceAndSubProcessInstances() {
+
+        final String businessKey = "businessKey";
+        final String processInstanceId = "processInstanceId";
+
+        // Process instance
+        ExecutionEntity pocessInstance = new ExecutionEntityImpl();
+        pocessInstance.setId(processInstanceId);
+
+        // Level 1
+        ExecutionEntity exec1 = createChildExecution(pocessInstance);
+        exec1.setId("exec1");
+        exec1.setProcessInstance(pocessInstance);
+
+        given(executionEntityManager.findById(processInstanceId)).willReturn(exec1);
+
+        ProcessDefinition processDefinition = mock(ProcessDefinition.class);
+        given(deploymentManager.findDeployedProcessDefinitionById(any())).willReturn(processDefinition);
+
+        ProcessDefinitionCacheEntry cacheEntry = mock(ProcessDefinitionCacheEntry.class);
+        given(deploymentManager.resolveProcessDefinition(processDefinition)).willReturn(cacheEntry);
+
+        org.activiti.bpmn.model.Process process = mock(org.activiti.bpmn.model.Process.class);
+        given(process.getExecutionListeners()).willReturn(new ArrayList<>());
+
+        // Level 2
+        ExecutionEntity exec2 = createChildExecution(exec1);
+        exec2.setId("exec2");
+        exec2.setMultiInstanceRoot(true);
+
+        // Level 3 - 1
+        ExecutionEntity exec3_1 = createChildExecution(exec2);
+        exec3_1.setId("exec3_1");
+
+        // Level 3 - 2
+        ExecutionEntity exec3_2 = createChildExecution(exec2);
+        exec3_2.setId("exec3_2");
+
+        // Level 4 - 1
+        ExecutionEntity exec4_1 = createChildExecution(exec3_1);
+        exec4_1.setId("exec4_1");
+        ExecutionEntity subProcessExec4_1 = createSubProcessInstance(processDefinition, businessKey, exec4_1, "subProcessInstanceId4_1");
+        exec4_1.setSubProcessInstance(subProcessExec4_1);
+
+        // Level 4 - 2
+        ExecutionEntity exec4_2 = createChildExecution(exec3_2);
+        exec4_2.setId("exec4_2");
+        ExecutionEntity subProcessExec4_2 = createSubProcessInstance(processDefinition, businessKey, exec4_2, "subProcessInstanceId4_2");
+        exec4_2.setSubProcessInstance(subProcessExec4_2);
+
+        executionEntityManager.deleteProcessInstance(processInstanceId, "deleted by test", true);
+
+        // Assert
+        assertThat(exec1.getProcessInstance().isDeleted()).isTrue();
+        assertThat(subProcessExec4_1.getProcessInstance().isDeleted()).isTrue();
+        assertThat(subProcessExec4_2.getProcessInstance().isDeleted()).isTrue();
+    }
+
+    private ExecutionEntity createChildExecution(ExecutionEntity parentExecution) {
+        ExecutionEntityImpl childExecution = ExecutionEntityImpl.createWithEmptyRelationshipCollections();
+        given(executionDataManager.create()).willReturn(childExecution);
+        return executionEntityManager.createChildExecution(parentExecution);
+    }
+
+    private ExecutionEntity createSubProcessInstance(ProcessDefinition processDefinition, String businessKey, ExecutionEntity superExecution, String subProcessInstanceId) {
+        ExecutionEntity processInstance = ExecutionEntityImpl.createWithEmptyRelationshipCollections();
+        processInstance.setId("processInstance_" + subProcessInstanceId);
+        ExecutionEntity subProcessInstance = ExecutionEntityImpl.createWithEmptyRelationshipCollections();
+        subProcessInstance.setId(subProcessInstanceId);
+        subProcessInstance.setProcessInstance(processInstance);
+        given(executionDataManager.create()).willReturn(subProcessInstance);
+        return executionEntityManager.createSubprocessInstance(processDefinition, superExecution, businessKey);
     }
 }
