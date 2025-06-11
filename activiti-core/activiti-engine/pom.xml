@@ -15,7 +15,7 @@
 
   <properties>
     <activiti-engine.unpack.version>7.2.0</activiti-engine.unpack.version>
-    <postgresql.version>42.7.4</postgresql.version>
+    <postgresql.version>42.7.7</postgresql.version>
   </properties>
 
   <dependencies>
