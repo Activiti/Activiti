@@ -129,8 +129,6 @@ public class ExecutionEntityManagerImplTest {
         String businessKey = "businessKey";
         String tenantId = "tenantId";
 
-        PerformanceSettings performanceSettings = mock(PerformanceSettings.class);
-        given(processEngineConfiguration.getPerformanceSettings()).willReturn(performanceSettings);
         ExecutionEntity execution = new ExecutionEntityImpl();
         execution.setId("processInstanceId");
         given(executionDataManager.create()).willReturn(execution);
@@ -311,8 +309,6 @@ public class ExecutionEntityManagerImplTest {
         String tenantId = "tenantId";
         Date startTime = new Date();
         given(clock.getCurrentTime()).willReturn(startTime);
-        PerformanceSettings performanceSettings = mock(PerformanceSettings.class);
-        given(processEngineConfiguration.getPerformanceSettings()).willReturn(performanceSettings);
         ExecutionEntity execution = new ExecutionEntityImpl();
         execution.setId("processInstanceId");
         given(executionDataManager.create()).willReturn(execution);
@@ -339,12 +335,12 @@ public class ExecutionEntityManagerImplTest {
      *
      * |- exec1 (execution)
      * |--- exec2 (subExecution)
-     * |----- exec3_1 (miExecution)
-     * |------- exec4_1 (miSubExecution)
-     * |--------- subProcessInstance4_1 (subProcessInstance)
-     * |----- exec3_2 (miExecution)
-     * |------- exec4_2 (miSubExecution)
-     * |--------- subProcessInstance4_2 (subProcessInstance)
+     * |----- exec31 (miExecution)
+     * |------- exec41 (miSubExecution)
+     * |--------- subProcessInstance41 (subProcessInstance)
+     * |----- exec32 (miExecution)
+     * |------- exec42 (miSubExecution)
+     * |--------- subProcessInstance42 (subProcessInstance)
      *
      */
     @Test
@@ -353,12 +349,12 @@ public class ExecutionEntityManagerImplTest {
         final String businessKey = "businessKey";
         final String processInstanceId = "processInstanceId";
 
-        boolean isContextInitialized = false;
+        boolean isCmdCtxInitialized = false;
 
         if (Context.getCommandContext() == null) {
             given(commandContext.getExecutionEntityManager()).willReturn(executionEntityManager);
             Context.setCommandContext(commandContext);
-            isContextInitialized = true;
+            isCmdCtxInitialized = true;
         }
 
         // Process instance
@@ -384,33 +380,33 @@ public class ExecutionEntityManagerImplTest {
         exec2.setMultiInstanceRoot(true);
 
         // Level 3 - 1
-        ExecutionEntity exec3_1 = createChildExecution(exec2);
-        exec3_1.setId("exec3_1");
+        ExecutionEntity exec31 = createChildExecution(exec2);
+        exec31.setId("exec31");
 
         // Level 3 - 2
-        ExecutionEntity exec3_2 = createChildExecution(exec2);
-        exec3_2.setId("exec3_2");
+        ExecutionEntity exec32 = createChildExecution(exec2);
+        exec32.setId("exec32");
 
         // Level 4 - 1
-        ExecutionEntity exec4_1 = createChildExecution(exec3_1);
-        exec4_1.setId("exec4_1");
-        ExecutionEntity subProcessExec4_1 = createSubProcessInstance(processDefinition, businessKey, exec4_1, "subProcessInstanceId4_1");
-        exec4_1.setSubProcessInstance(subProcessExec4_1);
+        ExecutionEntity exec41 = createChildExecution(exec31);
+        exec41.setId("exec41");
+        ExecutionEntity subProcessExec41 = createSubProcessInstance(processDefinition, businessKey, exec41, "subProcessInstanceId41");
+        exec41.setSubProcessInstance(subProcessExec41);
 
         // Level 4 - 2
-        ExecutionEntity exec4_2 = createChildExecution(exec3_2);
-        exec4_2.setId("exec4_2");
-        ExecutionEntity subProcessExec4_2 = createSubProcessInstance(processDefinition, businessKey, exec4_2, "subProcessInstanceId4_2");
-        exec4_2.setSubProcessInstance(subProcessExec4_2);
+        ExecutionEntity exec42 = createChildExecution(exec32);
+        exec42.setId("exec42");
+        ExecutionEntity subProcessExec42 = createSubProcessInstance(processDefinition, businessKey, exec42, "subProcessInstanceId42");
+        exec42.setSubProcessInstance(subProcessExec42);
 
         executionEntityManager.deleteProcessInstance(processInstanceId, "deleted by test", true);
 
         // Assert
         assertThat(exec1.getProcessInstance().isDeleted()).isTrue();
-        assertThat(subProcessExec4_1.getProcessInstance().isDeleted()).isTrue();
-        assertThat(subProcessExec4_2.getProcessInstance().isDeleted()).isTrue();
+        assertThat(subProcessExec41.getProcessInstance().isDeleted()).isTrue();
+        assertThat(subProcessExec42.getProcessInstance().isDeleted()).isTrue();
 
-        if (isContextInitialized) {
+        if (isCmdCtxInitialized) {
             Context.setCommandContext(null);
         }
     }
