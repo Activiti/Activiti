@@ -114,8 +114,6 @@ public class ExecutionEntityManagerImplTest {
         given(processEngineConfiguration.getDeadLetterJobEntityManager()).willReturn(deadLetterJobEntityManager);
         given(processEngineConfiguration.getEventSubscriptionEntityManager()).willReturn(eventSubscriptionEntityManager);
         given(processEngineConfiguration.getHistoricProcessInstanceEntityManager()).willReturn(historicProcessInstanceEntityManager);
-        given(commandContext.getExecutionEntityManager()).willReturn(executionEntityManager);
-        Context.setCommandContext(commandContext);
         Context.setProcessEngineConfiguration(processEngineConfiguration);
     }
 
@@ -337,7 +335,7 @@ public class ExecutionEntityManagerImplTest {
     }
 
     /**
-     * Execution Tree:
+     * Test sub-process instances deletion from execution tree below:
      *
      * |- exec1 (execution)
      * |--- exec2 (subExecution)
@@ -355,6 +353,14 @@ public class ExecutionEntityManagerImplTest {
         final String businessKey = "businessKey";
         final String processInstanceId = "processInstanceId";
 
+        boolean isContextInitialized = false;
+
+        if (Context.getCommandContext() == null) {
+            given(commandContext.getExecutionEntityManager()).willReturn(executionEntityManager);
+            Context.setCommandContext(commandContext);
+            isContextInitialized = true;
+        }
+
         // Process instance
         ExecutionEntity pocessInstance = new ExecutionEntityImpl();
         pocessInstance.setId(processInstanceId);
@@ -371,9 +377,6 @@ public class ExecutionEntityManagerImplTest {
 
         ProcessDefinitionCacheEntry cacheEntry = mock(ProcessDefinitionCacheEntry.class);
         given(deploymentManager.resolveProcessDefinition(processDefinition)).willReturn(cacheEntry);
-
-        org.activiti.bpmn.model.Process process = mock(org.activiti.bpmn.model.Process.class);
-        given(process.getExecutionListeners()).willReturn(new ArrayList<>());
 
         // Level 2
         ExecutionEntity exec2 = createChildExecution(exec1);
@@ -406,6 +409,10 @@ public class ExecutionEntityManagerImplTest {
         assertThat(exec1.getProcessInstance().isDeleted()).isTrue();
         assertThat(subProcessExec4_1.getProcessInstance().isDeleted()).isTrue();
         assertThat(subProcessExec4_2.getProcessInstance().isDeleted()).isTrue();
+
+        if (isContextInitialized) {
+            Context.setCommandContext(null);
+        }
     }
 
     private ExecutionEntity createChildExecution(ExecutionEntity parentExecution) {
