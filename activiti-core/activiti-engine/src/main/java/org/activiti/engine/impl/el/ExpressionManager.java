@@ -106,9 +106,6 @@ public class ExpressionManager {
     }
 
     public void setCustomELResolver(List<ELResolver> customELResolvers) {
-        for(ELResolver customELResolver : customELResolvers) {
-            System.out.println("In manager"+customELResolver);
-        }
         this.customELResolvers = customELResolvers;
     }
 

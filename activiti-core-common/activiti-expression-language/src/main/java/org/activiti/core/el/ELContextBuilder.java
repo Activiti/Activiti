@@ -39,7 +39,7 @@ public class ELContextBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(ELContextBuilder.class);
 
-    private List<ELResolver> resolvers ;
+    private List<ELResolver> resolvers;
     private Map<String, Object> variables;
 
     public ELContextBuilder withResolvers(ELResolver... resolvers) {

@@ -806,8 +806,6 @@ public class TaskRuntimeVariableMappingIT {
                 tuple("envVar","test-value"),
                 tuple("inNull", null)
             );
-
-        environmentVariables.teardown();
     }
 
 }
