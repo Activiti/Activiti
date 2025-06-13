@@ -37,7 +37,6 @@ import org.activiti.core.el.ReadOnlyMapELResolver;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
-import org.activiti.core.el.EnvironmentVariableELResolver;
 import org.activiti.engine.impl.persistence.entity.VariableScopeImpl;
 
 /**
@@ -56,6 +55,7 @@ public class ExpressionManager {
     protected ExpressionFactory expressionFactory;
     protected Map<Object, Object> beans;
     protected List<CustomFunctionProvider> customFunctionProviders;
+    protected List<ELResolver> customELResolvers;
 
     public ExpressionManager() {
         this(null);
@@ -101,6 +101,18 @@ public class ExpressionManager {
         this.customFunctionProviders = customFunctionProviders;
     }
 
+    public List<ELResolver> getCustomELResolvers() {
+        return customELResolvers;
+    }
+
+    public void setCustomELResolver(List<ELResolver> customELResolvers) {
+        for(ELResolver customELResolver : customELResolvers) {
+            System.out.println("In manager"+customELResolver);
+        }
+        this.customELResolvers = customELResolvers;
+    }
+
+
     public ELContext getElContext(VariableScope variableScope) {
         ELContext elContext = null;
         if (variableScope instanceof VariableScopeImpl) {
@@ -119,13 +131,12 @@ public class ExpressionManager {
     }
 
     protected ActivitiElContext createElContext(VariableScope variableScope) {
-        return (ActivitiElContext) new ELContextBuilder().withResolvers(createElResolver(variableScope)).buildWithCustomFunctions(customFunctionProviders);
+        return (ActivitiElContext) new ELContextBuilder().withCustomResolvers(customELResolvers).withResolvers(createElResolver(variableScope)).buildWithCustomFunctions(customFunctionProviders);
     }
 
     protected ELResolver createElResolver(VariableScope variableScope) {
         CompositeELResolver elResolver = new CompositeELResolver();
         elResolver.add(new VariableScopeElResolver(variableScope));
-        elResolver.add(new EnvironmentVariableELResolver());
         addBeansResolver(elResolver);
         addBaseResolvers(elResolver);
         return elResolver;

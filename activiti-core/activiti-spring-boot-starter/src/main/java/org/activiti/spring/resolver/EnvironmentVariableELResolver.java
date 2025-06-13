@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.core.el;
+package org.activiti.spring.resolver;
 
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
@@ -31,11 +31,8 @@ public class EnvironmentVariableELResolver extends ELResolver {
         }
         if (base instanceof EnvVar && property != null) {
             String env = System.getenv(VAR_PREFIX_WITH_DOT + property);
-            if(env != null) {
                 context.setPropertyResolved(true);
                 return env;
-            }
-
         }
         return null;
     }

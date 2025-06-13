@@ -10,9 +10,6 @@
   </parent>
   <artifactId>activiti-spring-boot-starter</artifactId>
   <name>Activiti :: Spring Boot Starter</name>
-  <properties>
-    <system.stubs.jupiter.version>2.0.2</system.stubs.jupiter.version>
-  </properties>
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>

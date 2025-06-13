@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.core.el;
+package org.activiti.spring.resolver;
 
 import jakarta.el.ELContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -124,3 +124,4 @@ class EnvironmentVariableELResolverTest {
         assertThat(commonPropertyType).isEqualTo(String.class);
     }
 }
+
