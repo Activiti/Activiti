@@ -22,9 +22,6 @@ public class ELResolverAutoConfiguration {
     public ProcessEngineConfigurationConfigurer environmentVariablesELResolverConfigurer(List<ELResolver> customELResolvers) {
         return processEngineConfiguration -> {
             if(customELResolvers!=null) {
-                customELResolvers.forEach(elResolver -> {
-                    System.out.println("ELResolver added: " + elResolver.getClass().getName());
-                });
                 processEngineConfiguration.setCustomELResolvers(customELResolvers);
             }
         };
