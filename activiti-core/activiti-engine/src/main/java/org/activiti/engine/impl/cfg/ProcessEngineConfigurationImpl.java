@@ -2041,7 +2041,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
     public void setCustomELResolvers(List<ELResolver> customELResolvers){
      this.customELResolvers = customELResolvers;
-     initExpressionManager();
+     //initExpressionManager();
   }
 
   public void initBusinessCalendarManager() {
