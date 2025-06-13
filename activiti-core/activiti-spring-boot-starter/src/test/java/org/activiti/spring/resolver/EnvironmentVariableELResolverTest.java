@@ -124,4 +124,3 @@ class EnvironmentVariableELResolverTest {
         assertThat(commonPropertyType).isEqualTo(String.class);
     }
 }
-
