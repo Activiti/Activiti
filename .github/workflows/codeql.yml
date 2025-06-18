@@ -15,8 +15,14 @@ on:
   push:
     branches: ["develop", "7.*.x"]
   pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - milestoned
     # The branches below must be a subset of the branches above
-    branches: ["develop"]
+    branches:
+      - develop
   schedule:
     - cron: "0 1 * * FRI"
 
@@ -28,7 +34,8 @@ jobs:
   pre-checks:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - name: Check dependabot build
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-check-secrets-source@improvement/AAE-35226-dependabot-validation
 
   analyze:
     name: Analyze

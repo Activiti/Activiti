@@ -10,9 +10,8 @@ on:
       - opened
       - reopened
       - synchronize
-      - labeled
+      - milestoned
 
-  # Allows to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 concurrency:
@@ -23,13 +22,10 @@ jobs:
   pre-checks:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-      - name: Check dependabot build
-        uses: ./.github/actions/check-ext-build
+      - name: Check dependabot/fork build
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-check-secrets-source@improvement/AAE-35226-dependabot-validation
       - name: pre-commit
         uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@edb17074b511e2443b0dbaed57772b9f0b1d017a # v8.35.0
-        with:
-          skip_checkout: true
       - name: Ensure SHA pinned actions
         uses: zgosalvez/github-actions-ensure-sha-pinned-actions@fc87bb5b5a97953d987372e74478de634726b3e5 # v3.0.25
 

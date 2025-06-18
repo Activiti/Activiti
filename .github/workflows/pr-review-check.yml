@@ -1,0 +1,15 @@
+name: "PR Review check"
+
+on:
+  pull_request_review:
+    types:
+      - submitted
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Alfresco/alfresco-build-tools/.github/actions/github-pr-manage-dependabot-approval@improvement/AAE-35226-dependabot-validation
+        with:
+          github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          milestone-on-approval: Dependabot
