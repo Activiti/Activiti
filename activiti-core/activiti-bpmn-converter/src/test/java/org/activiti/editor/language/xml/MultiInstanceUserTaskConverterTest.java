@@ -23,6 +23,8 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.UserTask;
 import org.junit.jupiter.api.Test;
 
+import java.nio.charset.StandardCharsets;
+
 public class MultiInstanceUserTaskConverterTest extends AbstractConverterTest {
 
     @Test
@@ -54,11 +56,11 @@ public class MultiInstanceUserTaskConverterTest extends AbstractConverterTest {
     private void checkXml(BpmnModel model) throws Exception {
 
         String xml = new String(new BpmnXMLConverter().convertToXML(model),
-                                "UTF-8");
+            StandardCharsets.UTF_8);
 
         assertThat(xml).containsSubsequence("incoming>SequenceFlow_0c6mbti<",
                                             "outgoing>SequenceFlow_0pj9a04<",
-                                            "<multiInstanceLoopCharacteristics");
+                                            "<bpmn2:multiInstanceLoopCharacteristics");
 
     }
 }
