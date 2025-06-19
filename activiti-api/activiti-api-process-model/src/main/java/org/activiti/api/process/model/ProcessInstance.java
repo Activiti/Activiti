@@ -53,4 +53,6 @@ public interface ProcessInstance extends ApplicationElement {
 
     String getProcessDefinitionName();
 
+    String getRootProcessInstanceId();
+
 }
