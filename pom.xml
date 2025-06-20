@@ -200,30 +200,30 @@
     <asm.version>9.7.1</asm.version>
     <build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>
     <dependency-check-maven.version>12.1.0</dependency-check-maven.version>
-    <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
+    <exec-maven-plugin.version>3.5.0</exec-maven-plugin.version>
     <extra-enforcer-rules.version>1.9.0</extra-enforcer-rules.version>
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
     <license-maven-plugin.version>5.0.0</license-maven-plugin.version>
     <third-party-license-maven-plugin.version>2.5.0</third-party-license-maven-plugin.version>
     <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.4.1</maven-clean-plugin.version>
-    <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+    <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
     <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
-    <maven-enforcer-plugin.version>3.1.0</maven-enforcer-plugin.version>
+    <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
     <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
     <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
     <maven-install-plugin.version>3.1.4</maven-install-plugin.version>
-    <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
-    <maven-javadoc-plugin.version>3.6.0</maven-javadoc-plugin.version>
+    <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
+    <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
     <maven-jxr-plugin.version>3.6.0</maven-jxr-plugin.version>
     <maven-pmd-plugin.version>3.26.0</maven-pmd-plugin.version>
     <maven-project-info-reports-plugin.version>3.4.1</maven-project-info-reports-plugin.version>
     <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
     <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
     <maven-site-plugin.version>3.21.0</maven-site-plugin.version>
-    <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-    <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
-    <spring-boot.version>3.4.3</spring-boot.version>
+    <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+    <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
+    <spring-boot.version>3.4.5</spring-boot.version>
     <h2.version>2.3.232</h2.version>
     <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
     <versions-maven-plugin.version>2.18.0</versions-maven-plugin.version>
@@ -240,7 +240,7 @@
       <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-core</artifactId>
-        <version>2.10.0</version>
+        <version>2.10.2</version>
         <scope>test</scope>
       </dependency>
       <!-- Temporary Security fix  -->
@@ -249,6 +249,25 @@
         <groupId>net.minidev</groupId>
         <artifactId>json-smart</artifactId>
         <version>2.5.2</version>
+      </dependency>
+      <!-- temporary security fix -->
+      <!-- temporary security fix AAE-33092 -->
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-crypto</artifactId>
+        <version>6.4.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-core</artifactId>
+        <version>6.4.4</version>
+      </dependency>
+      <!-- temporary security fix -->
+      <!-- temporary security fix AAE-35515-->
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>1.27.1</version>
       </dependency>
       <!-- temporary security fix -->
       <dependency>

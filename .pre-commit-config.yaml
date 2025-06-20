@@ -19,7 +19,7 @@ repos:
         types_or:
           - markdown
   - repo: https://github.com/sirosen/check-jsonschema
-    rev: 0.23.3
+    rev: 0.33.0
     hooks:
       - id: check-dependabot
       - id: check-github-actions
