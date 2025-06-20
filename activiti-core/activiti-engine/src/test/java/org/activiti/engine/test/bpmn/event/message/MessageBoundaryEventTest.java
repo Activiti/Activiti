@@ -512,7 +512,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
 
     // After setting the clock to time '1 hour and 5 seconds', the timer should fire.
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
-    waitForJobExecutorOnCondition(50000L, 1000L, new Callable<Boolean>() {
+    waitForJobExecutorOnCondition(5000L, 100L, new Callable<Boolean>() {
       public Boolean call() throws Exception {
         return taskService.createTaskQuery().count() == 2;
       }
@@ -573,7 +573,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
     // After setting the clock to time '2 hours and 5 seconds', the timer
     // should fire.
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((2 * 60 * 60 * 1000) + 5000)));
-    waitForJobExecutorOnCondition(20000L, 200L, new Callable<Boolean>() {
+    waitForJobExecutorOnCondition(2000L, 100L, new Callable<Boolean>() {
       @Override
       public Boolean call() throws Exception {
         return taskService.createTaskQuery().count() == 2;
