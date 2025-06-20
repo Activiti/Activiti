@@ -25,10 +25,6 @@
     <mapper resource="org/activiti/db/mapping/entity/HistoricActivityInstance.xml" />
     <mapper resource="org/activiti/db/mapping/entity/HistoricDetail.xml" />
     <mapper resource="org/activiti/db/mapping/entity/HistoricProcessInstance.xml" />
-    <mapper resource="org/activiti/db/mapping/entity/HistoricProcessInstance-Delete.xml" />
-    <mapper resource="org/activiti/db/mapping/entity/HistoricProcessInstance-Insert.xml" />
-    <mapper resource="org/activiti/db/mapping/entity/HistoricProcessInstance-Update.xml" />
-    <mapper resource="org/activiti/db/mapping/entity/HistoricProcessInstance-Select.xml" />
     <mapper resource="org/activiti/db/mapping/entity/HistoricVariableInstance.xml" />
     <mapper resource="org/activiti/db/mapping/entity/HistoricTaskInstance.xml" />
     <mapper resource="org/activiti/db/mapping/entity/HistoricIdentityLink.xml" />
