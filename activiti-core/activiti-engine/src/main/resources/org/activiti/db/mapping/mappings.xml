@@ -42,10 +42,6 @@
     <mapper resource="org/activiti/db/mapping/entity/SuspendedJob.xml" />
     <mapper resource="org/activiti/db/mapping/entity/TableData.xml" />
     <mapper resource="org/activiti/db/mapping/entity/Task.xml" />
-    <mapper resource="org/activiti/db/mapping/entity/Task-Delete.xml" />
-    <mapper resource="org/activiti/db/mapping/entity/Task-Insert.xml" />
-    <mapper resource="org/activiti/db/mapping/entity/Task-Update.xml" />
-    <mapper resource="org/activiti/db/mapping/entity/Task-Select.xml" />
     <mapper resource="org/activiti/db/mapping/entity/TimerJob.xml" />
     <mapper resource="org/activiti/db/mapping/entity/VariableInstance.xml" />
     <mapper resource="org/activiti/db/mapping/entity/EventSubscription.xml" />
