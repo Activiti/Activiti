@@ -67,6 +67,7 @@ public class TaskRuntimeVariableMappingIT {
     private static final String TASK_EXPRESSION_MAPPING = "taskExpressionMapping";
 
     private static final String TASK_EXPRESSION_MAPPING_ENV_VARS = "taskExpressionMappingEnvVars";
+    private static final String TASK_EXPRESSION_MAPPING_ENV_VARS_PROCESS_VARS = "taskExpressionMappingEnvVarsAndProcessVar";
     private static final String ASSIGNEE_VARIABLE_NAME = "sys_task_assignee";
 
     @Autowired
@@ -173,7 +174,7 @@ public class TaskRuntimeVariableMappingIT {
                         tuple("process-variable-datetime",
                               datetime)
 
-                );
+            );
         processBaseRuntime.delete(processInstance.getId());
     }
 
@@ -341,7 +342,7 @@ public class TaskRuntimeVariableMappingIT {
             .extracting(VariableInstance::getName,
                 VariableInstance::getValue)
             .containsOnly(tuple("process_variable_unmapped_1",
-                "unmapped1Value"),
+                    "unmapped1Value"),
                 tuple("process_variable_inputmap_1",
                     "inputmap1Value"),
                 tuple("process_variable_outputmap_1",
@@ -790,7 +791,7 @@ public class TaskRuntimeVariableMappingIT {
     }
 
     @Test
-    public void should_mapTaskVariables_when_inputMappingWithExpression_andExpressionHasEnvironmentVariables() throws Exception {
+    public void should_mapTaskVariables_when_inputMappingWithExpression_andExpressionHasEnvironmentVariables() {
         ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_EXPRESSION_MAPPING_ENV_VARS);
 
         Task task = checkTasks(processInstance.getId());
@@ -803,9 +804,27 @@ public class TaskRuntimeVariableMappingIT {
                 VariableInstance::getValue)
             .containsOnly(
                 tuple("inValue", "varValue"),
-                tuple("envVar","test-value"),
+                tuple("envVar", "test-value"),
                 tuple("inNull", null)
             );
     }
 
+    @Test
+    public void should_mapProcessVariables_when_inputMappingWithExpression_hasBothProcessVarAndEnvVarWithSameName() {
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_EXPRESSION_MAPPING_ENV_VARS_PROCESS_VARS);
+
+        Task task = checkTasks(processInstance.getId());
+
+        // input mapping
+        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(task.getId());
+        assertThat(taskVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .containsOnly(
+                tuple("inValue", "varValue"),
+                tuple("envVar", "some_value"),
+                tuple("inNull", null)
+            );
+    }
 }

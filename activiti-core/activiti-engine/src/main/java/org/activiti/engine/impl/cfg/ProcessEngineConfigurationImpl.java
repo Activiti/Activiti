@@ -2033,16 +2033,16 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
           if (customFunctionProviders != null) {
               expressionManager.setCustomFunctionProviders(customFunctionProviders);
           }
-          if (customELResolvers != null && !customELResolvers.isEmpty()) {
-              expressionManager.setCustomELResolver(customELResolvers);
-          }
       }
   }
 
     public void setCustomELResolvers(List<ELResolver> customELResolvers){
      this.customELResolvers = customELResolvers;
-     //initExpressionManager();
   }
+
+    public List<ELResolver> getCustomELResolvers(){
+       return this.customELResolvers;
+    }
 
   public void initBusinessCalendarManager() {
     if (businessCalendarManager == null) {

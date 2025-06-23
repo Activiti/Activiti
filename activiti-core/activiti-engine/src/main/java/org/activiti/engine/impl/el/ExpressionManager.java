@@ -105,10 +105,9 @@ public class ExpressionManager {
         return customELResolvers;
     }
 
-    public void setCustomELResolver(List<ELResolver> customELResolvers) {
+    public void setCustomELResolvers(List<ELResolver> customELResolvers) {
         this.customELResolvers = customELResolvers;
     }
-
 
     public ELContext getElContext(VariableScope variableScope) {
         ELContext elContext = null;
@@ -128,12 +127,15 @@ public class ExpressionManager {
     }
 
     protected ActivitiElContext createElContext(VariableScope variableScope) {
-        return (ActivitiElContext) new ELContextBuilder().withCustomResolvers(customELResolvers).withResolvers(createElResolver(variableScope)).buildWithCustomFunctions(customFunctionProviders);
+        return (ActivitiElContext) new ELContextBuilder().withResolvers(createElResolver(variableScope)).buildWithCustomFunctions(customFunctionProviders);
     }
 
     protected ELResolver createElResolver(VariableScope variableScope) {
         CompositeELResolver elResolver = new CompositeELResolver();
         elResolver.add(new VariableScopeElResolver(variableScope));
+        if (customELResolvers != null) {
+            customELResolvers.forEach(elResolver::add);
+        }
         addBeansResolver(elResolver);
         addBaseResolvers(elResolver);
         return elResolver;

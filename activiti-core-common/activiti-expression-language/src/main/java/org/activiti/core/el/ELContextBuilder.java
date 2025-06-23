@@ -18,7 +18,7 @@ package org.activiti.core.el;
 import static org.activiti.core.el.DateResolverHelper.addDateFunctions;
 import static org.activiti.core.el.ListResolverHelper.addListFunctions;
 
-import java.util.ArrayList;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,10 +43,7 @@ public class ELContextBuilder {
     private Map<String, Object> variables;
 
     public ELContextBuilder withResolvers(ELResolver... resolvers) {
-        if (this.resolvers == null) {
-            this.resolvers = new ArrayList<>();
-        }
-        this.resolvers.addAll(List.of(resolvers));
+        this.resolvers = List.of(resolvers);
         return this;
     }
 
@@ -55,16 +52,6 @@ public class ELContextBuilder {
         return this;
     }
 
-    public ELContextBuilder withCustomResolvers (List<ELResolver> customResolvers)
-    {
-        if(customResolvers!=null) {
-        if (this.resolvers == null) {
-            this.resolvers = new ArrayList<>();
-        }
-        this.resolvers.addAll(customResolvers);
-        }
-        return this;
-    }
     public ELContext build() {
         CompositeELResolver elResolver = createCompositeResolver();
         return new ActivitiElContext(elResolver);
