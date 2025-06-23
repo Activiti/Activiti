@@ -257,6 +257,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   protected ExtensionElement parseExtensionElement(XMLStreamReader xtr) throws Exception {
     ExtensionElement extensionElement = new ExtensionElement();
     extensionElement.setName(xtr.getLocalName());
+    BpmnXMLUtil.addXMLLocation(extensionElement, xtr);
     if (StringUtils.isNotEmpty(xtr.getNamespaceURI())) {
       extensionElement.setNamespace(xtr.getNamespaceURI());
     }
