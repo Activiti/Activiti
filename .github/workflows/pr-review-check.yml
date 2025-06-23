@@ -9,7 +9,7 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/github-pr-manage-dependabot-approval@improvement/AAE-35226-dependabot-validation
+      - uses: Alfresco/alfresco-build-tools/.github/actions/github-trigger-approved-pr@24c5fb2e495b8c2d7cea64a44052d641cbf73c26 # temp version for testing
         with:
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           milestone-on-approval: Dependabot

@@ -22,8 +22,8 @@ jobs:
   pre-checks:
     runs-on: ubuntu-latest
     steps:
-      - name: Check dependabot/fork build
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-check-secrets-source@improvement/AAE-35226-dependabot-validation
+      - name: Check dependabot build
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@24c5fb2e495b8c2d7cea64a44052d641cbf73c26 # temp version for testing
       - name: pre-commit
         uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@edb17074b511e2443b0dbaed57772b9f0b1d017a # v8.35.0
       - name: Ensure SHA pinned actions
