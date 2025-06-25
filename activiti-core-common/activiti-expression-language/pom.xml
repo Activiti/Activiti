@@ -10,6 +10,9 @@
   </parent>
   <artifactId>activiti-expression-language</artifactId>
   <name>Activiti :: Expression Language Support</name>
+  <properties>
+    <system.stubs.jupiter.version>2.0.2</system.stubs.jupiter.version>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>jakarta.el</groupId>
@@ -48,6 +51,12 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>uk.org.webcompere</groupId>
+      <artifactId>system-stubs-jupiter</artifactId>
+      <version>${system.stubs.jupiter.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

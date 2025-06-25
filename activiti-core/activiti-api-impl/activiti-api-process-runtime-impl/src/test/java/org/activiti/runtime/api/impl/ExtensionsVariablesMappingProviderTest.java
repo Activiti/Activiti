@@ -582,7 +582,7 @@ public class ExtensionsVariablesMappingProviderTest {
         DelegateExecution execution = buildExecution(extensions.getExtensions(processDefinitionKey));
         ExpressionResolver expressionResolver = ExpressionResolverHelper.initContext(execution,
             extensions.getExtensions(processDefinitionKey),
-            customFunctionProviders);
+            customFunctionProviders,new ArrayList<>());
 
         ReflectionTestUtils.setField(variablesMappingProvider,
             "expressionResolver",
