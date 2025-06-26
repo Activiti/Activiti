@@ -275,7 +275,7 @@
     <include refid="selectTaskByQueryCriteria"/>
   </select>
   <sql id="selectTaskByQueryCriteria">
-    ${v3_limitBefore}
+    select * from (
     <include refid="selectTaskByQueryCriteriaSql">
       <property name="isCount" value="false"/>
     </include>
