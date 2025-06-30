@@ -32,6 +32,7 @@ public class Extension {
     private Map<String, ProcessConstantsMapping> constants = new HashMap<>();
     private TemplatesDefinition templates = new TemplatesDefinition();
     private Map<String, AssignmentDefinition> assignments = new HashMap<>();
+    private Map<String, TaskNotificationDefinition> notifications = new HashMap<>();
 
     public Map<String, VariableDefinition> getProperties() {
         return properties;
@@ -127,5 +128,17 @@ public class Extension {
 
     public void setAssignments(Map<String, AssignmentDefinition> assignments) {
         this.assignments = assignments;
+    }
+
+    public Map<String, TaskNotificationDefinition> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(Map<String, TaskNotificationDefinition> notifications) {
+        this.notifications = notifications;
+    }
+
+    public TaskNotificationDefinition getTaskNotifications(String taskId) {
+        return notifications.get(taskId);
     }
 }
