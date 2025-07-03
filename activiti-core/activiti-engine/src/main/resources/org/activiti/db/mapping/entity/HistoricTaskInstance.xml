@@ -1106,11 +1106,11 @@
     <include refid="withoutJoins_selectHistoricTaskInstancesByQueryCriteriaSql"/>
     <choose>
       <!--
-        ${limitAfter} on mssql/oracle has more than just "order by" statement
+        ${limitAfter} on mssql/oracle/db2 has more than just "order by" statement
         Because that property is applied to several SQL statements,
           we need to make a workaround here
       -->
-      <when test="'${limitAfter}' != null and _databaseId != 'mssql' and _databaseId != 'oracle'">
+      <when test="'${limitAfter}' != null and _databaseId != 'mssql' and _databaseId != 'oracle' and _databaseId != 'db2'">
         ORDER BY rnk
         ${limitAfter}
       </when>
