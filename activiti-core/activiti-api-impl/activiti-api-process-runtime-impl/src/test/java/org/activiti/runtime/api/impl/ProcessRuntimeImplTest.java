@@ -370,7 +370,7 @@ public class ProcessRuntimeImplTest {
 
         Pageable pageable = Pageable.of(0, 10);
         GetProcessDefinitionsPayload payload = ProcessPayloadBuilder.processDefinitions()
-            .withExcludedCategory(processCategory)
+            .withProcessCategoryToExclude(processCategory)
             .build();
 
         processRuntime.processDefinitions(pageable, payload);

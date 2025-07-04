@@ -25,7 +25,7 @@ public class GetProcessDefinitionsPayload implements Payload {
     private String id;
     private String processDefinitionId;
     private Set<String> processDefinitionKeys;
-    private String excludedCategory;
+    private String processCategoryToExclude;
 
     public GetProcessDefinitionsPayload() {
         this.id = UUID.randomUUID().toString();
@@ -40,11 +40,11 @@ public class GetProcessDefinitionsPayload implements Payload {
 
     public GetProcessDefinitionsPayload(String processDefinitionId,
                                         Set<String> processDefinitionKeys,
-                                        String excludedCategory) {
+                                        String processCategoryToExclude) {
         this();
         this.processDefinitionId = processDefinitionId;
         this.processDefinitionKeys = processDefinitionKeys;
-        this.excludedCategory = excludedCategory;
+        this.processCategoryToExclude = processCategoryToExclude;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class GetProcessDefinitionsPayload implements Payload {
         this.processDefinitionKeys = processDefinitionKeys;
     }
 
-    public String getExcludedCategory() {
-        return excludedCategory;
+    public String getProcessCategoryToExclude() {
+        return processCategoryToExclude;
     }
 }

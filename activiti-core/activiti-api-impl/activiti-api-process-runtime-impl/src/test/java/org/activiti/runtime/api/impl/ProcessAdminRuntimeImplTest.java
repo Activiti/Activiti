@@ -104,7 +104,7 @@ class ProcessAdminRuntimeImplTest {
 
         Pageable pageable = Pageable.of(0, 10);
         GetProcessDefinitionsPayload payload = ProcessPayloadBuilder.processDefinitions()
-            .withExcludedCategory(processCategory)
+            .withProcessCategoryToExclude(processCategory)
             .build();
 
         processAdminRuntime.processDefinitions(pageable, payload);

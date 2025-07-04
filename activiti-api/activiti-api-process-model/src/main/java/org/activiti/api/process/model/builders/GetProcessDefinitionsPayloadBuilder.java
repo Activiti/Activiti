@@ -24,7 +24,7 @@ public class GetProcessDefinitionsPayloadBuilder {
 
     private String processDefinitionId;
     private Set<String> processDefinitionKeys = new HashSet<>();
-    private String excludedCategory;
+    private String processCategoryToExclude;
 
     public GetProcessDefinitionsPayloadBuilder withProcessDefinitionKeys(Set<String> processDefinitionKeys) {
         this.processDefinitionKeys = processDefinitionKeys;
@@ -44,12 +44,12 @@ public class GetProcessDefinitionsPayloadBuilder {
         return this;
     }
 
-    public GetProcessDefinitionsPayloadBuilder withExcludedCategory(String excludedCategory) {
-        this.excludedCategory = excludedCategory;
+    public GetProcessDefinitionsPayloadBuilder withProcessCategoryToExclude(String processCategoryToExclude) {
+        this.processCategoryToExclude = processCategoryToExclude;
         return this;
     }
 
     public GetProcessDefinitionsPayload build() {
-        return new GetProcessDefinitionsPayload(processDefinitionId, processDefinitionKeys, excludedCategory);
+        return new GetProcessDefinitionsPayload(processDefinitionId, processDefinitionKeys, processCategoryToExclude);
     }
 }

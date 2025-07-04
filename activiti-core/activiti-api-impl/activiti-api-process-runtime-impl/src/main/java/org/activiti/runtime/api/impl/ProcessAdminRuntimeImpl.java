@@ -132,9 +132,9 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
             processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());
         }
 
-        String excludedCategory = getProcessDefinitionsPayload.getExcludedCategory();
-        if (!StringUtils.isBlank(excludedCategory)) {
-            processDefinitionQuery.processDefinitionCategoryNotEquals(excludedCategory);
+        String processCategoryToExclude = getProcessDefinitionsPayload.getProcessCategoryToExclude();
+        if (!StringUtils.isBlank(processCategoryToExclude)) {
+            processDefinitionQuery.processDefinitionCategoryNotEquals(processCategoryToExclude);
         }
 
         return new PageImpl<>(processDefinitionConverter.from(processDefinitionQuery.listPage(pageable.getStartIndex(), pageable.getMaxItems())),
