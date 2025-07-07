@@ -1,0 +1,60 @@
+{
+  "id":"taskExpressionMappingEnvVarsAndProcessVar",
+  "type":"PROCESS",
+  "name":"Task Expression Mapping with EnvVars and ProcessVar",
+  "extensions":{
+    "taskExpressionMappingEnvVarsAndProcessVar":{
+      "mappings":{
+        "Task_0z87dw7":{
+          "inputs": {
+            "inNull": {
+              "type": "VALUE",
+              "value": "${notDefined}"
+            },
+            "inValue": {
+            "type": "VALUE",
+            "value": "${initVar}"
+            },
+            "envVar": {
+              "type": "VALUE",
+              "value": "${vars.MY_ENV_VAR}"
+            }
+          }
+        },
+          "outputs": {
+            "outNull": {
+              "type": "VALUE",
+              "value": "${notDefined}"
+            },
+            "outValue": {
+              "type": "VALUE",
+              "value": "${initVar}"
+            },
+            "outMapped": {
+              "type": "VALUE",
+              "value": "${mapped}"
+            }
+          }
+        },
+      "properties":{
+        "81d12b0c-a95a-4879-a36c-7d40f121cef1":{
+          "id":"81d12b0c-a95a-4879-a36c-7d40f121cef1",
+          "name":"initVar",
+          "type":"string",
+          "required":false,
+          "value": "varValue"
+        },
+        "e93a1065-da0c-4507-8542-d1d194b3ab37": {
+          "id": "e93a1065-da0c-4507-8542-d1d194b3ab37",
+          "name": "vars",
+          "type": "json",
+          "model": { "$ref": "#/$defs/primitive/json" },
+          "required": false,
+          "ephemeral": false,
+          "value": { "MY_ENV_VAR": "some_value" },
+          "category": "input/output"
+        }
+      }
+    }
+  }
+}

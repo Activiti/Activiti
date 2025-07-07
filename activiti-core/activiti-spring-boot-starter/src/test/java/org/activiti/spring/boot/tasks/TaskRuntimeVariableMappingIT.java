@@ -35,10 +35,15 @@ import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
+import uk.org.webcompere.systemstubs.jupiter.SystemStub;
+import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@ExtendWith(SystemStubsExtension.class)
 public class TaskRuntimeVariableMappingIT {
 
     private static final String TASK_EXPRESSION_MAPPING_ALL = "taskExpressionMappingAll";
@@ -61,6 +66,8 @@ public class TaskRuntimeVariableMappingIT {
     private static final String TASK_ASSIGNEE_MULTI_INSTANCE_MAPPING = "taskMultiInstanceVariableMapping";
     private static final String TASK_EXPRESSION_MAPPING = "taskExpressionMapping";
 
+    private static final String TASK_EXPRESSION_MAPPING_ENV_VARS = "taskExpressionMappingEnvVars";
+    private static final String TASK_EXPRESSION_MAPPING_ENV_VARS_PROCESS_VARS = "taskExpressionMappingEnvVarsAndProcessVar";
     private static final String ASSIGNEE_VARIABLE_NAME = "sys_task_assignee";
 
     @Autowired
@@ -80,6 +87,9 @@ public class TaskRuntimeVariableMappingIT {
 
     @Autowired
     private DateFormatterProvider dateFormatterProvider;
+
+    @SystemStub
+    private EnvironmentVariables environmentVariables = new EnvironmentVariables("vars.MY_ENV_VAR", "test-value");
 
     @AfterEach
     public void cleanUp() {
@@ -164,7 +174,7 @@ public class TaskRuntimeVariableMappingIT {
                         tuple("process-variable-datetime",
                               datetime)
 
-                );
+            );
         processBaseRuntime.delete(processInstance.getId());
     }
 
@@ -332,7 +342,7 @@ public class TaskRuntimeVariableMappingIT {
             .extracting(VariableInstance::getName,
                 VariableInstance::getValue)
             .containsOnly(tuple("process_variable_unmapped_1",
-                "unmapped1Value"),
+                    "unmapped1Value"),
                 tuple("process_variable_inputmap_1",
                     "inputmap1Value"),
                 tuple("process_variable_outputmap_1",
@@ -780,4 +790,41 @@ public class TaskRuntimeVariableMappingIT {
             );
     }
 
+    @Test
+    public void should_mapTaskVariables_when_inputMappingWithExpression_andExpressionHasEnvironmentVariables() {
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_EXPRESSION_MAPPING_ENV_VARS);
+
+        Task task = checkTasks(processInstance.getId());
+
+        // input mapping
+        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(task.getId());
+        assertThat(taskVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .containsOnly(
+                tuple("inValue", "varValue"),
+                tuple("envVar", "test-value"),
+                tuple("inNull", null)
+            );
+    }
+
+    @Test
+    public void should_mapProcessVariables_when_inputMappingWithExpression_hasBothProcessVarAndEnvVarWithSameName() {
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_EXPRESSION_MAPPING_ENV_VARS_PROCESS_VARS);
+
+        Task task = checkTasks(processInstance.getId());
+
+        // input mapping
+        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(task.getId());
+        assertThat(taskVariables)
+            .isNotNull()
+            .extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+            .containsOnly(
+                tuple("inValue", "varValue"),
+                tuple("envVar", "some_value"),
+                tuple("inNull", null)
+            );
+    }
 }

@@ -44,6 +44,7 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.xml.namespace.QName;
 
+import jakarta.el.ELResolver;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.engine.ActivitiException;
@@ -747,6 +748,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected ScriptingEngines scriptingEngines;
   protected List<ResolverFactory> resolverFactories;
   protected List<CustomFunctionProvider> customFunctionProviders;
+  private List<ELResolver> customELResolvers;
 
   protected BusinessCalendarManager businessCalendarManager;
 
@@ -2026,13 +2028,21 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
 
   public void initExpressionManager() {
-    if (expressionManager == null) {
-      expressionManager = new ExpressionManager(beans);
-      if (customFunctionProviders != null) {
-        expressionManager.setCustomFunctionProviders(customFunctionProviders);
+      if (expressionManager == null) {
+          expressionManager = new ExpressionManager(beans);
+          if (customFunctionProviders != null) {
+              expressionManager.setCustomFunctionProviders(customFunctionProviders);
+          }
       }
-    }
   }
+
+    public void setCustomELResolvers(List<ELResolver> customELResolvers){
+     this.customELResolvers = customELResolvers;
+  }
+
+    public List<ELResolver> getCustomELResolvers(){
+       return this.customELResolvers;
+    }
 
   public void initBusinessCalendarManager() {
     if (businessCalendarManager == null) {

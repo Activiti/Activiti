@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.el.ELResolver;
 import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -39,7 +40,7 @@ public class ExpressionResolverHelper {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    private static void initializeExpressionResolver(List<CustomFunctionProvider> customFunctionProviders) {
+    private static void initializeExpressionResolver(List<CustomFunctionProvider> customFunctionProviders, List<ELResolver> customELResolvers) {
         ProcessEngineConfigurationImpl processEngineConfiguration = mock(ProcessEngineConfigurationImpl.class);
         Context.setProcessEngineConfiguration(processEngineConfiguration);
         ExpressionManager expressionManager = new ExpressionManager();
@@ -50,13 +51,14 @@ public class ExpressionResolverHelper {
 
     public static ExpressionResolver initContext(DelegateExecution execution,
                                                  Extension extensions) {
-        return initContext(execution, extensions, new ArrayList<>());
+        return initContext(execution, extensions, new ArrayList<>(), new ArrayList<>());
     }
 
     public static ExpressionResolver initContext(DelegateExecution execution,
                                                  Extension extensions,
-                                                 List<CustomFunctionProvider> customFunctionProviders) {
-        initializeExpressionResolver(customFunctionProviders);
+                                                 List<CustomFunctionProvider> customFunctionProviders,
+                                                 List<ELResolver> customELResolvers) {
+        initializeExpressionResolver(customFunctionProviders, customELResolvers);
 
         Map<String, Object> variables = convertToStringObjectMap(extensions.getProperties());
 

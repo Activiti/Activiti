@@ -50,6 +50,7 @@ import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.query.impl.PageImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
@@ -130,6 +131,12 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
         if (getProcessDefinitionsPayload.hasDefinitionKeys()) {
             processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());
         }
+
+        String processCategoryToExclude = getProcessDefinitionsPayload.getProcessCategoryToExclude();
+        if (!StringUtils.isBlank(processCategoryToExclude)) {
+            processDefinitionQuery.processDefinitionCategoryNotEquals(processCategoryToExclude);
+        }
+
         return new PageImpl<>(processDefinitionConverter.from(processDefinitionQuery.listPage(pageable.getStartIndex(), pageable.getMaxItems())),
             Math.toIntExact(processDefinitionQuery.count()));
     }
