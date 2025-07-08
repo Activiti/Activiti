@@ -180,12 +180,6 @@
         <version>${batik.version}</version>
       </dependency>
       <dependency>
-        <groupId>net.javacrumbs.json-unit</groupId>
-        <artifactId>json-unit-assertj</artifactId>
-        <version>4.1.1</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
         <groupId>org.subethamail</groupId>
         <artifactId>subethasmtp-wiser</artifactId>
         <version>${subethasmtp-wiser.version}</version>
