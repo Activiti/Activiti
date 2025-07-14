@@ -260,7 +260,7 @@
       <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-core</artifactId>
-        <version>6.4.5</version>
+        <version>6.5.1</version>
       </dependency>
       <!-- temporary security fix -->
       <!-- temporary security fix AAE-35515-->
