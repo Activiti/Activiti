@@ -42,18 +42,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-public class ExtensionTest {
+class ExtensionTest {
 
     @Mock
     private ProcessVariablesMapping processVariablesMapping;
 
-    private final static ObjectMapper MAPPER = JsonMapper.builder()
+    private static final ObjectMapper MAPPER = JsonMapper.builder()
         .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
         .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
         .build();
 
     @Test
-    public void should_bothHasMappingTypeInputsAndOutputsReturnTrue_when_thereIsMappingTypeMAP_ALL() {
+    void should_bothHasMappingTypeInputsAndOutputsReturnTrue_when_thereIsMappingTypeMAP_ALL() {
         given(processVariablesMapping.getMappingType()).willReturn(MappingType.MAP_ALL);
 
         Extension extension = new Extension();
@@ -67,7 +67,7 @@ public class ExtensionTest {
     }
 
     @Test
-    public void should_onlyHasMappingTypeInputsReturnTrue_when_thereIsMappingTypeMAP_ALL_INPUTS() {
+    void should_onlyHasMappingTypeInputsReturnTrue_when_thereIsMappingTypeMAP_ALL_INPUTS() {
         given(processVariablesMapping.getMappingType()).willReturn(MappingType.MAP_ALL_INPUTS);
 
         Extension extension = new Extension();
@@ -81,7 +81,7 @@ public class ExtensionTest {
     }
 
     @Test
-    public void should_onlyHasMappingTypeOutputsReturnTrue_when_thereIsMappingTypeMAP_ALL_OUTPUTS() {
+    void should_onlyHasMappingTypeOutputsReturnTrue_when_thereIsMappingTypeMAP_ALL_OUTPUTS() {
         given(processVariablesMapping.getMappingType()).willReturn(MappingType.MAP_ALL_OUTPUTS);
 
         Extension extension = new Extension();
@@ -95,7 +95,7 @@ public class ExtensionTest {
     }
 
     @Test
-    public void should_hasMappingReturnTrue_when_thereIsMapping() {
+    void should_hasMappingReturnTrue_when_thereIsMapping() {
         Extension extension = new Extension();
 
         HashMap<String, ProcessVariablesMapping> mapping = new HashMap<>();
@@ -106,13 +106,13 @@ public class ExtensionTest {
     }
 
     @Test
-    public void should_hasMappingReturnFalse_when_thereIsNoMapping() {
+    void should_hasMappingReturnFalse_when_thereIsNoMapping() {
         Extension extension = new Extension();
         assertThat(extension.hasMapping("elementId")).isFalse();
     }
 
     @Test
-    public void findAssigneeTemplateForTask_should_returnTemplate_when_templateIsDefined() throws Exception {
+    void findAssigneeTemplateForTask_should_returnTemplate_when_templateIsDefined() throws Exception {
         //given
         try (InputStream inputStream = Thread.currentThread()
             .getContextClassLoader()
@@ -139,7 +139,7 @@ public class ExtensionTest {
     }
 
     @Test
-    public void findAssigneeTemplateForTask_should_returnEmpty_when_noTemplatesForTask() throws Exception {
+    void findAssigneeTemplateForTask_should_returnEmpty_when_noTemplatesForTask() throws Exception {
         //given
         try (InputStream inputStream = Thread.currentThread()
             .getContextClassLoader()
@@ -157,7 +157,7 @@ public class ExtensionTest {
     }
 
     @Test
-    public void findAssigneeTemplateForTask_should_returnEmpty_when_onlyCandidateTemplate() throws Exception {
+    void findAssigneeTemplateForTask_should_returnEmpty_when_onlyCandidateTemplate() throws Exception {
         //given
         try (InputStream inputStream = Thread.currentThread()
             .getContextClassLoader()
@@ -175,7 +175,7 @@ public class ExtensionTest {
     }
 
     @Test
-    public void findCandidateTemplateForTask_should_returnTemplate_when_templateIsDefined() throws Exception {
+    void findCandidateTemplateForTask_should_returnTemplate_when_templateIsDefined() throws Exception {
         //given
         try (InputStream inputStream = Thread.currentThread()
             .getContextClassLoader()
@@ -202,7 +202,7 @@ public class ExtensionTest {
     }
 
     @Test
-    public void findCandidateTemplateForTask_should_returnEmpty_when_onlyAssigneeCandidate() throws Exception {
+    void findCandidateTemplateForTask_should_returnEmpty_when_onlyAssigneeCandidate() throws Exception {
         //given
         try (InputStream inputStream = Thread.currentThread()
             .getContextClassLoader()
@@ -220,7 +220,7 @@ public class ExtensionTest {
     }
 
     @Test
-    public void findCandidateTemplateForTask_should_returnEmpty_when_noTemplatesForTask() throws Exception {
+    void findCandidateTemplateForTask_should_returnEmpty_when_noTemplatesForTask() throws Exception {
         //given
         try (InputStream inputStream = Thread.currentThread()
             .getContextClassLoader()
@@ -238,7 +238,7 @@ public class ExtensionTest {
     }
 
     @Test
-    public void should_readAssignmentDefinitionExtension() throws Exception {
+    void should_readAssignmentDefinitionExtension() throws Exception {
         //given
         try (InputStream inputStream = Thread.currentThread()
                                              .getContextClassLoader()
@@ -255,6 +255,66 @@ public class ExtensionTest {
                 .containsValues(new AssignmentDefinition("1", ASSIGNEE, STATIC, MANUAL),
                                 new AssignmentDefinition("2", CANDIDATES, IDENTITY, MANUAL),
                                 new AssignmentDefinition("3", CANDIDATES, EXPRESSION, SEQUENTIAL));
+        }
+    }
+
+    @Test
+    void should_enableEmailNotification_when_notSpecified() throws Exception {
+        try (InputStream inputStream = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("processes/template-mapping-extensions.json")) {
+            ProcessExtensionModel processExtensionModel = MAPPER.readValue(inputStream, ProcessExtensionModel.class);
+            Extension extensions = processExtensionModel
+                .getExtensions("processDefinitionId");
+            TemplatesDefinition templates = extensions.getTemplates();
+
+            boolean isEnabled = templates.isEmailNotificationEnabledForTask("myTaskId2");
+            assertThat(isEnabled).isTrue();
+        }
+    }
+
+    @Test
+    void should_disableEmailNotification_when_setToFalse() throws Exception {
+        try (InputStream inputStream = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("processes/template-mapping-extensions.json")) {
+            ProcessExtensionModel processExtensionModel = MAPPER.readValue(inputStream, ProcessExtensionModel.class);
+            Extension extensions = processExtensionModel
+                .getExtensions("processDefinitionId");
+            TemplatesDefinition templates = extensions.getTemplates();
+
+            boolean isEnabled = templates.isEmailNotificationEnabledForTask("myTaskId1");
+            assertThat(isEnabled).isFalse();
+        }
+    }
+
+    @Test
+    void should_enableEmailNotification_when_explicitlySetToTrue() throws Exception {
+        try (InputStream inputStream = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("processes/template-mapping-extensions.json")) {
+            ProcessExtensionModel processExtensionModel = MAPPER.readValue(inputStream, ProcessExtensionModel.class);
+            Extension extensions = processExtensionModel
+                .getExtensions("processDefinitionId");
+            TemplatesDefinition templates = extensions.getTemplates();
+
+            boolean isEnabled = templates.isEmailNotificationEnabledForTask("myTaskId3");
+            assertThat(isEnabled).isTrue();
+        }
+    }
+
+    @Test
+    void should_returnTrue_when_taskHasNoTemplateDefinition() throws Exception {
+        try (InputStream inputStream = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("processes/template-mapping-extensions.json")) {
+            ProcessExtensionModel processExtensionModel = MAPPER.readValue(inputStream, ProcessExtensionModel.class);
+            Extension extensions = processExtensionModel
+                .getExtensions("processDefinitionId");
+            TemplatesDefinition templates = extensions.getTemplates();
+
+            boolean isEnabled = templates.isEmailNotificationEnabledForTask("myTask");
+            assertThat(isEnabled).isTrue();
         }
     }
 }

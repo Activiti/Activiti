@@ -17,6 +17,8 @@ package org.activiti.core.el;
 
 import static org.activiti.core.el.DateResolverHelper.addDateFunctions;
 import static org.activiti.core.el.ListResolverHelper.addListFunctions;
+
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
