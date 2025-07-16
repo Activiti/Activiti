@@ -236,14 +236,6 @@
   </properties>
   <dependencyManagement>
     <dependencies>
-      <!-- Temporary Security fix  -->
-      <dependency>
-        <groupId>org.xmlunit</groupId>
-        <artifactId>xmlunit-core</artifactId>
-        <version>2.10.2</version>
-        <scope>test</scope>
-      </dependency>
-      <!-- Temporary Security fix  -->
       <!-- temporary security fix AAE-32649 -->
       <dependency>
         <groupId>net.minidev</groupId>
