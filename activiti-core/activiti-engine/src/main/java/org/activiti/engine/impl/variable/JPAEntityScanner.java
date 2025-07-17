@@ -17,12 +17,10 @@
 
 package org.activiti.engine.impl.variable;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 import org.activiti.engine.ActivitiException;
 
 /**

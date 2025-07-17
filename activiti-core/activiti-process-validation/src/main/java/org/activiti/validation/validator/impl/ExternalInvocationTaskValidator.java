@@ -49,10 +49,10 @@ public abstract class ExternalInvocationTaskValidator extends ProcessLevelValida
     }
 
     if (!toDefined) {
-      addError(errors, Problems.MAIL_TASK_NO_RECIPIENT, process, task, "No recipient is defined on the mail activity");
+      addError(errors, Problems.MAIL_TASK_NO_RECIPIENT, process, task);
     }
     if (!textOrHtmlDefined) {
-      addError(errors, Problems.MAIL_TASK_NO_CONTENT, process, task, "Text, html, textVar or htmlVar field should be provided");
+      addError(errors, Problems.MAIL_TASK_NO_CONTENT, process, task);
     }
   }
 
@@ -68,13 +68,13 @@ public abstract class ExternalInvocationTaskValidator extends ProcessLevelValida
       }
 
       if ((fieldName.equals("wait") || fieldName.equals("redirectError") || fieldName.equals("cleanEnv")) && !fieldValue.toLowerCase().equals("true") && !fieldValue.toLowerCase().equals("false")) {
-        addError(errors, Problems.SHELL_TASK_INVALID_PARAM, process, task, "Undefined parameter value for shell field");
+        addError(errors, Problems.SHELL_TASK_INVALID_PARAM, process, task);
       }
 
     }
 
     if (!shellCommandDefined) {
-      addError(errors, Problems.SHELL_TASK_NO_COMMAND, process, task, "No shell command is defined on the shell activity");
+      addError(errors, Problems.SHELL_TASK_NO_COMMAND, process, task);
     }
   }
 
@@ -91,7 +91,7 @@ public abstract class ExternalInvocationTaskValidator extends ProcessLevelValida
     }
 
     if (!keyDefined) {
-      addError(errors, Problems.DMN_TASK_NO_KEY, process, task, "No decision table reference key is defined on the dmn activity");
+      addError(errors, Problems.DMN_TASK_NO_KEY, process, task);
     }
   }
 

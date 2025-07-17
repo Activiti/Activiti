@@ -71,6 +71,10 @@ public class TaskPayloadBuilder {
         return new AssignTaskPayloadBuilder();
     }
 
+    public static AssignTasksPayloadBuilder assignMultiple() {
+        return new AssignTasksPayloadBuilder();
+    }
+
     public static CandidateUsersPayloadBuilder addCandidateUsers() {
         return new CandidateUsersPayloadBuilder();
     }

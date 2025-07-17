@@ -24,7 +24,6 @@ import static org.assertj.core.api.Assertions.tuple;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
 import org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiErrorEvent;
@@ -486,7 +485,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     Calendar tomorrow = Calendar.getInstance();
     tomorrow.add(Calendar.DAY_OF_YEAR, 1);
     processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
-    waitForJobExecutorToProcessAllJobs(2000, 1000);
+    waitForJobExecutorToProcessAllJobs(5000, 1000);
 
     // Check timeout has been dispatched
     assertThat(listener.getEventsReceived()).hasSize(1);

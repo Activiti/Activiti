@@ -45,8 +45,8 @@ public class ProcessVariablesMapDeserializer extends JsonDeserializer<ProcessVar
                                                                                                               JsonProcessingException {
         ProcessVariablesMap<String, Object> map = new ProcessVariablesMap<>();
 
-        JsonNode node = jp.getCodec().readTree(jp);
-
+        ObjectMapper codec = (ObjectMapper) jp.getCodec();
+        JsonNode node = codec.readTree(jp);
         node.fields().forEachRemaining(entry -> {
             String name = entry.getKey();
             JsonNode entryValue = entry.getValue();

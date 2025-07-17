@@ -25,16 +25,16 @@ import org.junit.jupiter.api.Test;
 class JavaObjectVariableTypeTest {
 
     private List<ActivitiException> exceptionList;
-    JavaObjectVariableType javaObjectVariableType;
+    private JavaObjectVariableType javaObjectVariableType;
 
     @BeforeEach
     public void setUp() {
-        javaObjectVariableType = new JavaObjectVariableType(Boolean.class);
         exceptionList = new ArrayList<>();
     }
 
     @Test
     public void should_returnException_when_validateValueNotAssignableToClass() {
+        javaObjectVariableType = new JavaObjectVariableType(Boolean.class);
         javaObjectVariableType.validate(1, exceptionList);
 
         assertTrue(exceptionList.stream().anyMatch(error ->
@@ -44,13 +44,21 @@ class JavaObjectVariableTypeTest {
 
     @Test
     public void should_returnEmptyErrorList_when_validateValueAssignableToClass() {
+        javaObjectVariableType = new JavaObjectVariableType(Boolean.class);
         javaObjectVariableType.validate(true, exceptionList);
+
+        javaObjectVariableType = new JavaObjectVariableType(Integer.class);
+        javaObjectVariableType.validate(1, exceptionList);
+
+        javaObjectVariableType = new JavaObjectVariableType(String.class);
+        javaObjectVariableType.validate("abc", exceptionList);
 
         assertTrue(exceptionList.isEmpty());
     }
 
     @Test
     public void should_returnEmptyErrorList_when_validateValidExpression() {
+        javaObjectVariableType = new JavaObjectVariableType(String.class);
         javaObjectVariableType.validate("${now()}", exceptionList);
 
         assertTrue(exceptionList.isEmpty());
@@ -58,6 +66,7 @@ class JavaObjectVariableTypeTest {
 
     @Test
     public void should_returnException_when_validateIncompleteExpression() {
+        javaObjectVariableType = new JavaObjectVariableType(Boolean.class);
         javaObjectVariableType.validate("${now()", exceptionList);
 
         assertTrue(exceptionList.stream().anyMatch(error ->

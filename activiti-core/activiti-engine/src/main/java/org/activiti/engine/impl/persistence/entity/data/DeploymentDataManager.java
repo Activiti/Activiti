@@ -16,13 +16,13 @@
 
 package org.activiti.engine.impl.persistence.entity.data;
 
-import java.util.List;
-import java.util.Map;
-
 import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.repository.Deployment;
+
+import java.util.List;
+import java.util.Map;
 
 /**
 
@@ -30,6 +30,8 @@ import org.activiti.engine.repository.Deployment;
 public interface DeploymentDataManager extends DataManager<DeploymentEntity> {
 
   DeploymentEntity findLatestDeploymentByName(String deploymentName);
+
+  DeploymentEntity findDeploymentByVersion(Integer version);
 
   long findDeploymentCountByQueryCriteria(DeploymentQueryImpl deploymentQuery);
 

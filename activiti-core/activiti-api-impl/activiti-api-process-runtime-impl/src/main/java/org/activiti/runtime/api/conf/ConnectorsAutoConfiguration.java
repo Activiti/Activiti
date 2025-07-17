@@ -17,6 +17,7 @@
 package org.activiti.runtime.api.conf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
 import org.activiti.engine.impl.bpmn.behavior.VariablesPropagator;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
@@ -27,18 +28,23 @@ import org.activiti.runtime.api.connector.IntegrationContextBuilder;
 import org.activiti.runtime.api.impl.ExpressionResolver;
 import org.activiti.runtime.api.impl.ExtensionsVariablesMappingProvider;
 import org.activiti.spring.process.ProcessExtensionService;
+import org.activiti.spring.process.variable.VariableParsingService;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
+import java.util.List;
+
+@AutoConfiguration
 public class ConnectorsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ExpressionManager expressionManager() {
-        return new ExpressionManager();
+    public ExpressionManager expressionManager(List<CustomFunctionProvider> customFunctionProviders) {
+        ExpressionManager expressionManager = new ExpressionManager();
+        expressionManager.setCustomFunctionProviders(customFunctionProviders);
+        return expressionManager;
     }
 
     @Bean
@@ -67,8 +73,9 @@ public class ConnectorsAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public ExtensionsVariablesMappingProvider variablesMappingProvider(ProcessExtensionService processExtensionService,
-                                                             ExpressionResolver expressionResolver) {
-        return new ExtensionsVariablesMappingProvider(processExtensionService, expressionResolver);
+                                                                       ExpressionResolver expressionResolver,
+                                                                       VariableParsingService variableParsingService) {
+        return new ExtensionsVariablesMappingProvider(processExtensionService, expressionResolver, variableParsingService);
     }
 
     @Bean

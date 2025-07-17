@@ -24,13 +24,19 @@ import java.util.Optional;
 
 public class ToVariableUpdatedConverter implements EventConverter<VariableUpdatedEvent, ActivitiVariableUpdatedEvent> {
 
+    private final EphemeralVariableResolver ephemeralVariableResolver;
+
+    public ToVariableUpdatedConverter(EphemeralVariableResolver ephemeralVariableResolver) {
+        this.ephemeralVariableResolver = ephemeralVariableResolver;
+    }
+
     @Override
     public Optional<VariableUpdatedEvent> from(ActivitiVariableUpdatedEvent internalEvent) {
-        VariableInstanceImpl<Object> variableInstance = new VariableInstanceImpl<>(internalEvent.getVariableName(),
-                                                                                   internalEvent.getVariableType().getTypeName(),
-                                                                                   internalEvent.getVariableValue(),
-                                                                                   internalEvent.getProcessInstanceId(),
-                                                                                   internalEvent.getTaskId());
-        return Optional.of(new VariableUpdatedEventImpl<>(variableInstance, internalEvent.getVariablePreviousValue()));
+        boolean isEphemeral = ephemeralVariableResolver.isEphemeralVariable(internalEvent);
+
+        VariableInstanceImpl<Object> variableInstance = createVariableInstance(internalEvent, isEphemeral);
+        Object previousValue = isEphemeral? null : internalEvent.getVariablePreviousValue();
+
+        return Optional.of(new VariableUpdatedEventImpl<>(variableInstance, previousValue, isEphemeral));
     }
 }

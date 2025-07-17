@@ -80,4 +80,13 @@ public class IntegrationContextEntityImpl extends AbstractEntity implements Inte
     public Object getPersistentState() {
         return new HashMap<>();
     }
+
+    @Override
+    public String toString() {
+        return "IntegrationContext[ " +
+            "executionId='" + executionId + '\'' +
+            ", processInstanceId='" + processInstanceId + '\'' +
+            ", flowNodeId='" + flowNodeId + '\'' +
+            " ]";
+    }
 }

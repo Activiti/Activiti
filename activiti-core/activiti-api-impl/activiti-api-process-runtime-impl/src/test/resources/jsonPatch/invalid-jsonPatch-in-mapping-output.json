@@ -1,0 +1,36 @@
+{
+  "id": "taskVarMapping",
+  "extensions": {
+    "Process_jsonPatchMappingOutput": {
+      "properties": {
+        "variable-person-id": {
+          "id": "variable-person-id",
+          "name": "process_variable_person",
+          "type": "json",
+          "required": false,
+          "value": {
+            "firstname": "Bob"
+          }
+        }
+      },
+      "mappings": {
+        "simpleTask": {
+          "inputs": {
+          },
+          "outputs": {
+            "process_variable_person": {
+              "type": "JSONPATCH",
+              "value": [
+                {
+                  "path": "/lastname",
+                  "value": "${process_variable_lastname}"
+                }
+              ]
+            }}
+        }
+      },
+      "constants": {
+      }
+    }
+  }
+}

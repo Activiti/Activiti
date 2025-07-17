@@ -1,0 +1,19 @@
+name: Create Pre-release
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+-alpha.[0-9]+'
+
+jobs:
+  create-prerelease:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Create prerelease
+        env:
+          TAG: ${{ github.ref_name }}
+          GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+        run: |
+          gh release create $TAG --prerelease -t $TAG

@@ -165,7 +165,13 @@ public class BpmnDeploymentHelper  {
     timerManager.scheduleTimers(processDefinition, process);
   }
 
-  enum ExpressionType {
+  public void disableExistingStartEventSubscriptions() {
+    timerManager.removeExistingTimerStartEventJobs();
+    eventSubscriptionManager.removeExistingSignalStartEventSubscriptions();
+    eventSubscriptionManager.removeExistingMessageStartEventSubscriptions();
+  }
+
+  protected enum ExpressionType {
     USER, GROUP
   }
 

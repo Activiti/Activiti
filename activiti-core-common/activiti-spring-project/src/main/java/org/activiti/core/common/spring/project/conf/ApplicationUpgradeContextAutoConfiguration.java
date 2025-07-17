@@ -18,13 +18,13 @@ package org.activiti.core.common.spring.project.conf;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
-@Configuration
+@AutoConfiguration
 public class ApplicationUpgradeContextAutoConfiguration {
 
     @Bean
@@ -37,11 +37,13 @@ public class ApplicationUpgradeContextAutoConfiguration {
     @Bean
     public ApplicationUpgradeContextService applicationUpgradeContextService(@Value("${project.manifest.file.path:classpath:/default-app.json}") String absolutePath,
                                                                              @Value("${application.version:0}") Integer enforcedAppVersion,
+                                                                             @Value("${activiti.deploy.after-rollback:false}") Boolean isRollbackDeployment,
                                                                              ObjectMapper objectMapper,
                                                                              ResourcePatternResolver resourceLoader) {
         return new ApplicationUpgradeContextService(absolutePath,
-                                                    enforcedAppVersion,
-                                                    objectMapper,
-                                                    resourceLoader);
+            enforcedAppVersion,
+            isRollbackDeployment,
+            objectMapper,
+            resourceLoader);
     }
 }

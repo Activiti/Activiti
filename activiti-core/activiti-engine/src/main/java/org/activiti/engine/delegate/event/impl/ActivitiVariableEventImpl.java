@@ -71,4 +71,9 @@ public class ActivitiVariableEventImpl extends ActivitiEventImpl implements Acti
     this.taskId = taskId;
   }
 
+  @Override
+  public boolean isTaskVariable() {
+    return taskId != null;
+  }
+
 }

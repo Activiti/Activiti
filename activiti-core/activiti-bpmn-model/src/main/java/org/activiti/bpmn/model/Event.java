@@ -44,4 +44,11 @@ public abstract class Event extends FlowNode {
       }
     }
   }
+    public boolean isLinkEvent() {
+        if (this.getEventDefinitions().size() == 1) {
+            return this.getEventDefinitions().getFirst() instanceof LinkEventDefinition;
+        }
+        return false;
+    }
+
 }

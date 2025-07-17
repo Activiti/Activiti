@@ -17,16 +17,16 @@ package org.activiti.common.util.conf;
 
 import org.activiti.common.util.DateFormatterProvider;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@AutoConfiguration
 public class ActivitiCoreCommonUtilAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DateFormatterProvider dateFormatterProvider(@Value("${spring.activiti.date-format-pattern:yyyy-MM-dd[['T']HH:mm:ss[.SSS'Z']]}")
+    public DateFormatterProvider dateFormatterProvider(@Value("${spring.activiti.date-format-pattern:yyyy-MM-dd[['T']HH:mm:ss[.SSS][XXX]]}")
                                                        String dateFormatPattern) {
         return new DateFormatterProvider(dateFormatPattern);
     }

@@ -27,9 +27,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import org.activiti.api.process.model.BPMNActivity;
+import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
 import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.api.process.runtime.events.ProcessCancelledEvent;
 import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
+import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.task.runtime.events.TaskCandidateGroupAddedEvent;
 import org.activiti.api.task.runtime.events.TaskCandidateGroupRemovedEvent;
@@ -66,6 +72,8 @@ public class RuntimeTestConfiguration {
 
     public static Set<String> completedProcesses = new HashSet<>();
 
+    public static Set<BPMNActivity> completedBpmnActivities = new HashSet<>();
+
     public static Set<String> completedTasks = new HashSet<>();
 
     public static Set<String> cancelledProcesses = new HashSet<>();
@@ -77,6 +85,18 @@ public class RuntimeTestConfiguration {
     public static Set<TaskCandidateGroupAddedEvent> taskCandidateGroupAddedEvents = new HashSet<>();
 
     public static Set<TaskCandidateGroupRemovedEvent> taskCandidateGroupRemovedEvents = new HashSet<>();
+
+    private CountDownLatch multiInstanceLatch = new CountDownLatch(1);
+
+    private CountDownLatch singleInstanceLatch = new CountDownLatch(1);
+
+    public CountDownLatch getMultiInstanceLatch() {
+        return multiInstanceLatch;
+    }
+
+    public CountDownLatch getSingleInstanceLatch() {
+        return singleInstanceLatch;
+    }
 
     @Bean
     public UserDetailsService myUserDetailsService() {
@@ -132,6 +152,30 @@ public class RuntimeTestConfiguration {
 
     @Bean
     public Connector testConnectorMultiInstanceExecution() {
+        return integrationContext -> integrationContext;
+    }
+
+    @Bean
+    public Connector testRaceConditionSingleInstance() {
+        return integrationContext -> {
+            try {
+                singleInstanceLatch.countDown();
+                LOGGER.info("Single instance started: single instance latch counted down. Waiting for multi-instance latch to be counted down... Thread: {}", Thread.currentThread().threadId());
+                boolean conditionReached = multiInstanceLatch.await(10, TimeUnit.SECONDS);
+                if (conditionReached) {
+                    LOGGER.info("Proceeding with the execution of single instance. Thread: {}", Thread.currentThread().threadId());
+                } else {
+                    LOGGER.info("Timeout while waiting for multi-instance latch to be counted down. Thread: {}", Thread.currentThread().threadId());
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            return integrationContext;
+        };
+    }
+
+    @Bean
+    public Connector testRaceConditionMultipleInstances() {
         return integrationContext -> integrationContext;
     }
 
@@ -227,6 +271,11 @@ public class RuntimeTestConfiguration {
     @Bean
     public ProcessRuntimeEventListener<ProcessCompletedEvent> processCompletedListener() {
         return processCompleted -> completedProcesses.add(processCompleted.getEntity().getId());
+    }
+
+    @Bean
+    public BPMNElementEventListener<BPMNActivityCompletedEvent> eventsCompletedListener() {
+        return eventsCompleted -> completedBpmnActivities.add(eventsCompleted.getEntity());
     }
 
     @Bean

@@ -143,18 +143,18 @@ import org.activiti.spring.process.variable.VariableParsingService;
 import org.activiti.spring.process.variable.VariableValidationService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
 
 import static java.util.Collections.emptyList;
 
-@Configuration
+@AutoConfiguration
 @AutoConfigureAfter(CommonRuntimeAutoConfiguration.class)
 public class ProcessRuntimeAutoConfiguration {
 
@@ -255,11 +255,13 @@ public class ProcessRuntimeAutoConfiguration {
     public ProcessVariablesInitiator processVariablesInitiator(ProcessExtensionService processExtensionService,
                                                                VariableParsingService variableParsingService,
                                                                VariableValidationService variableValidationService,
-                                                               ExtensionsVariablesMappingProvider mappingProvider) {
+                                                               ExtensionsVariablesMappingProvider mappingProvider,
+                                                               ExpressionResolver expressionResolver) {
         return new ProcessVariablesInitiator(processExtensionService,
                                              variableParsingService,
                                              variableValidationService,
-                                             mappingProvider);
+                                             mappingProvider,
+                                             expressionResolver);
     }
 
     @Bean
@@ -647,7 +649,7 @@ public class ProcessRuntimeAutoConfiguration {
                                                                                      ToAPIProcessCandidateStarterUserRemovedEventConverter processCandidateStarterUserRemovedEventConverter) {
         return () -> runtimeService.addEventListener(new ProcessCandidateStarterUserRemovedListenerDelegate(getInitializedListeners(listeners),
                 processCandidateStarterUserRemovedEventConverter),
-            ActivitiEventType.ENTITY_CREATED);
+            ActivitiEventType.ENTITY_DELETED);
     }
 
     @Bean
@@ -663,7 +665,7 @@ public class ProcessRuntimeAutoConfiguration {
                                                                                       ToAPIProcessCandidateStarterGroupRemovedEventConverter processCandidateStarterGroupRemovedEventConverter) {
         return () -> runtimeService.addEventListener(new ProcessCandidateStarterGroupRemovedListenerDelegate(getInitializedListeners(listeners),
                 processCandidateStarterGroupRemovedEventConverter),
-            ActivitiEventType.ENTITY_CREATED);
+            ActivitiEventType.ENTITY_DELETED);
     }
 
     @Bean

@@ -28,11 +28,11 @@ import org.activiti.api.model.shared.Payload;
 import org.activiti.api.model.shared.Result;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.runtime.model.impl.VariableInstanceImpl;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-@Configuration
+@AutoConfiguration
 @PropertySource("classpath:conf/rest-jackson-configuration.properties") //load default jackson configuration
 public class CommonModelAutoConfiguration {
 

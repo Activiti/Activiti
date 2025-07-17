@@ -24,12 +24,12 @@ import org.activiti.core.common.spring.security.policies.SecurityPoliciesProcess
 import org.activiti.core.common.spring.security.policies.SecurityPoliciesProcessInstanceRestrictionApplier;
 import org.activiti.core.common.spring.security.policies.SecurityPoliciesRestrictionApplier;
 import org.activiti.core.common.spring.security.policies.conf.SecurityPoliciesProperties;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@AutoConfiguration
 @EnableConfigurationProperties(SecurityPoliciesProperties.class)
 public class ActivitiSpringSecurityPoliciesAutoConfiguration {
 

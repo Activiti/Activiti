@@ -16,8 +16,8 @@
 
 package org.activiti.engine.impl.delegate.invocation;
 
-import javax.el.ELContext;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 
 /**
  * Class responsible for handling Expression.getValue invocations

@@ -100,6 +100,15 @@ public class ServiceTask extends TaskWithFieldExtensions {
     this.skipExpression = skipExpression;
   }
 
+  public boolean hasBoundaryErrorEvents() {
+    if (this.boundaryEvents != null && !this.boundaryEvents.isEmpty()) {
+      return this.boundaryEvents.stream().anyMatch(boundaryEvent ->
+        boundaryEvent.hasErrorEventDefinition()
+      );
+    }
+    return false;
+  }
+
   public ServiceTask clone() {
     ServiceTask clone = new ServiceTask();
     clone.setValues(this);

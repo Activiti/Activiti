@@ -99,7 +99,8 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
     // advance the clock after 9 days from starting the process ->
     // the system will execute the pending job and will create a new one (day by day)
     moveByMinutes((9 * 60 * 24));
-    executeJobExecutorForTime(10000, 200);
+    // because the poll for new jobs is done once per minute, we're going to wait the whole 10 seconds
+    executeJobExecutorForTime(10000, 10000);
 
     // there must be a pending job because the endDate is not reached yet
     assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
@@ -210,7 +211,7 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
   }
 
   private void moveByMinutes(int minutes) throws Exception {
-    processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + ((minutes * 60 * 1000))));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + ((minutes * 60l * 1000))));
   }
 
 }

@@ -21,6 +21,13 @@ public class VariableDefinition extends org.activiti.core.common.model.connector
 
     private Object value;
 
+    public VariableDefinition(){}
+    public VariableDefinition(String type, Object value) {
+        super();
+        this.setType(type);
+        this.value = value;
+    }
+
     public Object getValue() {
         return value;
     }

@@ -49,9 +49,7 @@ public class StartEventValidator extends ProcessLevelValidator {
         if (!(eventDefinition instanceof MessageEventDefinition) &&
             !(eventDefinition instanceof TimerEventDefinition) &&
             !(eventDefinition instanceof SignalEventDefinition)) {
-            addError(errors, Problems.START_EVENT_INVALID_EVENT_DEFINITION,
-                process, startEvent,
-                "Unsupported event definition on start event");
+            addError(errors, Problems.START_EVENT_INVALID_EVENT_DEFINITION, process, startEvent);
           }
         }
 
@@ -74,8 +72,8 @@ public class StartEventValidator extends ProcessLevelValidator {
             errors,
             Problems.START_EVENT_MULTIPLE_FOUND,
             process,
-            startEvent,
-            "Multiple none start events are not supported");
+            startEvent
+        );
       }
     }
 

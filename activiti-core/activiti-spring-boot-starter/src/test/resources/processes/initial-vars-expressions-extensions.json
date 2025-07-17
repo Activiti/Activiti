@@ -1,0 +1,39 @@
+{
+  "id":"initialVarsExpressionModel",
+  "type":"PROCESS",
+  "name":"initialVarsExpression",
+  "extensions":{
+    "initialVarsExpression":{
+      "properties":{
+        "15932631-5073-43e6-80f6-8e30a6ba2bfa":{
+          "id":"15932631-5073-43e6-80f6-8e30a6ba2bfa",
+          "name":"initVarWithExpressionInString",
+          "type":"string",
+          "required":false,
+          "value":"start var is ${startVariable} and defined var is ${definedVar} and undefinedVar is ${undefinedVar}"
+        },
+        "15932631-5073-43e6-80f6-8e30a6ba2bfb":{
+          "id":"15932631-5073-43e6-80f6-8e30a6ba2bfb",
+          "name":"initVarWithExpression",
+          "type":"string",
+          "required":false,
+          "value":"${startVariable}"
+        },
+        "15932631-5073-43e6-80f6-8e30a6ba2bfc":{
+          "id":"15932631-5073-43e6-80f6-8e30a6ba2bfc",
+          "name":"definedVar",
+          "type":"string",
+          "required":false,
+          "value":"predefinedVarValue"
+        },
+        "15932631-5073-43e6-80f6-8e30a6ba2bfd":{
+          "id":"15932631-5073-43e6-80f6-8e30a6ba2bfd",
+          "name":"initVarWithUnresolvableExpression",
+          "type":"string",
+          "required":false,
+          "value":"${unresolvableExpression}"
+        }
+      }
+    }
+  }
+}

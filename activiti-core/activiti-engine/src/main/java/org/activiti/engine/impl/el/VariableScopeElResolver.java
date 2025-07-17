@@ -17,15 +17,14 @@
 
 package org.activiti.engine.impl.el;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
 import java.beans.FeatureDescriptor;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import javax.el.ELContext;
-import javax.el.ELResolver;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.el.variable.AssigneeUserELResolver;
 import org.activiti.engine.impl.el.variable.AuthenticatedUserELResolver;
 import org.activiti.engine.impl.el.variable.ExecutionElResolver;
 import org.activiti.engine.impl.el.variable.ProcessInitiatorELResolver;
@@ -83,8 +82,7 @@ public class VariableScopeElResolver extends ELResolver {
                 new TaskElResolver(),
                 new AuthenticatedUserELResolver(),
                 new ProcessInitiatorELResolver(),
-                new VariableElResolver(Context.getProcessEngineConfiguration().getObjectMapper()),
-                new AssigneeUserELResolver());
+                new VariableElResolver(Context.getProcessEngineConfiguration().getObjectMapper()));
         }
         return variableScopeItemELResolvers;
     }

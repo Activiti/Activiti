@@ -9,6 +9,12 @@
             "type":"integer",
             "required":true
           },
+          "a671gn8h-0ac8-4a97-b163-51a6ec49faa1": {
+            "id":"a671gn8h-0ac8-4a97-b163-51a6ec49faa1",
+            "name":"height-meters",
+            "type":"bigdecimal",
+            "required":false
+          },
           "bbcf2eee-3e4a-45f3-b9b7-42be5dcb10bf": {
             "id":"bbcf2eee-3e4a-45f3-b9b7-42be5dcb10bf",
             "name":"name",

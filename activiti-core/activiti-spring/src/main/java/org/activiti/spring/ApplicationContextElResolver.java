@@ -20,8 +20,8 @@ package org.activiti.spring;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 
-import javax.el.ELContext;
-import javax.el.ELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
 
 import org.activiti.engine.ActivitiException;
 import org.springframework.context.ApplicationContext;

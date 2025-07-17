@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
+	<scr:component name="de.odysseus.el.ExpressionFactoryImpl">
+		<implementation class="de.odysseus.el.ExpressionFactoryImpl"/>
+		<service>
+			<provide interface="jakarta.el.ExpressionFactory"/>
+		</service>
+	</scr:component>
+</root>

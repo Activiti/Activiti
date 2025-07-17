@@ -18,9 +18,8 @@ package org.activiti.spring.boot;
 
 import static java.util.Arrays.asList;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import java.util.List;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -51,6 +50,9 @@ public class ActivitiProperties {
   private String deploymentMode = "default";
   private boolean serializePOJOsInVariablesToJson = true;
   private String javaClassFieldForJackson = JsonTypeInfo.Id.CLASS.getDefaultPropertyName();
+  private Integer processDefinitionCacheLimit;
+  private String processDefinitionCacheName;
+  private boolean disableExistingStartEventSubscriptions = false;
 
   public boolean isAsyncExecutorActivate() {
     return asyncExecutorActivate;
@@ -236,5 +238,29 @@ public class ActivitiProperties {
 
     public void setJavaClassFieldForJackson(String javaClassFieldForJackson) {
         this.javaClassFieldForJackson = javaClassFieldForJackson;
+    }
+
+    public Integer getProcessDefinitionCacheLimit() {
+        return processDefinitionCacheLimit;
+    }
+
+    public void setProcessDefinitionCacheLimit(Integer processDefinitionCacheLimit) {
+        this.processDefinitionCacheLimit = processDefinitionCacheLimit;
+    }
+
+    public String getProcessDefinitionCacheName() {
+        return processDefinitionCacheName;
+    }
+
+    public void setProcessDefinitionCacheName(String processDefinitionCacheName) {
+        this.processDefinitionCacheName = processDefinitionCacheName;
+    }
+
+    public void setDisableExistingStartEventSubscriptions(boolean disableExistingStartEventSubscriptions) {
+        this.disableExistingStartEventSubscriptions = disableExistingStartEventSubscriptions;
+    }
+
+    public boolean shouldDisableExistingStartEventSubscriptions() {
+        return disableExistingStartEventSubscriptions;
     }
 }

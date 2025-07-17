@@ -41,8 +41,9 @@ public class Mapping {
 
         VARIABLE,
 
-        VALUE
+        VALUE,
 
+        JSONPATCH
 
     }
 }

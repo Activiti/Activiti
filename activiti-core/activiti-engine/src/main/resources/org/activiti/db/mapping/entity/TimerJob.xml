@@ -233,6 +233,11 @@
 		and REV_ = #{revision, jdbcType=INTEGER}
 	</update>
 
+  <select id="selectTimerStartEvents" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+    select * from ${prefix}ACT_RU_TIMER_JOB where HANDLER_TYPE_ = 'timer-start-event'
+    and PROCESS_INSTANCE_ID_ IS NULL and EXECUTION_ID_ IS NULL
+  </select>
+
 	<select id="selectTimerJobByTypeAndProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
 		select J.*
 		from ${prefix}ACT_RU_TIMER_JOB J

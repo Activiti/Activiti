@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20240205183454397" modeler:modelId="1" modeler:modelVersion="2" modeler:modelLastUpdated="1706900616725">
+  <process id="executionListenersProcess" isExecutable="true">
+
+    <extensionElements>
+      <activiti:executionListener event="end" class="org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener">
+        <activiti:field name="parameter" stringValue="Process has ended" />
+      </activiti:executionListener>
+    </extensionElements>
+
+    <startEvent id="startEvent"/>
+    <sequenceFlow id="startEvent_userTask" sourceRef="startEvent" targetRef="userTask"/>
+
+    <userTask id="userTask" name="UserTask"/>
+    <sequenceFlow id="userTask_endEvent" sourceRef="userTask" targetRef="endEvent"/>
+
+    <endEvent id="endEvent"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_executionListenersProcess">
+    <bpmndi:BPMNPlane bpmnElement="executionListenersProcess" id="BPMNPlane_executionListenersProcess">
+      <bpmndi:BPMNShape bpmnElement="startEvent" id="BPMNShape_startEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="30.0" y="200.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent" id="BPMNShape_endEvent">
+        <omgdc:Bounds height="28.0" width="28.0" x="300.0" y="206.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="userTask" id="BPMNShape_userTask">
+        <omgdc:Bounds height="80.0" width="100.0" x="135.0" y="180.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="userTask_endEvent" id="BPMNEdge_userTask_endEvent">
+        <omgdi:waypoint x="235.0" y="220.0"/>
+        <omgdi:waypoint x="300.0" y="220.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="startEvent_userTask" id="BPMNEdge_startEvent_userTask">
+        <omgdi:waypoint x="60.0" y="215.0"/>
+        <omgdi:waypoint x="80.875" y="215.0"/>
+        <omgdi:waypoint x="135.0" y="217.59903961584632"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

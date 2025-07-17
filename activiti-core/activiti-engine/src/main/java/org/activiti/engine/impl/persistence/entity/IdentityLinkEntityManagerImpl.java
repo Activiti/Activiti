@@ -20,7 +20,6 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -112,24 +111,36 @@ public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<Identit
 
   @Override
   public IdentityLinkEntity addIdentityLink(ExecutionEntity executionEntity, String userId, String groupId, String type) {
+    return addIdentityLink(executionEntity, userId, groupId, type, null);
+  }
+
+  @Override
+  public IdentityLinkEntity addIdentityLink(ExecutionEntity executionEntity, String userId, String groupId, String type, byte[] details) {
     IdentityLinkEntity identityLinkEntity = identityLinkDataManager.create();
     executionEntity.getIdentityLinks().add(identityLinkEntity);
     identityLinkEntity.setProcessInstance(executionEntity.getProcessInstance() != null ? executionEntity.getProcessInstance() : executionEntity);
     identityLinkEntity.setUserId(userId);
     identityLinkEntity.setGroupId(groupId);
     identityLinkEntity.setType(type);
+    identityLinkEntity.setDetails(details);
     insert(identityLinkEntity);
     return identityLinkEntity;
   }
 
   @Override
   public IdentityLinkEntity addIdentityLink(TaskEntity taskEntity, String userId, String groupId, String type) {
+    return addIdentityLink(taskEntity, userId, groupId, type, null);
+  }
+
+  @Override
+  public IdentityLinkEntity addIdentityLink(TaskEntity taskEntity, String userId, String groupId, String type, byte[] details) {
     IdentityLinkEntity identityLinkEntity = identityLinkDataManager.create();
     taskEntity.getIdentityLinks().add(identityLinkEntity);
     identityLinkEntity.setTask(taskEntity);
     identityLinkEntity.setUserId(userId);
     identityLinkEntity.setGroupId(groupId);
     identityLinkEntity.setType(type);
+    identityLinkEntity.setDetails(details);
     insert(identityLinkEntity);
     if (userId != null && taskEntity.getProcessInstanceId() != null) {
       involveUser(taskEntity.getProcessInstance(), userId, IdentityLinkType.PARTICIPANT);
@@ -195,6 +206,11 @@ public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<Identit
   @Override
   public void addUserIdentityLink(TaskEntity taskEntity, String userId, String identityLinkType) {
     addIdentityLink(taskEntity, userId, null, identityLinkType);
+  }
+
+  @Override
+  public void addUserIdentityLink(TaskEntity taskEntity, String userId, String identityLinkType, byte[] details) {
+    addIdentityLink(taskEntity, userId, null, identityLinkType, details);
   }
 
   @Override

@@ -55,10 +55,10 @@ import org.activiti.test.LocalTaskSource;
 import org.activiti.test.TaskSource;
 import org.activiti.test.operations.ProcessRuntimeOperations;
 import org.activiti.test.operations.TaskRuntimeOperations;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@AutoConfiguration
 public class ActivitiAssertionsAutoConfiguration {
 
     private final LocalEventSource localEventProvider = new LocalEventSource();

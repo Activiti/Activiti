@@ -79,6 +79,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   protected String involvedUser;
   protected Set<String> processDefinitionKeys;
   protected Set<String> processDefinitionIds;
+  protected List<String> involvedGroups;
 
   // Not exposed in API, but here for the ProcessInstanceQuery support, since
   // the name lives on the
@@ -604,5 +605,12 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
 
   public void setStartedBy(String startedBy) {
     this.startedBy = startedBy;
+  }
+
+  public List<String> getInvolvedGroups() {
+    return involvedGroups;
+  }
+  public void setInvolvedGroups(List<String> involvedGroups) {
+    this.involvedGroups = involvedGroups;
   }
 }

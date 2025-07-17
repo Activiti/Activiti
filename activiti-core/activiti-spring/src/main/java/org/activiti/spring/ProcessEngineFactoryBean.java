@@ -17,6 +17,8 @@
 
 package org.activiti.spring;
 
+import jakarta.el.ELResolver;
+import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.SpringBeanFactoryProxyMap;
@@ -25,6 +27,8 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+
+import java.util.List;
 
 /**
 
@@ -64,7 +68,16 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
 
   protected void configureExpressionManager() {
     if (processEngineConfiguration.getExpressionManager() == null && applicationContext != null) {
-      processEngineConfiguration.setExpressionManager(new SpringExpressionManager(applicationContext, processEngineConfiguration.getBeans()));
+      SpringExpressionManager expressionManager = new SpringExpressionManager(applicationContext, processEngineConfiguration.getBeans());
+      List<CustomFunctionProvider> customFunctionProviders = processEngineConfiguration.getCustomFunctionProviders();
+      List<ELResolver> customELResolvers = processEngineConfiguration.getCustomELResolvers();
+      if (customFunctionProviders != null) {
+        expressionManager.setCustomFunctionProviders(customFunctionProviders);
+      }
+      if (customELResolvers != null) {
+        expressionManager.setCustomELResolvers(customELResolvers);
+      }
+      processEngineConfiguration.setExpressionManager(expressionManager);
     }
   }
 

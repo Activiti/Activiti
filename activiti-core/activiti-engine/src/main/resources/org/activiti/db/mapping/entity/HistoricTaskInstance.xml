@@ -276,32 +276,61 @@
     where PROC_INST_ID_ = #{parameter}
   </select>
 
+  <!-- select-clause broker (between withJoins and withoutJoins sql scripts) -->
+  <select id="selectHistoricTaskInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultType="long">
+    <choose>
+      <when test="_databaseId == 'mariadb'">
+        <!--
+          mariadb has performance penalty when using "withoutJoins" sql scripts
+        -->
+        <include refid="withJoins_selectHistoricTaskInstanceCountByQueryCriteria"/>
+      </when>
+      <otherwise>
+        <include refid="withoutJoins_selectHistoricTaskInstanceCountByQueryCriteria"/>
+      </otherwise>
+    </choose>
+  </select>
   <select id="selectHistoricTaskInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultMap="historicTaskInstanceResultMap">
-  	${limitBefore}
+    <choose>
+      <when test="_databaseId == 'mariadb'">
+        <!--
+          mariadb has performance penalty when using "withoutJoins" sql scripts
+        -->
+        <include refid="withJoins_selectHistoricTaskInstancesByQueryCriteria"/>
+      </when>
+      <otherwise>
+        <include refid="withoutJoins_selectHistoricTaskInstancesByQueryCriteria"/>
+      </otherwise>
+  </choose>
+  </select>
+
+
+  <!-- regular script (with joins) -->
+  <sql id="withJoins_selectHistoricTaskInstanceCountByQueryCriteria">
+    select count(DISTINCT RES.ID_)
+    <include refid="withJoins_selectHistoricTaskInstancesByQueryCriteriaSql"/>
+  </sql>
+  <sql id="withJoins_selectHistoricTaskInstancesByQueryCriteria">
+    ${limitBefore}
     select distinct RES.* ${limitBetween}
-    <include refid="selectHistoricTaskInstancesByQueryCriteriaSql"/>
+    <include refid="withJoins_selectHistoricTaskInstancesByQueryCriteriaSql"/>
     ${orderBy}
     ${limitAfter}
-  </select>
+  </sql>
 
-  <select id="selectHistoricTaskInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultType="long">
-    select count(DISTINCT RES.ID_)
-    <include refid="selectHistoricTaskInstancesByQueryCriteriaSql"/>
-  </select>
-
-  <sql id="selectHistoricTaskInstancesByQueryCriteriaSql">
+  <sql id="withJoins_selectHistoricTaskInstancesByQueryCriteriaSql">
     from ${prefix}ACT_HI_TASKINST RES
-    <include refid="commonSelectHistoricTaskInstancesByQueryCriteriaSql"/>
+    <include refid="withJoins_commonSelectHistoricTaskInstancesByQueryCriteriaSql"/>
   </sql>
 
   <select id="selectHistoricTaskInstancesWithVariablesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultMap="historicTaskInstanceAndVariablesResultMap">
-    <include refid="selectHistoricTaskInstancesWithVariablesByQueryCriteriaColumns"/>
-    <include refid="selectHistoricTaskInstancesWithVariablesByQueryCriteriaSql"/>
+    <include refid="withJoins_selectHistoricTaskInstancesWithVariablesByQueryCriteriaColumns"/>
+    <include refid="withJoins_selectHistoricTaskInstancesWithVariablesByQueryCriteriaSql"/>
     ${orderBy}
     ${limitAfter}
   </select>
 
-  <sql id="selectHistoricTaskInstancesWithVariablesByQueryCriteriaColumns">
+  <sql id="withJoins_selectHistoricTaskInstancesWithVariablesByQueryCriteriaColumns">
   ${limitBefore}
    <if test="_databaseId != 'db2' and _databaseId != 'mssql'">
     select distinct RES.*,
@@ -339,7 +368,7 @@
    </if>
   </sql>
 
-  <sql id="selectHistoricTaskInstancesWithVariablesByQueryCriteriaSql">
+  <sql id="withJoins_selectHistoricTaskInstancesWithVariablesByQueryCriteriaSql">
     from ${prefix}ACT_HI_TASKINST RES
     <choose>
       <when test="includeTaskLocalVariables &amp;&amp; includeProcessVariables">
@@ -354,10 +383,10 @@
         </if>
       </otherwise>
     </choose>
-    <include refid="commonSelectHistoricTaskInstancesByQueryCriteriaSql"/>
+    <include refid="withJoins_commonSelectHistoricTaskInstancesByQueryCriteriaSql"/>
   </sql>
 
-  <sql id="commonSelectHistoricTaskInstancesByQueryCriteriaSql">
+  <sql id="withJoins_commonSelectHistoricTaskInstancesByQueryCriteriaSql">
     <if test="candidateUser != null || candidateGroups != null || involvedGroups != null">
       inner join ${prefix}ACT_HI_IDENTITYLINK HI on HI.TASK_ID_ = RES.ID_
     </if>
@@ -806,7 +835,7 @@
           <if test="orQueryObject.taskNameLike != null">
             or RES.NAME_ like #{orQueryObject.taskNameLike}${wildcardEscapeClause}
           </if>
-           <if test="orQueryObject.taskNameLikeIgnoreCase != null">
+          <if test="orQueryObject.taskNameLikeIgnoreCase != null">
             or lower(RES.NAME_) like #{orQueryObject.taskNameLikeIgnoreCase}${wildcardEscapeClause}
           </if>
           <if test="orQueryObject.taskNameList != null &amp;&amp; orQueryObject.taskNameList.size() &gt; 0">
@@ -1066,4 +1095,812 @@
   <select id="selectHistoricTaskInstanceCountByNativeQuery" parameterType="java.util.Map" resultType="long">
     ${sql}
   </select>
+
+  <!-- optimized script (without joins) -->
+  <sql id="withoutJoins_selectHistoricTaskInstanceCountByQueryCriteria">
+    select count(SUB.ID_)
+    <include refid="withoutJoins_selectHistoricTaskInstancesByQueryCriteriaSql"/>
+  </sql>
+  <sql id="withoutJoins_selectHistoricTaskInstancesByQueryCriteria">
+    select *
+    <include refid="withoutJoins_selectHistoricTaskInstancesByQueryCriteriaSql"/>
+    <choose>
+      <!--
+        ${limitAfter} on mssql/oracle has more than just "order by" statement
+        Because that property is applied to several SQL statements,
+          we need to make a workaround here
+      -->
+      <when test="'${limitAfter}' != null and _databaseId != 'mssql' and _databaseId != 'oracle'">
+        ORDER BY rnk
+        ${limitAfter}
+      </when>
+      <otherwise>
+        WHERE rnk &gt;= #{firstRow} AND rnk &lt; #{lastRow}
+        ORDER BY rnk
+      </otherwise>
+    </choose>
+  </sql>
+
+  <sql id="withoutJoins_selectHistoricTaskInstancesByQueryCriteriaSql">
+    FROM (
+        SELECT RES.*,
+            row_number() OVER (ORDER BY ${orderByColumns}) rnk
+        FROM ACT_HI_TASKINST RES
+        <where>
+          <if test="taskId != null">
+              RES.ID_ = #{taskId}
+          </if>
+          <if test="category != null">
+            and RES.CATEGORY_ = #{category}
+          </if>
+          <if test="creationDate != null">
+            and RES.START_TIME_ = #{creationDate}
+          </if>
+          <if test="creationBeforeDate != null">
+            and RES.START_TIME_ &lt; #{creationBeforeDate}
+          </if>
+          <if test="creationAfterDate != null">
+            and RES.START_TIME_ &gt; #{creationAfterDate}
+          </if>
+          <if test="completedDate != null">
+            and RES.END_TIME_ = #{completedDate}
+          </if>
+          <if test="completedBeforeDate != null">
+            and RES.END_TIME_ &lt; #{completedBeforeDate}
+          </if>
+          <if test="completedAfterDate != null">
+            and RES.END_TIME_ &gt; #{completedAfterDate}
+          </if>
+          <if test="deploymentId != null">
+            and <include refid="withoutJoins_selectExists">
+              <property name="externalTable" value="${prefix}ACT_RE_PROCDEF DEPLOY_P"/>
+              <property name="join" value="RES.PROC_DEF_ID_ = DEPLOY_P.ID_"/>
+              <property name="where" value="DEPLOY_P.DEPLOYMENT_ID_ = #{deploymentId}"/>
+            </include>
+          </if>
+          <if test="deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0">
+            and <include refid="withoutJoins_selectExistsIn">
+              <property name="externalTable" value="${prefix}ACT_RE_PROCDEF DEPLOY_P"/>
+              <property name="join" value="RES.PROC_DEF_ID_ = DEPLOY_P.ID_"/>
+              <property name="field" value="DEPLOY_P.DEPLOYMENT_ID_"/>
+              <property name="collection" value="deploymentIds"/>
+            </include>
+          </if>
+          <if test="unfinished">and RES.END_TIME_ IS NULL</if>
+          <if test="finished">and RES.END_TIME_ IS NOT NULL</if>
+          <if test="candidateUser != null || candidateGroups != null">
+            and EXISTS (
+                SELECT 1
+                FROM ${prefix}ACT_HI_IDENTITYLINK HI
+                WHERE
+                    HI.TASK_ID_ = RES.ID_
+                    and RES.ASSIGNEE_ is null
+                    and HI.TYPE_ = 'candidate'
+                    and
+                    (
+                        <if test="candidateUser != null">
+                            HI.USER_ID_ = #{candidateUser}
+                        </if>
+                        <if test="candidateUser != null &amp;&amp; candidateGroups != null &amp;&amp; candidateGroups.size() &gt; 0">
+                          or
+                        </if>
+                        <if test="candidateGroups != null &amp;&amp; candidateGroups.size() &gt; 0">
+                          HI.GROUP_ID_ IN
+                          <foreach item="group" index="index" collection="candidateGroups"
+                                   open="(" separator="," close=")">
+                            #{group}
+                          </foreach>
+                        </if>
+                    )
+            )
+          </if>
+          <if test="involvedUser != null">
+            and (
+              exists (
+                select 1
+                from ${prefix}ACT_HI_IDENTITYLINK HI
+                where
+                  HI.TASK_ID_ = RES.ID_
+                  and HI.USER_ID_ = #{involvedUser}
+              )
+              or RES.ASSIGNEE_ = #{involvedUser}
+              or RES.OWNER_ = #{involvedUser}
+            )
+          </if>
+          <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
+            and exists (
+              select 1
+              from ACT_HI_IDENTITYLINK HI
+              where
+                HI.TASK_ID_ = RES.ID_
+                and HI.TYPE_ = 'participant'
+                and HI.GROUP_ID_ IN
+                  <foreach item="group" index="index" collection="involvedGroups" open="(" separator="," close=")">
+                    #{group}
+                  </foreach>
+            )
+          </if>
+          <if test="executionId != null">
+            and RES.EXECUTION_ID_ = #{executionId}
+          </if>
+          <if test="processDefinitionId != null">
+            and RES.PROC_DEF_ID_ = #{processDefinitionId}
+          </if>
+          <if test="processDefinitionKey != null">
+            and <include refid="withoutJoins_selectExists">
+              <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D"/>
+              <property name="join" value="RES.PROC_DEF_ID_ = D.ID_"/>
+              <property name="where" value="D.KEY_ = #{processDefinitionKey}"/>
+            </include>
+          </if>
+          <if test="processDefinitionKeyLike != null">
+            and <include refid="withoutJoins_selectExists">
+              <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D"/>
+              <property name="join" value="RES.PROC_DEF_ID_ = D.ID_"/>
+              <property name="where" value="D.KEY_ like #{processDefinitionKeyLike}${wildcardEscapeClause}"/>
+            </include>
+          </if>
+          <if test="processDefinitionKeyLikeIgnoreCase != null">
+            and <include refid="withoutJoins_selectExists">
+              <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D"/>
+              <property name="join" value="RES.PROC_DEF_ID_ = D.ID_"/>
+              <property name="where" value="lower(D.KEY_) like #{processDefinitionKeyLikeIgnoreCase}${wildcardEscapeClause}"/>
+            </include>
+          </if>
+          <if test="processDefinitionKeys != null &amp;&amp; processDefinitionKeys.size() &gt; 0">
+            and <include refid="withoutJoins_selectExistsIn">
+              <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D"/>
+              <property name="join" value="RES.PROC_DEF_ID_ = D.ID_"/>
+              <property name="field" value="D.KEY_"/>
+              <property name="collection" value="processDefinitionKeys"/>
+            </include>
+          </if>
+          <if test="processInstanceId != null">
+            and RES.PROC_INST_ID_ = #{processInstanceId}
+          </if>
+          <if test="processInstanceIds != null &amp;&amp; processInstanceIds.size() &gt; 0">
+            and RES.PROC_INST_ID_ IN
+            <foreach item="processInstance" index="index" collection="processInstanceIds"
+                     open="(" separator="," close=")">
+              #{processInstance}
+            </foreach>
+          </if>
+          <if test="processDefinitionName != null">
+            and <include refid="withoutJoins_selectExists">
+              <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D"/>
+              <property name="join" value="RES.PROC_DEF_ID_ = D.ID_"/>
+              <property name="where" value="D.NAME_ = #{processDefinitionName}"/>
+            </include>
+          </if>
+          <if test="processDefinitionNameLike != null">
+            and <include refid="withoutJoins_selectExists">
+                <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D"/>
+                <property name="join" value="RES.PROC_DEF_ID_ = D.ID_"/>
+                <property name="where" value="D.NAME_ like #{processDefinitionNameLike}${wildcardEscapeClause}"/>
+              </include>
+          </if>
+          <if test="processInstanceBusinessKey != null">
+            and <include refid="withoutJoins_selectExists">
+              <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI"/>
+              <property name="join" value="RES.PROC_INST_ID_ = HPI.ID_"/>
+              <property name="where" value="HPI.BUSINESS_KEY_ = #{processInstanceBusinessKey}"/>
+            </include>
+          </if>
+          <if test="processFinished">
+            and <include refid="withoutJoins_selectExists">
+              <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI"/>
+              <property name="join" value="RES.PROC_INST_ID_ = HPI.ID_"/>
+              <property name="where" value="HPI.END_TIME_ is not null"/>
+            </include>
+          </if>
+          <if test="processUnfinished">
+            and <include refid="withoutJoins_selectExists">
+              <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI"/>
+              <property name="join" value="RES.PROC_INST_ID_ = HPI.ID_"/>
+              <property name="where" value="HPI.END_TIME_ is null"/>
+            </include>
+          </if>
+          <if test="processInstanceBusinessKeyLike != null">
+            and <include refid="withoutJoins_selectExists">
+              <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI"/>
+              <property name="join" value="RES.PROC_INST_ID_ = HPI.ID_"/>
+              <property name="where" value="HPI.BUSINESS_KEY_ like #{processInstanceBusinessKeyLike}${wildcardEscapeClause}"/>
+            </include>
+          </if>
+          <if test="processInstanceBusinessKeyLikeIgnoreCase != null">
+            and <include refid="withoutJoins_selectExists">
+              <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI"/>
+              <property name="join" value="RES.PROC_INST_ID_ = HPI.ID_"/>
+              <property name="where" value="lower(HPI.BUSINESS_KEY_) like #{processInstanceBusinessKeyLikeIgnoreCase}${wildcardEscapeClause}"/>
+            </include>
+          </if>
+          <if test="taskAssignee != null">
+              and RES.ASSIGNEE_ = #{taskAssignee}
+            </if>
+          <if test="taskAssigneeLike != null">
+          and RES.ASSIGNEE_ like #{taskAssigneeLike}${wildcardEscapeClause}
+        </if>
+          <if test="taskAssigneeLikeIgnoreCase != null">
+              and lower(RES.ASSIGNEE_) like #{taskAssigneeLikeIgnoreCase}${wildcardEscapeClause}
+          </if>
+          <if test="taskAssigneeIds != null &amp;&amp; taskAssigneeIds.size() &gt; 0">
+            and RES.ASSIGNEE_ IN
+            <foreach item="assigneeId" index="index" collection="taskAssigneeIds"
+                     open="(" separator="," close=")">
+              #{assigneeId}
+            </foreach>
+          </if>
+          <if test="taskDefinitionKey != null">
+            and RES.TASK_DEF_KEY_ = #{taskDefinitionKey}
+          </if>
+          <if test="taskDefinitionKeyLike != null">
+            and RES.TASK_DEF_KEY_ like #{taskDefinitionKeyLike}${wildcardEscapeClause}
+          </if>
+          <if test="taskDeleteReason != null">
+            and RES.DELETE_REASON_ = #{taskDeleteReason}
+          </if>
+          <if test="taskDeleteReasonLike != null">
+            and RES.DELETE_REASON_ like #{taskDeleteReasonLike}${wildcardEscapeClause}
+          </if>
+          <if test="taskDescription != null">
+            and RES.DESCRIPTION_ = #{taskDescription}
+          </if>
+          <if test="taskDescriptionLike != null">
+            and RES.DESCRIPTION_ like #{taskDescriptionLike}${wildcardEscapeClause}
+          </if>
+          <if test="taskDescriptionLikeIgnoreCase != null">
+            and lower(RES.DESCRIPTION_) like #{taskDescriptionLikeIgnoreCase}${wildcardEscapeClause}
+          </if>
+          <if test="taskPriority != null">
+            and RES.PRIORITY_ = #{taskPriority}
+          </if>
+          <if test="taskMinPriority != null">
+            and RES.PRIORITY_ &gt;= #{taskMinPriority}
+          </if>
+          <if test="taskMaxPriority != null">
+            and RES.PRIORITY_ &lt;= #{taskMaxPriority}
+          </if>
+          <if test="tenantId != null">
+            and RES.TENANT_ID_ = #{tenantId}
+          </if>
+          <if test="tenantIdLike != null">
+            and RES.TENANT_ID_ like #{tenantIdLike}${wildcardEscapeClause}
+          </if>
+          <if test="withoutTenantId">
+            and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
+          </if>
+          <if test="dueDate != null">
+            and RES.DUE_DATE_ = #{dueDate}
+          </if>
+          <if test="dueBefore != null">
+            and RES.DUE_DATE_ &lt; #{dueBefore}
+          </if>
+          <if test="dueAfter != null">
+            and RES.DUE_DATE_ &gt; #{dueAfter}
+          </if>
+          <if test="taskName != null">
+            and RES.NAME_ = #{taskName}
+          </if>
+          <if test="taskNameLike != null">
+            and RES.NAME_ like #{taskNameLike}${wildcardEscapeClause}
+          </if>
+          <if test="taskNameLikeIgnoreCase != null">
+            and lower(RES.NAME_) like #{taskNameLikeIgnoreCase}${wildcardEscapeClause}
+          </if>
+          <if test="taskNameList != null &amp;&amp; taskNameList.size() &gt; 0">
+            and RES.NAME_ IN
+            <foreach item="taskName" index="index" collection="taskNameList"
+                     open="(" separator="," close=")">
+              #{taskName}
+            </foreach>
+          </if>
+          <if test="taskNameListIgnoreCase != null &amp;&amp; taskNameListIgnoreCase.size() &gt; 0">
+            and lower(RES.NAME_) IN
+            <foreach item="taskName" index="index" collection="taskNameListIgnoreCase"
+                     open="(" separator="," close=")">
+              #{taskName}
+            </foreach>
+          </if>
+          <if test="taskOwner != null">
+            and RES.OWNER_ = #{taskOwner}
+          </if>
+          <if test="taskOwnerLike != null">
+            and RES.OWNER_ like #{taskOwnerLike}${wildcardEscapeClause}
+          </if>
+          <if test="taskOwnerLikeIgnoreCase != null">
+              and lower(RES.OWNER_) like #{taskOwnerLikeIgnoreCase}${wildcardEscapeClause}
+            </if>
+          <if test="taskParentTaskId != null">
+            and RES.PARENT_TASK_ID_ = #{taskParentTaskId}
+          </if>
+          <if test="tenantIdLike != null">
+            and RES.TENANT_ID_ like #{tenantIdLike}${wildcardEscapeClause}
+          </if>
+          <if test="withoutDueDate">
+            and RES.DUE_DATE_ is null
+          </if>
+          <foreach item="queryVar" collection="queryVariableValues" index="index">
+              and
+              <trim prefix="(" prefixOverrides="AND" suffix=")">
+                EXISTS (
+                    SELECT 1
+                    FROM ${prefix}ACT_HI_VARINST A${index}
+                    WHERE
+                        <!-- When process instance variable is queried for, taskId should be null -->
+                        <if test="!queryVar.local">
+                          A${index}.PROC_INST_ID_ = RES.PROC_INST_ID_ and A${index}.TASK_ID_ is null
+                        </if>
+                        <if test="queryVar.local">
+                          RES.ID_ = A${index}.TASK_ID_
+                        </if>
+                        <!-- Match-all variable-names when name is null -->
+                        <if test="queryVar.name != null">
+                          and A${index}.NAME_ = #{queryVar.name}
+                        </if>
+                        <if test="!queryVar.type.equals('null')">
+                          and A${index}.VAR_TYPE_ = #{queryVar.type}
+                        </if>
+                        <!-- Variable value -->
+                        <if test="queryVar.textValue != null &amp;&amp; queryVar.longValue == null &amp;&amp; queryVar.doubleValue == null">
+                          <choose>
+                            <when test="queryVar.operator.equals('EQUALS_IGNORE_CASE') || queryVar.operator.equals('NOT_EQUALS_IGNORE_CASE') || queryVar.operator.equals('LIKE_IGNORE_CASE')">
+                              and lower(A${index}.TEXT_)
+                            </when>
+                            <otherwise>
+                              and A${index}.TEXT_
+                            </otherwise>
+                          </choose>
+                          <choose>
+                            <when test="queryVar.operator.equals('LIKE') || queryVar.operator.equals('LIKE_IGNORE_CASE')">LIKE</when>
+                            <otherwise><include refid="executionVariableOperator" /></otherwise>
+                          </choose>
+                          #{queryVar.textValue}
+                          <choose>
+                            <when test="queryVar.operator.equals('LIKE') || queryVar.operator.equals('LIKE_IGNORE_CASE')">${wildcardEscapeClause}</when>
+                          </choose>
+                        </if>
+                        <if test="queryVar.textValue2 != null">
+                          and A${index}.TEXT2_
+                          <choose>
+                            <when test="queryVar.operator.equals('LIKE')">LIKE</when>
+                            <otherwise><include refid="executionVariableOperator" /></otherwise>
+                          </choose>
+                          #{queryVar.textValue2}
+                          <choose>
+                            <when test="queryVar.operator.equals('LIKE')">${wildcardEscapeClause}</when>
+                          </choose>
+                        </if>
+                        <if test="queryVar.longValue != null">
+                          and A${index}.LONG_
+                          <include refid="executionVariableOperator" />
+                          #{queryVar.longValue}
+                        </if>
+                        <if test="queryVar.doubleValue != null">
+                          and A${index}.DOUBLE_
+                          <include refid="executionVariableOperator" />
+                          #{queryVar.doubleValue}
+                        </if>
+                        <!-- Null variable type -->
+                        <if test="queryVar.textValue == null &amp;&amp; queryVar.textValue2 == null &amp;&amp; queryVar.longValue == null &amp;&amp; queryVar.doubleValue == null">
+                          <choose>
+                            <when test="queryVar.operator.equals('NOT_EQUALS')">
+                              and (A${index}.TEXT_ is not null or A${index}.TEXT2_ is not null or A${index}.LONG_ is not null or A${index}.DOUBLE_ is not null or A${index}.BYTEARRAY_ID_ is not null)
+                            </when>
+                            <otherwise>
+                              and A${index}.TEXT_ is null and A${index}.TEXT2_ is null and A${index}.LONG_ is null and A${index}.DOUBLE_ is null and A${index}.BYTEARRAY_ID_ is null
+                            </otherwise>
+                          </choose>
+                        </if>
+                )
+              </trim>
+          </foreach>
+          <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
+              AND
+              <trim prefix="(" prefixOverrides="OR" suffix=")">
+                  <if test="orQueryObject.taskId != null">
+                    RES.ID_ = #{orQueryObject.taskId}
+                  </if>
+                  <if test="orQueryObject.deploymentId != null">
+                    or <include refid="withoutJoins_selectExists">
+                      <property name="externalTable" value="${prefix}ACT_RE_PROCDEF DEPLOY_P_OR${orIndex}"/>
+                      <property name="join" value="RES.PROC_DEF_ID_ = DEPLOY_P_OR${orIndex}.ID_"/>
+                      <property name="where" value="DEPLOY_P_OR${orIndex}.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}"/>
+                    </include>
+                  </if>
+                  <if test="orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0">
+                    or <include refid="withoutJoins_selectExistsIn">
+                      <property name="externalTable" value="${prefix}ACT_RE_PROCDEF DEPLOY_P_OR${orIndex}"/>
+                      <property name="join" value="RES.PROC_DEF_ID_ = DEPLOY_P_OR${orIndex}.ID_"/>
+                      <property name="field" value="DEPLOY_P_OR${orIndex}.DEPLOYMENT_ID_"/>
+                      <property name="collection" value="orQueryObject.deploymentIds"/>
+                    </include>
+                  </if>
+                  <if test="orQueryObject.category != null">
+                    or RES.CATEGORY_ = #{orQueryObject.category}
+                  </if>
+                  <if test="orQueryObject.creationDate != null">
+                    or RES.START_TIME_ = #{orQueryObject.creationDate}
+                  </if>
+                  <if test="orQueryObject.creationBeforeDate != null">
+                    or RES.START_TIME_ &lt; #{orQueryObject.creationBeforeDate}
+                  </if>
+                  <if test="orQueryObject.creationAfterDate != null">
+                    or RES.START_TIME_ &gt; #{orQueryObject.creationAfterDate}
+                  </if>
+                  <if test="orQueryObject.completedDate != null">
+                    or RES.END_TIME_ = #{orQueryObject.completedDate}
+                  </if>
+                  <if test="orQueryObject.completedBeforeDate != null">
+                    or RES.END_TIME_ &lt; #{orQueryObject.completedBeforeDate}
+                  </if>
+                  <if test="orQueryObject.completedAfterDate != null">
+                    or RES.END_TIME_ &gt; #{orQueryObject.completedAfterDate}
+                  </if>
+                  <if test="orQueryObject.executionId != null">
+                    or RES.EXECUTION_ID_ = #{orQueryObject.executionId}
+                  </if>
+                  <if test="orQueryObject.unfinished">
+                    or RES.END_TIME_ is null
+                  </if>
+                  <if test="orQueryObject.finished">
+                    or RES.END_TIME_ is not null
+                  </if>
+                  <if test="orQueryObject.involvedUser != null">
+                    or (
+                      exists (
+                        select 1
+                        from ${prefix}ACT_HI_IDENTITYLINK HI_OR${orIndex}
+                        where
+                          HI_OR${orIndex}.TASK_ID_ = RES.ID_
+                          and HI_OR${orIndex}.USER_ID_ = #{orQueryObject.involvedUser}
+                      )
+                      or RES.ASSIGNEE_ = #{orQueryObject.involvedUser}
+                      or RES.OWNER_ = #{orQueryObject.involvedUser}
+                    )
+                  </if>
+                  <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
+                    or (
+                      EXISTS (
+                          SELECT 1
+                          FROM ${prefix}ACT_HI_IDENTITYLINK HI_OR${orIndex}
+                          WHERE
+                              HI_OR${orIndex}.TASK_ID_ = RES.ID_ AND HI_OR${orIndex}.TYPE_ = 'participant'
+                              AND
+                              HI_OR${orIndex}.GROUP_ID_ IN
+                              <foreach item="group" index="index" collection="orQueryObject.involvedGroups" open="(" separator="," close=")">
+                                #{group}
+                              </foreach>
+                      )
+                    )
+                  </if>
+                  <if test="orQueryObject.processDefinitionId != null">
+                  or RES.PROC_DEF_ID_ = #{orQueryObject.processDefinitionId}
+                </if>
+                  <if test="orQueryObject.processDefinitionKey != null">
+                    or <include refid="withoutJoins_selectExists">
+                      <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D_OR${orIndex}"/>
+                      <property name="join" value="RES.PROC_DEF_ID_ = D_OR${orIndex}.ID_"/>
+                      <property name="where" value="D_OR${orIndex}.KEY_ = #{orQueryObject.processDefinitionKey}"/>
+                    </include>
+                  </if>
+                  <if test="orQueryObject.processDefinitionKeyLike != null">
+                    or <include refid="withoutJoins_selectExists">
+                      <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D_OR${orIndex}"/>
+                      <property name="join" value="RES.PROC_DEF_ID_ = D_OR${orIndex}.ID_"/>
+                      <property name="where" value="D_OR${orIndex}.KEY_ like #{orQueryObject.processDefinitionKeyLike}${wildcardEscapeClause}"/>
+                    </include>
+                  </if>
+                  <if test="orQueryObject.processDefinitionKeyLikeIgnoreCase != null">
+                    or <include refid="withoutJoins_selectExists">
+                      <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D_OR${orIndex}"/>
+                      <property name="join" value="RES.PROC_DEF_ID_ = D_OR${orIndex}.ID_"/>
+                      <property name="where" value="lower(D_OR${orIndex}.KEY_) like #{orQueryObject.processDefinitionKeyLikeIgnoreCase}${wildcardEscapeClause}"/>
+                    </include>
+                  </if>
+                  <if test="orQueryObject.processDefinitionKeys != null &amp;&amp; orQueryObject.processDefinitionKeys.size() &gt; 0">
+                    or <include refid="withoutJoins_selectExistsIn">
+                      <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D_OR${orIndex}"/>
+                      <property name="join" value="RES.PROC_DEF_ID_ = D_OR${orIndex}.ID_"/>
+                      <property name="field" value="D_OR${orIndex}.KEY_"/>
+                      <property name="collection" value="orQueryObject.processDefinitionKeys"/>
+                    </include>
+                  </if>
+                  <if test="orQueryObject.processDefinitionName != null">
+                    or <include refid="withoutJoins_selectExists">
+                      <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D_OR${orIndex}"/>
+                      <property name="join" value="RES.PROC_DEF_ID_ = D_OR${orIndex}.ID_"/>
+                      <property name="where" value="D_OR${orIndex}.NAME_ = #{orQueryObject.processDefinitionName}"/>
+                    </include>
+                  </if>
+                  <if test="orQueryObject.processDefinitionNameLike != null">
+                    or <include refid="withoutJoins_selectExists">
+                      <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D_OR${orIndex}"/>
+                      <property name="join" value="RES.PROC_DEF_ID_ = D_OR${orIndex}.ID_"/>
+                      <property name="where" value="D_OR${orIndex}.NAME_ like #{orQueryObject.processDefinitionNameLike}${wildcardEscapeClause}"/>
+                    </include>
+                  </if>
+                  <if test="orQueryObject.processInstanceId != null">
+                    or RES.PROC_INST_ID_ = #{orQueryObject.processInstanceId}
+                  </if>
+                  <if test="orQueryObject.processInstanceIds != null &amp;&amp; orQueryObject.processInstanceIds.size() &gt; 0">
+                    or RES.PROC_INST_ID_ IN
+                    <foreach item="processInstance" index="index" collection="orQueryObject.processInstanceIds"
+                             open="(" separator="," close=")">
+                      #{processInstance}
+                    </foreach>
+                  </if>
+                  <if test="orQueryObject.processInstanceBusinessKey != null">
+                    or <include refid="withoutJoins_selectExists">
+                      <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI_OR${orIndex}"/>
+                      <property name="join" value="RES.PROC_INST_ID_ = HPI_OR${orIndex}.ID_"/>
+                      <property name="where" value="HPI_OR${orIndex}.BUSINESS_KEY_ = #{orQueryObject.processInstanceBusinessKey}"/>
+                    </include>
+                  </if>
+                  <if test="orQueryObject.processInstanceBusinessKeyLike != null">
+                    or <include refid="withoutJoins_selectExists">
+                      <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI_OR${orIndex}"/>
+                      <property name="join" value="RES.PROC_INST_ID_ = HPI_OR${orIndex}.ID_"/>
+                      <property name="where" value="HPI_OR${orIndex}.BUSINESS_KEY_ like #{orQueryObject.processInstanceBusinessKeyLike}${wildcardEscapeClause}"/>
+                    </include>
+                  </if>
+                  <if test="orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null">
+                      or <include refid="withoutJoins_selectExists">
+                        <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI_OR${orIndex}"/>
+                        <property name="join" value="RES.PROC_INST_ID_ = HPI_OR${orIndex}.ID_"/>
+                        <property name="where" value="lower(HPI_OR${orIndex}.BUSINESS_KEY_) like #{orQueryObject.processInstanceBusinessKeyLikeIgnoreCase}${wildcardEscapeClause}"/>
+                      </include>
+                    </if>
+                  <if test="orQueryObject.processFinished">
+                    or <include refid="withoutJoins_selectExists">
+                      <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI_OR${orIndex}"/>
+                      <property name="join" value="RES.PROC_INST_ID_ = HPI_OR${orIndex}.ID_"/>
+                      <property name="where" value="HPI_OR${orIndex}.END_TIME_ is not null"/>
+                    </include>
+                  </if>
+                  <if test="orQueryObject.processUnfinished">
+                    or <include refid="withoutJoins_selectExists">
+                      <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI_OR${orIndex}"/>
+                      <property name="join" value="RES.PROC_INST_ID_ = HPI_OR${orIndex}.ID_"/>
+                      <property name="where" value="HPI_OR${orIndex}.END_TIME_ is null"/>
+                    </include>
+                  </if>
+                  <if test="orQueryObject.involvedUser != null">
+                        OR (
+                          <include refid="withoutJoins_selectExists">
+                            <property name="externalTable" value="${prefix}ACT_HI_IDENTITYLINK HI_OR${orIndex}"/>
+                            <property name="join" value="HI_OR${orIndex}.TASK_ID_ = RES.ID_"/>
+                            <property name="where" value="HI_OR${orIndex}.USER_ID_ = #{orQueryObject.involvedUser}"/>
+                          </include>
+                          OR RES.ASSIGNEE_ = #{orQueryObject.involvedUser}
+                          OR RES.OWNER_ = #{orQueryObject.involvedUser}
+                        )
+                      </if>
+                  <if test="orQueryObject.taskAssigneeLikeIgnoreCase != null">
+                    or RES.ASSIGNEE_ like #{orQueryObject.taskAssigneeLikeIgnoreCase}${wildcardEscapeClause}
+                  </if>
+                  <if test="orQueryObject.taskAssignee != null">
+                    or RES.ASSIGNEE_ = #{orQueryObject.taskAssignee}
+                  </if>
+                  <if test="orQueryObject.taskAssigneeLike != null">
+                    or RES.ASSIGNEE_ like #{orQueryObject.taskAssigneeLike}${wildcardEscapeClause}
+                  </if>
+                  <if test="orQueryObject.taskAssigneeIds != null &amp;&amp; orQueryObject.taskAssigneeIds.size() &gt; 0">
+                    or RES.ASSIGNEE_ IN
+                    <foreach item="assigneeId" index="index" collection="orQueryObject.taskAssigneeIds"
+                             open="(" separator="," close=")">
+                      #{assigneeId}
+                    </foreach>
+                  </if>
+                  <if test="orQueryObject.taskDeleteReason != null">
+                    or RES.DELETE_REASON_ = #{orQueryObject.taskDeleteReason}
+                  </if>
+                  <if test="orQueryObject.taskDeleteReasonLike != null">
+                    or RES.DELETE_REASON_ like #{orQueryObject.taskDeleteReasonLike}${wildcardEscapeClause}
+                  </if>
+                  <if test="orQueryObject.taskDescription != null">
+                    or RES.DESCRIPTION_ = #{orQueryObject.taskDescription}
+                  </if>
+                  <if test="orQueryObject.taskDescriptionLike != null">
+                    or RES.DESCRIPTION_ like #{orQueryObject.taskDescriptionLike}${wildcardEscapeClause}
+                  </if>
+                  <if test="orQueryObject.taskDescriptionLikeIgnoreCase != null">
+                    or lower(RES.DESCRIPTION_) like #{orQueryObject.taskDescriptionLikeIgnoreCase}${wildcardEscapeClause}
+                  </if>
+                  <if test="orQueryObject.taskDefinitionKey != null">
+                    or RES.TASK_DEF_KEY_ = #{orQueryObject.taskDefinitionKey}
+                  </if>
+                  <if test="orQueryObject.taskDefinitionKeyLike != null">
+                      or RES.TASK_DEF_KEY_ like #{orQueryObject.taskDefinitionKeyLike}${wildcardEscapeClause}
+                    </if>
+                  <if test="orQueryObject.taskPriority != null">
+                    or RES.PRIORITY_ = #{orQueryObject.taskPriority}
+                  </if>
+                  <if test="orQueryObject.taskMinPriority != null">
+                    or RES.PRIORITY_ &gt;= #{orQueryObject.taskMinPriority}
+                  </if>
+                  <if test="orQueryObject.taskMaxPriority != null">
+                    or RES.PRIORITY_ &lt;= #{orQueryObject.taskMaxPriority}
+                  </if>
+                  <if test="orQueryObject.dueAfter != null">
+                    or RES.DUE_DATE_ &gt; #{orQueryObject.dueAfter}
+                  </if>
+                  <if test="orQueryObject.dueDate != null">
+                    or RES.DUE_DATE_ = #{orQueryObject.dueDate}
+                  </if>
+                  <if test="orQueryObject.dueBefore != null">
+                    or RES.DUE_DATE_ &lt; #{orQueryObject.dueBefore}
+                  </if>
+                  <if test="orQueryObject.taskName != null">
+                    or RES.NAME_ = #{orQueryObject.taskName}
+                  </if>
+                  <if test="orQueryObject.taskNameLike != null">
+                    or RES.NAME_ like #{orQueryObject.taskNameLike}${wildcardEscapeClause}
+                  </if>
+                  <if test="orQueryObject.taskNameLikeIgnoreCase != null">
+                    or lower(RES.NAME_) like #{orQueryObject.taskNameLikeIgnoreCase}${wildcardEscapeClause}
+                  </if>
+                  <if test="orQueryObject.taskNameList != null &amp;&amp; orQueryObject.taskNameList.size() &gt; 0">
+                    or RES.NAME_ IN
+                    <foreach item="taskName" index="index" collection="orQueryObject.taskNameList"
+                             open="(" separator="," close=")">
+                      #{taskName}
+                    </foreach>
+                  </if>
+                  <if test="orQueryObject.taskNameListIgnoreCase != null &amp;&amp; orQueryObject.taskNameListIgnoreCase.size() &gt; 0">
+                    or lower(RES.NAME_) IN
+                    <foreach item="taskName" index="index" collection="orQueryObject.taskNameListIgnoreCase"
+                             open="(" separator="," close=")">
+                      #{taskName}
+                    </foreach>
+                  </if>
+                  <if test="orQueryObject.taskOwner != null">
+                    or RES.OWNER_ = #{orQueryObject.taskOwner}
+                  </if>
+                  <if test="orQueryObject.taskOwnerLike != null">
+                      or RES.OWNER_ like #{orQueryObject.taskOwnerLike}${wildcardEscapeClause}
+                  </if>
+                  <if test="orQueryObject.taskOwnerLikeIgnoreCase != null">
+                        or lower(RES.OWNER_) like #{orQueryObject.taskOwnerLikeIgnoreCase}${wildcardEscapeClause}
+                    </if>
+                  <if test="orQueryObject.taskParentTaskId != null">
+                    or RES.PARENT_TASK_ID_ = #{orQueryObject.taskParentTaskId}
+                  </if>
+                  <if test="orQueryObject.tenantId != null">
+                    or RES.TENANT_ID_ = #{orQueryObject.tenantId}
+                  </if>
+                  <if test="orQueryObject.tenantIdLike != null">
+                    or RES.TENANT_ID_ like #{orQueryObject.tenantIdLike}${wildcardEscapeClause}
+                  </if>
+                  <if test="orQueryObject.withoutDueDate">
+                    or RES.DUE_DATE_ is null
+                  </if>
+                  <if test="orQueryObject.withoutTenantId">
+                    or (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
+                  </if>
+                  <if test="orQueryObject.queryVariableValues.size() &gt; 0">
+                    or
+                    <!--
+                      This part replicates "withoutJoins_selectExists" script.
+                      Because ONGL doesn't allow double evaluation of expressions,
+                          we can't use <bind value="${}"> and use that to pass as parameter
+                          to <include>
+                    -->
+                    <!-- setup -->
+                    <if test="orQueryObject.hasLocalQueryVariableValue()">
+                      <bind name="alias" value="'A_L_OR'"/>
+                    </if>
+                    <if test="orQueryObject.hasNonLocalQueryVariableValue()">
+                      <bind name="alias" value="'A_OR'"/>
+                    </if>
+                    exists (
+                      select 1
+                      from ${prefix}ACT_HI_VARINST ${alias}${orIndex}
+                      where
+                        <!-- join -->
+                        <choose>
+                          <when test="orQueryObject.hasLocalQueryVariableValue()">
+                            RES.ID_ = ${alias}${orIndex}.TASK_ID_
+                          </when>
+                          <otherwise>
+                            RES.PROC_INST_ID_ = ${alias}${orIndex}.PROC_INST_ID_
+                          </otherwise>
+                        </choose>
+                        <foreach item="queryVar" collection="orQueryObject.queryVariableValues" index="index">
+                          and
+                          <trim prefix="(" prefixOverrides="AND" suffix=")">
+                            <if test="!queryVar.local">
+                                <!-- When process instance variable is queried for, taskId should be null -->
+                                and ${alias}${orIndex}.TASK_ID_ is null
+                              </if>
+                            <if test="queryVar.name != null">
+                                <!-- Match-all variable-names when name is null -->
+                                and ${alias}${orIndex}.NAME_= #{queryVar.name}
+                              </if>
+                            <if test="!queryVar.type.equals('null')">
+                              and ${alias}${orIndex}.VAR_TYPE_ = #{queryVar.type}
+                            </if>
+                            <!-- Variable value -->
+                            <if test="queryVar.textValue != null &amp;&amp; queryVar.longValue == null &amp;&amp; queryVar.doubleValue == null">
+                              <choose>
+                                <when test="queryVar.operator.equals('EQUALS_IGNORE_CASE') || queryVar.operator.equals('NOT_EQUALS_IGNORE_CASE') || queryVar.operator.equals('LIKE_IGNORE_CASE')">
+                                  and lower(${alias}${orIndex}.TEXT_)
+                                </when>
+                                <otherwise>
+                                  and ${alias}${orIndex}.TEXT_
+                                </otherwise>
+                              </choose>
+                              <choose>
+                                <when test="queryVar.operator.equals('LIKE') || queryVar.operator.equals('LIKE_IGNORE_CASE')">LIKE</when>
+                                <otherwise><include refid="executionVariableOperator" /></otherwise>
+                              </choose>
+                              #{queryVar.textValue}
+                              <choose>
+                                <when test="queryVar.operator.equals('LIKE') || queryVar.operator.equals('LIKE_IGNORE_CASE')">${wildcardEscapeClause}</when>
+                              </choose>
+                            </if>
+                            <if test="queryVar.textValue2 != null">
+                              and ${alias}${orIndex}.TEXT2_
+                              <choose>
+                                <when test="queryVar.operator.equals('LIKE')">LIKE</when>
+                                <otherwise><include refid="executionVariableOperator" /></otherwise>
+                              </choose>
+                              #{queryVar.textValue2}
+                              <choose>
+                                <when test="queryVar.operator.equals('LIKE')">${wildcardEscapeClause}</when>
+                              </choose>
+                            </if>
+                            <if test="queryVar.longValue != null">
+                              and ${alias}${orIndex}.LONG_
+                              <include refid="executionVariableOperator" />
+                              #{queryVar.longValue}
+                            </if>
+                            <if test="queryVar.doubleValue != null">
+                              and ${alias}${orIndex}.DOUBLE_
+                              <include refid="executionVariableOperator" />
+                              #{queryVar.doubleValue}
+                            </if>
+                            <!-- Null variable type -->
+                            <if test="queryVar.textValue == null &amp;&amp; queryVar.textValue2 == null &amp;&amp; queryVar.longValue == null &amp;&amp; queryVar.doubleValue == null">
+                              <choose>
+                                <when test="queryVar.operator.equals('NOT_EQUALS')">
+                                  and (${alias}${orIndex}.TEXT_ is not null or ${alias}${orIndex}.TEXT2_ is not null or ${alias}${orIndex}.LONG_ is not null or ${alias}${orIndex}.DOUBLE_ is not null or ${alias}${orIndex}.BYTEARRAY_ID_ is not null)
+                                </when>
+                                <otherwise>
+                                  and ${alias}${orIndex}.TEXT_ is null and ${alias}${orIndex}.TEXT2_ is null and ${alias}${orIndex}.LONG_ is null and ${alias}${orIndex}.DOUBLE_ is null and ${alias}${orIndex}.BYTEARRAY_ID_ is null
+                                </otherwise>
+                              </choose>
+                            </if>
+                          </trim>
+                        </foreach>
+                    )
+                    </if>
+                </trim>
+            </foreach>
+        </where>
+    ) SUB
+  </sql>
+
+  <sql id="withoutJoins_selectExists">
+    exists (
+      select 1
+      from ${externalTable}
+      where
+        ${join}
+        and ${where}
+    )
+  </sql>
+
+  <sql id="withoutJoins_selectExistsIn">
+    exists (
+      select 1
+      from ${externalTable}
+      where
+        ${join}
+        and ${field} in
+        <foreach item="item" index="index" collection="${collection}" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+    )
+  </sql>
+
 </mapper>

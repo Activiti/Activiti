@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:activiti="http://activiti.org/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" id="sample-diagram" name="process" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <bpmn2:process id="taskAssigneeSequentialMapAll" name="process" isExecutable="true">
+    <bpmn2:documentation />
+    <bpmn2:startEvent id="StartEvent_1">
+      <bpmn2:outgoing>SequenceFlow_0j0jsvc</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_1sdpteq" sourceRef="task1" targetRef="task2" />
+    <bpmn2:userTask id="task1" name="task1" activiti:assignee="user">
+      <bpmn2:incoming>SequenceFlow_0j0jsvc</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_1sdpteq</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_0j0jsvc" sourceRef="StartEvent_1" targetRef="task1" />
+    <bpmn2:userTask id="task2" name="task2" activiti:assignee="garth">
+      <bpmn2:incoming>SequenceFlow_1sdpteq</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_009zv07</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_009zv07" sourceRef="task2" targetRef="Task_14jn4i6" />
+    <bpmn2:userTask id="Task_14jn4i6" name="wait" activiti:assignee="user">
+      <bpmn2:incoming>SequenceFlow_009zv07</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_1x5bd9i</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:endEvent id="EndEvent_14yen4n">
+      <bpmn2:incoming>SequenceFlow_1x5bd9i</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_1x5bd9i" sourceRef="Task_14jn4i6" targetRef="EndEvent_14yen4n" />
+  </bpmn2:process>
+</bpmn2:definitions>

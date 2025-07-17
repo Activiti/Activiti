@@ -44,7 +44,9 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.xml.namespace.QName;
 
+import jakarta.el.ELResolver;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
+import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.DynamicBpmnService;
 import org.activiti.engine.HistoryService;
@@ -103,6 +105,7 @@ import org.activiti.engine.impl.bpmn.parser.handler.ExclusiveGatewayParseHandler
 import org.activiti.engine.impl.bpmn.parser.handler.InclusiveGatewayParseHandler;
 import org.activiti.engine.impl.bpmn.parser.handler.IntermediateCatchEventParseHandler;
 import org.activiti.engine.impl.bpmn.parser.handler.IntermediateThrowEventParseHandler;
+import org.activiti.engine.impl.bpmn.parser.handler.LinkEventDefinitionParseHandler;
 import org.activiti.engine.impl.bpmn.parser.handler.ManualTaskParseHandler;
 import org.activiti.engine.impl.bpmn.parser.handler.MessageEventDefinitionParseHandler;
 import org.activiti.engine.impl.bpmn.parser.handler.ParallelGatewayParseHandler;
@@ -744,6 +747,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected List<String> customScriptingEngineClasses;
   protected ScriptingEngines scriptingEngines;
   protected List<ResolverFactory> resolverFactories;
+  protected List<CustomFunctionProvider> customFunctionProviders;
+  private List<ELResolver> customELResolvers;
 
   protected BusinessCalendarManager businessCalendarManager;
 
@@ -757,6 +762,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected CommandContextFactory commandContextFactory;
   protected TransactionContextFactory transactionContextFactory;
+
+  protected boolean isRollbackDeployment;
 
   protected Map<Object, Object> beans;
 
@@ -1091,7 +1098,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  protected static Properties databaseTypeMappings = getDefaultDatabaseTypeMappings();
+  protected static Properties databaseVendorMappings = getDefaultDatabaseTypeMappings();
 
   public static final String DATABASE_TYPE_H2 = "h2";
   public static final String DATABASE_TYPE_HSQL = "hsql";
@@ -1099,6 +1106,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public static final String DATABASE_TYPE_ORACLE = "oracle";
   public static final String DATABASE_TYPE_POSTGRES = "postgres";
   public static final String DATABASE_TYPE_MSSQL = "mssql";
+  public static final String DATABASE_TYPE_MARIADB = "mariadb";
   public static final String DATABASE_TYPE_DB2 = "db2";
 
   public static Properties getDefaultDatabaseTypeMappings() {
@@ -1131,7 +1139,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     databaseTypeMappings.setProperty("DB2/PTX", DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("DB2/2", DATABASE_TYPE_DB2);
     databaseTypeMappings.setProperty("DB2 UDB AS400", DATABASE_TYPE_DB2);
-    databaseTypeMappings.setProperty("MariaDB", DATABASE_TYPE_MYSQL);
+    databaseTypeMappings.setProperty("MariaDB", DATABASE_TYPE_MARIADB);
     return databaseTypeMappings;
   }
 
@@ -1142,18 +1150,31 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       DatabaseMetaData databaseMetaData = connection.getMetaData();
       String databaseProductName = databaseMetaData.getDatabaseProductName();
       log.debug("database product name: '{}'", databaseProductName);
-      databaseType = databaseTypeMappings.getProperty(databaseProductName);
-      if (databaseType == null) {
-        throw new ActivitiException("couldn't deduct database type from database product name '" + databaseProductName + "'");
+      String databaseVendor = databaseVendorMappings.getProperty(databaseProductName);
+      if (databaseVendor == null) {
+        throw new ActivitiException("couldn't deduct database vendor from database product name '" + databaseProductName + "'");
+      }
+
+      databaseType = databaseVendor;
+
+      switch (databaseVendor) {
+          case DATABASE_TYPE_MYSQL:
+              String databaseProductVersion = databaseMetaData.getDatabaseProductVersion();
+              // MariaDB has performance penalty when using "withoutJoins" SQL scripts
+              // example of MariaDB 10.5.4
+              //     input: vendor=MySQL, version=5.5.5-10.5.24-MariaDB-1:10.5.24+maria~ubu2004
+              //     output: databaseType=mariadb
+              if (databaseProductVersion.toLowerCase().contains(DATABASE_TYPE_MARIADB)) {
+                  databaseType = DATABASE_TYPE_MARIADB;
+              }
+              break;
+          // Special care for MSSQL, as it has a hard limit of 2000 params per statement (incl bulk statement).
+          // Especially with executions, with 100 as default, this limit is passed.
+          case DATABASE_TYPE_MSSQL:
+              maxNrOfStatementsInBulkInsert = DEFAULT_MAX_NR_OF_STATEMENTS_BULK_INSERT_SQL_SERVER;
+              break;
       }
       log.debug("using database type: {}", databaseType);
-
-      // Special care for MSSQL, as it has a hard limit of 2000 params per statement (incl bulk statement).
-      // Especially with executions, with 100 as default, this limit is passed.
-      if (DATABASE_TYPE_MSSQL.equals(databaseType)) {
-        maxNrOfStatementsInBulkInsert = DEFAULT_MAX_NR_OF_STATEMENTS_BULK_INSERT_SQL_SERVER;
-      }
-
     } catch (SQLException e) {
       log.error("Exception while initializing Database connection", e);
     } finally {
@@ -1691,6 +1712,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     bpmnDeployer.setParsedDeploymentBuilderFactory(parsedDeploymentBuilderFactory);
     bpmnDeployer.setBpmnDeploymentHelper(bpmnDeploymentHelper);
     bpmnDeployer.setCachingAndArtifactsManager(cachingAndArtifactsManager);
+    bpmnDeployer.setDisableExistingStartEventSubscriptions(disableExistingStartEventSubscriptions);
 
     defaultDeployers.add(bpmnDeployer);
     return defaultDeployers;
@@ -1761,6 +1783,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     bpmnParserHandlers.add(new IntermediateThrowEventParseHandler());
     bpmnParserHandlers.add(new ManualTaskParseHandler());
     bpmnParserHandlers.add(new MessageEventDefinitionParseHandler());
+    bpmnParserHandlers.add(new LinkEventDefinitionParseHandler());
     bpmnParserHandlers.add(new ParallelGatewayParseHandler());
     bpmnParserHandlers.add(new ProcessParseHandler());
     bpmnParserHandlers.add(new ReceiveTaskParseHandler());
@@ -2005,10 +2028,21 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
 
   public void initExpressionManager() {
-    if (expressionManager == null) {
-      expressionManager = new ExpressionManager(beans);
-    }
+      if (expressionManager == null) {
+          expressionManager = new ExpressionManager(beans);
+          if (customFunctionProviders != null) {
+              expressionManager.setCustomFunctionProviders(customFunctionProviders);
+          }
+      }
   }
+
+    public void setCustomELResolvers(List<ELResolver> customELResolvers){
+     this.customELResolvers = customELResolvers;
+  }
+
+    public List<ELResolver> getCustomELResolvers(){
+       return this.customELResolvers;
+    }
 
   public void initBusinessCalendarManager() {
     if (businessCalendarManager == null) {
@@ -2744,6 +2778,23 @@ public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
 
   public ProcessEngineConfigurationImpl setResolverFactories(List<ResolverFactory> resolverFactories) {
     this.resolverFactories = resolverFactories;
+    return this;
+  }
+
+  public List<CustomFunctionProvider> getCustomFunctionProviders() {
+    return customFunctionProviders;
+  }
+
+  public ProcessEngineConfigurationImpl setCustomFunctionProviders(List<CustomFunctionProvider> customFunctionProviders) {
+    this.customFunctionProviders = customFunctionProviders;
+    return this;
+  }
+
+  public ProcessEngineConfigurationImpl addCustomFunctionProvider(CustomFunctionProvider customFunctionProvider) {
+    if (customFunctionProviders == null) {
+      customFunctionProviders = new ArrayList<>();
+    }
+    customFunctionProviders.add(customFunctionProvider);
     return this;
   }
 
@@ -3687,7 +3738,15 @@ public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
     return this;
   }
 
-  public EventSubscriptionPayloadMappingProvider getEventSubscriptionPayloadMappingProvider() {
+  public boolean isRollbackDeployment() {
+      return isRollbackDeployment;
+  }
+
+  public void setRollbackDeployment(boolean rollbackDeployment) {
+      isRollbackDeployment = rollbackDeployment;
+  }
+
+    public EventSubscriptionPayloadMappingProvider getEventSubscriptionPayloadMappingProvider() {
     return eventSubscriptionPayloadMappingProvider;
   }
 

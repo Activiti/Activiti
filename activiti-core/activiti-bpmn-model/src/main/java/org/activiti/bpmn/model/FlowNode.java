@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.collections4.CollectionUtils;
 
 public abstract class FlowNode extends FlowElement {
 
@@ -33,7 +34,7 @@ public abstract class FlowNode extends FlowElement {
 
   public FlowNode() {
 
-  }
+    }
 
  public boolean isAsynchronous() {
     return asynchronous;
@@ -86,5 +87,32 @@ public abstract class FlowNode extends FlowElement {
     super.setValues(otherNode);
     setAsynchronous(otherNode.isAsynchronous());
     setNotExclusive(otherNode.isNotExclusive());
+  }
+
+  public boolean hasIncomingFlows() {
+    return (CollectionUtils.isNotEmpty(this.incomingFlows));
+  }
+
+  public boolean hasOutgoingFlows() {
+    return (CollectionUtils.isNotEmpty(this.outgoingFlows));
+  }
+
+  public boolean isLinkCatchEvent() {
+    if (this instanceof IntermediateCatchEvent intermediateCatchEvent) {
+        return intermediateCatchEvent.isLinkEvent();
+    }
+    return false;
+  }
+
+  public boolean isLinkThrowEvent() {
+    if (this instanceof ThrowEvent throwEvent) {
+        return throwEvent.isLinkEvent();
+    }
+    return false;
+  }
+
+  public boolean isInitialFlowNode() {
+    return (CollectionUtils.isEmpty(this.getIncomingFlows())
+        && this.getSubProcess() == null && !this.isLinkCatchEvent());
   }
 }

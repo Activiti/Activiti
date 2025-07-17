@@ -179,4 +179,23 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
     assertThat(recordedEvents.get(1).getParameter()).isEqualTo("Subprocess End");
     assertThat(recordedEvents.get(2).getParameter()).isEqualTo("Process End");
   }
+
+  @Deployment(resources = { "org/activiti/examples/bpmn/executionlistener/ExecutionListenersOnProcessEndWhenProcessIsDeleted.bpmn20.xml" })
+  public void testExecutionListenerOnProcessEndWhenProcessIsDeleted() {
+      RecorderExecutionListener.clear();
+
+      // GIVEN: a process with an executionListener to be executed at the end of the process
+      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess");
+
+      // WHEN: we delete the process
+      runtimeService.deleteProcessInstance(processInstance.getProcessInstanceId(), null);
+
+      // THEN: the process should end and
+      assertProcessEnded(processInstance.getId());
+
+      // THEN: and the executionListener should have run
+      List<RecordedEvent> recordedEvents = RecorderExecutionListener.getRecordedEvents();
+      assertThat(recordedEvents).hasSize(1);
+      assertThat(recordedEvents.get(0).getParameter()).isEqualTo("Process has ended");
+  }
 }

@@ -28,7 +28,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.history.HistoricProcessInstance;
@@ -393,6 +392,34 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
             assertThat(historicLinks.get(0).getUserId()).isEqualTo("kermit");
             assertThat(historicLinks.get(0).getGroupId()).isNull();
             assertThat(historicLinks.get(0).getProcessInstanceId()).isEqualTo(pi.getId());
+
+            // When process is ended, link should remain
+            taskService.complete(taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult().getId());
+            assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(pi.getId()).singleResult()).isNull();
+
+            assertThat(historyService.getHistoricIdentityLinksForProcessInstance(pi.getId())).hasSize(1);
+
+            // When process is deleted, identitylinks shouldn't exist anymore
+            historyService.deleteHistoricProcessInstance(pi.getId());
+            assertThat(historyService.getHistoricIdentityLinksForProcessInstance(pi.getId())).hasSize(0);
+        }
+    }
+
+    @Deployment(resources = {"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
+    public void testHistoricIdentityLinksOnProcessInstanceWithDetails() {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+            ProcessInstance pi = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+            runtimeService.addUserIdentityLink(pi.getId(), "kermit", "myType", "details".getBytes());
+
+            // Check historic links
+            List<HistoricIdentityLink> historicLinks = historyService.getHistoricIdentityLinksForProcessInstance(pi.getId());
+            assertThat(historicLinks).hasSize(1);
+
+            assertThat(historicLinks.get(0).getType()).isEqualTo("myType");
+            assertThat(historicLinks.get(0).getUserId()).isEqualTo("kermit");
+            assertThat(historicLinks.get(0).getGroupId()).isNull();
+            assertThat(historicLinks.get(0).getProcessInstanceId()).isEqualTo(pi.getId());
+            assertThat(historicLinks.get(0).getDetails()).isEqualTo("details".getBytes());
 
             // When process is ended, link should remain
             taskService.complete(taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult().getId());

@@ -21,6 +21,8 @@ import java.util.List;
 
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.impl.context.Context;
 
 /**
  * Execution used in {@link JavaDelegate}s and {@link ExecutionListener}s.
@@ -43,6 +45,12 @@ public interface DelegateExecution extends VariableScope {
    * set will not always be the root. This method returns the topmost process instance.
    */
   String getRootProcessInstanceId();
+
+    /**
+     * Determines if the current execution is the root one
+     * @return true if the current execution is the root one; false otherwise
+     */
+    boolean isRootExecution();
 
   /**
    * Will contain the event name in case this execution is passed in for an {@link ExecutionListener}.
@@ -109,7 +117,7 @@ public interface DelegateExecution extends VariableScope {
   /* Execution management */
 
   /**
-   * returns the parent of this execution, or null if there no parent.
+   * returns the parent of this execution, or null if there's no parent.
    */
   DelegateExecution getParent();
 
@@ -175,5 +183,9 @@ public interface DelegateExecution extends VariableScope {
    * @param isMultiInstanceRoot
    */
   void setMultiInstanceRoot(boolean isMultiInstanceRoot);
+
+  default ProcessEngineConfiguration getEngineServices() {
+      return Context.getProcessEngineConfiguration();
+  }
 
 }

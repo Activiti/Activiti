@@ -43,12 +43,11 @@ public class ExclusiveGatewayValidator extends ProcessLevelValidator {
 
   public void validateExclusiveGateway(Process process, ExclusiveGateway exclusiveGateway, List<ValidationError> errors) {
     if (exclusiveGateway.getOutgoingFlows().isEmpty()) {
-      addError(errors, Problems.EXCLUSIVE_GATEWAY_NO_OUTGOING_SEQ_FLOW, process, exclusiveGateway, "Exclusive gateway has no outgoing sequence flow");
+      addError(errors, Problems.EXCLUSIVE_GATEWAY_NO_OUTGOING_SEQ_FLOW, process, exclusiveGateway);
     } else if (exclusiveGateway.getOutgoingFlows().size() == 1) {
       SequenceFlow sequenceFlow = exclusiveGateway.getOutgoingFlows().get(0);
       if (StringUtils.isNotEmpty(sequenceFlow.getConditionExpression())) {
-        addError(errors, Problems.EXCLUSIVE_GATEWAY_CONDITION_NOT_ALLOWED_ON_SINGLE_SEQ_FLOW, process, exclusiveGateway,
-            "Exclusive gateway has only one outgoing sequence flow. This is not allowed to have a condition.");
+        addError(errors, Problems.EXCLUSIVE_GATEWAY_CONDITION_NOT_ALLOWED_ON_SINGLE_SEQ_FLOW, process, exclusiveGateway);
       }
     } else {
       String defaultSequenceFlow = exclusiveGateway.getDefaultFlow();
@@ -63,13 +62,12 @@ public class ExclusiveGatewayValidator extends ProcessLevelValidator {
           flowsWithoutCondition.add(flow);
         }
         if (hasConditon && isDefaultFlow) {
-          addError(errors, Problems.EXCLUSIVE_GATEWAY_CONDITION_ON_DEFAULT_SEQ_FLOW, process, exclusiveGateway, "Default sequenceflow has a condition, which is not allowed");
+          addError(errors, Problems.EXCLUSIVE_GATEWAY_CONDITION_ON_DEFAULT_SEQ_FLOW, process, exclusiveGateway);
         }
       }
 
       if (!flowsWithoutCondition.isEmpty()) {
-        addWarning(errors, Problems.EXCLUSIVE_GATEWAY_SEQ_FLOW_WITHOUT_CONDITIONS, process, exclusiveGateway,
-            "Exclusive gateway has at least one outgoing sequence flow without a condition (which isn't the default one)");
+        addWarning(errors, Problems.EXCLUSIVE_GATEWAY_SEQ_FLOW_WITHOUT_CONDITIONS, process, exclusiveGateway);
       }
 
     }

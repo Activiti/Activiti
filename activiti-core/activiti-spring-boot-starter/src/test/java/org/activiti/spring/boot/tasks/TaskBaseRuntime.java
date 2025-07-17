@@ -25,6 +25,7 @@ import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.Task.TaskStatus;
+import org.activiti.api.task.model.builders.AssignTaskPayloadBuilder;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +74,13 @@ public class TaskBaseRuntime {
                 .complete(TaskPayloadBuilder.complete().withTaskId(taskId).withVariables(variables).build());
         assertThat(completeTask).isNotNull();
         assertThat(completeTask.getStatus()).isEqualTo(TaskStatus.COMPLETED);
+    }
+
+    public void assignTask(String taskId, String assignee) {
+        Task task = taskRuntime
+            .assign(new AssignTaskPayloadBuilder().withTaskId(taskId).withAssignee(assignee).build());
+        assertThat(task).isNotNull();
+        assertThat(task.getAssignee()).isEqualTo(assignee);
     }
 
 }

@@ -50,9 +50,9 @@ public class DateFormatterProvider  {
                                                       .withZone(getZoneId());
 
         try {
-            LocalDateTime localDateTime = dateTimeFormatter.parse(value,
-                                                                  LocalDateTime::from);
-            return Date.from(localDateTime.atZone(getZoneId()).toInstant());
+            ZonedDateTime zonedDateTime = dateTimeFormatter.parse(value,
+                                                                  ZonedDateTime::from);
+            return Date.from(zonedDateTime.toInstant());
         } catch (DateTimeException e) {
             LocalDate localDate = dateTimeFormatter.parse(String.valueOf(value),
                                                           LocalDate::from);
@@ -71,6 +71,18 @@ public class DateFormatterProvider  {
 
         if (value instanceof Long) {
             return new Date((long)value);
+        }
+
+        if (value instanceof LocalDate) {
+            return Date.from(((LocalDate)value).atStartOfDay(getZoneId()).toInstant());
+        }
+
+        if (value instanceof LocalDateTime) {
+            return Date.from(((LocalDateTime)value).atZone(getZoneId()).toInstant());
+        }
+
+        if (value instanceof ZonedDateTime) {
+            return Date.from(((ZonedDateTime)value).toInstant());
         }
 
         throw new DateTimeException(MessageFormat.format("Error while parsing date. Type: {0}, value: {1}", value.getClass().getName(), value));

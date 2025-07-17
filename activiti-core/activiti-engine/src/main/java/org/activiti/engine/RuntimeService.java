@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.api.internal.Internal;
@@ -378,6 +377,22 @@ public interface RuntimeService {
    *           when the process instance doesn't exist.
    */
   void addUserIdentityLink(String processInstanceId, String userId, String identityLinkType);
+
+  /**
+   * Involves a user with a process instance. The type of identity link is defined by the given identityLinkType.
+   *
+   * @param processInstanceId
+   *          id of the process instance, cannot be null.
+   * @param userId
+   *          id of the user involve, cannot be null.
+   * @param identityLinkType
+   *          type of identityLink, cannot be null (@see {@link IdentityLinkType}).
+   * @param details
+   *          serialized details of the identity link.
+   * @throws ActivitiObjectNotFoundException
+   *           when the process instance doesn't exist.
+   */
+  void addUserIdentityLink(String processInstanceId, String userId, String identityLinkType, byte[] details);
 
   /**
    * Involves a group with a process instance. The type of identityLink is defined by the given identityLink.

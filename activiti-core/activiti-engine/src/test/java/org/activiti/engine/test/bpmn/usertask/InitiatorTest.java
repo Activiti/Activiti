@@ -30,12 +30,9 @@ public class InitiatorTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testInitiator() {
-    try {
-      Authentication.setAuthenticatedUserId("bono");
+    withAuthenticatedUserId("bono", () -> {
       runtimeService.startProcessInstanceByKey("InitiatorProcess");
-    } finally {
-      Authentication.setAuthenticatedUserId(null);
-    }
+    });
 
     assertThat(taskService.createTaskQuery().taskAssignee("bono").count()).isEqualTo(1);
   }
@@ -43,14 +40,38 @@ public class InitiatorTest extends PluggableActivitiTestCase {
   // See ACT-1372
   @Deployment
   public void testInitiatorWithWhiteSpaceInExpression() {
-    try {
-      Authentication.setAuthenticatedUserId("bono");
+    withAuthenticatedUserId("bono", () -> {
       runtimeService.startProcessInstanceByKey("InitiatorProcess");
-    } finally {
-      Authentication.setAuthenticatedUserId(null);
-    }
+    });
 
     assertThat(taskService.createTaskQuery().taskAssignee("bono").count()).isEqualTo(1);
   }
+
+    @Deployment(resources = {
+        "org/activiti/engine/test/bpmn/usertask/InitiatorTest.testInitiatorWithinCallActivitySubProcess.bpmn20.xml",
+        "org/activiti/engine/test/bpmn/usertask/InitiatorTest.testInitiator.bpmn20.xml"}
+    )
+    public void testInitiatorWithinCallActivitySubProcess() {
+      withAuthenticatedUserId("bono", () -> {
+        runtimeService.startProcessInstanceByKey("CallActivityWithInitiatorSubprocess");
+     });
+
+     assertThat(managementService.createJobQuery().count()).isEqualTo(1);
+
+     waitForJobExecutorToProcessAllJobs(5000L, 100L);
+
+     assertThat(taskService.createTaskQuery().taskAssignee("bono").count()).isEqualTo(1);
+  }
+
+  private void withAuthenticatedUserId(String userId, Runnable runnable) {
+    try {
+      Authentication.setAuthenticatedUserId(userId);
+      runnable.run();
+    } finally {
+       Authentication.setAuthenticatedUserId(null);
+    }
+  }
+
+
 
 }

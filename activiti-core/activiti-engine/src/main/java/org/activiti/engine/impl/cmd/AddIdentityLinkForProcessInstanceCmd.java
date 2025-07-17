@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -43,12 +42,19 @@ public class AddIdentityLinkForProcessInstanceCmd implements Command<Void>, Seri
 
   protected String type;
 
+  protected byte[] details;
+
   public AddIdentityLinkForProcessInstanceCmd(String processInstanceId, String userId, String groupId, String type) {
+    this(processInstanceId, userId, groupId, type, null);
+  }
+
+  public AddIdentityLinkForProcessInstanceCmd(String processInstanceId, String userId, String groupId, String type, byte[] details) {
     validateParams(processInstanceId, userId, groupId, type);
     this.processInstanceId = processInstanceId;
     this.userId = userId;
     this.groupId = groupId;
     this.type = type;
+    this.details = details;
   }
 
   protected void validateParams(String processInstanceId, String userId, String groupId, String type) {
@@ -81,7 +87,7 @@ public class AddIdentityLinkForProcessInstanceCmd implements Command<Void>, Seri
 
   protected void executeInternal(CommandContext commandContext,ExecutionEntity processInstance) {
       IdentityLinkEntityManager identityLinkEntityManager = commandContext.getIdentityLinkEntityManager();
-      identityLinkEntityManager.addIdentityLink(processInstance, userId, groupId, type);
+      identityLinkEntityManager.addIdentityLink(processInstance, userId, groupId, type, details);
       commandContext.getHistoryManager().createProcessInstanceIdentityLinkComment(processInstanceId, userId, groupId, type, true);
   }
 

@@ -17,16 +17,15 @@
 
 package org.activiti.engine.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.activiti.engine.DynamicBpmnConstants;
 import org.activiti.engine.DynamicBpmnService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cmd.GetProcessDefinitionInfoCmd;
 import org.activiti.engine.impl.cmd.SaveProcessDefinitionInfoCmd;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
+import org.activiti.engine.repository.ProcessDefinition;
 
 
 /**
@@ -40,6 +39,10 @@ public class DynamicBpmnServiceImpl extends ServiceImpl implements DynamicBpmnSe
 
   public ObjectNode getProcessDefinitionInfo(String processDefinitionId) {
     return commandExecutor.execute(new GetProcessDefinitionInfoCmd(processDefinitionId));
+  }
+
+  public ObjectNode getProcessDefinitionInfo(ProcessDefinition processDefinition) {
+    return commandExecutor.execute(new GetProcessDefinitionInfoCmd(processDefinition));
   }
 
   public void saveProcessDefinitionInfo(String processDefinitionId, ObjectNode infoNode) {

@@ -62,7 +62,7 @@ public class BoundaryEventValidator extends ProcessLevelValidator {
         if (!(eventDefinition instanceof TimerEventDefinition) && !(eventDefinition instanceof ErrorEventDefinition) && !(eventDefinition instanceof SignalEventDefinition)
             && !(eventDefinition instanceof CancelEventDefinition) && !(eventDefinition instanceof MessageEventDefinition) && !(eventDefinition instanceof CompensateEventDefinition)) {
 
-          addError(errors, Problems.BOUNDARY_EVENT_INVALID_EVENT_DEFINITION, process, boundaryEvent, "Invalid or unsupported event definition");
+          addError(errors, Problems.BOUNDARY_EVENT_INVALID_EVENT_DEFINITION, process, boundaryEvent);
 
         }
 
@@ -70,7 +70,7 @@ public class BoundaryEventValidator extends ProcessLevelValidator {
 
           FlowElement attachedToFlowElement = bpmnModel.getFlowElement(boundaryEvent.getAttachedToRefId());
           if (!(attachedToFlowElement instanceof Transaction)) {
-            addError(errors, Problems.BOUNDARY_EVENT_CANCEL_ONLY_ON_TRANSACTION, process, boundaryEvent, "boundary event with cancelEventDefinition only supported on transaction subprocesses");
+            addError(errors, Problems.BOUNDARY_EVENT_CANCEL_ONLY_ON_TRANSACTION, process, boundaryEvent);
           } else {
             if (!cancelBoundaryEventsCounts.containsKey(attachedToFlowElement.getId())) {
               cancelBoundaryEventsCounts.put(attachedToFlowElement.getId(), Integer.valueOf(0));
@@ -99,7 +99,7 @@ public class BoundaryEventValidator extends ProcessLevelValidator {
                     MessageEventDefinition currentMessageEventDefinition = (MessageEventDefinition) eventDefinition;
                     MessageEventDefinition otherMessageEventDefinition = (MessageEventDefinition) otherEventDefinition;
                     if (otherMessageEventDefinition.getMessageRef() != null && otherMessageEventDefinition.getMessageRef().equals(currentMessageEventDefinition.getMessageRef())) {
-                      addError(errors, Problems.MESSAGE_EVENT_MULTIPLE_ON_BOUNDARY_SAME_MESSAGE_ID, process, boundaryEvent, "Multiple message events with same message id not supported");
+                      addError(errors, Problems.MESSAGE_EVENT_MULTIPLE_ON_BOUNDARY_SAME_MESSAGE_ID, process, boundaryEvent);
                     }
                   }
                 }
@@ -112,21 +112,20 @@ public class BoundaryEventValidator extends ProcessLevelValidator {
 
       } else {
 
-        addError(errors, Problems.BOUNDARY_EVENT_NO_EVENT_DEFINITION, process, boundaryEvent, "Event definition is missing from boundary event");
+        addError(errors, Problems.BOUNDARY_EVENT_NO_EVENT_DEFINITION, process, boundaryEvent);
 
       }
     }
 
     for (String elementId : cancelBoundaryEventsCounts.keySet()) {
       if (cancelBoundaryEventsCounts.get(elementId) > 1) {
-        addError(errors, Problems.BOUNDARY_EVENT_MULTIPLE_CANCEL_ON_TRANSACTION, process, bpmnModel.getFlowElement(elementId),
-            "multiple boundary events with cancelEventDefinition not supported on same transaction subprocess.");
+        addError(errors, Problems.BOUNDARY_EVENT_MULTIPLE_CANCEL_ON_TRANSACTION, process, bpmnModel.getFlowElement(elementId));
       }
     }
 
     for (String elementId : compensateBoundaryEventsCounts.keySet()) {
       if (compensateBoundaryEventsCounts.get(elementId) > 1) {
-        addError(errors, Problems.COMPENSATE_EVENT_MULTIPLE_ON_BOUNDARY, process, bpmnModel.getFlowElement(elementId), "Multiple boundary events of type 'compensate' is invalid");
+        addError(errors, Problems.COMPENSATE_EVENT_MULTIPLE_ON_BOUNDARY, process, bpmnModel.getFlowElement(elementId));
       }
     }
 

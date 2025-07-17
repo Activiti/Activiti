@@ -47,7 +47,7 @@ public class EndEventValidator extends ProcessLevelValidator {
 
           FlowElementsContainer parent = process.findParent(endEvent);
           if (!(parent instanceof Transaction)) {
-            addError(errors, Problems.END_EVENT_CANCEL_ONLY_INSIDE_TRANSACTION, process, endEvent, "end event with cancelEventDefinition only supported inside transaction subprocess");
+            addError(errors, Problems.END_EVENT_CANCEL_ONLY_INSIDE_TRANSACTION, process, endEvent);
           }
 
         }

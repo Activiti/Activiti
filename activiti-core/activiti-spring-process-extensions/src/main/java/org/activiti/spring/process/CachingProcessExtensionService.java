@@ -17,8 +17,8 @@
 package org.activiti.spring.process;
 
 import org.activiti.spring.process.model.Extension;
-import org.springframework.cache.annotation.Cacheable;
 
+@Deprecated
 public class CachingProcessExtensionService {
 
     private final ProcessExtensionService processExtensionService;
@@ -27,7 +27,6 @@ public class CachingProcessExtensionService {
         this.processExtensionService = processExtensionService;
     }
 
-    @Cacheable("extensionsById")
     public Extension getExtensionsForId(String processDefinitionId) {
         return processExtensionService.getExtensionsForId(processDefinitionId);
     }

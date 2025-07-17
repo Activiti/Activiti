@@ -1,0 +1,25 @@
+{
+  "id": "varsProcess",
+  "extensions": {
+    "Process_varsProcess": {
+      "constants": {},
+      "mappings": {},
+      "properties": {
+        "ea640de8-4683-4298-84a5-1e2d59c7219a": {
+          "id": "ea640de8-4683-4298-84a5-1e2d59c7219a",
+          "name": "testVariable",
+          "type": "integer",
+          "required": false,
+          "ephemeral": true
+        },
+        "f04b8b72-26ca-411e-8b2b-729a059bb06a": {
+          "id": "f04b8b72-26ca-411e-8b2b-729a059bb06a",
+          "name": "testVariable2",
+          "type": "string",
+          "required": false
+        }
+      },
+      "assignments": {}
+    }
+  }
+}

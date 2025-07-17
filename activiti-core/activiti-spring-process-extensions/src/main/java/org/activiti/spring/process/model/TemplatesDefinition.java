@@ -61,6 +61,14 @@ public class TemplatesDefinition {
         return Optional.ofNullable(taskTemplateDefinition.getCandidate());
     }
 
+    public boolean isEmailNotificationEnabledForTask(String taskUUID) {
+        TaskTemplateDefinition taskTemplateDefinition = tasks.get(taskUUID);
+        if (taskTemplateDefinition == null) {
+            return true;
+        }
+        return taskTemplateDefinition.isEmailNotificationEnabled();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

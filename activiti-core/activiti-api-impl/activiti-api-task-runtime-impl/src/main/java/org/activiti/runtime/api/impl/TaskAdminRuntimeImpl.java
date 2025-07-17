@@ -15,10 +15,8 @@
  */
 package org.activiti.runtime.api.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.activiti.api.model.shared.model.VariableInstance;
+import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.runtime.shared.security.SecurityManager;
@@ -26,6 +24,7 @@ import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.api.task.model.payloads.AssignTaskPayload;
+import org.activiti.api.task.model.payloads.AssignTasksPayload;
 import org.activiti.api.task.model.payloads.CandidateGroupsPayload;
 import org.activiti.api.task.model.payloads.CandidateUsersPayload;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
@@ -46,6 +45,11 @@ import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.query.impl.PageImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @PreAuthorize("hasAnyRole('ACTIVITI_ADMIN','APPLICATION_MANAGER')")
 public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
@@ -99,6 +103,19 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
                 pageable.getMaxItems()));
         return new PageImpl<>(tasks,
                 Math.toIntExact(taskQuery.count()));
+    }
+
+    @Override
+    public Task lastCreatedTaskByProcessInstanceIdAndTaskDefinitionKey(String processInstanceId, String taskDefinitionKey) {
+        TaskQuery taskQuery = taskService.createTaskQuery()
+                .processInstanceId(processInstanceId)
+                .taskDefinitionKey(taskDefinitionKey)
+            .orderByTaskCreateTime().desc();
+        org.activiti.engine.task.Task task = taskQuery.singleResult();
+        if (task == null) {
+            throw new NotFoundException("Unable to find task by given processInstanceId: " + processInstanceId + " and taskDefinitionKey: " + taskDefinitionKey);
+        }
+        return taskConverter.from(task);
     }
 
     @Override
@@ -176,14 +193,28 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
 
     @Override
     public Task assign(AssignTaskPayload assignTaskPayload) {
+        return assign(assignTaskPayload.getTaskId(), assignTaskPayload.getAssignee());
+    }
+
+    @Transactional
+    @Override
+    public Page<Task> assignMultiple(AssignTasksPayload assignTasksPayload) {
+        if (assignTasksPayload != null && assignTasksPayload.getTaskIds() != null) {
+            List<Task> tasks = assignTasksPayload.getTaskIds()
+                    .stream()
+                    .map(taskId -> assign(taskId, assignTasksPayload.getAssignee()))
+                    .collect(Collectors.toList());
+            return new PageImpl<>(tasks, tasks.size());
+        }
+        return new PageImpl<>(List.of(), 0);
+    }
+
+    private Task assign(String taskId, String assignee) {
         //We need to release, claim for assigned task is not working!
-        taskService.unclaim(assignTaskPayload.getTaskId());
-
+        taskService.unclaim(taskId);
         //Now assign a new user
-        taskService.claim(assignTaskPayload.getTaskId(),
-                assignTaskPayload.getAssignee());
-
-        return task(assignTaskPayload.getTaskId());
+        taskService.claim(taskId, assignee);
+        return task(taskId);
     }
 
     @Override

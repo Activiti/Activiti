@@ -5,25 +5,31 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>7.5.0-SNAPSHOT</version>
+    <version>8.8.0-SNAPSHOT</version>
   </parent>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-core</artifactId>
   <packaging>pom</packaging>
   <name>Activiti :: Core :: Parent</name>
   <properties>
-    <batik.version>1.14</batik.version>
-    <commons-email.version>1.5</commons-email.version>
-    <commons-io.version>2.11.0</commons-io.version>
-    <jakarta-enterprise-concurrent.version>1.1.2</jakarta-enterprise-concurrent.version>
-    <java-uuid-generator.version>4.0.1</java-uuid-generator.version>
+    <batik.version>1.19</batik.version>
+    <commons-email.version>1.6.0</commons-email.version>
+    <commons-io.version>2.19.0</commons-io.version>
+    <commons-text.version>1.13.0</commons-text.version>
+    <jakarta-enterprise-concurrent.version>3.1.1</jakarta-enterprise-concurrent.version>
+    <java-uuid-generator.version>5.1.0</java-uuid-generator.version>
     <javaGeom.version>0.11.1</javaGeom.version>
     <jgraphx.version>4.2.2</jgraphx.version>
-    <joda-time.version>2.10.14</joda-time.version>
-    <json-unit.version>2.35.0</json-unit.version>
-    <mybatis.version>3.5.10</mybatis.version>
+    <joda-time.version>2.14.0</joda-time.version>
+    <json-unit.version>4.1.0</json-unit.version>
+    <mybatis.version>3.5.19</mybatis.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
-    <xmlgraphics-commons.version>2.7</xmlgraphics-commons.version>
+    <xmlgraphics-commons.version>2.11</xmlgraphics-commons.version>
+    <nashorn-core.version>15.4</nashorn-core.version>
+    <groovy.version>3.0.25</groovy.version>
+    <simple-jndi.version>0.25.0</simple-jndi.version>
+    <zjsonpatch.version>0.4.16</zjsonpatch.version>
+    <system.stubs.jupiter.version>2.0.2</system.stubs.jupiter.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -57,6 +63,11 @@
         <version>${commons-io.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-text</artifactId>
+        <version>${commons-text.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.mybatis</groupId>
         <artifactId>mybatis</artifactId>
         <version>${mybatis.version}</version>
@@ -76,6 +87,26 @@
         <artifactId>jgraphx</artifactId>
         <version>${jgraphx.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy</artifactId>
+        <version>${groovy.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy-jsr223</artifactId>
+        <version>${groovy.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>jakarta.el</groupId>
+        <artifactId>jakarta.el-api</artifactId>
+        <version>${jakarta.el-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.h-thurow</groupId>
+        <artifactId>simple-jndi</artifactId>
+        <version>${simple-jndi.version}</version>
+      </dependency>
       <!-- batik -->
       <dependency>
         <groupId>org.apache.xmlgraphics</groupId>
@@ -92,11 +123,31 @@
         <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>batik-awt-util</artifactId>
         <version>${batik.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xalan</groupId>
+            <artifactId>serializer</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>batik-dom</artifactId>
         <version>${batik.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xalan</groupId>
+            <artifactId>serializer</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.xmlgraphics</groupId>
@@ -129,12 +180,6 @@
         <version>${batik.version}</version>
       </dependency>
       <dependency>
-        <groupId>net.javacrumbs.json-unit</groupId>
-        <artifactId>json-unit-fluent</artifactId>
-        <version>${json-unit.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
         <groupId>org.subethamail</groupId>
         <artifactId>subethasmtp-wiser</artifactId>
         <version>${subethasmtp-wiser.version}</version>
@@ -151,6 +196,11 @@
         <artifactId>joda-time</artifactId>
         <version>${joda-time.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.openjdk.nashorn</groupId>
+        <artifactId>nashorn-core</artifactId>
+        <version>${nashorn-core.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <dependencies>
@@ -165,6 +215,11 @@
       <artifactId>activiti-core-common-dependencies</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>com.flipkart.zjsonpatch</groupId>
+      <artifactId>zjsonpatch</artifactId>
+      <version>${zjsonpatch.version}</version>
     </dependency>
   </dependencies>
   <modules>

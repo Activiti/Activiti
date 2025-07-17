@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<bpmn2:definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20230217135720896" modeler:modelId="6" modeler:modelVersion="1" modeler:modelLastUpdated="1676642222572">
+  <bpmn2:process id="mnt-23090" name="mnt-23090" isExecutable="true">
+    <extensionElements>
+      <modeler:deleteallvariables xmlns:modeler="http://activiti.com/modeler" modeler:deleteallvariables=""/>
+    </extensionElements>
+    <bpmn2:startEvent id="process_start">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[startEvent1]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:outgoing>processStart-subprocess</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:subProcess id="subprocess" name="subProcess" activiti:async="true" activiti:exclusive="false">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-51D292A9-D754-48E1-A252-EB9D8235B3E8]]></modeler:editor-resource-id>
+      </extensionElements>
+      <multiInstanceLoopCharacteristics isSequential="false">
+        <loopCardinality>4</loopCardinality>
+      </multiInstanceLoopCharacteristics>
+      <bpmn2:startEvent id="subprocess_start">
+        <extensionElements>
+          <modeler:editor-resource-id><![CDATA[sid-99F0FF7A-97D7-4A5B-9448-55DB6362BEBB]]></modeler:editor-resource-id>
+        </extensionElements>
+        <bpmn2:outgoing>subprocessStart-subprocessEnd</bpmn2:outgoing>
+      </bpmn2:startEvent>
+      <bpmn2:endEvent id="subprocess_end">
+        <extensionElements>
+          <modeler:editor-resource-id><![CDATA[sid-3A8BEF3F-5E80-4C5A-A18E-3C1A3B33C419]]></modeler:editor-resource-id>
+        </extensionElements>
+        <bpmn2:incoming>subprocessStart-subprocessEnd</bpmn2:incoming>
+      </bpmn2:endEvent>
+      <bpmn2:sequenceFlow id="subprocessStart-subprocessEnd" sourceRef="subprocess_start" targetRef="subprocess_end">
+        <extensionElements>
+          <modeler:editor-resource-id><![CDATA[sid-F61E816E-388C-45C1-87E0-032FADCBC0FC]]></modeler:editor-resource-id>
+        </extensionElements>
+      </bpmn2:sequenceFlow>
+    </bpmn2:subProcess>
+    <bpmn2:sequenceFlow id="processStart-subprocess" sourceRef="process_start" targetRef="subprocess">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-6A9F0DC6-2FD3-46E6-948C-F2F261C85D7C]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:userTask id="process_usertask" activiti:assignee="$INITIATOR">
+      <extensionElements>
+        <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:editor-resource-id><![CDATA[sid-F1DD949B-EC58-4C5D-B7FD-B04580D1A5EE]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:incoming>subprocess_processUsertask</bpmn2:incoming>
+      <bpmn2:outgoing>processUserTask_processEnd</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:endEvent id="process_end">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-D9A02886-DAEE-4374-B58F-E01FBA07B773]]></modeler:editor-resource-id>
+      </extensionElements>
+      <bpmn2:incoming>processUserTask_processEnd</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="processUserTask_processEnd" sourceRef="process_usertask" targetRef="process_end">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-212740F2-EEBD-41C2-8B95-5482590BBE57]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="subprocess_processUsertask" sourceRef="subprocess" targetRef="process_usertask">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-3FC81C21-6F20-4B06-A036-2976362ADCD9]]></modeler:editor-resource-id>
+      </extensionElements>
+    </bpmn2:sequenceFlow>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_mnt-23090">
+    <bpmndi:BPMNPlane bpmnElement="mnt-23090" id="BPMNPlane_mnt-23090">
+      <bpmndi:BPMNShape bpmnElement="process_start" id="BPMNShape_process_start">
+        <omgdc:Bounds height="30.0" width="30.0" x="270.0" y="163.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subprocess" id="BPMNShape_subprocess">
+        <omgdc:Bounds height="160.0" width="200.0" x="379.6333312988281" y="98.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subprocess_start" id="BPMNShape_subprocess_start">
+        <omgdc:Bounds height="30.0" width="30.0" x="432.6333312988281" y="159.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="subprocess_end" id="BPMNShape_subprocess_end">
+        <omgdc:Bounds height="28.0" width="28.0" x="507.6333312988281" y="160.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="process_usertask" id="BPMNShape_process_usertask">
+        <omgdc:Bounds height="80.0" width="100.0" x="624.6333312988281" y="138.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="process_end" id="BPMNShape_process_end">
+        <omgdc:Bounds height="28.0" width="28.0" x="769.6333312988281" y="164.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="processStart-subprocess" id="BPMNEdge_processStart-subprocess">
+        <omgdi:waypoint x="300.0" y="178.0"/>
+        <omgdi:waypoint x="379.6333312988281" y="178.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="processUserTask_processEnd" id="BPMNEdge_processUserTask_processEnd">
+        <omgdi:waypoint x="724.6333312988281" y="178.0"/>
+        <omgdi:waypoint x="769.6333312988281" y="178.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="subprocessStart-subprocessEnd" id="BPMNEdge_subprocessStart-subprocessEnd">
+        <omgdi:waypoint x="462.6333312988281" y="174.0"/>
+        <omgdi:waypoint x="507.6333312988281" y="174.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="subprocess_processUsertask" id="BPMNEdge_subprocess_processUsertask">
+        <omgdi:waypoint x="579.6333312988281" y="178.0"/>
+        <omgdi:waypoint x="624.6333312988281" y="178.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

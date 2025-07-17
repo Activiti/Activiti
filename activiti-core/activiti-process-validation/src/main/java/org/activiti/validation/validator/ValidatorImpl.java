@@ -16,39 +16,65 @@
 
 package org.activiti.validation.validator;
 
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.activiti.validation.ValidationError;
 
-/**
-
- */
 public abstract class ValidatorImpl implements Validator {
 
   public void addError(List<ValidationError> validationErrors, ValidationError error) {
     validationErrors.add(error);
   }
 
-  protected void addError(List<ValidationError> validationErrors, String problem, String description) {
-    addError(validationErrors, problem, null, null, description, false);
+  protected void addError(List<ValidationError> validationErrors, String problem) {
+    addError(validationErrors, problem, null, null, false);
   }
 
-  protected void addError(List<ValidationError> validationErrors, String problem, BaseElement baseElement, String description) {
-    addError(validationErrors, problem, null, baseElement, description);
+  protected void addError(List<ValidationError> validationErrors, String problem, Map<String, String> params) {
+    addError(validationErrors, problem, null, null, false, params);
   }
 
-  protected void addError(List<ValidationError> validationErrors, String problem, Process process, BaseElement baseElement, String description) {
-    addError(validationErrors, problem, process, baseElement, description, false);
+  protected void addError(List<ValidationError> validationErrors, String problem,
+      BaseElement baseElement) {
+    addError(validationErrors, problem, null, baseElement);
   }
 
-  protected void addWarning(List<ValidationError> validationErrors, String problem, Process process, BaseElement baseElement, String description) {
-    addError(validationErrors, problem, process, baseElement, description, true);
+  protected void addError(List<ValidationError> validationErrors, String problem,
+      BaseElement baseElement, Map<String, String> params) {
+    addError(validationErrors, problem, null, baseElement, params);
   }
 
-  protected void addError(List<ValidationError> validationErrors, String problem, Process process, BaseElement baseElement, String description, boolean isWarning) {
+  protected void addError(List<ValidationError> validationErrors, String problem, Process process,
+      BaseElement baseElement) {
+    addError(validationErrors, problem, process, baseElement, false);
+  }
+
+  protected void addError(List<ValidationError> validationErrors, String problem, Process process,
+      BaseElement baseElement, Map<String, String> params) {
+    addError(validationErrors, problem, process, baseElement, false, params);
+  }
+
+  protected void addWarning(List<ValidationError> validationErrors, String problem, Process process,
+      BaseElement baseElement) {
+    addError(validationErrors, problem, process, baseElement, true);
+  }
+
+  protected void addWarning(List<ValidationError> validationErrors, String problem, Process process,
+      BaseElement baseElement, Map<String, String> params) {
+    addError(validationErrors, problem, process, baseElement, true, params);
+  }
+
+  protected void addError(List<ValidationError> validationErrors, String problem, Process process,
+      BaseElement baseElement, boolean isWarning) {
+    addError(validationErrors, problem, process, baseElement, isWarning, new HashMap<>());
+  }
+
+  protected void addError(List<ValidationError> validationErrors, String problem, Process process,
+      BaseElement baseElement, boolean isWarning, Map<String, String> params) {
     ValidationError error = new ValidationError();
     error.setWarning(isWarning);
 
@@ -61,8 +87,10 @@ public abstract class ValidatorImpl implements Validator {
       error.setXmlLineNumber(baseElement.getXmlRowNumber());
       error.setXmlColumnNumber(baseElement.getXmlColumnNumber());
     }
+    error.setKey(problem);
     error.setProblem(problem);
-    error.setDefaultDescription(description);
+    error.setDefaultDescription(problem);
+    error.setParams(params);
 
     if (baseElement instanceof FlowElement) {
       FlowElement flowElement = (FlowElement) baseElement;
@@ -73,7 +101,8 @@ public abstract class ValidatorImpl implements Validator {
     addError(validationErrors, error);
   }
 
-  protected void addError(List<ValidationError> validationErrors, String problem, Process process, String id, String description) {
+  protected void addError(List<ValidationError> validationErrors, String problem, Process process,
+      String id) {
     ValidationError error = new ValidationError();
 
     if (process != null) {
@@ -81,8 +110,9 @@ public abstract class ValidatorImpl implements Validator {
       error.setProcessDefinitionName(process.getName());
     }
 
+    error.setKey(problem);
     error.setProblem(problem);
-    error.setDefaultDescription(description);
+    error.setDefaultDescription(problem);
     error.setActivityId(id);
 
     addError(validationErrors, error);

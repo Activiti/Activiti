@@ -1,0 +1,30 @@
+{
+  "id":"taskExpressionMappingAllModel",
+  "type":"PROCESS",
+  "name":"Task Mapping All",
+  "extensions":{
+    "taskExpressionMappingAll":{
+      "mappings":{
+        "Task_0z87dw7":{
+          "mappingType": "MAP_ALL"
+        }
+      },
+      "properties":{
+        "81d12b0c-a95a-4879-a36c-7d40f121cef1":{
+          "id":"81d12b0c-a95a-4879-a36c-7d40f121cef1",
+          "name":"name",
+          "type":"string",
+          "required":false,
+          "value": "inName"
+        }
+      },
+      "constants": {
+        "Task_0z87dw7": {
+          "_constant_value_": {
+            "value": "myConstantValue"
+          }
+        }
+      }
+    }
+  }
+}

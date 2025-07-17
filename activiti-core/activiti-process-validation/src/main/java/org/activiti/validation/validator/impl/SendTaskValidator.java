@@ -40,14 +40,14 @@ public class SendTaskValidator extends ExternalInvocationTaskValidator {
 
       // Verify implementation
       if (StringUtils.isEmpty(sendTask.getType()) && !ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE.equalsIgnoreCase(sendTask.getImplementationType())) {
-        addError(errors, Problems.SEND_TASK_INVALID_IMPLEMENTATION, process, sendTask, "One of the attributes 'type' or 'operation' is mandatory on sendTask");
+        addError(errors, Problems.SEND_TASK_INVALID_IMPLEMENTATION, process, sendTask);
       }
 
       // Verify type
       if (StringUtils.isNotEmpty(sendTask.getType())) {
 
         if (!sendTask.getType().equalsIgnoreCase("mail") && !sendTask.getType().equalsIgnoreCase("mule") && !sendTask.getType().equalsIgnoreCase("camel")) {
-          addError(errors, Problems.SEND_TASK_INVALID_TYPE, process, sendTask, "Invalid or unsupported type for send task");
+          addError(errors, Problems.SEND_TASK_INVALID_TYPE, process, sendTask);
         }
 
         if (sendTask.getType().equalsIgnoreCase("mail")) {
@@ -78,7 +78,7 @@ public class SendTaskValidator extends ExternalInvocationTaskValidator {
       }
 
       if (!operationFound) {
-        addError(errors, Problems.SEND_TASK_WEBSERVICE_INVALID_OPERATION_REF, process, sendTask, "Invalid operation reference for send task");
+        addError(errors, Problems.SEND_TASK_WEBSERVICE_INVALID_OPERATION_REF, process, sendTask);
       }
 
     }

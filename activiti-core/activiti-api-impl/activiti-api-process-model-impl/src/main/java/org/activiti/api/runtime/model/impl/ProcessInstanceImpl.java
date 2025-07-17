@@ -34,6 +34,7 @@ public class ProcessInstanceImpl extends ApplicationElementImpl implements Proce
     private String parentId;
     private Integer processDefinitionVersion;
     private String processDefinitionName;
+    private String rootProcessInstanceId;
 
     public ProcessInstanceImpl() {
     }
@@ -98,6 +99,11 @@ public class ProcessInstanceImpl extends ApplicationElementImpl implements Proce
         return processDefinitionName;
     }
 
+    @Override
+    public String getRootProcessInstanceId() {
+        return rootProcessInstanceId;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -144,6 +150,10 @@ public class ProcessInstanceImpl extends ApplicationElementImpl implements Proce
 
     public void setProcessDefinitionName(String processDefinitionName) {
         this.processDefinitionName = processDefinitionName;
+    }
+
+    public void setRootProcessInstanceId(String rootProcessInstanceId) {
+        this.rootProcessInstanceId = rootProcessInstanceId;
     }
 
     @Override

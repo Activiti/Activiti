@@ -27,4 +27,5 @@ public interface DeploymentSettings {
 
   String IS_PROCESS_VALIDATION_ENABLED = "isProcessValidationEnabled";
 
+  String RESOURCE_NAMES = "resourceNames";
 }

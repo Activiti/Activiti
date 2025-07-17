@@ -19,7 +19,6 @@ package org.activiti.engine.delegate;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
-
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.task.DelegationState;
@@ -163,6 +162,20 @@ public interface DelegateTask extends VariableScope {
    *           when the task or user doesn't exist.
    */
   void addUserIdentityLink(String userId, String identityLinkType);
+
+  /**
+   * Involves a user with a task. The type of identity link is defined by the given identityLinkType.
+   *
+   * @param userId
+   *          id of the user involve, cannot be null.
+   * @param identityLinkType
+   *          type of identityLink, cannot be null (@see {@link IdentityLinkType}).
+   * @param details
+   *          serialized details of the identity link.
+   * @throws ActivitiObjectNotFoundException
+   *           when the task or user doesn't exist.
+   */
+  void addUserIdentityLink(String userId, String identityLinkType, byte[] details);
 
   /**
    * Involves a group with group task. The type of identityLink is defined by the given identityLink.

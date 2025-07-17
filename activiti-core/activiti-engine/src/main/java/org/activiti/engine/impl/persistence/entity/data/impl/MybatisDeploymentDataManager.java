@@ -16,9 +16,6 @@
 
 package org.activiti.engine.impl.persistence.entity.data.impl;
 
-import java.util.List;
-import java.util.Map;
-
 import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -27,6 +24,9 @@ import org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.DeploymentDataManager;
 import org.activiti.engine.repository.Deployment;
+
+import java.util.List;
+import java.util.Map;
 
 /**
 
@@ -54,6 +54,11 @@ public class MybatisDeploymentDataManager extends AbstractDataManager<Deployment
       return (DeploymentEntity) list.get(0);
     }
     return null;
+  }
+
+  @Override
+  public DeploymentEntity findDeploymentByVersion(Integer version) {
+      return getDbSqlSession().getSqlSession().selectOne("selectDeploymentByVersion", version);
   }
 
   @Override

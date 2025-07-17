@@ -17,78 +17,48 @@
 
 package org.activiti.spring.process;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.model.Extension;
-import org.activiti.spring.process.model.ProcessExtensionModel;
-import org.activiti.spring.resources.DeploymentResourceLoader;
+import org.activiti.spring.process.model.VariableDefinition;
+import org.springframework.lang.NonNull;
+
+import java.util.Optional;
 
 public class ProcessExtensionService {
 
-    private DeploymentResourceLoader<ProcessExtensionModel> processExtensionLoader;
-    private ProcessExtensionResourceReader processExtensionReader;
-    private RepositoryService repositoryService;
+    private final static Extension EMPTY_EXTENSION = new Extension();
 
-    private static final Extension EMPTY_EXTENSIONS = new Extension();
-    private Map<String, Map<String, Extension>> processExtensionModelDeploymentMap = new HashMap<>();
+    private final ProcessExtensionRepository processExtensionRepository;
 
-    public ProcessExtensionService(DeploymentResourceLoader<ProcessExtensionModel> processExtensionLoader,
-                                   ProcessExtensionResourceReader processExtensionReader) {
-
-        this.processExtensionLoader = processExtensionLoader;
-        this.processExtensionReader = processExtensionReader;
+    public ProcessExtensionService(ProcessExtensionRepository processExtensionRepository) {
+        this.processExtensionRepository = processExtensionRepository;
     }
 
-    private Map<String, Extension> getProcessExtensionsForDeploymentId(String deploymentId) {
-        Map<String, Extension> processExtensionModelMap = processExtensionModelDeploymentMap.get(deploymentId);
-        if (processExtensionModelMap != null) {
-            return processExtensionModelMap;
+    public boolean hasExtensionsFor(@NonNull ProcessDefinition processDefinition) {
+        return hasExtensionsFor(processDefinition.getId());
+    }
+
+    public boolean hasExtensionsFor(@NonNull String processDefinitionId) {
+        return processExtensionRepository.getExtensionsForId(processDefinitionId).isPresent();
+    }
+
+    public Extension getExtensionsFor(@NonNull ProcessDefinition processDefinition) {
+        return getExtensionsForId(processDefinition.getId());
+    }
+
+    public Extension getExtensionsForId(@NonNull String processDefinitionId) {
+        return processExtensionRepository.getExtensionsForId(processDefinitionId).orElse(EMPTY_EXTENSION);
+    }
+    public boolean hasEphemeralVariable(String processDefinitionId,
+                                        @NonNull String variableName) {
+        if(processDefinitionId == null) {
+            return false;
         }
+        Extension extension = this.getExtensionsForId(processDefinitionId);
+        return Optional.ofNullable(extension)
+            .map(ext -> ext.getPropertyByName(variableName))
+            .map(VariableDefinition::isEphemeral)
+            .orElse(false);
 
-        List<ProcessExtensionModel> processExtensionModels = processExtensionLoader.loadResourcesForDeployment(deploymentId,
-                processExtensionReader);
-
-        processExtensionModelMap = buildProcessDefinitionAndExtensionMap(processExtensionModels);
-        processExtensionModelDeploymentMap.put(deploymentId, processExtensionModelMap);
-        return processExtensionModelMap;
-    }
-
-    private Map<String, Extension> buildProcessDefinitionAndExtensionMap(List<ProcessExtensionModel> processExtensionModels) {
-        Map<String, Extension> buildProcessExtensionMap = new HashMap<>();
-        for (ProcessExtensionModel processExtensionModel:processExtensionModels ) {
-            buildProcessExtensionMap.putAll(processExtensionModel.getAllExtensions());
-        }
-
-        return buildProcessExtensionMap;
-    }
-
-    public boolean hasExtensionsFor(ProcessDefinition processDefinition) {
-        return !EMPTY_EXTENSIONS.equals(getExtensionsFor(processDefinition));
-    }
-
-    public boolean hasExtensionsFor(String processDefinitionId) {
-        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
-        return hasExtensionsFor(processDefinition);
-    }
-
-    public Extension getExtensionsFor(ProcessDefinition processDefinition) {
-        Map<String, Extension> processExtensionModelMap = getProcessExtensionsForDeploymentId(processDefinition.getDeploymentId());
-        Extension extension = processExtensionModelMap.get(processDefinition.getKey());
-
-        return extension != null ? extension : EMPTY_EXTENSIONS;
-    }
-
-    public Extension getExtensionsForId(String processDefinitionId) {
-        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
-
-        Extension processExtension = getExtensionsFor(processDefinition);
-        return processExtension != null ? processExtension : EMPTY_EXTENSIONS;
-    }
-
-    public void setRepositoryService(RepositoryService repositoryService) {
-        this.repositoryService = repositoryService;
     }
 }

@@ -17,7 +17,7 @@
 
 package org.activiti.spring.test.jpa;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
 

@@ -39,4 +39,5 @@ public interface HistoricIdentityLinkEntity extends HistoricIdentityLink, Entity
 
   void setProcessInstanceId(String processInstanceId);
 
+  void setDetails(byte[] details);
 }

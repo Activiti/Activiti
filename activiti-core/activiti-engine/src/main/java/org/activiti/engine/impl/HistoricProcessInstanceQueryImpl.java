@@ -84,6 +84,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected List<HistoricProcessInstanceQueryImpl> orQueryObjects = new ArrayList<HistoricProcessInstanceQueryImpl>();
   protected HistoricProcessInstanceQueryImpl currentOrQueryObject = null;
   protected boolean inOrStatement = false;
+  protected List<String> involvedGroups;
 
   public HistoricProcessInstanceQueryImpl() {
   }
@@ -791,4 +792,23 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   public List<HistoricProcessInstanceQueryImpl> getOrQueryObjects() {
     return orQueryObjects;
   }
+
+  public List<String> getInvolvedGroups() {
+    return involvedGroups;
+  }
+
+  public HistoricProcessInstanceQuery involvedGroupsIn(List<String> involvedGroups) {
+    if (involvedGroups == null || involvedGroups.isEmpty()) {
+      throw new ActivitiIllegalArgumentException("Involved groups list is null or empty.");
+    }
+
+    if (inOrStatement) {
+      this.currentOrQueryObject.involvedGroups = involvedGroups;
+    } else {
+      this.involvedGroups = involvedGroups;
+    }
+    return this;
+  }
+
+
 }

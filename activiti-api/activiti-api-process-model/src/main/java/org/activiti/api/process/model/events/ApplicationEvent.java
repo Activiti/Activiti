@@ -23,6 +23,7 @@ public interface ApplicationEvent extends
         RuntimeEvent<Deployment, ApplicationEvents> {
 
     enum ApplicationEvents {
-        APPLICATION_DEPLOYED
+        APPLICATION_DEPLOYED,
+        APPLICATION_ROLLBACK
     }
 }

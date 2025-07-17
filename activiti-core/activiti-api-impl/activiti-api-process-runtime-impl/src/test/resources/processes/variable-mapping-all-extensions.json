@@ -1,0 +1,37 @@
+{
+  "id":"taskVariableMappingAllModel",
+  "extensions": {
+    "taskVariableMappingAll": {
+      "properties": {
+        "process-variable-inputmap-1-id": {
+          "id": "process-variable-inputmap-1-id",
+          "name": "process_variable_inputmap_1",
+          "type": "string",
+          "required": true,
+          "value": "myString"
+        },
+        "process-variable-json-type-1-id": {
+          "id": "process-variable-json-type-1-id",
+          "name": "process_variable_json_type_1",
+          "type": "json",
+          "value": {
+            "field1": "${process_variable_inputmap_1}"
+          }
+        },
+        "process-variable-json-type-2-id": {
+          "id": "process-variable-json-type-2-id",
+          "name": "process_variable_json_type_2",
+          "type": "json",
+          "value": {
+            "field1": "myString"
+          }
+        }
+      },
+      "mappings": {
+        "simpleTask": {
+          "mappingType": "MAP_ALL"
+        }
+      }
+    }
+  }
+}

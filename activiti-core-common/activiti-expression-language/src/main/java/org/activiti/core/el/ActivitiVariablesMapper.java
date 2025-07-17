@@ -18,8 +18,8 @@ package org.activiti.core.el;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import javax.el.ValueExpression;
-import javax.el.VariableMapper;
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
 
 public class ActivitiVariablesMapper extends VariableMapper {
 

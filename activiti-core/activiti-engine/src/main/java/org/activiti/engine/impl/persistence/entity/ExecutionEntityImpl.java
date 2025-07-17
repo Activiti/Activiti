@@ -496,7 +496,12 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
     this.rootProcessInstanceId = rootProcessInstanceId;
   }
 
-  // scopes ///////////////////////////////////////////////////////////////////
+    @Override
+    public boolean isRootExecution() {
+        return id != null && id.equals(rootProcessInstanceId);
+    }
+
+    // scopes ///////////////////////////////////////////////////////////////////
 
   public boolean isScope() {
     return isScope;

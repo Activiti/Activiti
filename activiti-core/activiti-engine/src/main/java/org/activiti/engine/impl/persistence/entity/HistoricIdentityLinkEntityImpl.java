@@ -19,7 +19,6 @@ package org.activiti.engine.impl.persistence.entity;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.db.BulkDeleteable;
 
@@ -35,6 +34,7 @@ public class HistoricIdentityLinkEntityImpl extends AbstractEntityNoRevision imp
   protected String groupId;
   protected String taskId;
   protected String processInstanceId;
+  protected byte[] details;
 
   public HistoricIdentityLinkEntityImpl() {
 
@@ -59,6 +59,10 @@ public class HistoricIdentityLinkEntityImpl extends AbstractEntityNoRevision imp
 
     if (this.processInstanceId != null) {
       persistentState.put("processInstanceId", this.processInstanceId);
+    }
+
+    if (this.details != null) {
+      persistentState.put("details", this.details);
     }
 
     return persistentState;
@@ -116,5 +120,13 @@ public class HistoricIdentityLinkEntityImpl extends AbstractEntityNoRevision imp
 
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
+  }
+
+  public byte[] getDetails() {
+      return this.details;
+  }
+
+  public void setDetails(byte[] details) {
+      this.details = details;
   }
 }

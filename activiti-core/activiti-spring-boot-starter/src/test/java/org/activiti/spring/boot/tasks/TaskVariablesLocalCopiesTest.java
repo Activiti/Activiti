@@ -81,7 +81,7 @@ public class TaskVariablesLocalCopiesTest {
         securityUtil.logInAs("user");
         //when
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
-                                                                                                      50));
+                                                                                                      200));
         //then
         assertThat(processDefinitionPage.getContent()).isNotNull();
         assertThat(processDefinitionPage.getContent())
@@ -158,15 +158,16 @@ public class TaskVariablesLocalCopiesTest {
         //after completion the process variable should be updated but only the one that was modified
         assertThat(processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(twoTaskInstance).build()))
                 .extracting(VariableInstance::getName, VariableInstance::getValue)
-                .containsExactly(
+                .containsOnly(
                         tuple("start1", "modagainstart1"),
-                        tuple("start2", "start2"));
+                        tuple("start2", "start2"),
+                        tuple("sys_task_assignee", "user"));
 
         securityUtil.logInAs("garth");
         //and task2 should not see the change
         assertThat(taskRuntime.variables(TaskPayloadBuilder.variables().withTaskId(task2.getId()).build()))
                 .extracting(VariableInstance::getName, VariableInstance::getValue)
-                .containsExactly(
+                .containsOnly(
                         tuple("start1", "start1"),
                         tuple("start2", "start2"));
 
@@ -226,9 +227,10 @@ public class TaskVariablesLocalCopiesTest {
         //after completion the process variable should be updated but only the one that was modified
         assertThat(processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(twoTaskInstance).build()))
                 .extracting(VariableInstance::getName, VariableInstance::getValue)
-                .containsExactly(
+                .containsOnly(
                         tuple("start1", "modagainstart1"),
-                        tuple("start2", "start2"));
+                        tuple("start2", "start2"),
+                        tuple("sys_task_assignee", "user"));
 
 
     }

@@ -20,8 +20,7 @@ package org.activiti.standalone.el;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import javax.el.PropertyNotFoundException;
-
+import jakarta.el.PropertyNotFoundException;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;

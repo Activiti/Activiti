@@ -61,8 +61,10 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
   @Override
   public void trigger(DelegateExecution execution, String signalName, Object signalData) {
     Object delegate = DelegateExpressionUtil.resolveDelegateExpression(expression, execution, fieldDeclarations);
-    if (delegate instanceof TriggerableActivityBehavior) {
-      ((TriggerableActivityBehavior) delegate).trigger(execution, signalName, signalData);
+    if (delegate instanceof DelegateExecutionFunction) {
+        leave(execution);
+    } else if (delegate instanceof TriggerableActivityBehavior behavior) {
+      behavior.trigger(execution, signalName, signalData);
     }
   }
 
@@ -83,20 +85,25 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
         }
 
         Object delegate = DelegateExpressionUtil.resolveDelegateExpression(expression, execution, fieldDeclarations);
-        if (delegate instanceof ActivityBehavior) {
-
-          if (delegate instanceof AbstractBpmnActivityBehavior) {
-            ((AbstractBpmnActivityBehavior) delegate).setMultiInstanceActivityBehavior(getMultiInstanceActivityBehavior());
-          }
-
-          Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new ActivityBehaviorInvocation((ActivityBehavior) delegate, execution));
-
-        } else if (delegate instanceof JavaDelegate) {
-          Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new JavaDelegateInvocation((JavaDelegate) delegate, execution));
-          leave(execution);
-
-        } else {
-          throw new ActivitiIllegalArgumentException("Delegate expression " + expression + " did neither resolve to an implementation of " + ActivityBehavior.class + " nor " + JavaDelegate.class);
+        switch (delegate) {
+            case DelegateExecutionFunction function -> {
+                DelegateExecutionOutcome outcome = function.apply(execution);
+                if (outcome == DelegateExecutionOutcome.LEAVE_EXECUTION) {
+                    leave(execution);
+                }
+            }
+            case ActivityBehavior activityBehavior -> {
+                if (delegate instanceof AbstractBpmnActivityBehavior behavior) {
+                    behavior.setMultiInstanceActivityBehavior(getMultiInstanceActivityBehavior());
+                }
+                Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new ActivityBehaviorInvocation(activityBehavior, execution));
+            }
+            case JavaDelegate javaDelegate -> {
+                Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new JavaDelegateInvocation(javaDelegate, execution));
+                leave(execution);
+            }
+            case null, default ->
+                throw new ActivitiIllegalArgumentException("The resolved delegate expression " + expression + " should be an implementation of one of " + ActivityBehavior.class + ", " + JavaDelegate.class + " or " + DelegateExecutionFunction.class);
         }
       } else {
         leave(execution);
