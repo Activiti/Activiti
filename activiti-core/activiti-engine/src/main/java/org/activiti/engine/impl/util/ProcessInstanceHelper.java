@@ -119,13 +119,12 @@ public class ProcessInstanceHelper {
 
                     MessageEventDefinition messageEventDefinition = (MessageEventDefinition) startEvent.getEventDefinitions().get(0);
                     String messageRef = messageEventDefinition.getMessageRef();
-                    if (messageRef.equals(messageName)) {
-                        initialFlowElement = flowElement;
-                        break;
-                    } // FIXME: We should not need to reset eventDefinition messageRef to message name
-                    else if (bpmnModel.containsMessageId(messageRef)) {
+                    // FIXME: We should not need to reset eventDefinition messageRef to message name
+                    if (bpmnModel.containsMessageId(messageRef)) {
                         Message message = bpmnModel.getMessage(messageRef);
                         messageEventDefinition.setMessageRef(message.getName());
+                    }
+                    if (messageEventDefinition.getMessageRef().equals(messageName)) {
                         initialFlowElement = flowElement;
                         break;
                     }
