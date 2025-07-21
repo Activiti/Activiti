@@ -18,6 +18,7 @@ package org.activiti.spring.process.variable.types;
 import java.util.List;
 import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.BpmnError;
 
 /**
  * Basic date type for setting default date values for vars in extension json
@@ -37,7 +38,7 @@ public class DateVariableType extends JavaObjectVariableType {
     }
 
     @Override
-    public Object parseFromValue(Object value) throws ActivitiException {
+    public Object parseFromValue(Object value) throws BpmnError {
 
         try {
             if (isExpression(value)) {
@@ -45,7 +46,7 @@ public class DateVariableType extends JavaObjectVariableType {
             }
             return dateFormatterProvider.toDate(value);
         } catch (Exception e) {
-            throw new ActivitiException("Error parsing date value " + value, e);
+            throw new BpmnError("1", "Error parsing date value " + value);
         }
     }
 }

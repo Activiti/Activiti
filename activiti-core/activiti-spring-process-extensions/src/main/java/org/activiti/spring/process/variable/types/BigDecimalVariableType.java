@@ -16,6 +16,7 @@
 package org.activiti.spring.process.variable.types;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.BpmnError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +30,7 @@ public class BigDecimalVariableType extends VariableType {
     private static final Logger logger = LoggerFactory.getLogger(BigDecimalVariableType.class);
 
     @Override
-    public Object parseFromValue(Object value) throws ActivitiException {
+    public Object parseFromValue(Object value) throws BpmnError {
 
         if(value instanceof BigDecimal) {
             return value;
@@ -40,7 +41,8 @@ public class BigDecimalVariableType extends VariableType {
             }
             return BigDecimal.valueOf(((Number) value).doubleValue());
         } catch (ClassCastException | NumberFormatException e) {
-            throw new ActivitiException("Error parsing bigdecimal value from " + value + ": " + e.getMessage(), e);
+            String errorMessage = String.format("Error parsing bigdecimal value from %s: %s", value, e.getMessage());
+            throw new BpmnError("1", errorMessage);
         }
     }
 

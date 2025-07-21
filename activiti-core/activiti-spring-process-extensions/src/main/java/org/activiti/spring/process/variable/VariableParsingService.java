@@ -18,6 +18,7 @@ package org.activiti.spring.process.variable;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.BpmnError;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.types.VariableType;
 import org.slf4j.Logger;
@@ -36,7 +37,7 @@ public class VariableParsingService {
 
     private Map<String, VariableType> variableTypeMap;
 
-    public Object parse(VariableDefinition variableDefinition) throws ActivitiException {
+    public Object parse(VariableDefinition variableDefinition) throws BpmnError {
 
 
         if(variableDefinition.getType()!=null) {
