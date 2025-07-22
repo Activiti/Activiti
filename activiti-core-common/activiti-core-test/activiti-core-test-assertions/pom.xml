@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-core-test</artifactId>
-    <version>8.1.3-SNAPSHOT</version>
+    <version>8.1.4-SNAPSHOT</version>
   </parent>
   <artifactId>activiti-core-test-assertions</artifactId>
   <name>Activiti :: Test Assertions</name>

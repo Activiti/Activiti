@@ -2260,6 +2260,24 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertThat(taskService.createNativeTaskQuery().sql("SELECT count(*) FROM " + managementService.getTableName(Task.class) + " T WHERE T.NAME_ = #{taskName}").parameter("taskName", "gonzoTask").count()).isEqualTo(1);
   }
 
+    @Deployment(resources = { "org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml" })
+    public void testTaskExecutionId() throws Exception {
+        // Start process with a binary variable
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", singletonMap("binaryVariable", "It is I, le binary".getBytes()));
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+        assertThat(task).isNotNull();
+
+        // Query task (execution id)
+        Task queriedTask = taskService.createTaskQuery().executionId(task.getExecutionId()).singleResult();
+        assertThat(queriedTask).isNotNull();
+        assertThat(queriedTask.getExecutionId()).isEqualTo(task.getExecutionId());
+
+        Task orQueriedTask = taskService.createTaskQuery().or().executionId(task.getExecutionId()).singleResult();
+        assertThat(orQueriedTask).isNotNull();
+        assertThat(orQueriedTask.getExecutionId()).isEqualTo(task.getExecutionId());
+
+    }
+
   /**
    * Test confirming fix for ACT-1731
    */

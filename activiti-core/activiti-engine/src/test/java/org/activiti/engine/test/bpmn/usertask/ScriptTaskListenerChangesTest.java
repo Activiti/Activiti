@@ -28,6 +28,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ScriptTaskListenerChangesTest extends PluggableActivitiTestCase {
 
+    /*
+    MSSQL DDL uses "datetime", which rounds milliseconds to ".000", ".003" or ".007"
+    - This doesn't work with "new Date(1)"
+
+    MariaDB DDL uses "datetime(3)", which is supposed to store milliseconds
+    - It wasn't possible to store milliseconds, even with:
+      - upgraded JDBC driver
+      - using JDBC parameters
+        - mariaDBContainer.addParameter("useLegacyDatetimeCode","false");
+        - mariaDBContainer.addParameter("useFractionalSeconds","true");
+     */
+    private static Date EXPECTED_DUE_DATE = new Date(1000);
+
   @Deployment(resources={"org/activiti/engine/test/bpmn/usertask/ScriptTaskListenerChangesTest.bpmn20.xml"})
   public void testTaskChangesUsingTaskListeners() {
     // GIVEN: a process with an usertask, with a TaskListener to set values on the task using javascript
@@ -46,7 +59,7 @@ public class ScriptTaskListenerChangesTest extends PluggableActivitiTestCase {
     assertThat(task.getAssignee()).isEqualTo(historicTask.getAssignee()).isEqualTo("assignee from script");
     assertThat(task.getOwner()).isEqualTo(historicTask.getOwner()).isEqualTo("owner from script");
     assertThat(task.getPriority()).isEqualTo(historicTask.getPriority()).isEqualTo(1);
-    assertThat(task.getDueDate()).isEqualTo(historicTask.getDueDate()).isEqualTo(new Date(1));
+    assertThat(task.getDueDate()).isEqualTo(historicTask.getDueDate()).isEqualTo(EXPECTED_DUE_DATE);
   }
 
     @Deployment(resources={"org/activiti/engine/test/bpmn/usertask/ScriptTaskListenerChangesTest.bpmn20.xml"})
@@ -83,7 +96,7 @@ public class ScriptTaskListenerChangesTest extends PluggableActivitiTestCase {
       assertThat(task.getAssignee()).isEqualTo(historicTask.getAssignee()).isEqualTo("assignee from script");
       assertThat(task.getOwner()).isEqualTo(historicTask.getOwner()).isEqualTo("owner from script");
       assertThat(task.getPriority()).isEqualTo(historicTask.getPriority()).isEqualTo(1);
-      assertThat(task.getDueDate()).isEqualTo(historicTask.getDueDate()).isEqualTo(new Date(1));
+      assertThat(task.getDueDate()).isEqualTo(historicTask.getDueDate()).isEqualTo(EXPECTED_DUE_DATE);
     }
 
 }

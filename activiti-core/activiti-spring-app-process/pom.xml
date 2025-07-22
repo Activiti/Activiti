@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-core-dependencies</artifactId>
-    <version>8.1.3-SNAPSHOT</version>
+    <version>8.1.4-SNAPSHOT</version>
     <relativePath>../activiti-core-dependencies</relativePath>
   </parent>
   <artifactId>activiti-spring-app-process</artifactId>

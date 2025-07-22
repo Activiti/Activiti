@@ -1157,10 +1157,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       switch (databaseVendor) {
           case DATABASE_TYPE_MYSQL:
               String databaseProductVersion = databaseMetaData.getDatabaseProductVersion();
-              // MariaDB has performance penalty when using "withoutJoins" SQL scripts
-              // example of MariaDB 10.5.4
-              //     input: vendor=MySQL, version=5.5.5-10.5.24-MariaDB-1:10.5.24+maria~ubu2004
-              //     output: databaseType=mariadb
               if (databaseProductVersion.toLowerCase().contains(DATABASE_TYPE_MARIADB)) {
                   databaseType = DATABASE_TYPE_MARIADB;
               }

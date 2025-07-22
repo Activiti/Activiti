@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-examples</artifactId>
-    <version>8.1.3-SNAPSHOT</version>
+    <version>8.1.4-SNAPSHOT</version>
   </parent>
   <artifactId>activiti-api-basic-full-example-nobean</artifactId>
   <name>Activiti :: Examples :: API Basic Process and Tasks Example No Bean</name>

@@ -23,6 +23,8 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 import org.junit.Test;
 
+import java.util.Set;
+
 public class NonCascadeDeleteTest extends PluggableActivitiTestCase {
 
   private static String PROCESS_DEFINITION_KEY = "oneTaskProcess";
@@ -55,7 +57,20 @@ public class NonCascadeDeleteTest extends PluggableActivitiTestCase {
         // Delete deployment and historic process instance remains.
         repositoryService.deleteDeployment(deploymentId, false);
 
+        // Historic process instance remains (by querying processInstance)
         HistoricProcessInstance processInstanceAfterDelete = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+        assertThat(processInstanceAfterDelete.getProcessDefinitionKey()).isNull();
+        assertThat(processInstanceAfterDelete.getProcessDefinitionName()).isNull();
+        assertThat(processInstanceAfterDelete.getProcessDefinitionVersion()).isNull();
+
+        // Historic process instance remains (by querying processInstances)
+        processInstanceAfterDelete = historyService.createHistoricProcessInstanceQuery().processInstanceIds(Set.of(processInstanceId)).singleResult();
+        assertThat(processInstanceAfterDelete.getProcessDefinitionKey()).isNull();
+        assertThat(processInstanceAfterDelete.getProcessDefinitionName()).isNull();
+        assertThat(processInstanceAfterDelete.getProcessDefinitionVersion()).isNull();
+
+        // Historic process instance remains (by querying processDefinitionId)
+        processInstanceAfterDelete = historyService.createHistoricProcessInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).singleResult();
         assertThat(processInstanceAfterDelete.getProcessDefinitionKey()).isNull();
         assertThat(processInstanceAfterDelete.getProcessDefinitionName()).isNull();
         assertThat(processInstanceAfterDelete.getProcessDefinitionVersion()).isNull();
