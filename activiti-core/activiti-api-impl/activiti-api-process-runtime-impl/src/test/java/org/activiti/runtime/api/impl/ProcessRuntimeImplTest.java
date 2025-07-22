@@ -18,6 +18,7 @@ package org.activiti.runtime.api.impl;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.CreateProcessInstancePayload;
+import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.model.payloads.StartProcessPayload;
 import org.activiti.api.process.model.payloads.UpdateProcessPayload;
 import org.activiti.api.runtime.model.impl.DeploymentImpl;
@@ -60,6 +61,7 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -345,6 +347,35 @@ public class ProcessRuntimeImplTest {
         processRuntime.processDefinitions(Pageable.of(0, 2), List.of());
 
         verify(processDefinitionQuery).listPage(0, 2);
+    }
+
+    @Test
+    void should_setCategoryNotEquals_when_excludedCategoryIsSet() {
+        doReturn("user").when(securityManager).getAuthenticatedUserId();
+        given(securityPoliciesManager.restrictProcessDefQuery(any()))
+            .willReturn(ProcessPayloadBuilder.processDefinitions().build());
+
+        String processCategory = "#triggerableByForm";
+
+        ProcessDefinitionQuery processDefinitionQuery = mock(ProcessDefinitionQuery.class, Answers.RETURNS_SELF);
+        DeploymentQuery deploymentQuery = mock(DeploymentQuery.class, Answers.RETURNS_SELF);
+
+        when(repositoryService.createProcessDefinitionQuery()).thenReturn(processDefinitionQuery);
+        when(repositoryService.createDeploymentQuery()).thenReturn(deploymentQuery);
+        when(deploymentQuery.latestVersion()).thenReturn(deploymentQuery);
+        when(deploymentQuery.list()).thenReturn(Collections.emptyList());
+        when(processDefinitionQuery.deploymentIds(any())).thenReturn(processDefinitionQuery);
+        when(processDefinitionQuery.listPage(anyInt(), anyInt())).thenReturn(Collections.emptyList());
+        when(processDefinitionQuery.count()).thenReturn(0L);
+
+        Pageable pageable = Pageable.of(0, 10);
+        GetProcessDefinitionsPayload payload = ProcessPayloadBuilder.processDefinitions()
+            .withProcessCategoryToExclude(processCategory)
+            .build();
+
+        processRuntime.processDefinitions(pageable, payload);
+
+        verify(processDefinitionQuery).processDefinitionCategoryNotEquals(processCategory);
     }
 
 }

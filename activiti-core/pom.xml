@@ -29,6 +29,7 @@
     <groovy.version>3.0.25</groovy.version>
     <simple-jndi.version>0.25.0</simple-jndi.version>
     <zjsonpatch.version>0.4.16</zjsonpatch.version>
+    <system.stubs.jupiter.version>2.0.2</system.stubs.jupiter.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -177,12 +178,6 @@
         <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>batik-parser</artifactId>
         <version>${batik.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>net.javacrumbs.json-unit</groupId>
-        <artifactId>json-unit-fluent</artifactId>
-        <version>${json-unit.version}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.subethamail</groupId>
