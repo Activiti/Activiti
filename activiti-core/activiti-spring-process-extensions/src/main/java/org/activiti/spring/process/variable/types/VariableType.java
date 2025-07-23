@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.delegate.BpmnError;
 
 /**
  * Base variable type for types as defined in extension json files. Used to validate variables against definition.
@@ -39,7 +38,7 @@ public abstract class VariableType {
 
     abstract public void validate(Object var, List<ActivitiException> errors);
 
-    public Object parseFromValue(Object value) throws BpmnError {
+    public Object parseFromValue(Object value) throws ActivitiException {
         return value;
     }
 
