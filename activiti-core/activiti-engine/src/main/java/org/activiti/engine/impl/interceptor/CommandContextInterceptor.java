@@ -71,8 +71,10 @@ public class CommandContextInterceptor extends AbstractCommandInterceptor {
         if (!contextReused) {
           context.close();
         }
+      } catch (Throwable e) {
+        log.error("Unexpected error while closing command context", e);
+        context.exception(e);
       } finally {
-
         // Pop from stack
         Context.removeCommandContext();
         Context.removeProcessEngineConfiguration();
