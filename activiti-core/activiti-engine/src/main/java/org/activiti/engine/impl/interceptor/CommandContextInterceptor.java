@@ -74,6 +74,7 @@ public class CommandContextInterceptor extends AbstractCommandInterceptor {
       } catch (Throwable e) {
         log.error("Unexpected error while closing command context", e);
         context.exception(e);
+        throw  e;
       } finally {
         // Pop from stack
         Context.removeCommandContext();
