@@ -236,6 +236,13 @@
   </properties>
   <dependencyManagement>
     <dependencies>
+      <!-- temporary security fix AAE-36930 -->
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>3.18.0</version>
+      </dependency>
+      <!-- temporary security fix -->
       <!-- temporary security fix AAE-32649 -->
       <dependency>
         <groupId>net.minidev</groupId>
