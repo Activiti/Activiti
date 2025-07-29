@@ -127,8 +127,8 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     }
 
     @Override
-    public Page<ProcessDefinition> processDefinitionsLatestVersions(Pageable pageable, GetProcessDefinitionsPayload getProcessDefinitionsPayload) {
-      return   getProcessDefinitions(pageable, getProcessDefinitionsPayload, true);
+    public Page<ProcessDefinition> processDefinitionsLatestVersions(Pageable pageable) {
+      return   getProcessDefinitions(pageable,ProcessPayloadBuilder.processDefinitions().build(), true);
     }
 
     private Page<ProcessDefinition> getProcessDefinitions(Pageable pageable, GetProcessDefinitionsPayload payload, boolean latestVersionOnly) {
