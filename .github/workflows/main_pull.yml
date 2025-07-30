@@ -85,20 +85,81 @@ jobs:
         env:
           DO_PUSH: ${{ contains(github.event.pull_request.labels.*.name, 'preview') }}
 
+      - name: Build and Test with Maven (and maybe deploy)
+        shell: bash
+        run: mvn ${{ steps.define_maven_command.outputs.command }} ${{ env.MAVEN_CLI_OPTS}}
+        env:
+          MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+
+      - name: Merge JaCoCo execution files
+        shell: bash
+        run: mvn jacoco:merge@merge -N
+
+      - name: Create temporary aggregate directories
+        shell: bash
+        run: |
+          mkdir -p target/aggregate-classes
+          mkdir -p target/aggregate-sources
+
+      - name: Copy all class files to aggregate directory
+        shell: bash
+        run: |
+          find . -path "*/target/classes" -type d | while read -r dir; do
+            if [ -d "$dir" ] && [ "$(find "$dir" -name "*.class" | wc -l)" -gt 0 ]; then
+              echo "Copying classes from: $dir"
+              cp -r "$dir"/* target/aggregate-classes/ 2>/dev/null || true
+            fi
+          done
+
+      - name: Copy all source files to aggregate directory
+        shell: bash
+        run: |
+          find . -path "*/src/main/java" -type d | while read -r dir; do
+            if [ -d "$dir" ] && [ "$(find "$dir" -name "*.java" | wc -l)" -gt 0 ]; then
+              echo "Copying sources from: $dir"
+              cp -r "$dir"/* target/aggregate-sources/ 2>/dev/null || true
+            fi
+          done
+
+      - name: Download JaCoCo CLI
+        shell: bash
+        run: |
+          JACOCO_VERSION="0.8.12"
+          wget -O target/jacococli.jar "https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/${JACOCO_VERSION}/org.jacoco.cli-${JACOCO_VERSION}-nodeps.jar"
+
+      - name: Generate aggregate coverage report
+        shell: bash
+        run: |
+          mkdir -p target/site/jacoco-aggregate
+          java -jar target/jacococli.jar report target/jacoco.exec \
+            --classfiles target/aggregate-classes \
+            --sourcefiles target/aggregate-sources \
+            --html target/site/jacoco-aggregate \
+            --xml target/site/jacoco-aggregate/jacoco.xml \
+            --csv target/site/jacoco-aggregate/jacoco.csv
+
       - name: Set SONAR_SCANNER_OPTS
         shell: bash
         run: |
-          echo "JACOCO_REPORT_PATH=${{ github.workspace }}/activiti-coverage/target/site/jacoco-aggregate/jacoco.xml" >> $GITHUB_ENV
+          echo "JACOCO_REPORT_PATH=${{ github.workspace }}/target/site/jacoco-aggregate/jacoco.xml" >> $GITHUB_ENV
           echo "SONAR_SCANNER_OPTS=sonar:sonar -Dsonar.host.url='https://sonarcloud.io' -Dsonar.organization='activiti' -Dsonar.projectKey='Activiti_Activiti' -Dsonar.coverage.jacoco.xmlReportPaths=${{ env.JACOCO_REPORT_PATH }}" >> $GITHUB_ENV
 
-      - name: Build and Test with Maven (and maybe Deploy)
+      - name: Run SonarCloud analysis
+        if: ${{ env.SONAR_TOKEN != '' }}
         shell: bash
-        run: mvn ${{ steps.define_maven_command.outputs.command }} ${{ env.MAVEN_CLI_OPTS}} ${{ env.SONAR_SCANNER_OPTS }}
+        run: mvn ${{ env.SONAR_SCANNER_OPTS }}
         env:
           MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Clean up temporary files
+        shell: bash
+        run: |
+          rm -rf target/aggregate-classes target/aggregate-sources target/jacococli.jar
 
       - name: Echo Longest Test Run
         uses: ./.github/actions/echo-longest-run

@@ -156,7 +156,7 @@
     <module>activiti-core</module>
     <module>activiti-dependencies</module>
     <module>activiti-examples</module>
-    <module>activiti-coverage</module>
+    <!-- <module>activiti-coverage</module> -->
   </modules>
   <scm>
     <url>http://github.com/${project.scm.organization}/${project.scm.repository}</url>
@@ -739,6 +739,25 @@ limitations under the License.
             <goals>
               <goal>report-integration</goal>
             </goals>
+          </execution>
+          <!-- Merge execution reports configuration-->
+          <execution>
+            <id>merge</id>
+            <goals>
+              <goal>merge</goal>
+            </goals>
+            <configuration>
+              <!--   This change is required to get all reports scanned while executing `jacoco:merge` on the root pom (`-N` option) -->
+              <fileSets>
+                <fileSet>
+                  <directory>${project.basedir}</directory>
+                  <includes>
+                    <include>**/*.exec</include>
+                  </includes>
+                </fileSet>
+              </fileSets>
+              <destFile>${project.build.directory}/jacoco.exec</destFile>
+            </configuration>
           </execution>
         </executions>
       </plugin>
