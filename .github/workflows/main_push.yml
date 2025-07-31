@@ -76,15 +76,31 @@ jobs:
           echo set VERSION=$VERSION
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
+      - name: Build and Test with Maven (and maybe Deploy)
+        shell: bash
+        run: mvn deploy ${{ env.MAVEN_CLI_OPTS}}
+        env:
+          MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+
+      - name: Merge JaCoCo execution files
+        shell: bash
+        run: mvn jacoco:merge@merge -N
+
+      - name: Generate aggregate coverage report
+        shell: bash
+        run: mvn jacoco:report -Djacoco.dataFile=${{ github.workspace }}/target/jacoco.exec
+
       - name: Set SONAR_SCANNER_OPTS
         shell: bash
         run: |
-          echo "JACOCO_REPORT_PATH=${{ github.workspace }}/activiti-coverage/target/site/jacoco-aggregate/jacoco.xml" >> $GITHUB_ENV
-          echo "SONAR_SCANNER_OPTS=sonar:sonar -Dsonar.host.url='https://sonarcloud.io' -Dsonar.organization='activiti' -Dsonar.projectKey='Activiti_Activiti' -Dsonar.coverage.jacoco.xmlReportPaths=${{ env.JACOCO_REPORT_PATH }}" >> $GITHUB_ENV
+          echo "SONAR_SCANNER_OPTS=sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=activiti -Dsonar.projectKey=Activiti_Activiti -Dsonar.coverage.jacoco.xmlReportPaths=**/target/site/jacoco*/jacoco.xml" >> $GITHUB_ENV
 
-      - name: Build and Test with Maven (and maybe Deploy)
+      - name: Run SonarCloud analysis
+        if: ${{ env.SONAR_TOKEN != '' }}
         shell: bash
-        run: mvn deploy ${{ env.MAVEN_CLI_OPTS}} ${{ env.SONAR_SCANNER_OPTS }}
+        run: mvn ${{ env.SONAR_SCANNER_OPTS }} ${{ env.MAVEN_CLI_OPTS}}
         env:
           MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}

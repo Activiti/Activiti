@@ -109,7 +109,7 @@ jobs:
       - name: Run SonarCloud analysis
         if: ${{ env.SONAR_TOKEN != '' }}
         shell: bash
-        run: mvn ${{ env.SONAR_SCANNER_OPTS }}
+        run: mvn ${{ env.SONAR_SCANNER_OPTS }} ${{ env.MAVEN_CLI_OPTS}}
         env:
           MAVEN_CLI_OPTS: --show-version --no-transfer-progress --settings settings.xml
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
