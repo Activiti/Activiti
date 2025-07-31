@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.activiti.api.process.model.ProcessDefinition;
+import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.runtime.ProcessAdminRuntime;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.query.Page;
@@ -421,9 +422,11 @@ public class ApplicationUpgradeIT {
             MULTI_INSTANCE_PROCESS_DEFINITION_PATH);
 
         securityUtil.logInAs("admin");
+        GetProcessDefinitionsPayload getProcessDefinitionsPayload = new GetProcessDefinitionsPayload();
+        getProcessDefinitionsPayload.setLatestVersionOnly(true);
 
         //when
-        Page<ProcessDefinition> result = processAdminRuntime.processDefinitionsLatestVersions(Pageable.of(0, 100));
+        Page<ProcessDefinition> result = processAdminRuntime.processDefinitions(Pageable.of(0, 100), getProcessDefinitionsPayload);
 
         //then
         assertThat(result.getContent())
@@ -453,8 +456,11 @@ public class ApplicationUpgradeIT {
 
         securityUtil.logInAs("admin");
 
+        GetProcessDefinitionsPayload getProcessDefinitionsPayload = new GetProcessDefinitionsPayload();
+        getProcessDefinitionsPayload.setLatestVersionOnly(false);
+
         //when
-        Page<ProcessDefinition> result = processAdminRuntime.processDefinitions(Pageable.of(0, 100));
+        Page<ProcessDefinition> result = processAdminRuntime.processDefinitions(Pageable.of(0, 100), getProcessDefinitionsPayload);
 
         //then
         assertThat(result.getContent())

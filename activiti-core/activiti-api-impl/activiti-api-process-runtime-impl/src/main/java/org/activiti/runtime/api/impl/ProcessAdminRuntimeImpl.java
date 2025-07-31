@@ -123,33 +123,27 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     @Override
     public Page<ProcessDefinition> processDefinitions(Pageable pageable,
         GetProcessDefinitionsPayload getProcessDefinitionsPayload) {
-        return getProcessDefinitions(pageable, getProcessDefinitionsPayload, false);
-    }
-
-    @Override
-    public Page<ProcessDefinition> processDefinitionsLatestVersions(Pageable pageable) {
-        return getProcessDefinitions(pageable, ProcessPayloadBuilder.processDefinitions().build(), true);
-    }
-
-    private Page<ProcessDefinition> getProcessDefinitions(Pageable pageable, GetProcessDefinitionsPayload payload, boolean latestVersionOnly) {
-        if (payload == null) {
+        if (getProcessDefinitionsPayload == null) {
             throw new IllegalStateException("payload cannot be null");
         }
-        ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery();
-        if (latestVersionOnly) {
-            query.latestVersion();
+        ProcessDefinitionQuery processDefinitionQuery = repositoryService
+            .createProcessDefinitionQuery();
+
+        if (getProcessDefinitionsPayload.isLatestVersionOnly()) {
+            processDefinitionQuery.latestVersion();
         }
-        if (payload.hasDefinitionKeys()) {
-            query.processDefinitionKeys(payload.getProcessDefinitionKeys());
+
+        if (getProcessDefinitionsPayload.hasDefinitionKeys()) {
+            processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());
         }
-        String categoryToExclude = payload.getProcessCategoryToExclude();
-        if (!StringUtils.isBlank(categoryToExclude)) {
-            query.processDefinitionCategoryNotEquals(categoryToExclude);
+
+        String processCategoryToExclude = getProcessDefinitionsPayload.getProcessCategoryToExclude();
+        if (!StringUtils.isBlank(processCategoryToExclude)) {
+            processDefinitionQuery.processDefinitionCategoryNotEquals(processCategoryToExclude);
         }
-        return new PageImpl<>(
-            processDefinitionConverter.from(query.listPage(pageable.getStartIndex(), pageable.getMaxItems())),
-            Math.toIntExact(query.count())
-        );
+
+        return new PageImpl<>(processDefinitionConverter.from(processDefinitionQuery.listPage(pageable.getStartIndex(), pageable.getMaxItems())),
+            Math.toIntExact(processDefinitionQuery.count()));
     }
 
     @Override

@@ -55,10 +55,6 @@ public interface ProcessAdminRuntime {
     Page<ProcessDefinition> processDefinitions(Pageable pageable,
                                                GetProcessDefinitionsPayload getProcessDefinitionsPayload);
 
-    /**
-     * Get all process definitions with the latest version only, by pages
-     */
-    Page<ProcessDefinition> processDefinitionsLatestVersions(Pageable pageable);
 
     /**
      * Start a new Process Instance based on the payload parameters
