@@ -80,7 +80,7 @@ jobs:
           then
             echo "command=deploy" >> $GITHUB_OUTPUT
           else
-            echo "command=install" >> $GITHUB_OUTPUT
+            echo "command=verify" >> $GITHUB_OUTPUT
           fi
         env:
           DO_PUSH: ${{ contains(github.event.pull_request.labels.*.name, 'preview') }}
