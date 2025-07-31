@@ -95,11 +95,11 @@ jobs:
 
       - name: Merge JaCoCo execution files
         shell: bash
-        run: mvn -N jacoco:merge -Djacoco.destFile=${{ github.workspace }}/target/jacoco-merged.exec
+        run: mvn jacoco:merge@merge -N
 
       - name: Generate aggregate coverage report
         shell: bash
-        run: mvn jacoco:report -Djacoco.dataFile=${{ github.workspace }}/target/jacoco-merged.exec
+        run: mvn jacoco:report -Djacoco.dataFile=${{ github.workspace }}/target/jacoco.exec
 
       - name: Run SonarCloud analysis
         if: ${{ env.SONAR_TOKEN != '' }}
