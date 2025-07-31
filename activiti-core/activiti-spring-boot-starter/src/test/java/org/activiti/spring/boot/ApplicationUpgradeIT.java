@@ -408,6 +408,72 @@ public class ApplicationUpgradeIT {
         assertThat(signalSubscriptions).hasSize(1);
     }
 
+    @Test
+    public void should_returnOnlyTheLatestVersions_when_multipleVersions_andRequestForLatestVersions() {
+        //given
+        ProjectManifest projectManifest = new ProjectManifest();
+        projectManifest.setVersion("12");
+        Deployment oldDeployment = deployProcesses(projectManifest, SINGLE_TASK_PROCESS_DEFINITION_PATH,
+            MULTI_INSTANCE_PROCESS_DEFINITION_PATH);
+
+        projectManifest.setVersion("34");
+        Deployment latestDeployment = deployProcesses(projectManifest,
+            MULTI_INSTANCE_PROCESS_DEFINITION_PATH);
+
+        securityUtil.logInAs("admin");
+
+        //when
+        Page<ProcessDefinition> result = processAdminRuntime.processDefinitionsLatestVersions(Pageable.of(0, 100));
+
+        //then
+        assertThat(result.getContent())
+            .filteredOn(processDefinition -> processDefinition.getKey().equals(
+                SINGLE_TASK_PROCESS_DEFINITION_KEY) || processDefinition.getKey()
+                .equals(MULTI_INSTANCE_PROCESS_DEFINITION_KEY))
+            .extracting(ProcessDefinition::getKey, ProcessDefinition::getVersion,
+                ProcessDefinition::getAppVersion)
+            .containsExactlyInAnyOrder(
+                tuple(SINGLE_TASK_PROCESS_DEFINITION_KEY, oldDeployment.getVersion(), String.valueOf(oldDeployment.getVersion())),
+                tuple(MULTI_INSTANCE_PROCESS_DEFINITION_KEY, latestDeployment.getVersion(),
+                    String.valueOf(latestDeployment.getVersion())));
+    }
+
+    @Test
+    public void should_returnAllVersions_when_multipleVersions_andRequestForAllVersions() {
+        //given
+        ProjectManifest projectManifest = new ProjectManifest();
+        int firstVersion = 1;
+        projectManifest.setVersion("12");
+        Deployment oldDeployment = deployProcesses(projectManifest, SINGLE_TASK_PROCESS_DEFINITION_PATH,
+            MULTI_INSTANCE_PROCESS_DEFINITION_PATH);
+
+        projectManifest.setVersion("34");
+        Deployment latestDeployment = deployProcesses(projectManifest,
+            MULTI_INSTANCE_PROCESS_DEFINITION_PATH);
+
+        securityUtil.logInAs("admin");
+
+        //when
+        Page<ProcessDefinition> result = processAdminRuntime.processDefinitions(Pageable.of(0, 100));
+
+        //then
+        assertThat(result.getContent())
+            .filteredOn(processDefinition -> processDefinition.getKey().equals(
+                SINGLE_TASK_PROCESS_DEFINITION_KEY) || processDefinition.getKey()
+                .equals(MULTI_INSTANCE_PROCESS_DEFINITION_KEY))
+            .extracting(ProcessDefinition::getKey, ProcessDefinition::getVersion,
+                ProcessDefinition::getAppVersion)
+            .containsExactlyInAnyOrder(
+                tuple(MULTI_INSTANCE_PROCESS_DEFINITION_KEY, firstVersion,
+                    String.valueOf(firstVersion)),
+                tuple(MULTI_INSTANCE_PROCESS_DEFINITION_KEY, oldDeployment.getVersion(),
+                    String.valueOf(oldDeployment.getVersion())),
+                tuple(MULTI_INSTANCE_PROCESS_DEFINITION_KEY, latestDeployment.getVersion(),
+                    String.valueOf(latestDeployment.getVersion())),
+                tuple(SINGLE_TASK_PROCESS_DEFINITION_KEY, firstVersion, String.valueOf(firstVersion)),
+                tuple(SINGLE_TASK_PROCESS_DEFINITION_KEY, oldDeployment.getVersion(), String.valueOf(oldDeployment.getVersion())));
+    }
+
     private String deployProcess(String deploymentName, String processPath) {
         Deployment deployment = repositoryService.createDeployment()
             .addClasspathResource(processPath).
