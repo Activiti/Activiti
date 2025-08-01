@@ -1777,6 +1777,32 @@
                   <if test="orQueryObject.withoutTenantId">
                     or (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
                   </if>
+                  <if test="orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null">
+                    or (
+                      exists (
+                        select 1
+                        from ${prefix}ACT_HI_IDENTITYLINK HI_OR${orIndex}
+                        where
+                          RES.ASSIGNEE_ is null
+                          and HI_OR${orIndex}.TYPE_ = 'candidate'
+                          and (
+                            <if test="orQueryObject.candidateUser != null">
+                              HI_OR${orIndex}.USER_ID_ = #{orQueryObject.candidateUser}
+                            </if>
+                            <if test="orQueryObject.candidateUser != null &amp;&amp; orQueryObject.candidateGroups != null &amp;&amp; orQueryObject.candidateGroups.size() &gt; 0">
+                              or
+                            </if>
+                            <if test="orQueryObject.candidateGroups != null &amp;&amp; orQueryObject.candidateGroups.size() &gt; 0">
+                              HI_OR${orIndex}.GROUP_ID_ IN
+                              <foreach item="group" index="index" collection="orQueryObject.candidateGroups"
+                                       open="(" separator="," close=")">
+                                #{group}
+                              </foreach>
+                            </if>
+                          )
+                      )
+                    )
+                  </if>
                   <if test="orQueryObject.queryVariableValues.size() &gt; 0">
                     or
                     <!--
