@@ -1413,9 +1413,6 @@
           <if test="taskParentTaskId != null">
             and RES.PARENT_TASK_ID_ = #{taskParentTaskId}
           </if>
-          <if test="tenantIdLike != null">
-            and RES.TENANT_ID_ like #{tenantIdLike}${wildcardEscapeClause}
-          </if>
           <if test="withoutDueDate">
             and RES.DUE_DATE_ is null
           </if>
