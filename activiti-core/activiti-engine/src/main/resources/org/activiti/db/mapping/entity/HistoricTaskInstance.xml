@@ -1279,6 +1279,22 @@
                 <property name="where" value="D.NAME_ like #{processDefinitionNameLike}${wildcardEscapeClause}"/>
               </include>
           </if>
+          <if test="processCategoryInList != null &amp;&amp; processCategoryInList.size() &gt; 0">
+            and <include refid="withoutJoins_selectExistsIn">
+              <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D"/>
+              <property name="join" value="RES.PROC_DEF_ID_ = D.ID_"/>
+              <property name="field" value="D.CATEGORY_"/>
+              <property name="collection" value="processCategoryInList"/>
+            </include>
+          </if>
+          <if test="processCategoryNotInList != null &amp;&amp; processCategoryNotInList.size() &gt; 0">
+            and <include refid="withoutJoins_selectExistsNotIn">
+              <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D"/>
+              <property name="join" value="RES.PROC_DEF_ID_ = D.ID_"/>
+              <property name="field" value="D.CATEGORY_"/>
+              <property name="collection" value="processCategoryNotInList"/>
+            </include>
+          </if>
           <if test="processInstanceBusinessKey != null">
             and <include refid="withoutJoins_selectExists">
               <property name="externalTable" value="${prefix}ACT_HI_PROCINST HPI"/>
@@ -1616,6 +1632,22 @@
                       <property name="where" value="D_OR${orIndex}.NAME_ like #{orQueryObject.processDefinitionNameLike}${wildcardEscapeClause}"/>
                     </include>
                   </if>
+                  <if test="orQueryObject.processCategoryInList != null &amp;&amp; orQueryObject.processCategoryInList.size() &gt; 0">
+                    or <include refid="withoutJoins_selectExistsIn">
+                      <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D_OR${orIndex}"/>
+                      <property name="join" value="RES.PROC_DEF_ID_ = D_OR${orIndex}.ID_"/>
+                      <property name="field" value="D_OR${orIndex}.CATEGORY_"/>
+                      <property name="collection" value="orQueryObject.processCategoryInList"/>
+                    </include>
+                  </if>
+                  <if test="orQueryObject.processCategoryNotInList != null &amp;&amp; orQueryObject.processCategoryNotInList.size() &gt; 0">
+                    or <include refid="withoutJoins_selectExistsNotIn">
+                    <property name="externalTable" value="${prefix}ACT_RE_PROCDEF D_OR${orIndex}"/>
+                    <property name="join" value="RES.PROC_DEF_ID_ = D_OR${orIndex}.ID_"/>
+                    <property name="field" value="D_OR${orIndex}.CATEGORY_"/>
+                    <property name="collection" value="orQueryObject.processCategoryNotInList"/>
+                  </include>
+                  </if>
                   <if test="orQueryObject.processInstanceId != null">
                     or RES.PROC_INST_ID_ = #{orQueryObject.processInstanceId}
                   </if>
@@ -1920,6 +1952,19 @@
       where
         ${join}
         and ${field} in
+        <foreach item="item" index="index" collection="${collection}" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+    )
+  </sql>
+
+  <sql id="withoutJoins_selectExistsNotIn">
+    exists (
+      select 1
+      from ${externalTable}
+      where
+        ${join}
+        and ${field} not in
         <foreach item="item" index="index" collection="${collection}" open="(" separator="," close=")">
           #{item}
         </foreach>

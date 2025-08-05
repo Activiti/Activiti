@@ -34,6 +34,7 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -42,6 +43,11 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testHistoricTaskInstance() throws Exception {
+
+        // Set process definition category
+        final ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+        repositoryService.setProcessDefinitionCategory(processDefinition.getId(), "existingCategory");
+
         Map<String, Object> varMap = new HashMap<String, Object>();
         varMap.put("formKeyVar",
                    "expressionFormKey");
@@ -107,6 +113,28 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
         assertThat(historicTaskInstance.getDurationInMillis()).isNotNull();
         assertThat(historicTaskInstance.getClaimTime()).isNotNull();
         assertThat(historicTaskInstance.getWorkTimeInMillis()).isNotNull();
+
+        // Test process categories (AND query)
+        historicTaskInstance = historyService.createHistoricTaskInstanceQuery().processCategoryIn(List.of("existingCategory")).singleResult();
+        assertThat(historicTaskInstance).isNotNull();
+        historicTaskInstance = historyService.createHistoricTaskInstanceQuery().processCategoryIn(List.of("nonExistingCategory")).singleResult();
+        assertThat(historicTaskInstance).isNull();
+
+        historicTaskInstance = historyService.createHistoricTaskInstanceQuery().processCategoryNotIn(List.of("nonExistingCategory")).singleResult();
+        assertThat(historicTaskInstance).isNotNull();
+        historicTaskInstance = historyService.createHistoricTaskInstanceQuery().processCategoryNotIn(List.of("existingCategory", "nonExistingCategory")).singleResult();
+        assertThat(historicTaskInstance).isNull();
+
+        // Test process categories (OR query)
+        historicTaskInstance = historyService.createHistoricTaskInstanceQuery().or().processCategoryIn(List.of("existingCategory")).singleResult();
+        assertThat(historicTaskInstance).isNotNull();
+        historicTaskInstance = historyService.createHistoricTaskInstanceQuery().or().processCategoryIn(List.of("nonExistingCategory")).singleResult();
+        assertThat(historicTaskInstance).isNull();
+
+        historicTaskInstance = historyService.createHistoricTaskInstanceQuery().or().processCategoryNotIn(List.of("nonExistingCategory")).singleResult();
+        assertThat(historicTaskInstance).isNotNull();
+        historicTaskInstance = historyService.createHistoricTaskInstanceQuery().or().processCategoryNotIn(List.of("existingCategory", "nonExistingCategory")).singleResult();
+        assertThat(historicTaskInstance).isNull();
 
         historyService.deleteHistoricTaskInstance(taskId);
 
@@ -493,10 +521,6 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
 
         assertThat(historyService.createHistoricTaskInstanceQuery().or().finished().endOr().count()).isEqualTo(1);
         assertThat(historyService.createHistoricTaskInstanceQuery().or().unfinished().endOr().count()).isEqualTo(1);
-    }
-
-    public void testVRM() {
-        historyService.createHistoricTaskInstanceQuery().finished().or().taskCandidateUser("1").taskCandidateGroupIn(List.of("1","2","3")).endOr().list();
     }
 
     @Deployment
