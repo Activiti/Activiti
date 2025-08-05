@@ -17,6 +17,7 @@
 package org.activiti.engine.impl.cmd;
 
 import java.util.Map;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.behavior.VariablesPropagator;
 import org.activiti.engine.impl.context.Context;
@@ -58,7 +59,12 @@ public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
         }
 
         if (variablesPropagator != null ) {
-            variablesPropagator.propagate(execution, availableVariables);
+            try {
+                variablesPropagator.propagate(execution, availableVariables);
+            }
+            catch (ActivitiException exception){
+                commandContext.exception(exception);
+            }
         }
 
         Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
