@@ -24,8 +24,14 @@ public class TaskTemplateDefinition {
 
     private TemplateDefinition candidate;
 
+    private boolean isEmailNotificationEnabled = true;
+
     public TemplateDefinition getAssignee() {
         return assignee;
+    }
+
+    public boolean isEmailNotificationEnabled() {
+        return isEmailNotificationEnabled;
     }
 
     public void setAssignee(TemplateDefinition assignee) {
@@ -40,6 +46,10 @@ public class TaskTemplateDefinition {
         this.candidate = candidate;
     }
 
+    public void setEmailNotificationEnabled(boolean emailNotificationEnabled) {
+        this.isEmailNotificationEnabled = emailNotificationEnabled;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -47,13 +57,13 @@ public class TaskTemplateDefinition {
         if (o == null || getClass() != o.getClass()) return false;
         TaskTemplateDefinition that = (TaskTemplateDefinition) o;
         return Objects.equals(assignee, that.assignee) &&
-            Objects.equals(candidate, that.candidate);
+            Objects.equals(candidate, that.candidate) &&
+            isEmailNotificationEnabled == that.isEmailNotificationEnabled;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(assignee,
-                            candidate);
+                            candidate,isEmailNotificationEnabled);
     }
-
 }

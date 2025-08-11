@@ -156,7 +156,6 @@
     <module>activiti-core</module>
     <module>activiti-dependencies</module>
     <module>activiti-examples</module>
-    <module>activiti-coverage</module>
   </modules>
   <scm>
     <url>http://github.com/${project.scm.organization}/${project.scm.repository}</url>
@@ -200,16 +199,16 @@
     <asm.version>9.7.1</asm.version>
     <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
     <dependency-check-maven.version>12.1.3</dependency-check-maven.version>
-    <exec-maven-plugin.version>3.5.0</exec-maven-plugin.version>
+    <exec-maven-plugin.version>3.5.1</exec-maven-plugin.version>
     <extra-enforcer-rules.version>1.9.0</extra-enforcer-rules.version>
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
     <license-maven-plugin.version>5.0.0</license-maven-plugin.version>
     <third-party-license-maven-plugin.version>2.5.0</third-party-license-maven-plugin.version>
     <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
-    <maven-clean-plugin.version>3.4.1</maven-clean-plugin.version>
+    <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
     <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
-    <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
+    <maven-enforcer-plugin.version>3.6.1</maven-enforcer-plugin.version>
     <maven-failsafe-plugin.version>3.5.3</maven-failsafe-plugin.version>
     <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
     <maven-install-plugin.version>3.1.4</maven-install-plugin.version>
@@ -236,14 +235,13 @@
   </properties>
   <dependencyManagement>
     <dependencies>
-      <!-- Temporary Security fix  -->
+      <!-- temporary security fix AAE-36930 -->
       <dependency>
-        <groupId>org.xmlunit</groupId>
-        <artifactId>xmlunit-core</artifactId>
-        <version>2.10.2</version>
-        <scope>test</scope>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>3.18.0</version>
       </dependency>
-      <!-- Temporary Security fix  -->
+      <!-- temporary security fix -->
       <!-- temporary security fix AAE-32649 -->
       <dependency>
         <groupId>net.minidev</groupId>
@@ -260,7 +258,7 @@
       <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-core</artifactId>
-        <version>6.4.5</version>
+        <version>6.5.1</version>
       </dependency>
       <!-- temporary security fix -->
       <!-- temporary security fix AAE-35515-->
@@ -740,6 +738,25 @@ limitations under the License.
             <goals>
               <goal>report-integration</goal>
             </goals>
+          </execution>
+          <!-- Merge execution reports configuration-->
+          <execution>
+            <id>merge</id>
+            <goals>
+              <goal>merge</goal>
+            </goals>
+            <configuration>
+              <!--   This change is required to get all reports scanned while executing `jacoco:merge` on the root pom (`-N` option) -->
+              <fileSets>
+                <fileSet>
+                  <directory>${project.basedir}</directory>
+                  <includes>
+                    <include>**/*.exec</include>
+                  </includes>
+                </fileSet>
+              </fileSets>
+              <destFile>${project.build.directory}/jacoco.exec</destFile>
+            </configuration>
           </execution>
         </executions>
       </plugin>
