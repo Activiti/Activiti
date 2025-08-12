@@ -15,6 +15,8 @@
  */
 package org.activiti.runtime.api.impl;
 
+import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.activiti.engine.RuntimeService;
@@ -32,6 +34,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -88,6 +91,25 @@ class ProcessAdminRuntimeImplTest {
         processAdminRuntime.processDefinitions(Pageable.of(0, 2));
 
         verify(processDefinitionQuery).listPage(0, 2);
+    }
+
+    @Test
+    void should_setCategoryNotEquals_when_excludedCategoryIsSet() {
+        String processCategory = "#triggerableByForm";
+
+        ProcessDefinitionQuery processDefinitionQuery = mock(ProcessDefinitionQuery.class, Answers.RETURNS_SELF);
+        given(repositoryService.createProcessDefinitionQuery()).willReturn(processDefinitionQuery);
+        given(processDefinitionQuery.listPage(anyInt(), anyInt())).willReturn(Collections.emptyList());
+        given(processDefinitionQuery.count()).willReturn(0L);
+
+        Pageable pageable = Pageable.of(0, 10);
+        GetProcessDefinitionsPayload payload = ProcessPayloadBuilder.processDefinitions()
+            .withProcessCategoryToExclude(processCategory)
+            .build();
+
+        processAdminRuntime.processDefinitions(pageable, payload);
+
+        verify(processDefinitionQuery).processDefinitionCategoryNotEquals(processCategory);
     }
 
 }

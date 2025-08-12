@@ -1,3 +1,4 @@
 org.activiti.spring.boot.ActivitiMethodSecurityAutoConfiguration
 org.activiti.spring.boot.EndpointAutoConfiguration
 org.activiti.spring.boot.ProcessEngineAutoConfiguration
+org.activiti.spring.resolver.ELResolverAutoConfiguration

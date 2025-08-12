@@ -12,7 +12,8 @@
             "candidate": {
               "type": "file",
               "value": "https://github.com/leemunroe/responsive-html-email-template/blob/master/email-inlined.html"
-            }
+            },
+            "emailNotificationEnabled":false
           },
           "myTaskId2": {
             "assignee": {
@@ -28,7 +29,8 @@
               "subject": "myTaskId3 candidate subject",
               "type": "variable",
               "value": "myCandidateTemplateVariable"
-            }
+            },
+            "emailNotificationEnabled": true
           }
         },
         "default": {
