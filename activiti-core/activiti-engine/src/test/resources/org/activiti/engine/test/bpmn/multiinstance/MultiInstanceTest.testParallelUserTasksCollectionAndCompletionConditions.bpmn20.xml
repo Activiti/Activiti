@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="miParallelUserTasksCollectionAndCompletionConditions">
+
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="setup" />
+
+    <scriptTask id="setup" name="Setup" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <script>
+      execution.setVariable("ReturnBackTo", "null")
+      execution.setVariable("Empty", [])
+      def list = []
+      def initiator = execution.getVariable("initiator") as String
+      def aps_USER_ID = [initiator, initiator] as String[]
+      list.add(aps_USER_ID)
+      list.add(aps_USER_ID)
+      execution.setVariable("Approver1", list)</script>
+    </scriptTask>
+
+    <sequenceFlow id="flow2" sourceRef="setup" targetRef="miTasks"/>
+
+    <userTask id="miTasks" name="My Task ${loopCounter}" >
+      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${ReturnBackTo==&quot;null&quot;? Approver1 : Empty}" activiti:elementVariable="user">
+        <completionCondition>${ReturnBackTo!="null"}</completionCondition>
+      </multiInstanceLoopCharacteristics>
+    </userTask>
+
+    <sequenceFlow id="flow3" sourceRef="miTasks" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+
+  </process>
+
+</definitions>

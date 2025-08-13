@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
@@ -328,6 +329,24 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
       taskService.complete(tasks.get(i).getId());
     }
     assertProcessEnded(procId);
+  }
+
+  @Deployment
+  public void testParallelUserTasksCollectionAndCompletionConditions() {
+      String procId = runtimeService.startProcessInstanceByKey("miParallelUserTasksCollectionAndCompletionConditions").getId();
+      List<Task> tasks = taskService.createTaskQuery().list();
+      assertThat(tasks).hasSize(2);
+
+      // setting execution variable to meet completion condition
+      final List<Execution> list = runtimeService.createExecutionQuery().processInstanceId(procId).list();
+      final Optional<Execution> first = list.stream().filter(execution -> execution.getParentId() == null).findFirst();
+      runtimeService.setVariable(first.get().getId(), "ReturnBackTo", "non-null");
+
+      // complete one of the tasks
+      taskService.complete( tasks.getFirst().getId() );
+
+      // all tasks must be completed, since completion condition is met
+      assertProcessEnded(procId);
   }
 
   @Deployment

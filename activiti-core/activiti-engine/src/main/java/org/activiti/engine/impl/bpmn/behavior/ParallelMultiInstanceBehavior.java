@@ -106,10 +106,8 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
    */
   public void leave(DelegateExecution execution) {
 
-    boolean zeroNrOfInstances = false;
     if (resolveNrOfInstances(execution) == 0) {
       // Empty collection, just leave.
-      zeroNrOfInstances = true;
       removeLocalLoopVariable(execution, getCollectionElementIndexVariable());
       super.leave(execution); // Plan the default leave
       execution.setMultiInstanceRoot(false);
@@ -122,10 +120,6 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
 
     Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution, null);
     callActivityEndListeners(execution);
-
-    if (zeroNrOfInstances) {
-      return;
-    }
 
     DelegateExecution miRootExecution = getMultiInstanceRootExecution(execution);
     if (miRootExecution != null) { // will be null in case of empty collection
