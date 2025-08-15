@@ -64,7 +64,7 @@ public class APITaskConverter
             status
         );
         task.setProcessDefinitionId(internalTask.getProcessDefinitionId());
-        task.setRootProcessInstanceId(internalTask.getRootProcessInstanceId());
+        task.setTaskProcessRootProcessInstanceId(internalTask.getTaskProcessRootProcessInstanceId());
         task.setProcessInstanceId(internalTask.getProcessInstanceId());
         task.setAssignee(internalTask.getAssignee());
         task.setClaimedDate(internalTask.getClaimTime());

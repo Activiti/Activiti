@@ -35,7 +35,7 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
     private int priority;
     private String processDefinitionId;
     private String processInstanceId;
-    private String rootProcessInstanceId;
+    private String taskProcessRootProcessInstanceId;
     private String parentTaskId;
     private String formKey;
     private Date completedDate;
@@ -168,17 +168,17 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
         return processInstanceId;
     }
 
-    @Override
-    public String getRootProcessInstanceId() {
-        return rootProcessInstanceId;
-    }
-
     public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
 
-    public void setRootProcessInstanceId(String rootProcessInstanceId) {
-        this.rootProcessInstanceId = rootProcessInstanceId;
+    @Override
+    public String getTaskProcessRootProcessInstanceId() {
+        return taskProcessRootProcessInstanceId;
+    }
+
+    public void setTaskProcessRootProcessInstanceId(String taskProcessRootProcessInstanceId) {
+        this.taskProcessRootProcessInstanceId = taskProcessRootProcessInstanceId;
     }
 
     @Override
@@ -292,7 +292,10 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
             Objects.equals(dueDate, task.dueDate) &&
             Objects.equals(processDefinitionId, task.processDefinitionId) &&
             Objects.equals(processInstanceId, task.processInstanceId) &&
-            Objects.equals(rootProcessInstanceId, task.rootProcessInstanceId) &&
+            Objects.equals(
+                taskProcessRootProcessInstanceId,
+                task.taskProcessRootProcessInstanceId
+            ) &&
             Objects.equals(parentTaskId, task.parentTaskId) &&
             Objects.equals(formKey, task.formKey) &&
             Objects.equals(completedDate, task.completedDate) &&
@@ -323,7 +326,7 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
             priority,
             processDefinitionId,
             processInstanceId,
-            rootProcessInstanceId,
+            taskProcessRootProcessInstanceId,
             parentTaskId,
             formKey,
             completedDate,
@@ -367,8 +370,8 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
             '\'' +
             ", processInstanceId='" +
             processInstanceId +
-            ", rootProcessInstanceId='" +
-            rootProcessInstanceId +
+            ", taskProcessRootProcessInstanceId='" +
+                taskProcessRootProcessInstanceId +
             '\'' +
             ", parentTaskId='" +
             parentTaskId +

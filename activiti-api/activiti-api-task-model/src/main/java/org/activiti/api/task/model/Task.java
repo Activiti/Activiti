@@ -51,7 +51,7 @@ public interface Task extends ApplicationElement {
 
     String getProcessInstanceId();
 
-    String getRootProcessInstanceId();
+    String getTaskProcessRootProcessInstanceId();
 
     String getParentTaskId();
 

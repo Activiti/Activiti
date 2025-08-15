@@ -70,6 +70,7 @@ public class APITaskConverterTest {
                         .withTaskDefinitionKey("taskDefinitionKey")
                         .withAppVersion(1)
                         .withBusinessKey("businessKey")
+                        .withTaskProcessRootProcessInstanceId("testTaskProcessRootProcessInstanceId")
                         .build()
                                                );
 
@@ -90,7 +91,8 @@ public class APITaskConverterTest {
                             Task::getStatus,
                             Task::getTaskDefinitionKey,
                             Task::getAppVersion,
-                            Task::getBusinessKey)
+                            Task::getBusinessKey,
+                            Task::getTaskProcessRootProcessInstanceId)
                 .containsExactly("testTaskId",
                                  "testUser",
                                  "testTaskName",
@@ -106,7 +108,8 @@ public class APITaskConverterTest {
                                  ASSIGNED,
                                  "taskDefinitionKey",
                                  "1",
-                                 "businessKey");
+                                 "businessKey",
+                                 "testTaskProcessRootProcessInstanceId");
     }
 
     @Test

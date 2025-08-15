@@ -51,7 +51,7 @@ public class HistoricTaskInstanceEntityImpl
     protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
     protected List<HistoricVariableInstanceEntity> queryVariables;
     protected String businessKey;
-    protected String processRootProcessInstanceId;
+    protected String taskProcessRootProcessInstanceId;
 
     public HistoricTaskInstanceEntityImpl() {}
 
@@ -101,7 +101,7 @@ public class HistoricTaskInstanceEntityImpl
         persistentState.put("priority", priority);
         persistentState.put("category", category);
         persistentState.put("processDefinitionId", processDefinitionId);
-        persistentState.put("processRootProcessInstanceId", processRootProcessInstanceId);
+        persistentState.put("taskProcessRootProcessInstanceId", taskProcessRootProcessInstanceId);
         if (parentTaskId != null) {
             persistentState.put("parentTaskId", parentTaskId);
         }
@@ -161,8 +161,8 @@ public class HistoricTaskInstanceEntityImpl
     }
 
     @Override
-    public String getRootProcessInstanceId() {
-        return processRootProcessInstanceId;
+    public String getTaskProcessRootProcessInstanceId() {
+        return taskProcessRootProcessInstanceId;
     }
 
     public void setAssignee(String assignee) {

@@ -53,7 +53,7 @@ public interface TaskEntity
 
     void setProcessInstanceId(String processInstanceId);
 
-    void setRootProcessInstanceId(String rootProcessInstanceId);
+    void setTaskProcessRootProcessInstanceId(String taskProcessRootProcessInstanceId);
 
     int getSuspensionState();
 
