@@ -15,20 +15,18 @@
  */
 package org.activiti.api.task.model;
 
-import org.activiti.api.model.shared.model.ApplicationElement;
-
 import java.util.Date;
 import java.util.List;
+import org.activiti.api.model.shared.model.ApplicationElement;
 
 public interface Task extends ApplicationElement {
-
     enum TaskStatus {
         CREATED,
         ASSIGNED,
         SUSPENDED,
         COMPLETED,
         CANCELLED,
-        DELETED
+        DELETED,
     }
 
     String getId();
@@ -52,6 +50,8 @@ public interface Task extends ApplicationElement {
     String getProcessDefinitionId();
 
     String getProcessInstanceId();
+
+    String getRootProcessInstanceId();
 
     String getParentTaskId();
 
