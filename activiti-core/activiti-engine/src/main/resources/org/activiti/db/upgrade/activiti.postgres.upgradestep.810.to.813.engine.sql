@@ -1,4 +1,3 @@
-drop index if exists ACT_IDX_IDENT_LNK_TASK;
 -- this "INCLUDE" statement only works for Postgresql 11+
 create index ACT_IDX_IDENT_LNK_TASK on ACT_RU_IDENTITYLINK(TASK_ID_ ASC) INCLUDE (ID_, USER_ID_, TYPE_, GROUP_ID_);
 
