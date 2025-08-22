@@ -20,6 +20,7 @@ drop index if exists ACT_IDX_EXEC_BUSKEY;
 drop index if exists ACT_IDX_TASK_CREATE;
 drop index if exists ACT_IDX_IDENT_LNK_USER;
 drop index if exists ACT_IDX_IDENT_LNK_GROUP;
+drop index if exists ACT_IDX_IDENT_LNK_TASK;
 drop index if exists ACT_IDX_VARIABLE_TASK_ID;
 drop index if exists ACT_IDX_EVENT_SUBSCR_CONFIG_;
 drop index if exists ACT_IDX_ATHRZ_PROCEDEF;
