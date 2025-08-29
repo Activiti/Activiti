@@ -299,11 +299,11 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   }
 
   public void setName(String taskName) {
-    this.name = taskName;
+    this.name = truncate(taskName, 255);
   }
 
   public void setDescription(String description) {
-    this.description = description;
+    this.description = truncate(description, 4000);
   }
 
   public void setAssignee(String assignee) {
@@ -636,4 +636,10 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     return "Task[id=" + id + ", name=" + name + "]";
   }
 
+  private String truncate(String string, int maxLength) {
+    if (string != null) {
+      return string.length() > maxLength ? string.substring(0, maxLength) : string;
+    }
+    return null;
+  }
 }
