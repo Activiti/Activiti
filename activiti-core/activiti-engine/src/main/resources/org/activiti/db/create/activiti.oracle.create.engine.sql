@@ -337,7 +337,7 @@ alter table ACT_RU_EXECUTION
     foreign key (PROC_DEF_ID_)
     references ACT_RE_PROCDEF (ID_);
 
-create index ACT_IDX_TSKASS_TASK on ACT_RU_IDENTITYLINK(TASK_ID_);
+create index ACT_IDX_TSKASS_TASK on ACT_RU_IDENTITYLINK(TASK_ID_ ASC);
 alter table ACT_RU_IDENTITYLINK
     add constraint ACT_FK_TSKASS_TASK
     foreign key (TASK_ID_)
