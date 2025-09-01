@@ -45,9 +45,7 @@ import org.activiti.engine.task.IdentityLinkType;
 
 
  */
-public class TaskEntityImpl
-  extends VariableScopeImpl
-  implements TaskEntity, Serializable, BulkDeleteable {
+public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Serializable, BulkDeleteable {
 
   public static final String DELETE_REASON_COMPLETED = "completed";
   public static final String DELETE_REASON_DELETED = "deleted";
@@ -169,9 +167,7 @@ public class TaskEntityImpl
   }
 
   @Override
-  protected void initializeVariableInstanceBackPointer(
-    VariableInstanceEntity variableInstance
-  ) {
+  protected void initializeVariableInstanceBackPointer(VariableInstanceEntity variableInstance) {
     variableInstance.setTaskId(id);
     variableInstance.setExecutionId(executionId);
     variableInstance.setProcessInstanceId(processInstanceId);
@@ -179,29 +175,15 @@ public class TaskEntityImpl
 
   @Override
   protected List<VariableInstanceEntity> loadVariableInstances() {
-    return Context
-      .getCommandContext()
-      .getVariableInstanceEntityManager()
-      .findVariableInstancesByTaskId(id);
+    return Context.getCommandContext().getVariableInstanceEntityManager().findVariableInstancesByTaskId(id);
   }
 
   @Override
-  protected VariableInstanceEntity createVariableInstance(
-    String variableName,
-    Object value,
-    ExecutionEntity sourceActivityExecution
-  ) {
-    VariableInstanceEntity result = super.createVariableInstance(
-      variableName,
-      value,
-      sourceActivityExecution
-    );
+  protected VariableInstanceEntity createVariableInstance(String variableName, Object value, ExecutionEntity sourceActivityExecution) {
+    VariableInstanceEntity result = super.createVariableInstance(variableName, value, sourceActivityExecution);
 
     // Dispatch event, if needed
-    if (
-      Context.getProcessEngineConfiguration() != null &&
-      Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()
-    ) {
+    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       Context
         .getProcessEngineConfiguration()
         .getEventDispatcher()
@@ -222,34 +204,16 @@ public class TaskEntityImpl
   }
 
   @Override
-  protected void updateVariableInstance(
-    VariableInstanceEntity variableInstance,
-    Object value,
-    ExecutionEntity sourceActivityExecution
-  ) {
+  protected void updateVariableInstance(VariableInstanceEntity variableInstance, Object value, ExecutionEntity sourceActivityExecution) {
     Object previousValue = variableInstance.getValue();
-    super.updateVariableInstance(
-      variableInstance,
-      value,
-      sourceActivityExecution
-    );
+    super.updateVariableInstance(variableInstance, value, sourceActivityExecution);
 
     // Dispatch event, if needed
-    if (
-      Context.getProcessEngineConfiguration() != null &&
-      Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()
-    ) {
+    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       Context
         .getProcessEngineConfiguration()
         .getEventDispatcher()
-        .dispatchEvent(
-          ActivitiEventBuilder.createVariableUpdateEvent(
-            variableInstance,
-            previousValue,
-            getProcessInstanceId(),
-            getProcessDefinitionId()
-          )
-        );
+        .dispatchEvent(ActivitiEventBuilder.createVariableUpdateEvent(variableInstance, previousValue, getProcessInstanceId(), getProcessDefinitionId()));
     }
   }
 
@@ -257,11 +221,7 @@ public class TaskEntityImpl
 
   public ExecutionEntity getExecution() {
     if ((execution == null) && (executionId != null)) {
-      this.execution =
-        Context
-          .getCommandContext()
-          .getExecutionEntityManager()
-          .findById(executionId);
+      this.execution = Context.getCommandContext().getExecutionEntityManager().findById(executionId);
     }
     return execution;
   }
@@ -270,62 +230,37 @@ public class TaskEntityImpl
 
   @Override
   public void addCandidateUser(String userId) {
-    Context
-      .getCommandContext()
-      .getIdentityLinkEntityManager()
-      .addCandidateUser(this, userId);
+    Context.getCommandContext().getIdentityLinkEntityManager().addCandidateUser(this, userId);
   }
 
   @Override
   public void addCandidateUsers(Collection<String> candidateUsers) {
-    Context
-      .getCommandContext()
-      .getIdentityLinkEntityManager()
-      .addCandidateUsers(this, candidateUsers);
+    Context.getCommandContext().getIdentityLinkEntityManager().addCandidateUsers(this, candidateUsers);
   }
 
   @Override
   public void addCandidateGroup(String groupId) {
-    Context
-      .getCommandContext()
-      .getIdentityLinkEntityManager()
-      .addCandidateGroup(this, groupId);
+    Context.getCommandContext().getIdentityLinkEntityManager().addCandidateGroup(this, groupId);
   }
 
   @Override
   public void addCandidateGroups(Collection<String> candidateGroups) {
-    Context
-      .getCommandContext()
-      .getIdentityLinkEntityManager()
-      .addCandidateGroups(this, candidateGroups);
+    Context.getCommandContext().getIdentityLinkEntityManager().addCandidateGroups(this, candidateGroups);
   }
 
   @Override
   public void addUserIdentityLink(String userId, String identityLinkType) {
-    Context
-      .getCommandContext()
-      .getIdentityLinkEntityManager()
-      .addUserIdentityLink(this, userId, identityLinkType);
+    Context.getCommandContext().getIdentityLinkEntityManager().addUserIdentityLink(this, userId, identityLinkType);
   }
 
   @Override
-  public void addUserIdentityLink(
-    String userId,
-    String identityLinkType,
-    byte[] details
-  ) {
-    Context
-      .getCommandContext()
-      .getIdentityLinkEntityManager()
-      .addUserIdentityLink(this, userId, identityLinkType, details);
+  public void addUserIdentityLink(String userId, String identityLinkType, byte[] details) {
+    Context.getCommandContext().getIdentityLinkEntityManager().addUserIdentityLink(this, userId, identityLinkType, details);
   }
 
   @Override
   public void addGroupIdentityLink(String groupId, String identityLinkType) {
-    Context
-      .getCommandContext()
-      .getIdentityLinkEntityManager()
-      .addGroupIdentityLink(this, groupId, identityLinkType);
+    Context.getCommandContext().getIdentityLinkEntityManager().addGroupIdentityLink(this, groupId, identityLinkType);
   }
 
   public Set<IdentityLink> getCandidates() {
@@ -348,29 +283,19 @@ public class TaskEntityImpl
 
   public void deleteGroupIdentityLink(String groupId, String identityLinkType) {
     if (groupId != null) {
-      Context
-        .getCommandContext()
-        .getIdentityLinkEntityManager()
-        .deleteIdentityLink(this, null, groupId, identityLinkType);
+      Context.getCommandContext().getIdentityLinkEntityManager().deleteIdentityLink(this, null, groupId, identityLinkType);
     }
   }
 
   public void deleteUserIdentityLink(String userId, String identityLinkType) {
     if (userId != null) {
-      Context
-        .getCommandContext()
-        .getIdentityLinkEntityManager()
-        .deleteIdentityLink(this, userId, null, identityLinkType);
+      Context.getCommandContext().getIdentityLinkEntityManager().deleteIdentityLink(this, userId, null, identityLinkType);
     }
   }
 
   public List<IdentityLinkEntity> getIdentityLinks() {
     if (!isIdentityLinksInitialized) {
-      taskIdentityLinkEntities =
-        Context
-          .getCommandContext()
-          .getIdentityLinkEntityManager()
-          .findIdentityLinksByTaskId(id);
+      taskIdentityLinkEntities = Context.getCommandContext().getIdentityLinkEntityManager().findIdentityLinksByTaskId(id);
       isIdentityLinksInitialized = true;
     }
 
@@ -443,24 +368,18 @@ public class TaskEntityImpl
     if (commandContext == null) {
       throw new ActivitiException("lazy loading outside command context");
     }
-    VariableInstanceEntity variableInstance = commandContext
-      .getVariableInstanceEntityManager()
-      .findVariableInstanceByTaskAndName(id, variableName);
+    VariableInstanceEntity variableInstance = commandContext.getVariableInstanceEntityManager().findVariableInstanceByTaskAndName(id, variableName);
 
     return variableInstance;
   }
 
   @Override
-  protected List<VariableInstanceEntity> getSpecificVariables(
-    Collection<String> variableNames
-  ) {
+  protected List<VariableInstanceEntity> getSpecificVariables(Collection<String> variableNames) {
     CommandContext commandContext = Context.getCommandContext();
     if (commandContext == null) {
       throw new ActivitiException("lazy loading outside command context");
     }
-    return commandContext
-      .getVariableInstanceEntityManager()
-      .findVariableInstancesByTaskAndNames(id, variableNames);
+    return commandContext.getVariableInstanceEntityManager().findVariableInstancesByTaskAndNames(id, variableNames);
   }
 
   // regular getters and setters ////////////////////////////////////////////////////////
@@ -574,9 +493,7 @@ public class TaskEntityImpl
     return currentActivitiListener;
   }
 
-  public void setCurrentActivitiListener(
-    ActivitiListener currentActivitiListener
-  ) {
+  public void setCurrentActivitiListener(ActivitiListener currentActivitiListener) {
     this.currentActivitiListener = currentActivitiListener;
   }
 
@@ -586,11 +503,7 @@ public class TaskEntityImpl
 
   public ExecutionEntity getProcessInstance() {
     if (processInstance == null && processInstanceId != null) {
-      processInstance =
-        Context
-          .getCommandContext()
-          .getExecutionEntityManager()
-          .findById(processInstanceId);
+      processInstance = Context.getCommandContext().getExecutionEntityManager().findById(processInstanceId);
     }
     return processInstance;
   }
@@ -607,9 +520,7 @@ public class TaskEntityImpl
     this.processInstanceId = processInstanceId;
   }
 
-  public void setTaskProcessRootProcessInstanceId(
-    String taskProcessRootProcessInstanceId
-  ) {
+  public void setTaskProcessRootProcessInstanceId(String taskProcessRootProcessInstanceId) {
     this.taskProcessRootProcessInstanceId = taskProcessRootProcessInstanceId;
   }
 
@@ -630,15 +541,7 @@ public class TaskEntityImpl
   }
 
   public void setDelegationStateString(String delegationStateString) {
-    this.delegationState =
-      (
-        delegationStateString != null
-          ? DelegationState.valueOf(
-            DelegationState.class,
-            delegationStateString
-          )
-          : null
-      );
+    this.delegationState = (delegationStateString != null ? DelegationState.valueOf(DelegationState.class, delegationStateString) : null);
   }
 
   public boolean isDeleted() {
@@ -691,14 +594,8 @@ public class TaskEntityImpl
     Map<String, Object> variables = new HashMap<String, Object>();
     if (queryVariables != null) {
       for (VariableInstanceEntity variableInstance : queryVariables) {
-        if (
-          variableInstance.getId() != null &&
-          variableInstance.getTaskId() != null
-        ) {
-          variables.put(
-            variableInstance.getName(),
-            variableInstance.getValue()
-          );
+        if (variableInstance.getId() != null && variableInstance.getTaskId() != null) {
+          variables.put(variableInstance.getName(), variableInstance.getValue());
         }
       }
     }
@@ -709,14 +606,8 @@ public class TaskEntityImpl
     Map<String, Object> variables = new HashMap<String, Object>();
     if (queryVariables != null) {
       for (VariableInstanceEntity variableInstance : queryVariables) {
-        if (
-          variableInstance.getId() != null &&
-          variableInstance.getTaskId() == null
-        ) {
-          variables.put(
-            variableInstance.getName(),
-            variableInstance.getValue()
-          );
+        if (variableInstance.getId() != null && variableInstance.getTaskId() == null) {
+          variables.put(variableInstance.getName(), variableInstance.getValue());
         }
       }
     }
