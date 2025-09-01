@@ -20,7 +20,6 @@ import org.activiti.engine.api.internal.Internal;
 
 import java.util.Date;
 import java.util.Map;
-import org.activiti.engine.api.internal.Internal;
 
 /**
 
