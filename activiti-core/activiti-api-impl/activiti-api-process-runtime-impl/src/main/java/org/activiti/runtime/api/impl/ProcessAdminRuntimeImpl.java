@@ -128,6 +128,11 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
         }
         ProcessDefinitionQuery processDefinitionQuery = repositoryService
             .createProcessDefinitionQuery();
+
+        if (getProcessDefinitionsPayload.isLatestVersionOnly()) {
+            processDefinitionQuery.latestVersion();
+        }
+
         if (getProcessDefinitionsPayload.hasDefinitionKeys()) {
             processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());
         }
