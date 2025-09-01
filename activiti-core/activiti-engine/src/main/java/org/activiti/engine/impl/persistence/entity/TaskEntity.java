@@ -29,53 +29,53 @@ import org.activiti.engine.task.Task;
 /**
  */
 @Internal
-public interface TaskEntity
-    extends VariableScope, Task, DelegateTask, Entity, HasRevision {
-    ExecutionEntity getExecution();
+public interface TaskEntity extends VariableScope, Task, DelegateTask, Entity, HasRevision {
 
-    void setExecutionId(String executionId);
+  ExecutionEntity getExecution();
 
-    void setExecution(ExecutionEntity execution);
+  void setExecutionId(String executionId);
 
-    List<IdentityLinkEntity> getIdentityLinks();
+  void setExecution(ExecutionEntity execution);
 
-    void setExecutionVariables(Map<String, Object> parameters);
+  List<IdentityLinkEntity> getIdentityLinks();
 
-    void setCreateTime(Date createTime);
+  void setExecutionVariables(Map<String, Object> parameters);
 
-    void setProcessDefinitionId(String processDefinitionId);
+  void setCreateTime(Date createTime);
 
-    void setEventName(String eventName);
+  void setProcessDefinitionId(String processDefinitionId);
 
-    void setCurrentActivitiListener(ActivitiListener currentActivitiListener);
+  void setEventName(String eventName);
 
-    ExecutionEntity getProcessInstance();
+  void setCurrentActivitiListener(ActivitiListener currentActivitiListener);
 
-    void setProcessInstanceId(String processInstanceId);
+  ExecutionEntity getProcessInstance();
 
-    void setTaskProcessRootProcessInstanceId(String taskProcessRootProcessInstanceId);
+  void setProcessInstanceId(String processInstanceId);
 
-    int getSuspensionState();
+  void setTaskProcessRootProcessInstanceId(String taskProcessRootProcessInstanceId);
 
-    void setSuspensionState(int suspensionState);
+  int getSuspensionState();
 
-    void setTaskDefinitionKey(String taskDefinitionKey);
+  void setSuspensionState(int suspensionState);
 
-    Map<String, VariableInstanceEntity> getVariableInstanceEntities();
+  void setTaskDefinitionKey(String taskDefinitionKey);
 
-    void forceUpdate();
+  Map<String, VariableInstanceEntity> getVariableInstanceEntities();
 
-    boolean isDeleted();
+  void forceUpdate();
 
-    void setDeleted(boolean isDeleted);
+  boolean isDeleted();
 
-    Date getClaimTime();
+  void setDeleted(boolean isDeleted);
 
-    void setClaimTime(Date claimTime);
+  Date getClaimTime();
 
-    boolean isCanceled();
+  void setClaimTime(Date claimTime);
 
-    void setCanceled(boolean isCanceled);
+  boolean isCanceled();
 
-    void setBusinessKey(String businessKey);
+  void setCanceled(boolean isCanceled);
+
+  void setBusinessKey(String businessKey);
 }

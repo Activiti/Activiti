@@ -30,10 +30,8 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
-import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
@@ -102,7 +100,9 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   protected String businessKey;
 
-  public TaskEntityImpl() {}
+  public TaskEntityImpl() {
+
+  }
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
@@ -185,36 +185,25 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     // Dispatch event, if needed
     if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       Context
-        .getProcessEngineConfiguration()
-        .getEventDispatcher()
-        .dispatchEvent(
-          ActivitiEventBuilder.createVariableEvent(
-            ActivitiEventType.VARIABLE_CREATED,
-            variableName,
-            value,
-            result.getType(),
-            result.getTaskId(),
-            result.getExecutionId(),
-            getProcessInstanceId(),
-            getProcessDefinitionId()
-          )
-        );
+          .getProcessEngineConfiguration()
+          .getEventDispatcher()
+          .dispatchEvent(
+              ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_CREATED, variableName, value, result.getType(), result.getTaskId(), result.getExecutionId(), getProcessInstanceId(),
+                  getProcessDefinitionId()));
     }
     return result;
   }
 
   @Override
   protected void updateVariableInstance(VariableInstanceEntity variableInstance, Object value, ExecutionEntity sourceActivityExecution) {
-    Object previousValue = variableInstance.getValue();
-    super.updateVariableInstance(variableInstance, value, sourceActivityExecution);
+      Object previousValue = variableInstance.getValue();
+      super.updateVariableInstance(variableInstance, value, sourceActivityExecution);
 
-    // Dispatch event, if needed
-    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context
-        .getProcessEngineConfiguration()
-        .getEventDispatcher()
-        .dispatchEvent(ActivitiEventBuilder.createVariableUpdateEvent(variableInstance, previousValue, getProcessInstanceId(), getProcessDefinitionId()));
-    }
+      // Dispatch event, if needed
+      if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+          Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder
+              .createVariableUpdateEvent(variableInstance, previousValue, getProcessInstanceId(), getProcessDefinitionId()));
+      }
   }
 
   // execution //////////////////////////////////////////////////////////////////
@@ -309,11 +298,11 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   }
 
   public void setName(String taskName) {
-    this.name = taskName;
+    this.name = truncate(taskName, 255);
   }
 
   public void setDescription(String description) {
-    this.description = description;
+    this.description = truncate(description, 4000);
   }
 
   public void setAssignee(String assignee) {
@@ -553,16 +542,17 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   }
 
   public boolean isCanceled() {
-    return isCanceled;
+	  return isCanceled;
   }
 
   public void setCanceled(boolean isCanceled) {
-    this.isCanceled = isCanceled;
+	  this.isCanceled = isCanceled;
   }
 
   public String getParentTaskId() {
     return parentTaskId;
   }
+
 
   @Override
   public String getBusinessKey() {
@@ -641,15 +631,22 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     this.claimTime = claimTime;
   }
 
-  public Integer getAppVersion() {
-    return this.appVersion;
+  public Integer getAppVersion(){
+      return this.appVersion;
   }
 
-  public void setAppVersion(Integer appVersion) {
-    this.appVersion = appVersion;
+  public void setAppVersion (Integer appVersion){
+      this.appVersion = appVersion;
   }
 
   public String toString() {
     return "Task[id=" + id + ", name=" + name + "]";
+  }
+
+  private String truncate(String string, int maxLength) {
+    if (string != null) {
+      return string.length() > maxLength ? string.substring(0, maxLength) : string;
+    }
+    return null;
   }
 }

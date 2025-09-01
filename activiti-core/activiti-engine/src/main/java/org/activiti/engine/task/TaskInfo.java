@@ -16,6 +16,8 @@
 
 package org.activiti.engine.task;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.util.Date;
 import java.util.Map;
 import org.activiti.engine.api.internal.Internal;
@@ -25,101 +27,102 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface TaskInfo {
-    /** DB id of the task. */
-    String getId();
 
-    /**
-     * Name or title of the task.
-     */
-    String getName();
+  /** DB id of the task. */
+  String getId();
 
-    /**
-     * Free text description of the task.
-     */
-    String getDescription();
+  /**
+   * Name or title of the task.
+   */
+  String getName();
 
-    /**
-     * Indication of how important/urgent this task is
-     */
-    int getPriority();
+  /**
+   * Free text description of the task.
+   */
+  String getDescription();
 
-    /**
-     * The {@link User.getId() userId} of the person that is responsible for this task.
-     */
-    String getOwner();
+  /**
+   * Indication of how important/urgent this task is
+   */
+  int getPriority();
 
-    /**
-     * The {@link User.getId() userId} of the person to which this task is delegated.
-     */
-    String getAssignee();
+  /**
+   * The {@link User.getId() userId} of the person that is responsible for this task.
+   */
+  String getOwner();
 
-    /**
-     * Reference to the process instance or null if it is not related to a process instance.
-     */
-    String getProcessInstanceId();
+  /**
+   * The {@link User.getId() userId} of the person to which this task is delegated.
+   */
+  String getAssignee();
 
-    /**
-     * Reference to the task root process instance or null if it is not related to a process.
-     */
-    String getTaskProcessRootProcessInstanceId();
+  /**
+   * Reference to the process instance or null if it is not related to a process instance.
+   */
+  String getProcessInstanceId();
 
-    /**
-     * Reference to the path of execution or null if it is not related to a process instance.
-     */
-    String getExecutionId();
+  /**
+   * Reference to the task root process instance or null if it is not related to a process.
+   */
+  String getTaskProcessRootProcessInstanceId();
 
-    /**
-     * Reference to the process definition or null if it is not related to a process.
-     */
-    String getProcessDefinitionId();
+  /**
+   * Reference to the path of execution or null if it is not related to a process instance.
+   */
+  String getExecutionId();
 
-    /** The date/time when this task was created */
-    Date getCreateTime();
+  /**
+   * Reference to the process definition or null if it is not related to a process.
+   */
+  String getProcessDefinitionId();
 
-    /**
-     * The id of the activity in the process defining this task or null if this is not related to a process
-     */
-    String getTaskDefinitionKey();
+  /** The date/time when this task was created */
+  Date getCreateTime();
 
-    /**
-     * Due date of the task.
-     */
-    Date getDueDate();
+  /**
+   * The id of the activity in the process defining this task or null if this is not related to a process
+   */
+  String getTaskDefinitionKey();
 
-    /**
-     * The category of the task. This is an optional field and allows to 'tag' tasks as belonging to a certain category.
-     */
-    String getCategory();
+  /**
+   * Due date of the task.
+   */
+  Date getDueDate();
 
-    /**
-     * The parent task for which this task is a subtask
-     */
-    String getParentTaskId();
+  /**
+   * The category of the task. This is an optional field and allows to 'tag' tasks as belonging to a certain category.
+   */
+  String getCategory();
 
-    /**
-     * The tenant identifier of this task
-     */
-    String getTenantId();
+  /**
+   * The parent task for which this task is a subtask
+   */
+  String getParentTaskId();
 
-    /**
-     * The form key for the user task
-     */
-    String getFormKey();
+  /**
+   * The tenant identifier of this task
+   */
+  String getTenantId();
 
-    /**
-     * Returns the local task variables if requested in the task query
-     */
-    Map<String, Object> getTaskLocalVariables();
+  /**
+   * The form key for the user task
+   */
+  String getFormKey();
 
-    /**
-     * Returns the process variables if requested in the task query
-     */
-    Map<String, Object> getProcessVariables();
+  /**
+   * Returns the local task variables if requested in the task query
+   */
+  Map<String, Object> getTaskLocalVariables();
 
-    /**
-     * The claim time of this task
-     */
-    Date getClaimTime();
+  /**
+   * Returns the process variables if requested in the task query
+   */
+  Map<String, Object> getProcessVariables();
 
-    String getBusinessKey();
+  /**
+   * The claim time of this task
+   */
+  Date getClaimTime();
+
+  String getBusinessKey();
 }
