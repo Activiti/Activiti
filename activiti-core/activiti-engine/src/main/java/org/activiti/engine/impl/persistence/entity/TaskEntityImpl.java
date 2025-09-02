@@ -30,10 +30,8 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
-import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
@@ -77,6 +75,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   protected ExecutionEntity execution;
 
   protected String processInstanceId;
+  protected String taskProcessRootProcessInstanceId;
   protected ExecutionEntity processInstance;
 
   protected String processDefinitionId;
@@ -299,11 +298,11 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   }
 
   public void setName(String taskName) {
-    this.name = taskName;
+    this.name = truncate(taskName, 255);
   }
 
   public void setDescription(String description) {
-    this.description = description;
+    this.description = truncate(description, 4000);
   }
 
   public void setAssignee(String assignee) {
@@ -438,6 +437,10 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     return processInstanceId;
   }
 
+  public String getTaskProcessRootProcessInstanceId() {
+    return taskProcessRootProcessInstanceId;
+  }
+
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
@@ -504,6 +507,10 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
+  }
+
+  public void setTaskProcessRootProcessInstanceId(String taskProcessRootProcessInstanceId) {
+    this.taskProcessRootProcessInstanceId = taskProcessRootProcessInstanceId;
   }
 
   public String getOwner() {
@@ -636,4 +643,10 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     return "Task[id=" + id + ", name=" + name + "]";
   }
 
+  private String truncate(String string, int maxLength) {
+    if (string != null) {
+      return string.length() > maxLength ? string.substring(0, maxLength) : string;
+    }
+    return null;
+  }
 }

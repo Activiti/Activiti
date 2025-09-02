@@ -141,6 +141,11 @@ public class MockTaskBuilder {
         return this;
     }
 
+    public MockTaskBuilder withTaskProcessRootProcessInstanceId(String taskProcessRootProcessInstanceId) {
+        when(task.getTaskProcessRootProcessInstanceId()).thenReturn(taskProcessRootProcessInstanceId);
+        return this;
+    }
+
     public Task build() {
         return task;
     }

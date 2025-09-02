@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.activiti.api.process.model.ProcessDefinition;
+import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.runtime.ProcessAdminRuntime;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.query.Page;
@@ -406,6 +407,77 @@ public class ApplicationUpgradeIT {
 
         signalSubscriptions = eventSubscriptionQuery.eventType("signal").activityId("SignalStartEvent").list();
         assertThat(signalSubscriptions).hasSize(1);
+    }
+
+    @Test
+    public void should_returnOnlyTheLatestVersions_when_multipleVersions_andRequestForLatestVersions() {
+        //given
+        ProjectManifest projectManifest = new ProjectManifest();
+        projectManifest.setVersion("12");
+        Deployment oldDeployment = deployProcesses(projectManifest, SINGLE_TASK_PROCESS_DEFINITION_PATH,
+            MULTI_INSTANCE_PROCESS_DEFINITION_PATH);
+
+        projectManifest.setVersion("34");
+        Deployment latestDeployment = deployProcesses(projectManifest,
+            MULTI_INSTANCE_PROCESS_DEFINITION_PATH);
+
+        securityUtil.logInAs("admin");
+        GetProcessDefinitionsPayload getProcessDefinitionsPayload = new GetProcessDefinitionsPayload();
+        getProcessDefinitionsPayload.setLatestVersionOnly(true);
+
+        //when
+        Page<ProcessDefinition> result = processAdminRuntime.processDefinitions(Pageable.of(0, 100), getProcessDefinitionsPayload);
+
+        //then
+        assertThat(result.getContent())
+            .filteredOn(processDefinition -> processDefinition.getKey().equals(
+                SINGLE_TASK_PROCESS_DEFINITION_KEY) || processDefinition.getKey()
+                .equals(MULTI_INSTANCE_PROCESS_DEFINITION_KEY))
+            .extracting(ProcessDefinition::getKey, ProcessDefinition::getVersion,
+                ProcessDefinition::getAppVersion)
+            .containsExactlyInAnyOrder(
+                tuple(SINGLE_TASK_PROCESS_DEFINITION_KEY, oldDeployment.getVersion(), String.valueOf(oldDeployment.getVersion())),
+                tuple(MULTI_INSTANCE_PROCESS_DEFINITION_KEY, latestDeployment.getVersion(),
+                    String.valueOf(latestDeployment.getVersion())));
+    }
+
+    @Test
+    public void should_returnAllVersions_when_multipleVersions_andRequestForAllVersions() {
+        //given
+        ProjectManifest projectManifest = new ProjectManifest();
+        int firstVersion = 1;
+        projectManifest.setVersion("12");
+        Deployment oldDeployment = deployProcesses(projectManifest, SINGLE_TASK_PROCESS_DEFINITION_PATH,
+            MULTI_INSTANCE_PROCESS_DEFINITION_PATH);
+
+        projectManifest.setVersion("34");
+        Deployment latestDeployment = deployProcesses(projectManifest,
+            MULTI_INSTANCE_PROCESS_DEFINITION_PATH);
+
+        securityUtil.logInAs("admin");
+
+        GetProcessDefinitionsPayload getProcessDefinitionsPayload = new GetProcessDefinitionsPayload();
+        getProcessDefinitionsPayload.setLatestVersionOnly(false);
+
+        //when
+        Page<ProcessDefinition> result = processAdminRuntime.processDefinitions(Pageable.of(0, 100), getProcessDefinitionsPayload);
+
+        //then
+        assertThat(result.getContent())
+            .filteredOn(processDefinition -> processDefinition.getKey().equals(
+                SINGLE_TASK_PROCESS_DEFINITION_KEY) || processDefinition.getKey()
+                .equals(MULTI_INSTANCE_PROCESS_DEFINITION_KEY))
+            .extracting(ProcessDefinition::getKey, ProcessDefinition::getVersion,
+                ProcessDefinition::getAppVersion)
+            .containsExactlyInAnyOrder(
+                tuple(MULTI_INSTANCE_PROCESS_DEFINITION_KEY, firstVersion,
+                    String.valueOf(firstVersion)),
+                tuple(MULTI_INSTANCE_PROCESS_DEFINITION_KEY, oldDeployment.getVersion(),
+                    String.valueOf(oldDeployment.getVersion())),
+                tuple(MULTI_INSTANCE_PROCESS_DEFINITION_KEY, latestDeployment.getVersion(),
+                    String.valueOf(latestDeployment.getVersion())),
+                tuple(SINGLE_TASK_PROCESS_DEFINITION_KEY, firstVersion, String.valueOf(firstVersion)),
+                tuple(SINGLE_TASK_PROCESS_DEFINITION_KEY, oldDeployment.getVersion(), String.valueOf(oldDeployment.getVersion())));
     }
 
     private String deployProcess(String deploymentName, String processPath) {

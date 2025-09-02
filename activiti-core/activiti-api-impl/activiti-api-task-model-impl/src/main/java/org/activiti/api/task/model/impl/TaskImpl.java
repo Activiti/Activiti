@@ -36,6 +36,7 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
     private int priority;
     private String processDefinitionId;
     private String processInstanceId;
+    private String taskProcessRootProcessInstanceId;
     private String parentTaskId;
     private String formKey;
     private Date completedDate;
@@ -176,6 +177,15 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
     }
 
     @Override
+    public String getTaskProcessRootProcessInstanceId() {
+        return taskProcessRootProcessInstanceId;
+    }
+
+    public void setTaskProcessRootProcessInstanceId(String taskProcessRootProcessInstanceId) {
+        this.taskProcessRootProcessInstanceId = taskProcessRootProcessInstanceId;
+    }
+
+    @Override
     public TaskStatus getStatus() {
         return status;
     }
@@ -294,6 +304,8 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
                                task.processDefinitionId) &&
                 Objects.equals(processInstanceId,
                                task.processInstanceId) &&
+                Objects.equals(taskProcessRootProcessInstanceId,
+                               task.taskProcessRootProcessInstanceId) &&
                 Objects.equals(parentTaskId,
                                task.parentTaskId) &&
                 Objects.equals(formKey,
@@ -327,6 +339,7 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
                             priority,
                             processDefinitionId,
                             processInstanceId,
+                            taskProcessRootProcessInstanceId,
                             parentTaskId,
                             formKey,
                             completedDate,
@@ -351,6 +364,7 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
                 ", priority=" + priority +
                 ", processDefinitionId='" + processDefinitionId + '\'' +
                 ", processInstanceId='" + processInstanceId + '\'' +
+                ", taskProcessRootProcessInstanceId='" + taskProcessRootProcessInstanceId + '\'' +
                 ", parentTaskId='" + parentTaskId + '\'' +
                 ", formKey='" + formKey + '\'' +
                 ", status=" + status +
