@@ -61,6 +61,11 @@ public interface TaskInfo {
   String getProcessInstanceId();
 
   /**
+   * Reference to the task root process instance or null if it is not related to a process.
+   */
+  String getTaskProcessRootProcessInstanceId();
+
+  /**
    * Reference to the path of execution or null if it is not related to a process instance.
    */
   String getExecutionId();

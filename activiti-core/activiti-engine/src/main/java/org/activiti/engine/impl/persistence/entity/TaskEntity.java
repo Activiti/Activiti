@@ -19,7 +19,6 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.delegate.DelegateTask;
@@ -53,6 +52,8 @@ public interface TaskEntity extends VariableScope, Task, DelegateTask, Entity, H
   ExecutionEntity getProcessInstance();
 
   void setProcessInstanceId(String processInstanceId);
+
+  void setTaskProcessRootProcessInstanceId(String taskProcessRootProcessInstanceId);
 
   int getSuspensionState();
 

@@ -80,6 +80,9 @@ public interface Task extends TaskInfo {
   /** Change the form key of the task */
   void setFormKey(String formKey);
 
+    /** ID of the root process */
+  void setTaskProcessRootProcessInstanceId(String taskProcessRootProcessInstanceId);
+
   /** Indicates whether this task is suspended or not. */
   boolean isSuspended();
 
