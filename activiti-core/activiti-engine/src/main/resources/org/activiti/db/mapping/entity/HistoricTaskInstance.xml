@@ -281,7 +281,7 @@
     <choose>
       <when test="_databaseId == 'mariadb' || _databaseId == 'mssql' ">
         <!--
-          mariadb has performance penalty when using "withoutJoins" sql scripts
+          mariadb and SQL Server has performance penalty when using "withoutJoins" sql scripts
         -->
         <include refid="withJoins_selectHistoricTaskInstanceCountByQueryCriteria"/>
       </when>
@@ -294,7 +294,7 @@
     <choose>
       <when test="_databaseId == 'mariadb' || _databaseId == 'mssql'">
         <!--
-          mariadb has performance penalty when using "withoutJoins" sql scripts
+          mariadb and SQL Server has performance penalty when using "withoutJoins" sql scripts
         -->
         <include refid="withJoins_selectHistoricTaskInstancesByQueryCriteria"/>
       </when>
