@@ -279,9 +279,9 @@
   <!-- select-clause broker (between withJoins and withoutJoins sql scripts) -->
   <select id="selectHistoricTaskInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultType="long">
     <choose>
-      <when test="_databaseId == 'mariadb'">
+      <when test="_databaseId == 'mariadb' || _databaseId == 'mssql' ">
         <!--
-          mariadb has performance penalty when using "withoutJoins" sql scripts
+          mariadb and SQL Server has performance penalty when using "withoutJoins" sql scripts
         -->
         <include refid="withJoins_selectHistoricTaskInstanceCountByQueryCriteria"/>
       </when>
@@ -292,9 +292,9 @@
   </select>
   <select id="selectHistoricTaskInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultMap="historicTaskInstanceResultMap">
     <choose>
-      <when test="_databaseId == 'mariadb'">
+      <when test="_databaseId == 'mariadb' || _databaseId == 'mssql'">
         <!--
-          mariadb has performance penalty when using "withoutJoins" sql scripts
+          mariadb and SQL Server has performance penalty when using "withoutJoins" sql scripts
         -->
         <include refid="withJoins_selectHistoricTaskInstancesByQueryCriteria"/>
       </when>
