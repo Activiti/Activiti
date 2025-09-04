@@ -17,7 +17,6 @@ package org.activiti.runtime.api.event.internal;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.activiti.api.process.model.events.MessageSubscriptionCancelledEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -32,8 +31,10 @@ public class MessageSubscriptionCancelledListenerDelegate implements ActivitiEve
 
     private ToMessageSubscriptionCancelledConverter converter;
 
-    public MessageSubscriptionCancelledListenerDelegate(List<ProcessRuntimeEventListener<MessageSubscriptionCancelledEvent>> processRuntimeEventListeners,
-                                                        ToMessageSubscriptionCancelledConverter converter) {
+    public MessageSubscriptionCancelledListenerDelegate(
+        List<ProcessRuntimeEventListener<MessageSubscriptionCancelledEvent>> processRuntimeEventListeners,
+        ToMessageSubscriptionCancelledConverter converter
+    ) {
         this.processRuntimeEventListeners = processRuntimeEventListeners;
         this.converter = converter;
     }
@@ -41,10 +42,11 @@ public class MessageSubscriptionCancelledListenerDelegate implements ActivitiEve
     @Override
     public void onEvent(ActivitiEvent event) {
         if (isValidEvent(event)) {
-            converter.from((ActivitiEntityEvent) event)
-                    .ifPresent(convertedEvent -> {
-                        processRuntimeEventListeners.forEach(listener -> listener.onEvent(convertedEvent));
-                    });
+            converter
+                .from((ActivitiEntityEvent) event)
+                .ifPresent(convertedEvent -> {
+                    processRuntimeEventListeners.forEach(listener -> listener.onEvent(convertedEvent));
+                });
         }
     }
 
@@ -54,9 +56,10 @@ public class MessageSubscriptionCancelledListenerDelegate implements ActivitiEve
     }
 
     protected boolean isValidEvent(ActivitiEvent event) {
-        return Optional.ofNullable(event)
-                       .filter(ActivitiEntityEvent.class::isInstance)
-                       .map(e -> ((ActivitiEntityEvent) event).getEntity() instanceof MessageEventSubscriptionEntity)
-                       .orElse(false);
+        return Optional
+            .ofNullable(event)
+            .filter(ActivitiEntityEvent.class::isInstance)
+            .map(e -> ((ActivitiEntityEvent) event).getEntity() instanceof MessageEventSubscriptionEntity)
+            .orElse(false);
     }
 }

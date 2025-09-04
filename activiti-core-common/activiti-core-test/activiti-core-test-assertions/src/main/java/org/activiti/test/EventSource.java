@@ -16,11 +16,8 @@
 package org.activiti.test;
 
 import java.util.List;
-
 import org.activiti.api.model.shared.event.RuntimeEvent;
 
 public interface EventSource {
-
-    List<RuntimeEvent<?,?>> getEvents();
-
+    List<RuntimeEvent<?, ?>> getEvents();
 }

@@ -41,11 +41,7 @@ public class VarArgsTest {
         ExpressionFactory f = ExpressionFactory.newInstance();
 
         // create our context with function "vararg:format"
-        Method method =
-            String.class.getMethod(
-                    "format",
-                    new Class[] { String.class, Object[].class }
-                );
+        Method method = String.class.getMethod("format", new Class[] { String.class, Object[].class });
         SimpleContext context = new SimpleContext();
         context.setFunction("varargs", "format", method);
 
@@ -53,11 +49,7 @@ public class VarArgsTest {
         String expression = "${varargs:format('Hey %s','Joe')}";
 
         // let's go...
-        ValueExpression e = f.createValueExpression(
-            context,
-            expression,
-            String.class
-        );
+        ValueExpression e = f.createValueExpression(context, expression, String.class);
         assertEquals(e.getValue(context), "Hey Joe"); // --> Hey Joe
     }
 

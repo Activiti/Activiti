@@ -111,5 +111,4 @@ public class ProfileSession {
         }
         return result;
     }
-
 }

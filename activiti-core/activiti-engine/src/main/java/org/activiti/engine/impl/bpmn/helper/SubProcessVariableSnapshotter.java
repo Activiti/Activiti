@@ -29,7 +29,5 @@ public class SubProcessVariableSnapshotter {
         if (parentExecution != null && parentExecution.isMultiInstanceRoot()) {
             snapshotHolder.setVariablesLocal(parentExecution.getVariablesLocal());
         }
-
     }
-
 }

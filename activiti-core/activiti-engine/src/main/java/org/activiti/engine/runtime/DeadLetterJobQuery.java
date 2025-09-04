@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.runtime;
 
 import java.util.Date;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.query.Query;
 
@@ -27,91 +25,89 @@ import org.activiti.engine.query.Query;
  */
 @Internal
 public interface DeadLetterJobQuery extends Query<DeadLetterJobQuery, Job> {
+    /** Only select jobs with the given id */
+    DeadLetterJobQuery jobId(String jobId);
 
-  /** Only select jobs with the given id */
-  DeadLetterJobQuery jobId(String jobId);
+    /** Only select jobs which exist for the given process instance. **/
+    DeadLetterJobQuery processInstanceId(String processInstanceId);
 
-  /** Only select jobs which exist for the given process instance. **/
-  DeadLetterJobQuery processInstanceId(String processInstanceId);
+    /** Only select jobs which exist for the given execution */
+    DeadLetterJobQuery executionId(String executionId);
 
-  /** Only select jobs which exist for the given execution */
-  DeadLetterJobQuery executionId(String executionId);
+    /** Only select jobs which exist for the given process definition id */
+    DeadLetterJobQuery processDefinitionId(String processDefinitionid);
 
-  /** Only select jobs which exist for the given process definition id */
-  DeadLetterJobQuery processDefinitionId(String processDefinitionid);
+    /**
+     * Only select jobs which are executable, ie. duedate is null or duedate is in the past
+     **/
+    DeadLetterJobQuery executable();
 
-  /**
-   * Only select jobs which are executable, ie. duedate is null or duedate is in the past
-   **/
-  DeadLetterJobQuery executable();
+    /**
+     * Only select jobs that are timers. Cannot be used together with {@link #messages()}
+     */
+    DeadLetterJobQuery timers();
 
-  /**
-   * Only select jobs that are timers. Cannot be used together with {@link #messages()}
-   */
-  DeadLetterJobQuery timers();
+    /**
+     * Only select jobs that are messages. Cannot be used together with {@link #timers()}
+     */
+    DeadLetterJobQuery messages();
 
-  /**
-   * Only select jobs that are messages. Cannot be used together with {@link #timers()}
-   */
-  DeadLetterJobQuery messages();
+    /** Only select jobs where the duedate is lower than the given date. */
+    DeadLetterJobQuery duedateLowerThan(Date date);
 
-  /** Only select jobs where the duedate is lower than the given date. */
-  DeadLetterJobQuery duedateLowerThan(Date date);
+    /** Only select jobs where the duedate is higher then the given date. */
+    DeadLetterJobQuery duedateHigherThan(Date date);
 
-  /** Only select jobs where the duedate is higher then the given date. */
-  DeadLetterJobQuery duedateHigherThan(Date date);
+    /** Only select jobs that failed due to an exception. */
+    DeadLetterJobQuery withException();
 
-  /** Only select jobs that failed due to an exception. */
-  DeadLetterJobQuery withException();
+    /** Only select jobs that failed due to an exception with the given message. */
+    DeadLetterJobQuery exceptionMessage(String exceptionMessage);
 
-  /** Only select jobs that failed due to an exception with the given message. */
-  DeadLetterJobQuery exceptionMessage(String exceptionMessage);
+    /**
+     * Only select jobs that have the given tenant id.
+     */
+    DeadLetterJobQuery jobTenantId(String tenantId);
 
-  /**
-   * Only select jobs that have the given tenant id.
-   */
-  DeadLetterJobQuery jobTenantId(String tenantId);
+    /**
+     * Only select jobs with a tenant id like the given one.
+     */
+    DeadLetterJobQuery jobTenantIdLike(String tenantIdLike);
 
-  /**
-   * Only select jobs with a tenant id like the given one.
-   */
-  DeadLetterJobQuery jobTenantIdLike(String tenantIdLike);
+    /**
+     * Only select jobs that do not have a tenant id.
+     */
+    DeadLetterJobQuery jobWithoutTenantId();
 
-  /**
-   * Only select jobs that do not have a tenant id.
-   */
-  DeadLetterJobQuery jobWithoutTenantId();
+    // sorting //////////////////////////////////////////
 
-  // sorting //////////////////////////////////////////
+    /**
+     * Order by job id (needs to be followed by {@link #asc()} or {@link #desc()}).
+     */
+    DeadLetterJobQuery orderByJobId();
 
-  /**
-   * Order by job id (needs to be followed by {@link #asc()} or {@link #desc()}).
-   */
-  DeadLetterJobQuery orderByJobId();
+    /**
+     * Order by duedate (needs to be followed by {@link #asc()} or {@link #desc()}).
+     */
+    DeadLetterJobQuery orderByJobDuedate();
 
-  /**
-   * Order by duedate (needs to be followed by {@link #asc()} or {@link #desc()}).
-   */
-  DeadLetterJobQuery orderByJobDuedate();
+    /**
+     * Order by retries (needs to be followed by {@link #asc()} or {@link #desc()}).
+     */
+    DeadLetterJobQuery orderByJobRetries();
 
-  /**
-   * Order by retries (needs to be followed by {@link #asc()} or {@link #desc()}).
-   */
-  DeadLetterJobQuery orderByJobRetries();
+    /**
+     * Order by process instance id (needs to be followed by {@link #asc()} or {@link #desc()}).
+     */
+    DeadLetterJobQuery orderByProcessInstanceId();
 
-  /**
-   * Order by process instance id (needs to be followed by {@link #asc()} or {@link #desc()}).
-   */
-  DeadLetterJobQuery orderByProcessInstanceId();
+    /**
+     * Order by execution id (needs to be followed by {@link #asc()} or {@link #desc()}).
+     */
+    DeadLetterJobQuery orderByExecutionId();
 
-  /**
-   * Order by execution id (needs to be followed by {@link #asc()} or {@link #desc()}).
-   */
-  DeadLetterJobQuery orderByExecutionId();
-
-  /**
-   * Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}).
-   */
-  DeadLetterJobQuery orderByTenantId();
-
+    /**
+     * Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}).
+     */
+    DeadLetterJobQuery orderByTenantId();
 }

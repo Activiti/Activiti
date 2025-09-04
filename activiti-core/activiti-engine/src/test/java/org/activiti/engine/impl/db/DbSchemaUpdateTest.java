@@ -31,12 +31,16 @@ import org.testcontainers.utility.MountableFile;
 public class DbSchemaUpdateTest extends AbstractTestCase {
 
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine")
-        .withCopyFileToContainer(MountableFile.forHostPath(
-                Path.of("target/activiti-engine/org/activiti/db/create/activiti.postgres.create.engine.sql")),
+        .withCopyFileToContainer(
+            MountableFile.forHostPath(
+                Path.of("target/activiti-engine/org/activiti/db/create/activiti.postgres.create.engine.sql")
+            ),
             "/docker-entrypoint-initdb.d/engine.sql"
         )
-        .withCopyFileToContainer(MountableFile.forHostPath(
-                Path.of("target/activiti-engine/org/activiti/db/create/activiti.postgres.create.history.sql")),
+        .withCopyFileToContainer(
+            MountableFile.forHostPath(
+                Path.of("target/activiti-engine/org/activiti/db/create/activiti.postgres.create.history.sql")
+            ),
             "/docker-entrypoint-initdb.d/history.sql"
         );
 
@@ -52,7 +56,8 @@ public class DbSchemaUpdateTest extends AbstractTestCase {
 
     public void testDbSchemaUpdateToLatestEngineVersion() {
         // given
-        ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngineConfiguration.createStandaloneProcessEngineConfiguration()
+        ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngineConfiguration
+            .createStandaloneProcessEngineConfiguration()
             .setJdbcUrl(postgres.getJdbcUrl())
             .setJdbcUsername(postgres.getUsername())
             .setJdbcPassword(postgres.getPassword())
@@ -64,17 +69,19 @@ public class DbSchemaUpdateTest extends AbstractTestCase {
         CommandConfig config = new CommandConfig().transactionNotSupported();
 
         // and when
-        PropertyEntity schemaVersion = commandExecutor.execute(config,
-            commandContext -> commandContext.getDbSqlSession()
-                .selectById(PropertyEntity.class,"schema.version"));
+        PropertyEntity schemaVersion = commandExecutor.execute(
+            config,
+            commandContext -> commandContext.getDbSqlSession().selectById(PropertyEntity.class, "schema.version")
+        );
 
         // then
         assertThat(schemaVersion.getValue()).isEqualTo(ProcessEngine.VERSION);
 
         // and when
-        PropertyEntity schemaHistory = commandExecutor.execute(config,
-            commandContext -> commandContext.getDbSqlSession()
-                .selectById(PropertyEntity.class,"schema.history"));
+        PropertyEntity schemaHistory = commandExecutor.execute(
+            config,
+            commandContext -> commandContext.getDbSqlSession().selectById(PropertyEntity.class, "schema.history")
+        );
 
         // then
         assertThat(schemaHistory.getValue()).contains(ProcessEngine.VERSION);

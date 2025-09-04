@@ -59,13 +59,21 @@ public class CommonRuntimeAutoConfiguration {
     }
 
     @Bean
-    public InitializingBean registerVariableCreatedListenerDelegate(RuntimeService runtimeService,
+    public InitializingBean registerVariableCreatedListenerDelegate(
+        RuntimeService runtimeService,
         @Autowired(required = false) List<VariableEventListener<VariableCreatedEvent>> listeners,
-        VariableEventFilter variableEventFilter, EphemeralVariableResolver ephemeralVariableResolver) {
-        return () -> runtimeService.addEventListener(
-            new VariableCreatedListenerDelegate(getInitializedListeners(listeners),
-                new ToVariableCreatedConverter(ephemeralVariableResolver),
-                variableEventFilter), ActivitiEventType.VARIABLE_CREATED);
+        VariableEventFilter variableEventFilter,
+        EphemeralVariableResolver ephemeralVariableResolver
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new VariableCreatedListenerDelegate(
+                    getInitializedListeners(listeners),
+                    new ToVariableCreatedConverter(ephemeralVariableResolver),
+                    variableEventFilter
+                ),
+                ActivitiEventType.VARIABLE_CREATED
+            );
     }
 
     private <T> List<T> getInitializedListeners(List<T> eventListeners) {
@@ -73,18 +81,25 @@ public class CommonRuntimeAutoConfiguration {
     }
 
     @Bean
-    public InitializingBean registerVariableUpdatedListenerDelegate(RuntimeService runtimeService,
+    public InitializingBean registerVariableUpdatedListenerDelegate(
+        RuntimeService runtimeService,
         @Autowired(required = false) List<VariableEventListener<VariableUpdatedEvent>> listeners,
-        VariableEventFilter variableEventFilter, EphemeralVariableResolver ephemeralVariableResolver) {
-        return () -> runtimeService.addEventListener(
-            new VariableUpdatedListenerDelegate(getInitializedListeners(listeners),
-                new ToVariableUpdatedConverter(ephemeralVariableResolver),
-                variableEventFilter), ActivitiEventType.VARIABLE_UPDATED);
+        VariableEventFilter variableEventFilter,
+        EphemeralVariableResolver ephemeralVariableResolver
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new VariableUpdatedListenerDelegate(
+                    getInitializedListeners(listeners),
+                    new ToVariableUpdatedConverter(ephemeralVariableResolver),
+                    variableEventFilter
+                ),
+                ActivitiEventType.VARIABLE_UPDATED
+            );
     }
 
     @Bean
     public VariableNameValidator variableNameValidator() {
         return new VariableNameValidator();
     }
-
 }

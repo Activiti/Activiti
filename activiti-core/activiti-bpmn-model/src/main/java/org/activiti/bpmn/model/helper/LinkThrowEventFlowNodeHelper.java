@@ -15,22 +15,24 @@
  */
 package org.activiti.bpmn.model.helper;
 
+import java.util.Collection;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.LinkEventDefinition;
 import org.activiti.bpmn.model.ThrowEvent;
 
-import java.util.Collection;
-
 public class LinkThrowEventFlowNodeHelper {
+
     public static FlowNode findRelatedIntermediateCatchEventForLinkEvent(ThrowEvent throwEvent) {
         String linkEventTarget = ((LinkEventDefinition) throwEvent.getEventDefinitions().get(0)).getTarget();
         Collection<FlowElement> allFlowElements = throwEvent.getParentContainer().getFlowElements();
         for (FlowElement flowElement : allFlowElements) {
             if (flowElement instanceof IntermediateCatchEvent intermediateCatchEvent) {
                 if (intermediateCatchEvent.isLinkCatchEvent()) {
-                    LinkEventDefinition destinationEvent = (LinkEventDefinition) intermediateCatchEvent.getEventDefinitions().get(0);
+                    LinkEventDefinition destinationEvent = (LinkEventDefinition) intermediateCatchEvent
+                        .getEventDefinitions()
+                        .get(0);
                     if (destinationEvent.getId().equals(linkEventTarget)) {
                         return intermediateCatchEvent;
                     }

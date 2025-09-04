@@ -20,11 +20,16 @@ import org.activiti.engine.impl.persistence.entity.AbstractEntityManager;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.integration.IntegrationContextDataManager;
 
-public class IntegrationContextManagerImpl extends AbstractEntityManager<IntegrationContextEntity> implements IntegrationContextManager {
+public class IntegrationContextManagerImpl
+    extends AbstractEntityManager<IntegrationContextEntity>
+    implements IntegrationContextManager {
 
     private final IntegrationContextDataManager dataManager;
 
-    public IntegrationContextManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, IntegrationContextDataManager dataManager) {
+    public IntegrationContextManagerImpl(
+        ProcessEngineConfigurationImpl processEngineConfiguration,
+        IntegrationContextDataManager dataManager
+    ) {
         super(processEngineConfiguration);
         this.dataManager = dataManager;
     }
@@ -33,5 +38,4 @@ public class IntegrationContextManagerImpl extends AbstractEntityManager<Integra
     protected DataManager<IntegrationContextEntity> getDataManager() {
         return dataManager;
     }
-
 }

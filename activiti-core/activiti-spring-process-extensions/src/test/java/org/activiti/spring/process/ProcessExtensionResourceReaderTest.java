@@ -15,12 +15,12 @@
  */
 package org.activiti.spring.process;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 public class ProcessExtensionResourceReaderTest {
@@ -31,13 +31,11 @@ public class ProcessExtensionResourceReaderTest {
     @Test
     public void shouldSelectFileWithSuffixHyphenExtensionsDotJson() {
         assertThat(reader.getResourceNameSelector().test("any-path/to/my-extension/my-process-extensions.json"))
-                .isTrue();
+            .isTrue();
     }
 
     @Test
     public void shouldNotSelectSelectJsonFileWithoutSuffixHyphenExtensionsDotJson() {
-        assertThat(reader.getResourceNameSelector().test("any-path/to/my-extension/my-process-other.json"))
-                .isFalse();
+        assertThat(reader.getResourceNameSelector().test("any-path/to/my-extension/my-process-other.json")).isFalse();
     }
-
 }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.examples.bpmn.mail;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,7 +63,6 @@ public class EmailSendTaskTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testSendEmail() throws Exception {
-
         String from = "ordershipping@activiti.org";
         boolean male = true;
         String recipientName = "John Doe";
@@ -92,5 +90,4 @@ public class EmailSendTaskTest extends PluggableActivitiTestCase {
         assertThat(mimeMessage.getHeader("From", null)).isEqualTo(from);
         assertThat(mimeMessage.getHeader("To", null)).contains(recipient);
     }
-
 }

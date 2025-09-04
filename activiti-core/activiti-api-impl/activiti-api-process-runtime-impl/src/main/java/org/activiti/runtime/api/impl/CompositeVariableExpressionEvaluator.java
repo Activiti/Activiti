@@ -25,21 +25,24 @@ public class CompositeVariableExpressionEvaluator implements ExpressionEvaluator
     private SimpleMapExpressionEvaluator simpleMapExpressionEvaluator;
     private VariableScopeExpressionEvaluator variableScopeExpressionEvaluator;
 
-    public CompositeVariableExpressionEvaluator(SimpleMapExpressionEvaluator simpleMapExpressionEvaluator,
-                                                VariableScopeExpressionEvaluator variableScopeExpressionEvaluator) {
+    public CompositeVariableExpressionEvaluator(
+        SimpleMapExpressionEvaluator simpleMapExpressionEvaluator,
+        VariableScopeExpressionEvaluator variableScopeExpressionEvaluator
+    ) {
         this.simpleMapExpressionEvaluator = simpleMapExpressionEvaluator;
         this.variableScopeExpressionEvaluator = variableScopeExpressionEvaluator;
     }
 
     @Override
-    public Object evaluate(Expression expression,
+    public Object evaluate(
+        Expression expression,
         ExpressionManager expressionManager,
-        DelegateInterceptor delegateInterceptor) {
+        DelegateInterceptor delegateInterceptor
+    ) {
         try {
             return simpleMapExpressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor);
         } catch (ActivitiException activitiException) {
             return variableScopeExpressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor);
         }
     }
-
 }

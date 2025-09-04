@@ -16,7 +16,6 @@
 package org.activiti.api.runtime.event.impl;
 
 import java.util.List;
-
 import org.activiti.api.process.model.events.StartMessageDeployedEvent;
 import org.springframework.context.ApplicationEvent;
 
@@ -28,11 +27,8 @@ public class StartMessageDeployedEvents extends ApplicationEvent {
         super(processDeployedEvents);
     }
 
-
     @SuppressWarnings("unchecked")
     public final List<StartMessageDeployedEvent> getStartMessageDeployedEvents() {
         return (List<StartMessageDeployedEvent>) getSource();
     }
-
-
 }

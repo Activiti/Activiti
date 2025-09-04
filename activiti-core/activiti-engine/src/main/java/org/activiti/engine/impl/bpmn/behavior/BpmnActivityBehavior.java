@@ -18,7 +18,6 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.io.Serializable;
 import java.util.List;
-
 import org.activiti.engine.ActivitiEngineAgenda;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -44,9 +43,7 @@ public class BpmnActivityBehavior implements Serializable {
      * flow are selected, multiple, parallel paths of executions are created.
      */
     public void performDefaultOutgoingBehavior(ExecutionEntity activityExecution) {
-        performOutgoingBehavior(activityExecution,
-                                true,
-                                false);
+        performOutgoingBehavior(activityExecution, true, false);
     }
 
     /**
@@ -58,16 +55,20 @@ public class BpmnActivityBehavior implements Serializable {
             List<JobEntity> jobs = activityExecution.getJobs();
             for (JobEntity job : jobs) {
                 if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-                    Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED,
-                                                                                                                                      job));
+                    Context
+                        .getProcessEngineConfiguration()
+                        .getEventDispatcher()
+                        .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, job));
                 }
             }
 
             List<TimerJobEntity> timerJobs = activityExecution.getTimerJobs();
             for (TimerJobEntity job : timerJobs) {
                 if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-                    Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED,
-                                                                                                                                      job));
+                    Context
+                        .getProcessEngineConfiguration()
+                        .getEventDispatcher()
+                        .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, job));
                 }
             }
         }
@@ -80,9 +81,7 @@ public class BpmnActivityBehavior implements Serializable {
      * parallel paths of executions will be created.
      */
     public void performIgnoreConditionsOutgoingBehavior(ExecutionEntity activityExecution) {
-        performOutgoingBehavior(activityExecution,
-                                false,
-                                false);
+        performOutgoingBehavior(activityExecution, false, false);
     }
 
     /**
@@ -91,15 +90,15 @@ public class BpmnActivityBehavior implements Serializable {
      * @param checkConditions Whether or not to check conditions before determining whether or not to take a transition.
      * @param throwExceptionIfExecutionStuck If true, an {@link ActivitiException} will be thrown in case no transition could be found to leave the activity.
      */
-    protected void performOutgoingBehavior(ExecutionEntity execution,
-                                           boolean checkConditions,
-                                           boolean throwExceptionIfExecutionStuck) {
-        getAgenda().planTakeOutgoingSequenceFlowsOperation(execution,
-                                                                   true);
+    protected void performOutgoingBehavior(
+        ExecutionEntity execution,
+        boolean checkConditions,
+        boolean throwExceptionIfExecutionStuck
+    ) {
+        getAgenda().planTakeOutgoingSequenceFlowsOperation(execution, true);
     }
 
     protected ActivitiEngineAgenda getAgenda() {
         return Context.getAgenda();
     }
-
 }

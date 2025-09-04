@@ -15,6 +15,8 @@
  */
 package org.activiti.bpmn.model;
 
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -22,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 public abstract class BaseElement implements HasExtensionAttributes {
 
@@ -82,17 +82,22 @@ public abstract class BaseElement implements HasExtensionAttributes {
 
     @Override
     public String getAttributeValue(String namespace, String name) {
-
-        return Optional.ofNullable(getAttributes())
-                .map(map -> map.get(name))
-                .orElse(Collections.emptyList()).stream()
-                .filter(e -> this.isNamespaceMatching(namespace, e))
-                .findFirst().map(ExtensionAttribute::getValue).orElse(null);
+        return Optional
+            .ofNullable(getAttributes())
+            .map(map -> map.get(name))
+            .orElse(Collections.emptyList())
+            .stream()
+            .filter(e -> this.isNamespaceMatching(namespace, e))
+            .findFirst()
+            .map(ExtensionAttribute::getValue)
+            .orElse(null);
     }
 
     private boolean isNamespaceMatching(String namespace, ExtensionAttribute attribute) {
-        return (namespace == null && attribute.getNamespace() == null)
-                || (namespace != null && namespace.equals(attribute.getNamespace()));
+        return (
+            (namespace == null && attribute.getNamespace() == null) ||
+            (namespace != null && namespace.equals(attribute.getNamespace()))
+        );
     }
 
     @Override
@@ -112,16 +117,22 @@ public abstract class BaseElement implements HasExtensionAttributes {
         setId(otherElement.getId());
 
         if (otherElement.getExtensionElements() != null && !otherElement.getExtensionElements().isEmpty()) {
-            Map<String, List<ExtensionElement>> validExtensionElements = otherElement.getExtensionElements().entrySet()
-                    .stream().filter(e -> hasElements(e.getValue()))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            Map<String, List<ExtensionElement>> validExtensionElements = otherElement
+                .getExtensionElements()
+                .entrySet()
+                .stream()
+                .filter(e -> hasElements(e.getValue()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             extensionElements.putAll(validExtensionElements);
         }
 
         if (otherElement.getAttributes() != null && !otherElement.getAttributes().isEmpty()) {
-            Map<String, List<ExtensionAttribute>> validAttributes = otherElement.getAttributes().entrySet().stream()
-                    .filter(e -> hasElements(e.getValue()))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            Map<String, List<ExtensionAttribute>> validAttributes = otherElement
+                .getAttributes()
+                .entrySet()
+                .stream()
+                .filter(e -> hasElements(e.getValue()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             attributes.putAll(validAttributes);
         }
     }

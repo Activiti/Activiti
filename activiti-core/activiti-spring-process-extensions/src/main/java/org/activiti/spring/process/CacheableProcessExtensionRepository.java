@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.process;
 
 import static org.activiti.spring.process.CacheableProcessExtensionRepository.PROCESS_EXTENSIONS_CACHE_NAME;
@@ -25,7 +24,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.lang.NonNull;
 
-@CacheConfig(cacheNames = {PROCESS_EXTENSIONS_CACHE_NAME})
+@CacheConfig(cacheNames = { PROCESS_EXTENSIONS_CACHE_NAME })
 public class CacheableProcessExtensionRepository implements ProcessExtensionRepository {
 
     public static final String PROCESS_EXTENSIONS_CACHE_NAME = "processExtensionsById";
@@ -41,5 +40,4 @@ public class CacheableProcessExtensionRepository implements ProcessExtensionRepo
     public Optional<Extension> getExtensionsForId(@NonNull String processDefinitionId) {
         return delegate.getExtensionsForId(processDefinitionId);
     }
-
 }

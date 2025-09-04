@@ -27,12 +27,13 @@ public class RegressionTest extends PluggableActivitiTestCase {
     // https://jira.codehaus.org/browse/ACT-1623
     // NPE when eventbased gateway is after referenced event
     public void testAct1623() throws Exception {
-
         // Deploy processes
-        String deploymentId = repositoryService.createDeployment()
+        String deploymentId = repositoryService
+            .createDeployment()
             .addClasspathResource("org/activiti/engine/test/regression/act1623-processOne.bpmn")
             .addClasspathResource("org/activiti/engine/test/regression/act1623-processTwo.bpmn")
-            .deploy().getId();
+            .deploy()
+            .getId();
 
         runtimeService.startProcessInstanceByKey("ProcessOne");
 
@@ -42,5 +43,4 @@ public class RegressionTest extends PluggableActivitiTestCase {
         // Clean
         repositoryService.deleteDeployment(deploymentId, true);
     }
-
 }

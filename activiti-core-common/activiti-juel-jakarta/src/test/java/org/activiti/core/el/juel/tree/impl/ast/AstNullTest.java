@@ -78,10 +78,7 @@ public class AstNullTest extends TestCase {
     @Test
     public void testGetValue() {
         assertNull(parseNode("${null}").getValue(bindings, null, null));
-        assertEquals(
-            "",
-            parseNode("${null}").getValue(bindings, null, String.class)
-        );
+        assertEquals("", parseNode("${null}").getValue(bindings, null, String.class));
     }
 
     @Test

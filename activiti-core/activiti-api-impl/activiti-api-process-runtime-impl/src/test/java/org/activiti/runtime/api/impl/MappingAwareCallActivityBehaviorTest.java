@@ -31,7 +31,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith({MockitoExtension.class})
+@ExtendWith({ MockitoExtension.class })
 public class MappingAwareCallActivityBehaviorTest {
 
     @InjectMocks
@@ -54,11 +54,10 @@ public class MappingAwareCallActivityBehaviorTest {
         HashMap<String, Object> initiatorVariables = new HashMap<>(providerVariables);
         initiatorVariables.put("var2", "default");
         given(processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition, providerVariables))
-                .willReturn(initiatorVariables);
+            .willReturn(initiatorVariables);
 
         //when
-        Map<String, Object> inboundVariables = behavior.calculateInboundVariables(execution,
-                                                                           processDefinition);
+        Map<String, Object> inboundVariables = behavior.calculateInboundVariables(execution, processDefinition);
         //then
         assertThat(inboundVariables).isEqualTo(initiatorVariables);
     }
@@ -66,5 +65,4 @@ public class MappingAwareCallActivityBehaviorTest {
     private DelegateExecution buildExecution() {
         return mock(DelegateExecution.class);
     }
-
 }

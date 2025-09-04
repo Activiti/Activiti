@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.variable;
 
 /**
@@ -24,15 +23,14 @@ package org.activiti.engine.impl.variable;
  */
 public class HistoricJPAEntityVariableType extends JPAEntityVariableType {
 
-  private static final HistoricJPAEntityVariableType INSTANCE = new HistoricJPAEntityVariableType();
+    private static final HistoricJPAEntityVariableType INSTANCE = new HistoricJPAEntityVariableType();
 
-  @Override
-  public boolean isCachable() {
-    return true;
-  }
+    @Override
+    public boolean isCachable() {
+        return true;
+    }
 
-  public static HistoricJPAEntityVariableType getSharedInstance() {
-    return INSTANCE;
-  }
-
+    public static HistoricJPAEntityVariableType getSharedInstance() {
+        return INSTANCE;
+    }
 }

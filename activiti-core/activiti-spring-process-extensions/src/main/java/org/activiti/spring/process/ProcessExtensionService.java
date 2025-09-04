@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.process;
 
+import java.util.Optional;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.springframework.lang.NonNull;
 
-import java.util.Optional;
-
 public class ProcessExtensionService {
 
-    private final static Extension EMPTY_EXTENSION = new Extension();
+    private static final Extension EMPTY_EXTENSION = new Extension();
 
     private final ProcessExtensionRepository processExtensionRepository;
 
@@ -49,16 +47,16 @@ public class ProcessExtensionService {
     public Extension getExtensionsForId(@NonNull String processDefinitionId) {
         return processExtensionRepository.getExtensionsForId(processDefinitionId).orElse(EMPTY_EXTENSION);
     }
-    public boolean hasEphemeralVariable(String processDefinitionId,
-                                        @NonNull String variableName) {
-        if(processDefinitionId == null) {
+
+    public boolean hasEphemeralVariable(String processDefinitionId, @NonNull String variableName) {
+        if (processDefinitionId == null) {
             return false;
         }
         Extension extension = this.getExtensionsForId(processDefinitionId);
-        return Optional.ofNullable(extension)
+        return Optional
+            .ofNullable(extension)
             .map(ext -> ext.getPropertyByName(variableName))
             .map(VariableDefinition::isEphemeral)
             .orElse(false);
-
     }
 }

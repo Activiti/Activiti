@@ -53,15 +53,14 @@ public class BpmnDeployerTest {
             .willReturn(persistedProcessDefinition);
 
         //when
-        bpmnDeployer.makeProcessDefinitionsConsistentWithPersistedVersions(
-            parsedDeployment);
+        bpmnDeployer.makeProcessDefinitionsConsistentWithPersistedVersions(parsedDeployment);
 
         //then
         assertThat(parsedProcessDefinition.getId()).isEqualTo(persistedProcessDefinition.getId());
         assertThat(parsedProcessDefinition.getVersion()).isEqualTo(persistedProcessDefinition.getVersion());
         assertThat(parsedProcessDefinition.getAppVersion()).isEqualTo(persistedProcessDefinition.getAppVersion());
-        assertThat(parsedProcessDefinition.getSuspensionState()).isEqualTo(persistedProcessDefinition.getSuspensionState());
+        assertThat(parsedProcessDefinition.getSuspensionState())
+            .isEqualTo(persistedProcessDefinition.getSuspensionState());
         assertThat(parsedProcessDefinition.getEngineVersion()).isEqualTo(persistedProcessDefinition.getEngineVersion());
     }
-
 }

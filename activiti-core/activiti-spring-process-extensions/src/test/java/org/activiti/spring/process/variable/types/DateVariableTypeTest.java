@@ -17,6 +17,7 @@ package org.activiti.spring.process.variable.types;
 
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,7 +50,8 @@ class DateVariableTypeTest {
     public void should_throwException_when_parseInvalidString() {
         Throwable thrown = catchThrowable(() -> dateVariableType.parseFromValue("${now()"));
 
-        Assertions.assertThat(thrown)
+        Assertions
+            .assertThat(thrown)
             .isInstanceOf(ActivitiException.class)
             .hasMessage("Error parsing date value ${now()");
     }

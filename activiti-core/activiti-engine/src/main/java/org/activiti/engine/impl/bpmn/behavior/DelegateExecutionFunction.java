@@ -19,5 +19,4 @@ package org.activiti.engine.impl.bpmn.behavior;
 import java.util.function.Function;
 import org.activiti.engine.delegate.DelegateExecution;
 
-public interface DelegateExecutionFunction extends Function<DelegateExecution, DelegateExecutionOutcome> {
-}
+public interface DelegateExecutionFunction extends Function<DelegateExecution, DelegateExecutionOutcome> {}

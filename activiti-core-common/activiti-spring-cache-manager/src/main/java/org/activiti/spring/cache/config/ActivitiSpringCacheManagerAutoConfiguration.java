@@ -43,7 +43,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @AutoConfiguration(before = { CacheAutoConfiguration.class })
 @EnableCaching
-@EnableConfigurationProperties({ActivitiSpringCacheManagerProperties.class})
+@EnableConfigurationProperties({ ActivitiSpringCacheManagerProperties.class })
 @PropertySource("classpath:config/activiti-spring-cache-manager.properties")
 public class ActivitiSpringCacheManagerAutoConfiguration {
 
@@ -54,7 +54,8 @@ public class ActivitiSpringCacheManagerAutoConfiguration {
         CacheManager cacheManager
     ) {
         return () -> {
-            properties.getCaches()
+            properties
+                .getCaches()
                 .entrySet()
                 .stream()
                 .filter(it -> it.getValue().isEnabled())
@@ -65,7 +66,9 @@ public class ActivitiSpringCacheManagerAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(value = "activiti.spring.cache-manager.provider", havingValue = "simple")
-    public CacheManagerCustomizer<ConcurrentMapCacheManager> activitiSpringSimpleCacheManagerCustomizer(ActivitiSpringCacheManagerProperties properties) {
+    public CacheManagerCustomizer<ConcurrentMapCacheManager> activitiSpringSimpleCacheManagerCustomizer(
+        ActivitiSpringCacheManagerProperties properties
+    ) {
         return cacheManager -> {
             List<String> cacheNames = new ArrayList<>();
 
@@ -73,7 +76,8 @@ public class ActivitiSpringCacheManagerAutoConfiguration {
 
             cacheManager.setAllowNullValues(cacheProperties.isAllowNullValues());
 
-            properties.getCaches()
+            properties
+                .getCaches()
                 .entrySet()
                 .stream()
                 .filter(it -> it.getValue().isEnabled())
@@ -97,19 +101,20 @@ public class ActivitiSpringCacheManagerAutoConfiguration {
             cacheManager.setCaffeineSpec(CaffeineSpec.parse(caffeineCacheProperties.getDefaultSpec()));
             cacheManager.setAllowNullValues(caffeineCacheProperties.isAllowNullValues());
 
-            properties.getCaches()
+            properties
+                .getCaches()
                 .entrySet()
                 .stream()
                 .filter(it -> it.getValue().isEnabled())
                 .forEach(cacheEntry -> {
-                    Optional.ofNullable(cacheEntry.getValue())
+                    Optional
+                        .ofNullable(cacheEntry.getValue())
                         .map(ActivitiSpringCacheManagerProperties.ActivitiCacheProperties::getCaffeine)
                         .map(CacheProperties.Caffeine::getSpec)
                         .or(() -> Optional.ofNullable(properties.getCaffeine().getDefaultSpec()))
                         .map(CaffeineSpec::parse)
                         .map(Caffeine::from)
                         .ifPresent(caffeine -> {
-
                             if (caffeineCacheProperties.isUseSystemScheduler()) {
                                 caffeine.scheduler(Scheduler.systemScheduler());
                             }
@@ -126,5 +131,4 @@ public class ActivitiSpringCacheManagerAutoConfiguration {
                 });
         };
     }
-
 }

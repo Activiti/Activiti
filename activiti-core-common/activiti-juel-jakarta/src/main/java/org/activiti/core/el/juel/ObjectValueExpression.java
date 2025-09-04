@@ -41,20 +41,14 @@ public final class ObjectValueExpression extends ValueExpression {
      * @param object the object to wrap
      * @param type the expected type this object will be coerced in {@link #getValue(ELContext)}.
      */
-    public ObjectValueExpression(
-        TypeConverter converter,
-        Object object,
-        Class<?> type
-    ) {
+    public ObjectValueExpression(TypeConverter converter, Object object, Class<?> type) {
         super();
         this.converter = converter;
         this.object = object;
         this.type = type;
 
         if (type == null) {
-            throw new NullPointerException(
-                LocalMessages.get("error.value.notype")
-            );
+            throw new NullPointerException(LocalMessages.get("error.value.notype"));
         }
     }
 
@@ -68,11 +62,7 @@ public final class ObjectValueExpression extends ValueExpression {
             if (type != other.type) {
                 return false;
             }
-            return (
-                object == other.object ||
-                object != null &&
-                object.equals(other.object)
-            );
+            return (object == other.object || object != null && object.equals(other.object));
         }
         return false;
     }
@@ -127,12 +117,7 @@ public final class ObjectValueExpression extends ValueExpression {
      */
     @Override
     public void setValue(ELContext context, Object value) {
-        throw new ELException(
-            LocalMessages.get(
-                "error.value.set.rvalue",
-                "<object value expression>"
-            )
-        );
+        throw new ELException(LocalMessages.get("error.value.set.rvalue", "<object value expression>"));
     }
 
     @Override

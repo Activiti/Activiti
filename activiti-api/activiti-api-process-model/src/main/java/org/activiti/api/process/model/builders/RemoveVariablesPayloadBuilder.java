@@ -17,7 +17,6 @@ package org.activiti.api.process.model.builders;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.payloads.RemoveProcessVariablesPayload;
 
@@ -50,7 +49,6 @@ public class RemoveVariablesPayloadBuilder {
     }
 
     public RemoveProcessVariablesPayload build() {
-        return new RemoveProcessVariablesPayload(processInstanceId,
-                                                 variableNames);
+        return new RemoveProcessVariablesPayload(processInstanceId, variableNames);
     }
 }

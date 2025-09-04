@@ -21,7 +21,6 @@ public class InclusiveGatewayMatchers extends ActivityMatchers {
 
     private InclusiveGatewayMatchers(String definitionKey) {
         super(definitionKey);
-
     }
 
     @Override

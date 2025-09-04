@@ -15,13 +15,12 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import java.util.Optional;
 import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
 import org.activiti.api.runtime.event.impl.BPMNActivityCancelledEventImpl;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.runtime.api.model.impl.ToActivityConverter;
-
-import java.util.Optional;
 
 public class ToActivityCancelledConverter implements EventConverter<BPMNActivityCancelledEvent, ActivitiActivityEvent> {
 

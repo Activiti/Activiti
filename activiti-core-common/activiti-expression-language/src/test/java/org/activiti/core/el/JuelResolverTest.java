@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import jakarta.el.ELException;
 import jakarta.el.PropertyNotFoundException;
-
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
@@ -84,7 +83,6 @@ public class JuelResolverTest {
 
     @Test
     public void should_throwException_when_unknownVariableIsReferenced() {
-
         //given
         Map<String, Object> availableVariables = Map.of("name", "jon doe");
         String expressionString = "${nameeee}";
@@ -119,7 +117,8 @@ public class JuelResolverTest {
         //then
         assertThatExceptionOfType(ELException.class)
             .as("Referencing an unknown function")
-            .isThrownBy(() -> expressionResolver.resolveExpression(expressionString, Collections.emptyMap(), Date.class))
+            .isThrownBy(() -> expressionResolver.resolveExpression(expressionString, Collections.emptyMap(), Date.class)
+            )
             .withMessage("Could not resolve function 'current'");
     }
 
@@ -130,7 +129,11 @@ public class JuelResolverTest {
         ExpressionResolver expressionResolver = new JuelExpressionResolver();
 
         //when
-        List<Object> result = expressionResolver.resolveExpression(expressionString, Collections.emptyMap(), List.class);
+        List<Object> result = expressionResolver.resolveExpression(
+            expressionString,
+            Collections.emptyMap(),
+            List.class
+        );
 
         //then
         assertThat(result).contains(1l, "item", 3l);
@@ -144,10 +147,7 @@ public class JuelResolverTest {
 
         BigDecimal bigDecimal1 = new BigDecimal("1.2");
         BigDecimal bigDecimal2 = new BigDecimal("2.3");
-        Map<String, Object> variables = Map.of(
-            "bigDecimal1", bigDecimal1,
-            "bigDecimal2", bigDecimal2
-        );
+        Map<String, Object> variables = Map.of("bigDecimal1", bigDecimal1, "bigDecimal2", bigDecimal2);
 
         //when
         BigDecimal result = expressionResolver.resolveExpression(expressionString, variables, BigDecimal.class);

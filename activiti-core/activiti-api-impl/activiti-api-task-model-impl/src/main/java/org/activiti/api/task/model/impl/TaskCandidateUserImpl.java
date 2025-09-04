@@ -16,18 +16,15 @@
 package org.activiti.api.task.model.impl;
 
 import java.util.Objects;
-
 import org.activiti.api.task.model.TaskCandidateUser;
 
 public class TaskCandidateUserImpl extends TaskCandidateImpl implements TaskCandidateUser {
 
     private String userId;
 
-    public TaskCandidateUserImpl(){
+    public TaskCandidateUserImpl() {}
 
-    }
-
-    public TaskCandidateUserImpl(String userId, String taskId){
+    public TaskCandidateUserImpl(String userId, String taskId) {
         super(taskId);
         this.userId = userId;
     }
@@ -46,8 +43,7 @@ public class TaskCandidateUserImpl extends TaskCandidateImpl implements TaskCand
             return false;
         }
         TaskCandidateUserImpl that = (TaskCandidateUserImpl) o;
-        return Objects.equals(userId, that.userId) &&
-                Objects.equals(getTaskId(), that.getTaskId());
+        return (Objects.equals(userId, that.userId) && Objects.equals(getTaskId(), that.getTaskId()));
     }
 
     @Override

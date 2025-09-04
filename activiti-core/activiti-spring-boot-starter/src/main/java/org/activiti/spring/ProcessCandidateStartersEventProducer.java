@@ -15,6 +15,9 @@
  */
 package org.activiti.spring;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.activiti.api.process.runtime.events.ProcessCandidateStarterGroupAddedEvent;
 import org.activiti.api.process.runtime.events.ProcessCandidateStarterUserAddedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
@@ -30,10 +33,6 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.runtime.api.event.impl.ProcessCandidateStarterEventConverterHelper;
 import org.springframework.context.ApplicationEventPublisher;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 public class ProcessCandidateStartersEventProducer extends AbstractActivitiSmartLifeCycle {
 
     private RepositoryService repositoryService;
@@ -42,30 +41,45 @@ public class ProcessCandidateStartersEventProducer extends AbstractActivitiSmart
     private ProcessCandidateStarterEventConverterHelper processCandidateStarterEventConverterHelper = new ProcessCandidateStarterEventConverterHelper();
     private ApplicationEventPublisher eventPublisher;
 
-    public ProcessCandidateStartersEventProducer(RepositoryService repositoryService,
-                                                 List<ProcessRuntimeEventListener<ProcessCandidateStarterUserAddedEvent>> candidateStarterUserListeners,
-                                                 List<ProcessRuntimeEventListener<ProcessCandidateStarterGroupAddedEvent>> candidateStarterGroupListeners,
-                                                 ApplicationEventPublisher eventPublisher) {
+    public ProcessCandidateStartersEventProducer(
+        RepositoryService repositoryService,
+        List<ProcessRuntimeEventListener<ProcessCandidateStarterUserAddedEvent>> candidateStarterUserListeners,
+        List<ProcessRuntimeEventListener<ProcessCandidateStarterGroupAddedEvent>> candidateStarterGroupListeners,
+        ApplicationEventPublisher eventPublisher
+    ) {
         this.repositoryService = repositoryService;
-        this.candidateStarterUserListeners = Optional.ofNullable(candidateStarterUserListeners).orElseGet(() -> List.of());
-        this.candidateStarterGroupListeners = Optional.ofNullable(candidateStarterGroupListeners).orElseGet(() -> List.of());
+        this.candidateStarterUserListeners =
+            Optional.ofNullable(candidateStarterUserListeners).orElseGet(() -> List.of());
+        this.candidateStarterGroupListeners =
+            Optional.ofNullable(candidateStarterGroupListeners).orElseGet(() -> List.of());
         this.eventPublisher = eventPublisher;
     }
 
     @Override
     public void doStart() {
-        List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().latestVersion().list();
+        List<ProcessDefinition> processDefinitions = repositoryService
+            .createProcessDefinitionQuery()
+            .latestVersion()
+            .list();
         List<ProcessCandidateStarterUserAddedEvent> candidateStarterUserAddedEvents = new ArrayList<>();
         List<ProcessCandidateStarterGroupAddedEvent> candidateStarterGroupAddedEvents = new ArrayList<>();
         for (ProcessDefinition processDefinition : processDefinitions) {
-            List<IdentityLink> identityLinks = repositoryService.getIdentityLinksForProcessDefinition(processDefinition.getId());
-            for (IdentityLink identityLink: identityLinks){
-                if(processCandidateStarterEventConverterHelper.isProcessCandidateStarterUserLink(identityLink)) {
-                    ProcessCandidateStarterUserAddedEvent processCandidateStarterUserAddedEvent = createCandidateStarterUserEvent(identityLink);
+            List<IdentityLink> identityLinks = repositoryService.getIdentityLinksForProcessDefinition(
+                processDefinition.getId()
+            );
+            for (IdentityLink identityLink : identityLinks) {
+                if (processCandidateStarterEventConverterHelper.isProcessCandidateStarterUserLink(identityLink)) {
+                    ProcessCandidateStarterUserAddedEvent processCandidateStarterUserAddedEvent = createCandidateStarterUserEvent(
+                        identityLink
+                    );
                     candidateStarterUserAddedEvents.add(processCandidateStarterUserAddedEvent);
                     notifyCandidateStarterUserAddedListeners(processCandidateStarterUserAddedEvent);
-                } else if(processCandidateStarterEventConverterHelper.isProcessCandidateStarterGroupLink(identityLink)) {
-                    ProcessCandidateStarterGroupAddedEvent processCandidateStarterGroupAddedEvent = createCandidateStarterGroupEvent(identityLink);
+                } else if (
+                    processCandidateStarterEventConverterHelper.isProcessCandidateStarterGroupLink(identityLink)
+                ) {
+                    ProcessCandidateStarterGroupAddedEvent processCandidateStarterGroupAddedEvent = createCandidateStarterGroupEvent(
+                        identityLink
+                    );
                     candidateStarterGroupAddedEvents.add(processCandidateStarterGroupAddedEvent);
                     notifyCandidateStarterGroupAddedListeners(processCandidateStarterGroupAddedEvent);
                 }
@@ -75,36 +89,43 @@ public class ProcessCandidateStartersEventProducer extends AbstractActivitiSmart
         publishCandidateStarterEvents(candidateStarterUserAddedEvents, candidateStarterGroupAddedEvents);
     }
 
-    private void notifyCandidateStarterUserAddedListeners(ProcessCandidateStarterUserAddedEvent processCandidateStarterUserAddedEvent) {
-        for (ProcessRuntimeEventListener<ProcessCandidateStarterUserAddedEvent> listener: candidateStarterUserListeners) {
+    private void notifyCandidateStarterUserAddedListeners(
+        ProcessCandidateStarterUserAddedEvent processCandidateStarterUserAddedEvent
+    ) {
+        for (ProcessRuntimeEventListener<ProcessCandidateStarterUserAddedEvent> listener : candidateStarterUserListeners) {
             listener.onEvent(processCandidateStarterUserAddedEvent);
         }
     }
 
-    private void notifyCandidateStarterGroupAddedListeners(ProcessCandidateStarterGroupAddedEvent processCandidateStarterGroupAddedEvent) {
-        for (ProcessRuntimeEventListener<ProcessCandidateStarterGroupAddedEvent> listener: candidateStarterGroupListeners) {
+    private void notifyCandidateStarterGroupAddedListeners(
+        ProcessCandidateStarterGroupAddedEvent processCandidateStarterGroupAddedEvent
+    ) {
+        for (ProcessRuntimeEventListener<ProcessCandidateStarterGroupAddedEvent> listener : candidateStarterGroupListeners) {
             listener.onEvent(processCandidateStarterGroupAddedEvent);
         }
     }
 
     private ProcessCandidateStarterUserAddedEvent createCandidateStarterUserEvent(IdentityLink identityLink) {
         return new ProcessCandidateStarterUserAddedEventImpl(
-            new ProcessCandidateStarterUserImpl(identityLink.getProcessDefinitionId(), identityLink.getUserId()));
+            new ProcessCandidateStarterUserImpl(identityLink.getProcessDefinitionId(), identityLink.getUserId())
+        );
     }
 
     private ProcessCandidateStarterGroupAddedEvent createCandidateStarterGroupEvent(IdentityLink identityLink) {
         return new ProcessCandidateStarterGroupAddedEventImpl(
-            new ProcessCandidateStarterGroupImpl(identityLink.getProcessDefinitionId(), identityLink.getGroupId()));
+            new ProcessCandidateStarterGroupImpl(identityLink.getProcessDefinitionId(), identityLink.getGroupId())
+        );
     }
 
-    private void publishCandidateStarterEvents(List<ProcessCandidateStarterUserAddedEvent> candidateStarterUserAddedEvents,
-                                               List<ProcessCandidateStarterGroupAddedEvent> candidateStarterGroupAddedEvents) {
-
-        if(!candidateStarterUserAddedEvents.isEmpty()) {
+    private void publishCandidateStarterEvents(
+        List<ProcessCandidateStarterUserAddedEvent> candidateStarterUserAddedEvents,
+        List<ProcessCandidateStarterGroupAddedEvent> candidateStarterGroupAddedEvents
+    ) {
+        if (!candidateStarterUserAddedEvents.isEmpty()) {
             eventPublisher.publishEvent(new ProcessCandidateStarterUserAddedEvents(candidateStarterUserAddedEvents));
         }
 
-        if(!candidateStarterGroupAddedEvents.isEmpty()) {
+        if (!candidateStarterGroupAddedEvents.isEmpty()) {
             eventPublisher.publishEvent(new ProcessCandidateStarterGroupAddedEvents(candidateStarterGroupAddedEvents));
         }
     }

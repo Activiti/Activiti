@@ -15,12 +15,12 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityImpl;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class TaskCandidateEventConverterHelperTest {
 
@@ -58,13 +58,13 @@ public class TaskCandidateEventConverterHelperTest {
 
     @Test
     public void isNotTaskCandidateGroupLink_when_taskId_isNull() {
-        IdentityLink identityLink = createGroupIdentityLink(null,"aGroupId", IdentityLinkType.CANDIDATE);
+        IdentityLink identityLink = createGroupIdentityLink(null, "aGroupId", IdentityLinkType.CANDIDATE);
         assertThat(taskCandidateEventConverterHelper.isTaskCandidateGroupLink(identityLink)).isFalse();
     }
 
     @Test
     public void isNotTaskCandidateGroupLink_when_groupId_isNull() {
-        IdentityLink identityLink = createGroupIdentityLink("aTaskId",null, IdentityLinkType.CANDIDATE);
+        IdentityLink identityLink = createGroupIdentityLink("aTaskId", null, IdentityLinkType.CANDIDATE);
         assertThat(taskCandidateEventConverterHelper.isTaskCandidateGroupLink(identityLink)).isFalse();
     }
 

@@ -16,7 +16,6 @@
 package org.activiti.spring.boot;
 
 import java.util.List;
-
 import org.activiti.spring.resources.ResourceFinderDescriptor;
 import org.springframework.core.io.Resource;
 
@@ -25,7 +24,7 @@ public class ProcessDefinitionResourceFinderDescriptor implements ResourceFinder
     private ActivitiProperties activitiProperties;
 
     public ProcessDefinitionResourceFinderDescriptor(ActivitiProperties activitiProperties) {
-       this.activitiProperties = activitiProperties;
+        this.activitiProperties = activitiProperties;
     }
 
     @Override
@@ -45,18 +44,14 @@ public class ProcessDefinitionResourceFinderDescriptor implements ResourceFinder
 
     @Override
     public String getMsgForEmptyResources() {
-        return "No process definitions were found for auto-deployment in the location `" + getLocationPrefix() + "`";
+        return ("No process definitions were found for auto-deployment in the location `" + getLocationPrefix() + "`");
     }
 
     @Override
     public String getMsgForResourcesFound(List<String> foundProcessResources) {
-        return "The following process definition files will be deployed: " + foundProcessResources;
+        return ("The following process definition files will be deployed: " + foundProcessResources);
     }
 
     @Override
-    public void validate(List<Resource> resources) {
-
-    }
-
-
+    public void validate(List<Resource> resources) {}
 }

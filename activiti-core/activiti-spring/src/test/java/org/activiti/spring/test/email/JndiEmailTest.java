@@ -47,11 +47,13 @@ public class JndiEmailTest extends SpringActivitiTestCase {
         props.put("mail.smtp.provider.vendor", "test");
         props.put("mail.smtp.provider.version", "0.0.0");
 
-        Provider provider = new Provider(Provider.Type.TRANSPORT,
-                                         "smtp",
-                                         MockEmailTransport.class.getName(),
-                                         "test",
-                                         "1.0");
+        Provider provider = new Provider(
+            Provider.Type.TRANSPORT,
+            "smtp",
+            MockEmailTransport.class.getName(),
+            "test",
+            "1.0"
+        );
         try {
             Session mailSession = Session.getDefaultInstance(props);
             mailSession.setProvider(provider);
@@ -77,10 +79,10 @@ public class JndiEmailTest extends SpringActivitiTestCase {
         cleanUp();
     }
 
-    @Deployment(resources = {"org/activiti/spring/test/email/EmailTaskUsingJndi.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/spring/test/email/EmailTaskUsingJndi.bpmn20.xml" })
     public void testEmailUsingJndi() {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("EmailJndiProcess", emptyMap());
-        assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
+        assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count())
+            .isEqualTo(0);
     }
-
 }

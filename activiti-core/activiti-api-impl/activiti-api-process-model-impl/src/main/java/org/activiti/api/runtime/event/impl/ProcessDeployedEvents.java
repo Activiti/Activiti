@@ -16,7 +16,6 @@
 package org.activiti.api.runtime.event.impl;
 
 import java.util.List;
-
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
 
 public class ProcessDeployedEvents {
@@ -30,5 +29,4 @@ public class ProcessDeployedEvents {
     public List<ProcessDeployedEvent> getProcessDeployedEvents() {
         return processDeployedEvents;
     }
-
 }

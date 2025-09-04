@@ -21,36 +21,36 @@ package org.activiti.engine.impl.variable;
  */
 public class StringType implements VariableType {
 
-  private final int maxLength;
+    private final int maxLength;
 
-  public StringType(int maxLength) {
-    this.maxLength = maxLength;
-  }
-
-  public String getTypeName() {
-    return "string";
-  }
-
-  public boolean isCachable() {
-    return true;
-  }
-
-  public Object getValue(ValueFields valueFields) {
-    return valueFields.getTextValue();
-  }
-
-  public void setValue(Object value, ValueFields valueFields) {
-    valueFields.setTextValue((String) value);
-  }
-
-  public boolean isAbleToStore(Object value) {
-    if (value == null) {
-      return true;
+    public StringType(int maxLength) {
+        this.maxLength = maxLength;
     }
-    if (String.class.isAssignableFrom(value.getClass())) {
-      String stringValue = (String) value;
-      return stringValue.length() <= maxLength;
+
+    public String getTypeName() {
+        return "string";
     }
-    return false;
-  }
+
+    public boolean isCachable() {
+        return true;
+    }
+
+    public Object getValue(ValueFields valueFields) {
+        return valueFields.getTextValue();
+    }
+
+    public void setValue(Object value, ValueFields valueFields) {
+        valueFields.setTextValue((String) value);
+    }
+
+    public boolean isAbleToStore(Object value) {
+        if (value == null) {
+            return true;
+        }
+        if (String.class.isAssignableFrom(value.getClass())) {
+            String stringValue = (String) value;
+            return stringValue.length() <= maxLength;
+        }
+        return false;
+    }
 }

@@ -18,12 +18,12 @@ package org.activiti.api.process.model.events;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.ProcessCandidateStarterGroup;
 
-public interface ProcessCandidateStarterGroupEvent extends RuntimeEvent<ProcessCandidateStarterGroup, ProcessCandidateStarterGroupEvent.ProcessCandidateStarterGroupEvents> {
-
+public interface ProcessCandidateStarterGroupEvent
+    extends
+        RuntimeEvent<ProcessCandidateStarterGroup, ProcessCandidateStarterGroupEvent.ProcessCandidateStarterGroupEvents> {
     enum ProcessCandidateStarterGroupEvents {
-
         PROCESS_CANDIDATE_STARTER_GROUP_ADDED,
 
-        PROCESS_CANDIDATE_STARTER_GROUP_REMOVED
+        PROCESS_CANDIDATE_STARTER_GROUP_REMOVED,
     }
 }

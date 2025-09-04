@@ -15,34 +15,34 @@
  */
 package org.activiti.spring.process.variable.types;
 
-import org.activiti.engine.ActivitiException;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.activiti.engine.ActivitiException;
+import org.junit.jupiter.api.Test;
 
 public class BigDecimalVariableTypeTest {
 
     @Test
     public void should_returnException_when_validatingNotNumericType() {
-
         BigDecimalVariableType bigDecimalVariableType = new BigDecimalVariableType();
         List<ActivitiException> exceptionList = new ArrayList<>();
 
         String wrongType = "not a number";
         bigDecimalVariableType.validate(wrongType, exceptionList);
 
-        assertThat(exceptionList.stream()).anyMatch(e ->
-            e.getMessage().equals(String.format(BigDecimalVariableType.VALIDATION_ERROR_FORMAT, wrongType.getClass()))
-        );
+        assertThat(exceptionList.stream())
+            .anyMatch(e ->
+                e
+                    .getMessage()
+                    .equals(String.format(BigDecimalVariableType.VALIDATION_ERROR_FORMAT, wrongType.getClass()))
+            );
     }
 
     @Test
     public void should_returnEmptyExceptionList_when_validatingNumericType() {
-
         BigDecimalVariableType bigDecimalVariableType = new BigDecimalVariableType();
         List<ActivitiException> exceptionList = new ArrayList<>();
 
@@ -55,7 +55,6 @@ public class BigDecimalVariableTypeTest {
 
     @Test
     public void should_returnAccurateResult_whenParsingDoubleValue() {
-
         BigDecimalVariableType bigDecimalVariableType = new BigDecimalVariableType();
 
         double value1 = 0.1;
@@ -65,5 +64,4 @@ public class BigDecimalVariableTypeTest {
 
         assertThat(parsedValue1.add(parsedValue2)).isEqualTo(new BigDecimal("0.3"));
     }
-
 }

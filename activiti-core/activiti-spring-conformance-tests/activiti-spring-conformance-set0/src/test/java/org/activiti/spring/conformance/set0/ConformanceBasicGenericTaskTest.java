@@ -37,6 +37,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class ConformanceBasicGenericTaskTest {
 
     private final String processKey = "processwit-c6fd1b26-0d64-47f2-8d04-0b70764444a7";
+
     @Autowired
     private ProcessRuntime processRuntime;
 
@@ -70,12 +71,14 @@ public class ConformanceBasicGenericTaskTest {
     public void shouldBeAbleToStartProcess() {
         securityUtil.logInAs("user1");
         //when
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder
                 .start()
                 .withProcessDefinitionKey(processKey)
                 .withBusinessKey("my-business-key")
                 .withName("my-process-instance-name")
-                .build());
+                .build()
+        );
 
         //then
         assertThat(processInstance).isNotNull();
@@ -86,33 +89,31 @@ public class ConformanceBasicGenericTaskTest {
         // No Process Instance should be found
         Throwable throwable = catchThrowable(() -> processRuntime.processInstance(processInstance.getId()));
 
-        assertThat(throwable)
-                .isInstanceOf(NotFoundException.class);
+        assertThat(throwable).isInstanceOf(NotFoundException.class);
 
         // No Variable Instance should be found
-        throwable = catchThrowable(() -> processRuntime.variables(
-                ProcessPayloadBuilder
-                        .variables()
-                        .withProcessInstanceId(processInstance.getId())
-                        .build()));
-        assertThat(throwable)
-                .isInstanceOf(NotFoundException.class);
+        throwable =
+            catchThrowable(() ->
+                processRuntime.variables(
+                    ProcessPayloadBuilder.variables().withProcessInstanceId(processInstance.getId()).build()
+                )
+            );
+        assertThat(throwable).isInstanceOf(NotFoundException.class);
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
-                .containsExactly(
-                        ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
-                        ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-                        ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
-
+            .extracting(RuntimeEvent::getEventType)
+            .containsExactly(
+                ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED
+            );
     }
-
 }

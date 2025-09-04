@@ -15,18 +15,6 @@
  */
 package org.activiti.bpmn.converter.export;
 
-import org.activiti.bpmn.model.Activity;
-import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamWriter;
-
-import java.io.StringWriter;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -34,6 +22,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.io.StringWriter;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
+import org.activiti.bpmn.model.Activity;
+import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class MultiInstanceExportTest {
@@ -43,7 +41,6 @@ public class MultiInstanceExportTest {
 
     @Test
     public void shouldWriteStartElementWhenMultiInstanceLoopCharacteristicsIsNotNull() throws Exception {
-
         Activity activity = mock(Activity.class);
         MultiInstanceLoopCharacteristics multiInstance = new MultiInstanceLoopCharacteristics();
         when(activity.getLoopCharacteristics()).thenReturn(multiInstance);
@@ -55,20 +52,21 @@ public class MultiInstanceExportTest {
 
         String generatedXml = stringWriter.toString();
 
-
-        assertTrue(generatedXml.contains("<bpmn2:multiInstanceLoopCharacteristics isSequential=\"false\"></bpmn2:multiInstanceLoopCharacteristics>"));
-
+        assertTrue(
+            generatedXml.contains(
+                "<bpmn2:multiInstanceLoopCharacteristics isSequential=\"false\"></bpmn2:multiInstanceLoopCharacteristics>"
+            )
+        );
     }
+
     @Test
     public void shouldWriteStartElementWhenMultiInstanceLoopCharacteristicsHasCardinality() throws Exception {
-
         Activity activity = mock(Activity.class);
         MultiInstanceLoopCharacteristics multiInstance = new MultiInstanceLoopCharacteristics();
         multiInstance.setSequential(true);
         multiInstance.setLoopCardinality("100");
         when(activity.getLoopCharacteristics()).thenReturn(multiInstance);
 
-
         StringWriter stringWriter = new StringWriter();
         XMLStreamWriter xtw = XMLOutputFactory.newInstance().createXMLStreamWriter(stringWriter);
 
@@ -76,12 +74,15 @@ public class MultiInstanceExportTest {
 
         String generatedXml = stringWriter.toString();
 
-
-        assertTrue(generatedXml.contains("<bpmn2:multiInstanceLoopCharacteristics isSequential=\"true\"><bpmn2:loopCardinality>100</bpmn2:loopCardinality></bpmn2:multiInstanceLoopCharacteristics>"));
+        assertTrue(
+            generatedXml.contains(
+                "<bpmn2:multiInstanceLoopCharacteristics isSequential=\"true\"><bpmn2:loopCardinality>100</bpmn2:loopCardinality></bpmn2:multiInstanceLoopCharacteristics>"
+            )
+        );
     }
+
     @Test
     public void shouldNotWriteStartElementWhenMultiInstanceLoopCharacteristicsIsNull() throws Exception {
-
         Activity activity = mock(Activity.class);
         when(activity.getLoopCharacteristics()).thenReturn(null);
 
@@ -103,23 +104,23 @@ public class MultiInstanceExportTest {
         when(multiInstance.getOutputDataItem()).thenReturn("outputItem");
         when(multiInstance.getCompletionCondition()).thenReturn("${condition}");
 
-
         StringWriter stringWriter = new StringWriter();
         XMLStreamWriter xtw = XMLOutputFactory.newInstance().createXMLStreamWriter(stringWriter);
         MultiInstanceExport.writeMultiInstance(activity, xtw);
 
         String generatedXml = stringWriter.toString();
 
-        assertThat(generatedXml).contains(
-            "<bpmn2:multiInstanceLoopCharacteristics isSequential=\"true\"",
-            "activiti:collection=\"inputCollection\"",
-            "activiti:elementVariable=\"item\"",
-            "activiti:elementIndexVariable=\"index\"",
-            "<bpmn2:loopCardinality>10</bpmn2:loopCardinality>",
-            "<bpmn2:loopDataOutputRef>outputCollection</bpmn2:loopDataOutputRef>",
-            "<bpmn2:outputDataItem name=\"outputItem\"></bpmn2:outputDataItem>",
-            "<bpmn2:completionCondition>${condition}</bpmn2:completionCondition>",
-            "</bpmn2:multiInstanceLoopCharacteristics>"
-        );
+        assertThat(generatedXml)
+            .contains(
+                "<bpmn2:multiInstanceLoopCharacteristics isSequential=\"true\"",
+                "activiti:collection=\"inputCollection\"",
+                "activiti:elementVariable=\"item\"",
+                "activiti:elementIndexVariable=\"index\"",
+                "<bpmn2:loopCardinality>10</bpmn2:loopCardinality>",
+                "<bpmn2:loopDataOutputRef>outputCollection</bpmn2:loopDataOutputRef>",
+                "<bpmn2:outputDataItem name=\"outputItem\"></bpmn2:outputDataItem>",
+                "<bpmn2:completionCondition>${condition}</bpmn2:completionCondition>",
+                "</bpmn2:multiInstanceLoopCharacteristics>"
+            );
     }
 }

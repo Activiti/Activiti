@@ -15,6 +15,8 @@
  */
 package org.activiti.core.common.spring.security.policies;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.activiti.core.common.spring.identity.ExtendedInMemoryUserDetailsManager;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -23,9 +25,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Configuration
 @EnableConfigurationProperties

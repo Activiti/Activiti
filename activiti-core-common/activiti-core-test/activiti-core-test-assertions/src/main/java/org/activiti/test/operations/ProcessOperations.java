@@ -21,7 +21,6 @@ import org.activiti.test.assertions.ProcessInstanceAssertions;
 import org.activiti.test.assertions.SignalAssertions;
 
 public interface ProcessOperations {
-
     ProcessInstanceAssertions start(StartProcessPayload startProcessPayload);
 
     SignalAssertions signal(SignalPayload signalPayload);

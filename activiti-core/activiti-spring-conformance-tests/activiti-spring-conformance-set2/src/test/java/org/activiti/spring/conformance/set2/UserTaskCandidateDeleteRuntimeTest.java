@@ -62,18 +62,18 @@ public class UserTaskCandidateDeleteRuntimeTest {
         RuntimeTestConfiguration.collectedEvents.clear();
     }
 
-
     @Test
     public void shouldFailOnCandidateDelete() {
-
         securityUtil.logInAs("user1");
 
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder
                 .start()
                 .withProcessDefinitionKey(processKey)
                 .withBusinessKey("my-business-key")
                 .withName("my-process-instance-name")
-                .build());
+                .build()
+        );
 
         //then
         assertThat(processInstance).isNotNull();
@@ -97,30 +97,31 @@ public class UserTaskCandidateDeleteRuntimeTest {
 
         assertThat(taskById.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
-
         assertThat(task).isEqualTo(taskById);
 
         assertThat(task.getAssignee()).isNull();
 
-
         assertThat(RuntimeTestConfiguration.collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
-                .containsExactly(
-                        ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
-                        ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                        TaskRuntimeEvent.TaskEvents.TASK_CREATED);
+            .extracting(RuntimeEvent::getEventType)
+            .containsExactly(
+                ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                TaskRuntimeEvent.TaskEvents.TASK_CREATED
+            );
 
         RuntimeTestConfiguration.collectedEvents.clear();
 
-        Throwable throwable = catchThrowable(() -> taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(task.getId()).build()));
+        Throwable throwable = catchThrowable(() ->
+            taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(task.getId()).build())
+        );
 
         assertThat(throwable)
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("You cannot delete a task where you are not the assignee/owner");
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("You cannot delete a task where you are not the assignee/owner");
     }
 
     @AfterEach
@@ -132,5 +133,4 @@ public class UserTaskCandidateDeleteRuntimeTest {
         }
         RuntimeTestConfiguration.collectedEvents.clear();
     }
-
 }

@@ -15,11 +15,11 @@
  */
 package org.activiti.spring.boot;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.engine.ApplicationStatusHolder;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class ShutdownListenerTest {
 
@@ -27,7 +27,7 @@ public class ShutdownListenerTest {
     void should_MarkAsShutdown_when_CloseApplicationContext() {
         ApplicationContextRunner contextRunner = new ApplicationContextRunner()
             .withUserConfiguration(Application.class);
-        contextRunner.run((context) -> {
+        contextRunner.run(context -> {
             assertThat(ApplicationStatusHolder.isRunning()).isTrue();
             assertThat(ApplicationStatusHolder.isShutdownInProgress()).isFalse();
             context.close();
@@ -35,5 +35,4 @@ public class ShutdownListenerTest {
             assertThat(ApplicationStatusHolder.isShutdownInProgress()).isTrue();
         });
     }
-
 }

@@ -16,7 +16,6 @@
 package org.activiti.spring.boot.process.validation;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.FlowElement;
@@ -36,7 +35,11 @@ public class AsyncPropertyValidator extends ProcessLevelValidator {
         validateFlowElementsInContainer(process, errors, process);
     }
 
-    protected void validateFlowElementsInContainer(FlowElementsContainer container, List<ValidationError> errors, Process process) {
+    protected void validateFlowElementsInContainer(
+        FlowElementsContainer container,
+        List<ValidationError> errors,
+        Process process
+    ) {
         for (FlowElement flowElement : container.getFlowElements()) {
             if (flowElement instanceof FlowElementsContainer) {
                 FlowElementsContainer subProcess = (FlowElementsContainer) flowElement;
@@ -44,17 +47,21 @@ public class AsyncPropertyValidator extends ProcessLevelValidator {
             }
 
             if ((flowElement instanceof FlowNode) && ((FlowNode) flowElement).isAsynchronous()) {
-                addWarning(errors, Problems.FLOW_ELEMENT_ASYNC_NOT_AVAILABLE, process , flowElement);
+                addWarning(errors, Problems.FLOW_ELEMENT_ASYNC_NOT_AVAILABLE, process, flowElement);
             }
 
             if ((flowElement instanceof Event)) {
-                ((Event) flowElement).getEventDefinitions().stream().forEach(event -> {
-                    if (event instanceof TimerEventDefinition) {
-                        addWarning(errors, Problems.EVENT_TIMER_ASYNC_NOT_AVAILABLE, process, flowElement);
-                    } else if ((event instanceof SignalEventDefinition) && ((SignalEventDefinition) event).isAsync() ) {
-                        addWarning(errors, Problems.SIGNAL_ASYNC_NOT_AVAILABLE, process, flowElement);
-                    }
-                });
+                ((Event) flowElement).getEventDefinitions()
+                    .stream()
+                    .forEach(event -> {
+                        if (event instanceof TimerEventDefinition) {
+                            addWarning(errors, Problems.EVENT_TIMER_ASYNC_NOT_AVAILABLE, process, flowElement);
+                        } else if (
+                            (event instanceof SignalEventDefinition) && ((SignalEventDefinition) event).isAsync()
+                        ) {
+                            addWarning(errors, Problems.SIGNAL_ASYNC_NOT_AVAILABLE, process, flowElement);
+                        }
+                    });
             }
         }
     }

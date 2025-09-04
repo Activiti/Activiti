@@ -39,26 +39,25 @@ public class DemoApplicationConfiguration {
 
     @Bean
     public UserDetailsService userDetailsService() {
-
         InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
 
         String[][] usersGroupsAndRoles = {
-                {"bob", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
-                {"john", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
-                {"hannah", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
-                {"other", "}password", "ROLE_ACTIVITI_USER", "GROUP_otherTeam"},
-                {"admin", "password", "ROLE_ACTIVITI_ADMIN"},
+            { "bob", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam" },
+            { "john", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam" },
+            { "hannah", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam" },
+            { "other", "}password", "ROLE_ACTIVITI_USER", "GROUP_otherTeam" },
+            { "admin", "password", "ROLE_ACTIVITI_ADMIN" },
         };
 
         for (String[] user : usersGroupsAndRoles) {
             List<String> authoritiesStrings = asList(Arrays.copyOfRange(user, 2, user.length));
-            logger.info("> Registering new user: " + user[0] + " with the following Authorities[" + authoritiesStrings + "]");
+            logger.info(
+                "> Registering new user: " + user[0] + " with the following Authorities[" + authoritiesStrings + "]"
+            );
 
-            inMemoryUserDetailsManager.createUser(User.withDefaultPasswordEncoder()
-                .username(user[0])
-                .password(user[1])
-                .authorities(user[2])
-                .build());
+            inMemoryUserDetailsManager.createUser(
+                User.withDefaultPasswordEncoder().username(user[0]).password(user[1]).authorities(user[2]).build()
+            );
         }
 
         return inMemoryUserDetailsManager;
@@ -66,10 +65,6 @@ public class DemoApplicationConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http
-            .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-            .httpBasic(withDefaults())
-            .build();
+        return http.authorizeHttpRequests(auth -> auth.anyRequest().authenticated()).httpBasic(withDefaults()).build();
     }
-
 }

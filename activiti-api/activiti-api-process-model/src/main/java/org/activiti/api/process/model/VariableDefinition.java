@@ -16,7 +16,6 @@
 package org.activiti.api.process.model;
 
 public interface VariableDefinition {
-
     String getId();
 
     String getName();
@@ -32,5 +31,4 @@ public interface VariableDefinition {
     String getDisplayName();
 
     boolean isAnalytics();
-
 }

@@ -24,10 +24,8 @@ import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
  * and can be used to create special implementations for specific tenants.
  */
 public interface TenantAwareAsyncExecutorFactory {
-
-  /**
-   * Allows to create an {@link AsyncExecutor} specifically for a tenant.
-   */
-  AsyncExecutor createAsyncExecutor(String tenantId);
-
+    /**
+     * Allows to create an {@link AsyncExecutor} specifically for a tenant.
+     */
+    AsyncExecutor createAsyncExecutor(String tenantId);
 }

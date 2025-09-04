@@ -26,15 +26,14 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface Transformer {
-
-  /**
-   * Transforms anObject into a different object
-   *
-   * @param anObject
-   *          the object to be transformed
-   * @return the transformed object
-   * @throws ActivitiException
-   *           if the transformation could not be applied
-   */
-  Object transform(Object anObject);
+    /**
+     * Transforms anObject into a different object
+     *
+     * @param anObject
+     *          the object to be transformed
+     * @return the transformed object
+     * @throws ActivitiException
+     *           if the transformation could not be applied
+     */
+    Object transform(Object anObject);
 }

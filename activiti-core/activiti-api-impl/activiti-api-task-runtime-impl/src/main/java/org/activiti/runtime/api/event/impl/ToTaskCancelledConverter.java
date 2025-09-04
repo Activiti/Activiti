@@ -16,7 +16,6 @@
 package org.activiti.runtime.api.event.impl;
 
 import java.util.Optional;
-
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.runtime.events.TaskCancelledEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -44,8 +43,10 @@ public class ToTaskCancelledConverter implements EventConverter<TaskCancelledEve
     }
 
     private boolean isTaskCancelled(ActivitiEntityEvent internalEvent) {
-        return internalEvent.getEntity() != null &&
-                internalEvent.getEntity() instanceof TaskEntity &&
-                ((TaskEntity) internalEvent.getEntity()).isCanceled();
+        return (
+            internalEvent.getEntity() != null &&
+            internalEvent.getEntity() instanceof TaskEntity &&
+            ((TaskEntity) internalEvent.getEntity()).isCanceled()
+        );
     }
 }

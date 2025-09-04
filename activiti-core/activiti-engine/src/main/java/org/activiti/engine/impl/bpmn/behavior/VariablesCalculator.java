@@ -20,9 +20,10 @@ import java.util.Map;
 import org.activiti.engine.delegate.DelegateExecution;
 
 public interface VariablesCalculator {
-
-    Map<String, Object> calculateOutPutVariables(MappingExecutionContext mappingExecutionContext,
-        Map<String, Object> availableVariables);
+    Map<String, Object> calculateOutPutVariables(
+        MappingExecutionContext mappingExecutionContext,
+        Map<String, Object> availableVariables
+    );
 
     Map<String, Object> calculateInputVariables(DelegateExecution execution);
 }

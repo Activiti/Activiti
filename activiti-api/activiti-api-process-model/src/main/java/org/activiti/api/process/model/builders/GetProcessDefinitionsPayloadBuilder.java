@@ -17,7 +17,6 @@ package org.activiti.api.process.model.builders;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 
 public class GetProcessDefinitionsPayloadBuilder {
@@ -56,6 +55,11 @@ public class GetProcessDefinitionsPayloadBuilder {
     }
 
     public GetProcessDefinitionsPayload build() {
-        return new GetProcessDefinitionsPayload(processDefinitionId, processDefinitionKeys, processCategoryToExclude, latestVersionOnly);
+        return new GetProcessDefinitionsPayload(
+            processDefinitionId,
+            processDefinitionKeys,
+            processCategoryToExclude,
+            latestVersionOnly
+        );
     }
 }

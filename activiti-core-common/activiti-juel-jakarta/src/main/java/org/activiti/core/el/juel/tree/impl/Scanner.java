@@ -36,14 +36,8 @@ public class Scanner {
         final String encountered;
         final String expected;
 
-        public ScanException(
-            int position,
-            String encountered,
-            String expected
-        ) {
-            super(
-                LocalMessages.get("error.scan", position, encountered, expected)
-            );
+        public ScanException(int position, String encountered, String expected) {
+            super(LocalMessages.get("error.scan", position, encountered, expected));
             this.position = position;
             this.encountered = encountered;
             this.expected = expected;
@@ -266,11 +260,7 @@ public class Scanner {
     }
 
     protected boolean isEval() {
-        return (
-            token != null &&
-            token.getSymbol() != Symbol.TEXT &&
-            token.getSymbol() != Symbol.END_EVAL
-        );
+        return (token != null && token.getSymbol() != Symbol.TEXT && token.getSymbol() != Symbol.END_EVAL);
     }
 
     /**
@@ -297,11 +287,7 @@ public class Scanner {
                         if (escaped) {
                             builder.append(c);
                         } else {
-                            return token(
-                                Symbol.TEXT,
-                                builder.toString(),
-                                i - position
-                            );
+                            return token(Symbol.TEXT, builder.toString(), i - position);
                         }
                     } else {
                         if (escaped) {
@@ -338,21 +324,13 @@ public class Scanner {
             char c = input.charAt(i++);
             if (c == '\\') {
                 if (i == l) {
-                    throw new ScanException(
-                        position,
-                        "unterminated string",
-                        quote + " or \\"
-                    );
+                    throw new ScanException(position, "unterminated string", quote + " or \\");
                 } else {
                     c = input.charAt(i++);
                     if (c == '\\' || c == quote) {
                         builder.append(c);
                     } else {
-                        throw new ScanException(
-                            position,
-                            "invalid escape sequence \\" + c,
-                            "\\" + quote + " or \\\\"
-                        );
+                        throw new ScanException(position, "invalid escape sequence \\" + c, "\\" + quote + " or \\\\");
                     }
                 }
             } else if (c == quote) {
@@ -361,11 +339,7 @@ public class Scanner {
                 builder.append(c);
             }
         }
-        throw new ScanException(
-            position,
-            "unterminated string",
-            String.valueOf(quote)
-        );
+        throw new ScanException(position, "unterminated string", String.valueOf(quote));
     }
 
     /**
@@ -409,9 +383,7 @@ public class Scanner {
      */
     protected Token nextEval() throws ScanException {
         char c1 = input.charAt(position);
-        char c2 = position < input.length() - 1
-            ? input.charAt(position + 1)
-            : (char) 0;
+        char c2 = position < input.length() - 1 ? input.charAt(position + 1) : (char) 0;
 
         switch (c1) {
             case '*':
@@ -490,16 +462,10 @@ public class Scanner {
             }
             String name = input.substring(position, i);
             Token keyword = keyword(name);
-            return keyword == null
-                ? token(Symbol.IDENTIFIER, name, i - position)
-                : keyword;
+            return keyword == null ? token(Symbol.IDENTIFIER, name, i - position) : keyword;
         }
 
-        throw new ScanException(
-            position,
-            "invalid character '" + c1 + "'",
-            "expression token"
-        );
+        throw new ScanException(position, "invalid character '" + c1 + "'", "expression token");
     }
 
     protected Token nextToken() throws ScanException {
@@ -509,10 +475,7 @@ public class Scanner {
             }
             return nextEval();
         } else {
-            if (
-                position + 1 < input.length() &&
-                input.charAt(position + 1) == '{'
-            ) {
+            if (position + 1 < input.length() && input.charAt(position + 1) == '{') {
                 switch (input.charAt(position)) {
                     case '#':
                         return fixed(Symbol.START_EVAL_DEFERRED);
@@ -538,10 +501,7 @@ public class Scanner {
         int length = input.length();
 
         if (isEval()) {
-            while (
-                position < length &&
-                Character.isWhitespace(input.charAt(position))
-            ) {
+            while (position < length && Character.isWhitespace(input.charAt(position))) {
                 position++;
             }
         }

@@ -26,13 +26,13 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.delegate.DelegateExecution;
 
 /**
 
  */
 public class ShellCommandExecutor implements CommandExecutor {
+
     private Boolean waitFlag;
     private final Boolean cleanEnvBoolean;
     private final Boolean redirectErrorFlag;
@@ -41,7 +41,15 @@ public class ShellCommandExecutor implements CommandExecutor {
     private final String errorCodeVariableStr;
     private final List<String> argList;
 
-    public ShellCommandExecutor(Boolean waitFlag, Boolean cleanEnvBoolean, Boolean redirectErrorFlag, String directoryStr, String resultVariableStr, String errorCodeVariableStr, List<String> argList) {
+    public ShellCommandExecutor(
+        Boolean waitFlag,
+        Boolean cleanEnvBoolean,
+        Boolean redirectErrorFlag,
+        String directoryStr,
+        String resultVariableStr,
+        String errorCodeVariableStr,
+        List<String> argList
+    ) {
         this.waitFlag = waitFlag;
         this.cleanEnvBoolean = cleanEnvBoolean;
         this.redirectErrorFlag = redirectErrorFlag;
@@ -52,15 +60,16 @@ public class ShellCommandExecutor implements CommandExecutor {
     }
 
     public ShellCommandExecutor(ShellExecutorContext context) {
-        this(context.getWaitFlag(),
-                context.getCleanEnvBoolan(),
-                context.getRedirectErrorFlag(),
-                context.getDirectoryStr(),
-                context.getResultVariableStr(),
-                context.getErrorCodeVariableStr(),
-                context.getArgList());
+        this(
+            context.getWaitFlag(),
+            context.getCleanEnvBoolan(),
+            context.getRedirectErrorFlag(),
+            context.getDirectoryStr(),
+            context.getResultVariableStr(),
+            context.getErrorCodeVariableStr(),
+            context.getArgList()
+        );
     }
-
 
     public void executeCommand(DelegateExecution execution) throws Exception {
         if (argList != null && argList.size() > 0) {
@@ -70,8 +79,9 @@ public class ShellCommandExecutor implements CommandExecutor {
                 Map<String, String> env = processBuilder.environment();
                 env.clear();
             }
-            if (getDirectoryStr() != null && getDirectoryStr().length() > 0)
-                processBuilder.directory(new File(getDirectoryStr()));
+            if (getDirectoryStr() != null && getDirectoryStr().length() > 0) processBuilder.directory(
+                new File(getDirectoryStr())
+            );
 
             Process process = processBuilder.start();
 
@@ -85,15 +95,12 @@ public class ShellCommandExecutor implements CommandExecutor {
 
                 if (getErrorCodeVariableStr() != null) {
                     execution.setVariable(getErrorCodeVariableStr(), Integer.toString(errorCode));
-
                 }
-
             }
         }
     }
 
     private String convertStreamToStr(InputStream is) throws IOException {
-
         if (is != null) {
             Writer writer = new StringWriter();
 
@@ -144,5 +151,4 @@ public class ShellCommandExecutor implements CommandExecutor {
     public List<String> getArgList() {
         return argList;
     }
-
 }

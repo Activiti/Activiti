@@ -72,7 +72,11 @@
             "process-variable-with-jsonpatch-type": {
               "type": "JSONPATCH",
               "value": [
-                { "op": "add", "path": "/firstProperty/secondProperty", "value": "${task_output_variable_name_1}" }
+                {
+                  "op": "add",
+                  "path": "/firstProperty/secondProperty",
+                  "value": "${task_output_variable_name_1}"
+                }
               ]
             }
           }

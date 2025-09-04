@@ -20,8 +20,9 @@ import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.api.process.runtime.events.ProcessResumedEvent;
 import org.activiti.api.runtime.event.impl.RuntimeEventImpl;
 
-public class ProcessResumedEventImpl extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>
-        implements ProcessResumedEvent {
+public class ProcessResumedEventImpl
+    extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>
+    implements ProcessResumedEvent {
 
     public ProcessResumedEventImpl(ProcessInstance entity) {
         super(entity);

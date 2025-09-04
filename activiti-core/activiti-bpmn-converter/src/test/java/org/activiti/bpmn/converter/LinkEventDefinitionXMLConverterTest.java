@@ -15,14 +15,13 @@
  */
 package org.activiti.bpmn.converter;
 
-import org.activiti.bpmn.model.LinkEventDefinition;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.io.StringWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
-import java.io.StringWriter;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import org.activiti.bpmn.model.LinkEventDefinition;
+import org.junit.jupiter.api.Test;
 
 public class LinkEventDefinitionXMLConverterTest {
 
@@ -36,7 +35,8 @@ public class LinkEventDefinitionXMLConverterTest {
 
         // Act
         String generatedXml = convertToXml(eventDefinition);
-        String expectedXml = """
+        String expectedXml =
+            """
             <bpmn2:linkEventDefinition id="id" name="name">
                 <bpmn2:target>target</bpmn2:target>
              </bpmn2:linkEventDefinition>
@@ -67,7 +67,8 @@ public class LinkEventDefinitionXMLConverterTest {
 
         // Act
         String generatedXml = convertToXml(eventDefinition);
-        String expectedXml = """
+        String expectedXml =
+            """
             <bpmn2:linkEventDefinition id="id" name="name">
                 <bpmn2:source>source1</bpmn2:source>
                 <bpmn2:source>source2</bpmn2:source>
@@ -88,7 +89,8 @@ public class LinkEventDefinitionXMLConverterTest {
 
         // Act
         String generatedXml = convertToXml(eventDefinition);
-        String expectedXml = """
+        String expectedXml =
+            """
             <bpmn2:linkEventDefinition id="id" name="">
                 <bpmn2:source>source1</bpmn2:source>
             </bpmn2:linkEventDefinition>

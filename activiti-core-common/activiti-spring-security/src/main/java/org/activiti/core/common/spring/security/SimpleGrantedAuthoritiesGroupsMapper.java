@@ -15,13 +15,13 @@
  */
 package org.activiti.core.common.spring.security;
 
-import org.springframework.security.core.GrantedAuthority;
-
 import java.util.Collection;
 import java.util.List;
+import org.springframework.security.core.GrantedAuthority;
 
-public class SimpleGrantedAuthoritiesGroupsMapper extends AbstractSimpleGrantedAuthoritiesMapper
-                                                  implements GrantedAuthoritiesGroupsMapper {
+public class SimpleGrantedAuthoritiesGroupsMapper
+    extends AbstractSimpleGrantedAuthoritiesMapper
+    implements GrantedAuthoritiesGroupsMapper {
 
     private final String prefix;
 

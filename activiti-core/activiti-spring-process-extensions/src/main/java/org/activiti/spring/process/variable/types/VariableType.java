@@ -36,13 +36,17 @@ public abstract class VariableType {
         this.name = name;
     }
 
-    abstract public void validate(Object var, List<ActivitiException> errors);
+    public abstract void validate(Object var, List<ActivitiException> errors);
 
     public Object parseFromValue(Object value) throws ActivitiException {
         return value;
     }
 
     protected boolean isExpression(Object var) {
-        return Objects.nonNull(var) && var.getClass().isAssignableFrom(String.class) && EXPRESSION_PATTERN.matcher((CharSequence) var).matches();
+        return (
+            Objects.nonNull(var) &&
+            var.getClass().isAssignableFrom(String.class) &&
+            EXPRESSION_PATTERN.matcher((CharSequence) var).matches()
+        );
     }
 }

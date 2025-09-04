@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
-
 
 import org.activiti.engine.api.internal.Internal;
 
@@ -26,11 +24,9 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface SignalEventSubscriptionEntity extends EventSubscriptionEntity {
+    String EVENT_TYPE = "signal";
 
-  String EVENT_TYPE = "signal";
+    boolean isProcessInstanceScoped();
 
-  boolean isProcessInstanceScoped();
-
-  boolean isGlobalScoped();
-
+    boolean isGlobalScoped();
 }

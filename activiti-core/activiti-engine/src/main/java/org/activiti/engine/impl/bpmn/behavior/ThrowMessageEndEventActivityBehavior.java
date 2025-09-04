@@ -27,17 +27,17 @@ public class ThrowMessageEndEventActivityBehavior extends AbstractThrowMessageEv
 
     private final EndEvent endEvent;
 
-    public ThrowMessageEndEventActivityBehavior(EndEvent endEvent,
-                                                MessageEventDefinition messageEventDefinition,
-                                                ThrowMessageDelegate delegate,
-                                                MessageExecutionContext messageExecutionContext) {
+    public ThrowMessageEndEventActivityBehavior(
+        EndEvent endEvent,
+        MessageEventDefinition messageEventDefinition,
+        ThrowMessageDelegate delegate,
+        MessageExecutionContext messageExecutionContext
+    ) {
         super(messageEventDefinition, delegate, messageExecutionContext);
-
         this.endEvent = endEvent;
     }
 
     public EndEvent getEndEvent() {
         return endEvent;
     }
-
 }

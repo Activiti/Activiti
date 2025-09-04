@@ -15,6 +15,9 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+
 import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
 import org.activiti.api.runtime.model.impl.BPMNSignalImpl;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -25,9 +28,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class ToSignalReceivedConverterTest {
@@ -48,7 +48,6 @@ public class ToSignalReceivedConverterTest {
         BPMNSignalImpl bpmnSignal = new BPMNSignalImpl();
         given(toSignalConverter.from(internalEvent)).willReturn(bpmnSignal);
 
-
         //when
         BPMNSignalReceivedEvent bpmnSignalReceivedEvent = toSignalReceivedConverter.from(internalEvent).orElse(null);
 
@@ -57,6 +56,5 @@ public class ToSignalReceivedConverterTest {
         assertThat(bpmnSignalReceivedEvent.getEntity()).isEqualTo(bpmnSignal);
         assertThat(bpmnSignalReceivedEvent.getProcessDefinitionId()).isEqualTo("procDefId");
         assertThat(bpmnSignalReceivedEvent.getProcessInstanceId()).isEqualTo("procInstId");
-
     }
 }

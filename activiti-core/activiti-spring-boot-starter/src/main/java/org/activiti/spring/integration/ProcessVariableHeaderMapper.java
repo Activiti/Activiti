@@ -16,13 +16,12 @@
 
 package org.activiti.spring.integration;
 
-import org.springframework.integration.mapping.HeaderMapper;
-import org.springframework.messaging.MessageHeaders;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
+import org.springframework.integration.mapping.HeaderMapper;
+import org.springframework.messaging.MessageHeaders;
 
 /**
 
@@ -43,20 +42,12 @@ public class ProcessVariableHeaderMapper implements HeaderMapper<Map<String, Obj
 
     @Override
     public Map<String, Object> toHeaders(Map<String, Object> source) {
-        Map<String, Object> matches = sync(
-                this.keysToPreserve,
-                source,
-                new HashMap<String, Object>());
+        Map<String, Object> matches = sync(this.keysToPreserve, source, new HashMap<String, Object>());
         return matches;
     }
 
-    private static Map<String, Object> sync(
-            Set<String> keys,
-            Map<String, Object> in,
-            Map<String, Object> out) {
-        for (String k : keys)
-            if (in.containsKey(k))
-                out.put(k, in.get(k));
+    private static Map<String, Object> sync(Set<String> keys, Map<String, Object> in, Map<String, Object> out) {
+        for (String k : keys) if (in.containsKey(k)) out.put(k, in.get(k));
         return out;
     }
 }

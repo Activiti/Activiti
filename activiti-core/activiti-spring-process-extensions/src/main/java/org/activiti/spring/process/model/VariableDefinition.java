@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.process.model;
 
 public class VariableDefinition extends org.activiti.core.common.model.connector.VariableDefinition {
 
     private Object value;
 
-    public VariableDefinition(){}
+    public VariableDefinition() {}
+
     public VariableDefinition(String type, Object value) {
         super();
         this.setType(type);
@@ -31,6 +31,7 @@ public class VariableDefinition extends org.activiti.core.common.model.connector
     public Object getValue() {
         return value;
     }
+
     public void setValue(Object value) {
         this.value = value;
     }

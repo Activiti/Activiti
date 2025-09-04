@@ -18,10 +18,9 @@ package org.activiti.api.process.model.events;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.ProcessInstance;
 
-public interface ProcessRuntimeEvent<T extends ProcessInstance> extends RuntimeEvent<T, ProcessRuntimeEvent.ProcessEvents> {
-
+public interface ProcessRuntimeEvent<T extends ProcessInstance>
+    extends RuntimeEvent<T, ProcessRuntimeEvent.ProcessEvents> {
     enum ProcessEvents {
-
         PROCESS_CREATED,
 
         PROCESS_STARTED,
@@ -36,7 +35,6 @@ public interface ProcessRuntimeEvent<T extends ProcessInstance> extends RuntimeE
 
         PROCESS_UPDATED,
 
-        PROCESS_DELETED
+        PROCESS_DELETED,
     }
-
 }

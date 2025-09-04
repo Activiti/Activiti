@@ -35,8 +35,9 @@ public class BpmnXMLConverterTest {
     @Test
     public void should_createSchema_when_pathContainsDecodedUTF8Characters() throws Exception {
         assertThatCode(() -> {
-            bpmnXMLConverter.createSchema(factory, getDecodedUrl("你好/Main.xsd"));
-        }).doesNotThrowAnyException();
+                bpmnXMLConverter.createSchema(factory, getDecodedUrl("你好/Main.xsd"));
+            })
+            .doesNotThrowAnyException();
     }
 
     private URL getDecodedUrl(String path) throws MalformedURLException {
@@ -47,9 +48,10 @@ public class BpmnXMLConverterTest {
 
     @Test
     public void should_createSchema() throws Exception {
-        Schema schema = bpmnXMLConverter.createSchema(factory, getClass().getClassLoader()
-                .getResource("org/activiti/impl/bpmn/parser/BPMN20.xsd"));
+        Schema schema = bpmnXMLConverter.createSchema(
+            factory,
+            getClass().getClassLoader().getResource("org/activiti/impl/bpmn/parser/BPMN20.xsd")
+        );
         assertThat(schema).isNotNull();
     }
-
 }

@@ -29,7 +29,6 @@ public class BPMNErrorConverterTest {
 
     @Test
     public void convertShouldReturnBPMNError() {
-
         ActivitiErrorEvent internalEvent = mock(ActivitiErrorEvent.class);
         given(internalEvent.getErrorId()).willReturn("errorId");
         given(internalEvent.getErrorCode()).willReturn("errorCode");
@@ -49,5 +48,4 @@ public class BPMNErrorConverterTest {
         assertThat(bpmnError.getActivityName()).isEqualTo("activityName");
         assertThat(bpmnError.getActivityType()).isEqualTo("activityType");
     }
-
 }

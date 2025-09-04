@@ -26,12 +26,12 @@ public class LoopCardinalityParser implements ElementParser<MultiInstanceLoopCha
 
     @Override
     public boolean canParseCurrentElement(XMLStreamReader reader) {
-        return reader.isStartElement() && ELEMENT_MULTIINSTANCE_CARDINALITY.equalsIgnoreCase(reader.getLocalName());
+        return (reader.isStartElement() && ELEMENT_MULTIINSTANCE_CARDINALITY.equalsIgnoreCase(reader.getLocalName()));
     }
 
     @Override
-    public void setInformation(XMLStreamReader reader,
-        MultiInstanceLoopCharacteristics loopCharacteristics) throws XMLStreamException {
+    public void setInformation(XMLStreamReader reader, MultiInstanceLoopCharacteristics loopCharacteristics)
+        throws XMLStreamException {
         loopCharacteristics.setLoopCardinality(reader.getElementText());
     }
 }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.test.transaction;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
 import javax.sql.DataSource;
-
 import org.activiti.bpmn.exceptions.XMLException;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -43,12 +41,10 @@ public class SpringTransactionIntegrationTest extends SpringActivitiTestCase {
     @Autowired
     protected DataSource dataSource;
 
-
     private void cleanUp() {
         List<org.activiti.engine.repository.Deployment> deployments = repositoryService.createDeploymentQuery().list();
         for (org.activiti.engine.repository.Deployment deployment : deployments) {
-            repositoryService.deleteDeployment(deployment.getId(),
-                true);
+            repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
 
@@ -67,7 +63,6 @@ public class SpringTransactionIntegrationTest extends SpringActivitiTestCase {
 
     @Deployment
     public void testRollbackTransactionOnActivitiException() {
-
         // Create a table that the userBean is supposed to fill with some data
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         jdbcTemplate.execute("create table MY_TABLE (MY_TEXT varchar);");
@@ -94,10 +89,8 @@ public class SpringTransactionIntegrationTest extends SpringActivitiTestCase {
     public void testRollBackOnDeployment() {
         // The second process should fail. None of the processes should be deployed, the first one should be rolled back
         assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(0);
-        assertThatExceptionOfType(XMLException.class)
-            .isThrownBy(() -> deployBean.deployProcesses());
+        assertThatExceptionOfType(XMLException.class).isThrownBy(() -> deployBean.deployProcesses());
 
         assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(0);
     }
-
 }

@@ -15,6 +15,4 @@
  */
 package org.activiti.api.model.shared.event;
 
-public interface VariableCreatedEvent extends VariableEvent {
-
-}
+public interface VariableCreatedEvent extends VariableEvent {}

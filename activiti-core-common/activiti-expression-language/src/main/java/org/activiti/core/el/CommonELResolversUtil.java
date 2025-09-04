@@ -50,5 +50,4 @@ public final class CommonELResolversUtil {
     public static ELResolver beanResolver() {
         return new ELResolverReflectionBlockerDecorator(new BeanELResolver());
     }
-
 }

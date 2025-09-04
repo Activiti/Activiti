@@ -15,16 +15,15 @@
  */
 package org.activiti.bpmn.model;
 
-import org.junit.Before;
-import org.junit.Test;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Before;
+import org.junit.Test;
 
 public class BaseElementTest {
 
@@ -32,17 +31,17 @@ public class BaseElementTest {
 
     @Before
     public void setUp() {
-        this.baseElement = new BaseElement() {
-            @Override
-            public BaseElement clone() {
-                return null;
-            }
-        };
+        this.baseElement =
+            new BaseElement() {
+                @Override
+                public BaseElement clone() {
+                    return null;
+                }
+            };
     }
 
     @Test
     public void testAddExtensionElement() {
-
         //Given
         ExtensionElement successExtensionElement = new ExtensionElement();
         successExtensionElement.setName("success");
@@ -59,9 +58,8 @@ public class BaseElementTest {
         assertThat(baseElement.getExtensionElements()).hasSize(1);
 
         assertThat(baseElement.getExtensionElements().get("success"))
-                .isNotNull()
-                .containsExactly(successExtensionElement);
-
+            .isNotNull()
+            .containsExactly(successExtensionElement);
     }
 
     @Test
@@ -74,12 +72,9 @@ public class BaseElementTest {
 
         ExtensionAttribute extensionAttributeThree = createExtensionAttribute("attrThree", "attrValueTwo");
 
-
-        baseElement.getAttributes().put("attributeOne", asList(
-                extensionAttributeOne,
-                extensionAttributeTwo,
-                extensionAttributeThree
-        ));
+        baseElement
+            .getAttributes()
+            .put("attributeOne", asList(extensionAttributeOne, extensionAttributeTwo, extensionAttributeThree));
 
         //When
         String successValue = baseElement.getAttributeValue("namespace", "attributeOne");
@@ -94,7 +89,6 @@ public class BaseElementTest {
 
     @Test
     public void testAddAttribute() {
-
         //Given
         ExtensionAttribute attributeOne = createExtensionAttribute("attr", "valueOne");
 
@@ -110,7 +104,6 @@ public class BaseElementTest {
         assertThat(baseElement.getAttributes().get("attr")).hasSize(2).containsExactly(attributeOne, attributeTwo);
         assertThat(baseElement.getAttributes()).hasSize(1);
     }
-
 
     @Test
     public void testSetValues() {
@@ -131,7 +124,9 @@ public class BaseElementTest {
         assertThat(extensionElementOne.getName()).isEqualTo("elementOne");
         assertThat(extensionElementOne.getAttributes()).hasSize(1);
 
-        List<ExtensionAttribute> nestedAttributesInElementOne = extensionElementOne.getAttributes().get("attrOneElementOne");
+        List<ExtensionAttribute> nestedAttributesInElementOne = extensionElementOne
+            .getAttributes()
+            .get("attrOneElementOne");
         assertThat(nestedAttributesInElementOne).hasSize(1);
         assertThat(nestedAttributesInElementOne.get(0).getName()).isEqualTo("attrOneElementOne");
         assertThat(nestedAttributesInElementOne.get(0).getValue()).isEqualTo("attrOneElementOneValue");
@@ -150,12 +145,14 @@ public class BaseElementTest {
 
         baseElement.setId("otherBaseElementId");
 
-        ExtensionAttribute extensionAttributeElementOne =
-                createExtensionAttribute("attrOneElementOne", "attrOneElementOneValue");
+        ExtensionAttribute extensionAttributeElementOne = createExtensionAttribute(
+            "attrOneElementOne",
+            "attrOneElementOneValue"
+        );
 
         ExtensionElement extensionElementOne = createExtensionElement(
-                "elementOne",
-                singletonList(extensionAttributeElementOne)
+            "elementOne",
+            singletonList(extensionAttributeElementOne)
         );
 
         ExtensionAttribute extensionAttributeOne = createExtensionAttribute("attrOne", "prefix", "attrValueOne");
@@ -169,7 +166,10 @@ public class BaseElementTest {
         ExtensionElement extensionElement = new ExtensionElement();
         extensionElement.setName(name);
         extensionElement.setNamespace("namespace");
-        Optional.ofNullable(extensionAttributes).orElse(Collections.emptyList()).forEach(extensionElement::addAttribute);
+        Optional
+            .ofNullable(extensionAttributes)
+            .orElse(Collections.emptyList())
+            .forEach(extensionElement::addAttribute);
         return extensionElement;
     }
 
@@ -185,5 +185,4 @@ public class BaseElementTest {
         extensionAttributeOne.setValue(value);
         return extensionAttributeOne;
     }
-
 }

@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.core.io.Resource;
 
 public class ApplicationService {
@@ -27,8 +26,7 @@ public class ApplicationService {
     private ApplicationDiscovery applicationDiscovery;
     private ApplicationReader applicationReader;
 
-    public ApplicationService(ApplicationDiscovery applicationDiscovery,
-                              ApplicationReader applicationReader) {
+    public ApplicationService(ApplicationDiscovery applicationDiscovery, ApplicationReader applicationReader) {
         this.applicationDiscovery = applicationDiscovery;
         this.applicationReader = applicationReader;
     }
@@ -47,5 +45,4 @@ public class ApplicationService {
         }
         return applications;
     }
-
 }

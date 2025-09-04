@@ -29,10 +29,10 @@ public class DeployedApplicationListener implements ProcessRuntimeEventListener<
 
     @Override
     public void onEvent(ApplicationDeployedEvent event) {
-            deployedApplications.add(event.getEntity());
+        deployedApplications.add(event.getEntity());
     }
 
     public List<Deployment> getDeployedApplication() {
-            return deployedApplications;
+        return deployedApplications;
     }
 }

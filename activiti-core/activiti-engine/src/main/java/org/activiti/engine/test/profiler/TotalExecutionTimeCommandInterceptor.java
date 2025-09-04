@@ -34,7 +34,6 @@ public class TotalExecutionTimeCommandInterceptor extends AbstractCommandInterce
         ProfileSession currentProfileSession = activitiProfiler.getCurrentProfileSession();
 
         if (currentProfileSession != null) {
-
             String className = command.getClass().getName();
             CommandExecutionResult commandExecutionResult = new CommandExecutionResult();
             currentProfileSession.setCurrentCommandExecution(commandExecutionResult);
@@ -51,11 +50,8 @@ public class TotalExecutionTimeCommandInterceptor extends AbstractCommandInterce
             currentProfileSession.clearCurrentCommandExecution();
 
             return result;
-
         } else {
             return next.execute(config, command);
         }
-
     }
-
 }

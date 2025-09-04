@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.process;
 
 import java.util.List;
@@ -34,9 +33,11 @@ public class ProcessExtensionRepositoryImpl implements ProcessExtensionRepositor
     private final ProcessExtensionResourceReader processExtensionReader;
     private final RepositoryService repositoryService;
 
-    public ProcessExtensionRepositoryImpl(DeploymentResourceLoader<ProcessExtensionModel> processExtensionLoader,
-        ProcessExtensionResourceReader processExtensionReader, RepositoryService repositoryService) {
-
+    public ProcessExtensionRepositoryImpl(
+        DeploymentResourceLoader<ProcessExtensionModel> processExtensionLoader,
+        ProcessExtensionResourceReader processExtensionReader,
+        RepositoryService repositoryService
+    ) {
         this.processExtensionLoader = processExtensionLoader;
         this.processExtensionReader = processExtensionReader;
         this.repositoryService = repositoryService;
@@ -44,20 +45,25 @@ public class ProcessExtensionRepositoryImpl implements ProcessExtensionRepositor
 
     @Override
     public Optional<Extension> getExtensionsForId(@NonNull String processDefinitionId) {
-        return Optional.of(processDefinitionId)
+        return Optional
+            .of(processDefinitionId)
             .map(repositoryService::getProcessDefinition)
             .map(this::getExtensionsFor);
     }
 
     private Extension getExtensionsFor(ProcessDefinition processDefinition) {
-        Map<String, Extension> processExtensionModelMap = getProcessExtensionsForDeploymentId(processDefinition.getDeploymentId());
+        Map<String, Extension> processExtensionModelMap = getProcessExtensionsForDeploymentId(
+            processDefinition.getDeploymentId()
+        );
 
         return processExtensionModelMap.get(processDefinition.getKey());
     }
 
     private Map<String, Extension> getProcessExtensionsForDeploymentId(String deploymentId) {
-        List<ProcessExtensionModel> processExtensionModels = processExtensionLoader.loadResourcesForDeployment(deploymentId,
-                processExtensionReader);
+        List<ProcessExtensionModel> processExtensionModels = processExtensionLoader.loadResourcesForDeployment(
+            deploymentId,
+            processExtensionReader
+        );
 
         return processExtensionModels
             .stream()

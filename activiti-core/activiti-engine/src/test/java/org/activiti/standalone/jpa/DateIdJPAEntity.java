@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.jpa;
 
 import jakarta.persistence.Column;
@@ -30,17 +29,16 @@ import java.util.Date;
 @Entity(name = "DATE_ID_ENTITY")
 public class DateIdJPAEntity {
 
-  @Id
-  @Column(name = "ID_")
-  @Temporal(TemporalType.DATE)
-  private Date dateId;
+    @Id
+    @Column(name = "ID_")
+    @Temporal(TemporalType.DATE)
+    private Date dateId;
 
-  public Date getDateId() {
-    return dateId;
-  }
+    public Date getDateId() {
+        return dateId;
+    }
 
-  public void setDateId(Date dateId) {
-    this.dateId = dateId;
-  }
-
+    public void setDateId(Date dateId) {
+        this.dateId = dateId;
+    }
 }

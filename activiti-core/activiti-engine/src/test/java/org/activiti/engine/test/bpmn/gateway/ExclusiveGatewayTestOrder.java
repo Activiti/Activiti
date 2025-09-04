@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.gateway;
 
 import java.io.Serializable;
@@ -24,32 +23,31 @@ import java.io.Serializable;
  */
 public class ExclusiveGatewayTestOrder implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private int price;
+    private int price;
 
-  public ExclusiveGatewayTestOrder(int price) {
-    this.price = price;
-  }
+    public ExclusiveGatewayTestOrder(int price) {
+        this.price = price;
+    }
 
-  public void setPrice(int price) {
-    this.price = price;
-  }
+    public void setPrice(int price) {
+        this.price = price;
+    }
 
-  public int getPrice() {
-    return price;
-  }
+    public int getPrice() {
+        return price;
+    }
 
-  public boolean isBasic() {
-    return price <= 100;
-  }
+    public boolean isBasic() {
+        return price <= 100;
+    }
 
-  public boolean isStandard() {
-    return price > 100 && price < 250;
-  }
+    public boolean isStandard() {
+        return price > 100 && price < 250;
+    }
 
-  public boolean isGold() {
-    return price >= 250;
-  }
-
+    public boolean isGold() {
+        return price >= 250;
+    }
 }

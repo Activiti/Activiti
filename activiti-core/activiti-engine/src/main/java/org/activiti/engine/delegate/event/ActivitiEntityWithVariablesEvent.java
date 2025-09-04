@@ -24,12 +24,11 @@ import java.util.Map;
 
  */
 public interface ActivitiEntityWithVariablesEvent extends ActivitiEntityEvent {
+    /**
+     * @return the variables created together with the entity.
+     */
+    @SuppressWarnings("rawtypes")
+    Map getVariables();
 
-  /**
-   * @return the variables created together with the entity.
-   */
-  @SuppressWarnings("rawtypes")
-  Map getVariables();
-
-  boolean isLocalScope();
+    boolean isLocalScope();
 }

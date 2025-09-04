@@ -16,7 +16,6 @@
 package org.activiti.api.task.model.payloads;
 
 import java.util.UUID;
-
 import org.activiti.api.model.shared.Payload;
 
 public class DeleteTaskPayload implements Payload {
@@ -29,8 +28,7 @@ public class DeleteTaskPayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public DeleteTaskPayload(String taskId,
-                             String reason) {
+    public DeleteTaskPayload(String taskId, String reason) {
         this();
         this.taskId = taskId;
         this.reason = reason;

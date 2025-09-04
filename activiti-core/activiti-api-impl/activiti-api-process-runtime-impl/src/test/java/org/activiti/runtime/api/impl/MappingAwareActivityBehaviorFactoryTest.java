@@ -30,25 +30,24 @@ public class MappingAwareActivityBehaviorFactoryTest {
     @Test
     public void createUserTaskActivityBehaviorShouldReturnMappingAwareUserTaskBehavior() {
         assertThat(factory.createUserTaskActivityBehavior(mock(UserTask.class)))
-                .isInstanceOf(MappingAwareUserTaskBehavior.class);
+            .isInstanceOf(MappingAwareUserTaskBehavior.class);
     }
 
     @Test
     public void createCallActivityBehaviorShouldReturnMappingAwareCallActivityBehavior() {
         assertThat(factory.createCallActivityBehavior("element", emptyList()))
-                .isInstanceOf(MappingAwareCallActivityBehavior.class);
+            .isInstanceOf(MappingAwareCallActivityBehavior.class);
     }
 
     @Test
     public void createCallActivityBehaviorWithExpressionShouldReturnMappingAwareCallActivityBehavior() {
         assertThat(factory.createCallActivityBehavior(mock(Expression.class), emptyList()))
-                .isInstanceOf(MappingAwareCallActivityBehavior.class);
+            .isInstanceOf(MappingAwareCallActivityBehavior.class);
     }
 
     @Test
     public void getMessagePayloadMappingProviderFactoryShouldReturnJsonMessagePayloadMappingProvider() {
         assertThat(factory.getMessagePayloadMappingProviderFactory())
-                .isInstanceOf(JsonMessagePayloadMappingProviderFactory.class);
+            .isInstanceOf(JsonMessagePayloadMappingProviderFactory.class);
     }
-
 }

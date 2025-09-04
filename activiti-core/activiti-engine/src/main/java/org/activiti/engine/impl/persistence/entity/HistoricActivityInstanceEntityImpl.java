@@ -14,121 +14,126 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.ProcessEngineConfiguration;
 
 /**
 
 
  */
-public class HistoricActivityInstanceEntityImpl extends HistoricScopeInstanceEntityImpl implements HistoricActivityInstanceEntity {
+public class HistoricActivityInstanceEntityImpl
+    extends HistoricScopeInstanceEntityImpl
+    implements HistoricActivityInstanceEntity {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String activityId;
-  protected String activityName;
-  protected String activityType;
-  protected String executionId;
-  protected String assignee;
-  protected String taskId;
-  protected String calledProcessInstanceId;
-  protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
+    protected String activityId;
+    protected String activityName;
+    protected String activityType;
+    protected String executionId;
+    protected String assignee;
+    protected String taskId;
+    protected String calledProcessInstanceId;
+    protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
 
-  public HistoricActivityInstanceEntityImpl() {
+    public HistoricActivityInstanceEntityImpl() {}
 
-  }
+    public Object getPersistentState() {
+        Map<String, Object> persistentState = (Map<String, Object>) new HashMap<String, Object>();
+        persistentState.put("endTime", endTime);
+        persistentState.put("durationInMillis", durationInMillis);
+        persistentState.put("deleteReason", deleteReason);
+        persistentState.put("executionId", executionId);
+        persistentState.put("assignee", assignee);
+        return persistentState;
+    }
 
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = (Map<String, Object>) new HashMap<String, Object>();
-    persistentState.put("endTime", endTime);
-    persistentState.put("durationInMillis", durationInMillis);
-    persistentState.put("deleteReason", deleteReason);
-    persistentState.put("executionId", executionId);
-    persistentState.put("assignee", assignee);
-    return persistentState;
-  }
+    // getters and setters //////////////////////////////////////////////////////
 
-  // getters and setters //////////////////////////////////////////////////////
+    public String getActivityId() {
+        return activityId;
+    }
 
-  public String getActivityId() {
-    return activityId;
-  }
+    public void setActivityId(String activityId) {
+        this.activityId = activityId;
+    }
 
-  public void setActivityId(String activityId) {
-    this.activityId = activityId;
-  }
+    public String getActivityName() {
+        return activityName;
+    }
 
-  public String getActivityName() {
-    return activityName;
-  }
+    public void setActivityName(String activityName) {
+        this.activityName = activityName;
+    }
 
-  public void setActivityName(String activityName) {
-    this.activityName = activityName;
-  }
+    public String getActivityType() {
+        return activityType;
+    }
 
-  public String getActivityType() {
-    return activityType;
-  }
+    public void setActivityType(String activityType) {
+        this.activityType = activityType;
+    }
 
-  public void setActivityType(String activityType) {
-    this.activityType = activityType;
-  }
+    public String getExecutionId() {
+        return executionId;
+    }
 
-  public String getExecutionId() {
-    return executionId;
-  }
+    public void setExecutionId(String executionId) {
+        this.executionId = executionId;
+    }
 
-  public void setExecutionId(String executionId) {
-    this.executionId = executionId;
-  }
+    public String getAssignee() {
+        return assignee;
+    }
 
-  public String getAssignee() {
-    return assignee;
-  }
+    public void setAssignee(String assignee) {
+        this.assignee = assignee;
+    }
 
-  public void setAssignee(String assignee) {
-    this.assignee = assignee;
-  }
+    public String getTaskId() {
+        return taskId;
+    }
 
-  public String getTaskId() {
-    return taskId;
-  }
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
 
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
-  }
+    public String getCalledProcessInstanceId() {
+        return calledProcessInstanceId;
+    }
 
-  public String getCalledProcessInstanceId() {
-    return calledProcessInstanceId;
-  }
+    public void setCalledProcessInstanceId(String calledProcessInstanceId) {
+        this.calledProcessInstanceId = calledProcessInstanceId;
+    }
 
-  public void setCalledProcessInstanceId(String calledProcessInstanceId) {
-    this.calledProcessInstanceId = calledProcessInstanceId;
-  }
+    public String getTenantId() {
+        return tenantId;
+    }
 
-  public String getTenantId() {
-    return tenantId;
-  }
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
 
-  public void setTenantId(String tenantId) {
-    this.tenantId = tenantId;
-  }
+    public Date getTime() {
+        return getStartTime();
+    }
 
-  public Date getTime() {
-    return getStartTime();
-  }
+    // common methods //////////////////////////////////////////////////////////
 
-  // common methods //////////////////////////////////////////////////////////
-
-  @Override
-  public String toString() {
-    return "HistoricActivityInstanceEntity[id=" + id + ", activityId=" + activityId + ", activityName=" + activityName + "]";
-  }
-
+    @Override
+    public String toString() {
+        return (
+            "HistoricActivityInstanceEntity[id=" +
+            id +
+            ", activityId=" +
+            activityId +
+            ", activityName=" +
+            activityName +
+            "]"
+        );
+    }
 }

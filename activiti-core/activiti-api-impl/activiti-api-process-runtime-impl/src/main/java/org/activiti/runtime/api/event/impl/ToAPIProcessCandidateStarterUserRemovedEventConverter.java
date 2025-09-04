@@ -15,15 +15,15 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import java.util.Optional;
 import org.activiti.api.process.runtime.events.ProcessCandidateStarterUserRemovedEvent;
 import org.activiti.api.runtime.event.impl.ProcessCandidateStarterUserRemovedEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.runtime.api.model.impl.APIProcessCandidateStarterUserConverter;
 
-import java.util.Optional;
-
-public class ToAPIProcessCandidateStarterUserRemovedEventConverter implements EventConverter<ProcessCandidateStarterUserRemovedEvent, ActivitiEntityEvent> {
+public class ToAPIProcessCandidateStarterUserRemovedEventConverter
+    implements EventConverter<ProcessCandidateStarterUserRemovedEvent, ActivitiEntityEvent> {
 
     private APIProcessCandidateStarterUserConverter converter;
     private ProcessCandidateStarterEventConverterHelper processCandidateStarterEventConverterHelper = new ProcessCandidateStarterEventConverterHelper();
@@ -43,5 +43,4 @@ public class ToAPIProcessCandidateStarterUserRemovedEventConverter implements Ev
         }
         return Optional.ofNullable(event);
     }
-
 }

@@ -36,12 +36,7 @@ public class AstFunction extends AstRightValue implements FunctionNode {
         this(name, index, params, false);
     }
 
-    public AstFunction(
-        String name,
-        int index,
-        AstParameters params,
-        boolean varargs
-    ) {
+    public AstFunction(String name, int index, AstParameters params, boolean varargs) {
         this.name = name;
         this.index = index;
         this.params = params;
@@ -58,12 +53,8 @@ public class AstFunction extends AstRightValue implements FunctionNode {
      * @throws InvocationTargetException
      * @throws IllegalAccessException
      */
-    protected Object invoke(
-        Bindings bindings,
-        ELContext context,
-        Object base,
-        Method method
-    ) throws InvocationTargetException, IllegalAccessException {
+    protected Object invoke(Bindings bindings, ELContext context, Object base, Method method)
+        throws InvocationTargetException, IllegalAccessException {
         Class<?>[] types = method.getParameterTypes();
         Object[] params = null;
         if (types.length > 0) {
@@ -80,8 +71,7 @@ public class AstFunction extends AstRightValue implements FunctionNode {
                 int length = getParamCount() - varargIndex;
                 Object array = null;
                 if (length == 1) { // special: eventually use argument as is
-                    Object param = getParam(varargIndex)
-                        .eval(bindings, context);
+                    Object param = getParam(varargIndex).eval(bindings, context);
                     if (param != null && param.getClass().isArray()) {
                         if (types[varargIndex].isInstance(param)) {
                             array = param;
@@ -91,35 +81,22 @@ public class AstFunction extends AstRightValue implements FunctionNode {
                             for (int i = 0; i < length; i++) {
                                 Object elem = Array.get(param, i);
                                 if (elem != null || varargType.isPrimitive()) {
-                                    Array.set(
-                                        array,
-                                        i,
-                                        bindings.convert(elem, varargType)
-                                    );
+                                    Array.set(array, i, bindings.convert(elem, varargType));
                                 }
                             }
                         }
                     } else { // single element array
                         array = Array.newInstance(varargType, 1);
                         if (param != null || varargType.isPrimitive()) {
-                            Array.set(
-                                array,
-                                0,
-                                bindings.convert(param, varargType)
-                            );
+                            Array.set(array, 0, bindings.convert(param, varargType));
                         }
                     }
                 } else {
                     array = Array.newInstance(varargType, length);
                     for (int i = 0; i < length; i++) {
-                        Object param = getParam(varargIndex + i)
-                            .eval(bindings, context);
+                        Object param = getParam(varargIndex + i).eval(bindings, context);
                         if (param != null || varargType.isPrimitive()) {
-                            Array.set(
-                                array,
-                                i,
-                                bindings.convert(param, varargType)
-                            );
+                            Array.set(array, i, bindings.convert(param, varargType));
                         }
                     }
                 }
@@ -142,15 +119,9 @@ public class AstFunction extends AstRightValue implements FunctionNode {
         try {
             return invoke(bindings, context, null, method);
         } catch (IllegalAccessException e) {
-            throw new ELException(
-                LocalMessages.get("error.function.access", name),
-                e
-            );
+            throw new ELException(LocalMessages.get("error.function.access", name), e);
         } catch (InvocationTargetException e) {
-            throw new ELException(
-                LocalMessages.get("error.function.invocation", name),
-                e.getCause()
-            );
+            throw new ELException(LocalMessages.get("error.function.invocation", name), e.getCause());
         }
     }
 
@@ -161,9 +132,7 @@ public class AstFunction extends AstRightValue implements FunctionNode {
 
     @Override
     public void appendStructure(StringBuilder b, Bindings bindings) {
-        b.append(
-            bindings != null && bindings.isFunctionBound(index) ? "<fn>" : name
-        );
+        b.append(bindings != null && bindings.isFunctionBound(index) ? "<fn>" : name);
         params.appendStructure(b, bindings);
     }
 

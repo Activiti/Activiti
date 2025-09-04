@@ -16,7 +16,5 @@
 package org.activiti.api.task.model;
 
 public interface TaskCandidateGroup extends TaskCandidate {
-
     String getGroupId();
-
 }

@@ -26,12 +26,12 @@ public class LoopDataOutputRefParser implements ElementParser<MultiInstanceLoopC
 
     @Override
     public boolean canParseCurrentElement(XMLStreamReader reader) {
-        return reader.isStartElement() && ELEMENT_MULTI_INSTANCE_DATA_OUTPUT.equalsIgnoreCase(reader.getLocalName());
+        return (reader.isStartElement() && ELEMENT_MULTI_INSTANCE_DATA_OUTPUT.equalsIgnoreCase(reader.getLocalName()));
     }
 
     @Override
-    public void setInformation(XMLStreamReader reader,
-        MultiInstanceLoopCharacteristics loopCharacteristics) throws XMLStreamException {
+    public void setInformation(XMLStreamReader reader, MultiInstanceLoopCharacteristics loopCharacteristics)
+        throws XMLStreamException {
         loopCharacteristics.setLoopDataOutputRef(reader.getElementText());
     }
 }
