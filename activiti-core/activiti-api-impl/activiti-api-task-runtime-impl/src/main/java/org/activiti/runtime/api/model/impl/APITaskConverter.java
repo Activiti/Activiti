@@ -58,6 +58,7 @@ public class APITaskConverter extends ListConverter<org.activiti.engine.task.Tas
             internalTask.getName(),
             status);
         task.setProcessDefinitionId(internalTask.getProcessDefinitionId());
+        task.setTaskProcessRootProcessInstanceId(internalTask.getTaskProcessRootProcessInstanceId());
         task.setProcessInstanceId(internalTask.getProcessInstanceId());
         task.setAssignee(internalTask.getAssignee());
         task.setClaimedDate(internalTask.getClaimTime());
@@ -89,7 +90,6 @@ public class APITaskConverter extends ListConverter<org.activiti.engine.task.Tas
         task.setCompletedBy(completedBy);
 
         return task;
-
     }
 
     private void extractCandidateUsersAndGroups(org.activiti.engine.task.Task source, TaskImpl destination) {

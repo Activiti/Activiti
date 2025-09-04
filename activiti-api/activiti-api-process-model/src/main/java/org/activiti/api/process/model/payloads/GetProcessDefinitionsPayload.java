@@ -26,6 +26,7 @@ public class GetProcessDefinitionsPayload implements Payload {
     private String processDefinitionId;
     private Set<String> processDefinitionKeys;
     private String processCategoryToExclude;
+    private boolean latestVersionOnly;
 
     public GetProcessDefinitionsPayload() {
         this.id = UUID.randomUUID().toString();
@@ -45,6 +46,17 @@ public class GetProcessDefinitionsPayload implements Payload {
         this.processDefinitionId = processDefinitionId;
         this.processDefinitionKeys = processDefinitionKeys;
         this.processCategoryToExclude = processCategoryToExclude;
+    }
+
+    public GetProcessDefinitionsPayload(String processDefinitionId,
+                                        Set<String> processDefinitionKeys,
+                                        String processCategoryToExclude,
+                                        boolean latestVersionOnly) {
+        this();
+        this.processDefinitionId = processDefinitionId;
+        this.processDefinitionKeys = processDefinitionKeys;
+        this.processCategoryToExclude = processCategoryToExclude;
+        this.latestVersionOnly = latestVersionOnly;
     }
 
     @Override
@@ -70,5 +82,13 @@ public class GetProcessDefinitionsPayload implements Payload {
 
     public String getProcessCategoryToExclude() {
         return processCategoryToExclude;
+    }
+
+    public boolean isLatestVersionOnly() {
+        return latestVersionOnly;
+    }
+
+    public void setLatestVersionOnly(boolean latestVersionOnly) {
+        this.latestVersionOnly = latestVersionOnly;
     }
 }
