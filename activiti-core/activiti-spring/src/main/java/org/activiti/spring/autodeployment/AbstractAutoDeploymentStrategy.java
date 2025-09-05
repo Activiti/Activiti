@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.autodeployment;
 
 import java.io.IOException;
 import java.util.List;
-
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
@@ -70,10 +68,8 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
 
         if (resource instanceof ContextResource) {
             resourceName = ((ContextResource) resource).getPathWithinContext();
-
         } else if (resource instanceof ByteArrayResource) {
             resourceName = resource.getDescription();
-
         } else {
             try {
                 resourceName = resource.getFile().getAbsolutePath();
@@ -85,44 +81,47 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
     }
 
     protected boolean validateModel(Resource resource, final RepositoryService repositoryService) {
-
         String resourceName = determineResourceName(resource);
 
         if (isProcessDefinitionResource(resourceName)) {
-        try {
-            BpmnXMLConverter converter = new BpmnXMLConverter();
-            BpmnModel bpmnModel = converter.convertToBpmnModel(new InputStreamSource(resource.getInputStream()), true,
-                    false);
-            List<ValidationError> validationErrors = repositoryService.validateProcess(bpmnModel);
-            if ( validationErrors != null && !validationErrors.isEmpty() ) {
-                StringBuilder warningBuilder = new StringBuilder();
-                StringBuilder errorBuilder = new StringBuilder();
+            try {
+                BpmnXMLConverter converter = new BpmnXMLConverter();
+                BpmnModel bpmnModel = converter.convertToBpmnModel(
+                    new InputStreamSource(resource.getInputStream()),
+                    true,
+                    false
+                );
+                List<ValidationError> validationErrors = repositoryService.validateProcess(bpmnModel);
+                if (validationErrors != null && !validationErrors.isEmpty()) {
+                    StringBuilder warningBuilder = new StringBuilder();
+                    StringBuilder errorBuilder = new StringBuilder();
 
-                for (ValidationError error : validationErrors) {
-                    if ( error.isWarning() ) {
-                        warningBuilder.append(error.toString());
-                        warningBuilder.append("\n");
-                    } else {
-                        errorBuilder.append(error.toString());
-                        errorBuilder.append("\n");
-                    }
+                    for (ValidationError error : validationErrors) {
+                        if (error.isWarning()) {
+                            warningBuilder.append(error.toString());
+                            warningBuilder.append("\n");
+                        } else {
+                            errorBuilder.append(error.toString());
+                            errorBuilder.append("\n");
+                        }
 
-                    // Write out warnings (if any)
-                    if ( warningBuilder.length() > 0 ) {
-                        LOGGER.warn("Following warnings encountered during process validation: "
-                                + warningBuilder.toString());
-                    }
+                        // Write out warnings (if any)
+                        if (warningBuilder.length() > 0) {
+                            LOGGER.warn(
+                                "Following warnings encountered during process validation: " + warningBuilder.toString()
+                            );
+                        }
 
-                    if ( errorBuilder.length() > 0 ) {
-                        LOGGER.error("Errors while parsing:\n" + errorBuilder.toString());
-                        return false;
+                        if (errorBuilder.length() > 0) {
+                            LOGGER.error("Errors while parsing:\n" + errorBuilder.toString());
+                            return false;
+                        }
                     }
                 }
+            } catch (Exception e) {
+                LOGGER.error("Error parsing XML", e);
+                return false;
             }
-        } catch ( Exception e ) {
-            LOGGER.error("Error parsing XML", e);
-            return false;
-        }
         }
         return true;
     }
@@ -132,7 +131,7 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
     }
 
     protected DeploymentBuilder loadApplicationUpgradeContext(DeploymentBuilder deploymentBuilder) {
-        if(applicationUpgradeContextService != null){
+        if (applicationUpgradeContextService != null) {
             loadProjectManifest(deploymentBuilder);
             loadEnforcedAppVersion(deploymentBuilder);
         }
@@ -144,7 +143,9 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
             try {
                 deploymentBuilder.setProjectManifest(applicationUpgradeContextService.loadProjectManifest());
             } catch (IOException e) {
-                LOGGER.warn("Manifest of application not found. Project release version will not be set for deployment.");
+                LOGGER.warn(
+                    "Manifest of application not found. Project release version will not be set for deployment."
+                );
             }
         }
     }
@@ -152,7 +153,10 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
     private void loadEnforcedAppVersion(DeploymentBuilder deploymentBuilder) {
         if (applicationUpgradeContextService.hasEnforcedAppVersion()) {
             deploymentBuilder.setEnforcedAppVersion(applicationUpgradeContextService.getEnforcedAppVersion());
-            LOGGER.warn("Enforced application version set to " + applicationUpgradeContextService.getEnforcedAppVersion().toString());
+            LOGGER.warn(
+                "Enforced application version set to " +
+                applicationUpgradeContextService.getEnforcedAppVersion().toString()
+            );
         } else {
             LOGGER.warn("Enforced application version not set.");
         }

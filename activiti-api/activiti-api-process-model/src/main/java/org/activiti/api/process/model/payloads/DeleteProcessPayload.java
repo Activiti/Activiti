@@ -16,9 +16,7 @@
 package org.activiti.api.process.model.payloads;
 
 import java.util.UUID;
-
 import org.activiti.api.model.shared.Payload;
-
 
 public class DeleteProcessPayload implements Payload {
 
@@ -30,8 +28,7 @@ public class DeleteProcessPayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public DeleteProcessPayload(String processInstanceId,
-                                String reason) {
+    public DeleteProcessPayload(String processInstanceId, String reason) {
         this();
         this.processInstanceId = processInstanceId;
         this.reason = reason;

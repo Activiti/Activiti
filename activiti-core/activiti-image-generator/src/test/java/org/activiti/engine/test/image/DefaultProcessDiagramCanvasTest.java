@@ -15,16 +15,16 @@
  */
 package org.activiti.engine.test.image;
 
-import java.io.InputStream;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.io.InputStream;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.image.exception.ActivitiImageException;
 import org.activiti.image.impl.DefaultProcessDiagramCanvas;
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.anim.dom.SVGOMDocument;
 import org.apache.batik.util.XMLResourceDescriptor;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
@@ -103,7 +103,6 @@ class DefaultProcessDiagramCanvasTest {
         assertThat(childElement).isNotNull();
         assertThat(childElement.getTagName()).isEqualTo("g");
     }
-
 
     private SVGOMDocument parseSvg(InputStream svgStream) throws Exception {
         String parser = XMLResourceDescriptor.getXMLParserClassName();

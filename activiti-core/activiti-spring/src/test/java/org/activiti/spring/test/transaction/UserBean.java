@@ -16,12 +16,11 @@
 
 package org.activiti.spring.test.transaction;
 
+import javax.sql.DataSource;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.sql.DataSource;
 
 public class UserBean {
 
@@ -47,7 +46,6 @@ public class UserBean {
 
     @Transactional
     public void completeTask(String taskId) {
-
         // First insert a record in the MY_TABLE table
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         int nrOfRows = jdbcTemplate.update("insert into MY_TABLE values ('test');");
@@ -57,5 +55,4 @@ public class UserBean {
 
         taskService.complete(taskId);
     }
-
 }

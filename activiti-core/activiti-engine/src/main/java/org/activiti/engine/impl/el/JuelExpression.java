@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.el;
 
 import jakarta.el.ELContext;
@@ -49,16 +48,16 @@ public class JuelExpression implements Expression {
     @Override
     public Object getValue(VariableScope variableScope) {
         ELContext elContext = Context.getProcessEngineConfiguration()
-                                     .getExpressionManager()
-                                     .getElContext(variableScope);
+            .getExpressionManager()
+            .getElContext(variableScope);
         return getValueFromContext(elContext, Context.getProcessEngineConfiguration().getDelegateInterceptor());
     }
 
     @Override
     public void setValue(Object value, VariableScope variableScope) {
         ELContext elContext = Context.getProcessEngineConfiguration()
-                                     .getExpressionManager()
-                                     .getElContext(variableScope);
+            .getExpressionManager()
+            .getElContext(variableScope);
         try {
             ExpressionSetInvocation invocation = new ExpressionSetInvocation(valueExpression, elContext, value);
             Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(invocation);
@@ -81,14 +80,16 @@ public class JuelExpression implements Expression {
     }
 
     @Override
-    public Object getValue(ExpressionManager expressionManager,
-        DelegateInterceptor delegateInterceptor, Map<String, Object> availableVariables) {
+    public Object getValue(
+        ExpressionManager expressionManager,
+        DelegateInterceptor delegateInterceptor,
+        Map<String, Object> availableVariables
+    ) {
         ELContext elContext = expressionManager.getElContext(availableVariables);
         return getValueFromContext(elContext, delegateInterceptor);
     }
 
-    private Object getValueFromContext(ELContext elContext,
-        DelegateInterceptor delegateInterceptor) {
+    private Object getValueFromContext(ELContext elContext, DelegateInterceptor delegateInterceptor) {
         try {
             ExpressionGetInvocation invocation = new ExpressionGetInvocation(valueExpression, elContext);
             delegateInterceptor.handleInvocation(invocation);

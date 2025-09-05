@@ -17,5 +17,5 @@ package org.activiti.bpmn.model;
 
 public abstract class EventDefinition extends BaseElement {
 
-  public abstract EventDefinition clone();
+    public abstract EventDefinition clone();
 }

@@ -17,7 +17,6 @@ package org.activiti.engine.impl.persistence.entity.integration;
 
 import java.util.Date;
 import java.util.HashMap;
-
 import org.activiti.engine.impl.persistence.entity.AbstractEntity;
 
 public class IntegrationContextEntityImpl extends AbstractEntity implements IntegrationContextEntity {
@@ -83,10 +82,18 @@ public class IntegrationContextEntityImpl extends AbstractEntity implements Inte
 
     @Override
     public String toString() {
-        return "IntegrationContext[ " +
-            "executionId='" + executionId + '\'' +
-            ", processInstanceId='" + processInstanceId + '\'' +
-            ", flowNodeId='" + flowNodeId + '\'' +
-            " ]";
+        return (
+            "IntegrationContext[ " +
+            "executionId='" +
+            executionId +
+            '\'' +
+            ", processInstanceId='" +
+            processInstanceId +
+            '\'' +
+            ", flowNodeId='" +
+            flowNodeId +
+            '\'' +
+            " ]"
+        );
     }
 }

@@ -15,12 +15,11 @@
  */
 package org.activiti.bpmn.model;
 
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
 
 public class FlowNodeTest {
 
@@ -90,7 +89,6 @@ public class FlowNodeTest {
         throwEvent.setIncomingFlows(Arrays.asList(sequenceFlow));
         assertThat(throwEvent.hasIncomingFlows()).isTrue();
     }
-
 
     @Test
     public void hasOutgoingFlows_should_returnFalse_when_outgoingFlowsAreNotPresent() {

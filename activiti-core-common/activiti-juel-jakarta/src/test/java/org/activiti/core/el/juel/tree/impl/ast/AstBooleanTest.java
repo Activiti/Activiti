@@ -80,10 +80,7 @@ public class AstBooleanTest extends TestCase {
     @Test
     public void testGetValue() {
         assertEquals(true, parseNode("${true}").getValue(bindings, null, null));
-        assertEquals(
-            "true",
-            parseNode("${true}").getValue(bindings, null, String.class)
-        );
+        assertEquals("true", parseNode("${true}").getValue(bindings, null, String.class));
     }
 
     @Test

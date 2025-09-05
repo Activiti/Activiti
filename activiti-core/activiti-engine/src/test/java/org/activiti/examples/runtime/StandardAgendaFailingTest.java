@@ -31,5 +31,4 @@ public class StandardAgendaFailingTest extends PluggableActivitiTestCase {
     public void ignoreStandardAgendaWithEndLessLoop() {
         this.runtimeService.startProcessInstanceByKey("endlessloop");
     }
-
 }

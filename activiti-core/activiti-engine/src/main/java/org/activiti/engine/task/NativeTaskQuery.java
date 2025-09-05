@@ -23,6 +23,4 @@ import org.activiti.engine.query.NativeQuery;
  *
  */
 @Internal
-public interface NativeTaskQuery extends NativeQuery<NativeTaskQuery, Task> {
-
-}
+public interface NativeTaskQuery extends NativeQuery<NativeTaskQuery, Task> {}

@@ -28,5 +28,4 @@ public abstract class ListConverter<SourceT, TargetT> implements ModelConverter<
         }
         return targetElements;
     }
-
 }

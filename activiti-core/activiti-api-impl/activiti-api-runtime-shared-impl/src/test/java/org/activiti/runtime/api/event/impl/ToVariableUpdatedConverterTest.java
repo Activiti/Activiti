@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-
 import org.activiti.api.model.shared.event.VariableEvent.VariableEvents;
 import org.activiti.api.model.shared.event.VariableUpdatedEvent;
 import org.activiti.api.model.shared.model.VariableInstance;
@@ -80,7 +79,10 @@ class ToVariableUpdatedConverterTest {
         assertThat(actualValue).isNull();
     }
 
-    private VariableInstance assertVariableUpdatedEvent(VariableUpdatedEvent actualEvent, ActivitiVariableUpdatedEventImpl internalEvent) {
+    private VariableInstance assertVariableUpdatedEvent(
+        VariableUpdatedEvent actualEvent,
+        ActivitiVariableUpdatedEventImpl internalEvent
+    ) {
         assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_UPDATED);
         VariableInstance actualEntity = actualEvent.getEntity();
         assertThat(actualEntity.getName()).isEqualTo(internalEvent.getVariableName());

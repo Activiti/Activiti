@@ -16,6 +16,7 @@
 package org.activiti.spring.process.variable.types;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.activiti.engine.ActivitiException;
@@ -37,9 +38,13 @@ class JavaObjectVariableTypeTest {
         javaObjectVariableType = new JavaObjectVariableType(Boolean.class);
         javaObjectVariableType.validate(1, exceptionList);
 
-        assertTrue(exceptionList.stream().anyMatch(error ->
-            error.getMessage().equals("class java.lang.Integer is not assignable from class java.lang.Boolean")
-        ));
+        assertTrue(
+            exceptionList
+                .stream()
+                .anyMatch(error ->
+                    error.getMessage().equals("class java.lang.Integer is not assignable from class java.lang.Boolean")
+                )
+        );
     }
 
     @Test
@@ -69,8 +74,12 @@ class JavaObjectVariableTypeTest {
         javaObjectVariableType = new JavaObjectVariableType(Boolean.class);
         javaObjectVariableType.validate("${now()", exceptionList);
 
-        assertTrue(exceptionList.stream().anyMatch(error ->
-            error.getMessage().equals("class java.lang.String is not assignable from class java.lang.Boolean")
-        ));
+        assertTrue(
+            exceptionList
+                .stream()
+                .anyMatch(error ->
+                    error.getMessage().equals("class java.lang.String is not assignable from class java.lang.Boolean")
+                )
+        );
     }
 }

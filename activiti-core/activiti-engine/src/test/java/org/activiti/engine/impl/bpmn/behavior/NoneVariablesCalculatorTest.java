@@ -31,14 +31,17 @@ public class NoneVariablesCalculatorTest {
     @Test
     public void calculateOutPutVariables_should_returnEmptyMap() {
         //given
-        MappingExecutionContext mappingExecutionContext = MappingExecutionContext
-            .buildMappingExecutionContext("procDefId", "activityId");
+        MappingExecutionContext mappingExecutionContext = MappingExecutionContext.buildMappingExecutionContext(
+            "procDefId",
+            "activityId"
+        );
         Map<String, Object> availableVariables = Collections.singletonMap("any", "any");
 
         //when
         Map<String, Object> calculatedVariables = variablesCalculator.calculateOutPutVariables(
             mappingExecutionContext,
-            availableVariables);
+            availableVariables
+        );
 
         //then
         assertThat(calculatedVariables).isEmpty();
@@ -50,11 +53,9 @@ public class NoneVariablesCalculatorTest {
         DelegateExecution mock = mock(DelegateExecution.class);
 
         //when
-        Map<String, Object> calculatedVariables = variablesCalculator
-            .calculateInputVariables(mock);
+        Map<String, Object> calculatedVariables = variablesCalculator.calculateInputVariables(mock);
 
         //then
         assertThat(calculatedVariables).isEmpty();
     }
-
 }

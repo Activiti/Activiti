@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.bpmn.listener;
 
 import java.util.Map;
-
 import org.activiti.bpmn.model.Task;
 
 /**
@@ -25,38 +24,43 @@ import org.activiti.bpmn.model.Task;
  */
 public class TransactionDependentTaskListenerExecutionScope {
 
-  protected final String processInstanceId;
-  protected final String executionId;
-  protected final Task task;
-  protected final Map<String, Object> executionVariables;
-  protected final Map<String, Object> customPropertiesMap;
+    protected final String processInstanceId;
+    protected final String executionId;
+    protected final Task task;
+    protected final Map<String, Object> executionVariables;
+    protected final Map<String, Object> customPropertiesMap;
 
-  public TransactionDependentTaskListenerExecutionScope(String processInstanceId, String executionId,
-                                                       Task task, Map<String, Object> executionVariables, Map<String, Object> customPropertiesMap) {
-    this.processInstanceId = processInstanceId;
-    this.executionId = executionId;
-    this.task = task;
-    this.executionVariables = executionVariables;
-    this.customPropertiesMap = customPropertiesMap;
-  }
+    public TransactionDependentTaskListenerExecutionScope(
+        String processInstanceId,
+        String executionId,
+        Task task,
+        Map<String, Object> executionVariables,
+        Map<String, Object> customPropertiesMap
+    ) {
+        this.processInstanceId = processInstanceId;
+        this.executionId = executionId;
+        this.task = task;
+        this.executionVariables = executionVariables;
+        this.customPropertiesMap = customPropertiesMap;
+    }
 
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
 
-  public String getExecutionId() {
-    return executionId;
-  }
+    public String getExecutionId() {
+        return executionId;
+    }
 
-  public Task getTask() {
-    return task;
-  }
+    public Task getTask() {
+        return task;
+    }
 
-  public Map<String, Object> getExecutionVariables() {
-    return executionVariables;
-  }
+    public Map<String, Object> getExecutionVariables() {
+        return executionVariables;
+    }
 
-  public Map<String, Object> getCustomPropertiesMap() {
-    return customPropertiesMap;
-  }
+    public Map<String, Object> getCustomPropertiesMap() {
+        return customPropertiesMap;
+    }
 }

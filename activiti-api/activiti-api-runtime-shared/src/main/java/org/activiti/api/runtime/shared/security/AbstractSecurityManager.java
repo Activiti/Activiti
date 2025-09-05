@@ -26,10 +26,12 @@ public abstract class AbstractSecurityManager implements SecurityManager {
     private final PrincipalGroupsProvider principalGroupsProvider;
     private final PrincipalRolesProvider principalRolesProvider;
 
-    public AbstractSecurityManager(SecurityContextPrincipalProvider securityContextPrincipalProvider,
-                                   PrincipalIdentityProvider principalIdentityProvider,
-                                   PrincipalGroupsProvider principalGroupsProvider,
-                                   PrincipalRolesProvider principalRolesProvider) {
+    public AbstractSecurityManager(
+        SecurityContextPrincipalProvider securityContextPrincipalProvider,
+        PrincipalIdentityProvider principalIdentityProvider,
+        PrincipalGroupsProvider principalGroupsProvider,
+        PrincipalRolesProvider principalRolesProvider
+    ) {
         this.securityContextPrincipalProvider = securityContextPrincipalProvider;
         this.principalIdentityProvider = principalIdentityProvider;
         this.principalGroupsProvider = principalGroupsProvider;
@@ -38,27 +40,29 @@ public abstract class AbstractSecurityManager implements SecurityManager {
 
     @Override
     public String getAuthenticatedUserId() {
-        return securityContextPrincipalProvider.getCurrentPrincipal()
-                                               .map(principalIdentityProvider::getUserId)
-                                               .orElseThrow(this::securityException);
+        return securityContextPrincipalProvider
+            .getCurrentPrincipal()
+            .map(principalIdentityProvider::getUserId)
+            .orElseThrow(this::securityException);
     }
 
     @Override
     public List<String> getAuthenticatedUserGroups() {
-        return securityContextPrincipalProvider.getCurrentPrincipal()
-                                               .map(principalGroupsProvider::getGroups)
-                                               .orElseThrow(this::securityException);
+        return securityContextPrincipalProvider
+            .getCurrentPrincipal()
+            .map(principalGroupsProvider::getGroups)
+            .orElseThrow(this::securityException);
     }
 
     @Override
     public List<String> getAuthenticatedUserRoles() {
-        return securityContextPrincipalProvider.getCurrentPrincipal()
-                                               .map(principalRolesProvider::getRoles)
-                                               .orElseThrow(this::securityException);
+        return securityContextPrincipalProvider
+            .getCurrentPrincipal()
+            .map(principalRolesProvider::getRoles)
+            .orElseThrow(this::securityException);
     }
 
     protected SecurityException securityException() {
         return new SecurityException(INVALID_AUTHENTICATED_PRINCIPAL);
     }
-
 }

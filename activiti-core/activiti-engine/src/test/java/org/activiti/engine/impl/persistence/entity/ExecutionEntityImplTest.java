@@ -16,7 +16,6 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
@@ -32,7 +31,6 @@ public class ExecutionEntityImplTest {
         executionEntity.setRootProcessInstanceId(ROOT_ID);
 
         assertThat(executionEntity.isRootExecution()).isTrue();
-
     }
 
     @Test
@@ -42,7 +40,6 @@ public class ExecutionEntityImplTest {
         executionEntity.setRootProcessInstanceId(ROOT_ID);
 
         assertThat(executionEntity.isRootExecution()).isFalse();
-
     }
 
     @Test

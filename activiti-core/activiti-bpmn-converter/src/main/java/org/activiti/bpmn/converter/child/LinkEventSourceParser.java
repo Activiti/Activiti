@@ -15,13 +15,12 @@
  */
 package org.activiti.bpmn.converter.child;
 
+import static org.activiti.bpmn.converter.LinkEventDefinitionXMLConverter.ATTRIBUTE_LINK_SOURCE;
+
+import javax.xml.stream.XMLStreamReader;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.LinkEventDefinition;
-
-import javax.xml.stream.XMLStreamReader;
-
-import static org.activiti.bpmn.converter.LinkEventDefinitionXMLConverter.ATTRIBUTE_LINK_SOURCE;
 
 public class LinkEventSourceParser extends BaseChildElementParser {
 
@@ -30,7 +29,6 @@ public class LinkEventSourceParser extends BaseChildElementParser {
     }
 
     public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-
         if (parentElement instanceof LinkEventDefinition linkEventDefinition) {
             linkEventDefinition.addSource(xtr.getElementText());
         }

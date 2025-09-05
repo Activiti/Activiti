@@ -17,6 +17,7 @@ package org.activiti.spring.process.variable.types;
 
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

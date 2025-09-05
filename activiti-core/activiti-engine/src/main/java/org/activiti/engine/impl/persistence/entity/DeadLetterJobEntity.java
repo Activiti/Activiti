@@ -22,6 +22,4 @@ import org.activiti.engine.api.internal.Internal;
  * Suspended jobs are stored separately to increase the normal job query performance
  */
 @Internal
-public interface DeadLetterJobEntity extends AbstractJobEntity {
-
-}
+public interface DeadLetterJobEntity extends AbstractJobEntity {}

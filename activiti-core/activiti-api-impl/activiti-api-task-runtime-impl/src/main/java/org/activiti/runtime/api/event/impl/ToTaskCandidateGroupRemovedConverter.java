@@ -15,17 +15,18 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import java.util.Optional;
 import org.activiti.api.task.runtime.events.TaskCandidateGroupRemovedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.runtime.api.model.impl.APITaskCandidateGroupConverter;
 
-import java.util.Optional;
-
-public class ToTaskCandidateGroupRemovedConverter implements EventConverter<TaskCandidateGroupRemovedEvent, ActivitiEntityEvent> {
+public class ToTaskCandidateGroupRemovedConverter
+    implements EventConverter<TaskCandidateGroupRemovedEvent, ActivitiEntityEvent> {
 
     private APITaskCandidateGroupConverter converter;
-    private TaskCandidateEventConverterHelper taskCandidateEventConverterHelper = new TaskCandidateEventConverterHelper();
+    private TaskCandidateEventConverterHelper taskCandidateEventConverterHelper =
+        new TaskCandidateEventConverterHelper();
 
     public ToTaskCandidateGroupRemovedConverter(APITaskCandidateGroupConverter converter) {
         this.converter = converter;
@@ -42,5 +43,4 @@ public class ToTaskCandidateGroupRemovedConverter implements EventConverter<Task
         }
         return Optional.ofNullable(event);
     }
-
 }

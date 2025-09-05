@@ -16,11 +16,9 @@
 
 package org.activiti.engine.impl.variable;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
-
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl;
 import org.junit.Test;
 
@@ -57,7 +55,7 @@ public class BigDecimalTypeTest {
         ValueFields valueFields = new VariableInstanceEntityImpl();
 
         //when
-        bigDecimalType.setValue(BigDecimal.valueOf(1000,4), valueFields);
+        bigDecimalType.setValue(BigDecimal.valueOf(1000, 4), valueFields);
 
         //then
         assertThat(valueFields.getTextValue()).isEqualTo("0.1000");
@@ -103,5 +101,4 @@ public class BigDecimalTypeTest {
         //then
         assertThat(valueFields.getTextValue()).isNull();
     }
-
 }

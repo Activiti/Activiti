@@ -82,8 +82,7 @@ public class JsonTypeConverterTest {
         private String firstName;
         private String lastName;
 
-        public Person() {
-        }
+        public Person() {}
 
         public Person(String firstName, String lastName) {
             this.firstName = firstName;
@@ -98,5 +97,4 @@ public class JsonTypeConverterTest {
             return lastName;
         }
     }
-
 }

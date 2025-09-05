@@ -16,6 +16,7 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -27,51 +28,51 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskInfo;
 
-import java.io.Serializable;
-
 /**
 
  */
 public class SaveTaskCmd implements Command<Task>, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected TaskEntity task;
+    protected TaskEntity task;
 
-  public SaveTaskCmd(Task task) {
-    this.task = (TaskEntity) task;
-  }
-
-  public Task execute(CommandContext commandContext) {
-    if (task == null) {
-      throw new ActivitiIllegalArgumentException("task is null");
+    public SaveTaskCmd(Task task) {
+        this.task = (TaskEntity) task;
     }
 
-    if (task.getRevision() == 0) {
-      commandContext.getTaskEntityManager().insert(task, null);
-
-      if (commandContext.getEventDispatcher().isEnabled()) {
-        commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_CREATED, task));
-        if (task.getAssignee() != null) {
-          commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_ASSIGNED, task));
-        }
-      }
-
-    } else {
-        TaskInfo originalTaskEntity = null;
-        if (commandContext.getProcessEngineConfiguration().getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-            originalTaskEntity = commandContext.getHistoricTaskInstanceEntityManager().findById(task.getId());
-        }
-        if (originalTaskEntity == null) {
-            originalTaskEntity = commandContext.getTaskEntityManager().findById(task.getId());
+    public Task execute(CommandContext commandContext) {
+        if (task == null) {
+            throw new ActivitiIllegalArgumentException("task is null");
         }
 
-        TaskUpdater taskUpdater = new TaskUpdater(commandContext);
-        taskUpdater.updateTask(originalTaskEntity, task);
-      return commandContext.getTaskEntityManager().update(task);
+        if (task.getRevision() == 0) {
+            commandContext.getTaskEntityManager().insert(task, null);
+
+            if (commandContext.getEventDispatcher().isEnabled()) {
+                commandContext
+                    .getEventDispatcher()
+                    .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_CREATED, task));
+                if (task.getAssignee() != null) {
+                    commandContext
+                        .getEventDispatcher()
+                        .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_ASSIGNED, task));
+                }
+            }
+        } else {
+            TaskInfo originalTaskEntity = null;
+            if (commandContext.getProcessEngineConfiguration().getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+                originalTaskEntity = commandContext.getHistoricTaskInstanceEntityManager().findById(task.getId());
+            }
+            if (originalTaskEntity == null) {
+                originalTaskEntity = commandContext.getTaskEntityManager().findById(task.getId());
+            }
+
+            TaskUpdater taskUpdater = new TaskUpdater(commandContext);
+            taskUpdater.updateTask(originalTaskEntity, task);
+            return commandContext.getTaskEntityManager().update(task);
+        }
+
+        return null;
     }
-
-    return null;
-  }
-
 }

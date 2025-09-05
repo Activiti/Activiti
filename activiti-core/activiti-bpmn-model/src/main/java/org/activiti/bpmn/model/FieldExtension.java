@@ -17,47 +17,45 @@ package org.activiti.bpmn.model;
 
 public class FieldExtension extends BaseElement {
 
-  protected String fieldName;
-  protected String stringValue;
-  protected String expression;
+    protected String fieldName;
+    protected String stringValue;
+    protected String expression;
 
-  public FieldExtension() {
+    public FieldExtension() {}
 
-  }
+    public String getFieldName() {
+        return fieldName;
+    }
 
-  public String getFieldName() {
-    return fieldName;
-  }
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
+    }
 
-  public void setFieldName(String fieldName) {
-    this.fieldName = fieldName;
-  }
+    public String getStringValue() {
+        return stringValue;
+    }
 
-  public String getStringValue() {
-    return stringValue;
-  }
+    public void setStringValue(String stringValue) {
+        this.stringValue = stringValue;
+    }
 
-  public void setStringValue(String stringValue) {
-    this.stringValue = stringValue;
-  }
+    public String getExpression() {
+        return expression;
+    }
 
-  public String getExpression() {
-    return expression;
-  }
+    public void setExpression(String expression) {
+        this.expression = expression;
+    }
 
-  public void setExpression(String expression) {
-    this.expression = expression;
-  }
+    public FieldExtension clone() {
+        FieldExtension clone = new FieldExtension();
+        clone.setValues(this);
+        return clone;
+    }
 
-  public FieldExtension clone() {
-    FieldExtension clone = new FieldExtension();
-    clone.setValues(this);
-    return clone;
-  }
-
-  public void setValues(FieldExtension otherExtension) {
-    setFieldName(otherExtension.getFieldName());
-    setStringValue(otherExtension.getStringValue());
-    setExpression(otherExtension.getExpression());
-  }
+    public void setValues(FieldExtension otherExtension) {
+        setFieldName(otherExtension.getFieldName());
+        setStringValue(otherExtension.getStringValue());
+        setExpression(otherExtension.getExpression());
+    }
 }

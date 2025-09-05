@@ -21,19 +21,19 @@ package org.activiti.engine.impl.db;
  */
 public class IdBlock {
 
-  long nextId;
-  long lastId;
+    long nextId;
+    long lastId;
 
-  public IdBlock(long nextId, long lastId) {
-    this.nextId = nextId;
-    this.lastId = lastId;
-  }
+    public IdBlock(long nextId, long lastId) {
+        this.nextId = nextId;
+        this.lastId = lastId;
+    }
 
-  public long getNextId() {
-    return nextId;
-  }
+    public long getNextId() {
+        return nextId;
+    }
 
-  public long getLastId() {
-    return lastId;
-  }
+    public long getLastId() {
+        return lastId;
+    }
 }

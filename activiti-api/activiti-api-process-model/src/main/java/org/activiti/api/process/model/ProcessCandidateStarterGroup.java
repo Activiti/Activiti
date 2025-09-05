@@ -16,7 +16,5 @@
 package org.activiti.api.process.model;
 
 public interface ProcessCandidateStarterGroup extends ProcessCandidateStarter {
-
     String getGroupId();
-
 }

@@ -17,23 +17,22 @@ package org.activiti.core.common.spring.security;
 
 import static java.util.Collections.emptyList;
 
-import org.springframework.lang.NonNull;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Optional;
+import org.springframework.lang.NonNull;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 
 public class SimpleGrantedAuthoritiesResolver implements GrantedAuthoritiesResolver {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities(@NonNull Principal principal) {
         return Optional.of(principal)
-                .filter(this::isSupportedPrincipal)
-                .map(this.getPrincipalClass()::cast)
-                .map(this::getAuthorities)
-                .orElseThrow(this::securityException);
+            .filter(this::isSupportedPrincipal)
+            .map(this.getPrincipalClass()::cast)
+            .map(this::getAuthorities)
+            .orElseThrow(this::securityException);
     }
 
     protected SecurityException securityException() {
@@ -41,8 +40,7 @@ public class SimpleGrantedAuthoritiesResolver implements GrantedAuthoritiesResol
     }
 
     protected <T> Collection<? extends GrantedAuthority> getAuthorities(Authentication authentication) {
-        return Optional.ofNullable(authentication.getAuthorities())
-                       .orElseGet(this::emptyAuthorities);
+        return Optional.ofNullable(authentication.getAuthorities()).orElseGet(this::emptyAuthorities);
     }
 
     protected <T> Collection<T> emptyAuthorities() {

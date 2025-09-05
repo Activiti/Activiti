@@ -28,19 +28,13 @@ public class AstDot extends AstProperty {
         this(base, property, lvalue, false);
     }
 
-    public AstDot(
-        AstNode base,
-        String property,
-        boolean lvalue,
-        boolean ignoreReturnType
-    ) {
+    public AstDot(AstNode base, String property, boolean lvalue, boolean ignoreReturnType) {
         super(base, lvalue, true, ignoreReturnType);
         this.property = property;
     }
 
     @Override
-    protected String getProperty(Bindings bindings, ELContext context)
-        throws ELException {
+    protected String getProperty(Bindings bindings, ELContext context) throws ELException {
         return property;
     }
 

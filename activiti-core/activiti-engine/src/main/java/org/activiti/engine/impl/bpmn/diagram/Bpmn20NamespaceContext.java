@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.diagram;
 
 import java.util.HashMap;
@@ -23,7 +22,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPath;
 
@@ -36,52 +34,51 @@ import javax.xml.xpath.XPath;
  */
 public class Bpmn20NamespaceContext implements NamespaceContext {
 
-  public static final String BPMN = "bpmn";
-  public static final String BPMNDI = "bpmndi";
-  public static final String OMGDC = "omgdc";
-  public static final String OMGDI = "omgdi";
+    public static final String BPMN = "bpmn";
+    public static final String BPMNDI = "bpmndi";
+    public static final String OMGDC = "omgdc";
+    public static final String OMGDI = "omgdi";
 
-  /**
-   * This is a protected filed so you can extend that context with your own namespaces if necessary
-   */
-  protected Map<String, String> namespaceUris = new HashMap<String, String>();
+    /**
+     * This is a protected filed so you can extend that context with your own namespaces if necessary
+     */
+    protected Map<String, String> namespaceUris = new HashMap<String, String>();
 
-  public Bpmn20NamespaceContext() {
-    namespaceUris.put(BPMN, "http://www.omg.org/spec/BPMN/20100524/MODEL");
-    namespaceUris.put(BPMNDI, "http://www.omg.org/spec/BPMN/20100524/DI");
-    namespaceUris.put(OMGDC, "http://www.omg.org/spec/DD/20100524/DI");
-    namespaceUris.put(OMGDI, "http://www.omg.org/spec/DD/20100524/DC");
-  }
-
-  public String getNamespaceURI(String prefix) {
-    return namespaceUris.get(prefix);
-  }
-
-  public String getPrefix(String namespaceURI) {
-    return getKeyByValue(namespaceUris, namespaceURI);
-  }
-
-  public Iterator<String> getPrefixes(String namespaceURI) {
-    return getKeysByValue(namespaceUris, namespaceURI).iterator();
-  }
-
-  private static <T, E> Set<T> getKeysByValue(Map<T, E> map, E value) {
-    Set<T> keys = new HashSet<T>();
-    for (Entry<T, E> entry : map.entrySet()) {
-      if (value.equals(entry.getValue())) {
-        keys.add(entry.getKey());
-      }
+    public Bpmn20NamespaceContext() {
+        namespaceUris.put(BPMN, "http://www.omg.org/spec/BPMN/20100524/MODEL");
+        namespaceUris.put(BPMNDI, "http://www.omg.org/spec/BPMN/20100524/DI");
+        namespaceUris.put(OMGDC, "http://www.omg.org/spec/DD/20100524/DI");
+        namespaceUris.put(OMGDI, "http://www.omg.org/spec/DD/20100524/DC");
     }
-    return keys;
-  }
 
-  private static <T, E> T getKeyByValue(Map<T, E> map, E value) {
-    for (Entry<T, E> entry : map.entrySet()) {
-      if (value.equals(entry.getValue())) {
-        return entry.getKey();
-      }
+    public String getNamespaceURI(String prefix) {
+        return namespaceUris.get(prefix);
     }
-    return null;
-  }
 
+    public String getPrefix(String namespaceURI) {
+        return getKeyByValue(namespaceUris, namespaceURI);
+    }
+
+    public Iterator<String> getPrefixes(String namespaceURI) {
+        return getKeysByValue(namespaceUris, namespaceURI).iterator();
+    }
+
+    private static <T, E> Set<T> getKeysByValue(Map<T, E> map, E value) {
+        Set<T> keys = new HashSet<T>();
+        for (Entry<T, E> entry : map.entrySet()) {
+            if (value.equals(entry.getValue())) {
+                keys.add(entry.getKey());
+            }
+        }
+        return keys;
+    }
+
+    private static <T, E> T getKeyByValue(Map<T, E> map, E value) {
+        for (Entry<T, E> entry : map.entrySet()) {
+            if (value.equals(entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
 }

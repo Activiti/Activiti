@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.task.Attachment;
@@ -29,27 +27,25 @@ import org.activiti.engine.task.Attachment;
 @Internal
 @Deprecated
 public interface AttachmentEntity extends Attachment, Entity, HasRevision {
+    void setType(String type);
 
-  void setType(String type);
+    void setTaskId(String taskId);
 
-  void setTaskId(String taskId);
+    void setProcessInstanceId(String processInstanceId);
 
-  void setProcessInstanceId(String processInstanceId);
+    void setUrl(String url);
 
-  void setUrl(String url);
+    void setContentId(String contentId);
 
-  void setContentId(String contentId);
+    ByteArrayEntity getContent();
 
-  ByteArrayEntity getContent();
+    void setContent(ByteArrayEntity content);
 
-  void setContent(ByteArrayEntity content);
+    void setUserId(String userId);
 
-  void setUserId(String userId);
+    String getUserId();
 
-  String getUserId();
+    Date getTime();
 
-  Date getTime();
-
-  void setTime(Date time);
-
+    void setTime(Date time);
 }

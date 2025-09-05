@@ -29,7 +29,6 @@ public class MessageSubscriptionConverterTest {
 
     @Test
     public void convertShouldReturnBPMNMessage() {
-
         MessageEventSubscriptionEntity entity = mock(MessageEventSubscriptionEntity.class);
         given(entity.getConfiguration()).willReturn("correlationKey");
         given(entity.getEventName()).willReturn("messageName");
@@ -44,7 +43,5 @@ public class MessageSubscriptionConverterTest {
         assertThat(messageSubscription.getProcessDefinitionId()).isEqualTo("procDefId");
         assertThat(messageSubscription.getConfiguration()).isEqualTo("correlationKey");
         assertThat(messageSubscription.getEventName()).isEqualTo("messageName");
-
     }
-
 }

@@ -15,8 +15,9 @@
  */
 package org.activiti.spring.boot.process;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
@@ -31,14 +32,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessRuntimeCallActivityIT {
 
     private static final String PARENT_PROCESS_CALL_ACTIVITY = "parentproc-843144bc-3797-40db-8edc-d23190b118e3";
     private static final String SUB_PROCESS_CALL_ACTIVITY = "subprocess-fb5f2386-709a-4947-9aa0-bbf31497384f";
-    private static final String MAIN_PROCESS_CALL_ACTIVITY= "mainProcess-843144bc-3797-40db-8edc-d23190b1183h";
+    private static final String MAIN_PROCESS_CALL_ACTIVITY = "mainProcess-843144bc-3797-40db-8edc-d23190b1183h";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -58,8 +57,7 @@ public class ProcessRuntimeCallActivityIT {
     }
 
     @Test
-    public void testCheckSubProcessTaskWhenCallActivity (){
-
+    public void testCheckSubProcessTaskWhenCallActivity() {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance = startProcess(PARENT_PROCESS_CALL_ACTIVITY);
@@ -70,13 +68,12 @@ public class ProcessRuntimeCallActivityIT {
         assertThat(subProcessInstance.getParentId()).isEqualTo(processInstance.getId());
         assertThat(subProcessInstance.getProcessDefinitionKey()).isEqualTo(SUB_PROCESS_CALL_ACTIVITY);
 
-        List <Task> taskList = taskRuntime.tasks(
+        List<Task> taskList = taskRuntime
+            .tasks(
                 Pageable.of(0, 50),
-                TaskPayloadBuilder
-                        .tasks()
-                        .withProcessInstanceId(subProcessInstance.getId())
-                        .build())
-                .getContent();
+                TaskPayloadBuilder.tasks().withProcessInstanceId(subProcessInstance.getId()).build()
+            )
+            .getContent();
 
         assertThat(taskList).isNotEmpty();
 
@@ -88,7 +85,6 @@ public class ProcessRuntimeCallActivityIT {
 
     @Test
     public void testCheckRootProcessInstanceIdWhenCallActivity() {
-
         securityUtil.logInAs("user");
 
         ProcessInstance rootProcessInstance = startProcess(MAIN_PROCESS_CALL_ACTIVITY);
@@ -100,7 +96,7 @@ public class ProcessRuntimeCallActivityIT {
         assertThat(parentProcessInstance).isNotNull();
         assertThat(parentProcessInstance.getParentId()).isEqualTo(rootProcessInstance.getId());
         assertThat(parentProcessInstance.getProcessDefinitionKey()).isEqualTo(PARENT_PROCESS_CALL_ACTIVITY);
-        assertThat(parentProcessInstance.getRootProcessInstanceId()).isEqualTo(rootProcessInstance .getId());
+        assertThat(parentProcessInstance.getRootProcessInstanceId()).isEqualTo(rootProcessInstance.getId());
 
         ProcessInstance subProcessInstance = getFirstChildProcessInstance(parentProcessInstance);
 
@@ -120,20 +116,16 @@ public class ProcessRuntimeCallActivityIT {
 
     private ProcessInstance startProcess(String processDefinitionKey) {
         return processRuntime.start(
-            ProcessPayloadBuilder
-                .start()
-                .withProcessDefinitionKey(processDefinitionKey)
-                .build());
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(processDefinitionKey).build()
+        );
     }
 
     private List<ProcessInstance> getChildProcessInstances(ProcessInstance processInstance) {
-        return processRuntime.processInstances(
+        return processRuntime
+            .processInstances(
                 Pageable.of(0, 50),
-                ProcessPayloadBuilder
-                    .processInstances()
-                    .withParentProcessInstanceId(processInstance.getId())
-                    .build())
+                ProcessPayloadBuilder.processInstances().withParentProcessInstanceId(processInstance.getId()).build()
+            )
             .getContent();
     }
-
 }

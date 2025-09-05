@@ -32,12 +32,7 @@ public class AstComposite extends AstRightValue {
     public Object eval(Bindings bindings, ELContext context) {
         StringBuilder b = new StringBuilder(16);
         for (int i = 0; i < getCardinality(); i++) {
-            b.append(
-                bindings.convert(
-                    nodes.get(i).eval(bindings, context),
-                    String.class
-                )
-            );
+            b.append(bindings.convert(nodes.get(i).eval(bindings, context), String.class));
         }
         return b.toString();
     }

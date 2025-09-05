@@ -49,12 +49,7 @@ public class Tree {
      * @param functions collection of function nodes
      * @param identifiers collection of identifier nodes
      */
-    public Tree(
-        ExpressionNode root,
-        List<FunctionNode> functions,
-        List<IdentifierNode> identifiers,
-        boolean deferred
-    ) {
+    public Tree(ExpressionNode root, List<FunctionNode> functions, List<IdentifierNode> identifiers, boolean deferred) {
         super();
         this.root = root;
         this.functions = functions;
@@ -109,17 +104,11 @@ public class Tree {
      * @param converter custom type converter
      * @return tree bindings
      */
-    public Bindings bind(
-        FunctionMapper fnMapper,
-        VariableMapper varMapper,
-        TypeConverter converter
-    ) {
+    public Bindings bind(FunctionMapper fnMapper, VariableMapper varMapper, TypeConverter converter) {
         Method[] methods = null;
         if (!functions.isEmpty()) {
             if (fnMapper == null) {
-                throw new ELException(
-                    LocalMessages.get("error.function.nomapper")
-                );
+                throw new ELException(LocalMessages.get("error.function.nomapper"));
             }
             methods = new Method[functions.size()];
             for (int i = 0; i < functions.size(); i++) {
@@ -130,35 +119,18 @@ public class Tree {
                 if (colon < 0) {
                     method = fnMapper.resolveFunction("", image);
                 } else {
-                    method =
-                        fnMapper.resolveFunction(
-                            image.substring(0, colon),
-                            image.substring(colon + 1)
-                        );
+                    method = fnMapper.resolveFunction(image.substring(0, colon), image.substring(colon + 1));
                 }
                 if (method == null) {
-                    throw new ELException(
-                        LocalMessages.get("error.function.notfound", image)
-                    );
+                    throw new ELException(LocalMessages.get("error.function.notfound", image));
                 }
                 if (node.isVarArgs() && method.isVarArgs()) {
-                    if (
-                        method.getParameterTypes().length >
-                        node.getParamCount() +
-                        1
-                    ) {
-                        throw new ELException(
-                            LocalMessages.get("error.function.params", image)
-                        );
+                    if (method.getParameterTypes().length > node.getParamCount() + 1) {
+                        throw new ELException(LocalMessages.get("error.function.params", image));
                     }
                 } else {
-                    if (
-                        method.getParameterTypes().length !=
-                        node.getParamCount()
-                    ) {
-                        throw new ELException(
-                            LocalMessages.get("error.function.params", image)
-                        );
+                    if (method.getParameterTypes().length != node.getParamCount()) {
+                        throw new ELException(LocalMessages.get("error.function.params", image));
                     }
                 }
                 methods[node.getIndex()] = method;

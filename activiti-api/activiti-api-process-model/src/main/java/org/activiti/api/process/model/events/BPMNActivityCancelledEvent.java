@@ -15,6 +15,4 @@
  */
 package org.activiti.api.process.model.events;
 
-public interface BPMNActivityCancelledEvent extends BPMNActivityEvent {
-
-}
+public interface BPMNActivityCancelledEvent extends BPMNActivityEvent {}

@@ -24,10 +24,8 @@ import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
  */
 public class TimerJobsByExecutionIdMatcher extends CachedEntityMatcherAdapter<TimerJobEntity> {
 
-  @Override
-  public boolean isRetained(TimerJobEntity jobEntity, Object param) {
-    return jobEntity.getExecutionId() != null && jobEntity.getExecutionId().equals(param); // param = executionId
-  }
-
-
+    @Override
+    public boolean isRetained(TimerJobEntity jobEntity, Object param) {
+        return jobEntity.getExecutionId() != null && jobEntity.getExecutionId().equals(param); // param = executionId
+    }
 }

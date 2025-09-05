@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence;
 
 import org.activiti.engine.ActivitiException;
@@ -44,8 +43,10 @@ public class GenericManagerFactory implements SessionFactory {
         try {
             return implementationClass.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
-            throw new ActivitiException("couldn't instantiate " + implementationClass.getName() + ": " + e.getMessage(), e);
+            throw new ActivitiException(
+                "couldn't instantiate " + implementationClass.getName() + ": " + e.getMessage(),
+                e
+            );
         }
     }
-
 }

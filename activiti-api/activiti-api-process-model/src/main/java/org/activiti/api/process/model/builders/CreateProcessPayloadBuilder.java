@@ -24,8 +24,7 @@ public class CreateProcessPayloadBuilder {
     private String name;
     private String businessKey;
 
-    public CreateProcessPayloadBuilder() {
-    }
+    public CreateProcessPayloadBuilder() {}
 
     public CreateProcessPayloadBuilder withProcessDefinitionId(String processDefinitionId) {
         this.processDefinitionId = processDefinitionId;
@@ -48,9 +47,6 @@ public class CreateProcessPayloadBuilder {
     }
 
     public CreateProcessInstancePayload build() {
-        return new CreateProcessInstancePayload(processDefinitionId,
-            processDefinitionKey,
-            name,
-            businessKey);
+        return new CreateProcessInstancePayload(processDefinitionId, processDefinitionKey, name, businessKey);
     }
 }

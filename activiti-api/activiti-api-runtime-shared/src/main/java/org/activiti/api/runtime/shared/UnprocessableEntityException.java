@@ -20,5 +20,4 @@ public class UnprocessableEntityException extends IllegalArgumentException {
     public UnprocessableEntityException(String message) {
         super(message);
     }
-
 }

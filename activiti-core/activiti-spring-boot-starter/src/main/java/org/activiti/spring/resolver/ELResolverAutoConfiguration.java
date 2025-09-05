@@ -16,29 +16,33 @@
 package org.activiti.spring.resolver;
 
 import jakarta.el.ELResolver;
+import java.util.List;
 import org.activiti.spring.boot.ProcessEngineConfigurationConfigurer;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 
-import java.util.List;
-
 @AutoConfiguration
 public class ELResolverAutoConfiguration {
 
-    @ConditionalOnProperty(name = "spring.activiti.env-var-el-resolver.enabled", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(
+        name = "spring.activiti.env-var-el-resolver.enabled",
+        havingValue = "true",
+        matchIfMissing = true
+    )
     @Bean
     public EnvironmentVariableELResolver environmentVariableELResolver() {
         return new EnvironmentVariableELResolver();
     }
 
     @Bean
-    public ProcessEngineConfigurationConfigurer environmentVariablesELResolverConfigurer(List<ELResolver> customELResolvers) {
+    public ProcessEngineConfigurationConfigurer environmentVariablesELResolverConfigurer(
+        List<ELResolver> customELResolvers
+    ) {
         return processEngineConfiguration -> {
-            if(customELResolvers!=null) {
+            if (customELResolvers != null) {
                 processEngineConfiguration.setCustomELResolvers(customELResolvers);
             }
         };
     }
-
 }

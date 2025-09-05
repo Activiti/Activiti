@@ -15,12 +15,12 @@
  */
 package org.activiti.test.assertions;
 
+import static org.awaitility.Awaitility.await;
+
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.test.matchers.OperationScopeMatcher;
 import org.activiti.test.matchers.ProcessResultMatcher;
 import org.activiti.test.matchers.ProcessTaskMatcher;
-
-import static org.awaitility.Awaitility.await;
 
 public class AwaitProcessInstanceAssertions implements ProcessInstanceAssertions {
 

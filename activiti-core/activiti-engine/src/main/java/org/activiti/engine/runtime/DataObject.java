@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.runtime;
 
 import org.activiti.engine.api.internal.Internal;
@@ -24,34 +23,33 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface DataObject {
+    /**
+     * Name of the DataObject.
+     */
+    String getName();
 
-  /**
-   * Name of the DataObject.
-   */
-  String getName();
+    /**
+     * Localized Name of the DataObject.
+     */
+    String getLocalizedName();
 
-  /**
-   * Localized Name of the DataObject.
-   */
-  String getLocalizedName();
+    /**
+     * Description of the DataObject.
+     */
+    String getDescription();
 
-  /**
-   * Description of the DataObject.
-   */
-  String getDescription();
+    /**
+     * Value of the DataObject.
+     */
+    Object getValue();
 
-  /**
-   * Value of the DataObject.
-   */
-  Object getValue();
+    /**
+     * Type of the DataObject.
+     */
+    String getType();
 
-  /**
-   * Type of the DataObject.
-   */
-  String getType();
-
-  /**
-   * The id of the flow element in the process defining this data object.
-   */
-  String getDataObjectDefinitionKey();
+    /**
+     * The id of the flow element in the process defining this data object.
+     */
+    String getDataObjectDefinitionKey();
 }

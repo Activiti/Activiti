@@ -52,11 +52,7 @@ public class UpdateProcessPayloadBuilder {
         return this;
     }
 
-
     public UpdateProcessPayload build() {
-        return new UpdateProcessPayload(processInstanceId,
-                name,
-                description,
-                businessKey);
+        return new UpdateProcessPayload(processInstanceId, name, description, businessKey);
     }
 }

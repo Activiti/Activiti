@@ -26,10 +26,13 @@ public class ListResolverHelper {
         return List.of(objects);
     }
 
-    private ListResolverHelper() {
-    }
+    private ListResolverHelper() {}
 
     public static void addListFunctions(ActivitiElContext elContext) throws NoSuchMethodException {
-        elContext.setFunction("", LIST_FUNCTION_NAME, ListResolverHelper.class.getMethod(LIST_INVOKE_METHOD, Object[].class));
+        elContext.setFunction(
+            "",
+            LIST_FUNCTION_NAME,
+            ListResolverHelper.class.getMethod(LIST_INVOKE_METHOD, Object[].class)
+        );
     }
 }

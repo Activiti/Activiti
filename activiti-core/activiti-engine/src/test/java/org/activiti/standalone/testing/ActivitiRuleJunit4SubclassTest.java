@@ -25,6 +25,4 @@ package org.activiti.standalone.testing;
  *
  * Specifically, {@link org.activiti.engine.impl.test.TestHelper} needs to call getMethod() rather than getDeclaredMethod() since the method is declared in a parent of the actual test class.
  */
-public class ActivitiRuleJunit4SubclassTest extends ActivitiRuleJunit4Test {
-
-}
+public class ActivitiRuleJunit4SubclassTest extends ActivitiRuleJunit4Test {}

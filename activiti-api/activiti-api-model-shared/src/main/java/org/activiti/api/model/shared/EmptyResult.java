@@ -17,11 +17,9 @@ package org.activiti.api.model.shared;
 
 public class EmptyResult extends Result<Void> {
 
-    public EmptyResult() {
-    }
+    public EmptyResult() {}
 
     public EmptyResult(Payload payload) {
-        super(payload,
-              null);
+        super(payload, null);
     }
 }

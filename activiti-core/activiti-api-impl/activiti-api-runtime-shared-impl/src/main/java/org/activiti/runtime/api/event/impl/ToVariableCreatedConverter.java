@@ -15,12 +15,11 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import java.util.Optional;
 import org.activiti.api.model.shared.event.VariableCreatedEvent;
 import org.activiti.api.runtime.event.impl.VariableCreatedEventImpl;
 import org.activiti.api.runtime.model.impl.VariableInstanceImpl;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
-
-import java.util.Optional;
 
 public class ToVariableCreatedConverter implements EventConverter<VariableCreatedEvent, ActivitiVariableEvent> {
 
@@ -36,6 +35,8 @@ public class ToVariableCreatedConverter implements EventConverter<VariableCreate
 
         VariableInstanceImpl<Object> variableInstance = createVariableInstance(internalEvent, isEphemeral);
 
-        return Optional.of(new VariableCreatedEventImpl(variableInstance, internalEvent.getProcessDefinitionId(), isEphemeral));
+        return Optional.of(
+            new VariableCreatedEventImpl(variableInstance, internalEvent.getProcessDefinitionId(), isEphemeral)
+        );
     }
 }

@@ -50,20 +50,20 @@ public class TaskTemplateDefinition {
         this.isEmailNotificationEnabled = emailNotificationEnabled;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TaskTemplateDefinition that = (TaskTemplateDefinition) o;
-        return Objects.equals(assignee, that.assignee) &&
+        return (
+            Objects.equals(assignee, that.assignee) &&
             Objects.equals(candidate, that.candidate) &&
-            isEmailNotificationEnabled == that.isEmailNotificationEnabled;
+            isEmailNotificationEnabled == that.isEmailNotificationEnabled
+        );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(assignee,
-                            candidate,isEmailNotificationEnabled);
+        return Objects.hash(assignee, candidate, isEmailNotificationEnabled);
     }
 }

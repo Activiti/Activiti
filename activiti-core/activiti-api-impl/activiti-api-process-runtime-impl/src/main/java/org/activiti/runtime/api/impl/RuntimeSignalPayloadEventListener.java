@@ -36,8 +36,6 @@ public class RuntimeSignalPayloadEventListener implements SignalPayloadEventList
     @Override
     @EventListener
     public void sendSignal(SignalPayload signalPayload) {
-        runtimeService.signalEventReceived(signalPayload.getName(),
-                                           signalPayload.getVariables());
+        runtimeService.signalEventReceived(signalPayload.getName(), signalPayload.getVariables());
     }
-
 }

@@ -1,6 +1,6 @@
 {
-  "id":"CompleteReviewTaskProcessModel",
-  "name":"myProcess234.bpmn",
+  "id": "CompleteReviewTaskProcessModel",
+  "name": "myProcess234.bpmn",
   "extensions": {
     "CompleteReviewTaskProcess": {
       "properties": {},

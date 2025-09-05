@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.jpa;
-
-import java.math.BigInteger;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import java.math.BigInteger;
 
 /**
 
@@ -29,16 +27,15 @@ import jakarta.persistence.Id;
 @Entity(name = "BIGINT_ID_ENTITY")
 public class BigIntegerIdJPAEntity {
 
-  @Id
-  @Column(name = "ID_")
-  private BigInteger bigIntegerId;
+    @Id
+    @Column(name = "ID_")
+    private BigInteger bigIntegerId;
 
-  public BigInteger getBigIntegerId() {
-    return bigIntegerId;
-  }
+    public BigInteger getBigIntegerId() {
+        return bigIntegerId;
+    }
 
-  public void setBigIntegerId(BigInteger bigIntegerId) {
-    this.bigIntegerId = bigIntegerId;
-  }
-
+    public void setBigIntegerId(BigInteger bigIntegerId) {
+        this.bigIntegerId = bigIntegerId;
+    }
 }

@@ -35,12 +35,12 @@ public class ProcessExtensionServiceIT {
     @Autowired
     private ProcessExtensionService processExtensionService;
 
-
     @Test
     public void canReadExtension() throws IOException {
-        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-                .processDefinitionKey("Process_initialVarsProcess")
-                .singleResult();
+        ProcessDefinition processDefinition = repositoryService
+            .createProcessDefinitionQuery()
+            .processDefinitionKey("Process_initialVarsProcess")
+            .singleResult();
 
         boolean hasExtensionsFor = processExtensionService.hasExtensionsFor(processDefinition);
 

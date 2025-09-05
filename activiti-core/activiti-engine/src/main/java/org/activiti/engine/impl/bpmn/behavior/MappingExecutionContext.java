@@ -30,8 +30,7 @@ public class MappingExecutionContext {
         this.execution = delegateExecution;
     }
 
-    public MappingExecutionContext(String processDefinitionId,
-                                   String activityId) {
+    public MappingExecutionContext(String processDefinitionId, String activityId) {
         this.processDefinitionId = processDefinitionId;
         this.activityId = activityId;
     }
@@ -56,10 +55,8 @@ public class MappingExecutionContext {
         return new MappingExecutionContext(delegateExecution);
     }
 
-    public static MappingExecutionContext buildMappingExecutionContext(String processDefinitionId,
-                                                                       String activityId) {
-        return new MappingExecutionContext(processDefinitionId,
-                activityId);
+    public static MappingExecutionContext buildMappingExecutionContext(String processDefinitionId, String activityId) {
+        return new MappingExecutionContext(processDefinitionId, activityId);
     }
 
     @Override
@@ -71,15 +68,13 @@ public class MappingExecutionContext {
             return false;
         }
         MappingExecutionContext that = (MappingExecutionContext) o;
-        return Objects.equals(processDefinitionId,
-                that.processDefinitionId) &&
-                Objects.equals(activityId,
-                        that.activityId);
+        return (
+            Objects.equals(processDefinitionId, that.processDefinitionId) && Objects.equals(activityId, that.activityId)
+        );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(processDefinitionId,
-                activityId);
+        return Objects.hash(processDefinitionId, activityId);
     }
 }

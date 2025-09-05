@@ -42,6 +42,7 @@ public class ShutdownListener implements ApplicationListener<ContextClosedEvent>
             ApplicationStatusHolder.shutdown();
         }
     }
+
     @Override
     public int getOrder() {
         return HIGHEST_PRECEDENCE;

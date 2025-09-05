@@ -16,7 +16,5 @@
 package org.activiti.api.process.model;
 
 public interface ProcessCandidateStarter {
-
     String getProcessDefinitionId();
-
 }

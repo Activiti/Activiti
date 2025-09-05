@@ -33,11 +33,7 @@ public class NodePrinter {
         return true;
     }
 
-    private static void dump(
-        PrintWriter writer,
-        Node node,
-        Stack<Node> predecessors
-    ) {
+    private static void dump(PrintWriter writer, Node node, Stack<Node> predecessors) {
         if (!predecessors.isEmpty()) {
             Node parent = null;
             for (Node predecessor : predecessors) {

@@ -93,20 +93,14 @@ public final class TreeMethodExpression extends MethodExpression {
 
         if (node.isLiteralText()) {
             if (returnType == void.class || returnType == Void.class) {
-                throw new ELException(
-                    LocalMessages.get("error.method.literal.void", expr)
-                );
+                throw new ELException(LocalMessages.get("error.method.literal.void", expr));
             }
         } else if (!node.isMethodInvocation()) {
             if (!node.isLeftValue()) {
-                throw new ELException(
-                    LocalMessages.get("error.method.invalid", expr)
-                );
+                throw new ELException(LocalMessages.get("error.method.invalid", expr));
             }
             if (paramTypes == null) {
-                throw new NullPointerException(
-                    LocalMessages.get("error.method.notypes")
-                ); // EL specification requires NPE
+                throw new NullPointerException(LocalMessages.get("error.method.notypes")); // EL specification requires NPE
             }
         }
     }
@@ -142,8 +136,7 @@ public final class TreeMethodExpression extends MethodExpression {
      * @throws ELException if evaluation fails (e.g. suitable method not found)
      */
     @Override
-    public Object invoke(ELContext context, Object[] paramValues)
-        throws ELException {
+    public Object invoke(ELContext context, Object[] paramValues) throws ELException {
         return node.invoke(bindings, context, type, types, paramValues);
     }
 
@@ -196,10 +189,7 @@ public final class TreeMethodExpression extends MethodExpression {
             if (!Arrays.equals(types, other.types)) {
                 return false;
             }
-            return (
-                getStructuralId().equals(other.getStructuralId()) &&
-                bindings.equals(other.bindings)
-            );
+            return (getStructuralId().equals(other.getStructuralId()) && bindings.equals(other.bindings));
         }
         return false;
     }
@@ -222,8 +212,7 @@ public final class TreeMethodExpression extends MethodExpression {
         NodePrinter.dump(writer, node);
     }
 
-    private void readObject(ObjectInputStream in)
-        throws IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         try {
             node = builder.build(expr).getRoot();

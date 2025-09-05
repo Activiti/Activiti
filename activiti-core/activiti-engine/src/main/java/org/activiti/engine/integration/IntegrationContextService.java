@@ -20,9 +20,7 @@ import org.activiti.engine.impl.persistence.entity.integration.IntegrationContex
 
 @Internal
 public interface IntegrationContextService {
-
     IntegrationContextEntity findById(String id);
 
     void deleteIntegrationContext(IntegrationContextEntity integrationContextEntity);
-
 }

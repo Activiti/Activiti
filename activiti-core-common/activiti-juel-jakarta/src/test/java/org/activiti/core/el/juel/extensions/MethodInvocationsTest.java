@@ -51,28 +51,13 @@ public class MethodInvocationsTest {
         // let's go...
         ValueExpression e = null;
 
-        e =
-            f.createValueExpression(
-                context,
-                "${'foo'.matches('foo|bar')}",
-                boolean.class
-            );
+        e = f.createValueExpression(context, "${'foo'.matches('foo|bar')}", boolean.class);
         assertEquals(e.getValue(context), true); // --> true
 
-        e =
-            f.createValueExpression(
-                context,
-                "${'bar'.toUpperCase()}",
-                String.class
-            );
+        e = f.createValueExpression(context, "${'bar'.toUpperCase()}", String.class);
         assertEquals(e.getValue(context), "BAR"); // --> BAR
 
-        e =
-            f.createValueExpression(
-                context,
-                "${'foobar '.trim().length()}",
-                int.class
-            );
+        e = f.createValueExpression(context, "${'foobar '.trim().length()}", int.class);
         assertEquals((Integer) e.getValue(context), 6); // --> 6
     }
 

@@ -32,7 +32,10 @@ public class ProfileSession {
     protected long totalTime;
 
     protected ThreadLocal<CommandExecutionResult> currentCommandExecution = new ThreadLocal<CommandExecutionResult>();
-    protected Map<String, List<CommandExecutionResult>> commandExecutionResults = new HashMap<String, List<CommandExecutionResult>>();
+    protected Map<String, List<CommandExecutionResult>> commandExecutionResults = new HashMap<
+        String,
+        List<CommandExecutionResult>
+    >();
 
     public ProfileSession(String name) {
         this.name = name;
@@ -111,5 +114,4 @@ public class ProfileSession {
         }
         return result;
     }
-
 }

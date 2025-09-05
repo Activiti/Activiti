@@ -15,11 +15,10 @@
  */
 package org.activiti.api.task.model.builders;
 
-import org.activiti.api.task.model.payloads.AssignTasksPayload;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.activiti.api.task.model.payloads.AssignTasksPayload;
 
 public class AssignTasksPayloadBuilder {
 

@@ -22,9 +22,8 @@ package org.activiti.spring.test.expression.callactivity;
  */
 public class NextProcessExecutionEvaluator {
 
-  public String returnProcessDefinitionToCall() {
-    // some business logic here
-    return "simpleSubProcess";
-  }
-
+    public String returnProcessDefinitionToCall() {
+        // some business logic here
+        return "simpleSubProcess";
+    }
 }
