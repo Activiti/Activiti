@@ -29,10 +29,12 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.runtime.Clock;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-public class ClaimTaskCmdTest {
+class ClaimTaskCmdTest {
 
     private static final String TASK_ID = "task123";
     private static final String NEW_USER_ID = "user456";
@@ -42,8 +44,8 @@ public class ClaimTaskCmdTest {
     private HistoryManager historyManager;
     private Date currentTime;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         commandContext = mock();
         task = mock();
         taskEntityManager = mock();
@@ -63,9 +65,10 @@ public class ClaimTaskCmdTest {
         when(task.getAssignee()).thenReturn(null);
     }
 
-    @Test
-    public void should_changeAssignee_when_taskIsNotAssignedYet() {
-        ClaimTaskCmd cmd = new ClaimTaskCmd(TASK_ID, NEW_USER_ID);
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void should_changeAssignee_when_taskIsNotAssignedYet(boolean force) {
+        ClaimTaskCmd cmd = new ClaimTaskCmd(TASK_ID, NEW_USER_ID, force);
 
         cmd.execute(commandContext, task);
 
@@ -74,10 +77,11 @@ public class ClaimTaskCmdTest {
         verify(historyManager).recordTaskClaim(task);
     }
 
-    @Test
-    public void should_keepAssignee_when_taskIsAlreadyAssignedToTheUser() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void should_keepAssignee_when_taskIsAlreadyAssignedToTheUser(boolean force) {
         when(task.getAssignee()).thenReturn(NEW_USER_ID);
-        ClaimTaskCmd cmd = new ClaimTaskCmd(TASK_ID, NEW_USER_ID);
+        ClaimTaskCmd cmd = new ClaimTaskCmd(TASK_ID, NEW_USER_ID, force);
 
         cmd.execute(commandContext, task);
 
@@ -87,10 +91,10 @@ public class ClaimTaskCmdTest {
     }
 
     @Test
-    public void should_throwException_when_taskIsAlreadyAssignedToAnotherUser() {
+    void should_throwException_when_taskIsAlreadyAssignedToAnotherUser() {
         String existingAssignee = "user789";
         when(task.getAssignee()).thenReturn(existingAssignee);
-        ClaimTaskCmd cmd = new ClaimTaskCmd(TASK_ID, NEW_USER_ID);
+        ClaimTaskCmd cmd = new ClaimTaskCmd(TASK_ID, NEW_USER_ID, false);
 
         assertThrows(
             ActivitiTaskAlreadyClaimedException.class,
@@ -101,10 +105,24 @@ public class ClaimTaskCmdTest {
     }
 
     @Test
-    public void should_removeAssignee_when_taskIsAlreadyAssignedToAUser() {
+    void should_notThrowException_when_taskIsAlreadyAssignedToAnotherUser() {
         String existingAssignee = "user789";
         when(task.getAssignee()).thenReturn(existingAssignee);
-        ClaimTaskCmd cmd = new ClaimTaskCmd(TASK_ID, null);
+        ClaimTaskCmd cmd = new ClaimTaskCmd(TASK_ID, NEW_USER_ID, true);
+
+        cmd.execute(commandContext, task);
+
+        verify(task).setClaimTime(currentTime);
+        verify(taskEntityManager).changeTaskAssignee(task, NEW_USER_ID);
+        verify(historyManager).recordTaskClaim(task);
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void should_removeAssignee_when_taskIsAlreadyAssignedToAUser(boolean force) {
+        String existingAssignee = "user789";
+        when(task.getAssignee()).thenReturn(existingAssignee);
+        ClaimTaskCmd cmd = new ClaimTaskCmd(TASK_ID, null, force);
 
         cmd.execute(commandContext, task);
 
@@ -113,9 +131,10 @@ public class ClaimTaskCmdTest {
         verify(historyManager).recordTaskClaim(task);
     }
 
-    @Test
-    public void should_removeAssignee_when_taskIsNotAssignedYet() {
-        ClaimTaskCmd cmd = new ClaimTaskCmd(TASK_ID, null);
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void should_removeAssignee_when_taskIsNotAssignedYet(boolean force) {
+        ClaimTaskCmd cmd = new ClaimTaskCmd(TASK_ID, null, force);
 
         cmd.execute(commandContext, task);
 
