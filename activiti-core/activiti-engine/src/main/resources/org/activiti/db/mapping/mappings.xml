@@ -27,6 +27,9 @@
     <mapper resource="org/activiti/db/mapping/entity/HistoricProcessInstance.xml" />
     <mapper resource="org/activiti/db/mapping/entity/HistoricVariableInstance.xml" />
     <mapper resource="org/activiti/db/mapping/entity/HistoricTaskInstance.xml" />
+    <mapper resource="org/activiti/db/mapping/entity/HistoricTaskInstance-v1.xml" />
+    <mapper resource="org/activiti/db/mapping/entity/HistoricTaskInstance-v2.xml" />
+    <mapper resource="org/activiti/db/mapping/entity/HistoricTaskInstance-v3.xml" />
     <mapper resource="org/activiti/db/mapping/entity/HistoricIdentityLink.xml" />
     <mapper resource="org/activiti/db/mapping/entity/IdentityLink.xml" />
     <mapper resource="org/activiti/db/mapping/entity/Job.xml" />
