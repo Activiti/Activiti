@@ -18,6 +18,7 @@ package org.activiti.engine.impl.cmd;
 
 import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,10 +30,11 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.runtime.Clock;
-import org.junit.Before;
-import org.junit.Test;
 
-public class ClaimTaskCmdTest {
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+class ClaimTaskCmdTest {
 
     private static final String TASK_ID = "task123";
     private static final String NEW_USER_ID = "user456";
@@ -42,8 +44,8 @@ public class ClaimTaskCmdTest {
     private HistoryManager historyManager;
     private Date currentTime;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         commandContext = mock();
         task = mock();
         taskEntityManager = mock();
@@ -64,7 +66,7 @@ public class ClaimTaskCmdTest {
     }
 
     @Test
-    public void should_changeAssignee_when_taskIsNotAssignedYet() {
+    void should_changeAssignee_when_taskIsNotAssignedYet() {
         ClaimTaskCmd cmd = new ClaimTaskCmd(TASK_ID, NEW_USER_ID);
 
         cmd.execute(commandContext, task);
@@ -75,19 +77,19 @@ public class ClaimTaskCmdTest {
     }
 
     @Test
-    public void should_keepAssignee_when_taskIsAlreadyAssignedToTheUser() {
+    void should_keepAssignee_when_taskIsAlreadyAssignedToTheUser() {
         when(task.getAssignee()).thenReturn(NEW_USER_ID);
         ClaimTaskCmd cmd = new ClaimTaskCmd(TASK_ID, NEW_USER_ID);
 
         cmd.execute(commandContext, task);
 
         verify(task).setClaimTime(currentTime);
-        verify(taskEntityManager).changeTaskAssignee(task, NEW_USER_ID);
+        verify(taskEntityManager, times(0)).changeTaskAssignee(task, NEW_USER_ID);
         verify(historyManager).recordTaskClaim(task);
     }
 
     @Test
-    public void should_throwException_when_taskIsAlreadyAssignedToAnotherUser() {
+    void should_throwException_when_taskIsAlreadyAssignedToAnotherUser() {
         String existingAssignee = "user789";
         when(task.getAssignee()).thenReturn(existingAssignee);
         ClaimTaskCmd cmd = new ClaimTaskCmd(TASK_ID, NEW_USER_ID);
@@ -101,7 +103,7 @@ public class ClaimTaskCmdTest {
     }
 
     @Test
-    public void should_removeAssignee_when_taskIsAlreadyAssignedToAUser() {
+    void should_removeAssignee_when_taskIsAlreadyAssignedToAUser() {
         String existingAssignee = "user789";
         when(task.getAssignee()).thenReturn(existingAssignee);
         ClaimTaskCmd cmd = new ClaimTaskCmd(TASK_ID, null);
@@ -114,7 +116,7 @@ public class ClaimTaskCmdTest {
     }
 
     @Test
-    public void should_removeAssignee_when_taskIsNotAssignedYet() {
+    void should_removeAssignee_when_taskIsNotAssignedYet() {
         ClaimTaskCmd cmd = new ClaimTaskCmd(TASK_ID, null);
 
         cmd.execute(commandContext, task);
