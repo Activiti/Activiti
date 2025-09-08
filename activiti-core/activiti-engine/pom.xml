@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-core-dependencies</artifactId>
-    <version>8.1.6-alpha.1</version>
+    <version>8.1.6</version>
     <relativePath>../activiti-core-dependencies</relativePath>
   </parent>
 
