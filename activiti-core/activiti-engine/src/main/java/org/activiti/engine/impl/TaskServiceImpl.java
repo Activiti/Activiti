@@ -188,10 +188,6 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     commandExecutor.execute(new ClaimTaskCmd(taskId, userId));
   }
 
-  public void claim(String taskId, String userId, boolean ignoreExistingAssignee) {
-    commandExecutor.execute(new ClaimTaskCmd(taskId, userId, ignoreExistingAssignee));
-  }
-
   public void unclaim(String taskId) {
     commandExecutor.execute(new ClaimTaskCmd(taskId, null));
   }
