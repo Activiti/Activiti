@@ -193,4 +193,19 @@ class IntegrationContextImplTest {
         return objectMapper.readValue(objectMapper.writeValueAsString(source),
                                       IntegrationContext.class);
     }
+
+    @Test
+    void assertThatIntegrationContextImplDoesNotAddVariableValuesIntoToStringMethod(){
+        //given
+        IntegrationContextImpl integrationContext = new IntegrationContextImpl();
+        integrationContext.addInBoundVariable("inbound_key", "inbound_value");
+        integrationContext.addOutBoundVariable("outbound_key", "outbound_value");
+
+        //when
+        String toString = integrationContext.toString();
+
+        //then
+        assertThat(toString).doesNotContain("inbound_value");
+        assertThat(toString).doesNotContain("outbound_value");
+    }
 }
