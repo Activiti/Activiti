@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.history.HistoricTaskInstance;
@@ -365,36 +366,48 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
         }
     }
 
-    @Deployment
-    public void testCandidate() {
+    private HistoricTaskInstanceQuery createAndHistoricTaskInstanceQuery() {
+        return historyService.createHistoricTaskInstanceQuery();
+    }
+    private HistoricTaskInstanceQuery createOrHistoricTaskInstanceQuery() {
+        return historyService.createHistoricTaskInstanceQuery().or();
+    }
+
+    @Deployment(resources={"org/activiti/engine/test/api/history/HistoricTaskAndVariablesQueryTest.testCandidate.bpmn20.xml"})
+    public void testCandidateWithAndCondition() {
+        testCandidate(this::createAndHistoricTaskInstanceQuery);
+    }
+
+    @Deployment(resources={"org/activiti/engine/test/api/history/HistoricTaskAndVariablesQueryTest.testCandidate.bpmn20.xml"})
+    public void testCandidateWithOrCondition() {
+        testCandidate(this::createOrHistoricTaskInstanceQuery);
+    }
+    private void testCandidate(Supplier<HistoricTaskInstanceQuery> queryBuilder) {
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-            List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(KERMIT,
-                                                                                                                  KERMITSGROUPS).list();
+
+            List<HistoricTaskInstance> tasks = queryBuilder.get().taskCandidateUser(KERMIT, KERMITSGROUPS).list();
             assertThat(tasks).hasSize(3);
 
-            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(GONZO,
-                                                                                       GONZOSGROUPS).list();
+            tasks = queryBuilder.get().taskCandidateUser(GONZO, GONZOSGROUPS).list();
             assertThat(tasks).hasSize(0);
 
-            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(FOZZIE,
-                                                                                       FOZZIESGROUPS).list();
+            tasks = queryBuilder.get().taskCandidateUser(FOZZIE, FOZZIESGROUPS).list();
             assertThat(tasks).hasSize(1);
 
-            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroup("management").list();
+            tasks = queryBuilder.get().taskCandidateGroup("management").list();
             assertThat(tasks).hasSize(1);
+
             List<String> groups = new ArrayList<String>();
             groups.add("management");
             groups.add("accountancy");
-            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroupIn(groups).list();
+            tasks = queryBuilder.get().taskCandidateGroupIn(groups).list();
             assertThat(tasks).hasSize(1);
 
-            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(KERMIT,
-                                                                                       KERMITSGROUPS).taskCandidateGroupIn(groups).list();
+            tasks = queryBuilder.get().taskCandidateUser(KERMIT, KERMITSGROUPS).taskCandidateGroupIn(groups).list();
             assertThat(tasks).hasSize(3);
 
-            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(GONZO,
-                                                                                       GONZOSGROUPS).taskCandidateGroupIn(groups).list();
+            tasks = queryBuilder.get().taskCandidateUser(GONZO, GONZOSGROUPS).taskCandidateGroupIn(groups).list();
             assertThat(tasks).hasSize(1);
 
             Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
@@ -402,34 +415,28 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
 
             assertThat(taskService.createTaskQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
 
-            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(KERMIT,
-                                                                                       KERMITSGROUPS).list();
+            tasks = queryBuilder.get().taskCandidateUser(KERMIT, KERMITSGROUPS).list();
             assertThat(tasks).hasSize(3);
 
-            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(GONZO,
-                                                                                       GONZOSGROUPS).list();
+            tasks = queryBuilder.get().taskCandidateUser(GONZO, GONZOSGROUPS).list();
             assertThat(tasks).hasSize(0);
 
-            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(FOZZIE,
-                                                                                       FOZZIESGROUPS).list();
+            tasks = queryBuilder.get().taskCandidateUser(FOZZIE, FOZZIESGROUPS).list();
             assertThat(tasks).hasSize(1);
 
-            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroup("management").list();
+            tasks = queryBuilder.get().taskCandidateGroup("management").list();
             assertThat(tasks).hasSize(1);
 
-            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(KERMIT,
-                                                                                       KERMITSGROUPS).taskCandidateGroupIn(asList("management")).list();
+            tasks = queryBuilder.get().taskCandidateUser(KERMIT, KERMITSGROUPS).taskCandidateGroupIn(asList("management")).list();
             assertThat(tasks).hasSize(3);
 
-            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(GONZO,
-                                                                                       GONZOSGROUPS).taskCandidateGroupIn(asList("management")).list();
+            tasks = queryBuilder.get().taskCandidateUser(GONZO, GONZOSGROUPS).taskCandidateGroupIn(asList("management")).list();
             assertThat(tasks).hasSize(1);
 
-            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateUser(GONZO,
-                                                                                       GONZOSGROUPS).taskCandidateGroupIn(asList("invalid")).list();
+            tasks = queryBuilder.get().taskCandidateUser(GONZO, GONZOSGROUPS).taskCandidateGroupIn(asList("invalid")).list();
             assertThat(tasks).hasSize(0);
 
-            tasks = historyService.createHistoricTaskInstanceQuery().taskCandidateGroupIn(groups).list();
+            tasks = queryBuilder.get().taskCandidateGroupIn(groups).list();
             assertThat(tasks).hasSize(1);
         }
     }

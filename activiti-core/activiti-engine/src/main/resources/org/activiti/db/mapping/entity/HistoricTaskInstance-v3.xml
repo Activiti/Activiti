@@ -17,12 +17,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntityImpl">
-  <!-- HISTORIC TASK INSTANCE SELECT (V2 - withoutJoins) -->
-
-  <!--
-    <include refid="withoutJoins_selectHistoricTaskInstanceCountByQueryCriteria"/>
-    <include refid="withoutJoins_selectHistoricTaskInstancesByQueryCriteria"/>
-  -->
 
   <!-- optimized script -->
   <sql id="v3_selectHistoricTaskInstanceCountByQueryCriteria">
@@ -250,8 +244,9 @@
           )
         </if>
       </if>
-      <if test="!orQueryObject.bothCandidateAndAssigned &amp;&amp; (orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null)">
-        left join ${prefix}ACT_RU_IDENTITYLINK link_or${orIndex}
+      -->
+      <if test="orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null">
+        left join ${prefix}ACT_HI_IDENTITYLINK link_or${orIndex}
         on RES.ID_ = link_or${orIndex}.TASK_ID_
         and RES.ASSIGNEE_ is null
         and link_or${orIndex}.TYPE_ = 'candidate'
@@ -269,7 +264,6 @@
           </if>
         </trim>
       </if>
-      -->
       <!-- TODO: bothCandidateAndAssigned doesn't exist (end) -->
       <if test="orQueryObject.involvedUser != null">
         left join ${prefix}ACT_HI_IDENTITYLINK link_user_or${orIndex}
@@ -853,6 +847,10 @@
           </if>
           -->
           <!-- TODO: excludeSubtasks doesn't exist (end) -->
+          <if test="orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null">
+            or link_or${orIndex}.ID_ is not null
+          </if>
+
           <!-- TODO: bothCandidateAndAssigned doesn't exist (begin) -->
           <!--
           <if test="!orQueryObject.bothCandidateAndAssigned &amp;&amp; (orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null)">
