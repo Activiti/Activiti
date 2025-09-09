@@ -80,10 +80,7 @@ public class AstNumberTest extends TestCase {
     @Test
     public void testGetValue() {
         assertEquals(1l, parseNode("${1}").getValue(bindings, null, null));
-        assertEquals(
-            1d,
-            parseNode("${1}").getValue(bindings, null, Double.class)
-        );
+        assertEquals(1d, parseNode("${1}").getValue(bindings, null, Double.class));
     }
 
     @Test

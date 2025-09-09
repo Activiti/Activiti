@@ -17,7 +17,6 @@ package org.activiti.spring.boot;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.api.process.model.events.BPMNMessageEvent;
 import org.activiti.api.process.model.events.BPMNMessageReceivedEvent;
 import org.activiti.api.process.model.events.BPMNMessageSentEvent;
@@ -32,7 +31,9 @@ import org.springframework.context.annotation.Configuration;
 public class MessageTestConfiguration {
 
     public static List<BPMNMessageEvent> messageEvents = new ArrayList<BPMNMessageEvent>();
-    public static List<MessageSubscriptionCancelledEvent> messageSubscriptionCancelledEvents = new ArrayList<MessageSubscriptionCancelledEvent>();
+    public static List<MessageSubscriptionCancelledEvent> messageSubscriptionCancelledEvents = new ArrayList<
+        MessageSubscriptionCancelledEvent
+    >();
 
     @Bean
     public BPMNElementEventListener<BPMNMessageSentEvent> messageSentEventListener() {
@@ -51,7 +52,7 @@ public class MessageTestConfiguration {
 
     @Bean
     public ProcessRuntimeEventListener<MessageSubscriptionCancelledEvent> messageSubscriptionCancelledEventListener() {
-        return messageSubscriptionCancelledEvent -> messageSubscriptionCancelledEvents.add(messageSubscriptionCancelledEvent);
+        return messageSubscriptionCancelledEvent ->
+            messageSubscriptionCancelledEvents.add(messageSubscriptionCancelledEvent);
     }
-
 }

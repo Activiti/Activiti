@@ -15,22 +15,21 @@
  */
 package org.activiti.application;
 
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.Resource;
-
-import static java.util.Collections.singletonList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 public class ApplicationServiceTest {
@@ -75,8 +74,6 @@ public class ApplicationServiceTest {
         Throwable thrown = catchThrowable(() -> applicationService.loadApplications());
 
         //then
-        assertThat(thrown)
-            .isInstanceOf(ApplicationLoadException.class)
-            .hasCause(ioException);
+        assertThat(thrown).isInstanceOf(ApplicationLoadException.class).hasCause(ioException);
     }
 }

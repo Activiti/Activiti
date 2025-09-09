@@ -24,10 +24,8 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 
  */
 public enum JobType {
-
-  ASYNC,
-  TIMER,
-  SUSPENDED,
-  DEADLETTER
-
+    ASYNC,
+    TIMER,
+    SUSPENDED,
+    DEADLETTER,
 }

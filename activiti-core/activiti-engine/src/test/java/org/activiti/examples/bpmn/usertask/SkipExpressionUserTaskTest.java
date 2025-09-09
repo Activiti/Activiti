@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -70,8 +69,7 @@ public class SkipExpressionUserTaskTest extends PluggableActivitiTestCase {
         variables.put("skip2", true);
         variables.put("skip3", false);
 
-        runtimeService.startProcessInstanceByKey("skipExpressionUserTask-testSkipMultipleTasks",
-                                                 variables);
+        runtimeService.startProcessInstanceByKey("skipExpressionUserTask-testSkipMultipleTasks", variables);
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
         assertThat(tasks.get(0).getName()).isEqualTo("Task3");

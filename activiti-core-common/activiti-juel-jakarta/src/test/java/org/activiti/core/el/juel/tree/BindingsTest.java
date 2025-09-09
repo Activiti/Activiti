@@ -47,21 +47,10 @@ public class BindingsTest extends TestCase {
         context.setFunction("ns", "f", BindingsTest.class.getMethod("foo"));
 
         // function g()
-        context.setFunction(
-            "",
-            "g",
-            BindingsTest.class.getMethod("bar", new Class[] { int.class })
-        );
+        context.setFunction("", "g", BindingsTest.class.getMethod("bar", new Class[] { int.class }));
 
         // variable v
-        context.setVariable(
-            "v",
-            new ObjectValueExpression(
-                TypeConverter.DEFAULT,
-               Long.valueOf(0),
-                long.class
-            )
-        );
+        context.setVariable("v", new ObjectValueExpression(TypeConverter.DEFAULT, Long.valueOf(0), long.class));
     }
 
     @Test
@@ -71,9 +60,7 @@ public class BindingsTest extends TestCase {
         bindings = new Bindings(null, null);
         assertEquals(bindings, deserialize(serialize(bindings)));
 
-        bindings =
-            parse("${ns:f()+v+g(1)+x}")
-                .bind(context.getFunctionMapper(), context.getVariableMapper());
+        bindings = parse("${ns:f()+v+g(1)+x}").bind(context.getFunctionMapper(), context.getVariableMapper());
         assertEquals(bindings, deserialize(serialize(bindings)));
     }
 
@@ -93,10 +80,8 @@ public class BindingsTest extends TestCase {
         assertEquals(bindings1.hashCode(), bindings2.hashCode());
 
         Tree tree = parse("${ns:f()+v+g(1)}+x");
-        bindings1 =
-            tree.bind(context.getFunctionMapper(), context.getVariableMapper());
-        bindings2 =
-            tree.bind(context.getFunctionMapper(), context.getVariableMapper());
+        bindings1 = tree.bind(context.getFunctionMapper(), context.getVariableMapper());
+        bindings2 = tree.bind(context.getFunctionMapper(), context.getVariableMapper());
         assertEquals(bindings1, bindings2);
         assertEquals(bindings1.hashCode(), bindings2.hashCode());
     }

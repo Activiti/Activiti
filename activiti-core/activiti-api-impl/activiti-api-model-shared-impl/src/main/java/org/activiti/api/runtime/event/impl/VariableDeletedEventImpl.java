@@ -22,8 +22,7 @@ public class VariableDeletedEventImpl extends VariableEventImpl implements Varia
 
     private boolean isEphemeralVariable;
 
-    public VariableDeletedEventImpl() {
-    }
+    public VariableDeletedEventImpl() {}
 
     public VariableDeletedEventImpl(VariableInstance entity, boolean isEphemeralVariable) {
         super(entity);

@@ -37,8 +37,7 @@
       },
       "mappings": {
         "simpleTask": {
-          "inputs": {
-          },
+          "inputs": {},
           "outputs": {
             "process_variable_output_invalid_path_variable_empty": {
               "type": "JSONPATCH",
@@ -53,8 +52,7 @@
           }
         }
       },
-      "constants": {
-      }
+      "constants": {}
     }
   }
 }

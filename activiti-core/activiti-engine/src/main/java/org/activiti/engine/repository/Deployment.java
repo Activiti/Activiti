@@ -16,9 +16,8 @@
 
 package org.activiti.engine.repository;
 
-import org.activiti.engine.api.internal.Internal;
-
 import java.util.Date;
+import org.activiti.engine.api.internal.Internal;
 
 /**
  * Represents a deployment that is already present in the process repository.
@@ -35,21 +34,19 @@ import java.util.Date;
 
 @Internal
 public interface Deployment {
+    String getId();
 
-  String getId();
+    String getName();
 
-  String getName();
+    Date getDeploymentTime();
 
-  Date getDeploymentTime();
+    String getCategory();
 
-  String getCategory();
+    String getKey();
 
-  String getKey();
+    String getTenantId();
 
-  String getTenantId();
+    Integer getVersion();
 
-  Integer getVersion();
-
-  String getProjectReleaseVersion();
-
+    String getProjectReleaseVersion();
 }

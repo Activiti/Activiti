@@ -15,6 +15,10 @@
  */
 package org.activiti.runtime.api.connector;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.junit.jupiter.api.Test;
@@ -23,10 +27,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationContext;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 public class DefaultServiceTaskBehaviorTest {
@@ -81,5 +81,4 @@ public class DefaultServiceTaskBehaviorTest {
         //then
         assertThat(hasConnectorBean).isFalse();
     }
-
 }

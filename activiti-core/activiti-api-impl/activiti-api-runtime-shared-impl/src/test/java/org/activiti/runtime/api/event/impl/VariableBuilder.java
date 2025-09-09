@@ -39,5 +39,4 @@ public class VariableBuilder {
         internalEvent.setVariableValue("value");
         return internalEvent;
     }
-
 }

@@ -21,9 +21,7 @@ public class Error {
     private String name;
     private String errorCode;
 
-    public Error(String id,
-                 String name,
-                 String errorCode) {
+    public Error(String id, String name, String errorCode) {
         this.id = id;
         this.name = name;
         this.errorCode = errorCode;

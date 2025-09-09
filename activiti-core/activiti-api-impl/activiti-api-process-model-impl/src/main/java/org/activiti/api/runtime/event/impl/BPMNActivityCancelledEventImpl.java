@@ -20,8 +20,7 @@ import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
 
 public class BPMNActivityCancelledEventImpl extends BPMNActivityEventImpl implements BPMNActivityCancelledEvent {
 
-    public BPMNActivityCancelledEventImpl() {
-    }
+    public BPMNActivityCancelledEventImpl() {}
 
     public BPMNActivityCancelledEventImpl(BPMNActivity entity) {
         super(entity);

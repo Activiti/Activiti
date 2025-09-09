@@ -15,6 +15,11 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
+import java.util.Optional;
 import org.activiti.api.process.model.events.BPMNTimerFailedEvent;
 import org.activiti.api.runtime.model.impl.BPMNTimerImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -23,12 +28,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 public class ToTimerFailedConverterTest {

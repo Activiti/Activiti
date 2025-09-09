@@ -25,33 +25,34 @@ package org.activiti.engine;
  */
 public class ActivitiWrongDbException extends ActivitiException {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  String libraryVersion;
-  String dbVersion;
+    String libraryVersion;
+    String dbVersion;
 
-  public ActivitiWrongDbException(String libraryVersion, String dbVersion) {
-    super(
-        "version mismatch: activiti library version is '"
-            + libraryVersion
-            + "', db version is "
-            + dbVersion
-            + " Hint: Set <property name=\"databaseSchemaUpdate\" to value=\"true\" or value=\"create-drop\" (use create-drop for testing only!) in bean processEngineConfiguration in activiti.cfg.xml for automatic schema creation");
-    this.libraryVersion = libraryVersion;
-    this.dbVersion = dbVersion;
-  }
+    public ActivitiWrongDbException(String libraryVersion, String dbVersion) {
+        super(
+            "version mismatch: activiti library version is '" +
+            libraryVersion +
+            "', db version is " +
+            dbVersion +
+            " Hint: Set <property name=\"databaseSchemaUpdate\" to value=\"true\" or value=\"create-drop\" (use create-drop for testing only!) in bean processEngineConfiguration in activiti.cfg.xml for automatic schema creation"
+        );
+        this.libraryVersion = libraryVersion;
+        this.dbVersion = dbVersion;
+    }
 
-  /**
-   * The version of the Activiti library used.
-   */
-  public String getLibraryVersion() {
-    return libraryVersion;
-  }
+    /**
+     * The version of the Activiti library used.
+     */
+    public String getLibraryVersion() {
+        return libraryVersion;
+    }
 
-  /**
-   * The version of the Activiti library that was used to create the database schema.
-   */
-  public String getDbVersion() {
-    return dbVersion;
-  }
+    /**
+     * The version of the Activiti library that was used to create the database schema.
+     */
+    public String getDbVersion() {
+        return dbVersion;
+    }
 }

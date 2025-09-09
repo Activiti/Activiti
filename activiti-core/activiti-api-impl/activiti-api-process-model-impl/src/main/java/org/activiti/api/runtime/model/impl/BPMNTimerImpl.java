@@ -22,8 +22,7 @@ public class BPMNTimerImpl extends BPMNElementImpl implements BPMNTimer {
 
     private TimerPayload timerPayload;
 
-    public BPMNTimerImpl() {
-    }
+    public BPMNTimerImpl() {}
 
     public BPMNTimerImpl(String elementId) {
         this.setElementId(elementId);
@@ -47,26 +46,27 @@ public class BPMNTimerImpl extends BPMNElementImpl implements BPMNTimer {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!super.equals(obj))
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (!super.equals(obj)) return false;
+        if (getClass() != obj.getClass()) return false;
         BPMNTimerImpl other = (BPMNTimerImpl) obj;
         if (timerPayload == null) {
-            if (other.timerPayload != null)
-                return false;
-        } else if (!timerPayload.equals(other.timerPayload))
-            return false;
+            if (other.timerPayload != null) return false;
+        } else if (!timerPayload.equals(other.timerPayload)) return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "BPMNActivityImpl{" +
-                ", elementId='" + getElementId() + '\'' +
-                ", timerPayload='" + (timerPayload != null ? timerPayload.toString() : null) + '\'' +
-                '}';
+        return (
+            "BPMNActivityImpl{" +
+            ", elementId='" +
+            getElementId() +
+            '\'' +
+            ", timerPayload='" +
+            (timerPayload != null ? timerPayload.toString() : null) +
+            '\'' +
+            '}'
+        );
     }
 }

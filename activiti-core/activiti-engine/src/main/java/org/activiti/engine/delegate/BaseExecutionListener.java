@@ -24,8 +24,7 @@ import java.io.Serializable;
 
  */
 public interface BaseExecutionListener extends Serializable {
-
-  String EVENTNAME_START = "start";
-  String EVENTNAME_END = "end";
-  String EVENTNAME_TAKE = "take";
+    String EVENTNAME_START = "start";
+    String EVENTNAME_END = "end";
+    String EVENTNAME_TAKE = "take";
 }

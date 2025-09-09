@@ -24,14 +24,13 @@ import java.io.InputStream;
  */
 public class BytesStreamSource implements StreamSource {
 
-  protected byte[] bytes;
+    protected byte[] bytes;
 
-  public BytesStreamSource(byte[] bytes) {
-    this.bytes = bytes;
-  }
+    public BytesStreamSource(byte[] bytes) {
+        this.bytes = bytes;
+    }
 
-  public InputStream getInputStream() {
-    return new ByteArrayInputStream(bytes);
-  }
-
+    public InputStream getInputStream() {
+        return new ByteArrayInputStream(bytes);
+    }
 }

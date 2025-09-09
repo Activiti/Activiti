@@ -22,10 +22,8 @@ public class ActivitiImageException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    public ActivitiImageException(String message,
-                                  Throwable cause) {
-        super(message,
-              cause);
+    public ActivitiImageException(String message, Throwable cause) {
+        super(message, cause);
     }
 
     public ActivitiImageException(String message) {

@@ -19,8 +19,9 @@ import org.activiti.api.task.model.TaskCandidateUser;
 import org.activiti.api.task.model.impl.TaskCandidateUserImpl;
 import org.activiti.engine.task.IdentityLink;
 
-public class APITaskCandidateUserConverter extends ListConverter<IdentityLink, TaskCandidateUser>
-        implements ModelConverter<IdentityLink, TaskCandidateUser> {
+public class APITaskCandidateUserConverter
+    extends ListConverter<IdentityLink, TaskCandidateUser>
+    implements ModelConverter<IdentityLink, TaskCandidateUser> {
 
     @Override
     public TaskCandidateUser from(IdentityLink identityLink) {

@@ -56,11 +56,7 @@ public interface ExpressionNode extends Node {
      *            result type
      * @return evaluated node, coerced to the expected type
      */
-    public Object getValue(
-        Bindings bindings,
-        ELContext context,
-        Class<?> expectedType
-    );
+    public Object getValue(Bindings bindings, ELContext context, Class<?> expectedType);
 
     /**
      * Get value reference.
@@ -69,10 +65,7 @@ public interface ExpressionNode extends Node {
      * @param context
      * @return value reference
      */
-    public ValueReference getValueReference(
-        Bindings bindings,
-        ELContext context
-    );
+    public ValueReference getValueReference(Bindings bindings, ELContext context);
 
     /**
      * Get the value type accepted in {@link #setValue(Bindings, ELContext, Object)}.
@@ -122,12 +115,7 @@ public interface ExpressionNode extends Node {
      *            expected method argument types
      * @return method information or <code>null</code>
      */
-    public MethodInfo getMethodInfo(
-        Bindings bindings,
-        ELContext context,
-        Class<?> returnType,
-        Class<?>[] paramTypes
-    );
+    public MethodInfo getMethodInfo(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes);
 
     /**
      * Invoke method.

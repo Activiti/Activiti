@@ -25,47 +25,45 @@ import org.activiti.validation.validator.ValidatorSet;
 
 public class ProcessValidatorImpl implements ProcessValidator {
 
-  protected List<ValidatorSet> validatorSets;
-  protected ValidationErrorDecorator validationErrorDecorator;
+    protected List<ValidatorSet> validatorSets;
+    protected ValidationErrorDecorator validationErrorDecorator;
 
-  public ProcessValidatorImpl() {
-    this.validationErrorDecorator = new ValidationErrorDecorator();
-  }
+    public ProcessValidatorImpl() {
+        this.validationErrorDecorator = new ValidationErrorDecorator();
+    }
 
-  @Override
-  public List<ValidationError> validate(BpmnModel bpmnModel) {
+    @Override
+    public List<ValidationError> validate(BpmnModel bpmnModel) {
+        List<ValidationError> allErrors = new ArrayList<ValidationError>();
 
-    List<ValidationError> allErrors = new ArrayList<ValidationError>();
-
-    for (ValidatorSet validatorSet : validatorSets) {
-      for (Validator validator : validatorSet.getValidators()) {
-        List<ValidationError> validatorErrors = new ArrayList<ValidationError>();
-        validator.validate(bpmnModel, validatorErrors);
-        if (!validatorErrors.isEmpty()) {
-          for (ValidationError error : validatorErrors) {
-            error.setValidatorSetName(validatorSet.getName());
-            validationErrorDecorator.decorate(error);
-          }
-          allErrors.addAll(validatorErrors);
+        for (ValidatorSet validatorSet : validatorSets) {
+            for (Validator validator : validatorSet.getValidators()) {
+                List<ValidationError> validatorErrors = new ArrayList<ValidationError>();
+                validator.validate(bpmnModel, validatorErrors);
+                if (!validatorErrors.isEmpty()) {
+                    for (ValidationError error : validatorErrors) {
+                        error.setValidatorSetName(validatorSet.getName());
+                        validationErrorDecorator.decorate(error);
+                    }
+                    allErrors.addAll(validatorErrors);
+                }
+            }
         }
-      }
+        return allErrors;
     }
-    return allErrors;
-  }
 
-  public List<ValidatorSet> getValidatorSets() {
-    return validatorSets;
-  }
-
-  public void setValidatorSets(List<ValidatorSet> validatorSets) {
-    this.validatorSets = validatorSets;
-  }
-
-  public void addValidatorSet(ValidatorSet validatorSet) {
-    if (validatorSets == null) {
-      validatorSets = new ArrayList<ValidatorSet>();
+    public List<ValidatorSet> getValidatorSets() {
+        return validatorSets;
     }
-    validatorSets.add(validatorSet);
-  }
 
+    public void setValidatorSets(List<ValidatorSet> validatorSets) {
+        this.validatorSets = validatorSets;
+    }
+
+    public void addValidatorSet(ValidatorSet validatorSet) {
+        if (validatorSets == null) {
+            validatorSets = new ArrayList<ValidatorSet>();
+        }
+        validatorSets.add(validatorSet);
+    }
 }

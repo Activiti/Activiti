@@ -18,7 +18,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-
   pre-checks:
     runs-on: ubuntu-latest
     outputs:
@@ -30,7 +29,7 @@ jobs:
         uses: Alfresco/alfresco-build-tools/.github/actions/github-pr-check-metadata@ce7f6e0b62727da8600acf87d72ffbf064ac34b5 # v8.33.0
         with:
           gh-token: ${{ secrets.BOT_GITHUB_TOKEN }}
-          actor: 'dependabot[bot]'
+          actor: "dependabot[bot]"
           label: github_actions
       - name: pre-commit
         uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@ce7f6e0b62727da8600acf87d72ffbf064ac34b5 # v8.33.0
@@ -44,7 +43,6 @@ jobs:
     needs: pre-checks
     if: ${{ needs.pre-checks.outputs.skip != 'true' }}
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
@@ -61,7 +59,7 @@ jobs:
         uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # 5.0.0
         with:
           java-version: 21
-          distribution: 'temurin'
+          distribution: "temurin"
 
       - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@ce7f6e0b62727da8600acf87d72ffbf064ac34b5 # v8.33.0
         id: update-pom-to-next-version
@@ -133,7 +131,7 @@ jobs:
           DEVELOPMENT_BRANCH: ${{ github.ref_name }}
         with:
           version: ${{ env.VERSION }}
-          auto-merge: 'true'
+          auto-merge: "true"
           labels: ${{ env.DEVELOPMENT_BRANCH }}
           base-branch-name: ${{ env.DEVELOPMENT_BRANCH }}
           git-username: ${{ secrets.BOT_GITHUB_USERNAME }}

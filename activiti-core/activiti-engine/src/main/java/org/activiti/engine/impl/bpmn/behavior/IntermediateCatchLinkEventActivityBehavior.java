@@ -16,6 +16,7 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 public class IntermediateCatchLinkEventActivityBehavior extends FlowNodeActivityBehavior {
+
     public IntermediateCatchLinkEventActivityBehavior() {
         super();
     }

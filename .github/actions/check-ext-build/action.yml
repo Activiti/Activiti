@@ -4,7 +4,6 @@ description: Checks if the build is a dependabot build or external contribution
 runs:
   using: composite
   steps:
-
     - name: Check build
       env:
         SENDER_LOGIN: ${{ github.event.sender.login }}

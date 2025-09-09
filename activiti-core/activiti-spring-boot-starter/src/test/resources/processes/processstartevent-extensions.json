@@ -1,53 +1,52 @@
 {
-   "id":"process-b42a166d-605b-4eec-8b96-82b1253666bf-model",
-   "type":"PROCESS",
-   "name":"processstartevent",
-   "extensions":{
-     "process-b42a166d-605b-4eec-8b96-82b1253666bf": {
-       "properties": {
-         "3f54237c-e376-48d6-a424-c0802158fba4": {
-           "id": "3f54237c-e376-48d6-a424-c0802158fba4",
-           "name": "name",
-           "type": "string",
-           "required": false,
-           "value": ""
-         },
-         "f839befc-23dd-4177-a0da-d24b52e9c8d4": {
-           "id": "f839befc-23dd-4177-a0da-d24b52e9c8d4",
-           "name": "email",
-           "type": "string",
-           "required": false,
-           "value": ""
-         }
-       },
-       "mappings": {
-         "StartEvent_1": {
-           "outputs": {
-             "name": {
-               "type": "variable",
-               "value": "Text0xfems"
-             },
-             "email": {
-               "type": "variable",
-               "value": "Text0rvs0o"
-             }
-           }
-         },
-         "Task_145dbyt": {
-           "inputs": {
-             "nameInTask": {
-               "type": "variable",
-               "value": "name"
-             },
-             "emailInTask": {
-               "type": "variable",
-               "value": "email"
-             }
-           }
-         }
-       },
-       "constants": {
-       }
-     }
-   }
+  "id": "process-b42a166d-605b-4eec-8b96-82b1253666bf-model",
+  "type": "PROCESS",
+  "name": "processstartevent",
+  "extensions": {
+    "process-b42a166d-605b-4eec-8b96-82b1253666bf": {
+      "properties": {
+        "3f54237c-e376-48d6-a424-c0802158fba4": {
+          "id": "3f54237c-e376-48d6-a424-c0802158fba4",
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "value": ""
+        },
+        "f839befc-23dd-4177-a0da-d24b52e9c8d4": {
+          "id": "f839befc-23dd-4177-a0da-d24b52e9c8d4",
+          "name": "email",
+          "type": "string",
+          "required": false,
+          "value": ""
+        }
+      },
+      "mappings": {
+        "StartEvent_1": {
+          "outputs": {
+            "name": {
+              "type": "variable",
+              "value": "Text0xfems"
+            },
+            "email": {
+              "type": "variable",
+              "value": "Text0rvs0o"
+            }
+          }
+        },
+        "Task_145dbyt": {
+          "inputs": {
+            "nameInTask": {
+              "type": "variable",
+              "value": "name"
+            },
+            "emailInTask": {
+              "type": "variable",
+              "value": "email"
+            }
+          }
+        }
+      },
+      "constants": {}
+    }
+  }
 }

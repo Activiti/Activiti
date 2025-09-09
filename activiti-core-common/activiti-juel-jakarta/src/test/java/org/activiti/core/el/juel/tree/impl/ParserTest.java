@@ -49,11 +49,7 @@ public class ParserTest extends TestCase {
         return verifyEvalExpression(canonical);
     }
 
-    static Tree verifyEvalExpression(
-        String canonical,
-        String expression1,
-        String expression2
-    ) {
+    static Tree verifyEvalExpression(String canonical, String expression1, String expression2) {
         Tree tree = parse(expression2);
         assertFalse(tree.getRoot().isLiteralText());
         assertEquals(canonical, tree.getRoot().getStructuralId(null));
@@ -88,10 +84,7 @@ public class ParserTest extends TestCase {
     Tree verifyBinary(AstBinary.Operator op, String canonical) {
         Tree tree = verifyEvalExpression(canonical);
         assertTrue((tree.getRoot()).getChild(0) instanceof AstBinary);
-        assertEquals(
-            op,
-            ((AstBinary) tree.getRoot().getChild(0)).getOperator()
-        );
+        assertEquals(op, ((AstBinary) tree.getRoot().getChild(0)).getOperator());
         return tree;
     }
 

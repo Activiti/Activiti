@@ -18,5 +18,5 @@ package org.activiti.api.process.runtime.events.listener;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.ProcessCandidateStarter;
 
-public interface ProcessCandidateStarterEventListener <E extends RuntimeEvent<? extends ProcessCandidateStarter, ?>> extends ProcessRuntimeEventListener<E>{
-}
+public interface ProcessCandidateStarterEventListener<E extends RuntimeEvent<? extends ProcessCandidateStarter, ?>>
+    extends ProcessRuntimeEventListener<E> {}

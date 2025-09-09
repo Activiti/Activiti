@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.el;
 
 import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.VariableScope;
@@ -54,9 +52,11 @@ public class FixedValue implements Expression {
     }
 
     @Override
-    public Object getValue(ExpressionManager expressionManager,
-        DelegateInterceptor delegateInterceptor, Map<String, Object> availableVariables) {
+    public Object getValue(
+        ExpressionManager expressionManager,
+        DelegateInterceptor delegateInterceptor,
+        Map<String, Object> availableVariables
+    ) {
         return value;
     }
-
 }

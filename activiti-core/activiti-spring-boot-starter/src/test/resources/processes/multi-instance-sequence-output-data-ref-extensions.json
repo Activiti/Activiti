@@ -4,8 +4,8 @@
   "extensions": {
     "miSequentialUserTasksOutputCollection": {
       "mappings": {
-        "miTasks" : {
-          "inputs" : {}
+        "miTasks": {
+          "inputs": {}
         }
       }
     }

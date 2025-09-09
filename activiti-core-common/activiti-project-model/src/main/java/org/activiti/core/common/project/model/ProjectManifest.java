@@ -96,5 +96,4 @@ public class ProjectManifest {
     public void setVersion(String version) {
         this.version = version;
     }
-
 }

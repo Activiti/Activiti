@@ -15,7 +15,6 @@
  */
 package org.activiti.engine.impl.variable;
 
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;

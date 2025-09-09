@@ -129,14 +129,8 @@ public class AstBinaryTest extends TestCase {
 
     @Test
     public void testGetValue() {
-        assertEquals(
-            Long.valueOf(2l),
-            parseNode("${1+1}").getValue(bindings, null, null)
-        );
-        assertEquals(
-            "2",
-            parseNode("${1+1}").getValue(bindings, null, String.class)
-        );
+        assertEquals(Long.valueOf(2l), parseNode("${1+1}").getValue(bindings, null, null));
+        assertEquals("2", parseNode("${1+1}").getValue(bindings, null, String.class));
     }
 
     @Test
@@ -146,38 +140,14 @@ public class AstBinaryTest extends TestCase {
 
     @Test
     public void testOperators() {
-        assertTrue(
-            (Boolean) parseNode("${true and true}")
-                .getValue(bindings, null, Boolean.class)
-        );
-        assertFalse(
-            (Boolean) parseNode("${true and false}")
-                .getValue(bindings, null, Boolean.class)
-        );
-        assertFalse(
-            (Boolean) parseNode("${false and true}")
-                .getValue(bindings, null, Boolean.class)
-        );
-        assertFalse(
-            (Boolean) parseNode("${false and false}")
-                .getValue(bindings, null, Boolean.class)
-        );
+        assertTrue((Boolean) parseNode("${true and true}").getValue(bindings, null, Boolean.class));
+        assertFalse((Boolean) parseNode("${true and false}").getValue(bindings, null, Boolean.class));
+        assertFalse((Boolean) parseNode("${false and true}").getValue(bindings, null, Boolean.class));
+        assertFalse((Boolean) parseNode("${false and false}").getValue(bindings, null, Boolean.class));
 
-        assertTrue(
-            (Boolean) parseNode("${true or true}")
-                .getValue(bindings, null, Boolean.class)
-        );
-        assertTrue(
-            (Boolean) parseNode("${true or false}")
-                .getValue(bindings, null, Boolean.class)
-        );
-        assertTrue(
-            (Boolean) parseNode("${false or true}")
-                .getValue(bindings, null, Boolean.class)
-        );
-        assertFalse(
-            (Boolean) parseNode("${false or false}")
-                .getValue(bindings, null, Boolean.class)
-        );
+        assertTrue((Boolean) parseNode("${true or true}").getValue(bindings, null, Boolean.class));
+        assertTrue((Boolean) parseNode("${true or false}").getValue(bindings, null, Boolean.class));
+        assertTrue((Boolean) parseNode("${false or true}").getValue(bindings, null, Boolean.class));
+        assertFalse((Boolean) parseNode("${false or false}").getValue(bindings, null, Boolean.class));
     }
 }

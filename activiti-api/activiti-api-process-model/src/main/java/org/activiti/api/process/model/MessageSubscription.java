@@ -18,7 +18,6 @@ package org.activiti.api.process.model;
 import java.util.Date;
 
 public interface MessageSubscription {
-
     String getId();
 
     String getEventName();
@@ -36,5 +35,4 @@ public interface MessageSubscription {
     Date getCreated();
 
     String getProcessDefinitionId();
-
 }

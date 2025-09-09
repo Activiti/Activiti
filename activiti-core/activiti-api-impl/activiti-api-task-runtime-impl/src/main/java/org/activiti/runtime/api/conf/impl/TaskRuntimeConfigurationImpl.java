@@ -17,19 +17,20 @@ package org.activiti.runtime.api.conf.impl;
 
 import static java.util.Collections.unmodifiableList;
 
+import java.util.List;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
-
-import java.util.List;
 
 public class TaskRuntimeConfigurationImpl implements TaskRuntimeConfiguration {
 
     private List<TaskRuntimeEventListener<?>> taskRuntimeEventListeners;
     private final List<VariableEventListener<?>> variableEventListeners;
 
-    public TaskRuntimeConfigurationImpl(List<TaskRuntimeEventListener<?>> taskRuntimeEventListeners,
-                                        List<VariableEventListener<?>> variableEventListeners) {
+    public TaskRuntimeConfigurationImpl(
+        List<TaskRuntimeEventListener<?>> taskRuntimeEventListeners,
+        List<VariableEventListener<?>> variableEventListeners
+    ) {
         this.taskRuntimeEventListeners = taskRuntimeEventListeners;
         this.variableEventListeners = variableEventListeners;
     }
@@ -43,5 +44,4 @@ public class TaskRuntimeConfigurationImpl implements TaskRuntimeConfiguration {
     public List<VariableEventListener<?>> variableEventListeners() {
         return unmodifiableList(variableEventListeners);
     }
-
 }

@@ -30,5 +30,4 @@ public class ActivitiSpringIdentityAutoConfiguration {
     public UserGroupManager userGroupManager(UserDetailsService userDetailsService) {
         return new ActivitiUserGroupManagerImpl(userDetailsService);
     }
-
 }

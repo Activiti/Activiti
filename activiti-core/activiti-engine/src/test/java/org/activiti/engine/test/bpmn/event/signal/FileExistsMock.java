@@ -18,27 +18,26 @@ package org.activiti.engine.test.bpmn.event.signal;
 
 public class FileExistsMock {
 
-	private boolean exists = false;
+    private boolean exists = false;
 
-	private static FileExistsMock instance;
+    private static FileExistsMock instance;
 
-	public static synchronized FileExistsMock getInstance() {
-		if (instance == null) {
-			instance = new FileExistsMock();
-		}
-		return instance;
-	}
+    public static synchronized FileExistsMock getInstance() {
+        if (instance == null) {
+            instance = new FileExistsMock();
+        }
+        return instance;
+    }
 
-	public boolean fileExists(){
-		return this.exists;
-	}
+    public boolean fileExists() {
+        return this.exists;
+    }
 
-	public void touchFile(){
-		this.exists = true;
-	}
+    public void touchFile() {
+        this.exists = true;
+    }
 
-	public void removeFile(){
-		this.exists = false;
-	}
-
+    public void removeFile() {
+        this.exists = false;
+    }
 }

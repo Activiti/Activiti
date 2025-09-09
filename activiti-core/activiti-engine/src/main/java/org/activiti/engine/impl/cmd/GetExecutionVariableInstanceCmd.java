@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -54,7 +53,7 @@ public class GetExecutionVariableInstanceCmd implements Command<VariableInstance
             throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
         }
 
-        VariableInstance variableEntity = getVariable(execution,commandContext);
+        VariableInstance variableEntity = getVariable(execution, commandContext);
 
         if (variableEntity != null) {
             variableEntity.getValue();
@@ -63,7 +62,7 @@ public class GetExecutionVariableInstanceCmd implements Command<VariableInstance
         return variableEntity;
     }
 
-    protected VariableInstance getVariable(ExecutionEntity execution,CommandContext commandContext){
+    protected VariableInstance getVariable(ExecutionEntity execution, CommandContext commandContext) {
         VariableInstance variableEntity = null;
         if (isLocal) {
             variableEntity = execution.getVariableInstanceLocal(variableName, false);

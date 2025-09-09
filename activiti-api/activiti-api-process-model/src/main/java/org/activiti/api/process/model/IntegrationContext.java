@@ -18,7 +18,6 @@ package org.activiti.api.process.model;
 import java.util.Map;
 
 public interface IntegrationContext {
-
     String getId();
 
     String getProcessInstanceId();

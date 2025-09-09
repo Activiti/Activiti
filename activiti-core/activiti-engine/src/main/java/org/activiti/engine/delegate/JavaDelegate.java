@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.delegate;
 
 /**
@@ -28,7 +27,5 @@ package org.activiti.engine.delegate;
 
  */
 public interface JavaDelegate {
-
-  void execute(DelegateExecution execution);
-
+    void execute(DelegateExecution execution);
 }

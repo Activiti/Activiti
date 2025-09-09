@@ -17,7 +17,6 @@
 package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
-
 import org.activiti.engine.impl.DeadLetterJobQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntity;
@@ -27,12 +26,11 @@ import org.activiti.engine.runtime.Job;
 
  */
 public interface DeadLetterJobDataManager extends DataManager<DeadLetterJobEntity> {
+    List<DeadLetterJobEntity> findJobsByExecutionId(String executionId);
 
-  List<DeadLetterJobEntity> findJobsByExecutionId(String executionId);
+    List<Job> findJobsByQueryCriteria(DeadLetterJobQueryImpl jobQuery, Page page);
 
-  List<Job> findJobsByQueryCriteria(DeadLetterJobQueryImpl jobQuery, Page page);
+    long findJobCountByQueryCriteria(DeadLetterJobQueryImpl jobQuery);
 
-  long findJobCountByQueryCriteria(DeadLetterJobQueryImpl jobQuery);
-
-  void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
+    void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
 }

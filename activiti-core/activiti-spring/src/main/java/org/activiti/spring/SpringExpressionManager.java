@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring;
 
-import java.util.Map;
 import jakarta.el.CompositeELResolver;
-import org.activiti.engine.impl.el.ExpressionManager;
+import java.util.Map;
 import org.activiti.core.el.ReadOnlyMapELResolver;
+import org.activiti.engine.impl.el.ExpressionManager;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -30,18 +29,18 @@ import org.springframework.context.ApplicationContext;
  */
 public class SpringExpressionManager extends ExpressionManager {
 
-  protected ApplicationContext applicationContext;
+    protected ApplicationContext applicationContext;
 
-  /**
-   * @param applicationContext
-   *          the applicationContext to use. Ignored when 'beans' parameter is not null.
-   * @param beans
-   *          a map of custom beans to expose. If null, all beans in the application-context will be exposed.
-   */
-  public SpringExpressionManager(ApplicationContext applicationContext, Map<Object, Object> beans) {
-    super(beans);
-    this.applicationContext = applicationContext;
-  }
+    /**
+     * @param applicationContext
+     *          the applicationContext to use. Ignored when 'beans' parameter is not null.
+     * @param beans
+     *          a map of custom beans to expose. If null, all beans in the application-context will be exposed.
+     */
+    public SpringExpressionManager(ApplicationContext applicationContext, Map<Object, Object> beans) {
+        super(beans);
+        this.applicationContext = applicationContext;
+    }
 
     @Override
     protected void addBeansResolver(CompositeELResolver elResolver) {
@@ -52,7 +51,5 @@ public class SpringExpressionManager extends ExpressionManager {
             // Expose full application-context in expressions
             elResolver.add(new ApplicationContextElResolver(applicationContext));
         }
-
     }
-
 }

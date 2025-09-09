@@ -21,8 +21,7 @@ import org.activiti.api.process.model.events.BPMNActivityStartedEvent;
 
 public class BPMNActivityStartedEventImpl extends BPMNActivityEventImpl implements BPMNActivityStartedEvent {
 
-    public BPMNActivityStartedEventImpl() {
-    }
+    public BPMNActivityStartedEventImpl() {}
 
     public BPMNActivityStartedEventImpl(BPMNActivity entity) {
         super(entity);

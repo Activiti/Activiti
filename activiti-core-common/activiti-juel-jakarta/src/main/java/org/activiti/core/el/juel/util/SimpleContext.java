@@ -42,11 +42,7 @@ public class SimpleContext extends ELContext {
             return map.get(prefix + ":" + localName);
         }
 
-        public void setFunction(
-            String prefix,
-            String localName,
-            Method method
-        ) {
+        public void setFunction(String prefix, String localName, Method method) {
             if (map.isEmpty()) {
                 map = new HashMap<String, Method>();
             }
@@ -64,10 +60,7 @@ public class SimpleContext extends ELContext {
         }
 
         @Override
-        public ValueExpression setVariable(
-            String variable,
-            ValueExpression expression
-        ) {
+        public ValueExpression setVariable(String variable, ValueExpression expression) {
             if (map.isEmpty()) {
                 map = new HashMap<String, ValueExpression>();
             }
@@ -106,10 +99,7 @@ public class SimpleContext extends ELContext {
     /**
      * Define a variable.
      */
-    public ValueExpression setVariable(
-        String name,
-        ValueExpression expression
-    ) {
+    public ValueExpression setVariable(String name, ValueExpression expression) {
         if (variables == null) {
             variables = new Variables();
         }

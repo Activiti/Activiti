@@ -15,18 +15,19 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import java.util.Optional;
 import org.activiti.api.process.runtime.events.ProcessCandidateStarterGroupRemovedEvent;
 import org.activiti.api.runtime.event.impl.ProcessCandidateStarterGroupRemovedEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.runtime.api.model.impl.APIProcessCandidateStarterGroupConverter;
 
-import java.util.Optional;
-
-public class ToAPIProcessCandidateStarterGroupRemovedEventConverter implements EventConverter<ProcessCandidateStarterGroupRemovedEvent, ActivitiEntityEvent> {
+public class ToAPIProcessCandidateStarterGroupRemovedEventConverter
+    implements EventConverter<ProcessCandidateStarterGroupRemovedEvent, ActivitiEntityEvent> {
 
     private APIProcessCandidateStarterGroupConverter converter;
-    private ProcessCandidateStarterEventConverterHelper processCandidateStarterEventConverterHelper = new ProcessCandidateStarterEventConverterHelper();
+    private ProcessCandidateStarterEventConverterHelper processCandidateStarterEventConverterHelper =
+        new ProcessCandidateStarterEventConverterHelper();
 
     public ToAPIProcessCandidateStarterGroupRemovedEventConverter(APIProcessCandidateStarterGroupConverter converter) {
         this.converter = converter;
@@ -43,5 +44,4 @@ public class ToAPIProcessCandidateStarterGroupRemovedEventConverter implements E
         }
         return Optional.ofNullable(event);
     }
-
 }

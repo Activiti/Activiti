@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.variable.EntityManagerSession;
 import org.activiti.engine.impl.variable.EntityManagerSessionImpl;
 import org.springframework.orm.jpa.EntityManagerFactoryUtils;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 
 /**
  * Session Factory for {@link EntityManagerSession}.
@@ -37,26 +35,29 @@ import jakarta.persistence.EntityManagerFactory;
  */
 public class SpringEntityManagerSessionFactory implements SessionFactory {
 
-  protected EntityManagerFactory entityManagerFactory;
-  protected boolean handleTransactions;
-  protected boolean closeEntityManager;
+    protected EntityManagerFactory entityManagerFactory;
+    protected boolean handleTransactions;
+    protected boolean closeEntityManager;
 
-  public SpringEntityManagerSessionFactory(Object entityManagerFactory, boolean handleTransactions, boolean closeEntityManager) {
-    this.entityManagerFactory = (EntityManagerFactory) entityManagerFactory;
-    this.handleTransactions = handleTransactions;
-    this.closeEntityManager = closeEntityManager;
-  }
-
-  public Class<?> getSessionType() {
-    return EntityManagerFactory.class;
-  }
-
-  public Session openSession(CommandContext commandContext) {
-    EntityManager entityManager = EntityManagerFactoryUtils.getTransactionalEntityManager(entityManagerFactory);
-    if (entityManager == null) {
-      return new EntityManagerSessionImpl(entityManagerFactory, handleTransactions, closeEntityManager);
+    public SpringEntityManagerSessionFactory(
+        Object entityManagerFactory,
+        boolean handleTransactions,
+        boolean closeEntityManager
+    ) {
+        this.entityManagerFactory = (EntityManagerFactory) entityManagerFactory;
+        this.handleTransactions = handleTransactions;
+        this.closeEntityManager = closeEntityManager;
     }
-    return new EntityManagerSessionImpl(entityManagerFactory, entityManager, false, false);
-  }
 
+    public Class<?> getSessionType() {
+        return EntityManagerFactory.class;
+    }
+
+    public Session openSession(CommandContext commandContext) {
+        EntityManager entityManager = EntityManagerFactoryUtils.getTransactionalEntityManager(entityManagerFactory);
+        if (entityManager == null) {
+            return new EntityManagerSessionImpl(entityManagerFactory, handleTransactions, closeEntityManager);
+        }
+        return new EntityManagerSessionImpl(entityManagerFactory, entityManager, false, false);
+    }
 }

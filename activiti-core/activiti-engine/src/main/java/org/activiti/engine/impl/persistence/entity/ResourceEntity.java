@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.persistence.entity;
-
 
 import org.activiti.engine.api.internal.Internal;
 
@@ -25,23 +23,21 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface ResourceEntity extends Entity {
+    String getName();
 
-  String getName();
+    void setName(String name);
 
-  void setName(String name);
+    byte[] getBytes();
 
-  byte[] getBytes();
+    void setBytes(byte[] bytes);
 
-  void setBytes(byte[] bytes);
+    String getDeploymentId();
 
-  String getDeploymentId();
+    void setDeploymentId(String deploymentId);
 
-  void setDeploymentId(String deploymentId);
+    Object getPersistentState();
 
-  Object getPersistentState();
+    void setGenerated(boolean generated);
 
-  void setGenerated(boolean generated);
-
-  boolean isGenerated();
-
+    boolean isGenerated();
 }

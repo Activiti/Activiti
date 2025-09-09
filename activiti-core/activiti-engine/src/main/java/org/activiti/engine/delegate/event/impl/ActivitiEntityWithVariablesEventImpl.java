@@ -17,7 +17,6 @@
 package org.activiti.engine.delegate.event.impl;
 
 import java.util.Map;
-
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityWithVariablesEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -28,25 +27,31 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 
  */
 @SuppressWarnings("rawtypes")
-public class ActivitiEntityWithVariablesEventImpl extends ActivitiEntityEventImpl implements ActivitiEntityWithVariablesEvent {
+public class ActivitiEntityWithVariablesEventImpl
+    extends ActivitiEntityEventImpl
+    implements ActivitiEntityWithVariablesEvent {
 
-  protected Map variables;
-  protected boolean localScope;
+    protected Map variables;
+    protected boolean localScope;
 
-  public ActivitiEntityWithVariablesEventImpl(Object entity, Map variables, boolean localScope, ActivitiEventType type) {
-    super(entity, type);
+    public ActivitiEntityWithVariablesEventImpl(
+        Object entity,
+        Map variables,
+        boolean localScope,
+        ActivitiEventType type
+    ) {
+        super(entity, type);
+        this.variables = variables;
+        this.localScope = localScope;
+    }
 
-    this.variables = variables;
-    this.localScope = localScope;
-  }
+    @Override
+    public Map getVariables() {
+        return variables;
+    }
 
-  @Override
-  public Map getVariables() {
-    return variables;
-  }
-
-  @Override
-  public boolean isLocalScope() {
-    return localScope;
-  }
+    @Override
+    public boolean isLocalScope() {
+        return localScope;
+    }
 }

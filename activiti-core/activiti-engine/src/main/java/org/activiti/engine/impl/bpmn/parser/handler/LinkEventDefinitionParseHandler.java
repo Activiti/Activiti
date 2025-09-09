@@ -21,14 +21,19 @@ import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.LinkEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
-public class LinkEventDefinitionParseHandler extends AbstractBpmnParseHandler<LinkEventDefinition>{
+public class LinkEventDefinitionParseHandler extends AbstractBpmnParseHandler<LinkEventDefinition> {
+
     protected Class<? extends BaseElement> getHandledType() {
         return LinkEventDefinition.class;
     }
 
     protected void executeParse(BpmnParse bpmnParse, LinkEventDefinition element) {
         if (bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent intermediateCatchEvent) {
-            intermediateCatchEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateCatchLinkEventActivityBehavior(intermediateCatchEvent,element));
+            intermediateCatchEvent.setBehavior(
+                bpmnParse
+                    .getActivityBehaviorFactory()
+                    .createIntermediateCatchLinkEventActivityBehavior(intermediateCatchEvent, element)
+            );
         }
     }
 }

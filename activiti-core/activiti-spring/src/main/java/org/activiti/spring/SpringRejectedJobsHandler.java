@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring;
 
 import org.activiti.engine.api.internal.Internal;
@@ -31,6 +30,5 @@ import org.activiti.engine.runtime.Job;
 @Deprecated
 @Internal
 public interface SpringRejectedJobsHandler {
-
-  public void jobRejected(AsyncExecutor asyncExecutor, Job job);
+    public void jobRejected(AsyncExecutor asyncExecutor, Job job);
 }

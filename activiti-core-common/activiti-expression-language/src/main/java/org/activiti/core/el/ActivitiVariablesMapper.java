@@ -15,18 +15,17 @@
  */
 package org.activiti.core.el;
 
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import jakarta.el.ValueExpression;
-import jakarta.el.VariableMapper;
 
 public class ActivitiVariablesMapper extends VariableMapper {
 
     Map<String, ValueExpression> map = Collections.emptyMap();
 
-    public ActivitiVariablesMapper() {
-    }
+    public ActivitiVariablesMapper() {}
 
     public ActivitiVariablesMapper(Map<String, ValueExpression> map) {
         this.map = map;

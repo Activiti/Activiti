@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.process.model;
 
 import java.util.HashMap;
@@ -29,6 +28,7 @@ public class ProcessVariablesMapping {
     public Map<String, Mapping> getInputs() {
         return inputs;
     }
+
     public void setInputs(Map<String, Mapping> inputs) {
         this.inputs = inputs;
     }
@@ -40,6 +40,7 @@ public class ProcessVariablesMapping {
     public Map<String, Mapping> getOutputs() {
         return outputs;
     }
+
     public void setOutputs(Map<String, Mapping> outputs) {
         this.outputs = outputs;
     }
@@ -55,6 +56,6 @@ public class ProcessVariablesMapping {
     public enum MappingType {
         MAP_ALL,
         MAP_ALL_INPUTS,
-        MAP_ALL_OUTPUTS
+        MAP_ALL_OUTPUTS,
     }
 }

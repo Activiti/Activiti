@@ -16,24 +16,35 @@
 
 package org.activiti.editor.language.json.converter;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.util.Map;
-
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElementsContainer;
 import org.activiti.editor.language.json.model.ModelInfo;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-
 /**
 
  */
 public interface ActivityProcessor {
+    public void processFlowElements(
+        FlowElementsContainer container,
+        BpmnModel model,
+        ArrayNode shapesArrayNode,
+        Map<String, ModelInfo> formKeyMap,
+        Map<String, ModelInfo> decisionTableKeyMap,
+        double subProcessX,
+        double subProcessY
+    );
 
-  public void processFlowElements(FlowElementsContainer container, BpmnModel model, ArrayNode shapesArrayNode,
-      Map<String, ModelInfo> formKeyMap, Map<String, ModelInfo> decisionTableKeyMap, double subProcessX, double subProcessY);
-
-  public void processJsonElements(JsonNode shapesArrayNode, JsonNode modelNode, BaseElement parentElement,
-      Map<String, JsonNode> shapeMap, Map<String, String> formKeyMap, Map<String, String> decisionTableMap, BpmnModel bpmnModel);
+    public void processJsonElements(
+        JsonNode shapesArrayNode,
+        JsonNode modelNode,
+        BaseElement parentElement,
+        Map<String, JsonNode> shapeMap,
+        Map<String, String> formKeyMap,
+        Map<String, String> decisionTableMap,
+        BpmnModel bpmnModel
+    );
 }

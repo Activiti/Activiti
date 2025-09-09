@@ -29,5 +29,4 @@ public class ResourceFinderAutoConfiguration {
     public ResourceFinder resourceFinderImpl(ResourcePatternResolver resourcePatternResolver) {
         return new ResourceFinder(resourcePatternResolver);
     }
-
 }

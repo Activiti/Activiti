@@ -33,13 +33,7 @@ public class TreeBuilderException extends ELException {
     private final String encountered;
     private final String expected;
 
-    public TreeBuilderException(
-        String expression,
-        int position,
-        String encountered,
-        String expected,
-        String message
-    ) {
+    public TreeBuilderException(String expression, int position, String encountered, String expected, String message) {
         super(LocalMessages.get("error.build", expression, message));
         this.expression = expression;
         this.position = position;

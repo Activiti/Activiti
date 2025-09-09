@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-
 import org.activiti.api.model.shared.event.VariableDeletedEvent;
 import org.activiti.api.model.shared.event.VariableEvent.VariableEvents;
 import org.activiti.api.model.shared.model.VariableInstance;
@@ -49,7 +48,6 @@ class ToVariableDeletedConverterTest {
         VariableDeletedEvent actualEvent = result.get();
         assertThat(actualEvent.isEphemeralVariable()).isFalse();
 
-
         VariableInstance actualEntity = assertVariableDeleted(actualEvent, internalEvent);
         Object actualValue = actualEntity.getValue();
         assertThat(actualValue).isEqualTo(internalEvent.getVariableValue());
@@ -71,7 +69,10 @@ class ToVariableDeletedConverterTest {
         assertThat(actualValue).isNull();
     }
 
-    private VariableInstance assertVariableDeleted(VariableDeletedEvent actualEvent, ActivitiVariableEventImpl internalEvent) {
+    private VariableInstance assertVariableDeleted(
+        VariableDeletedEvent actualEvent,
+        ActivitiVariableEventImpl internalEvent
+    ) {
         assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_DELETED);
         VariableInstance actualEntity = actualEvent.getEntity();
         assertThat(actualEntity.getName()).isEqualTo(internalEvent.getVariableName());
@@ -80,5 +81,4 @@ class ToVariableDeletedConverterTest {
         assertThat(actualEntity.getType()).isEqualTo(internalEvent.getVariableType().getTypeName());
         return actualEntity;
     }
-
 }

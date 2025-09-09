@@ -78,8 +78,7 @@ public class TemplatesDefinition {
             return false;
         }
         TemplatesDefinition that = (TemplatesDefinition) o;
-        return Objects.equals(tasks, that.tasks) && Objects
-            .equals(defaultTemplate, that.defaultTemplate);
+        return Objects.equals(tasks, that.tasks) && Objects.equals(defaultTemplate, that.defaultTemplate);
     }
 
     @Override

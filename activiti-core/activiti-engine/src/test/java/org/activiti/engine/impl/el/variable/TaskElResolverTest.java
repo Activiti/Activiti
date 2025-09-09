@@ -64,5 +64,4 @@ public class TaskElResolverTest {
         //then
         assertThat(result).isEqualTo(variableScope);
     }
-
 }

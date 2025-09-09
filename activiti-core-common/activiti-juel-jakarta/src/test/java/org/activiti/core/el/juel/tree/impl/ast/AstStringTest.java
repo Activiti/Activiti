@@ -78,10 +78,7 @@ public class AstStringTest extends TestCase {
     @Test
     public void testGetValue() {
         assertEquals("1", parseNode("${'1'}").getValue(bindings, null, null));
-        assertEquals(
-            1,
-            parseNode("${'1'}").getValue(bindings, null, Integer.class)
-        );
+        assertEquals(1, parseNode("${'1'}").getValue(bindings, null, Integer.class));
     }
 
     @Test

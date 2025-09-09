@@ -15,11 +15,10 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import java.util.Optional;
 import org.activiti.api.task.runtime.events.TaskAssignedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
-
-import java.util.Optional;
 
 public class ToAPITaskAssignedEventConverter implements EventConverter<TaskAssignedEvent, ActivitiEntityEvent> {
 
@@ -31,6 +30,8 @@ public class ToAPITaskAssignedEventConverter implements EventConverter<TaskAssig
 
     @Override
     public Optional<TaskAssignedEvent> from(ActivitiEntityEvent internalEvent) {
-        return Optional.of(new TaskAssignedEventImpl(taskConverter.from((org.activiti.engine.task.Task) internalEvent.getEntity())));
+        return Optional.of(
+            new TaskAssignedEventImpl(taskConverter.from((org.activiti.engine.task.Task) internalEvent.getEntity()))
+        );
     }
 }

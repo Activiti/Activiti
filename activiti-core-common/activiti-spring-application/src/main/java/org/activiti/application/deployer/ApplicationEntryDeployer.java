@@ -18,7 +18,5 @@ package org.activiti.application.deployer;
 import org.activiti.application.ApplicationContent;
 
 public interface ApplicationEntryDeployer {
-
     void deployEntries(ApplicationContent application);
-
 }

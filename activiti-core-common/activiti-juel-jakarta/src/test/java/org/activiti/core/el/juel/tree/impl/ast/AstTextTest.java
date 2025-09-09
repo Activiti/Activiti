@@ -88,14 +88,8 @@ public class AstTextTest extends TestCase {
 
     @Test
     public void testInvoke() {
-        assertEquals(
-            "1",
-            parseNode("1").invoke(bindings, null, null, null, null)
-        );
-        assertEquals(
-            1l,
-            parseNode("1").invoke(bindings, null, Long.class, null, null)
-        );
+        assertEquals("1", parseNode("1").invoke(bindings, null, null, null, null));
+        assertEquals(1l, parseNode("1").invoke(bindings, null, Long.class, null, null));
     }
 
     @Test

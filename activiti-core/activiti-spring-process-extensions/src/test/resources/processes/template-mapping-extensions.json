@@ -13,7 +13,7 @@
               "type": "file",
               "value": "https://github.com/leemunroe/responsive-html-email-template/blob/master/email-inlined.html"
             },
-            "emailNotificationEnabled":false
+            "emailNotificationEnabled": false
           },
           "myTaskId2": {
             "assignee": {

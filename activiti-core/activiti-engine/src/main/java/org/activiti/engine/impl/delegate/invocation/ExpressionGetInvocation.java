@@ -26,15 +26,14 @@ import jakarta.el.ValueExpression;
  */
 public class ExpressionGetInvocation extends ExpressionInvocation {
 
-  protected final ELContext elContext;
+    protected final ELContext elContext;
 
-  public ExpressionGetInvocation(ValueExpression valueExpression, ELContext elContext) {
-    super(valueExpression);
-    this.elContext = elContext;
-  }
+    public ExpressionGetInvocation(ValueExpression valueExpression, ELContext elContext) {
+        super(valueExpression);
+        this.elContext = elContext;
+    }
 
-  protected void invoke() {
-    invocationResult = valueExpression.getValue(elContext);
-  }
-
+    protected void invoke() {
+        invocationResult = valueExpression.getValue(elContext);
+    }
 }

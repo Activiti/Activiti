@@ -33,5 +33,4 @@ public class ActivitiUserGroupManagerImplIT {
         assertThat(userGroupManager.getUserRoles("user")).doesNotContain("ACTIVITI_ADMIN");
         assertThat(userGroupManager.getUserRoles("admin")).contains("ACTIVITI_ADMIN");
     }
-
 }

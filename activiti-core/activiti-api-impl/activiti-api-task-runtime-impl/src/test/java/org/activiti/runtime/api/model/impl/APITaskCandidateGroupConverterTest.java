@@ -15,12 +15,12 @@
  */
 package org.activiti.runtime.api.model.impl;
 
-import org.activiti.api.task.model.TaskCandidateGroup;
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+
+import org.activiti.api.task.model.TaskCandidateGroup;
+import org.junit.jupiter.api.Test;
 
 public class APITaskCandidateGroupConverterTest {
 
@@ -39,5 +39,4 @@ public class APITaskCandidateGroupConverterTest {
         assertThat(taskCandidateGroup.getGroupId()).isNotEqualToIgnoringCase("groupId");
         assertThat(taskCandidateGroup.getTaskId()).isNotEqualToIgnoringCase("taskId");
     }
-
 }

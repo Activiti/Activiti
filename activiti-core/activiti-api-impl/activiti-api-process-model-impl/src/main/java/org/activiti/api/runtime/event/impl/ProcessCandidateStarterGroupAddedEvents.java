@@ -15,9 +15,8 @@
  */
 package org.activiti.api.runtime.event.impl;
 
-import org.activiti.api.process.runtime.events.ProcessCandidateStarterGroupAddedEvent;
-
 import java.util.List;
+import org.activiti.api.process.runtime.events.ProcessCandidateStarterGroupAddedEvent;
 
 public class ProcessCandidateStarterGroupAddedEvents {
 

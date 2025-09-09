@@ -19,10 +19,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ObjectValue {
+
     private Object object;
 
-    ObjectValue() {
-    }
+    ObjectValue() {}
 
     public ObjectValue(Object object) {
         this.object = object;
@@ -31,5 +31,4 @@ public class ObjectValue {
     public Object getObject() {
         return object;
     }
-
 }

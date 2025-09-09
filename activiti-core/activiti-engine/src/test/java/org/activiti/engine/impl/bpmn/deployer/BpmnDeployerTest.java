@@ -49,19 +49,20 @@ public class BpmnDeployerTest {
         persistedProcessDefinition.setVersion(1);
         persistedProcessDefinition.setAppVersion(2);
         persistedProcessDefinition.setEngineVersion("activiti-5");
-        given(bpmnDeploymentHelper.getPersistedInstanceOfProcessDefinition(parsedProcessDefinition))
-            .willReturn(persistedProcessDefinition);
+        given(bpmnDeploymentHelper.getPersistedInstanceOfProcessDefinition(parsedProcessDefinition)).willReturn(
+            persistedProcessDefinition
+        );
 
         //when
-        bpmnDeployer.makeProcessDefinitionsConsistentWithPersistedVersions(
-            parsedDeployment);
+        bpmnDeployer.makeProcessDefinitionsConsistentWithPersistedVersions(parsedDeployment);
 
         //then
         assertThat(parsedProcessDefinition.getId()).isEqualTo(persistedProcessDefinition.getId());
         assertThat(parsedProcessDefinition.getVersion()).isEqualTo(persistedProcessDefinition.getVersion());
         assertThat(parsedProcessDefinition.getAppVersion()).isEqualTo(persistedProcessDefinition.getAppVersion());
-        assertThat(parsedProcessDefinition.getSuspensionState()).isEqualTo(persistedProcessDefinition.getSuspensionState());
+        assertThat(parsedProcessDefinition.getSuspensionState()).isEqualTo(
+            persistedProcessDefinition.getSuspensionState()
+        );
         assertThat(parsedProcessDefinition.getEngineVersion()).isEqualTo(persistedProcessDefinition.getEngineVersion());
     }
-
 }
