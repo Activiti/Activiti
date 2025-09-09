@@ -55,25 +55,34 @@
     <!-- variables -->
     <choose>
       <when test="includeTaskLocalVariables &amp;&amp; includeProcessVariables">
-        left join ${prefix}ACT_RU_VARIABLE VAR ON RES.ID_ = VAR.TASK_ID_ or RES.PROC_INST_ID_ = VAR.EXECUTION_ID_
+        <include refid="leftJoinWithVariables">
+          <property name="tableAlias" value="VAR"/>
+        </include>
+        or RES.PROC_INST_ID_ = VAR.EXECUTION_ID_
       </when>
       <otherwise>
         <if test="includeTaskLocalVariables">
-          left join ${prefix}ACT_RU_VARIABLE VAR ON RES.ID_ = VAR.TASK_ID_
+          <include refid="leftJoinWithVariables">
+            <property name="tableAlias" value="VAR"/>
+          </include>
         </if>
         <if test="includeProcessVariables">
-          left join ${prefix}ACT_RU_VARIABLE VAR ON RES.PROC_INST_ID_ = VAR.EXECUTION_ID_ and VAR.TASK_ID_ is null
+          <include refid="leftJoinWithProcessInstanceVariables">
+            <property name="tableAlias" value="VAR"/>
+          </include>
+          and VAR.TASK_ID_ is null
         </if>
       </otherwise>
     </choose>
     <!-- left joins -->
     <if test="candidateUser != null || candidateGroups != null">
-      left join ${prefix}ACT_HI_IDENTITYLINK link
-        on RES.ID_ = link.TASK_ID_
-        and RES.ASSIGNEE_ is null
-        and link.TYPE_ = 'candidate'
-        and
-        <trim prefix="(" prefixOverrides="OR" suffix=")">
+      <include refid="leftJoinWithIdentityLink">
+        <property name="tableAlias" value="link"/>
+      </include>
+      and RES.ASSIGNEE_ is null
+      and link.TYPE_ = 'candidate'
+      and
+      <trim prefix="(" prefixOverrides="OR" suffix=")">
           <if test="candidateUser != null">
             link.USER_ID_ = #{candidateUser}
           </if>
@@ -85,38 +94,11 @@
             </foreach>
           </if>
         </trim>
-      </if>
-
-    <!-- TODO: THERE'S NO BOTHCANDIDATEANDASSIGNED PROPERTY -->
-    <!--
-    <if test="bothCandidateAndAssigned">
-      <if test="userIdForCandidateAndAssignee != null">
-        <if test="candidateGroups == null">
-          left join ${prefix}ACT_RU_IDENTITYLINK link
-          on RES.ID_ = link.TASK_ID_
-          and link.TYPE_ = 'candidate'
-          and link.USER_ID_ = #{userIdForCandidateAndAssignee}
-        </if>
-      </if>
-      <if test="candidateGroups != null">
-        left join ${prefix}ACT_RU_IDENTITYLINK link
-        on RES.ID_ = link.TASK_ID_
-        and link.TYPE_ = 'candidate'
-        and (
-        link.USER_ID_ = #{userIdForCandidateAndAssignee}
-        <if test="candidateGroups.size() &gt; 0">
-          or link.GROUP_ID_ IN
-          <foreach item="group" index="index" collection="candidateGroups" open="(" separator="," close=")">
-            #{group}
-          </foreach>
-        </if>
-        )
-      </if>
     </if>
-    -->
     <if test="involvedUser != null">
-      left join ${prefix}ACT_HI_IDENTITYLINK link_user
-      on RES.ID_ = link_user.TASK_ID_
+      <include refid="leftJoinWithIdentityLink">
+        <property name="tableAlias" value="link_user"/>
+      </include>
       and (
         link_user.USER_ID_ = #{involvedUser}
         or RES.ASSIGNEE_ = #{involvedUser}
@@ -124,8 +106,9 @@
       )
     </if>
     <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
-      left join ${prefix}ACT_HI_IDENTITYLINK link_groups
-      on RES.ID_ = link_groups.TASK_ID_
+      <include refid="leftJoinWithIdentityLink">
+        <property name="tableAlias" value="link_groups"/>
+      </include>
       and (
         link_groups.TYPE_ = 'participant'
         and link_groups.GROUP_ID_ in
@@ -135,7 +118,9 @@
       )
     </if>
     <if test="@org.activiti.engine.query.QueryUtils@hasProcessDefinitionKey(_parameter)">
-      left join ${prefix}ACT_RE_PROCDEF deploy on RES.PROC_DEF_ID_ = deploy.ID_
+      <include refid="leftJoinWithProcessDefinition">
+        <property name="tableAlias" value="deploy"/>
+      </include>
       <if test="processDefinitionKey != null">
         and deploy.KEY_ = #{processDefinitionKey}
       </if>
@@ -153,56 +138,76 @@
       </if>
     </if>
     <if test="processDefinitionName != null">
-      left join ${prefix}ACT_RE_PROCDEF deploy
-        on RES.PROC_DEF_ID_ = deploy.ID_
-        and deploy.NAME_ = #{processDefinitionName}
+      <include refid="leftJoinWithProcessDefinition">
+        <property name="tableAlias" value="deploy"/>
+      </include>
+      and deploy.NAME_ = #{processDefinitionName}
     </if>
     <if test="processDefinitionNameLike != null">
-      left join ${prefix}ACT_RE_PROCDEF deploy
-        on RES.PROC_DEF_ID_ = deploy.ID_
-        and deploy.NAME_ like #{processDefinitionNameLike}${wildcardEscapeClause}
+      <include refid="leftJoinWithProcessDefinition">
+        <property name="tableAlias" value="deploy"/>
+      </include>
+      and deploy.NAME_ like #{processDefinitionNameLike}${wildcardEscapeClause}
     </if>
     <if test="processInstanceBusinessKey != null">
-      left join ${prefix}ACT_HI_PROCINST e on RES.PROC_INST_ID_ = e.ID_ and e.BUSINESS_KEY_ = #{processInstanceBusinessKey}
+      <include refid="leftJoinWithProcessInstance">
+        <property name="tableAlias" value="e"/>
+      </include>
+      and e.BUSINESS_KEY_ = #{processInstanceBusinessKey}
     </if>
     <if test="processInstanceBusinessKeyLike != null">
-      left join ${prefix}ACT_HI_PROCINST e on RES.PROC_INST_ID_ = e.PROC_INST_ID_ and e.BUSINESS_KEY_ like #{processInstanceBusinessKeyLike}${wildcardEscapeClause}
+      <include refid="leftJoinWithProcessInstance">
+        <property name="tableAlias" value="e"/>
+      </include>
+      and e.BUSINESS_KEY_ like #{processInstanceBusinessKeyLike}${wildcardEscapeClause}
     </if>
     <if test="processInstanceBusinessKeyLikeIgnoreCase != null">
-      left join ${prefix}ACT_HI_PROCINST e on RES.PROC_INST_ID_ = e.PROC_INST_ID_ and lower(e.BUSINESS_KEY_) like #{processInstanceBusinessKeyLikeIgnoreCase}${wildcardEscapeClause}
+      <include refid="leftJoinWithProcessInstance">
+        <property name="tableAlias" value="e"/>
+      </include>
+      and lower(e.BUSINESS_KEY_) like #{processInstanceBusinessKeyLikeIgnoreCase}${wildcardEscapeClause}
     </if>
     <if test="processFinished">
-      left join ${prefix}ACT_HI_PROCINST HPI
-        on RES.PROC_INST_ID_ = HPI.ID_
-        and HPI.END_TIME_ is not null
+      <include refid="leftJoinWithProcessInstance">
+        <property name="tableAlias" value="HPI"/>
+      </include>
+      and HPI.END_TIME_ is not null
     </if>
     <if test="processUnfinished">
-      left join ${prefix}ACT_HI_PROCINST HPI
-      on RES.PROC_INST_ID_ = HPI.ID_
+      <include refid="leftJoinWithProcessInstance">
+        <property name="tableAlias" value="HPI"/>
+      </include>
       and HPI.END_TIME_ is null
     </if>
     <if test="deploymentId != null">
-      left join ${prefix}ACT_RE_PROCDEF deploy on RES.PROC_DEF_ID_ = deploy.ID_ and deploy.DEPLOYMENT_ID_ = #{deploymentId}
+      <include refid="leftJoinWithProcessDefinition">
+        <property name="tableAlias" value="deploy"/>
+      </include>
+      and deploy.DEPLOYMENT_ID_ = #{deploymentId}
     </if>
     <if test="deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0">
       <include refid="leftJoinWithProcessDefinition">
-        <property name="externalTableAlias" value="deploy_p"/>
-        <property name="field" value="DEPLOYMENT_ID_"/>
-        <property name="collection" value="deploymentIds"/>
+        <property name="tableAlias" value="deploy_p"/>
       </include>
+      and deploy_p.DEPLOYMENT_ID_ in
+      <foreach item="item" index="index" collection="deploymentIds" open="(" separator="," close=")">
+        #{item}
+      </foreach>
     </if>
-    <!--
     <if test="processCategoryInList != null &amp;&amp; processCategoryInList.size() &gt; 0">
       <include refid="leftJoinWithProcessDefinition">
-        <property name="externalTableAlias" value="deploy_p"/>
-        <property name="field" value="CATEGORY_"/>
-        <property name="collection" value="processCategoryInList"/>
+        <property name="tableAlias" value="deploy_p"/>
       </include>
+      and deploy_p.CATEGORY_ not in
+      <foreach item="category" index="index" collection="processCategoryInList"
+               open="(" separator="," close=")">
+        #{category}
+      </foreach>
     </if>
-    -->
     <if test="processCategoryNotInList != null &amp;&amp; processCategoryNotInList.size() &gt; 0">
-      left join ACT_RE_PROCDEF deploy_p
-      on RES.PROC_DEF_ID_ = deploy_p.ID_
+      <include refid="leftJoinWithProcessDefinition">
+        <property name="tableAlias" value="deploy_p"/>
+      </include>
       and deploy_p.CATEGORY_ not in
       <foreach item="category" index="index" collection="processCategoryNotInList"
                open="(" separator="," close=")">
@@ -218,36 +223,10 @@
     </if>
     <!-- left joins for orQueries -->
     <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
-      <!-- TODO: bothCandidateAndAssigned doesn't exist (begin) -->
-      <!--
-      <if test="orQueryObject.bothCandidateAndAssigned">
-        <if test="orQueryObject.userIdForCandidateAndAssignee != null">
-          <if test="orQueryObject.candidateGroups == null">
-            left join ${prefix}ACT_RU_IDENTITYLINK link_or${orIndex}
-            on RES.ID_ = link_or${orIndex}.TASK_ID_
-            and link_or${orIndex}.TYPE_ = 'candidate'
-            and link_or${orIndex}.USER_ID_ = #{orQueryObject.userIdForCandidateAndAssignee}
-          </if>
-        </if>
-        <if test="orQueryObject.candidateGroups != null">
-          left join ${prefix}ACT_RU_IDENTITYLINK link_or${orIndex}
-          on RES.ID_ = link_or${orIndex}.TASK_ID_
-          and link_or${orIndex}.TYPE_ = 'candidate'
-          and (
-          link_or${orIndex}.USER_ID_ = #{orQueryObject.userIdForCandidateAndAssignee}
-          <if test="orQueryObject.candidateGroups.size() &gt; 0">
-            or link_or${orIndex}.GROUP_ID_ IN
-            <foreach item="group" index="index" collection="orQueryObject.candidateGroups" open="(" separator="," close=")">
-              #{group}
-            </foreach>
-          </if>
-          )
-        </if>
-      </if>
-      -->
       <if test="orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null">
-        left join ${prefix}ACT_HI_IDENTITYLINK link_or${orIndex}
-        on RES.ID_ = link_or${orIndex}.TASK_ID_
+        <include refid="leftJoinWithIdentityLink">
+          <property name="tableAlias" value="link_or${orIndex}"/>
+        </include>
         and RES.ASSIGNEE_ is null
         and link_or${orIndex}.TYPE_ = 'candidate'
         and
@@ -264,25 +243,28 @@
           </if>
         </trim>
       </if>
-      <!-- TODO: bothCandidateAndAssigned doesn't exist (end) -->
       <if test="orQueryObject.involvedUser != null">
-        left join ${prefix}ACT_HI_IDENTITYLINK link_user_or${orIndex}
-        on RES.ID_ = link_user_or${orIndex}.TASK_ID_
+        <include refid="leftJoinWithIdentityLink">
+          <property name="tableAlias" value="link_user_or${orIndex}"/>
+        </include>
         and link_user_or${orIndex}.USER_ID_ = #{orQueryObject.involvedUser}
       </if>
       <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
-        left join ${prefix}ACT_HI_IDENTITYLINK link_groups_or${orIndex}
-        on RES.ID_ = link_groups_or${orIndex}.TASK_ID_
+        <include refid="leftJoinWithIdentityLink">
+          <property name="tableAlias" value="link_groups_or${orIndex}"/>
+        </include>
         and (
-        link_groups_or${orIndex}.TYPE_ = 'participant'
-        and link_groups_or${orIndex}.GROUP_ID_ in
-        <foreach item="group" index="index" collection="orQueryObject.involvedGroups" open="(" separator="," close=")">
-          #{group}
-        </foreach>
+          link_groups_or${orIndex}.TYPE_ = 'participant'
+          and link_groups_or${orIndex}.GROUP_ID_ in
+          <foreach item="group" index="index" collection="orQueryObject.involvedGroups" open="(" separator="," close=")">
+            #{group}
+          </foreach>
         )
       </if>
       <if test="@org.activiti.engine.query.QueryUtils@hasProcessDefinitionKey(orQueryObject)">
-        left join ${prefix}ACT_RE_PROCDEF deploy_p_or${orIndex} on RES.PROC_DEF_ID_ = deploy_p_or${orIndex}.ID_
+        <include refid="leftJoinWithProcessDefinition">
+          <property name="tableAlias" value="deploy_p_or${orIndex}"/>
+        </include>
         and
         <trim prefix="(" prefixOverrides="OR" suffix=")">
           <if test="orQueryObject.processDefinitionKey != null">
@@ -302,64 +284,77 @@
           </if>
         </trim>
       </if>
-
-      <!-- TODO: replaced by static method, in order to avoid multiple left-joins (begin) -->
-      <!--
-      <if test="orQueryObject.processDefinitionKey != null">
-        left join ${prefix}ACT_RE_PROCDEF deploy_p_or${orIndex} on RES.PROC_DEF_ID_ = deploy_p_or${orIndex}.ID_ and deploy_p_or${orIndex}.KEY_ = #{orQueryObject.processDefinitionKey}
-      </if>
-      <if test="orQueryObject.processDefinitionKeyLike != null">
-        left join ${prefix}ACT_RE_PROCDEF deploy_p_or${orIndex} on RES.PROC_DEF_ID_ = deploy_p_or${orIndex}.ID_ and deploy_p_or${orIndex}.KEY_ like #{orQueryObject.processDefinitionKeyLike}${wildcardEscapeClause}
-      </if>
-      <if test="orQueryObject.processDefinitionKeyLikeIgnoreCase != null">
-        left join ${prefix}ACT_RE_PROCDEF deploy_p_or${orIndex} on RES.PROC_DEF_ID_ = deploy_p_or${orIndex}.ID_ and lower(deploy_p_or${orIndex}.KEY_) like #{orQueryObject.processDefinitionKeyLikeIgnoreCase}${wildcardEscapeClause}
-      </if>
-      <if test="orQueryObject.processDefinitionKeys != null &amp;&amp; orQueryObject.processDefinitionKeys.size() &gt; 0">
-        <include refid="leftJoinWithProcessDefinition">
-          <property name="externalTableAlias" value="deploy_p_or${orIndex}"/>
-          <property name="field" value="KEY_"/>
-          <property name="collection" value="orQueryObject.processDefinitionKeys"/>
-        </include>
-      </if>
-      -->
       <if test="orQueryObject.processDefinitionName != null">
-        left join ${prefix}ACT_RE_PROCDEF deploy_p_or${orIndex} on RES.PROC_DEF_ID_ = deploy_p_or${orIndex}.ID_ and deploy_p_or${orIndex}.NAME_ = #{orQueryObject.processDefinitionName}
+        <include refid="leftJoinWithProcessDefinition">
+          <property name="tableAlias" value="deploy_p_or${orIndex}"/>
+        </include>
+        and deploy_p_or${orIndex}.NAME_ = #{orQueryObject.processDefinitionName}
       </if>
       <if test="orQueryObject.processDefinitionNameLike != null">
-        left join ${prefix}ACT_RE_PROCDEF deploy_p_or${orIndex} on RES.PROC_DEF_ID_ = deploy_p_or${orIndex}.ID_ and deploy_p_or${orIndex}.NAME_ like #{orQueryObject.processDefinitionNameLike}${wildcardEscapeClause}
+        <include refid="leftJoinWithProcessDefinition">
+          <property name="tableAlias" value="deploy_p_or${orIndex}"/>
+        </include>
+        and deploy_p_or${orIndex}.NAME_ like #{orQueryObject.processDefinitionNameLike}${wildcardEscapeClause}
       </if>
-      <!-- TODO: replaced by static method, in order to avoid multiple left-joins (end) -->
       <if test="orQueryObject.processInstanceBusinessKey != null">
-        left join ${prefix}ACT_HI_PROCINST exec_or${orIndex} on RES.PROC_INST_ID_ = exec_or${orIndex}.ID_ and exec_or${orIndex}.BUSINESS_KEY_ = #{orQueryObject.processInstanceBusinessKey}
+        <include refid="leftJoinWithProcessInstance">
+          <property name="tableAlias" value="exec_or${orIndex}"/>
+        </include>
+        and exec_or${orIndex}.BUSINESS_KEY_ = #{orQueryObject.processInstanceBusinessKey}
       </if>
       <if test="orQueryObject.processInstanceBusinessKeyLike != null">
-        left join ${prefix}ACT_HI_PROCINST exec_or${orIndex} on RES.PROC_INST_ID_ = exec_or${orIndex}.PROC_INST_ID_ and exec_or${orIndex}.BUSINESS_KEY_ like #{orQueryObject.processInstanceBusinessKeyLike}${wildcardEscapeClause}
+        <include refid="leftJoinWithProcessInstance">
+          <property name="tableAlias" value="exec_or${orIndex}"/>
+        </include>
+        and exec_or${orIndex}.BUSINESS_KEY_ like #{orQueryObject.processInstanceBusinessKeyLike}${wildcardEscapeClause}
       </if>
       <if test="orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null">
-        left join ${prefix}ACT_HI_PROCINST exec_or${orIndex} on RES.PROC_INST_ID_ = exec_or${orIndex}.PROC_INST_ID_ and lower(exec_or${orIndex}.BUSINESS_KEY_) like #{orQueryObject.processInstanceBusinessKeyLikeIgnoreCase}${wildcardEscapeClause}
+        <include refid="leftJoinWithProcessInstance">
+          <property name="tableAlias" value="exec_or${orIndex}"/>
+        </include>
+        and lower(exec_or${orIndex}.BUSINESS_KEY_) like #{orQueryObject.processInstanceBusinessKeyLikeIgnoreCase}${wildcardEscapeClause}
+      </if>
+      <if test="orQueryObject.processFinished">
+        <include refid="leftJoinWithProcessInstance">
+          <property name="tableAlias" value="HPI_OR${orIndex}"/>
+        </include>
+        and HPI_OR${orIndex}.END_TIME_ is not null
+      </if>
+      <if test="orQueryObject.processUnfinished">
+        <include refid="leftJoinWithProcessInstance">
+          <property name="tableAlias" value="HPI_OR${orIndex}"/>
+        </include>
+        and HPI_OR${orIndex}.END_TIME_ is null
       </if>
       <if test="orQueryObject.deploymentId != null">
-        left join ${prefix}ACT_RE_PROCDEF deploy_p_or${orIndex} on RES.PROC_DEF_ID_ = deploy_p_or${orIndex}.ID_ and deploy_p_or${orIndex}.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
+        <include refid="leftJoinWithProcessDefinition">
+          <property name="tableAlias" value="deploy_p_or${orIndex}"/>
+        </include>
+        and deploy_p_or${orIndex}.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
       </if>
       <if test="orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0">
         <include refid="leftJoinWithProcessDefinition">
-          <property name="externalTableAlias" value="deploy_p_or${orIndex}"/>
-          <property name="field" value="DEPLOYMENT_ID_"/>
-          <property name="collection" value="orQueryObject.deploymentIds"/>
+          <property name="tableAlias" value="deploy_p_or${orIndex}"/>
         </include>
+        and deploy_p_or${orIndex}.DEPLOYMENT_ID_ in
+        <foreach item="item" index="index" collection="orQueryObject.deploymentIds" open="(" separator="," close=")">
+          #{item}
+        </foreach>
       </if>
-      <!--
       <if test="orQueryObject.processCategoryInList != null &amp;&amp; orQueryObject.processCategoryInList.size() &gt; 0">
         <include refid="leftJoinWithProcessDefinition">
-          <property name="externalTableAlias" value="deploy_p_or${orIndex}"/>
-          <property name="field" value="CATEGORY_"/>
-          <property name="collection" value="orQueryObject.processCategoryInList"/>
+          <property name="tableAlias" value="deploy_p_or${orIndex}"/>
         </include>
+        and deploy_p_or${orIndex}.CATEGORY_ in
+        <foreach item="category" index="index" collection="orQueryObject.processCategoryInList"
+                 open="(" separator="," close=")">
+          #{category}
+        </foreach>
       </if>
-      -->
       <if test="orQueryObject.processCategoryNotInList != null &amp;&amp; orQueryObject.processCategoryNotInList.size() &gt; 0">
-        left join ACT_RE_PROCDEF deploy_p_or${orIndex}
-        on RES.PROC_DEF_ID_ = deploy_p_or${orIndex}.ID_
+        <include refid="leftJoinWithProcessDefinition">
+          <property name="tableAlias" value="deploy_p_or${orIndex}"/>
+        </include>
         and deploy_p_or${orIndex}.CATEGORY_ not in
         <foreach item="category" index="index" collection="orQueryObject.processCategoryNotInList"
                  open="(" separator="," close=")">
@@ -464,19 +459,6 @@
       <if test="taskOwnerLikeIgnoreCase != null">
         and lower(RES.OWNER_) like #{taskOwnerLikeIgnoreCase}${wildcardEscapeClause}
       </if>
-      <!-- TODO: doesn't exist -->
-      <!--
-      <if test="unassigned">
-        and RES.ASSIGNEE_ is null
-      </if>
-      <if test="noDelegationState">
-        and RES.DELEGATION_ IS NULL
-      </if>
-      <if test="delegationState != null">
-        and RES.DELEGATION_ = #{delegationStateString}
-      </if>
-
-      -->
       <if test="taskParentTaskId != null">
         and RES.PARENT_TASK_ID_ = #{taskParentTaskId}
       </if>
@@ -491,13 +473,13 @@
         </foreach>
       </if>
       <if test="processInstanceBusinessKey != null">
-        and e.BUSINESS_KEY_ is not null
+        and e.ID_ is not null
       </if>
       <if test="processInstanceBusinessKeyLike != null">
-        and e.BUSINESS_KEY_ is not null
+        and e.ID_ is not null
       </if>
       <if test="processInstanceBusinessKeyLikeIgnoreCase != null">
-        and e.BUSINESS_KEY_ is not null
+        and e.ID_ is not null
       </if>
       <if test="processFinished">
         and HPI.ID_ is not null
@@ -526,16 +508,6 @@
       <if test="completedAfterDate != null">
         and RES.END_TIME_ &gt; #{completedAfterDate}
       </if>
-      <!-- TODO: doesn't exist (begin) -->
-      <!--
-      <if test="key != null">
-        and RES.TASK_DEF_KEY_ = #{key}
-      </if>
-      <if test="keyLike != null">
-        and RES.TASK_DEF_KEY_ like #{keyLike}${wildcardEscapeClause}
-      </if>
-      -->
-      <!-- TODO: doesn't exist (end) -->
       <if test="processDefinitionId != null">
         and RES.PROC_DEF_ID_ = #{processDefinitionId}
       </if>
@@ -552,10 +524,10 @@
         and deploy.ID_ is not null
       </if>
       <if test="processDefinitionName != null">
-        and deploy.NAME_ is not null
+        and deploy.ID_ is not null
       </if>
       <if test="processDefinitionNameLike != null">
-        and deploy.NAME_ is not null
+        and deploy.ID_ is not null
       </if>
       <if test="processCategoryInList != null &amp;&amp; processCategoryInList.size() &gt; 0">
         and deploy_p.ID_ is not null
@@ -581,53 +553,9 @@
       <if test="withoutDueDate">
         and RES.DUE_DATE_ is null
       </if>
-      <if test="dueDate != null || dueBefore != null || dueAfter != null">
-        and RES.DUE_DATE_ is not null
-      </if>
       <if test="category != null">
         and RES.CATEGORY_ = #{category}
       </if>
-      <!-- TODO: doesn't exist (begin) -->
-      <!--
-      <if test="excludeSubtasks">
-        and RES.PARENT_TASK_ID_ is null
-      </if>
-      <if test="!bothCandidateAndAssigned &amp;&amp; (candidateUser != null || candidateGroups != null)">
-        and link.ID_ is not null
-      </if>
-      <if test="bothCandidateAndAssigned">
-        <if test="userIdForCandidateAndAssignee != null">
-          <if test="candidateGroups == null">
-            and (
-            RES.ASSIGNEE_ = #{userIdForCandidateAndAssignee}
-            or (
-            RES.ASSIGNEE_ is null
-            and link.ID_ is not null
-            )
-            )
-          </if>
-        </if>
-        <if test="candidateGroups != null">
-          and (
-          RES.ASSIGNEE_ = #{userIdForCandidateAndAssignee}
-          or (
-          RES.ASSIGNEE_ is null
-          and link.ID_ is not null
-          )
-          )
-        </if>
-      </if>
-            <if test="suspensionState != null">
-        <if test="suspensionState.stateCode == 1">
-          and RES.SUSPENSION_STATE_ = 1
-        </if>
-        <if test="suspensionState.stateCode == 2">
-          and RES.SUSPENSION_STATE_ = 2
-        </if>
-      </if>
-
-      -->
-      <!-- TODO: doesn't exist (end) -->
       <if test="involvedUser != null">
         and link_user.ID_ is not null
       </if>
@@ -643,7 +571,7 @@
       <if test="withoutTenantId">
         and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
       </if>
-      <!-- or query for "act_ru_task" table -->
+      <!-- or query for "ACT_HI_TASKINST" table -->
       <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
         and
         <trim prefix="(" prefixOverrides="OR" suffix=")">
@@ -732,19 +660,6 @@
           <if test="orQueryObject.taskOwnerLikeIgnoreCase != null">
             or RES.OWNER_ like #{orQueryObject.taskOwnerLikeIgnoreCase}${wildcardEscapeClause}
           </if>
-          <!-- TODO: doesn't exist -->
-          <!--
-          <if test="orQueryObject.unassigned">
-            or RES.ASSIGNEE_ IS NULL
-          </if>
-          <if test="orQueryObject.noDelegationState">
-            or RES.DELEGATION_ IS NULL
-          </if>
-          <if test="orQueryObject.delegationState != null">
-            or RES.DELEGATION_ = #{orQueryObject.delegationStateString}
-          </if>
-
-          -->
           <if test="orQueryObject.taskParentTaskId != null">
             or RES.PARENT_TASK_ID_ = #{orQueryObject.taskParentTaskId}
           </if>
@@ -759,13 +674,13 @@
             </foreach>
           </if>
           <if test="orQueryObject.processInstanceBusinessKey != null">
-            or exec_or${orIndex}.BUSINESS_KEY_ is not null
+            or exec_or${orIndex}.ID_ is not null
           </if>
           <if test="orQueryObject.processInstanceBusinessKeyLike != null">
-            or exec_or${orIndex}.BUSINESS_KEY_ is not null
+            or exec_or${orIndex}.ID_ is not null
           </if>
           <if test="orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null">
-            or exec_or${orIndex}.BUSINESS_KEY_ is not null
+            or exec_or${orIndex}.ID_ is not null
           </if>
           <if test="orQueryObject.executionId != null">
             or RES.EXECUTION_ID_ = #{orQueryObject.executionId}
@@ -788,20 +703,16 @@
           <if test="orQueryObject.completedAfterDate != null">
             or RES.END_TIME_ &gt; #{orQueryObject.completedAfterDate}
           </if>
-          <!-- TODO: key doesn't exist (begin) -->
-          <!--
-          <if test="orQueryObject.key != null">
-            or RES.TASK_DEF_KEY_ = #{orQueryObject.key}
-          </if>
-          <if test="orQueryObject.keyLike != null">
-            or RES.TASK_DEF_KEY_ like #{orQueryObject.keyLike}${wildcardEscapeClause}
-          </if>
-          -->
-          <!-- TODO: key doesn't exist (end) -->
           <if test="orQueryObject.processDefinitionId != null">
             or RES.PROC_DEF_ID_ = #{orQueryObject.processDefinitionId}
           </if>
           <if test="orQueryObject.processDefinitionKey != null">
+            or deploy_p_or${orIndex}.ID_ is not null
+          </if>
+          <if test="orQueryObject.processDefinitionKeyLike != null">
+            or deploy_p_or${orIndex}.ID_ is not null
+          </if>
+          <if test="orQueryObject.processDefinitionKeyLikeIgnoreCase != null">
             or deploy_p_or${orIndex}.ID_ is not null
           </if>
           <if test="orQueryObject.processDefinitionKeys != null &amp;&amp; orQueryObject.processDefinitionKeys.size() &gt; 0">
@@ -818,6 +729,12 @@
           </if>
           <if test="orQueryObject.processCategoryNotInList != null &amp;&amp; orQueryObject.processCategoryNotInList.size() &gt; 0">
             or deploy_p_or${orIndex}.ID_ is not null
+          </if>
+          <if test="orQueryObject.processFinished">
+            or HPI_OR${orIndex}.ID_ is not null
+          </if>
+          <if test="orQueryObject.processUnfinished">
+            or HPI_OR${orIndex}.ID_ is not null
           </if>
           <if test="orQueryObject.deploymentId != null">
             or deploy_p_or${orIndex}.ID_ is not null
@@ -840,46 +757,9 @@
           <if test="orQueryObject.category != null">
             or RES.CATEGORY_ = #{orQueryObject.category}
           </if>
-          <!-- TODO: excludeSubtasks doesn't exist (begin) -->
-          <!--
-          <if test="orQueryObject.excludeSubtasks">
-            or RES.PARENT_TASK_ID_ is null
-          </if>
-          -->
-          <!-- TODO: excludeSubtasks doesn't exist (end) -->
           <if test="orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null">
             or link_or${orIndex}.ID_ is not null
           </if>
-
-          <!-- TODO: bothCandidateAndAssigned doesn't exist (begin) -->
-          <!--
-          <if test="!orQueryObject.bothCandidateAndAssigned &amp;&amp; (orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null)">
-            or link_or${orIndex}.ID_ is not null
-          </if>
-          <if test="orQueryObject.bothCandidateAndAssigned">
-            <if test="orQueryObject.userIdForCandidateAndAssignee != null">
-              <if test="orQueryObject.candidateGroups == null">
-                or (
-                RES.ASSIGNEE_ = #{orQueryObject.userIdForCandidateAndAssignee}
-                or (
-                RES.ASSIGNEE_ is null
-                and link_or${orIndex}.ID_ is not null
-                )
-                )
-              </if>
-            </if>
-            <if test="orQueryObject.candidateGroups != null">
-              or (
-              RES.ASSIGNEE_ = #{orQueryObject.userIdForCandidateAndAssignee}
-              or (
-              RES.ASSIGNEE_ is null
-              and link_or${orIndex}.ID_ is not null
-              )
-              )
-            </if>
-          </if>
-          -->
-          <!-- TODO: bothCandidateAndAssigned doesn't exist (end) -->
           <if test="orQueryObject.involvedUser != null">
             or link_user_or${orIndex}.ID_ is not null
             or RES.ASSIGNEE_ = #{orQueryObject.involvedUser}
@@ -893,18 +773,6 @@
               or a_or${orIndex}_${varIndex}.ID_ is not null
             </foreach>
           </if>
-          <!-- TODO: suspensionState doesn't exist (begin) -->
-          <!--
-          <if test="orQueryObject.suspensionState != null">
-            <if test="orQueryObject.suspensionState.stateCode == 1">
-              or RES.SUSPENSION_STATE_ = 1
-            </if>
-            <if test="orQueryObject.suspensionState.stateCode == 2">
-              or RES.SUSPENSION_STATE_ = 2
-            </if>
-          </if>
-          -->
-          <!-- TODO: suspensionState doesn't exist (end) -->
           <if test="orQueryObject.tenantId != null">
             or RES.TENANT_ID_ = #{orQueryObject.tenantId}
           </if>
@@ -990,14 +858,27 @@
   </sql>
 
   <sql id="leftJoinWithProcessDefinition">
-    left join ${prefix}ACT_RE_PROCDEF ${externalTableAlias}
-    on RES.PROC_DEF_ID_ = ${externalTableAlias}.ID_
-    <if test="${collection} != null">
-      and ${externalTableAlias}.${field} in
-      <foreach item="item" index="index" collection="${collection}" open="(" separator="," close=")">
-        #{item}
-      </foreach>
-    </if>
+    left join ${prefix}ACT_RE_PROCDEF ${tableAlias}
+    on RES.PROC_DEF_ID_ = ${tableAlias}.ID_
+  </sql>
+
+  <sql id="leftJoinWithIdentityLink">
+    left join ${prefix}ACT_HI_IDENTITYLINK ${tableAlias}
+    on RES.ID_ = ${tableAlias}.TASK_ID_
+  </sql>
+
+  <sql id="leftJoinWithProcessInstance">
+    left join ${prefix}ACT_HI_PROCINST ${tableAlias}
+    on RES.PROC_INST_ID_ = ${tableAlias}.ID_
+  </sql>
+
+  <sql id="leftJoinWithVariables">
+    left join ${prefix}ACT_HI_VARINST ${tableAlias}
+    on RES.ID_ = ${tableAlias}.TASK_ID_
+  </sql>
+
+  <sql id="leftJoinWithProcessInstanceVariables">
+    left join ${prefix}ACT_HI_VARINST ${tableAlias} ON RES.PROC_INST_ID_ = ${tableAlias}.EXECUTION_ID_
   </sql>
 
   <sql id="leftJoinVariables">
