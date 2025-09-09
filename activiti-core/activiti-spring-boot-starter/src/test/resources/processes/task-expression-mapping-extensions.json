@@ -1,19 +1,19 @@
 {
-  "id":"taskExpressionMappingModel",
-  "type":"PROCESS",
-  "name":"Task Expression Mapping",
-  "extensions":{
-    "taskExpressionMapping":{
-      "mappings":{
-        "Task_0z87dw7":{
+  "id": "taskExpressionMappingModel",
+  "type": "PROCESS",
+  "name": "Task Expression Mapping",
+  "extensions": {
+    "taskExpressionMapping": {
+      "mappings": {
+        "Task_0z87dw7": {
           "inputs": {
             "inNull": {
               "type": "VALUE",
               "value": "${notDefined}"
             },
             "inValue": {
-            "type": "VALUE",
-            "value": "${initVar}"
+              "type": "VALUE",
+              "value": "${initVar}"
             }
           },
           "outputs": {
@@ -32,31 +32,31 @@
           }
         }
       },
-      "properties":{
-        "81d12b0c-a95a-4879-a36c-7d40f121cef1":{
-          "id":"81d12b0c-a95a-4879-a36c-7d40f121cef1",
-          "name":"initVar",
-          "type":"string",
-          "required":false,
+      "properties": {
+        "81d12b0c-a95a-4879-a36c-7d40f121cef1": {
+          "id": "81d12b0c-a95a-4879-a36c-7d40f121cef1",
+          "name": "initVar",
+          "type": "string",
+          "required": false,
           "value": "varValue"
         },
-        "81d12b0c-a95a-4879-a36c-7d40f121cef2":{
-          "id":"81d12b0c-a95a-4879-a36c-7d40f121cef2",
-          "name":"outValue",
-          "type":"string",
-          "required":false
+        "81d12b0c-a95a-4879-a36c-7d40f121cef2": {
+          "id": "81d12b0c-a95a-4879-a36c-7d40f121cef2",
+          "name": "outValue",
+          "type": "string",
+          "required": false
         },
-        "81d12b0c-a95a-4879-a36c-7d40f121cef3":{
-          "id":"81d12b0c-a95a-4879-a36c-7d40f121cef3",
-          "name":"outNull",
-          "type":"string",
-          "required":false
+        "81d12b0c-a95a-4879-a36c-7d40f121cef3": {
+          "id": "81d12b0c-a95a-4879-a36c-7d40f121cef3",
+          "name": "outNull",
+          "type": "string",
+          "required": false
         },
-        "81d12b0c-a95a-4879-a36c-7d40f121cef4":{
-          "id":"81d12b0c-a95a-4879-a36c-7d40f121cef4",
-          "name":"outMapped",
-          "type":"string",
-          "required":false
+        "81d12b0c-a95a-4879-a36c-7d40f121cef4": {
+          "id": "81d12b0c-a95a-4879-a36c-7d40f121cef4",
+          "name": "outMapped",
+          "type": "string",
+          "required": false
         }
       }
     }

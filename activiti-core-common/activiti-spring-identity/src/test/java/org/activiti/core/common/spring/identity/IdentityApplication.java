@@ -17,7 +17,6 @@ package org.activiti.core.common.spring.identity;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -35,7 +34,8 @@ public class IdentityApplication {
 
     @Bean
     public UserDetailsService myUserDetailsService() {
-        ExtendedInMemoryUserDetailsManager extendedInMemoryUserDetailsManager = new ExtendedInMemoryUserDetailsManager();
+        ExtendedInMemoryUserDetailsManager extendedInMemoryUserDetailsManager =
+            new ExtendedInMemoryUserDetailsManager();
 
         List<GrantedAuthority> userAuthorities = new ArrayList<>();
         userAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));

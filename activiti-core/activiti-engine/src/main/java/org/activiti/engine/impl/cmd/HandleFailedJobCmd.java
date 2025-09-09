@@ -16,6 +16,7 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.io.Serializable;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -29,62 +30,78 @@ import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
-
 public class HandleFailedJobCmd implements Command<Object>, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private static Logger log = LoggerFactory.getLogger(HandleFailedJobCmd.class);
+    private static Logger log = LoggerFactory.getLogger(HandleFailedJobCmd.class);
 
-  protected String jobId;
-  protected Throwable exception;
-  protected ProcessEngineConfigurationImpl processEngineConfiguration;
+    protected String jobId;
+    protected Throwable exception;
+    protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
-  public HandleFailedJobCmd(
-      String jobId,
-      ProcessEngineConfigurationImpl processEngineConfiguration,
-      Throwable exception) {
-    this.jobId = jobId;
-    this.processEngineConfiguration = processEngineConfiguration;
-    this.exception = exception;
-  }
-
-  public Object execute(CommandContext commandContext) {
-    if (jobId == null) {
-      throw new ActivitiIllegalArgumentException("jobId and job is null");
+    public HandleFailedJobCmd(
+        String jobId,
+        ProcessEngineConfigurationImpl processEngineConfiguration,
+        Throwable exception
+    ) {
+        this.jobId = jobId;
+        this.processEngineConfiguration = processEngineConfiguration;
+        this.exception = exception;
     }
 
-    Job job = commandContext.getJobEntityManager().findById(jobId);
+    public Object execute(CommandContext commandContext) {
+        if (jobId == null) {
+            throw new ActivitiIllegalArgumentException("jobId and job is null");
+        }
 
-    if (job == null) {
-      throw new JobNotFoundException(jobId);
+        Job job = commandContext.getJobEntityManager().findById(jobId);
+
+        if (job == null) {
+            throw new JobNotFoundException(jobId);
+        }
+
+        if (log.isDebugEnabled()) {
+            log.debug("Executing job {}", job.getId());
+        }
+
+        executeInternal(commandContext, job);
+        return null;
     }
 
-    if (log.isDebugEnabled()) {
-      log.debug("Executing job {}", job.getId());
+    protected void executeInternal(CommandContext commandContext, Job job) {
+        CommandConfig commandConfig = processEngineConfiguration
+            .getCommandExecutor()
+            .getDefaultConfig()
+            .transactionRequiresNew();
+        FailedJobCommandFactory failedJobCommandFactory = commandContext.getFailedJobCommandFactory();
+        Command<Object> cmd = failedJobCommandFactory.getCommand(job.getId(), exception);
+
+        log.trace(
+            "Using FailedJobCommandFactory '" +
+            failedJobCommandFactory.getClass() +
+            "' and command of type '" +
+            cmd.getClass() +
+            "'"
+        );
+        processEngineConfiguration.getCommandExecutor().execute(commandConfig, cmd);
+
+        // Dispatch an event, indicating job execution failed in a
+        // try-catch block, to prevent the original exception to be swallowed
+        if (commandContext.getEventDispatcher().isEnabled()) {
+            try {
+                commandContext
+                    .getEventDispatcher()
+                    .dispatchEvent(
+                        ActivitiEventBuilder.createEntityExceptionEvent(
+                            ActivitiEventType.JOB_EXECUTION_FAILURE,
+                            job,
+                            exception
+                        )
+                    );
+            } catch (Throwable ignore) {
+                log.warn("Exception occurred while dispatching job failure event, ignoring.", ignore);
+            }
+        }
     }
-
-    executeInternal(commandContext,job);
-    return null;
-  }
-
-  protected void executeInternal(CommandContext commandContext, Job job) {
-      CommandConfig commandConfig = processEngineConfiguration.getCommandExecutor().getDefaultConfig().transactionRequiresNew();
-      FailedJobCommandFactory failedJobCommandFactory = commandContext.getFailedJobCommandFactory();
-      Command<Object> cmd = failedJobCommandFactory.getCommand(job.getId(), exception);
-
-      log.trace("Using FailedJobCommandFactory '" + failedJobCommandFactory.getClass() + "' and command of type '" + cmd.getClass() + "'");
-      processEngineConfiguration.getCommandExecutor().execute(commandConfig, cmd);
-
-      // Dispatch an event, indicating job execution failed in a
-      // try-catch block, to prevent the original exception to be swallowed
-      if (commandContext.getEventDispatcher().isEnabled()) {
-          try {
-              commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityExceptionEvent(ActivitiEventType.JOB_EXECUTION_FAILURE, job, exception));
-          } catch (Throwable ignore) {
-              log.warn("Exception occurred while dispatching job failure event, ignoring.", ignore);
-          }
-      }
-  }
 }

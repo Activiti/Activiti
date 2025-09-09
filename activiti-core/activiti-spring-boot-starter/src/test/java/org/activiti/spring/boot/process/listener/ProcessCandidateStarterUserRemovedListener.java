@@ -15,16 +15,16 @@
  */
 package org.activiti.spring.boot.process.listener;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.activiti.api.process.model.ProcessCandidateStarterUser;
 import org.activiti.api.process.runtime.events.ProcessCandidateStarterUserRemovedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Component
-public class ProcessCandidateStarterUserRemovedListener implements ProcessRuntimeEventListener<ProcessCandidateStarterUserRemovedEvent> {
+public class ProcessCandidateStarterUserRemovedListener
+    implements ProcessRuntimeEventListener<ProcessCandidateStarterUserRemovedEvent> {
 
     private List<ProcessCandidateStarterUser> candidateStarterUsers = new ArrayList<>();
 
@@ -36,5 +36,4 @@ public class ProcessCandidateStarterUserRemovedListener implements ProcessRuntim
     public List<ProcessCandidateStarterUser> getCandidateStarterUsers() {
         return candidateStarterUsers;
     }
-
 }

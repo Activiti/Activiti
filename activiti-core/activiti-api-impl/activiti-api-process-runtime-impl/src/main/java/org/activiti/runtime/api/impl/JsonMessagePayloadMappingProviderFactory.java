@@ -26,19 +26,21 @@ public class JsonMessagePayloadMappingProviderFactory implements MessagePayloadM
 
     private final VariablesCalculator variablesCalculator;
 
-    public JsonMessagePayloadMappingProviderFactory(
-        VariablesCalculator variablesCalculator) {
+    public JsonMessagePayloadMappingProviderFactory(VariablesCalculator variablesCalculator) {
         this.variablesCalculator = variablesCalculator;
     }
 
     @Override
-    public MessagePayloadMappingProvider create(Event bpmnEvent,
-                                                MessageEventDefinition messageEventDefinition,
-                                                ExpressionManager expressionManager) {
-        return new JsonMessagePayloadMappingProvider(bpmnEvent,
-                                                     messageEventDefinition,
-                                                     expressionManager,
-            variablesCalculator);
+    public MessagePayloadMappingProvider create(
+        Event bpmnEvent,
+        MessageEventDefinition messageEventDefinition,
+        ExpressionManager expressionManager
+    ) {
+        return new JsonMessagePayloadMappingProvider(
+            bpmnEvent,
+            messageEventDefinition,
+            expressionManager,
+            variablesCalculator
+        );
     }
-
 }

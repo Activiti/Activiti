@@ -15,6 +15,8 @@
  */
 package org.activiti.spring.boot.process.listener;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.activiti.api.process.model.ProcessCandidateStarterUser;
 import org.activiti.api.process.runtime.events.ProcessCandidateStarterUserAddedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
@@ -22,11 +24,9 @@ import org.activiti.api.runtime.event.impl.ProcessCandidateStarterUserAddedEvent
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Component
-public class ProcessCandidateStarterUserAddedListener implements ProcessRuntimeEventListener<ProcessCandidateStarterUserAddedEvent> {
+public class ProcessCandidateStarterUserAddedListener
+    implements ProcessRuntimeEventListener<ProcessCandidateStarterUserAddedEvent> {
 
     private List<ProcessCandidateStarterUser> candidateStarterUsers = new ArrayList<>();
     private ProcessCandidateStarterUserAddedEvents events;
@@ -48,5 +48,4 @@ public class ProcessCandidateStarterUserAddedListener implements ProcessRuntimeE
     public ProcessCandidateStarterUserAddedEvents getPublishedEvents() {
         return events;
     }
-
 }

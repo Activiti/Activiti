@@ -19,32 +19,30 @@ package org.activiti.engine.impl.cfg;
 import org.activiti.engine.delegate.DelegateHelper;
 
 public enum DelegateExpressionFieldInjectionMode {
+    /**
+     * This is the pre version 5.21 mode: field expressions are allowed and the
+     * only way to inject values.
+     *
+     * Using the
+     * {@link DelegateHelper#getField(org.activiti.engine.delegate.DelegateExecution, String)}
+     * method is not possible when using this mode, unless the Expressions are still defined
+     * as members of the delegate (otherwise an exception will be thrown). In that case, they
+     * should not be used, but rather the DelegateHelper methods should be used.
+     */
+    COMPATIBILITY,
 
-  /**
-   * This is the pre version 5.21 mode: field expressions are allowed and the
-   * only way to inject values.
-   *
-   * Using the
-   * {@link DelegateHelper#getField(org.activiti.engine.delegate.DelegateExecution, String)}
-   * method is not possible when using this mode, unless the Expressions are still defined
-   * as members of the delegate (otherwise an exception will be thrown). In that case, they
-   * should not be used, but rather the DelegateHelper methods should be used.
-   */
-  COMPATIBILITY,
+    /**
+     * Allows injection when using delegateExpressions but will not throw an exception
+     * when the fields are not defined on the delegate. This allows for mixed behaviours
+     * where some delegates have injection (for example because they are not singletons)
+     * and some don't.
+     */
+    MIXED,
 
-  /**
-   * Allows injection when using delegateExpressions but will not throw an exception
-   * when the fields are not defined on the delegate. This allows for mixed behaviours
-   * where some delegates have injection (for example because they are not singletons)
-   * and some don't.
-   */
-  MIXED,
-
-  /**
-   * (Advised mode, as it is the safest)
-   *
-   * Disables field injection when using delegateExpressions, no field injection will happen.
-   */
-  DISABLED
-
+    /**
+     * (Advised mode, as it is the safest)
+     *
+     * Disables field injection when using delegateExpressions, no field injection will happen.
+     */
+    DISABLED,
 }

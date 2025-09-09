@@ -15,6 +15,7 @@
  */
 package org.activiti.runtime.api.event.internal;
 
+import java.util.List;
 import org.activiti.api.process.runtime.events.ProcessCandidateStarterGroupRemovedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -22,16 +23,16 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToAPIProcessCandidateStarterGroupRemovedEventConverter;
 
-import java.util.List;
-
 public class ProcessCandidateStarterGroupRemovedListenerDelegate implements ActivitiEventListener {
 
     private List<ProcessRuntimeEventListener<ProcessCandidateStarterGroupRemovedEvent>> listeners;
 
     private ToAPIProcessCandidateStarterGroupRemovedEventConverter processCandidateStarterGroupRemovedEventConverter;
 
-    public ProcessCandidateStarterGroupRemovedListenerDelegate(List<ProcessRuntimeEventListener<ProcessCandidateStarterGroupRemovedEvent>> listeners,
-                                                               ToAPIProcessCandidateStarterGroupRemovedEventConverter processCandidateStarterGroupRemovedEventConverter) {
+    public ProcessCandidateStarterGroupRemovedListenerDelegate(
+        List<ProcessRuntimeEventListener<ProcessCandidateStarterGroupRemovedEvent>> listeners,
+        ToAPIProcessCandidateStarterGroupRemovedEventConverter processCandidateStarterGroupRemovedEventConverter
+    ) {
         this.listeners = listeners;
         this.processCandidateStarterGroupRemovedEventConverter = processCandidateStarterGroupRemovedEventConverter;
     }
@@ -39,12 +40,13 @@ public class ProcessCandidateStarterGroupRemovedListenerDelegate implements Acti
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiEntityEvent) {
-            processCandidateStarterGroupRemovedEventConverter.from((ActivitiEntityEvent) event)
-                    .ifPresent(convertedEvent -> {
-                        for (ProcessRuntimeEventListener<ProcessCandidateStarterGroupRemovedEvent> listener : listeners ) {
-                            listener.onEvent(convertedEvent);
-                        }
-                    });
+            processCandidateStarterGroupRemovedEventConverter
+                .from((ActivitiEntityEvent) event)
+                .ifPresent(convertedEvent -> {
+                    for (ProcessRuntimeEventListener<ProcessCandidateStarterGroupRemovedEvent> listener : listeners) {
+                        listener.onEvent(convertedEvent);
+                    }
+                });
         }
     }
 

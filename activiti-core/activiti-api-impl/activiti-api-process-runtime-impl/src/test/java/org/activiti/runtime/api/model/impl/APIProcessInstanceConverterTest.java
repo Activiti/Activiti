@@ -15,16 +15,15 @@
  */
 package org.activiti.runtime.api.model.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Date;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.ProcessInstance.ProcessInstanceStatus;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.junit.jupiter.api.Test;
-
-import java.util.Date;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class APIProcessInstanceConverterTest {
 
@@ -139,5 +138,4 @@ public class APIProcessInstanceConverterTest {
 
         return internalProcessInstance;
     }
-
 }

@@ -29,6 +29,9 @@ public class RetrieveIntegrationContextsCmd implements Command<IntegrationContex
 
     @Override
     public IntegrationContextEntity execute(CommandContext commandContext) {
-        return commandContext.getProcessEngineConfiguration().getIntegrationContextManager().findById(integrationContextId);
+        return commandContext
+            .getProcessEngineConfiguration()
+            .getIntegrationContextManager()
+            .findById(integrationContextId);
     }
 }

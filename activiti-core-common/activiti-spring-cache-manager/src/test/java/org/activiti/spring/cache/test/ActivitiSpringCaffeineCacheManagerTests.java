@@ -42,10 +42,11 @@ import org.springframework.context.annotation.Bean;
         "activiti.spring.cache-manager.caches.foo.caffeine.spec=initialCapacity=100, maximumSize=1000, expireAfterAccess=60s, recordStats",
         "activiti.spring.cache-manager.caches.bar.enabled=false",
         "activiti.spring.cache-manager.caches.bar.caffeine.spec=initialCapacity=100, maximumSize=1000, expireAfterAccess=60s, recordStats",
-})
+    }
+)
 class ActivitiSpringCaffeineCacheManagerTests {
 
-    private static final List<Caffeine<Object,Object>> caffeineCacheConfigurers = new ArrayList<>();
+    private static final List<Caffeine<Object, Object>> caffeineCacheConfigurers = new ArrayList<>();
 
     @SpringBootApplication
     static class TestApplication {
@@ -76,9 +77,7 @@ class ActivitiSpringCaffeineCacheManagerTests {
 
     @Test
     void testCacheManager() {
-        assertThat(cacheManager)
-            .isNotNull()
-            .isInstanceOf(CaffeineCacheManager.class);
+        assertThat(cacheManager).isNotNull().isInstanceOf(CaffeineCacheManager.class);
     }
 
     @Test
@@ -110,7 +109,5 @@ class ActivitiSpringCaffeineCacheManagerTests {
         var cache = cacheManager.getCache("foo");
 
         assertThat(cache.get("foo", String.class)).isEqualTo("bar");
-
     }
-
 }

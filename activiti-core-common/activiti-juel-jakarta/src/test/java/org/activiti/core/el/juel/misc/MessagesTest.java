@@ -43,10 +43,6 @@ public class MessagesTest {
      */
     @Test
     public void testGetStringObjectObject() {
-        assertTrue(
-            LocalMessages
-                .get("foo", "bar", "baz")
-                .matches(".*foo\\(bar,\\s*baz\\)")
-        );
+        assertTrue(LocalMessages.get("foo", "bar", "baz").matches(".*foo\\(bar,\\s*baz\\)"));
     }
 }

@@ -20,28 +20,28 @@ import java.util.List;
 
 public class DataGrid implements ComplexDataType {
 
-  protected List<DataGridRow> rows = new ArrayList<DataGridRow>();
+    protected List<DataGridRow> rows = new ArrayList<DataGridRow>();
 
-  public List<DataGridRow> getRows() {
-    return rows;
-  }
-
-  public void setRows(List<DataGridRow> rows) {
-    this.rows = rows;
-  }
-
-  public DataGrid clone() {
-    DataGrid clone = new DataGrid();
-    clone.setValues(this);
-    return clone;
-  }
-
-  public void setValues(DataGrid otherGrid) {
-    rows = new ArrayList<DataGridRow>();
-    if (otherGrid.getRows() != null && !otherGrid.getRows().isEmpty()) {
-      for (DataGridRow row : otherGrid.getRows()) {
-        rows.add(row.clone());
-      }
+    public List<DataGridRow> getRows() {
+        return rows;
     }
-  }
+
+    public void setRows(List<DataGridRow> rows) {
+        this.rows = rows;
+    }
+
+    public DataGrid clone() {
+        DataGrid clone = new DataGrid();
+        clone.setValues(this);
+        return clone;
+    }
+
+    public void setValues(DataGrid otherGrid) {
+        rows = new ArrayList<DataGridRow>();
+        if (otherGrid.getRows() != null && !otherGrid.getRows().isEmpty()) {
+            for (DataGridRow row : otherGrid.getRows()) {
+                rows.add(row.clone());
+            }
+        }
+    }
 }

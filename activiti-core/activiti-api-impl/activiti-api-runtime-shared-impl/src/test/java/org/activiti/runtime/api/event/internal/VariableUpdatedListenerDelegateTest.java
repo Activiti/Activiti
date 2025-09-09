@@ -54,7 +54,10 @@ public class VariableUpdatedListenerDelegateTest {
     @BeforeEach
     public void setUp() {
         variableUpdatedListenerDelegate = new VariableUpdatedListenerDelegate(
-            Arrays.asList(firstListener, secondListener), converter, variableEventFilter);
+            Arrays.asList(firstListener, secondListener),
+            converter,
+            variableEventFilter
+        );
     }
 
     @Test
@@ -99,5 +102,4 @@ public class VariableUpdatedListenerDelegateTest {
         verifyNoInteractions(firstListener);
         verifyNoInteractions(secondListener);
     }
-
 }

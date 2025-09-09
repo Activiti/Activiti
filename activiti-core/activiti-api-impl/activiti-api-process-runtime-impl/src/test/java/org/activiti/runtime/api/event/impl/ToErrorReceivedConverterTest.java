@@ -57,5 +57,4 @@ public class ToErrorReceivedConverterTest {
         assertThat(errorEvent.getProcessDefinitionId()).isEqualTo("procDefId");
         assertThat(errorEvent.getEntity()).isEqualTo(bpmnError);
     }
-
 }

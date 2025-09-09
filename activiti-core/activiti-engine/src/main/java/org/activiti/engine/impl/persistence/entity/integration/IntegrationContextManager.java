@@ -17,6 +17,4 @@ package org.activiti.engine.impl.persistence.entity.integration;
 
 import org.activiti.engine.impl.persistence.entity.EntityManager;
 
-public interface IntegrationContextManager extends EntityManager<IntegrationContextEntity> {
-
-}
+public interface IntegrationContextManager extends EntityManager<IntegrationContextEntity> {}

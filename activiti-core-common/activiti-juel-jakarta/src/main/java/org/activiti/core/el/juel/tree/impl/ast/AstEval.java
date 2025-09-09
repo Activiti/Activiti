@@ -43,10 +43,7 @@ public final class AstEval extends AstNode {
         return getChild(0).isMethodInvocation();
     }
 
-    public ValueReference getValueReference(
-        Bindings bindings,
-        ELContext context
-    ) {
+    public ValueReference getValueReference(Bindings bindings, ELContext context) {
         return child.getValueReference(bindings, context);
     }
 
@@ -67,12 +64,7 @@ public final class AstEval extends AstNode {
         b.append("}");
     }
 
-    public MethodInfo getMethodInfo(
-        Bindings bindings,
-        ELContext context,
-        Class<?> returnType,
-        Class<?>[] paramTypes
-    ) {
+    public MethodInfo getMethodInfo(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes) {
         return child.getMethodInfo(bindings, context, returnType, paramTypes);
     }
 
@@ -83,13 +75,7 @@ public final class AstEval extends AstNode {
         Class<?>[] paramTypes,
         Object[] paramValues
     ) {
-        return child.invoke(
-            bindings,
-            context,
-            returnType,
-            paramTypes,
-            paramValues
-        );
+        return child.invoke(bindings, context, returnType, paramTypes, paramValues);
     }
 
     public Class<?> getType(Bindings bindings, ELContext context) {

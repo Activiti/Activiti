@@ -71,9 +71,12 @@ public class VariablesPropagatorTest {
 
         final Map<String, Object> availableVariables = Collections.singletonMap("beforeMapping", "value");
         final Map<String, Object> outboundVariables = Collections.singletonMap("mapped", "value");
-        given(variablesCalculator.calculateOutPutVariables(MappingExecutionContext.buildMappingExecutionContext(execution), availableVariables))
-            .willReturn(outboundVariables);
-
+        given(
+            variablesCalculator.calculateOutPutVariables(
+                MappingExecutionContext.buildMappingExecutionContext(execution),
+                availableVariables
+            )
+        ).willReturn(outboundVariables);
 
         //when
         variablesPropagator.propagate(execution, availableVariables);
@@ -101,12 +104,10 @@ public class VariablesPropagatorTest {
         final DelegateExecution execution = buildExecution(processInstanceId, true);
         final Map<String, Object> availableVariables = Collections.singletonMap("beforeMapping", "value");
 
-
         //when
         variablesPropagator.propagate(execution, availableVariables);
 
         //then
         verify(execution).setVariablesLocal(availableVariables);
     }
-
 }

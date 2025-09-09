@@ -17,33 +17,33 @@ package org.activiti.bpmn.model;
 
 public class DataGridField extends BaseElement {
 
-  protected String name;
-  protected String value;
+    protected String name;
+    protected String value;
 
-  public String getName() {
-    return name;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public String getValue() {
-    return value;
-  }
+    public String getValue() {
+        return value;
+    }
 
-  public void setValue(String value) {
-    this.value = value;
-  }
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-  public DataGridField clone() {
-    DataGridField clone = new DataGridField();
-    clone.setValues(this);
-    return clone;
-  }
+    public DataGridField clone() {
+        DataGridField clone = new DataGridField();
+        clone.setValues(this);
+        return clone;
+    }
 
-  public void setValues(DataGridField otherField) {
-    setName(otherField.getName());
-    setValue(otherField.getValue());
-  }
+    public void setValues(DataGridField otherField) {
+        setName(otherField.getName());
+        setValue(otherField.getValue());
+    }
 }

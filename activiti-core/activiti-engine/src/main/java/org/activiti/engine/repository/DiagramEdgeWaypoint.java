@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.repository;
 
 import java.io.Serializable;
@@ -26,25 +25,24 @@ import java.io.Serializable;
  */
 public class DiagramEdgeWaypoint implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private Double x;
-  private Double y;
+    private Double x;
+    private Double y;
 
-  public Double getX() {
-    return x;
-  }
+    public Double getX() {
+        return x;
+    }
 
-  public void setX(Double x) {
-    this.x = x;
-  }
+    public void setX(Double x) {
+        this.x = x;
+    }
 
-  public Double getY() {
-    return y;
-  }
+    public Double getY() {
+        return y;
+    }
 
-  public void setY(Double y) {
-    this.y = y;
-  }
-
+    public void setY(Double y) {
+        this.y = y;
+    }
 }

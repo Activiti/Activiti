@@ -81,10 +81,7 @@ public class SimpleResolver extends ELResolver {
      * values, resource values and bean properties.
      */
     public SimpleResolver(boolean readOnly) {
-        this(
-            readOnly ? DEFAULT_RESOLVER_READ_ONLY : DEFAULT_RESOLVER_READ_WRITE,
-            readOnly
-        );
+        this(readOnly ? DEFAULT_RESOLVER_READ_ONLY : DEFAULT_RESOLVER_READ_WRITE, readOnly);
     }
 
     /**
@@ -110,10 +107,7 @@ public class SimpleResolver extends ELResolver {
     }
 
     @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(
-        ELContext context,
-        Object base
-    ) {
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
         return delegate.getFeatureDescriptors(context, base);
     }
 
@@ -133,23 +127,12 @@ public class SimpleResolver extends ELResolver {
     }
 
     @Override
-    public void setValue(
-        ELContext context,
-        Object base,
-        Object property,
-        Object value
-    ) {
+    public void setValue(ELContext context, Object base, Object property, Object value) {
         delegate.setValue(context, base, property, value);
     }
 
     @Override
-    public Object invoke(
-        ELContext context,
-        Object base,
-        Object method,
-        Class<?>[] paramTypes,
-        Object[] params
-    ) {
+    public Object invoke(ELContext context, Object base, Object method, Class<?>[] paramTypes, Object[] params) {
         return delegate.invoke(context, base, method, paramTypes, params);
     }
 }

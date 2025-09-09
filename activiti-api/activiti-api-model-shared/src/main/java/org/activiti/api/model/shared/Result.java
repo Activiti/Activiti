@@ -24,11 +24,9 @@ public abstract class Result<T> implements Serializable {
     private Payload payload;
     private T entity;
 
-    public Result() {
-    }
+    public Result() {}
 
-    public Result(Payload payload,
-                  T entity) {
+    public Result(Payload payload, T entity) {
         this.payload = payload;
         this.entity = entity;
     }

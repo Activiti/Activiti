@@ -15,9 +15,14 @@
  */
 package org.activiti.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import java.io.IOException;
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,12 +30,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 public class ApplicationDiscoveryTest {
@@ -51,7 +50,7 @@ public class ApplicationDiscoveryTest {
         givenExistingResourceFolder();
 
         Resource applicationResource = mock(Resource.class);
-        given(resourceLoader.getResources(anyString())).willReturn(new Resource[]{applicationResource});
+        given(resourceLoader.getResources(anyString())).willReturn(new Resource[] { applicationResource });
 
         //when
         List<Resource> resources = applicationDiscovery.discoverApplications();
@@ -72,9 +71,7 @@ public class ApplicationDiscoveryTest {
         Throwable thrown = catchThrowable(() -> applicationDiscovery.discoverApplications());
 
         //then
-        assertThat(thrown)
-                .isInstanceOf(ApplicationLoadException.class)
-                .hasCause(ioException);
+        assertThat(thrown).isInstanceOf(ApplicationLoadException.class).hasCause(ioException);
     }
 
     private void givenExistingResourceFolder() {

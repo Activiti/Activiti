@@ -25,34 +25,16 @@ import org.activiti.core.el.juel.tree.Bindings;
 public class AstBinary extends AstRightValue {
 
     public interface Operator {
-        public Object eval(
-            Bindings bindings,
-            ELContext context,
-            AstNode left,
-            AstNode right
-        );
+        public Object eval(Bindings bindings, ELContext context, AstNode left, AstNode right);
     }
 
     public abstract static class SimpleOperator implements Operator {
 
-        public Object eval(
-            Bindings bindings,
-            ELContext context,
-            AstNode left,
-            AstNode right
-        ) {
-            return apply(
-                bindings,
-                left.eval(bindings, context),
-                right.eval(bindings, context)
-            );
+        public Object eval(Bindings bindings, ELContext context, AstNode left, AstNode right) {
+            return apply(bindings, left.eval(bindings, context), right.eval(bindings, context));
         }
 
-        protected abstract Object apply(
-            TypeConverter converter,
-            Object o1,
-            Object o2
-        );
+        protected abstract Object apply(TypeConverter converter, Object o1, Object o2);
     }
 
     public static final Operator ADD = new SimpleOperator() {
@@ -67,16 +49,8 @@ public class AstBinary extends AstRightValue {
         }
     };
     public static final Operator AND = new Operator() {
-        public Object eval(
-            Bindings bindings,
-            ELContext context,
-            AstNode left,
-            AstNode right
-        ) {
-            Boolean l = bindings.convert(
-                left.eval(bindings, context),
-                Boolean.class
-            );
+        public Object eval(Bindings bindings, ELContext context, AstNode left, AstNode right) {
+            Boolean l = bindings.convert(left.eval(bindings, context), Boolean.class);
             return Boolean.TRUE.equals(l)
                 ? bindings.convert(right.eval(bindings, context), Boolean.class)
                 : Boolean.FALSE;
@@ -187,22 +161,11 @@ public class AstBinary extends AstRightValue {
         }
     };
     public static final Operator OR = new Operator() {
-        public Object eval(
-            Bindings bindings,
-            ELContext context,
-            AstNode left,
-            AstNode right
-        ) {
-            Boolean l = bindings.convert(
-                left.eval(bindings, context),
-                Boolean.class
-            );
+        public Object eval(Bindings bindings, ELContext context, AstNode left, AstNode right) {
+            Boolean l = bindings.convert(left.eval(bindings, context), Boolean.class);
             return Boolean.TRUE.equals(l)
                 ? Boolean.TRUE
-                : bindings.convert(
-                    right.eval(bindings, context),
-                    Boolean.class
-                );
+                : bindings.convert(right.eval(bindings, context), Boolean.class);
         }
 
         @Override

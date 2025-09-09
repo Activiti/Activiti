@@ -17,14 +17,13 @@ package org.activiti.api.runtime.model.impl;
 
 import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistry.OBJECT_TYPE_KEY;
 
-import java.util.Map;
-
-import org.springframework.core.convert.converter.Converter;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
+import org.springframework.core.convert.converter.Converter;
 
 @ProcessVariableTypeConverter
 public class ObjectValueToStringConverter implements Converter<ObjectValue, String> {
+
     private static final String CLASS = "@class";
     private final ObjectMapper objectMapper;
 
@@ -35,7 +34,6 @@ public class ObjectValueToStringConverter implements Converter<ObjectValue, Stri
     @SuppressWarnings("unchecked")
     @Override
     public String convert(ObjectValue source) {
-
         try {
             Map<String, Object> value = objectMapper.convertValue(source, Map.class);
 

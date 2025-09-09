@@ -16,13 +16,14 @@
 package org.activiti.api.runtime.event.impl;
 
 import org.activiti.api.process.model.BPMNSequenceFlow;
-import org.activiti.api.process.model.events.SequenceFlowEvent;
 import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
+import org.activiti.api.process.model.events.SequenceFlowEvent;
 
-public class BPMNSequenceFlowTakenImpl extends RuntimeEventImpl<BPMNSequenceFlow, SequenceFlowEvent.SequenceFlowEvents> implements BPMNSequenceFlowTakenEvent {
+public class BPMNSequenceFlowTakenImpl
+    extends RuntimeEventImpl<BPMNSequenceFlow, SequenceFlowEvent.SequenceFlowEvents>
+    implements BPMNSequenceFlowTakenEvent {
 
-    public BPMNSequenceFlowTakenImpl() {
-    }
+    public BPMNSequenceFlowTakenImpl() {}
 
     public BPMNSequenceFlowTakenImpl(BPMNSequenceFlow entity) {
         super(entity);

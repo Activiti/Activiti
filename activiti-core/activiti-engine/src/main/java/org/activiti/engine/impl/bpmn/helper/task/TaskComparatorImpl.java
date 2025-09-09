@@ -15,13 +15,12 @@
  */
 package org.activiti.engine.impl.bpmn.helper.task;
 
-import org.activiti.engine.impl.persistence.entity.TaskEntityImpl;
-import org.activiti.engine.task.TaskInfo;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Date;
 import java.util.Objects;
 import java.util.function.Function;
+import org.activiti.engine.impl.persistence.entity.TaskEntityImpl;
+import org.activiti.engine.task.TaskInfo;
+import org.apache.commons.lang3.StringUtils;
 
 public class TaskComparatorImpl implements TaskComparator {
 
@@ -31,8 +30,9 @@ public class TaskComparatorImpl implements TaskComparator {
     public void setOriginalTask(TaskInfo task) {
         this.originalTask = copyInformationFromTaskInfo(task);
     }
+
     public void setUpdatedTask(TaskInfo task) {
-        if (originalTask==null) {
+        if (originalTask == null) {
             throw new IllegalArgumentException("an originalTask is needed before setting an updatedTask");
         }
         this.updatedTask = copyInformationFromTaskInfo(task);
@@ -61,52 +61,64 @@ public class TaskComparatorImpl implements TaskComparator {
     public boolean hasTaskDueDateChanged() {
         return hasDateFieldChanged(TaskInfo::getDueDate);
     }
+
     public boolean hasTaskDescriptionChanged() {
         return hasStringFieldChanged(TaskInfo::getDescription);
     }
+
     public boolean hasTaskOwnerChanged() {
         return hasStringFieldChanged(TaskInfo::getOwner);
     }
+
     public boolean hasTaskPriorityChanged() {
         return hasIntegerFieldChanged(TaskInfo::getPriority);
     }
+
     public boolean hasTaskCategoryChanged() {
         return hasStringFieldChanged(TaskInfo::getCategory);
     }
+
     public boolean hasTaskFormKeyChanged() {
         return hasStringFieldChanged(TaskInfo::getFormKey);
     }
+
     public boolean hasTaskParentIdChanged() {
         return hasStringFieldChanged(TaskInfo::getParentTaskId);
     }
 
     private boolean hasStringFieldChanged(Function<TaskInfo, String> comparableTaskGetter) {
-        if (originalTask!=null && updatedTask!=null) {
-            return !StringUtils.equals(comparableTaskGetter.apply(originalTask), comparableTaskGetter.apply(updatedTask));
+        if (originalTask != null && updatedTask != null) {
+            return !StringUtils.equals(
+                comparableTaskGetter.apply(originalTask),
+                comparableTaskGetter.apply(updatedTask)
+            );
         }
         return false;
     }
+
     private boolean hasIntegerFieldChanged(Function<TaskInfo, Integer> comparableTaskGetter) {
-        if (originalTask!=null && updatedTask!=null) {
+        if (originalTask != null && updatedTask != null) {
             return !Objects.equals(comparableTaskGetter.apply(originalTask), comparableTaskGetter.apply(updatedTask));
         }
         return false;
     }
 
     private boolean hasDateFieldChanged(Function<TaskInfo, Date> comparableTaskGetter) {
-        if (originalTask!=null && updatedTask!=null) {
+        if (originalTask != null && updatedTask != null) {
             Date originalDate = comparableTaskGetter.apply(originalTask);
             Date newDate = comparableTaskGetter.apply(updatedTask);
 
-            return (originalDate == null && newDate != null)
-                || (originalDate != null && newDate == null)
-                || (originalDate != null && !originalDate.equals(newDate));
+            return (
+                (originalDate == null && newDate != null) ||
+                (originalDate != null && newDate == null) ||
+                (originalDate != null && !originalDate.equals(newDate))
+            );
         }
         return false;
     }
 
     private TaskInfo copyInformationFromTaskInfo(TaskInfo task) {
-        if (task!=null) {
+        if (task != null) {
             TaskEntityImpl duplicatedTask = new TaskEntityImpl();
 
             duplicatedTask.setName(task.getName());

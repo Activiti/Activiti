@@ -15,14 +15,13 @@
  */
 package org.activiti.bpmn.converter;
 
-import org.activiti.bpmn.model.LinkEventDefinition;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.io.StringWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
-import java.io.StringWriter;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import org.activiti.bpmn.model.LinkEventDefinition;
+import org.junit.jupiter.api.Test;
 
 public class LinkEventDefinitionXMLConverterTest {
 

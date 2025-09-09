@@ -47,9 +47,10 @@ public class BpmnXMLConverterTest {
 
     @Test
     public void should_createSchema() throws Exception {
-        Schema schema = bpmnXMLConverter.createSchema(factory, getClass().getClassLoader()
-                .getResource("org/activiti/impl/bpmn/parser/BPMN20.xsd"));
+        Schema schema = bpmnXMLConverter.createSchema(
+            factory,
+            getClass().getClassLoader().getResource("org/activiti/impl/bpmn/parser/BPMN20.xsd")
+        );
         assertThat(schema).isNotNull();
     }
-
 }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.variable;
 
 import org.activiti.engine.api.internal.Internal;
@@ -27,6 +26,5 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface CacheableVariable {
-
-  public void setForceCacheable(boolean forceCachedValue);
+    public void setForceCacheable(boolean forceCachedValue);
 }

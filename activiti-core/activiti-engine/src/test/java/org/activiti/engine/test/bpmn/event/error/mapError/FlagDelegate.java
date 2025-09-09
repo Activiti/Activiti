@@ -23,20 +23,19 @@ import org.activiti.engine.delegate.JavaDelegate;
 
  */
 public class FlagDelegate implements JavaDelegate {
-  static boolean visited;
 
-  public static void reset() {
-    visited = false;
-  }
+    static boolean visited;
 
-  public static boolean isVisited() {
-    return visited;
-  }
+    public static void reset() {
+        visited = false;
+    }
 
-  @Override
-  public void execute(DelegateExecution execution) {
-    visited = true;
+    public static boolean isVisited() {
+        return visited;
+    }
 
-  }
-
+    @Override
+    public void execute(DelegateExecution execution) {
+        visited = true;
+    }
 }

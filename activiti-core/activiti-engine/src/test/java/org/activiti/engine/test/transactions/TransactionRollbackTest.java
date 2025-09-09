@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.transactions;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -62,8 +61,11 @@ public class TransactionRollbackTest extends PluggableActivitiTestCase {
     }
 
     @Deployment(
-        resources = {"org/activiti/engine/test/transactions/trivial.bpmn20.xml",
-            "org/activiti/engine/test/transactions/rollbackAfterSubProcess.bpmn20.xml"})
+        resources = {
+            "org/activiti/engine/test/transactions/trivial.bpmn20.xml",
+            "org/activiti/engine/test/transactions/rollbackAfterSubProcess.bpmn20.xml",
+        }
+    )
     public void testRollbackAfterSubProcess() {
         assertThatExceptionOfType(Exception.class)
             .as("Starting the process instance should throw an exception")

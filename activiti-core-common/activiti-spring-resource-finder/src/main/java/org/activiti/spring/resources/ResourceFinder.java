@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -50,12 +49,13 @@ public class ResourceFinder {
             } else {
                 resourceFinderDescriptor.validate(resources);
 
-                List<String> foundResources = resources.stream().map(Resource::getFilename).collect(Collectors.toList());
+                List<String> foundResources = resources
+                    .stream()
+                    .map(Resource::getFilename)
+                    .collect(Collectors.toList());
                 LOGGER.info(resourceFinderDescriptor.getMsgForResourcesFound(foundResources));
             }
         }
         return resources;
     }
-
-
 }

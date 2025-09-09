@@ -26,8 +26,10 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 public class CopyVariablesCalculator implements VariablesCalculator {
 
     @Override
-    public Map<String, Object> calculateOutPutVariables(MappingExecutionContext mappingExecutionContext,
-        Map<String, Object> availableVariables) {
+    public Map<String, Object> calculateOutPutVariables(
+        MappingExecutionContext mappingExecutionContext,
+        Map<String, Object> availableVariables
+    ) {
         CommandContext commandContext = Context.getCommandContext();
         if (commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()) {
             return availableVariables;

@@ -20,9 +20,9 @@ import org.activiti.engine.impl.delegate.MessagePayloadMappingProvider;
 import org.activiti.engine.impl.el.ExpressionManager;
 
 public interface MessageExecutionContextFactory {
-
-    MessageExecutionContext create(MessageEventDefinition messageEventDefinition,
-                                   MessagePayloadMappingProvider messagePayloadMappingProvider,
-                                   ExpressionManager expressionManager);
-
+    MessageExecutionContext create(
+        MessageEventDefinition messageEventDefinition,
+        MessagePayloadMappingProvider messagePayloadMappingProvider,
+        ExpressionManager expressionManager
+    );
 }

@@ -19,11 +19,9 @@ import java.security.Principal;
 import java.util.Optional;
 
 public interface PrincipalIdentityProvider {
-
     default String getUserId(Principal principal) {
         return Optional.of(principal)
-                       .map(Principal::getName)
-                       .orElseThrow(() -> new SecurityException("Invalid security principal name"));
-    };
-
+            .map(Principal::getName)
+            .orElseThrow(() -> new SecurityException("Invalid security principal name"));
+    }
 }

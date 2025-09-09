@@ -18,6 +18,7 @@ package org.activiti.engine.impl.bpmn.behavior;
 import org.activiti.bpmn.model.ThrowEvent;
 
 public class IntermediateThrowLinkEventActivityBehavior extends FlowNodeActivityBehavior {
+
     private static final long serialVersionUID = 1L;
 
     private final ThrowEvent throwEvent;
@@ -25,7 +26,6 @@ public class IntermediateThrowLinkEventActivityBehavior extends FlowNodeActivity
     public IntermediateThrowLinkEventActivityBehavior(ThrowEvent throwEvent) {
         this.throwEvent = throwEvent;
     }
-
 
     public ThrowEvent getThrowEvent() {
         return throwEvent;

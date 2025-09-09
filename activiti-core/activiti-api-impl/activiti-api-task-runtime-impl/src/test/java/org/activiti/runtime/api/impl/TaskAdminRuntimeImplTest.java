@@ -15,6 +15,13 @@
  */
 package org.activiti.runtime.api.impl;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.Task;
@@ -31,25 +38,21 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class TaskAdminRuntimeImplTest {
 
     @Mock
     private TaskService taskService;
+
     @Mock
     private APIVariableInstanceConverter variableInstanceConverter;
+
     @Mock
     private TaskRuntimeHelper taskRuntimeHelper;
+
     @Mock
     private SecurityManager securityManager;
+
     @Spy
     private APITaskConverter taskConverter = new APITaskConverter(taskService);
 
@@ -113,5 +116,4 @@ class TaskAdminRuntimeImplTest {
         verify(taskService, never()).claim(any(), any());
         Assertions.assertThat(tasks.getContent()).hasSize(0);
     }
-
 }

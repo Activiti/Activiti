@@ -39,21 +39,13 @@ public class ExpressionFactoryImplTest extends TestCase {
     @Test
     public void testCreateTreeValueExpression() {
         SimpleContext context = new SimpleContext(new SimpleResolver());
-        assertEquals(
-            1l,
-            factory
-                .createValueExpression(context, "${1}", Object.class)
-                .getValue(context)
-        );
+        assertEquals(1l, factory.createValueExpression(context, "${1}", Object.class).getValue(context));
     }
 
     @Test
     public void testCreateObjectValueExpression() {
         SimpleContext context = new SimpleContext(new SimpleResolver());
-        assertEquals(
-            "1",
-            factory.createValueExpression("1", Object.class).getValue(context)
-        );
+        assertEquals("1", factory.createValueExpression("1", Object.class).getValue(context));
     }
 
     @Test
@@ -62,14 +54,7 @@ public class ExpressionFactoryImplTest extends TestCase {
         context.getELResolver().setValue(context, null, "foo", this);
         assertEquals(
             bar(),
-            factory
-                .createMethodExpression(
-                    context,
-                    "${foo.bar}",
-                    null,
-                    new Class[0]
-                )
-                .invoke(context, null)
+            factory.createMethodExpression(context, "${foo.bar}", null, new Class[0]).invoke(context, null)
         );
     }
 }

@@ -56,5 +56,4 @@ public class SpringProcessDefinitionCache implements DeploymentCache<ProcessDefi
     public Cache getDelegate() {
         return delegate;
     }
-
 }

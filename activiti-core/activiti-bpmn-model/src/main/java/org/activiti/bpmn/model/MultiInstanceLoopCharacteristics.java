@@ -17,62 +17,62 @@ package org.activiti.bpmn.model;
 
 public class MultiInstanceLoopCharacteristics extends BaseElement {
 
-  private String inputDataItem;
-  private String loopCardinality;
-  private String completionCondition;
-  private String elementVariable;
-  private String elementIndexVariable;
-  private boolean sequential;
-  private String loopDataOutputRef;
-  private String outputDataItem;
+    private String inputDataItem;
+    private String loopCardinality;
+    private String completionCondition;
+    private String elementVariable;
+    private String elementIndexVariable;
+    private boolean sequential;
+    private String loopDataOutputRef;
+    private String outputDataItem;
 
-  public String getInputDataItem() {
-    return inputDataItem;
-  }
+    public String getInputDataItem() {
+        return inputDataItem;
+    }
 
-  public void setInputDataItem(String inputDataItem) {
-    this.inputDataItem = inputDataItem;
-  }
+    public void setInputDataItem(String inputDataItem) {
+        this.inputDataItem = inputDataItem;
+    }
 
-  public String getLoopCardinality() {
-    return loopCardinality;
-  }
+    public String getLoopCardinality() {
+        return loopCardinality;
+    }
 
-  public void setLoopCardinality(String loopCardinality) {
-    this.loopCardinality = loopCardinality;
-  }
+    public void setLoopCardinality(String loopCardinality) {
+        this.loopCardinality = loopCardinality;
+    }
 
-  public String getCompletionCondition() {
-    return completionCondition;
-  }
+    public String getCompletionCondition() {
+        return completionCondition;
+    }
 
-  public void setCompletionCondition(String completionCondition) {
-    this.completionCondition = completionCondition;
-  }
+    public void setCompletionCondition(String completionCondition) {
+        this.completionCondition = completionCondition;
+    }
 
-  public String getElementVariable() {
-    return elementVariable;
-  }
+    public String getElementVariable() {
+        return elementVariable;
+    }
 
-  public void setElementVariable(String elementVariable) {
-    this.elementVariable = elementVariable;
-  }
+    public void setElementVariable(String elementVariable) {
+        this.elementVariable = elementVariable;
+    }
 
-  public String getElementIndexVariable() {
-    return elementIndexVariable;
-  }
+    public String getElementIndexVariable() {
+        return elementIndexVariable;
+    }
 
-  public void setElementIndexVariable(String elementIndexVariable) {
-    this.elementIndexVariable = elementIndexVariable;
-  }
+    public void setElementIndexVariable(String elementIndexVariable) {
+        this.elementIndexVariable = elementIndexVariable;
+    }
 
-  public boolean isSequential() {
-    return sequential;
-  }
+    public boolean isSequential() {
+        return sequential;
+    }
 
-  public void setSequential(boolean sequential) {
-    this.sequential = sequential;
-  }
+    public void setSequential(boolean sequential) {
+        this.sequential = sequential;
+    }
 
     public String getLoopDataOutputRef() {
         return loopDataOutputRef;
@@ -91,19 +91,19 @@ public class MultiInstanceLoopCharacteristics extends BaseElement {
     }
 
     public MultiInstanceLoopCharacteristics clone() {
-    MultiInstanceLoopCharacteristics clone = new MultiInstanceLoopCharacteristics();
-    clone.setValues(this);
-    return clone;
-  }
+        MultiInstanceLoopCharacteristics clone = new MultiInstanceLoopCharacteristics();
+        clone.setValues(this);
+        return clone;
+    }
 
-  public void setValues(MultiInstanceLoopCharacteristics otherLoopCharacteristics) {
-    setInputDataItem(otherLoopCharacteristics.getInputDataItem());
-    setLoopCardinality(otherLoopCharacteristics.getLoopCardinality());
-    setCompletionCondition(otherLoopCharacteristics.getCompletionCondition());
-    setElementVariable(otherLoopCharacteristics.getElementVariable());
-    setElementIndexVariable(otherLoopCharacteristics.getElementIndexVariable());
-    setSequential(otherLoopCharacteristics.isSequential());
-    setLoopDataOutputRef(otherLoopCharacteristics.getLoopDataOutputRef());
-    setOutputDataItem(otherLoopCharacteristics.getOutputDataItem());
-  }
+    public void setValues(MultiInstanceLoopCharacteristics otherLoopCharacteristics) {
+        setInputDataItem(otherLoopCharacteristics.getInputDataItem());
+        setLoopCardinality(otherLoopCharacteristics.getLoopCardinality());
+        setCompletionCondition(otherLoopCharacteristics.getCompletionCondition());
+        setElementVariable(otherLoopCharacteristics.getElementVariable());
+        setElementIndexVariable(otherLoopCharacteristics.getElementIndexVariable());
+        setSequential(otherLoopCharacteristics.isSequential());
+        setLoopDataOutputRef(otherLoopCharacteristics.getLoopDataOutputRef());
+        setOutputDataItem(otherLoopCharacteristics.getOutputDataItem());
+    }
 }

@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -57,20 +55,17 @@ public class GetTaskVariableInstancesCmd implements Command<Map<String, Variable
 
         Map<String, VariableInstance> variables = null;
         if (variableNames == null) {
-
             if (isLocal) {
                 variables = task.getVariableInstancesLocal();
             } else {
                 variables = task.getVariableInstances();
             }
-
         } else {
             if (isLocal) {
                 variables = task.getVariableInstancesLocal(variableNames, false);
             } else {
                 variables = task.getVariableInstances(variableNames, false);
             }
-
         }
 
         if (variables != null) {

@@ -19,51 +19,51 @@ import java.util.ArrayList;
 
 public class SendTask extends TaskWithFieldExtensions {
 
-  protected String type;
-  protected String implementationType;
-  protected String operationRef;
+    protected String type;
+    protected String implementationType;
+    protected String operationRef;
 
-  public String getType() {
-    return type;
-  }
-
-  public void setType(String type) {
-    this.type = type;
-  }
-
-  public String getImplementationType() {
-    return implementationType;
-  }
-
-  public void setImplementationType(String implementationType) {
-    this.implementationType = implementationType;
-  }
-
-  public String getOperationRef() {
-    return operationRef;
-  }
-
-  public void setOperationRef(String operationRef) {
-    this.operationRef = operationRef;
-  }
-
-  public SendTask clone() {
-    SendTask clone = new SendTask();
-    clone.setValues(this);
-    return clone;
-  }
-
-  public void setValues(SendTask otherElement) {
-    super.setValues(otherElement);
-    setType(otherElement.getType());
-    setImplementationType(otherElement.getImplementationType());
-    setOperationRef(otherElement.getOperationRef());
-
-    fieldExtensions = new ArrayList<FieldExtension>();
-    if (otherElement.getFieldExtensions() != null && !otherElement.getFieldExtensions().isEmpty()) {
-      for (FieldExtension extension : otherElement.getFieldExtensions()) {
-        fieldExtensions.add(extension.clone());
-      }
+    public String getType() {
+        return type;
     }
-  }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getImplementationType() {
+        return implementationType;
+    }
+
+    public void setImplementationType(String implementationType) {
+        this.implementationType = implementationType;
+    }
+
+    public String getOperationRef() {
+        return operationRef;
+    }
+
+    public void setOperationRef(String operationRef) {
+        this.operationRef = operationRef;
+    }
+
+    public SendTask clone() {
+        SendTask clone = new SendTask();
+        clone.setValues(this);
+        return clone;
+    }
+
+    public void setValues(SendTask otherElement) {
+        super.setValues(otherElement);
+        setType(otherElement.getType());
+        setImplementationType(otherElement.getImplementationType());
+        setOperationRef(otherElement.getOperationRef());
+
+        fieldExtensions = new ArrayList<FieldExtension>();
+        if (otherElement.getFieldExtensions() != null && !otherElement.getFieldExtensions().isEmpty()) {
+            for (FieldExtension extension : otherElement.getFieldExtensions()) {
+                fieldExtensions.add(extension.clone());
+            }
+        }
+    }
 }

@@ -30,17 +30,16 @@ import org.activiti.validation.validator.ValidatorSetNames;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 public class FlowElementValidatorTest {
 
-  ValidatorSet validatorSet = new ValidatorSet(ValidatorSetNames.ACTIVITI_EXECUTABLE_PROCESS);
-  ProcessValidatorImpl validator = new ProcessValidatorImpl();
+    ValidatorSet validatorSet = new ValidatorSet(ValidatorSetNames.ACTIVITI_EXECUTABLE_PROCESS);
+    ProcessValidatorImpl validator = new ProcessValidatorImpl();
 
-  @BeforeEach
-  void setUp() {
-    validatorSet.addValidator(new FlowElementValidator());
-    validator.addValidatorSet(validatorSet);
-  }
+    @BeforeEach
+    void setUp() {
+        validatorSet.addValidator(new FlowElementValidator());
+        validator.addValidatorSet(validatorSet);
+    }
 
     @Test
     public void testExecuteValidationofProcessWithoutCardinality() {
@@ -60,10 +59,14 @@ public class FlowElementValidatorTest {
 
         var errors = validator.validate(bpmnModel);
 
-        assertThat(errors).hasSize(1).first()
+        assertThat(errors)
+            .hasSize(1)
+            .first()
             .extracting(ValidationError::getProblem, ValidationError::getDefaultDescription)
-            .containsExactly("activiti-multi-instance-missing-collection",
-              "Either loopCardinality or loopDataInputRef/activiti:collection must been set");
+            .containsExactly(
+                "activiti-multi-instance-missing-collection",
+                "Either loopCardinality or loopDataInputRef/activiti:collection must been set"
+            );
     }
 
     @Test
@@ -134,9 +137,13 @@ public class FlowElementValidatorTest {
 
         var errors = validator.validate(bpmnModel);
 
-      assertThat(errors).hasSize(1).first()
-          .extracting(ValidationError::getProblem, ValidationError::getDefaultDescription)
-          .containsExactly("activiti-multi-instance-missing-collection",
-              "Either loopCardinality or loopDataInputRef/activiti:collection must been set");
+        assertThat(errors)
+            .hasSize(1)
+            .first()
+            .extracting(ValidationError::getProblem, ValidationError::getDefaultDescription)
+            .containsExactly(
+                "activiti-multi-instance-missing-collection",
+                "Either loopCardinality or loopDataInputRef/activiti:collection must been set"
+            );
     }
 }

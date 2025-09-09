@@ -15,6 +15,4 @@
  */
 package org.activiti.api.process.model.events;
 
-public interface BPMNSignalReceivedEvent extends BPMNSignalEvent {
-
-}
+public interface BPMNSignalReceivedEvent extends BPMNSignalEvent {}

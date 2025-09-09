@@ -38,7 +38,6 @@ public class DateVariableType extends JavaObjectVariableType {
 
     @Override
     public Object parseFromValue(Object value) throws ActivitiException {
-
         try {
             if (isExpression(value)) {
                 return value;

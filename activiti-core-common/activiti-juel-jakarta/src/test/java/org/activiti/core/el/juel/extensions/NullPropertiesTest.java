@@ -45,11 +45,7 @@ public class NullPropertiesTest {
         ELContext context = new SimpleContext();
 
         // create our expression we want to evaluate
-        ValueExpression e = f.createValueExpression(
-            context,
-            "${map[null]}",
-            String.class
-        );
+        ValueExpression e = f.createValueExpression(context, "${map[null]}", String.class);
 
         // create a map containing a value for key <code>null</code> and make it available
         Map<String, String> map = new HashMap<String, String>();
@@ -70,11 +66,7 @@ public class NullPropertiesTest {
         ELContext context = new SimpleContext();
 
         // create our expression we want to evaluate
-        ValueExpression e = f.createValueExpression(
-            context,
-            "${map[null]}",
-            String.class
-        );
+        ValueExpression e = f.createValueExpression(context, "${map[null]}", String.class);
 
         // create a map containing a value for key <code>null</code> and make it available
         Map<String, String> map = new HashMap<String, String>();

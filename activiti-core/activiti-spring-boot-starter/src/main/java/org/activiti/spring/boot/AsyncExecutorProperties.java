@@ -19,6 +19,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "spring.activiti.async-executor")
 public class AsyncExecutorProperties {
+
     private int retryWaitTimeInMillis = 500;
 
     /**

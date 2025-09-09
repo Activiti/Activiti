@@ -18,6 +18,5 @@ package org.activiti.api.process.model;
 import org.activiti.api.process.model.payloads.MessageEventPayload;
 
 public interface BPMNMessage extends BPMNElement {
-
     MessageEventPayload getMessagePayload();
 }

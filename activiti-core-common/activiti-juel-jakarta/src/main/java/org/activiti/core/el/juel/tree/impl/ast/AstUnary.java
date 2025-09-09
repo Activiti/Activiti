@@ -85,8 +85,7 @@ public class AstUnary extends AstRightValue {
     }
 
     @Override
-    public Object eval(Bindings bindings, ELContext context)
-        throws ELException {
+    public Object eval(Bindings bindings, ELContext context) throws ELException {
         return operator.eval(bindings, context, child);
     }
 

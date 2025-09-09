@@ -35,7 +35,8 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
         "activiti.spring.cache-manager.simple.allow-null-values=true",
         "activiti.spring.cache-manager.caches.foo.enabled=true",
         "activiti.spring.cache-manager.caches.bar.enabled=false",
-})
+    }
+)
 class ActivitiSpringSimpleCacheManagerTests {
 
     @SpringBootApplication
@@ -49,9 +50,7 @@ class ActivitiSpringSimpleCacheManagerTests {
 
     @Test
     void testCacheManager() {
-        assertThat(cacheManager)
-            .isNotNull()
-            .isInstanceOf(ConcurrentMapCacheManager.class);
+        assertThat(cacheManager).isNotNull().isInstanceOf(ConcurrentMapCacheManager.class);
     }
 
     @Test
@@ -66,7 +65,6 @@ class ActivitiSpringSimpleCacheManagerTests {
         assertThat(cache).isInstanceOf(ConcurrentMapCache.class);
     }
 
-
     @Test
     void testAllowNullValues() {
         assertThat(ConcurrentMapCacheManager.class.cast(cacheManager).isAllowNullValues()).isTrue();
@@ -76,5 +74,4 @@ class ActivitiSpringSimpleCacheManagerTests {
     void springCacheType() {
         assertThat(springCacheType).isEqualTo(CacheType.SIMPLE);
     }
-
 }

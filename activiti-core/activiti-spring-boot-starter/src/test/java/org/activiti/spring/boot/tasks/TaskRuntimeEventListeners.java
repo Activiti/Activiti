@@ -17,7 +17,6 @@ package org.activiti.spring.boot.tasks;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.runtime.events.TaskCancelledEvent;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;

@@ -90,5 +90,4 @@ public class VariableElResolverTest {
         given(variableScope.getVariableInstance(variableName)).willReturn(variableInstance);
         return variableScope;
     }
-
 }

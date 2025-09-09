@@ -15,15 +15,14 @@
  */
 package org.activiti.editor.language.xml;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.util.Lists.newArrayList;
+
+import java.nio.charset.StandardCharsets;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Error;
 import org.junit.jupiter.api.Test;
-
-import java.nio.charset.StandardCharsets;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.util.Lists.newArrayList;
 
 public class ErrorConverterTest extends AbstractConverterTest {
 
@@ -31,13 +30,10 @@ public class ErrorConverterTest extends AbstractConverterTest {
     public void testConversionFromXmlToBPMNModel() throws Exception {
         BpmnModel bpmnModel = readXMLFile();
         assertThat(bpmnModel.getErrors().values())
-                .usingRecursiveFieldByFieldElementComparator()
-                .isSubsetOf(newArrayList(new Error("Error_0v4rsz5",
-                                                               "ok",
-                                                               "200"),
-                                                     new Error("Error_02htlc0",
-                                                               "conflict",
-                                                               "409")));
+            .usingRecursiveFieldByFieldElementComparator()
+            .isSubsetOf(
+                newArrayList(new Error("Error_0v4rsz5", "ok", "200"), new Error("Error_02htlc0", "conflict", "409"))
+            );
     }
 
     @Test

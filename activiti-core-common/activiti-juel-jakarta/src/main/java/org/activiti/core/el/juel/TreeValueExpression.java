@@ -84,9 +84,7 @@ public final class TreeValueExpression extends ValueExpression {
         this.deferred = tree.isDeferred();
 
         if (type == null) {
-            throw new NullPointerException(
-                LocalMessages.get("error.value.notype")
-            );
+            throw new NullPointerException(LocalMessages.get("error.value.notype"));
         }
     }
 
@@ -206,10 +204,7 @@ public final class TreeValueExpression extends ValueExpression {
             if (type != other.type) {
                 return false;
             }
-            return (
-                getStructuralId().equals(other.getStructuralId()) &&
-                bindings.equals(other.bindings)
-            );
+            return (getStructuralId().equals(other.getStructuralId()) && bindings.equals(other.bindings));
         }
         return false;
     }
@@ -232,8 +227,7 @@ public final class TreeValueExpression extends ValueExpression {
         NodePrinter.dump(writer, node);
     }
 
-    private void readObject(ObjectInputStream in)
-        throws IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         try {
             node = builder.build(expr).getRoot();

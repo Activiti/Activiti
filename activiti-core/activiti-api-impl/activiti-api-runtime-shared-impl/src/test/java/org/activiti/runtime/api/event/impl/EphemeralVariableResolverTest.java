@@ -45,8 +45,12 @@ class EphemeralVariableResolverTest {
     void should_considerEphemeral_when_hasEphemeralVariableWithSameNameAndItsNotAUserTask() {
         //given
         ActivitiVariableEventImpl internalEvent = buildVariableEvent();
-        given(processExtensionService.hasEphemeralVariable(internalEvent.getProcessDefinitionId(),
-            internalEvent.getVariableName())).willReturn(true);
+        given(
+            processExtensionService.hasEphemeralVariable(
+                internalEvent.getProcessDefinitionId(),
+                internalEvent.getVariableName()
+            )
+        ).willReturn(true);
 
         //when
         assertThat(resolver.isEphemeralVariable(internalEvent)).isTrue();
@@ -56,8 +60,12 @@ class EphemeralVariableResolverTest {
     void should_notConsiderEphemeral_when_dontHaveEphemeralVariableWithSameName() {
         //given
         ActivitiVariableEventImpl internalEvent = buildVariableEvent();
-        given(processExtensionService.hasEphemeralVariable(internalEvent.getProcessDefinitionId(),
-            internalEvent.getVariableName())).willReturn(false);
+        given(
+            processExtensionService.hasEphemeralVariable(
+                internalEvent.getProcessDefinitionId(),
+                internalEvent.getVariableName()
+            )
+        ).willReturn(false);
 
         //when
         assertThat(resolver.isEphemeralVariable(internalEvent)).isFalse();
@@ -72,5 +80,4 @@ class EphemeralVariableResolverTest {
         verify(processExtensionService, never()).hasEphemeralVariable(any(), any());
         assertThat(resolver.isEphemeralVariable(internalEvent)).isFalse();
     }
-
 }
