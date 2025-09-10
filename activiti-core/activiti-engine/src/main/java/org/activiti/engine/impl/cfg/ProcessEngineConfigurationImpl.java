@@ -58,6 +58,8 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.cfg.ProcessEngineConfigurator;
+import org.activiti.engine.impl.cfg.configuration.CoreConfiguration;
+import org.activiti.engine.impl.cfg.configuration.JobConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -336,14 +338,6 @@ import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.activiti.engine.impl.cfg.configurators.BpmnConfigurator;
-import org.activiti.engine.impl.cfg.configurators.CommandConfigurator;
-import org.activiti.engine.impl.cfg.configurators.CoreConfigurator;
-import org.activiti.engine.impl.cfg.configurators.DatabaseConfigurator;
-import org.activiti.engine.impl.cfg.configurators.EventConfigurator;
-import org.activiti.engine.impl.cfg.configurators.JobConfigurator;
-import org.activiti.engine.impl.cfg.configurators.ServiceConfigurator;
-import org.activiti.engine.impl.cfg.configurators.SessionConfigurator;
 
 public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfiguration {
 
@@ -468,6 +462,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     protected boolean enableConfiguratorServiceLoader = true; // Enabled by default. In certain environments this should be set to false (eg osgi)
     protected List<ProcessEngineConfigurator> configurators; // The injected configurators
     protected List<ProcessEngineConfigurator> allConfigurators; // Including auto-discovered configurators
+    
+    // INTERNAL CONFIGURATION CLASSES ////////////////////////////////////////////
+    
+    protected CoreConfiguration coreConfiguration;
+    protected JobConfiguration jobConfiguration;
 
     // DEPLOYERS //////////////////////////////////////////////////////////////////
 
@@ -864,17 +863,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
     protected ProcessDefinitionHelper processDefinitionHelper;
 
-    // CONFIGURATORS //////////////////////////////////////////////////////////////////
-    
-    protected CoreConfigurator coreConfigurator;
-    protected DatabaseConfigurator databaseConfigurator;
-    protected CommandConfigurator commandConfigurator;
-    protected ServiceConfigurator serviceConfigurator;
-    protected BpmnConfigurator bpmnConfigurator;
-    protected JobConfigurator jobConfigurator;
-    protected SessionConfigurator sessionConfigurator;
-    protected EventConfigurator eventConfigurator;
-
     // buildProcessEngine
     // ///////////////////////////////////////////////////////
 
@@ -894,52 +882,62 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         initConfigurators();
         configuratorsBeforeInit();
         
-        // Initialize internal configurators
-        initInternalConfigurators();
+        // Initialize internal configuration classes
+        initInternalConfigurations();
         
-        // Use configurators to organize initialization
-        coreConfigurator.configure();
+        // Initialize core components
+        coreConfiguration.configure();
 
-        databaseConfigurator.configure();
+        if (usingRelationalDatabase) {
+            initDataSource();
+        }
 
-        commandConfigurator.configure();
-        serviceConfigurator.configure();
-        bpmnConfigurator.configure();
-        jobConfigurator.configure();
-
-        sessionConfigurator.configure();
-        eventConfigurator.configure();
+        initHelpers();
+        initVariableTypes();
+        initBeans();
+        initScriptingEngines();
+        initCommandContextFactory();
+        initTransactionContextFactory();
+        initCommandExecutors();
+        initServices();
+        initIdGenerator();
+        initBehaviorFactory();
+        initListenerFactory();
+        initBpmnParser();
+        initProcessDefinitionCache();
+        initProcessDefinitionInfoCache();
+        initKnowledgeBaseCache();
         
+        // Initialize job components
+        jobConfiguration.configure();
+
+        initTransactionFactory();
+
+        if (usingRelationalDatabase) {
+            initSqlSessionFactory();
+        }
+
+        initSessionFactories();
+        initDataManagers();
+        initEntityManagers();
+        initHistoryManager();
+        initJpa();
+        initDeployers();
+        initDelegateInterceptor();
+        initEventHandlers();
+        initFailedJobCommandFactory();
+        initEventDispatcher();
+        initProcessValidator();
+        initDatabaseEventLogging();
         configuratorsAfterInit();
     }
-
-    // internal configurators initialization
-    // ////////////////////////////////////////////////////////
-
-    protected void initInternalConfigurators() {
-        if (coreConfigurator == null) {
-            coreConfigurator = new CoreConfigurator(this);
+    
+    protected void initInternalConfigurations() {
+        if (coreConfiguration == null) {
+            coreConfiguration = new CoreConfiguration(this);
         }
-        if (databaseConfigurator == null) {
-            databaseConfigurator = new DatabaseConfigurator(this);
-        }
-        if (commandConfigurator == null) {
-            commandConfigurator = new CommandConfigurator(this);
-        }
-        if (serviceConfigurator == null) {
-            serviceConfigurator = new ServiceConfigurator(this);
-        }
-        if (bpmnConfigurator == null) {
-            bpmnConfigurator = new BpmnConfigurator(this);
-        }
-        if (jobConfigurator == null) {
-            jobConfigurator = new JobConfigurator(this);
-        }
-        if (sessionConfigurator == null) {
-            sessionConfigurator = new SessionConfigurator(this);
-        }
-        if (eventConfigurator == null) {
-            eventConfigurator = new EventConfigurator(this);
+        if (jobConfiguration == null) {
+            jobConfiguration = new JobConfiguration(this);
         }
     }
 
@@ -1532,16 +1530,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         }
     }
 
-    // Job manager ///////////////////////////////////////////////////////////
-
-    public void initJobManager() {
-        if (jobManager == null) {
-            jobManager = new DefaultJobManager(this);
-        }
-
-        jobManager.setProcessEngineConfiguration(this);
-    }
-
     // session factories ////////////////////////////////////////////////////////
 
     public void initSessionFactories() {
@@ -1913,71 +1901,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         return bpmnParserHandlers;
     }
 
-    public void initClock() {
-        if (clock == null) {
-            clock = new DefaultClockImpl();
-        }
-    }
-
-    public void initAgendaFactory() {
-        if (this.engineAgendaFactory == null) {
-            this.engineAgendaFactory = new DefaultActivitiEngineAgendaFactory();
-        }
-    }
-
-    public void initJobHandlers() {
-        jobHandlers = new HashMap<String, JobHandler>();
-
-        AsyncContinuationJobHandler asyncContinuationJobHandler = new AsyncContinuationJobHandler();
-        jobHandlers.put(asyncContinuationJobHandler.getType(), asyncContinuationJobHandler);
-
-        TriggerTimerEventJobHandler triggerTimerEventJobHandler = new TriggerTimerEventJobHandler();
-        jobHandlers.put(triggerTimerEventJobHandler.getType(), triggerTimerEventJobHandler);
-
-        TimerStartEventJobHandler timerStartEvent = new TimerStartEventJobHandler();
-        jobHandlers.put(timerStartEvent.getType(), timerStartEvent);
-
-        TimerSuspendProcessDefinitionHandler suspendProcessDefinitionHandler =
-            new TimerSuspendProcessDefinitionHandler();
-        jobHandlers.put(suspendProcessDefinitionHandler.getType(), suspendProcessDefinitionHandler);
-
-        TimerActivateProcessDefinitionHandler activateProcessDefinitionHandler =
-            new TimerActivateProcessDefinitionHandler();
-        jobHandlers.put(activateProcessDefinitionHandler.getType(), activateProcessDefinitionHandler);
-
-        ProcessEventJobHandler processEventJobHandler = new ProcessEventJobHandler();
-        jobHandlers.put(processEventJobHandler.getType(), processEventJobHandler);
-
-        // if we have custom job handlers, register them
-        if (getCustomJobHandlers() != null) {
-            for (JobHandler customJobHandler : getCustomJobHandlers()) {
-                jobHandlers.put(customJobHandler.getType(), customJobHandler);
-            }
-        }
-    }
-
-    // async executor
-    // /////////////////////////////////////////////////////////////
-
-    public void initAsyncExecutor() {
-        if (asyncExecutor == null) {
-            DefaultAsyncJobExecutor defaultAsyncExecutor = new DefaultAsyncJobExecutor();
-            defaultAsyncExecutor.applyConfig(this);
-            asyncExecutor = defaultAsyncExecutor;
-        }
-
-        asyncExecutor.setProcessEngineConfiguration(this);
-        asyncExecutor.setAutoActivate(asyncExecutorActivate);
-    }
-
     // history
     // //////////////////////////////////////////////////////////////////
-
-    public void initHistoryLevel() {
-        if (historyLevel == null) {
-            historyLevel = HistoryLevel.getHistoryLevelForKey(getHistory());
-        }
-    }
 
     // id generator
     // /////////////////////////////////////////////////////////////
@@ -2111,41 +2036,12 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         }
     }
 
-    public void initExpressionManager() {
-        if (expressionManager == null) {
-            expressionManager = new ExpressionManager(beans);
-            if (customFunctionProviders != null) {
-                expressionManager.setCustomFunctionProviders(customFunctionProviders);
-            }
-        }
-    }
-
     public void setCustomELResolvers(List<ELResolver> customELResolvers) {
         this.customELResolvers = customELResolvers;
     }
 
     public List<ELResolver> getCustomELResolvers() {
         return this.customELResolvers;
-    }
-
-    public void initBusinessCalendarManager() {
-        if (businessCalendarManager == null) {
-            MapBusinessCalendarManager mapBusinessCalendarManager = new MapBusinessCalendarManager();
-            mapBusinessCalendarManager.addBusinessCalendar(
-                DurationBusinessCalendar.NAME,
-                new DurationBusinessCalendar(this.clock)
-            );
-            mapBusinessCalendarManager.addBusinessCalendar(
-                DueDateBusinessCalendar.NAME,
-                new DueDateBusinessCalendar(this.clock)
-            );
-            mapBusinessCalendarManager.addBusinessCalendar(
-                CycleBusinessCalendar.NAME,
-                new CycleBusinessCalendar(this.clock)
-            );
-
-            businessCalendarManager = mapBusinessCalendarManager;
-        }
     }
 
     public void initDelegateInterceptor() {
@@ -3966,78 +3862,21 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         return this;
     }
 
-    // Configurator getters and setters
-    // ////////////////////////////////////////////////////////
-
-    public CoreConfigurator getCoreConfigurator() {
-        return coreConfigurator;
+    public CoreConfiguration getCoreConfiguration() {
+        return coreConfiguration;
     }
 
-    public ProcessEngineConfigurationImpl setCoreConfigurator(CoreConfigurator coreConfigurator) {
-        this.coreConfigurator = coreConfigurator;
+    public ProcessEngineConfigurationImpl setCoreConfiguration(CoreConfiguration coreConfiguration) {
+        this.coreConfiguration = coreConfiguration;
         return this;
     }
 
-    public DatabaseConfigurator getDatabaseConfigurator() {
-        return databaseConfigurator;
+    public JobConfiguration getJobConfiguration() {
+        return jobConfiguration;
     }
 
-    public ProcessEngineConfigurationImpl setDatabaseConfigurator(DatabaseConfigurator databaseConfigurator) {
-        this.databaseConfigurator = databaseConfigurator;
-        return this;
-    }
-
-    public CommandConfigurator getCommandConfigurator() {
-        return commandConfigurator;
-    }
-
-    public ProcessEngineConfigurationImpl setCommandConfigurator(CommandConfigurator commandConfigurator) {
-        this.commandConfigurator = commandConfigurator;
-        return this;
-    }
-
-    public ServiceConfigurator getServiceConfigurator() {
-        return serviceConfigurator;
-    }
-
-    public ProcessEngineConfigurationImpl setServiceConfigurator(ServiceConfigurator serviceConfigurator) {
-        this.serviceConfigurator = serviceConfigurator;
-        return this;
-    }
-
-    public BpmnConfigurator getBpmnConfigurator() {
-        return bpmnConfigurator;
-    }
-
-    public ProcessEngineConfigurationImpl setBpmnConfigurator(BpmnConfigurator bpmnConfigurator) {
-        this.bpmnConfigurator = bpmnConfigurator;
-        return this;
-    }
-
-    public JobConfigurator getJobConfigurator() {
-        return jobConfigurator;
-    }
-
-    public ProcessEngineConfigurationImpl setJobConfigurator(JobConfigurator jobConfigurator) {
-        this.jobConfigurator = jobConfigurator;
-        return this;
-    }
-
-    public SessionConfigurator getSessionConfigurator() {
-        return sessionConfigurator;
-    }
-
-    public ProcessEngineConfigurationImpl setSessionConfigurator(SessionConfigurator sessionConfigurator) {
-        this.sessionConfigurator = sessionConfigurator;
-        return this;
-    }
-
-    public EventConfigurator getEventConfigurator() {
-        return eventConfigurator;
-    }
-
-    public ProcessEngineConfigurationImpl setEventConfigurator(EventConfigurator eventConfigurator) {
-        this.eventConfigurator = eventConfigurator;
+    public ProcessEngineConfigurationImpl setJobConfiguration(JobConfiguration jobConfiguration) {
+        this.jobConfiguration = jobConfiguration;
         return this;
     }
 }
