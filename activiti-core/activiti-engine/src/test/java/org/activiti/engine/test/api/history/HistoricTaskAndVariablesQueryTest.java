@@ -57,6 +57,13 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
 
     private UserGroupManager userGroupManager = Mockito.mock(UserGroupManager.class);
 
+    private HistoricTaskInstanceQueryUtils utils;
+
+    public void initializeServices() {
+        super.initializeServices();
+        this.utils = new HistoricTaskInstanceQueryUtils(historyService);
+    }
+
     public void setUp() throws Exception {
         ProcessEngineConfigurationImpl engineConfiguration = (ProcessEngineConfigurationImpl) cachedProcessEngine.getProcessEngineConfiguration();
         engineConfiguration.setUserGroupManager(userGroupManager);
@@ -366,48 +373,41 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
         }
     }
 
-    private HistoricTaskInstanceQuery createAndHistoricTaskInstanceQuery() {
-        return historyService.createHistoricTaskInstanceQuery();
-    }
-    private HistoricTaskInstanceQuery createOrHistoricTaskInstanceQuery() {
-        return historyService.createHistoricTaskInstanceQuery().or();
+    @Deployment(resources={"org/activiti/engine/test/api/history/HistoricTaskAndVariablesQueryTest.testCandidate.bpmn20.xml"})
+    public void testCandidateWithAndClause() {
+        testCandidate(utils::createHistoricTaskInstanceQueryWithAndClause);
     }
 
     @Deployment(resources={"org/activiti/engine/test/api/history/HistoricTaskAndVariablesQueryTest.testCandidate.bpmn20.xml"})
-    public void testCandidateWithAndCondition() {
-        testCandidate(this::createAndHistoricTaskInstanceQuery);
+    public void testCandidateWithOrClause() {
+        testCandidate(utils::createHistoricTaskInstanceQueryWithOrClause);
     }
-
-    @Deployment(resources={"org/activiti/engine/test/api/history/HistoricTaskAndVariablesQueryTest.testCandidate.bpmn20.xml"})
-    public void testCandidateWithOrCondition() {
-        testCandidate(this::createOrHistoricTaskInstanceQuery);
-    }
-    private void testCandidate(Supplier<HistoricTaskInstanceQuery> queryBuilder) {
+    private void testCandidate(Supplier<HistoricTaskInstanceQuery> querySupplier) {
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
-            List<HistoricTaskInstance> tasks = queryBuilder.get().taskCandidateUser(KERMIT, KERMITSGROUPS).list();
+            List<HistoricTaskInstance> tasks = querySupplier.get().taskCandidateUser(KERMIT, KERMITSGROUPS).list();
             assertThat(tasks).hasSize(3);
 
-            tasks = queryBuilder.get().taskCandidateUser(GONZO, GONZOSGROUPS).list();
+            tasks = querySupplier.get().taskCandidateUser(GONZO, GONZOSGROUPS).list();
             assertThat(tasks).hasSize(0);
 
-            tasks = queryBuilder.get().taskCandidateUser(FOZZIE, FOZZIESGROUPS).list();
+            tasks = querySupplier.get().taskCandidateUser(FOZZIE, FOZZIESGROUPS).list();
             assertThat(tasks).hasSize(1);
 
-            tasks = queryBuilder.get().taskCandidateGroup("management").list();
+            tasks = querySupplier.get().taskCandidateGroup("management").list();
             assertThat(tasks).hasSize(1);
 
             List<String> groups = new ArrayList<String>();
             groups.add("management");
             groups.add("accountancy");
-            tasks = queryBuilder.get().taskCandidateGroupIn(groups).list();
+            tasks = querySupplier.get().taskCandidateGroupIn(groups).list();
             assertThat(tasks).hasSize(1);
 
-            tasks = queryBuilder.get().taskCandidateUser(KERMIT, KERMITSGROUPS).taskCandidateGroupIn(groups).list();
+            tasks = querySupplier.get().taskCandidateUser(KERMIT, KERMITSGROUPS).taskCandidateGroupIn(groups).list();
             assertThat(tasks).hasSize(3);
 
-            tasks = queryBuilder.get().taskCandidateUser(GONZO, GONZOSGROUPS).taskCandidateGroupIn(groups).list();
+            tasks = querySupplier.get().taskCandidateUser(GONZO, GONZOSGROUPS).taskCandidateGroupIn(groups).list();
             assertThat(tasks).hasSize(1);
 
             Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
@@ -415,28 +415,28 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
 
             assertThat(taskService.createTaskQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
 
-            tasks = queryBuilder.get().taskCandidateUser(KERMIT, KERMITSGROUPS).list();
+            tasks = querySupplier.get().taskCandidateUser(KERMIT, KERMITSGROUPS).list();
             assertThat(tasks).hasSize(3);
 
-            tasks = queryBuilder.get().taskCandidateUser(GONZO, GONZOSGROUPS).list();
+            tasks = querySupplier.get().taskCandidateUser(GONZO, GONZOSGROUPS).list();
             assertThat(tasks).hasSize(0);
 
-            tasks = queryBuilder.get().taskCandidateUser(FOZZIE, FOZZIESGROUPS).list();
+            tasks = querySupplier.get().taskCandidateUser(FOZZIE, FOZZIESGROUPS).list();
             assertThat(tasks).hasSize(1);
 
-            tasks = queryBuilder.get().taskCandidateGroup("management").list();
+            tasks = querySupplier.get().taskCandidateGroup("management").list();
             assertThat(tasks).hasSize(1);
 
-            tasks = queryBuilder.get().taskCandidateUser(KERMIT, KERMITSGROUPS).taskCandidateGroupIn(asList("management")).list();
+            tasks = querySupplier.get().taskCandidateUser(KERMIT, KERMITSGROUPS).taskCandidateGroupIn(asList("management")).list();
             assertThat(tasks).hasSize(3);
 
-            tasks = queryBuilder.get().taskCandidateUser(GONZO, GONZOSGROUPS).taskCandidateGroupIn(asList("management")).list();
+            tasks = querySupplier.get().taskCandidateUser(GONZO, GONZOSGROUPS).taskCandidateGroupIn(asList("management")).list();
             assertThat(tasks).hasSize(1);
 
-            tasks = queryBuilder.get().taskCandidateUser(GONZO, GONZOSGROUPS).taskCandidateGroupIn(asList("invalid")).list();
+            tasks = querySupplier.get().taskCandidateUser(GONZO, GONZOSGROUPS).taskCandidateGroupIn(asList("invalid")).list();
             assertThat(tasks).hasSize(0);
 
-            tasks = queryBuilder.get().taskCandidateGroupIn(groups).list();
+            tasks = querySupplier.get().taskCandidateGroupIn(groups).list();
             assertThat(tasks).hasSize(1);
         }
     }

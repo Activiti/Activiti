@@ -17,6 +17,7 @@
 
 package org.activiti.engine.test.history;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.tuple;
@@ -29,16 +30,27 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.activiti.engine.test.api.history.HistoricTaskInstanceQueryUtils;
 
 public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
+
+    private HistoricTaskInstanceQueryUtils utils;
+
+    public void initializeServices() {
+        super.initializeServices();
+        this.utils = new HistoricTaskInstanceQueryUtils(historyService);
+    }
 
     @Deployment
     public void testHistoricTaskInstance() throws Exception {
@@ -495,26 +507,33 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
         assertThat(historyService.createHistoricTaskInstanceQuery().or().unfinished().endOr().count()).isEqualTo(1);
     }
 
-    @Deployment
-    public void testHistoricTaskInstanceQueryProcessFinished() {
+    @Deployment(resources = {"org/activiti/engine/test/history/HistoricTaskInstanceTest.testHistoricTaskInstanceQueryProcessFinished.bpmn20.xml"})
+    public void testHistoricTaskInstanceQueryProcessFinishedWithAndClause() {
+        testHistoricTaskInstanceQueryProcessFinished(utils::createHistoricTaskInstanceQueryWithAndClause);
+    }
+    @Deployment(resources = {"org/activiti/engine/test/history/HistoricTaskInstanceTest.testHistoricTaskInstanceQueryProcessFinished.bpmn20.xml"})
+    public void testHistoricTaskInstanceQueryProcessFinishedWithOrClause() {
+        testHistoricTaskInstanceQueryProcessFinished(utils::createHistoricTaskInstanceQueryWithOrClause);
+    }
+    private void testHistoricTaskInstanceQueryProcessFinished(Supplier<HistoricTaskInstanceQuery> querySupplier) {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("TwoTaskHistoricTaskQueryTest");
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 
         // Running task on running process should be available
-        assertThat(historyService.createHistoricTaskInstanceQuery().processUnfinished().count()).isEqualTo(1);
-        assertThat(historyService.createHistoricTaskInstanceQuery().processFinished().count()).isEqualTo(0);
+        assertThat(querySupplier.get().processUnfinished().count()).isEqualTo(1);
+        assertThat(querySupplier.get().processFinished().count()).isEqualTo(0);
 
         // Finished and running task on running process should be available
         taskService.complete(task.getId());
-        assertThat(historyService.createHistoricTaskInstanceQuery().processUnfinished().count()).isEqualTo(2);
-        assertThat(historyService.createHistoricTaskInstanceQuery().processFinished().count()).isEqualTo(0);
+        assertThat(querySupplier.get().processUnfinished().count()).isEqualTo(2);
+        assertThat(querySupplier.get().processFinished().count()).isEqualTo(0);
 
         // 2 finished tasks are found for finished process after completing last
         // task of process
         task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
         taskService.complete(task.getId());
-        assertThat(historyService.createHistoricTaskInstanceQuery().processUnfinished().count()).isEqualTo(0);
-        assertThat(historyService.createHistoricTaskInstanceQuery().processFinished().count()).isEqualTo(2);
+        assertThat(querySupplier.get().processUnfinished().count()).isEqualTo(0);
+        assertThat(querySupplier.get().processFinished().count()).isEqualTo(2);
     }
 
     @Deployment
@@ -683,5 +702,55 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
 
         varValue = taskInstance.getTaskLocalVariables().get("taskVar");
         assertThat(varValue).isEqualTo(9);
+    }
+
+    @Deployment(resources = { "org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml" })
+    public void testProcessCategoryInWithAndClause() throws Exception {
+        testProcessCategoryIn(utils::createHistoricTaskInstanceQueryWithAndClause);
+    }
+
+    @Deployment(resources = { "org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml" })
+    public void testProcessCategoryInWithOrClause() throws Exception {
+        testProcessCategoryIn(utils::createHistoricTaskInstanceQueryWithOrClause);
+    }
+
+    private void testProcessCategoryIn(Supplier<HistoricTaskInstanceQuery> querySupplier) throws Exception {
+        // GIVEN: a process started with a user task
+        runtimeService.startProcessInstanceByKey("oneTaskProcess");
+
+        // WHEN: by completing the task, the process ends
+        final Task task = taskService.createTaskQuery().processCategoryIn(singletonList("Examples")).singleResult();
+        taskService.complete(task.getId());
+        final List<ProcessInstance> processList = runtimeService.createProcessInstanceQuery().list();
+        assertThat(processList).isEmpty();
+
+        // THEN: we check if the ended process instance belongs/not-belongs to specific categories
+        assertThat(querySupplier.get().processCategoryIn(singletonList("Examples")).count()).isEqualTo(1);
+        assertThat(querySupplier.get().processCategoryIn(singletonList("unexisting")).count()).isEqualTo(0);
+    }
+
+    @Deployment(resources = { "org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml" })
+    public void testProcessCategoryNotInWithAndClause() throws Exception {
+        testProcessCategoryNotIn(utils::createHistoricTaskInstanceQueryWithAndClause);
+    }
+
+    @Deployment(resources = { "org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml" })
+    public void testProcessCategoryNotInWithOrClause() throws Exception {
+        testProcessCategoryNotIn(utils::createHistoricTaskInstanceQueryWithOrClause);
+    }
+
+    private void testProcessCategoryNotIn(Supplier<HistoricTaskInstanceQuery> querySupplier) throws Exception {
+        // GIVEN: a process started with a user task
+        runtimeService.startProcessInstanceByKey("oneTaskProcess");
+
+        // WHEN: by completing the task, the process ends
+        final Task task = taskService.createTaskQuery().processCategoryNotIn(singletonList("unexisting")).singleResult();
+        taskService.complete(task.getId());
+        final List<ProcessInstance> processList = runtimeService.createProcessInstanceQuery().list();
+        assertThat(processList).isEmpty();
+
+        // THEN: we check if the ended process instance belongs/not-belongs to specific categories
+        assertThat(querySupplier.get().processCategoryNotIn(singletonList("Examples")).count()).isEqualTo(0);
+        assertThat(querySupplier.get().processCategoryNotIn(singletonList("unexisting")).count()).isEqualTo(1);
     }
 }

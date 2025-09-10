@@ -198,7 +198,7 @@
       <include refid="leftJoinWithProcessDefinition">
         <property name="tableAlias" value="deploy_p"/>
       </include>
-      and deploy_p.CATEGORY_ not in
+      and deploy_p.CATEGORY_ in
       <foreach item="category" index="index" collection="processCategoryInList"
                open="(" separator="," close=")">
         #{category}
