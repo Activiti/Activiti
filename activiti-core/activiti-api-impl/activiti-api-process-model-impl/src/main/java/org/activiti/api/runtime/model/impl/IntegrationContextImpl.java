@@ -20,6 +20,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.activiti.api.process.model.IntegrationContext;
 
 public class IntegrationContextImpl implements IntegrationContext {
@@ -293,7 +295,7 @@ public class IntegrationContextImpl implements IntegrationContext {
     }
 
     private String printKeys(Set<String> keys) {
-        return String.join(", ", keys);
+        return Stream.ofNullable(keys).map(String::valueOf).collect(Collectors.joining(", "));
     }
 
     @SuppressWarnings("unchecked")

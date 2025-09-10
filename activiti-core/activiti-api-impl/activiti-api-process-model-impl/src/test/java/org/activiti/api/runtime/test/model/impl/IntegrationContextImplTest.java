@@ -212,8 +212,10 @@ class IntegrationContextImplTest {
     void assertThatIntegrationContextImplDoesNotAddVariableValuesIntoToStringMethod(){
         //given
         IntegrationContextImpl integrationContext = new IntegrationContextImpl();
-        integrationContext.addInBoundVariable("inbound_key", "inbound_value");
-        integrationContext.addOutBoundVariable("outbound_key", "outbound_value");
+        integrationContext.addInBoundVariable("inbound_key1", "inbound_value");
+        integrationContext.addInBoundVariable("inbound_key2", "inbound_value");
+        integrationContext.addOutBoundVariable("outbound_key1", "outbound_value");
+        integrationContext.addOutBoundVariable("outbound_key2", "outbound_value");
 
         //when
         String toString = integrationContext.toString();
@@ -221,5 +223,26 @@ class IntegrationContextImplTest {
         //then
         assertThat(toString).doesNotContain("inbound_value");
         assertThat(toString).doesNotContain("outbound_value");
+        assertThat(
+            toString.contains("[inbound_key1, inbound_key2]") ||
+                toString.contains("[inbound_key2, inbound_key1]")
+        ).isTrue();
+        assertThat(
+            toString.contains("[outbound_key1, outbound_key2]") ||
+                toString.contains("[outbound_key2, outbound_key1]")
+        ).isTrue();
+    }
+
+    @Test
+    void assertThatIntegrationContextImplDoesAddEmptyVariablePartIntoToStringMethod(){
+        //given
+        IntegrationContextImpl integrationContext = new IntegrationContextImpl();
+
+        //when
+        String toString = integrationContext.toString();
+
+        //then
+        assertThat(toString).contains("inboundVariablesKeys=[]");
+        assertThat(toString).contains("outBoundVariableKeys=[]");
     }
 }
