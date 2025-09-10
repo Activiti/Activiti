@@ -336,6 +336,14 @@ import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.activiti.engine.impl.cfg.configurators.BpmnConfigurator;
+import org.activiti.engine.impl.cfg.configurators.CommandConfigurator;
+import org.activiti.engine.impl.cfg.configurators.CoreConfigurator;
+import org.activiti.engine.impl.cfg.configurators.DatabaseConfigurator;
+import org.activiti.engine.impl.cfg.configurators.EventConfigurator;
+import org.activiti.engine.impl.cfg.configurators.JobConfigurator;
+import org.activiti.engine.impl.cfg.configurators.ServiceConfigurator;
+import org.activiti.engine.impl.cfg.configurators.SessionConfigurator;
 
 public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfiguration {
 
@@ -856,6 +864,17 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
     protected ProcessDefinitionHelper processDefinitionHelper;
 
+    // CONFIGURATORS //////////////////////////////////////////////////////////////////
+    
+    protected CoreConfigurator coreConfigurator;
+    protected DatabaseConfigurator databaseConfigurator;
+    protected CommandConfigurator commandConfigurator;
+    protected ServiceConfigurator serviceConfigurator;
+    protected BpmnConfigurator bpmnConfigurator;
+    protected JobConfigurator jobConfigurator;
+    protected SessionConfigurator sessionConfigurator;
+    protected EventConfigurator eventConfigurator;
+
     // buildProcessEngine
     // ///////////////////////////////////////////////////////
 
@@ -874,54 +893,54 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     public void init() {
         initConfigurators();
         configuratorsBeforeInit();
-        initHistoryLevel();
-        initExpressionManager();
+        
+        // Initialize internal configurators
+        initInternalConfigurators();
+        
+        // Use configurators to organize initialization
+        coreConfigurator.configure();
 
-        if (usingRelationalDatabase) {
-            initDataSource();
-        }
+        databaseConfigurator.configure();
 
-        initAgendaFactory();
-        initHelpers();
-        initVariableTypes();
-        initBeans();
-        initScriptingEngines();
-        initClock();
-        initBusinessCalendarManager();
-        initCommandContextFactory();
-        initTransactionContextFactory();
-        initCommandExecutors();
-        initServices();
-        initIdGenerator();
-        initBehaviorFactory();
-        initListenerFactory();
-        initBpmnParser();
-        initProcessDefinitionCache();
-        initProcessDefinitionInfoCache();
-        initKnowledgeBaseCache();
-        initJobHandlers();
-        initJobManager();
-        initAsyncExecutor();
+        commandConfigurator.configure();
+        serviceConfigurator.configure();
+        bpmnConfigurator.configure();
+        jobConfigurator.configure();
 
-        initTransactionFactory();
-
-        if (usingRelationalDatabase) {
-            initSqlSessionFactory();
-        }
-
-        initSessionFactories();
-        initDataManagers();
-        initEntityManagers();
-        initHistoryManager();
-        initJpa();
-        initDeployers();
-        initDelegateInterceptor();
-        initEventHandlers();
-        initFailedJobCommandFactory();
-        initEventDispatcher();
-        initProcessValidator();
-        initDatabaseEventLogging();
+        sessionConfigurator.configure();
+        eventConfigurator.configure();
+        
         configuratorsAfterInit();
+    }
+
+    // internal configurators initialization
+    // ////////////////////////////////////////////////////////
+
+    protected void initInternalConfigurators() {
+        if (coreConfigurator == null) {
+            coreConfigurator = new CoreConfigurator(this);
+        }
+        if (databaseConfigurator == null) {
+            databaseConfigurator = new DatabaseConfigurator(this);
+        }
+        if (commandConfigurator == null) {
+            commandConfigurator = new CommandConfigurator(this);
+        }
+        if (serviceConfigurator == null) {
+            serviceConfigurator = new ServiceConfigurator(this);
+        }
+        if (bpmnConfigurator == null) {
+            bpmnConfigurator = new BpmnConfigurator(this);
+        }
+        if (jobConfigurator == null) {
+            jobConfigurator = new JobConfigurator(this);
+        }
+        if (sessionConfigurator == null) {
+            sessionConfigurator = new SessionConfigurator(this);
+        }
+        if (eventConfigurator == null) {
+            eventConfigurator = new EventConfigurator(this);
+        }
     }
 
     // failedJobCommandFactory
@@ -3944,6 +3963,81 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
     public ProcessEngineConfigurationImpl setProcessDefinitionHelper(ProcessDefinitionHelper processDefinitionHelper) {
         this.processDefinitionHelper = processDefinitionHelper;
+        return this;
+    }
+
+    // Configurator getters and setters
+    // ////////////////////////////////////////////////////////
+
+    public CoreConfigurator getCoreConfigurator() {
+        return coreConfigurator;
+    }
+
+    public ProcessEngineConfigurationImpl setCoreConfigurator(CoreConfigurator coreConfigurator) {
+        this.coreConfigurator = coreConfigurator;
+        return this;
+    }
+
+    public DatabaseConfigurator getDatabaseConfigurator() {
+        return databaseConfigurator;
+    }
+
+    public ProcessEngineConfigurationImpl setDatabaseConfigurator(DatabaseConfigurator databaseConfigurator) {
+        this.databaseConfigurator = databaseConfigurator;
+        return this;
+    }
+
+    public CommandConfigurator getCommandConfigurator() {
+        return commandConfigurator;
+    }
+
+    public ProcessEngineConfigurationImpl setCommandConfigurator(CommandConfigurator commandConfigurator) {
+        this.commandConfigurator = commandConfigurator;
+        return this;
+    }
+
+    public ServiceConfigurator getServiceConfigurator() {
+        return serviceConfigurator;
+    }
+
+    public ProcessEngineConfigurationImpl setServiceConfigurator(ServiceConfigurator serviceConfigurator) {
+        this.serviceConfigurator = serviceConfigurator;
+        return this;
+    }
+
+    public BpmnConfigurator getBpmnConfigurator() {
+        return bpmnConfigurator;
+    }
+
+    public ProcessEngineConfigurationImpl setBpmnConfigurator(BpmnConfigurator bpmnConfigurator) {
+        this.bpmnConfigurator = bpmnConfigurator;
+        return this;
+    }
+
+    public JobConfigurator getJobConfigurator() {
+        return jobConfigurator;
+    }
+
+    public ProcessEngineConfigurationImpl setJobConfigurator(JobConfigurator jobConfigurator) {
+        this.jobConfigurator = jobConfigurator;
+        return this;
+    }
+
+    public SessionConfigurator getSessionConfigurator() {
+        return sessionConfigurator;
+    }
+
+    public ProcessEngineConfigurationImpl setSessionConfigurator(SessionConfigurator sessionConfigurator) {
+        this.sessionConfigurator = sessionConfigurator;
+        return this;
+    }
+
+    public EventConfigurator getEventConfigurator() {
+        return eventConfigurator;
+    }
+
+    public ProcessEngineConfigurationImpl setEventConfigurator(EventConfigurator eventConfigurator) {
+        this.eventConfigurator = eventConfigurator;
         return this;
     }
 }
