@@ -15,12 +15,13 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.activiti.api.process.model.IntegrationContext;
 
 public class IntegrationContextImpl implements IntegrationContext {
@@ -256,15 +257,13 @@ public class IntegrationContextImpl implements IntegrationContext {
 
     @Override
     public String toString() {
-        final int maxLen = 10;
         StringBuilder builder = new StringBuilder();
-        builder
-            .append("IntegrationContextImpl [id=")
+        builder.append("IntegrationContextImpl [id=")
             .append(id)
-            .append(", inboundVariables=")
-            .append(inBoundVariables != null ? toString(inBoundVariables.entrySet(), maxLen) : null)
-            .append(", outBoundVariables=")
-            .append(outBoundVariables != null ? toString(outBoundVariables.entrySet(), maxLen) : null)
+            .append(", inboundVariablesKeys=")
+            .append(inBoundVariables != null ? printKeys(inBoundVariables.keySet()) : null)
+            .append(", outBoundVariableKeys=")
+            .append(outBoundVariables != null ? printKeys(outBoundVariables.keySet()) : null)
             .append(", rootProcessInstanceId=")
             .append(rootProcessInstanceId)
             .append(", processInstanceId=")
@@ -295,18 +294,8 @@ public class IntegrationContextImpl implements IntegrationContext {
         return builder.toString();
     }
 
-    private String toString(Collection<?> collection, int maxLen) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
-        int i = 0;
-        for (Iterator<?> iterator = collection.iterator(); iterator.hasNext() && i < maxLen; i++) {
-            if (i > 0) {
-                builder.append(", ");
-            }
-            builder.append(iterator.next());
-        }
-        builder.append("]");
-        return builder.toString();
+    private String printKeys(Set<String> keys) {
+        return Stream.ofNullable(keys).map(String::valueOf).collect(Collectors.joining(", "));
     }
 
     @SuppressWarnings("unchecked")
