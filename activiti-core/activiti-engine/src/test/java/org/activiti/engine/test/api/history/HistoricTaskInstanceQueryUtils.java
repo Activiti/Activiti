@@ -18,9 +18,7 @@ package org.activiti.engine.test.api.history;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 public final class HistoricTaskInstanceQueryUtils {
 
     private HistoryService historyService;
