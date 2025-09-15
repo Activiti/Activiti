@@ -21,6 +21,8 @@ concurrency:
 jobs:
   pre-checks:
     runs-on: ubuntu-latest
+    outputs:
+      preview: ${{ steps.check_pr_preview.outputs.preview }}
     steps:
       - name: Check dependabot build
         uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@24c5fb2e495b8c2d7cea64a44052d641cbf73c26 # temp version for testing
@@ -28,6 +30,11 @@ jobs:
         uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@edb17074b511e2443b0dbaed57772b9f0b1d017a # v8.35.0
       - name: Ensure SHA pinned actions
         uses: zgosalvez/github-actions-ensure-sha-pinned-actions@fc87bb5b5a97953d987372e74478de634726b3e5 # v3.0.25
+      - name: Check PR preview
+        id: check_pr_preview
+        shell: bash
+        run: |
+          echo "preview=${{ contains(github.event.pull_request.labels.*.name, 'preview') }}" >> $GITHUB_OUTPUT
 
   build:
     runs-on: ubuntu-latest
@@ -50,20 +57,20 @@ jobs:
           distribution: "temurin"
 
       - name: Set preview version
-        if: ${{ contains(github.event.pull_request.labels.*.name, 'preview') }}
+        if: ${{ needs.pre-checks.outputs.preview == 'true' }}
         run: |
           GITHUB_PR_NUMBER=PR-${{ github.event.pull_request.number }}
           echo 0.0.1-${GITHUB_PR_NUMBER}-${GITHUB_RUN_NUMBER}-SNAPSHOT > VERSION
 
       - name: Set VERSION env variable
-        if: ${{ contains(github.event.pull_request.labels.*.name, 'preview') }}
+        if: ${{ needs.pre-checks.outputs.preview == 'true' }}
         run: |
           VERSION=$(cat VERSION)
           echo set VERSION=$VERSION
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Update pom files to the new version
-        if: ${{ contains(github.head_ref, 'preview') || contains(github.event.pull_request.labels.*.name, 'preview') }}
+        if: ${{ needs.pre-checks.outputs.preview == 'true' }}
         run: mvn -B versions:set -DnewVersion=$VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
 
       - name: Define Maven Command
@@ -77,7 +84,7 @@ jobs:
             echo "command=install" >> $GITHUB_OUTPUT
           fi
         env:
-          DO_PUSH: ${{ contains(github.event.pull_request.labels.*.name, 'preview') }}
+          DO_PUSH: ${{ needs.pre-checks.outputs.preview }}
 
       - name: Build and Test with Maven (and maybe deploy)
         shell: bash
