@@ -1,15 +1,41 @@
 name: "PR Review check"
 
+env:
+  TRIGGER_LABELS: '["CI", "preview", "skip-tests"]'
+  DEPENDABOT_CREATOR: 'dependabot[bot]'
+  MILESTONE_NAME: 'Validating'
+
 on:
   pull_request_review:
     types:
       - submitted
+  pull_request:
+    branches:
+      - develop
+    types:
+      - labeled
 
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/github-trigger-approved-pr@24c5fb2e495b8c2d7cea64a44052d641cbf73c26 # temp version for testing
+      - uses: Alfresco/alfresco-build-tools/.github/actions/github-trigger-approved-pr@5ffac4ee01a41daa04d148db02b20b900deebb06 # temp version for testing
+        if: github.event_name == 'pull_request_review'
         with:
+          creator: ${{ env.DEPENDABOT_CREATOR }}
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
-          milestone-on-approval: Dependabot
+          milestone-on-approval: ${{ env.MILESTONE_NAME }}
+          auto-merge-on-approval: true
+      - name: Trigger validation on labeling
+        if: github.event_name == 'labeled' && contains(fromJson(env.TRIGGER_LABELS), github.event.label.name)
+        env:
+          MILESTONE: ${{ env.MILESTONE_NAME }}
+          GH_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        shell: bash
+        run: |
+          echo "::notice::Clearing milestone on PR: $PR_URL"
+          gh pr edit -R $GITHUB_REPOSITORY $PR_NUMBER --milestone ""
+          echo "::notice::Milestone PR to trigger PR validation: $PR_URL"
+          gh pr edit -R $GITHUB_REPOSITORY $PR_NUMBER --milestone "$MILESTONE"
