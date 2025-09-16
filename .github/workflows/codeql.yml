@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check dependabot build
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@6aad0af23482c32f8a4d4ddf68c0ada5a85e2a41 # temp version for testing
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@fc16d6c2f032a24825ee40131640bc5b4b6736d8 # temp version for testing
 
   analyze:
     name: Analyze
