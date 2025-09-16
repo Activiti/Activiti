@@ -25,7 +25,7 @@ jobs:
       preview: ${{ steps.check_pr_preview.outputs.preview }}
     steps:
       - name: Check dependabot build
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@5ffac4ee01a41daa04d148db02b20b900deebb06 # temp version for testing
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@6aad0af23482c32f8a4d4ddf68c0ada5a85e2a41 # temp version for testing
       - name: pre-commit
         uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@edb17074b511e2443b0dbaed57772b9f0b1d017a # v8.35.0
       - name: Ensure SHA pinned actions

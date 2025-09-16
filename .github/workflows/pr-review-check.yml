@@ -19,23 +19,18 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/github-trigger-approved-pr@5ffac4ee01a41daa04d148db02b20b900deebb06 # temp version for testing
+      - name: Trigger validate on approval
         if: github.event_name == 'pull_request_review'
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-trigger-approved-pr@6aad0af23482c32f8a4d4ddf68c0ada5a85e2a41 # temp version for testing
         with:
           creator: ${{ env.DEPENDABOT_CREATOR }}
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           milestone-on-approval: ${{ env.MILESTONE_NAME }}
           auto-merge-on-approval: true
+
       - name: Trigger validation on labeling
-        if: github.event_name == 'labeled' && contains(fromJson(env.TRIGGER_LABELS), github.event.label.name)
-        env:
-          MILESTONE: ${{ env.MILESTONE_NAME }}
-          GH_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          PR_URL: ${{ github.event.pull_request.html_url }}
-        shell: bash
-        run: |
-          echo "::notice::Clearing milestone on PR: $PR_URL"
-          gh pr edit -R $GITHUB_REPOSITORY $PR_NUMBER --milestone ""
-          echo "::notice::Milestone PR to trigger PR validation: $PR_URL"
-          gh pr edit -R $GITHUB_REPOSITORY $PR_NUMBER --milestone "$MILESTONE"
+        if: github.event_name == 'pull_request'
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-trigger-labeled-pr@6aad0af23482c32f8a4d4ddf68c0ada5a85e2a41 # temp version for testing
+        with:
+          labels: ${{ env.TRIGGER_LABELS }}
+          milestone: ${{ env.MILESTONE_NAME }}
