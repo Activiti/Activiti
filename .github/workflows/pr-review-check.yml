@@ -34,3 +34,4 @@ jobs:
         with:
           labels: ${{ env.TRIGGER_LABELS }}
           milestone: ${{ env.MILESTONE_NAME }}
+          force-trigger: true
