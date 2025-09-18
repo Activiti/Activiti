@@ -268,6 +268,13 @@
         <version>1.28.0</version>
       </dependency>
       <!-- temporary security fix -->
+      <!-- temporary security fix AAE-38297 -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>6.2.11</version>
+      </dependency>
+      <!-- temporary security fix -->
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-dependency-check</artifactId>
