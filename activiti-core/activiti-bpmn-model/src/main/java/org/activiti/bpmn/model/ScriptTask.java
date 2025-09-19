@@ -17,55 +17,56 @@ package org.activiti.bpmn.model;
 
 public class ScriptTask extends Task {
 
-  protected String scriptFormat;
-  protected String script;
-  protected String resultVariable;
-  protected boolean autoStoreVariables = false; // see
-                                                // https://activiti.atlassian.net/browse/ACT-1626
+    protected String scriptFormat;
+    protected String script;
+    protected String resultVariable;
+    protected boolean autoStoreVariables = false; // see
 
-  public String getScriptFormat() {
-    return scriptFormat;
-  }
+    // https://activiti.atlassian.net/browse/ACT-1626
 
-  public void setScriptFormat(String scriptFormat) {
-    this.scriptFormat = scriptFormat;
-  }
+    public String getScriptFormat() {
+        return scriptFormat;
+    }
 
-  public String getScript() {
-    return script;
-  }
+    public void setScriptFormat(String scriptFormat) {
+        this.scriptFormat = scriptFormat;
+    }
 
-  public void setScript(String script) {
-    this.script = script;
-  }
+    public String getScript() {
+        return script;
+    }
 
-  public String getResultVariable() {
-    return resultVariable;
-  }
+    public void setScript(String script) {
+        this.script = script;
+    }
 
-  public void setResultVariable(String resultVariable) {
-    this.resultVariable = resultVariable;
-  }
+    public String getResultVariable() {
+        return resultVariable;
+    }
 
-  public boolean isAutoStoreVariables() {
-    return autoStoreVariables;
-  }
+    public void setResultVariable(String resultVariable) {
+        this.resultVariable = resultVariable;
+    }
 
-  public void setAutoStoreVariables(boolean autoStoreVariables) {
-    this.autoStoreVariables = autoStoreVariables;
-  }
+    public boolean isAutoStoreVariables() {
+        return autoStoreVariables;
+    }
 
-  public ScriptTask clone() {
-    ScriptTask clone = new ScriptTask();
-    clone.setValues(this);
-    return clone;
-  }
+    public void setAutoStoreVariables(boolean autoStoreVariables) {
+        this.autoStoreVariables = autoStoreVariables;
+    }
 
-  public void setValues(ScriptTask otherElement) {
-    super.setValues(otherElement);
-    setScriptFormat(otherElement.getScriptFormat());
-    setScript(otherElement.getScript());
-    setResultVariable(otherElement.getResultVariable());
-    setAutoStoreVariables(otherElement.isAutoStoreVariables());
-  }
+    public ScriptTask clone() {
+        ScriptTask clone = new ScriptTask();
+        clone.setValues(this);
+        return clone;
+    }
+
+    public void setValues(ScriptTask otherElement) {
+        super.setValues(otherElement);
+        setScriptFormat(otherElement.getScriptFormat());
+        setScript(otherElement.getScript());
+        setResultVariable(otherElement.getResultVariable());
+        setAutoStoreVariables(otherElement.isAutoStoreVariables());
+    }
 }

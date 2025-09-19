@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.test.bpmn.multiinstance;
 
 import static java.util.Arrays.asList;
@@ -623,996 +622,1163 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         assertThat(hai.getStartTime()).isNotNull();
         assertThat(hai.getEndTime()).isNotNull();
       }
-    }
-  }
-
-  @Deployment
-  public void testSequentialSubProcessWithTimer() {
-    String procId = runtimeService.startProcessInstanceByKey("miSequentialSubprocessWithTimer").getId();
-
-    // Complete one subprocess
-    List<Task> tasks = taskService.createTaskQuery().list();
-    assertThat(tasks).hasSize(2);
-    taskService.complete(tasks.get(0).getId());
-    taskService.complete(tasks.get(1).getId());
-    tasks = taskService.createTaskQuery().list();
-    assertThat(tasks).hasSize(2);
-
-    // Fire timer
-    Job timer = managementService.createTimerJobQuery().singleResult();
-    managementService.moveTimerToExecutableJob(timer.getId());
-    managementService.executeJob(timer.getId());
-
-    Task taskAfterTimer = taskService.createTaskQuery().singleResult();
-    assertThat(taskAfterTimer.getTaskDefinitionKey()).isEqualTo("taskAfterTimer");
-    taskService.complete(taskAfterTimer.getId());
-
-    assertProcessEnded(procId);
-  }
-
-  @Deployment
-  public void testSequentialSubProcessCompletionCondition() {
-    String procId = runtimeService.startProcessInstanceByKey("miSequentialSubprocessCompletionCondition").getId();
-
-    TaskQuery query = taskService.createTaskQuery().orderByTaskName().asc();
-    for (int i = 0; i < 3; i++) {
-      List<Task> tasks = query.list();
-      assertThat(tasks).hasSize(2);
-
-      assertThat(tasks.get(0).getName()).isEqualTo("task one");
-      assertThat(tasks.get(1).getName()).isEqualTo("task two");
-
-      taskService.complete(tasks.get(0).getId());
-      taskService.complete(tasks.get(1).getId());
-    }
-
-    assertProcessEnded(procId);
-  }
-
-  @Deployment
-  public void testNestedSequentialSubProcess() {
-    String procId = runtimeService.startProcessInstanceByKey("miNestedSequentialSubProcess").getId();
-
-    for (int i = 0; i < 3; i++) {
-      List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
-      taskService.complete(tasks.get(0).getId());
-      taskService.complete(tasks.get(1).getId());
-    }
-
-    assertProcessEnded(procId);
-  }
-
-  @Deployment
-  public void testNestedSequentialSubProcessWithTimer() {
-    String procId = runtimeService.startProcessInstanceByKey("miNestedSequentialSubProcessWithTimer").getId();
-
-    for (int i = 0; i < 2; i++) {
-      List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
-      taskService.complete(tasks.get(0).getId());
-      taskService.complete(tasks.get(1).getId());
-    }
-
-    // Complete one task, to make it a bit more trickier
-    List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
-    taskService.complete(tasks.get(0).getId());
-
-    // Fire timer
-    Job timer = managementService.createTimerJobQuery().singleResult();
-    managementService.moveTimerToExecutableJob(timer.getId());
-    managementService.executeJob(timer.getId());
-
-    Task taskAfterTimer = taskService.createTaskQuery().singleResult();
-    assertThat(taskAfterTimer.getTaskDefinitionKey()).isEqualTo("taskAfterTimer");
-    taskService.complete(taskAfterTimer.getId());
-
-    assertProcessEnded(procId);
-  }
-
-  @Deployment
-  public void testParallelSubProcess() {
-    String procId = runtimeService.startProcessInstanceByKey("miParallelSubprocess").getId();
-    List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-    assertThat(tasks).hasSize(4);
-
-    for (Task task : tasks) {
-      taskService.complete(task.getId());
-    }
-
-    assertProcessEnded(procId);
-  }
-
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelSubProcess.bpmn20.xml" })
-  public void testParallelSubProcessHistory() {
-    runtimeService.startProcessInstanceByKey("miParallelSubprocess");
-    for (Task task : taskService.createTaskQuery().list()) {
-      taskService.complete(task.getId());
-    }
-
-    // Validate history
-    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      List<HistoricActivityInstance> historicActivityInstances = historyService.createHistoricActivityInstanceQuery().activityId("miSubProcess").list();
-      assertThat(historicActivityInstances).hasSize(2);
-      for (HistoricActivityInstance hai : historicActivityInstances) {
-        assertThat(hai.getStartTime()).isNotNull();
-        assertThat(hai.getEndTime()).isNotNull();
-      }
-    }
-  }
-
-  @Deployment
-  public void testParallelSubProcessWithTimer() {
-    String procId = runtimeService.startProcessInstanceByKey("miParallelSubprocessWithTimer").getId();
-    List<Task> tasks = taskService.createTaskQuery().list();
-    assertThat(tasks).hasSize(6);
-
-    // Complete two tasks
-    taskService.complete(tasks.get(0).getId());
-    taskService.complete(tasks.get(1).getId());
-
-    // Fire timer
-    Job timer = managementService.createTimerJobQuery().singleResult();
-    managementService.moveTimerToExecutableJob(timer.getId());
-    managementService.executeJob(timer.getId());
-
-    Task taskAfterTimer = taskService.createTaskQuery().singleResult();
-    assertThat(taskAfterTimer.getTaskDefinitionKey()).isEqualTo("taskAfterTimer");
-    taskService.complete(taskAfterTimer.getId());
-
-    assertProcessEnded(procId);
-  }
-
-  @Deployment
-  public void testParallelSubProcessCompletionCondition() {
-    String procId = runtimeService.startProcessInstanceByKey("miParallelSubprocessCompletionCondition").getId();
-    List<Task> tasks = taskService.createTaskQuery().list();
-    assertThat(tasks).hasSize(4);
-
-    List<Task> subProcessTasks1 = taskService.createTaskQuery().taskDefinitionKey("subProcessTask1").list();
-    assertThat(subProcessTasks1).hasSize(2);
-
-    List<Task> subProcessTasks2 = taskService.createTaskQuery().taskDefinitionKey("subProcessTask2").list();
-    assertThat(subProcessTasks2).hasSize(2);
-
-    Execution taskExecution = runtimeService.createExecutionQuery().executionId(subProcessTasks1.get(0).getExecutionId()).singleResult();
-    String parentExecutionId = taskExecution.getParentId();
-
-    Task subProcessTask2 = null;
-    for (Task task : subProcessTasks2) {
-      Execution toFindExecution = runtimeService.createExecutionQuery().executionId(task.getExecutionId()).singleResult();
-      if (toFindExecution.getParentId().equals(parentExecutionId)) {
-        subProcessTask2 = task;
-        break;
       }
     }
 
-    assertThat(subProcessTask2).isNotNull();
-    taskService.complete(tasks.get(0).getId());
-    taskService.complete(subProcessTask2.getId());
+    @Deployment
+    public void testSequentialSubProcessWithTimer() {
+        String procId = runtimeService.startProcessInstanceByKey("miSequentialSubprocessWithTimer").getId();
 
-    assertProcessEnded(procId);
-  }
+        // Complete one subprocess
+        List<Task> tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(2);
+        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.get(1).getId());
+        tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(2);
 
-  @Deployment
-  public void testParallelSubProcessAllAutomatic() {
-    String procId = runtimeService.startProcessInstanceByKey("miParallelSubprocessAllAutomatics", singletonMap(NR_OF_LOOPS_KEY, 5)).getId();
+        // Fire timer
+        Job timer = managementService.createTimerJobQuery().singleResult();
+        managementService.moveTimerToExecutableJob(timer.getId());
+        managementService.executeJob(timer.getId());
 
-    for (int i = 0; i < 5; i++) {
-      List<Execution> waitSubExecutions = runtimeService.createExecutionQuery().activityId("subProcessWait").list();
-      assertThat(waitSubExecutions.size() > 0).isTrue();
-      runtimeService.trigger(waitSubExecutions.get(0).getId());
+        Task taskAfterTimer = taskService.createTaskQuery().singleResult();
+        assertThat(taskAfterTimer.getTaskDefinitionKey()).isEqualTo("taskAfterTimer");
+        taskService.complete(taskAfterTimer.getId());
+
+        assertProcessEnded(procId);
     }
 
-    List<Execution> waitSubExecutions = runtimeService.createExecutionQuery().activityId("subProcessWait").list();
-    assertThat(waitSubExecutions).hasSize(0);
+    @Deployment
+    public void testSequentialSubProcessCompletionCondition() {
+        String procId = runtimeService.startProcessInstanceByKey("miSequentialSubprocessCompletionCondition").getId();
 
-    Execution waitState = runtimeService.createExecutionQuery().activityId("waitState").singleResult();
-    assertThat(runtimeService.getVariable(waitState.getId(), "sum")).isEqualTo(10);
+        TaskQuery query = taskService.createTaskQuery().orderByTaskName().asc();
+        for (int i = 0; i < 3; i++) {
+            List<Task> tasks = query.list();
+            assertThat(tasks).hasSize(2);
 
-    runtimeService.trigger(waitState.getId());
-    assertProcessEnded(procId);
-  }
+            assertThat(tasks.get(0).getName()).isEqualTo("task one");
+            assertThat(tasks.get(1).getName()).isEqualTo("task two");
 
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelSubProcessAllAutomatic.bpmn20.xml" })
-  public void testParallelSubProcessAllAutomaticCompletionCondition() {
-    String procId = runtimeService.startProcessInstanceByKey("miParallelSubprocessAllAutomatics", singletonMap(NR_OF_LOOPS_KEY, 10)).getId();
+            taskService.complete(tasks.get(0).getId());
+            taskService.complete(tasks.get(1).getId());
+        }
 
-    for (int i = 0; i < 6; i++) {
-      List<Execution> waitSubExecutions = runtimeService.createExecutionQuery().activityId("subProcessWait").list();
-      assertThat(waitSubExecutions.size() > 0).isTrue();
-      runtimeService.trigger(waitSubExecutions.get(0).getId());
+        assertProcessEnded(procId);
     }
 
-    List<Execution> waitSubExecutions = runtimeService.createExecutionQuery().activityId("subProcessWait").list();
-    assertThat(waitSubExecutions).hasSize(0);
+    @Deployment
+    public void testNestedSequentialSubProcess() {
+        String procId = runtimeService.startProcessInstanceByKey("miNestedSequentialSubProcess").getId();
 
-    Execution waitState = runtimeService.createExecutionQuery().activityId("waitState").singleResult();
-    assertThat(runtimeService.getVariable(procId, "sum")).isEqualTo(12);
+        for (int i = 0; i < 3; i++) {
+            List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
+            taskService.complete(tasks.get(0).getId());
+            taskService.complete(tasks.get(1).getId());
+        }
 
-    runtimeService.trigger(waitState.getId());
-    assertProcessEnded(procId);
-  }
-
-  @Deployment
-  public void testNestedParallelSubProcess() {
-    String procId = runtimeService.startProcessInstanceByKey("miNestedParallelSubProcess").getId();
-    List<Task> tasks = taskService.createTaskQuery().list();
-    assertThat(tasks).hasSize(8);
-
-    for (Task task : tasks) {
-      taskService.complete(task.getId());
-    }
-    assertProcessEnded(procId);
-  }
-
-  @Deployment
-  public void testNestedParallelSubProcessWithTimer() {
-    String procId = runtimeService.startProcessInstanceByKey("miNestedParallelSubProcess").getId();
-    List<Task> tasks = taskService.createTaskQuery().list();
-    assertThat(tasks).hasSize(12);
-
-    for (int i = 0; i < 3; i++) {
-      taskService.complete(tasks.get(i).getId());
+        assertProcessEnded(procId);
     }
 
-    // Fire timer
-    Job timer = managementService.createTimerJobQuery().singleResult();
-    managementService.moveTimerToExecutableJob(timer.getId());
-    managementService.executeJob(timer.getId());
+    @Deployment
+    public void testNestedSequentialSubProcessWithTimer() {
+        String procId = runtimeService.startProcessInstanceByKey("miNestedSequentialSubProcessWithTimer").getId();
 
-    Task taskAfterTimer = taskService.createTaskQuery().singleResult();
-    assertThat(taskAfterTimer.getTaskDefinitionKey()).isEqualTo("taskAfterTimer");
-    taskService.complete(taskAfterTimer.getId());
+        for (int i = 0; i < 2; i++) {
+            List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
+            taskService.complete(tasks.get(0).getId());
+            taskService.complete(tasks.get(1).getId());
+        }
 
-    assertProcessEnded(procId);
-  }
+        // Complete one task, to make it a bit more trickier
+        List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
+        taskService.complete(tasks.get(0).getId());
 
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialCallActivity.bpmn20.xml",
-      "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml" })
-  public void testSequentialCallActivity() {
-    String procId = runtimeService.startProcessInstanceByKey("miSequentialCallActivity").getId();
+        // Fire timer
+        Job timer = managementService.createTimerJobQuery().singleResult();
+        managementService.moveTimerToExecutableJob(timer.getId());
+        managementService.executeJob(timer.getId());
 
-    for (int i = 0; i < 3; i++) {
-      List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-      assertThat(tasks).hasSize(2);
-      assertThat(tasks.get(0).getName()).isEqualTo("task one");
-      assertThat(tasks.get(1).getName()).isEqualTo("task two");
-      taskService.complete(tasks.get(0).getId());
-      taskService.complete(tasks.get(1).getId());
+        Task taskAfterTimer = taskService.createTaskQuery().singleResult();
+        assertThat(taskAfterTimer.getTaskDefinitionKey()).isEqualTo("taskAfterTimer");
+        taskService.complete(taskAfterTimer.getId());
+
+        assertProcessEnded(procId);
     }
 
-    assertProcessEnded(procId);
-  }
+    @Deployment
+    public void testParallelSubProcess() {
+        String procId = runtimeService.startProcessInstanceByKey("miParallelSubprocess").getId();
+        List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+        assertThat(tasks).hasSize(4);
 
-  @Deployment(resources = "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialCallActivityWithList.bpmn20.xml")
-  public void testSequentialCallActivityWithList() {
-      ArrayList<String> list = new ArrayList<String>();
-      list.add("one");
-      list.add("two");
+        for (Task task : tasks) {
+            taskService.complete(task.getId());
+        }
 
-      HashMap<String, Object> variables = new HashMap<String, Object>();
-      variables.put("list", list);
-
-      String procId = runtimeService.startProcessInstanceByKey("parentProcess", variables).getId();
-
-      Task task1 = taskService.createTaskQuery().processVariableValueEquals("element", "one").singleResult();
-      Task task2 = taskService.createTaskQuery().processVariableValueEquals("element", "two").singleResult();
-
-      assertThat(task1).isNotNull();
-      assertThat(task2).isNotNull();
-
-      HashMap<String, Object> subVariables = new HashMap<String, Object>();
-      subVariables.put("x", "y");
-
-      taskService.complete(task1.getId(), subVariables);
-      taskService.complete(task2.getId(), subVariables);
-
-      Task task3 = taskService.createTaskQuery().processDefinitionKey("midProcess").singleResult();
-      assertThat(task3).isNotNull();
-      taskService.complete(task3.getId(), null);
-
-      Task task4 = taskService.createTaskQuery().processDefinitionKey("parentProcess").singleResult();
-      assertThat(task4).isNotNull();
-      taskService.complete(task4.getId(), null);
-
-      assertProcessEnded(procId);
-  }
-
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialCallActivityWithTimer.bpmn20.xml",
-      "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml" })
-  public void testSequentialCallActivityWithTimer() {
-    String procId = runtimeService.startProcessInstanceByKey("miSequentialCallActivityWithTimer").getId();
-
-    // Complete first subprocess
-    List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-    assertThat(tasks).hasSize(2);
-    assertThat(tasks.get(0).getName()).isEqualTo("task one");
-    assertThat(tasks.get(1).getName()).isEqualTo("task two");
-    taskService.complete(tasks.get(0).getId());
-    taskService.complete(tasks.get(1).getId());
-
-    // Fire timer
-    Job timer = managementService.createTimerJobQuery().singleResult();
-    managementService.moveTimerToExecutableJob(timer.getId());
-    managementService.executeJob(timer.getId());
-
-    Task taskAfterTimer = taskService.createTaskQuery().singleResult();
-    assertThat(taskAfterTimer.getTaskDefinitionKey()).isEqualTo("taskAfterTimer");
-    taskService.complete(taskAfterTimer.getId());
-
-    assertProcessEnded(procId);
-  }
-
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelCallActivity.bpmn20.xml",
-      "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml" })
-  public void testParallelCallActivity() {
-    String procId = runtimeService.startProcessInstanceByKey("miParallelCallActivity").getId();
-    List<Task> tasks = taskService.createTaskQuery().list();
-    assertThat(tasks).hasSize(12);
-    for (int i = 0; i < tasks.size(); i++) {
-      taskService.complete(tasks.get(i).getId());
+        assertProcessEnded(procId);
     }
 
-    assertProcessEnded(procId);
-  }
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelSubProcess.bpmn20.xml",
+        }
+    )
+    public void testParallelSubProcessHistory() {
+        runtimeService.startProcessInstanceByKey("miParallelSubprocess");
+        for (Task task : taskService.createTaskQuery().list()) {
+            taskService.complete(task.getId());
+        }
 
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelCallActivity.bpmn20.xml",
-      "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml" })
-  public void testParallelCallActivityHistory() {
-    runtimeService.startProcessInstanceByKey("miParallelCallActivity");
-    List<Task> tasks = taskService.createTaskQuery().list();
-    assertThat(tasks).hasSize(12);
-    for (int i = 0; i < tasks.size(); i++) {
-      taskService.complete(tasks.get(i).getId());
+        // Validate history
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+            List<HistoricActivityInstance> historicActivityInstances = historyService
+                .createHistoricActivityInstanceQuery()
+                .activityId("miSubProcess")
+                .list();
+            assertThat(historicActivityInstances).hasSize(2);
+            for (HistoricActivityInstance hai : historicActivityInstances) {
+                assertThat(hai.getStartTime()).isNotNull();
+                assertThat(hai.getEndTime()).isNotNull();
+            }
+        }
     }
 
-    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      // Validate historic processes
-      List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().list();
-      assertThat(historicProcessInstances).hasSize(7); // 6 subprocesses
-                                                        // + main process
-      for (HistoricProcessInstance hpi : historicProcessInstances) {
-        assertThat(hpi.getStartTime()).isNotNull();
-        assertThat(hpi.getEndTime()).isNotNull();
-      }
+    @Deployment
+    public void testParallelSubProcessWithTimer() {
+        String procId = runtimeService.startProcessInstanceByKey("miParallelSubprocessWithTimer").getId();
+        List<Task> tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(6);
 
-      // Validate historic tasks
-      List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery().list();
-      assertThat(historicTaskInstances).hasSize(12);
-      for (HistoricTaskInstance hti : historicTaskInstances) {
-        assertThat(hti.getStartTime()).isNotNull();
-        assertThat(hti.getEndTime()).isNotNull();
-        assertThat(hti.getAssignee()).isNotNull();
-        assertThat(hti.getDeleteReason()).isNull();
-      }
+        // Complete two tasks
+        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.get(1).getId());
 
-      // Validate historic activities
-      List<HistoricActivityInstance> historicActivityInstances = historyService.createHistoricActivityInstanceQuery().activityType("callActivity").list();
-      assertThat(historicActivityInstances).hasSize(6);
-      for (HistoricActivityInstance hai : historicActivityInstances) {
-        assertThat(hai.getStartTime()).isNotNull();
-        assertThat(hai.getEndTime()).isNotNull();
-      }
-    }
-  }
+        // Fire timer
+        Job timer = managementService.createTimerJobQuery().singleResult();
+        managementService.moveTimerToExecutableJob(timer.getId());
+        managementService.executeJob(timer.getId());
 
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelCallActivityWithTimer.bpmn20.xml",
-      "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml" })
-  public void testParallelCallActivityWithTimer() {
-    String procId = runtimeService.startProcessInstanceByKey("miParallelCallActivity").getId();
-    List<Task> tasks = taskService.createTaskQuery().list();
-    assertThat(tasks).hasSize(6);
-    for (int i = 0; i < 2; i++) {
-      taskService.complete(tasks.get(i).getId());
+        Task taskAfterTimer = taskService.createTaskQuery().singleResult();
+        assertThat(taskAfterTimer.getTaskDefinitionKey()).isEqualTo("taskAfterTimer");
+        taskService.complete(taskAfterTimer.getId());
+
+        assertProcessEnded(procId);
     }
 
-    // Fire timer
-    Job timer = managementService.createTimerJobQuery().singleResult();
-    managementService.moveTimerToExecutableJob(timer.getId());
-    managementService.executeJob(timer.getId());
+    @Deployment
+    public void testParallelSubProcessCompletionCondition() {
+        String procId = runtimeService.startProcessInstanceByKey("miParallelSubprocessCompletionCondition").getId();
+        List<Task> tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(4);
 
-    Task taskAfterTimer = taskService.createTaskQuery().singleResult();
-    assertThat(taskAfterTimer.getTaskDefinitionKey()).isEqualTo("taskAfterTimer");
-    taskService.complete(taskAfterTimer.getId());
+        List<Task> subProcessTasks1 = taskService.createTaskQuery().taskDefinitionKey("subProcessTask1").list();
+        assertThat(subProcessTasks1).hasSize(2);
 
-    assertProcessEnded(procId);
-  }
+        List<Task> subProcessTasks2 = taskService.createTaskQuery().taskDefinitionKey("subProcessTask2").list();
+        assertThat(subProcessTasks2).hasSize(2);
 
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedSequentialCallActivity.bpmn20.xml",
-      "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml" })
-  public void testNestedSequentialCallActivity() {
-    String procId = runtimeService.startProcessInstanceByKey("miNestedSequentialCallActivity").getId();
+        Execution taskExecution = runtimeService
+            .createExecutionQuery()
+            .executionId(subProcessTasks1.get(0).getExecutionId())
+            .singleResult();
+        String parentExecutionId = taskExecution.getParentId();
 
-    for (int i = 0; i < 4; i++) {
-      List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-      assertThat(tasks).hasSize(2);
-      assertThat(tasks.get(0).getName()).isEqualTo("task one");
-      assertThat(tasks.get(1).getName()).isEqualTo("task two");
-      taskService.complete(tasks.get(0).getId());
-      taskService.complete(tasks.get(1).getId());
+        Task subProcessTask2 = null;
+        for (Task task : subProcessTasks2) {
+            Execution toFindExecution = runtimeService
+                .createExecutionQuery()
+                .executionId(task.getExecutionId())
+                .singleResult();
+            if (toFindExecution.getParentId().equals(parentExecutionId)) {
+                subProcessTask2 = task;
+                break;
+            }
+        }
+
+        assertThat(subProcessTask2).isNotNull();
+        taskService.complete(tasks.get(0).getId());
+        taskService.complete(subProcessTask2.getId());
+
+        assertProcessEnded(procId);
     }
 
-    assertProcessEnded(procId);
-  }
+    @Deployment
+    public void testParallelSubProcessAllAutomatic() {
+        String procId = runtimeService
+            .startProcessInstanceByKey("miParallelSubprocessAllAutomatics", singletonMap(NR_OF_LOOPS_KEY, 5))
+            .getId();
 
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedSequentialCallActivityWithTimer.bpmn20.xml",
-      "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml" })
-  public void testNestedSequentialCallActivityWithTimer() {
-    String procId = runtimeService.startProcessInstanceByKey("miNestedSequentialCallActivityWithTimer").getId();
+        for (int i = 0; i < 5; i++) {
+            List<Execution> waitSubExecutions = runtimeService
+                .createExecutionQuery()
+                .activityId("subProcessWait")
+                .list();
+            assertThat(waitSubExecutions.size() > 0).isTrue();
+            runtimeService.trigger(waitSubExecutions.get(0).getId());
+        }
 
-    // first instance
-    List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-    assertThat(tasks).hasSize(2);
-    assertThat(tasks.get(0).getName()).isEqualTo("task one");
-    assertThat(tasks.get(1).getName()).isEqualTo("task two");
-    taskService.complete(tasks.get(0).getId());
-    taskService.complete(tasks.get(1).getId());
+        List<Execution> waitSubExecutions = runtimeService.createExecutionQuery().activityId("subProcessWait").list();
+        assertThat(waitSubExecutions).hasSize(0);
 
-    // one task of second instance
-    tasks = taskService.createTaskQuery().list();
-    assertThat(tasks).hasSize(2);
-    taskService.complete(tasks.get(0).getId());
+        Execution waitState = runtimeService.createExecutionQuery().activityId("waitState").singleResult();
+        assertThat(runtimeService.getVariable(waitState.getId(), "sum")).isEqualTo(10);
 
-    // Fire timer
-    Job timer = managementService.createTimerJobQuery().singleResult();
-    managementService.moveTimerToExecutableJob(timer.getId());
-    managementService.executeJob(timer.getId());
-
-    Task taskAfterTimer = taskService.createTaskQuery().singleResult();
-    assertThat(taskAfterTimer.getTaskDefinitionKey()).isEqualTo("taskAfterTimer");
-    taskService.complete(taskAfterTimer.getId());
-
-    assertProcessEnded(procId);
-  }
-
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedParallelCallActivity.bpmn20.xml",
-      "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml" })
-  public void testNestedParallelCallActivity() {
-    String procId = runtimeService.startProcessInstanceByKey("miNestedParallelCallActivity").getId();
-
-    List<Task> tasks = taskService.createTaskQuery().list();
-    assertThat(tasks).hasSize(14);
-    for (int i = 0; i < 14; i++) {
-      taskService.complete(tasks.get(i).getId());
+        runtimeService.trigger(waitState.getId());
+        assertProcessEnded(procId);
     }
 
-    assertProcessEnded(procId);
-  }
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelSubProcessAllAutomatic.bpmn20.xml",
+        }
+    )
+    public void testParallelSubProcessAllAutomaticCompletionCondition() {
+        String procId = runtimeService
+            .startProcessInstanceByKey("miParallelSubprocessAllAutomatics", singletonMap(NR_OF_LOOPS_KEY, 10))
+            .getId();
 
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedParallelCallActivityWithTimer.bpmn20.xml",
-      "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml" })
-  public void testNestedParallelCallActivityWithTimer() {
-    String procId = runtimeService.startProcessInstanceByKey("miNestedParallelCallActivityWithTimer").getId();
+        for (int i = 0; i < 6; i++) {
+            List<Execution> waitSubExecutions = runtimeService
+                .createExecutionQuery()
+                .activityId("subProcessWait")
+                .list();
+            assertThat(waitSubExecutions.size() > 0).isTrue();
+            runtimeService.trigger(waitSubExecutions.get(0).getId());
+        }
 
-    List<Task> tasks = taskService.createTaskQuery().list();
-    assertThat(tasks).hasSize(4);
-    for (int i = 0; i < 3; i++) {
-      taskService.complete(tasks.get(i).getId());
+        List<Execution> waitSubExecutions = runtimeService.createExecutionQuery().activityId("subProcessWait").list();
+        assertThat(waitSubExecutions).hasSize(0);
+
+        Execution waitState = runtimeService.createExecutionQuery().activityId("waitState").singleResult();
+        assertThat(runtimeService.getVariable(procId, "sum")).isEqualTo(12);
+
+        runtimeService.trigger(waitState.getId());
+        assertProcessEnded(procId);
     }
 
-    // Fire timer
-    Job timer = managementService.createTimerJobQuery().singleResult();
-    managementService.moveTimerToExecutableJob(timer.getId());
-    managementService.executeJob(timer.getId());
+    @Deployment
+    public void testNestedParallelSubProcess() {
+        String procId = runtimeService.startProcessInstanceByKey("miNestedParallelSubProcess").getId();
+        List<Task> tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(8);
 
-    Task taskAfterTimer = taskService.createTaskQuery().singleResult();
-    assertThat(taskAfterTimer.getTaskDefinitionKey()).isEqualTo("taskAfterTimer");
-    taskService.complete(taskAfterTimer.getId());
+        for (Task task : tasks) {
+            taskService.complete(task.getId());
+        }
+        assertProcessEnded(procId);
+    }
 
-    assertProcessEnded(procId);
-  }
+    @Deployment
+    public void testNestedParallelSubProcessWithTimer() {
+        String procId = runtimeService.startProcessInstanceByKey("miNestedParallelSubProcess").getId();
+        List<Task> tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(12);
 
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedParallelCallActivityCompletionCondition.bpmn20.xml",
-      "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml" })
-  public void testNestedParallelCallActivityCompletionCondition() {
-    String procId = runtimeService.startProcessInstanceByKey("miNestedParallelCallActivityCompletionCondition").getId();
+        for (int i = 0; i < 3; i++) {
+            taskService.complete(tasks.get(i).getId());
+        }
 
-    assertThat(taskService.createTaskQuery().count()).isEqualTo(8);
+        // Fire timer
+        Job timer = managementService.createTimerJobQuery().singleResult();
+        managementService.moveTimerToExecutableJob(timer.getId());
+        managementService.executeJob(timer.getId());
 
-    for (int i = 0; i < 2; i++) {
-      ProcessInstance nextSubProcessInstance = runtimeService.createProcessInstanceQuery().processDefinitionKey("externalSubProcess").listPage(0, 1).get(0);
-      List<Task> tasks = taskService.createTaskQuery().processInstanceId(nextSubProcessInstance.getId()).list();
-      assertThat(tasks).hasSize(2);
-      for (Task task : tasks) {
+        Task taskAfterTimer = taskService.createTaskQuery().singleResult();
+        assertThat(taskAfterTimer.getTaskDefinitionKey()).isEqualTo("taskAfterTimer");
+        taskService.complete(taskAfterTimer.getId());
+
+        assertProcessEnded(procId);
+    }
+
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialCallActivity.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml",
+        }
+    )
+    public void testSequentialCallActivity() {
+        String procId = runtimeService.startProcessInstanceByKey("miSequentialCallActivity").getId();
+
+        for (int i = 0; i < 3; i++) {
+            List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+            assertThat(tasks).hasSize(2);
+            assertThat(tasks.get(0).getName()).isEqualTo("task one");
+            assertThat(tasks.get(1).getName()).isEqualTo("task two");
+            taskService.complete(tasks.get(0).getId());
+            taskService.complete(tasks.get(1).getId());
+        }
+
+        assertProcessEnded(procId);
+    }
+
+    @Deployment(
+        resources = "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialCallActivityWithList.bpmn20.xml"
+    )
+    public void testSequentialCallActivityWithList() {
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("one");
+        list.add("two");
+
+        HashMap<String, Object> variables = new HashMap<String, Object>();
+        variables.put("list", list);
+
+        String procId = runtimeService.startProcessInstanceByKey("parentProcess", variables).getId();
+
+        Task task1 = taskService.createTaskQuery().processVariableValueEquals("element", "one").singleResult();
+        Task task2 = taskService.createTaskQuery().processVariableValueEquals("element", "two").singleResult();
+
+        assertThat(task1).isNotNull();
+        assertThat(task2).isNotNull();
+
+        HashMap<String, Object> subVariables = new HashMap<String, Object>();
+        subVariables.put("x", "y");
+
+        taskService.complete(task1.getId(), subVariables);
+        taskService.complete(task2.getId(), subVariables);
+
+        Task task3 = taskService.createTaskQuery().processDefinitionKey("midProcess").singleResult();
+        assertThat(task3).isNotNull();
+        taskService.complete(task3.getId(), null);
+
+        Task task4 = taskService.createTaskQuery().processDefinitionKey("parentProcess").singleResult();
+        assertThat(task4).isNotNull();
+        taskService.complete(task4.getId(), null);
+
+        assertProcessEnded(procId);
+    }
+
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialCallActivityWithTimer.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml",
+        }
+    )
+    public void testSequentialCallActivityWithTimer() {
+        String procId = runtimeService.startProcessInstanceByKey("miSequentialCallActivityWithTimer").getId();
+
+        // Complete first subprocess
+        List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+        assertThat(tasks).hasSize(2);
+        assertThat(tasks.get(0).getName()).isEqualTo("task one");
+        assertThat(tasks.get(1).getName()).isEqualTo("task two");
+        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.get(1).getId());
+
+        // Fire timer
+        Job timer = managementService.createTimerJobQuery().singleResult();
+        managementService.moveTimerToExecutableJob(timer.getId());
+        managementService.executeJob(timer.getId());
+
+        Task taskAfterTimer = taskService.createTaskQuery().singleResult();
+        assertThat(taskAfterTimer.getTaskDefinitionKey()).isEqualTo("taskAfterTimer");
+        taskService.complete(taskAfterTimer.getId());
+
+        assertProcessEnded(procId);
+    }
+
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelCallActivity.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml",
+        }
+    )
+    public void testParallelCallActivity() {
+        String procId = runtimeService.startProcessInstanceByKey("miParallelCallActivity").getId();
+        List<Task> tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(12);
+        for (int i = 0; i < tasks.size(); i++) {
+            taskService.complete(tasks.get(i).getId());
+        }
+
+        assertProcessEnded(procId);
+    }
+
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelCallActivity.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml",
+        }
+    )
+    public void testParallelCallActivityHistory() {
+        runtimeService.startProcessInstanceByKey("miParallelCallActivity");
+        List<Task> tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(12);
+        for (int i = 0; i < tasks.size(); i++) {
+            taskService.complete(tasks.get(i).getId());
+        }
+
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+            // Validate historic processes
+            List<HistoricProcessInstance> historicProcessInstances = historyService
+                .createHistoricProcessInstanceQuery()
+                .list();
+            assertThat(historicProcessInstances).hasSize(7); // 6 subprocesses
+            // + main process
+            for (HistoricProcessInstance hpi : historicProcessInstances) {
+                assertThat(hpi.getStartTime()).isNotNull();
+                assertThat(hpi.getEndTime()).isNotNull();
+            }
+
+            // Validate historic tasks
+            List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery().list();
+            assertThat(historicTaskInstances).hasSize(12);
+            for (HistoricTaskInstance hti : historicTaskInstances) {
+                assertThat(hti.getStartTime()).isNotNull();
+                assertThat(hti.getEndTime()).isNotNull();
+                assertThat(hti.getAssignee()).isNotNull();
+                assertThat(hti.getDeleteReason()).isNull();
+            }
+
+            // Validate historic activities
+            List<HistoricActivityInstance> historicActivityInstances = historyService
+                .createHistoricActivityInstanceQuery()
+                .activityType("callActivity")
+                .list();
+            assertThat(historicActivityInstances).hasSize(6);
+            for (HistoricActivityInstance hai : historicActivityInstances) {
+                assertThat(hai.getStartTime()).isNotNull();
+                assertThat(hai.getEndTime()).isNotNull();
+            }
+        }
+    }
+
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelCallActivityWithTimer.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml",
+        }
+    )
+    public void testParallelCallActivityWithTimer() {
+        String procId = runtimeService.startProcessInstanceByKey("miParallelCallActivity").getId();
+        List<Task> tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(6);
+        for (int i = 0; i < 2; i++) {
+            taskService.complete(tasks.get(i).getId());
+        }
+
+        // Fire timer
+        Job timer = managementService.createTimerJobQuery().singleResult();
+        managementService.moveTimerToExecutableJob(timer.getId());
+        managementService.executeJob(timer.getId());
+
+        Task taskAfterTimer = taskService.createTaskQuery().singleResult();
+        assertThat(taskAfterTimer.getTaskDefinitionKey()).isEqualTo("taskAfterTimer");
+        taskService.complete(taskAfterTimer.getId());
+
+        assertProcessEnded(procId);
+    }
+
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedSequentialCallActivity.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml",
+        }
+    )
+    public void testNestedSequentialCallActivity() {
+        String procId = runtimeService.startProcessInstanceByKey("miNestedSequentialCallActivity").getId();
+
+        for (int i = 0; i < 4; i++) {
+            List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+            assertThat(tasks).hasSize(2);
+            assertThat(tasks.get(0).getName()).isEqualTo("task one");
+            assertThat(tasks.get(1).getName()).isEqualTo("task two");
+            taskService.complete(tasks.get(0).getId());
+            taskService.complete(tasks.get(1).getId());
+        }
+
+        assertProcessEnded(procId);
+    }
+
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedSequentialCallActivityWithTimer.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml",
+        }
+    )
+    public void testNestedSequentialCallActivityWithTimer() {
+        String procId = runtimeService.startProcessInstanceByKey("miNestedSequentialCallActivityWithTimer").getId();
+
+        // first instance
+        List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+        assertThat(tasks).hasSize(2);
+        assertThat(tasks.get(0).getName()).isEqualTo("task one");
+        assertThat(tasks.get(1).getName()).isEqualTo("task two");
+        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.get(1).getId());
+
+        // one task of second instance
+        tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(2);
+        taskService.complete(tasks.get(0).getId());
+
+        // Fire timer
+        Job timer = managementService.createTimerJobQuery().singleResult();
+        managementService.moveTimerToExecutableJob(timer.getId());
+        managementService.executeJob(timer.getId());
+
+        Task taskAfterTimer = taskService.createTaskQuery().singleResult();
+        assertThat(taskAfterTimer.getTaskDefinitionKey()).isEqualTo("taskAfterTimer");
+        taskService.complete(taskAfterTimer.getId());
+
+        assertProcessEnded(procId);
+    }
+
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedParallelCallActivity.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml",
+        }
+    )
+    public void testNestedParallelCallActivity() {
+        String procId = runtimeService.startProcessInstanceByKey("miNestedParallelCallActivity").getId();
+
+        List<Task> tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(14);
+        for (int i = 0; i < 14; i++) {
+            taskService.complete(tasks.get(i).getId());
+        }
+
+        assertProcessEnded(procId);
+    }
+
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedParallelCallActivityWithTimer.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml",
+        }
+    )
+    public void testNestedParallelCallActivityWithTimer() {
+        String procId = runtimeService.startProcessInstanceByKey("miNestedParallelCallActivityWithTimer").getId();
+
+        List<Task> tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(4);
+        for (int i = 0; i < 3; i++) {
+            taskService.complete(tasks.get(i).getId());
+        }
+
+        // Fire timer
+        Job timer = managementService.createTimerJobQuery().singleResult();
+        managementService.moveTimerToExecutableJob(timer.getId());
+        managementService.executeJob(timer.getId());
+
+        Task taskAfterTimer = taskService.createTaskQuery().singleResult();
+        assertThat(taskAfterTimer.getTaskDefinitionKey()).isEqualTo("taskAfterTimer");
+        taskService.complete(taskAfterTimer.getId());
+
+        assertProcessEnded(procId);
+    }
+
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedParallelCallActivityCompletionCondition.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.externalSubProcess.bpmn20.xml",
+        }
+    )
+    public void testNestedParallelCallActivityCompletionCondition() {
+        String procId = runtimeService
+            .startProcessInstanceByKey("miNestedParallelCallActivityCompletionCondition")
+            .getId();
+
+        assertThat(taskService.createTaskQuery().count()).isEqualTo(8);
+
+        for (int i = 0; i < 2; i++) {
+            ProcessInstance nextSubProcessInstance = runtimeService
+                .createProcessInstanceQuery()
+                .processDefinitionKey("externalSubProcess")
+                .listPage(0, 1)
+                .get(0);
+            List<Task> tasks = taskService.createTaskQuery().processInstanceId(nextSubProcessInstance.getId()).list();
+            assertThat(tasks).hasSize(2);
+            for (Task task : tasks) {
+                taskService.complete(task.getId());
+            }
+        }
+
+        assertProcessEnded(procId);
+    }
+
+    // ACT-764
+    @Deployment
+    public void testSequentialServiceTaskWithClass() {
+        ProcessInstance procInst = runtimeService.startProcessInstanceByKey(
+            "multiInstanceServiceTask",
+            singletonMap("result", 5)
+        );
+        Integer result = (Integer) runtimeService.getVariable(procInst.getId(), "result");
+        assertThat(result.intValue()).isEqualTo(160);
+
+        Execution waitExecution = runtimeService
+            .createExecutionQuery()
+            .processInstanceId(procInst.getId())
+            .activityId("wait")
+            .singleResult();
+        runtimeService.trigger(waitExecution.getId());
+        assertProcessEnded(procInst.getId());
+    }
+
+    @Deployment
+    public void testSequentialServiceTaskWithClassAndCollection() {
+        Collection<Integer> items = asList(1, 2, 3, 4, 5, 6);
+        Map<String, Object> vars = new HashMap<String, Object>();
+        vars.put("result", 1);
+        vars.put("items", items);
+
+        ProcessInstance procInst = runtimeService.startProcessInstanceByKey("multiInstanceServiceTask", vars);
+        Integer result = (Integer) runtimeService.getVariable(procInst.getId(), "result");
+        assertThat(result.intValue()).isEqualTo(720);
+
+        Execution waitExecution = runtimeService
+            .createExecutionQuery()
+            .processInstanceId(procInst.getId())
+            .activityId("wait")
+            .singleResult();
+        runtimeService.trigger(waitExecution.getId());
+        assertProcessEnded(procInst.getId());
+    }
+
+    // ACT-901
+    @Deployment
+    public void testAct901() {
+        Date startTime = processEngineConfiguration.getClock().getCurrentTime();
+
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("multiInstanceSubProcess");
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc().list();
+
+        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + 61000L)); // timer is set to one minute
+        List<Job> timers = managementService.createTimerJobQuery().list();
+        assertThat(timers).hasSize(5);
+
+        // Execute all timers one by one (single thread vs thread pool of job
+        // executor, which leads to optimisticlockingexceptions!)
+        for (Job timer : timers) {
+            managementService.moveTimerToExecutableJob(timer.getId());
+            managementService.executeJob(timer.getId());
+        }
+
+        // All tasks should be canceled
+        tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc().list();
+        assertThat(tasks).hasSize(0);
+    }
+
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.callActivityWithBoundaryErrorEvent.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.throwingErrorEventSubProcess.bpmn20.xml",
+        }
+    )
+    public void testMultiInstanceCallActivityWithErrorBoundaryEvent() {
+        Map<String, Object> variableMap = new HashMap<String, Object>();
+        variableMap.put("assignees", asList("kermit", "gonzo"));
+
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("process", variableMap);
+
+        List<Task> tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(2);
+
+        // finish first call activity with error
+        variableMap = new HashMap<String, Object>();
+        variableMap.put("done", false);
+        taskService.complete(tasks.get(0).getId(), variableMap);
+
+        tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(1);
+
+        taskService.complete(tasks.get(0).getId());
+
+        List<ProcessInstance> processInstances = runtimeService
+            .createProcessInstanceQuery()
+            .processDefinitionKey("process")
+            .list();
+        assertThat(processInstances).hasSize(0);
+        assertProcessEnded(processInstance.getId());
+    }
+
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.callActivityWithBoundaryErrorEventSequential.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.throwingErrorEventSubProcess.bpmn20.xml",
+        }
+    )
+    public void testSequentialMultiInstanceCallActivityWithErrorBoundaryEvent() {
+        Map<String, Object> variableMap = new HashMap<String, Object>();
+        variableMap.put("assignees", asList("kermit", "gonzo"));
+
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("process", variableMap);
+
+        List<Task> tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(1);
+
+        // finish first call activity with error
+        variableMap = new HashMap<String, Object>();
+        variableMap.put("done", false);
+        taskService.complete(tasks.get(0).getId(), variableMap);
+
+        tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(1);
+
+        taskService.complete(tasks.get(0).getId());
+
+        List<ProcessInstance> processInstances = runtimeService
+            .createProcessInstanceQuery()
+            .processDefinitionKey("process")
+            .list();
+        assertThat(processInstances).hasSize(0);
+        assertProcessEnded(processInstance.getId());
+    }
+
+    @Deployment
+    public void testMultiInstanceParallelReceiveTask() {
+        runtimeService.startProcessInstanceByKey("multi-instance-receive");
+        List<Execution> executions = runtimeService.createExecutionQuery().activityId("theReceiveTask").list();
+        assertThat(executions).hasSize(4);
+
+        // Complete all four of the executions
+        for (Execution execution : executions) {
+            runtimeService.trigger(execution.getId());
+        }
+
+        // There is one task after the task
+        Task task = taskService.createTaskQuery().singleResult();
+        assertThat(task).isNotNull();
         taskService.complete(task.getId());
-      }
+
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
     }
 
-    assertProcessEnded(procId);
-  }
+    @Deployment
+    public void testMultiInstanceParalelReceiveTaskWithTimer() {
+        Date startTime = new Date();
+        processEngineConfiguration.getClock().setCurrentTime(startTime);
 
-  // ACT-764
-  @Deployment
-  public void testSequentialServiceTaskWithClass() {
-    ProcessInstance procInst = runtimeService.startProcessInstanceByKey("multiInstanceServiceTask", singletonMap("result", 5));
-    Integer result = (Integer) runtimeService.getVariable(procInst.getId(), "result");
-    assertThat(result.intValue()).isEqualTo(160);
+        runtimeService.startProcessInstanceByKey("multiInstanceReceiveWithTimer");
+        List<Execution> executions = runtimeService.createExecutionQuery().activityId("theReceiveTask").list();
+        assertThat(executions).hasSize(3);
 
-    Execution waitExecution = runtimeService.createExecutionQuery().processInstanceId(procInst.getId()).activityId("wait").singleResult();
-    runtimeService.trigger(waitExecution.getId());
-    assertProcessEnded(procInst.getId());
-  }
+        // Signal only one execution. Then the timer will fire
+        runtimeService.trigger(executions.get(1).getId());
+        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + 60000L));
+        waitForJobExecutorToProcessAllJobs(10000L, 1000L);
 
-  @Deployment
-  public void testSequentialServiceTaskWithClassAndCollection() {
-    Collection<Integer> items = asList(1, 2, 3, 4, 5, 6);
-    Map<String, Object> vars = new HashMap<String, Object>();
-    vars.put("result", 1);
-    vars.put("items", items);
+        // The process should now be in the task after the timer
+        Task task = taskService.createTaskQuery().singleResult();
+        assertThat(task.getName()).isEqualTo("Task after timer");
 
-    ProcessInstance procInst = runtimeService.startProcessInstanceByKey("multiInstanceServiceTask", vars);
-    Integer result = (Integer) runtimeService.getVariable(procInst.getId(), "result");
-    assertThat(result.intValue()).isEqualTo(720);
-
-    Execution waitExecution = runtimeService.createExecutionQuery().processInstanceId(procInst.getId()).activityId("wait").singleResult();
-    runtimeService.trigger(waitExecution.getId());
-    assertProcessEnded(procInst.getId());
-  }
-
-  // ACT-901
-  @Deployment
-  public void testAct901() {
-
-    Date startTime = processEngineConfiguration.getClock().getCurrentTime();
-
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("multiInstanceSubProcess");
-    List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc().list();
-
-    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + 61000L)); // timer is set to one minute
-    List<Job> timers = managementService.createTimerJobQuery().list();
-    assertThat(timers).hasSize(5);
-
-    // Execute all timers one by one (single thread vs thread pool of job
-    // executor, which leads to optimisticlockingexceptions!)
-    for (Job timer : timers) {
-      managementService.moveTimerToExecutableJob(timer.getId());
-      managementService.executeJob(timer.getId());
+        // Completing it should end the process
+        taskService.complete(task.getId());
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
     }
 
-    // All tasks should be canceled
-    tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc().list();
-    assertThat(tasks).hasSize(0);
-  }
+    @Deployment
+    public void testMultiInstanceSequentialReceiveTask() {
+        runtimeService.startProcessInstanceByKey("multi-instance-receive");
+        Execution execution = runtimeService.createExecutionQuery().activityId("theReceiveTask").singleResult();
+        assertThat(execution).isNotNull();
 
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.callActivityWithBoundaryErrorEvent.bpmn20.xml",
-      "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.throwingErrorEventSubProcess.bpmn20.xml" })
-  public void testMultiInstanceCallActivityWithErrorBoundaryEvent() {
-    Map<String, Object> variableMap = new HashMap<String, Object>();
-    variableMap.put("assignees", asList("kermit", "gonzo"));
+        // Complete all four of the executions
+        while (execution != null) {
+            runtimeService.trigger(execution.getId());
+            execution = runtimeService.createExecutionQuery().activityId("theReceiveTask").singleResult();
+        }
 
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("process", variableMap);
+        // There is one task after the task
+        Task task = taskService.createTaskQuery().singleResult();
+        assertThat(task).isNotNull();
+        taskService.complete(task.getId());
 
-    List<Task> tasks = taskService.createTaskQuery().list();
-    assertThat(tasks).hasSize(2);
-
-    // finish first call activity with error
-    variableMap = new HashMap<String, Object>();
-    variableMap.put("done", false);
-    taskService.complete(tasks.get(0).getId(), variableMap);
-
-    tasks = taskService.createTaskQuery().list();
-    assertThat(tasks).hasSize(1);
-
-    taskService.complete(tasks.get(0).getId());
-
-    List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().processDefinitionKey("process").list();
-    assertThat(processInstances).hasSize(0);
-    assertProcessEnded(processInstance.getId());
-  }
-
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.callActivityWithBoundaryErrorEventSequential.bpmn20.xml",
-      "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.throwingErrorEventSubProcess.bpmn20.xml" })
-  public void testSequentialMultiInstanceCallActivityWithErrorBoundaryEvent() {
-    Map<String, Object> variableMap = new HashMap<String, Object>();
-    variableMap.put("assignees", asList("kermit", "gonzo"));
-
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("process", variableMap);
-
-    List<Task> tasks = taskService.createTaskQuery().list();
-    assertThat(tasks).hasSize(1);
-
-    // finish first call activity with error
-    variableMap = new HashMap<String, Object>();
-    variableMap.put("done", false);
-    taskService.complete(tasks.get(0).getId(), variableMap);
-
-    tasks = taskService.createTaskQuery().list();
-    assertThat(tasks).hasSize(1);
-
-    taskService.complete(tasks.get(0).getId());
-
-    List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().processDefinitionKey("process").list();
-    assertThat(processInstances).hasSize(0);
-    assertProcessEnded(processInstance.getId());
-  }
-
-  @Deployment
-  public void testMultiInstanceParallelReceiveTask() {
-    runtimeService.startProcessInstanceByKey("multi-instance-receive");
-    List<Execution> executions = runtimeService.createExecutionQuery().activityId("theReceiveTask").list();
-    assertThat(executions).hasSize(4);
-
-    // Complete all four of the executions
-    for (Execution execution : executions) {
-      runtimeService.trigger(execution.getId());
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
     }
 
-    // There is one task after the task
-    Task task = taskService.createTaskQuery().singleResult();
-    assertThat(task).isNotNull();
-    taskService.complete(task.getId());
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedMultiInstanceTasks.bpmn20.xml",
+        }
+    )
+    public void testNestedMultiInstanceTasks() {
+        List<String> processes = asList("process A", "process B");
+        List<String> assignees = asList("kermit", "gonzo");
+        Map<String, Object> variableMap = new HashMap<String, Object>();
+        variableMap.put("subProcesses", processes);
+        variableMap.put("assignees", assignees);
 
-    assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
-  }
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "miNestedMultiInstanceTasks",
+            variableMap
+        );
 
-  @Deployment
-  public void testMultiInstanceParalelReceiveTaskWithTimer() {
-    Date startTime = new Date();
-    processEngineConfiguration.getClock().setCurrentTime(startTime);
+        List<Task> tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(processes.size() * assignees.size());
 
-    runtimeService.startProcessInstanceByKey("multiInstanceReceiveWithTimer");
-    List<Execution> executions = runtimeService.createExecutionQuery().activityId("theReceiveTask").list();
-    assertThat(executions).hasSize(3);
+        for (Task t : tasks) {
+            taskService.complete(t.getId());
+        }
 
-    // Signal only one execution. Then the timer will fire
-    runtimeService.trigger(executions.get(1).getId());
-    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + 60000L));
-    waitForJobExecutorToProcessAllJobs(10000L, 1000L);
-
-    // The process should now be in the task after the timer
-    Task task = taskService.createTaskQuery().singleResult();
-    assertThat(task.getName()).isEqualTo("Task after timer");
-
-    // Completing it should end the process
-    taskService.complete(task.getId());
-    assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
-  }
-
-  @Deployment
-  public void testMultiInstanceSequentialReceiveTask() {
-    runtimeService.startProcessInstanceByKey("multi-instance-receive");
-    Execution execution = runtimeService.createExecutionQuery().activityId("theReceiveTask").singleResult();
-    assertThat(execution).isNotNull();
-
-    // Complete all four of the executions
-    while (execution != null) {
-      runtimeService.trigger(execution.getId());
-      execution = runtimeService.createExecutionQuery().activityId("theReceiveTask").singleResult();
+        List<ProcessInstance> processInstances = runtimeService
+            .createProcessInstanceQuery()
+            .processDefinitionKey("miNestedMultiInstanceTasks")
+            .list();
+        assertThat(processInstances).hasSize(0);
+        assertProcessEnded(processInstance.getId());
     }
 
-    // There is one task after the task
-    Task task = taskService.createTaskQuery().singleResult();
-    assertThat(task).isNotNull();
-    taskService.complete(task.getId());
-
-    assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
-  }
-
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testNestedMultiInstanceTasks.bpmn20.xml" })
-  public void testNestedMultiInstanceTasks() {
-    List<String> processes = asList("process A", "process B");
-    List<String> assignees = asList("kermit", "gonzo");
-    Map<String, Object> variableMap = new HashMap<String, Object>();
-    variableMap.put("subProcesses", processes);
-    variableMap.put("assignees", assignees);
-
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("miNestedMultiInstanceTasks", variableMap);
-
-    List<Task> tasks = taskService.createTaskQuery().list();
-    assertThat(tasks).hasSize(processes.size() * assignees.size());
-
-    for (Task t : tasks) {
-      taskService.complete(t.getId());
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialSubprocessEmptyCollection.bpmn20.xml",
+        }
+    )
+    public void testSequentialSubprocessEmptyCollection() {
+        Collection<String> collection = emptyList();
+        Map<String, Object> variableMap = new HashMap<String, Object>();
+        variableMap.put("collection", collection);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "testSequentialSubProcessEmptyCollection",
+            variableMap
+        );
+        assertThat(processInstance).isNotNull();
+        Task task = taskService.createTaskQuery().singleResult();
+        assertThat(task).isNull();
+        assertProcessEnded(processInstance.getId());
     }
 
-    List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().processDefinitionKey("miNestedMultiInstanceTasks").list();
-    assertThat(processInstances).hasSize(0);
-    assertProcessEnded(processInstance.getId());
-  }
-
-
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialSubprocessEmptyCollection.bpmn20.xml" })
-  public void testSequentialSubprocessEmptyCollection() {
-	Collection<String> collection = emptyList();
-    Map<String, Object> variableMap = new HashMap<String, Object>();
-    variableMap.put("collection", collection);
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testSequentialSubProcessEmptyCollection", variableMap);
-    assertThat(processInstance).isNotNull();
-    Task task = taskService.createTaskQuery().singleResult();
-    assertThat(task).isNull();
-    assertProcessEnded(processInstance.getId());
-  }
-
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialEmptyCollection.bpmn20.xml" })
-  public void testSequentialEmptyCollection() {
-    Collection<String> collection = emptyList();
-    Map<String, Object> variableMap = new HashMap<String, Object>();
-    variableMap.put("collection", collection);
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testSequentialEmptyCollection", variableMap);
-    assertThat(processInstance).isNotNull();
-    Task task = taskService.createTaskQuery().singleResult();
-    assertThat(task).isNull();
-    assertProcessEnded(processInstance.getId());
-  }
-
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialEmptyCollection.bpmn20.xml" })
-  public void testSequentialEmptyCollectionWithNonEmptyCollection() {
-    Collection<String> collection = singleton("Test");
-    Map<String, Object> variableMap = new HashMap<String, Object>();
-    variableMap.put("collection", collection);
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testSequentialEmptyCollection", variableMap);
-    assertThat(processInstance).isNotNull();
-    Task task = taskService.createTaskQuery().singleResult();
-    assertThat(task).isNotNull();
-    taskService.complete(task.getId());
-    assertProcessEnded(processInstance.getId());
-  }
-
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelEmptyCollection.bpmn20.xml" })
-  public void testParalellEmptyCollection() throws Exception {
-    Collection<String> collection = emptyList();
-    Map<String, Object> variableMap = new HashMap<String, Object>();
-    variableMap.put("collection", collection);
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testParalellEmptyCollection", variableMap);
-    assertThat(processInstance).isNotNull();
-    Task task = taskService.createTaskQuery().singleResult();
-    assertThat(task).isNull();
-    assertProcessEnded(processInstance.getId());
-  }
-
-  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelEmptyCollection.bpmn20.xml" })
-  public void testParalellEmptyCollectionWithNonEmptyCollection() {
-    Collection<String> collection = singleton("Test");
-    Map<String, Object> variableMap = new HashMap<String, Object>();
-    variableMap.put("collection", collection);
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testParalellEmptyCollection", variableMap);
-    assertThat(processInstance).isNotNull();
-    Task task = taskService.createTaskQuery().singleResult();
-    assertThat(task).isNotNull();
-    taskService.complete(task.getId());
-    assertProcessEnded(processInstance.getId());
-  }
-
-  @Deployment
-  public void testInfiniteLoopWithDelegateExpressionFix() {
-
-    // Add bean temporary to process engine
-
-    Map<Object, Object> originalBeans = processEngineConfiguration.getExpressionManager().getBeans();
-
-    try {
-
-      Map<Object, Object> newBeans = new HashMap<Object, Object>();
-      newBeans.put("SampleTask", new TestSampleServiceTask());
-      processEngineConfiguration.getExpressionManager().setBeans(newBeans);
-
-      Map<String, Object> params = new HashMap<String, Object>();
-      params.put("sampleValues", asList("eins", "zwei", "drei"));
-      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("infiniteLoopTest", params);
-      assertThat(processInstance).isNotNull();
-
-    } finally {
-
-      // Put beans back
-      processEngineConfiguration.getExpressionManager().setBeans(originalBeans);
-
-    }
-  }
-
-  @Deployment
-  public void testEmptyCollectionOnParallelUserTask() {
-    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-      Map<String, Object> vars = new HashMap<>();
-      vars.put("messages", emptyList());
-      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("parallelUserTaskMi", vars);
-
-      assertThat(historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).finished().count()).isEqualTo(1L);
-    }
-  }
-
-  @Deployment
-  public void testZeroLoopCardinalityOnParallelUserTask() {
-    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("parallelUserTaskMi");
-      assertThat(historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).finished().count()).isEqualTo(1L);
-    }
-  }
-
-  @Deployment
-  public void testEmptyCollectionOnSequentialEmbeddedSubprocess() {
-    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-      Map<String, Object> vars = new HashMap<>();
-      vars.put("messages", emptyList());
-      runtimeService.startProcessInstanceByKey("sequentialMiSubprocess", vars);
-
-      assertThat(historyService.createHistoricProcessInstanceQuery().finished().count()).isEqualTo(1L);
-    }
-  }
-
-  @Deployment
-  public void testEmptyCollectionOnParallelEmbeddedSubprocess() {
-    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-      Map<String, Object> vars = new HashMap<>();
-      vars.put("messages", emptyList());
-      runtimeService.startProcessInstanceByKey("parallelMiSubprocess", vars);
-
-      assertThat(historyService.createHistoricProcessInstanceQuery().finished().count()).isEqualTo(1L);
-    }
-  }
-
-  @Deployment
-  public void testExecutionListenersOnMultiInstanceSubprocess() {
-  	resetTestCounts();
-		Map<String, Object> variableMap = new HashMap<String, Object>();
-		List<String> assignees = new ArrayList<String>();
-		assignees.add("john");
-		assignees.add("jane");
-		assignees.add("matt");
-		variableMap.put("assignees", assignees );
-		runtimeService.startProcessInstanceByKey("MultiInstanceTest", variableMap);
-
-		assertThat(TestStartExecutionListener.countWithLoopCounter.get()).isEqualTo(3);
-		assertThat(TestEndExecutionListener.countWithLoopCounter.get()).isEqualTo(3);
-
-		assertThat(TestStartExecutionListener.countWithoutLoopCounter.get()).isEqualTo(1);
-		assertThat(TestEndExecutionListener.countWithoutLoopCounter.get()).isEqualTo(1);
-  }
-
-
-  @Deployment
-  public void testExecutionListenersOnMultiInstanceUserTask() {
-  	resetTestCounts();
-		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testExecutionListenersOnMultiInstanceUserTask");
-
-		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
-		for (Task task : tasks) {
-			taskService.complete(task.getId());
-		}
-
-		assertThat(TestTaskCompletionListener.count.get()).isEqualTo(4);
-
-		assertThat(TestStartExecutionListener.countWithLoopCounter.get()).isEqualTo(4);
-		assertThat(TestEndExecutionListener.countWithLoopCounter.get()).isEqualTo(4);
-
-		assertThat(TestStartExecutionListener.countWithoutLoopCounter.get()).isEqualTo(1);
-		assertThat(TestEndExecutionListener.countWithoutLoopCounter.get()).isEqualTo(1);
-  }
-
-  @Deployment
-  public void testParallelAfterSequentialMultiInstance() {
-
-    // Used to throw a nullpointer exception
-
-    runtimeService.startProcessInstanceByKey("multiInstance");
-    assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
-  }
-
-  @Deployment
-  public void testEndTimeOnMiSubprocess() {
-
-    if (!processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-      return;
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialEmptyCollection.bpmn20.xml",
+        }
+    )
+    public void testSequentialEmptyCollection() {
+        Collection<String> collection = emptyList();
+        Map<String, Object> variableMap = new HashMap<String, Object>();
+        variableMap.put("collection", collection);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "testSequentialEmptyCollection",
+            variableMap
+        );
+        assertThat(processInstance).isNotNull();
+        Task task = taskService.createTaskQuery().singleResult();
+        assertThat(task).isNull();
+        assertProcessEnded(processInstance.getId());
     }
 
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("multiInstanceSubProcessParallelTasks");
-
-    List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
-    assertThat(tasks).hasSize(2);
-    assertThat(tasks.get(0).getName()).isEqualTo("User Task 1");
-    assertThat(tasks.get(1).getName()).isEqualTo("User Task 1");
-
-    // End time should not be set for the subprocess
-    List<HistoricActivityInstance> historicActivityInstances = historyService.createHistoricActivityInstanceQuery().activityId("subprocess1").list();
-    assertThat(historicActivityInstances).hasSize(2);
-    for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
-      assertThat(historicActivityInstance.getStartTime()).isNotNull();
-      assertThat(historicActivityInstance.getEndTime()).isNull();
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testSequentialEmptyCollection.bpmn20.xml",
+        }
+    )
+    public void testSequentialEmptyCollectionWithNonEmptyCollection() {
+        Collection<String> collection = singleton("Test");
+        Map<String, Object> variableMap = new HashMap<String, Object>();
+        variableMap.put("collection", collection);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "testSequentialEmptyCollection",
+            variableMap
+        );
+        assertThat(processInstance).isNotNull();
+        Task task = taskService.createTaskQuery().singleResult();
+        assertThat(task).isNotNull();
+        taskService.complete(task.getId());
+        assertProcessEnded(processInstance.getId());
     }
 
-    // Complete one of the user tasks. This should not trigger setting of end time of the subprocess, but due to a bug it did exactly that
-    taskService.complete(tasks.get(0).getId());
-    historicActivityInstances = historyService.createHistoricActivityInstanceQuery().activityId("subprocess1").list();
-    assertThat(historicActivityInstances).hasSize(2);
-    for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
-      assertThat(historicActivityInstance.getEndTime()).isNull();
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelEmptyCollection.bpmn20.xml",
+        }
+    )
+    public void testParalellEmptyCollection() throws Exception {
+        Collection<String> collection = emptyList();
+        Map<String, Object> variableMap = new HashMap<String, Object>();
+        variableMap.put("collection", collection);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "testParalellEmptyCollection",
+            variableMap
+        );
+        assertThat(processInstance).isNotNull();
+        Task task = taskService.createTaskQuery().singleResult();
+        assertThat(task).isNull();
+        assertProcessEnded(processInstance.getId());
     }
 
-    taskService.complete(tasks.get(1).getId());
-    historicActivityInstances = historyService.createHistoricActivityInstanceQuery().activityId("subprocess1").list();
-    assertThat(historicActivityInstances).hasSize(2);
-    for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
-      assertThat(historicActivityInstance.getEndTime()).isNull();
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelEmptyCollection.bpmn20.xml",
+        }
+    )
+    public void testParalellEmptyCollectionWithNonEmptyCollection() {
+        Collection<String> collection = singleton("Test");
+        Map<String, Object> variableMap = new HashMap<String, Object>();
+        variableMap.put("collection", collection);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "testParalellEmptyCollection",
+            variableMap
+        );
+        assertThat(processInstance).isNotNull();
+        Task task = taskService.createTaskQuery().singleResult();
+        assertThat(task).isNotNull();
+        taskService.complete(task.getId());
+        assertProcessEnded(processInstance.getId());
     }
 
-    tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("User Task 3").list();
-    assertThat(tasks).hasSize(2);
-    for (Task task : tasks) {
-      taskService.complete(task.getId());
-      historicActivityInstances = historyService.createHistoricActivityInstanceQuery().activityId("subprocess1").list();
-      assertThat(historicActivityInstances).hasSize(2);
-      for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
-        assertThat(historicActivityInstance.getEndTime()).isNull();
-      }
+    @Deployment
+    public void testInfiniteLoopWithDelegateExpressionFix() {
+        // Add bean temporary to process engine
+
+        Map<Object, Object> originalBeans = processEngineConfiguration.getExpressionManager().getBeans();
+
+        try {
+            Map<Object, Object> newBeans = new HashMap<Object, Object>();
+            newBeans.put("SampleTask", new TestSampleServiceTask());
+            processEngineConfiguration.getExpressionManager().setBeans(newBeans);
+
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("sampleValues", asList("eins", "zwei", "drei"));
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("infiniteLoopTest", params);
+            assertThat(processInstance).isNotNull();
+        } finally {
+            // Put beans back
+            processEngineConfiguration.getExpressionManager().setBeans(originalBeans);
+        }
     }
 
-    // Finishing the tasks should also set the end time
-    tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
-    assertThat(tasks).hasSize(2);
-    for (Task task : tasks) {
-      taskService.complete(task.getId());
+    @Deployment
+    public void testEmptyCollectionOnParallelUserTask() {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+            Map<String, Object> vars = new HashMap<>();
+            vars.put("messages", emptyList());
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("parallelUserTaskMi", vars);
+
+            assertThat(
+                historyService
+                    .createHistoricProcessInstanceQuery()
+                    .processInstanceId(processInstance.getId())
+                    .finished()
+                    .count()
+            ).isEqualTo(1L);
+        }
     }
 
-    historicActivityInstances = historyService.createHistoricActivityInstanceQuery().activityId("subprocess1").list();
-    assertThat(historicActivityInstances).hasSize(2);
-    for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
-      assertThat(historicActivityInstance.getEndTime()).isNotNull();
+    @Deployment
+    public void testZeroLoopCardinalityOnParallelUserTask() {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("parallelUserTaskMi");
+            assertThat(
+                historyService
+                    .createHistoricProcessInstanceQuery()
+                    .processInstanceId(processInstance.getId())
+                    .finished()
+                    .count()
+            ).isEqualTo(1L);
+        }
     }
-  }
 
-  @Deployment
-  public void testChangingCollection() {
-    Map<String, Object> vars = new HashMap<String, Object>();
-    vars.put("multi_users", asList("testuser"));
-    ProcessInstance instance = runtimeService.startProcessInstanceByKey("test_multi", vars);
-    assertThat(instance).isNotNull();
-    Task task = taskService.createTaskQuery().singleResult();
-    assertThat(task.getTaskDefinitionKey()).isEqualTo("multi");
-    vars.put("multi_users", new ArrayList<String>()); // <-- Problem here.
-    taskService.complete(task.getId(), vars);
-    List<ProcessInstance> instances = runtimeService.createProcessInstanceQuery().list();
-    assertThat(instances).hasSize(0);
-  }
+    @Deployment
+    public void testEmptyCollectionOnSequentialEmbeddedSubprocess() {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+            Map<String, Object> vars = new HashMap<>();
+            vars.put("messages", emptyList());
+            runtimeService.startProcessInstanceByKey("sequentialMiSubprocess", vars);
 
-  protected void resetTestCounts() {
-  	TestStartExecutionListener.countWithLoopCounter.set(0);
-  	TestStartExecutionListener.countWithoutLoopCounter.set(0);
-  	TestEndExecutionListener.countWithLoopCounter.set(0);
-  	TestEndExecutionListener.countWithoutLoopCounter.set(0);
-  	TestTaskCompletionListener.count.set(0);
-  }
+            assertThat(historyService.createHistoricProcessInstanceQuery().finished().count()).isEqualTo(1L);
+        }
+    }
 
-  public static class TestStartExecutionListener implements ExecutionListener {
+    @Deployment
+    public void testEmptyCollectionOnParallelEmbeddedSubprocess() {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+            Map<String, Object> vars = new HashMap<>();
+            vars.put("messages", emptyList());
+            runtimeService.startProcessInstanceByKey("parallelMiSubprocess", vars);
 
-  	public static AtomicInteger countWithLoopCounter = new AtomicInteger(0);
-  	public static AtomicInteger countWithoutLoopCounter = new AtomicInteger(0);
+            assertThat(historyService.createHistoricProcessInstanceQuery().finished().count()).isEqualTo(1L);
+        }
+    }
 
-  	@Override
-  	public void notify(DelegateExecution execution) {
-  		Integer loopCounter = (Integer) execution.getVariable(LOOP_COUNTER_KEY);
-  		if (loopCounter != null) {
-  			countWithLoopCounter.incrementAndGet();
-  		} else {
-  			countWithoutLoopCounter.incrementAndGet();
-  		}
-  	}
+    @Deployment
+    public void testExecutionListenersOnMultiInstanceSubprocess() {
+        resetTestCounts();
+        Map<String, Object> variableMap = new HashMap<String, Object>();
+        List<String> assignees = new ArrayList<String>();
+        assignees.add("john");
+        assignees.add("jane");
+        assignees.add("matt");
+        variableMap.put("assignees", assignees);
+        runtimeService.startProcessInstanceByKey("MultiInstanceTest", variableMap);
 
-  }
+        assertThat(TestStartExecutionListener.countWithLoopCounter.get()).isEqualTo(3);
+        assertThat(TestEndExecutionListener.countWithLoopCounter.get()).isEqualTo(3);
 
-  public static class TestEndExecutionListener implements ExecutionListener {
+        assertThat(TestStartExecutionListener.countWithoutLoopCounter.get()).isEqualTo(1);
+        assertThat(TestEndExecutionListener.countWithoutLoopCounter.get()).isEqualTo(1);
+    }
 
-  	public static AtomicInteger countWithLoopCounter = new AtomicInteger(0);
-  	public static AtomicInteger countWithoutLoopCounter = new AtomicInteger(0);
+    @Deployment
+    public void testExecutionListenersOnMultiInstanceUserTask() {
+        resetTestCounts();
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "testExecutionListenersOnMultiInstanceUserTask"
+        );
 
-  	@Override
-  	public void notify(DelegateExecution execution) {
-  		Integer loopCounter = (Integer) execution.getVariable(LOOP_COUNTER_KEY);
-  		if (loopCounter != null) {
-  			countWithLoopCounter.incrementAndGet();
-  		} else{
-  			countWithoutLoopCounter.incrementAndGet();
-  		}
-  	}
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+        for (Task task : tasks) {
+            taskService.complete(task.getId());
+        }
 
-  }
+        assertThat(TestTaskCompletionListener.count.get()).isEqualTo(4);
 
-  public static class TestTaskCompletionListener implements TaskListener {
+        assertThat(TestStartExecutionListener.countWithLoopCounter.get()).isEqualTo(4);
+        assertThat(TestEndExecutionListener.countWithLoopCounter.get()).isEqualTo(4);
 
-  	public static AtomicInteger count = new AtomicInteger(0);
+        assertThat(TestStartExecutionListener.countWithoutLoopCounter.get()).isEqualTo(1);
+        assertThat(TestEndExecutionListener.countWithoutLoopCounter.get()).isEqualTo(1);
+    }
 
-  	@Override
-  	public void notify(DelegateTask delegateTask) {
-  		count.incrementAndGet();
-  	}
+    @Deployment
+    public void testParallelAfterSequentialMultiInstance() {
+        // Used to throw a nullpointer exception
 
-  }
+        runtimeService.startProcessInstanceByKey("multiInstance");
+        assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
+    }
 
+    @Deployment
+    public void testEndTimeOnMiSubprocess() {
+        if (!processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+            return;
+        }
+
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "multiInstanceSubProcessParallelTasks"
+        );
+
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+        assertThat(tasks).hasSize(2);
+        assertThat(tasks.get(0).getName()).isEqualTo("User Task 1");
+        assertThat(tasks.get(1).getName()).isEqualTo("User Task 1");
+
+        // End time should not be set for the subprocess
+        List<HistoricActivityInstance> historicActivityInstances = historyService
+            .createHistoricActivityInstanceQuery()
+            .activityId("subprocess1")
+            .list();
+        assertThat(historicActivityInstances).hasSize(2);
+        for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
+            assertThat(historicActivityInstance.getStartTime()).isNotNull();
+            assertThat(historicActivityInstance.getEndTime()).isNull();
+        }
+
+        // Complete one of the user tasks. This should not trigger setting of end time of the subprocess, but due to a bug it did exactly that
+        taskService.complete(tasks.get(0).getId());
+        historicActivityInstances = historyService
+            .createHistoricActivityInstanceQuery()
+            .activityId("subprocess1")
+            .list();
+        assertThat(historicActivityInstances).hasSize(2);
+        for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
+            assertThat(historicActivityInstance.getEndTime()).isNull();
+        }
+
+        taskService.complete(tasks.get(1).getId());
+        historicActivityInstances = historyService
+            .createHistoricActivityInstanceQuery()
+            .activityId("subprocess1")
+            .list();
+        assertThat(historicActivityInstances).hasSize(2);
+        for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
+            assertThat(historicActivityInstance.getEndTime()).isNull();
+        }
+
+        tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskName("User Task 3").list();
+        assertThat(tasks).hasSize(2);
+        for (Task task : tasks) {
+            taskService.complete(task.getId());
+            historicActivityInstances = historyService
+                .createHistoricActivityInstanceQuery()
+                .activityId("subprocess1")
+                .list();
+            assertThat(historicActivityInstances).hasSize(2);
+            for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
+                assertThat(historicActivityInstance.getEndTime()).isNull();
+            }
+        }
+
+        // Finishing the tasks should also set the end time
+        tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+        assertThat(tasks).hasSize(2);
+        for (Task task : tasks) {
+            taskService.complete(task.getId());
+        }
+
+        historicActivityInstances = historyService
+            .createHistoricActivityInstanceQuery()
+            .activityId("subprocess1")
+            .list();
+        assertThat(historicActivityInstances).hasSize(2);
+        for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
+            assertThat(historicActivityInstance.getEndTime()).isNotNull();
+        }
+    }
+
+    @Deployment
+    public void testChangingCollection() {
+        Map<String, Object> vars = new HashMap<String, Object>();
+        vars.put("multi_users", asList("testuser"));
+        ProcessInstance instance = runtimeService.startProcessInstanceByKey("test_multi", vars);
+        assertThat(instance).isNotNull();
+        Task task = taskService.createTaskQuery().singleResult();
+        assertThat(task.getTaskDefinitionKey()).isEqualTo("multi");
+        vars.put("multi_users", new ArrayList<String>()); // <-- Problem here.
+        taskService.complete(task.getId(), vars);
+        List<ProcessInstance> instances = runtimeService.createProcessInstanceQuery().list();
+        assertThat(instances).hasSize(0);
+    }
+
+    protected void resetTestCounts() {
+        TestStartExecutionListener.countWithLoopCounter.set(0);
+        TestStartExecutionListener.countWithoutLoopCounter.set(0);
+        TestEndExecutionListener.countWithLoopCounter.set(0);
+        TestEndExecutionListener.countWithoutLoopCounter.set(0);
+        TestTaskCompletionListener.count.set(0);
+    }
+
+    public static class TestStartExecutionListener implements ExecutionListener {
+
+        public static AtomicInteger countWithLoopCounter = new AtomicInteger(0);
+        public static AtomicInteger countWithoutLoopCounter = new AtomicInteger(0);
+
+        @Override
+        public void notify(DelegateExecution execution) {
+            Integer loopCounter = (Integer) execution.getVariable(LOOP_COUNTER_KEY);
+            if (loopCounter != null) {
+                countWithLoopCounter.incrementAndGet();
+            } else {
+                countWithoutLoopCounter.incrementAndGet();
+            }
+        }
+    }
+
+    public static class TestEndExecutionListener implements ExecutionListener {
+
+        public static AtomicInteger countWithLoopCounter = new AtomicInteger(0);
+        public static AtomicInteger countWithoutLoopCounter = new AtomicInteger(0);
+
+        @Override
+        public void notify(DelegateExecution execution) {
+            Integer loopCounter = (Integer) execution.getVariable(LOOP_COUNTER_KEY);
+            if (loopCounter != null) {
+                countWithLoopCounter.incrementAndGet();
+            } else {
+                countWithoutLoopCounter.incrementAndGet();
+            }
+        }
+    }
+
+    public static class TestTaskCompletionListener implements TaskListener {
+
+        public static AtomicInteger count = new AtomicInteger(0);
+
+        @Override
+        public void notify(DelegateTask delegateTask) {
+            count.incrementAndGet();
+        }
+    }
 }

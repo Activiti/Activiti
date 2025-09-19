@@ -16,9 +16,9 @@
 
 package org.activiti.spring.process.model;
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 class TaskTemplateDefinitionTest {
 
@@ -34,7 +34,10 @@ class TaskTemplateDefinitionTest {
     @Test
     void should_setAndGetAssignee() {
         TaskTemplateDefinition taskTemplate = new TaskTemplateDefinition();
-        TemplateDefinition assigneeTemplate = new TemplateDefinition(TemplateDefinition.TemplateType.VARIABLE, "assigneeTemplate");
+        TemplateDefinition assigneeTemplate = new TemplateDefinition(
+            TemplateDefinition.TemplateType.VARIABLE,
+            "assigneeTemplate"
+        );
 
         taskTemplate.setAssignee(assigneeTemplate);
 
@@ -58,7 +61,10 @@ class TaskTemplateDefinitionTest {
     @Test
     void should_setAndGetCandidate() {
         TaskTemplateDefinition taskTemplate = new TaskTemplateDefinition();
-        TemplateDefinition candidateTemplate = new TemplateDefinition(TemplateDefinition.TemplateType.FILE, "candidateTemplate");
+        TemplateDefinition candidateTemplate = new TemplateDefinition(
+            TemplateDefinition.TemplateType.FILE,
+            "candidateTemplate"
+        );
 
         taskTemplate.setCandidate(candidateTemplate);
 
@@ -129,8 +135,14 @@ class TaskTemplateDefinitionTest {
         TaskTemplateDefinition taskTemplate1 = new TaskTemplateDefinition();
         TaskTemplateDefinition taskTemplate2 = new TaskTemplateDefinition();
 
-        TemplateDefinition assigneeTemplate = new TemplateDefinition(TemplateDefinition.TemplateType.VARIABLE, "assignee");
-        TemplateDefinition candidateTemplate = new TemplateDefinition(TemplateDefinition.TemplateType.FILE, "candidate");
+        TemplateDefinition assigneeTemplate = new TemplateDefinition(
+            TemplateDefinition.TemplateType.VARIABLE,
+            "assignee"
+        );
+        TemplateDefinition candidateTemplate = new TemplateDefinition(
+            TemplateDefinition.TemplateType.FILE,
+            "candidate"
+        );
 
         taskTemplate1.setAssignee(assigneeTemplate);
         taskTemplate1.setCandidate(candidateTemplate);
@@ -150,8 +162,14 @@ class TaskTemplateDefinitionTest {
         TaskTemplateDefinition taskTemplate1 = new TaskTemplateDefinition();
         TaskTemplateDefinition taskTemplate2 = new TaskTemplateDefinition();
 
-        TemplateDefinition assigneeTemplate1 = new TemplateDefinition(TemplateDefinition.TemplateType.VARIABLE, "assignee1");
-        TemplateDefinition assigneeTemplate2 = new TemplateDefinition(TemplateDefinition.TemplateType.VARIABLE, "assignee2");
+        TemplateDefinition assigneeTemplate1 = new TemplateDefinition(
+            TemplateDefinition.TemplateType.VARIABLE,
+            "assignee1"
+        );
+        TemplateDefinition assigneeTemplate2 = new TemplateDefinition(
+            TemplateDefinition.TemplateType.VARIABLE,
+            "assignee2"
+        );
 
         taskTemplate1.setAssignee(assigneeTemplate1);
         taskTemplate2.setAssignee(assigneeTemplate2);
@@ -164,7 +182,10 @@ class TaskTemplateDefinitionTest {
         TaskTemplateDefinition taskTemplate1 = new TaskTemplateDefinition();
         TaskTemplateDefinition taskTemplate2 = new TaskTemplateDefinition();
 
-        TemplateDefinition assigneeTemplate = new TemplateDefinition(TemplateDefinition.TemplateType.VARIABLE, "assignee");
+        TemplateDefinition assigneeTemplate = new TemplateDefinition(
+            TemplateDefinition.TemplateType.VARIABLE,
+            "assignee"
+        );
 
         taskTemplate1.setAssignee(assigneeTemplate);
         taskTemplate2.setAssignee(null);
@@ -188,8 +209,14 @@ class TaskTemplateDefinitionTest {
         TaskTemplateDefinition taskTemplate1 = new TaskTemplateDefinition();
         TaskTemplateDefinition taskTemplate2 = new TaskTemplateDefinition();
 
-        TemplateDefinition candidateTemplate1 = new TemplateDefinition(TemplateDefinition.TemplateType.VARIABLE, "candidate1");
-        TemplateDefinition candidateTemplate2 = new TemplateDefinition(TemplateDefinition.TemplateType.VARIABLE, "candidate2");
+        TemplateDefinition candidateTemplate1 = new TemplateDefinition(
+            TemplateDefinition.TemplateType.VARIABLE,
+            "candidate1"
+        );
+        TemplateDefinition candidateTemplate2 = new TemplateDefinition(
+            TemplateDefinition.TemplateType.VARIABLE,
+            "candidate2"
+        );
 
         taskTemplate1.setCandidate(candidateTemplate1);
         taskTemplate2.setCandidate(candidateTemplate2);
@@ -202,7 +229,10 @@ class TaskTemplateDefinitionTest {
         TaskTemplateDefinition taskTemplate1 = new TaskTemplateDefinition();
         TaskTemplateDefinition taskTemplate2 = new TaskTemplateDefinition();
 
-        TemplateDefinition candidateTemplate = new TemplateDefinition(TemplateDefinition.TemplateType.FILE, "candidate");
+        TemplateDefinition candidateTemplate = new TemplateDefinition(
+            TemplateDefinition.TemplateType.FILE,
+            "candidate"
+        );
 
         taskTemplate1.setCandidate(candidateTemplate);
         taskTemplate2.setCandidate(null);
@@ -238,7 +268,10 @@ class TaskTemplateDefinitionTest {
         TaskTemplateDefinition taskTemplate2 = new TaskTemplateDefinition();
         TaskTemplateDefinition taskTemplate3 = new TaskTemplateDefinition();
 
-        TemplateDefinition assigneeTemplate = new TemplateDefinition(TemplateDefinition.TemplateType.VARIABLE, "assignee");
+        TemplateDefinition assigneeTemplate = new TemplateDefinition(
+            TemplateDefinition.TemplateType.VARIABLE,
+            "assignee"
+        );
 
         taskTemplate1.setAssignee(assigneeTemplate);
         taskTemplate1.setEmailNotificationEnabled(false);
@@ -257,7 +290,10 @@ class TaskTemplateDefinitionTest {
     @Test
     void should_testHashCode_consistency() {
         TaskTemplateDefinition taskTemplate = new TaskTemplateDefinition();
-        TemplateDefinition assigneeTemplate = new TemplateDefinition(TemplateDefinition.TemplateType.VARIABLE, "assignee");
+        TemplateDefinition assigneeTemplate = new TemplateDefinition(
+            TemplateDefinition.TemplateType.VARIABLE,
+            "assignee"
+        );
 
         taskTemplate.setAssignee(assigneeTemplate);
         taskTemplate.setEmailNotificationEnabled(false);
@@ -273,8 +309,14 @@ class TaskTemplateDefinitionTest {
         TaskTemplateDefinition taskTemplate1 = new TaskTemplateDefinition();
         TaskTemplateDefinition taskTemplate2 = new TaskTemplateDefinition();
 
-        TemplateDefinition assigneeTemplate = new TemplateDefinition(TemplateDefinition.TemplateType.VARIABLE, "assignee");
-        TemplateDefinition candidateTemplate = new TemplateDefinition(TemplateDefinition.TemplateType.FILE, "candidate");
+        TemplateDefinition assigneeTemplate = new TemplateDefinition(
+            TemplateDefinition.TemplateType.VARIABLE,
+            "assignee"
+        );
+        TemplateDefinition candidateTemplate = new TemplateDefinition(
+            TemplateDefinition.TemplateType.FILE,
+            "candidate"
+        );
 
         taskTemplate1.setAssignee(assigneeTemplate);
         taskTemplate1.setCandidate(candidateTemplate);

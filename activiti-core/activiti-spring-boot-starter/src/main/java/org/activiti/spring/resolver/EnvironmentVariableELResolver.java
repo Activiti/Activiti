@@ -31,8 +31,8 @@ public class EnvironmentVariableELResolver extends ELResolver {
         }
         if (base instanceof EnvVar && property != null) {
             String env = System.getenv(VAR_PREFIX_WITH_DOT + property);
-                context.setPropertyResolved(true);
-                return env;
+            context.setPropertyResolved(true);
+            return env;
         }
         return null;
     }

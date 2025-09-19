@@ -17,7 +17,6 @@ package org.activiti.api.process.model.builders;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
 
 public class GetProcessInstancesPayloadBuilder {
@@ -27,7 +26,6 @@ public class GetProcessInstancesPayloadBuilder {
     private boolean suspendedOnly = false;
     private boolean activeOnly = false;
     private String parentProcessInstanceId;
-
 
     public GetProcessInstancesPayloadBuilder withBusinessKey(String businessKey) {
         this.businessKey = businessKey;
@@ -61,7 +59,6 @@ public class GetProcessInstancesPayloadBuilder {
         this.parentProcessInstanceId = parentProcessInstanceId;
         return this;
     }
-
 
     public GetProcessInstancesPayload build() {
         GetProcessInstancesPayload getProcessInstancesPayload = new GetProcessInstancesPayload();

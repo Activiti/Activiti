@@ -15,14 +15,13 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import java.util.List;
-
-import org.springframework.core.convert.converter.Converter;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import org.springframework.core.convert.converter.Converter;
 
 @ProcessVariableTypeConverter
 public class ListToStringConverter implements Converter<List<Object>, String> {
+
     private final ObjectMapper objectMapper;
 
     public ListToStringConverter(ObjectMapper objectMapper) {
@@ -31,7 +30,6 @@ public class ListToStringConverter implements Converter<List<Object>, String> {
 
     @Override
     public String convert(List<Object> source) {
-
         try {
             return objectMapper.writeValueAsString(source);
         } catch (Exception cause) {

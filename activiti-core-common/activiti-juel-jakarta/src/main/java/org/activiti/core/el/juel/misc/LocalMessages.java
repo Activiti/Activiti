@@ -23,12 +23,8 @@ import java.util.ResourceBundle;
 
 public final class LocalMessages {
 
-    private static final String BUNDLE_NAME =
-        "org.activiti.core.el.juel.misc.LocalStrings";
-    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(
-        BUNDLE_NAME,
-        Locale.US
-    );
+    private static final String BUNDLE_NAME = "org.activiti.core.el.juel.misc.LocalStrings";
+    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME, Locale.US);
 
     public static String get(String key, Object... args) {
         String template = null;

@@ -59,8 +59,7 @@ public final class Cache implements TreeCache {
      *            this many threads.
      */
     public Cache(int capacity, int concurrencyLevel) {
-        this.map =
-            new ConcurrentHashMap<String, Tree>(16, 0.75f, concurrencyLevel);
+        this.map = new ConcurrentHashMap<String, Tree>(16, 0.75f, concurrencyLevel);
         this.queue = new ConcurrentLinkedQueue<String>();
         this.size = new AtomicInteger();
         this.capacity = capacity;

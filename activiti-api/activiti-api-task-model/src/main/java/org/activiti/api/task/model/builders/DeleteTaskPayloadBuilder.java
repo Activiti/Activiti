@@ -15,7 +15,6 @@
  */
 package org.activiti.api.task.model.builders;
 
-
 import org.activiti.api.task.model.payloads.DeleteTaskPayload;
 
 public class DeleteTaskPayloadBuilder {
@@ -34,7 +33,6 @@ public class DeleteTaskPayloadBuilder {
     }
 
     public DeleteTaskPayload build() {
-        return new DeleteTaskPayload(taskId,
-                                     reason);
+        return new DeleteTaskPayload(taskId, reason);
     }
 }

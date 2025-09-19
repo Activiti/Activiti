@@ -24,29 +24,17 @@ public class AstBracket extends AstProperty {
 
     protected final AstNode property;
 
-    public AstBracket(
-        AstNode base,
-        AstNode property,
-        boolean lvalue,
-        boolean strict
-    ) {
+    public AstBracket(AstNode base, AstNode property, boolean lvalue, boolean strict) {
         this(base, property, lvalue, strict, false);
     }
 
-    public AstBracket(
-        AstNode base,
-        AstNode property,
-        boolean lvalue,
-        boolean strict,
-        boolean ignoreReturnType
-    ) {
+    public AstBracket(AstNode base, AstNode property, boolean lvalue, boolean strict, boolean ignoreReturnType) {
         super(base, lvalue, strict, ignoreReturnType);
         this.property = property;
     }
 
     @Override
-    protected Object getProperty(Bindings bindings, ELContext context)
-        throws ELException {
+    protected Object getProperty(Bindings bindings, ELContext context) throws ELException {
         return property.eval(bindings, context);
     }
 

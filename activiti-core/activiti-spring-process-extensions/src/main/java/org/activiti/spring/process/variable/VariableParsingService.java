@@ -16,7 +16,6 @@
 package org.activiti.spring.process.variable;
 
 import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.types.VariableType;
@@ -37,9 +36,7 @@ public class VariableParsingService {
     private Map<String, VariableType> variableTypeMap;
 
     public Object parse(VariableDefinition variableDefinition) throws ActivitiException {
-
-
-        if(variableDefinition.getType()!=null) {
+        if (variableDefinition.getType() != null) {
             VariableType type = variableTypeMap.get(variableDefinition.getType());
 
             return type.parseFromValue(variableDefinition.getValue());
@@ -47,5 +44,4 @@ public class VariableParsingService {
 
         return variableDefinition.getValue();
     }
-
 }

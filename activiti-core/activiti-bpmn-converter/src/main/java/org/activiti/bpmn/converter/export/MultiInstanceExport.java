@@ -23,6 +23,7 @@ import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 import org.apache.commons.lang3.StringUtils;
 
 public class MultiInstanceExport implements BpmnXMLConstants {
+
     public static void writeMultiInstance(Activity activity, XMLStreamWriter xtw) throws Exception {
         if (activity == null || activity.getLoopCharacteristics() == null) {
             return;
@@ -32,12 +33,19 @@ public class MultiInstanceExport implements BpmnXMLConstants {
 
         xtw.writeStartElement(BPMN2_PREFIX, ELEMENT_MULTIINSTANCE, BPMN2_NAMESPACE);
 
-        BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_MULTIINSTANCE_SEQUENTIAL,
-            String.valueOf(multiInstanceObject.isSequential()).toLowerCase(), xtw);
+        BpmnXMLUtil.writeDefaultAttribute(
+            ATTRIBUTE_MULTIINSTANCE_SEQUENTIAL,
+            String.valueOf(multiInstanceObject.isSequential()).toLowerCase(),
+            xtw
+        );
 
         writeAttributeIfNotEmpty(ATTRIBUTE_MULTIINSTANCE_COLLECTION, multiInstanceObject.getInputDataItem(), xtw);
         writeAttributeIfNotEmpty(ATTRIBUTE_MULTIINSTANCE_VARIABLE, multiInstanceObject.getElementVariable(), xtw);
-        writeAttributeIfNotEmpty(ATTRIBUTE_MULTIINSTANCE_INDEX_VARIABLE, multiInstanceObject.getElementIndexVariable(), xtw);
+        writeAttributeIfNotEmpty(
+            ATTRIBUTE_MULTIINSTANCE_INDEX_VARIABLE,
+            multiInstanceObject.getElementIndexVariable(),
+            xtw
+        );
 
         writeElementIfNotEmpty(ELEMENT_MULTIINSTANCE_CARDINALITY, multiInstanceObject.getLoopCardinality(), xtw);
         writeElementIfNotEmpty(ELEMENT_MULTI_INSTANCE_DATA_OUTPUT, multiInstanceObject.getLoopDataOutputRef(), xtw);
@@ -53,8 +61,8 @@ public class MultiInstanceExport implements BpmnXMLConstants {
         xtw.writeEndElement();
     }
 
-
-    private static void writeAttributeIfNotEmpty(String attributeName, String value, XMLStreamWriter xtw) throws Exception {
+    private static void writeAttributeIfNotEmpty(String attributeName, String value, XMLStreamWriter xtw)
+        throws Exception {
         if (StringUtils.isNotEmpty(value)) {
             BpmnXMLUtil.writeQualifiedAttribute(attributeName, value, xtw);
         }
@@ -67,5 +75,4 @@ public class MultiInstanceExport implements BpmnXMLConstants {
             xtw.writeEndElement();
         }
     }
-
 }

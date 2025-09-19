@@ -24,9 +24,8 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface BpmnInterfaceImplementation {
-
-  /**
-   * @return the name of this implementation
-   */
-  String getName();
+    /**
+     * @return the name of this implementation
+     */
+    String getName();
 }

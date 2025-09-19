@@ -30,8 +30,8 @@ public class LoopDataOutputRefParser implements ElementParser<MultiInstanceLoopC
     }
 
     @Override
-    public void setInformation(XMLStreamReader reader,
-        MultiInstanceLoopCharacteristics loopCharacteristics) throws XMLStreamException {
+    public void setInformation(XMLStreamReader reader, MultiInstanceLoopCharacteristics loopCharacteristics)
+        throws XMLStreamException {
         loopCharacteristics.setLoopDataOutputRef(reader.getElementText());
     }
 }

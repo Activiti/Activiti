@@ -15,12 +15,11 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import java.util.Optional;
 import org.activiti.api.model.shared.event.VariableUpdatedEvent;
 import org.activiti.api.runtime.event.impl.VariableUpdatedEventImpl;
 import org.activiti.api.runtime.model.impl.VariableInstanceImpl;
 import org.activiti.engine.delegate.event.ActivitiVariableUpdatedEvent;
-
-import java.util.Optional;
 
 public class ToVariableUpdatedConverter implements EventConverter<VariableUpdatedEvent, ActivitiVariableUpdatedEvent> {
 
@@ -35,7 +34,7 @@ public class ToVariableUpdatedConverter implements EventConverter<VariableUpdate
         boolean isEphemeral = ephemeralVariableResolver.isEphemeralVariable(internalEvent);
 
         VariableInstanceImpl<Object> variableInstance = createVariableInstance(internalEvent, isEphemeral);
-        Object previousValue = isEphemeral? null : internalEvent.getVariablePreviousValue();
+        Object previousValue = isEphemeral ? null : internalEvent.getVariablePreviousValue();
 
         return Optional.of(new VariableUpdatedEventImpl<>(variableInstance, previousValue, isEphemeral));
     }

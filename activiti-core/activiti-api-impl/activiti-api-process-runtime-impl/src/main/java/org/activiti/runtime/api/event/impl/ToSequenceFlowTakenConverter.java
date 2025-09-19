@@ -15,20 +15,22 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import java.util.Optional;
 import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.runtime.event.impl.BPMNSequenceFlowTakenImpl;
 import org.activiti.api.runtime.model.impl.BPMNSequenceFlowImpl;
 import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
 
-import java.util.Optional;
-
-public class ToSequenceFlowTakenConverter implements EventConverter<BPMNSequenceFlowTakenEvent, ActivitiSequenceFlowTakenEvent> {
+public class ToSequenceFlowTakenConverter
+    implements EventConverter<BPMNSequenceFlowTakenEvent, ActivitiSequenceFlowTakenEvent> {
 
     @Override
     public Optional<BPMNSequenceFlowTakenEvent> from(ActivitiSequenceFlowTakenEvent internalEvent) {
-        BPMNSequenceFlowImpl sequenceFlow = new BPMNSequenceFlowImpl(internalEvent.getId(),
-                internalEvent.getSourceActivityId(),
-                internalEvent.getTargetActivityId());
+        BPMNSequenceFlowImpl sequenceFlow = new BPMNSequenceFlowImpl(
+            internalEvent.getId(),
+            internalEvent.getSourceActivityId(),
+            internalEvent.getTargetActivityId()
+        );
 
         sequenceFlow.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         sequenceFlow.setProcessInstanceId(internalEvent.getProcessInstanceId());

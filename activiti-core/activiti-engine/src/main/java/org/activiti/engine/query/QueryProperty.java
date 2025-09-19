@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.query;
 
-import org.activiti.engine.api.internal.Internal;
-
 import java.io.Serializable;
+import org.activiti.engine.api.internal.Internal;
 
 /**
  * Describes a property that can be used in a Query.
@@ -27,6 +25,5 @@ import java.io.Serializable;
  */
 @Internal
 public interface QueryProperty extends Serializable {
-
-  String getName();
+    String getName();
 }

@@ -31,8 +31,7 @@ public class NodePrinterTest extends TestCase {
 
     @Test
     public void testDump() throws IOException {
-        Tree tree = new Builder(Builder.Feature.METHOD_INVOCATIONS)
-            .build("${foo.bar[baz] + foobar}");
+        Tree tree = new Builder(Builder.Feature.METHOD_INVOCATIONS).build("${foo.bar[baz] + foobar}");
         StringWriter writer = new StringWriter();
         NodePrinter.dump(new PrintWriter(writer), tree.getRoot());
         String[] expected = {
@@ -51,9 +50,7 @@ public class NodePrinterTest extends TestCase {
             "      +- foobar",
             null,
         };
-        BufferedReader reader = new BufferedReader(
-            new StringReader(writer.toString())
-        );
+        BufferedReader reader = new BufferedReader(new StringReader(writer.toString()));
         for (String line : expected) {
             assertEquals(line, reader.readLine());
         }

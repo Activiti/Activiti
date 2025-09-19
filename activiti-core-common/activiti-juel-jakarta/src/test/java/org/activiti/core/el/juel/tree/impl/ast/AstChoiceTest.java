@@ -78,14 +78,8 @@ public class AstChoiceTest extends TestCase {
 
     @Test
     public void testGetValue() {
-        assertEquals(
-            1l,
-            parseNode("${true?1:2}").getValue(bindings, null, null)
-        );
-        assertEquals(
-            "1",
-            parseNode("${true?1:2}").getValue(bindings, null, String.class)
-        );
+        assertEquals(1l, parseNode("${true?1:2}").getValue(bindings, null, null));
+        assertEquals("1", parseNode("${true?1:2}").getValue(bindings, null, String.class));
     }
 
     @Test

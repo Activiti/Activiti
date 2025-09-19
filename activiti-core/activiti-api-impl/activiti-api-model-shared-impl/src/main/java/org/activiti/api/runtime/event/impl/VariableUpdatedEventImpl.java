@@ -24,8 +24,7 @@ public class VariableUpdatedEventImpl<T> extends VariableEventImpl implements Va
 
     private boolean isEphemeralVariable;
 
-    public VariableUpdatedEventImpl() {
-    }
+    public VariableUpdatedEventImpl() {}
 
     public VariableUpdatedEventImpl(VariableInstance entity, T previousValue, boolean isEphemeralVariable) {
         super(entity);

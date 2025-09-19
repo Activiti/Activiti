@@ -38,7 +38,6 @@ public class SequenceflowValidator extends ProcessLevelValidator {
     protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
         List<SequenceFlow> sequenceFlows = process.findFlowElementsOfType(SequenceFlow.class);
         for (SequenceFlow sequenceFlow : sequenceFlows) {
-
             String sourceRef = sequenceFlow.getSourceRef();
             String targetRef = sequenceFlow.getTargetRef();
 
@@ -82,14 +81,15 @@ public class SequenceflowValidator extends ProcessLevelValidator {
 
             if (conditionExpression != null) {
                 try {
-                    ExpressionFactory.newInstance()
-                        .createValueExpression(new SimpleContext(), conditionExpression.trim(), Object.class);
+                    ExpressionFactory.newInstance().createValueExpression(
+                        new SimpleContext(),
+                        conditionExpression.trim(),
+                        Object.class
+                    );
                 } catch (Exception e) {
                     addError(errors, Problems.SEQ_FLOW_INVALID_CONDITIONAL_EXPRESSION, process, sequenceFlow);
                 }
             }
-
         }
     }
-
 }

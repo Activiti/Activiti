@@ -21,6 +21,5 @@ import org.activiti.spring.process.model.Extension;
 import org.springframework.lang.NonNull;
 
 public interface ProcessExtensionRepository {
-
     Optional<Extension> getExtensionsForId(@NonNull String processDefinitionId);
 }

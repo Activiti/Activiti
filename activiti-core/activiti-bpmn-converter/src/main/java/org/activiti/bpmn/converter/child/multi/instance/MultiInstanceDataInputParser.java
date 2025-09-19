@@ -22,8 +22,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.activiti.bpmn.converter.child.ElementParser;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 
-public class MultiInstanceDataInputParser implements
-    ElementParser<MultiInstanceLoopCharacteristics> {
+public class MultiInstanceDataInputParser implements ElementParser<MultiInstanceLoopCharacteristics> {
 
     @Override
     public boolean canParseCurrentElement(XMLStreamReader reader) {
@@ -31,8 +30,8 @@ public class MultiInstanceDataInputParser implements
     }
 
     @Override
-    public void setInformation(XMLStreamReader reader,
-        MultiInstanceLoopCharacteristics loopCharacteristics) throws XMLStreamException {
+    public void setInformation(XMLStreamReader reader, MultiInstanceLoopCharacteristics loopCharacteristics)
+        throws XMLStreamException {
         loopCharacteristics.setInputDataItem(reader.getElementText());
     }
 }

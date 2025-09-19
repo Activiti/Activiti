@@ -15,14 +15,13 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import static org.activiti.runtime.api.event.impl.ActivitiEntityEventHelper.isProcessInstanceEntity;
+
+import java.util.Optional;
 import org.activiti.api.process.runtime.events.ProcessResumedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
-
-import java.util.Optional;
-
-import static org.activiti.runtime.api.event.impl.ActivitiEntityEventHelper.isProcessInstanceEntity;
 
 public class ToProcessResumedConverter implements EventConverter<ProcessResumedEvent, ActivitiEntityEvent> {
 
@@ -38,10 +37,10 @@ public class ToProcessResumedConverter implements EventConverter<ProcessResumedE
 
         ProcessResumedEventImpl event = null;
         if (isProcessInstanceEntity(entity)) {
-            event = new ProcessResumedEventImpl(processInstanceConverter.from(((ExecutionEntity)
-                    entity).getProcessInstance()));
+            event = new ProcessResumedEventImpl(
+                processInstanceConverter.from(((ExecutionEntity) entity).getProcessInstance())
+            );
         }
         return Optional.ofNullable(event);
     }
-
 }

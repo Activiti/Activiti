@@ -141,123 +141,63 @@ public class ScannerTest extends TestCase {
     @Test
     public void testKeywords() throws Scanner.ScanException {
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.NULL,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.NULL, Scanner.Symbol.END_EVAL },
             symbols("${null}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.TRUE,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.TRUE, Scanner.Symbol.END_EVAL },
             symbols("${true}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.FALSE,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.FALSE, Scanner.Symbol.END_EVAL },
             symbols("${false}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.EMPTY,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.EMPTY, Scanner.Symbol.END_EVAL },
             symbols("${empty}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.DIV,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.DIV, Scanner.Symbol.END_EVAL },
             symbols("${div}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.MOD,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.MOD, Scanner.Symbol.END_EVAL },
             symbols("${mod}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.NOT,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.NOT, Scanner.Symbol.END_EVAL },
             symbols("${not}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.AND,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.AND, Scanner.Symbol.END_EVAL },
             symbols("${and}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.OR,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.OR, Scanner.Symbol.END_EVAL },
             symbols("${or}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.LE,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.LE, Scanner.Symbol.END_EVAL },
             symbols("${le}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.LT,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.LT, Scanner.Symbol.END_EVAL },
             symbols("${lt}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.EQ,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.EQ, Scanner.Symbol.END_EVAL },
             symbols("${eq}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.NE,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.NE, Scanner.Symbol.END_EVAL },
             symbols("${ne}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.GE,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.GE, Scanner.Symbol.END_EVAL },
             symbols("${ge}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.GT,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.GT, Scanner.Symbol.END_EVAL },
             symbols("${gt}")
         );
         assertEquals(
@@ -290,43 +230,23 @@ public class ScannerTest extends TestCase {
     @Test
     public void testOperators() throws Scanner.ScanException {
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.MUL,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.MUL, Scanner.Symbol.END_EVAL },
             symbols("${*}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.DIV,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.DIV, Scanner.Symbol.END_EVAL },
             symbols("${/}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.MOD,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.MOD, Scanner.Symbol.END_EVAL },
             symbols("${%}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.PLUS,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.PLUS, Scanner.Symbol.END_EVAL },
             symbols("${+}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.MINUS,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.MINUS, Scanner.Symbol.END_EVAL },
             symbols("${-}")
         );
         assertEquals(
@@ -338,131 +258,67 @@ public class ScannerTest extends TestCase {
             symbols("${?}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.COLON,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.COLON, Scanner.Symbol.END_EVAL },
             symbols("${:}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.LBRACK,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.LBRACK, Scanner.Symbol.END_EVAL },
             symbols("${[}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.RBRACK,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.RBRACK, Scanner.Symbol.END_EVAL },
             symbols("${]}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.LPAREN,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.LPAREN, Scanner.Symbol.END_EVAL },
             symbols("${(}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.RPAREN,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.RPAREN, Scanner.Symbol.END_EVAL },
             symbols("${)}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.COMMA,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.COMMA, Scanner.Symbol.END_EVAL },
             symbols("${,}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.DOT,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.DOT, Scanner.Symbol.END_EVAL },
             symbols("${.}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.AND,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.AND, Scanner.Symbol.END_EVAL },
             symbols("${&&}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.OR,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.OR, Scanner.Symbol.END_EVAL },
             symbols("${||}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.NOT,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.NOT, Scanner.Symbol.END_EVAL },
             symbols("${!}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.LE,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.LE, Scanner.Symbol.END_EVAL },
             symbols("${<=}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.LT,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.LT, Scanner.Symbol.END_EVAL },
             symbols("${<}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.EQ,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.EQ, Scanner.Symbol.END_EVAL },
             symbols("${==}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.NE,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.NE, Scanner.Symbol.END_EVAL },
             symbols("${!=}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.GE,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.GE, Scanner.Symbol.END_EVAL },
             symbols("${>=}")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.GT,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.GT, Scanner.Symbol.END_EVAL },
             symbols("${>}")
         );
 
@@ -483,10 +339,7 @@ public class ScannerTest extends TestCase {
     @Test
     public void testWhitespace() throws Scanner.ScanException {
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.END_EVAL,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.END_EVAL },
             symbols("${\t\n\r }")
         );
     }
@@ -519,26 +372,13 @@ public class ScannerTest extends TestCase {
 
     @Test
     public void testMixed() throws Scanner.ScanException {
+        assertEquals(new Scanner.Symbol[] { Scanner.Symbol.TEXT, Scanner.Symbol.START_EVAL_DYNAMIC }, symbols("foo${"));
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.TEXT,
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-            },
-            symbols("foo${")
-        );
-        assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.IDENTIFIER,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.IDENTIFIER },
             symbols("${bar")
         );
         assertEquals(
-            new Scanner.Symbol[] {
-                Scanner.Symbol.START_EVAL_DYNAMIC,
-                Scanner.Symbol.END_EVAL,
-                Scanner.Symbol.TEXT,
-            },
+            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DYNAMIC, Scanner.Symbol.END_EVAL, Scanner.Symbol.TEXT },
             symbols("${}bar")
         );
         assertEquals(
@@ -554,9 +394,6 @@ public class ScannerTest extends TestCase {
 
     @Test
     public void testDeferred() throws Scanner.ScanException {
-        assertEquals(
-            new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DEFERRED },
-            symbols("#{")
-        );
+        assertEquals(new Scanner.Symbol[] { Scanner.Symbol.START_EVAL_DEFERRED }, symbols("#{"));
     }
 }

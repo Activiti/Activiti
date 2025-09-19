@@ -27,17 +27,17 @@ public class IntermediateThrowMessageEventActivityBehavior extends AbstractThrow
 
     private final ThrowEvent throwEvent;
 
-    public IntermediateThrowMessageEventActivityBehavior(ThrowEvent throwEvent,
-                                                         MessageEventDefinition messageEventDefinition,
-                                                         ThrowMessageDelegate delegate,
-                                                         MessageExecutionContext messageExecutionContext) {
+    public IntermediateThrowMessageEventActivityBehavior(
+        ThrowEvent throwEvent,
+        MessageEventDefinition messageEventDefinition,
+        ThrowMessageDelegate delegate,
+        MessageExecutionContext messageExecutionContext
+    ) {
         super(messageEventDefinition, delegate, messageExecutionContext);
-
         this.throwEvent = throwEvent;
     }
 
     public ThrowEvent getThrowEvent() {
         return throwEvent;
     }
-
 }

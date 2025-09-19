@@ -52,17 +52,8 @@ public abstract class AstRightValue extends AstNode {
     /**
      * non-lvalues are always readonly, so throw an exception
      */
-    public final void setValue(
-        Bindings bindings,
-        ELContext context,
-        Object value
-    ) {
-        throw new ELException(
-            LocalMessages.get(
-                "error.value.set.rvalue",
-                getStructuralId(bindings)
-            )
-        );
+    public final void setValue(Bindings bindings, ELContext context, Object value) {
+        throw new ELException(LocalMessages.get("error.value.set.rvalue", getStructuralId(bindings)));
     }
 
     public final MethodInfo getMethodInfo(
@@ -81,9 +72,7 @@ public abstract class AstRightValue extends AstNode {
         Class<?>[] paramTypes,
         Object[] paramValues
     ) {
-        throw new ELException(
-            LocalMessages.get("error.method.invalid", getStructuralId(bindings))
-        );
+        throw new ELException(LocalMessages.get("error.method.invalid", getStructuralId(bindings)));
     }
 
     public final boolean isLeftValue() {
@@ -94,10 +83,7 @@ public abstract class AstRightValue extends AstNode {
         return false;
     }
 
-    public final ValueReference getValueReference(
-        Bindings bindings,
-        ELContext context
-    ) {
+    public final ValueReference getValueReference(Bindings bindings, ELContext context) {
         return null;
     }
 }

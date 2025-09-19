@@ -25,23 +25,22 @@ import org.activiti.engine.delegate.BpmnError;
  */
 public class Error {
 
-  protected String id;
-  protected String errorCode;
+    protected String id;
+    protected String errorCode;
 
-  public String getId() {
-    return id;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  public String getErrorCode() {
-    return errorCode;
-  }
+    public String getErrorCode() {
+        return errorCode;
+    }
 
-  public void setErrorCode(String errorCode) {
-    this.errorCode = errorCode;
-  }
-
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
 }

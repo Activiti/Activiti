@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.bpmn.behavior;
 
 public class EventBasedGatewayActivityBehavior extends FlowNodeActivityBehavior {

@@ -23,5 +23,4 @@ public class Printer {
     public void printMessage(DelegateExecution execution) {
         execution.setVariable("myVar", "Hello from Printer!");
     }
-
 }

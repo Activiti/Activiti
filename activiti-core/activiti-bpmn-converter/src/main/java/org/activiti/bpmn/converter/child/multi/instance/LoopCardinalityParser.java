@@ -30,8 +30,8 @@ public class LoopCardinalityParser implements ElementParser<MultiInstanceLoopCha
     }
 
     @Override
-    public void setInformation(XMLStreamReader reader,
-        MultiInstanceLoopCharacteristics loopCharacteristics) throws XMLStreamException {
+    public void setInformation(XMLStreamReader reader, MultiInstanceLoopCharacteristics loopCharacteristics)
+        throws XMLStreamException {
         loopCharacteristics.setLoopCardinality(reader.getElementText());
     }
 }

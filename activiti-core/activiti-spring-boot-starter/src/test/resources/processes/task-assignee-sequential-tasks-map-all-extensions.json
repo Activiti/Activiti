@@ -8,7 +8,7 @@
       "mappings": {
         "task1": {
           "mappingType": "MAP_ALL"
-          },
+        },
         "task2": {
           "mappingType": "MAP_ALL"
         }

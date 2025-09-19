@@ -15,6 +15,7 @@
  */
 package org.activiti.editor.language.xml;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.activiti.bpmn.exceptions.XMLException;
@@ -22,8 +23,6 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.ServiceTask;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class MapExceptionConverterTest extends AbstractConverterTest {
 
@@ -76,7 +75,6 @@ public class MapExceptionConverterTest extends AbstractConverterTest {
     }
 
     private void validateModel(BpmnModel model) {
-
         // check service task with andChildren Set to True
         FlowElement flowElement = model.getMainProcess().getFlowElement("servicetaskWithAndTrueAndChildren");
         assertThat(flowElement).isNotNull();

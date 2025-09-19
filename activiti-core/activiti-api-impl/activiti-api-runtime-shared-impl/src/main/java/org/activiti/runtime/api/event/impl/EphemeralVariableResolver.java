@@ -28,8 +28,12 @@ public class EphemeralVariableResolver {
     }
 
     boolean isEphemeralVariable(ActivitiVariableEvent internalEvent) {
-        return !internalEvent.isTaskVariable() && processExtensionService.hasEphemeralVariable(internalEvent.getProcessDefinitionId(),
-            internalEvent.getVariableName());
+        return (
+            !internalEvent.isTaskVariable() &&
+            processExtensionService.hasEphemeralVariable(
+                internalEvent.getProcessDefinitionId(),
+                internalEvent.getVariableName()
+            )
+        );
     }
-
 }

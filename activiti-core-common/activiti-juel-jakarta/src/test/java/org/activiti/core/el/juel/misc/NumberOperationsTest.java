@@ -142,7 +142,7 @@ public class NumberOperationsTest extends TestCase {
         Integer i1 = Integer.valueOf(1);
         Long l1 = Long.valueOf(1);
         Float f1 = Float.valueOf(1);
-        Double d1 =  Double.valueOf(1);
+        Double d1 = Double.valueOf(1);
         String e1 = "1e0";
         String s1 = "1";
         BigInteger bi1 = new BigInteger("1");

@@ -21,8 +21,7 @@ public abstract class ProcessCandidateStarterImpl implements ProcessCandidateSta
 
     private String processDefinitionId;
 
-    public ProcessCandidateStarterImpl() {
-    }
+    public ProcessCandidateStarterImpl() {}
 
     public ProcessCandidateStarterImpl(String processDefinitionId) {
         this.processDefinitionId = processDefinitionId;
@@ -32,5 +31,4 @@ public abstract class ProcessCandidateStarterImpl implements ProcessCandidateSta
     public String getProcessDefinitionId() {
         return processDefinitionId;
     }
-
 }

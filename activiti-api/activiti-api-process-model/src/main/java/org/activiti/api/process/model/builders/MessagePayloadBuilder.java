@@ -44,5 +44,4 @@ public class MessagePayloadBuilder {
     public static MessageEventPayloadBuilder from(MessageEventPayload messageEventPayload) {
         return MessageEventPayloadBuilder.from(messageEventPayload);
     }
-
 }

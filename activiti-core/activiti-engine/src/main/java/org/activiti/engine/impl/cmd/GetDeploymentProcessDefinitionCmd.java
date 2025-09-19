@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -28,14 +26,17 @@ import org.activiti.engine.repository.ProcessDefinition;
  */
 public class GetDeploymentProcessDefinitionCmd implements Command<ProcessDefinition>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String processDefinitionId;
+    private static final long serialVersionUID = 1L;
+    protected String processDefinitionId;
 
-  public GetDeploymentProcessDefinitionCmd(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
+    public GetDeploymentProcessDefinitionCmd(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
+    }
 
-  public ProcessDefinition execute(CommandContext commandContext) {
-    return commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
-  }
+    public ProcessDefinition execute(CommandContext commandContext) {
+        return commandContext
+            .getProcessEngineConfiguration()
+            .getDeploymentManager()
+            .findDeployedProcessDefinitionById(processDefinitionId);
+    }
 }

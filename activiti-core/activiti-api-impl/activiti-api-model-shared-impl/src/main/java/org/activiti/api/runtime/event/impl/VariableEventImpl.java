@@ -18,11 +18,11 @@ package org.activiti.api.runtime.event.impl;
 import org.activiti.api.model.shared.event.VariableEvent;
 import org.activiti.api.model.shared.model.VariableInstance;
 
-public abstract class VariableEventImpl extends RuntimeEventImpl<VariableInstance, VariableEvent.VariableEvents>
-        implements VariableEvent {
+public abstract class VariableEventImpl
+    extends RuntimeEventImpl<VariableInstance, VariableEvent.VariableEvents>
+    implements VariableEvent {
 
-    public VariableEventImpl() {
-    }
+    public VariableEventImpl() {}
 
     public VariableEventImpl(VariableInstance entity) {
         super(entity);

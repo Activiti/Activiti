@@ -27,5 +27,4 @@ public class Task extends Activity {
     public void setValues(Task otherElement) {
         super.setValues(otherElement);
     }
-
 }

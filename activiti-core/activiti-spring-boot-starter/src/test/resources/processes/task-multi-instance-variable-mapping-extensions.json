@@ -1,14 +1,12 @@
 {
-  "id":"taskMultiInstanceVariableMappingModel",
-  "name":"miSequentialUserTasksAllOutputCollection",
+  "id": "taskMultiInstanceVariableMappingModel",
+  "name": "miSequentialUserTasksAllOutputCollection",
   "extensions": {
     "taskMultiInstanceVariableMapping": {
       "mappings": {
         "miTasks": {
-          "inputs": {
-          },
-          "outputs": {
-          }
+          "inputs": {},
+          "outputs": {}
         }
       }
     }

@@ -25,7 +25,8 @@ public class NoneVariablesCalculator implements VariablesCalculator {
     @Override
     public Map<String, Object> calculateOutPutVariables(
         MappingExecutionContext mappingExecutionContext,
-        Map<String, Object> availableVariables) {
+        Map<String, Object> availableVariables
+    ) {
         return Collections.emptyMap();
     }
 

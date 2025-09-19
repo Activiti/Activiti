@@ -86,8 +86,7 @@ public class AstMethodTest extends TestCase {
     @Test
     public void testAppendStructure() {
         StringBuilder s = new StringBuilder();
-        parseNode("${foo.bar(1)}")
-            .appendStructure(s, new Bindings(null, null, null));
+        parseNode("${foo.bar(1)}").appendStructure(s, new Bindings(null, null, null));
         assertEquals("foo.bar(1)", s.toString());
     }
 
@@ -121,51 +120,33 @@ public class AstMethodTest extends TestCase {
 
     @Test
     public void testGetValue() {
-        assertEquals(
-            "1",
-            parseNode("${base.bar()}").getValue(bindings, context, String.class)
-        );
-        assertEquals(
-            "3",
-            parseNode("${base.bar(3)}")
-                .getValue(bindings, context, String.class)
-        );
+        assertEquals("1", parseNode("${base.bar()}").getValue(bindings, context, String.class));
+        assertEquals("3", parseNode("${base.bar(3)}").getValue(bindings, context, String.class));
 
-        assertNull(
-            parseNode("${base.nullObject.toString()}")
-                .getValue(bindings, context, Object.class)
-        );
+        assertNull(parseNode("${base.nullObject.toString()}").getValue(bindings, context, Object.class));
     }
 
     @Test
     public void testGetValueReference() {
-        assertNull(
-            parseNode("${base.bar()}").getValueReference(bindings, context)
-        );
+        assertNull(parseNode("${base.bar()}").getValueReference(bindings, context));
     }
 
     @Test
     public void testInvoke() {
-        assertEquals(
-            1l,
-            parseNode("${base.bar()}")
-                .invoke(bindings, context, null, null, new Object[] { 999l })
-        );
+        assertEquals(1l, parseNode("${base.bar()}").invoke(bindings, context, null, null, new Object[] { 999l }));
         assertEquals(
             3l,
-            parseNode("${base.bar(3)}")
-                .invoke(
-                    bindings,
-                    context,
-                    null,
-                    new Class[] { long.class },
-                    new Object[] { 999l }
-                )
+            parseNode("${base.bar(3)}").invoke(
+                bindings,
+                context,
+                null,
+                new Class[] { long.class },
+                new Object[] { 999l }
+            )
         );
 
         try {
-            parseNode("${base.nullObject.toString()}")
-                .invoke(bindings, context, null, null, new Object[0]);
+            parseNode("${base.nullObject.toString()}").invoke(bindings, context, null, null, new Object[0]);
             fail();
         } catch (PropertyNotFoundException e) {
             // ok
@@ -174,14 +155,6 @@ public class AstMethodTest extends TestCase {
 
     @Test
     public void testGetMethodInfo() {
-        assertNull(
-            parseNode("${base.bar()}")
-                .getMethodInfo(
-                    bindings,
-                    context,
-                    null,
-                    new Class[] { long.class }
-                )
-        );
+        assertNull(parseNode("${base.bar()}").getMethodInfo(bindings, context, null, new Class[] { long.class }));
     }
 }

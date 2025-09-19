@@ -16,11 +16,12 @@
 package org.activiti.runtime.api.model.impl;
 
 import org.activiti.api.process.model.ProcessCandidateStarterUser;
-import org.activiti.engine.task.IdentityLink;
 import org.activiti.api.runtime.model.impl.ProcessCandidateStarterUserImpl;
+import org.activiti.engine.task.IdentityLink;
 
-public class APIProcessCandidateStarterUserConverter extends ListConverter<IdentityLink, ProcessCandidateStarterUser>
-        implements ModelConverter<IdentityLink, ProcessCandidateStarterUser> {
+public class APIProcessCandidateStarterUserConverter
+    extends ListConverter<IdentityLink, ProcessCandidateStarterUser>
+    implements ModelConverter<IdentityLink, ProcessCandidateStarterUser> {
 
     @Override
     public ProcessCandidateStarterUser from(IdentityLink identityLink) {

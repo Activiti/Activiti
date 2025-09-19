@@ -31,15 +31,9 @@ public class AstChoice extends AstRightValue {
     }
 
     @Override
-    public Object eval(Bindings bindings, ELContext context)
-        throws ELException {
-        Boolean value = bindings.convert(
-            question.eval(bindings, context),
-            Boolean.class
-        );
-        return value.booleanValue()
-            ? yes.eval(bindings, context)
-            : no.eval(bindings, context);
+    public Object eval(Bindings bindings, ELContext context) throws ELException {
+        Boolean value = bindings.convert(question.eval(bindings, context), Boolean.class);
+        return value.booleanValue() ? yes.eval(bindings, context) : no.eval(bindings, context);
     }
 
     @Override

@@ -20,7 +20,6 @@ import org.activiti.api.task.model.payloads.CompleteTaskPayload;
 import org.activiti.test.assertions.TaskAssertions;
 
 public interface TaskOperations {
-
     TaskAssertions claim(ClaimTaskPayload claimTaskPayload);
 
     TaskAssertions complete(CompleteTaskPayload completeTaskPayload);

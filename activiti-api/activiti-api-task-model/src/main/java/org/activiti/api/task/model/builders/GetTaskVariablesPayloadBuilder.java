@@ -15,9 +15,8 @@
  */
 package org.activiti.api.task.model.builders;
 
-import org.activiti.api.task.model.payloads.GetTaskVariablesPayload;
-
 import java.util.Collection;
+import org.activiti.api.task.model.payloads.GetTaskVariablesPayload;
 
 public class GetTaskVariablesPayloadBuilder {
 

@@ -23,10 +23,9 @@ public class VariableCreatedEventImpl extends VariableEventImpl implements Varia
 
     private boolean isEphemeralVariable;
 
-    public VariableCreatedEventImpl() {
-    }
+    public VariableCreatedEventImpl() {}
 
-    public VariableCreatedEventImpl(VariableInstance entity, String processDefinitionId, boolean isEphemeralVariable){
+    public VariableCreatedEventImpl(VariableInstance entity, String processDefinitionId, boolean isEphemeralVariable) {
         super(entity);
         setProcessInstanceId(entity.getProcessInstanceId());
         setProcessDefinitionId(processDefinitionId);

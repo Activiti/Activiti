@@ -21,7 +21,6 @@ public class ThrowEventMatchers extends ActivityMatchers {
 
     private ThrowEventMatchers(String definitionKey) {
         super(definitionKey);
-
     }
 
     @Override
@@ -32,5 +31,4 @@ public class ThrowEventMatchers extends ActivityMatchers {
     public static ThrowEventMatchers throwEvent(String definitionKey) {
         return new ThrowEventMatchers(definitionKey);
     }
-
 }

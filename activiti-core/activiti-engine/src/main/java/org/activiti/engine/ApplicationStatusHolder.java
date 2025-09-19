@@ -27,7 +27,7 @@ public class ApplicationStatusHolder {
 
     private static boolean running = true;
 
-    public static void shutdown(){
+    public static void shutdown() {
         ApplicationStatusHolder.running = false;
     }
 

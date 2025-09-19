@@ -18,7 +18,6 @@ package org.activiti.engine.impl.bpmn.helper.task;
 import org.activiti.engine.task.TaskInfo;
 
 public interface TaskComparator {
-
     TaskInfo getOriginalTask();
     TaskInfo getUpdatedTask();
 
@@ -34,16 +33,17 @@ public interface TaskComparator {
     boolean hasTaskDueDateChanged();
 
     default boolean hasTaskChanged() {
-        return hasTaskNameChanged()
-            || hasTaskDescriptionChanged()
-            || hasTaskOwnerChanged()
-            || hasTaskPriorityChanged()
-            || hasTaskCategoryChanged()
-            || hasTaskFormKeyChanged()
-            || hasTaskParentIdChanged()
-            || hasTaskDefinitionKeyChanged()
-            || hasTaskAssigneeChanged()
-            || hasTaskDueDateChanged();
+        return (
+            hasTaskNameChanged() ||
+            hasTaskDescriptionChanged() ||
+            hasTaskOwnerChanged() ||
+            hasTaskPriorityChanged() ||
+            hasTaskCategoryChanged() ||
+            hasTaskFormKeyChanged() ||
+            hasTaskParentIdChanged() ||
+            hasTaskDefinitionKeyChanged() ||
+            hasTaskAssigneeChanged() ||
+            hasTaskDueDateChanged()
+        );
     }
-
 }

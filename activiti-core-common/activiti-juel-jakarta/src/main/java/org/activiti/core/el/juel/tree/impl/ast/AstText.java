@@ -52,18 +52,10 @@ public final class AstText extends AstNode {
     }
 
     public void setValue(Bindings bindings, ELContext context, Object value) {
-        throw new ELException(
-            LocalMessages.get(
-                "error.value.set.rvalue",
-                getStructuralId(bindings)
-            )
-        );
+        throw new ELException(LocalMessages.get("error.value.set.rvalue", getStructuralId(bindings)));
     }
 
-    public ValueReference getValueReference(
-        Bindings bindings,
-        ELContext context
-    ) {
+    public ValueReference getValueReference(Bindings bindings, ELContext context) {
         return null;
     }
 
@@ -72,12 +64,7 @@ public final class AstText extends AstNode {
         return value;
     }
 
-    public MethodInfo getMethodInfo(
-        Bindings bindings,
-        ELContext context,
-        Class<?> returnType,
-        Class<?>[] paramTypes
-    ) {
+    public MethodInfo getMethodInfo(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes) {
         return null;
     }
 

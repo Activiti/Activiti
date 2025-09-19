@@ -29,8 +29,7 @@ public abstract class AbstractActivitiSmartLifeCycle implements SmartLifecycle, 
     private int phase = DEFAULT_PHASE;
     private volatile boolean running = false;
 
-    public AbstractActivitiSmartLifeCycle() {
-    }
+    public AbstractActivitiSmartLifeCycle() {}
 
     public abstract void doStart();
 
@@ -118,5 +117,4 @@ public abstract class AbstractActivitiSmartLifeCycle implements SmartLifecycle, 
     public void destroy() {
         stop();
     }
-
 }

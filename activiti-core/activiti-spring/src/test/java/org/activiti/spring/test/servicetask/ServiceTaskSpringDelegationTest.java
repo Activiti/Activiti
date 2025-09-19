@@ -76,11 +76,17 @@ public class ServiceTaskSpringDelegationTest extends SpringActivitiTestCase {
 
     @Deployment
     public void testExecutionAndTaskListenerDelegationExpression() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionAndTaskListenerDelegation");
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "executionAndTaskListenerDelegation"
+        );
         assertThat(runtimeService.getVariable(processInstance.getId(), "executionListenerVar")).isEqualTo("working");
         assertThat(runtimeService.getVariable(processInstance.getId(), "taskListenerVar")).isEqualTo("working");
 
-        assertThat(runtimeService.getVariable(processInstance.getId(), "executionListenerField")).isEqualTo("executionListenerInjection");
-        assertThat(runtimeService.getVariable(processInstance.getId(), "taskListenerField")).isEqualTo("taskListenerInjection");
+        assertThat(runtimeService.getVariable(processInstance.getId(), "executionListenerField")).isEqualTo(
+            "executionListenerInjection"
+        );
+        assertThat(runtimeService.getVariable(processInstance.getId(), "taskListenerField")).isEqualTo(
+            "taskListenerInjection"
+        );
     }
 }

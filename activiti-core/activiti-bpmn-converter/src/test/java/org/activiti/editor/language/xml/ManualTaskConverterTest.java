@@ -52,12 +52,8 @@ public class ManualTaskConverterTest extends AbstractConverterTest {
     }
 
     private void checkXml(BpmnModel model) throws Exception {
+        String xml = new String(new BpmnXMLConverter().convertToXML(model), "UTF-8");
 
-        String xml = new String(new BpmnXMLConverter().convertToXML(model),
-                                "UTF-8");
-
-        assertThat(xml).contains("incoming>SequenceFlow_12e82d4<",
-                                 "outgoing>SequenceFlow_0zx88mt<");
-
+        assertThat(xml).contains("incoming>SequenceFlow_12e82d4<", "outgoing>SequenceFlow_0zx88mt<");
     }
 }

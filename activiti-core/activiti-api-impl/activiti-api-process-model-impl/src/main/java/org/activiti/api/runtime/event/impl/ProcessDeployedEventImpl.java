@@ -19,12 +19,13 @@ import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.events.ProcessDefinitionEvent;
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
 
-public class ProcessDeployedEventImpl extends RuntimeEventImpl<ProcessDefinition, ProcessDefinitionEvent.ProcessDefinitionEvents> implements ProcessDeployedEvent {
+public class ProcessDeployedEventImpl
+    extends RuntimeEventImpl<ProcessDefinition, ProcessDefinitionEvent.ProcessDefinitionEvents>
+    implements ProcessDeployedEvent {
 
     private String processModelContent;
 
-    public ProcessDeployedEventImpl() {
-    }
+    public ProcessDeployedEventImpl() {}
 
     public ProcessDeployedEventImpl(ProcessDefinition entity) {
         super(entity);

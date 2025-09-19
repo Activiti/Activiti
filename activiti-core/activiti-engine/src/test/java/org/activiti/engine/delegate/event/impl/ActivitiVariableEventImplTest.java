@@ -42,5 +42,4 @@ public class ActivitiVariableEventImplTest {
         //then
         assertThat(variableEvent.isTaskVariable()).isFalse();
     }
-
 }

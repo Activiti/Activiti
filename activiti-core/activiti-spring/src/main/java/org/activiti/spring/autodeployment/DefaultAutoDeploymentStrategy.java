@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.spring.autodeployment;
 
 import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
@@ -42,21 +41,24 @@ public class DefaultAutoDeploymentStrategy extends AbstractAutoDeploymentStrateg
     }
 
     @Override
-    public void deployResources(final String deploymentNameHint,
-                                final Resource[] resources,
-                                final RepositoryService repositoryService) {
-
+    public void deployResources(
+        final String deploymentNameHint,
+        final Resource[] resources,
+        final RepositoryService repositoryService
+    ) {
         // Create a single deployment for all resources using the name hint as
         // the
         // literal name
 
-        DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name(deploymentNameHint);
+        DeploymentBuilder deploymentBuilder = repositoryService
+            .createDeployment()
+            .enableDuplicateFiltering()
+            .name(deploymentNameHint);
 
         for (final Resource resource : resources) {
             final String resourceName = determineResourceName(resource);
 
-            deploymentBuilder.addInputStream(resourceName,
-                                             resource);
+            deploymentBuilder.addInputStream(resourceName, resource);
         }
 
         loadApplicationUpgradeContext(deploymentBuilder).deploy();

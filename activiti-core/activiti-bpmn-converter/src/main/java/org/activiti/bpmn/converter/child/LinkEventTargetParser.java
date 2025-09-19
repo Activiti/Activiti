@@ -15,13 +15,12 @@
  */
 package org.activiti.bpmn.converter.child;
 
+import static org.activiti.bpmn.converter.LinkEventDefinitionXMLConverter.ATTRIBUTE_LINK_TARGET;
+
+import javax.xml.stream.XMLStreamReader;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.LinkEventDefinition;
-
-import javax.xml.stream.XMLStreamReader;
-
-import static org.activiti.bpmn.converter.LinkEventDefinitionXMLConverter.ATTRIBUTE_LINK_TARGET;
 
 public class LinkEventTargetParser extends BaseChildElementParser {
 

@@ -25,6 +25,5 @@ import java.util.Map;
 
  */
 public interface CustomPropertiesResolver {
-
-  Map<String, Object> getCustomPropertiesMap(DelegateExecution execution);
+    Map<String, Object> getCustomPropertiesMap(DelegateExecution execution);
 }

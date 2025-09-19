@@ -16,7 +16,6 @@
 package org.activiti.application.deployer;
 
 import java.util.List;
-
 import org.activiti.application.ApplicationContent;
 import org.activiti.application.FileContent;
 import org.activiti.application.discovery.ProcessEntryDiscovery;
@@ -34,7 +33,10 @@ public class ProcessEntryDeployer implements ApplicationEntryDeployer {
     @Override
     public void deployEntries(ApplicationContent application) {
         List<FileContent> processContents = application.getFileContents(ProcessEntryDiscovery.PROCESSES);
-        DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name("ApplicationAutoDeployment");
+        DeploymentBuilder deploymentBuilder = repositoryService
+            .createDeployment()
+            .enableDuplicateFiltering()
+            .name("ApplicationAutoDeployment");
         for (FileContent processContent : processContents) {
             deploymentBuilder.addBytes(processContent.getName(), processContent.getContent());
         }

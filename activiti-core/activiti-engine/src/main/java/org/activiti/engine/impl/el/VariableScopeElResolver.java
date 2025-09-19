@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.el;
 
 import jakarta.el.ELContext;
@@ -52,7 +51,6 @@ public class VariableScopeElResolver extends ELResolver {
 
     @Override
     public Object getValue(ELContext context, Object base, Object property) {
-
         if (base == null) {
             String variable = (String) property; // according to javadoc, can
             // only be a String
@@ -82,43 +80,43 @@ public class VariableScopeElResolver extends ELResolver {
                 new TaskElResolver(),
                 new AuthenticatedUserELResolver(),
                 new ProcessInitiatorELResolver(),
-                new VariableElResolver(Context.getProcessEngineConfiguration().getObjectMapper()));
+                new VariableElResolver(Context.getProcessEngineConfiguration().getObjectMapper())
+            );
         }
         return variableScopeItemELResolvers;
     }
 
-	@Override
-	public boolean isReadOnly(ELContext context, Object base, Object property) {
-		if (base == null) {
-			String variable = (String) property;
-			return !variableScope.hasVariable(variable);
-		}
-		return true;
-	}
+    @Override
+    public boolean isReadOnly(ELContext context, Object base, Object property) {
+        if (base == null) {
+            String variable = (String) property;
+            return !variableScope.hasVariable(variable);
+        }
+        return true;
+    }
 
-	@Override
-	public void setValue(ELContext context, Object base, Object property, Object value) {
-		if (base == null) {
-			String variable = (String) property;
-			if (variableScope.hasVariable(variable)) {
-				variableScope.setVariable(variable, value);
-			}
-		}
-	}
+    @Override
+    public void setValue(ELContext context, Object base, Object property, Object value) {
+        if (base == null) {
+            String variable = (String) property;
+            if (variableScope.hasVariable(variable)) {
+                variableScope.setVariable(variable, value);
+            }
+        }
+    }
 
-	@Override
-	public Class<?> getCommonPropertyType(ELContext arg0, Object arg1) {
-		return Object.class;
-	}
+    @Override
+    public Class<?> getCommonPropertyType(ELContext arg0, Object arg1) {
+        return Object.class;
+    }
 
-	@Override
-	public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext arg0, Object arg1) {
-		return null;
-	}
+    @Override
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext arg0, Object arg1) {
+        return null;
+    }
 
-	@Override
-	public Class<?> getType(ELContext arg0, Object arg1, Object arg2) {
-		return Object.class;
-	}
-
+    @Override
+    public Class<?> getType(ELContext arg0, Object arg1, Object arg2) {
+        return Object.class;
+    }
 }

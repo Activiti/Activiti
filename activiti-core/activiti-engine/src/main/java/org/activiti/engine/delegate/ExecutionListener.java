@@ -24,6 +24,5 @@ package org.activiti.engine.delegate;
 
  */
 public interface ExecutionListener extends BaseExecutionListener {
-
-  void notify(DelegateExecution execution);
+    void notify(DelegateExecution execution);
 }

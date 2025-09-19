@@ -27,24 +27,23 @@ import java.util.Set;
  */
 public class AcquiredJobs {
 
-  protected List<List<String>> acquiredJobBatches = new ArrayList<List<String>>();
-  protected Set<String> acquiredJobs = new HashSet<String>();
+    protected List<List<String>> acquiredJobBatches = new ArrayList<List<String>>();
+    protected Set<String> acquiredJobs = new HashSet<String>();
 
-  public List<List<String>> getJobIdBatches() {
-    return acquiredJobBatches;
-  }
+    public List<List<String>> getJobIdBatches() {
+        return acquiredJobBatches;
+    }
 
-  public void addJobIdBatch(List<String> jobIds) {
-    acquiredJobBatches.add(jobIds);
-    acquiredJobs.addAll(jobIds);
-  }
+    public void addJobIdBatch(List<String> jobIds) {
+        acquiredJobBatches.add(jobIds);
+        acquiredJobs.addAll(jobIds);
+    }
 
-  public boolean contains(String jobId) {
-    return acquiredJobs.contains(jobId);
-  }
+    public boolean contains(String jobId) {
+        return acquiredJobs.contains(jobId);
+    }
 
-  public int size() {
-    return acquiredJobs.size();
-  }
-
+    public int size() {
+        return acquiredJobs.size();
+    }
 }

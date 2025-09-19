@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-
 import org.activiti.api.model.shared.event.VariableCreatedEvent;
 import org.activiti.api.model.shared.event.VariableEvent.VariableEvents;
 import org.activiti.api.model.shared.model.VariableInstance;
@@ -70,7 +69,10 @@ class ToVariableCreatedConverterTest {
         assertThat(actualValue).isNull();
     }
 
-    private VariableInstance assertVariableCreatedEvent(VariableCreatedEvent actualEvent, ActivitiVariableEventImpl internalEvent) {
+    private VariableInstance assertVariableCreatedEvent(
+        VariableCreatedEvent actualEvent,
+        ActivitiVariableEventImpl internalEvent
+    ) {
         assertThat(actualEvent.getEventType()).isEqualTo(VariableEvents.VARIABLE_CREATED);
         assertThat(actualEvent.getProcessInstanceId()).isEqualTo(internalEvent.getProcessInstanceId());
         assertThat(actualEvent.getProcessDefinitionId()).isEqualTo(internalEvent.getProcessDefinitionId());
@@ -81,5 +83,4 @@ class ToVariableCreatedConverterTest {
         assertThat(actualEntity.getType()).isEqualTo(internalEvent.getVariableType().getTypeName());
         return actualEntity;
     }
-
 }

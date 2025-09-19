@@ -1,6 +1,6 @@
 {
-  "id":"connectorVarMapping",
-  "name":"myProcess.bpmn",
+  "id": "connectorVarMapping",
+  "name": "myProcess.bpmn",
   "extensions": {
     "properties": {
       "age-id": {
@@ -50,10 +50,12 @@
         "outputs": {
           "name": {
             "type": "variable",
-            "value" : "out_variable_name_1"},
+            "value": "out_variable_name_1"
+          },
           "age": {
             "type": "variable",
-            "value" : "out_variable_name_2"}
+            "value": "out_variable_name_2"
+          }
         }
       }
     }

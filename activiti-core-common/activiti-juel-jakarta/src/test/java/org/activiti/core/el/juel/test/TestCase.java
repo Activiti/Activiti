@@ -27,9 +27,7 @@ import org.activiti.core.el.juel.tree.impl.Builder;
 
 public abstract class TestCase {
 
-    protected static final Builder BUILDER = new Builder(
-        Builder.Feature.METHOD_INVOCATIONS
-    );
+    protected static final Builder BUILDER = new Builder(Builder.Feature.METHOD_INVOCATIONS);
 
     protected static final Tree parse(String expression) {
         return BUILDER.build(expression);

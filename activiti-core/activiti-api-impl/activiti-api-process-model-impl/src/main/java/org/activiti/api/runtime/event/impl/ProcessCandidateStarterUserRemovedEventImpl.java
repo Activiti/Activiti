@@ -19,10 +19,14 @@ import org.activiti.api.process.model.ProcessCandidateStarterUser;
 import org.activiti.api.process.model.events.ProcessCandidateStarterUserEvent;
 import org.activiti.api.process.runtime.events.ProcessCandidateStarterUserRemovedEvent;
 
-public class ProcessCandidateStarterUserRemovedEventImpl extends RuntimeEventImpl<ProcessCandidateStarterUser, ProcessCandidateStarterUserEvent.ProcessCandidateStarterUserEvents> implements ProcessCandidateStarterUserRemovedEvent {
+public class ProcessCandidateStarterUserRemovedEventImpl
+    extends RuntimeEventImpl<
+        ProcessCandidateStarterUser,
+        ProcessCandidateStarterUserEvent.ProcessCandidateStarterUserEvents
+    >
+    implements ProcessCandidateStarterUserRemovedEvent {
 
-    public ProcessCandidateStarterUserRemovedEventImpl() {
-    }
+    public ProcessCandidateStarterUserRemovedEventImpl() {}
 
     public ProcessCandidateStarterUserRemovedEventImpl(ProcessCandidateStarterUser entity) {
         super(entity);

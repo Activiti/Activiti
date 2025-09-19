@@ -57,5 +57,4 @@ public class ToMessageReceivedConverterTest {
         assertThat(messageEvent.getProcessDefinitionId()).isEqualTo("procDefId");
         assertThat(messageEvent.getEntity()).isEqualTo(bpmnMessage);
     }
-
 }

@@ -29,5 +29,4 @@ public class TimerTestConfigurator implements ProcessEngineConfigurationConfigur
         //reduces the amout of time to wait before checking if a timer should be executed
         processEngineConfiguration.setAsyncExecutorDefaultTimerJobAcquireWaitTime(100);
     }
-
 }

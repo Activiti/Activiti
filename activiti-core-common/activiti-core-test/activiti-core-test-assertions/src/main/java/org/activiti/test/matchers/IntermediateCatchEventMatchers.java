@@ -21,7 +21,6 @@ public class IntermediateCatchEventMatchers extends ActivityMatchers {
 
     private IntermediateCatchEventMatchers(String definitionKey) {
         super(definitionKey);
-
     }
 
     @Override
@@ -32,5 +31,4 @@ public class IntermediateCatchEventMatchers extends ActivityMatchers {
     public static IntermediateCatchEventMatchers intermediateCatchEvent(String definitionKey) {
         return new IntermediateCatchEventMatchers(definitionKey);
     }
-
 }

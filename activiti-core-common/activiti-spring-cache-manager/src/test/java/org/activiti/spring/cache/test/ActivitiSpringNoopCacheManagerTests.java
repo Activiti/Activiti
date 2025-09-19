@@ -33,8 +33,9 @@ import org.springframework.cache.support.NoOpCacheManager;
         "debug=false",
         "activiti.spring.cache-manager.provider=noop",
         "activiti.spring.cache-manager.caches.foo.enabled=true",
-        "activiti.spring.cache-manager.caches.bar.enabled=false"
-})
+        "activiti.spring.cache-manager.caches.bar.enabled=false",
+    }
+)
 class ActivitiSpringNoopCacheManagerTests {
 
     @SpringBootApplication
@@ -48,9 +49,7 @@ class ActivitiSpringNoopCacheManagerTests {
 
     @Test
     void testCacheManager() {
-        assertThat(cacheManager)
-            .isNotNull()
-            .isInstanceOf(NoOpCacheManager.class);
+        assertThat(cacheManager).isNotNull().isInstanceOf(NoOpCacheManager.class);
     }
 
     @Test
@@ -69,5 +68,4 @@ class ActivitiSpringNoopCacheManagerTests {
 
         assertThat(cache).isInstanceOf(NoOpCache.class);
     }
-
 }

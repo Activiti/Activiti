@@ -17,9 +17,7 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 public enum DelegateExecutionOutcome {
-
     LEAVE_EXECUTION,
 
-    WAIT_FOR_TRIGGER
-
+    WAIT_FOR_TRIGGER,
 }

@@ -18,7 +18,6 @@ package org.activiti.api.process.model.payloads;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
 import org.activiti.api.model.shared.Payload;
 
 public class SignalPayload implements Payload {
@@ -31,8 +30,7 @@ public class SignalPayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public SignalPayload(String name,
-                         Map<String, Object> variables) {
+    public SignalPayload(String name, Map<String, Object> variables) {
         this();
         this.name = name;
         this.variables = variables;

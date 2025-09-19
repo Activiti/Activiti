@@ -49,7 +49,7 @@ public class ProcessExtensionsCacheManagerIT {
 
     @Test
     @Disabled
-    void testProcessExtensionsCache(){
+    void testProcessExtensionsCache() {
         var processExtensionsCache = cacheManager.getCache("processExtensionsById");
         var deploymentResourcesCache = cacheManager.getCache("deploymentResourcesById");
 
@@ -60,5 +60,4 @@ public class ProcessExtensionsCacheManagerIT {
 
         assertThat(result).isNotNull();
     }
-
 }

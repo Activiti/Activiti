@@ -18,11 +18,9 @@ package org.activiti.core.common.spring.security.policies;
 import java.util.Set;
 
 public interface SecurityPoliciesRestrictionApplier<T> {
-
     T restrictToKeys(Set<String> keys);
 
     T denyAll();
 
     T allowAll();
-
 }

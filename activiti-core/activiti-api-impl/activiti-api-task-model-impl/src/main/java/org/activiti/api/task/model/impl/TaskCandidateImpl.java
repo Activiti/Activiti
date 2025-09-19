@@ -16,15 +16,13 @@
 package org.activiti.api.task.model.impl;
 
 import java.util.Objects;
-
 import org.activiti.api.task.model.TaskCandidate;
 
 public abstract class TaskCandidateImpl implements TaskCandidate {
 
     private String taskId;
 
-    public TaskCandidateImpl() {
-    }
+    public TaskCandidateImpl() {}
 
     public TaskCandidateImpl(String taskId) {
         this.taskId = taskId;
@@ -34,5 +32,4 @@ public abstract class TaskCandidateImpl implements TaskCandidate {
     public String getTaskId() {
         return taskId;
     }
-
 }

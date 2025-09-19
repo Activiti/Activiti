@@ -18,11 +18,12 @@ package org.activiti.runtime.api.model.impl;
 import org.activiti.api.process.model.Deployment;
 import org.activiti.api.runtime.model.impl.DeploymentImpl;
 
-public class APIDeploymentConverter extends ListConverter<org.activiti.engine.repository.Deployment, Deployment>
-        implements ModelConverter<org.activiti.engine.repository.Deployment, Deployment>{
+public class APIDeploymentConverter
+    extends ListConverter<org.activiti.engine.repository.Deployment, Deployment>
+    implements ModelConverter<org.activiti.engine.repository.Deployment, Deployment> {
 
     @Override
-    public Deployment from(org.activiti.engine.repository.Deployment internalDeployment){
+    public Deployment from(org.activiti.engine.repository.Deployment internalDeployment) {
         DeploymentImpl deployment = new DeploymentImpl();
 
         deployment.setId(internalDeployment.getId());
@@ -32,6 +33,4 @@ public class APIDeploymentConverter extends ListConverter<org.activiti.engine.re
 
         return deployment;
     }
-
-
 }

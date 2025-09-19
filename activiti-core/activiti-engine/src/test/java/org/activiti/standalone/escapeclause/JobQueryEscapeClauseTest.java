@@ -29,42 +29,39 @@ public class JobQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        deploymentId = repositoryService.createDeployment()
-                .addClasspathResource("org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml")
-                .tenantId("tenant%")
-                .deploy()
-                .getId();
+        deploymentId = repositoryService
+            .createDeployment()
+            .addClasspathResource("org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml")
+            .tenantId("tenant%")
+            .deploy()
+            .getId();
 
-        deploymentTwoId = repositoryService.createDeployment()
-                .addClasspathResource("org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml")
-                .tenantId("tenant_")
-                .deploy()
-                .getId();
+        deploymentTwoId = repositoryService
+            .createDeployment()
+            .addClasspathResource("org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml")
+            .tenantId("tenant_")
+            .deploy()
+            .getId();
 
-        deploymentThreeId = repositoryService.createDeployment()
-                .addClasspathResource("org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml")
-                .tenantId("test")
-                .deploy()
-                .getId();
+        deploymentThreeId = repositoryService
+            .createDeployment()
+            .addClasspathResource("org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml")
+            .tenantId("test")
+            .deploy()
+            .getId();
 
-        runtimeService.startProcessInstanceByKeyAndTenantId("timerOnTask",
-                                                            "tenant%").getId();
+        runtimeService.startProcessInstanceByKeyAndTenantId("timerOnTask", "tenant%").getId();
 
-        runtimeService.startProcessInstanceByKeyAndTenantId("timerOnTask",
-                                                            "tenant_").getId();
+        runtimeService.startProcessInstanceByKeyAndTenantId("timerOnTask", "tenant_").getId();
 
-        runtimeService.startProcessInstanceByKeyAndTenantId("timerOnTask",
-                                                            "test").getId();
+        runtimeService.startProcessInstanceByKeyAndTenantId("timerOnTask", "test").getId();
     }
 
     @Override
     protected void tearDown() throws Exception {
-        repositoryService.deleteDeployment(deploymentId,
-                                           true);
-        repositoryService.deleteDeployment(deploymentTwoId,
-                                           true);
-        repositoryService.deleteDeployment(deploymentThreeId,
-                                           true);
+        repositoryService.deleteDeployment(deploymentId, true);
+        repositoryService.deleteDeployment(deploymentTwoId, true);
+        repositoryService.deleteDeployment(deploymentThreeId, true);
         super.tearDown();
     }
 

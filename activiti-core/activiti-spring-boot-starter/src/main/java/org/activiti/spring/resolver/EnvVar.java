@@ -15,5 +15,4 @@
  */
 package org.activiti.spring.resolver;
 
-public class EnvVar {
-}
+public class EnvVar {}

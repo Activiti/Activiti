@@ -31,8 +31,11 @@ public class DefaultServiceTaskBehavior implements DelegateExecutionFunction {
     private final IntegrationContextBuilder integrationContextBuilder;
     private final VariablesPropagator variablesPropagator;
 
-    public DefaultServiceTaskBehavior(ApplicationContext applicationContext,
-        IntegrationContextBuilder integrationContextBuilder, VariablesPropagator variablesPropagator) {
+    public DefaultServiceTaskBehavior(
+        ApplicationContext applicationContext,
+        IntegrationContextBuilder integrationContextBuilder,
+        VariablesPropagator variablesPropagator
+    ) {
         this.applicationContext = applicationContext;
         this.integrationContextBuilder = integrationContextBuilder;
         this.variablesPropagator = variablesPropagator;
@@ -56,8 +59,7 @@ public class DefaultServiceTaskBehavior implements DelegateExecutionFunction {
     }
 
     private Connector getConnector(String implementation) {
-        return applicationContext.getBean(implementation,
-                                          Connector.class);
+        return applicationContext.getBean(implementation, Connector.class);
     }
 
     private String getServiceTaskImplementation(DelegateExecution execution) {
@@ -66,6 +68,9 @@ public class DefaultServiceTaskBehavior implements DelegateExecutionFunction {
 
     public boolean hasConnectorBean(DelegateExecution execution) {
         String implementation = getServiceTaskImplementation(execution);
-        return applicationContext.containsBean(implementation) && applicationContext.getBean(implementation) instanceof Connector;
+        return (
+            applicationContext.containsBean(implementation) &&
+            applicationContext.getBean(implementation) instanceof Connector
+        );
     }
 }

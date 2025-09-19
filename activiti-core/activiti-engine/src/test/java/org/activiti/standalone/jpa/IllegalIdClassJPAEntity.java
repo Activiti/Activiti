@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.activiti.standalone.jpa;
-
-import java.util.Calendar;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import java.util.Calendar;
 
 /**
  *
@@ -33,15 +31,14 @@ import jakarta.persistence.Id;
 @Entity
 public class IllegalIdClassJPAEntity {
 
-  @Id
-  private Calendar id;
+    @Id
+    private Calendar id;
 
-  public Calendar getId() {
-    return id;
-  }
+    public Calendar getId() {
+        return id;
+    }
 
-  public void setId(Calendar id) {
-    this.id = id;
-  }
-
+    public void setId(Calendar id) {
+        this.id = id;
+    }
 }
