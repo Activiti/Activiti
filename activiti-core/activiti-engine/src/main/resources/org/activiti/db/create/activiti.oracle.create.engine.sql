@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '8.1.3', 1);
+values ('schema.version', '8.1.4', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(8.1.3)', 1);
+values ('schema.history', 'create(8.1.4)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -337,7 +337,7 @@ alter table ACT_RU_EXECUTION
     foreign key (PROC_DEF_ID_)
     references ACT_RE_PROCDEF (ID_);
 
-create index ACT_IDX_TSKASS_TASK on ACT_RU_IDENTITYLINK(TASK_ID_);
+create index ACT_IDX_TSKASS_TASK on ACT_RU_IDENTITYLINK(TASK_ID_ ASC);
 alter table ACT_RU_IDENTITYLINK
     add constraint ACT_FK_TSKASS_TASK
     foreign key (TASK_ID_)
