@@ -24,10 +24,6 @@ jobs:
     outputs:
       preview: ${{ steps.check_pr_preview.outputs.preview }}
     steps:
-      - name: Check dependabot build
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@38ef6dee366288fd8a94d3aef54f151f660cc800 # temp version for testing
-        with:
-          error-message: "This PR requires additional validation, please set the milestone to 'Validating' or ask a reviewer to approve it."
       - name: pre-commit
         uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@edb17074b511e2443b0dbaed57772b9f0b1d017a # v8.35.0
       - name: Ensure SHA pinned actions
