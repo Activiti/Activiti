@@ -15,13 +15,14 @@ on:
     types:
       - labeled
 
+permissions:
+  contents: read          # Required to read repository content
+  pull-requests: write    # Required to edit PR (milestones, labels, auto-merge)
+  issues: write          # Required to create comments on PRs
+
 jobs:
   check:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read          # Required to read repository content
-      pull-requests: write    # Required to edit PR (milestones, labels, auto-merge)
-      issues: write          # Required to create comments on PRs
     steps:
       - name: Trigger validation on approval
         if: github.event_name == 'pull_request_review'
@@ -36,7 +37,7 @@ jobs:
         if: github.event_name == 'pull_request' && github.event.action == 'labeled'
         uses: Alfresco/alfresco-build-tools/.github/actions/github-trigger-labeled-pr@38ef6dee366288fd8a94d3aef54f151f660cc800 # temp version for testing
         with:
-          github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           labels: ${{ env.TRIGGER_LABELS }}
           milestone: ${{ env.MILESTONE_NAME }}
           force-trigger: true
