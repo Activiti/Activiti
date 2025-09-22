@@ -18,6 +18,10 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read          # Required to read repository content
+      pull-requests: write    # Required to edit PR (milestones, labels, auto-merge)
+      issues: write          # Required to create comments on PRs
     steps:
       - name: Trigger validation on approval
         if: github.event_name == 'pull_request_review'
