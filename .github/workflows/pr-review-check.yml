@@ -19,7 +19,7 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger validate on approval
+      - name: Trigger validation on approval
         if: github.event_name == 'pull_request_review'
         uses: Alfresco/alfresco-build-tools/.github/actions/github-trigger-approved-pr@006d902af2f90a80e2dd99dede963115c8470b9f # temp version for testing
         with:
