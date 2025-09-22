@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Trigger validation on approval
         if: github.event_name == 'pull_request_review'
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-trigger-approved-pr@f3774db31ebd2b33dbcdfd34deb11a61b106fca9 # temp version for testing
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-trigger-approved-pr@38ef6dee366288fd8a94d3aef54f151f660cc800 # temp version for testing
         with:
           creator: ${{ env.DEPENDABOT_CREATOR }}
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
@@ -30,7 +30,7 @@ jobs:
 
       - name: Trigger validation on labeling
         if: github.event_name == 'pull_request' && github.event.action == 'labeled'
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-trigger-labeled-pr@f3774db31ebd2b33dbcdfd34deb11a61b106fca9 # temp version for testing
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-trigger-labeled-pr@38ef6dee366288fd8a94d3aef54f151f660cc800 # temp version for testing
         with:
           labels: ${{ env.TRIGGER_LABELS }}
           milestone: ${{ env.MILESTONE_NAME }}
