@@ -22,7 +22,7 @@ permissions:
 
 jobs:
   check:
-    if: ${{ secrets.SECRET_SOURCE != 'None' }}
+    if: github.secret_source != 'None'
     runs-on: ubuntu-latest
     steps:
       - name: Trigger validation on approval
