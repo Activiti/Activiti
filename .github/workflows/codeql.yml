@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check dependabot build
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@7ba138df824e6e09faeacb599fa2112cbd8e5085 # temp version for testing
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@f3774db31ebd2b33dbcdfd34deb11a61b106fca9 # temp version for testing
         with:
           dependabot-error-message: "This PR requires additional validation, please set the milestone to 'Validating' or ask a reviewer to approve it."
 
