@@ -24,6 +24,11 @@ jobs:
     outputs:
       preview: ${{ steps.check_pr_preview.outputs.preview }}
     steps:
+      - name: Check dependabot build
+        if: github.secret_source == 'Dependabot'
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@f3774db31ebd2b33dbcdfd34deb11a61b106fca9 # temp version for testing
+        with:
+          dependabot-error-message: "This PR requires additional validation, please set the milestone to 'Validating' or ask a reviewer to approve it."
       - name: pre-commit
         uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@edb17074b511e2443b0dbaed57772b9f0b1d017a # v8.35.0
       - name: Ensure SHA pinned actions
@@ -75,7 +80,7 @@ jobs:
         id: define_maven_command
         shell: bash
         run: |
-          if [ $DO_PUSH == 'true' ]
+          if [[ $DO_PUSH == 'true' && $SECRET_SOURCE != 'None' ]]
           then
             echo "command=deploy" >> $GITHUB_OUTPUT
           else
@@ -83,6 +88,7 @@ jobs:
           fi
         env:
           DO_PUSH: ${{ needs.pre-checks.outputs.preview }}
+          SECRET_SOURCE: ${{ github.secret_source }}
 
       - name: Build and Test with Maven (and maybe deploy)
         shell: bash
@@ -106,7 +112,7 @@ jobs:
           echo "SONAR_SCANNER_OPTS=sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=activiti -Dsonar.projectKey=Activiti_Activiti -Dsonar.coverage.jacoco.xmlReportPaths=**/target/site/jacoco*/jacoco.xml" >> $GITHUB_ENV
 
       - name: Run SonarCloud analysis
-        if: ${{ env.SONAR_TOKEN != '' }}
+        if: ${{ secrets.SONAR_TOKEN != '' }}
         shell: bash
         run: mvn ${{ env.SONAR_SCANNER_OPTS }} ${{ env.MAVEN_CLI_OPTS}}
         env:
