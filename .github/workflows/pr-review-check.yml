@@ -29,7 +29,7 @@ jobs:
           auto-merge-on-approval: true
 
       - name: Trigger validation on labeling
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && github.event.action == 'labeled'
         uses: Alfresco/alfresco-build-tools/.github/actions/github-trigger-labeled-pr@006d902af2f90a80e2dd99dede963115c8470b9f # temp version for testing
         with:
           labels: ${{ env.TRIGGER_LABELS }}
