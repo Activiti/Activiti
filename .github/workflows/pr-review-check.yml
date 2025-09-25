@@ -35,7 +35,7 @@ jobs:
           auto-merge-on-approval: true
 
       - name: Trigger validation on labeling, unless token is readonly (dependabot/fork)
-        if: github.event_name == 'pull_request' && github.event.action == 'labeled' && github.secret_source == "Actions"
+        if: github.event_name == 'pull_request' && github.event.action == 'labeled' && github.secret_source == 'Actions'
         uses: Alfresco/alfresco-build-tools/.github/actions/github-trigger-labeled-pr@45894bc477cf31bf1455eae066f0aeccd6e920b7 # temp version for testing
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
