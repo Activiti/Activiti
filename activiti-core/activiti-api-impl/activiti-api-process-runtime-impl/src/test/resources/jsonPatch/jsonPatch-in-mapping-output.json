@@ -40,6 +40,9 @@
               },
               {
                 "street": "456 Elm St"
+              },
+              {
+                "street": "77 Replace Street"
               }
             ]
           }
@@ -176,6 +179,13 @@
                 {
                   "op": "add",
                   "path": "/addresses/2",
+                  "value": {
+                    "street": "100 Replaced address"
+                  }
+                },
+                {
+                  "op": "add",
+                  "path": "/addresses/3",
                   "value": "${process_variable_address}"
                 }
               ]

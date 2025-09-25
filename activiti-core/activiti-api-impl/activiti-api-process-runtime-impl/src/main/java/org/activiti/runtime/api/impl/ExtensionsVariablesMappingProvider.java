@@ -291,9 +291,12 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
 
             JsonNode currentNode = oldNode;
 
-            for (int i = 1; i < properties.length - 1; i++) {
+            for (int i = 1; i < properties.length; i++) {
                 String property = properties[i];
-                if (isArrayProperty(currentNode, property)) {
+                if(isArrayElementPath(i, properties, property)) {
+                    prepareArrayElementForReplace((ObjectNode) patch, currentNode, property);
+                }
+                else if (isArrayProperty(currentNode, property)) {
                     currentNode = handleArrayPath(property, currentNode);
                 } else {
                     if (!currentNode.has(property) || !currentNode.get(property).isObject()) {
@@ -310,6 +313,21 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
             node.isArray() ||
             ((!node.isEmpty() && (node.has(property) && node.get(property).isArray())) || property.matches("\\d+"))
         );
+    }
+
+    private void prepareArrayElementForReplace(ObjectNode patch, JsonNode currentNode, String property) {
+        if (currentNode.isArray()) {
+            patch.put("op", "replace");
+            ArrayNode arrayNode = (ArrayNode) currentNode;
+            int index = Integer.parseInt(property);
+            while (arrayNode.size() <= index) {
+                arrayNode.add(objectMapper.createObjectNode());
+            }
+        }
+    }
+
+    private boolean isArrayElementPath(int index, String[] properties, String property) {
+        return index == properties.length - 1 && StringUtils.isNumeric(property);
     }
 
     private JsonNode handleArrayPath(String property, JsonNode currentNode) {
