@@ -38,7 +38,7 @@ jobs:
         if: github.event_name == 'pull_request' && github.event.action == 'labeled' && github.secret_source == 'Actions'
         uses: Alfresco/alfresco-build-tools/.github/actions/github-trigger-labeled-pr@45894bc477cf31bf1455eae066f0aeccd6e920b7 # temp version for testing
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           labels: ${{ env.TRIGGER_LABELS }}
           milestone: ${{ env.MILESTONE_NAME }}
           force-trigger: true

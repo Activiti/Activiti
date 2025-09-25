@@ -39,12 +39,11 @@ jobs:
         uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@45894bc477cf31bf1455eae066f0aeccd6e920b7 # temp version for testing
         with:
           dependabot-error-message: "This PR requires additional validation, please set the milestone to 'Validating' or ask a reviewer to approve it."
-          none-error-message: "This PR requires additional validation, please set the milestone to 'Validating' or ask a reviewer to approve it."
+          none-error-message: "This PR requires additional validation, please set the milestone to 'Validating'."
 
   analyze:
     name: Analyze
     needs: pre-checks
-    if: ${{ needs.pre-checks.outputs.skip != 'true' }}
     # Runner size impacts CodeQL analysis time. To learn more, please see:
     #   - https://gh.io/recommended-hardware-resources-for-running-codeql
     #   - https://gh.io/supported-runners-and-hardware-resources
