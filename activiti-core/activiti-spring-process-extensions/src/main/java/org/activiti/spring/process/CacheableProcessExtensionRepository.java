@@ -18,6 +18,8 @@ package org.activiti.spring.process;
 import static org.activiti.spring.process.CacheableProcessExtensionRepository.PROCESS_EXTENSIONS_CACHE_NAME;
 
 import java.util.Optional;
+
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.model.Extension;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
@@ -38,5 +40,11 @@ public class CacheableProcessExtensionRepository implements ProcessExtensionRepo
     @Cacheable
     public Optional<Extension> getExtensionsForId(@NonNull String processDefinitionId) {
         return delegate.getExtensionsForId(processDefinitionId);
+    }
+
+    @Override
+    @Cacheable
+    public Optional<Extension> getExtensionsFor(ProcessDefinition processDefinition) {
+        return delegate.getExtensionsFor(processDefinition);
     }
 }

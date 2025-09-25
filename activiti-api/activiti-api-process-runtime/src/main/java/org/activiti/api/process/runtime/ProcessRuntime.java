@@ -81,6 +81,10 @@ public interface ProcessRuntime {
     );
 
     /**
+     * Get all process definitions using payload filters
+     */
+    List<org.activiti.engine.repository.ProcessDefinition> processDefinitions();
+    /**
      * Start a new Process Instance based on the payload parameters
      */
     ProcessInstance start(StartProcessPayload startProcessPayload);

@@ -23,5 +23,9 @@
       <groupId>org.activiti</groupId>
       <artifactId>activiti-api-process-model</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-engine</artifactId>
+    </dependency>
   </dependencies>
 </project>

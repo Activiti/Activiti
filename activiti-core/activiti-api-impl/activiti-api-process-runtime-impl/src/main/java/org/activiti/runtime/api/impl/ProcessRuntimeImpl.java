@@ -221,6 +221,24 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         GetProcessDefinitionsPayload getProcessDefinitionsPayload,
         List<String> include
     ) {
+        ProcessDefinitionQuery processDefinitionQuery = getProcessDefinitionQuery(getProcessDefinitionsPayload);
+
+        return new PageImpl<>(
+            processDefinitionConverter.from(
+                processDefinitionQuery.listPage(pageable.getStartIndex(), pageable.getMaxItems())
+            ),
+            Math.toIntExact(processDefinitionQuery.count())
+        );
+    }
+
+    @Override
+    public List<org.activiti.engine.repository.ProcessDefinition> processDefinitions() {
+        ProcessDefinitionQuery processDefinitionQuery = getProcessDefinitionQuery(ProcessPayloadBuilder.processDefinitions().build());
+
+        return processDefinitionQuery.list();
+    }
+
+    private ProcessDefinitionQuery getProcessDefinitionQuery(GetProcessDefinitionsPayload getProcessDefinitionsPayload) {
         if (getProcessDefinitionsPayload == null) {
             throw new IllegalStateException("payload cannot be null");
         }
@@ -245,13 +263,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         if (!StringUtils.isBlank(processCategoryToExclude)) {
             processDefinitionQuery.processDefinitionCategoryNotEquals(processCategoryToExclude);
         }
-
-        return new PageImpl<>(
-            processDefinitionConverter.from(
-                processDefinitionQuery.listPage(pageable.getStartIndex(), pageable.getMaxItems())
-            ),
-            Math.toIntExact(processDefinitionQuery.count())
-        );
+        return processDefinitionQuery;
     }
 
     @Override

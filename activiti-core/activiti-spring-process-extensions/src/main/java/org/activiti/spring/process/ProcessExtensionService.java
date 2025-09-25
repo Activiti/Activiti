@@ -15,6 +15,7 @@
  */
 package org.activiti.spring.process;
 
+import java.util.List;
 import java.util.Optional;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.model.Extension;
@@ -41,6 +42,10 @@ public class ProcessExtensionService {
 
     public Extension getExtensionsFor(@NonNull ProcessDefinition processDefinition) {
         return getExtensionsForId(processDefinition.getId());
+    }
+
+    public Extension getExtensionsForWithoutCallingDB(@NonNull ProcessDefinition processDefinition) {
+        return getExtensionsFor(processDefinition);
     }
 
     public Extension getExtensionsForId(@NonNull String processDefinitionId) {

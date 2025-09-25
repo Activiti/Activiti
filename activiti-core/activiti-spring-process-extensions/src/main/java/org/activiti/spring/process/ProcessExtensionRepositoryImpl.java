@@ -46,10 +46,15 @@ public class ProcessExtensionRepositoryImpl implements ProcessExtensionRepositor
     public Optional<Extension> getExtensionsForId(@NonNull String processDefinitionId) {
         return Optional.of(processDefinitionId)
             .map(repositoryService::getProcessDefinition)
-            .map(this::getExtensionsFor);
+            .map(this::fetchExtensionsFor);
     }
 
-    private Extension getExtensionsFor(ProcessDefinition processDefinition) {
+    @Override
+    public Optional<Extension> getExtensionsFor(ProcessDefinition processDefinition) {
+        return Optional.ofNullable(fetchExtensionsFor(processDefinition));
+    }
+
+    private Extension fetchExtensionsFor(ProcessDefinition processDefinition) {
         Map<String, Extension> processExtensionModelMap = getProcessExtensionsForDeploymentId(
             processDefinition.getDeploymentId()
         );
