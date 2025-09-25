@@ -381,19 +381,32 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testParallelUserTasksCollectionAndCompletionConditions() {
-        String procId = runtimeService.startProcessInstanceByKey("miParallelUserTasksCollectionAndCompletionConditions").getId();
+        // GIVEN: a started process with variables setup
+        Map<String, Object> vars = new HashMap<String, Object>();
+        List<String> assigneeList = asList("kermit", "gonzo");
+        List<String> emptyList = new ArrayList<>();
+        vars.put("Approver1", assigneeList);
+        vars.put("Empty", emptyList);
+        vars.put("ReturnBackTo", "null");
+        String procId = runtimeService
+            .startProcessInstanceByKey("miParallelUserTasksCollectionAndCompletionConditions",
+                vars
+            )
+            .getId();
+
+        // WHEN: the process started, 2 tasks are created in parallel
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(2);
 
-        // setting execution variable to meet completion condition
+        // WHEN: setting execution variable to meet completion condition
         final List<Execution> list = runtimeService.createExecutionQuery().processInstanceId(procId).list();
         final Optional<Execution> first = list.stream().filter(execution -> execution.getParentId() == null).findFirst();
         runtimeService.setVariable(first.get().getId(), "ReturnBackTo", "non-null");
 
-        // complete one of the tasks
+        // WHEN: and complete one of the tasks (to evaluate completionCondition)
         taskService.complete( tasks.getFirst().getId() );
 
-        // all tasks must be completed, since completion condition is met
+        // THEN: all tasks must be completed (and the process is finished), since completion condition is met
         assertProcessEnded(procId);
     }
 
