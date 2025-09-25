@@ -536,6 +536,8 @@ public class ExtensionsVariablesMappingProviderTest {
         Map<String, Object> expectedAddress3 = Map.of("address", Map.of("street", "Ha-Ha Road"));
         Map<String, Object> expectedAddress5 = Map.of("street", "123 Main St", "propertyFromVariable", "Street Name");
         Map<String, Object> expectedAddress6 = Map.of("street", "456 Elm St", "propertyFromVariable", "Street Name");
+        Map<String, Object> expectedAddress7 = Map.of("street", "100 Replaced address");
+
 
         assertThat(outputVariables).isNotEmpty();
         assertThat(outputVariables.entrySet())
@@ -563,7 +565,7 @@ public class ExtensionsVariablesMappingProviderTest {
                         "firstname",
                         "Bob",
                         "addresses",
-                        List.of(expectedAddress0, expectedAddress2, expectedAddress3)
+                        List.of(expectedAddress0, expectedAddress2,expectedAddress7, expectedAddress3)
                     )
                 ),
                 tuple(
