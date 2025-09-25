@@ -382,11 +382,11 @@
 
     <!-- where -->
     <where>
-      <if test="candidateUser != null || candidateGroups != null">
-        and link.ID_ is not null
-      </if>
       <if test="taskId != null">
         RES.ID_ = #{taskId}
+      </if>
+      <if test="candidateUser != null || candidateGroups != null">
+        and link.ID_ is not null
       </if>
       <if test="taskDefinitionKey != null">
         and RES.TASK_DEF_KEY_ = #{taskDefinitionKey}
