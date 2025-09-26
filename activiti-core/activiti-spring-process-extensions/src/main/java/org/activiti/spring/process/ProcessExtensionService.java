@@ -45,7 +45,7 @@ public class ProcessExtensionService {
     }
 
     public Extension getExtensionsForWithoutCallingDB(@NonNull ProcessDefinition processDefinition) {
-        return getExtensionsFor(processDefinition);
+        return processExtensionRepository.getExtensionsFor(processDefinition).orElse(EMPTY_EXTENSION);
     }
 
     public Extension getExtensionsForId(@NonNull String processDefinitionId) {

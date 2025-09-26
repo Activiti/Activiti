@@ -18,6 +18,7 @@ package org.activiti.spring.process;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.resources.DeploymentResourceLoader;
 import org.junit.jupiter.api.Disabled;
@@ -57,6 +58,103 @@ public class ProcessExtensionsCacheManagerIT {
         assertThat(processExtensionsCache).isNotNull();
 
         var result = processExtensionService.getExtensionsForId("processDefinitionId");
+
+        assertThat(result).isNotNull();
+    }
+
+
+    @Test
+    void testProcessExtensionsWithoutCallingDBCache() {
+        var processExtensionsCache = cacheManager.getCache("processExtensionsById");
+        var deploymentResourcesCache = cacheManager.getCache("deploymentResourcesById");
+
+        assertThat(deploymentResourcesCache).isNotNull();
+        assertThat(processExtensionsCache).isNotNull();
+
+        ProcessDefinition processDefinition = new ProcessDefinition() {
+            @Override
+            public String getId() {
+                return "processDefinitionId";
+            }
+
+            @Override
+            public String getCategory() {
+                return "";
+            }
+
+            @Override
+            public String getName() {
+                return "";
+            }
+
+            @Override
+            public String getKey() {
+                return "";
+            }
+
+            @Override
+            public String getDescription() {
+                return "";
+            }
+
+            @Override
+            public int getVersion() {
+                return 0;
+            }
+
+            @Override
+            public String getResourceName() {
+                return "";
+            }
+
+            @Override
+            public String getDeploymentId() {
+                return "";
+            }
+
+            @Override
+            public String getDiagramResourceName() {
+                return "";
+            }
+
+            @Override
+            public boolean hasStartFormKey() {
+                return false;
+            }
+
+            @Override
+            public boolean hasGraphicalNotation() {
+                return false;
+            }
+
+            @Override
+            public boolean isSuspended() {
+                return false;
+            }
+
+            @Override
+            public String getTenantId() {
+                return "";
+            }
+
+            @Override
+            public String getEngineVersion() {
+                return "";
+            }
+
+            @Override
+            public void setAppVersion(Integer appVersion) {
+
+            }
+
+            @Override
+            public Integer getAppVersion() {
+                return 0;
+            }
+        };
+
+
+        var result = processExtensionService.getExtensionsForWithoutCallingDB(processDefinition);
 
         assertThat(result).isNotNull();
     }

@@ -1078,4 +1078,16 @@ public class ProcessRuntimeIT {
 
         assertThat(processInstancePage).isNotNull();
     }
+
+    @Test
+    public void shouldGetAllAvailableProcessDefinitionForTheGivenUser() {
+        //when
+        var processDefinitionList = processRuntime.processDefinitions();
+        //then
+        assertThat(processDefinitionList).isNotNull();
+        assertThat(processDefinitionList)
+            .extracting(org.activiti.engine.repository.ProcessDefinition::getKey)
+            .contains(CATEGORIZE_PROCESS, CATEGORIZE_HUMAN_PROCESS, ONE_STEP_PROCESS);
+    }
+
 }
