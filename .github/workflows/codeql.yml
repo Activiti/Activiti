@@ -15,8 +15,14 @@ on:
   push:
     branches: ["develop", "7.*.x"]
   pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - milestoned
     # The branches below must be a subset of the branches above
-    branches: ["develop"]
+    branches:
+      - develop
   schedule:
     - cron: "0 1 * * FRI"
 
@@ -28,12 +34,16 @@ jobs:
   pre-checks:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - name: Check dependabot build
+        if: github.secret_source == 'Dependabot' || (github.secret_source == 'None' && github.event.action != 'milestoned')
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@c295ecd6ca6b9c473dcada1e0478cdeaba79d5ea # v9.0.0
+        with:
+          dependabot-error-message: "This PR requires additional validation, please set the milestone to 'Validating' or ask a reviewer to approve it."
+          none-error-message: "This PR requires additional validation, please set the milestone to 'Validating'."
 
   analyze:
     name: Analyze
     needs: pre-checks
-    if: ${{ needs.pre-checks.outputs.skip != 'true' }}
     # Runner size impacts CodeQL analysis time. To learn more, please see:
     #   - https://gh.io/recommended-hardware-resources-for-running-codeql
     #   - https://gh.io/supported-runners-and-hardware-resources

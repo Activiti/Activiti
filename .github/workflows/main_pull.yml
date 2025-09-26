@@ -10,9 +10,8 @@ on:
       - opened
       - reopened
       - synchronize
-      - labeled
+      - milestoned
 
-  # Allows to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 concurrency:
@@ -22,16 +21,24 @@ concurrency:
 jobs:
   pre-checks:
     runs-on: ubuntu-latest
+    outputs:
+      preview: ${{ steps.check_pr_preview.outputs.preview }}
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-      - name: Check dependabot build
-        uses: ./.github/actions/check-ext-build
-      - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@edb17074b511e2443b0dbaed57772b9f0b1d017a # v8.35.0
+      - name: Check dependabot/fork build
+        if: github.secret_source == 'Dependabot' || (github.secret_source == 'None' && github.event.action != 'milestoned')
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-require-secrets@c295ecd6ca6b9c473dcada1e0478cdeaba79d5ea # v9.0.0
         with:
-          skip_checkout: true
+          dependabot-error-message: "This PR requires additional validation, please set the milestone to 'Validating' or ask a reviewer to approve it."
+          none-error-message: "This PR requires additional validation, please set the milestone to 'Validating'."
+      - name: pre-commit
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@c295ecd6ca6b9c473dcada1e0478cdeaba79d5ea # v9.0.0
       - name: Ensure SHA pinned actions
         uses: zgosalvez/github-actions-ensure-sha-pinned-actions@fc87bb5b5a97953d987372e74478de634726b3e5 # v3.0.25
+      - name: Check PR preview
+        id: check_pr_preview
+        shell: bash
+        run: |
+          echo "preview=${{ contains(github.event.pull_request.labels.*.name, 'preview') }}" >> $GITHUB_OUTPUT
 
   build:
     runs-on: ubuntu-latest
@@ -54,34 +61,35 @@ jobs:
           distribution: "temurin"
 
       - name: Set preview version
-        if: ${{ contains(github.event.pull_request.labels.*.name, 'preview') }}
+        if: ${{ needs.pre-checks.outputs.preview == 'true' }}
         run: |
           GITHUB_PR_NUMBER=PR-${{ github.event.pull_request.number }}
           echo 0.0.1-${GITHUB_PR_NUMBER}-${GITHUB_RUN_NUMBER}-SNAPSHOT > VERSION
 
       - name: Set VERSION env variable
-        if: ${{ contains(github.event.pull_request.labels.*.name, 'preview') }}
+        if: ${{ needs.pre-checks.outputs.preview == 'true' }}
         run: |
           VERSION=$(cat VERSION)
           echo set VERSION=$VERSION
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Update pom files to the new version
-        if: ${{ contains(github.head_ref, 'preview') || contains(github.event.pull_request.labels.*.name, 'preview') }}
+        if: ${{ needs.pre-checks.outputs.preview == 'true' }}
         run: mvn -B versions:set -DnewVersion=$VERSION -DprocessAllModules=true -DgenerateBackupPoms=false
 
       - name: Define Maven Command
         id: define_maven_command
         shell: bash
         run: |
-          if [ $DO_PUSH == 'true' ]
+          if [[ $DO_PUSH == 'true' && $SECRET_SOURCE != 'None' ]]
           then
             echo "command=deploy" >> $GITHUB_OUTPUT
           else
             echo "command=install" >> $GITHUB_OUTPUT
           fi
         env:
-          DO_PUSH: ${{ contains(github.event.pull_request.labels.*.name, 'preview') }}
+          DO_PUSH: ${{ needs.pre-checks.outputs.preview }}
+          SECRET_SOURCE: ${{ github.secret_source }}
 
       - name: Build and Test with Maven (and maybe deploy)
         shell: bash
