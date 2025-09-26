@@ -124,10 +124,9 @@ class ProcessExtensionServiceTest {
         ProcessExtensionService service = new ProcessExtensionService(mockRepository);
 
         ProcessDefinition processDefinition = Mockito.mock(ProcessDefinition.class);
-        when(processDefinition.getId()).thenReturn("validId");
 
         Extension mockExtension = new Extension();
-        when(mockRepository.getExtensionsForId("validId")).thenReturn(Optional.of(mockExtension));
+        when(mockRepository.getExtensionsFor(processDefinition)).thenReturn(Optional.of(mockExtension));
 
         Extension result = service.getExtensionsForWithoutCallingDB(processDefinition);
 
