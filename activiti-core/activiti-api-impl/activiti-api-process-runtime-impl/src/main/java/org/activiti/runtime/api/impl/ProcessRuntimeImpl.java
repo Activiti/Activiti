@@ -221,6 +221,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         GetProcessDefinitionsPayload getProcessDefinitionsPayload,
         List<String> include
     ) {
+        getProcessDefinitionsPayload.setLatestVersionOnly(true);
         ProcessDefinitionQuery processDefinitionQuery = getProcessDefinitionQuery(getProcessDefinitionsPayload);
 
         return new PageImpl<>(
@@ -251,9 +252,14 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             getProcessDefinitionsPayload.setProcessDefinitionKeys(securityKeysInPayload.getProcessDefinitionKeys());
         }
 
-        ProcessDefinitionQuery processDefinitionQuery = createProcessDefinitionQueryWithAccessCheck()
-            .latestVersion()
-            .deploymentIds(latestDeploymentIds());
+        ProcessDefinitionQuery processDefinitionQuery = createProcessDefinitionQueryWithAccessCheck();
+
+        if (getProcessDefinitionsPayload.isLatestVersionOnly()) {
+            processDefinitionQuery
+                .latestVersion()
+                .deploymentIds(latestDeploymentIds());
+        }
+
 
         if (getProcessDefinitionsPayload.hasDefinitionKeys()) {
             processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());
