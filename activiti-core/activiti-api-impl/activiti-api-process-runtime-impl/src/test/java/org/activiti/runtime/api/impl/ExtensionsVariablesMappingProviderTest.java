@@ -1092,6 +1092,27 @@ public class ExtensionsVariablesMappingProviderTest {
             );
     }
 
+    @Test
+    public void shouldReadFieldEphemeralWhenSetInExtension() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProcessExtensionModel extensions = objectMapper.readValue(
+            new File("src/test/resources/task-variable-mapping-extensions-with-ephemeral.json"),
+            ProcessExtensionModel.class
+        );
+
+        ProcessVariablesMapping processVariablesMapping = extensions.getExtensions("Process_taskVarMapping").getMappingForFlowElement("simpleTask");
+
+        Map<String,Mapping> inputs = processVariablesMapping.getInputs();
+        Map<String,Mapping> outputs = processVariablesMapping.getOutputs();
+
+        assertThat(inputs.get("task_input_variable_name_1").isEphemeral()).isTrue();
+        assertThat(inputs.get("task_input_variable_name_2").isEphemeral()).isFalse();
+
+        assertThat(outputs.get("process_variable_outputmap_1").isEphemeral()).isTrue();
+        assertThat(outputs.get("property-with-no-default-value").isEphemeral()).isFalse();
+        assertThat(outputs.get("process-variable-with-jsonpatch-type").isEphemeral()).isTrue();
+    }
+
     public static class TestCustomFunctionProvider implements CustomFunctionProvider {
 
         public static Integer plusOne(Integer number) {
