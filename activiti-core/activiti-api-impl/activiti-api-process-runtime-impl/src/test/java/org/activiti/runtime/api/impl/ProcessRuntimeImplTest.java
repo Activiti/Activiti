@@ -68,6 +68,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -388,5 +389,42 @@ public class ProcessRuntimeImplTest {
         processRuntime.processDefinitions(pageable, payload);
 
         verify(processDefinitionQuery).processDefinitionCategoryNotEquals(processCategory);
+    }
+
+
+    @Test
+    public void should_processDefinitionsReturnsEmptyList_when_noDefinitionsExist() {
+        when(securityPoliciesManager.restrictProcessDefQuery(any())).thenReturn(
+            ProcessPayloadBuilder.processDefinitions().build()
+        );
+
+        ProcessDefinitionQuery processDefinitionQuery = mock(ProcessDefinitionQuery.class, Answers.RETURNS_SELF);
+        when(processDefinitionQuery.deploymentIds(any())).thenReturn(processDefinitionQuery);
+        when(repositoryService.createDeploymentQuery()).thenReturn(mock(DeploymentQuery.class, Answers.RETURNS_SELF));
+        when(repositoryService.createProcessDefinitionQuery()).thenReturn(processDefinitionQuery);
+        when(processDefinitionQuery.list()).thenReturn(Collections.emptyList());
+
+        List<ProcessDefinition> result = processRuntime.processDefinitions();
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void should_processDefinitionsReturnsListOfDefinitions_when_definitionsExist() {
+        ProcessDefinition mockDefinition = Mockito.mock(ProcessDefinition.class);
+        when(securityPoliciesManager.restrictProcessDefQuery(any())).thenReturn(
+            ProcessPayloadBuilder.processDefinitions().build()
+        );
+
+        ProcessDefinitionQuery processDefinitionQuery = mock(ProcessDefinitionQuery.class, Answers.RETURNS_SELF);
+        when(processDefinitionQuery.deploymentIds(any())).thenReturn(processDefinitionQuery);
+        when(repositoryService.createDeploymentQuery()).thenReturn(mock(DeploymentQuery.class, Answers.RETURNS_SELF));
+        when(repositoryService.createProcessDefinitionQuery()).thenReturn(processDefinitionQuery);
+        when(processDefinitionQuery.list()).thenReturn(List.of(mockDefinition));
+
+        List<ProcessDefinition> result = processRuntime.processDefinitions();
+
+        assertThat(result).hasSize(1);
+        assertThat(result).contains(mockDefinition);
     }
 }

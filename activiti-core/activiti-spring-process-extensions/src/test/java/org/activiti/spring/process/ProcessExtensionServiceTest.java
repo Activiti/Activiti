@@ -20,6 +20,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.junit.jupiter.api.Test;
@@ -94,5 +96,41 @@ class ProcessExtensionServiceTest {
         String variableName = "variableName";
         boolean result = processExtensionService.hasEphemeralVariable(null, variableName);
         assertThat(result).isFalse();
+    }
+
+    @Test
+    public void should_returnsEmptyExtension_when_getExtensionsForWithoutCallingDB_withProcessDefinitionNull() {
+        ProcessExtensionRepository mockRepository = Mockito.mock(ProcessExtensionRepository.class);
+        ProcessExtensionService service = new ProcessExtensionService(mockRepository);
+
+        ProcessDefinition processDefinition = Mockito.mock(ProcessDefinition.class);
+        when(processDefinition.getId()).thenReturn("validId");
+
+        when(mockRepository.getExtensionsForId("validId")).thenReturn(Optional.empty());
+
+
+        Extension result = service.getExtensionsForWithoutCallingDB(processDefinition);
+
+        assertThat(result).isInstanceOf(Extension.class);
+        assertThat(result).isNotNull();
+        assertThat(result.getProperties().isEmpty()).isTrue();
+        assertThat(result.getMappings().isEmpty()).isTrue();
+        assertThat(result.getConstants().isEmpty()).isTrue();
+    }
+
+    @Test
+    public void should_returnsEmptyExtension_when_getExtensionsForWithoutCallingDB_withValidProcessDefinition() {
+        ProcessExtensionRepository mockRepository = Mockito.mock(ProcessExtensionRepository.class);
+        ProcessExtensionService service = new ProcessExtensionService(mockRepository);
+
+        ProcessDefinition processDefinition = Mockito.mock(ProcessDefinition.class);
+        when(processDefinition.getId()).thenReturn("validId");
+
+        Extension mockExtension = new Extension();
+        when(mockRepository.getExtensionsForId("validId")).thenReturn(Optional.of(mockExtension));
+
+        Extension result = service.getExtensionsForWithoutCallingDB(processDefinition);
+
+        assertThat(result).isEqualTo(mockExtension);
     }
 }
