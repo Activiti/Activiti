@@ -15,13 +15,19 @@
  */
 package org.activiti.runtime.api.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Collections;
+import java.util.List;
+
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.runtime.shared.query.Pageable;
@@ -29,6 +35,7 @@ import org.activiti.core.common.spring.security.policies.ProcessSecurityPolicies
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
@@ -37,6 +44,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -110,5 +118,42 @@ class ProcessAdminRuntimeImplTest {
         processAdminRuntime.processDefinitions(pageable, payload);
 
         verify(processDefinitionQuery).processDefinitionCategoryNotEquals(processCategory);
+    }
+
+    @Test
+    public void should_processDefinitionsReturnsEmptyList_when_noDefinitionsExist() {
+
+        ProcessDefinitionQuery processDefinitionQuery = mock(ProcessDefinitionQuery.class, Answers.RETURNS_SELF);
+        when(repositoryService.createProcessDefinitionQuery()).thenReturn(processDefinitionQuery);
+        when(processDefinitionQuery.list()).thenReturn(Collections.emptyList());
+
+        List<ProcessDefinition> result = processAdminRuntime.processDefinitions();
+
+        assertThat(result).isEmpty();
+        verify(repositoryService).createProcessDefinitionQuery();
+        verify(processDefinitionQuery).list();
+        verify(repositoryService, never()).createDeploymentQuery();
+        verify(securityPoliciesManager, never()).restrictProcessDefQuery(any());
+
+    }
+
+    @Test
+    public void should_processDefinitionsReturnsListOfDefinitions_when_definitionsExist() {
+        ProcessDefinition mockDefinition = Mockito.mock(ProcessDefinition.class);
+
+        ProcessDefinitionQuery processDefinitionQuery = mock(ProcessDefinitionQuery.class, Answers.RETURNS_SELF);
+        when(repositoryService.createProcessDefinitionQuery()).thenReturn(processDefinitionQuery);
+        when(processDefinitionQuery.list()).thenReturn(List.of(mockDefinition));
+
+        List<ProcessDefinition> result = processAdminRuntime.processDefinitions();
+
+        assertThat(result).hasSize(1);
+        assertThat(result).contains(mockDefinition);
+
+        verify(repositoryService).createProcessDefinitionQuery();
+        verify(processDefinitionQuery).list();
+        verify(repositoryService, never()).createDeploymentQuery();
+        verify(securityPoliciesManager, never()).restrictProcessDefQuery(any());
+
     }
 }

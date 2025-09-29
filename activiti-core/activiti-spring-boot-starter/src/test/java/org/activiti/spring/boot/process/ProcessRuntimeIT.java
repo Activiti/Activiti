@@ -1080,11 +1080,27 @@ public class ProcessRuntimeIT {
     }
 
     @Test
+    public void shouldGetAllAvailableProcessDefinition_when_admin() {
+
+        securityUtil.logInAs("admin");
+
+        //when
+        var processDefinitionList = processAdminRuntime.processDefinitions();
+        //then
+        assertThat(processDefinitionList).isNotNull();
+        assertThat(processDefinitionList).hasSize(113);
+        assertThat(processDefinitionList)
+            .extracting(org.activiti.engine.repository.ProcessDefinition::getKey)
+            .contains(CATEGORIZE_PROCESS, CATEGORIZE_HUMAN_PROCESS, ONE_STEP_PROCESS);
+    }
+
+    @Test
     public void shouldGetAllAvailableProcessDefinitionForTheGivenUser() {
         //when
         var processDefinitionList = processRuntime.processDefinitions();
         //then
         assertThat(processDefinitionList).isNotNull();
+        assertThat(processDefinitionList).hasSize(112);
         assertThat(processDefinitionList)
             .extracting(org.activiti.engine.repository.ProcessDefinition::getKey)
             .contains(CATEGORIZE_PROCESS, CATEGORIZE_HUMAN_PROCESS, ONE_STEP_PROCESS);
