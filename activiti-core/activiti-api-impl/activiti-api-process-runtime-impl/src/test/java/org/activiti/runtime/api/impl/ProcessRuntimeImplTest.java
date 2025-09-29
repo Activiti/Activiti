@@ -23,6 +23,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -399,14 +400,15 @@ public class ProcessRuntimeImplTest {
         );
 
         ProcessDefinitionQuery processDefinitionQuery = mock(ProcessDefinitionQuery.class, Answers.RETURNS_SELF);
-        when(processDefinitionQuery.deploymentIds(any())).thenReturn(processDefinitionQuery);
-        when(repositoryService.createDeploymentQuery()).thenReturn(mock(DeploymentQuery.class, Answers.RETURNS_SELF));
         when(repositoryService.createProcessDefinitionQuery()).thenReturn(processDefinitionQuery);
         when(processDefinitionQuery.list()).thenReturn(Collections.emptyList());
 
         List<ProcessDefinition> result = processRuntime.processDefinitions();
 
         assertThat(result).isEmpty();
+        verify(repositoryService).createProcessDefinitionQuery();
+        verify(processDefinitionQuery).list();
+        verify(repositoryService, never()).createDeploymentQuery();
     }
 
     @Test
@@ -417,8 +419,6 @@ public class ProcessRuntimeImplTest {
         );
 
         ProcessDefinitionQuery processDefinitionQuery = mock(ProcessDefinitionQuery.class, Answers.RETURNS_SELF);
-        when(processDefinitionQuery.deploymentIds(any())).thenReturn(processDefinitionQuery);
-        when(repositoryService.createDeploymentQuery()).thenReturn(mock(DeploymentQuery.class, Answers.RETURNS_SELF));
         when(repositoryService.createProcessDefinitionQuery()).thenReturn(processDefinitionQuery);
         when(processDefinitionQuery.list()).thenReturn(List.of(mockDefinition));
 
@@ -426,5 +426,10 @@ public class ProcessRuntimeImplTest {
 
         assertThat(result).hasSize(1);
         assertThat(result).contains(mockDefinition);
+
+        verify(repositoryService).createProcessDefinitionQuery();
+        verify(processDefinitionQuery).list();
+        verify(repositoryService, never()).createDeploymentQuery();
+
     }
 }

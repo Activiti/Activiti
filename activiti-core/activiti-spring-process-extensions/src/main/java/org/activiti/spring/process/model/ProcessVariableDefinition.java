@@ -42,18 +42,22 @@ public class ProcessVariableDefinition extends VariableDefinition {
     public String getProcessDefinitionName() {
         return processDefinitionName;
     }
+
     public void setProcessDefinitionName(String processDefinitionName) {
         this.processDefinitionName = processDefinitionName;
     }
     public String getProcessDefinitionId() {
         return processDefinitionId;
     }
+
     public void setProcessDefinitionId(String processDefinitionId) {
         this.processDefinitionId = processDefinitionId;
     }
+
     public String getProcessDefinitionKey() {
         return processDefinitionKey;
     }
+
     public void setProcessDefinitionKey(String processDefinitionKey) {
         this.processDefinitionKey = processDefinitionKey;
     }
@@ -62,7 +66,6 @@ public class ProcessVariableDefinition extends VariableDefinition {
     public boolean equals(Object o) {
         if (!(o instanceof ProcessVariableDefinition that)) return false;
         return Objects.equals(getProcessDefinitionName(), that.getProcessDefinitionName())
-            && Objects.equals(getProcessDefinitionId(), that.getProcessDefinitionId())
             && Objects.equals(getProcessDefinitionKey(), that.getProcessDefinitionKey())
             && Objects.equals(getDescription(), that.getDescription())
             && Objects.equals(getName(), that.getName())
@@ -78,7 +81,8 @@ public class ProcessVariableDefinition extends VariableDefinition {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getProcessDefinitionName(), getProcessDefinitionId(), getProcessDefinitionKey(),
+        return Objects.hash(getProcessDefinitionName(),
+            getProcessDefinitionKey(),
             getDescription(), getName(), isRequired(), getId(), isAnalytics(), isEphemeral(), getDisplayName(), getDisplay(), getValue(), getType());
     }
 }
