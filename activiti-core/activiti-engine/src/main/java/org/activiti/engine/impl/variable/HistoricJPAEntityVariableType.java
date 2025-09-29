@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.variable;
 
 /**
@@ -24,15 +22,14 @@ package org.activiti.engine.impl.variable;
  */
 public class HistoricJPAEntityVariableType extends JPAEntityVariableType {
 
-  private static final HistoricJPAEntityVariableType INSTANCE = new HistoricJPAEntityVariableType();
+    private static final HistoricJPAEntityVariableType INSTANCE = new HistoricJPAEntityVariableType();
 
-  @Override
-  public boolean isCachable() {
-    return true;
-  }
+    @Override
+    public boolean isCachable() {
+        return true;
+    }
 
-  public static HistoricJPAEntityVariableType getSharedInstance() {
-    return INSTANCE;
-  }
-
+    public static HistoricJPAEntityVariableType getSharedInstance() {
+        return INSTANCE;
+    }
 }

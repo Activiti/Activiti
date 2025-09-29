@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.InputStream;
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -32,22 +29,28 @@ import org.activiti.engine.repository.ProcessDefinition;
  */
 public class GetDeploymentProcessModelCmd implements Command<InputStream>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String processDefinitionId;
+    private static final long serialVersionUID = 1L;
+    protected String processDefinitionId;
 
-  public GetDeploymentProcessModelCmd(String processDefinitionId) {
-    if (processDefinitionId == null || processDefinitionId.length() < 1) {
-      throw new ActivitiIllegalArgumentException("The process definition id is mandatory, but '" + processDefinitionId + "' has been provided.");
+    public GetDeploymentProcessModelCmd(String processDefinitionId) {
+        if (processDefinitionId == null || processDefinitionId.length() < 1) {
+            throw new ActivitiIllegalArgumentException(
+                "The process definition id is mandatory, but '" + processDefinitionId + "' has been provided."
+            );
+        }
+        this.processDefinitionId = processDefinitionId;
     }
-    this.processDefinitionId = processDefinitionId;
-  }
 
-  public InputStream execute(CommandContext commandContext) {
-    ProcessDefinition processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
-    String deploymentId = processDefinition.getDeploymentId();
-    String resourceName = processDefinition.getResourceName();
-    InputStream processModelStream = new GetDeploymentResourceCmd(deploymentId, resourceName).execute(commandContext);
-    return processModelStream;
-  }
-
+    public InputStream execute(CommandContext commandContext) {
+        ProcessDefinition processDefinition = commandContext
+            .getProcessEngineConfiguration()
+            .getDeploymentManager()
+            .findDeployedProcessDefinitionById(processDefinitionId);
+        String deploymentId = processDefinition.getDeploymentId();
+        String resourceName = processDefinition.getResourceName();
+        InputStream processModelStream = new GetDeploymentResourceCmd(deploymentId, resourceName).execute(
+            commandContext
+        );
+        return processModelStream;
+    }
 }

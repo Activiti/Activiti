@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.activiti.engine.impl.calendar;
 
 import java.util.Date;
 import java.util.TimeZone;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.runtime.ClockReader;
 
@@ -27,18 +26,16 @@ import org.activiti.engine.runtime.ClockReader;
  */
 @Internal
 public interface AdvancedSchedulerResolver {
-
-  /**
-   * Resolves a due date using the specified time zone (if supported)
-   *
-   * @param duedateDescription
-   *          An original Activiti schedule string in either ISO or CRON format
-   * @param clockReader
-   *          The time provider
-   * @param timeZone
-   *          The time zone to use in the calculations
-   * @return The due date
-   */
-  Date resolve(String duedateDescription, ClockReader clockReader, TimeZone timeZone);
-
+    /**
+     * Resolves a due date using the specified time zone (if supported)
+     *
+     * @param duedateDescription
+     *          An original Activiti schedule string in either ISO or CRON format
+     * @param clockReader
+     *          The time provider
+     * @param timeZone
+     *          The time zone to use in the calculations
+     * @return The due date
+     */
+    Date resolve(String duedateDescription, ClockReader clockReader, TimeZone timeZone);
 }

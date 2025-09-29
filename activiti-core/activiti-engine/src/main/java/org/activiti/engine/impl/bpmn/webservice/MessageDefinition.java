@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.webservice;
 
 import org.activiti.engine.impl.bpmn.data.ItemDefinition;
@@ -26,31 +25,31 @@ import org.activiti.engine.impl.bpmn.data.StructureDefinition;
  */
 public class MessageDefinition {
 
-  protected String id;
+    protected String id;
 
-  protected ItemDefinition itemDefinition;
+    protected ItemDefinition itemDefinition;
 
-  public MessageDefinition(String id) {
-    this.id = id;
-  }
+    public MessageDefinition(String id) {
+        this.id = id;
+    }
 
-  public MessageInstance createInstance() {
-    return new MessageInstance(this, this.itemDefinition.createInstance());
-  }
+    public MessageInstance createInstance() {
+        return new MessageInstance(this, this.itemDefinition.createInstance());
+    }
 
-  public ItemDefinition getItemDefinition() {
-    return this.itemDefinition;
-  }
+    public ItemDefinition getItemDefinition() {
+        return this.itemDefinition;
+    }
 
-  public StructureDefinition getStructureDefinition() {
-    return this.itemDefinition.getStructureDefinition();
-  }
+    public StructureDefinition getStructureDefinition() {
+        return this.itemDefinition.getStructureDefinition();
+    }
 
-  public void setItemDefinition(ItemDefinition itemDefinition) {
-    this.itemDefinition = itemDefinition;
-  }
+    public void setItemDefinition(ItemDefinition itemDefinition) {
+        this.itemDefinition = itemDefinition;
+    }
 
-  public String getId() {
-    return this.id;
-  }
+    public String getId() {
+        return this.id;
+    }
 }

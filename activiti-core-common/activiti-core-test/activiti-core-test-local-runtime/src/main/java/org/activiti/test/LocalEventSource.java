@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,20 +44,15 @@ public class LocalEventSource implements EventSource {
         collectedEvents.clear();
     }
 
-    public <T extends RuntimeEvent<?,?>> List<T> getEvents(Class<T> eventType) {
-        return collectedEvents
-                .stream()
-                .filter(eventType::isInstance)
-                .map(eventType::cast)
-                .collect(Collectors.toList());
+    public <T extends RuntimeEvent<?, ?>> List<T> getEvents(Class<T> eventType) {
+        return collectedEvents.stream().filter(eventType::isInstance).map(eventType::cast).collect(Collectors.toList());
     }
 
     public List<RuntimeEvent<?, ?>> getEvents(Enum<?>... eventTypes) {
         return collectedEvents
-                .stream()
-                .filter(event -> asList(eventTypes).contains(event.getEventType()))
-                .collect(Collectors.toList());
-
+            .stream()
+            .filter(event -> asList(eventTypes).contains(event.getEventType()))
+            .collect(Collectors.toList());
     }
 
     public List<RuntimeEvent<?, ?>> getTaskEvents() {
@@ -79,5 +74,4 @@ public class LocalEventSource implements EventSource {
     public List<BPMNTimerCancelledEvent> getTimerCancelledEvents() {
         return getEvents(BPMNTimerCancelledEvent.class);
     }
-
 }

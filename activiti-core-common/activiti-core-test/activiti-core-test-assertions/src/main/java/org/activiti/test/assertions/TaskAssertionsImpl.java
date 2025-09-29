@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,9 @@
  */
 package org.activiti.test.assertions;
 
-import java.util.List;
+import static org.activiti.test.matchers.OperationScopeImpl.scope;
 
+import java.util.List;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.task.model.Task;
 import org.activiti.test.EventSource;
@@ -24,8 +25,6 @@ import org.activiti.test.TaskSource;
 import org.activiti.test.matchers.OperationScopeMatcher;
 import org.activiti.test.matchers.ProcessTaskMatcher;
 import org.activiti.test.matchers.TaskResultMatcher;
-
-import static org.activiti.test.matchers.OperationScopeImpl.scope;
 
 public class TaskAssertionsImpl implements TaskAssertions {
 
@@ -35,9 +34,7 @@ public class TaskAssertionsImpl implements TaskAssertions {
 
     private List<TaskSource> taskSources;
 
-    public TaskAssertionsImpl(Task task,
-                              List<TaskSource> taskSources,
-                              EventSource eventSource) {
+    public TaskAssertionsImpl(Task task, List<TaskSource> taskSources, EventSource eventSource) {
         this.task = task;
         this.taskSources = taskSources;
         this.eventSource = eventSource;
@@ -47,9 +44,7 @@ public class TaskAssertionsImpl implements TaskAssertions {
     public TaskAssertions expectEvents(OperationScopeMatcher... matchers) {
         List<RuntimeEvent<?, ?>> events = eventSource.getEvents();
         for (OperationScopeMatcher matcher : matchers) {
-            matcher.match(scope(task.getProcessInstanceId(),
-                                task.getId()),
-                          events);
+            matcher.match(scope(task.getProcessInstanceId(), task.getId()), events);
         }
         return this;
     }
@@ -65,8 +60,7 @@ public class TaskAssertionsImpl implements TaskAssertions {
     @Override
     public TaskAssertions expect(ProcessTaskMatcher... matchers) {
         for (ProcessTaskMatcher matcher : matchers) {
-            matcher.match(task.getProcessInstanceId(),
-                          taskSources);
+            matcher.match(task.getProcessInstanceId(), taskSources);
         }
         return this;
     }

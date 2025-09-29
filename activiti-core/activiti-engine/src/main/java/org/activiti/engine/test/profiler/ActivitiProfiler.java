@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.activiti.engine.test.profiler;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.engine.cfg.ProcessEngineConfigurator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
@@ -39,7 +38,6 @@ public class ActivitiProfiler implements ProcessEngineConfigurator {
 
     @Override
     public void beforeInit(ProcessEngineConfigurationImpl processEngineConfiguration) {
-
         // Command interceptor
         List<CommandInterceptor> interceptors = new ArrayList<CommandInterceptor>();
         interceptors.add(new TotalExecutionTimeCommandInterceptor());
@@ -50,9 +48,7 @@ public class ActivitiProfiler implements ProcessEngineConfigurator {
     }
 
     @Override
-    public void configure(ProcessEngineConfigurationImpl processEngineConfiguration) {
-
-    }
+    public void configure(ProcessEngineConfigurationImpl processEngineConfiguration) {}
 
     @Override
     public int getPriority() {
@@ -60,11 +56,11 @@ public class ActivitiProfiler implements ProcessEngineConfigurator {
     }
 
     public void reset() {
-      if (currentProfileSession != null) {
-        stopCurrentProfileSession();
-      }
-      this.currentProfileSession = null;
-      this.profileSessions.clear();
+        if (currentProfileSession != null) {
+            stopCurrentProfileSession();
+        }
+        this.currentProfileSession = null;
+        this.profileSessions.clear();
     }
 
     public void startProfileSession(String name) {
@@ -92,5 +88,4 @@ public class ActivitiProfiler implements ProcessEngineConfigurator {
     public void setProfileSessions(List<ProfileSession> profileSessions) {
         this.profileSessions = profileSessions;
     }
-
 }

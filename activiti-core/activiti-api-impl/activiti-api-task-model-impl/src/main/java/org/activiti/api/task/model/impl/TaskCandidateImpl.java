@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,13 @@
 package org.activiti.api.task.model.impl;
 
 import java.util.Objects;
-
 import org.activiti.api.task.model.TaskCandidate;
 
 public abstract class TaskCandidateImpl implements TaskCandidate {
 
     private String taskId;
 
-    public TaskCandidateImpl() {
-    }
+    public TaskCandidateImpl() {}
 
     public TaskCandidateImpl(String taskId) {
         this.taskId = taskId;
@@ -34,5 +32,4 @@ public abstract class TaskCandidateImpl implements TaskCandidate {
     public String getTaskId() {
         return taskId;
     }
-
 }

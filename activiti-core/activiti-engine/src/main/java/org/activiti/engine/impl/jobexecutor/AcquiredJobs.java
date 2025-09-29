@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.jobexecutor;
 
 import java.util.ArrayList;
@@ -27,24 +26,23 @@ import java.util.Set;
  */
 public class AcquiredJobs {
 
-  protected List<List<String>> acquiredJobBatches = new ArrayList<List<String>>();
-  protected Set<String> acquiredJobs = new HashSet<String>();
+    protected List<List<String>> acquiredJobBatches = new ArrayList<List<String>>();
+    protected Set<String> acquiredJobs = new HashSet<String>();
 
-  public List<List<String>> getJobIdBatches() {
-    return acquiredJobBatches;
-  }
+    public List<List<String>> getJobIdBatches() {
+        return acquiredJobBatches;
+    }
 
-  public void addJobIdBatch(List<String> jobIds) {
-    acquiredJobBatches.add(jobIds);
-    acquiredJobs.addAll(jobIds);
-  }
+    public void addJobIdBatch(List<String> jobIds) {
+        acquiredJobBatches.add(jobIds);
+        acquiredJobs.addAll(jobIds);
+    }
 
-  public boolean contains(String jobId) {
-    return acquiredJobs.contains(jobId);
-  }
+    public boolean contains(String jobId) {
+        return acquiredJobs.contains(jobId);
+    }
 
-  public int size() {
-    return acquiredJobs.size();
-  }
-
+    public int size() {
+        return acquiredJobs.size();
+    }
 }

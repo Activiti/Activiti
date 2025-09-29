@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,32 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.test.bpmn.event.signal;
 
 public class FileExistsMock {
 
-	private boolean exists = false;
+    private boolean exists = false;
 
-	private static FileExistsMock instance;
+    private static FileExistsMock instance;
 
-	public static synchronized FileExistsMock getInstance() {
-		if (instance == null) {
-			instance = new FileExistsMock();
-		}
-		return instance;
-	}
+    public static synchronized FileExistsMock getInstance() {
+        if (instance == null) {
+            instance = new FileExistsMock();
+        }
+        return instance;
+    }
 
-	public boolean fileExists(){
-		return this.exists;
-	}
+    public boolean fileExists() {
+        return this.exists;
+    }
 
-	public void touchFile(){
-		this.exists = true;
-	}
+    public void touchFile() {
+        this.exists = true;
+    }
 
-	public void removeFile(){
-		this.exists = false;
-	}
-
+    public void removeFile() {
+        this.exists = false;
+    }
 }

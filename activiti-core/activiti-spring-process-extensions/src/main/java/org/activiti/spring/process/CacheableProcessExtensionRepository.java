@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.spring.process;
 
 import static org.activiti.spring.process.CacheableProcessExtensionRepository.PROCESS_EXTENSIONS_CACHE_NAME;
@@ -25,7 +23,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.lang.NonNull;
 
-@CacheConfig(cacheNames = {PROCESS_EXTENSIONS_CACHE_NAME})
+@CacheConfig(cacheNames = { PROCESS_EXTENSIONS_CACHE_NAME })
 public class CacheableProcessExtensionRepository implements ProcessExtensionRepository {
 
     public static final String PROCESS_EXTENSIONS_CACHE_NAME = "processExtensionsById";
@@ -41,5 +39,4 @@ public class CacheableProcessExtensionRepository implements ProcessExtensionRepo
     public Optional<Extension> getExtensionsForId(@NonNull String processDefinitionId) {
         return delegate.getExtensionsForId(processDefinitionId);
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,15 +35,12 @@ public class TaskCleanUpUtil {
 
     public void cleanUpWithAdmin() {
         securityUtil.logInAs("admin");
-        Page<Task> tasks = taskAdminRuntime.tasks(Pageable.of(0,
-                50));
+        Page<Task> tasks = taskAdminRuntime.tasks(Pageable.of(0, 50));
         for (Task task : tasks.getContent()) {
             if (task.getProcessInstanceId() == null) {
-                taskAdminRuntime.delete(TaskPayloadBuilder
-                                                .delete()
-                                                .withTaskId(task.getId())
-                                                .withReason("test clean up")
-                                                .build());
+                taskAdminRuntime.delete(
+                    TaskPayloadBuilder.delete().withTaskId(task.getId()).withReason("test clean up").build()
+                );
             }
         }
     }

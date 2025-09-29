@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,11 @@
  */
 package org.activiti.bpmn.model;
 
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
 
 public class FlowNodeTest {
 
@@ -90,7 +89,6 @@ public class FlowNodeTest {
         throwEvent.setIncomingFlows(Arrays.asList(sequenceFlow));
         assertThat(throwEvent.hasIncomingFlows()).isTrue();
     }
-
 
     @Test
     public void hasOutgoingFlows_should_returnFalse_when_outgoingFlowsAreNotPresent() {

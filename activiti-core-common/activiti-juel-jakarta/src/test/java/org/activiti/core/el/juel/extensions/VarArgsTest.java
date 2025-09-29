@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.extensions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,11 +40,7 @@ public class VarArgsTest {
         ExpressionFactory f = ExpressionFactory.newInstance();
 
         // create our context with function "vararg:format"
-        Method method =
-            String.class.getMethod(
-                    "format",
-                    new Class[] { String.class, Object[].class }
-                );
+        Method method = String.class.getMethod("format", new Class[] { String.class, Object[].class });
         SimpleContext context = new SimpleContext();
         context.setFunction("varargs", "format", method);
 
@@ -53,11 +48,7 @@ public class VarArgsTest {
         String expression = "${varargs:format('Hey %s','Joe')}";
 
         // let's go...
-        ValueExpression e = f.createValueExpression(
-            context,
-            expression,
-            String.class
-        );
+        ValueExpression e = f.createValueExpression(context, expression, String.class);
         assertEquals(e.getValue(context), "Hey Joe"); // --> Hey Joe
     }
 

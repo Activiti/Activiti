@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.activiti.api.process.model.builders;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-
 import org.activiti.api.process.model.payloads.StartMessagePayload;
 
 public class StartMessagePayloadBuilder {
@@ -30,9 +29,10 @@ public class StartMessagePayloadBuilder {
     public static StartMessagePayloadBuilder from(StartMessagePayload messagePayload) {
         Objects.requireNonNull(messagePayload, "messagePayload must not be null");
 
-        return new StartMessagePayloadBuilder().withName(messagePayload.getName())
-                                               .withBusinessKey(messagePayload.getBusinessKey())
-                                               .withVariables(messagePayload.getVariables());
+        return new StartMessagePayloadBuilder()
+            .withName(messagePayload.getName())
+            .withBusinessKey(messagePayload.getBusinessKey())
+            .withVariables(messagePayload.getVariables());
     }
 
     public static StartMessagePayloadBuilder start(String name) {
@@ -53,13 +53,11 @@ public class StartMessagePayloadBuilder {
         return this;
     }
 
-    public StartMessagePayloadBuilder withVariable(String name,
-                                                   Object value) {
+    public StartMessagePayloadBuilder withVariable(String name, Object value) {
         if (this.variables == null) {
             this.variables = new LinkedHashMap<>();
         }
-        this.variables.put(name,
-                           value);
+        this.variables.put(name, value);
         return this;
     }
 
@@ -70,8 +68,6 @@ public class StartMessagePayloadBuilder {
     }
 
     public StartMessagePayload build() {
-        return new StartMessagePayload(name,
-                                       businessKey,
-                                       this.variables);
+        return new StartMessagePayload(name, businessKey, this.variables);
     }
 }

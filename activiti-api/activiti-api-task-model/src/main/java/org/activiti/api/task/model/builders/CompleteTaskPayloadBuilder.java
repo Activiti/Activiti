@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.activiti.api.task.model.builders;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.api.task.model.payloads.CompleteTaskPayload;
 
 public class CompleteTaskPayloadBuilder {
@@ -35,18 +34,15 @@ public class CompleteTaskPayloadBuilder {
         return this;
     }
 
-    public CompleteTaskPayloadBuilder withVariable(String name,
-                                                   Object value) {
+    public CompleteTaskPayloadBuilder withVariable(String name, Object value) {
         if (this.variables == null) {
             this.variables = new HashMap<>();
         }
-        this.variables.put(name,
-                           value);
+        this.variables.put(name, value);
         return this;
     }
 
     public CompleteTaskPayload build() {
-        return new CompleteTaskPayload(taskId,
-                                       variables);
+        return new CompleteTaskPayload(taskId, variables);
     }
 }

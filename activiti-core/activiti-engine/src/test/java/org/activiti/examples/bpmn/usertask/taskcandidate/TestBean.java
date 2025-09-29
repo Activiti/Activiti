@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.examples.bpmn.usertask.taskcandidate;
 
 import java.io.Serializable;
@@ -24,22 +23,21 @@ import java.io.Serializable;
 
 public class TestBean implements Serializable {
 
-  private static final long serialVersionUID = -8840933240517620693L;
+    private static final long serialVersionUID = -8840933240517620693L;
 
-  public String twoParametersMethod(String param1, String param2) {
-    return "kermit";
-  }
+    public String twoParametersMethod(String param1, String param2) {
+        return "kermit";
+    }
 
-  public String returnParamAsGroupMethod(String param1) {
-    return param1;
-  }
+    public String returnParamAsGroupMethod(String param1) {
+        return param1;
+    }
 
-  public String oneParameterMethod(String param1) {
-    return "kermit";
-  }
+    public String oneParameterMethod(String param1) {
+        return "kermit";
+    }
 
-  public String getTestProperty() {
-    return "kermit";
-  }
-
+    public String getTestProperty() {
+        return "kermit";
+    }
 }

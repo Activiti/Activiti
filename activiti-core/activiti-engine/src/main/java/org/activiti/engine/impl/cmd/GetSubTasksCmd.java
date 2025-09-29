@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.List;
-
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Task;
@@ -29,15 +26,14 @@ import org.activiti.engine.task.Task;
  */
 public class GetSubTasksCmd implements Command<List<Task>>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String parentTaskId;
+    private static final long serialVersionUID = 1L;
+    protected String parentTaskId;
 
-  public GetSubTasksCmd(String parentTaskId) {
-    this.parentTaskId = parentTaskId;
-  }
+    public GetSubTasksCmd(String parentTaskId) {
+        this.parentTaskId = parentTaskId;
+    }
 
-  public List<Task> execute(CommandContext commandContext) {
-    return commandContext.getTaskEntityManager().findTasksByParentTaskId(parentTaskId);
-  }
-
+    public List<Task> execute(CommandContext commandContext) {
+        return commandContext.getTaskEntityManager().findTasksByParentTaskId(parentTaskId);
+    }
 }

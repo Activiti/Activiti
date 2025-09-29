@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.spring.test.servicetask;
 
 import org.activiti.engine.delegate.BpmnError;
@@ -26,18 +24,17 @@ import org.activiti.engine.delegate.JavaDelegate;
  */
 public class ThrowBpmnErrorDelegate implements JavaDelegate {
 
-  public void execute(DelegateExecution execution) {
-    Integer executionsBeforeError = (Integer) execution.getVariable("executionsBeforeError");
-    Integer executions = (Integer) execution.getVariable("executions");
-    if (executions == null) {
-      executions = 0;
+    public void execute(DelegateExecution execution) {
+        Integer executionsBeforeError = (Integer) execution.getVariable("executionsBeforeError");
+        Integer executions = (Integer) execution.getVariable("executions");
+        if (executions == null) {
+            executions = 0;
+        }
+        executions++;
+        if (executionsBeforeError == null || executionsBeforeError < executions) {
+            throw new BpmnError("23", "This is a business fault, which can be caught by a BPMN Error Event.");
+        } else {
+            execution.setVariable("executions", executions);
+        }
     }
-    executions++;
-    if (executionsBeforeError == null || executionsBeforeError < executions) {
-      throw new BpmnError("23", "This is a business fault, which can be caught by a BPMN Error Event.");
-    } else {
-      execution.setVariable("executions", executions);
-    }
-  }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
@@ -22,12 +21,14 @@ import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntit
 /**
 
  */
-public class HistoricVariableInstanceByTaskIdMatcher extends CachedEntityMatcherAdapter<HistoricVariableInstanceEntity> {
+public class HistoricVariableInstanceByTaskIdMatcher
+    extends CachedEntityMatcherAdapter<HistoricVariableInstanceEntity> {
 
-  @Override
-  public boolean isRetained(HistoricVariableInstanceEntity historicVariableInstanceEntity, Object parameter) {
-    return historicVariableInstanceEntity.getTaskId() != null
-        && historicVariableInstanceEntity.getTaskId().equals((String) parameter);
-  }
-
+    @Override
+    public boolean isRetained(HistoricVariableInstanceEntity historicVariableInstanceEntity, Object parameter) {
+        return (
+            historicVariableInstanceEntity.getTaskId() != null &&
+            historicVariableInstanceEntity.getTaskId().equals((String) parameter)
+        );
+    }
 }

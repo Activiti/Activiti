@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.standalone.parsing;
 
 import org.activiti.bpmn.model.UserTask;
@@ -25,12 +24,10 @@ import org.activiti.engine.impl.bpmn.parser.handler.UserTaskParseHandler;
  */
 public class CustomUserTaskBpmnParseHandler extends UserTaskParseHandler {
 
-  protected void executeParse(BpmnParse bpmnParse, UserTask userTask) {
+    protected void executeParse(BpmnParse bpmnParse, UserTask userTask) {
+        // Do the regular stuff
+        super.executeParse(bpmnParse, userTask);
 
-    // Do the regular stuff
-    super.executeParse(bpmnParse, userTask);
-
-    userTask.setAsynchronous(true);
-  }
-
+        userTask.setAsynchronous(true);
+    }
 }

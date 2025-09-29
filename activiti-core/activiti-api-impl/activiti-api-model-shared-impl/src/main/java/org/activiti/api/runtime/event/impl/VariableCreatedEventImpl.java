@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,9 @@ public class VariableCreatedEventImpl extends VariableEventImpl implements Varia
 
     private boolean isEphemeralVariable;
 
-    public VariableCreatedEventImpl() {
-    }
+    public VariableCreatedEventImpl() {}
 
-    public VariableCreatedEventImpl(VariableInstance entity, String processDefinitionId, boolean isEphemeralVariable){
+    public VariableCreatedEventImpl(VariableInstance entity, String processDefinitionId, boolean isEphemeralVariable) {
         super(entity);
         setProcessInstanceId(entity.getProcessInstanceId());
         setProcessDefinitionId(processDefinitionId);

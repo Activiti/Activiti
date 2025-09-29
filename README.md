@@ -20,23 +20,19 @@ If you want to read more about our Repositories structure you can read our [GitB
 ## Configuring IntelliJ
 
 - Force language level 21, to fail-fast when (accidentally) using features available only in newer Java versions.
-
   - Open menu _File_, menu item _Project Structure_
   - Click list item _Modules_, for each module, tab _Sources_, combobox _Language level_ should be automatically set to `21 ...`
 
 - Avoid that changes in some resources are ignored in the next run/debug (and you are forced to use mvn)
-
   - Open menu _File_, menu item _Settings_ or menu _IntelliJ IDEA_, menu item _Preferences..._ if on a Mac
   - Click tree item _Compiler_, textfield _Resource patterns_: change to `!?*.java` (remove other content)
 
 - Avoid a `StackOverflowError` when building
-
   - Open menu _File_, menu item _Settings_ or menu _IntelliJ IDEA_, menu item _Preferences..._ if on a Mac
   - Click tree item _Compiler_, tree item _Java Compiler_, textfield _Additional command line parameters_
   - Add `-J-Xss1024k`
 
 - Recommended code style: use the [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html) with editorconfig
-
   - Download the IntelliJ code style xml from: [https://google.github.io/styleguide/intellij-java-google-style.xml]
   - Open menu _File_, menu item _Settings_ or menu _IntelliJ IDEA_, menu item _Preferences..._ if on a Mac
   - Click tree item _Code Style_, click cogwheel and select _Import scheme_, then _IntelliJ code style xml_
@@ -48,7 +44,6 @@ If you want to read more about our Repositories structure you can read our [GitB
   - Eclipse needs [editorconfig-eclipse](https://marketplace.eclipse.org/content/editorconfig-eclipse) plugin in order to support EditorConfig files.
 
 - Set manually the correct file encoding (UTF-8 except for properties files) and end-of-line characters (unix):
-
   - Open menu _File_, menu item _Settings_ or menu _IntelliJ IDEA_, menu item _Preferences..._ if on a Mac
   - Click tree item _Code Style_, tree item _General_
     - Combobox _Line separator (for new files)_: `Unix`
@@ -58,7 +53,6 @@ If you want to read more about our Repositories structure you can read our [GitB
       - Note: normal i18n properties files must be in `ISO-8859-1` as specified by the java `ResourceBundle` contract.
 
 - Set manually the correct number of spaces when pressing tab:
-
   - Open menu _File_, menu item _Settings_ or menu _IntelliJ IDEA_, menu item _Preferences..._ if on a Mac
   - Click tree item _Code Style_, tree item _General_
   - Click tab _Java_
@@ -73,7 +67,6 @@ If you want to read more about our Repositories structure you can read our [GitB
     - Textfield _Continuation indent_: `4`
 
 - Set the correct file headers (do not include @author or a meaningless javadoc):
-
   - Open menu _File_, menu item _Settings_ or menu _IntelliJ IDEA_, menu item _Preferences..._ if on a Mac
   - Click tree item _File templates_, tab _Includes_, list item `File Header`
   - Remove the line _@author Your Name_.
@@ -91,15 +84,12 @@ If you want to read more about our Repositories structure you can read our [GitB
 # FAQ
 
 - Why do you not accept `@author` lines in your source code?
-
   - Because the author tags in the java files are a maintenance nightmare
-
     - A large percentage is wrong, incomplete or inaccurate.
     - Most of the time, it only contains the original author. Many files are completely refactored/expanded by other authors.
     - Git is accurate, that is the canonical source to find the correct author.
 
   - Because the author tags promote _code ownership_, which is bad in the long run.
-
     - If people work on a piece they perceive as being owned by someone else, they tend to:
       - only fix what they are assigned to fix, instead of everything that's broken
       - discard responsibility if that code doesn't work properly

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,19 +22,18 @@ import javax.xml.stream.XMLStreamReader;
 import org.activiti.bpmn.converter.child.ElementParser;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 
-public class MultiInstanceOutputDataItemParser implements
-    ElementParser<MultiInstanceLoopCharacteristics> {
+public class MultiInstanceOutputDataItemParser implements ElementParser<MultiInstanceLoopCharacteristics> {
 
     @Override
     public boolean canParseCurrentElement(XMLStreamReader reader) {
-        return reader.isStartElement() && ELEMENT_MULTI_INSTANCE_OUTPUT_DATA_ITEM.equalsIgnoreCase(reader.getLocalName());
+        return (
+            reader.isStartElement() && ELEMENT_MULTI_INSTANCE_OUTPUT_DATA_ITEM.equalsIgnoreCase(reader.getLocalName())
+        );
     }
 
     @Override
-    public void setInformation(XMLStreamReader reader,
-        MultiInstanceLoopCharacteristics loopCharacteristics) {
-        String attributeValue = reader.getAttributeValue(null,
-            ATTRIBUTE_NAME);
+    public void setInformation(XMLStreamReader reader, MultiInstanceLoopCharacteristics loopCharacteristics) {
+        String attributeValue = reader.getAttributeValue(null, ATTRIBUTE_NAME);
         if (attributeValue != null) {
             loopCharacteristics.setOutputDataItem(attributeValue);
         }

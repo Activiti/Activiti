@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -35,42 +32,41 @@ import org.activiti.engine.runtime.Execution;
  */
 public class FindActiveActivityIdsCmd implements Command<List<String>>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String executionId;
+    private static final long serialVersionUID = 1L;
+    protected String executionId;
 
-  public FindActiveActivityIdsCmd(String executionId) {
-    this.executionId = executionId;
-  }
-
-  public List<String> execute(CommandContext commandContext) {
-    if (executionId == null) {
-      throw new ActivitiIllegalArgumentException("executionId is null");
+    public FindActiveActivityIdsCmd(String executionId) {
+        this.executionId = executionId;
     }
 
-    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-    ExecutionEntity execution = executionEntityManager.findById(executionId);
+    public List<String> execute(CommandContext commandContext) {
+        if (executionId == null) {
+            throw new ActivitiIllegalArgumentException("executionId is null");
+        }
 
-    if (execution == null) {
-      throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
+        ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
+        ExecutionEntity execution = executionEntityManager.findById(executionId);
+
+        if (execution == null) {
+            throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
+        }
+
+        return findActiveActivityIds(execution);
     }
 
-    return findActiveActivityIds(execution);
-  }
-
-  public List<String> findActiveActivityIds(ExecutionEntity executionEntity) {
-    List<String> activeActivityIds = new ArrayList<String>();
-    collectActiveActivityIds(executionEntity, activeActivityIds);
-    return activeActivityIds;
-  }
-
-  protected void collectActiveActivityIds(ExecutionEntity executionEntity, List<String> activeActivityIds) {
-    if (executionEntity.isActive() && executionEntity.getActivityId() != null) {
-      activeActivityIds.add(executionEntity.getActivityId());
+    public List<String> findActiveActivityIds(ExecutionEntity executionEntity) {
+        List<String> activeActivityIds = new ArrayList<String>();
+        collectActiveActivityIds(executionEntity, activeActivityIds);
+        return activeActivityIds;
     }
 
-    for (ExecutionEntity childExecution : executionEntity.getExecutions()) {
-      collectActiveActivityIds(childExecution, activeActivityIds);
-    }
-  }
+    protected void collectActiveActivityIds(ExecutionEntity executionEntity, List<String> activeActivityIds) {
+        if (executionEntity.isActive() && executionEntity.getActivityId() != null) {
+            activeActivityIds.add(executionEntity.getActivityId());
+        }
 
+        for (ExecutionEntity childExecution : executionEntity.getExecutions()) {
+            collectActiveActivityIds(childExecution, activeActivityIds);
+        }
+    }
 }

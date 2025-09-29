@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.spring.process.model;
 
 import java.util.HashMap;
@@ -29,6 +27,7 @@ public class ProcessVariablesMapping {
     public Map<String, Mapping> getInputs() {
         return inputs;
     }
+
     public void setInputs(Map<String, Mapping> inputs) {
         this.inputs = inputs;
     }
@@ -40,6 +39,7 @@ public class ProcessVariablesMapping {
     public Map<String, Mapping> getOutputs() {
         return outputs;
     }
+
     public void setOutputs(Map<String, Mapping> outputs) {
         this.outputs = outputs;
     }
@@ -55,6 +55,6 @@ public class ProcessVariablesMapping {
     public enum MappingType {
         MAP_ALL,
         MAP_ALL_INPUTS,
-        MAP_ALL_OUTPUTS
+        MAP_ALL_OUTPUTS,
     }
 }

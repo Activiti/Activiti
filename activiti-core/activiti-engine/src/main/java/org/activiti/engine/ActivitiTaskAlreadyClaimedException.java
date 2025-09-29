@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,26 +23,25 @@ package org.activiti.engine;
  */
 public class ActivitiTaskAlreadyClaimedException extends ActivitiException {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  /** the id of the task that is already claimed */
-  private String taskId;
+    /** the id of the task that is already claimed */
+    private String taskId;
 
-  /** the assignee of the task that is already claimed */
-  private String taskAssignee;
+    /** the assignee of the task that is already claimed */
+    private String taskAssignee;
 
-  public ActivitiTaskAlreadyClaimedException(String taskId, String taskAssignee) {
-    super("Task '" + taskId + "' is already claimed by someone else.");
-    this.taskId = taskId;
-    this.taskAssignee = taskAssignee;
-  }
+    public ActivitiTaskAlreadyClaimedException(String taskId, String taskAssignee) {
+        super("Task '" + taskId + "' is already claimed by someone else.");
+        this.taskId = taskId;
+        this.taskAssignee = taskAssignee;
+    }
 
-  public String getTaskId() {
-    return this.taskId;
-  }
+    public String getTaskId() {
+        return this.taskId;
+    }
 
-  public String getTaskAssignee() {
-    return this.taskAssignee;
-  }
-
+    public String getTaskAssignee() {
+        return this.taskAssignee;
+    }
 }

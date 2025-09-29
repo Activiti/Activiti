@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.cfg.multitenant;
 
 import java.util.Collection;
-
 
 /**
  * Interface to be implemented when using the {@link MultiSchemaMultiTenantProcessEngineConfiguration} and used
@@ -31,25 +29,23 @@ import java.util.Collection;
  */
 @Deprecated
 public interface TenantInfoHolder {
+    /**
+     * Returns all known tenant identifiers.
+     */
+    Collection<String> getAllTenants();
 
-  /**
-   * Returns all known tenant identifiers.
-   */
-  Collection<String> getAllTenants();
+    /**
+     * Sets the current tenant identifier.
+     */
+    void setCurrentTenantId(String tenantid);
 
-  /**
-   * Sets the current tenant identifier.
-   */
-  void setCurrentTenantId(String tenantid);
+    /**
+     * Returns the current tenant identifier.
+     */
+    String getCurrentTenantId();
 
-  /**
-   * Returns the current tenant identifier.
-   */
-  String getCurrentTenantId();
-
-  /**
-   * Clears the current tenant identifier settings.
-   */
-  void clearCurrentTenantId();
-
+    /**
+     * Clears the current tenant identifier settings.
+     */
+    void clearCurrentTenantId();
 }

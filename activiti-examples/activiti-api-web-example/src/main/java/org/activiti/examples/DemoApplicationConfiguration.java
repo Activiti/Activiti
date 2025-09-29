@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,26 +39,25 @@ public class DemoApplicationConfiguration {
 
     @Bean
     public UserDetailsService userDetailsService() {
-
         InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
 
         String[][] usersGroupsAndRoles = {
-                {"bob", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
-                {"john", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
-                {"hannah", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
-                {"other", "}password", "ROLE_ACTIVITI_USER", "GROUP_otherTeam"},
-                {"admin", "password", "ROLE_ACTIVITI_ADMIN"},
+            { "bob", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam" },
+            { "john", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam" },
+            { "hannah", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam" },
+            { "other", "}password", "ROLE_ACTIVITI_USER", "GROUP_otherTeam" },
+            { "admin", "password", "ROLE_ACTIVITI_ADMIN" },
         };
 
         for (String[] user : usersGroupsAndRoles) {
             List<String> authoritiesStrings = asList(Arrays.copyOfRange(user, 2, user.length));
-            logger.info("> Registering new user: " + user[0] + " with the following Authorities[" + authoritiesStrings + "]");
+            logger.info(
+                "> Registering new user: " + user[0] + " with the following Authorities[" + authoritiesStrings + "]"
+            );
 
-            inMemoryUserDetailsManager.createUser(User.withDefaultPasswordEncoder()
-                .username(user[0])
-                .password(user[1])
-                .authorities(user[2])
-                .build());
+            inMemoryUserDetailsManager.createUser(
+                User.withDefaultPasswordEncoder().username(user[0]).password(user[1]).authorities(user[2]).build()
+            );
         }
 
         return inMemoryUserDetailsManager;
@@ -71,5 +70,4 @@ public class DemoApplicationConfiguration {
             .httpBasic(withDefaults())
             .build();
     }
-
 }

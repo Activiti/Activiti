@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,18 @@
  */
 package org.activiti.test.matchers;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.model.events.SequenceFlowEvent;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class SequenceFlowMatchers {
 
     private String definitionKey;
 
     private SequenceFlowMatchers(String definitionKey) {
-
         this.definitionKey = definitionKey;
     }
 
@@ -39,15 +37,16 @@ public class SequenceFlowMatchers {
     public OperationScopeMatcher hasBeenTaken() {
         return (operationScope, events) -> {
             List<BPMNSequenceFlowTakenEvent> flowTakenEvents = events
-                    .stream()
-                    .filter(event -> SequenceFlowEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN.equals(event.getEventType()))
-                    .map(BPMNSequenceFlowTakenEvent.class::cast)
-                    .collect(Collectors.toList());
+                .stream()
+                .filter(event -> SequenceFlowEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN.equals(event.getEventType()))
+                .map(BPMNSequenceFlowTakenEvent.class::cast)
+                .collect(Collectors.toList());
             assertThat(flowTakenEvents)
-                    .filteredOn(event -> event.getEntity().getProcessInstanceId().equals(operationScope.getProcessInstanceId()))
-                    .extracting(event -> event.getEntity().getElementId())
-                    .contains(definitionKey);
+                .filteredOn(event ->
+                    event.getEntity().getProcessInstanceId().equals(operationScope.getProcessInstanceId())
+                )
+                .extracting(event -> event.getEntity().getElementId())
+                .contains(definitionKey);
         };
     }
-
 }

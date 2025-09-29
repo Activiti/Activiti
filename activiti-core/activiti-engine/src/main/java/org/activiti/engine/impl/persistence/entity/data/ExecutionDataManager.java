@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
@@ -32,47 +30,55 @@ import org.activiti.engine.runtime.ProcessInstance;
 
  */
 public interface ExecutionDataManager extends DataManager<ExecutionEntity> {
+    ExecutionEntity findSubProcessInstanceBySuperExecutionId(final String superExecutionId);
 
-  ExecutionEntity findSubProcessInstanceBySuperExecutionId(final String superExecutionId);
+    List<ExecutionEntity> findChildExecutionsByParentExecutionId(final String parentExecutionId);
 
-  List<ExecutionEntity> findChildExecutionsByParentExecutionId(final String parentExecutionId);
+    List<ExecutionEntity> findChildExecutionsByProcessInstanceId(final String processInstanceId);
 
-  List<ExecutionEntity> findChildExecutionsByProcessInstanceId(final String processInstanceId);
+    List<ExecutionEntity> findExecutionsByParentExecutionAndActivityIds(
+        final String parentExecutionId,
+        final Collection<String> activityIds
+    );
 
-  List<ExecutionEntity> findExecutionsByParentExecutionAndActivityIds(final String parentExecutionId, final Collection<String> activityIds);
+    long findExecutionCountByQueryCriteria(ExecutionQueryImpl executionQuery);
 
-  long findExecutionCountByQueryCriteria(ExecutionQueryImpl executionQuery);
+    List<ExecutionEntity> findExecutionsByQueryCriteria(ExecutionQueryImpl executionQuery, Page page);
 
-  List<ExecutionEntity> findExecutionsByQueryCriteria(ExecutionQueryImpl executionQuery, Page page);
+    long findProcessInstanceCountByQueryCriteria(ProcessInstanceQueryImpl executionQuery);
 
-  long findProcessInstanceCountByQueryCriteria(ProcessInstanceQueryImpl executionQuery);
+    List<ProcessInstance> findProcessInstanceByQueryCriteria(ProcessInstanceQueryImpl executionQuery);
 
-  List<ProcessInstance> findProcessInstanceByQueryCriteria(ProcessInstanceQueryImpl executionQuery);
+    List<ExecutionEntity> findExecutionsByRootProcessInstanceId(String rootProcessInstanceId);
 
-  List<ExecutionEntity> findExecutionsByRootProcessInstanceId(String rootProcessInstanceId);
+    List<ExecutionEntity> findExecutionsByProcessInstanceId(String processInstanceId);
 
-  List<ExecutionEntity> findExecutionsByProcessInstanceId(String processInstanceId);
+    List<ProcessInstance> findProcessInstanceAndVariablesByQueryCriteria(ProcessInstanceQueryImpl executionQuery);
 
-  List<ProcessInstance> findProcessInstanceAndVariablesByQueryCriteria(ProcessInstanceQueryImpl executionQuery);
+    Collection<ExecutionEntity> findInactiveExecutionsByProcessInstanceId(final String processInstanceId);
 
-  Collection<ExecutionEntity> findInactiveExecutionsByProcessInstanceId(final String processInstanceId);
+    Collection<ExecutionEntity> findInactiveExecutionsByActivityIdAndProcessInstanceId(
+        final String activityId,
+        final String processInstanceId
+    );
 
-  Collection<ExecutionEntity> findInactiveExecutionsByActivityIdAndProcessInstanceId(final String activityId, final String processInstanceId);
+    List<String> findProcessInstanceIdsByProcessDefinitionId(String processDefinitionId);
 
-  List<String> findProcessInstanceIdsByProcessDefinitionId(String processDefinitionId);
+    List<Execution> findExecutionsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
 
-  List<Execution> findExecutionsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
+    List<ProcessInstance> findProcessInstanceByNativeQuery(
+        Map<String, Object> parameterMap,
+        int firstResult,
+        int maxResults
+    );
 
-  List<ProcessInstance> findProcessInstanceByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
+    long findExecutionCountByNativeQuery(Map<String, Object> parameterMap);
 
-  long findExecutionCountByNativeQuery(Map<String, Object> parameterMap);
+    void updateExecutionTenantIdForDeployment(String deploymentId, String newTenantId);
 
-  void updateExecutionTenantIdForDeployment(String deploymentId, String newTenantId);
+    void updateProcessInstanceLockTime(String processInstanceId, Date lockDate, Date expirationTime);
 
-  void updateProcessInstanceLockTime(String processInstanceId, Date lockDate, Date expirationTime);
+    void updateAllExecutionRelatedEntityCountFlags(boolean newValue);
 
-  void updateAllExecutionRelatedEntityCountFlags(boolean newValue);
-
-  void clearProcessInstanceLockTime(String processInstanceId);
-
+    void clearProcessInstanceLockTime(String processInstanceId);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.activiti.runtime.api.event.impl;
 
 import java.util.Optional;
-
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.runtime.events.TaskCancelledEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -44,8 +43,10 @@ public class ToTaskCancelledConverter implements EventConverter<TaskCancelledEve
     }
 
     private boolean isTaskCancelled(ActivitiEntityEvent internalEvent) {
-        return internalEvent.getEntity() != null &&
-                internalEvent.getEntity() instanceof TaskEntity &&
-                ((TaskEntity) internalEvent.getEntity()).isCanceled();
+        return (
+            internalEvent.getEntity() != null &&
+            internalEvent.getEntity() instanceof TaskEntity &&
+            ((TaskEntity) internalEvent.getEntity()).isCanceled()
+        );
     }
 }

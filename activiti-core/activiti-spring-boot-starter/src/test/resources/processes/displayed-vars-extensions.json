@@ -1,38 +1,38 @@
 {
-  "id":"displayedVarsProcess",
-  "extensions":{
+  "id": "displayedVarsProcess",
+  "extensions": {
     "Process_displayedVarsProcess": {
-      "properties":{
-        "d440ff7b-0ac8-4a97-b163-51a6ec49faa1":{
-          "id":"d440ff7b-0ac8-4a97-b163-51a6ec49faa1",
-          "name":"age",
-          "type":"integer",
-          "required":true,
+      "properties": {
+        "d440ff7b-0ac8-4a97-b163-51a6ec49faa1": {
+          "id": "d440ff7b-0ac8-4a97-b163-51a6ec49faa1",
+          "name": "age",
+          "type": "integer",
+          "required": true,
           "display": true,
           "displayName": "Age"
         },
-        "bbcf2eee-3e4a-45f3-b9b7-42be5dcb10bf":{
-          "id":"bbcf2eee-3e4a-45f3-b9b7-42be5dcb10bf",
-          "name":"name",
-          "type":"string",
-          "required":true,
-          "value":"Nobody",
+        "bbcf2eee-3e4a-45f3-b9b7-42be5dcb10bf": {
+          "id": "bbcf2eee-3e4a-45f3-b9b7-42be5dcb10bf",
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "value": "Nobody",
           "display": true,
           "displayName": "Full name"
         },
-        "379dc1a1-481d-4617-a027-ef39fdadf224":{
-          "id":"379dc1a1-481d-4617-a027-ef39fdadf224",
-          "name":"subscribe",
-          "required":false,
-          "type":"boolean",
+        "379dc1a1-481d-4617-a027-ef39fdadf224": {
+          "id": "379dc1a1-481d-4617-a027-ef39fdadf224",
+          "name": "subscribe",
+          "required": false,
+          "type": "boolean",
           "display": true,
           "displayName": "Subscribe"
         },
-        "379dc1a1-481d-4617-a027-ef39fdadf225":{
-          "id":"379dc1a1-481d-4617-a027-ef39fdadf225",
-          "name":"birth",
-          "type":"date",
-          "required":false,
+        "379dc1a1-481d-4617-a027-ef39fdadf225": {
+          "id": "379dc1a1-481d-4617-a027-ef39fdadf225",
+          "name": "birth",
+          "type": "date",
+          "required": false,
           "display": true,
           "displayName": "Date of birth"
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.editor.language.json.converter;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.FlowElement;
@@ -27,10 +28,6 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.activiti.editor.language.json.model.ModelInfo;
 import org.apache.commons.lang3.StringUtils;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  *
@@ -40,7 +37,10 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
     protected Map<String, String> formMap;
     protected Map<String, ModelInfo> formKeyMap;
 
-    public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+    public static void fillTypes(
+        Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
+        Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap
+    ) {
         fillJsonTypes(convertersToBpmnMap);
         fillBpmnTypes(convertersToJsonMap);
     }
@@ -49,7 +49,9 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
         convertersToBpmnMap.put(STENCIL_TASK_USER, UserTaskJsonConverter.class);
     }
 
-    public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+    public static void fillBpmnTypes(
+        Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap
+    ) {
         convertersToJsonMap.put(UserTask.class, UserTaskJsonConverter.class);
     }
 
@@ -63,24 +65,34 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
         UserTask userTask = (UserTask) baseElement;
         String assignee = userTask.getAssignee();
 
-        if (StringUtils.isNotEmpty(assignee) || CollectionUtils.isNotEmpty(userTask.getCandidateUsers()) || CollectionUtils.isNotEmpty(userTask.getCandidateGroups())) {
-
+        if (
+            StringUtils.isNotEmpty(assignee) ||
+            CollectionUtils.isNotEmpty(userTask.getCandidateUsers()) ||
+            CollectionUtils.isNotEmpty(userTask.getCandidateGroups())
+        ) {
             ObjectNode assignmentNode = objectMapper.createObjectNode();
             ObjectNode assignmentValuesNode = objectMapper.createObjectNode();
 
             List<ExtensionElement> idmAssigneeList = userTask.getExtensionElements().get("activiti-idm-assignee");
-            List<ExtensionElement> idmAssigneeFieldList = userTask.getExtensionElements().get("activiti-idm-assignee-field");
-            if (CollectionUtils.isNotEmpty(idmAssigneeList) || CollectionUtils.isNotEmpty(idmAssigneeFieldList)
-                || CollectionUtils.isNotEmpty(userTask.getExtensionElements().get("activiti-idm-candidate-user"))
-                || CollectionUtils.isNotEmpty(userTask.getExtensionElements().get("activiti-idm-candidate-group"))) {
-
+            List<ExtensionElement> idmAssigneeFieldList = userTask
+                .getExtensionElements()
+                .get("activiti-idm-assignee-field");
+            if (
+                CollectionUtils.isNotEmpty(idmAssigneeList) ||
+                CollectionUtils.isNotEmpty(idmAssigneeFieldList) ||
+                CollectionUtils.isNotEmpty(userTask.getExtensionElements().get("activiti-idm-candidate-user")) ||
+                CollectionUtils.isNotEmpty(userTask.getExtensionElements().get("activiti-idm-candidate-group"))
+            ) {
                 assignmentValuesNode.put("type", "idm");
                 ObjectNode idmNode = objectMapper.createObjectNode();
                 assignmentValuesNode.set("idm", idmNode);
 
                 List<ExtensionElement> canCompleteList = userTask.getExtensionElements().get("initiator-can-complete");
                 if (CollectionUtils.isNotEmpty(canCompleteList)) {
-                    assignmentValuesNode.put("initiatorCanCompleteTask", Boolean.valueOf(canCompleteList.get(0).getElementText()));
+                    assignmentValuesNode.put(
+                        "initiatorCanCompleteTask",
+                        Boolean.valueOf(canCompleteList.get(0).getElementText())
+                    );
                 }
 
                 if (StringUtils.isNotEmpty(userTask.getAssignee())) {
@@ -91,7 +103,6 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
 
                         fillProperty("id", "activiti-idm-assignee-field", assigneeNode, userTask);
                         fillProperty("name", "assignee-field-info-name", assigneeNode, userTask);
-
                     } else {
                         assigneeNode.put("id", userTask.getAssignee());
                         idmNode.set("assignee", assigneeNode);
@@ -104,16 +115,26 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
                     }
                 }
 
-                List<ExtensionElement> idmCandidateUserList = userTask.getExtensionElements().get("activiti-idm-candidate-user");
-                if (CollectionUtils.isNotEmpty(userTask.getCandidateUsers()) && CollectionUtils.isNotEmpty(idmCandidateUserList)) {
-
+                List<ExtensionElement> idmCandidateUserList = userTask
+                    .getExtensionElements()
+                    .get("activiti-idm-candidate-user");
+                if (
+                    CollectionUtils.isNotEmpty(userTask.getCandidateUsers()) &&
+                    CollectionUtils.isNotEmpty(idmCandidateUserList)
+                ) {
                     List<String> candidateUserIds = new ArrayList<>();
 
-                    if (userTask.getCandidateUsers().size() == 1 && userTask.getCandidateUsers().get(0).contains("${taskAssignmentBean.assignTaskToCandidateUsers(")) {
+                    if (
+                        userTask.getCandidateUsers().size() == 1 &&
+                        userTask.getCandidateUsers().get(0).contains("${taskAssignmentBean.assignTaskToCandidateUsers(")
+                    ) {
                         idmNode.put("type", "users");
 
                         String candidateUsersString = userTask.getCandidateUsers().get(0);
-                        candidateUsersString = candidateUsersString.replace("${taskAssignmentBean.assignTaskToCandidateUsers('", "");
+                        candidateUsersString = candidateUsersString.replace(
+                            "${taskAssignmentBean.assignTaskToCandidateUsers('",
+                            ""
+                        );
                         candidateUsersString = candidateUsersString.replace("', execution)}", "");
 
                         List<String> candidateFieldIds = new ArrayList<>();
@@ -138,7 +159,6 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
                                 fillProperty("name", "user-field-info-name-" + fieldId, fieldNode, userTask);
                             }
                         }
-
                     } else {
                         candidateUserIds.addAll(userTask.getCandidateUsers());
                     }
@@ -152,24 +172,52 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
                             candidateUserNode.put("id", candidateUser);
                             candidateUsersNode.add(candidateUserNode);
 
-                            fillProperty("externalId", "user-info-externalid-" + candidateUser, candidateUserNode, userTask);
+                            fillProperty(
+                                "externalId",
+                                "user-info-externalid-" + candidateUser,
+                                candidateUserNode,
+                                userTask
+                            );
                             fillProperty("email", "user-info-email-" + candidateUser, candidateUserNode, userTask);
-                            fillProperty("firstName", "user-info-firstname-" + candidateUser, candidateUserNode, userTask);
-                            fillProperty("lastName", "user-info-lastname-" + candidateUser, candidateUserNode, userTask);
+                            fillProperty(
+                                "firstName",
+                                "user-info-firstname-" + candidateUser,
+                                candidateUserNode,
+                                userTask
+                            );
+                            fillProperty(
+                                "lastName",
+                                "user-info-lastname-" + candidateUser,
+                                candidateUserNode,
+                                userTask
+                            );
                         }
                     }
                 }
 
-                List<ExtensionElement> idmCandidateGroupList = userTask.getExtensionElements().get("activiti-idm-candidate-group");
-                if (CollectionUtils.isNotEmpty(userTask.getCandidateGroups()) && CollectionUtils.isNotEmpty(idmCandidateGroupList)) {
-
+                List<ExtensionElement> idmCandidateGroupList = userTask
+                    .getExtensionElements()
+                    .get("activiti-idm-candidate-group");
+                if (
+                    CollectionUtils.isNotEmpty(userTask.getCandidateGroups()) &&
+                    CollectionUtils.isNotEmpty(idmCandidateGroupList)
+                ) {
                     List<String> candidateGroupIds = new ArrayList<>();
 
-                    if (userTask.getCandidateGroups().size() == 1 && userTask.getCandidateGroups().get(0).contains("${taskAssignmentBean.assignTaskToCandidateGroups(")) {
+                    if (
+                        userTask.getCandidateGroups().size() == 1 &&
+                        userTask
+                            .getCandidateGroups()
+                            .get(0)
+                            .contains("${taskAssignmentBean.assignTaskToCandidateGroups(")
+                    ) {
                         idmNode.put("type", "groups");
 
                         String candidateGroupsString = userTask.getCandidateGroups().get(0);
-                        candidateGroupsString = candidateGroupsString.replace("${taskAssignmentBean.assignTaskToCandidateGroups('", "");
+                        candidateGroupsString = candidateGroupsString.replace(
+                            "${taskAssignmentBean.assignTaskToCandidateGroups('",
+                            ""
+                        );
                         candidateGroupsString = candidateGroupsString.replace("', execution)}", "");
 
                         List<String> candidateFieldIds = new ArrayList<>();
@@ -194,7 +242,6 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
                                 fillProperty("name", "group-field-info-name-" + fieldId, fieldNode, userTask);
                             }
                         }
-
                     } else {
                         candidateGroupIds.addAll(userTask.getCandidateGroups());
                     }
@@ -208,12 +255,16 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
                             candidateGroupNode.put("id", candidateGroup);
                             candidateGroupsNode.add(candidateGroupNode);
 
-                            fillProperty("externalId", "group-info-externalid-" + candidateGroup, candidateGroupNode, userTask);
+                            fillProperty(
+                                "externalId",
+                                "group-info-externalid-" + candidateGroup,
+                                candidateGroupNode,
+                                userTask
+                            );
                             fillProperty("name", "group-info-name-" + candidateGroup, candidateGroupNode, userTask);
                         }
                     }
                 }
-
             } else {
                 assignmentValuesNode.put("type", "static");
 
@@ -258,7 +309,6 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
                 formRefNode.put("name", modelInfo.getName());
                 formRefNode.put("key", modelInfo.getKey());
                 propertiesNode.set(PROPERTY_FORM_REFERENCE, formRefNode);
-
             } else {
                 setPropertyValue(PROPERTY_FORMKEY, userTask.getFormKey(), propertiesNode);
             }
@@ -289,7 +339,11 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
     }
 
     @Override
-    protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
+    protected FlowElement convertJsonToElement(
+        JsonNode elementNode,
+        JsonNode modelNode,
+        Map<String, JsonNode> shapeMap
+    ) {
         UserTask task = new UserTask();
 
         task.setPriority(getPropertyValueAsString(PROPERTY_USERTASK_PRIORITY, elementNode));
@@ -299,7 +353,6 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
         } else {
             JsonNode formReferenceNode = getProperty(PROPERTY_FORM_REFERENCE, elementNode);
             if (formReferenceNode != null && formReferenceNode.get("id") != null) {
-
                 if (formMap != null && formMap.containsKey(formReferenceNode.get("id").asText())) {
                     task.setFormKey(formMap.get(formReferenceNode.get("id").asText()));
                 }
@@ -313,7 +366,6 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
         if (assignmentNode != null) {
             JsonNode assignmentDefNode = assignmentNode.get("assignment");
             if (assignmentDefNode != null) {
-
                 JsonNode typeNode = assignmentDefNode.get("type");
                 JsonNode canCompleteTaskNode = assignmentDefNode.get("initiatorCanCompleteTask");
                 if (typeNode == null || "static".equalsIgnoreCase(typeNode.asText())) {
@@ -325,34 +377,44 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
                     task.setCandidateUsers(getValueAsList(PROPERTY_USERTASK_CANDIDATE_USERS, assignmentDefNode));
                     task.setCandidateGroups(getValueAsList(PROPERTY_USERTASK_CANDIDATE_GROUPS, assignmentDefNode));
 
-                    if (StringUtils.isNotEmpty(task.getAssignee()) && !"$INITIATOR".equalsIgnoreCase(task.getAssignee())) {
-
+                    if (
+                        StringUtils.isNotEmpty(task.getAssignee()) && !"$INITIATOR".equalsIgnoreCase(task.getAssignee())
+                    ) {
                         if (canCompleteTaskNode != null && !canCompleteTaskNode.isNull()) {
-                            addInitiatorCanCompleteExtensionElement(Boolean.parseBoolean(canCompleteTaskNode.asText()), task);
+                            addInitiatorCanCompleteExtensionElement(
+                                Boolean.parseBoolean(canCompleteTaskNode.asText()),
+                                task
+                            );
                         } else {
                             addInitiatorCanCompleteExtensionElement(false, task);
                         }
-
-                    } else if (StringUtils.isNotEmpty(task.getAssignee()) && "$INITIATOR".equalsIgnoreCase(task.getAssignee())) {
+                    } else if (
+                        StringUtils.isNotEmpty(task.getAssignee()) && "$INITIATOR".equalsIgnoreCase(task.getAssignee())
+                    ) {
                         addInitiatorCanCompleteExtensionElement(true, task);
                     }
-
                 } else if ("idm".equalsIgnoreCase(typeNode.asText())) {
                     JsonNode idmDefNode = assignmentDefNode.get("idm");
                     if (idmDefNode != null && idmDefNode.has("type")) {
                         JsonNode idmTypeNode = idmDefNode.get("type");
-                        if (idmTypeNode != null && "user".equalsIgnoreCase(idmTypeNode.asText()) && (idmDefNode.has("assignee") || idmDefNode.has("assigneeField"))) {
-
+                        if (
+                            idmTypeNode != null &&
+                            "user".equalsIgnoreCase(idmTypeNode.asText()) &&
+                            (idmDefNode.has("assignee") || idmDefNode.has("assigneeField"))
+                        ) {
                             fillAssigneeInfo(idmDefNode, canCompleteTaskNode, task);
-
-                        } else if (idmTypeNode != null && "users".equalsIgnoreCase(idmTypeNode.asText()) && (idmDefNode.has("candidateUsers") || idmDefNode.has("candidateUserFields"))) {
-
+                        } else if (
+                            idmTypeNode != null &&
+                            "users".equalsIgnoreCase(idmTypeNode.asText()) &&
+                            (idmDefNode.has("candidateUsers") || idmDefNode.has("candidateUserFields"))
+                        ) {
                             fillCandidateUsers(idmDefNode, canCompleteTaskNode, task);
-
-                        } else if (idmTypeNode != null && "groups".equalsIgnoreCase(idmTypeNode.asText()) && (idmDefNode.has("candidateGroups") || idmDefNode.has("candidateGroupFields"))) {
-
+                        } else if (
+                            idmTypeNode != null &&
+                            "groups".equalsIgnoreCase(idmTypeNode.asText()) &&
+                            (idmDefNode.has("candidateGroups") || idmDefNode.has("candidateGroupFields"))
+                        ) {
                             fillCandidateGroups(idmDefNode, canCompleteTaskNode, task);
-
                         } else {
                             task.setAssignee("$INITIATOR");
                             addExtensionElement("activiti-idm-initiator", String.valueOf(true), task);
@@ -379,7 +441,6 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
                 addExtensionElement("assignee-info-firstname", assigneeNode.get("firstName"), task);
                 addExtensionElement("assignee-info-lastname", assigneeNode.get("lastName"), task);
                 addExtensionElement("assignee-info-externalid", assigneeNode.get("externalId"), task);
-
             } else if (emailNode != null && !emailNode.isNull() && StringUtils.isNotEmpty(emailNode.asText())) {
                 task.setAssignee(emailNode.asText());
 
@@ -388,7 +449,6 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
                 addExtensionElement("activiti-assignee-email", task.getAssignee(), task);
                 addExtensionElement("activiti-idm-assignee", String.valueOf(true), task);
             }
-
         } else if (assigneeFieldNode != null && !assigneeFieldNode.isNull()) {
             JsonNode idNode = assigneeFieldNode.get("id");
             if (idNode != null && !idNode.isNull() && StringUtils.isNotEmpty(idNode.asText())) {
@@ -422,7 +482,6 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
                         addExtensionElement("user-info-firstname-" + id, userNode.get("firstName"), task);
                         addExtensionElement("user-info-lastname-" + id, userNode.get("lastName"), task);
                         addExtensionElement("user-info-externalid-" + id, userNode.get("externalId"), task);
-
                     } else if (emailNode != null && !emailNode.isNull() && StringUtils.isNotEmpty(emailNode.asText())) {
                         String email = emailNode.asText();
                         candidateUsers.add(email);
@@ -460,13 +519,17 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
         }
 
         if (candidateUsers.size() > 0) {
-            if (candidateUserFieldsNode != null && candidateUserFieldsNode.isArray() && candidateUserFieldsNode.size() > 0) {
+            if (
+                candidateUserFieldsNode != null &&
+                candidateUserFieldsNode.isArray() &&
+                candidateUserFieldsNode.size() > 0
+            ) {
                 String candidateUsersString = StringUtils.join(candidateUsers, ",");
-                candidateUsersString = "${taskAssignmentBean.assignTaskToCandidateUsers('" + candidateUsersString + "', execution)}";
+                candidateUsersString =
+                    "${taskAssignmentBean.assignTaskToCandidateUsers('" + candidateUsersString + "', execution)}";
                 candidateUsers.clear();
                 candidateUsers.add(candidateUsersString);
                 task.setCandidateUsers(candidateUsers);
-
             } else {
                 task.setCandidateUsers(candidateUsers);
             }
@@ -506,13 +569,17 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
         }
 
         if (candidateGroups.size() > 0) {
-            if (candidateGroupFieldsNode != null && candidateGroupFieldsNode.isArray() && candidateGroupFieldsNode.size() > 0) {
+            if (
+                candidateGroupFieldsNode != null &&
+                candidateGroupFieldsNode.isArray() &&
+                candidateGroupFieldsNode.size() > 0
+            ) {
                 String candidateGroupsString = StringUtils.join(candidateGroups, ",");
-                candidateGroupsString = "${taskAssignmentBean.assignTaskToCandidateGroups('" + candidateGroupsString + "', execution)}";
+                candidateGroupsString =
+                    "${taskAssignmentBean.assignTaskToCandidateGroups('" + candidateGroupsString + "', execution)}";
                 candidateGroups.clear();
                 candidateGroups.add(candidateGroupsString);
                 task.setCandidateGroups(candidateGroups);
-
             } else {
                 task.setCandidateGroups(candidateGroups);
             }
@@ -545,7 +612,12 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
         task.addExtensionElement(extensionElement);
     }
 
-    protected void fillProperty(String propertyName, String extensionElementName, ObjectNode elementNode, UserTask task) {
+    protected void fillProperty(
+        String propertyName,
+        String extensionElementName,
+        ObjectNode elementNode,
+        UserTask task
+    ) {
         List<ExtensionElement> extensionElementList = task.getExtensionElements().get(extensionElementName);
         if (CollectionUtils.isNotEmpty(extensionElementList)) {
             elementNode.put(propertyName, extensionElementList.get(0).getElementText());

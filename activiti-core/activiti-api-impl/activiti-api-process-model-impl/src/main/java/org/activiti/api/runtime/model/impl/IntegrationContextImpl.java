@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,13 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
-
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.activiti.api.process.model.IntegrationContext;
 
 public class IntegrationContextImpl implements IntegrationContext {
@@ -120,10 +120,10 @@ public class IntegrationContextImpl implements IntegrationContext {
     }
 
     @Override
-    public void addOutBoundVariable(String name,
-                                    Object value) {
+    public void addOutBoundVariable(String name, Object value) {
         outBoundVariables.put(name, value);
     }
+
     @Override
     public void addOutBoundVariables(Map<String, Object> variables) {
         outBoundVariables.putAll(variables);
@@ -152,7 +152,6 @@ public class IntegrationContextImpl implements IntegrationContext {
         return clientName;
     }
 
-
     public void setClientName(String clientName) {
         this.clientName = clientName;
     }
@@ -162,11 +161,9 @@ public class IntegrationContextImpl implements IntegrationContext {
         return clientType;
     }
 
-
     public void setClientType(String clientType) {
         this.clientType = clientType;
     }
-
 
     @Override
     public String getBusinessKey() {
@@ -195,12 +192,10 @@ public class IntegrationContextImpl implements IntegrationContext {
         this.appVersion = appVersion;
     }
 
-
     @Override
     public String getExecutionId() {
         return executionId;
     }
-
 
     public void setExecutionId(String executionId) {
         this.executionId = executionId;
@@ -208,22 +203,24 @@ public class IntegrationContextImpl implements IntegrationContext {
 
     @Override
     public int hashCode() {
-        return Objects.hash(appVersion,
-                            businessKey,
-                            clientId,
-                            clientName,
-                            clientType,
-                            connectorType,
-                            executionId,
-                            id,
-                            inBoundVariables,
-                            outBoundVariables,
-                            parentProcessInstanceId,
-                            processDefinitionId,
-                            processDefinitionKey,
-                            processDefinitionVersion,
-                            processInstanceId,
-                            rootProcessInstanceId);
+        return Objects.hash(
+            appVersion,
+            businessKey,
+            clientId,
+            clientName,
+            clientType,
+            connectorType,
+            executionId,
+            id,
+            inBoundVariables,
+            outBoundVariables,
+            parentProcessInstanceId,
+            processDefinitionId,
+            processDefinitionKey,
+            processDefinitionVersion,
+            processInstanceId,
+            rootProcessInstanceId
+        );
     }
 
     @Override
@@ -238,108 +235,98 @@ public class IntegrationContextImpl implements IntegrationContext {
             return false;
         }
         IntegrationContextImpl other = (IntegrationContextImpl) obj;
-        return Objects.equals(appVersion, other.appVersion) &&
-               Objects.equals(businessKey, other.businessKey) &&
-               Objects.equals(clientId, other.clientId) &&
-               Objects.equals(clientName, other.clientName) &&
-               Objects.equals(clientType, other.clientType) &&
-               Objects.equals(connectorType, other.connectorType) &&
-               Objects.equals(executionId, other.executionId) &&
-               Objects.equals(id, other.id) &&
-               Objects.equals(inBoundVariables, other.inBoundVariables) &&
-               Objects.equals(outBoundVariables, other.outBoundVariables) &&
-               Objects.equals(parentProcessInstanceId, other.parentProcessInstanceId) &&
-               Objects.equals(processDefinitionId, other.processDefinitionId) &&
-               Objects.equals(processDefinitionKey, other.processDefinitionKey) &&
-               Objects.equals(processDefinitionVersion, other.processDefinitionVersion) &&
-               Objects.equals(processInstanceId, other.processInstanceId) &&
-               Objects.equals(rootProcessInstanceId, other.rootProcessInstanceId);
+        return (
+            Objects.equals(appVersion, other.appVersion) &&
+            Objects.equals(businessKey, other.businessKey) &&
+            Objects.equals(clientId, other.clientId) &&
+            Objects.equals(clientName, other.clientName) &&
+            Objects.equals(clientType, other.clientType) &&
+            Objects.equals(connectorType, other.connectorType) &&
+            Objects.equals(executionId, other.executionId) &&
+            Objects.equals(id, other.id) &&
+            Objects.equals(inBoundVariables, other.inBoundVariables) &&
+            Objects.equals(outBoundVariables, other.outBoundVariables) &&
+            Objects.equals(parentProcessInstanceId, other.parentProcessInstanceId) &&
+            Objects.equals(processDefinitionId, other.processDefinitionId) &&
+            Objects.equals(processDefinitionKey, other.processDefinitionKey) &&
+            Objects.equals(processDefinitionVersion, other.processDefinitionVersion) &&
+            Objects.equals(processInstanceId, other.processInstanceId) &&
+            Objects.equals(rootProcessInstanceId, other.rootProcessInstanceId)
+        );
     }
 
     @Override
     public String toString() {
-        final int maxLen = 10;
         StringBuilder builder = new StringBuilder();
         builder.append("IntegrationContextImpl [id=")
-               .append(id)
-               .append(", inboundVariables=")
-               .append(inBoundVariables != null ? toString(inBoundVariables.entrySet(), maxLen) : null)
-               .append(", outBoundVariables=")
-               .append(outBoundVariables != null ? toString(outBoundVariables.entrySet(), maxLen) : null)
-               .append(", rootProcessInstanceId=")
-               .append(rootProcessInstanceId)
-               .append(", processInstanceId=")
-               .append(processInstanceId)
-               .append(", parentProcessInstanceId=")
-               .append(parentProcessInstanceId)
-               .append(", processDefinitionId=")
-               .append(processDefinitionId)
-               .append(", executionId=")
-               .append(executionId)
-               .append(", processDefinitionKey=")
-               .append(processDefinitionKey)
-               .append(", processDefinitionVersion=")
-               .append(processDefinitionVersion)
-               .append(", businessKey=")
-               .append(businessKey)
-               .append(", clientId=")
-               .append(clientId)
-               .append(", clientName=")
-               .append(clientName)
-               .append(", clientType=")
-               .append(clientType)
-               .append(", appVersion=")
-               .append(appVersion)
-               .append(", connectorType=")
-               .append(connectorType)
-               .append("]");
+            .append(id)
+            .append(", inboundVariablesKeys=")
+            .append(inBoundVariables != null ? printKeys(inBoundVariables.keySet()) : null)
+            .append(", outBoundVariableKeys=")
+            .append(outBoundVariables != null ? printKeys(outBoundVariables.keySet()) : null)
+            .append(", rootProcessInstanceId=")
+            .append(rootProcessInstanceId)
+            .append(", processInstanceId=")
+            .append(processInstanceId)
+            .append(", parentProcessInstanceId=")
+            .append(parentProcessInstanceId)
+            .append(", processDefinitionId=")
+            .append(processDefinitionId)
+            .append(", executionId=")
+            .append(executionId)
+            .append(", processDefinitionKey=")
+            .append(processDefinitionKey)
+            .append(", processDefinitionVersion=")
+            .append(processDefinitionVersion)
+            .append(", businessKey=")
+            .append(businessKey)
+            .append(", clientId=")
+            .append(clientId)
+            .append(", clientName=")
+            .append(clientName)
+            .append(", clientType=")
+            .append(clientType)
+            .append(", appVersion=")
+            .append(appVersion)
+            .append(", connectorType=")
+            .append(connectorType)
+            .append("]");
         return builder.toString();
     }
 
-    private String toString(Collection<?> collection, int maxLen) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
-        int i = 0;
-        for (Iterator<?> iterator = collection.iterator(); iterator.hasNext() && i < maxLen; i++) {
-            if (i > 0) {
-                builder.append(", ");
-            }
-            builder.append(iterator.next());
-        }
-        builder.append("]");
-        return builder.toString();
+    private String printKeys(Set<String> keys) {
+        return Stream.ofNullable(keys).map(String::valueOf).collect(Collectors.joining(", "));
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getInBoundVariable(String name) {
         return Optional.ofNullable(inBoundVariables)
-                       .map(it -> (T) inBoundVariables.get(name))
-                       .orElse(null);
+            .map(it -> (T) inBoundVariables.get(name))
+            .orElse(null);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getInBoundVariable(String name, Class<T> type) {
         return Optional.ofNullable(inBoundVariables)
-                       .map(it -> (T) inBoundVariables.get(name))
-                       .orElse(null);
+            .map(it -> (T) inBoundVariables.get(name))
+            .orElse(null);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getOutBoundVariable(String name) {
         return Optional.ofNullable(outBoundVariables)
-                       .map(it -> (T) it.get(name))
-                       .orElse(null);
+            .map(it -> (T) it.get(name))
+            .orElse(null);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getOutBoundVariable(String name, Class<T> type) {
         return Optional.ofNullable(outBoundVariables)
-                       .map(it -> (T) it.get(name))
-                       .orElse(null);
+            .map(it -> (T) it.get(name))
+            .orElse(null);
     }
-
 }

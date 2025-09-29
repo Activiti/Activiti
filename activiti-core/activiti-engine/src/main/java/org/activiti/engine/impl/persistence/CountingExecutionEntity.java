@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence;
 
 import org.activiti.engine.api.internal.Internal;
@@ -23,32 +22,30 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface CountingExecutionEntity {
+    boolean isCountEnabled();
+    void setCountEnabled(boolean isCountEnabled);
 
-  boolean isCountEnabled();
-  void setCountEnabled(boolean isCountEnabled);
+    void setEventSubscriptionCount(int eventSubscriptionCount);
+    int getEventSubscriptionCount();
 
-  void setEventSubscriptionCount(int eventSubscriptionCount);
-  int getEventSubscriptionCount();
+    void setTaskCount(int taskcount);
+    int getTaskCount();
 
-  void setTaskCount(int taskcount);
-  int getTaskCount();
+    void setJobCount(int jobCount);
+    int getJobCount();
 
-  void setJobCount(int jobCount);
-  int getJobCount();
+    void setTimerJobCount(int timerJobCount);
+    int getTimerJobCount();
 
-  void setTimerJobCount(int timerJobCount);
-  int getTimerJobCount();
+    void setSuspendedJobCount(int suspendedJobCount);
+    int getSuspendedJobCount();
 
-  void setSuspendedJobCount(int suspendedJobCount);
-  int getSuspendedJobCount();
+    void setDeadLetterJobCount(int deadLetterJobCount);
+    int getDeadLetterJobCount();
 
-  void setDeadLetterJobCount(int deadLetterJobCount);
-  int getDeadLetterJobCount();
+    void setVariableCount(int variableCount);
+    int getVariableCount();
 
-  void setVariableCount(int variableCount);
-  int getVariableCount();
-
-  void setIdentityLinkCount(int identityLinkCount);
-  int getIdentityLinkCount();
-
+    void setIdentityLinkCount(int identityLinkCount);
+    int getIdentityLinkCount();
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.transformer;
 
 import java.math.BigDecimal;
@@ -26,13 +25,13 @@ import java.text.DecimalFormat;
  */
 public class BigDecimalToString extends AbstractTransformer {
 
-  protected DecimalFormat format = new DecimalFormat();
+    protected DecimalFormat format = new DecimalFormat();
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected Object primTransform(Object anObject) throws Exception {
-    return format.format((BigDecimal) anObject);
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Object primTransform(Object anObject) throws Exception {
+        return format.format((BigDecimal) anObject);
+    }
 }

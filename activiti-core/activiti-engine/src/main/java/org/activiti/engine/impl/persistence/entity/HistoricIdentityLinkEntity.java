@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.api.internal.Internal;
@@ -24,20 +23,19 @@ import org.activiti.engine.history.HistoricIdentityLink;
  */
 @Internal
 public interface HistoricIdentityLinkEntity extends HistoricIdentityLink, Entity {
+    boolean isUser();
 
-  boolean isUser();
+    boolean isGroup();
 
-  boolean isGroup();
+    void setType(String type);
 
-  void setType(String type);
+    void setUserId(String userId);
 
-  void setUserId(String userId);
+    void setGroupId(String groupId);
 
-  void setGroupId(String groupId);
+    void setTaskId(String taskId);
 
-  void setTaskId(String taskId);
+    void setProcessInstanceId(String processInstanceId);
 
-  void setProcessInstanceId(String processInstanceId);
-
-  void setDetails(byte[] details);
+    void setDetails(byte[] details);
 }

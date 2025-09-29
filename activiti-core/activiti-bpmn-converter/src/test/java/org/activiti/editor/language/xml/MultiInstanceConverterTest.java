@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,16 +40,14 @@ public class MultiInstanceConverterTest extends AbstractConverterTest {
 
     private void validateModel(BpmnModel bpmnModel) {
         FlowElement flowElement = bpmnModel.getMainProcess().getFlowElement("miTasks");
-        assertThat(flowElement)
-            .isNotNull()
-            .isInstanceOf(UserTask.class);
-        MultiInstanceLoopCharacteristics loopCharacteristics = ((UserTask) flowElement)
-            .getLoopCharacteristics();
+        assertThat(flowElement).isNotNull().isInstanceOf(UserTask.class);
+        MultiInstanceLoopCharacteristics loopCharacteristics = ((UserTask) flowElement).getLoopCharacteristics();
         assertThat(loopCharacteristics)
-            .extracting(MultiInstanceLoopCharacteristics::getLoopDataOutputRef,
-                MultiInstanceLoopCharacteristics::getOutputDataItem)
-            .containsExactly(
-                "meals", "meal");
+            .extracting(
+                MultiInstanceLoopCharacteristics::getLoopDataOutputRef,
+                MultiInstanceLoopCharacteristics::getOutputDataItem
+            )
+            .containsExactly("meals", "meal");
     }
 
     @Override

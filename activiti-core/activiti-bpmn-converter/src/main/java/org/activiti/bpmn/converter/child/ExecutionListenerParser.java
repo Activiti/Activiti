@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,7 @@ public class ExecutionListenerParser extends ActivitiListenerParser {
         return ELEMENT_EXECUTION_LISTENER;
     }
 
-    public void addListenerToParent(ActivitiListener listener,
-                                    BaseElement parentElement) {
+    public void addListenerToParent(ActivitiListener listener, BaseElement parentElement) {
         if (parentElement instanceof HasExecutionListeners) {
             if (StringUtils.isEmpty(listener.getEvent()) && parentElement instanceof SequenceFlow) {
                 // No event type on a sequenceflow = 'take' implied

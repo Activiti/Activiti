@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.standalone.testing;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,14 +26,14 @@ import org.activiti.engine.test.Deployment;
  */
 public class ActivitiTestCaseTest extends ActivitiTestCase {
 
-  @Deployment
-  public void testSimpleProcess() {
-    runtimeService.startProcessInstanceByKey("simpleProcess");
+    @Deployment
+    public void testSimpleProcess() {
+        runtimeService.startProcessInstanceByKey("simpleProcess");
 
-    Task task = taskService.createTaskQuery().singleResult();
-    assertThat(task.getName()).isEqualTo("My Task");
+        Task task = taskService.createTaskQuery().singleResult();
+        assertThat(task.getName()).isEqualTo("My Task");
 
-    taskService.complete(task.getId());
-    assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
-  }
+        taskService.complete(task.getId());
+        assertThat(runtimeService.createProcessInstanceQuery().count()).isEqualTo(0);
+    }
 }

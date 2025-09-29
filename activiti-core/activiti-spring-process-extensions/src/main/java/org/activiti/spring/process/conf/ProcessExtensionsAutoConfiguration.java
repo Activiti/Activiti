@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.spring.process.conf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,8 +57,10 @@ public class ProcessExtensionsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessExtensionResourceReader processExtensionResourceReader(ObjectMapper objectMapper,
-                                                            Map<String, VariableType> variableTypeMap) {
+    public ProcessExtensionResourceReader processExtensionResourceReader(
+        ObjectMapper objectMapper,
+        Map<String, VariableType> variableTypeMap
+    ) {
         return new ProcessExtensionResourceReader(objectMapper, variableTypeMap);
     }
 
@@ -71,7 +71,11 @@ public class ProcessExtensionsAutoConfiguration {
         DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader,
         @Lazy RepositoryService repositoryService
     ) {
-        var delegate = new ProcessExtensionRepositoryImpl(deploymentResourceLoader, processExtensionResourceReader, repositoryService);
+        var delegate = new ProcessExtensionRepositoryImpl(
+            deploymentResourceLoader,
+            processExtensionResourceReader,
+            repositoryService
+        );
 
         return new CacheableProcessExtensionRepository(delegate);
     }
@@ -83,15 +87,19 @@ public class ProcessExtensionsAutoConfiguration {
     }
 
     @Bean
-    InitializingBean initRepositoryServiceForDeploymentResourceLoader(RepositoryService repositoryService,
-                                                                      DeploymentResourceLoader deploymentResourceLoader) {
+    InitializingBean initRepositoryServiceForDeploymentResourceLoader(
+        RepositoryService repositoryService,
+        DeploymentResourceLoader deploymentResourceLoader
+    ) {
         return () -> deploymentResourceLoader.setRepositoryService(repositoryService);
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "variableTypeMap")
-    public Map<String, VariableType> variableTypeMap(ObjectMapper objectMapper,
-                                                     DateFormatterProvider dateFormatterProvider) {
+    public Map<String, VariableType> variableTypeMap(
+        ObjectMapper objectMapper,
+        DateFormatterProvider dateFormatterProvider
+    ) {
         Map<String, VariableType> variableTypeMap = new HashMap<>();
         variableTypeMap.put("boolean", new JavaObjectVariableType(Boolean.class));
         variableTypeMap.put("string", new JavaObjectVariableType(String.class));
@@ -119,8 +127,9 @@ public class ProcessExtensionsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public CachingProcessExtensionService cachingProcessExtensionService(ProcessExtensionService processExtensionService) {
+    public CachingProcessExtensionService cachingProcessExtensionService(
+        ProcessExtensionService processExtensionService
+    ) {
         return new CachingProcessExtensionService(processExtensionService);
     }
-
 }

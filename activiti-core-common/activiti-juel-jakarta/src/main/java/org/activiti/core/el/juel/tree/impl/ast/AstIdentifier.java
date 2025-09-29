@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree.impl.ast;
 
 import jakarta.el.ELContext;
@@ -55,9 +54,7 @@ public class AstIdentifier extends AstNode implements IdentifierNode {
         context.setPropertyResolved(false);
         Class<?> result = context.getELResolver().getType(context, null, name);
         if (!context.isPropertyResolved()) {
-            throw new PropertyNotFoundException(
-                LocalMessages.get("error.identifier.property.notfound", name)
-            );
+            throw new PropertyNotFoundException(LocalMessages.get("error.identifier.property.notfound", name));
         }
         return result;
     }
@@ -74,10 +71,7 @@ public class AstIdentifier extends AstNode implements IdentifierNode {
         return false;
     }
 
-    public ValueReference getValueReference(
-        Bindings bindings,
-        ELContext context
-    ) {
+    public ValueReference getValueReference(Bindings bindings, ELContext context) {
         ValueExpression expression = bindings.getVariable(index);
         if (expression != null) {
             return expression.getValueReference(context);
@@ -94,9 +88,7 @@ public class AstIdentifier extends AstNode implements IdentifierNode {
         context.setPropertyResolved(false);
         Object result = context.getELResolver().getValue(context, null, name);
         if (!context.isPropertyResolved()) {
-            throw new PropertyNotFoundException(
-                LocalMessages.get("error.identifier.property.notfound", name)
-            );
+            throw new PropertyNotFoundException(LocalMessages.get("error.identifier.property.notfound", name));
         }
         return result;
     }
@@ -117,9 +109,7 @@ public class AstIdentifier extends AstNode implements IdentifierNode {
         }
         context.getELResolver().setValue(context, null, name, value);
         if (!context.isPropertyResolved()) {
-            throw new PropertyNotFoundException(
-                LocalMessages.get("error.identifier.property.notfound", name)
-            );
+            throw new PropertyNotFoundException(LocalMessages.get("error.identifier.property.notfound", name));
         }
     }
 
@@ -129,13 +119,9 @@ public class AstIdentifier extends AstNode implements IdentifierNode {
             return expression.isReadOnly(context);
         }
         context.setPropertyResolved(false);
-        boolean result = context
-            .getELResolver()
-            .isReadOnly(context, null, name);
+        boolean result = context.getELResolver().isReadOnly(context, null, name);
         if (!context.isPropertyResolved()) {
-            throw new PropertyNotFoundException(
-                LocalMessages.get("error.identifier.property.notfound", name)
-            );
+            throw new PropertyNotFoundException(LocalMessages.get("error.identifier.property.notfound", name));
         }
         return result;
     }
@@ -148,35 +134,20 @@ public class AstIdentifier extends AstNode implements IdentifierNode {
     ) {
         Object value = eval(bindings, context);
         if (value == null) {
-            throw new MethodNotFoundException(
-                LocalMessages.get("error.identifier.method.notfound", name)
-            );
+            throw new MethodNotFoundException(LocalMessages.get("error.identifier.method.notfound", name));
         }
         if (value instanceof Method) {
             final Method method = findAccessibleMethod((Method) value);
             if (method == null) {
-                throw new MethodNotFoundException(
-                    LocalMessages.get("error.identifier.method.notfound", name)
-                );
+                throw new MethodNotFoundException(LocalMessages.get("error.identifier.method.notfound", name));
             }
-            if (
-                !ignoreReturnType &&
-                returnType != null &&
-                !returnType.isAssignableFrom(method.getReturnType())
-            ) {
+            if (!ignoreReturnType && returnType != null && !returnType.isAssignableFrom(method.getReturnType())) {
                 throw new MethodNotFoundException(
-                    LocalMessages.get(
-                        "error.identifier.method.returntype",
-                        method.getReturnType(),
-                        name,
-                        returnType
-                    )
+                    LocalMessages.get("error.identifier.method.returntype", method.getReturnType(), name, returnType)
                 );
             }
             if (!Arrays.equals(method.getParameterTypes(), paramTypes)) {
-                throw new MethodNotFoundException(
-                    LocalMessages.get("error.identifier.method.notfound", name)
-                );
+                throw new MethodNotFoundException(LocalMessages.get("error.identifier.method.notfound", name));
             }
             return new MethodExpression() {
                 private static final long serialVersionUID = 1L;
@@ -206,60 +177,31 @@ public class AstIdentifier extends AstNode implements IdentifierNode {
                     try {
                         return method.invoke(null, params);
                     } catch (IllegalAccessException e) {
-                        throw new ELException(
-                            LocalMessages.get(
-                                "error.identifier.method.access",
-                                name
-                            )
-                        );
+                        throw new ELException(LocalMessages.get("error.identifier.method.access", name));
                     } catch (IllegalArgumentException e) {
-                        throw new ELException(
-                            LocalMessages.get(
-                                "error.identifier.method.invocation",
-                                name,
-                                e
-                            )
-                        );
+                        throw new ELException(LocalMessages.get("error.identifier.method.invocation", name, e));
                     } catch (InvocationTargetException e) {
                         throw new ELException(
-                            LocalMessages.get(
-                                "error.identifier.method.invocation",
-                                name,
-                                e.getCause()
-                            )
+                            LocalMessages.get("error.identifier.method.invocation", name, e.getCause())
                         );
                     }
                 }
 
                 @Override
                 public MethodInfo getMethodInfo(ELContext context) {
-                    return new MethodInfo(
-                        method.getName(),
-                        method.getReturnType(),
-                        method.getParameterTypes()
-                    );
+                    return new MethodInfo(method.getName(), method.getReturnType(), method.getParameterTypes());
                 }
             };
         } else if (value instanceof MethodExpression) {
             return (MethodExpression) value;
         }
         throw new MethodNotFoundException(
-            LocalMessages.get(
-                "error.identifier.method.notamethod",
-                name,
-                value.getClass()
-            )
+            LocalMessages.get("error.identifier.method.notamethod", name, value.getClass())
         );
     }
 
-    public MethodInfo getMethodInfo(
-        Bindings bindings,
-        ELContext context,
-        Class<?> returnType,
-        Class<?>[] paramTypes
-    ) {
-        return getMethodExpression(bindings, context, returnType, paramTypes)
-            .getMethodInfo(context);
+    public MethodInfo getMethodInfo(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes) {
+        return getMethodExpression(bindings, context, returnType, paramTypes).getMethodInfo(context);
     }
 
     public Object invoke(
@@ -269,8 +211,7 @@ public class AstIdentifier extends AstNode implements IdentifierNode {
         Class<?>[] paramTypes,
         Object[] params
     ) {
-        return getMethodExpression(bindings, context, returnType, paramTypes)
-            .invoke(context, params);
+        return getMethodExpression(bindings, context, returnType, paramTypes).invoke(context, params);
     }
 
     @Override
@@ -280,9 +221,7 @@ public class AstIdentifier extends AstNode implements IdentifierNode {
 
     @Override
     public void appendStructure(StringBuilder b, Bindings bindings) {
-        b.append(
-            bindings != null && bindings.isVariableBound(index) ? "<var>" : name
-        );
+        b.append(bindings != null && bindings.isVariableBound(index) ? "<var>" : name);
     }
 
     public int getIndex() {

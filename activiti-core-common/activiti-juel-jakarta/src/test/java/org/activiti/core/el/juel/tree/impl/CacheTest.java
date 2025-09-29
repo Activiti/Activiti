@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -68,11 +67,8 @@ public class CacheTest extends TestCase {
         assertEquals(9, cache.size());
     }
 
-    long testMultiThread(
-        final int cacheSize,
-        final int numberOfThreads,
-        final int numberOfLookups
-    ) throws InterruptedException, ExecutionException {
+    long testMultiThread(final int cacheSize, final int numberOfThreads, final int numberOfLookups)
+        throws InterruptedException, ExecutionException {
         final Cache cache = new Cache(cacheSize, numberOfThreads);
         final Builder builder = new Builder();
         final Random random = new Random(7);
@@ -84,15 +80,10 @@ public class CacheTest extends TestCase {
                     public Long call() throws Exception {
                         long time = System.currentTimeMillis();
                         for (int j = 0; j < numberOfLookups; j++) {
-                            String expression = String.valueOf(
-                                Math.abs(random.nextInt()) % numberOfLookups
-                            );
+                            String expression = String.valueOf(Math.abs(random.nextInt()) % numberOfLookups);
                             Tree tree = cache.get(expression);
                             if (tree == null) {
-                                cache.put(
-                                    expression,
-                                    builder.build(expression)
-                                );
+                                cache.put(expression, builder.build(expression));
                             }
                         }
                         return System.currentTimeMillis() - time;
@@ -102,11 +93,7 @@ public class CacheTest extends TestCase {
         }
 
         long result = 0;
-        for (Future<Long> future : service.invokeAll(
-            tasks,
-            10L,
-            TimeUnit.SECONDS
-        )) {
+        for (Future<Long> future : service.invokeAll(tasks, 10L, TimeUnit.SECONDS)) {
             if (!future.isDone() || future.isCancelled()) {
                 fail();
             }

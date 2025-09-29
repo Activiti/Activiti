@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree.impl.ast;
 
 import jakarta.el.ELContext;
@@ -31,15 +30,9 @@ public class AstChoice extends AstRightValue {
     }
 
     @Override
-    public Object eval(Bindings bindings, ELContext context)
-        throws ELException {
-        Boolean value = bindings.convert(
-            question.eval(bindings, context),
-            Boolean.class
-        );
-        return value.booleanValue()
-            ? yes.eval(bindings, context)
-            : no.eval(bindings, context);
+    public Object eval(Bindings bindings, ELContext context) throws ELException {
+        Boolean value = bindings.convert(question.eval(bindings, context), Boolean.class);
+        return value.booleanValue() ? yes.eval(bindings, context) : no.eval(bindings, context);
     }
 
     @Override

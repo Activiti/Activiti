@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.delegate;
 
 import org.activiti.engine.api.internal.Internal;
@@ -24,7 +23,5 @@ import org.activiti.engine.delegate.DelegateExecution;
  */
 @Internal
 public interface TriggerableActivityBehavior extends ActivityBehavior {
-
-  void trigger(DelegateExecution execution, String signalEvent, Object signalData);
-
+    void trigger(DelegateExecution execution, String signalEvent, Object signalData);
 }

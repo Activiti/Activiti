@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,62 +46,60 @@ public class MessageEventDefinitionConverterTest extends AbstractConverterTest {
     private void validateModel(BpmnModel model) {
         Message message = model.getMessage("Message_1");
 
-        assertThat(message).isNotNull()
-                           .extracting(Message::getId,
-                                       Message::getName)
-                           .contains("Message_1",
-                                     "catchMessage");
+        assertThat(message)
+            .isNotNull()
+            .extracting(Message::getId, Message::getName)
+            .contains("Message_1", "catchMessage");
 
-        assertThat(model.getProcessById("intermediateCatchProcess")
-                        .getFlowElements()).filteredOn(IntermediateCatchEvent.class::isInstance)
-                                           .flatExtracting("eventDefinitions")
-                                           .extracting("messageRef", "correlationKey")
-                                           .contains(tuple("Message_1", "${correlationId}"));
+        assertThat(model.getProcessById("intermediateCatchProcess").getFlowElements())
+            .filteredOn(IntermediateCatchEvent.class::isInstance)
+            .flatExtracting("eventDefinitions")
+            .extracting("messageRef", "correlationKey")
+            .contains(tuple("Message_1", "${correlationId}"));
 
-        assertThat(model.getProcessById("intermediateThrowProcess")
-                        .getFlowElements()).filteredOn(ThrowEvent.class::isInstance)
-                                           .flatExtracting("eventDefinitions")
-                                           .extracting("messageRef", "correlationKey")
-                                           .contains(tuple("Message_1", "${correlationId}"));
+        assertThat(model.getProcessById("intermediateThrowProcess").getFlowElements())
+            .filteredOn(ThrowEvent.class::isInstance)
+            .flatExtracting("eventDefinitions")
+            .extracting("messageRef", "correlationKey")
+            .contains(tuple("Message_1", "${correlationId}"));
 
-        assertThat(model.getProcessById("endThrowProcess")
-                        .getFlowElements()).filteredOn(EndEvent.class::isInstance)
-                                           .flatExtracting("eventDefinitions")
-                                           .extracting("messageRef", "correlationKey")
-                                           .contains(tuple("Message_1", "${correlationId}"));
+        assertThat(model.getProcessById("endThrowProcess").getFlowElements())
+            .filteredOn(EndEvent.class::isInstance)
+            .flatExtracting("eventDefinitions")
+            .extracting("messageRef", "correlationKey")
+            .contains(tuple("Message_1", "${correlationId}"));
 
-        assertThat(model.getProcessById("boundaryCatchProcess")
-                        .getFlowElements()).filteredOn(BoundaryEvent.class::isInstance)
-                                           .flatExtracting("eventDefinitions")
-                                           .extracting("messageRef", "correlationKey")
-                                           .contains(tuple("Message_1", "${correlationId}"));
+        assertThat(model.getProcessById("boundaryCatchProcess").getFlowElements())
+            .filteredOn(BoundaryEvent.class::isInstance)
+            .flatExtracting("eventDefinitions")
+            .extracting("messageRef", "correlationKey")
+            .contains(tuple("Message_1", "${correlationId}"));
 
-        assertThat(model.getProcessById("startMessageEventSubprocess")
-                        .getFlowElements()).filteredOn(EventSubProcess.class::isInstance)
-                                           .flatExtracting("flowElements")
-                                           .filteredOn(StartEvent.class::isInstance)
-                                           .flatExtracting("eventDefinitions")
-                                           .extracting("messageRef", "correlationKey")
-                                           .contains(tuple("Message_1", "${correlationId}"));
+        assertThat(model.getProcessById("startMessageEventSubprocess").getFlowElements())
+            .filteredOn(EventSubProcess.class::isInstance)
+            .flatExtracting("flowElements")
+            .filteredOn(StartEvent.class::isInstance)
+            .flatExtracting("eventDefinitions")
+            .extracting("messageRef", "correlationKey")
+            .contains(tuple("Message_1", "${correlationId}"));
 
-        assertThat(model.getProcessById("startMessageProcess")
-                        .getFlowElements()).filteredOn(StartEvent.class::isInstance)
-                                           .flatExtracting("eventDefinitions")
-                                           .extracting("messageRef", "correlationKey")
-                                           .contains(tuple("Message_1", null));
+        assertThat(model.getProcessById("startMessageProcess").getFlowElements())
+            .filteredOn(StartEvent.class::isInstance)
+            .flatExtracting("eventDefinitions")
+            .extracting("messageRef", "correlationKey")
+            .contains(tuple("Message_1", null));
 
-        assertThat(model.getProcessById("boundaryCatchSubrocess")
-                        .getFlowElements()).filteredOn(BoundaryEvent.class::isInstance)
-                                           .flatExtracting("eventDefinitions")
-                                           .extracting("messageRef", "correlationKey")
-                                           .contains(tuple("Message_1", "${correlationId}"));
+        assertThat(model.getProcessById("boundaryCatchSubrocess").getFlowElements())
+            .filteredOn(BoundaryEvent.class::isInstance)
+            .flatExtracting("eventDefinitions")
+            .extracting("messageRef", "correlationKey")
+            .contains(tuple("Message_1", "${correlationId}"));
 
-        assertThat(model.getProcessById("intermediateCatchMessageExpressionProcess")
-                        .getFlowElements()).filteredOn(IntermediateCatchEvent.class::isInstance)
-                                           .flatExtracting("eventDefinitions")
-                                           .extracting("messageRef", "messageExpression", "correlationKey")
-                                           .contains(tuple(null, "catchMessage", "${correlationId}"));
-
+        assertThat(model.getProcessById("intermediateCatchMessageExpressionProcess").getFlowElements())
+            .filteredOn(IntermediateCatchEvent.class::isInstance)
+            .flatExtracting("eventDefinitions")
+            .extracting("messageRef", "messageExpression", "correlationKey")
+            .contains(tuple(null, "catchMessage", "${correlationId}"));
     }
 
     protected String getResource() {

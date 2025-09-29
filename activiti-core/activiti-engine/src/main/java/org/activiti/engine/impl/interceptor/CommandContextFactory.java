@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.interceptor;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -23,20 +22,20 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
  */
 public class CommandContextFactory {
 
-  protected ProcessEngineConfigurationImpl processEngineConfiguration;
+    protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
-  public CommandContext createCommandContext(Command<?> cmd) {
-    return new CommandContext(cmd, processEngineConfiguration);
-  }
+    public CommandContext createCommandContext(Command<?> cmd) {
+        return new CommandContext(cmd, processEngineConfiguration);
+    }
 
-  // getters and setters
-  // //////////////////////////////////////////////////////
+    // getters and setters
+    // //////////////////////////////////////////////////////
 
-  public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
-    return processEngineConfiguration;
-  }
+    public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
+        return processEngineConfiguration;
+    }
 
-  public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
-    this.processEngineConfiguration = processEngineConfiguration;
-  }
+    public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
+        this.processEngineConfiguration = processEngineConfiguration;
+    }
 }

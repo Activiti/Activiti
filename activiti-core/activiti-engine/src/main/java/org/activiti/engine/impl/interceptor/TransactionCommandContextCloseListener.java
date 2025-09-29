@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.interceptor;
 
 import org.activiti.engine.impl.cfg.TransactionContext;
@@ -24,30 +22,25 @@ import org.activiti.engine.impl.cfg.TransactionContext;
  */
 public class TransactionCommandContextCloseListener implements CommandContextCloseListener {
 
-  protected TransactionContext transactionContext;
+    protected TransactionContext transactionContext;
 
-  public TransactionCommandContextCloseListener(TransactionContext transactionContext) {
-    this.transactionContext = transactionContext;
-  }
+    public TransactionCommandContextCloseListener(TransactionContext transactionContext) {
+        this.transactionContext = transactionContext;
+    }
 
-  @Override
-  public void closing(CommandContext commandContext) {
+    @Override
+    public void closing(CommandContext commandContext) {}
 
-  }
+    @Override
+    public void afterSessionsFlush(CommandContext commandContext) {
+        transactionContext.commit();
+    }
 
-  @Override
-  public void afterSessionsFlush(CommandContext commandContext) {
-    transactionContext.commit();
-  }
+    @Override
+    public void closed(CommandContext commandContext) {}
 
-  @Override
-  public void closed(CommandContext commandContext) {
-
-  }
-
-  @Override
-  public void closeFailure(CommandContext commandContext) {
-    transactionContext.rollback();
-  }
-
+    @Override
+    public void closeFailure(CommandContext commandContext) {
+        transactionContext.rollback();
+    }
 }

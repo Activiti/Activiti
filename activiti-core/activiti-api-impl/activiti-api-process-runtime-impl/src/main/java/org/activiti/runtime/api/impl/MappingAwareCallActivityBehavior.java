@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.runtime.api.impl;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
@@ -33,26 +31,36 @@ public class MappingAwareCallActivityBehavior extends CallActivityBehavior {
     private VariablesCalculator variablesCalculator;
     private ProcessVariablesInitiator processVariablesInitiator;
 
-    public MappingAwareCallActivityBehavior(String processDefinitionKey, List<MapExceptionEntry> mapExceptions,
-        VariablesCalculator variablesCalculator, ProcessVariablesInitiator processVariablesInitiator, VariablesPropagator variablesPropagator) {
+    public MappingAwareCallActivityBehavior(
+        String processDefinitionKey,
+        List<MapExceptionEntry> mapExceptions,
+        VariablesCalculator variablesCalculator,
+        ProcessVariablesInitiator processVariablesInitiator,
+        VariablesPropagator variablesPropagator
+    ) {
         super(processDefinitionKey, mapExceptions, variablesPropagator);
         this.variablesCalculator = variablesCalculator;
         this.processVariablesInitiator = processVariablesInitiator;
     }
 
-    public MappingAwareCallActivityBehavior(Expression processDefinitionExpression, List<MapExceptionEntry> mapExceptions,
-        VariablesCalculator variablesCalculator, ProcessVariablesInitiator processVariablesInitiator, VariablesPropagator variablesPropagator) {
+    public MappingAwareCallActivityBehavior(
+        Expression processDefinitionExpression,
+        List<MapExceptionEntry> mapExceptions,
+        VariablesCalculator variablesCalculator,
+        ProcessVariablesInitiator processVariablesInitiator,
+        VariablesPropagator variablesPropagator
+    ) {
         super(processDefinitionExpression, mapExceptions, variablesPropagator);
         this.variablesCalculator = variablesCalculator;
         this.processVariablesInitiator = processVariablesInitiator;
     }
 
     @Override
-    protected Map<String, Object> calculateInboundVariables(DelegateExecution execution,
-                                                            ProcessDefinition processDefinition) {
-
+    protected Map<String, Object> calculateInboundVariables(
+        DelegateExecution execution,
+        ProcessDefinition processDefinition
+    ) {
         Map<String, Object> inputVariables = variablesCalculator.calculateInputVariables(execution);
         return processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition, inputVariables);
     }
-
 }

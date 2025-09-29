@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.test.fieldinjection;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateHelper;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
 
@@ -30,21 +28,20 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component("testExecutionListener")
 public class TestExecutionListener implements ExecutionListener {
 
-  public static AtomicInteger INSTANCE_COUNT = new AtomicInteger(0);
+    public static AtomicInteger INSTANCE_COUNT = new AtomicInteger(0);
 
-  public TestExecutionListener() {
-    INSTANCE_COUNT.incrementAndGet();
-  }
+    public TestExecutionListener() {
+        INSTANCE_COUNT.incrementAndGet();
+    }
 
-  @Override
-  public void notify(DelegateExecution execution) {
-    Expression inputExpression = DelegateHelper.getFieldExpression(execution, "input");
-    Number input = (Number) inputExpression.getValue(execution);
+    @Override
+    public void notify(DelegateExecution execution) {
+        Expression inputExpression = DelegateHelper.getFieldExpression(execution, "input");
+        Number input = (Number) inputExpression.getValue(execution);
 
-    int result = input.intValue() * 100;
+        int result = input.intValue() * 100;
 
-    Expression resultVarExpression = DelegateHelper.getFieldExpression(execution, "resultVar");
-    execution.setVariable(resultVarExpression.getValue(execution).toString(), result);
-  }
-
+        Expression resultVarExpression = DelegateHelper.getFieldExpression(execution, "resultVar");
+        execution.setVariable(resultVarExpression.getValue(execution).toString(), result);
+    }
 }

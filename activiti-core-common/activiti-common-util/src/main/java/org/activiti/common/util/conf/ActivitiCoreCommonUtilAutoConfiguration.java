@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,9 @@ public class ActivitiCoreCommonUtilAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DateFormatterProvider dateFormatterProvider(@Value("${spring.activiti.date-format-pattern:yyyy-MM-dd[['T']HH:mm:ss[.SSS][XXX]]}")
-                                                       String dateFormatPattern) {
+    public DateFormatterProvider dateFormatterProvider(
+        @Value("${spring.activiti.date-format-pattern:yyyy-MM-dd[['T']HH:mm:ss[.SSS][XXX]]}") String dateFormatPattern
+    ) {
         return new DateFormatterProvider(dateFormatPattern);
     }
-
 }

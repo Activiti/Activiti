@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,37 +55,27 @@ public class ProcessRuntimeMultipleInstancesIT {
         securityUtil.logInAs("user");
 
         ProcessInstance processInstance1 = processRuntime.start(
-            ProcessPayloadBuilder
-                .start()
-                .withProcessDefinitionKey(PROCESS_MULTIPLE_INSTANCE_1)
-                .build());
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(PROCESS_MULTIPLE_INSTANCE_1).build()
+        );
         assertThat(processInstance1).isNotNull();
 
-        List<VariableInstance> processInstance1Vars = processRuntime.variables(ProcessPayloadBuilder
-                                                                                   .variables()
-                                                                                   .withProcessInstanceId(processInstance1.getId())
-                                                                                   .build());
-        assertThat(processInstance1Vars).extracting(VariableInstance::getName,
-                                                    VariableInstance::getValue)
-            .containsOnly(tuple("name",
-                                "Kermit"));
+        List<VariableInstance> processInstance1Vars = processRuntime.variables(
+            ProcessPayloadBuilder.variables().withProcessInstanceId(processInstance1.getId()).build()
+        );
+        assertThat(processInstance1Vars)
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .containsOnly(tuple("name", "Kermit"));
 
         ProcessInstance processInstance2 = processRuntime.start(
-            ProcessPayloadBuilder
-                .start()
-                .withProcessDefinitionKey(PROCESS_MULTIPLE_INSTANCE_2)
-                .build());
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(PROCESS_MULTIPLE_INSTANCE_2).build()
+        );
         assertThat(processInstance1).isNotNull();
 
-        List<VariableInstance> processInstance2Vars = processRuntime.variables(ProcessPayloadBuilder
-                                                                                   .variables()
-                                                                                   .withProcessInstanceId(processInstance2.getId())
-                                                                                   .build());
-        assertThat(processInstance2Vars).extracting(VariableInstance::getName,
-                                                    VariableInstance::getValue)
-            .containsOnly(tuple("lastName",
-                                "The Frog"));
-
-
+        List<VariableInstance> processInstance2Vars = processRuntime.variables(
+            ProcessPayloadBuilder.variables().withProcessInstanceId(processInstance2.getId()).build()
+        );
+        assertThat(processInstance2Vars)
+            .extracting(VariableInstance::getName, VariableInstance::getValue)
+            .containsOnly(tuple("lastName", "The Frog"));
     }
 }

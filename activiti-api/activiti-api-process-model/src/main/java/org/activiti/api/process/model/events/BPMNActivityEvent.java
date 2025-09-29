@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,15 @@
  */
 package org.activiti.api.process.model.events;
 
-
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.BPMNActivity;
 
 public interface BPMNActivityEvent extends RuntimeEvent<BPMNActivity, BPMNActivityEvent.ActivityEvents> {
-
     enum ActivityEvents {
-
         ACTIVITY_STARTED,
 
         ACTIVITY_CANCELLED,
 
-        ACTIVITY_COMPLETED
+        ACTIVITY_COMPLETED,
     }
 }

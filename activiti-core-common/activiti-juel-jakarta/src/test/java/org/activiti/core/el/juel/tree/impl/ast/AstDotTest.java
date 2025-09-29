@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree.impl.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -91,8 +90,7 @@ public class AstDotTest extends TestCase {
     @Test
     public void testAppendStructure() {
         StringBuilder s = new StringBuilder();
-        parseNode("${foo.bar}")
-            .appendStructure(s, new Bindings(null, null, null));
+        parseNode("${foo.bar}").appendStructure(s, new Bindings(null, null, null));
         assertEquals("foo.bar", s.toString());
     }
 
@@ -113,10 +111,7 @@ public class AstDotTest extends TestCase {
             parseNode("${base.bad}").getType(bindings, context);
             fail();
         } catch (ELException e) {}
-        assertEquals(
-            long.class,
-            parseNode("${base.foo}").getType(bindings, context)
-        );
+        assertEquals(long.class, parseNode("${base.foo}").getType(bindings, context));
         assertNull(parseNode("${'base'.foo}").getType(bindings, context));
     }
 
@@ -140,69 +135,48 @@ public class AstDotTest extends TestCase {
 
     @Test
     public void testGetValue() {
-        assertEquals(
-            1l,
-            parseNode("${base.foo}").getValue(bindings, context, null)
-        );
-        assertEquals(
-            "1",
-            parseNode("${base.foo}").getValue(bindings, context, String.class)
-        );
-        assertNull(
-            parseNode("${base.nullObject.class}")
-                .getValue(bindings, context, Object.class)
-        );
+        assertEquals(1l, parseNode("${base.foo}").getValue(bindings, context, null));
+        assertEquals("1", parseNode("${base.foo}").getValue(bindings, context, String.class));
+        assertNull(parseNode("${base.nullObject.class}").getValue(bindings, context, Object.class));
     }
 
     @Test
     public void testGetValueReference() {
-        assertEquals(
-            this,
-            parseNode("${base.foo}")
-                .getValueReference(bindings, context)
-                .getBase()
-        );
-        assertEquals(
-            "foo",
-            parseNode("${base.foo}")
-                .getValueReference(bindings, context)
-                .getProperty()
-        );
+        assertEquals(this, parseNode("${base.foo}").getValueReference(bindings, context).getBase());
+        assertEquals("foo", parseNode("${base.foo}").getValueReference(bindings, context).getProperty());
     }
 
     @Test
     public void testInvoke() {
-        assertEquals(
-            1l,
-            parseNode("${base.bar}")
-                .invoke(bindings, context, long.class, new Class[0], null)
-        );
+        assertEquals(1l, parseNode("${base.bar}").invoke(bindings, context, long.class, new Class[0], null));
         assertEquals(
             2l,
-            parseNode("${base.bar}")
-                .invoke(
-                    bindings,
-                    context,
-                    null,
-                    new Class[] { long.class },
-                    new Object[] { 2l }
-                )
+            parseNode("${base.bar}").invoke(bindings, context, null, new Class[] { long.class }, new Object[] { 2l })
         );
 
         assertEquals(
             42,
-            parseNode("${base.testClass.anonymousTestInterface.fourtyTwo}")
-                .invoke(bindings, context, null, new Class[0], null)
+            parseNode("${base.testClass.anonymousTestInterface.fourtyTwo}").invoke(
+                bindings,
+                context,
+                null,
+                new Class[0],
+                null
+            )
         );
         assertEquals(
             42,
-            parseNode("${base.testClass.nestedTestInterface.fourtyTwo}")
-                .invoke(bindings, context, null, new Class[0], null)
+            parseNode("${base.testClass.nestedTestInterface.fourtyTwo}").invoke(
+                bindings,
+                context,
+                null,
+                new Class[0],
+                null
+            )
         );
 
         try {
-            parseNode("${base.nullObject.class}")
-                .invoke(bindings, context, null, null, new Object[0]);
+            parseNode("${base.nullObject.class}").invoke(bindings, context, null, null, new Object[0]);
             fail();
         } catch (PropertyNotFoundException e) {
             // ok
@@ -214,50 +188,25 @@ public class AstDotTest extends TestCase {
         MethodInfo info = null;
 
         // long bar()
-        info =
-            parseNode("${base.bar}")
-                .getMethodInfo(bindings, context, long.class, new Class[0]);
+        info = parseNode("${base.bar}").getMethodInfo(bindings, context, long.class, new Class[0]);
         assertEquals("bar", info.getName());
         assertTrue(Arrays.equals(new Class[0], info.getParamTypes()));
         assertEquals(long.class, info.getReturnType());
 
         // long bar(long)
-        info =
-            parseNode("${base.bar}")
-                .getMethodInfo(
-                    bindings,
-                    context,
-                    null,
-                    new Class[] { long.class }
-                );
+        info = parseNode("${base.bar}").getMethodInfo(bindings, context, null, new Class[] { long.class });
         assertEquals("bar", info.getName());
-        assertTrue(
-            Arrays.equals(new Class[] { long.class }, info.getParamTypes())
-        );
+        assertTrue(Arrays.equals(new Class[] { long.class }, info.getParamTypes()));
         assertEquals(long.class, info.getReturnType());
 
         // bad arg type
         try {
-            info =
-                parseNode("${base.bar}")
-                    .getMethodInfo(
-                        bindings,
-                        context,
-                        null,
-                        new Class[] { String.class }
-                    );
+            info = parseNode("${base.bar}").getMethodInfo(bindings, context, null, new Class[] { String.class });
             fail();
         } catch (ELException e) {}
         // bad return type
         try {
-            info =
-                parseNode("${base.bar}")
-                    .getMethodInfo(
-                        bindings,
-                        context,
-                        String.class,
-                        new Class[0]
-                    );
+            info = parseNode("${base.bar}").getMethodInfo(bindings, context, String.class, new Class[0]);
             fail();
         } catch (ELException e) {}
     }

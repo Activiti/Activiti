@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.boot;
 
 import org.activiti.engine.HistoryService;
@@ -33,38 +32,37 @@ import org.activiti.spring.SpringProcessEngineConfiguration;
  */
 public abstract class AbstractProcessEngineConfiguration {
 
-  public ProcessEngineFactoryBean springProcessEngineBean(SpringProcessEngineConfiguration configuration) {
-    ProcessEngineFactoryBean processEngineFactoryBean = new ProcessEngineFactoryBean();
-    processEngineFactoryBean.setProcessEngineConfiguration(configuration);
-    return processEngineFactoryBean;
-  }
+    public ProcessEngineFactoryBean springProcessEngineBean(SpringProcessEngineConfiguration configuration) {
+        ProcessEngineFactoryBean processEngineFactoryBean = new ProcessEngineFactoryBean();
+        processEngineFactoryBean.setProcessEngineConfiguration(configuration);
+        return processEngineFactoryBean;
+    }
 
-  public RuntimeService runtimeServiceBean(ProcessEngine processEngine) {
-    return processEngine.getRuntimeService();
-  }
+    public RuntimeService runtimeServiceBean(ProcessEngine processEngine) {
+        return processEngine.getRuntimeService();
+    }
 
-  public RepositoryService repositoryServiceBean(ProcessEngine processEngine) {
-    return processEngine.getRepositoryService();
-  }
+    public RepositoryService repositoryServiceBean(ProcessEngine processEngine) {
+        return processEngine.getRepositoryService();
+    }
 
-  public TaskService taskServiceBean(ProcessEngine processEngine) {
-    return processEngine.getTaskService();
-  }
+    public TaskService taskServiceBean(ProcessEngine processEngine) {
+        return processEngine.getTaskService();
+    }
 
-  public HistoryService historyServiceBean(ProcessEngine processEngine) {
-    return processEngine.getHistoryService();
-  }
+    public HistoryService historyServiceBean(ProcessEngine processEngine) {
+        return processEngine.getHistoryService();
+    }
 
-  public ManagementService managementServiceBeanBean(ProcessEngine processEngine) {
-    return processEngine.getManagementService();
-  }
+    public ManagementService managementServiceBeanBean(ProcessEngine processEngine) {
+        return processEngine.getManagementService();
+    }
 
-  public IntegrationContextManager integrationContextManagerBean(ProcessEngine processEngine) {
-      return processEngine.getProcessEngineConfiguration().getIntegrationContextManager();
-  }
+    public IntegrationContextManager integrationContextManagerBean(ProcessEngine processEngine) {
+        return processEngine.getProcessEngineConfiguration().getIntegrationContextManager();
+    }
 
-  public IntegrationContextService integrationContextServiceBean(ProcessEngine processEngine) {
-      return processEngine.getProcessEngineConfiguration().getIntegrationContextService();
-  }
-
+    public IntegrationContextService integrationContextServiceBean(ProcessEngine processEngine) {
+        return processEngine.getProcessEngineConfiguration().getIntegrationContextService();
+    }
 }

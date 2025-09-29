@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,43 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.calendar;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.api.internal.Internal;
 
 @Internal
 public class MapBusinessCalendarManager implements BusinessCalendarManager {
 
-  private final Map<String, BusinessCalendar> businessCalendars;
+    private final Map<String, BusinessCalendar> businessCalendars;
 
-  public MapBusinessCalendarManager(){
-    this.businessCalendars = new HashMap<String, BusinessCalendar>();
-  }
-
-  public MapBusinessCalendarManager(Map<String, BusinessCalendar> businessCalendars) {
-    if (businessCalendars == null) {
-      throw new IllegalArgumentException("businessCalendars can not be null");
+    public MapBusinessCalendarManager() {
+        this.businessCalendars = new HashMap<String, BusinessCalendar>();
     }
 
-    this.businessCalendars = new HashMap<String, BusinessCalendar>(businessCalendars);
-  }
+    public MapBusinessCalendarManager(Map<String, BusinessCalendar> businessCalendars) {
+        if (businessCalendars == null) {
+            throw new IllegalArgumentException("businessCalendars can not be null");
+        }
 
-  public BusinessCalendar getBusinessCalendar(String businessCalendarRef) {
-    BusinessCalendar businessCalendar = businessCalendars.get(businessCalendarRef);
-    if (businessCalendar == null) {
-      throw new ActivitiException("Requested business calendar " + businessCalendarRef +
-          " does not exist. Allowed calendars are " + this.businessCalendars.keySet() + ".");
+        this.businessCalendars = new HashMap<String, BusinessCalendar>(businessCalendars);
     }
-    return businessCalendar;
-  }
 
-  public BusinessCalendarManager addBusinessCalendar(String businessCalendarRef, BusinessCalendar businessCalendar) {
-    businessCalendars.put(businessCalendarRef, businessCalendar);
-    return this;
-  }
+    public BusinessCalendar getBusinessCalendar(String businessCalendarRef) {
+        BusinessCalendar businessCalendar = businessCalendars.get(businessCalendarRef);
+        if (businessCalendar == null) {
+            throw new ActivitiException(
+                "Requested business calendar " +
+                businessCalendarRef +
+                " does not exist. Allowed calendars are " +
+                this.businessCalendars.keySet() +
+                "."
+            );
+        }
+        return businessCalendar;
+    }
+
+    public BusinessCalendarManager addBusinessCalendar(String businessCalendarRef, BusinessCalendar businessCalendar) {
+        businessCalendars.put(businessCalendarRef, businessCalendar);
+        return this;
+    }
 }

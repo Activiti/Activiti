@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,26 +29,29 @@ public class MappingAwareActivityBehaviorFactoryTest {
 
     @Test
     public void createUserTaskActivityBehaviorShouldReturnMappingAwareUserTaskBehavior() {
-        assertThat(factory.createUserTaskActivityBehavior(mock(UserTask.class)))
-                .isInstanceOf(MappingAwareUserTaskBehavior.class);
+        assertThat(factory.createUserTaskActivityBehavior(mock(UserTask.class))).isInstanceOf(
+            MappingAwareUserTaskBehavior.class
+        );
     }
 
     @Test
     public void createCallActivityBehaviorShouldReturnMappingAwareCallActivityBehavior() {
-        assertThat(factory.createCallActivityBehavior("element", emptyList()))
-                .isInstanceOf(MappingAwareCallActivityBehavior.class);
+        assertThat(factory.createCallActivityBehavior("element", emptyList())).isInstanceOf(
+            MappingAwareCallActivityBehavior.class
+        );
     }
 
     @Test
     public void createCallActivityBehaviorWithExpressionShouldReturnMappingAwareCallActivityBehavior() {
-        assertThat(factory.createCallActivityBehavior(mock(Expression.class), emptyList()))
-                .isInstanceOf(MappingAwareCallActivityBehavior.class);
+        assertThat(factory.createCallActivityBehavior(mock(Expression.class), emptyList())).isInstanceOf(
+            MappingAwareCallActivityBehavior.class
+        );
     }
 
     @Test
     public void getMessagePayloadMappingProviderFactoryShouldReturnJsonMessagePayloadMappingProvider() {
-        assertThat(factory.getMessagePayloadMappingProviderFactory())
-                .isInstanceOf(JsonMessagePayloadMappingProviderFactory.class);
+        assertThat(factory.getMessagePayloadMappingProviderFactory()).isInstanceOf(
+            JsonMessagePayloadMappingProviderFactory.class
+        );
     }
-
 }

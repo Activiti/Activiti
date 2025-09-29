@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.bpmn.listener;
 
+import java.util.Map;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.CustomPropertiesResolver;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
-
-import java.util.Map;
 
 /**
  * An {@link CustomPropertiesResolver} that evaluates a {@link Expression} when notified.
@@ -31,26 +28,28 @@ import java.util.Map;
  */
 public class ExpressionCustomPropertiesResolver implements CustomPropertiesResolver {
 
-  protected Expression expression;
+    protected Expression expression;
 
-  public ExpressionCustomPropertiesResolver(Expression expression) {
-    this.expression = expression;
-  }
-
-  @Override
-  public Map<String, Object> getCustomPropertiesMap(DelegateExecution execution) {
-    Object expressionValue = expression.getValue(execution);
-    if (expressionValue instanceof Map) {
-      return (Map<String, Object>) expressionValue;
-    } else {
-      throw new ActivitiIllegalArgumentException("Custom properties resolver expression " + expression + " did not return a Map<String, Object>");
+    public ExpressionCustomPropertiesResolver(Expression expression) {
+        this.expression = expression;
     }
-  }
 
-  /**
-   * returns the expression text for this execution listener. Comes in handy if you want to check which listeners you already have.
-   */
-  public String getExpressionText() {
-    return expression.getExpressionText();
-  }
+    @Override
+    public Map<String, Object> getCustomPropertiesMap(DelegateExecution execution) {
+        Object expressionValue = expression.getValue(execution);
+        if (expressionValue instanceof Map) {
+            return (Map<String, Object>) expressionValue;
+        } else {
+            throw new ActivitiIllegalArgumentException(
+                "Custom properties resolver expression " + expression + " did not return a Map<String, Object>"
+            );
+        }
+    }
+
+    /**
+     * returns the expression text for this execution listener. Comes in handy if you want to check which listeners you already have.
+     */
+    public String getExpressionText() {
+        return expression.getExpressionText();
+    }
 }

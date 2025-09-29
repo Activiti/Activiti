@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.extensions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,28 +50,13 @@ public class MethodInvocationsTest {
         // let's go...
         ValueExpression e = null;
 
-        e =
-            f.createValueExpression(
-                context,
-                "${'foo'.matches('foo|bar')}",
-                boolean.class
-            );
+        e = f.createValueExpression(context, "${'foo'.matches('foo|bar')}", boolean.class);
         assertEquals(e.getValue(context), true); // --> true
 
-        e =
-            f.createValueExpression(
-                context,
-                "${'bar'.toUpperCase()}",
-                String.class
-            );
+        e = f.createValueExpression(context, "${'bar'.toUpperCase()}", String.class);
         assertEquals(e.getValue(context), "BAR"); // --> BAR
 
-        e =
-            f.createValueExpression(
-                context,
-                "${'foobar '.trim().length()}",
-                int.class
-            );
+        e = f.createValueExpression(context, "${'foobar '.trim().length()}", int.class);
         assertEquals((Integer) e.getValue(context), 6); // --> 6
     }
 

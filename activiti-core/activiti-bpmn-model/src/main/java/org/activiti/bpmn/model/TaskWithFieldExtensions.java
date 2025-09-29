@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,13 @@ import java.util.List;
 
 public abstract class TaskWithFieldExtensions extends Task {
 
-  protected List<FieldExtension> fieldExtensions = new ArrayList<FieldExtension>();
+    protected List<FieldExtension> fieldExtensions = new ArrayList<FieldExtension>();
 
-  public List<FieldExtension> getFieldExtensions() {
-    return fieldExtensions;
-  }
-  public void setFieldExtensions(List<FieldExtension> fieldExtensions) {
-    this.fieldExtensions = fieldExtensions;
-  }
+    public List<FieldExtension> getFieldExtensions() {
+        return fieldExtensions;
+    }
 
+    public void setFieldExtensions(List<FieldExtension> fieldExtensions) {
+        this.fieldExtensions = fieldExtensions;
+    }
 }

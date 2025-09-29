@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.test.api.identity;
 
 import org.activiti.engine.impl.identity.Authentication;
@@ -27,40 +26,38 @@ import org.activiti.engine.test.Deployment;
  */
 public class ProcessInstanceIdentityLinkTest extends PluggableActivitiTestCase {
 
-  // Test specific for fix introduced by
-  // https://jira.codehaus.org/browse/ACT-1591
-  // (Referential integrity constraint violation on PROC_INST and
-  // IDENTITY_LINK)
-  @Deployment
-  public void testSetAuthenticatedUserAndCompleteLastTask() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("identityLinktest");
+    // Test specific for fix introduced by
+    // https://jira.codehaus.org/browse/ACT-1591
+    // (Referential integrity constraint violation on PROC_INST and
+    // IDENTITY_LINK)
+    @Deployment
+    public void testSetAuthenticatedUserAndCompleteLastTask() {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("identityLinktest");
 
-    // There are two tasks
+        // There are two tasks
 
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    taskService.complete(task.getId());
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+        taskService.complete(task.getId());
 
-    Authentication.setAuthenticatedUserId("kermit");
-    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    taskService.complete(task.getId());
-    Authentication.setAuthenticatedUserId(null);
+        Authentication.setAuthenticatedUserId("kermit");
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+        taskService.complete(task.getId());
+        Authentication.setAuthenticatedUserId(null);
 
-    assertProcessEnded(processInstance.getId());
+        assertProcessEnded(processInstance.getId());
+    }
 
-  }
+    // Test specific for fix introduced by
+    // https://jira.codehaus.org/browse/ACT-1591
+    // (Referential integrity constraint violation on PROC_INST and
+    // IDENTITY_LINK)
+    @Deployment
+    public void testSetAuthenticatedUserWithNoWaitStates() {
+        Authentication.setAuthenticatedUserId("kermit");
 
-  // Test specific for fix introduced by
-  // https://jira.codehaus.org/browse/ACT-1591
-  // (Referential integrity constraint violation on PROC_INST and
-  // IDENTITY_LINK)
-  @Deployment
-  public void testSetAuthenticatedUserWithNoWaitStates() {
-    Authentication.setAuthenticatedUserId("kermit");
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("identityLinktest");
+        assertProcessEnded(processInstance.getId());
 
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("identityLinktest");
-    assertProcessEnded(processInstance.getId());
-
-    Authentication.setAuthenticatedUserId(null);
-  }
-
+        Authentication.setAuthenticatedUserId(null);
+    }
 }

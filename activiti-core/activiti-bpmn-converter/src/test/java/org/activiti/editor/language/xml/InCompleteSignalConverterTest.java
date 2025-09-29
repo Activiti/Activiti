@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.activiti.editor.language.xml;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.UserTask;
@@ -29,25 +28,25 @@ import org.junit.jupiter.api.Test;
 
 public class InCompleteSignalConverterTest extends AbstractConverterTest {
 
-  @Test
-  public void convertXMLToModel() throws Exception {
-    BpmnModel bpmnModel = readXMLFile();
-    validateModel(bpmnModel);
-  }
+    @Test
+    public void convertXMLToModel() throws Exception {
+        BpmnModel bpmnModel = readXMLFile();
+        validateModel(bpmnModel);
+    }
 
-  protected String getResource() {
-    return "incompletesignalmodel.bpmn";
-  }
+    protected String getResource() {
+        return "incompletesignalmodel.bpmn";
+    }
 
-  private void validateModel(BpmnModel model) {
-    FlowElement flowElement = model.getMainProcess().getFlowElement("task");
-    assertThat(flowElement).isNotNull();
-    assertThat(flowElement).isInstanceOf(UserTask.class);
-    assertThat(flowElement.getId()).isEqualTo("task");
+    private void validateModel(BpmnModel model) {
+        FlowElement flowElement = model.getMainProcess().getFlowElement("task");
+        assertThat(flowElement).isNotNull();
+        assertThat(flowElement).isInstanceOf(UserTask.class);
+        assertThat(flowElement.getId()).isEqualTo("task");
 
-    ProcessValidator processValidator = new ProcessValidatorFactory().createDefaultProcessValidator();
-    List<ValidationError> errors = processValidator.validate(model);
-    assertThat(errors).isNotNull();
-    assertThat(errors).hasSize(2);
-  }
+        ProcessValidator processValidator = new ProcessValidatorFactory().createDefaultProcessValidator();
+        List<ValidationError> errors = processValidator.validate(model);
+        assertThat(errors).isNotNull();
+        assertThat(errors).hasSize(2);
+    }
 }

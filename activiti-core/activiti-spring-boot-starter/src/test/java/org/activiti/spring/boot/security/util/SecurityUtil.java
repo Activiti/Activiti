@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,48 +42,49 @@ public class SecurityUtil {
     private SecurityManager securityManager;
 
     public void logInAs(String username) {
-
         UserDetails user = userDetailsService.loadUserByUsername(username);
         if (user == null) {
             throw new IllegalStateException("User " + username + " doesn't exist, please provide a valid user");
         }
         logger.info("> Logged in as: " + username);
-        SecurityContextHolder.setContext(new SecurityContextImpl(new Authentication() {
-            @Override
-            public Collection<? extends GrantedAuthority> getAuthorities() {
-                return user.getAuthorities();
-            }
+        SecurityContextHolder.setContext(
+            new SecurityContextImpl(
+                new Authentication() {
+                    @Override
+                    public Collection<? extends GrantedAuthority> getAuthorities() {
+                        return user.getAuthorities();
+                    }
 
-            @Override
-            public Object getCredentials() {
-                return user.getPassword();
-            }
+                    @Override
+                    public Object getCredentials() {
+                        return user.getPassword();
+                    }
 
-            @Override
-            public Object getDetails() {
-                return user;
-            }
+                    @Override
+                    public Object getDetails() {
+                        return user;
+                    }
 
-            @Override
-            public Object getPrincipal() {
-                return user;
-            }
+                    @Override
+                    public Object getPrincipal() {
+                        return user;
+                    }
 
-            @Override
-            public boolean isAuthenticated() {
-                return true;
-            }
+                    @Override
+                    public boolean isAuthenticated() {
+                        return true;
+                    }
 
-            @Override
-            public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+                    @Override
+                    public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {}
 
-            }
-
-            @Override
-            public String getName() {
-                return user.getUsername();
-            }
-        }));
+                    @Override
+                    public String getName() {
+                        return user.getUsername();
+                    }
+                }
+            )
+        );
         org.activiti.engine.impl.identity.Authentication.setAuthenticatedUserId(username);
 
         assertThat(securityManager.getAuthenticatedUserId()).isEqualTo(username);

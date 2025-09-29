@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.validation.validator.impl;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Message;
 import org.activiti.validation.ValidationError;
@@ -30,20 +28,17 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class MessageValidator extends ValidatorImpl {
 
-  @Override
-  public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
-    if (bpmnModel.getMessages() != null && !bpmnModel.getMessages().isEmpty()) {
-      for (Message message : bpmnModel.getMessages()) {
-
-        // Item ref
-        if (StringUtils.isNotEmpty(message.getItemRef())) {
-          if (!bpmnModel.getItemDefinitions().containsKey(message.getItemRef())) {
-            addError(errors, Problems.MESSAGE_INVALID_ITEM_REF, null, message);
-          }
+    @Override
+    public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
+        if (bpmnModel.getMessages() != null && !bpmnModel.getMessages().isEmpty()) {
+            for (Message message : bpmnModel.getMessages()) {
+                // Item ref
+                if (StringUtils.isNotEmpty(message.getItemRef())) {
+                    if (!bpmnModel.getItemDefinitions().containsKey(message.getItemRef())) {
+                        addError(errors, Problems.MESSAGE_INVALID_ITEM_REF, null, message);
+                    }
+                }
+            }
         }
-
-      }
     }
-  }
-
 }

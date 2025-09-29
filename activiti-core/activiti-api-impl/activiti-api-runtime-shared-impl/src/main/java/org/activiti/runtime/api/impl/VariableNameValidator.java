@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
-
 import org.springframework.util.StringUtils;
 
 public class VariableNameValidator {
@@ -27,14 +26,12 @@ public class VariableNameValidator {
     public static String regexPattern = "(?i)[a-z][a-z0-9_]*";
 
     public boolean validate(String name) {
-
         if (StringUtils.hasLength(name)) {
             if (Pattern.compile(regexPattern).matcher(name).matches()) {
                 return true;
             }
         }
         return false;
-
     }
 
     public Set<String> validateVariables(Map<String, Object> variables) {
@@ -49,5 +46,4 @@ public class VariableNameValidator {
 
         return mismatchedVars;
     }
-
 }

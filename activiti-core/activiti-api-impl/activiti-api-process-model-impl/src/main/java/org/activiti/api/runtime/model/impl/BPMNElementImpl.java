@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.activiti.api.runtime.model.impl;
 
 import java.util.Objects;
-
 import org.activiti.api.process.model.BPMNElement;
 
 public class BPMNElementImpl implements BPMNElement {
@@ -43,7 +42,6 @@ public class BPMNElementImpl implements BPMNElement {
         this.processDefinitionId = processDefinitionId;
     }
 
-
     @Override
     public String getElementId() {
         return elementId;
@@ -62,20 +60,15 @@ public class BPMNElementImpl implements BPMNElement {
             return false;
         }
         BPMNElementImpl that = (BPMNElementImpl) o;
-        return Objects.equals(processInstanceId,
-                               that.processInstanceId) &&
-                Objects.equals(processDefinitionId,
-                               that.processDefinitionId) &&
-                Objects.equals(elementId,
-                               that.elementId);
+        return (
+            Objects.equals(processInstanceId, that.processInstanceId) &&
+            Objects.equals(processDefinitionId, that.processDefinitionId) &&
+            Objects.equals(elementId, that.elementId)
+        );
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(elementId,
-                            processInstanceId,
-                            processDefinitionId);
+        return Objects.hash(elementId, processInstanceId, processDefinitionId);
     }
-
 }

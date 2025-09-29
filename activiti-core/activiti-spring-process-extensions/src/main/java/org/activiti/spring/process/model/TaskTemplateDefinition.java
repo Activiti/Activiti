@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.process.model;
 
 import java.util.Objects;
@@ -50,20 +49,20 @@ public class TaskTemplateDefinition {
         this.isEmailNotificationEnabled = emailNotificationEnabled;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TaskTemplateDefinition that = (TaskTemplateDefinition) o;
-        return Objects.equals(assignee, that.assignee) &&
+        return (
+            Objects.equals(assignee, that.assignee) &&
             Objects.equals(candidate, that.candidate) &&
-            isEmailNotificationEnabled == that.isEmailNotificationEnabled;
+            isEmailNotificationEnabled == that.isEmailNotificationEnabled
+        );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(assignee,
-                            candidate,isEmailNotificationEnabled);
+        return Objects.hash(assignee, candidate, isEmailNotificationEnabled);
     }
 }

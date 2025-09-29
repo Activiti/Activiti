@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,24 @@
  */
 package org.activiti.engine.test.api.history;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-
 public class HistoricProcessInstanceQueryGroupInvolvementTest extends PluggableActivitiTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/history/HistoricProcessInstanceQueryGroupInvolvementTest.bpmn20.xml").deploy();
+        repositoryService
+            .createDeployment()
+            .addClasspathResource(
+                "org/activiti/engine/test/api/history/HistoricProcessInstanceQueryGroupInvolvementTest.bpmn20.xml"
+            )
+            .deploy();
 
         ProcessInstance processInstance0 = runtimeService.startProcessInstanceByKey("groupInvolvementProcess");
         runtimeService.addParticipantGroup(processInstance0.getId(), "group1");
@@ -57,11 +61,20 @@ public class HistoricProcessInstanceQueryGroupInvolvementTest extends PluggableA
         groupList.add("group1");
         groupList.add("group2");
         //Assert group and user involvement query is working
-        assertThat(historyService.createHistoricProcessInstanceQuery().or().involvedUser("kermit").involvedGroupsIn(groupList).endOr().count()).isEqualTo(3L);
+        assertThat(
+            historyService
+                .createHistoricProcessInstanceQuery()
+                .or()
+                .involvedUser("kermit")
+                .involvedGroupsIn(groupList)
+                .endOr()
+                .count()
+        ).isEqualTo(3L);
         //Assert group only involvement query working
-        assertThat( historyService.createHistoricProcessInstanceQuery().involvedGroupsIn(groupList).count()).isEqualTo(2L);
+        assertThat(historyService.createHistoricProcessInstanceQuery().involvedGroupsIn(groupList).count()).isEqualTo(
+            2L
+        );
         //Assert user only involvement query working
-        assertThat( historyService.createHistoricProcessInstanceQuery().involvedUser("kermit").count()).isEqualTo(1L);
+        assertThat(historyService.createHistoricProcessInstanceQuery().involvedUser("kermit").count()).isEqualTo(1L);
     }
-
 }

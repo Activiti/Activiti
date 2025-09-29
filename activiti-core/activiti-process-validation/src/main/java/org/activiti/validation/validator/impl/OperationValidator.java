@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.validation.validator.impl;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Interface;
 import org.activiti.bpmn.model.Operation;
@@ -30,19 +28,18 @@ import org.activiti.validation.validator.ValidatorImpl;
  */
 public class OperationValidator extends ValidatorImpl {
 
-  @Override
-  public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
-    if (bpmnModel.getInterfaces() != null) {
-      for (Interface bpmnInterface : bpmnModel.getInterfaces()) {
-        if (bpmnInterface.getOperations() != null) {
-          for (Operation operation : bpmnInterface.getOperations()) {
-            if (bpmnModel.getMessage(operation.getInMessageRef()) == null) {
-              addError(errors, Problems.OPERATION_INVALID_IN_MESSAGE_REFERENCE, null, operation);
+    @Override
+    public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
+        if (bpmnModel.getInterfaces() != null) {
+            for (Interface bpmnInterface : bpmnModel.getInterfaces()) {
+                if (bpmnInterface.getOperations() != null) {
+                    for (Operation operation : bpmnInterface.getOperations()) {
+                        if (bpmnModel.getMessage(operation.getInMessageRef()) == null) {
+                            addError(errors, Problems.OPERATION_INVALID_IN_MESSAGE_REFERENCE, null, operation);
+                        }
+                    }
+                }
             }
-          }
         }
-      }
     }
-  }
-
 }

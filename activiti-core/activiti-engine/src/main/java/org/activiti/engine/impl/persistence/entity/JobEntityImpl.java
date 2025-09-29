@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
@@ -27,46 +26,45 @@ import java.util.Map;
  */
 public class JobEntityImpl extends AbstractJobEntityImpl implements JobEntity {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String lockOwner;
-  protected Date lockExpirationTime;
+    protected String lockOwner;
+    protected Date lockExpirationTime;
 
-  @SuppressWarnings("unchecked")
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = (Map<String, Object>) super.getPersistentState();
-    persistentState.put("lockOwner", lockOwner);
-    persistentState.put("lockExpirationTime", lockExpirationTime);
+    @SuppressWarnings("unchecked")
+    public Object getPersistentState() {
+        Map<String, Object> persistentState = (Map<String, Object>) super.getPersistentState();
+        persistentState.put("lockOwner", lockOwner);
+        persistentState.put("lockExpirationTime", lockExpirationTime);
 
-    return persistentState;
-  }
+        return persistentState;
+    }
 
-  // getters and setters ////////////////////////////////////////////////////////
+    // getters and setters ////////////////////////////////////////////////////////
 
-  public void setExecution(ExecutionEntity execution) {
-    super.setExecution(execution);
-    execution.getJobs().add(this);
-  }
+    public void setExecution(ExecutionEntity execution) {
+        super.setExecution(execution);
+        execution.getJobs().add(this);
+    }
 
-  public String getLockOwner() {
-    return lockOwner;
-  }
+    public String getLockOwner() {
+        return lockOwner;
+    }
 
-  public void setLockOwner(String claimedBy) {
-    this.lockOwner = claimedBy;
-  }
+    public void setLockOwner(String claimedBy) {
+        this.lockOwner = claimedBy;
+    }
 
-  public Date getLockExpirationTime() {
-    return lockExpirationTime;
-  }
+    public Date getLockExpirationTime() {
+        return lockExpirationTime;
+    }
 
-  public void setLockExpirationTime(Date claimedUntil) {
-    this.lockExpirationTime = claimedUntil;
-  }
+    public void setLockExpirationTime(Date claimedUntil) {
+        this.lockExpirationTime = claimedUntil;
+    }
 
-  @Override
-  public String toString() {
-    return "JobEntity [id=" + id + "]";
-  }
-
+    @Override
+    public String toString() {
+        return "JobEntity [id=" + id + "]";
+    }
 }

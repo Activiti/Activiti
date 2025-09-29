@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,104 +15,103 @@
  */
 package org.activiti.bpmn.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.collections4.CollectionUtils;
 
 public abstract class FlowNode extends FlowElement {
 
-  protected boolean asynchronous;
-  protected boolean notExclusive;
+    protected boolean asynchronous;
+    protected boolean notExclusive;
 
-  protected List<SequenceFlow> incomingFlows = new ArrayList<SequenceFlow>();
-  protected List<SequenceFlow> outgoingFlows = new ArrayList<SequenceFlow>();
+    protected List<SequenceFlow> incomingFlows = new ArrayList<SequenceFlow>();
+    protected List<SequenceFlow> outgoingFlows = new ArrayList<SequenceFlow>();
 
-  @JsonIgnore
-  protected Object behavior;
+    @JsonIgnore
+    protected Object behavior;
 
-  public FlowNode() {
+    public FlowNode() {}
 
+    public boolean isAsynchronous() {
+        return asynchronous;
     }
 
- public boolean isAsynchronous() {
-    return asynchronous;
-  }
-
-  public void setAsynchronous(boolean asynchronous) {
-    this.asynchronous = asynchronous;
-  }
-
-  public boolean isExclusive() {
-    return !notExclusive;
-  }
-
-  public void setExclusive(boolean exclusive) {
-    this.notExclusive = !exclusive;
-  }
-
-  public boolean isNotExclusive() {
-    return notExclusive;
-  }
-  public void setNotExclusive(boolean notExclusive) {
-    this.notExclusive = notExclusive;
-  }
-
-  public Object getBehavior() {
-    return behavior;
-  }
-
-  public void setBehavior(Object behavior) {
-    this.behavior = behavior;
-  }
-
-  public List<SequenceFlow> getIncomingFlows() {
-    return incomingFlows;
-  }
-
-  public void setIncomingFlows(List<SequenceFlow> incomingFlows) {
-    this.incomingFlows = incomingFlows;
-  }
-
-  public List<SequenceFlow> getOutgoingFlows() {
-    return outgoingFlows;
-  }
-
-  public void setOutgoingFlows(List<SequenceFlow> outgoingFlows) {
-    this.outgoingFlows = outgoingFlows;
-  }
-
-  public void setValues(FlowNode otherNode) {
-    super.setValues(otherNode);
-    setAsynchronous(otherNode.isAsynchronous());
-    setNotExclusive(otherNode.isNotExclusive());
-  }
-
-  public boolean hasIncomingFlows() {
-    return (CollectionUtils.isNotEmpty(this.incomingFlows));
-  }
-
-  public boolean hasOutgoingFlows() {
-    return (CollectionUtils.isNotEmpty(this.outgoingFlows));
-  }
-
-  public boolean isLinkCatchEvent() {
-    if (this instanceof IntermediateCatchEvent intermediateCatchEvent) {
-        return intermediateCatchEvent.isLinkEvent();
+    public void setAsynchronous(boolean asynchronous) {
+        this.asynchronous = asynchronous;
     }
-    return false;
-  }
 
-  public boolean isLinkThrowEvent() {
-    if (this instanceof ThrowEvent throwEvent) {
-        return throwEvent.isLinkEvent();
+    public boolean isExclusive() {
+        return !notExclusive;
     }
-    return false;
-  }
 
-  public boolean isInitialFlowNode() {
-    return (CollectionUtils.isEmpty(this.getIncomingFlows())
-        && this.getSubProcess() == null && !this.isLinkCatchEvent());
-  }
+    public void setExclusive(boolean exclusive) {
+        this.notExclusive = !exclusive;
+    }
+
+    public boolean isNotExclusive() {
+        return notExclusive;
+    }
+
+    public void setNotExclusive(boolean notExclusive) {
+        this.notExclusive = notExclusive;
+    }
+
+    public Object getBehavior() {
+        return behavior;
+    }
+
+    public void setBehavior(Object behavior) {
+        this.behavior = behavior;
+    }
+
+    public List<SequenceFlow> getIncomingFlows() {
+        return incomingFlows;
+    }
+
+    public void setIncomingFlows(List<SequenceFlow> incomingFlows) {
+        this.incomingFlows = incomingFlows;
+    }
+
+    public List<SequenceFlow> getOutgoingFlows() {
+        return outgoingFlows;
+    }
+
+    public void setOutgoingFlows(List<SequenceFlow> outgoingFlows) {
+        this.outgoingFlows = outgoingFlows;
+    }
+
+    public void setValues(FlowNode otherNode) {
+        super.setValues(otherNode);
+        setAsynchronous(otherNode.isAsynchronous());
+        setNotExclusive(otherNode.isNotExclusive());
+    }
+
+    public boolean hasIncomingFlows() {
+        return (CollectionUtils.isNotEmpty(this.incomingFlows));
+    }
+
+    public boolean hasOutgoingFlows() {
+        return (CollectionUtils.isNotEmpty(this.outgoingFlows));
+    }
+
+    public boolean isLinkCatchEvent() {
+        if (this instanceof IntermediateCatchEvent intermediateCatchEvent) {
+            return intermediateCatchEvent.isLinkEvent();
+        }
+        return false;
+    }
+
+    public boolean isLinkThrowEvent() {
+        if (this instanceof ThrowEvent throwEvent) {
+            return throwEvent.isLinkEvent();
+        }
+        return false;
+    }
+
+    public boolean isInitialFlowNode() {
+        return (
+            CollectionUtils.isEmpty(this.getIncomingFlows()) && this.getSubProcess() == null && !this.isLinkCatchEvent()
+        );
+    }
 }

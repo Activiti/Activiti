@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.boot.tasks;
 
 import java.util.Arrays;
@@ -31,12 +30,10 @@ public class MealsConnector implements Connector {
     private List<String> sizes = Arrays.asList("small", "medium");
 
     @Override
-    public IntegrationContext apply(
-        IntegrationContext integrationContext) {
+    public IntegrationContext apply(IntegrationContext integrationContext) {
         int remainder = currentMealIndex.getAndIncrement() % meals.size();
         integrationContext.addOutBoundVariable("meal", meals.get(remainder));
         integrationContext.addOutBoundVariable("size", sizes.get(remainder));
         return integrationContext;
     }
-
 }

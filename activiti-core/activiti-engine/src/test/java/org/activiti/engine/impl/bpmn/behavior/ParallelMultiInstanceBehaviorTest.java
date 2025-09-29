@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.behavior;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -102,6 +101,7 @@ public class ParallelMultiInstanceBehaviorTest {
         //then
         assertThat(hasOutputDataItem).isFalse();
     }
+
     @Test
     public void hasLoopDataOutputRef_should_returnTrue_when_dataOutputRefIsSet() {
         //given
@@ -147,8 +147,7 @@ public class ParallelMultiInstanceBehaviorTest {
         given(multiInstanceBehavior.getResultElementItem(variablesLocal)).willReturn("result");
 
         //when
-        Object resultElementItem = multiInstanceBehavior
-            .getResultElementItem(childExecution);
+        Object resultElementItem = multiInstanceBehavior.getResultElementItem(childExecution);
 
         //then
         assertThat(resultElementItem).isEqualTo("result");
@@ -173,21 +172,25 @@ public class ParallelMultiInstanceBehaviorTest {
         multiInstanceBehavior.setOutputDataItem(null);
         multiInstanceBehavior.setCollectionElementIndexVariable("counter");
         Map<String, Object> variables = Map.of(
-            "name", "John",
-            "city", "London",
-            MultiInstanceActivityBehavior.NUMBER_OF_COMPLETED_INSTANCES, 3,
-            MultiInstanceActivityBehavior.NUMBER_OF_ACTIVE_INSTANCES, 2,
-            MultiInstanceActivityBehavior.NUMBER_OF_INSTANCES, 5,
-            multiInstanceBehavior.getCollectionElementIndexVariable(), 1
-            );
+            "name",
+            "John",
+            "city",
+            "London",
+            MultiInstanceActivityBehavior.NUMBER_OF_COMPLETED_INSTANCES,
+            3,
+            MultiInstanceActivityBehavior.NUMBER_OF_ACTIVE_INSTANCES,
+            2,
+            MultiInstanceActivityBehavior.NUMBER_OF_INSTANCES,
+            5,
+            multiInstanceBehavior.getCollectionElementIndexVariable(),
+            1
+        );
 
         //when
         Object resultElementItem = multiInstanceBehavior.getResultElementItem(variables);
 
         //then
-        assertThat(resultElementItem).isEqualTo(Map.of(
-            "name", "John",
-            "city", "London"));
+        assertThat(resultElementItem).isEqualTo(Map.of("name", "John", "city", "London"));
     }
 
     @Test
@@ -226,7 +229,9 @@ public class ParallelMultiInstanceBehaviorTest {
         multiInstanceBehavior.setLoopDataOutputRef(loopDataOutputRef);
         DelegateExecution childExecution = mock(DelegateExecution.class);
         DelegateExecution miRootExecution = mock(DelegateExecution.class);
-        given(miRootExecution.getVariableLocal(loopDataOutputRef)).willReturn(new ArrayList<>(Collections.singleton("previousItem")));
+        given(miRootExecution.getVariableLocal(loopDataOutputRef)).willReturn(
+            new ArrayList<>(Collections.singleton("previousItem"))
+        );
         doReturn("currentItem").when(multiInstanceBehavior).getResultElementItem(childExecution);
 
         //when
@@ -235,5 +240,4 @@ public class ParallelMultiInstanceBehaviorTest {
         //then
         verify(miRootExecution).setVariableLocal(loopDataOutputRef, Arrays.asList("previousItem", "currentItem"));
     }
-
 }

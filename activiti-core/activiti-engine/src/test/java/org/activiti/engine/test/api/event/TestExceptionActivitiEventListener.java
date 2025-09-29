@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.test.api.event;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -21,20 +20,19 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
 
 public class TestExceptionActivitiEventListener implements ActivitiEventListener {
 
-  private boolean failOnException;
+    private boolean failOnException;
 
-  public TestExceptionActivitiEventListener(boolean failOnException) {
-    this.failOnException = failOnException;
-  }
+    public TestExceptionActivitiEventListener(boolean failOnException) {
+        this.failOnException = failOnException;
+    }
 
-  @Override
-  public void onEvent(ActivitiEvent event) {
-    throw new RuntimeException("Test exception");
-  }
+    @Override
+    public void onEvent(ActivitiEvent event) {
+        throw new RuntimeException("Test exception");
+    }
 
-  @Override
-  public boolean isFailOnException() {
-    return failOnException;
-  }
-
+    @Override
+    public boolean isFailOnException() {
+        return failOnException;
+    }
 }

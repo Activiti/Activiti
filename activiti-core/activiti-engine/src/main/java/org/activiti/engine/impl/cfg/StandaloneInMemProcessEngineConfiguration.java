@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.cfg;
 
 /**
@@ -22,8 +20,8 @@ package org.activiti.engine.impl.cfg;
  */
 public class StandaloneInMemProcessEngineConfiguration extends StandaloneProcessEngineConfiguration {
 
-  public StandaloneInMemProcessEngineConfiguration() {
-    this.databaseSchemaUpdate = DB_SCHEMA_UPDATE_CREATE_DROP;
-    this.jdbcUrl = "jdbc:h2:mem:activiti";
-  }
+    public StandaloneInMemProcessEngineConfiguration() {
+        this.databaseSchemaUpdate = DB_SCHEMA_UPDATE_CREATE_DROP;
+        this.jdbcUrl = "jdbc:h2:mem:activiti";
+    }
 }

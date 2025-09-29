@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 package org.activiti.runtime.api.impl;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,15 +39,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -66,15 +66,13 @@ public class TaskRuntimeImplTest {
     @Test
     public void should_returnResultOfHelper_when_updateTask() {
         //given
-        UpdateTaskPayload updateTaskPayload = TaskPayloadBuilder
-                .update()
-                .withTaskId("taskId")
-                .withDescription("new description")
-                .build();
+        UpdateTaskPayload updateTaskPayload = TaskPayloadBuilder.update()
+            .withTaskId("taskId")
+            .withDescription("new description")
+            .build();
 
         TaskImpl updatedTask = new TaskImpl();
-        given(taskRuntimeHelper.applyUpdateTaskPayload(false,
-                                                       updateTaskPayload)).willReturn(updatedTask);
+        given(taskRuntimeHelper.applyUpdateTaskPayload(false, updateTaskPayload)).willReturn(updatedTask);
 
         //when
         Task retrievedTask = taskRuntime.update(updateTaskPayload);
@@ -86,22 +84,22 @@ public class TaskRuntimeImplTest {
     @Test
     public void assign_should_returnIllegalStateException_when_assigneeIsNotACandidateUser() {
         //given
-        AssignTaskPayload assignTaskPayload = TaskPayloadBuilder
-                .assign()
-                .withTaskId("taskId")
-                .withAssignee("assignee")
-                .build();
+        AssignTaskPayload assignTaskPayload = TaskPayloadBuilder.assign()
+            .withTaskId("taskId")
+            .withAssignee("assignee")
+            .build();
         List<String> userCandidates = Collections.emptyList();
-        doReturn(userCandidates).when(taskRuntime).userCandidates( "taskId");
+        doReturn(userCandidates).when(taskRuntime).userCandidates("taskId");
 
         //when
         Throwable thrown = catchThrowable(() -> taskRuntime.assign(assignTaskPayload));
 
         //then
         assertThat(thrown)
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageStartingWith("You cannot assign a task to " + assignTaskPayload.getAssignee()
-                        + " due it is not a candidate for it");
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessageStartingWith(
+                "You cannot assign a task to " + assignTaskPayload.getAssignee() + " due it is not a candidate for it"
+            );
     }
 
     @Test
@@ -111,14 +109,13 @@ public class TaskRuntimeImplTest {
 
         String taskId = "taskId";
         String newAssignee = "newAssignee";
-        AssignTaskPayload assignTaskPayload = TaskPayloadBuilder
-                .assign()
-                .withTaskId(taskId)
-                .withAssignee(newAssignee)
-                .build();
+        AssignTaskPayload assignTaskPayload = TaskPayloadBuilder.assign()
+            .withTaskId(taskId)
+            .withAssignee(newAssignee)
+            .build();
         List<String> userCandidates = Arrays.asList(newAssignee);
         doReturn(userCandidates).when(taskRuntime).userCandidates(taskId);
-        TaskImpl task =  mock(TaskImpl.class);
+        TaskImpl task = mock(TaskImpl.class);
         given(task.getAssignee()).willReturn("user");
         doReturn(task).when(taskConverter).fromWithCandidates(any());
 
@@ -127,5 +124,4 @@ public class TaskRuntimeImplTest {
         verify(taskService).unclaim(taskId);
         verify(taskService).claim(taskId, newAssignee);
     }
-
 }

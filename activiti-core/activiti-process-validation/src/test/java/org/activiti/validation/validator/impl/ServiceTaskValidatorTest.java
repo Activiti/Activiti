@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,10 +51,9 @@ public class ServiceTaskValidatorTest {
         //then
         assertThat(errors).hasSize(1);
         assertThat(errors.get(0).getProblem()).isEqualTo("activiti-servicetask-missing-implementation");
-        assertThat(errors.get(0).getDefaultDescription())
-                .isEqualTo(
-                        "One of the attributes 'implementation', 'class', 'delegateExpression', 'type', 'operation', or 'expression' is mandatory on serviceTask."
-                );
+        assertThat(errors.get(0).getDefaultDescription()).isEqualTo(
+            "One of the attributes 'implementation', 'class', 'delegateExpression', 'type', 'operation', or 'expression' is mandatory on serviceTask."
+        );
     }
 
     @Test
@@ -71,9 +70,6 @@ public class ServiceTaskValidatorTest {
         var errors = validator.validate(bpmnModel);
 
         //then
-        assertThat(errors)
-                .as("No error is expected: the default behavior will be used")
-                .isEmpty();
+        assertThat(errors).as("No error is expected: the default behavior will be used").isEmpty();
     }
-
 }

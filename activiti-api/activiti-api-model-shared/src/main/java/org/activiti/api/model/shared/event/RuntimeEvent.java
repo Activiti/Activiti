@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.activiti.api.model.shared.event;
 import java.io.Serializable;
 
 public interface RuntimeEvent<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> extends Serializable {
-
     String getId();
 
     ENTITY_TYPE getEntity();
@@ -38,5 +37,4 @@ public interface RuntimeEvent<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> extends S
     Integer getProcessDefinitionVersion();
 
     String getBusinessKey();
-
 }

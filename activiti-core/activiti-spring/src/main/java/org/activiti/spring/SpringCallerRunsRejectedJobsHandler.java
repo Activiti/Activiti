@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.spring;
 
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
@@ -30,16 +28,15 @@ import org.slf4j.LoggerFactory;
  */
 public class SpringCallerRunsRejectedJobsHandler implements SpringRejectedJobsHandler {
 
-  private static Logger log = LoggerFactory.getLogger(SpringCallerRunsRejectedJobsHandler.class);
+    private static Logger log = LoggerFactory.getLogger(SpringCallerRunsRejectedJobsHandler.class);
 
-  public void jobRejected(AsyncExecutor asyncExecutor, Job job) {
-    try {
-      // execute rejected work in caller thread (potentially blocking job
-      // acquisition)
-      new ExecuteAsyncRunnable((JobEntity) job, asyncExecutor.getProcessEngineConfiguration()).run();
-    } catch (Exception e) {
-      log.error("Failed to execute rejected job " + job.getId(), e);
+    public void jobRejected(AsyncExecutor asyncExecutor, Job job) {
+        try {
+            // execute rejected work in caller thread (potentially blocking job
+            // acquisition)
+            new ExecuteAsyncRunnable((JobEntity) job, asyncExecutor.getProcessEngineConfiguration()).run();
+        } catch (Exception e) {
+            log.error("Failed to execute rejected job " + job.getId(), e);
+        }
     }
-  }
-
 }

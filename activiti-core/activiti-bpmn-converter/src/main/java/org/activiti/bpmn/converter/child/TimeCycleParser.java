@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.TimerEventDefinition;
@@ -27,19 +26,18 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class TimeCycleParser extends BaseChildElementParser {
 
-  public String getElementName() {
-    return ATTRIBUTE_TIMER_CYCLE;
-  }
-
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (!(parentElement instanceof TimerEventDefinition))
-      return;
-
-    TimerEventDefinition eventDefinition = (TimerEventDefinition) parentElement;
-
-    if (StringUtils.isNotEmpty(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_END_DATE))) {
-      eventDefinition.setEndDate(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_END_DATE));
+    public String getElementName() {
+        return ATTRIBUTE_TIMER_CYCLE;
     }
-    eventDefinition.setTimeCycle(xtr.getElementText());
-  }
+
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+        if (!(parentElement instanceof TimerEventDefinition)) return;
+
+        TimerEventDefinition eventDefinition = (TimerEventDefinition) parentElement;
+
+        if (StringUtils.isNotEmpty(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_END_DATE))) {
+            eventDefinition.setEndDate(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_END_DATE));
+        }
+        eventDefinition.setTimeCycle(xtr.getElementText());
+    }
 }

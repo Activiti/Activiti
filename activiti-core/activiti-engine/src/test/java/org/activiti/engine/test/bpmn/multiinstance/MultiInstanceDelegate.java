@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.test.bpmn.multiinstance;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -24,16 +23,15 @@ import org.activiti.engine.delegate.JavaDelegate;
  */
 public class MultiInstanceDelegate implements JavaDelegate {
 
-  public void execute(DelegateExecution execution) {
-    Integer result = (Integer) execution.getVariable("result");
+    public void execute(DelegateExecution execution) {
+        Integer result = (Integer) execution.getVariable("result");
 
-    Integer item = (Integer) execution.getVariable("item");
-    if (item != null) {
-      result = result * item;
-    } else {
-      result = result * 2;
+        Integer item = (Integer) execution.getVariable("item");
+        if (item != null) {
+            result = result * item;
+        } else {
+            result = result * 2;
+        }
+        execution.setVariable("result", result);
     }
-    execution.setVariable("result", result);
-  }
-
 }

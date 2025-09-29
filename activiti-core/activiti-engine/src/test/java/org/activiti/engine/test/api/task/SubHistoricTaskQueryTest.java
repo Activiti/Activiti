@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,14 @@
  */
 package org.activiti.engine.test.api.task;
 
-import org.activiti.engine.history.HistoricTaskInstanceQuery;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.task.Task;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.activiti.engine.history.HistoricTaskInstanceQuery;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.task.Task;
 
 public class SubHistoricTaskQueryTest extends PluggableActivitiTestCase {
 
@@ -33,16 +32,12 @@ public class SubHistoricTaskQueryTest extends PluggableActivitiTestCase {
 
     private static final String GONZO = "gonzo";
 
-
     public void setUp() throws Exception {
-
         taskIds = generateTestSubTasks();
     }
 
     public void tearDown() throws Exception {
-
-        taskService.deleteTasks(taskIds,
-            true);
+        taskService.deleteTasks(taskIds, true);
     }
 
     /**
@@ -56,20 +51,24 @@ public class SubHistoricTaskQueryTest extends PluggableActivitiTestCase {
 
         // gonzo has 2 root tasks and 3+2 subtasks assigned
         // include subtasks
-        HistoricTaskInstanceQuery query = historyService.createHistoricTaskInstanceQuery().taskAssignee("gonzo").orderByTaskCreateTime().asc();
+        HistoricTaskInstanceQuery query = historyService
+            .createHistoricTaskInstanceQuery()
+            .taskAssignee("gonzo")
+            .orderByTaskCreateTime()
+            .asc();
         assertThat(query.count()).isEqualTo(7);
         assertThat(query.listPage(0, 1)).hasSize(1);
-        assertThat(query.listPage(0,1).get(0).getCreateTime()).isEqualTo(sdf.parse("01/02/2008 02:02:02.000"));
+        assertThat(query.listPage(0, 1).get(0).getCreateTime()).isEqualTo(sdf.parse("01/02/2008 02:02:02.000"));
         assertThat(query.listPage(1, 1)).hasSize(1);
-        assertThat(query.listPage(1,1).get(0).getCreateTime()).isEqualTo(sdf.parse("05/02/2008 02:02:02.000"));
-        assertThat(query.listPage(0,2)).hasSize(2);
+        assertThat(query.listPage(1, 1).get(0).getCreateTime()).isEqualTo(sdf.parse("05/02/2008 02:02:02.000"));
+        assertThat(query.listPage(0, 2)).hasSize(2);
         assertThat(query.listPage(0, 2).get(0).getCreateTime()).isEqualTo(sdf.parse("01/02/2008 02:02:02.000"));
-        assertThat(query.listPage(0,2).get(1).getCreateTime()).isEqualTo(sdf.parse("05/02/2008 02:02:02.000"));
+        assertThat(query.listPage(0, 2).get(1).getCreateTime()).isEqualTo(sdf.parse("05/02/2008 02:02:02.000"));
 
         // kermit has no root tasks and no subtasks assigned include subtasks
         query = historyService.createHistoricTaskInstanceQuery().taskAssignee(KERMIT).orderByTaskCreateTime().asc();
         assertThat(query.count()).isEqualTo(0);
-        assertThat(query.listPage(0,2)).hasSize(0);
+        assertThat(query.listPage(0, 2)).hasSize(0);
         assertThat(query.singleResult()).isNull();
     }
 
@@ -98,8 +97,7 @@ public class SubHistoricTaskQueryTest extends PluggableActivitiTestCase {
             subtask.setParentTaskId(rootTask1.getId());
             subtask.setDescription("description for kermit sub-task" + i);
             taskService.saveTask(subtask);
-            taskService.addCandidateUser(subtask.getId(),
-                KERMIT);
+            taskService.addCandidateUser(subtask.getId(), KERMIT);
             taskService.complete(subtask.getId());
             ids.add(subtask.getId());
         }
@@ -112,8 +110,7 @@ public class SubHistoricTaskQueryTest extends PluggableActivitiTestCase {
         rootTask2.setName("gonzoRootTask1");
         rootTask2.setDescription("gonzo Root task1 description");
         taskService.saveTask(rootTask2);
-        taskService.setAssignee(rootTask2.getId(),
-            GONZO);
+        taskService.setAssignee(rootTask2.getId(), GONZO);
         taskService.complete(rootTask2.getId());
         ids.add(rootTask2.getId());
         // second parent task for gonzo
@@ -122,8 +119,7 @@ public class SubHistoricTaskQueryTest extends PluggableActivitiTestCase {
         rootTask3.setName("gonzoRootTask2");
         rootTask3.setDescription("gonzo Root task2 description");
         taskService.saveTask(rootTask3);
-        taskService.setAssignee(rootTask3.getId(),
-            GONZO);
+        taskService.setAssignee(rootTask3.getId(), GONZO);
         taskService.complete(rootTask3.getId());
         ids.add(rootTask3.getId());
         // 3 sub-tasks for the first parent task
@@ -134,8 +130,7 @@ public class SubHistoricTaskQueryTest extends PluggableActivitiTestCase {
             subtask.setParentTaskId(rootTask2.getId());
             subtask.setDescription("description for gonzo sub-task1_" + i);
             taskService.saveTask(subtask);
-            taskService.setAssignee(subtask.getId(),
-                GONZO);
+            taskService.setAssignee(subtask.getId(), GONZO);
             taskService.complete(subtask.getId());
             ids.add(subtask.getId());
         }
@@ -147,12 +142,10 @@ public class SubHistoricTaskQueryTest extends PluggableActivitiTestCase {
             subtask.setParentTaskId(rootTask3.getId());
             subtask.setDescription("description for gonzo sub-task2_" + i);
             taskService.saveTask(subtask);
-            taskService.setAssignee(subtask.getId(),
-                GONZO);
+            taskService.setAssignee(subtask.getId(), GONZO);
             taskService.complete(subtask.getId());
             ids.add(subtask.getId());
         }
         return ids;
     }
-
 }

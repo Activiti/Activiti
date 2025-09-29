@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
@@ -29,23 +28,24 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class CompensateEventDefinitionParser extends BaseChildElementParser {
 
-  public String getElementName() {
-    return ELEMENT_EVENT_COMPENSATEDEFINITION;
-  }
-
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (!(parentElement instanceof Event))
-      return;
-
-    CompensateEventDefinition eventDefinition = new CompensateEventDefinition();
-    BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
-    eventDefinition.setActivityRef(xtr.getAttributeValue(null, ATTRIBUTE_COMPENSATE_ACTIVITYREF));
-    if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_COMPENSATE_WAITFORCOMPLETION))) {
-      eventDefinition.setWaitForCompletion(Boolean.parseBoolean(xtr.getAttributeValue(null, ATTRIBUTE_COMPENSATE_WAITFORCOMPLETION)));
+    public String getElementName() {
+        return ELEMENT_EVENT_COMPENSATEDEFINITION;
     }
 
-    BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_COMPENSATEDEFINITION, eventDefinition, xtr, model);
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+        if (!(parentElement instanceof Event)) return;
 
-    ((Event) parentElement).getEventDefinitions().add(eventDefinition);
-  }
+        CompensateEventDefinition eventDefinition = new CompensateEventDefinition();
+        BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
+        eventDefinition.setActivityRef(xtr.getAttributeValue(null, ATTRIBUTE_COMPENSATE_ACTIVITYREF));
+        if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_COMPENSATE_WAITFORCOMPLETION))) {
+            eventDefinition.setWaitForCompletion(
+                Boolean.parseBoolean(xtr.getAttributeValue(null, ATTRIBUTE_COMPENSATE_WAITFORCOMPLETION))
+            );
+        }
+
+        BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_COMPENSATEDEFINITION, eventDefinition, xtr, model);
+
+        ((Event) parentElement).getEventDefinitions().add(eventDefinition);
+    }
 }

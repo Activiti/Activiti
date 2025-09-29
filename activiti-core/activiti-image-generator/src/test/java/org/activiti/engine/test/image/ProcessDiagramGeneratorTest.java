@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,18 @@
  */
 package org.activiti.engine.test.image;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
+import java.io.File;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.ProcessEngines;
@@ -38,23 +50,10 @@ import org.xmlunit.diff.ComparisonResult;
 import org.xmlunit.diff.ComparisonType;
 import org.xmlunit.diff.DifferenceEvaluator;
 
-import java.io.File;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
 
-    public static final String TEST_OUTPUT_RESULT_PATH = "classpath:org/activiti/engine/test/image/" +
-            "ProcessDiagramGeneratorTest.testOutput.result.svg";
+    public static final String TEST_OUTPUT_RESULT_PATH =
+        "classpath:org/activiti/engine/test/image/" + "ProcessDiagramGeneratorTest.testOutput.result.svg";
 
     private final ProcessDiagramGenerator imageGenerator = new DefaultProcessDiagramGenerator();
 
@@ -68,12 +67,12 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
     protected void initializeProcessEngine() {
         ProcessEngines.destroy();
         processEngine = ProcessEngineConfiguration.createStandaloneProcessEngineConfiguration()
-                                                  .setDatabaseSchemaUpdate("drop-create")
-                .setJdbcDriver("org.h2.Driver")
-                .setJdbcUrl("jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000")
-                .setJdbcPassword("")
-                .setJdbcUsername("sa")
-                .buildProcessEngine();
+            .setDatabaseSchemaUpdate("drop-create")
+            .setJdbcDriver("org.h2.Driver")
+            .setJdbcUrl("jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000")
+            .setJdbcPassword("")
+            .setJdbcUsername("sa")
+            .buildProcessEngine();
 
         cachedProcessEngine = processEngine;
         processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
@@ -90,103 +89,212 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
         taskService.complete(task.getId());
 
         List<String> activityIds = runtimeService.getActiveActivityIds(task.getProcessInstanceId());
-        InputStream diagram = imageGenerator
-                .generateDiagram(repositoryService.getBpmnModel(task.getProcessDefinitionId()), activityIds);
+        InputStream diagram = imageGenerator.generateDiagram(
+            repositoryService.getBpmnModel(task.getProcessDefinitionId()),
+            activityIds
+        );
         assertThat(diagram).isNotNull();
 
         List<String> highLightedFlows = asList("flow1", "flow2", "flow3", "flow4", "flow5", "flow6");
-        diagram = imageGenerator.generateDiagram(repositoryService.getBpmnModel(task.getProcessDefinitionId()),
-                                                 activityIds, highLightedFlows);
+        diagram = imageGenerator.generateDiagram(
+            repositoryService.getBpmnModel(task.getProcessDefinitionId()),
+            activityIds,
+            highLightedFlows
+        );
         assertThat(diagram).isNotNull();
 
-        diagram = imageGenerator.generateDiagram(repositoryService.getBpmnModel(task.getProcessDefinitionId()),
-                                                 activityIds, highLightedFlows, activityFontName, labelFontName, annotationFontName);
+        diagram = imageGenerator.generateDiagram(
+            repositoryService.getBpmnModel(task.getProcessDefinitionId()),
+            activityIds,
+            highLightedFlows,
+            activityFontName,
+            labelFontName,
+            annotationFontName
+        );
         assertThat(diagram).isNotNull();
     }
 
     @Deployment
     public void testSmallBoxLabels() throws Exception {
-        String id = repositoryService.createProcessDefinitionQuery().processDefinitionKey("myProcess").singleResult()
-                .getId();
+        String id = repositoryService
+            .createProcessDefinitionQuery()
+            .processDefinitionKey("myProcess")
+            .singleResult()
+            .getId();
 
         List<String> activityIds = new ArrayList<>();
         List<String> highLightedFlows = new ArrayList<>();
-        InputStream diagram = imageGenerator.generateDiagram(repositoryService.getBpmnModel(id),
-                                                 activityIds, highLightedFlows);
+        InputStream diagram = imageGenerator.generateDiagram(
+            repositoryService.getBpmnModel(id),
+            activityIds,
+            highLightedFlows
+        );
         assertThat(diagram).isNotNull();
 
-        diagram = imageGenerator.generateDiagram(repositoryService.getBpmnModel(id),
-                                                 activityIds, highLightedFlows, activityFontName, labelFontName, annotationFontName);
+        diagram = imageGenerator.generateDiagram(
+            repositoryService.getBpmnModel(id),
+            activityIds,
+            highLightedFlows,
+            activityFontName,
+            labelFontName,
+            annotationFontName
+        );
         assertThat(diagram).isNotNull();
     }
 
     @Deployment
     public void testTransactionElements() throws Exception {
-        String id = repositoryService.createProcessDefinitionQuery().processDefinitionKey("transactionSubRequest").singleResult()
-                .getId();
+        String id = repositoryService
+            .createProcessDefinitionQuery()
+            .processDefinitionKey("transactionSubRequest")
+            .singleResult()
+            .getId();
 
         List<String> activityIds = new ArrayList<>();
         List<String> highLightedFlows = new ArrayList<>();
-        InputStream diagram = imageGenerator.generateDiagram(repositoryService.getBpmnModel(id),
-                                                 activityIds, highLightedFlows);
+        InputStream diagram = imageGenerator.generateDiagram(
+            repositoryService.getBpmnModel(id),
+            activityIds,
+            highLightedFlows
+        );
         assertThat(diagram).isNotNull();
 
-        diagram = imageGenerator.generateDiagram(repositoryService.getBpmnModel(id),
-                                                 activityIds, highLightedFlows, activityFontName, labelFontName, annotationFontName);
+        diagram = imageGenerator.generateDiagram(
+            repositoryService.getBpmnModel(id),
+            activityIds,
+            highLightedFlows,
+            activityFontName,
+            labelFontName,
+            annotationFontName
+        );
         assertThat(diagram).isNotNull();
     }
 
     @Deployment
     public void testAllElements() throws Exception {
-        String id = repositoryService.createProcessDefinitionQuery().processDefinitionKey("myProcess").singleResult()
-                .getId();
+        String id = repositoryService
+            .createProcessDefinitionQuery()
+            .processDefinitionKey("myProcess")
+            .singleResult()
+            .getId();
         BpmnModel bpmnModel = repositoryService.getBpmnModel(id);
-        try (final InputStream resourceStream = imageGenerator.generateDiagram(bpmnModel, activityFontName,
-                                                                               labelFontName, annotationFontName)) {
+        try (
+            final InputStream resourceStream = imageGenerator.generateDiagram(
+                bpmnModel,
+                activityFontName,
+                labelFontName,
+                annotationFontName
+            )
+        ) {
             SVGOMDocument svg = parseXml(resourceStream);
-            List<String> startEventIdList = asList("startevent1", "errorstartevent1", "signalstartevent1",
-                                                          "messagestartevent1", "timerstartevent1");
+            List<String> startEventIdList = asList(
+                "startevent1",
+                "errorstartevent1",
+                "signalstartevent1",
+                "messagestartevent1",
+                "timerstartevent1"
+            );
             checkDiagramElements(startEventIdList, svg);
-            List<String> userTaskIdList = asList("usertask1", "usertask2", "usertask3", "usertask4", "usertask5",
-                                                        "usertask6", "usertask7", "usertask8", "usertask9", "usertask10", "usertask11", "usertask12",
-                                                        "usertask13", "usertask14", "usertask15", "usertask16", "usertask17", "usertask18", "usertask19");
+            List<String> userTaskIdList = asList(
+                "usertask1",
+                "usertask2",
+                "usertask3",
+                "usertask4",
+                "usertask5",
+                "usertask6",
+                "usertask7",
+                "usertask8",
+                "usertask9",
+                "usertask10",
+                "usertask11",
+                "usertask12",
+                "usertask13",
+                "usertask14",
+                "usertask15",
+                "usertask16",
+                "usertask17",
+                "usertask18",
+                "usertask19"
+            );
             checkDiagramElements(userTaskIdList, svg);
             List<String> scriptTaskIdList = asList("scripttask1", "scripttask2", "scripttask3");
             checkDiagramElements(scriptTaskIdList, svg);
-            List<String> otherTaskIdList = asList("servicetask1", "mailtask1", "manualtask1", "receivetask1",
-                    "callactivity1");
+            List<String> otherTaskIdList = asList(
+                "servicetask1",
+                "mailtask1",
+                "manualtask1",
+                "receivetask1",
+                "callactivity1"
+            );
             checkDiagramElements(otherTaskIdList, svg);
-            List<String> intermediateEvent = asList("timerintermediatecatchevent1",
-                                                           "signalintermediatecatchevent1", "messageintermediatecatchevent1", "signalintermediatethrowevent1",
-                                                           "compensationintermediatethrowevent1", "noneintermediatethrowevent1");
+            List<String> intermediateEvent = asList(
+                "timerintermediatecatchevent1",
+                "signalintermediatecatchevent1",
+                "messageintermediatecatchevent1",
+                "signalintermediatethrowevent1",
+                "compensationintermediatethrowevent1",
+                "noneintermediatethrowevent1"
+            );
             checkDiagramElements(intermediateEvent, svg);
-            List<String> gatewayIdList = asList("parallelgateway1", "parallelgateway2", "exclusivegateway1",
-                                                       "exclusivegateway3", "inclusivegateway1", "inclusivegateway2", "eventgateway1");
+            List<String> gatewayIdList = asList(
+                "parallelgateway1",
+                "parallelgateway2",
+                "exclusivegateway1",
+                "exclusivegateway3",
+                "inclusivegateway1",
+                "inclusivegateway2",
+                "eventgateway1"
+            );
             checkDiagramElements(gatewayIdList, svg);
-            List<String> containerIdList = asList("subprocess1", "eventsubprocess1", "pool1", "pool2", "pool3",
-                                                         "lane1", "lane2", "lane3", "lane4");
+            List<String> containerIdList = asList(
+                "subprocess1",
+                "eventsubprocess1",
+                "pool1",
+                "pool2",
+                "pool3",
+                "lane1",
+                "lane2",
+                "lane3",
+                "lane4"
+            );
             checkDiagramElements(containerIdList, svg);
-            List<String> endEventIdList = asList("errorendevent1", "endevent1", "endevent2", "endevent3",
-                                                        "endevent4", "endevent5", "endevent6", "endevent7", "endevent8", "endevent9", "endevent10",
-                                                        "endevent11", "endevent12");
+            List<String> endEventIdList = asList(
+                "errorendevent1",
+                "endevent1",
+                "endevent2",
+                "endevent3",
+                "endevent4",
+                "endevent5",
+                "endevent6",
+                "endevent7",
+                "endevent8",
+                "endevent9",
+                "endevent10",
+                "endevent11",
+                "endevent12"
+            );
             checkDiagramElements(endEventIdList, svg);
         }
     }
 
     @Deployment
     public void testOutput() throws Exception {
-        String id = repositoryService.createProcessDefinitionQuery().processDefinitionKey("big-process").singleResult()
-                .getId();
+        String id = repositoryService
+            .createProcessDefinitionQuery()
+            .processDefinitionKey("big-process")
+            .singleResult()
+            .getId();
         BpmnModel bpmnModel = repositoryService.getBpmnModel(id);
         try (final InputStream resourceStream = imageGenerator.generateDiagram(bpmnModel, "", "", "")) {
             byte[] bytes = StreamUtils.copyToByteArray(resourceStream);
             String resultSvgContent = new String(bytes, StandardCharsets.UTF_8);
             File expectedResultFile = ResourceUtils.getFile(TEST_OUTPUT_RESULT_PATH);
-            XmlAssert.assertThat(resultSvgContent).and(expectedResultFile)
-                    .ignoreWhitespace()
-                    .withNodeFilter(node -> !"path".equals(node.getNodeName()))
-                    .withDifferenceEvaluator(new StyleAttributeEvaluator())
-                    .areIdentical();
+            XmlAssert.assertThat(resultSvgContent)
+                .and(expectedResultFile)
+                .ignoreWhitespace()
+                .withNodeFilter(node -> !"path".equals(node.getNodeName()))
+                .withDifferenceEvaluator(new StyleAttributeEvaluator())
+                .areIdentical();
         }
     }
 
@@ -201,56 +309,74 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
     public void testGenerateDefaultDiagram() throws Exception {
         //GIVEN
         String id = repositoryService
-                .createProcessDefinitionQuery()
-                .processDefinitionKey("fixSystemFailure")
-                .singleResult()
-                .getId();
+            .createProcessDefinitionQuery()
+            .processDefinitionKey("fixSystemFailure")
+            .singleResult()
+            .getId();
         BpmnModel bpmnModel = repositoryService.getBpmnModel(id);
 
         //WHEN
-        try (final InputStream resourceStream = imageGenerator.generateDiagram(bpmnModel,
-                                                                               emptyList(),
-                                                                               emptyList(),
-                                                                               activityFontName,
-                                                                               labelFontName,
-                                                                               annotationFontName,
-                                                                               true)) {
+        try (
+            final InputStream resourceStream = imageGenerator.generateDiagram(
+                bpmnModel,
+                emptyList(),
+                emptyList(),
+                activityFontName,
+                labelFontName,
+                annotationFontName,
+                true
+            )
+        ) {
             //THEN
             assertThat(resourceStream).isNotNull();
             byte[] diagram = IOUtils.toByteArray(resourceStream);
             assertThat(diagram).isNotNull();
 
-            try (InputStream imageStream = getClass().getResourceAsStream(imageGenerator.getDefaultDiagramImageFileName())) {
+            try (
+                InputStream imageStream = getClass().getResourceAsStream(
+                    imageGenerator.getDefaultDiagramImageFileName()
+                )
+            ) {
                 assertThat(diagram).isEqualTo(IOUtils.toByteArray(imageStream));
             }
         }
 
         //THEN
-        assertThatExceptionOfType(ActivitiInterchangeInfoNotFoundException.class).isThrownBy(
-            //WHEN
-            () -> imageGenerator.generateDiagram(bpmnModel,
-                                                 emptyList(),
-                                                 emptyList(),
-                                                 activityFontName,
-                                                 labelFontName,
-                                                 annotationFontName,
-                                                 false)
-        ).withMessage("No interchange information found.");
+        assertThatExceptionOfType(ActivitiInterchangeInfoNotFoundException.class)
+            .isThrownBy(
+                //WHEN
+                () ->
+                    imageGenerator.generateDiagram(
+                        bpmnModel,
+                        emptyList(),
+                        emptyList(),
+                        activityFontName,
+                        labelFontName,
+                        annotationFontName,
+                        false
+                    )
+            )
+            .withMessage("No interchange information found.");
 
         //THEN
-        assertThatExceptionOfType(ActivitiImageException.class).isThrownBy(
-            //WHEN
-            () -> imageGenerator.generateDiagram(bpmnModel,
-                                                 emptyList(),
-                                                 emptyList(),
-                                                 emptyList(),
-                                                 emptyList(),
-                                                 activityFontName,
-                                                 labelFontName,
-                                                 annotationFontName,
-                                                 true,
-                                                 "invalid-file-name")
-        ).withMessage("Error occurred while getting default diagram image from file: invalid-file-name");
+        assertThatExceptionOfType(ActivitiImageException.class)
+            .isThrownBy(
+                //WHEN
+                () ->
+                    imageGenerator.generateDiagram(
+                        bpmnModel,
+                        emptyList(),
+                        emptyList(),
+                        emptyList(),
+                        emptyList(),
+                        activityFontName,
+                        labelFontName,
+                        annotationFontName,
+                        true,
+                        "invalid-file-name"
+                    )
+            )
+            .withMessage("Error occurred while getting default diagram image from file: invalid-file-name");
     }
 
     private void checkDiagramElements(List<String> elementIdList, SVGOMDocument svg) {
@@ -266,6 +392,7 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
     }
 
     private static class StyleAttributeEvaluator implements DifferenceEvaluator {
+
         @Override
         public ComparisonResult evaluate(Comparison comparison, ComparisonResult outcome) {
             if (outcome != ComparisonResult.EQUAL && isStyleAttribute(comparison)) {
@@ -279,14 +406,16 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
         }
 
         private boolean isStyleAttribute(Comparison comparison) {
-            return comparison.getType() == ComparisonType.ATTR_VALUE &&
-                    "style".equals(comparison.getControlDetails().getTarget().getNodeName());
+            return (
+                comparison.getType() == ComparisonType.ATTR_VALUE &&
+                "style".equals(comparison.getControlDetails().getTarget().getNodeName())
+            );
         }
 
         private List<String> split(Comparison.Detail comparison) {
             return Arrays.stream(((String) comparison.getValue()).split(";"))
-                    .map(String::trim)
-                    .collect(Collectors.toList());
+                .map(String::trim)
+                .collect(Collectors.toList());
         }
     }
 }

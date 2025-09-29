@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,6 @@ public class MessageSubscriptionConverterTest {
 
     @Test
     public void convertShouldReturnBPMNMessage() {
-
         MessageEventSubscriptionEntity entity = mock(MessageEventSubscriptionEntity.class);
         given(entity.getConfiguration()).willReturn("correlationKey");
         given(entity.getEventName()).willReturn("messageName");
@@ -44,7 +43,5 @@ public class MessageSubscriptionConverterTest {
         assertThat(messageSubscription.getProcessDefinitionId()).isEqualTo("procDefId");
         assertThat(messageSubscription.getConfiguration()).isEqualTo("correlationKey");
         assertThat(messageSubscription.getEventName()).isEqualTo("messageName");
-
     }
-
 }

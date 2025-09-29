@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,27 +51,23 @@ public abstract class TaskIconType extends IconType {
         return null;
     }
 
-    public void drawIcon(final int imageX,
-                         final int imageY,
-                         final int iconPadding,
-                         final ProcessDiagramSVGGraphics2D svgGenerator) {
-        Element gTag = svgGenerator.getDOMFactory().createElementNS(null,
-                                                                    SVGGraphics2D.SVG_G_TAG);
-        gTag.setAttributeNS(null,
-                            "transform",
-                            "translate(" + (imageX + iconPadding) + "," + (imageY + iconPadding) + ")");
+    public void drawIcon(
+        final int imageX,
+        final int imageY,
+        final int iconPadding,
+        final ProcessDiagramSVGGraphics2D svgGenerator
+    ) {
+        Element gTag = svgGenerator.getDOMFactory().createElementNS(null, SVGGraphics2D.SVG_G_TAG);
+        gTag.setAttributeNS(
+            null,
+            "transform",
+            "translate(" + (imageX + iconPadding) + "," + (imageY + iconPadding) + ")"
+        );
 
-        Element pathTag = svgGenerator.getDOMFactory().createElementNS(null,
-                                                                       SVGGraphics2D.SVG_PATH_TAG);
-        pathTag.setAttributeNS(null,
-                               "d",
-                               this.getDValue());
-        pathTag.setAttributeNS(null,
-                               "anchors",
-                               this.getAnchorValue());
-        pathTag.setAttributeNS(null,
-                               "style",
-                               this.getStyleValue());
+        Element pathTag = svgGenerator.getDOMFactory().createElementNS(null, SVGGraphics2D.SVG_PATH_TAG);
+        pathTag.setAttributeNS(null, "d", this.getDValue());
+        pathTag.setAttributeNS(null, "anchors", this.getAnchorValue());
+        pathTag.setAttributeNS(null, "style", this.getStyleValue());
 
         gTag.appendChild(pathTag);
         svgGenerator.getExtendDOMGroupManager().addElement(gTag);

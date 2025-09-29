@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -28,24 +27,22 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
  */
 public abstract class GatewayActivityBehavior extends FlowNodeActivityBehavior {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected void lockFirstParentScope(DelegateExecution execution) {
+    protected void lockFirstParentScope(DelegateExecution execution) {
+        ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
 
-    ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+        boolean found = false;
+        ExecutionEntity parentScopeExecution = null;
+        ExecutionEntity currentExecution = (ExecutionEntity) execution;
+        while (!found && currentExecution != null && currentExecution.getParentId() != null) {
+            parentScopeExecution = executionEntityManager.findById(currentExecution.getParentId());
+            if (parentScopeExecution != null && parentScopeExecution.isScope()) {
+                found = true;
+            }
+            currentExecution = parentScopeExecution;
+        }
 
-    boolean found = false;
-    ExecutionEntity parentScopeExecution = null;
-    ExecutionEntity currentExecution = (ExecutionEntity) execution;
-    while (!found && currentExecution != null && currentExecution.getParentId() != null) {
-      parentScopeExecution = executionEntityManager.findById(currentExecution.getParentId());
-      if (parentScopeExecution != null && parentScopeExecution.isScope()) {
-        found = true;
-      }
-      currentExecution = parentScopeExecution;
+        parentScopeExecution.forceUpdate();
     }
-
-    parentScopeExecution.forceUpdate();
-  }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package org.activiti.spring.boot.tasks;
+
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -30,9 +33,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class TaskAdminRuntimeIT {
@@ -63,32 +63,40 @@ class TaskAdminRuntimeIT {
 
     @Test
     void should_returnLastCreatedTaskByProcessInstanceIdAndTaskDefinitionKey() {
-
-        ProcessInstance processInstance = processAdminRuntime.start(ProcessPayloadBuilder.start()
-            .withProcessDefinitionKey("Process_at2zjUes")
-            .build());
+        ProcessInstance processInstance = processAdminRuntime.start(
+            ProcessPayloadBuilder.start().withProcessDefinitionKey("Process_at2zjUes").build()
+        );
         Task task = taskAdminRuntime.tasks(Pageable.of(0, 1)).getContent().getFirst();
 
-        Task retrievedTask = taskAdminRuntime.lastCreatedTaskByProcessInstanceIdAndTaskDefinitionKey(processInstance.getId(), task.getTaskDefinitionKey());
+        Task retrievedTask = taskAdminRuntime.lastCreatedTaskByProcessInstanceIdAndTaskDefinitionKey(
+            processInstance.getId(),
+            task.getTaskDefinitionKey()
+        );
         assertThat(retrievedTask).isEqualTo(task);
     }
 
     @Test
     public void should_returnLastCreatedTaskByProcessInstanceIdAndTaskDefinitionKey_whenTaskIsInALoop() {
         String taskDefinitionKey = "Task_125yjke";
-        final ProcessInstance processInstance = processAdminRuntime.start(new StartProcessPayloadBuilder().withProcessDefinitionKey("Process_N4qkN051N").build());
-        Task task1 = taskAdminRuntime.lastCreatedTaskByProcessInstanceIdAndTaskDefinitionKey(processInstance.getId(), taskDefinitionKey);
+        final ProcessInstance processInstance = processAdminRuntime.start(
+            new StartProcessPayloadBuilder().withProcessDefinitionKey("Process_N4qkN051N").build()
+        );
+        Task task1 = taskAdminRuntime.lastCreatedTaskByProcessInstanceIdAndTaskDefinitionKey(
+            processInstance.getId(),
+            taskDefinitionKey
+        );
 
         //complete task and provide a value that causes a loop back
         taskAdminRuntime.complete(new CompleteTaskPayload(task1.getId(), singletonMap("formInput", "provided-it1")));
 
-        Task task2 = taskAdminRuntime.lastCreatedTaskByProcessInstanceIdAndTaskDefinitionKey(processInstance.getId(), taskDefinitionKey);
+        Task task2 = taskAdminRuntime.lastCreatedTaskByProcessInstanceIdAndTaskDefinitionKey(
+            processInstance.getId(),
+            taskDefinitionKey
+        );
         assertThat(task2).satisfies(t -> {
-            assertThat(t.getId()).isNotEqualTo(task1.getId());
-            assertThat(t.getProcessInstanceId()).isEqualTo(processInstance.getId());
-            assertThat(t.getTaskDefinitionKey()).isEqualTo(taskDefinitionKey);
-        });
-
+                assertThat(t.getId()).isNotEqualTo(task1.getId());
+                assertThat(t.getProcessInstanceId()).isEqualTo(processInstance.getId());
+                assertThat(t.getTaskDefinitionKey()).isEqualTo(taskDefinitionKey);
+            });
     }
-
 }

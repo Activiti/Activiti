@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
@@ -22,11 +20,13 @@ import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 
 public enum TimerDeclarationType {
-  DATE(DueDateBusinessCalendar.NAME), DURATION(DurationBusinessCalendar.NAME), CYCLE(CycleBusinessCalendar.NAME);
+    DATE(DueDateBusinessCalendar.NAME),
+    DURATION(DurationBusinessCalendar.NAME),
+    CYCLE(CycleBusinessCalendar.NAME);
 
-  public final String calendarName;
+    public final String calendarName;
 
-  TimerDeclarationType(String calendarName) {
-    this.calendarName = calendarName;
-  }
+    TimerDeclarationType(String calendarName) {
+        this.calendarName = calendarName;
+    }
 }

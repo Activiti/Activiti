@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.test.servicetask;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -26,21 +25,20 @@ import org.activiti.engine.impl.el.FixedValue;
  */
 public class MyExecutionListenerBean implements ExecutionListener {
 
-  private FixedValue someField;
+    private FixedValue someField;
 
-  public void notify(DelegateExecution execution) {
-    execution.setVariable("executionListenerVar", "working");
-    if (someField != null) {
-      execution.setVariable("executionListenerField", someField.getValue(execution));
+    public void notify(DelegateExecution execution) {
+        execution.setVariable("executionListenerVar", "working");
+        if (someField != null) {
+            execution.setVariable("executionListenerField", someField.getValue(execution));
+        }
     }
-  }
 
-  public FixedValue getSomeField() {
-    return someField;
-  }
+    public FixedValue getSomeField() {
+        return someField;
+    }
 
-  public void setSomeField(FixedValue someField) {
-    this.someField = someField;
-  }
-
+    public void setSomeField(FixedValue someField) {
+        this.someField = someField;
+    }
 }

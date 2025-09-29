@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree.impl.ast;
 
 import jakarta.el.ELContext;
@@ -27,11 +26,7 @@ public abstract class AstNode implements ExpressionNode {
     /**
      * evaluate and return the (optionally coerced) result.
      */
-    public final Object getValue(
-        Bindings bindings,
-        ELContext context,
-        Class<?> type
-    ) {
+    public final Object getValue(Bindings bindings, ELContext context, Class<?> type) {
         Object value = eval(bindings, context);
         if (type != null) {
             value = bindings.convert(value, type);
@@ -39,10 +34,7 @@ public abstract class AstNode implements ExpressionNode {
         return value;
     }
 
-    public abstract void appendStructure(
-        StringBuilder builder,
-        Bindings bindings
-    );
+    public abstract void appendStructure(StringBuilder builder, Bindings bindings);
 
     public abstract Object eval(Bindings bindings, ELContext context);
 
@@ -62,22 +54,13 @@ public abstract class AstNode implements ExpressionNode {
         if (method == null || !Modifier.isPublic(method.getModifiers())) {
             return null;
         }
-        if (
-            method.isAccessible() ||
-            Modifier.isPublic(method.getDeclaringClass().getModifiers())
-        ) {
+        if (method.isAccessible() || Modifier.isPublic(method.getDeclaringClass().getModifiers())) {
             return method;
         }
         for (Class<?> cls : method.getDeclaringClass().getInterfaces()) {
             Method mth = null;
             try {
-                mth =
-                    findPublicAccessibleMethod(
-                        cls.getMethod(
-                            method.getName(),
-                            method.getParameterTypes()
-                        )
-                    );
+                mth = findPublicAccessibleMethod(cls.getMethod(method.getName(), method.getParameterTypes()));
                 if (mth != null) {
                     return mth;
                 }
@@ -89,13 +72,7 @@ public abstract class AstNode implements ExpressionNode {
         if (cls != null) {
             Method mth = null;
             try {
-                mth =
-                    findPublicAccessibleMethod(
-                        cls.getMethod(
-                            method.getName(),
-                            method.getParameterTypes()
-                        )
-                    );
+                mth = findPublicAccessibleMethod(cls.getMethod(method.getName(), method.getParameterTypes()));
                 if (mth != null) {
                     return mth;
                 }
@@ -108,11 +85,7 @@ public abstract class AstNode implements ExpressionNode {
 
     protected Method findAccessibleMethod(Method method) {
         Method result = findPublicAccessibleMethod(method);
-        if (
-            result == null &&
-            method != null &&
-            Modifier.isPublic(method.getModifiers())
-        ) {
+        if (result == null && method != null && Modifier.isPublic(method.getModifiers())) {
             result = method;
             try {
                 method.setAccessible(true);

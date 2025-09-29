@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@
 package org.activiti.runtime.api.model.impl;
 
 import java.util.Objects;
-
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
 
-public class APIProcessInstanceConverter extends ListConverter<org.activiti.engine.runtime.ProcessInstance, ProcessInstance>
-        implements ModelConverter<org.activiti.engine.runtime.ProcessInstance, ProcessInstance> {
+public class APIProcessInstanceConverter
+    extends ListConverter<org.activiti.engine.runtime.ProcessInstance, ProcessInstance>
+    implements ModelConverter<org.activiti.engine.runtime.ProcessInstance, ProcessInstance> {
 
     @Override
     public ProcessInstance from(org.activiti.engine.runtime.ProcessInstance internalProcessInstance) {
@@ -44,12 +44,14 @@ public class APIProcessInstanceConverter extends ListConverter<org.activiti.engi
         return processInstance;
     }
 
-    private ProcessInstance.ProcessInstanceStatus calculateStatus(org.activiti.engine.runtime.ProcessInstance internalProcessInstance) {
+    private ProcessInstance.ProcessInstanceStatus calculateStatus(
+        org.activiti.engine.runtime.ProcessInstance internalProcessInstance
+    ) {
         if (internalProcessInstance.isSuspended()) {
             return ProcessInstance.ProcessInstanceStatus.SUSPENDED;
         } else if (internalProcessInstance.isEnded()) {
             return ProcessInstance.ProcessInstanceStatus.COMPLETED;
-        }else if(internalProcessInstance.getStartTime() == null){
+        } else if (internalProcessInstance.getStartTime() == null) {
             return ProcessInstance.ProcessInstanceStatus.CREATED;
         }
         return ProcessInstance.ProcessInstanceStatus.RUNNING;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree.impl;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -59,8 +58,7 @@ public final class Cache implements TreeCache {
      *            this many threads.
      */
     public Cache(int capacity, int concurrencyLevel) {
-        this.map =
-            new ConcurrentHashMap<String, Tree>(16, 0.75f, concurrencyLevel);
+        this.map = new ConcurrentHashMap<String, Tree>(16, 0.75f, concurrencyLevel);
         this.queue = new ConcurrentLinkedQueue<String>();
         this.size = new AtomicInteger();
         this.capacity = capacity;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,54 +19,55 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class BoundaryEvent extends Event {
 
-  @JsonIgnore
-  protected Activity attachedToRef;
-  protected String attachedToRefId;
-  protected boolean cancelActivity = true;
+    @JsonIgnore
+    protected Activity attachedToRef;
 
-  public Activity getAttachedToRef() {
-    return attachedToRef;
-  }
+    protected String attachedToRefId;
+    protected boolean cancelActivity = true;
 
-  public void setAttachedToRef(Activity attachedToRef) {
-    this.attachedToRef = attachedToRef;
-  }
-
-  public String getAttachedToRefId() {
-    return attachedToRefId;
-  }
-
-  public void setAttachedToRefId(String attachedToRefId) {
-    this.attachedToRefId = attachedToRefId;
-  }
-
-  public boolean isCancelActivity() {
-    return cancelActivity;
-  }
-
-  public void setCancelActivity(boolean cancelActivity) {
-    this.cancelActivity = cancelActivity;
-  }
-
-  public boolean hasErrorEventDefinition() {
-    if(this.eventDefinitions != null && !this.eventDefinitions.isEmpty()){
-      return this.eventDefinitions.stream().anyMatch(eventDefinition ->
-        ErrorEventDefinition.class.isInstance(eventDefinition)
-      );
+    public Activity getAttachedToRef() {
+        return attachedToRef;
     }
-    return false;
-  }
 
-  public BoundaryEvent clone() {
-    BoundaryEvent clone = new BoundaryEvent();
-    clone.setValues(this);
-    return clone;
-  }
+    public void setAttachedToRef(Activity attachedToRef) {
+        this.attachedToRef = attachedToRef;
+    }
 
-  public void setValues(BoundaryEvent otherEvent) {
-    super.setValues(otherEvent);
-    setAttachedToRefId(otherEvent.getAttachedToRefId());
-    setAttachedToRef(otherEvent.getAttachedToRef());
-    setCancelActivity(otherEvent.isCancelActivity());
-  }
+    public String getAttachedToRefId() {
+        return attachedToRefId;
+    }
+
+    public void setAttachedToRefId(String attachedToRefId) {
+        this.attachedToRefId = attachedToRefId;
+    }
+
+    public boolean isCancelActivity() {
+        return cancelActivity;
+    }
+
+    public void setCancelActivity(boolean cancelActivity) {
+        this.cancelActivity = cancelActivity;
+    }
+
+    public boolean hasErrorEventDefinition() {
+        if (this.eventDefinitions != null && !this.eventDefinitions.isEmpty()) {
+            return this.eventDefinitions.stream().anyMatch(eventDefinition ->
+                ErrorEventDefinition.class.isInstance(eventDefinition)
+            );
+        }
+        return false;
+    }
+
+    public BoundaryEvent clone() {
+        BoundaryEvent clone = new BoundaryEvent();
+        clone.setValues(this);
+        return clone;
+    }
+
+    public void setValues(BoundaryEvent otherEvent) {
+        super.setValues(otherEvent);
+        setAttachedToRefId(otherEvent.getAttachedToRefId());
+        setAttachedToRef(otherEvent.getAttachedToRef());
+        setCancelActivity(otherEvent.isCancelActivity());
+    }
 }

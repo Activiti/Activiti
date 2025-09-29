@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,9 @@
  */
 package org.activiti.spring.boot;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.spring.boot.security.util.SecurityUtil;
@@ -26,13 +29,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class RuntimeConfigurationTest {
-
 
     @Autowired
     private SecurityManager securityManager;
@@ -81,7 +79,5 @@ public class RuntimeConfigurationTest {
         List<String> userGroups = userGroupManager.getUserGroups("admin");
         assertThat(userGroups).isNotNull();
         assertThat(userGroups).hasSize(0);
-
     }
-
 }

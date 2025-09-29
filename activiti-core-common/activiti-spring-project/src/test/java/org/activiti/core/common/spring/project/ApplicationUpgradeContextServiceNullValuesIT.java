@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,21 @@
  */
 package org.activiti.core.common.spring.project;
 
-import java.io.FileNotFoundException;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 
+import java.io.FileNotFoundException;
 import org.activiti.core.common.spring.project.conf.ApplicationUpgradeContextAutoConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
-
-@SpringBootTest(classes = ApplicationUpgradeContextAutoConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@TestPropertySource(properties = {"project.manifest.file.path=null", "application.version=0"})
+@SpringBootTest(
+    classes = ApplicationUpgradeContextAutoConfiguration.class,
+    webEnvironment = SpringBootTest.WebEnvironment.NONE
+)
+@TestPropertySource(properties = { "project.manifest.file.path=null", "application.version=0" })
 public class ApplicationUpgradeContextServiceNullValuesIT {
 
     @Autowired
@@ -35,12 +37,9 @@ public class ApplicationUpgradeContextServiceNullValuesIT {
 
     @Test
     public void should_throwException_when_noManifestPresent() {
-
         assertThat(applicationUpgradeContextService.hasProjectManifest()).isFalse();
         Throwable thrown = catchThrowable(() -> applicationUpgradeContextService.loadProjectManifest());
-        assertThat(thrown)
-            .isInstanceOf(FileNotFoundException.class)
-            .hasMessageContaining("manifest not found");
+        assertThat(thrown).isInstanceOf(FileNotFoundException.class).hasMessageContaining("manifest not found");
     }
 
     @Test

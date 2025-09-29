@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.cmd;
 
 import java.util.Date;
-
 import org.activiti.engine.impl.jobexecutor.TimerActivateProcessDefinitionHandler;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
@@ -29,23 +27,34 @@ import org.activiti.engine.runtime.ProcessInstance;
  */
 public class ActivateProcessDefinitionCmd extends AbstractSetProcessDefinitionStateCmd {
 
-  public ActivateProcessDefinitionCmd(ProcessDefinitionEntity processDefinitionEntity, boolean includeProcessInstances, Date executionDate, String tenantId) {
-    super(processDefinitionEntity, includeProcessInstances, executionDate, tenantId);
-  }
+    public ActivateProcessDefinitionCmd(
+        ProcessDefinitionEntity processDefinitionEntity,
+        boolean includeProcessInstances,
+        Date executionDate,
+        String tenantId
+    ) {
+        super(processDefinitionEntity, includeProcessInstances, executionDate, tenantId);
+    }
 
-  public ActivateProcessDefinitionCmd(String processDefinitionId, String processDefinitionKey, boolean includeProcessInstances, Date executionDate, String tenantId) {
-    super(processDefinitionId, processDefinitionKey, includeProcessInstances, executionDate, tenantId);
-  }
+    public ActivateProcessDefinitionCmd(
+        String processDefinitionId,
+        String processDefinitionKey,
+        boolean includeProcessInstances,
+        Date executionDate,
+        String tenantId
+    ) {
+        super(processDefinitionId, processDefinitionKey, includeProcessInstances, executionDate, tenantId);
+    }
 
-  protected SuspensionState getProcessDefinitionSuspensionState() {
-    return SuspensionState.ACTIVE;
-  }
+    protected SuspensionState getProcessDefinitionSuspensionState() {
+        return SuspensionState.ACTIVE;
+    }
 
-  protected String getDelayedExecutionJobHandlerType() {
-    return TimerActivateProcessDefinitionHandler.TYPE;
-  }
+    protected String getDelayedExecutionJobHandlerType() {
+        return TimerActivateProcessDefinitionHandler.TYPE;
+    }
 
-  protected AbstractSetProcessInstanceStateCmd getProcessInstanceChangeStateCmd(ProcessInstance processInstance) {
-    return new ActivateProcessInstanceCmd(processInstance.getId());
-  }
+    protected AbstractSetProcessInstanceStateCmd getProcessInstanceChangeStateCmd(ProcessInstance processInstance) {
+        return new ActivateProcessInstanceCmd(processInstance.getId());
+    }
 }

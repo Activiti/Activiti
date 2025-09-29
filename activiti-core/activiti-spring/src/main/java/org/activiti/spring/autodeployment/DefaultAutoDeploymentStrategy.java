@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.spring.autodeployment;
 
 import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
@@ -42,21 +40,24 @@ public class DefaultAutoDeploymentStrategy extends AbstractAutoDeploymentStrateg
     }
 
     @Override
-    public void deployResources(final String deploymentNameHint,
-                                final Resource[] resources,
-                                final RepositoryService repositoryService) {
-
+    public void deployResources(
+        final String deploymentNameHint,
+        final Resource[] resources,
+        final RepositoryService repositoryService
+    ) {
         // Create a single deployment for all resources using the name hint as
         // the
         // literal name
 
-        DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name(deploymentNameHint);
+        DeploymentBuilder deploymentBuilder = repositoryService
+            .createDeployment()
+            .enableDuplicateFiltering()
+            .name(deploymentNameHint);
 
         for (final Resource resource : resources) {
             final String resourceName = determineResourceName(resource);
 
-            deploymentBuilder.addInputStream(resourceName,
-                                             resource);
+            deploymentBuilder.addInputStream(resourceName, resource);
         }
 
         loadApplicationUpgradeContext(deploymentBuilder).deploy();

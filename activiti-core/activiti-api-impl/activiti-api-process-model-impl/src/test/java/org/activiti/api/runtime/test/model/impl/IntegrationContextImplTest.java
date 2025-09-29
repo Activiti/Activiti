@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,12 @@ import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.TextNode;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -32,7 +38,6 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Stream;
-
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
 import org.activiti.api.runtime.model.impl.ProcessVariablesMap;
@@ -46,13 +51,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.context.annotation.Bean;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.TextNode;
-
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class IntegrationContextImplTest {
 
@@ -61,49 +59,62 @@ class IntegrationContextImplTest {
 
     private static Instant instant = Instant.now();
 
-    private static Arguments[] testValues = {Arguments.of(BigDecimal.valueOf(1000, 2), BigDecimal.valueOf(1000, 2)),
-                                             Arguments.of(Long.valueOf(100000000000L), Long.valueOf(100000000000L)),
-                                             Arguments.of(Integer.valueOf(123), Integer.valueOf(123)),
-                                             Arguments.of(String.valueOf("string"), String.valueOf("string")),
-                                             Arguments.of(String.valueOf("item1,item2"), String.valueOf("item1,item2")),
-                                             Arguments.of(Boolean.valueOf(true), Boolean.valueOf(true)),
-                                             Arguments.of('A', 'A'),
-                                             Arguments.of(Character.valueOf('A'), Character.valueOf('A')),
-                                             Arguments.of(Double.valueOf(123.123), Double.valueOf(123.123)),
-                                             Arguments.of(Float.valueOf(123.123F), Float.valueOf(123.123F)),
-                                             Arguments.of(Byte.valueOf("1"), Byte.valueOf("1")),
-                                             Arguments.of(Short.valueOf("1"), Short.valueOf("1")),
-                                             Arguments.of(Float.valueOf(123.123F), Float.valueOf(123.123F)),
-                                             Arguments.of(100000000000L, 100000000000L),
-                                             Arguments.of(123, 123),
-                                             Arguments.of(true, true),
-                                             Arguments.of(123.123, 123.123),
-                                             Arguments.of(123.123f, 123.123f),
-                                             Arguments.of(null, null),
-                                             Arguments.of(Currency.getInstance("USD"), "USD"),
-                                             Arguments.of(Date.from(instant), Date.from(instant)),
-                                             Arguments.of(LocalDate.ofInstant(instant, ZoneOffset.UTC), LocalDate.ofInstant(instant, ZoneOffset.UTC)),
-                                             Arguments.of(LocalDateTime.ofInstant(instant, ZoneOffset.UTC), LocalDateTime.ofInstant(instant, ZoneOffset.UTC)),
-                                             Arguments.of(singletonList("item"), singletonList("item")),
-                                             Arguments.of(singletonList(singletonMap("key", "value")), singletonList(singletonMap("key", "value"))),
-                                             Arguments.of(singleton(singletonMap("key", "value")), singleton(singletonMap("key", "value"))),
-                                             Arguments.of(singleton("item"), singleton("item")),
-                                             Arguments.of(singletonMap("key", "value"), singletonMap("key", "value")),
-                                             Arguments.of(JsonNodeFactory.instance.objectNode().set("key", TextNode.valueOf("value")),
-                                                          JsonNodeFactory.instance.objectNode().set("key", TextNode.valueOf("value"))),
-                                             Arguments.of(new CustomPojo("field1", "field2"),
-                                                          new LinkedHashMap<String, String>() {{
-                                                              put("field1", "field1");
-                                                              put("field2", "field2");
-                                                          }}),
-
-                                             Arguments.of(new CustomPojoAnnotated("field1", "field2"),
-                                                          new LinkedHashMap<String, String>() {{
-                                                              put("@class", "org.activiti.api.runtime.test.model.impl.CustomPojoAnnotated");
-                                                              put("field1", "field1");
-                                                              put("field2", "field2");
-                                                          }})
-                                             };
+    private static Arguments[] testValues = {
+        Arguments.of(BigDecimal.valueOf(1000, 2), BigDecimal.valueOf(1000, 2)),
+        Arguments.of(Long.valueOf(100000000000L), Long.valueOf(100000000000L)),
+        Arguments.of(Integer.valueOf(123), Integer.valueOf(123)),
+        Arguments.of(String.valueOf("string"), String.valueOf("string")),
+        Arguments.of(String.valueOf("item1,item2"), String.valueOf("item1,item2")),
+        Arguments.of(Boolean.valueOf(true), Boolean.valueOf(true)),
+        Arguments.of('A', 'A'),
+        Arguments.of(Character.valueOf('A'), Character.valueOf('A')),
+        Arguments.of(Double.valueOf(123.123), Double.valueOf(123.123)),
+        Arguments.of(Float.valueOf(123.123F), Float.valueOf(123.123F)),
+        Arguments.of(Byte.valueOf("1"), Byte.valueOf("1")),
+        Arguments.of(Short.valueOf("1"), Short.valueOf("1")),
+        Arguments.of(Float.valueOf(123.123F), Float.valueOf(123.123F)),
+        Arguments.of(100000000000L, 100000000000L),
+        Arguments.of(123, 123),
+        Arguments.of(true, true),
+        Arguments.of(123.123, 123.123),
+        Arguments.of(123.123f, 123.123f),
+        Arguments.of(null, null),
+        Arguments.of(Currency.getInstance("USD"), "USD"),
+        Arguments.of(Date.from(instant), Date.from(instant)),
+        Arguments.of(LocalDate.ofInstant(instant, ZoneOffset.UTC), LocalDate.ofInstant(instant, ZoneOffset.UTC)),
+        Arguments.of(
+            LocalDateTime.ofInstant(instant, ZoneOffset.UTC),
+            LocalDateTime.ofInstant(instant, ZoneOffset.UTC)
+        ),
+        Arguments.of(singletonList("item"), singletonList("item")),
+        Arguments.of(singletonList(singletonMap("key", "value")), singletonList(singletonMap("key", "value"))),
+        Arguments.of(singleton(singletonMap("key", "value")), singleton(singletonMap("key", "value"))),
+        Arguments.of(singleton("item"), singleton("item")),
+        Arguments.of(singletonMap("key", "value"), singletonMap("key", "value")),
+        Arguments.of(
+            JsonNodeFactory.instance.objectNode().set("key", TextNode.valueOf("value")),
+            JsonNodeFactory.instance.objectNode().set("key", TextNode.valueOf("value"))
+        ),
+        Arguments.of(
+            new CustomPojo("field1", "field2"),
+            new LinkedHashMap<String, String>() {
+                {
+                    put("field1", "field1");
+                    put("field2", "field2");
+                }
+            }
+        ),
+        Arguments.of(
+            new CustomPojoAnnotated("field1", "field2"),
+            new LinkedHashMap<String, String>() {
+                {
+                    put("@class", "org.activiti.api.runtime.test.model.impl.CustomPojoAnnotated");
+                    put("field1", "field1");
+                    put("field2", "field2");
+                }
+            }
+        ),
+    };
 
     @SpringBootApplication
     static class Application {
@@ -124,14 +135,12 @@ class IntegrationContextImplTest {
         // given
         IntegrationContextImpl source = new IntegrationContextImpl();
 
-        source.addInBoundVariable("variable",
-                                  input);
+        source.addInBoundVariable("variable", input);
         // when
         IntegrationContext target = exchangeIntegrationContext(source);
 
         // then
-        assertThat(target.getInBoundVariables()).containsEntry("variable",
-                                                               output);
+        assertThat(target.getInBoundVariables()).containsEntry("variable", output);
     }
 
     private static Stream<Arguments> testIntegrationContextOutBoundVariables() {
@@ -144,15 +153,13 @@ class IntegrationContextImplTest {
         // given
         IntegrationContextImpl source = new IntegrationContextImpl();
 
-        source.addOutBoundVariable("variable",
-                                   input);
+        source.addOutBoundVariable("variable", input);
 
         // when
         IntegrationContext target = exchangeIntegrationContext(source);
 
         // then
-        assertThat(target.getOutBoundVariables()).containsEntry("variable",
-                                                                output);
+        assertThat(target.getOutBoundVariables()).containsEntry("variable", output);
     }
 
     @Test
@@ -172,25 +179,70 @@ class IntegrationContextImplTest {
         String json = objectMapper.writeValueAsString(map);
 
         // when
-        ProcessVariablesMap<String, Object> result = objectMapper.readValue(json, new TypeReference<ProcessVariablesMap<String, Object>>() {});
+        ProcessVariablesMap<String, Object> result = objectMapper.readValue(
+            json,
+            new TypeReference<ProcessVariablesMap<String, Object>>() {}
+        );
 
         // then
-        assertThat(result).containsEntry("age", 123)
-                          .containsEntry("name", "John")
-                          .containsEntry("bool", true)
-                          .containsEntry("nullable", null)
-                          .containsEntry("amount", 12.34)
-                          .containsEntry("map", Collections.singletonMap("key", "value"))
-                          .containsEntry("list", Collections.singletonList("item"))
-                          .containsEntry("pojo",  new LinkedHashMap<String, String>() {{
-                              put("field1", "field1");
-                              put("field2", "field2");
-                          }});
-
+        assertThat(result)
+            .containsEntry("age", 123)
+            .containsEntry("name", "John")
+            .containsEntry("bool", true)
+            .containsEntry("nullable", null)
+            .containsEntry("amount", 12.34)
+            .containsEntry("map", Collections.singletonMap("key", "value"))
+            .containsEntry("list", Collections.singletonList("item"))
+            .containsEntry(
+                "pojo",
+                new LinkedHashMap<String, String>() {
+                    {
+                        put("field1", "field1");
+                        put("field2", "field2");
+                    }
+                }
+            );
     }
 
     private IntegrationContext exchangeIntegrationContext(IntegrationContext source) throws IOException {
-        return objectMapper.readValue(objectMapper.writeValueAsString(source),
-                                      IntegrationContext.class);
+        return objectMapper.readValue(objectMapper.writeValueAsString(source), IntegrationContext.class);
+    }
+
+    @Test
+    void assertThatIntegrationContextImplDoesNotAddVariableValuesIntoToStringMethod(){
+        //given
+        IntegrationContextImpl integrationContext = new IntegrationContextImpl();
+        integrationContext.addInBoundVariable("inbound_key1", "inbound_value");
+        integrationContext.addInBoundVariable("inbound_key2", "inbound_value");
+        integrationContext.addOutBoundVariable("outbound_key1", "outbound_value");
+        integrationContext.addOutBoundVariable("outbound_key2", "outbound_value");
+
+        //when
+        String toString = integrationContext.toString();
+
+        //then
+        assertThat(toString).doesNotContain("inbound_value");
+        assertThat(toString).doesNotContain("outbound_value");
+        assertThat(
+            toString.contains("[inbound_key1, inbound_key2]") ||
+                toString.contains("[inbound_key2, inbound_key1]")
+        ).isTrue();
+        assertThat(
+            toString.contains("[outbound_key1, outbound_key2]") ||
+                toString.contains("[outbound_key2, outbound_key1]")
+        ).isTrue();
+    }
+
+    @Test
+    void assertThatIntegrationContextImplDoesAddEmptyVariablePartIntoToStringMethod(){
+        //given
+        IntegrationContextImpl integrationContext = new IntegrationContextImpl();
+
+        //when
+        String toString = integrationContext.toString();
+
+        //then
+        assertThat(toString).contains("inboundVariablesKeys=[]");
+        assertThat(toString).contains("outBoundVariableKeys=[]");
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.repository;
 
 import java.util.List;
@@ -26,34 +24,32 @@ import java.util.List;
  */
 public class DiagramEdge extends DiagramElement {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private List<DiagramEdgeWaypoint> waypoints;
+    private List<DiagramEdgeWaypoint> waypoints;
 
-  public DiagramEdge() {
-  }
+    public DiagramEdge() {}
 
-  public DiagramEdge(String id, List<DiagramEdgeWaypoint> waypoints) {
-    super(id);
-    this.waypoints = waypoints;
-  }
+    public DiagramEdge(String id, List<DiagramEdgeWaypoint> waypoints) {
+        super(id);
+        this.waypoints = waypoints;
+    }
 
-  @Override
-  public boolean isNode() {
-    return false;
-  }
+    @Override
+    public boolean isNode() {
+        return false;
+    }
 
-  @Override
-  public boolean isEdge() {
-    return true;
-  }
+    @Override
+    public boolean isEdge() {
+        return true;
+    }
 
-  public List<DiagramEdgeWaypoint> getWaypoints() {
-    return waypoints;
-  }
+    public List<DiagramEdgeWaypoint> getWaypoints() {
+        return waypoints;
+    }
 
-  public void setWaypoints(List<DiagramEdgeWaypoint> waypoints) {
-    this.waypoints = waypoints;
-  }
-
+    public void setWaypoints(List<DiagramEdgeWaypoint> waypoints) {
+        this.waypoints = waypoints;
+    }
 }

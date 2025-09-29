@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.impl.db.HasRevision;
@@ -25,57 +24,56 @@ import org.activiti.engine.impl.db.HasRevision;
  */
 public abstract class AbstractEntity implements Entity, HasRevision {
 
-  protected String id;
-  protected int revision = 1;
+    protected String id;
+    protected int revision = 1;
 
-  protected boolean isInserted;
-  protected boolean isUpdated;
-  protected boolean isDeleted;
+    protected boolean isInserted;
+    protected boolean isUpdated;
+    protected boolean isDeleted;
 
-  @Override
-  public String getId() {
-    return id;
-  }
+    @Override
+    public String getId() {
+        return id;
+    }
 
-  @Override
-  public void setId(String id) {
-    this.id = id;
-  }
+    @Override
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  public int getRevisionNext() {
-    return revision + 1;
-  }
+    public int getRevisionNext() {
+        return revision + 1;
+    }
 
-  public int getRevision() {
-    return revision;
-  }
+    public int getRevision() {
+        return revision;
+    }
 
-  public void setRevision(int revision) {
-    this.revision = revision;
-  }
+    public void setRevision(int revision) {
+        this.revision = revision;
+    }
 
-  public boolean isInserted() {
-    return isInserted;
-  }
+    public boolean isInserted() {
+        return isInserted;
+    }
 
-  public void setInserted(boolean isInserted) {
-    this.isInserted = isInserted;
-  }
+    public void setInserted(boolean isInserted) {
+        this.isInserted = isInserted;
+    }
 
-  public boolean isUpdated() {
-    return isUpdated;
-  }
+    public boolean isUpdated() {
+        return isUpdated;
+    }
 
-  public void setUpdated(boolean isUpdated) {
-    this.isUpdated = isUpdated;
-  }
+    public void setUpdated(boolean isUpdated) {
+        this.isUpdated = isUpdated;
+    }
 
-  public boolean isDeleted() {
-    return isDeleted;
-  }
+    public boolean isDeleted() {
+        return isDeleted;
+    }
 
-  public void setDeleted(boolean isDeleted) {
-    this.isDeleted = isDeleted;
-  }
-
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity.data.impl.cachematcher;
 
 import java.util.Map;
-
 import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
@@ -25,17 +23,22 @@ import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntit
 /**
 
  */
-public class MessageEventSubscriptionsByProcInstAndEventNameMatcher extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
+public class MessageEventSubscriptionsByProcInstAndEventNameMatcher
+    extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
 
-  @Override
-  public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity, Object param) {
-    Map<String, String> paramMap = (Map<String, String>) param;
-    String processInstanceId = paramMap.get("processInstanceId");
-    String eventName = paramMap.get("eventName");
+    @Override
+    public boolean isRetained(EventSubscriptionEntity eventSubscriptionEntity, Object param) {
+        Map<String, String> paramMap = (Map<String, String>) param;
+        String processInstanceId = paramMap.get("processInstanceId");
+        String eventName = paramMap.get("eventName");
 
-    return eventSubscriptionEntity.getEventType() != null && eventSubscriptionEntity.getEventType().equals(MessageEventSubscriptionEntity.EVENT_TYPE)
-        && eventSubscriptionEntity.getEventName() != null && eventSubscriptionEntity.getEventName().equals(eventName)
-        && eventSubscriptionEntity.getProcessInstanceId() != null && eventSubscriptionEntity.getProcessInstanceId().equals(processInstanceId);
-  }
-
+        return (
+            eventSubscriptionEntity.getEventType() != null &&
+            eventSubscriptionEntity.getEventType().equals(MessageEventSubscriptionEntity.EVENT_TYPE) &&
+            eventSubscriptionEntity.getEventName() != null &&
+            eventSubscriptionEntity.getEventName().equals(eventName) &&
+            eventSubscriptionEntity.getProcessInstanceId() != null &&
+            eventSubscriptionEntity.getProcessInstanceId().equals(processInstanceId)
+        );
+    }
 }

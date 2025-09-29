@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,9 @@ import org.activiti.api.task.model.TaskCandidateUser;
 import org.activiti.api.task.model.impl.TaskCandidateUserImpl;
 import org.activiti.engine.task.IdentityLink;
 
-public class APITaskCandidateUserConverter extends ListConverter<IdentityLink, TaskCandidateUser>
-        implements ModelConverter<IdentityLink, TaskCandidateUser> {
+public class APITaskCandidateUserConverter
+    extends ListConverter<IdentityLink, TaskCandidateUser>
+    implements ModelConverter<IdentityLink, TaskCandidateUser> {
 
     @Override
     public TaskCandidateUser from(IdentityLink identityLink) {

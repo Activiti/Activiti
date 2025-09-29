@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.behavior;
 
 import static org.mockito.BDDMockito.given;
@@ -71,9 +70,12 @@ public class VariablesPropagatorTest {
 
         final Map<String, Object> availableVariables = Collections.singletonMap("beforeMapping", "value");
         final Map<String, Object> outboundVariables = Collections.singletonMap("mapped", "value");
-        given(variablesCalculator.calculateOutPutVariables(MappingExecutionContext.buildMappingExecutionContext(execution), availableVariables))
-            .willReturn(outboundVariables);
-
+        given(
+            variablesCalculator.calculateOutPutVariables(
+                MappingExecutionContext.buildMappingExecutionContext(execution),
+                availableVariables
+            )
+        ).willReturn(outboundVariables);
 
         //when
         variablesPropagator.propagate(execution, availableVariables);
@@ -101,12 +103,10 @@ public class VariablesPropagatorTest {
         final DelegateExecution execution = buildExecution(processInstanceId, true);
         final Map<String, Object> availableVariables = Collections.singletonMap("beforeMapping", "value");
 
-
         //when
         variablesPropagator.propagate(execution, availableVariables);
 
         //then
         verify(execution).setVariablesLocal(availableVariables);
     }
-
 }

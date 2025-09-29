@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,10 @@
  */
 package org.activiti.spring.boot.process;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.groups.Tuple.tuple;
+
+import java.util.List;
 import org.activiti.api.process.model.ProcessCandidateStarterGroup;
 import org.activiti.api.process.model.ProcessCandidateStarterUser;
 import org.activiti.api.process.runtime.events.ProcessCandidateStarterGroupAddedEvent;
@@ -29,12 +33,6 @@ import org.activiti.spring.boot.process.listener.ProcessCandidateStarterUserRemo
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.groups.Tuple.tuple;
-
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class ProcessCandidateStarterEventIT {
@@ -54,21 +52,24 @@ public class ProcessCandidateStarterEventIT {
     @Autowired
     private RepositoryService repositoryService;
 
-
     @Test
     public void shouldTriggerProcessCandidateStarterAddedEvents() {
         String processDefinitionId = getProcessDefinitionId();
-        assertCandidateStarters(processDefinitionId,
-                                candidateStarterUserListener.getCandidateStarterUsers(),
-                                candidateStarterGroupListener.getCandidateStarterGroups());
+        assertCandidateStarters(
+            processDefinitionId,
+            candidateStarterUserListener.getCandidateStarterUsers(),
+            candidateStarterGroupListener.getCandidateStarterGroups()
+        );
     }
 
     @Test
     public void shouldPublishProcessCandidateStarterAddedEvents() {
         String processDefinitionId = getProcessDefinitionId();
-        assertPublishedCandidateStartersEvents(processDefinitionId,
-                                               candidateStarterUserListener.getPublishedEvents(),
-                                               candidateStarterGroupListener.getPublishedEvents());
+        assertPublishedCandidateStartersEvents(
+            processDefinitionId,
+            candidateStarterUserListener.getPublishedEvents(),
+            candidateStarterGroupListener.getPublishedEvents()
+        );
     }
 
     @Test
@@ -78,20 +79,27 @@ public class ProcessCandidateStarterEventIT {
         repositoryService.deleteCandidateStarterUser(processDefinitionId, "user");
         repositoryService.deleteCandidateStarterGroup(processDefinitionId, "activitiTeam");
 
-        assertCandidateStarters(processDefinitionId,
+        assertCandidateStarters(
+            processDefinitionId,
             candidateStarterUserRemovedListener.getCandidateStarterUsers(),
-            candidateStarterGroupRemovedListener.getCandidateStarterGroups());
+            candidateStarterGroupRemovedListener.getCandidateStarterGroups()
+        );
     }
 
     private String getProcessDefinitionId() {
-        return repositoryService.createProcessDefinitionQuery()
-                                .processDefinitionKey("SingleTaskProcessRestricted")
-                                .latestVersion().singleResult().getId();
+        return repositoryService
+            .createProcessDefinitionQuery()
+            .processDefinitionKey("SingleTaskProcessRestricted")
+            .latestVersion()
+            .singleResult()
+            .getId();
     }
 
-    private void assertCandidateStarters(String processDefinitionId,
-                                         List<ProcessCandidateStarterUser> candidateStarterUsers,
-                                         List<ProcessCandidateStarterGroup> candidateStarterGroups) {
+    private void assertCandidateStarters(
+        String processDefinitionId,
+        List<ProcessCandidateStarterUser> candidateStarterUsers,
+        List<ProcessCandidateStarterGroup> candidateStarterGroups
+    ) {
         assertThat(candidateStarterUsers)
             .extracting(ProcessCandidateStarterUser::getProcessDefinitionId, ProcessCandidateStarterUser::getUserId)
             .contains(tuple(processDefinitionId, "user"));
@@ -101,9 +109,11 @@ public class ProcessCandidateStarterEventIT {
             .contains(tuple(processDefinitionId, "activitiTeam"));
     }
 
-    private void assertPublishedCandidateStartersEvents(String processDefinitionId,
-                                                        ProcessCandidateStarterUserAddedEvents candidateStarterUsersAddedEvents,
-                                                        ProcessCandidateStarterGroupAddedEvents candidateStarterGroupsAddedEvents) {
+    private void assertPublishedCandidateStartersEvents(
+        String processDefinitionId,
+        ProcessCandidateStarterUserAddedEvents candidateStarterUsersAddedEvents,
+        ProcessCandidateStarterGroupAddedEvents candidateStarterGroupsAddedEvents
+    ) {
         assertThat(candidateStarterUsersAddedEvents).isNotNull();
         assertThat(candidateStarterUsersAddedEvents.getEvents())
             .extracting(ProcessCandidateStarterUserAddedEvent::getEntity)

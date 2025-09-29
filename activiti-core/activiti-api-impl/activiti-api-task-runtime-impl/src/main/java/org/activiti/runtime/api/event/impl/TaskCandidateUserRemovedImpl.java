@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,11 @@ import org.activiti.api.task.model.TaskCandidateUser;
 import org.activiti.api.task.model.events.TaskCandidateUserEvent;
 import org.activiti.api.task.runtime.events.TaskCandidateUserRemovedEvent;
 
-public class TaskCandidateUserRemovedImpl extends RuntimeEventImpl<TaskCandidateUser, TaskCandidateUserEvent.TaskCandidateUserEvents>
-        implements TaskCandidateUserRemovedEvent {
+public class TaskCandidateUserRemovedImpl
+    extends RuntimeEventImpl<TaskCandidateUser, TaskCandidateUserEvent.TaskCandidateUserEvents>
+    implements TaskCandidateUserRemovedEvent {
 
-    public TaskCandidateUserRemovedImpl() {
-    }
+    public TaskCandidateUserRemovedImpl() {}
 
     public TaskCandidateUserRemovedImpl(TaskCandidateUser entity) {
         super(entity);
@@ -34,5 +34,4 @@ public class TaskCandidateUserRemovedImpl extends RuntimeEventImpl<TaskCandidate
     public TaskCandidateUserEvents getEventType() {
         return TaskCandidateUserEvents.TASK_CANDIDATE_USER_REMOVED;
     }
-
 }

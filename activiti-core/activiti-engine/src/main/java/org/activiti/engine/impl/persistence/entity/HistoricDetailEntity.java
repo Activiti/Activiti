@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.history.HistoricDetail;
 
@@ -28,19 +25,17 @@ import org.activiti.engine.history.HistoricDetail;
  */
 @Internal
 public interface HistoricDetailEntity extends HistoricDetail, Entity {
+    void setProcessInstanceId(String processInstanceId);
 
-  void setProcessInstanceId(String processInstanceId);
+    void setActivityInstanceId(String activityInstanceId);
 
-  void setActivityInstanceId(String activityInstanceId);
+    void setTaskId(String taskId);
 
-  void setTaskId(String taskId);
+    void setExecutionId(String executionId);
 
-  void setExecutionId(String executionId);
+    void setTime(Date time);
 
-  void setTime(Date time);
+    String getDetailType();
 
-  String getDetailType();
-
-  void setDetailType(String detailType);
-
+    void setDetailType(String detailType);
 }

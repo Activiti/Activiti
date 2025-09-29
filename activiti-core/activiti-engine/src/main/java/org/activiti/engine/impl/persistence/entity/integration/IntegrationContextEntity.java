@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,9 @@
 package org.activiti.engine.impl.persistence.entity.integration;
 
 import java.util.Date;
-
 import org.activiti.engine.impl.persistence.entity.Entity;
 
 public interface IntegrationContextEntity extends Entity {
-
     String getExecutionId();
 
     void setExecutionId(String executionId);
@@ -40,5 +38,4 @@ public interface IntegrationContextEntity extends Entity {
     Date getCreatedDate();
 
     void setCreatedDate(Date createdDate);
-
 }

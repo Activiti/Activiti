@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree.impl.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -83,14 +82,8 @@ public class AstUnaryTest extends TestCase {
 
     @Test
     public void testGetValue() {
-        assertEquals(
-            Long.valueOf(-1l),
-            parseNode("${-1}").getValue(bindings, null, null)
-        );
-        assertEquals(
-            "-1",
-            parseNode("${-1}").getValue(bindings, null, String.class)
-        );
+        assertEquals(Long.valueOf(-1l), parseNode("${-1}").getValue(bindings, null, null));
+        assertEquals("-1", parseNode("${-1}").getValue(bindings, null, String.class));
     }
 
     @Test
@@ -100,13 +93,7 @@ public class AstUnaryTest extends TestCase {
 
     @Test
     public void testOperators() {
-        assertFalse(
-            (Boolean) parseNode("${not true}")
-                .getValue(bindings, null, Boolean.class)
-        );
-        assertTrue(
-            (Boolean) parseNode("${not false}")
-                .getValue(bindings, null, Boolean.class)
-        );
+        assertFalse((Boolean) parseNode("${not true}").getValue(bindings, null, Boolean.class));
+        assertTrue((Boolean) parseNode("${not false}").getValue(bindings, null, Boolean.class));
     }
 }

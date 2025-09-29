@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@TestPropertySource(
-        locations = {"classpath:application-connectors-empty.properties"}
-)
+@TestPropertySource(locations = { "classpath:application-connectors-empty.properties" })
 public class ProcessRuntimeEmptyConnectorDefinitionIT {
 
     private static final String CATEGORIZE_PROCESS = "categorizeProcess";
@@ -45,13 +43,13 @@ public class ProcessRuntimeEmptyConnectorDefinitionIT {
      **/
     @Test
     public void connectorDefinitionEmptyDir() {
-
         securityUtil.logInAs("user");
 
-        processRuntime.start(ProcessPayloadBuilder.start()
-                                     .withProcessDefinitionKey(CATEGORIZE_PROCESS)
-                                     .withVariable("expectedKey",
-                                                   true)
-                                     .build());
+        processRuntime.start(
+            ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey(CATEGORIZE_PROCESS)
+                .withVariable("expectedKey", true)
+                .build()
+        );
     }
 }

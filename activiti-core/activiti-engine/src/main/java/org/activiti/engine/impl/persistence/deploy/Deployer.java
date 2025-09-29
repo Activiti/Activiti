@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.deploy;
 
 import java.util.Map;
-
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 
 /**
@@ -25,6 +23,5 @@ import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 
  */
 public interface Deployer {
-
-  void deploy(DeploymentEntity deployment, Map<String, Object> deploymentSettings);
+    void deploy(DeploymentEntity deployment, Map<String, Object> deploymentSettings);
 }

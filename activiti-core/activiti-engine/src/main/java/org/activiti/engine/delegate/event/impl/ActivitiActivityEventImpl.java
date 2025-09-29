@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.delegate.event.impl;
 
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
@@ -27,47 +26,46 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
  */
 public class ActivitiActivityEventImpl extends ActivitiEventImpl implements ActivitiActivityEvent {
 
-  protected String activityId;
-  protected String activityName;
-  protected String activityType;
-  protected String behaviorClass;
+    protected String activityId;
+    protected String activityName;
+    protected String activityType;
+    protected String behaviorClass;
 
-  public ActivitiActivityEventImpl(ActivitiEventType type) {
-    super(type);
-  }
+    public ActivitiActivityEventImpl(ActivitiEventType type) {
+        super(type);
+    }
 
-  @Override
-  public String getActivityId() {
-    return activityId;
-  }
+    @Override
+    public String getActivityId() {
+        return activityId;
+    }
 
-  public void setActivityId(String activityId) {
-    this.activityId = activityId;
-  }
+    public void setActivityId(String activityId) {
+        this.activityId = activityId;
+    }
 
-  public String getActivityName() {
-    return activityName;
-  }
+    public String getActivityName() {
+        return activityName;
+    }
 
-  public void setActivityName(String activityName) {
-    this.activityName = activityName;
-  }
+    public void setActivityName(String activityName) {
+        this.activityName = activityName;
+    }
 
-  @Override
-  public String getActivityType() {
-    return activityType;
-  }
+    @Override
+    public String getActivityType() {
+        return activityType;
+    }
 
-  public void setActivityType(String activityType) {
-    this.activityType = activityType;
-  }
+    public void setActivityType(String activityType) {
+        this.activityType = activityType;
+    }
 
-  public String getBehaviorClass() {
-    return behaviorClass;
-  }
+    public String getBehaviorClass() {
+        return behaviorClass;
+    }
 
-  public void setBehaviorClass(String behaviorClass) {
-    this.behaviorClass = behaviorClass;
-  }
-
+    public void setBehaviorClass(String behaviorClass) {
+        this.behaviorClass = behaviorClass;
+    }
 }

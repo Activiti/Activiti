@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ public class CommandStats {
     public double getAverageExecutionTime() {
         long total = 0;
         for (Long timing : commandExecutionTimings) {
-          total += timing.longValue();
+            total += timing.longValue();
         }
         double average = (double) total / (double) commandExecutionTimings.size();
         return Math.round(average * 100.0) / 100.0;
@@ -84,12 +84,12 @@ public class CommandStats {
     }
 
     public double getAverageDatabaseExecutionTime() {
-      long total = 0;
-      for (Long timing : databaseTimings) {
-        total += timing.longValue();
-      }
-      double average = (double) total / (double) commandExecutionTimings.size();
-      return Math.round(average * 100.0) / 100.0;
+        long total = 0;
+        for (Long timing : databaseTimings) {
+            total += timing.longValue();
+        }
+        double average = (double) total / (double) commandExecutionTimings.size();
+        return Math.round(average * 100.0) / 100.0;
     }
 
     public Map<String, Long> getDbSelects() {
@@ -123,5 +123,4 @@ public class CommandStats {
     public void setDbDeletes(Map<String, Long> dbDeletes) {
         this.dbDeletes = dbDeletes;
     }
-
 }

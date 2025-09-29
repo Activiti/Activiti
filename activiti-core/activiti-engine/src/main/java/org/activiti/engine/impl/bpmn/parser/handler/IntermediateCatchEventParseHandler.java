@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.parser.handler;
 
 import org.activiti.bpmn.model.BaseElement;
@@ -33,28 +32,33 @@ import org.slf4j.LoggerFactory;
  */
 public class IntermediateCatchEventParseHandler extends AbstractFlowNodeBpmnParseHandler<IntermediateCatchEvent> {
 
-  private static final Logger logger = LoggerFactory.getLogger(IntermediateCatchEventParseHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(IntermediateCatchEventParseHandler.class);
 
-  public Class<? extends BaseElement> getHandledType() {
-    return IntermediateCatchEvent.class;
-  }
-
-  protected void executeParse(BpmnParse bpmnParse, IntermediateCatchEvent event) {
-    EventDefinition eventDefinition = null;
-    if (!event.getEventDefinitions().isEmpty()) {
-      eventDefinition = event.getEventDefinitions().get(0);
+    public Class<? extends BaseElement> getHandledType() {
+        return IntermediateCatchEvent.class;
     }
 
-    if (eventDefinition == null) {
-      event.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateCatchEventActivityBehavior(event));
+    protected void executeParse(BpmnParse bpmnParse, IntermediateCatchEvent event) {
+        EventDefinition eventDefinition = null;
+        if (!event.getEventDefinitions().isEmpty()) {
+            eventDefinition = event.getEventDefinitions().get(0);
+        }
 
-    } else {
-      if (eventDefinition instanceof TimerEventDefinition || eventDefinition instanceof SignalEventDefinition || eventDefinition instanceof MessageEventDefinition || eventDefinition instanceof LinkEventDefinition) {
-        bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
-      } else {
-        logger.warn("Unsupported intermediate catch event type for event " + event.getId());
-      }
+        if (eventDefinition == null) {
+            event.setBehavior(
+                bpmnParse.getActivityBehaviorFactory().createIntermediateCatchEventActivityBehavior(event)
+            );
+        } else {
+            if (
+                eventDefinition instanceof TimerEventDefinition ||
+                eventDefinition instanceof SignalEventDefinition ||
+                eventDefinition instanceof MessageEventDefinition ||
+                eventDefinition instanceof LinkEventDefinition
+            ) {
+                bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
+            } else {
+                logger.warn("Unsupported intermediate catch event type for event " + event.getId());
+            }
+        }
     }
-  }
-
 }

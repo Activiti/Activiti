@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,23 +21,21 @@ import java.util.Date;
 
  */
 public interface EventLogEntry {
+    long getLogNumber();
 
-  long getLogNumber();
+    String getType();
 
-  String getType();
+    String getProcessDefinitionId();
 
-  String getProcessDefinitionId();
+    String getProcessInstanceId();
 
-  String getProcessInstanceId();
+    String getExecutionId();
 
-  String getExecutionId();
+    String getTaskId();
 
-  String getTaskId();
+    Date getTimeStamp();
 
-  Date getTimeStamp();
+    String getUserId();
 
-  String getUserId();
-
-  byte[] getData();
-
+    byte[] getData();
 }

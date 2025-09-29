@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.delegate;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.TaskWithFieldExtensions;
 import org.activiti.engine.ActivitiException;
@@ -34,7 +33,6 @@ import org.activiti.engine.impl.el.FixedValue;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.activiti.bpmn.model.Process;
 
 /**
  * Class that provides helper operations for use in the {@link JavaDelegate},
@@ -49,23 +47,20 @@ public class DelegateHelper {
      * that evaluates to true are followed.
      */
     public static void leaveDelegate(DelegateExecution delegateExecution) {
-        Context.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) delegateExecution,
-                                                                   true);
+        Context.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) delegateExecution, true);
     }
 
     /**
      * To be used in an {@link ActivityBehavior} or {@link JavaDelegate}: leaves
      * the current activity via one specific sequenceflow.
      */
-    public static void leaveDelegate(DelegateExecution delegateExecution,
-                                     String sequenceFlowId) {
+    public static void leaveDelegate(DelegateExecution delegateExecution, String sequenceFlowId) {
         String processDefinitionId = delegateExecution.getProcessDefinitionId();
         Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
         FlowElement flowElement = process.getFlowElement(sequenceFlowId);
         if (flowElement instanceof SequenceFlow) {
             delegateExecution.setCurrentFlowElement(flowElement);
-            Context.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) delegateExecution,
-                                                                       false);
+            Context.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) delegateExecution, false);
         } else {
             throw new ActivitiException(sequenceFlowId + " does not match a sequence flow");
         }
@@ -89,7 +84,9 @@ public class DelegateHelper {
         BpmnModel bpmnModel = getBpmnModel(execution);
         FlowElement flowElement = bpmnModel.getFlowElement(execution.getCurrentActivityId());
         if (flowElement == null) {
-            throw new ActivitiException("Could not find a FlowElement for activityId " + execution.getCurrentActivityId());
+            throw new ActivitiException(
+                "Could not find a FlowElement for activityId " + execution.getCurrentActivityId()
+            );
         }
         return flowElement;
     }
@@ -174,19 +171,15 @@ public class DelegateHelper {
      * {@link #getListenerField(DelegateExecution, String)} for specifically
      * getting the field from either the flow element or the listener.
      */
-    public static FieldExtension getField(DelegateExecution execution,
-                                          String fieldName) {
+    public static FieldExtension getField(DelegateExecution execution, String fieldName) {
         if (isExecutingExecutionListener(execution)) {
-            return getListenerField(execution,
-                                    fieldName);
+            return getListenerField(execution, fieldName);
         } else {
-            return getFlowElementField(execution,
-                                       fieldName);
+            return getFlowElementField(execution, fieldName);
         }
     }
 
-    public static FieldExtension getFlowElementField(DelegateExecution execution,
-                                                     String fieldName) {
+    public static FieldExtension getFlowElementField(DelegateExecution execution, String fieldName) {
         List<FieldExtension> fieldExtensions = getFlowElementFields(execution);
         if (fieldExtensions == null || fieldExtensions.size() == 0) {
             return null;
@@ -199,8 +192,7 @@ public class DelegateHelper {
         return null;
     }
 
-    public static FieldExtension getListenerField(DelegateExecution execution,
-                                                  String fieldName) {
+    public static FieldExtension getListenerField(DelegateExecution execution, String fieldName) {
         List<FieldExtension> fieldExtensions = getListenerFields(execution);
         if (fieldExtensions == null || fieldExtensions.size() == 0) {
             return null;
@@ -238,22 +230,18 @@ public class DelegateHelper {
      * {@link #getListenerFieldExpression(DelegateExecution, String)} for
      * specifically getting the flow element or listener field expression.
      */
-    public static Expression getFieldExpression(DelegateExecution execution,
-                                                String fieldName) {
+    public static Expression getFieldExpression(DelegateExecution execution, String fieldName) {
         if (isExecutingExecutionListener(execution)) {
-            return getListenerFieldExpression(execution,
-                                              fieldName);
+            return getListenerFieldExpression(execution, fieldName);
         } else {
-            return getFlowElementFieldExpression(execution,
-                                                 fieldName);
+            return getFlowElementFieldExpression(execution, fieldName);
         }
     }
 
     /**
      * Similar to {@link #getFieldExpression(DelegateExecution, String)}, but for use within a {@link TaskListener}.
      */
-    public static Expression getFieldExpression(DelegateTask task,
-                                                String fieldName) {
+    public static Expression getFieldExpression(DelegateTask task, String fieldName) {
         if (task.getCurrentActivitiListener() != null) {
             List<FieldExtension> fieldExtensions = task.getCurrentActivitiListener().getFieldExtensions();
             if (fieldExtensions != null && fieldExtensions.size() > 0) {
@@ -267,20 +255,16 @@ public class DelegateHelper {
         return null;
     }
 
-    public static Expression getFlowElementFieldExpression(DelegateExecution execution,
-                                                           String fieldName) {
-        FieldExtension fieldExtension = getFlowElementField(execution,
-                                                            fieldName);
+    public static Expression getFlowElementFieldExpression(DelegateExecution execution, String fieldName) {
+        FieldExtension fieldExtension = getFlowElementField(execution, fieldName);
         if (fieldExtension != null) {
             return createExpressionForField(fieldExtension);
         }
         return null;
     }
 
-    public static Expression getListenerFieldExpression(DelegateExecution execution,
-                                                        String fieldName) {
-        FieldExtension fieldExtension = getListenerField(execution,
-                                                         fieldName);
+    public static Expression getListenerFieldExpression(DelegateExecution execution, String fieldName) {
+        FieldExtension fieldExtension = getListenerField(execution, fieldName);
         if (fieldExtension != null) {
             return createExpressionForField(fieldExtension);
         }

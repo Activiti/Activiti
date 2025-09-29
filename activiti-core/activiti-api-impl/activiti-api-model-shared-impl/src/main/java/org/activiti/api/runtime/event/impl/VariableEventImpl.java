@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@ package org.activiti.api.runtime.event.impl;
 import org.activiti.api.model.shared.event.VariableEvent;
 import org.activiti.api.model.shared.model.VariableInstance;
 
-public abstract class VariableEventImpl extends RuntimeEventImpl<VariableInstance, VariableEvent.VariableEvents>
-        implements VariableEvent {
+public abstract class VariableEventImpl
+    extends RuntimeEventImpl<VariableInstance, VariableEvent.VariableEvents>
+    implements VariableEvent {
 
-    public VariableEventImpl() {
-    }
+    public VariableEventImpl() {}
 
     public VariableEventImpl(VariableInstance entity) {
         super(entity);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,21 @@
  */
 package org.activiti.core.common.spring.security;
 
-import org.activiti.api.runtime.shared.security.PrincipalRolesProvider;
-import org.springframework.lang.NonNull;
-
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import org.activiti.api.runtime.shared.security.PrincipalRolesProvider;
+import org.springframework.lang.NonNull;
 
 public class AuthenticationPrincipalRolesProvider implements PrincipalRolesProvider {
 
     private final GrantedAuthoritiesResolver grantedAuthoritiesResolver;
     private final GrantedAuthoritiesRolesMapper grantedAuthoritiesRolesMapper;
 
-    public AuthenticationPrincipalRolesProvider(@NonNull GrantedAuthoritiesResolver grantedAuthoritiesResolver,
-                                                @NonNull GrantedAuthoritiesRolesMapper grantedAuthoritiesRolesMapper) {
+    public AuthenticationPrincipalRolesProvider(
+        @NonNull GrantedAuthoritiesResolver grantedAuthoritiesResolver,
+        @NonNull GrantedAuthoritiesRolesMapper grantedAuthoritiesRolesMapper
+    ) {
         this.grantedAuthoritiesResolver = grantedAuthoritiesResolver;
         this.grantedAuthoritiesRolesMapper = grantedAuthoritiesRolesMapper;
     }
@@ -36,13 +37,12 @@ public class AuthenticationPrincipalRolesProvider implements PrincipalRolesProvi
     @Override
     public List<String> getRoles(@NonNull Principal principal) {
         return Optional.of(principal)
-                       .map(grantedAuthoritiesResolver::getAuthorities)
-                       .map(grantedAuthoritiesRolesMapper::getRoles)
-                       .orElseThrow(this::securityException);
+            .map(grantedAuthoritiesResolver::getAuthorities)
+            .map(grantedAuthoritiesRolesMapper::getRoles)
+            .orElseThrow(this::securityException);
     }
 
     protected SecurityException securityException() {
         return new SecurityException("Invalid principal rolese");
     }
-
 }

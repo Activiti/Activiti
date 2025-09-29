@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.webservice;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -29,21 +28,23 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class MessageImplicitDataInputAssociation extends AbstractDataAssociation {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public MessageImplicitDataInputAssociation(String source, String target) {
-    super(source, target);
-  }
-
-  @Override
-  public void evaluate(DelegateExecution execution) {
-    if (StringUtils.isNotEmpty(this.source)) {
-      Object value = execution.getVariable(this.source);
-      MessageInstance message = (MessageInstance) execution.getVariable(WebServiceActivityBehavior.CURRENT_MESSAGE);
-      if (message.getStructureInstance() instanceof FieldBaseStructureInstance) {
-        FieldBaseStructureInstance structure = (FieldBaseStructureInstance) message.getStructureInstance();
-        structure.setFieldValue(this.target, value);
-      }
+    public MessageImplicitDataInputAssociation(String source, String target) {
+        super(source, target);
     }
-  }
+
+    @Override
+    public void evaluate(DelegateExecution execution) {
+        if (StringUtils.isNotEmpty(this.source)) {
+            Object value = execution.getVariable(this.source);
+            MessageInstance message = (MessageInstance) execution.getVariable(
+                WebServiceActivityBehavior.CURRENT_MESSAGE
+            );
+            if (message.getStructureInstance() instanceof FieldBaseStructureInstance) {
+                FieldBaseStructureInstance structure = (FieldBaseStructureInstance) message.getStructureInstance();
+                structure.setFieldValue(this.target, value);
+            }
+        }
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,13 @@ import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.events.ProcessDefinitionEvent;
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
 
-public class ProcessDeployedEventImpl extends RuntimeEventImpl<ProcessDefinition, ProcessDefinitionEvent.ProcessDefinitionEvents> implements ProcessDeployedEvent {
+public class ProcessDeployedEventImpl
+    extends RuntimeEventImpl<ProcessDefinition, ProcessDefinitionEvent.ProcessDefinitionEvents>
+    implements ProcessDeployedEvent {
 
     private String processModelContent;
 
-    public ProcessDeployedEventImpl() {
-    }
+    public ProcessDeployedEventImpl() {}
 
     public ProcessDeployedEventImpl(ProcessDefinition entity) {
         super(entity);

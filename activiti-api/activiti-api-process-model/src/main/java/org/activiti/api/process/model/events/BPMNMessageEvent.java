@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,9 @@ import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.BPMNMessage;
 
 public interface BPMNMessageEvent extends RuntimeEvent<BPMNMessage, BPMNMessageEvent.MessageEvents> {
-
     enum MessageEvents {
         MESSAGE_WAITING,
         MESSAGE_RECEIVED,
-        MESSAGE_SENT
+        MESSAGE_SENT,
     }
 }

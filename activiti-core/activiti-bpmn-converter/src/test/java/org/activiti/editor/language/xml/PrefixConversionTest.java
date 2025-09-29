@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,35 +15,40 @@
  */
 package org.activiti.editor.language.xml;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.converter.util.InputStreamProvider;
 import org.activiti.bpmn.model.BpmnModel;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class PrefixConversionTest {
 
     @Test
     public void shouldConvertWithoutDoublingTheBPMN2PrefixWhenAbpmnFileWithPrefixIsGiven() throws IOException {
-        final InputStream originalXMLStream = this.getClass().getClassLoader().getResourceAsStream("checkConversionPrefix.bpmn");
-        final InputStream copiedXMLStream = this.getClass().getClassLoader().getResourceAsStream("checkConversionPrefix.bpmn");
+        final InputStream originalXMLStream = this.getClass()
+            .getClassLoader()
+            .getResourceAsStream("checkConversionPrefix.bpmn");
+        final InputStream copiedXMLStream = this.getClass()
+            .getClassLoader()
+            .getResourceAsStream("checkConversionPrefix.bpmn");
         BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
 
         byte[] byteOriginalXMLStream = new byte[originalXMLStream.available()];
         originalXMLStream.read(byteOriginalXMLStream);
 
-
-        BpmnModel bpmnModel = bpmnXMLConverter.convertToBpmnModel(new InputStreamProvider() {
-
-            @Override
-            public InputStream getInputStream() {
-                return copiedXMLStream;
-            }
-        }, false, false);
+        BpmnModel bpmnModel = bpmnXMLConverter.convertToBpmnModel(
+            new InputStreamProvider() {
+                @Override
+                public InputStream getInputStream() {
+                    return copiedXMLStream;
+                }
+            },
+            false,
+            false
+        );
 
         byte[] bytesReconvertedXMLModel = bpmnXMLConverter.convertToXML(bpmnModel);
         String stringifyOriginalXML = new String(byteOriginalXMLStream);

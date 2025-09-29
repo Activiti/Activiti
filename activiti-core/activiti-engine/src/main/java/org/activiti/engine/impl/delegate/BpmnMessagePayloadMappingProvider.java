@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.delegate;
 
 import static java.util.Collections.unmodifiableMap;
@@ -23,7 +22,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
@@ -41,27 +39,25 @@ public class BpmnMessagePayloadMappingProvider implements MessagePayloadMappingP
     public Optional<Map<String, Object>> getMessagePayload(DelegateExecution execution) {
         Map<String, Object> payload = new LinkedHashMap<>();
 
-        fieldDeclarations.stream()
-                         .map(field -> applyFieldDeclaration(execution,
-                                                             field))
-                         .forEach(entry -> payload.put(entry.getKey(), entry.getValue()));
+        fieldDeclarations
+            .stream()
+            .map(field -> applyFieldDeclaration(execution, field))
+            .forEach(entry -> payload.put(entry.getKey(), entry.getValue()));
 
         return Optional.of(payload)
-                       .filter(map -> !map.isEmpty())
-                       .map(map -> unmodifiableMap(map));
+            .filter(map -> !map.isEmpty())
+            .map(map -> unmodifiableMap(map));
     }
 
     protected Map.Entry<String, Object> applyFieldDeclaration(DelegateExecution execution, FieldDeclaration field) {
         return Optional.of(field)
-                       .map(f -> {
-                           Object value = Optional.ofNullable(f.getValue())
-                                                  .map(v -> (Expression.class.isInstance(v))
-                                                               ? Expression.class.cast(v).getValue(execution)
-                                                               : v)
-                                                  .orElse(null);
+            .map(f -> {
+                Object value = Optional.ofNullable(f.getValue())
+                    .map(v -> (Expression.class.isInstance(v)) ? Expression.class.cast(v).getValue(execution) : v)
+                    .orElse(null);
 
-                           return new AbstractMap.SimpleImmutableEntry<>(field.getName(), value);
-                        })
-                       .get();
+                return new AbstractMap.SimpleImmutableEntry<>(field.getName(), value);
+            })
+            .get();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.Page;
@@ -30,13 +27,16 @@ import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SuspendedJobEntityManagerImpl extends AbstractEntityManager<SuspendedJobEntity> implements SuspendedJobEntityManager {
-
+public class SuspendedJobEntityManagerImpl
+    extends AbstractEntityManager<SuspendedJobEntity>
+    implements SuspendedJobEntityManager {
 
     protected SuspendedJobDataManager jobDataManager;
 
-    public SuspendedJobEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration,
-                                         SuspendedJobDataManager jobDataManager) {
+    public SuspendedJobEntityManagerImpl(
+        ProcessEngineConfigurationImpl processEngineConfiguration,
+        SuspendedJobDataManager jobDataManager
+    ) {
         super(processEngineConfiguration);
         this.jobDataManager = jobDataManager;
     }
@@ -52,10 +52,8 @@ public class SuspendedJobEntityManagerImpl extends AbstractEntityManager<Suspend
     }
 
     @Override
-    public List<Job> findJobsByQueryCriteria(SuspendedJobQueryImpl jobQuery,
-                                             Page page) {
-        return jobDataManager.findJobsByQueryCriteria(jobQuery,
-                                                      page);
+    public List<Job> findJobsByQueryCriteria(SuspendedJobQueryImpl jobQuery, Page page) {
+        return jobDataManager.findJobsByQueryCriteria(jobQuery, page);
     }
 
     @Override
@@ -64,16 +62,12 @@ public class SuspendedJobEntityManagerImpl extends AbstractEntityManager<Suspend
     }
 
     @Override
-    public void updateJobTenantIdForDeployment(String deploymentId,
-                                               String newTenantId) {
-        jobDataManager.updateJobTenantIdForDeployment(deploymentId,
-                                                      newTenantId);
+    public void updateJobTenantIdForDeployment(String deploymentId, String newTenantId) {
+        jobDataManager.updateJobTenantIdForDeployment(deploymentId, newTenantId);
     }
 
     @Override
-    public void insert(SuspendedJobEntity jobEntity,
-                       boolean fireCreateEvent) {
-
+    public void insert(SuspendedJobEntity jobEntity, boolean fireCreateEvent) {
         // add link to execution
         if (jobEntity.getExecutionId() != null) {
             ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
@@ -89,14 +83,12 @@ public class SuspendedJobEntityManagerImpl extends AbstractEntityManager<Suspend
             }
         }
 
-        super.insert(jobEntity,
-                     fireCreateEvent);
+        super.insert(jobEntity, fireCreateEvent);
     }
 
     @Override
     public void insert(SuspendedJobEntity jobEntity) {
-        insert(jobEntity,
-               true);
+        insert(jobEntity, true);
     }
 
     @Override
@@ -106,7 +98,9 @@ public class SuspendedJobEntityManagerImpl extends AbstractEntityManager<Suspend
         deleteExceptionByteArrayRef(jobEntity);
 
         if (jobEntity.getExecutionId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
-            CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(jobEntity.getExecutionId());
+            CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(
+                jobEntity.getExecutionId()
+            );
             if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
                 executionEntity.setSuspendedJobCount(executionEntity.getSuspendedJobCount() - 1);
             }
@@ -114,8 +108,9 @@ public class SuspendedJobEntityManagerImpl extends AbstractEntityManager<Suspend
 
         // Send event
         if (getEventDispatcher().isEnabled()) {
-            getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED,
-                                                                                      this));
+            getEventDispatcher().dispatchEvent(
+                ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, this)
+            );
         }
     }
 

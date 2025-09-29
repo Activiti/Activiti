@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,9 @@
  */
 package org.activiti.spring.resolver;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import jakarta.el.ELContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,10 +25,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
 import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
-
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SystemStubsExtension.class)
 class EnvironmentVariableELResolverTest {
@@ -60,7 +59,7 @@ class EnvironmentVariableELResolverTest {
         environmentVariables.setup();
 
         // Act
-        var result = resolver.getValue(elContext,new EnvVar(), "MY_ENV_VAR");
+        var result = resolver.getValue(elContext, new EnvVar(), "MY_ENV_VAR");
 
         // Assert
         assertThat(result).isEqualTo("test-value");

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.misc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,9 +48,7 @@ public class TypeConverterImplTest extends TestCase {
 
         private Date value;
 
-        public void addPropertyChangeListener(
-            PropertyChangeListener listener
-        ) {}
+        public void addPropertyChangeListener(PropertyChangeListener listener) {}
 
         public String getAsText() {
             return value == null ? null : "" + value.getTime();
@@ -79,9 +76,7 @@ public class TypeConverterImplTest extends TestCase {
 
         public void paintValue(Graphics gfx, Rectangle box) {}
 
-        public void removePropertyChangeListener(
-            PropertyChangeListener listener
-        ) {}
+        public void removePropertyChangeListener(PropertyChangeListener listener) {}
 
         public void setAsText(String text) throws IllegalArgumentException {
             value = new Date(Long.parseLong(text));
@@ -128,14 +123,8 @@ public class TypeConverterImplTest extends TestCase {
 
     @Test
     public void testToCharacter() {
-        assertEquals(
-            Character.valueOf((char) 0),
-            converter.coerceToCharacter(null)
-        );
-        assertEquals(
-            Character.valueOf((char) 0),
-            converter.coerceToCharacter("")
-        );
+        assertEquals(Character.valueOf((char) 0), converter.coerceToCharacter(null));
+        assertEquals(Character.valueOf((char) 0), converter.coerceToCharacter(""));
         Character c = Character.valueOf((char) 99);
         assertSame(c, converter.coerceToCharacter(c));
         try {
@@ -167,10 +156,7 @@ public class TypeConverterImplTest extends TestCase {
         Number ninetynine = Long.valueOf(99l);
         assertEquals(zero, converter.coerceToLong(null));
         assertEquals(zero, converter.coerceToLong(""));
-        assertEquals(
-            ninetynine,
-            converter.coerceToLong(Character.valueOf('c'))
-        );
+        assertEquals(ninetynine, converter.coerceToLong(Character.valueOf('c')));
         assertEquals(ninetynine, converter.coerceToLong(Byte.valueOf((byte) 99)));
         assertEquals(ninetynine, converter.coerceToLong(Short.valueOf((short) 99)));
         assertEquals(ninetynine, converter.coerceToLong(Integer.valueOf(99)));
@@ -192,31 +178,16 @@ public class TypeConverterImplTest extends TestCase {
         Number ninetynine = Integer.valueOf(99);
         assertEquals(zero, converter.coerceToInteger(null));
         assertEquals(zero, converter.coerceToInteger(""));
-        assertEquals(
-            ninetynine,
-            converter.coerceToInteger(Character.valueOf('c'))
-        );
-        assertEquals(
-            ninetynine,
-            converter.coerceToInteger(Byte.valueOf((byte) 99))
-        );
-        assertEquals(
-            ninetynine,
-            converter.coerceToInteger(Short.valueOf((short) 99))
-        );
+        assertEquals(ninetynine, converter.coerceToInteger(Character.valueOf('c')));
+        assertEquals(ninetynine, converter.coerceToInteger(Byte.valueOf((byte) 99)));
+        assertEquals(ninetynine, converter.coerceToInteger(Short.valueOf((short) 99)));
         assertEquals(ninetynine, converter.coerceToInteger(Integer.valueOf(99)));
         assertEquals(ninetynine, converter.coerceToInteger(Long.valueOf(99)));
         assertEquals(ninetynine, converter.coerceToInteger(Float.valueOf(99)));
         assertEquals(ninetynine, converter.coerceToInteger(Double.valueOf(99)));
         assertEquals(ninetynine, converter.coerceToInteger(new BigDecimal(99)));
-        assertEquals(
-            ninetynine,
-            converter.coerceToInteger(new BigInteger("99"))
-        );
-        assertEquals(
-            ninetynine,
-            converter.coerceToInteger(ninetynine.toString())
-        );
+        assertEquals(ninetynine, converter.coerceToInteger(new BigInteger("99")));
+        assertEquals(ninetynine, converter.coerceToInteger(ninetynine.toString()));
         try {
             converter.coerceToInteger("foo");
             fail();
@@ -229,25 +200,16 @@ public class TypeConverterImplTest extends TestCase {
         Number ninetynine = Short.valueOf((short) 99);
         assertEquals(zero, converter.coerceToShort(null));
         assertEquals(zero, converter.coerceToShort(""));
-        assertEquals(
-            ninetynine,
-            converter.coerceToShort(Character.valueOf('c'))
-        );
+        assertEquals(ninetynine, converter.coerceToShort(Character.valueOf('c')));
         assertEquals(ninetynine, converter.coerceToShort(Byte.valueOf((byte) 99)));
-        assertEquals(
-            ninetynine,
-            converter.coerceToShort(Short.valueOf((short) 99))
-        );
+        assertEquals(ninetynine, converter.coerceToShort(Short.valueOf((short) 99)));
         assertEquals(ninetynine, converter.coerceToShort(Integer.valueOf(99)));
         assertEquals(ninetynine, converter.coerceToShort(Long.valueOf(99)));
         assertEquals(ninetynine, converter.coerceToShort(Float.valueOf(99)));
         assertEquals(ninetynine, converter.coerceToShort(Double.valueOf(99)));
         assertEquals(ninetynine, converter.coerceToShort(new BigDecimal(99)));
         assertEquals(ninetynine, converter.coerceToShort(new BigInteger("99")));
-        assertEquals(
-            ninetynine,
-            converter.coerceToShort(ninetynine.toString())
-        );
+        assertEquals(ninetynine, converter.coerceToShort(ninetynine.toString()));
         try {
             converter.coerceToShort("foo");
             fail();
@@ -260,10 +222,7 @@ public class TypeConverterImplTest extends TestCase {
         Number ninetynine = Byte.valueOf((byte) 99);
         assertEquals(zero, converter.coerceToByte(null));
         assertEquals(zero, converter.coerceToByte(""));
-        assertEquals(
-            ninetynine,
-            converter.coerceToByte(Character.valueOf('c'))
-        );
+        assertEquals(ninetynine, converter.coerceToByte(Character.valueOf('c')));
         assertEquals(ninetynine, converter.coerceToByte(Byte.valueOf((byte) 99)));
         assertEquals(ninetynine, converter.coerceToByte(Short.valueOf((short) 99)));
         assertEquals(ninetynine, converter.coerceToByte(Integer.valueOf(99)));
@@ -285,28 +244,16 @@ public class TypeConverterImplTest extends TestCase {
         Number ninetynine = Double.valueOf(99);
         assertEquals(zero, converter.coerceToDouble(null));
         assertEquals(zero, converter.coerceToDouble(""));
-        assertEquals(
-            ninetynine,
-            converter.coerceToDouble(Character.valueOf('c'))
-        );
-        assertEquals(ninetynine, converter.coerceToDouble( Byte.valueOf((byte) 99)));
-        assertEquals(
-            ninetynine,
-            converter.coerceToDouble(Short.valueOf((short) 99))
-        );
+        assertEquals(ninetynine, converter.coerceToDouble(Character.valueOf('c')));
+        assertEquals(ninetynine, converter.coerceToDouble(Byte.valueOf((byte) 99)));
+        assertEquals(ninetynine, converter.coerceToDouble(Short.valueOf((short) 99)));
         assertEquals(ninetynine, converter.coerceToDouble(Integer.valueOf(99)));
         assertEquals(ninetynine, converter.coerceToDouble(Long.valueOf(99)));
-        assertEquals(ninetynine, converter.coerceToDouble( Float.valueOf(99)));
+        assertEquals(ninetynine, converter.coerceToDouble(Float.valueOf(99)));
         assertEquals(ninetynine, converter.coerceToDouble(Double.valueOf(99)));
         assertEquals(ninetynine, converter.coerceToDouble(new BigDecimal(99)));
-        assertEquals(
-            ninetynine,
-            converter.coerceToDouble(new BigInteger("99"))
-        );
-        assertEquals(
-            ninetynine,
-            converter.coerceToDouble(ninetynine.toString())
-        );
+        assertEquals(ninetynine, converter.coerceToDouble(new BigInteger("99")));
+        assertEquals(ninetynine, converter.coerceToDouble(ninetynine.toString()));
         try {
             converter.coerceToDouble("foo");
             fail();
@@ -319,25 +266,16 @@ public class TypeConverterImplTest extends TestCase {
         Number ninetynine = Float.valueOf(99);
         assertEquals(zero, converter.coerceToFloat(null));
         assertEquals(zero, converter.coerceToFloat(""));
-        assertEquals(
-            ninetynine,
-            converter.coerceToFloat(Character.valueOf('c'))
-        );
+        assertEquals(ninetynine, converter.coerceToFloat(Character.valueOf('c')));
         assertEquals(ninetynine, converter.coerceToFloat(Byte.valueOf((byte) 99)));
-        assertEquals(
-            ninetynine,
-            converter.coerceToFloat(Short.valueOf((short) 99))
-        );
+        assertEquals(ninetynine, converter.coerceToFloat(Short.valueOf((short) 99)));
         assertEquals(ninetynine, converter.coerceToFloat(Integer.valueOf(99)));
-        assertEquals(ninetynine, converter.coerceToFloat( Long.valueOf(99)));
-        assertEquals(ninetynine, converter.coerceToFloat( Float.valueOf(99)));
+        assertEquals(ninetynine, converter.coerceToFloat(Long.valueOf(99)));
+        assertEquals(ninetynine, converter.coerceToFloat(Float.valueOf(99)));
         assertEquals(ninetynine, converter.coerceToFloat(Double.valueOf(99)));
         assertEquals(ninetynine, converter.coerceToFloat(new BigDecimal(99)));
         assertEquals(ninetynine, converter.coerceToFloat(new BigInteger("99")));
-        assertEquals(
-            ninetynine,
-            converter.coerceToFloat(ninetynine.toString())
-        );
+        assertEquals(ninetynine, converter.coerceToFloat(ninetynine.toString()));
         try {
             converter.coerceToFloat("foo");
             fail();
@@ -350,34 +288,16 @@ public class TypeConverterImplTest extends TestCase {
         Number ninetynine = BigDecimal.valueOf(99);
         assertEquals(zero, converter.coerceToBigDecimal(null));
         assertEquals(zero, converter.coerceToBigDecimal(""));
-        assertEquals(
-            ninetynine,
-            converter.coerceToBigDecimal(Character.valueOf('c'))
-        );
-        assertEquals(
-            ninetynine,
-            converter.coerceToBigDecimal(Byte.valueOf((byte) 99))
-        );
-        assertEquals(
-            ninetynine,
-            converter.coerceToBigDecimal(Short.valueOf((short) 99))
-        );
+        assertEquals(ninetynine, converter.coerceToBigDecimal(Character.valueOf('c')));
+        assertEquals(ninetynine, converter.coerceToBigDecimal(Byte.valueOf((byte) 99)));
+        assertEquals(ninetynine, converter.coerceToBigDecimal(Short.valueOf((short) 99)));
         assertEquals(ninetynine, converter.coerceToBigDecimal(Integer.valueOf(99)));
         assertEquals(ninetynine, converter.coerceToBigDecimal(Long.valueOf(99)));
         assertEquals(ninetynine, converter.coerceToBigDecimal(Float.valueOf(99)));
         assertEquals(ninetynine, converter.coerceToBigDecimal(Double.valueOf(99)));
-        assertEquals(
-            ninetynine,
-            converter.coerceToBigDecimal(new BigDecimal(99))
-        );
-        assertEquals(
-            ninetynine,
-            converter.coerceToBigDecimal(new BigInteger("99"))
-        );
-        assertEquals(
-            ninetynine,
-            converter.coerceToBigDecimal(ninetynine.toString())
-        );
+        assertEquals(ninetynine, converter.coerceToBigDecimal(new BigDecimal(99)));
+        assertEquals(ninetynine, converter.coerceToBigDecimal(new BigInteger("99")));
+        assertEquals(ninetynine, converter.coerceToBigDecimal(ninetynine.toString()));
         try {
             converter.coerceToBigDecimal("foo");
             fail();
@@ -390,34 +310,16 @@ public class TypeConverterImplTest extends TestCase {
         Number ninetynine = BigInteger.valueOf(99);
         assertEquals(zero, converter.coerceToBigInteger(null));
         assertEquals(zero, converter.coerceToBigInteger(""));
-        assertEquals(
-            ninetynine,
-            converter.coerceToBigInteger(Character.valueOf('c'))
-        );
-        assertEquals(
-            ninetynine,
-            converter.coerceToBigInteger(Byte.valueOf((byte) 99))
-        );
-        assertEquals(
-            ninetynine,
-            converter.coerceToBigInteger(Short.valueOf((short) 99))
-        );
+        assertEquals(ninetynine, converter.coerceToBigInteger(Character.valueOf('c')));
+        assertEquals(ninetynine, converter.coerceToBigInteger(Byte.valueOf((byte) 99)));
+        assertEquals(ninetynine, converter.coerceToBigInteger(Short.valueOf((short) 99)));
         assertEquals(ninetynine, converter.coerceToBigInteger(Integer.valueOf(99)));
         assertEquals(ninetynine, converter.coerceToBigInteger(Long.valueOf(99)));
         assertEquals(ninetynine, converter.coerceToBigInteger(Float.valueOf(99)));
         assertEquals(ninetynine, converter.coerceToBigInteger(Double.valueOf(99)));
-        assertEquals(
-            ninetynine,
-            converter.coerceToBigInteger(new BigDecimal(99))
-        );
-        assertEquals(
-            ninetynine,
-            converter.coerceToBigInteger(new BigInteger("99"))
-        );
-        assertEquals(
-            ninetynine,
-            converter.coerceToBigInteger(ninetynine.toString())
-        );
+        assertEquals(ninetynine, converter.coerceToBigInteger(new BigDecimal(99)));
+        assertEquals(ninetynine, converter.coerceToBigInteger(new BigInteger("99")));
+        assertEquals(ninetynine, converter.coerceToBigInteger(ninetynine.toString()));
         try {
             converter.coerceToBigInteger("foo");
             fail();
@@ -446,14 +348,8 @@ public class TypeConverterImplTest extends TestCase {
     public void testToType() {
         assertEquals("foo", converter.coerceToType("foo", String.class));
         assertEquals(Long.valueOf(0), converter.coerceToType("0", Long.class));
-        assertEquals(
-            Character.valueOf('c'),
-            converter.coerceToType("c", Character.class)
-        );
-        assertEquals(
-            Boolean.TRUE,
-            converter.coerceToType("true", Boolean.class)
-        );
+        assertEquals(Character.valueOf('c'), converter.coerceToType("c", Character.class));
+        assertEquals(Boolean.TRUE, converter.coerceToType("true", Boolean.class));
         assertEquals(Foo.BAR, converter.coerceToType("BAR", Foo.class));
         // other types
         assertNull(converter.coerceToType(null, Object.class));

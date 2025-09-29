@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,18 @@ import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
  */
 public class TestSampleServiceTask extends AbstractBpmnActivityBehavior {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  @Override
-  public void execute(DelegateExecution execution) {
-    System.out.println("###: execution: " + execution.getId() + "; " + execution.getVariable("value") + "; " + getMultiInstanceActivityBehavior());
-    leave(execution);
-  }
+    @Override
+    public void execute(DelegateExecution execution) {
+        System.out.println(
+            "###: execution: " +
+            execution.getId() +
+            "; " +
+            execution.getVariable("value") +
+            "; " +
+            getMultiInstanceActivityBehavior()
+        );
+        leave(execution);
+    }
 }

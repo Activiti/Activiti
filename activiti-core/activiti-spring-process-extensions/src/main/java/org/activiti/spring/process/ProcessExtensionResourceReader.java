@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,8 +33,7 @@ public class ProcessExtensionResourceReader implements ResourceReader<ProcessExt
     private final ObjectMapper objectMapper;
     private final Map<String, VariableType> variableTypeMap;
 
-    public ProcessExtensionResourceReader(ObjectMapper objectMapper,
-                                          Map<String, VariableType> variableTypeMap) {
+    public ProcessExtensionResourceReader(ObjectMapper objectMapper, Map<String, VariableType> variableTypeMap) {
         this.objectMapper = objectMapper;
         this.variableTypeMap = variableTypeMap;
     }
@@ -47,8 +46,7 @@ public class ProcessExtensionResourceReader implements ResourceReader<ProcessExt
     @Override
     public ProcessExtensionModel read(InputStream inputStream) throws IOException {
         objectMapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
-        ProcessExtensionModel mappedModel = objectMapper.readValue(inputStream,
-                                                                   ProcessExtensionModel.class);
+        ProcessExtensionModel mappedModel = objectMapper.readValue(inputStream, ProcessExtensionModel.class);
 
         return convertJsonVariables(mappedModel);
     }
@@ -58,26 +56,28 @@ public class ProcessExtensionResourceReader implements ResourceReader<ProcessExt
      * Do this for any var marked as json or whose type is not recognised from the extension file
      */
     private ProcessExtensionModel convertJsonVariables(ProcessExtensionModel processExtensionModel) {
-        if (processExtensionModel != null &&
+        if (
+            processExtensionModel != null &&
             processExtensionModel.getAllExtensions() != null &&
-            processExtensionModel.getAllExtensions().size() > 0) {
+            processExtensionModel.getAllExtensions().size() > 0
+        ) {
             for (Extension extension : processExtensionModel.getAllExtensions().values()) {
                 if (extension.getProperties() != null) {
                     saveVariableAsJsonObject(extension);
                 }
             }
-
         }
         return processExtensionModel;
     }
 
     private void saveVariableAsJsonObject(Extension extension) {
         for (VariableDefinition variableDefinition : extension.getProperties().values()) {
-            if (!variableTypeMap.containsKey(variableDefinition.getType()) || variableDefinition.getType().equals("json")) {
-                variableDefinition.setValue(objectMapper.convertValue(variableDefinition.getValue(),
-                    JsonNode.class));
+            if (
+                !variableTypeMap.containsKey(variableDefinition.getType()) ||
+                variableDefinition.getType().equals("json")
+            ) {
+                variableDefinition.setValue(objectMapper.convertValue(variableDefinition.getValue(), JsonNode.class));
             }
         }
     }
-
 }

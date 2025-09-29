@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.activiti.runtime.api.impl;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.Task;
@@ -32,15 +31,18 @@ import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 
 public class TaskRuntimeHelper {
+
     private final TaskService taskService;
     private final SecurityManager securityManager;
     private final APITaskConverter taskConverter;
     private final TaskVariablesPayloadValidator taskVariablesValidator;
 
-    public TaskRuntimeHelper(TaskService taskService,
-                             APITaskConverter taskConverter,
-                             SecurityManager securityManager,
-                             TaskVariablesPayloadValidator taskVariablesValidator) {
+    public TaskRuntimeHelper(
+        TaskService taskService,
+        APITaskConverter taskConverter,
+        SecurityManager securityManager,
+        TaskVariablesPayloadValidator taskVariablesValidator
+    ) {
         this.taskService = taskService;
         this.securityManager = securityManager;
         this.taskConverter = taskConverter;
@@ -48,7 +50,6 @@ public class TaskRuntimeHelper {
     }
 
     public Task applyUpdateTaskPayload(boolean isAdmin, UpdateTaskPayload updateTaskPayload) {
-
         org.activiti.engine.task.Task internalTask;
 
         if (isAdmin) {
@@ -57,25 +58,13 @@ public class TaskRuntimeHelper {
             internalTask = getTaskToUpdate(updateTaskPayload.getTaskId());
         }
 
-        int updates = updateName(updateTaskPayload,
-                internalTask,
-                0);
-        updates = updateDescription(updateTaskPayload,
-                internalTask,
-                updates);
-        updates = updatePriority(updateTaskPayload,
-                internalTask,
-                updates);
+        int updates = updateName(updateTaskPayload, internalTask, 0);
+        updates = updateDescription(updateTaskPayload, internalTask, updates);
+        updates = updatePriority(updateTaskPayload, internalTask, updates);
 
-        updates = updateDueDate(updateTaskPayload,
-                internalTask,
-                updates);
-        updates = updateParentTaskId(updateTaskPayload,
-                internalTask,
-                updates);
-        updates = updateFormKey(updateTaskPayload,
-                internalTask,
-                updates);
+        updates = updateDueDate(updateTaskPayload, internalTask, updates);
+        updates = updateParentTaskId(updateTaskPayload, internalTask, updates);
+        updates = updateFormKey(updateTaskPayload, internalTask, updates);
 
         if (updates > 0) {
             taskService.saveTask(internalTask);
@@ -85,7 +74,6 @@ public class TaskRuntimeHelper {
     }
 
     private org.activiti.engine.task.Task getTaskToUpdate(String taskId) {
-
         org.activiti.engine.task.Task internalTask = getInternalTaskWithChecks(taskId);
         assertCanModifyTask(internalTask);
         return internalTask;
@@ -99,9 +87,11 @@ public class TaskRuntimeHelper {
         }
     }
 
-    private int updateFormKey(UpdateTaskPayload updateTaskPayload,
-                              org.activiti.engine.task.Task internalTask,
-                              int updates) {
+    private int updateFormKey(
+        UpdateTaskPayload updateTaskPayload,
+        org.activiti.engine.task.Task internalTask,
+        int updates
+    ) {
         String newValue;
 
         if ((newValue = updateTaskPayload.getFormKey()) != null) {
@@ -114,9 +104,11 @@ public class TaskRuntimeHelper {
         return updates;
     }
 
-    private int updateParentTaskId(UpdateTaskPayload updateTaskPayload,
-                                   org.activiti.engine.task.Task internalTask,
-                                   int updates) {
+    private int updateParentTaskId(
+        UpdateTaskPayload updateTaskPayload,
+        org.activiti.engine.task.Task internalTask,
+        int updates
+    ) {
         String newValue;
 
         if ((newValue = updateTaskPayload.getParentTaskId()) != null) {
@@ -129,20 +121,26 @@ public class TaskRuntimeHelper {
         return updates;
     }
 
-    private int updateDueDate(UpdateTaskPayload updateTaskPayload,
-                              org.activiti.engine.task.Task internalTask,
-                              int updates) {
-        if (updateTaskPayload.getDueDate() != null && !Objects.equals(internalTask.getDueDate(),
-                updateTaskPayload.getDueDate())) {
+    private int updateDueDate(
+        UpdateTaskPayload updateTaskPayload,
+        org.activiti.engine.task.Task internalTask,
+        int updates
+    ) {
+        if (
+            updateTaskPayload.getDueDate() != null &&
+            !Objects.equals(internalTask.getDueDate(), updateTaskPayload.getDueDate())
+        ) {
             updates++;
             internalTask.setDueDate(updateTaskPayload.getDueDate());
         }
         return updates;
     }
 
-    private int updatePriority(UpdateTaskPayload updateTaskPayload,
-                               org.activiti.engine.task.Task internalTask,
-                               int updates) {
+    private int updatePriority(
+        UpdateTaskPayload updateTaskPayload,
+        org.activiti.engine.task.Task internalTask,
+        int updates
+    ) {
         if (updateTaskPayload.getPriority() != null && internalTask.getPriority() != updateTaskPayload.getPriority()) {
             updates++;
             internalTask.setPriority(updateTaskPayload.getPriority());
@@ -150,9 +148,11 @@ public class TaskRuntimeHelper {
         return updates;
     }
 
-    private int updateDescription(UpdateTaskPayload updateTaskPayload,
-                                  org.activiti.engine.task.Task internalTask,
-                                  int updates) {
+    private int updateDescription(
+        UpdateTaskPayload updateTaskPayload,
+        org.activiti.engine.task.Task internalTask,
+        int updates
+    ) {
         String newValue;
 
         if ((newValue = updateTaskPayload.getDescription()) != null) {
@@ -165,9 +165,11 @@ public class TaskRuntimeHelper {
         return updates;
     }
 
-    private int updateName(UpdateTaskPayload updateTaskPayload,
-                           org.activiti.engine.task.Task internalTask,
-                           int updates) {
+    private int updateName(
+        UpdateTaskPayload updateTaskPayload,
+        org.activiti.engine.task.Task internalTask,
+        int updates
+    ) {
         String newValue;
         if ((newValue = updateTaskPayload.getName()) != null) {
             String oldValue = internalTask.getName();
@@ -183,18 +185,28 @@ public class TaskRuntimeHelper {
         String authenticatedUserId = getAuthenticatedUser();
 
         if (authenticatedUserId != null && !authenticatedUserId.isEmpty() && securityManager != null) {
-
             List<String> userRoles = securityManager.getAuthenticatedUserRoles();
             List<String> userGroups = securityManager.getAuthenticatedUserGroups();
-            org.activiti.engine.task.Task task = taskService.createTaskQuery()
-                                                         .or()
-                                                         .taskCandidateOrAssigned(authenticatedUserId, userGroups)
-                                                         .taskOwner(authenticatedUserId)
-                                                         .endOr()
-                                                         .taskId(taskId)
-                                                         .singleResult();
+            org.activiti.engine.task.Task task = taskService
+                .createTaskQuery()
+                .or()
+                .taskCandidateOrAssigned(authenticatedUserId, userGroups)
+                .taskOwner(authenticatedUserId)
+                .endOr()
+                .taskId(taskId)
+                .singleResult();
             if (task == null) {
-                throw new NotFoundException("Unable to find task for the given id: " + taskId + " for user: " + authenticatedUserId + " (with groups: " + userGroups + " & with roles: " + userRoles + ")");
+                throw new NotFoundException(
+                    "Unable to find task for the given id: " +
+                    taskId +
+                    " for user: " +
+                    authenticatedUserId +
+                    " (with groups: " +
+                    userGroups +
+                    " & with roles: " +
+                    userRoles +
+                    ")"
+                );
             }
 
             return task;
@@ -218,12 +230,13 @@ public class TaskRuntimeHelper {
         return internalTask;
     }
 
-    public Map<String, org.activiti.engine.impl.persistence.entity.VariableInstance> getInternalTaskVariables(String taskId) {
+    public Map<String, org.activiti.engine.impl.persistence.entity.VariableInstance> getInternalTaskVariables(
+        String taskId
+    ) {
         return taskService.getVariableInstancesLocal(taskId);
     }
 
-    public void createVariable(boolean isAdmin,
-                               CreateTaskVariablePayload createTaskVariablePayload) {
+    public void createVariable(boolean isAdmin, CreateTaskVariablePayload createTaskVariablePayload) {
         if (!isAdmin) {
             assertCanModifyTask(getInternalTask(createTaskVariablePayload.getTaskId()));
         }
@@ -232,21 +245,24 @@ public class TaskRuntimeHelper {
 
         assertVariableDoesNotExist(createTaskVariablePayload);
 
-        taskService.setVariableLocal(createTaskVariablePayload.getTaskId(),
-                createTaskVariablePayload.getName(),
-                createTaskVariablePayload.getValue());
+        taskService.setVariableLocal(
+            createTaskVariablePayload.getTaskId(),
+            createTaskVariablePayload.getName(),
+            createTaskVariablePayload.getValue()
+        );
     }
 
     private void assertVariableDoesNotExist(CreateTaskVariablePayload createTaskVariablePayload) {
-        Map<String, VariableInstance> variables = taskService.getVariableInstancesLocal(createTaskVariablePayload.getTaskId());
+        Map<String, VariableInstance> variables = taskService.getVariableInstancesLocal(
+            createTaskVariablePayload.getTaskId()
+        );
 
         if (variables != null && variables.containsKey(createTaskVariablePayload.getName())) {
             throw new IllegalStateException("Variable already exists");
         }
     }
 
-    public void updateVariable(boolean isAdmin,
-                               UpdateTaskVariablePayload updateTaskVariablePayload) {
+    public void updateVariable(boolean isAdmin, UpdateTaskVariablePayload updateTaskVariablePayload) {
         if (!isAdmin) {
             assertCanModifyTask(getInternalTask(updateTaskVariablePayload.getTaskId()));
         }
@@ -255,13 +271,17 @@ public class TaskRuntimeHelper {
 
         assertVariableExists(updateTaskVariablePayload);
 
-        taskService.setVariableLocal(updateTaskVariablePayload.getTaskId(),
-                updateTaskVariablePayload.getName(),
-                updateTaskVariablePayload.getValue());
+        taskService.setVariableLocal(
+            updateTaskVariablePayload.getTaskId(),
+            updateTaskVariablePayload.getName(),
+            updateTaskVariablePayload.getValue()
+        );
     }
 
     private void assertVariableExists(UpdateTaskVariablePayload updateTaskVariablePayload) {
-        Map<String, VariableInstance> variables = taskService.getVariableInstancesLocal(updateTaskVariablePayload.getTaskId());
+        Map<String, VariableInstance> variables = taskService.getVariableInstancesLocal(
+            updateTaskVariablePayload.getTaskId()
+        );
 
         if (variables == null) {
             throw new IllegalStateException("Variable does not exist");
@@ -273,17 +293,12 @@ public class TaskRuntimeHelper {
     }
 
     public void handleCompleteTaskPayload(CompleteTaskPayload completeTaskPayload) {
-
-        completeTaskPayload.setVariables(taskVariablesValidator
-                                         .handlePayloadVariables(completeTaskPayload.getVariables()));
-
+        completeTaskPayload.setVariables(
+            taskVariablesValidator.handlePayloadVariables(completeTaskPayload.getVariables())
+        );
     }
 
     public void handleSaveTaskPayload(SaveTaskPayload saveTaskPayload) {
-
-        saveTaskPayload.setVariables(taskVariablesValidator
-                                     .handlePayloadVariables(saveTaskPayload.getVariables()));
-
+        saveTaskPayload.setVariables(taskVariablesValidator.handlePayloadVariables(saveTaskPayload.getVariables()));
     }
-
 }

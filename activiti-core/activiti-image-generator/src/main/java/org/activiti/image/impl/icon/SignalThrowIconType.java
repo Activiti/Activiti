@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,30 +52,15 @@ public class SignalThrowIconType extends IconType {
     }
 
     @Override
-    public void drawIcon(int imageX,
-                         int imageY,
-                         int iconPadding,
-                         ProcessDiagramSVGGraphics2D svgGenerator) {
-        Element gTag = svgGenerator.getDOMFactory().createElementNS(null,
-                                                                    SVGGraphics2D.SVG_G_TAG);
-        gTag.setAttributeNS(null,
-                            "transform",
-                            "translate(" + (imageX - 7) + "," + (imageY - 7) + ")");
+    public void drawIcon(int imageX, int imageY, int iconPadding, ProcessDiagramSVGGraphics2D svgGenerator) {
+        Element gTag = svgGenerator.getDOMFactory().createElementNS(null, SVGGraphics2D.SVG_G_TAG);
+        gTag.setAttributeNS(null, "transform", "translate(" + (imageX - 7) + "," + (imageY - 7) + ")");
 
-        Element pathTag = svgGenerator.getDOMFactory().createElementNS(null,
-                                                                       SVGGraphics2D.SVG_PATH_TAG);
-        pathTag.setAttributeNS(null,
-                               "d",
-                               this.getDValue());
-        pathTag.setAttributeNS(null,
-                               "style",
-                               this.getStyleValue());
-        pathTag.setAttributeNS(null,
-                               "fill",
-                               this.getFillValue());
-        pathTag.setAttributeNS(null,
-                               "stroke",
-                               this.getStrokeValue());
+        Element pathTag = svgGenerator.getDOMFactory().createElementNS(null, SVGGraphics2D.SVG_PATH_TAG);
+        pathTag.setAttributeNS(null, "d", this.getDValue());
+        pathTag.setAttributeNS(null, "style", this.getStyleValue());
+        pathTag.setAttributeNS(null, "fill", this.getFillValue());
+        pathTag.setAttributeNS(null, "stroke", this.getStrokeValue());
 
         gTag.appendChild(pathTag);
         svgGenerator.getExtendDOMGroupManager().addElement(gTag);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.asyncexecutor;
 
 import java.util.Collection;
-
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.runtime.Job;
@@ -27,24 +25,23 @@ import org.activiti.engine.runtime.Job;
  */
 public class ResetExpiredJobsCmd implements Command<Void> {
 
-  protected Collection<String> jobIds;
+    protected Collection<String> jobIds;
 
-  public ResetExpiredJobsCmd(Collection<String> jobsIds) {
-    this.jobIds = jobsIds;
-  }
-
-  @Override
-  public Void execute(CommandContext commandContext) {
-    boolean messageQueueMode = commandContext.getProcessEngineConfiguration().isAsyncExecutorIsMessageQueueMode();
-    for (String jobId : jobIds) {
-      if (!messageQueueMode) {
-        Job job = commandContext.getJobEntityManager().findById(jobId);
-        commandContext.getJobManager().unacquire(job);
-      } else {
-        commandContext.getJobEntityManager().resetExpiredJob(jobId);
-      }
+    public ResetExpiredJobsCmd(Collection<String> jobsIds) {
+        this.jobIds = jobsIds;
     }
-    return null;
-  }
 
+    @Override
+    public Void execute(CommandContext commandContext) {
+        boolean messageQueueMode = commandContext.getProcessEngineConfiguration().isAsyncExecutorIsMessageQueueMode();
+        for (String jobId : jobIds) {
+            if (!messageQueueMode) {
+                Job job = commandContext.getJobEntityManager().findById(jobId);
+                commandContext.getJobManager().unacquire(job);
+            } else {
+                commandContext.getJobEntityManager().resetExpiredJob(jobId);
+            }
+        }
+        return null;
+    }
 }
