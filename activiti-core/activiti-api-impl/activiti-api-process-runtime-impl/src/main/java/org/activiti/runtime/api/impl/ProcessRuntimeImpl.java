@@ -160,6 +160,11 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             .startableByGroups(getCurrentUserGroupsIncludingEveryOneGroup());
     }
 
+    private ProcessDefinitionQuery createProcessDefinitionQueryIncludingNoUserStartableProcesses() {
+        return repositoryService
+            .createProcessDefinitionQuery();
+    }
+
     private Optional<org.activiti.engine.repository.ProcessDefinition> findLatestProcessDefinition(
         ProcessDefinitionQuery processDefinitionQuery
     ) {
@@ -233,9 +238,19 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             getProcessDefinitionsPayload.setProcessDefinitionKeys(securityKeysInPayload.getProcessDefinitionKeys());
         }
 
-        ProcessDefinitionQuery processDefinitionQuery = createProcessDefinitionQueryWithAccessCheck()
-            .latestVersion()
-            .deploymentIds(latestDeploymentIds());
+        ProcessDefinitionQuery processDefinitionQuery;
+
+
+        if (include.contains("noUserStartableProcesses")){
+            processDefinitionQuery = createProcessDefinitionQueryIncludingNoUserStartableProcesses()
+                .latestVersion()
+                .deploymentIds(latestDeploymentIds());
+        } else {
+            processDefinitionQuery = createProcessDefinitionQueryWithAccessCheck()
+                .latestVersion()
+                .deploymentIds(latestDeploymentIds());
+        }
+
 
         if (getProcessDefinitionsPayload.hasDefinitionKeys()) {
             processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());
