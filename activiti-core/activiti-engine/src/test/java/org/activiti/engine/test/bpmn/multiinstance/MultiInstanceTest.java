@@ -429,7 +429,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
         // THEN: loopCardinality shouldn't be re-evaluated and no task is active
         tasks = taskService.createTaskQuery().list();
-        assertThat(tasks).hasSize(0);
+        assertThat(tasks).isEmpty();
 
         // THEN: the process is not finished
         assertProcessEnded(procId);
@@ -487,7 +487,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
         // THEN: collection shouldn't be re-evaluated and no task is active
         tasks = taskService.createTaskQuery().list();
-        assertThat(tasks).hasSize(0);
+        assertThat(tasks).isEmpty();
 
         // THEN: the process is not finished
         assertProcessEnded(procId);
