@@ -113,8 +113,10 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
      */
     public void leave(DelegateExecution execution) {
         boolean zeroNrOfInstances = false;
-        if (resolveNrOfInstances(execution) == 0) {
-            // Empty collection, just leave.
+        int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES);
+
+        if (nrOfActiveInstances == 0) {
+            // Empty collection/loop, just leave.
             zeroNrOfInstances = true;
             removeLocalLoopVariable(execution, getCollectionElementIndexVariable());
             super.leave(execution); // Plan the default leave
@@ -124,7 +126,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
         int loopCounter = getLoopVariable(execution, getCollectionElementIndexVariable());
         int nrOfInstances = getLoopVariable(execution, NUMBER_OF_INSTANCES);
         int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
-        int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES) - 1;
+        nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES) - 1;
 
         Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution, null);
         callActivityEndListeners(execution);
