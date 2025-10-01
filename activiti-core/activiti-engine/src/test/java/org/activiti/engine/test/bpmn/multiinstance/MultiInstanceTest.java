@@ -19,6 +19,9 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonMap;
+import static org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior.NUMBER_OF_ACTIVE_INSTANCES;
+import static org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior.NUMBER_OF_COMPLETED_INSTANCES;
+import static org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior.NUMBER_OF_INSTANCES;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
@@ -27,6 +30,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
@@ -36,6 +40,7 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
@@ -376,6 +381,118 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         }
         assertProcessEnded(procId);
     }
+
+    @Deployment
+    public void testParallelUserTasksReevaluateLoop() {
+        // GIVEN: a started process with variables setup
+        Map<String, Object> vars = new HashMap<String, Object>();
+        vars.put("wantedNumberOfTasks", 2);
+        String procId = runtimeService
+            .startProcessInstanceByKey("miParallelUserTasksReevaluateLoop",
+                vars
+            )
+            .getId();
+
+        // WHEN: the process started, 2 tasks are created in parallel
+        List<Task> tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(2);
+
+        final Optional<Execution> multiInstanceRootExecution = runtimeService.createExecutionQuery().processInstanceId(procId).list().stream()
+            .filter(execution -> ((ExecutionEntityImpl) execution).isMultiInstanceRoot()).findFirst();
+        final String multiInstanceRootExecutionId = multiInstanceRootExecution.get().getId();
+
+        assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_INSTANCES)).isEqualTo(2);
+        assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_ACTIVE_INSTANCES)).isEqualTo(2);
+        assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_COMPLETED_INSTANCES)).isEqualTo(0);
+
+        // WHEN: setting execution variable to test if loopCardinality will be re-evaluated when task is completed
+        final List<Execution> list = runtimeService.createExecutionQuery().processInstanceId(procId).list();
+        final Optional<Execution> first = list.stream().filter(execution -> execution.getParentId() == null).findFirst();
+        runtimeService.setVariable(first.get().getId(), "wantedNumberOfTasks", 0l);
+
+        // WHEN: a task is completed
+        taskService.complete( tasks.getFirst().getId() );
+
+        // THEN: loopCardinality shouldn't be re-evaluated and one task is still active
+        tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(1);
+
+        assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_INSTANCES)).isEqualTo(2);
+        assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_ACTIVE_INSTANCES)).isEqualTo(1);
+        assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_COMPLETED_INSTANCES)).isEqualTo(1);
+
+        // THEN: the process is not finished
+        assertProcessNotEnded(procId);
+
+        // WHEN: a task is completed
+        taskService.complete( tasks.getFirst().getId() );
+
+        // THEN: loopCardinality shouldn't be re-evaluated and no task is active
+        tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(0);
+
+        // THEN: the process is not finished
+        assertProcessEnded(procId);
+    }
+
+    @Deployment
+    public void testParallelUserTasksReevaluateCollection() {
+        // GIVEN: a started process with variables setup
+        Map<String, Object> vars = new HashMap<String, Object>();
+        List<String> assigneeList = asList("kermit", "gonzo");
+        List<String> emptyList = new ArrayList<>();
+        vars.put("ApproversList", assigneeList);
+        vars.put("EmptyList", emptyList);
+        vars.put("ListType", "ApproversList");
+        vars.put("CompleteTasks", false);
+        String procId = runtimeService
+            .startProcessInstanceByKey("miParallelUserTasksReevaluateCollection",
+                vars
+            )
+            .getId();
+
+        // WHEN: the process started, 2 tasks are created in parallel
+        List<Task> tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(2);
+
+        final Optional<Execution> multiInstanceRootExecution = runtimeService.createExecutionQuery().processInstanceId(procId).list().stream()
+            .filter(execution -> ((ExecutionEntityImpl) execution).isMultiInstanceRoot()).findFirst();
+        final String multiInstanceRootExecutionId = multiInstanceRootExecution.get().getId();
+
+        assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_INSTANCES)).isEqualTo(2);
+        assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_ACTIVE_INSTANCES)).isEqualTo(2);
+        assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_COMPLETED_INSTANCES)).isEqualTo(0);
+
+        // WHEN: setting execution variable to test if collection will be evaluated when task is completed
+        final List<Execution> list = runtimeService.createExecutionQuery().processInstanceId(procId).list();
+        final Optional<Execution> first = list.stream().filter(execution -> execution.getParentId() == null).findFirst();
+        runtimeService.setVariable(first.get().getId(), "ListType", "EmptyList");
+
+        // WHEN: a task is completed
+        taskService.complete( tasks.getFirst().getId() );
+
+        // THEN: collection shouldn't be re-evaluated and one task is still active
+        tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(1);
+
+        assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_INSTANCES)).isEqualTo(2);
+        assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_ACTIVE_INSTANCES)).isEqualTo(1);
+        assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_COMPLETED_INSTANCES)).isEqualTo(1);
+
+        // THEN: the process is not finished
+        assertProcessNotEnded(procId);
+
+        // WHEN: a task is completed
+        taskService.complete( tasks.getFirst().getId() );
+
+        // THEN: collection shouldn't be re-evaluated and no task is active
+        tasks = taskService.createTaskQuery().list();
+        assertThat(tasks).hasSize(0);
+
+        // THEN: the process is not finished
+        assertProcessEnded(procId);
+    }
+
 
     @Deployment
     public void testParallelUserTasksBasedOnCollection() {
