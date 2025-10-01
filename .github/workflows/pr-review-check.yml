@@ -1,9 +1,5 @@
 name: "PR Review check"
 
-env:
-  TRIGGER_LABELS: '["CI", "preview", "skip-tests"]'
-  MILESTONE_NAME: 'Validating'
-
 on:
   pull_request_review:
     types:
@@ -18,6 +14,7 @@ jobs:
   check:
     uses: Alfresco/alfresco-build-tools/.github/workflows/pr-review-check.yml@improvement/AAE-35226-dependabot-validation
     with:
-      github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
-      trigger-labels: ${{ env.TRIGGER_LABELS }}
-      milestone-name: ${{ env.MILESTONE_NAME }}
+      trigger-labels: '["CI", "preview", "skip-tests"]'
+      milestone-name: 'Validating'
+    secrets:
+      BOT_GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
