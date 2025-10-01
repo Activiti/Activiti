@@ -2,7 +2,6 @@ name: "PR Review check"
 
 env:
   TRIGGER_LABELS: '["CI", "preview", "skip-tests"]'
-  DEPENDABOT_CREATOR: 'dependabot[bot]'
   MILESTONE_NAME: 'Validating'
 
 on:
@@ -15,30 +14,10 @@ on:
     types:
       - labeled
 
-permissions:
-  contents: read          # Required to read repository content
-  pull-requests: write    # Required to edit PR (milestones, labels, auto-merge)
-  issues: write          # Required to create comments on PRs
-
 jobs:
   check:
-    if: github.secret_source != 'None'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger validation on approval
-        if: github.event_name == 'pull_request_review'
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-trigger-approved-pr@c295ecd6ca6b9c473dcada1e0478cdeaba79d5ea # v9.0.0
-        with:
-          creator: ${{ env.DEPENDABOT_CREATOR }}
-          github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
-          milestone-on-approval: ${{ env.MILESTONE_NAME }}
-          auto-merge-on-approval: true
-
-      - name: Trigger validation on labeling, unless token is readonly (dependabot/fork)
-        if: github.event_name == 'pull_request' && github.event.action == 'labeled' && github.secret_source == 'Actions'
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-trigger-labeled-pr@c295ecd6ca6b9c473dcada1e0478cdeaba79d5ea # v9.0.0
-        with:
-          github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
-          labels: ${{ env.TRIGGER_LABELS }}
-          milestone: ${{ env.MILESTONE_NAME }}
-          force-trigger: true
+    uses: Alfresco/alfresco-build-tools/.github/workflows/pr-review-check.yml@improvement/AAE-35226-dependabot-validation
+    with:
+      github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
+      trigger-labels: ${{ env.TRIGGER_LABELS }}
+      milestone-name: ${{ env.MILESTONE_NAME }}
