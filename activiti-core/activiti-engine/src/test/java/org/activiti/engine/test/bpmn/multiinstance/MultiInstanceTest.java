@@ -386,8 +386,10 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     @Deployment
     public void testParallelUserTasksEvaluateOnlyOnceLoop() {
         // GIVEN: a started process with variables setup
-        Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put("wantedNumberOfTasks", 2);
+        Map<String, Object> vars;
+        vars = Map.of(
+            "wantedNumberOfTasks", 2
+        );
         String procId = runtimeService
             .startProcessInstanceByKey("miParallelUserTasksEvaluateOnlyOnceLoop",
                 vars
@@ -401,7 +403,6 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         // WHEN: the process started, 2 tasks are created in parallel
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(2);
-
         assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_INSTANCES)).isEqualTo(2);
         assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_ACTIVE_INSTANCES)).isEqualTo(2);
         assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_COMPLETED_INSTANCES)).isEqualTo(0);
@@ -417,7 +418,6 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         // THEN: loopCardinality shouldn't be re-evaluated and one task is still active
         tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
-
         assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_INSTANCES)).isEqualTo(2);
         assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_ACTIVE_INSTANCES)).isEqualTo(1);
         assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_COMPLETED_INSTANCES)).isEqualTo(1);
@@ -425,12 +425,19 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         // THEN: the process is not finished
         assertProcessNotEnded(procId);
 
-        // WHEN: the last task is completed
+        // WHEN: the last multi-instance task is completed
         taskService.complete( tasks.getFirst().getId() );
+        assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_INSTANCES)).isEqualTo(2);
+        assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_ACTIVE_INSTANCES)).isEqualTo(0);
+        assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_COMPLETED_INSTANCES)).isEqualTo(2);
 
-        // THEN: loopCardinality shouldn't be re-evaluated and no task is active
+        // THEN: loopCardinality shouldn't be re-evaluated and no multi-instance task is active
+        // THEN: the last userTask is the only active task
         tasks = taskService.createTaskQuery().list();
-        assertThat(tasks).isEmpty();
+        assertThat(tasks).hasSize(1);
+
+        // WHEN: a task is completed
+        taskService.complete(tasks.getFirst().getId());
 
         // THEN: the process is finished
         assertProcessEnded(procId);
@@ -461,7 +468,6 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         // WHEN: the process started, 2 tasks are created in parallel
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(2);
-
         assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_INSTANCES)).isEqualTo(2);
         assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_ACTIVE_INSTANCES)).isEqualTo(2);
         assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_COMPLETED_INSTANCES)).isEqualTo(0);
@@ -477,7 +483,6 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         // THEN: collection shouldn't be re-evaluated and one task is still active
         tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
-
         assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_INSTANCES)).isEqualTo(2);
         assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_ACTIVE_INSTANCES)).isEqualTo(1);
         assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_COMPLETED_INSTANCES)).isEqualTo(1);
@@ -485,12 +490,19 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         // THEN: the process is not finished
         assertProcessNotEnded(procId);
 
-        // WHEN: a task is completed
+        // WHEN: the last multi-instance task is completed
         taskService.complete( tasks.getFirst().getId() );
+        assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_INSTANCES)).isEqualTo(2);
+        assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_ACTIVE_INSTANCES)).isEqualTo(0);
+        assertThat(runtimeService.getVariable(multiInstanceRootExecutionId, NUMBER_OF_COMPLETED_INSTANCES)).isEqualTo(2);
 
-        // THEN: collection shouldn't be re-evaluated and no task is active
+        // THEN: collection shouldn't be re-evaluated and no multi-instance task is active
+        // THEN: the last userTask is the only active task
         tasks = taskService.createTaskQuery().list();
-        assertThat(tasks).isEmpty();
+        assertThat(tasks).hasSize(1);
+
+        // WHEN: a task is completed
+        taskService.complete(tasks.getFirst().getId());
 
         // THEN: the process is finished
         assertProcessEnded(procId);

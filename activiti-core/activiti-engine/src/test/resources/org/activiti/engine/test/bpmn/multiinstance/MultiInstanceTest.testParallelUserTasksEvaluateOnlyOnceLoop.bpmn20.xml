@@ -15,8 +15,11 @@
         <loopCardinality>${wantedNumberOfTasks}</loopCardinality>
       </multiInstanceLoopCharacteristics>
     </userTask>
+    <sequenceFlow id="flow2" sourceRef="myTasks" targetRef="lastTask" />
 
-    <sequenceFlow id="flow2" sourceRef="myTasks" targetRef="theEnd" />
+    <userTask id="lastTask" name="Last Task"/>
+    <sequenceFlow id="flow3" sourceRef="lastTask" targetRef="theEnd"/>
+
     <endEvent id="theEnd" />
 
   </process>
