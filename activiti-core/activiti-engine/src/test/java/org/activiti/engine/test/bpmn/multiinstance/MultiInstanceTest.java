@@ -384,12 +384,12 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     }
 
     @Deployment
-    public void testParallelUserTasksReevaluateLoop() {
+    public void testParallelUserTasksEvaluateOnlyOnceLoop() {
         // GIVEN: a started process with variables setup
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("wantedNumberOfTasks", 2);
         String procId = runtimeService
-            .startProcessInstanceByKey("miParallelUserTasksReevaluateLoop",
+            .startProcessInstanceByKey("miParallelUserTasksEvaluateOnlyOnceLoop",
                 vars
             )
             .getId();
@@ -437,7 +437,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     }
 
     @Deployment
-    public void testParallelUserTasksReevaluateCollection() {
+    public void testParallelUserTasksEvaluateOnlyOnceCollection() {
         // GIVEN: a started process with variables setup
         Map<String, Object> vars;
         List<String> assigneeList = asList("kermit", "gonzo");
@@ -449,7 +449,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
             "CompleteTasks", false
         );
         String procId = runtimeService
-            .startProcessInstanceByKey("miParallelUserTasksReevaluateCollection",
+            .startProcessInstanceByKey("miParallelUserTasksEvaluateOnlyOnceCollection",
                 vars
             )
             .getId();

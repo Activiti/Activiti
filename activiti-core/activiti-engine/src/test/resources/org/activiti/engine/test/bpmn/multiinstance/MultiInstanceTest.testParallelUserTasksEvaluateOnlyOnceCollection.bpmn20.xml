@@ -5,7 +5,7 @@
              xmlns:activiti="http://activiti.org/bpmn"
              targetNamespace="Examples">
 
-  <process id="miParallelUserTasksReevaluateCollection">
+  <process id="miParallelUserTasksEvaluateOnlyOnceCollection">
 
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="myTasks" />
