@@ -32,7 +32,9 @@ import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.Deployment;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
+import org.activiti.api.process.model.builders.GetProcessDefinitionsPayloadBuilder;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.model.payloads.SignalPayload;
 import org.activiti.api.process.model.payloads.StartProcessPayload;
 import org.activiti.api.process.model.payloads.UpdateProcessPayload;
@@ -85,6 +87,7 @@ public class ProcessRuntimeIT {
     private static final String TWO_TASKS_PROCESS = "twoTaskProcess";
     private static final Pageable PAGEABLE = Pageable.of(0, 200);
     public static final String CATEGORIZE_HUMAN_PROCESS_CATEGORY = "test-category";
+    public static final String UNSTARTABLE_PROCESS = "UnstartableProcess";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -1077,5 +1080,23 @@ public class ProcessRuntimeIT {
         Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0, 200));
 
         assertThat(processInstancePage).isNotNull();
+    }
+
+    @Test
+    public void should_ReturnProcessDefinitionsFromLatestVersionAndNotStartable() {
+
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(PAGEABLE,  List.of("noUserStartableProcesses"));
+
+        assertThat(
+            processDefinitionPage
+                .getContent()).hasSize(113);
+
+        assertThat(
+            processDefinitionPage
+                .getContent()
+                .stream()
+                .filter(c -> c.getKey().equals(UNSTARTABLE_PROCESS))
+        )
+            .isNotEmpty();
     }
 }

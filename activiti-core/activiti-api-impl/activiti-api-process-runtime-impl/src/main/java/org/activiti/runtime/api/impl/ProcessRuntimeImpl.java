@@ -76,6 +76,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProcessRuntimeImpl implements ProcessRuntime {
 
     private static final String EVERYONE_GROUP = "*";
+    private static final String NO_USER_STARTABLE_PROCESSES = "noUserStartableProcesses";
 
     private final RepositoryService repositoryService;
 
@@ -241,7 +242,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         ProcessDefinitionQuery processDefinitionQuery;
 
 
-        if (include.contains("noUserStartableProcesses")){
+        if (include.contains(NO_USER_STARTABLE_PROCESSES)){
             processDefinitionQuery = createProcessDefinitionQueryIncludingNoUserStartableProcesses()
                 .latestVersion()
                 .deploymentIds(latestDeploymentIds());
