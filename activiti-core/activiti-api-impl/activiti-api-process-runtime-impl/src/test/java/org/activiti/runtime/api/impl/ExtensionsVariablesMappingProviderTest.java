@@ -1100,17 +1100,11 @@ public class ExtensionsVariablesMappingProviderTest {
             ProcessExtensionModel.class
         );
 
-        ProcessVariablesMapping processVariablesMapping = extensions.getExtensions("Process_taskVarMapping").getMappingForFlowElement("simpleTask");
+        ProcessVariablesMapping processVariablesMapping = extensions.getExtensions("Process_taskVarMapping").getMappings().get("simpleTask");
+        ProcessVariablesMapping anotherProcessVariablesMapping = extensions.getExtensions("Process_taskVarMapping").getMappings().get("myTask");
 
-        Map<String,Mapping> inputs = processVariablesMapping.getInputs();
-        Map<String,Mapping> outputs = processVariablesMapping.getOutputs();
-
-        assertThat(inputs.get("task_input_variable_name_1").isEphemeral()).isTrue();
-        assertThat(inputs.get("task_input_variable_name_2").isEphemeral()).isFalse();
-
-        assertThat(outputs.get("process_variable_outputmap_1").isEphemeral()).isTrue();
-        assertThat(outputs.get("property-with-no-default-value").isEphemeral()).isFalse();
-        assertThat(outputs.get("process-variable-with-jsonpatch-type").isEphemeral()).isTrue();
+        assertThat(processVariablesMapping.isEphemeral()).isTrue();
+        assertThat(anotherProcessVariablesMapping.isEphemeral()).isFalse();
     }
 
     public static class TestCustomFunctionProvider implements CustomFunctionProvider {

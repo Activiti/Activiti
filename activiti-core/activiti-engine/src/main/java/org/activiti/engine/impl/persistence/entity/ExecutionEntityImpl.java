@@ -557,7 +557,6 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
         ExecutionEntity sourceActivityExecution
     ) {
         VariableInstanceEntity result = super.createVariableInstance(variableName, value, sourceActivityExecution);
-
         // Dispatch event, if needed
         if (
             Context.getProcessEngineConfiguration() != null &&
@@ -574,7 +573,8 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
                         result.getTaskId(),
                         result.getExecutionId(),
                         getProcessInstanceId(),
-                        getProcessDefinitionId()
+                        getProcessDefinitionId(),
+                        sourceActivityExecution.getCurrentActivityId()
                     )
                 );
         }

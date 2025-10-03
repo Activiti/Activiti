@@ -24,6 +24,7 @@ public class ProcessVariablesMapping {
     private MappingType mappingType;
     private Map<String, Mapping> inputs = new HashMap<>();
     private Map<String, Mapping> outputs = new HashMap<>();
+    private boolean isEphemeral;
 
     public Map<String, Mapping> getInputs() {
         return inputs;
@@ -58,4 +59,12 @@ public class ProcessVariablesMapping {
         MAP_ALL_INPUTS,
         MAP_ALL_OUTPUTS,
     }
+    public boolean isEphemeral() {
+        return isEphemeral;
+    }
+
+    public void setEphemeral(boolean ephemeral) {
+        isEphemeral = ephemeral;
+    }
+
 }

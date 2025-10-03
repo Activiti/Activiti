@@ -9,19 +9,13 @@
           "inputs": {
             "task_input_variable_name_1": {
               "type": "VARIABLE",
-              "value": "process_variable_inputmap_1",
-              "ephemeral": true
-            },
-            "task_input_variable_name_2": {
-              "type": "VALUE",
-              "value": "the value"
+              "value": "process_variable_inputmap_1"
             }
           },
           "outputs": {
             "process_variable_outputmap_1": {
               "type": "VARIABLE",
-              "value": "task_output_variable_name_1",
-              "ephemeral": true
+              "value": "task_output_variable_name_1"
             },
             "property-with-no-default-value": {
               "type": "VARIABLE",
@@ -31,8 +25,22 @@
               "type": "JSONPATCH",
               "value": [
                 { "op": "add", "path": "/firstProperty/secondProperty", "value": "${task_output_variable_name_1}" }
-              ],
-              "ephemeral": true
+              ]
+            }
+          },
+          "ephemeral": "true"
+        },
+        "myTask": {
+          "inputs": {
+            "task_input_variable_name_2": {
+              "type": "VARIABLE",
+              "value": "process_variable_inputmap_1"
+            }
+          },
+          "outputs": {
+            "process_variable_outputmap_2": {
+              "type": "VARIABLE",
+              "value": "task_output_variable_name_1"
             }
           }
         }

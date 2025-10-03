@@ -21,8 +21,6 @@ public class Mapping {
 
     private Object value;
 
-    private boolean ephemeral;
-
     public SourceMappingType getType() {
         return type;
     }
@@ -37,14 +35,6 @@ public class Mapping {
 
     public void setValue(Object value) {
         this.value = value;
-    }
-
-    public boolean isEphemeral() {
-        return ephemeral;
-    }
-
-    public void setEphemeral(boolean ephemeral) {
-        this.ephemeral = ephemeral;
     }
 
     public enum SourceMappingType {
