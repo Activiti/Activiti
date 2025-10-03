@@ -56,8 +56,8 @@ import org.activiti.engine.test.Deployment;
  */
 public class MultiInstanceTest extends PluggableActivitiTestCase {
 
-    public static final String NR_OF_LOOPS_KEY = "nrOfLoops";
-    public static final String LOOP_COUNTER_KEY = "loopCounter";
+  public static final String NR_OF_LOOPS_KEY = "nrOfLoops";
+  public static final String LOOP_COUNTER_KEY = "loopCounter";
 
   @Deployment(resources = {"org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.parallelEmbeddedSubProcessNonExclusive.bpmn20.xml"})
   public void testParallelEmbeddedSubProcessAsyncNonExclusive() {
@@ -98,21 +98,21 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
       assertProcessEnded(procId);
   }
 
-    private String getMultiInstanceExectionRoot(String processInstanceId) {
-        String result;
+  private String getMultiInstanceExectionRoot(String processInstanceId) {
+    String result;
 
-        final Optional<Execution> multiInstanceRootExecution = runtimeService.createExecutionQuery().processInstanceId(processInstanceId).list().stream()
-            .filter(execution -> ((ExecutionEntityImpl) execution).isMultiInstanceRoot()).findFirst();
-        if(multiInstanceRootExecution.isPresent()) {
-            result = multiInstanceRootExecution.get().getId();
-        } else {
-            result = null;
-        }
-        return result;
+    final Optional<Execution> multiInstanceRootExecution = runtimeService.createExecutionQuery().processInstanceId(processInstanceId).list().stream()
+        .filter(execution -> ((ExecutionEntityImpl) execution).isMultiInstanceRoot()).findFirst();
+    if(multiInstanceRootExecution.isPresent()) {
+        result = multiInstanceRootExecution.get().getId();
+    } else {
+        result = null;
     }
+    return result;
+  }
 
-    @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.sequentialUserTasks.bpmn20.xml" })
-    public void testSequentialUserTasks() {
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.sequentialUserTasks.bpmn20.xml" })
+  public void testSequentialUserTasks() {
         checkSequentialUserTasks("miSequentialUserTasks", LOOP_COUNTER_KEY);
     }
 
@@ -158,24 +158,24 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     // this variable should be available only in the inner instance: see BPMN specification table 10.30, page 194
     assertThat(localVariables).doesNotContainKey(elementIndexVariable);
 
-        assertThat(localVariables).containsKeys(
-            NUMBER_OF_INSTANCES,
-            NUMBER_OF_ACTIVE_INSTANCES,
-            NUMBER_OF_COMPLETED_INSTANCES
-        );
-        assertThat(localVariables).containsEntry(NUMBER_OF_INSTANCES, nrOfLoops);
-        assertThat(localVariables).containsEntry(NUMBER_OF_ACTIVE_INSTANCES, 1);
-        assertThat(localVariables).containsEntry(NUMBER_OF_COMPLETED_INSTANCES, loopCounter);
-    }
+    assertThat(localVariables).containsKeys(
+      NUMBER_OF_INSTANCES,
+      NUMBER_OF_ACTIVE_INSTANCES,
+      NUMBER_OF_COMPLETED_INSTANCES
+    );
+    assertThat(localVariables).containsEntry(NUMBER_OF_INSTANCES, nrOfLoops);
+    assertThat(localVariables).containsEntry(NUMBER_OF_ACTIVE_INSTANCES, 1);
+    assertThat(localVariables).containsEntry(NUMBER_OF_COMPLETED_INSTANCES, loopCounter);
+  }
 
-    private void checkInnerInstanceVariables(Task task, int loopCounter, String elementIndexVariable) {
-        Map<String, Object> localVariables = runtimeService.getVariablesLocal(task.getExecutionId());
-        // these variables should be available only in the outer instance: see BPMN specification table 10.30, page 194
-        assertThat(localVariables).doesNotContainKeys(
-            NUMBER_OF_INSTANCES,
-            NUMBER_OF_ACTIVE_INSTANCES,
-            NUMBER_OF_COMPLETED_INSTANCES
-        );
+  private void checkInnerInstanceVariables(Task task, int loopCounter, String elementIndexVariable) {
+    Map<String, Object> localVariables = runtimeService.getVariablesLocal(task.getExecutionId());
+    // these variables should be available only in the outer instance: see BPMN specification table 10.30, page 194
+    assertThat(localVariables).doesNotContainKeys(
+      NUMBER_OF_INSTANCES,
+      NUMBER_OF_ACTIVE_INSTANCES,
+      NUMBER_OF_COMPLETED_INSTANCES
+    );
 
     assertThat(localVariables).containsKey(elementIndexVariable);
     assertThat(localVariables.get(elementIndexVariable)).isEqualTo(loopCounter);
@@ -284,17 +284,17 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     assertProcessEnded(procId);
   }
 
-    private void checkBuiltInOuterVariables(
+  private void checkBuiltInOuterVariables(
         Execution outerExecution,
         int expetedActiveNumber,
         int expectedCompletedNumber
-    ) {
-        Map<String, Object> variables = runtimeService.getVariablesLocal(outerExecution.getId());
-        assertThat(variables).containsEntry(NUMBER_OF_INSTANCES, 3);
-        assertThat(variables).containsEntry(NUMBER_OF_ACTIVE_INSTANCES, expetedActiveNumber);
-        assertThat(variables).containsEntry(NUMBER_OF_COMPLETED_INSTANCES, expectedCompletedNumber);
-        assertThat(variables).doesNotContainKey(LOOP_COUNTER_KEY);
-    }
+  ) {
+    Map<String, Object> variables = runtimeService.getVariablesLocal(outerExecution.getId());
+    assertThat(variables).containsEntry(NUMBER_OF_INSTANCES, 3);
+    assertThat(variables).containsEntry(NUMBER_OF_ACTIVE_INSTANCES, expetedActiveNumber);
+    assertThat(variables).containsEntry(NUMBER_OF_COMPLETED_INSTANCES, expectedCompletedNumber);
+    assertThat(variables).doesNotContainKey(LOOP_COUNTER_KEY);
+  }
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelUserTasks.bpmn20.xml" })
   public void testParallelUserTasksHistory() {

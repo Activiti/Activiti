@@ -101,25 +101,25 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     return nrOfInstances;
   }
 
-    /**
-     * Called when the wrapped {@link ActivityBehavior} calls the {@link AbstractBpmnActivityBehavior#leave(ActivityExecution)} method. Handles the completion of one of the parallel instances
-     */
-    public void leave(DelegateExecution execution) {
-        int loopCounter = getLoopVariable(execution, getCollectionElementIndexVariable());
-        int nrOfInstances = getLoopVariable(execution, NUMBER_OF_INSTANCES);
-        int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
-        int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES) - 1;
+  /**
+   * Called when the wrapped {@link ActivityBehavior} calls the {@link AbstractBpmnActivityBehavior#leave(ActivityExecution)} method. Handles the completion of one of the parallel instances
+   */
+  public void leave(DelegateExecution execution) {
+    int loopCounter = getLoopVariable(execution, getCollectionElementIndexVariable());
+    int nrOfInstances = getLoopVariable(execution, NUMBER_OF_INSTANCES);
+    int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
+    int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES) - 1;
 
     Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution, null);
     callActivityEndListeners(execution);
 
-        DelegateExecution miRootExecution = getMultiInstanceRootExecution(execution);
-        if (miRootExecution != null) {
-            // will be null in case of empty collection
-            setLoopVariable(miRootExecution, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
-            setLoopVariable(miRootExecution, NUMBER_OF_ACTIVE_INSTANCES, nrOfActiveInstances);
-        }
-        updateResultCollection(execution, miRootExecution);
+    DelegateExecution miRootExecution = getMultiInstanceRootExecution(execution);
+    if (miRootExecution != null) {
+        // will be null in case of empty collection
+        setLoopVariable(miRootExecution, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
+        setLoopVariable(miRootExecution, NUMBER_OF_ACTIVE_INSTANCES, nrOfActiveInstances);
+    }
+    updateResultCollection(execution, miRootExecution);
 
     //executeCompensationBoundaryEvents(execution.getCurrentFlowElement(), execution);
 
