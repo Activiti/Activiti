@@ -6,7 +6,7 @@
     <sequenceFlow id="flow2" sourceRef="usertask1" targetRef="end"></sequenceFlow>
     <endEvent id="end"></endEvent>
     <userTask id="usertask1" name="Multi">
-      <multiInstanceLoopCharacteristics isSequential="true" activiti:collection="collection"></multiInstanceLoopCharacteristics>
+      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="collection"></multiInstanceLoopCharacteristics>
     </userTask>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_testParalellEmptyCollection">
