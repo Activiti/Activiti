@@ -1689,7 +1689,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
             "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelCollection.bpmn20.xml",
         }
     )
-    public void testParallelWithEmptyCollection() throws Exception {
+    public void testParallelWithEmptyCollection() {
         // GIVEN: a started process with variables setup
         Collection<String> collection = emptyList();
         Map<String, Object> variableMap = new HashMap<String, Object>();
