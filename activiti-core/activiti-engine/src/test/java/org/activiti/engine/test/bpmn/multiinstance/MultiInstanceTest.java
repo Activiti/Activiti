@@ -163,9 +163,9 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
             NUMBER_OF_ACTIVE_INSTANCES,
             NUMBER_OF_COMPLETED_INSTANCES
         );
-        assertThat(localVariables.get(NUMBER_OF_INSTANCES)).isEqualTo(nrOfLoops);
-        assertThat(localVariables.get(NUMBER_OF_ACTIVE_INSTANCES)).isEqualTo(1);
-        assertThat(localVariables.get(NUMBER_OF_COMPLETED_INSTANCES)).isEqualTo(loopCounter);
+        assertThat(localVariables).containsEntry(NUMBER_OF_INSTANCES, nrOfLoops);
+        assertThat(localVariables).containsEntry(NUMBER_OF_ACTIVE_INSTANCES, 1);
+        assertThat(localVariables).containsEntry(NUMBER_OF_COMPLETED_INSTANCES, loopCounter);
     }
 
     private void checkInnerInstanceVariables(Task task, int loopCounter, String elementIndexVariable) {
