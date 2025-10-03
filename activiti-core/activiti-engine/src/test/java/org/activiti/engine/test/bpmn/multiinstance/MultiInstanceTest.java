@@ -1552,7 +1552,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     }
 
     @Deployment
-    public void testMultiInstanceParalelReceiveTaskWithTimer() {
+    public void testMultiInstanceParallelReceiveTaskWithTimer() {
         Date startTime = new Date();
         processEngineConfiguration.getClock().setCurrentTime(startTime);
 
@@ -1689,7 +1689,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
             "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelCollection.bpmn20.xml",
         }
     )
-    public void testParalellWithEmptyCollection() throws Exception {
+    public void testParallelWithEmptyCollection() throws Exception {
         // GIVEN: a started process with variables setup
         Collection<String> collection = emptyList();
         Map<String, Object> variableMap = new HashMap<String, Object>();
@@ -1718,7 +1718,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
             "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelCollection.bpmn20.xml",
         }
     )
-    public void testParalellWithNonEmptyCollection() {
+    public void testParallelWithNonEmptyCollection() {
         // GIVEN: a started process with variables setup
         Collection<String> collection = singleton("Test");
         Map<String, Object> variableMap = new HashMap<String, Object>();
