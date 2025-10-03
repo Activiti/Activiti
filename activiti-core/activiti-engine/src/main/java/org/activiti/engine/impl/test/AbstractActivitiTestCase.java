@@ -248,6 +248,11 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
     dynamicBpmnService = processEngine.getDynamicBpmnService();
   }
 
+    public void assertProcessNotEnded(final String processInstanceId) {
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+        assertThat(processInstance).isNotNull();
+    }
+
   public void assertProcessEnded(final String processInstanceId) {
     ProcessInstance processInstance = processEngine.getRuntimeService().createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
 
