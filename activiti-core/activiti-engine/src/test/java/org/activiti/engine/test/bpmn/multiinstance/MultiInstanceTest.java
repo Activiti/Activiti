@@ -96,6 +96,19 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         assertProcessEnded(procId);
     }
 
+    private String getMultiInstanceExectionRoot(String processInstanceId) {
+        String result;
+
+        final Optional<Execution> multiInstanceRootExecution = runtimeService.createExecutionQuery().processInstanceId(processInstanceId).list().stream()
+            .filter(execution -> ((ExecutionEntityImpl) execution).isMultiInstanceRoot()).findFirst();
+        if(multiInstanceRootExecution.isPresent()) {
+            result = multiInstanceRootExecution.get().getId();
+        } else {
+            result = null;
+        }
+        return result;
+    }
+
     @Deployment(
         resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.sequentialUserTasks.bpmn20.xml" }
     )
@@ -392,10 +405,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
                 vars
             )
             .getId();
-        // get the multiInstance root execution
-        final Optional<Execution> multiInstanceRootExecution = runtimeService.createExecutionQuery().processInstanceId(procId).list().stream()
-            .filter(execution -> ((ExecutionEntityImpl) execution).isMultiInstanceRoot()).findFirst();
-        final String multiInstanceRootExecutionId = multiInstanceRootExecution.get().getId();
+        final String multiInstanceRootExecutionId = getMultiInstanceExectionRoot(procId);
 
         // WHEN: the process started, 2 tasks are created in parallel
         List<Task> tasks = taskService.createTaskQuery().list();
@@ -457,10 +467,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
                 vars
             )
             .getId();
-        // get the multiInstance root execution
-        final Optional<Execution> multiInstanceRootExecution = runtimeService.createExecutionQuery().processInstanceId(procId).list().stream()
-            .filter(execution -> ((ExecutionEntityImpl) execution).isMultiInstanceRoot()).findFirst();
-        final String multiInstanceRootExecutionId = multiInstanceRootExecution.get().getId();
+        final String multiInstanceRootExecutionId = getMultiInstanceExectionRoot(procId);
 
         // WHEN: the process started, 2 tasks are created in parallel
         List<Task> tasks = taskService.createTaskQuery().list();
@@ -1679,40 +1686,67 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
     @Deployment(
         resources = {
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelEmptyCollection.bpmn20.xml",
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelCollection.bpmn20.xml",
         }
     )
-    public void testParalellEmptyCollection() throws Exception {
+    public void testParalellWithEmptyCollection() throws Exception {
+        // GIVEN: a started process with variables setup
         Collection<String> collection = emptyList();
         Map<String, Object> variableMap = new HashMap<String, Object>();
         variableMap.put("collection", collection);
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testParalellEmptyCollection",
-            variableMap
-        );
-        assertThat(processInstance).isNotNull();
-        Task task = taskService.createTaskQuery().singleResult();
-        assertThat(task).isNull();
-        assertProcessEnded(processInstance.getId());
-    }
-
-    @Deployment(
-        resources = {
-            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelEmptyCollection.bpmn20.xml",
-        }
-    )
-    public void testParalellEmptyCollectionWithNonEmptyCollection() {
-        Collection<String> collection = singleton("Test");
-        Map<String, Object> variableMap = new HashMap<String, Object>();
-        variableMap.put("collection", collection);
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-            "testParalellEmptyCollection",
+            "testParallelCollection",
             variableMap
         );
         assertThat(processInstance).isNotNull();
         Task task = taskService.createTaskQuery().singleResult();
         assertThat(task).isNotNull();
+
+        // WHEN: we gather information regarding multi-instance execution
+        final String multiInstanceExectionRoot = getMultiInstanceExectionRoot(processInstance.getId());
+        // THEN: we don't have any multi-instance execution, because it never ran since there were no data to start with
+        assertThat(multiInstanceExectionRoot).isNull();
+
+        // WHEN: we complete the last task
         taskService.complete(task.getId());
+        // THEN: the process ends
+        assertProcessEnded(processInstance.getId());
+    }
+
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelCollection.bpmn20.xml",
+        }
+    )
+    public void testParalellWithNonEmptyCollection() {
+        // GIVEN: a started process with variables setup
+        Collection<String> collection = singleton("Test");
+        Map<String, Object> variableMap = new HashMap<String, Object>();
+        variableMap.put("collection", collection);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "testParallelCollection",
+            variableMap
+        );
+        assertThat(processInstance).isNotNull();
+        Task task = taskService.createTaskQuery().singleResult();
+        assertThat(task).isNotNull();
+
+        // WHEN: we gather information regarding multi-instance execution
+        final String multiInstanceExectionRoot = getMultiInstanceExectionRoot(processInstance.getId());
+        // THEN: we have that information updated
+        assertThat(runtimeService.getVariable(multiInstanceExectionRoot, NUMBER_OF_INSTANCES)).isEqualTo(1);
+        assertThat(runtimeService.getVariable(multiInstanceExectionRoot, NUMBER_OF_ACTIVE_INSTANCES)).isEqualTo(1);
+        assertThat(runtimeService.getVariable(multiInstanceExectionRoot, NUMBER_OF_COMPLETED_INSTANCES)).isEqualTo(0);
+
+        // WHEN: we complete the last multi-instance task
+        taskService.complete(task.getId());
+        // THEN: the process isn't complete
+        assertProcessNotEnded(processInstance.getId());
+
+        // WHEN: completing the last user task
+        task = taskService.createTaskQuery().singleResult();
+        taskService.complete(task.getId());
+        // THEN: the process is finally completed
         assertProcessEnded(processInstance.getId());
     }
 
