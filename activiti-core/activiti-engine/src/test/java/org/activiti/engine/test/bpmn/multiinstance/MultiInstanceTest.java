@@ -54,9 +54,6 @@ import org.activiti.engine.test.Deployment;
  */
 public class MultiInstanceTest extends PluggableActivitiTestCase {
 
-    public static final String NR_OF_INSTANCES_KEY = "nrOfInstances";
-    public static final String NR_OF_ACTIVE_INSTANCES_KEY = "nrOfActiveInstances";
-    public static final String NR_OF_COMPLETED_INSTANCES_KEY = "nrOfCompletedInstances";
     public static final String NR_OF_LOOPS_KEY = "nrOfLoops";
     public static final String LOOP_COUNTER_KEY = "loopCounter";
 
@@ -162,22 +159,22 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         assertThat(localVariables).doesNotContainKey(elementIndexVariable);
 
         assertThat(localVariables).containsKeys(
-            NR_OF_INSTANCES_KEY,
-            NR_OF_ACTIVE_INSTANCES_KEY,
-            NR_OF_COMPLETED_INSTANCES_KEY
+            NUMBER_OF_INSTANCES,
+            NUMBER_OF_ACTIVE_INSTANCES,
+            NUMBER_OF_COMPLETED_INSTANCES
         );
-        assertThat(localVariables.get(NR_OF_INSTANCES_KEY)).isEqualTo(nrOfLoops);
-        assertThat(localVariables.get(NR_OF_ACTIVE_INSTANCES_KEY)).isEqualTo(1);
-        assertThat(localVariables.get(NR_OF_COMPLETED_INSTANCES_KEY)).isEqualTo(loopCounter);
+        assertThat(localVariables.get(NUMBER_OF_INSTANCES)).isEqualTo(nrOfLoops);
+        assertThat(localVariables.get(NUMBER_OF_ACTIVE_INSTANCES)).isEqualTo(1);
+        assertThat(localVariables.get(NUMBER_OF_COMPLETED_INSTANCES)).isEqualTo(loopCounter);
     }
 
     private void checkInnerInstanceVariables(Task task, int loopCounter, String elementIndexVariable) {
         Map<String, Object> localVariables = runtimeService.getVariablesLocal(task.getExecutionId());
         // these variables should be available only in the outer instance: see BPMN specification table 10.30, page 194
         assertThat(localVariables).doesNotContainKeys(
-            NR_OF_INSTANCES_KEY,
-            NR_OF_ACTIVE_INSTANCES_KEY,
-            NR_OF_COMPLETED_INSTANCES_KEY
+            NUMBER_OF_INSTANCES,
+            NUMBER_OF_ACTIVE_INSTANCES,
+            NUMBER_OF_COMPLETED_INSTANCES
         );
 
         assertThat(localVariables).containsKey(elementIndexVariable);
@@ -306,9 +303,9 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         int expectedCompletedNumber
     ) {
         Map<String, Object> variables = runtimeService.getVariablesLocal(outerExecution.getId());
-        assertThat(variables).containsEntry(NR_OF_INSTANCES_KEY, 3);
-        assertThat(variables).containsEntry(NR_OF_ACTIVE_INSTANCES_KEY, expetedActiveNumber);
-        assertThat(variables).containsEntry(NR_OF_COMPLETED_INSTANCES_KEY, expectedCompletedNumber);
+        assertThat(variables).containsEntry(NUMBER_OF_INSTANCES, 3);
+        assertThat(variables).containsEntry(NUMBER_OF_ACTIVE_INSTANCES, expetedActiveNumber);
+        assertThat(variables).containsEntry(NUMBER_OF_COMPLETED_INSTANCES, expectedCompletedNumber);
         assertThat(variables).doesNotContainKey(LOOP_COUNTER_KEY);
     }
 
