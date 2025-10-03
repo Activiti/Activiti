@@ -182,7 +182,7 @@ public class VariableInstanceEntityManagerImpl
             variableInstance.getExecutionId(),
             variableInstance.getProcessInstanceId(),
             processDefinitionId,
-            task.getTaskDefinitionKey()
+            task != null ? task.getTaskDefinitionKey() : null
         );
     }
 
