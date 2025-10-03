@@ -66,4 +66,3 @@ public class ProcessExtensionService {
         return mapping != null && mapping.isEphemeral();
     }
 }
-
