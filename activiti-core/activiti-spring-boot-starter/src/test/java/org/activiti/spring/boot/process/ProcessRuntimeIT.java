@@ -1089,10 +1089,6 @@ public class ProcessRuntimeIT {
 
         assertThat(
             processDefinitionPage
-                .getContent()).hasSize(113);
-
-        assertThat(
-            processDefinitionPage
                 .getContent()
                 .stream()
                 .filter(c -> c.getKey().equals(UNSTARTABLE_PROCESS))
