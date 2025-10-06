@@ -10,7 +10,7 @@
               "value": "Name"
             }
           },
-          "ephemeral": "false"
+          "ephemeral": false
         },
         "Activity_2": {
           "inputs": {
@@ -25,7 +25,7 @@
               "value": "restResult"
             }
           },
-          "ephemeral": "true"
+          "ephemeral": true
         }
       }
   }
