@@ -115,8 +115,8 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
 
     DelegateExecution miRootExecution = getMultiInstanceRootExecution(execution);
     if (miRootExecution != null) { // will be null in case of empty collection
-        setLoopVariable(miRootExecution, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
-        setLoopVariable(miRootExecution, NUMBER_OF_ACTIVE_INSTANCES, nrOfActiveInstances);
+      setLoopVariable(miRootExecution, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
+      setLoopVariable(miRootExecution, NUMBER_OF_ACTIVE_INSTANCES, nrOfActiveInstances);
     }
     updateResultCollection(execution, miRootExecution);
 
