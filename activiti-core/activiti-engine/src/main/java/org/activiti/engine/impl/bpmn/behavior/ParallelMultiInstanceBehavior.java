@@ -114,8 +114,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     callActivityEndListeners(execution);
 
     DelegateExecution miRootExecution = getMultiInstanceRootExecution(execution);
-    if (miRootExecution != null) {
-        // will be null in case of empty collection
+    if (miRootExecution != null) { // will be null in case of empty collection
         setLoopVariable(miRootExecution, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
         setLoopVariable(miRootExecution, NUMBER_OF_ACTIVE_INSTANCES, nrOfActiveInstances);
     }
