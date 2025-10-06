@@ -10,9 +10,14 @@ on:
     types:
       - labeled
 
+permissions:
+  contents: read          # Required to read repository content
+  pull-requests: write    # Required to edit PR (milestones, labels, auto-merge)
+  issues: write          # Required to create comments on PRs
+
 jobs:
   check:
-    uses: Alfresco/alfresco-build-tools/.github/workflows/pr-review-check.yml@09ecb59ac62d18a4c685f5e859383497f4f360c9 # v9.3.0
+    uses: Alfresco/alfresco-build-tools/.github/workflows/pr-review-check.yml@348e767723102af8cff995773904a2c16b098d11 # v9.3.1
     with:
       trigger-labels: '["CI", "preview", "skip-tests"]'
       milestone-name: 'Validating'
