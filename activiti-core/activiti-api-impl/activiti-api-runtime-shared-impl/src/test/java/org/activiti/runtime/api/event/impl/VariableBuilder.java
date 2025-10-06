@@ -26,6 +26,7 @@ public class VariableBuilder {
     public static ActivitiVariableEventImpl buildTaskVariableEvent() {
         ActivitiVariableEventImpl variableEvent = buildVariableEvent();
         variableEvent.setTaskId("taskId");
+        variableEvent.setTaskDefinitionKey("taskDefinitionKey");
         return variableEvent;
     }
 

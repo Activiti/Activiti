@@ -19,8 +19,11 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import org.activiti.spring.process.model.Extension;
+import org.activiti.spring.process.model.ProcessVariablesMapping;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -94,5 +97,26 @@ class ProcessExtensionServiceTest {
         String variableName = "variableName";
         boolean result = processExtensionService.hasEphemeralVariable(null, variableName);
         assertThat(result).isFalse();
+    }
+
+    @Test
+    void should_returnTrue_when_taskMappingIsEphemeral() {
+        String processDefinitionId = "processDefinitionId";
+        String taskDefinitionKey = "taskDefinitionKey";
+        Extension extension = mock(Extension.class);
+        when(processExtensionRepository.getExtensionsForId(processDefinitionId)).thenReturn(Optional.of(extension));
+
+       ProcessVariablesMapping mapping = new ProcessVariablesMapping();
+        mapping.setEphemeral(true);
+
+
+        Map<String, ProcessVariablesMapping> processVariablesMapping = new HashMap<>();
+        processVariablesMapping.put("taskDefinitionKey", mapping);
+
+        when(extension.getMappings()).thenReturn(processVariablesMapping);
+
+        boolean result = processExtensionService.isTaskMappingEphemeral(processDefinitionId, taskDefinitionKey);
+
+        assertThat(result).isTrue();
     }
 }
