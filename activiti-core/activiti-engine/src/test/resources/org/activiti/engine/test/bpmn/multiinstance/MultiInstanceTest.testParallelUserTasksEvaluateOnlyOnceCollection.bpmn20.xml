@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+
+  <process id="miParallelUserTasksEvaluateOnlyOnceCollection">
+
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="myTasks" />
+
+    <userTask id="myTasks" name="My Task ${loopCounter}" >
+      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${ListType==&quot;ApproversList&quot;? ApproversList : EmptyList}" activiti:elementVariable="user"/>
+    </userTask>
+    <sequenceFlow id="flow2" sourceRef="myTasks" targetRef="lastTask" />
+
+    <userTask id="lastTask" name="Last Task"/>
+    <sequenceFlow id="flow3" sourceRef="lastTask" targetRef="theEnd"/>
+
+    <endEvent id="theEnd" />
+
+  </process>
+
+</definitions>
