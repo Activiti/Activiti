@@ -12,7 +12,7 @@ on:
 
 jobs:
   check:
-    uses: Alfresco/alfresco-build-tools/.github/workflows/pr-review-check.yml@improvement/AAE-35226-dependabot-validation
+    uses: Alfresco/alfresco-build-tools/.github/workflows/pr-review-check.yml@09ecb59ac62d18a4c685f5e859383497f4f360c9 # v9.3.0
     with:
       trigger-labels: '["CI", "preview", "skip-tests"]'
       milestone-name: 'Validating'

@@ -26,13 +26,13 @@ jobs:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       - name: dependabot check
         id: dependabot
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-pr-check-metadata@c295ecd6ca6b9c473dcada1e0478cdeaba79d5ea # v9.0.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-pr-check-metadata@09ecb59ac62d18a4c685f5e859383497f4f360c9 # v9.3.0
         with:
           gh-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           actor: "dependabot[bot]"
           label: github_actions
       - name: pre-commit
-        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@c295ecd6ca6b9c473dcada1e0478cdeaba79d5ea # v9.0.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@09ecb59ac62d18a4c685f5e859383497f4f360c9 # v9.3.0
         with:
           skip_checkout: true
       - name: Ensure SHA pinned actions
@@ -61,7 +61,7 @@ jobs:
           java-version: 21
           distribution: "temurin"
 
-      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@c295ecd6ca6b9c473dcada1e0478cdeaba79d5ea # v9.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/update-pom-to-next-pre-release@09ecb59ac62d18a4c685f5e859383497f4f360c9 # v9.3.0
         id: update-pom-to-next-version
 
       - name: Update VERSION file
@@ -122,10 +122,10 @@ jobs:
           git push -f -q origin $VERSION
 
       - name: Get branch name
-        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@c295ecd6ca6b9c473dcada1e0478cdeaba79d5ea # v9.0.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@09ecb59ac62d18a4c685f5e859383497f4f360c9 # v9.3.0
 
       - name: Propagate
-        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@c295ecd6ca6b9c473dcada1e0478cdeaba79d5ea # v9.0.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/jx-updatebot-pr@09ecb59ac62d18a4c685f5e859383497f4f360c9 # v9.3.0
         if: ${{ env.BRANCH_NAME == 'develop' }}
         env:
           DEVELOPMENT_BRANCH: ${{ github.ref_name }}
@@ -144,6 +144,6 @@ jobs:
     if: always() && failure()
     steps:
       - name: Teams Notification
-        uses: Alfresco/alfresco-build-tools/.github/actions/send-teams-notification@c295ecd6ca6b9c473dcada1e0478cdeaba79d5ea # v9.0.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/send-teams-notification@09ecb59ac62d18a4c685f5e859383497f4f360c9 # v9.3.0
         with:
           webhook-url: ${{ secrets.TEAMS_NOTIFICATION_WORKFLOW_WEBHOOK }}
