@@ -129,7 +129,6 @@ class ProcessExtensionServiceTest {
         ProcessVariablesMapping mapping = new ProcessVariablesMapping();
         mapping.setEphemeral(false);
 
-
         Map<String, ProcessVariablesMapping> processVariablesMapping = new HashMap<>();
         processVariablesMapping.put("taskDefinitionKey", mapping);
 
