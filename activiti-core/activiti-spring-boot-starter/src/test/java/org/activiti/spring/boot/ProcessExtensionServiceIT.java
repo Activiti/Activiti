@@ -57,8 +57,8 @@ public class ProcessExtensionServiceIT {
             .createProcessDefinitionQuery()
             .processDefinitionKey("Process_ephemeralMappingProcess")
             .singleResult();
-        assertThat(processExtensionService.isTaskMappingEphemeral(processDefinition.getId(),"Activity_1")).isFalse();
-        assertThat(processExtensionService.isTaskMappingEphemeral(processDefinition.getId(),"Activity_2")).isTrue();
+        assertThat(processExtensionService.isTaskMappingEphemeral(processDefinition.getId(), "Activity_1")).isFalse();
+        assertThat(processExtensionService.isTaskMappingEphemeral(processDefinition.getId(), "Activity_2")).isTrue();
 
     }
 

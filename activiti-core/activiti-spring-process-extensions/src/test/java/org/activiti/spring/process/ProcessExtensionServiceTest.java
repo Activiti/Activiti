@@ -106,9 +106,8 @@ class ProcessExtensionServiceTest {
         Extension extension = mock(Extension.class);
         when(processExtensionRepository.getExtensionsForId(processDefinitionId)).thenReturn(Optional.of(extension));
 
-       ProcessVariablesMapping mapping = new ProcessVariablesMapping();
+        ProcessVariablesMapping mapping = new ProcessVariablesMapping();
         mapping.setEphemeral(true);
-
 
         Map<String, ProcessVariablesMapping> processVariablesMapping = new HashMap<>();
         processVariablesMapping.put("taskDefinitionKey", mapping);
@@ -118,5 +117,26 @@ class ProcessExtensionServiceTest {
         boolean result = processExtensionService.isTaskMappingEphemeral(processDefinitionId, taskDefinitionKey);
 
         assertThat(result).isTrue();
+    }
+
+    @Test
+    void should_returnFalse_when_taskMappingIsNotEphemeral() {
+        String processDefinitionId = "processDefinitionId";
+        String taskDefinitionKey = "taskDefinitionKey";
+        Extension extension = mock(Extension.class);
+        when(processExtensionRepository.getExtensionsForId(processDefinitionId)).thenReturn(Optional.of(extension));
+
+        ProcessVariablesMapping mapping = new ProcessVariablesMapping();
+        mapping.setEphemeral(false);
+
+
+        Map<String, ProcessVariablesMapping> processVariablesMapping = new HashMap<>();
+        processVariablesMapping.put("taskDefinitionKey", mapping);
+
+        when(extension.getMappings()).thenReturn(processVariablesMapping);
+
+        boolean result = processExtensionService.isTaskMappingEphemeral(processDefinitionId, taskDefinitionKey);
+
+        assertThat(result).isFalse();
     }
 }
