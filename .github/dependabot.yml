@@ -17,8 +17,8 @@ updates:
 
   - package-ecosystem: "github-actions"
     directories:
-      - "/"
-      - "/.github/actions/*"
+    - "/"
+    - "/.github/actions/echo-longest-run"
     schedule:
       interval: "weekly"
     groups:
