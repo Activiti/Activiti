@@ -163,4 +163,16 @@ public class DeployCmdTest {
         );
         return deploymentSettings;
     }
+
+    @Test
+    public void should_updateDeploymentVersion_when_deployingAnOldVersion() {
+        DeploymentEntityImpl existingDeployment = buildExistingDeployment();
+
+        given(deploymentEntityManager.findLatestDeploymentByName(any())).willReturn(existingDeployment);
+//        given(deploymentBuilder.getEnforcedAppVersion()).willReturn(6);
+        given(deploymentBuilder.hasEnforcedAppVersion()).willReturn(false);
+
+        Deployment deployment = deployCmd.executeDeploy(commandContext);
+        assertThat((deployment).getVersion()).isEqualTo(ENFORCED_DEPLOYMENT_VERSION);
+    }
 }

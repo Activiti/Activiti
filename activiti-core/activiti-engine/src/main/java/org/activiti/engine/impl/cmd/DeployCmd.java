@@ -78,6 +78,10 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
             if (!existingDeployments.isEmpty()) {
                 DeploymentEntity existingDeployment = (DeploymentEntity) existingDeployments.get(0);
 
+                if (existingDeployment.getVersion() > newDeployment.getVersion()){
+                    newDeployment.setVersion(existingDeployment.getVersion());
+                }
+
                 if (deploymentsDiffer(newDeployment, existingDeployment)) {
                     applyUpgradeLogic(newDeployment, existingDeployment);
                 } else {
