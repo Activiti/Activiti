@@ -10,6 +10,9 @@ on:
     types:
       - labeled
 
+permissions:
+  contents: read
+
 jobs:
   check:
     uses: Alfresco/alfresco-build-tools/.github/workflows/pr-review-check.yml@348e767723102af8cff995773904a2c16b098d11 # v9.3.1
