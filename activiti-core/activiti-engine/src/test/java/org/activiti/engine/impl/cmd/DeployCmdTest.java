@@ -169,7 +169,6 @@ public class DeployCmdTest {
         DeploymentEntityImpl existingDeployment = buildExistingDeployment();
 
         given(deploymentEntityManager.findLatestDeploymentByName(any())).willReturn(existingDeployment);
-//        given(deploymentBuilder.getEnforcedAppVersion()).willReturn(6);
         given(deploymentBuilder.hasEnforcedAppVersion()).willReturn(false);
 
         Deployment deployment = deployCmd.executeDeploy(commandContext);
