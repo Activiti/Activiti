@@ -201,7 +201,7 @@
     <dependency-check-maven.version>12.1.5</dependency-check-maven.version>
     <exec-maven-plugin.version>3.5.1</exec-maven-plugin.version>
     <extra-enforcer-rules.version>1.10.0</extra-enforcer-rules.version>
-    <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
     <license-maven-plugin.version>5.0.0</license-maven-plugin.version>
     <third-party-license-maven-plugin.version>2.6.0</third-party-license-maven-plugin.version>
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
