@@ -79,8 +79,6 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
             if (!existingDeployments.isEmpty()) {
                 DeploymentEntity existingDeployment = (DeploymentEntity) existingDeployments.get(0);
 
-                // As per HXPCC-197 if the application version on the new deployment is inconsistent compared to the latest persisted version,
-                // the latest persistent version is forced
                 if (existingDeployment.getVersion() > newDeployment.getVersion()) {
                     newDeployment.setVersion(existingDeployment.getVersion());
                 }
