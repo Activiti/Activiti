@@ -160,8 +160,7 @@ public class VariableInstanceEntityManagerImpl
             }
         }
 
-        TaskEntityManager taskEntityManager = getTaskEntityManager();
-        TaskEntity task = taskEntityManager.findById(variableInstance.getTaskId());
+        TaskEntity task = getTaskEntityManager().findById(variableInstance.getTaskId());
 
         Object variableValue = null;
         boolean getValue = true;
