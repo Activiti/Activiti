@@ -63,8 +63,8 @@ public class ProcessInstanceHelper {
             processInstanceName,
             variables,
             transientVariables,
-            true
-        , linkedProcessInstanceId);
+            true,
+            linkedProcessInstanceId);
     }
 
     public Process getActiveProcess(ProcessDefinition processDefinition) {
@@ -133,8 +133,7 @@ public class ProcessInstanceHelper {
             businessKey,
             processInstanceName,
             initialFlowElement,
-            process
-        ,
+            process,
             linkedProcessInstanceId);
         return processInstance;
     }
@@ -193,8 +192,7 @@ public class ProcessInstanceHelper {
             businessKey,
             null,
             initialFlowElement,
-            process
-        ,
+            process,
             linkedProcessInstanceId);
 
         // Dispatch message received event
@@ -436,8 +434,7 @@ public ExecutionEntity createProcessInstanceWithInitialFlowElement(ProcessDefini
                 processDefinition,
                 businessKey,
                 processDefinition.getTenantId(),
-                initiatorVariableName
-            ,
+                initiatorVariableName,
                 linkedProcessInstanceId);
 
         // Set processInstance name

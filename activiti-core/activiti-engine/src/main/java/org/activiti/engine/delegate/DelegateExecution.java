@@ -42,7 +42,12 @@ public interface DelegateExecution extends VariableScope {
      */
     String getRootProcessInstanceId();
 
-  String getLinkedProcessInstanceId();
+    /**
+     * The linked process instance id aims to create a link between two process instances without any strong dependency.
+     * It's used mostly for administration   purposes.
+     *
+     */
+    String getLinkedProcessInstanceId();
 
     /**
      * Determines if the current execution is the root one
