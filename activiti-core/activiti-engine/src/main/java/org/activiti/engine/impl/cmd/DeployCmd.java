@@ -17,6 +17,7 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.*;
+
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -52,7 +53,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
 
             if (
                 newDeployment.getTenantId() == null ||
-                ProcessEngineConfiguration.NO_TENANT_ID.equals(newDeployment.getTenantId())
+                    ProcessEngineConfiguration.NO_TENANT_ID.equals(newDeployment.getTenantId())
             ) {
                 DeploymentEntity latestDeployment = getLatestDeployment(commandContext, newDeployment);
 
@@ -77,6 +78,10 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
 
             if (!existingDeployments.isEmpty()) {
                 DeploymentEntity existingDeployment = (DeploymentEntity) existingDeployments.get(0);
+
+                if (existingDeployment.getVersion() > newDeployment.getVersion()) {
+                    newDeployment.setVersion(existingDeployment.getVersion());
+                }
 
                 if (deploymentsDiffer(newDeployment, existingDeployment)) {
                     applyUpgradeLogic(newDeployment, existingDeployment);
@@ -147,7 +152,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
     private DeploymentEntity checkForRollback(CommandContext commandContext, DeploymentEntity latestDeployment) {
         if (
             commandContext.getProcessEngineConfiguration().isRollbackDeployment() &&
-            latestDeployment.getVersion() > deploymentBuilder.getEnforcedAppVersion()
+                latestDeployment.getVersion() > deploymentBuilder.getEnforcedAppVersion()
         ) {
             LOGGER.info("Rollback detected: Previous rolled back deployment will be deleted");
             DeleteDeploymentCmd deleteDeploymentCmd = new DeleteDeploymentCmd(latestDeployment.getId(), false);
