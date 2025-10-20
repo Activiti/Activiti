@@ -267,6 +267,7 @@ public class ExecutionEntityManagerImpl
         String authenticatedUserId = Authentication.getAuthenticatedUserId();
 
         processInstanceExecution.setStartUserId(authenticatedUserId);
+        processInstanceExecution.setLinkedProcessInstanceId(linkedProcessInstanceId);
 
         // Store in database
         insert(processInstanceExecution, false);
@@ -278,7 +279,8 @@ public class ExecutionEntityManagerImpl
         // Need to be after insert, cause we need the id
         processInstanceExecution.setProcessInstanceId(processInstanceExecution.getId());
         processInstanceExecution.setRootProcessInstanceId(processInstanceExecution.getId());
-        processInstanceExecution.setLinkedProcessInstanceId(linkedProcessInstanceId);if (authenticatedUserId != null) {
+
+        if (authenticatedUserId != null) {
             getIdentityLinkEntityManager().addIdentityLink(
                 processInstanceExecution,
                 authenticatedUserId,
