@@ -39,6 +39,7 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
     protected Map<String, Object> processVariables;
     protected Map<String, Object> transientVariables;
     protected String tenantId;
+    protected String linkedProcessInstanceId;
 
     public StartProcessInstanceByMessageCmd(
         String messageName,
@@ -58,7 +59,8 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
         this.processVariables = processInstanceBuilder.getVariables();
         this.transientVariables = processInstanceBuilder.getTransientVariables();
         this.tenantId = processInstanceBuilder.getTenantId();
-    }
+        this.linkedProcessInstanceId = processInstanceBuilder.getLinkedProcessInstanceId();
+  }
 
     public ProcessInstance execute(CommandContext commandContext) {
         if (messageName == null) {
@@ -102,14 +104,9 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
         ProcessInstanceHelper processInstanceHelper = commandContext
             .getProcessEngineConfiguration()
             .getProcessInstanceHelper();
-        ProcessInstance processInstance = processInstanceHelper.createAndStartProcessInstanceByMessage(
-            processDefinition,
-            businessKey,
-            messageName,
-            processVariables,
-            transientVariables
-        );
 
-        return processInstance;
+
+        return processInstanceHelper.createAndStartProcessInstanceByMessage(processDefinition,
+          businessKey, messageName, processVariables, transientVariables, linkedProcessInstanceId);
     }
 }

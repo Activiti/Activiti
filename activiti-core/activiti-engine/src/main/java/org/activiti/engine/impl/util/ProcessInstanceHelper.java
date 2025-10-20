@@ -55,8 +55,8 @@ public class ProcessInstanceHelper {
         String businessKey,
         String processInstanceName,
         Map<String, Object> variables,
-        Map<String, Object> transientVariables
-    ) {
+        Map<String, Object> transientVariables,
+        String linkedProcessInstanceId) {
         return createAndStartProcessInstance(
             processDefinition,
             businessKey,
@@ -64,7 +64,7 @@ public class ProcessInstanceHelper {
             variables,
             transientVariables,
             true
-        );
+        , linkedProcessInstanceId);
     }
 
     public Process getActiveProcess(ProcessDefinition processDefinition) {
@@ -99,14 +99,11 @@ public class ProcessInstanceHelper {
         return initialFlowElement;
     }
 
-    protected ProcessInstance createAndStartProcessInstance(
-        ProcessDefinition processDefinition,
-        String businessKey,
-        String processInstanceName,
-        Map<String, Object> variables,
-        Map<String, Object> transientVariables,
-        boolean startProcessInstance
-    ) {
+    protected ProcessInstance createAndStartProcessInstance(ProcessDefinition processDefinition,
+                                                            String businessKey, String processInstanceName,
+                                                            Map<String, Object> variables, Map<String, Object> transientVariables,
+                                                            boolean startProcessInstance, String linkedProcessInstanceId) {
+
         Process process = this.getActiveProcess(processDefinition);
 
         FlowElement initialFlowElement = this.getInitialFlowElement(process, processDefinition.getId());
@@ -119,17 +116,15 @@ public class ProcessInstanceHelper {
             process,
             variables,
             transientVariables,
-            startProcessInstance
-        );
+            startProcessInstance,
+            linkedProcessInstanceId);
     }
 
-    public ProcessInstance createProcessInstance(
-        ProcessDefinition processDefinition,
-        String businessKey,
-        String processInstanceName,
-        Map<String, Object> variables,
-        Map<String, Object> transientVariables
-    ) {
+    public ProcessInstance createProcessInstance(ProcessDefinition processDefinition, String businessKey,
+                                                 String processInstanceName, Map<String, Object> variables,
+                                                 Map<String, Object> transientVariables,
+                                                 String linkedProcessInstanceId) {
+
         Process process = this.getActiveProcess(processDefinition);
         FlowElement initialFlowElement = this.getInitialFlowElement(process, processDefinition.getId());
 
@@ -139,7 +134,8 @@ public class ProcessInstanceHelper {
             processInstanceName,
             initialFlowElement,
             process
-        );
+        ,
+            linkedProcessInstanceId);
         return processInstance;
     }
 
@@ -148,7 +144,8 @@ public class ProcessInstanceHelper {
         String businessKey,
         String messageName,
         Map<String, Object> messageVariables,
-        Map<String, Object> transientVariables
+        Map<String, Object> transientVariables,
+        String linkedProcessInstanceId
     ) {
         Process process = this.getActiveProcess(processDefinition);
 
@@ -197,7 +194,8 @@ public class ProcessInstanceHelper {
             null,
             initialFlowElement,
             process
-        );
+        ,
+            linkedProcessInstanceId);
 
         // Dispatch message received event
         dispatchStartMessageReceivedEvent(processInstance, messageName, messageVariables);
@@ -222,15 +220,16 @@ public class ProcessInstanceHelper {
         Process process,
         Map<String, Object> variables,
         Map<String, Object> transientVariables,
-        boolean startProcessInstance
+        boolean startProcessInstance,
+        String linkedProcessInstanceId
     ) {
         ExecutionEntity processInstance = createProcessInstanceWithInitialFlowElement(
             processDefinition,
             businessKey,
             processInstanceName,
             initialFlowElement,
-            process
-        );
+            process,
+            linkedProcessInstanceId);
         if (startProcessInstance) {
             CommandContext commandContext = Context.getCommandContext();
             startProcessInstance(processInstance, commandContext, variables, initialFlowElement, transientVariables);
@@ -409,13 +408,20 @@ public class ProcessInstanceHelper {
         return expression.getValue(execution).toString();
     }
 
-    public ExecutionEntity createProcessInstanceWithInitialFlowElement(
+public ExecutionEntity createProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition,
+                                                                       String businessKey,
+                                                                       String processInstanceName,
+                                                                       FlowElement initialFlowElement,
+                                                                       Process process) {
+        return this.createProcessInstanceWithInitialFlowElement(processDefinition, businessKey, processInstanceName, initialFlowElement, process, null);
+    }    public ExecutionEntity createProcessInstanceWithInitialFlowElement(
         ProcessDefinition processDefinition,
         String businessKey,
         String processInstanceName,
         FlowElement initialFlowElement,
         Process process
-    ) {
+    ,
+                                                                       String linkedProcessInstanceId) {
         CommandContext commandContext = Context.getCommandContext();
 
         // Create the process instance
@@ -431,7 +437,8 @@ public class ProcessInstanceHelper {
                 businessKey,
                 processDefinition.getTenantId(),
                 initiatorVariableName
-            );
+            ,
+                linkedProcessInstanceId);
 
         // Set processInstance name
         setProcessInstanceName(commandContext, processInstance, processInstanceName);
