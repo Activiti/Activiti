@@ -136,8 +136,8 @@ public class ProcessInstanceHelper {
             process,
             linkedProcessInstanceId);
 
-        processInstance.setTransientVariables(transientVariables);
-        processInstance.setVariables(variables);
+        processInstance.setTransientVariables(transientVariables != null ? transientVariables : Map.of());
+        processInstance.setVariables(variables != null ? variables : Map.of());
 
         return processInstance;
     }
