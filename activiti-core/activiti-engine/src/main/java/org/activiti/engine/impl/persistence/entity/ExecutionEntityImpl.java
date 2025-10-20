@@ -193,6 +193,8 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
 
     protected String parentProcessInstanceId;
 
+  protected String linkedProcessInstanceId;
+
     private Integer appVersion;
 
     public ExecutionEntityImpl() {}
@@ -245,7 +247,7 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
         persistentState.put("deadLetterJobCount", deadLetterJobCount);
         persistentState.put("variableCount", variableCount);
         persistentState.put("identityLinkCount", identityLinkCount);
-        return persistentState;
+        persistentState.put("linkedProcessInstanceId", linkedProcessInstanceId);return persistentState;
     }
 
     // The current flow element, will be filled during operation execution
@@ -499,6 +501,18 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
     public void setRootProcessInstanceId(String rootProcessInstanceId) {
         this.rootProcessInstanceId = rootProcessInstanceId;
     }
+
+  @Override
+  public String getLinkedProcessInstanceId() {
+    return linkedProcessInstanceId;
+  }
+
+ @Override
+ public void setLinkedProcessInstanceId(String linkedProcessInstanceId) {
+    this.linkedProcessInstanceId = linkedProcessInstanceId;
+ }
+
+
 
     @Override
     public boolean isRootExecution() {

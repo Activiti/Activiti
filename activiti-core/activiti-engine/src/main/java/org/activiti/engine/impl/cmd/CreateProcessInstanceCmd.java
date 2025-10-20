@@ -16,9 +16,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.util.Map;
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
@@ -38,6 +35,7 @@ public class CreateProcessInstanceCmd implements Command<ProcessInstance> {
     protected String businessKey;
     protected String tenantId;
     protected String processInstanceName;
+    protected String linkedProcessInstanceId;
     protected ProcessInstanceHelper processInstanceHelper;
 
     public CreateProcessInstanceCmd(
@@ -73,6 +71,7 @@ public class CreateProcessInstanceCmd implements Command<ProcessInstance> {
         );
         this.processInstanceName = processInstanceBuilder.getProcessInstanceName();
         this.transientVariables = processInstanceBuilder.getTransientVariables();
+        this.linkedProcessInstanceId = processInstanceBuilder.getLinkedProcessInstanceId();
     }
 
     public ProcessInstance execute(CommandContext commandContext) {
@@ -90,7 +89,7 @@ public class CreateProcessInstanceCmd implements Command<ProcessInstance> {
             businessKey,
             processInstanceName,
             variables,
-            transientVariables
-        );
+            transientVariables,
+            linkedProcessInstanceId);
     }
 }
