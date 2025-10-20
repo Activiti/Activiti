@@ -135,6 +135,10 @@ public class ProcessInstanceHelper {
             initialFlowElement,
             process,
             linkedProcessInstanceId);
+
+        processInstance.setTransientVariables(transientVariables);
+        processInstance.setVariables(variables);
+
         return processInstance;
     }
 
