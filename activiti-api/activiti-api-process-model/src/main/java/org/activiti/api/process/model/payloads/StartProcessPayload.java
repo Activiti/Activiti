@@ -40,15 +40,13 @@ public class StartProcessPayload implements Payload {
         String name,
         String businessKey,
         Map<String, Object> variables
-    ,
-                               String linkedProcessInstanceId) {
+    ) {
         this();
         this.processDefinitionId = processDefinitionId;
         this.processDefinitionKey = processDefinitionKey;
         this.name = name;
         this.businessKey = businessKey;
         this.variables = variables;
-        this.linkedProcessInstanceId = linkedProcessInstanceId;
     }
 
     @Override
