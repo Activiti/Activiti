@@ -153,7 +153,9 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
 
     public String getLinkedProcessInstanceId() {
     return linkedProcessInstanceId;
-  }public String getTenantId() {
+  }
+
+    public String getTenantId() {
         return tenantId;
     }
 

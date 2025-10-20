@@ -193,7 +193,7 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
 
     protected String parentProcessInstanceId;
 
-  protected String linkedProcessInstanceId;
+    protected String linkedProcessInstanceId;
 
     private Integer appVersion;
 

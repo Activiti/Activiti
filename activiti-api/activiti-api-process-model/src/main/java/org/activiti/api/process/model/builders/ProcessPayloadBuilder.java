@@ -40,7 +40,7 @@ public class ProcessPayloadBuilder {
             .withProcessDefinitionId(from.getProcessDefinitionId())
             .withProcessDefinitionKey(from.getProcessDefinitionKey())
             .withVariables(from.getVariables())
-                                               .withLinkedProcessInstanceId(from.getLinkedProcessInstanceId());
+            .withLinkedProcessInstanceId(from.getLinkedProcessInstanceId());
     }
 
     public static CreateProcessPayloadBuilder create(CreateProcessInstancePayload from) {
