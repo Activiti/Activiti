@@ -23,7 +23,7 @@ import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 
 public class ToProcessCompletedConverter implements EventConverter<ProcessCompletedEvent, ActivitiEntityEvent> {
 
-    private APIProcessInstanceConverter processInstanceConverter;
+    private final APIProcessInstanceConverter processInstanceConverter;
 
     public ToProcessCompletedConverter(APIProcessInstanceConverter processInstanceConverter) {
         this.processInstanceConverter = processInstanceConverter;
@@ -33,7 +33,7 @@ public class ToProcessCompletedConverter implements EventConverter<ProcessComple
     public Optional<ProcessCompletedEvent> from(ActivitiEntityEvent internalEvent) {
         return Optional.of(
             new ProcessCompletedImpl(
-                processInstanceConverter.from(((ExecutionEntity) internalEvent.getEntity()).getProcessInstance())
+                processInstanceConverter.from(((ExecutionEntity) internalEvent.getEntity()).getProcessInstance(), ((ExecutionEntity) internalEvent.getEntity()).getIdentityLinks())
             )
         );
     }

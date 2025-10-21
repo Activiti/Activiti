@@ -15,13 +15,22 @@
  */
 package org.activiti.runtime.api.model.impl;
 
+import java.util.List;
 import java.util.Objects;
+
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
+import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 
 public class APIProcessInstanceConverter
     extends ListConverter<org.activiti.engine.runtime.ProcessInstance, ProcessInstance>
     implements ModelConverter<org.activiti.engine.runtime.ProcessInstance, ProcessInstance> {
+
+    private final APIIdentityLinkConverter identityLinkConverter;
+
+    public APIProcessInstanceConverter(APIIdentityLinkConverter identityLinkConverter) {
+        this.identityLinkConverter = identityLinkConverter;
+    }
 
     @Override
     public ProcessInstance from(org.activiti.engine.runtime.ProcessInstance internalProcessInstance) {
@@ -41,6 +50,15 @@ public class APIProcessInstanceConverter
         processInstance.setAppVersion(Objects.toString(internalProcessInstance.getAppVersion(), null));
         processInstance.setProcessDefinitionName(internalProcessInstance.getProcessDefinitionName());
         processInstance.setRootProcessInstanceId(internalProcessInstance.getRootProcessInstanceId());
+        return processInstance;
+    }
+
+    public ProcessInstance from(org.activiti.engine.runtime.ProcessInstance internalProcessInstance, List<IdentityLinkEntity> identityLinks) {
+        ProcessInstanceImpl processInstance = (ProcessInstanceImpl) from(internalProcessInstance);
+
+        if (identityLinks != null) {
+            processInstance.setIdentityLinks(identityLinkConverter.from(identityLinks));
+        }
         return processInstance;
     }
 

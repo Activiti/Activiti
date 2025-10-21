@@ -1,0 +1,56 @@
+/*
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.activiti.api.model.shared.model;
+
+/**
+ * An identity link is used to associate a process or task with a certain identity.
+ */
+public interface IdentityLink {
+    /**
+     * Returns the type of link (e.g., assignee, candidate, participant, etc.)
+     */
+    String getType();
+
+    /**
+     * If the identity link involves a user, then this will be a non-null id of a user.
+     */
+    String getUserId();
+
+    /**
+     * If the identity link involves a group, then this will be a non-null id of a group.
+     */
+    String getGroupId();
+
+    /**
+     * The id of the task associated with this identity link.
+     */
+    String getTaskId();
+
+    /**
+     * The process definition id associated with this identity link.
+     */
+    String getProcessDefinitionId();
+
+    /**
+     * The process instance id associated with this identity link.
+     */
+    String getProcessInstanceId();
+
+    /**
+     * The details associated with the identity link.
+     */
+    byte[] getDetails();
+}

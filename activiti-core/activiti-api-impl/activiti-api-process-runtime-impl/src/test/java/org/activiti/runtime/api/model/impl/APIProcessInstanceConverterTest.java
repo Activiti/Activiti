@@ -18,12 +18,17 @@ package org.activiti.runtime.api.model.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Date;
+import java.util.List;
+
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.ProcessInstance.ProcessInstanceStatus;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
+import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
+import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityImpl;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.Nested;
 
 public class APIProcessInstanceConverterTest {
 
@@ -42,7 +47,9 @@ public class APIProcessInstanceConverterTest {
     private static final String PROCESS_DEFINITION_NAME = "processDefinitionName";
     private static final String ROOT_PROCESS_INSTANCE_ID = "rootProcessInstanceId";
 
-    private APIProcessInstanceConverter subject = new APIProcessInstanceConverter();
+    private final APIIdentityLinkConverter identityLinkConverter = new APIIdentityLinkConverter();
+
+    private final APIProcessInstanceConverter subject = new APIProcessInstanceConverter(identityLinkConverter);
 
     @Test
     public void should_convertFromInternalProcessInstance_when_withRunningStatus() {
@@ -138,4 +145,38 @@ public class APIProcessInstanceConverterTest {
 
         return internalProcessInstance;
     }
+
+
+    @Test
+    public void should_convertFromInternalProcessInstanceWithIdentityLinks_when_identityLinksAreProvided() {
+        ExecutionEntity internalProcessInstance = anInternalProcessInstance(APP_VERSION);
+        List<IdentityLinkEntity> identityLinks = List.of(new IdentityLinkEntityImpl());
+
+        ProcessInstance result = subject.from(internalProcessInstance, identityLinks);
+
+        assertValidProcessInstanceResult(result);
+        assertThat(result.getIdentityLinks()).isNotEmpty();
+    }
+
+    @Test
+    public void should_convertFromInternalProcessInstanceWithIdentityLinks_when_identityLinksAreNull() {
+        ExecutionEntity internalProcessInstance = anInternalProcessInstance(APP_VERSION);
+
+        ProcessInstance result = subject.from(internalProcessInstance, null);
+
+        assertValidProcessInstanceResult(result);
+        assertThat(result.getIdentityLinks()).isNull();
+    }
+
+    @Test
+    public void should_convertFromInternalProcessInstanceWithIdentityLinks_when_identityLinksAreEmpty() {
+        ExecutionEntity internalProcessInstance = anInternalProcessInstance(APP_VERSION);
+        List<IdentityLinkEntity> identityLinks = List.of();
+
+        ProcessInstance result = subject.from(internalProcessInstance, identityLinks);
+
+        assertValidProcessInstanceResult(result);
+        assertThat(result.getIdentityLinks()).isEmpty();
+    }
+
 }

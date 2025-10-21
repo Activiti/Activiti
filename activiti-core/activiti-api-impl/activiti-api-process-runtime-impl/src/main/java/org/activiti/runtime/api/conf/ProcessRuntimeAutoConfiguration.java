@@ -131,6 +131,7 @@ import org.activiti.runtime.api.impl.RuntimeSignalPayloadEventListener;
 import org.activiti.runtime.api.impl.VariableNameValidator;
 import org.activiti.runtime.api.message.ReceiveMessagePayloadEventListener;
 import org.activiti.runtime.api.model.impl.APIDeploymentConverter;
+import org.activiti.runtime.api.model.impl.APIIdentityLinkConverter;
 import org.activiti.runtime.api.model.impl.APIProcessCandidateStarterGroupConverter;
 import org.activiti.runtime.api.model.impl.APIProcessCandidateStarterUserConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
@@ -295,8 +296,8 @@ public class ProcessRuntimeAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public APIProcessInstanceConverter apiProcessInstanceConverter() {
-        return new APIProcessInstanceConverter();
+    public APIProcessInstanceConverter apiProcessInstanceConverter(APIIdentityLinkConverter identityLinkConverter) {
+        return new APIProcessInstanceConverter(identityLinkConverter);
     }
 
     @Bean
@@ -880,5 +881,11 @@ public class ProcessRuntimeAutoConfiguration {
         APIProcessCandidateStarterGroupConverter processCandidateStarterGroupConverter
     ) {
         return new ToAPIProcessCandidateStarterGroupRemovedEventConverter(processCandidateStarterGroupConverter);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public APIIdentityLinkConverter apiIdentityLinkConverter() {
+        return new APIIdentityLinkConverter();
     }
 }

@@ -16,8 +16,10 @@
 package org.activiti.api.runtime.model.impl;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import org.activiti.api.process.model.ProcessInstance;
+import org.activiti.api.model.shared.model.IdentityLink;
 
 public class ProcessInstanceImpl extends ApplicationElementImpl implements ProcessInstance {
 
@@ -34,6 +36,7 @@ public class ProcessInstanceImpl extends ApplicationElementImpl implements Proce
     private Integer processDefinitionVersion;
     private String processDefinitionName;
     private String rootProcessInstanceId;
+    private List<IdentityLink> identityLinks;
 
     public ProcessInstanceImpl() {}
 
@@ -102,6 +105,11 @@ public class ProcessInstanceImpl extends ApplicationElementImpl implements Proce
         return rootProcessInstanceId;
     }
 
+    @Override
+    public List<IdentityLink> getIdentityLinks() {
+        return identityLinks;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -152,6 +160,10 @@ public class ProcessInstanceImpl extends ApplicationElementImpl implements Proce
 
     public void setRootProcessInstanceId(String rootProcessInstanceId) {
         this.rootProcessInstanceId = rootProcessInstanceId;
+    }
+
+    public void setIdentityLinks(List<IdentityLink> identityLinks) {
+        this.identityLinks = identityLinks;
     }
 
     @Override

@@ -16,7 +16,9 @@
 package org.activiti.api.process.model;
 
 import java.util.Date;
+import java.util.List;
 import org.activiti.api.model.shared.model.ApplicationElement;
+import org.activiti.api.model.shared.model.IdentityLink;
 
 public interface ProcessInstance extends ApplicationElement {
     enum ProcessInstanceStatus {
@@ -52,4 +54,10 @@ public interface ProcessInstance extends ApplicationElement {
     String getProcessDefinitionName();
 
     String getRootProcessInstanceId();
+
+    /**
+     * Returns the identity links associated with this process instance.
+     * Identity links represent the relationship between users/groups and the process instance.
+     */
+    List<IdentityLink> getIdentityLinks();
 }
