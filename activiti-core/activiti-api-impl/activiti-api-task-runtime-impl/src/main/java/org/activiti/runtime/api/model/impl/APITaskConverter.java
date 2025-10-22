@@ -23,8 +23,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.impl.TaskImpl;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +36,12 @@ public class APITaskConverter
     implements ModelConverter<org.activiti.engine.task.Task, Task> {
 
     private final TaskService taskService;
+    private final RuntimeService runtimeService;
 
     @Autowired
-    public APITaskConverter(TaskService taskService) {
+    public APITaskConverter(TaskService taskService, RuntimeService runtimeService) {
         this.taskService = taskService;
+        this.runtimeService = runtimeService;
     }
 
     @Override
@@ -108,15 +112,26 @@ public class APITaskConverter
     }
 
     private String extractActor(org.activiti.engine.task.Task source) {
-        List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(source.getId());
-        if (identityLinks != null) {
-            return identityLinks
-                .stream()
-                .filter(link -> IdentityLinkType.ACTOR.equals(link.getType()))
-                .filter(link -> link.getUserId() != null)
-                .map(IdentityLink::getUserId)
-                .findFirst()
-                .orElse(null);
+        // Only extract actor for tasks in started (running) or completed processes
+        String processInstanceId = source.getProcessInstanceId();
+        if (processInstanceId != null) {
+            ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
+                .processInstanceId(processInstanceId)
+                .singleResult();
+            
+            // If process instance exists and is running (not suspended) or if it doesn't exist (completed)
+            if (processInstance == null || !processInstance.isSuspended()) {
+                List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(source.getId());
+                if (identityLinks != null) {
+                    return identityLinks
+                        .stream()
+                        .filter(link -> IdentityLinkType.ACTOR.equals(link.getType()))
+                        .filter(link -> link.getUserId() != null)
+                        .map(IdentityLink::getUserId)
+                        .findFirst()
+                        .orElse(null);
+                }
+            }
         }
         return null;
     }

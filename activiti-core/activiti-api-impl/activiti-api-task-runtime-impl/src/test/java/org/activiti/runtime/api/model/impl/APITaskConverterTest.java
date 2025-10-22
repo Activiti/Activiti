@@ -30,8 +30,11 @@ import static org.mockito.Mockito.verify;
 
 import java.util.Date;
 import org.activiti.api.task.model.Task;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityImpl;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.junit.jupiter.api.Test;
@@ -48,6 +51,9 @@ public class APITaskConverterTest {
 
     @Mock
     private TaskService taskService;
+
+    @Mock
+    private RuntimeService runtimeService;
 
     @Test
     public void should_convertTask_when_allFieldsAreSet() {
@@ -193,6 +199,8 @@ public class APITaskConverterTest {
     public void should_extractActor_when_actorIdentityLinkExists() {
         // given
         org.activiti.engine.task.Task internalTask = taskBuilder().build();
+        ProcessInstanceQuery processInstanceQuery = mockProcessInstanceQuery(false); // not suspended
+        given(runtimeService.createProcessInstanceQuery()).willReturn(processInstanceQuery);
         given(taskService.getIdentityLinksForTask(eq(internalTask.getId())))
             .willReturn(
                 asList(
@@ -213,6 +221,8 @@ public class APITaskConverterTest {
     public void should_returnNullActor_when_noActorIdentityLinkExists() {
         // given
         org.activiti.engine.task.Task internalTask = taskBuilder().build();
+        ProcessInstanceQuery processInstanceQuery = mockProcessInstanceQuery(false); // not suspended
+        given(runtimeService.createProcessInstanceQuery()).willReturn(processInstanceQuery);
         given(taskService.getIdentityLinksForTask(eq(internalTask.getId())))
             .willReturn(
                 asList(
@@ -232,6 +242,8 @@ public class APITaskConverterTest {
     public void should_returnNullActor_when_noIdentityLinksExist() {
         // given
         org.activiti.engine.task.Task internalTask = taskBuilder().build();
+        ProcessInstanceQuery processInstanceQuery = mockProcessInstanceQuery(false); // not suspended
+        given(runtimeService.createProcessInstanceQuery()).willReturn(processInstanceQuery);
         given(taskService.getIdentityLinksForTask(eq(internalTask.getId()))).willReturn(null);
 
         // when
@@ -239,5 +251,61 @@ public class APITaskConverterTest {
 
         // then
         assertThat(convertedTask).isNotNull().extracting(Task::getActor).isNull();
+    }
+
+    @Test
+    public void should_returnNullActor_when_processIsSuspended() {
+        // given
+        org.activiti.engine.task.Task internalTask = taskBuilder().build();
+        ProcessInstanceQuery processInstanceQuery = mockProcessInstanceQuery(true); // suspended
+        given(runtimeService.createProcessInstanceQuery()).willReturn(processInstanceQuery);
+        given(taskService.getIdentityLinksForTask(eq(internalTask.getId())))
+            .willReturn(
+                asList(
+                    buildIdentityLink("actorUser", null, IdentityLinkType.ACTOR)
+                )
+            );
+
+        // when
+        Task convertedTask = taskConverter.from(internalTask);
+
+        // then
+        assertThat(convertedTask).isNotNull().extracting(Task::getActor).isNull();
+    }
+
+    @Test
+    public void should_extractActor_when_processIsCompleted() {
+        // given
+        org.activiti.engine.task.Task internalTask = taskBuilder().build();
+        ProcessInstanceQuery processInstanceQuery = mockProcessInstanceQuery(null); // completed (no process instance)
+        given(runtimeService.createProcessInstanceQuery()).willReturn(processInstanceQuery);
+        given(taskService.getIdentityLinksForTask(eq(internalTask.getId())))
+            .willReturn(
+                asList(
+                    buildIdentityLink("actorUser", null, IdentityLinkType.ACTOR)
+                )
+            );
+
+        // when
+        Task convertedTask = taskConverter.from(internalTask);
+
+        // then
+        assertThat(convertedTask).isNotNull().extracting(Task::getActor).isEqualTo("actorUser");
+    }
+
+    private ProcessInstanceQuery mockProcessInstanceQuery(Boolean suspended) {
+        ProcessInstanceQuery query = org.mockito.Mockito.mock(ProcessInstanceQuery.class);
+        given(query.processInstanceId(any())).willReturn(query);
+        
+        if (suspended == null) {
+            // Process is completed (no process instance found)
+            given(query.singleResult()).willReturn(null);
+        } else {
+            ProcessInstance processInstance = org.mockito.Mockito.mock(ProcessInstance.class);
+            given(processInstance.isSuspended()).willReturn(suspended);
+            given(query.singleResult()).willReturn(processInstance);
+        }
+        
+        return query;
     }
 }
