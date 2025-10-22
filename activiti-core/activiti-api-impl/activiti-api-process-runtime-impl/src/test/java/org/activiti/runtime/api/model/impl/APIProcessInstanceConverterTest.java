@@ -22,13 +22,13 @@ import java.util.List;
 
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.ProcessInstance.ProcessInstanceStatus;
+import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityImpl;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.Nested;
 
 public class APIProcessInstanceConverterTest {
 
@@ -152,7 +152,7 @@ public class APIProcessInstanceConverterTest {
         ExecutionEntity internalProcessInstance = anInternalProcessInstance(APP_VERSION);
         List<IdentityLinkEntity> identityLinks = List.of(new IdentityLinkEntityImpl());
 
-        ProcessInstance result = subject.from(internalProcessInstance, identityLinks);
+        ProcessInstanceImpl result = (ProcessInstanceImpl) subject.from(internalProcessInstance, identityLinks);
 
         assertValidProcessInstanceResult(result);
         assertThat(result.getIdentityLinks()).isNotEmpty();
@@ -162,7 +162,7 @@ public class APIProcessInstanceConverterTest {
     public void should_convertFromInternalProcessInstanceWithIdentityLinks_when_identityLinksAreNull() {
         ExecutionEntity internalProcessInstance = anInternalProcessInstance(APP_VERSION);
 
-        ProcessInstance result = subject.from(internalProcessInstance, null);
+        ProcessInstanceImpl result = (ProcessInstanceImpl) subject.from(internalProcessInstance, null);
 
         assertValidProcessInstanceResult(result);
         assertThat(result.getIdentityLinks()).isNull();
@@ -173,7 +173,7 @@ public class APIProcessInstanceConverterTest {
         ExecutionEntity internalProcessInstance = anInternalProcessInstance(APP_VERSION);
         List<IdentityLinkEntity> identityLinks = List.of();
 
-        ProcessInstance result = subject.from(internalProcessInstance, identityLinks);
+        ProcessInstanceImpl result = (ProcessInstanceImpl)subject.from(internalProcessInstance, identityLinks);
 
         assertValidProcessInstanceResult(result);
         assertThat(result.getIdentityLinks()).isEmpty();
