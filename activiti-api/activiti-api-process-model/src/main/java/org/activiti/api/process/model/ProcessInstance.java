@@ -54,10 +54,4 @@ public interface ProcessInstance extends ApplicationElement {
     String getProcessDefinitionName();
 
     String getRootProcessInstanceId();
-
-    /**
-     * Returns the identity links associated with this process instance.
-     * Identity links represent the relationship between users/groups and the process instance.
-     */
-    List<IdentityLink> getIdentityLinks();
 }

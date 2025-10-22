@@ -105,7 +105,6 @@ public class ProcessInstanceImpl extends ApplicationElementImpl implements Proce
         return rootProcessInstanceId;
     }
 
-    @Override
     public List<IdentityLink> getIdentityLinks() {
         return identityLinks;
     }
