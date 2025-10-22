@@ -597,6 +597,18 @@ public class ExecutionEntityManagerImpl
             return;
         }
 
+        if (getEventDispatcher().isEnabled()) {
+            if (!cancel) {
+                getEventDispatcher().dispatchEvent(
+                    ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED, processInstanceEntity)
+                );
+            } else {
+                getEventDispatcher().dispatchEvent(
+                    ActivitiEventBuilder.createProcessCancelledEvent(processInstanceEntity, deleteReason)
+                );
+            }
+        }
+
         // Call activities
         for (ExecutionEntity subExecutionEntity : processInstanceEntity.getExecutions()) {
             if (subExecutionEntity.getSubProcessInstance() != null && !subExecutionEntity.isEnded()) {
@@ -617,18 +629,6 @@ public class ExecutionEntityManagerImpl
         } else {
             deleteChildExecutions(processInstanceEntity, deleteReason);
             deleteExecutionAndRelatedData(processInstanceEntity, deleteReason);
-        }
-
-        if (getEventDispatcher().isEnabled()) {
-            if (!cancel) {
-                getEventDispatcher().dispatchEvent(
-                    ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED, processInstanceEntity)
-                );
-            } else {
-                getEventDispatcher().dispatchEvent(
-                    ActivitiEventBuilder.createProcessCancelledEvent(processInstanceEntity, deleteReason)
-                );
-            }
         }
 
         // TODO: what about delete reason?
