@@ -76,4 +76,11 @@ public interface Task extends ApplicationElement {
     List<String> getCandidateGroups();
 
     String getCompletedBy();
+
+    /**
+     * Returns the actor for this task.
+     * The actor is determined from identity links of type "actor".
+     * If no actor identity link exists, this returns null.
+     */
+    String getActor();
 }

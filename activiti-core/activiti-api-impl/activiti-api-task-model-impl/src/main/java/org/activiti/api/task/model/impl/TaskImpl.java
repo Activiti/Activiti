@@ -46,6 +46,7 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
     private List<String> candidateUsers;
     private List<String> candidateGroups;
     private String completedBy;
+    private String actor;
 
     public TaskImpl() {}
 
@@ -268,6 +269,15 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
     }
 
     @Override
+    public String getActor() {
+        return this.actor;
+    }
+
+    public void setActor(String actor) {
+        this.actor = actor;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -300,7 +310,8 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
             Objects.equals(processDefinitionVersion, task.processDefinitionVersion) &&
             Objects.equals(businessKey, task.businessKey) &&
             Objects.equals(taskDefinitionKey, task.taskDefinitionKey) &&
-            Objects.equals(completedBy, task.completedBy)
+            Objects.equals(completedBy, task.completedBy) &&
+            Objects.equals(actor, task.actor)
         );
     }
 
@@ -328,7 +339,8 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
             processDefinitionVersion,
             businessKey,
             taskDefinitionKey,
-            completedBy
+            completedBy,
+            actor
         );
     }
 
@@ -384,6 +396,8 @@ public class TaskImpl extends ApplicationElementImpl implements Task {
             taskDefinitionKey +
             ", completedBy=" +
             completedBy +
+            ", actor=" +
+            actor +
             '}'
         );
     }

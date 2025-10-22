@@ -188,4 +188,56 @@ public class APITaskConverterTest {
         identityLink.setType(type);
         return identityLink;
     }
+
+    @Test
+    public void should_extractActor_when_actorIdentityLinkExists() {
+        // given
+        org.activiti.engine.task.Task internalTask = taskBuilder().build();
+        given(taskService.getIdentityLinksForTask(eq(internalTask.getId())))
+            .willReturn(
+                asList(
+                    buildIdentityLink("testUser", null, IdentityLinkType.CANDIDATE),
+                    buildIdentityLink("actorUser", null, IdentityLinkType.ACTOR),
+                    buildIdentityLink(null, "testGroup", IdentityLinkType.CANDIDATE)
+                )
+            );
+
+        // when
+        Task convertedTask = taskConverter.from(internalTask);
+
+        // then
+        assertThat(convertedTask).isNotNull().extracting(Task::getActor).isEqualTo("actorUser");
+    }
+
+    @Test
+    public void should_returnNullActor_when_noActorIdentityLinkExists() {
+        // given
+        org.activiti.engine.task.Task internalTask = taskBuilder().build();
+        given(taskService.getIdentityLinksForTask(eq(internalTask.getId())))
+            .willReturn(
+                asList(
+                    buildIdentityLink("testUser", null, IdentityLinkType.CANDIDATE),
+                    buildIdentityLink(null, "testGroup", IdentityLinkType.CANDIDATE)
+                )
+            );
+
+        // when
+        Task convertedTask = taskConverter.from(internalTask);
+
+        // then
+        assertThat(convertedTask).isNotNull().extracting(Task::getActor).isNull();
+    }
+
+    @Test
+    public void should_returnNullActor_when_noIdentityLinksExist() {
+        // given
+        org.activiti.engine.task.Task internalTask = taskBuilder().build();
+        given(taskService.getIdentityLinksForTask(eq(internalTask.getId()))).willReturn(null);
+
+        // when
+        Task convertedTask = taskConverter.from(internalTask);
+
+        // then
+        assertThat(convertedTask).isNotNull().extracting(Task::getActor).isNull();
+    }
 }

@@ -68,6 +68,7 @@ public class APITaskConverter
         task.setTaskDefinitionKey(internalTask.getTaskDefinitionKey());
         task.setAppVersion(Objects.toString(internalTask.getAppVersion(), null));
         task.setBusinessKey(internalTask.getBusinessKey());
+        task.setActor(extractActor(internalTask));
 
         return task;
     }
@@ -104,6 +105,20 @@ public class APITaskConverter
                 .collect(Collectors.toList());
         }
         return result;
+    }
+
+    private String extractActor(org.activiti.engine.task.Task source) {
+        List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(source.getId());
+        if (identityLinks != null) {
+            return identityLinks
+                .stream()
+                .filter(link -> IdentityLinkType.ACTOR.equals(link.getType()))
+                .filter(link -> link.getUserId() != null)
+                .map(IdentityLink::getUserId)
+                .findFirst()
+                .orElse(null);
+        }
+        return null;
     }
 
     private Task.TaskStatus calculateStatus(org.activiti.engine.task.Task source) {

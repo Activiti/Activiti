@@ -38,4 +38,6 @@ public class IdentityLinkType {
     public static final String STARTER = "starter";
 
     public static final String PARTICIPANT = "participant";
+
+    public static final String ACTOR = "actor";
 }
