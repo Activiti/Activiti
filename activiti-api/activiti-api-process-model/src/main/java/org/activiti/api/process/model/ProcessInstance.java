@@ -16,9 +16,8 @@
 package org.activiti.api.process.model;
 
 import java.util.Date;
-import java.util.List;
+
 import org.activiti.api.model.shared.model.ApplicationElement;
-import org.activiti.api.model.shared.model.IdentityLink;
 
 public interface ProcessInstance extends ApplicationElement {
     enum ProcessInstanceStatus {
