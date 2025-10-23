@@ -71,9 +71,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 @SpringBootTest
 public class ExtensionsVariablesMappingProviderTest {
 
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String EXPRESSION_TEST_FILES_PATH = "src/test/resources/expressions/";
 
     private static final String JSONPATCH_TEST_FILES_PATH = "src/test/resources/jsonPatch/";
+    private static final String PROCESS_DEFINITION_KEY = "Process_taskVarMapping";
 
     @InjectMocks
     @Autowired
@@ -85,8 +87,7 @@ public class ExtensionsVariablesMappingProviderTest {
     @Test
     public void calculateInputVariablesShouldDoMappingWhenThereIsMappingSet() throws Exception {
         //given
-        ObjectMapper objectMapper = new ObjectMapper();
-        ProcessExtensionModel extensions = objectMapper.readValue(
+        ProcessExtensionModel extensions = OBJECT_MAPPER.readValue(
             new File("src/test/resources/task-variable-mapping-extensions.json"),
             ProcessExtensionModel.class
         );
@@ -127,8 +128,7 @@ public class ExtensionsVariablesMappingProviderTest {
     @Test
     public void calculateInputVariablesShouldPassAllVariablesWhenThereIsNoMapping() throws Exception {
         //given
-        ObjectMapper objectMapper = new ObjectMapper();
-        ProcessExtensionModel extensions = objectMapper.readValue(
+        ProcessExtensionModel extensions = OBJECT_MAPPER.readValue(
             new File("src/test/resources/task-variable-no-mapping-extensions.json"),
             ProcessExtensionModel.class
         );
@@ -153,8 +153,7 @@ public class ExtensionsVariablesMappingProviderTest {
     @Test
     public void calculateInputVariablesShouldNotPassAnyVariablesWhenTheMappingIsEmpty() throws Exception {
         //given
-        ObjectMapper objectMapper = new ObjectMapper();
-        ProcessExtensionModel extensions = objectMapper.readValue(
+        ProcessExtensionModel extensions = OBJECT_MAPPER.readValue(
             new File("src/test/resources/task-variable-empty-mapping-extensions.json"),
             ProcessExtensionModel.class
         );
@@ -171,8 +170,7 @@ public class ExtensionsVariablesMappingProviderTest {
     @Test
     public void calculateInputVariablesShouldPassOnlyConstantsWhenTheMappingIsEmpty() throws Exception {
         //given
-        ObjectMapper objectMapper = new ObjectMapper();
-        ProcessExtensionModel extensions = objectMapper.readValue(
+        ProcessExtensionModel extensions = OBJECT_MAPPER.readValue(
             new File("src/test/resources/task-variable-empty-mapping-with-constants-extensions.json"),
             ProcessExtensionModel.class
         );
@@ -197,8 +195,7 @@ public class ExtensionsVariablesMappingProviderTest {
     @Test
     public void calculateOutputVariablesShouldDoMappingWhenThereIsMappingSet() throws Exception {
         //given
-        ObjectMapper objectMapper = new ObjectMapper();
-        ProcessExtensionModel extensions = objectMapper.readValue(
+        ProcessExtensionModel extensions = OBJECT_MAPPER.readValue(
             new File("src/test/resources/task-variable-mapping-extensions.json"),
             ProcessExtensionModel.class
         );
@@ -233,8 +230,7 @@ public class ExtensionsVariablesMappingProviderTest {
         given(expressionResolver.containsExpression(any())).willReturn(false);
         ReflectionTestUtils.setField(variablesMappingProvider, "expressionResolver", expressionResolver);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        ProcessExtensionModel extensions = objectMapper.readValue(
+        ProcessExtensionModel extensions = OBJECT_MAPPER.readValue(
             new File("src/test/resources/task-variable-no-mapping-extensions.json"),
             ProcessExtensionModel.class
         );
@@ -261,8 +257,7 @@ public class ExtensionsVariablesMappingProviderTest {
     @Test
     public void calculateOutputVariablesShouldNotPassAnyVariablesWhenTheMappingIsEmpty() throws Exception {
         //given
-        ObjectMapper objectMapper = new ObjectMapper();
-        ProcessExtensionModel extensions = objectMapper.readValue(
+        ProcessExtensionModel extensions = OBJECT_MAPPER.readValue(
             new File("src/test/resources/task-variable-empty-mapping-extensions.json"),
             ProcessExtensionModel.class
         );
@@ -682,8 +677,7 @@ public class ExtensionsVariablesMappingProviderTest {
         String processDefinitionKey,
         List<CustomFunctionProvider> customFunctionProviders
     ) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        ProcessExtensionModel extensions = objectMapper.readValue(
+        ProcessExtensionModel extensions = OBJECT_MAPPER.readValue(
             new File(filePath + fileName),
             ProcessExtensionModel.class
         );
@@ -947,8 +941,7 @@ public class ExtensionsVariablesMappingProviderTest {
 
     @Test
     public void should_returnAllExecutionVariables_when_calculatingAnImplicitInputMapping() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-        ProcessExtensionModel extensions = objectMapper.readValue(
+        ProcessExtensionModel extensions = OBJECT_MAPPER.readValue(
             new File("src/test/resources/task-variable-implicit-mapping-extensions.json"),
             ProcessExtensionModel.class
         );
@@ -970,8 +963,7 @@ public class ExtensionsVariablesMappingProviderTest {
 
     @Test
     public void should_returnAllTaskVariables_when_calculatingAnImplicitOutputMapping() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-        ProcessExtensionModel extensions = objectMapper.readValue(
+        ProcessExtensionModel extensions = OBJECT_MAPPER.readValue(
             new File("src/test/resources/task-variable-implicit-mapping-extensions.json"),
             ProcessExtensionModel.class
         );
@@ -997,8 +989,7 @@ public class ExtensionsVariablesMappingProviderTest {
     @Test
     public void should_calculateInputVariables_when_variableIsInProcessInstanceContextButNotDefinedInExtensions()
         throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-        ProcessExtensionModel extensions = objectMapper.readValue(
+        ProcessExtensionModel extensions = OBJECT_MAPPER.readValue(
             new File("src/test/resources/task-variable-implicit-mapping-extensions.json"),
             ProcessExtensionModel.class
         );
@@ -1019,8 +1010,7 @@ public class ExtensionsVariablesMappingProviderTest {
     @Test
     public void should_calculateOutputVariables_when_variableIsInProcessInstanceContextButNotDefinedInExtensions()
         throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-        ProcessExtensionModel extensions = objectMapper.readValue(
+        ProcessExtensionModel extensions = OBJECT_MAPPER.readValue(
             new File("src/test/resources/task-variable-implicit-mapping-extensions.json"),
             ProcessExtensionModel.class
         );
@@ -1090,6 +1080,20 @@ public class ExtensionsVariablesMappingProviderTest {
                 tuple("task_input_variable_name_1", 1),
                 tuple("task_input_variable_name_2", 2)
             );
+    }
+
+    @Test
+    public void shouldReadFieldEphemeralWhenSetInExtension() throws Exception {
+        ProcessExtensionModel extensions = OBJECT_MAPPER.readValue(
+            new File("src/test/resources/task-variable-mapping-extensions-with-ephemeral.json"),
+            ProcessExtensionModel.class
+        );
+
+        ProcessVariablesMapping ephemeralVariablesMapping = extensions.getExtensions(PROCESS_DEFINITION_KEY).getMappings().get("simpleTask");
+        ProcessVariablesMapping nonEphemeralVariablesMapping = extensions.getExtensions(PROCESS_DEFINITION_KEY).getMappings().get("myTask");
+
+        assertThat(ephemeralVariablesMapping.isEphemeral()).isTrue();
+        assertThat(nonEphemeralVariablesMapping.isEphemeral()).isFalse();
     }
 
     public static class TestCustomFunctionProvider implements CustomFunctionProvider {

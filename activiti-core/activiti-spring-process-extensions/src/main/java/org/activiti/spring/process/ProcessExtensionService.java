@@ -18,6 +18,7 @@ package org.activiti.spring.process;
 import java.util.Optional;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.model.Extension;
+import org.activiti.spring.process.model.ProcessVariablesMapping;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.springframework.lang.NonNull;
 
@@ -56,5 +57,13 @@ public class ProcessExtensionService {
             .map(ext -> ext.getPropertyByName(variableName))
             .map(VariableDefinition::isEphemeral)
             .orElse(false);
+    }
+
+    public boolean isTaskMappingEphemeral(String processDefinitionId, String taskDefinitionKey) {
+        Extension extension = this.getExtensionsForId(processDefinitionId);
+        ProcessVariablesMapping mapping = extension.getMappings() != null
+            ? extension.getMappings().get(taskDefinitionKey)
+            : null;
+        return mapping != null && mapping.isEphemeral();
     }
 }
