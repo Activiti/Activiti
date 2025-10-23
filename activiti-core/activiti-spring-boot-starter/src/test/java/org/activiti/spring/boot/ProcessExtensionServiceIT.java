@@ -47,19 +47,8 @@ public class ProcessExtensionServiceIT {
         assertThat(hasExtensionsFor).isTrue();
 
         Extension extensions = processExtensionService.getExtensionsFor(processDefinition);
+
         assertThat(extensions).isNotNull();
         assertThat(extensions.getProperties()).containsKey("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
     }
-
-    @Test
-    public void shouldReturnProperResultForTaskVarMappingEphemeral() {
-        ProcessDefinition processDefinition = repositoryService
-            .createProcessDefinitionQuery()
-            .processDefinitionKey("Process_ephemeralMappingProcess")
-            .singleResult();
-        assertThat(processExtensionService.isTaskMappingEphemeral(processDefinition.getId(), "Activity_1")).isFalse();
-        assertThat(processExtensionService.isTaskMappingEphemeral(processDefinition.getId(), "Activity_2")).isTrue();
-
-    }
-
 }

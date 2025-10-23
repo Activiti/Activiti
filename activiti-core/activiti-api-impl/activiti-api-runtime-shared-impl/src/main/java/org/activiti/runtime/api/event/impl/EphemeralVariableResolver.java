@@ -27,11 +27,8 @@ public class EphemeralVariableResolver {
     }
 
     boolean isEphemeralVariable(ActivitiVariableEvent internalEvent) {
-        if (internalEvent.isTaskVariable()) {
-            return processExtensionService.isTaskMappingEphemeral(internalEvent.getProcessDefinitionId(),
-                internalEvent.getTaskDefinitionKey());
-        }
         return (
+            !internalEvent.isTaskVariable() &&
             processExtensionService.hasEphemeralVariable(
                 internalEvent.getProcessDefinitionId(),
                 internalEvent.getVariableName()

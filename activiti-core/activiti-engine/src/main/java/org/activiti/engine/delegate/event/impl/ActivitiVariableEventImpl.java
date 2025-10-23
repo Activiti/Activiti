@@ -30,8 +30,6 @@ public class ActivitiVariableEventImpl extends ActivitiEventImpl implements Acti
     protected Object variableValue;
     protected VariableType variableType;
     protected String taskId;
-    private String taskDefinitionKey;
-
 
     public ActivitiVariableEventImpl(ActivitiEventType type) {
         super(type);
@@ -75,14 +73,5 @@ public class ActivitiVariableEventImpl extends ActivitiEventImpl implements Acti
     @Override
     public boolean isTaskVariable() {
         return taskId != null;
-    }
-
-    @Override
-    public String getTaskDefinitionKey() {
-        return taskDefinitionKey;
-    }
-
-    public void setTaskDefinitionKey(String taskDefinitionKey) {
-        this.taskDefinitionKey = taskDefinitionKey;
     }
 }

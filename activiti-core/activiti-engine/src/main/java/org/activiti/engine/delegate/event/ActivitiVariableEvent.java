@@ -51,6 +51,4 @@ public interface ActivitiVariableEvent extends ActivitiEvent {
     String getTaskId();
 
     boolean isTaskVariable();
-
-    String getTaskDefinitionKey();
 }
