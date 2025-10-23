@@ -141,9 +141,16 @@ public class CancelCallActivityByMessageTest extends PluggableActivitiTestCase {
         assertThat(taskEntity.getName()).isEqualTo("Sample User Task2 in External");
         String externalTaskExecutionId = taskEntity.getExecutionId();
 
+
+        ActivitiCancelledEvent processCancelledEvent = (ActivitiCancelledEvent) myEventListener
+            .getEventsReceived()
+            .get(14);
+        assertThat(processCancelledEvent.getType()).isEqualTo(ActivitiEventType.PROCESS_CANCELLED);
+        assertThat(processCancelledEvent.getExecutionId()).isEqualTo(processCancelledEvent.getProcessInstanceId());
+
         // activityId is the call activity and the execution is the boundary event as we have seen before
         // We get this event in workflow but we ignore the activityType of "callActivity"
-        activityEvent = (ActivitiActivityEvent) myEventListener.getEventsReceived().get(14);
+        activityEvent = (ActivitiActivityEvent) myEventListener.getEventsReceived().get(15);
         assertThat(activityEvent)
             .extracting(
                 ActivitiActivityEvent::getType,
@@ -162,15 +169,9 @@ public class CancelCallActivityByMessageTest extends PluggableActivitiTestCase {
             "boundary event (cancelBoundaryMessageEvent)"
         );
 
-        ActivitiEntityEvent taskCancelledEvent = (ActivitiEntityEvent) myEventListener.getEventsReceived().get(15);
+        ActivitiEntityEvent taskCancelledEvent = (ActivitiEntityEvent) myEventListener.getEventsReceived().get(16);
         assertThat(taskCancelledEvent.getType()).isEqualTo(ActivitiEventType.ENTITY_DELETED);
         assertThat(((TaskEntity) taskCancelledEvent.getEntity()).getName()).isEqualTo(taskEntity.getName());
-
-        ActivitiCancelledEvent processCancelledEvent = (ActivitiCancelledEvent) myEventListener
-            .getEventsReceived()
-            .get(16);
-        assertThat(processCancelledEvent.getType()).isEqualTo(ActivitiEventType.PROCESS_CANCELLED);
-        assertThat(processCancelledEvent.getExecutionId()).isEqualTo(processCancelledEvent.getProcessInstanceId());
 
         activityEvent = (ActivitiActivityEvent) myEventListener.getEventsReceived().get(17);
         assertThat(activityEvent)
