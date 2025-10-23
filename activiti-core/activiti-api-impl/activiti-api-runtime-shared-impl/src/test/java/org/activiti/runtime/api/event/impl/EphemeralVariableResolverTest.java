@@ -71,22 +71,12 @@ class EphemeralVariableResolverTest {
     }
 
     @Test
-    void should_considerEphemeral_when_itsTaskVariable_andMappingIsEphemeral() {
+    void should_notConsiderEphemeral_when_itsTaskVariable() {
         //given
         ActivitiVariableEventImpl internalEvent = buildTaskVariableEvent();
-        given(processExtensionService.isTaskMappingEphemeral(internalEvent.getProcessDefinitionId(),
-            internalEvent.getTaskDefinitionKey())).willReturn(true);
-        //when
-        assertThat(resolver.isEphemeralVariable(internalEvent)).isTrue();
-    }
 
-    @Test
-    void should_notConsiderEphemeral_when_itsTaskVariable_andMappingIsNotEphemeral() {
-        //given
-        ActivitiVariableEventImpl internalEvent = buildTaskVariableEvent();
-        given(processExtensionService.isTaskMappingEphemeral(internalEvent.getProcessDefinitionId(),
-            internalEvent.getTaskDefinitionKey())).willReturn(false);
         //when
+        verify(processExtensionService, never()).hasEphemeralVariable(any(), any());
         assertThat(resolver.isEphemeralVariable(internalEvent)).isFalse();
     }
 }

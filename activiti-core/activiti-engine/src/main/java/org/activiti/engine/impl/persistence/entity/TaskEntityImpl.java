@@ -199,8 +199,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
                         result.getTaskId(),
                         result.getExecutionId(),
                         getProcessInstanceId(),
-                        getProcessDefinitionId(),
-                        sourceActivityExecution != null ? sourceActivityExecution.getCurrentActivityId() : null
+                        getProcessDefinitionId()
                     )
                 );
         }

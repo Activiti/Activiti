@@ -480,8 +480,7 @@ public class ActivitiEventBuilder {
         String taskId,
         String executionId,
         String processInstanceId,
-        String processDefinitionId,
-        String taskDefinitionKey
+        String processDefinitionId
     ) {
         ActivitiVariableEventImpl newEvent = new ActivitiVariableEventImpl(type);
         newEvent.setVariableName(variableName);
@@ -491,7 +490,6 @@ public class ActivitiEventBuilder {
         newEvent.setExecutionId(executionId);
         newEvent.setProcessDefinitionId(processDefinitionId);
         newEvent.setProcessInstanceId(processInstanceId);
-        newEvent.setTaskDefinitionKey(taskDefinitionKey);
         return newEvent;
     }
 
