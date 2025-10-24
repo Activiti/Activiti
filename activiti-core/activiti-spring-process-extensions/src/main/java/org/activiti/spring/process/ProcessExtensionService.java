@@ -61,6 +61,9 @@ public class ProcessExtensionService {
     }
 
     public boolean isTaskMappingEphemeral(String processDefinitionId, String taskDefinitionKey) {
+        if (processDefinitionId == null) {
+            return false;
+        }
         Extension extension = this.getExtensionsForId(processDefinitionId);
         ProcessVariablesMapping mapping = extension.getMappings() != null
             ? extension.getMappings().get(taskDefinitionKey)

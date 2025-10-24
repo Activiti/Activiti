@@ -138,4 +138,11 @@ class ProcessExtensionServiceTest {
 
         assertThat(result).isFalse();
     }
+
+    @Test
+    void should_returnFalse_when_processDefinitionId_isNull_forTaskVariables() {
+        String variableName = "variableName";
+        boolean result = processExtensionService.isTaskMappingEphemeral(null, variableName);
+        assertThat(result).isFalse();
+    }
 }
