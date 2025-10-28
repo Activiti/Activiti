@@ -43,6 +43,8 @@ public class IntegrationContextImpl implements IntegrationContext {
     private String appVersion;
     private String connectorType;
 
+    private boolean ephemeral;
+
     public IntegrationContextImpl() {
         this.id = UUID.randomUUID().toString();
     }
@@ -201,6 +203,10 @@ public class IntegrationContextImpl implements IntegrationContext {
         this.executionId = executionId;
     }
 
+    public void setEphemeral(boolean ephemeral) {
+        this.ephemeral = ephemeral;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(
@@ -328,5 +334,10 @@ public class IntegrationContextImpl implements IntegrationContext {
         return Optional.ofNullable(outBoundVariables)
             .map(it -> (T) it.get(name))
             .orElse(null);
+    }
+
+    @Override
+    public boolean hasEphemeralMapping() {
+        return this.ephemeral;
     }
 }
