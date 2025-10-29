@@ -92,7 +92,7 @@ public class IntegrationContextBuilder {
         }
 
         integrationContext.addInBoundVariables(inboundVariablesProvider.calculateInputVariables(execution));
-        integrationContext.setEphemeral(inboundVariablesProvider.isMappingEphemeral(execution));
+        integrationContext.setEphemeralVariables(inboundVariablesProvider.isMappingEphemeral(execution));
 
         return integrationContext;
     }

@@ -42,8 +42,7 @@ public class IntegrationContextImpl implements IntegrationContext {
     private String clientType;
     private String appVersion;
     private String connectorType;
-
-    private boolean ephemeral;
+    private Boolean ephemeralVariables;
 
     public IntegrationContextImpl() {
         this.id = UUID.randomUUID().toString();
@@ -203,8 +202,8 @@ public class IntegrationContextImpl implements IntegrationContext {
         this.executionId = executionId;
     }
 
-    public void setEphemeral(boolean ephemeral) {
-        this.ephemeral = ephemeral;
+    public void setEphemeralVariables(Boolean ephemeralVariables) {
+        this.ephemeralVariables = ephemeralVariables;
     }
 
     @Override
@@ -225,7 +224,8 @@ public class IntegrationContextImpl implements IntegrationContext {
             processDefinitionKey,
             processDefinitionVersion,
             processInstanceId,
-            rootProcessInstanceId
+            rootProcessInstanceId,
+            ephemeralVariables
         );
     }
 
@@ -257,7 +257,8 @@ public class IntegrationContextImpl implements IntegrationContext {
             Objects.equals(processDefinitionKey, other.processDefinitionKey) &&
             Objects.equals(processDefinitionVersion, other.processDefinitionVersion) &&
             Objects.equals(processInstanceId, other.processInstanceId) &&
-            Objects.equals(rootProcessInstanceId, other.rootProcessInstanceId)
+            Objects.equals(rootProcessInstanceId, other.rootProcessInstanceId) &&
+            Objects.equals(ephemeralVariables, other.ephemeralVariables)
         );
     }
 
@@ -296,6 +297,8 @@ public class IntegrationContextImpl implements IntegrationContext {
             .append(appVersion)
             .append(", connectorType=")
             .append(connectorType)
+            .append(", ephemeralVariables=")
+            .append(ephemeralVariables)
             .append("]");
         return builder.toString();
     }
@@ -337,7 +340,7 @@ public class IntegrationContextImpl implements IntegrationContext {
     }
 
     @Override
-    public boolean hasEphemeralMapping() {
-        return this.ephemeral;
+    public boolean hasEphemeralVariables() {
+        return Boolean.TRUE.equals(this.ephemeralVariables);
     }
 }

@@ -245,4 +245,20 @@ class IntegrationContextImplTest {
         assertThat(toString).contains("inboundVariablesKeys=[]");
         assertThat(toString).contains("outBoundVariableKeys=[]");
     }
+
+    @Test
+    void testEphemeralVariablesSetting() {
+        IntegrationContextImpl integrationContext = new IntegrationContextImpl();
+
+        assertThat(integrationContext.hasEphemeralVariables()).isFalse();
+
+        integrationContext.setEphemeralVariables(true);
+        assertThat(integrationContext.hasEphemeralVariables()).isTrue();
+
+        integrationContext.setEphemeralVariables(false);
+        assertThat(integrationContext.hasEphemeralVariables()).isFalse();
+
+        integrationContext.setEphemeralVariables(null);
+        assertThat(integrationContext.hasEphemeralVariables()).isFalse();
+    }
 }

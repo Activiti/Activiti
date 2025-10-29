@@ -17,6 +17,7 @@ package org.activiti.runtime.api.connector;
 
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -170,5 +171,18 @@ public class IntegrationContextBuilderTest {
         assertThat(integrationContext.getProcessDefinitionVersion()).isEqualTo(PROCESS_DEFINITION_VERSION);
         assertThat(integrationContext.getParentProcessInstanceId()).isEqualTo(PARENT_PROCESS_INSTANCE_ID);
         assertThat(integrationContext.getInBoundVariables()).containsAllEntriesOf(variables);
+    }
+
+    @Test
+     void should_setEphemeral_when_mappingIsEphemeral() {
+        ExecutionEntity execution = mock(ExecutionEntity.class);
+        given(execution.getProcessDefinitionId()).willReturn(PROCESS_DEFINITION_ID);
+        given(inboundVariablesProvider.isMappingEphemeral(any())).willReturn(true);
+
+        //when
+        IntegrationContext integrationContext = builder.from(execution);
+
+        //then
+       assertThat(integrationContext.hasEphemeralVariables()).isTrue();
     }
 }
