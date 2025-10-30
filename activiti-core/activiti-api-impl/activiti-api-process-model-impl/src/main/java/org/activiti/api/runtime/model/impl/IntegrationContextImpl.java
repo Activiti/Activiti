@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.activiti.api.process.model.IntegrationContext;
 
 public class IntegrationContextImpl implements IntegrationContext {
@@ -362,6 +363,7 @@ public class IntegrationContextImpl implements IntegrationContext {
     }
 
     @Override
+    @JsonProperty("ephemeralVariables")
     public boolean hasEphemeralVariables() {
         return Boolean.TRUE.equals(this.ephemeralVariables);
     }
