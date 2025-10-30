@@ -261,4 +261,47 @@ class IntegrationContextImplTest {
         integrationContext.setEphemeralVariables(null);
         assertThat(integrationContext.hasEphemeralVariables()).isFalse();
     }
+
+    @Test
+    void testCopyConstructorCopiesAllFields() {
+        IntegrationContextImpl original = new IntegrationContextImpl();
+        original.setProcessInstanceId("proc123");
+        original.setParentProcessInstanceId("parent456");
+        original.setRootProcessInstanceId("root789");
+        original.setProcessDefinitionId("defId");
+        original.setExecutionId("execId");
+        original.setProcessDefinitionKey("defKey");
+        original.setProcessDefinitionVersion(2);
+        original.setBusinessKey("bizKey");
+        original.setClientId("clientId");
+        original.setClientName("clientName");
+        original.setClientType("clientType");
+        original.setAppVersion("1.0.0");
+        original.setConnectorType("connectorType");
+        original.setEphemeralVariables(true);
+        original.addInBoundVariable("inKey", "inValue");
+        original.addOutBoundVariable("outKey", "outValue");
+
+        IntegrationContextImpl copy = new IntegrationContextImpl(original);
+
+        assertThat(copy).isNotSameAs(original);
+        assertThat(copy.getProcessInstanceId()).isEqualTo(original.getProcessInstanceId());
+        assertThat(copy.getParentProcessInstanceId()).isEqualTo(original.getParentProcessInstanceId());
+        assertThat(copy.getRootProcessInstanceId()).isEqualTo(original.getRootProcessInstanceId());
+        assertThat(copy.getProcessDefinitionId()).isEqualTo(original.getProcessDefinitionId());
+        assertThat(copy.getExecutionId()).isEqualTo(original.getExecutionId());
+        assertThat(copy.getProcessDefinitionKey()).isEqualTo(original.getProcessDefinitionKey());
+        assertThat(copy.getProcessDefinitionVersion()).isEqualTo(original.getProcessDefinitionVersion());
+        assertThat(copy.getBusinessKey()).isEqualTo(original.getBusinessKey());
+        assertThat(copy.getClientId()).isEqualTo(original.getClientId());
+        assertThat(copy.getClientName()).isEqualTo(original.getClientName());
+        assertThat(copy.getClientType()).isEqualTo(original.getClientType());
+        assertThat(copy.getAppVersion()).isEqualTo(original.getAppVersion());
+        assertThat(copy.getConnectorType()).isEqualTo(original.getConnectorType());
+        assertThat(copy.hasEphemeralVariables()).isEqualTo(original.hasEphemeralVariables());
+        assertThat(copy.getInBoundVariables()).isEqualTo(original.getInBoundVariables());
+        assertThat(copy.getOutBoundVariables()).isEqualTo(original.getOutBoundVariables());
+        assertThat(copy.getInBoundVariables()).isNotSameAs(original.getInBoundVariables());
+        assertThat(copy.getOutBoundVariables()).isNotSameAs(original.getOutBoundVariables());
+    }
 }

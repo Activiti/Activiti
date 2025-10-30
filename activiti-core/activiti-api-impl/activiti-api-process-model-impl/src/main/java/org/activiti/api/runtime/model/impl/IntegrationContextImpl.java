@@ -48,6 +48,28 @@ public class IntegrationContextImpl implements IntegrationContext {
         this.id = UUID.randomUUID().toString();
     }
 
+    public IntegrationContextImpl(IntegrationContextImpl other) {
+        this.id = other.id;
+        this.inBoundVariables = new ProcessVariablesMap<>();
+        this.inBoundVariables.putAll(other.inBoundVariables);
+        this.outBoundVariables = new ProcessVariablesMap<>();
+        this.outBoundVariables.putAll(other.outBoundVariables);
+        this.processInstanceId = other.processInstanceId;
+        this.parentProcessInstanceId = other.parentProcessInstanceId;
+        this.rootProcessInstanceId = other.rootProcessInstanceId;
+        this.processDefinitionId = other.processDefinitionId;
+        this.executionId = other.executionId;
+        this.processDefinitionKey = other.processDefinitionKey;
+        this.processDefinitionVersion = other.processDefinitionVersion;
+        this.businessKey = other.businessKey;
+        this.clientId = other.clientId;
+        this.clientName = other.clientName;
+        this.clientType = other.clientType;
+        this.appVersion = other.appVersion;
+        this.connectorType = other.connectorType;
+        this.ephemeralVariables = other.ephemeralVariables;
+    }
+
     @Override
     public String getId() {
         return id;
