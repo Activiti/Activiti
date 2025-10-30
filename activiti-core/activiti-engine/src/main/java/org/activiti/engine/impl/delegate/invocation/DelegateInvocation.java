@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.delegate.invocation;
 
 import org.activiti.engine.impl.interceptor.DelegateInterceptor;
@@ -26,38 +25,37 @@ import org.activiti.engine.impl.interceptor.DelegateInterceptor;
  */
 public abstract class DelegateInvocation {
 
-  protected Object invocationResult;
-  protected Object[] invocationParameters;
+    protected Object invocationResult;
+    protected Object[] invocationParameters;
 
-  /**
-   * make the invocation proceed, performing the actual invocation of the user code.
-   *
-   * @throws Exception
-   *           the exception thrown by the user code
-   */
-  public void proceed() {
-    invoke();
-  }
+    /**
+     * make the invocation proceed, performing the actual invocation of the user code.
+     *
+     * @throws Exception
+     *           the exception thrown by the user code
+     */
+    public void proceed() {
+        invoke();
+    }
 
-  protected abstract void invoke();
+    protected abstract void invoke();
 
-  /**
-   * @return the result of the invocation (can be null if the invocation does not return a result)
-   */
-  public Object getInvocationResult() {
-    return invocationResult;
-  }
+    /**
+     * @return the result of the invocation (can be null if the invocation does not return a result)
+     */
+    public Object getInvocationResult() {
+        return invocationResult;
+    }
 
-  /**
-   * @return an array of invocation parameters (null if the invocation takes no parameters)
-   */
-  public Object[] getInvocationParameters() {
-    return invocationParameters;
-  }
+    /**
+     * @return an array of invocation parameters (null if the invocation takes no parameters)
+     */
+    public Object[] getInvocationParameters() {
+        return invocationParameters;
+    }
 
-  /**
-   * returns the target of the current invocation, ie. JavaDelegate, ValueExpression ...
-   */
-  public abstract Object getTarget();
-
+    /**
+     * returns the target of the current invocation, ie. JavaDelegate, ValueExpression ...
+     */
+    public abstract Object getTarget();
 }

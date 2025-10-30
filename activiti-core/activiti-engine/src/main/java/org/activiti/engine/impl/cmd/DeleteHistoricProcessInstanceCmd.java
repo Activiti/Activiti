@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -31,32 +28,39 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public class DeleteHistoricProcessInstanceCmd implements Command<Object>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String processInstanceId;
+    private static final long serialVersionUID = 1L;
+    protected String processInstanceId;
 
-  public DeleteHistoricProcessInstanceCmd(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
-
-  public Object execute(CommandContext commandContext) {
-    if (processInstanceId == null) {
-      throw new ActivitiIllegalArgumentException("processInstanceId is null");
-    }
-    // Check if process instance is still running
-    HistoricProcessInstance instance = commandContext.getHistoricProcessInstanceEntityManager().findById(processInstanceId);
-
-    if (instance == null) {
-      throw new ActivitiObjectNotFoundException("No historic process instance found with id: " + processInstanceId, HistoricProcessInstance.class);
-    }
-    if (instance.getEndTime() == null) {
-      throw new ActivitiException("Process instance is still running, cannot delete historic process instance: " + processInstanceId);
+    public DeleteHistoricProcessInstanceCmd(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
     }
 
-    executeInternal(commandContext,instance);
-    return null;
-  }
+    public Object execute(CommandContext commandContext) {
+        if (processInstanceId == null) {
+            throw new ActivitiIllegalArgumentException("processInstanceId is null");
+        }
+        // Check if process instance is still running
+        HistoricProcessInstance instance = commandContext
+            .getHistoricProcessInstanceEntityManager()
+            .findById(processInstanceId);
 
-  protected void executeInternal(CommandContext commandContext,HistoricProcessInstance instance){
-      commandContext.getHistoricProcessInstanceEntityManager().delete(processInstanceId);
-  }
+        if (instance == null) {
+            throw new ActivitiObjectNotFoundException(
+                "No historic process instance found with id: " + processInstanceId,
+                HistoricProcessInstance.class
+            );
+        }
+        if (instance.getEndTime() == null) {
+            throw new ActivitiException(
+                "Process instance is still running, cannot delete historic process instance: " + processInstanceId
+            );
+        }
+
+        executeInternal(commandContext, instance);
+        return null;
+    }
+
+    protected void executeInternal(CommandContext commandContext, HistoricProcessInstance instance) {
+        commandContext.getHistoricProcessInstanceEntityManager().delete(processInstanceId);
+    }
 }

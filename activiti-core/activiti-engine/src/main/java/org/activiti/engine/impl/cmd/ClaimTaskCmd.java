@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
@@ -25,46 +24,45 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
  */
 public class ClaimTaskCmd extends NeedsActiveTaskCmd<Void> {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String userId;
+    protected String userId;
 
-  public ClaimTaskCmd(String taskId, String userId) {
-    super(taskId);
-    this.userId = userId;
-  }
-
-  protected Void execute(CommandContext commandContext, TaskEntity task) {
-    if (userId != null) {
-      task.setClaimTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
-
-      if (task.getAssignee() != null) {
-        if (!task.getAssignee().equals(userId)) {
-          // When the task is already claimed by another user, throw
-          // exception. Otherwise, ignore
-          // this, post-conditions of method already met.
-          throw new ActivitiTaskAlreadyClaimedException(task.getId(), task.getAssignee());
-        }
-      } else {
-        commandContext.getTaskEntityManager().changeTaskAssignee(task, userId);
-      }
-    } else {
-      // Task claim time should be null
-      task.setClaimTime(null);
-
-      // Task should be assigned to no one
-      commandContext.getTaskEntityManager().changeTaskAssignee(task, null);
+    public ClaimTaskCmd(String taskId, String userId) {
+        super(taskId);
+        this.userId = userId;
     }
 
-    // Add claim time to historic task instance
-    commandContext.getHistoryManager().recordTaskClaim(task);
+    protected Void execute(CommandContext commandContext, TaskEntity task) {
+        if (userId != null) {
+            task.setClaimTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
 
-    return null;
-  }
+            if (task.getAssignee() != null) {
+                if (!task.getAssignee().equals(userId)) {
+                    // When the task is already claimed by another user, throw
+                    // exception. Otherwise, ignore
+                    // this, post-conditions of method already met.
+                    throw new ActivitiTaskAlreadyClaimedException(task.getId(), task.getAssignee());
+                }
+            } else {
+                commandContext.getTaskEntityManager().changeTaskAssignee(task, userId);
+            }
+        } else {
+            // Task claim time should be null
+            task.setClaimTime(null);
 
-  @Override
-  protected String getSuspendedTaskException() {
-    return "Cannot claim a suspended task";
-  }
+            // Task should be assigned to no one
+            commandContext.getTaskEntityManager().changeTaskAssignee(task, null);
+        }
 
+        // Add claim time to historic task instance
+        commandContext.getHistoryManager().recordTaskClaim(task);
+
+        return null;
+    }
+
+    @Override
+    protected String getSuspendedTaskException() {
+        return "Cannot claim a suspended task";
+    }
 }

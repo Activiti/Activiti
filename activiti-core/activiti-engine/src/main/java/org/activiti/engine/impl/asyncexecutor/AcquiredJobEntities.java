@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.asyncexecutor;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 /**
@@ -27,21 +25,21 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
  */
 public class AcquiredJobEntities {
 
-  protected Map<String, JobEntity> acquiredJobs = new HashMap<String, JobEntity>();
+    protected Map<String, JobEntity> acquiredJobs = new HashMap<String, JobEntity>();
 
-  public void addJob(JobEntity job) {
-    acquiredJobs.put(job.getId(), job);
-  }
+    public void addJob(JobEntity job) {
+        acquiredJobs.put(job.getId(), job);
+    }
 
-  public Collection<JobEntity> getJobs() {
-    return acquiredJobs.values();
-  }
+    public Collection<JobEntity> getJobs() {
+        return acquiredJobs.values();
+    }
 
-  public boolean contains(String jobId) {
-    return acquiredJobs.containsKey(jobId);
-  }
+    public boolean contains(String jobId) {
+        return acquiredJobs.containsKey(jobId);
+    }
 
-  public int size() {
-    return acquiredJobs.size();
-  }
+    public int size() {
+        return acquiredJobs.size();
+    }
 }

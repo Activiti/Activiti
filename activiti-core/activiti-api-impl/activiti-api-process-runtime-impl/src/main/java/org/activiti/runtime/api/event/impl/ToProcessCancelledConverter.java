@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,8 @@ import org.activiti.engine.delegate.event.ActivitiProcessCancelledEvent;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 
-public class ToProcessCancelledConverter implements EventConverter<ProcessCancelledEvent, ActivitiProcessCancelledEvent> {
+public class ToProcessCancelledConverter
+    implements EventConverter<ProcessCancelledEvent, ActivitiProcessCancelledEvent> {
 
     private final APIProcessInstanceConverter processInstanceConverter;
 
@@ -32,8 +33,8 @@ public class ToProcessCancelledConverter implements EventConverter<ProcessCancel
     @Override
     public Optional<ProcessCancelledEvent> from(ActivitiProcessCancelledEvent internalEvent) {
         String cause = internalEvent.getCause() != null ? internalEvent.getCause().toString() : null;
-        return Optional.of(new ProcessCancelledImpl(
-            processInstanceConverter.from((ProcessInstance) internalEvent.getEntity()),
-                cause));
+        return Optional.of(
+            new ProcessCancelledImpl(processInstanceConverter.from((ProcessInstance) internalEvent.getEntity()), cause)
+        );
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.persistence.entity;
 
 import static java.util.Collections.emptyList;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -30,100 +27,138 @@ import org.activiti.engine.impl.persistence.entity.data.HistoricProcessInstanceD
 
 /**
  */
-public class HistoricProcessInstanceEntityManagerImpl extends AbstractEntityManager<HistoricProcessInstanceEntity> implements HistoricProcessInstanceEntityManager {
+public class HistoricProcessInstanceEntityManagerImpl
+    extends AbstractEntityManager<HistoricProcessInstanceEntity>
+    implements HistoricProcessInstanceEntityManager {
 
-  protected HistoricProcessInstanceDataManager historicProcessInstanceDataManager;
+    protected HistoricProcessInstanceDataManager historicProcessInstanceDataManager;
 
-  public HistoricProcessInstanceEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, HistoricProcessInstanceDataManager historicProcessInstanceDataManager) {
-    super(processEngineConfiguration);
-    this.historicProcessInstanceDataManager = historicProcessInstanceDataManager;
-  }
-
-  @Override
-  protected DataManager<HistoricProcessInstanceEntity> getDataManager() {
-    return historicProcessInstanceDataManager;
-  }
-
-  @Override
-  public HistoricProcessInstanceEntity create(ExecutionEntity processInstanceExecutionEntity) {
-    return historicProcessInstanceDataManager.create(processInstanceExecutionEntity);
-  }
-
-  @Override
-  public void deleteHistoricProcessInstanceByProcessDefinitionId(String processDefinitionId) {
-    if (getHistoryManager().isHistoryEnabled()) {
-      List<String> historicProcessInstanceIds = historicProcessInstanceDataManager.findHistoricProcessInstanceIdsByProcessDefinitionId(processDefinitionId);
-      for (String historicProcessInstanceId : historicProcessInstanceIds) {
-        delete(historicProcessInstanceId);
-      }
+    public HistoricProcessInstanceEntityManagerImpl(
+        ProcessEngineConfigurationImpl processEngineConfiguration,
+        HistoricProcessInstanceDataManager historicProcessInstanceDataManager
+    ) {
+        super(processEngineConfiguration);
+        this.historicProcessInstanceDataManager = historicProcessInstanceDataManager;
     }
-  }
 
-  @Override
-  public void delete(String historicProcessInstanceId) {
-    if (getHistoryManager().isHistoryEnabled()) {
-      HistoricProcessInstanceEntity historicProcessInstance = findById(historicProcessInstanceId);
-
-      getHistoricDetailEntityManager().deleteHistoricDetailsByProcessInstanceId(historicProcessInstanceId);
-      getHistoricVariableInstanceEntityManager().deleteHistoricVariableInstanceByProcessInstanceId(historicProcessInstanceId);
-      getHistoricActivityInstanceEntityManager().deleteHistoricActivityInstancesByProcessInstanceId(historicProcessInstanceId);
-      getHistoricTaskInstanceEntityManager().deleteHistoricTaskInstancesByProcessInstanceId(historicProcessInstanceId);
-      getHistoricIdentityLinkEntityManager().deleteHistoricIdentityLinksByProcInstance(historicProcessInstanceId);
-      getCommentEntityManager().deleteCommentsByProcessInstanceId(historicProcessInstanceId);
-
-      delete(historicProcessInstance, false);
-
-      // Also delete any sub-processes that may be active (ACT-821)
-
-      List<HistoricProcessInstanceEntity> selectList = historicProcessInstanceDataManager.findHistoricProcessInstancesBySuperProcessInstanceId(historicProcessInstanceId);
-      for (HistoricProcessInstanceEntity child : selectList) {
-        delete(child.getId()); // NEEDS to be by id, to come again through this method!
-      }
+    @Override
+    protected DataManager<HistoricProcessInstanceEntity> getDataManager() {
+        return historicProcessInstanceDataManager;
     }
-  }
 
-  @Override
-  public long findHistoricProcessInstanceCountByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery) {
-    if (getHistoryManager().isHistoryEnabled()) {
-      return historicProcessInstanceDataManager.findHistoricProcessInstanceCountByQueryCriteria(historicProcessInstanceQuery);
+    @Override
+    public HistoricProcessInstanceEntity create(ExecutionEntity processInstanceExecutionEntity) {
+        return historicProcessInstanceDataManager.create(processInstanceExecutionEntity);
     }
-    return 0;
-  }
 
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<HistoricProcessInstance> findHistoricProcessInstancesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery) {
-    if (getHistoryManager().isHistoryEnabled()) {
-      return historicProcessInstanceDataManager.findHistoricProcessInstancesByQueryCriteria(historicProcessInstanceQuery);
+    @Override
+    public void deleteHistoricProcessInstanceByProcessDefinitionId(String processDefinitionId) {
+        if (getHistoryManager().isHistoryEnabled()) {
+            List<String> historicProcessInstanceIds =
+                historicProcessInstanceDataManager.findHistoricProcessInstanceIdsByProcessDefinitionId(
+                    processDefinitionId
+                );
+            for (String historicProcessInstanceId : historicProcessInstanceIds) {
+                delete(historicProcessInstanceId);
+            }
+        }
     }
-    return emptyList();
-  }
 
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<HistoricProcessInstance> findHistoricProcessInstancesAndVariablesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery) {
-    if (getHistoryManager().isHistoryEnabled()) {
-      return historicProcessInstanceDataManager.findHistoricProcessInstancesAndVariablesByQueryCriteria(historicProcessInstanceQuery);
+    @Override
+    public void delete(String historicProcessInstanceId) {
+        if (getHistoryManager().isHistoryEnabled()) {
+            HistoricProcessInstanceEntity historicProcessInstance = findById(historicProcessInstanceId);
+
+            getHistoricDetailEntityManager().deleteHistoricDetailsByProcessInstanceId(historicProcessInstanceId);
+            getHistoricVariableInstanceEntityManager().deleteHistoricVariableInstanceByProcessInstanceId(
+                historicProcessInstanceId
+            );
+            getHistoricActivityInstanceEntityManager().deleteHistoricActivityInstancesByProcessInstanceId(
+                historicProcessInstanceId
+            );
+            getHistoricTaskInstanceEntityManager().deleteHistoricTaskInstancesByProcessInstanceId(
+                historicProcessInstanceId
+            );
+            getHistoricIdentityLinkEntityManager().deleteHistoricIdentityLinksByProcInstance(historicProcessInstanceId);
+            getCommentEntityManager().deleteCommentsByProcessInstanceId(historicProcessInstanceId);
+
+            delete(historicProcessInstance, false);
+
+            // Also delete any sub-processes that may be active (ACT-821)
+
+            List<HistoricProcessInstanceEntity> selectList =
+                historicProcessInstanceDataManager.findHistoricProcessInstancesBySuperProcessInstanceId(
+                    historicProcessInstanceId
+                );
+            for (HistoricProcessInstanceEntity child : selectList) {
+                delete(child.getId()); // NEEDS to be by id, to come again through this method!
+            }
+        }
     }
-    return emptyList();
-  }
 
-  @Override
-  public List<HistoricProcessInstance> findHistoricProcessInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return historicProcessInstanceDataManager.findHistoricProcessInstancesByNativeQuery(parameterMap, firstResult, maxResults);
-  }
+    @Override
+    public long findHistoricProcessInstanceCountByQueryCriteria(
+        HistoricProcessInstanceQueryImpl historicProcessInstanceQuery
+    ) {
+        if (getHistoryManager().isHistoryEnabled()) {
+            return historicProcessInstanceDataManager.findHistoricProcessInstanceCountByQueryCriteria(
+                historicProcessInstanceQuery
+            );
+        }
+        return 0;
+    }
 
-  @Override
-  public long findHistoricProcessInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
-    return historicProcessInstanceDataManager.findHistoricProcessInstanceCountByNativeQuery(parameterMap);
-  }
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<HistoricProcessInstance> findHistoricProcessInstancesByQueryCriteria(
+        HistoricProcessInstanceQueryImpl historicProcessInstanceQuery
+    ) {
+        if (getHistoryManager().isHistoryEnabled()) {
+            return historicProcessInstanceDataManager.findHistoricProcessInstancesByQueryCriteria(
+                historicProcessInstanceQuery
+            );
+        }
+        return emptyList();
+    }
 
-  public HistoricProcessInstanceDataManager getHistoricProcessInstanceDataManager() {
-    return historicProcessInstanceDataManager;
-  }
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<HistoricProcessInstance> findHistoricProcessInstancesAndVariablesByQueryCriteria(
+        HistoricProcessInstanceQueryImpl historicProcessInstanceQuery
+    ) {
+        if (getHistoryManager().isHistoryEnabled()) {
+            return historicProcessInstanceDataManager.findHistoricProcessInstancesAndVariablesByQueryCriteria(
+                historicProcessInstanceQuery
+            );
+        }
+        return emptyList();
+    }
 
-  public void setHistoricProcessInstanceDataManager(HistoricProcessInstanceDataManager historicProcessInstanceDataManager) {
-    this.historicProcessInstanceDataManager = historicProcessInstanceDataManager;
-  }
+    @Override
+    public List<HistoricProcessInstance> findHistoricProcessInstancesByNativeQuery(
+        Map<String, Object> parameterMap,
+        int firstResult,
+        int maxResults
+    ) {
+        return historicProcessInstanceDataManager.findHistoricProcessInstancesByNativeQuery(
+            parameterMap,
+            firstResult,
+            maxResults
+        );
+    }
 
+    @Override
+    public long findHistoricProcessInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
+        return historicProcessInstanceDataManager.findHistoricProcessInstanceCountByNativeQuery(parameterMap);
+    }
+
+    public HistoricProcessInstanceDataManager getHistoricProcessInstanceDataManager() {
+        return historicProcessInstanceDataManager;
+    }
+
+    public void setHistoricProcessInstanceDataManager(
+        HistoricProcessInstanceDataManager historicProcessInstanceDataManager
+    ) {
+        this.historicProcessInstanceDataManager = historicProcessInstanceDataManager;
+    }
 }

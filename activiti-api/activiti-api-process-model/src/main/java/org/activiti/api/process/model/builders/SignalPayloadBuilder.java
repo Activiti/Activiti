@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.activiti.api.process.model.builders;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.api.process.model.payloads.SignalPayload;
 
 public class SignalPayloadBuilder {
@@ -35,18 +34,15 @@ public class SignalPayloadBuilder {
         return this;
     }
 
-    public SignalPayloadBuilder withVariable(String name,
-                                             Object value) {
+    public SignalPayloadBuilder withVariable(String name, Object value) {
         if (this.variables == null) {
             this.variables = new HashMap<>();
         }
-        this.variables.put(name,
-                           value);
+        this.variables.put(name, value);
         return this;
     }
 
     public SignalPayload build() {
-        return new SignalPayload(name,
-                                 this.variables);
+        return new SignalPayload(name, this.variables);
     }
 }

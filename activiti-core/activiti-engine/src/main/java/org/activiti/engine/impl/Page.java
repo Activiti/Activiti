@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl;
 
 /**
@@ -24,19 +23,19 @@ package org.activiti.engine.impl;
  */
 public class Page {
 
-  protected int firstResult;
-  protected int maxResults;
+    protected int firstResult;
+    protected int maxResults;
 
-  public Page(int firstResult, int maxResults) {
-    this.firstResult = firstResult;
-    this.maxResults = maxResults;
-  }
+    public Page(int firstResult, int maxResults) {
+        this.firstResult = firstResult;
+        this.maxResults = maxResults;
+    }
 
-  public int getFirstResult() {
-    return firstResult;
-  }
+    public int getFirstResult() {
+        return firstResult;
+    }
 
-  public int getMaxResults() {
-    return maxResults;
-  }
+    public int getMaxResults() {
+        return maxResults;
+    }
 }

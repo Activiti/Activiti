@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.test.api.event;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
@@ -31,37 +29,41 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
  */
 public class TestActivitiActivityEventListener implements ActivitiEventListener {
 
-  private List<ActivitiEvent> eventsReceived;
-  private boolean ignoreRawActivityEvents;
+    private List<ActivitiEvent> eventsReceived;
+    private boolean ignoreRawActivityEvents;
 
-  public TestActivitiActivityEventListener(boolean ignoreRawActivityEvents) {
-    eventsReceived = new ArrayList<ActivitiEvent>();
-    this.ignoreRawActivityEvents = ignoreRawActivityEvents;
-  }
-
-  public List<ActivitiEvent> getEventsReceived() {
-    return eventsReceived;
-  }
-
-  public void clearEventsReceived() {
-    eventsReceived.clear();
-  }
-
-  @Override
-  public void onEvent(ActivitiEvent event) {
-    if (event instanceof ActivitiActivityEvent) {
-      if (!ignoreRawActivityEvents || (event.getType() != ActivitiEventType.ACTIVITY_STARTED && event.getType() != ActivitiEventType.ACTIVITY_COMPLETED)) {
-        eventsReceived.add(event);
-      }
+    public TestActivitiActivityEventListener(boolean ignoreRawActivityEvents) {
+        eventsReceived = new ArrayList<ActivitiEvent>();
+        this.ignoreRawActivityEvents = ignoreRawActivityEvents;
     }
-  }
 
-  public void setIgnoreRawActivityEvents(boolean ignoreRawActivityEvents) {
-    this.ignoreRawActivityEvents = ignoreRawActivityEvents;
-  }
+    public List<ActivitiEvent> getEventsReceived() {
+        return eventsReceived;
+    }
 
-  @Override
-  public boolean isFailOnException() {
-    return false;
-  }
+    public void clearEventsReceived() {
+        eventsReceived.clear();
+    }
+
+    @Override
+    public void onEvent(ActivitiEvent event) {
+        if (event instanceof ActivitiActivityEvent) {
+            if (
+                !ignoreRawActivityEvents ||
+                (event.getType() != ActivitiEventType.ACTIVITY_STARTED &&
+                    event.getType() != ActivitiEventType.ACTIVITY_COMPLETED)
+            ) {
+                eventsReceived.add(event);
+            }
+        }
+    }
+
+    public void setIgnoreRawActivityEvents(boolean ignoreRawActivityEvents) {
+        this.ignoreRawActivityEvents = ignoreRawActivityEvents;
+    }
+
+    @Override
+    public boolean isFailOnException() {
+        return false;
+    }
 }

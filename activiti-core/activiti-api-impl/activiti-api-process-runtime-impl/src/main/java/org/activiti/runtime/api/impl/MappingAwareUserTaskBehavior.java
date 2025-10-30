@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.runtime.api.impl;
 
 import java.util.Map;
-
 import org.activiti.bpmn.model.UserTask;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
@@ -29,7 +26,11 @@ public class MappingAwareUserTaskBehavior extends UserTaskActivityBehavior {
 
     private VariablesCalculator variablesCalculator;
 
-    public MappingAwareUserTaskBehavior(UserTask userTask, VariablesCalculator variablesCalculator, VariablesPropagator variablesPropagator) {
+    public MappingAwareUserTaskBehavior(
+        UserTask userTask,
+        VariablesCalculator variablesCalculator,
+        VariablesPropagator variablesPropagator
+    ) {
         super(userTask, variablesPropagator);
         this.variablesCalculator = variablesCalculator;
     }
@@ -38,5 +39,4 @@ public class MappingAwareUserTaskBehavior extends UserTaskActivityBehavior {
     protected Map<String, Object> calculateInputVariables(DelegateExecution execution) {
         return variablesCalculator.calculateInputVariables(execution);
     }
-
 }

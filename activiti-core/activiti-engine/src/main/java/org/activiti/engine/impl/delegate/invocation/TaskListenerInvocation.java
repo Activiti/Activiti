@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.delegate.invocation;
 
 import org.activiti.engine.delegate.DelegateTask;
@@ -26,20 +25,19 @@ import org.activiti.engine.delegate.TaskListener;
  */
 public class TaskListenerInvocation extends DelegateInvocation {
 
-  protected final TaskListener executionListenerInstance;
-  protected final DelegateTask delegateTask;
+    protected final TaskListener executionListenerInstance;
+    protected final DelegateTask delegateTask;
 
-  public TaskListenerInvocation(TaskListener executionListenerInstance, DelegateTask delegateTask) {
-    this.executionListenerInstance = executionListenerInstance;
-    this.delegateTask = delegateTask;
-  }
+    public TaskListenerInvocation(TaskListener executionListenerInstance, DelegateTask delegateTask) {
+        this.executionListenerInstance = executionListenerInstance;
+        this.delegateTask = delegateTask;
+    }
 
-  protected void invoke() {
-    executionListenerInstance.notify(delegateTask);
-  }
+    protected void invoke() {
+        executionListenerInstance.notify(delegateTask);
+    }
 
-  public Object getTarget() {
-    return executionListenerInstance;
-  }
-
+    public Object getTarget() {
+        return executionListenerInstance;
+    }
 }

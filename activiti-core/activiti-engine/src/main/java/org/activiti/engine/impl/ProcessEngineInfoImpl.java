@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ProcessEngineInfo;
 
 /**
@@ -25,27 +23,27 @@ import org.activiti.engine.ProcessEngineInfo;
  */
 public class ProcessEngineInfoImpl implements Serializable, ProcessEngineInfo {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  String name;
-  String resourceUrl;
-  String exception;
+    String name;
+    String resourceUrl;
+    String exception;
 
-  public ProcessEngineInfoImpl(String name, String resourceUrl, String exception) {
-    this.name = name;
-    this.resourceUrl = resourceUrl;
-    this.exception = exception;
-  }
+    public ProcessEngineInfoImpl(String name, String resourceUrl, String exception) {
+        this.name = name;
+        this.resourceUrl = resourceUrl;
+        this.exception = exception;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public String getResourceUrl() {
-    return resourceUrl;
-  }
+    public String getResourceUrl() {
+        return resourceUrl;
+    }
 
-  public String getException() {
-    return exception;
-  }
+    public String getException() {
+        return exception;
+    }
 }

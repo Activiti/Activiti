@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.activiti.api.runtime.model.impl;
 
 import java.util.Objects;
-
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.StartMessageDeploymentDefinition;
 import org.activiti.api.process.model.StartMessageSubscription;
@@ -27,13 +26,12 @@ public class StartMessageDeploymentDefinitionImpl implements StartMessageDeploym
 
     private ProcessDefinition processDefinition;
 
-
     private StartMessageDeploymentDefinitionImpl(Builder builder) {
         this.messageSubscription = builder.messageSubscription;
         this.processDefinition = builder.processDefinition;
     }
 
-    StartMessageDeploymentDefinitionImpl() { }
+    StartMessageDeploymentDefinitionImpl() {}
 
     public ProcessDefinition getProcessDefinition() {
         return processDefinition;
@@ -60,18 +58,21 @@ public class StartMessageDeploymentDefinitionImpl implements StartMessageDeploym
             return false;
         }
         StartMessageDeploymentDefinitionImpl other = (StartMessageDeploymentDefinitionImpl) obj;
-        return Objects.equals(messageSubscription, other.messageSubscription) &&
-               Objects.equals(processDefinition, other.processDefinition);
+        return (
+            Objects.equals(messageSubscription, other.messageSubscription) &&
+            Objects.equals(processDefinition, other.processDefinition)
+        );
     }
 
     @Override
     public String toString() {
         StringBuilder builder2 = new StringBuilder();
-        builder2.append("StartMessageDeploymentDefinitionImpl [messageSubscription=")
-                .append(messageSubscription)
-                .append(", processDefinition=")
-                .append(processDefinition)
-                .append("]");
+        builder2
+            .append("StartMessageDeploymentDefinitionImpl [messageSubscription=")
+            .append(messageSubscription)
+            .append(", processDefinition=")
+            .append(processDefinition)
+            .append("]");
         return builder2.toString();
     }
 
@@ -96,8 +97,7 @@ public class StartMessageDeploymentDefinitionImpl implements StartMessageDeploym
         private StartMessageSubscription messageSubscription;
         private ProcessDefinition processDefinition;
 
-        public Builder() {
-        }
+        public Builder() {}
 
         private Builder(StartMessageDeploymentDefinitionImpl startMessageEventSubscriptionImpl) {
             this.messageSubscription = startMessageEventSubscriptionImpl.messageSubscription;
@@ -105,32 +105,31 @@ public class StartMessageDeploymentDefinitionImpl implements StartMessageDeploym
         }
 
         /**
-        * Builder method for messageEventSubscription parameter.
-        * @param messageEventSubscription field to set
-        * @return builder
-        */
+         * Builder method for messageEventSubscription parameter.
+         * @param messageEventSubscription field to set
+         * @return builder
+         */
         public Builder withMessageSubscription(StartMessageSubscription messageEventSubscription) {
             this.messageSubscription = messageEventSubscription;
             return this;
         }
 
         /**
-        * Builder method for processDefinition parameter.
-        * @param processDefinition field to set
-        * @return builder
-        */
+         * Builder method for processDefinition parameter.
+         * @param processDefinition field to set
+         * @return builder
+         */
         public Builder withProcessDefinition(ProcessDefinition processDefinition) {
             this.processDefinition = processDefinition;
             return this;
         }
 
         /**
-        * Builder method of the builder.
-        * @return built class
-        */
+         * Builder method of the builder.
+         * @return built class
+         */
         public StartMessageDeploymentDefinitionImpl build() {
             return new StartMessageDeploymentDefinitionImpl(this);
         }
     }
-
 }

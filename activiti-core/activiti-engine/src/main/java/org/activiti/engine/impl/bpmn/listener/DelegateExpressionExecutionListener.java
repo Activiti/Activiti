@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.listener;
 
 import java.util.List;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
@@ -34,30 +32,40 @@ import org.activiti.engine.impl.delegate.invocation.JavaDelegateInvocation;
  */
 public class DelegateExpressionExecutionListener implements ExecutionListener {
 
-  protected Expression expression;
-  private final List<FieldDeclaration> fieldDeclarations;
+    protected Expression expression;
+    private final List<FieldDeclaration> fieldDeclarations;
 
-  public DelegateExpressionExecutionListener(Expression expression, List<FieldDeclaration> fieldDeclarations) {
-    this.expression = expression;
-    this.fieldDeclarations = fieldDeclarations;
-  }
-
-  public void notify(DelegateExecution execution) {
-    Object delegate = DelegateExpressionUtil.resolveDelegateExpression(expression, execution, fieldDeclarations);
-    if (delegate instanceof ExecutionListener) {
-      Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new ExecutionListenerInvocation((ExecutionListener) delegate, execution));
-    } else if (delegate instanceof JavaDelegate) {
-      Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new JavaDelegateInvocation((JavaDelegate) delegate, execution));
-    } else {
-      throw new ActivitiIllegalArgumentException("Delegate expression " + expression + " did not resolve to an implementation of " + ExecutionListener.class + " nor " + JavaDelegate.class);
+    public DelegateExpressionExecutionListener(Expression expression, List<FieldDeclaration> fieldDeclarations) {
+        this.expression = expression;
+        this.fieldDeclarations = fieldDeclarations;
     }
-  }
 
-  /**
-   * returns the expression text for this execution listener. Comes in handy if you want to check which listeners you already have.
-   */
-  public String getExpressionText() {
-    return expression.getExpressionText();
-  }
+    public void notify(DelegateExecution execution) {
+        Object delegate = DelegateExpressionUtil.resolveDelegateExpression(expression, execution, fieldDeclarations);
+        if (delegate instanceof ExecutionListener) {
+            Context.getProcessEngineConfiguration()
+                .getDelegateInterceptor()
+                .handleInvocation(new ExecutionListenerInvocation((ExecutionListener) delegate, execution));
+        } else if (delegate instanceof JavaDelegate) {
+            Context.getProcessEngineConfiguration()
+                .getDelegateInterceptor()
+                .handleInvocation(new JavaDelegateInvocation((JavaDelegate) delegate, execution));
+        } else {
+            throw new ActivitiIllegalArgumentException(
+                "Delegate expression " +
+                expression +
+                " did not resolve to an implementation of " +
+                ExecutionListener.class +
+                " nor " +
+                JavaDelegate.class
+            );
+        }
+    }
 
+    /**
+     * returns the expression text for this execution listener. Comes in handy if you want to check which listeners you already have.
+     */
+    public String getExpressionText() {
+        return expression.getExpressionText();
+    }
 }

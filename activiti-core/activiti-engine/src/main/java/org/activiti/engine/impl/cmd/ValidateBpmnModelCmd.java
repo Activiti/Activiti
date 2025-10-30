@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -29,20 +28,19 @@ import org.activiti.validation.ValidationError;
  */
 public class ValidateBpmnModelCmd implements Command<List<ValidationError>> {
 
-  protected BpmnModel bpmnModel;
+    protected BpmnModel bpmnModel;
 
-  public ValidateBpmnModelCmd(BpmnModel bpmnModel) {
-    this.bpmnModel = bpmnModel;
-  }
-
-  @Override
-  public List<ValidationError> execute(CommandContext commandContext) {
-    ProcessValidator processValidator = commandContext.getProcessEngineConfiguration().getProcessValidator();
-    if (processValidator == null) {
-      throw new ActivitiException("No process validator defined");
+    public ValidateBpmnModelCmd(BpmnModel bpmnModel) {
+        this.bpmnModel = bpmnModel;
     }
 
-    return processValidator.validate(bpmnModel);
-  }
+    @Override
+    public List<ValidationError> execute(CommandContext commandContext) {
+        ProcessValidator processValidator = commandContext.getProcessEngineConfiguration().getProcessValidator();
+        if (processValidator == null) {
+            throw new ActivitiException("No process validator defined");
+        }
 
+        return processValidator.validate(bpmnModel);
+    }
 }

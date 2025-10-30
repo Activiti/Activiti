@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,60 +13,60 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.test.api.event;
 
 import static java.util.Arrays.asList;
 
 import java.util.*;
-
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
-import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 
 public class TestMultipleActivitiEventListener implements ActivitiEventListener {
 
-  private List<ActivitiEvent> eventsReceived;
-  private List<Class<?>> entityClasses;
-  private List<Class<?>> eventClasses;
+    private List<ActivitiEvent> eventsReceived;
+    private List<Class<?>> entityClasses;
+    private List<Class<?>> eventClasses;
 
-  public TestMultipleActivitiEventListener() {
-    eventsReceived = new ArrayList<ActivitiEvent>();
-  }
-
-  public List<ActivitiEvent> getEventsReceived() {
-    return eventsReceived;
-  }
-
-  public void clearEventsReceived() {
-    eventsReceived.clear();
-  }
-
-  @Override
-  public void onEvent(ActivitiEvent event) {
-    if (isAssignableFrom(eventClasses, event) && isAssignableFrom(entityClasses, ((ActivitiEntityEvent) event).getEntity())) {
-      eventsReceived.add(event);
+    public TestMultipleActivitiEventListener() {
+        eventsReceived = new ArrayList<ActivitiEvent>();
     }
-  }
 
-  private boolean isAssignableFrom(Collection<Class<?>> classes, Object entity) {
-    for (Class<?> itemClass : classes) {
-      if (itemClass.isAssignableFrom(entity.getClass()))
+    public List<ActivitiEvent> getEventsReceived() {
+        return eventsReceived;
+    }
+
+    public void clearEventsReceived() {
+        eventsReceived.clear();
+    }
+
+    @Override
+    public void onEvent(ActivitiEvent event) {
+        if (
+            isAssignableFrom(eventClasses, event) &&
+            isAssignableFrom(entityClasses, ((ActivitiEntityEvent) event).getEntity())
+        ) {
+            eventsReceived.add(event);
+        }
+    }
+
+    private boolean isAssignableFrom(Collection<Class<?>> classes, Object entity) {
+        for (Class<?> itemClass : classes) {
+            if (itemClass.isAssignableFrom(entity.getClass())) return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isFailOnException() {
         return true;
     }
-    return false;
-  }
 
-  @Override
-  public boolean isFailOnException() {
-    return true;
-  }
+    public void setEntityClasses(Class<?>... entityClasses) {
+        this.entityClasses = asList(entityClasses);
+    }
 
-  public void setEntityClasses(Class<?>... entityClasses) {
-    this.entityClasses = asList(entityClasses);
-  }
-
-  public void setEventClasses(Class<?>... eventClasses) {
-    this.eventClasses = asList(eventClasses);
-  }
+    public void setEventClasses(Class<?>... eventClasses) {
+        this.eventClasses = asList(eventClasses);
+    }
 }

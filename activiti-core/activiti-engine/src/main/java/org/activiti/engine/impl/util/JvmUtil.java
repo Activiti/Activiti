@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,22 +20,21 @@ package org.activiti.engine.impl.util;
  */
 public class JvmUtil {
 
-  public static String getJavaVersion() {
-    return System.getProperty("java.version");
-  }
+    public static String getJavaVersion() {
+        return System.getProperty("java.version");
+    }
 
-  public static boolean isJDK8() {
-    String version = System.getProperty("java.version");
-    return version.startsWith("1.8");
-  }
+    public static boolean isJDK8() {
+        String version = System.getProperty("java.version");
+        return version.startsWith("1.8");
+    }
 
-  public static boolean isJDK7() {
-    String version = System.getProperty("java.version");
-    return version.startsWith("1.7");
-  }
+    public static boolean isJDK7() {
+        String version = System.getProperty("java.version");
+        return version.startsWith("1.7");
+    }
 
-  public static boolean isAtLeastJDK7() {
-    return isJDK7() || isJDK8();
-  }
-
+    public static boolean isAtLeastJDK7() {
+        return isJDK7() || isJDK8();
+    }
 }

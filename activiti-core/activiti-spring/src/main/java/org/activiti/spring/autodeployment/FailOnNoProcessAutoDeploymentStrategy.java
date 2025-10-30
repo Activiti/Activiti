@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,10 @@ public class FailOnNoProcessAutoDeploymentStrategy extends AbstractAutoDeploymen
 
     @Override
     public void deployResources(String deploymentNameHint, Resource[] resources, RepositoryService repositoryService) {
-        DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering()
-                .name(deploymentNameHint);
+        DeploymentBuilder deploymentBuilder = repositoryService
+            .createDeployment()
+            .enableDuplicateFiltering()
+            .name(deploymentNameHint);
 
         int validProcessCount = 0;
         for (final Resource resource : resources) {
@@ -51,8 +53,10 @@ public class FailOnNoProcessAutoDeploymentStrategy extends AbstractAutoDeploymen
                 validProcessCount++;
                 deploymentBuilder.addInputStream(resourceName, resource);
             } else {
-                LOGGER.error("The following resource wasn't included in the deployment since it is invalid:\n{}",
-                        resourceName);
+                LOGGER.error(
+                    "The following resource wasn't included in the deployment since it is invalid:\n{}",
+                    resourceName
+                );
             }
         }
 

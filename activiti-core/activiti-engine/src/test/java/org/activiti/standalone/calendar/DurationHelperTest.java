@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.standalone.calendar;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +22,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
-
 import org.activiti.engine.impl.calendar.DurationHelper;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.runtime.Clock;
@@ -80,11 +77,15 @@ public class DurationHelperTest {
 
         DurationHelper dh = new DurationHelper("R2/2013-11-03T00:45:00-04:00/PT1H", testingClock);
 
-        assertThat(dh.getCalendarAfter(testingClock.getCurrentCalendar(TimeZone.getTimeZone("US/Eastern")))).isEqualTo(parseCalendar("20131103-05:45:00", TimeZone.getTimeZone("UTC")));
+        assertThat(dh.getCalendarAfter(testingClock.getCurrentCalendar(TimeZone.getTimeZone("US/Eastern")))).isEqualTo(
+            parseCalendar("20131103-05:45:00", TimeZone.getTimeZone("UTC"))
+        );
 
         testingClock.setCurrentCalendar(parseCalendar("20131103-05:45:00", TimeZone.getTimeZone("UTC")));
 
-        assertThat(dh.getCalendarAfter(testingClock.getCurrentCalendar(TimeZone.getTimeZone("US/Eastern")))).isEqualTo(parseCalendar("20131103-06:45:00", TimeZone.getTimeZone("UTC")));
+        assertThat(dh.getCalendarAfter(testingClock.getCurrentCalendar(TimeZone.getTimeZone("US/Eastern")))).isEqualTo(
+            parseCalendar("20131103-06:45:00", TimeZone.getTimeZone("UTC"))
+        );
     }
 
     @Test
@@ -95,7 +96,9 @@ public class DurationHelperTest {
 
         DurationHelper dh = new DurationHelper("R2/2013-11-03T01:45:00-04:00/PT1H", testingClock);
 
-        assertThat(dh.getCalendarAfter(easternTime)).isEqualTo(parseCalendar("20131103-06:45:00", TimeZone.getTimeZone("UTC")));
+        assertThat(dh.getCalendarAfter(easternTime)).isEqualTo(
+            parseCalendar("20131103-06:45:00", TimeZone.getTimeZone("UTC"))
+        );
     }
 
     @Test
@@ -106,7 +109,9 @@ public class DurationHelperTest {
 
         DurationHelper dh = new DurationHelper("R2/2013-11-03T01:45:00-05:00/PT1H", testingClock);
 
-        assertThat(dh.getCalendarAfter(easternTime)).isEqualTo(parseCalendar("20131103-07:45:00", TimeZone.getTimeZone("UTC")));
+        assertThat(dh.getCalendarAfter(easternTime)).isEqualTo(
+            parseCalendar("20131103-07:45:00", TimeZone.getTimeZone("UTC"))
+        );
     }
 
     @Test
@@ -138,7 +143,9 @@ public class DurationHelperTest {
 
         DurationHelper dh = new DurationHelper("R2/2014-03-09T00:45:00-05:00/PT1H", testingClock);
 
-        assertThat(dh.getCalendarAfter(testingClock.getCurrentCalendar(TimeZone.getTimeZone("US/Eastern")))).isEqualTo(parseCalendar("20140309-06:45:00", TimeZone.getTimeZone("UTC")));
+        assertThat(dh.getCalendarAfter(testingClock.getCurrentCalendar(TimeZone.getTimeZone("US/Eastern")))).isEqualTo(
+            parseCalendar("20140309-06:45:00", TimeZone.getTimeZone("UTC"))
+        );
     }
 
     @Test
@@ -159,7 +166,9 @@ public class DurationHelperTest {
 
         DurationHelper dh = new DurationHelper("R2/2013-11-03T00:00:00/P1D", testingClock);
 
-        assertThat(dh.getCalendarAfter(testingClock.getCurrentCalendar())).isEqualTo(parseCalendar("20131104-00:00:00", TimeZone.getTimeZone("US/Eastern")));
+        assertThat(dh.getCalendarAfter(testingClock.getCurrentCalendar())).isEqualTo(
+            parseCalendar("20131104-00:00:00", TimeZone.getTimeZone("US/Eastern"))
+        );
     }
 
     @Test
@@ -169,7 +178,9 @@ public class DurationHelperTest {
 
         DurationHelper dh = new DurationHelper("R2/2014-03-09T00:00:00/P1D", testingClock);
 
-        assertThat(dh.getCalendarAfter(testingClock.getCurrentCalendar())).isEqualTo(parseCalendar("20140310-00:00:00", TimeZone.getTimeZone("US/Eastern")));
+        assertThat(dh.getCalendarAfter(testingClock.getCurrentCalendar())).isEqualTo(
+            parseCalendar("20140310-00:00:00", TimeZone.getTimeZone("US/Eastern"))
+        );
     }
 
     @Test
@@ -179,7 +190,9 @@ public class DurationHelperTest {
 
         DurationHelper dh = new DurationHelper("R2/2013-10-27T00:00:00/P1D", testingClock);
 
-        assertThat(dh.getCalendarAfter(testingClock.getCurrentCalendar())).isEqualTo(parseCalendar("20131028-00:00:00", TimeZone.getTimeZone("Europe/Amsterdam")));
+        assertThat(dh.getCalendarAfter(testingClock.getCurrentCalendar())).isEqualTo(
+            parseCalendar("20131028-00:00:00", TimeZone.getTimeZone("Europe/Amsterdam"))
+        );
     }
 
     @Test
@@ -189,7 +202,9 @@ public class DurationHelperTest {
 
         DurationHelper dh = new DurationHelper("R2/2014-03-30T00:00:00/P1D", testingClock);
 
-        assertThat(dh.getCalendarAfter(testingClock.getCurrentCalendar())).isEqualTo(parseCalendar("20140331-00:00:00", TimeZone.getTimeZone("Europe/Amsterdam")));
+        assertThat(dh.getCalendarAfter(testingClock.getCurrentCalendar())).isEqualTo(
+            parseCalendar("20140331-00:00:00", TimeZone.getTimeZone("Europe/Amsterdam"))
+        );
     }
 
     private Date parse(String str) throws Exception {
@@ -198,7 +213,6 @@ public class DurationHelperTest {
     }
 
     private Calendar parseCalendarWithOffset(String str) throws Exception {
-
         Calendar cal = Calendar.getInstance();
         cal.setTime(DateUtils.parseDate(str, "yyyyMMdd-HH:mm:ss ZZ"));
         return cal;

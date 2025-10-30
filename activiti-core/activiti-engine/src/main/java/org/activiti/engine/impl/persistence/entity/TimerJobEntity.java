@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity;
 
-import org.activiti.engine.api.internal.Internal;
-
 import java.util.Date;
+import org.activiti.engine.api.internal.Internal;
 
 /**
  * Stub of the common parts of a Job. You will normally work with a subclass of JobEntity, such as {@link TimerEntity} or {@link MessageEntity}.
@@ -26,12 +24,11 @@ import java.util.Date;
  */
 @Internal
 public interface TimerJobEntity extends AbstractJobEntity {
+    String getLockOwner();
 
-  String getLockOwner();
+    void setLockOwner(String claimedBy);
 
-  void setLockOwner(String claimedBy);
+    Date getLockExpirationTime();
 
-  Date getLockExpirationTime();
-
-  void setLockExpirationTime(Date claimedUntil);
+    void setLockExpirationTime(Date claimedUntil);
 }

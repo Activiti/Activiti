@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.test.mock;
 
 import org.activiti.engine.delegate.VariableScope;
@@ -55,19 +54,22 @@ import org.activiti.engine.impl.scripting.ResolverFactory;
  *
  */
 public class MockResolverFactory implements ResolverFactory {
-  @Override
-  public Resolver createResolver(ProcessEngineConfigurationImpl processEngineConfiguration, VariableScope variableScope) {
-    return new Resolver() {
 
-      @Override
-      public Object get(Object key) {
-        return Mocks.get(key);
-      }
+    @Override
+    public Resolver createResolver(
+        ProcessEngineConfigurationImpl processEngineConfiguration,
+        VariableScope variableScope
+    ) {
+        return new Resolver() {
+            @Override
+            public Object get(Object key) {
+                return Mocks.get(key);
+            }
 
-      @Override
-      public boolean containsKey(Object key) {
-        return Mocks.get(key) != null;
-      }
-    };
-  }
+            @Override
+            public boolean containsKey(Object key) {
+                return Mocks.get(key) != null;
+            }
+        };
+    }
 }

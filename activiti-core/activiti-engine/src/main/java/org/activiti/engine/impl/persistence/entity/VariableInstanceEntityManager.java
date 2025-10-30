@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.variable.VariableType;
 
@@ -28,25 +26,23 @@ import org.activiti.engine.impl.variable.VariableType;
  */
 @Internal
 public interface VariableInstanceEntityManager extends EntityManager<VariableInstanceEntity> {
+    VariableInstanceEntity create(String name, VariableType type, Object value);
 
-  VariableInstanceEntity create(String name, VariableType type, Object value);
+    List<VariableInstanceEntity> findVariableInstancesByTaskId(String taskId);
 
-  List<VariableInstanceEntity> findVariableInstancesByTaskId(String taskId);
+    List<VariableInstanceEntity> findVariableInstancesByTaskIds(Set<String> taskIds);
 
-  List<VariableInstanceEntity> findVariableInstancesByTaskIds(Set<String> taskIds);
+    List<VariableInstanceEntity> findVariableInstancesByExecutionId(String executionId);
 
-  List<VariableInstanceEntity> findVariableInstancesByExecutionId(String executionId);
+    List<VariableInstanceEntity> findVariableInstancesByExecutionIds(Set<String> executionIds);
 
-  List<VariableInstanceEntity> findVariableInstancesByExecutionIds(Set<String> executionIds);
+    VariableInstanceEntity findVariableInstanceByExecutionAndName(String executionId, String variableName);
 
-  VariableInstanceEntity findVariableInstanceByExecutionAndName(String executionId, String variableName);
+    List<VariableInstanceEntity> findVariableInstancesByExecutionAndNames(String executionId, Collection<String> names);
 
-  List<VariableInstanceEntity> findVariableInstancesByExecutionAndNames(String executionId, Collection<String> names);
+    VariableInstanceEntity findVariableInstanceByTaskAndName(String taskId, String variableName);
 
-  VariableInstanceEntity findVariableInstanceByTaskAndName(String taskId, String variableName);
+    List<VariableInstanceEntity> findVariableInstancesByTaskAndNames(String taskId, Collection<String> names);
 
-  List<VariableInstanceEntity> findVariableInstancesByTaskAndNames(String taskId, Collection<String> names);
-
-  void deleteVariableInstanceByTask(TaskEntity task);
-
+    void deleteVariableInstanceByTask(TaskEntity task);
 }

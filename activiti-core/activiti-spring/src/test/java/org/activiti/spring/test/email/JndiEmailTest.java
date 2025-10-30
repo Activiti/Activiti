@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,11 +47,13 @@ public class JndiEmailTest extends SpringActivitiTestCase {
         props.put("mail.smtp.provider.vendor", "test");
         props.put("mail.smtp.provider.version", "0.0.0");
 
-        Provider provider = new Provider(Provider.Type.TRANSPORT,
-                                         "smtp",
-                                         MockEmailTransport.class.getName(),
-                                         "test",
-                                         "1.0");
+        Provider provider = new Provider(
+            Provider.Type.TRANSPORT,
+            "smtp",
+            MockEmailTransport.class.getName(),
+            "test",
+            "1.0"
+        );
         try {
             Session mailSession = Session.getDefaultInstance(props);
             mailSession.setProvider(provider);
@@ -77,10 +79,11 @@ public class JndiEmailTest extends SpringActivitiTestCase {
         cleanUp();
     }
 
-    @Deployment(resources = {"org/activiti/spring/test/email/EmailTaskUsingJndi.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/spring/test/email/EmailTaskUsingJndi.bpmn20.xml" })
     public void testEmailUsingJndi() {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("EmailJndiProcess", emptyMap());
-        assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count()).isEqualTo(0);
+        assertThat(
+            runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count()
+        ).isEqualTo(0);
     }
-
 }

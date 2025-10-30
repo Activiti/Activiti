@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  */
 package org.activiti.core.el;
 
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
+import java.beans.FeatureDescriptor;
+import java.util.Iterator;
 
 /**
  * Generic Decorator for {@link ELResolver} implementations.
@@ -30,7 +30,6 @@ public abstract class ELResolverDecorator extends ELResolver {
     public ELResolverDecorator(ELResolver resolver) {
         this.decoratedResolver = resolver;
     }
-
 
     @Override
     public Object getValue(ELContext context, Object base, Object property) {

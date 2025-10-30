@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.spring.test.taskListener;
 
 import org.activiti.engine.delegate.DelegateTask;
@@ -25,12 +23,11 @@ import org.activiti.engine.delegate.TaskListener;
  */
 public class MyTaskListener implements TaskListener {
 
-  public void notify(DelegateTask delegateTask) {
-    delegateTask.setVariable("calledThroughNotify", delegateTask.getName() + "-notify");
-  }
+    public void notify(DelegateTask delegateTask) {
+        delegateTask.setVariable("calledThroughNotify", delegateTask.getName() + "-notify");
+    }
 
-  public void calledInExpression(DelegateTask task, String eventName) {
-    task.setVariable("calledInExpression", task.getName() + "-" + eventName);
-  }
-
+    public void calledInExpression(DelegateTask task, String eventName) {
+        task.setVariable("calledInExpression", task.getName() + "-" + eventName);
+    }
 }

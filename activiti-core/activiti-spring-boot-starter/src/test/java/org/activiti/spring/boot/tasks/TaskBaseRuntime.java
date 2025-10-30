@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,14 +38,9 @@ public class TaskBaseRuntime {
     private TaskRuntime taskRuntime;
 
     public List<Task> getTasksByProcessInstanceId(String processInstanceId) {
-        List<Task> taskList = taskRuntime.tasks(
-                Pageable.of(0,
-                        50),
-                TaskPayloadBuilder
-                        .tasks()
-                        .withProcessInstanceId(processInstanceId)
-                        .build())
-                .getContent();
+        List<Task> taskList = taskRuntime
+            .tasks(Pageable.of(0, 50), TaskPayloadBuilder.tasks().withProcessInstanceId(processInstanceId).build())
+            .getContent();
         return taskList;
     }
 
@@ -70,17 +65,18 @@ public class TaskBaseRuntime {
     }
 
     public void completeTask(String taskId, Map<String, Object> variables) {
-        Task completeTask = taskRuntime
-                .complete(TaskPayloadBuilder.complete().withTaskId(taskId).withVariables(variables).build());
+        Task completeTask = taskRuntime.complete(
+            TaskPayloadBuilder.complete().withTaskId(taskId).withVariables(variables).build()
+        );
         assertThat(completeTask).isNotNull();
         assertThat(completeTask.getStatus()).isEqualTo(TaskStatus.COMPLETED);
     }
 
     public void assignTask(String taskId, String assignee) {
-        Task task = taskRuntime
-            .assign(new AssignTaskPayloadBuilder().withTaskId(taskId).withAssignee(assignee).build());
+        Task task = taskRuntime.assign(
+            new AssignTaskPayloadBuilder().withTaskId(taskId).withAssignee(assignee).build()
+        );
         assertThat(task).isNotNull();
         assertThat(task.getAssignee()).isEqualTo(assignee);
     }
-
 }

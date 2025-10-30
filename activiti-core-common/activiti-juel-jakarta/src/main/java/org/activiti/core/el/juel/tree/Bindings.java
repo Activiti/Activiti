@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree;
 
 import jakarta.el.ELException;
@@ -51,16 +50,14 @@ public class Bindings implements TypeConverter {
             this.method = method;
         }
 
-        private void writeObject(ObjectOutputStream out)
-            throws IOException, ClassNotFoundException {
+        private void writeObject(ObjectOutputStream out) throws IOException, ClassNotFoundException {
             out.defaultWriteObject();
             out.writeObject(method.getDeclaringClass());
             out.writeObject(method.getName());
             out.writeObject(method.getParameterTypes());
         }
 
-        private void readObject(ObjectInputStream in)
-            throws IOException, ClassNotFoundException {
+        private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
             in.defaultReadObject();
             Class<?> type = (Class<?>) in.readObject();
             String name = (String) in.readObject();
@@ -87,20 +84,10 @@ public class Bindings implements TypeConverter {
     /**
      * Constructor.
      */
-    public Bindings(
-        Method[] functions,
-        ValueExpression[] variables,
-        TypeConverter converter
-    ) {
+    public Bindings(Method[] functions, ValueExpression[] variables, TypeConverter converter) {
         super();
-        this.functions =
-            functions == null || functions.length == 0
-                ? NO_FUNCTIONS
-                : functions;
-        this.variables =
-            variables == null || variables.length == 0
-                ? NO_VARIABLES
-                : variables;
+        this.functions = functions == null || functions.length == 0 ? NO_FUNCTIONS : functions;
+        this.variables = variables == null || variables.length == 0 ? NO_VARIABLES : variables;
         this.converter = converter == null ? TypeConverter.DEFAULT : converter;
     }
 
@@ -139,9 +126,7 @@ public class Bindings implements TypeConverter {
      * @return <code>true</code> if the given index is bound to a variable
      */
     public boolean isVariableBound(int index) {
-        return (
-            index >= 0 && index < variables.length && variables[index] != null
-        );
+        return (index >= 0 && index < variables.length && variables[index] != null);
     }
 
     /**
@@ -170,15 +155,10 @@ public class Bindings implements TypeConverter {
 
     @Override
     public int hashCode() {
-        return (
-            Arrays.hashCode(functions) ^
-            Arrays.hashCode(variables) ^
-            converter.hashCode()
-        );
+        return (Arrays.hashCode(functions) ^ Arrays.hashCode(variables) ^ converter.hashCode());
     }
 
-    private void writeObject(ObjectOutputStream out)
-        throws IOException, ClassNotFoundException {
+    private void writeObject(ObjectOutputStream out) throws IOException, ClassNotFoundException {
         out.defaultWriteObject();
         MethodWrapper[] wrappers = new MethodWrapper[functions.length];
         for (int i = 0; i < wrappers.length; i++) {
@@ -187,8 +167,7 @@ public class Bindings implements TypeConverter {
         out.writeObject(wrappers);
     }
 
-    private void readObject(ObjectInputStream in)
-        throws IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         MethodWrapper[] wrappers = (MethodWrapper[]) in.readObject();
         if (wrappers.length == 0) {

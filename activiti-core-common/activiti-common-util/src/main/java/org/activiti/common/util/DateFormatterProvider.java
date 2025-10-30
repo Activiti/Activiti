@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.Date;
 
-public class DateFormatterProvider  {
+public class DateFormatterProvider {
 
     private String dateFormatPattern;
 
@@ -45,17 +45,15 @@ public class DateFormatterProvider  {
 
     public Date parse(String value) throws DateTimeException {
         DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder()
-                                                      .appendPattern(getDateFormatPattern())
-                                                      .toFormatter()
-                                                      .withZone(getZoneId());
+            .appendPattern(getDateFormatPattern())
+            .toFormatter()
+            .withZone(getZoneId());
 
         try {
-            ZonedDateTime zonedDateTime = dateTimeFormatter.parse(value,
-                                                                  ZonedDateTime::from);
+            ZonedDateTime zonedDateTime = dateTimeFormatter.parse(value, ZonedDateTime::from);
             return Date.from(zonedDateTime.toInstant());
         } catch (DateTimeException e) {
-            LocalDate localDate = dateTimeFormatter.parse(String.valueOf(value),
-                                                          LocalDate::from);
+            LocalDate localDate = dateTimeFormatter.parse(String.valueOf(value), LocalDate::from);
             return Date.from(localDate.atStartOfDay().atZone(getZoneId()).toInstant());
         }
     }
@@ -66,25 +64,27 @@ public class DateFormatterProvider  {
         }
 
         if (value instanceof Date) {
-            return (Date)value;
+            return (Date) value;
         }
 
         if (value instanceof Long) {
-            return new Date((long)value);
+            return new Date((long) value);
         }
 
         if (value instanceof LocalDate) {
-            return Date.from(((LocalDate)value).atStartOfDay(getZoneId()).toInstant());
+            return Date.from(((LocalDate) value).atStartOfDay(getZoneId()).toInstant());
         }
 
         if (value instanceof LocalDateTime) {
-            return Date.from(((LocalDateTime)value).atZone(getZoneId()).toInstant());
+            return Date.from(((LocalDateTime) value).atZone(getZoneId()).toInstant());
         }
 
         if (value instanceof ZonedDateTime) {
-            return Date.from(((ZonedDateTime)value).toInstant());
+            return Date.from(((ZonedDateTime) value).toInstant());
         }
 
-        throw new DateTimeException(MessageFormat.format("Error while parsing date. Type: {0}, value: {1}", value.getClass().getName(), value));
+        throw new DateTimeException(
+            MessageFormat.format("Error while parsing date. Type: {0}, value: {1}", value.getClass().getName(), value)
+        );
     }
 }

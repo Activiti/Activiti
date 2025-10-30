@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,13 @@
  */
 package org.activiti.spring.test.engine;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.engine.ProcessEngines;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Spring process engine base test
@@ -32,10 +32,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ContextConfiguration("classpath:org/activiti/spring/test/engine/springProcessEngine-context.xml")
 public class SpringProcessEngineTest {
 
-  @Test
-  public void testGetEngineFromCache() {
-    assertThat(ProcessEngines.getDefaultProcessEngine()).isNotNull();
-    assertThat(ProcessEngines.getProcessEngine("default")).isNotNull();
-  }
-
+    @Test
+    public void testGetEngineFromCache() {
+        assertThat(ProcessEngines.getDefaultProcessEngine()).isNotNull();
+        assertThat(ProcessEngines.getProcessEngine("default")).isNotNull();
+    }
 }

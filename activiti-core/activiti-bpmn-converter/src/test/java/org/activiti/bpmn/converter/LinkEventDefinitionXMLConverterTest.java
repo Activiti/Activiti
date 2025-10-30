@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,13 @@
  */
 package org.activiti.bpmn.converter;
 
-import org.activiti.bpmn.model.LinkEventDefinition;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.io.StringWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
-import java.io.StringWriter;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import org.activiti.bpmn.model.LinkEventDefinition;
+import org.junit.jupiter.api.Test;
 
 public class LinkEventDefinitionXMLConverterTest {
 

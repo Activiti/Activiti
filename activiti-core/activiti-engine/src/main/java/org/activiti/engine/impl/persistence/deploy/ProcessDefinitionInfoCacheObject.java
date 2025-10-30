@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.deploy;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -23,31 +22,31 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class ProcessDefinitionInfoCacheObject {
 
-  protected String id;
-  protected int revision;
-  protected ObjectNode infoNode;
+    protected String id;
+    protected int revision;
+    protected ObjectNode infoNode;
 
-  public String getId() {
-    return id;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  public int getRevision() {
-    return revision;
-  }
+    public int getRevision() {
+        return revision;
+    }
 
-  public void setRevision(int revision) {
-    this.revision = revision;
-  }
+    public void setRevision(int revision) {
+        this.revision = revision;
+    }
 
-  public ObjectNode getInfoNode() {
-    return infoNode;
-  }
+    public ObjectNode getInfoNode() {
+        return infoNode;
+    }
 
-  public void setInfoNode(ObjectNode infoNode) {
-    this.infoNode = infoNode;
-  }
+    public void setInfoNode(ObjectNode infoNode) {
+        this.infoNode = infoNode;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree.impl.ast;
 
 import jakarta.el.ELContext;
@@ -43,10 +42,7 @@ public final class AstEval extends AstNode {
         return getChild(0).isMethodInvocation();
     }
 
-    public ValueReference getValueReference(
-        Bindings bindings,
-        ELContext context
-    ) {
+    public ValueReference getValueReference(Bindings bindings, ELContext context) {
         return child.getValueReference(bindings, context);
     }
 
@@ -67,12 +63,7 @@ public final class AstEval extends AstNode {
         b.append("}");
     }
 
-    public MethodInfo getMethodInfo(
-        Bindings bindings,
-        ELContext context,
-        Class<?> returnType,
-        Class<?>[] paramTypes
-    ) {
+    public MethodInfo getMethodInfo(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes) {
         return child.getMethodInfo(bindings, context, returnType, paramTypes);
     }
 
@@ -83,13 +74,7 @@ public final class AstEval extends AstNode {
         Class<?>[] paramTypes,
         Object[] paramValues
     ) {
-        return child.invoke(
-            bindings,
-            context,
-            returnType,
-            paramTypes,
-            paramValues
-        );
+        return child.invoke(bindings, context, returnType, paramTypes, paramValues);
     }
 
     public Class<?> getType(Bindings bindings, ELContext context) {

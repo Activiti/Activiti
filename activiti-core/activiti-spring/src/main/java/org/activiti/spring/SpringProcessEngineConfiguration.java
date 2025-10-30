@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.spring;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import javax.sql.DataSource;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;
 import org.activiti.engine.ActivitiException;
@@ -36,11 +37,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.Collection;
-
-public class SpringProcessEngineConfiguration extends ProcessEngineConfigurationImpl implements ApplicationContextAware {
+public class SpringProcessEngineConfiguration
+    extends ProcessEngineConfigurationImpl
+    implements ApplicationContextAware {
 
     protected PlatformTransactionManager transactionManager;
     protected String deploymentName = "SpringAutoDeployment";
@@ -63,7 +62,7 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
         deploymentStrategies.add(new ResourceParentFolderAutoDeploymentStrategy(applicationUpgradeContextService));
         deploymentStrategies.add(new FailOnNoProcessAutoDeploymentStrategy(applicationUpgradeContextService));
         deploymentStrategies.add(new NeverFailAutoDeploymentStrategy(applicationUpgradeContextService));
-        if(applicationUpgradeContextService!= null) {
+        if (applicationUpgradeContextService != null) {
             this.isRollbackDeployment = applicationUpgradeContextService.isRollbackDeployment();
         }
     }
@@ -76,120 +75,133 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
         return processEngine;
     }
 
-  @Override
-  public UserGroupManager getUserGroupManager() {
-    return userGroupManager;
-  }
-
-  public void setTransactionSynchronizationAdapterOrder(Integer transactionSynchronizationAdapterOrder) {
-    this.transactionSynchronizationAdapterOrder = transactionSynchronizationAdapterOrder;
-  }
-
-  @Override
-  public void initDefaultCommandConfig() {
-    if (defaultCommandConfig == null) {
-      defaultCommandConfig = new CommandConfig().setContextReusePossible(true);
-    }
-  }
-
-  @Override
-  public CommandInterceptor createTransactionInterceptor() {
-    if (transactionManager == null) {
-      throw new ActivitiException("transactionManager is required property for SpringProcessEngineConfiguration, use " + StandaloneProcessEngineConfiguration.class.getName() + " otherwise");
+    @Override
+    public UserGroupManager getUserGroupManager() {
+        return userGroupManager;
     }
 
-    return new SpringTransactionInterceptor(transactionManager);
-  }
-
-  @Override
-  public void initTransactionContextFactory() {
-    if (transactionContextFactory == null && transactionManager != null) {
-      transactionContextFactory = new SpringTransactionContextFactory(transactionManager, transactionSynchronizationAdapterOrder);
+    public void setTransactionSynchronizationAdapterOrder(Integer transactionSynchronizationAdapterOrder) {
+        this.transactionSynchronizationAdapterOrder = transactionSynchronizationAdapterOrder;
     }
-  }
 
-  @Override
-  public void initJpa() {
-    super.initJpa();
-    if (jpaEntityManagerFactory != null) {
-      sessionFactories.put(EntityManagerSession.class, new SpringEntityManagerSessionFactory(jpaEntityManagerFactory, jpaHandleTransaction, jpaCloseEntityManager));
+    @Override
+    public void initDefaultCommandConfig() {
+        if (defaultCommandConfig == null) {
+            defaultCommandConfig = new CommandConfig().setContextReusePossible(true);
+        }
     }
-  }
 
-  protected void autoDeployResources(ProcessEngine processEngine) {
-      final AutoDeploymentStrategy strategy = getAutoDeploymentStrategy(deploymentMode);
-      strategy.deployResources(deploymentName, deploymentResources, processEngine.getRepositoryService());
-  }
+    @Override
+    public CommandInterceptor createTransactionInterceptor() {
+        if (transactionManager == null) {
+            throw new ActivitiException(
+                "transactionManager is required property for SpringProcessEngineConfiguration, use " +
+                StandaloneProcessEngineConfiguration.class.getName() +
+                " otherwise"
+            );
+        }
 
-  @Override
-  public ProcessEngineConfiguration setDataSource(DataSource dataSource) {
-    if (dataSource instanceof TransactionAwareDataSourceProxy) {
-      return super.setDataSource(dataSource);
-    } else {
-      // Wrap datasource in Transaction-aware proxy
-      DataSource proxiedDataSource = new TransactionAwareDataSourceProxy(dataSource);
-      return super.setDataSource(proxiedDataSource);
+        return new SpringTransactionInterceptor(transactionManager);
     }
-  }
 
-  public PlatformTransactionManager getTransactionManager() {
-    return transactionManager;
-  }
+    @Override
+    public void initTransactionContextFactory() {
+        if (transactionContextFactory == null && transactionManager != null) {
+            transactionContextFactory = new SpringTransactionContextFactory(
+                transactionManager,
+                transactionSynchronizationAdapterOrder
+            );
+        }
+    }
 
-  public void setTransactionManager(PlatformTransactionManager transactionManager) {
-    this.transactionManager = transactionManager;
-  }
+    @Override
+    public void initJpa() {
+        super.initJpa();
+        if (jpaEntityManagerFactory != null) {
+            sessionFactories.put(
+                EntityManagerSession.class,
+                new SpringEntityManagerSessionFactory(
+                    jpaEntityManagerFactory,
+                    jpaHandleTransaction,
+                    jpaCloseEntityManager
+                )
+            );
+        }
+    }
 
-  public String getDeploymentName() {
-    return deploymentName;
-  }
+    protected void autoDeployResources(ProcessEngine processEngine) {
+        final AutoDeploymentStrategy strategy = getAutoDeploymentStrategy(deploymentMode);
+        strategy.deployResources(deploymentName, deploymentResources, processEngine.getRepositoryService());
+    }
 
-  public void setDeploymentName(String deploymentName) {
-    this.deploymentName = deploymentName;
-  }
+    @Override
+    public ProcessEngineConfiguration setDataSource(DataSource dataSource) {
+        if (dataSource instanceof TransactionAwareDataSourceProxy) {
+            return super.setDataSource(dataSource);
+        } else {
+            // Wrap datasource in Transaction-aware proxy
+            DataSource proxiedDataSource = new TransactionAwareDataSourceProxy(dataSource);
+            return super.setDataSource(proxiedDataSource);
+        }
+    }
 
-  public Resource[] getDeploymentResources() {
-    return deploymentResources;
-  }
+    public PlatformTransactionManager getTransactionManager() {
+        return transactionManager;
+    }
 
-  public void setDeploymentResources(Resource[] deploymentResources) {
-    this.deploymentResources = deploymentResources;
-  }
+    public void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
+    }
 
-  public ApplicationContext getApplicationContext() {
-    return applicationContext;
-  }
+    public String getDeploymentName() {
+        return deploymentName;
+    }
 
-  @Override
-  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-    this.applicationContext = applicationContext;
-  }
+    public void setDeploymentName(String deploymentName) {
+        this.deploymentName = deploymentName;
+    }
 
-  public String getDeploymentMode() {
-    return deploymentMode;
-  }
+    public Resource[] getDeploymentResources() {
+        return deploymentResources;
+    }
 
-  public void setDeploymentMode(String deploymentMode) {
-    this.deploymentMode = deploymentMode;
-  }
+    public void setDeploymentResources(Resource[] deploymentResources) {
+        this.deploymentResources = deploymentResources;
+    }
 
-  /**
-   * Gets the {@link AutoDeploymentStrategy} for the provided mode. This method may be overridden to implement custom deployment strategies if required, but implementors should take care not to return
-   * <code>null</code>.
-   *
-   * @param mode
-   *          the mode to get the strategy for
-   * @return the deployment strategy to use for the mode. Never <code>null</code>
-   */
-  protected AutoDeploymentStrategy getAutoDeploymentStrategy(final String mode) {
-      AutoDeploymentStrategy result = defaultAutoDeploymentStrategy;
-      for (final AutoDeploymentStrategy strategy : deploymentStrategies) {
-          if (strategy.handlesMode(mode)) {
-              result = strategy;
-              break;
-          }
-      }
-      return result;
-  }
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    public String getDeploymentMode() {
+        return deploymentMode;
+    }
+
+    public void setDeploymentMode(String deploymentMode) {
+        this.deploymentMode = deploymentMode;
+    }
+
+    /**
+     * Gets the {@link AutoDeploymentStrategy} for the provided mode. This method may be overridden to implement custom deployment strategies if required, but implementors should take care not to return
+     * <code>null</code>.
+     *
+     * @param mode
+     *          the mode to get the strategy for
+     * @return the deployment strategy to use for the mode. Never <code>null</code>
+     */
+    protected AutoDeploymentStrategy getAutoDeploymentStrategy(final String mode) {
+        AutoDeploymentStrategy result = defaultAutoDeploymentStrategy;
+        for (final AutoDeploymentStrategy strategy : deploymentStrategies) {
+            if (strategy.handlesMode(mode)) {
+                result = strategy;
+                break;
+            }
+        }
+        return result;
+    }
 }

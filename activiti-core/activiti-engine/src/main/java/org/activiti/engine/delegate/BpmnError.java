@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.delegate;
 
 import org.activiti.engine.ActivitiException;
@@ -33,31 +31,31 @@ import org.activiti.engine.impl.bpmn.parser.Error;
  */
 public class BpmnError extends ActivitiException {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private String errorCode;
+    private String errorCode;
 
-  public BpmnError(String errorCode) {
-    super("");
-    setErrorCode(errorCode);
-  }
-
-  public BpmnError(String errorCode, String message) {
-    super(message);
-    setErrorCode(errorCode);
-  }
-
-  protected void setErrorCode(String errorCode) {
-    if (errorCode == null) {
-      throw new ActivitiIllegalArgumentException("Error Code must not be null.");
+    public BpmnError(String errorCode) {
+        super("");
+        setErrorCode(errorCode);
     }
-    if (errorCode.length() < 1) {
-      throw new ActivitiIllegalArgumentException("Error Code must not be empty.");
-    }
-    this.errorCode = errorCode;
-  }
 
-  public String getErrorCode() {
-    return errorCode;
-  }
+    public BpmnError(String errorCode, String message) {
+        super(message);
+        setErrorCode(errorCode);
+    }
+
+    protected void setErrorCode(String errorCode) {
+        if (errorCode == null) {
+            throw new ActivitiIllegalArgumentException("Error Code must not be null.");
+        }
+        if (errorCode.length() < 1) {
+            throw new ActivitiIllegalArgumentException("Error Code must not be empty.");
+        }
+        this.errorCode = errorCode;
+    }
+
+    public String getErrorCode() {
+        return errorCode;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.test.api.repository;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -27,16 +26,15 @@ import org.activiti.engine.test.Deployment;
  */
 public class DeployNonExecutableProcessDefinitionTest extends PluggableActivitiTestCase {
 
-  /**
-   * Test for https://jira.codehaus.org/browse/ACT-2071
-   *
-   * In this test, a process definition is deployed together with one that is not executable. The none-executable should not be startable.
-   */
-  @Deployment
-  public void testDeployNonExecutableProcessDefinition() {
-    assertThatExceptionOfType(ActivitiException.class)
-      .isThrownBy(() -> runtimeService.startProcessInstanceByKey("oneTaskProcessNonExecutable"))
-      .withMessageContaining("no processes deployed with key 'oneTaskProcessNonExecutable'");
-  }
-
+    /**
+     * Test for https://jira.codehaus.org/browse/ACT-2071
+     *
+     * In this test, a process definition is deployed together with one that is not executable. The none-executable should not be startable.
+     */
+    @Deployment
+    public void testDeployNonExecutableProcessDefinition() {
+        assertThatExceptionOfType(ActivitiException.class)
+            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("oneTaskProcessNonExecutable"))
+            .withMessageContaining("no processes deployed with key 'oneTaskProcessNonExecutable'");
+    }
 }

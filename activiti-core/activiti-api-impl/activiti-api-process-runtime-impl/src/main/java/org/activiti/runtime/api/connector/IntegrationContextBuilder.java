@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.runtime.api.connector;
 
 import java.util.Objects;
-
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
 import org.activiti.bpmn.model.ServiceTask;
@@ -40,14 +38,15 @@ public class IntegrationContextBuilder {
     private final ExtensionsVariablesMappingProvider inboundVariablesProvider;
     private final ExpressionManager expressionManager;
 
-    public IntegrationContextBuilder(ExtensionsVariablesMappingProvider inboundVariablesProvider,
-                                     ExpressionManager expressionManager) {
+    public IntegrationContextBuilder(
+        ExtensionsVariablesMappingProvider inboundVariablesProvider,
+        ExpressionManager expressionManager
+    ) {
         this.inboundVariablesProvider = inboundVariablesProvider;
         this.expressionManager = expressionManager;
     }
 
-    public IntegrationContext from(IntegrationContextEntity integrationContextEntity,
-                                   DelegateExecution execution) {
+    public IntegrationContext from(IntegrationContextEntity integrationContextEntity, DelegateExecution execution) {
         IntegrationContextImpl integrationContext = buildFromExecution(execution);
         integrationContext.setId(integrationContextEntity.getId());
         return integrationContext;
@@ -73,8 +72,7 @@ public class IntegrationContextBuilder {
 
             if (processInstance != null) {
                 integrationContext.setParentProcessInstanceId(processInstance.getParentProcessInstanceId());
-                integrationContext.setAppVersion(Objects.toString(processInstance.getAppVersion(),"1"));
-
+                integrationContext.setAppVersion(Objects.toString(processInstance.getAppVersion(), "1"));
             }
 
             // Let's try to resolve process definition attributes
@@ -84,7 +82,6 @@ public class IntegrationContextBuilder {
                 integrationContext.setProcessDefinitionKey(processDefinition.getKey());
                 integrationContext.setProcessDefinitionVersion(processDefinition.getVersion());
             }
-
         }
 
         ServiceTask serviceTask = (ServiceTask) execution.getCurrentFlowElement();
@@ -99,14 +96,12 @@ public class IntegrationContextBuilder {
         return integrationContext;
     }
 
-    protected String resolveServiceTaskNameExpression(ServiceTask serviceTask,
-                                                      DelegateExecution execution) {
+    protected String resolveServiceTaskNameExpression(ServiceTask serviceTask, DelegateExecution execution) {
         String clientName = serviceTask.getName();
 
         if (StringUtils.isNotEmpty(clientName)) {
             try {
-                return (String) expressionManager.createExpression(clientName)
-                                                 .getValue(execution);
+                return (String) expressionManager.createExpression(clientName).getValue(execution);
             } catch (ActivitiException e) {
                 LOGGER.warn("property not found in service task name expression " + e.getMessage());
             }
@@ -114,5 +109,4 @@ public class IntegrationContextBuilder {
 
         return clientName;
     }
-
 }

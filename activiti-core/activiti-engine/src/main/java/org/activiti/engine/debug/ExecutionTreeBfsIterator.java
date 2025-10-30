@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.debug;
 
 import java.util.Iterator;
@@ -26,67 +25,65 @@ import java.util.LinkedList;
  */
 public class ExecutionTreeBfsIterator implements Iterator<ExecutionTreeNode> {
 
-  protected ExecutionTreeNode rootNode;
-  protected boolean reverseOrder;
+    protected ExecutionTreeNode rootNode;
+    protected boolean reverseOrder;
 
-  protected LinkedList<ExecutionTreeNode> flattenedList;
-  protected Iterator<ExecutionTreeNode> flattenedListIterator;
+    protected LinkedList<ExecutionTreeNode> flattenedList;
+    protected Iterator<ExecutionTreeNode> flattenedListIterator;
 
-  public ExecutionTreeBfsIterator(ExecutionTreeNode executionTree) {
-    this(executionTree, false);
-  }
+    public ExecutionTreeBfsIterator(ExecutionTreeNode executionTree) {
+        this(executionTree, false);
+    }
 
-  public ExecutionTreeBfsIterator(ExecutionTreeNode rootNode, boolean reverseOrder) {
-    this.rootNode = rootNode;
-    this.reverseOrder = reverseOrder;
-  }
+    public ExecutionTreeBfsIterator(ExecutionTreeNode rootNode, boolean reverseOrder) {
+        this.rootNode = rootNode;
+        this.reverseOrder = reverseOrder;
+    }
 
-  protected void flattenTree() {
-    flattenedList = new LinkedList<ExecutionTreeNode>();
+    protected void flattenTree() {
+        flattenedList = new LinkedList<ExecutionTreeNode>();
 
-    LinkedList<ExecutionTreeNode> nodesToHandle = new LinkedList<ExecutionTreeNode>();
-    nodesToHandle.add(rootNode);
-    while (!nodesToHandle.isEmpty()) {
+        LinkedList<ExecutionTreeNode> nodesToHandle = new LinkedList<ExecutionTreeNode>();
+        nodesToHandle.add(rootNode);
+        while (!nodesToHandle.isEmpty()) {
+            ExecutionTreeNode currentNode = nodesToHandle.pop();
+            if (reverseOrder) {
+                flattenedList.addFirst(currentNode);
+            } else {
+                flattenedList.add(currentNode);
+            }
 
-      ExecutionTreeNode currentNode = nodesToHandle.pop();
-      if (reverseOrder) {
-        flattenedList.addFirst(currentNode);
-      } else {
-        flattenedList.add(currentNode);
-      }
-
-      if (currentNode.getChildren() != null && currentNode.getChildren().size() > 0) {
-        for (ExecutionTreeNode childNode : currentNode.getChildren()) {
-          nodesToHandle.add(childNode);
+            if (currentNode.getChildren() != null && currentNode.getChildren().size() > 0) {
+                for (ExecutionTreeNode childNode : currentNode.getChildren()) {
+                    nodesToHandle.add(childNode);
+                }
+            }
         }
-      }
+
+        flattenedListIterator = flattenedList.iterator();
     }
 
-    flattenedListIterator = flattenedList.iterator();
-  }
-
-  @Override
-  public boolean hasNext() {
-    if (flattenedList == null) {
-      flattenTree();
+    @Override
+    public boolean hasNext() {
+        if (flattenedList == null) {
+            flattenTree();
+        }
+        return flattenedListIterator.hasNext();
     }
-    return flattenedListIterator.hasNext();
-  }
 
-  @Override
-  public ExecutionTreeNode next() {
-    if (flattenedList == null) {
-      flattenTree();
+    @Override
+    public ExecutionTreeNode next() {
+        if (flattenedList == null) {
+            flattenTree();
+        }
+        return flattenedListIterator.next();
     }
-    return flattenedListIterator.next();
-  }
 
-  @Override
-  public void remove() {
-    if (flattenedList == null) {
-      flattenTree();
+    @Override
+    public void remove() {
+        if (flattenedList == null) {
+            flattenTree();
+        }
+        flattenedListIterator.remove();
     }
-    flattenedListIterator.remove();
-  }
-
 }

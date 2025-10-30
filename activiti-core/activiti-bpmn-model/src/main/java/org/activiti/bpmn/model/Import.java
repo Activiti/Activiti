@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,44 +17,44 @@ package org.activiti.bpmn.model;
 
 public class Import extends BaseElement {
 
-  protected String importType;
-  protected String location;
-  protected String namespace;
+    protected String importType;
+    protected String location;
+    protected String namespace;
 
-  public String getImportType() {
-    return importType;
-  }
+    public String getImportType() {
+        return importType;
+    }
 
-  public void setImportType(String importType) {
-    this.importType = importType;
-  }
+    public void setImportType(String importType) {
+        this.importType = importType;
+    }
 
-  public String getLocation() {
-    return location;
-  }
+    public String getLocation() {
+        return location;
+    }
 
-  public void setLocation(String location) {
-    this.location = location;
-  }
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
-  public String getNamespace() {
-    return namespace;
-  }
+    public String getNamespace() {
+        return namespace;
+    }
 
-  public void setNamespace(String namespace) {
-    this.namespace = namespace;
-  }
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
 
-  public Import clone() {
-    Import clone = new Import();
-    clone.setValues(this);
-    return clone;
-  }
+    public Import clone() {
+        Import clone = new Import();
+        clone.setValues(this);
+        return clone;
+    }
 
-  public void setValues(Import otherElement) {
-    super.setValues(otherElement);
-    setImportType(otherElement.getImportType());
-    setLocation(otherElement.getLocation());
-    setNamespace(otherElement.getNamespace());
-  }
+    public void setValues(Import otherElement) {
+        super.setValues(otherElement);
+        setImportType(otherElement.getImportType());
+        setLocation(otherElement.getLocation());
+        setNamespace(otherElement.getNamespace());
+    }
 }

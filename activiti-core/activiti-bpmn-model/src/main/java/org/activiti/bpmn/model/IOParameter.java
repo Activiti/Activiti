@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,54 +17,54 @@ package org.activiti.bpmn.model;
 
 public class IOParameter extends BaseElement {
 
-  protected String source;
-  protected String sourceExpression;
-  protected String target;
-  protected String targetExpression;
+    protected String source;
+    protected String sourceExpression;
+    protected String target;
+    protected String targetExpression;
 
-  public String getSource() {
-    return source;
-  }
+    public String getSource() {
+        return source;
+    }
 
-  public void setSource(String source) {
-    this.source = source;
-  }
+    public void setSource(String source) {
+        this.source = source;
+    }
 
-  public String getTarget() {
-    return target;
-  }
+    public String getTarget() {
+        return target;
+    }
 
-  public void setTarget(String target) {
-    this.target = target;
-  }
+    public void setTarget(String target) {
+        this.target = target;
+    }
 
-  public String getSourceExpression() {
-    return sourceExpression;
-  }
+    public String getSourceExpression() {
+        return sourceExpression;
+    }
 
-  public void setSourceExpression(String sourceExpression) {
-    this.sourceExpression = sourceExpression;
-  }
+    public void setSourceExpression(String sourceExpression) {
+        this.sourceExpression = sourceExpression;
+    }
 
-  public String getTargetExpression() {
-    return targetExpression;
-  }
+    public String getTargetExpression() {
+        return targetExpression;
+    }
 
-  public void setTargetExpression(String targetExpression) {
-    this.targetExpression = targetExpression;
-  }
+    public void setTargetExpression(String targetExpression) {
+        this.targetExpression = targetExpression;
+    }
 
-  public IOParameter clone() {
-    IOParameter clone = new IOParameter();
-    clone.setValues(this);
-    return clone;
-  }
+    public IOParameter clone() {
+        IOParameter clone = new IOParameter();
+        clone.setValues(this);
+        return clone;
+    }
 
-  public void setValues(IOParameter otherElement) {
-    super.setValues(otherElement);
-    setSource(otherElement.getSource());
-    setSourceExpression(otherElement.getSourceExpression());
-    setTarget(otherElement.getTarget());
-    setTargetExpression(otherElement.getTargetExpression());
-  }
+    public void setValues(IOParameter otherElement) {
+        super.setValues(otherElement);
+        setSource(otherElement.getSource());
+        setSourceExpression(otherElement.getSourceExpression());
+        setTarget(otherElement.getTarget());
+        setTargetExpression(otherElement.getTargetExpression());
+    }
 }

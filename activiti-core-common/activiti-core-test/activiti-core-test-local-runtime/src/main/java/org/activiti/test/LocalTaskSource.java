@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.activiti.test;
 
 import java.util.List;
-
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
@@ -34,9 +33,10 @@ public class LocalTaskSource implements TaskSource {
 
     @Override
     public List<Task> getTasks(String processInstanceId) {
-        Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0,
-                                                         MAX_ITEMS),
-                                             TaskPayloadBuilder.tasks().withProcessInstanceId(processInstanceId).build());
+        Page<Task> taskPage = taskRuntime.tasks(
+            Pageable.of(0, MAX_ITEMS),
+            TaskPayloadBuilder.tasks().withProcessInstanceId(processInstanceId).build()
+        );
         return taskPage.getContent();
     }
 

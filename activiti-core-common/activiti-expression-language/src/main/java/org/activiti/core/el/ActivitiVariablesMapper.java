@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,17 @@
  */
 package org.activiti.core.el;
 
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import jakarta.el.ValueExpression;
-import jakarta.el.VariableMapper;
 
 public class ActivitiVariablesMapper extends VariableMapper {
 
     Map<String, ValueExpression> map = Collections.emptyMap();
 
-    public ActivitiVariablesMapper() {
-    }
+    public ActivitiVariablesMapper() {}
 
     public ActivitiVariablesMapper(Map<String, ValueExpression> map) {
         this.map = map;

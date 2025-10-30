@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
  */
 package org.activiti.core.el;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import jakarta.el.ELContext;
-import jakarta.el.ELResolver;
 
 /**
  * {@link ELResolverDecorator} that blocks invocations using reflection or native calls.
@@ -33,9 +33,9 @@ public class ELResolverReflectionBlockerDecorator extends ELResolverDecorator {
     private static final Predicate<Method> IS_FINAL = method -> Modifier.isFinal(method.getModifiers());
     private static final Predicate<Method> IS_NATIVE = method -> Modifier.isNative(method.getModifiers());
     private static final Set<String> NATIVE_METHODS = Arrays.stream(Object.class.getMethods())
-                                                            .filter(IS_FINAL.or(IS_NATIVE))
-                                                            .map(Method::getName)
-                                                            .collect(Collectors.toSet());
+        .filter(IS_FINAL.or(IS_NATIVE))
+        .map(Method::getName)
+        .collect(Collectors.toSet());
 
     public ELResolverReflectionBlockerDecorator(ELResolver resolver) {
         super(resolver);
@@ -44,11 +44,11 @@ public class ELResolverReflectionBlockerDecorator extends ELResolverDecorator {
     @Override
     public Object invoke(ELContext context, Object base, Object method, Class<?>[] paramTypes, Object[] params) {
         final String basePackageName = base.getClass().getPackageName();
-        if(JAVA_REFLECTION_PACKAGE.equals(basePackageName)) {
+        if (JAVA_REFLECTION_PACKAGE.equals(basePackageName)) {
             throw new IllegalArgumentException("Illegal use of Reflection in a JUEL Expression");
         }
 
-        if(NATIVE_METHODS.contains(method)) {
+        if (NATIVE_METHODS.contains(method)) {
             throw new IllegalArgumentException("Illegal use of Native Method in a JUEL Expression");
         }
         return super.invoke(context, base, method, paramTypes, params);

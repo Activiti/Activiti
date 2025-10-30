@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,8 @@
  */
 package org.activiti.engine.test.logging.mdc;
 
-import java.io.ByteArrayOutputStream;
-
 import ch.qos.logback.core.OutputStreamAppender;
+import java.io.ByteArrayOutputStream;
 
 /**
  * @author Saeid Mirzaei
@@ -44,5 +43,4 @@ public class MemoryLogAppender<E> extends OutputStreamAppender<E> {
     public void clear() {
         this.init();
     }
-
 }

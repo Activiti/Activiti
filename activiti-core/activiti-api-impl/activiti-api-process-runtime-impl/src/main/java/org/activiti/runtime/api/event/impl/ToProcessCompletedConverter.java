@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,11 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import java.util.Optional;
 import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
-
-import java.util.Optional;
 
 public class ToProcessCompletedConverter implements EventConverter<ProcessCompletedEvent, ActivitiEntityEvent> {
 
@@ -32,6 +31,10 @@ public class ToProcessCompletedConverter implements EventConverter<ProcessComple
 
     @Override
     public Optional<ProcessCompletedEvent> from(ActivitiEntityEvent internalEvent) {
-        return Optional.of(new ProcessCompletedImpl(processInstanceConverter.from(((ExecutionEntity) internalEvent.getEntity()).getProcessInstance())));
+        return Optional.of(
+            new ProcessCompletedImpl(
+                processInstanceConverter.from(((ExecutionEntity) internalEvent.getEntity()).getProcessInstance())
+            )
+        );
     }
 }

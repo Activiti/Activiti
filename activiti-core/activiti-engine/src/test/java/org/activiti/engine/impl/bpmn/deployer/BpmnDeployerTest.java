@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,19 +49,20 @@ public class BpmnDeployerTest {
         persistedProcessDefinition.setVersion(1);
         persistedProcessDefinition.setAppVersion(2);
         persistedProcessDefinition.setEngineVersion("activiti-5");
-        given(bpmnDeploymentHelper.getPersistedInstanceOfProcessDefinition(parsedProcessDefinition))
-            .willReturn(persistedProcessDefinition);
+        given(bpmnDeploymentHelper.getPersistedInstanceOfProcessDefinition(parsedProcessDefinition)).willReturn(
+            persistedProcessDefinition
+        );
 
         //when
-        bpmnDeployer.makeProcessDefinitionsConsistentWithPersistedVersions(
-            parsedDeployment);
+        bpmnDeployer.makeProcessDefinitionsConsistentWithPersistedVersions(parsedDeployment);
 
         //then
         assertThat(parsedProcessDefinition.getId()).isEqualTo(persistedProcessDefinition.getId());
         assertThat(parsedProcessDefinition.getVersion()).isEqualTo(persistedProcessDefinition.getVersion());
         assertThat(parsedProcessDefinition.getAppVersion()).isEqualTo(persistedProcessDefinition.getAppVersion());
-        assertThat(parsedProcessDefinition.getSuspensionState()).isEqualTo(persistedProcessDefinition.getSuspensionState());
+        assertThat(parsedProcessDefinition.getSuspensionState()).isEqualTo(
+            persistedProcessDefinition.getSuspensionState()
+        );
         assertThat(parsedProcessDefinition.getEngineVersion()).isEqualTo(persistedProcessDefinition.getEngineVersion());
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.test.impl.logger;
 
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -24,15 +23,14 @@ import org.slf4j.Logger;
  */
 public class DebugInfoExecutionDeleted extends AbstractDebugInfo {
 
-  protected ExecutionEntity executionEntity;
+    protected ExecutionEntity executionEntity;
 
-  public DebugInfoExecutionDeleted(ExecutionEntity executionEntity) {
-    this.executionEntity = executionEntity;
-  }
+    public DebugInfoExecutionDeleted(ExecutionEntity executionEntity) {
+        this.executionEntity = executionEntity;
+    }
 
-  @Override
-  public void printOut(Logger logger) {
-    logger.info("Execution " + executionEntity.getId() + " deleted");
-  }
-
+    @Override
+    public void printOut(Logger logger) {
+        logger.info("Execution " + executionEntity.getId() + " deleted");
+    }
 }

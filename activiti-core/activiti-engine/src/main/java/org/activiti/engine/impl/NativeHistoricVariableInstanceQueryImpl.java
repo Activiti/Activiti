@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,32 +17,41 @@ package org.activiti.engine.impl;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.NativeHistoricVariableInstanceQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
-public class NativeHistoricVariableInstanceQueryImpl extends AbstractNativeQuery<NativeHistoricVariableInstanceQuery, HistoricVariableInstance> implements NativeHistoricVariableInstanceQuery {
+public class NativeHistoricVariableInstanceQueryImpl
+    extends AbstractNativeQuery<NativeHistoricVariableInstanceQuery, HistoricVariableInstance>
+    implements NativeHistoricVariableInstanceQuery {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public NativeHistoricVariableInstanceQueryImpl(CommandContext commandContext) {
-    super(commandContext);
-  }
+    public NativeHistoricVariableInstanceQueryImpl(CommandContext commandContext) {
+        super(commandContext);
+    }
 
-  public NativeHistoricVariableInstanceQueryImpl(CommandExecutor commandExecutor) {
-    super(commandExecutor);
-  }
+    public NativeHistoricVariableInstanceQueryImpl(CommandExecutor commandExecutor) {
+        super(commandExecutor);
+    }
 
-  // results ////////////////////////////////////////////////////////////////
+    // results ////////////////////////////////////////////////////////////////
 
-  public List<HistoricVariableInstance> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return commandContext.getHistoricVariableInstanceEntityManager().findHistoricVariableInstancesByNativeQuery(parameterMap, firstResult, maxResults);
-  }
+    public List<HistoricVariableInstance> executeList(
+        CommandContext commandContext,
+        Map<String, Object> parameterMap,
+        int firstResult,
+        int maxResults
+    ) {
+        return commandContext
+            .getHistoricVariableInstanceEntityManager()
+            .findHistoricVariableInstancesByNativeQuery(parameterMap, firstResult, maxResults);
+    }
 
-  public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
-    return commandContext.getHistoricVariableInstanceEntityManager().findHistoricVariableInstanceCountByNativeQuery(parameterMap);
-  }
-
+    public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
+        return commandContext
+            .getHistoricVariableInstanceEntityManager()
+            .findHistoricVariableInstanceCountByNativeQuery(parameterMap);
+    }
 }

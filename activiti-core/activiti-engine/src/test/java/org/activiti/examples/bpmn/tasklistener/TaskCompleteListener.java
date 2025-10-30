@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.examples.bpmn.tasklistener;
 
 import org.activiti.engine.delegate.DelegateTask;
@@ -25,15 +24,16 @@ import org.activiti.engine.delegate.TaskListener;
  */
 public class TaskCompleteListener implements TaskListener {
 
-  private static final long serialVersionUID = 1L;
-  private Expression greeter;
-  private Expression shortName;
+    private static final long serialVersionUID = 1L;
+    private Expression greeter;
+    private Expression shortName;
 
-  public void notify(DelegateTask delegateTask) {
-    delegateTask.getExecution().setVariable("greeting", "Hello from " + greeter.getValue(delegateTask.getExecution()));
-    delegateTask.getExecution().setVariable("shortName", shortName.getValue(delegateTask.getExecution()));
+    public void notify(DelegateTask delegateTask) {
+        delegateTask
+            .getExecution()
+            .setVariable("greeting", "Hello from " + greeter.getValue(delegateTask.getExecution()));
+        delegateTask.getExecution().setVariable("shortName", shortName.getValue(delegateTask.getExecution()));
 
-    delegateTask.setVariableLocal("myTaskVariable", "test");
-  }
-
+        delegateTask.setVariableLocal("myTaskVariable", "test");
+    }
 }

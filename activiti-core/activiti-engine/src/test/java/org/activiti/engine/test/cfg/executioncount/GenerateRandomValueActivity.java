@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,18 @@
  */
 package org.activiti.engine.test.cfg.executioncount;
 
+import java.util.Random;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
-import java.util.Random;
-
-
 public class GenerateRandomValueActivity implements JavaDelegate {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private static Random random = new Random();
+    private static Random random = new Random();
 
-  public void execute(DelegateExecution execution) {
-    Integer value = random.nextInt(10);
-    execution.setVariable("var", value);
-  }
-
+    public void execute(DelegateExecution execution) {
+        Integer value = random.nextInt(10);
+        execution.setVariable("var", value);
+    }
 }

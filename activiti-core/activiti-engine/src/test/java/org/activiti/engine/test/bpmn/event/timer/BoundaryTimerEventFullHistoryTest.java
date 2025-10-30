@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.test.bpmn.event.timer;
 
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
@@ -26,14 +24,13 @@ import org.activiti.engine.test.Deployment;
  */
 public class BoundaryTimerEventFullHistoryTest extends ResourceActivitiTestCase {
 
-  public BoundaryTimerEventFullHistoryTest() {
-    super("org/activiti/standalone/history/fullhistory.activiti.cfg.xml");
-  }
+    public BoundaryTimerEventFullHistoryTest() {
+        super("org/activiti/standalone/history/fullhistory.activiti.cfg.xml");
+    }
 
-  @Deployment
-  public void testSetProcessVariablesFromTaskWhenTimerOnTask() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerVariablesProcess");
-    runtimeService.setVariable(processInstance.getId(), "myVar", 123456L);
-  }
-
+    @Deployment
+    public void testSetProcessVariablesFromTaskWhenTimerOnTask() {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerVariablesProcess");
+        runtimeService.setVariable(processInstance.getId(), "myVar", 123456L);
+    }
 }

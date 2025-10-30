@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package org.activiti.spring.process.variable.types;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.activiti.engine.ActivitiException;
@@ -37,9 +38,13 @@ class JavaObjectVariableTypeTest {
         javaObjectVariableType = new JavaObjectVariableType(Boolean.class);
         javaObjectVariableType.validate(1, exceptionList);
 
-        assertTrue(exceptionList.stream().anyMatch(error ->
-            error.getMessage().equals("class java.lang.Integer is not assignable from class java.lang.Boolean")
-        ));
+        assertTrue(
+            exceptionList
+                .stream()
+                .anyMatch(error ->
+                    error.getMessage().equals("class java.lang.Integer is not assignable from class java.lang.Boolean")
+                )
+        );
     }
 
     @Test
@@ -69,8 +74,12 @@ class JavaObjectVariableTypeTest {
         javaObjectVariableType = new JavaObjectVariableType(Boolean.class);
         javaObjectVariableType.validate("${now()", exceptionList);
 
-        assertTrue(exceptionList.stream().anyMatch(error ->
-            error.getMessage().equals("class java.lang.String is not assignable from class java.lang.Boolean")
-        ));
+        assertTrue(
+            exceptionList
+                .stream()
+                .anyMatch(error ->
+                    error.getMessage().equals("class java.lang.String is not assignable from class java.lang.Boolean")
+                )
+        );
     }
 }

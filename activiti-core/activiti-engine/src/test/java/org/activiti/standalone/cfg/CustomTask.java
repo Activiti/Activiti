@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,35 +26,34 @@ import java.util.Date;
  */
 public class CustomTask {
 
-  protected String id;
-  protected String name;
-  protected String owner;
-  protected String assignee;
-  protected Date createTime;
-  protected int priority;
+    protected String id;
+    protected String name;
+    protected String owner;
+    protected String assignee;
+    protected Date createTime;
+    protected int priority;
 
-  public String getId() {
-    return id;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public String getOwner() {
-    return owner;
-  }
+    public String getOwner() {
+        return owner;
+    }
 
-  public String getAssignee() {
-    return assignee;
-  }
+    public String getAssignee() {
+        return assignee;
+    }
 
-  public Date getCreateTime() {
-    return createTime;
-  }
+    public Date getCreateTime() {
+        return createTime;
+    }
 
-  public int getPriority() {
-    return priority;
-  }
-
+    public int getPriority() {
+        return priority;
+    }
 }

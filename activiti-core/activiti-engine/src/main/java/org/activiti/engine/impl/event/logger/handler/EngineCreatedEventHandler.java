@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 
@@ -28,35 +27,34 @@ import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
  */
 public class EngineCreatedEventHandler extends AbstractDatabaseEventLoggerEventHandler {
 
-  @Override
-  public EventLogEntryEntity generateEventLogEntry(CommandContext commandContext) {
-    Map<String, Object> data = new HashMap<String, Object>();
-    try {
-      data.put("ip", InetAddress.getLocalHost().getHostAddress()); // Note
-                                                                   // that
-                                                                   // this
-                                                                   // might
-                                                                   // give
-                                                                   // the
-                                                                   // wrong
-                                                                   // ip
-                                                                   // address
-                                                                   // in
-                                                                   // case
-                                                                   // of
-                                                                   // multiple
-                                                                   // network
-                                                                   // interfaces
-                                                                   // -
-                                                                   // but
-                                                                   // it's
-                                                                   // better
-                                                                   // than
-                                                                   // nothing.
-    } catch (UnknownHostException e) {
-      // Best effort
+    @Override
+    public EventLogEntryEntity generateEventLogEntry(CommandContext commandContext) {
+        Map<String, Object> data = new HashMap<String, Object>();
+        try {
+            data.put("ip", InetAddress.getLocalHost().getHostAddress()); // Note
+            // that
+            // this
+            // might
+            // give
+            // the
+            // wrong
+            // ip
+            // address
+            // in
+            // case
+            // of
+            // multiple
+            // network
+            // interfaces
+            // -
+            // but
+            // it's
+            // better
+            // than
+            // nothing.
+        } catch (UnknownHostException e) {
+            // Best effort
+        }
+        return createEventLogEntry(data);
     }
-    return createEventLogEntry(data);
-  }
-
 }

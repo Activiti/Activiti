@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,13 @@
  */
 package org.activiti.core.common.spring.security.policies;
 
+import java.util.Set;
+import java.util.UUID;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 
-import java.util.Set;
-import java.util.UUID;
-
-public class SecurityPoliciesProcessDefinitionRestrictionApplier implements SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> {
+public class SecurityPoliciesProcessDefinitionRestrictionApplier
+    implements SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> {
 
     @Override
     public GetProcessDefinitionsPayload restrictToKeys(Set<String> keys) {
@@ -31,7 +31,9 @@ public class SecurityPoliciesProcessDefinitionRestrictionApplier implements Secu
     @Override
     public GetProcessDefinitionsPayload denyAll() {
         //user should not see anything so give unsatisfiable condition
-        return ProcessPayloadBuilder.processDefinitions().withProcessDefinitionKey("missing-" + UUID.randomUUID().toString()).build();
+        return ProcessPayloadBuilder.processDefinitions()
+            .withProcessDefinitionKey("missing-" + UUID.randomUUID().toString())
+            .build();
     }
 
     @Override

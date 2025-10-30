@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,20 @@ package org.activiti.bpmn.model;
 
 public abstract class Gateway extends FlowNode {
 
-  protected String defaultFlow;
+    protected String defaultFlow;
 
-  public String getDefaultFlow() {
-    return defaultFlow;
-  }
+    public String getDefaultFlow() {
+        return defaultFlow;
+    }
 
-  public void setDefaultFlow(String defaultFlow) {
-    this.defaultFlow = defaultFlow;
-  }
+    public void setDefaultFlow(String defaultFlow) {
+        this.defaultFlow = defaultFlow;
+    }
 
-  public abstract Gateway clone();
+    public abstract Gateway clone();
 
-  public void setValues(Gateway otherElement) {
-    super.setValues(otherElement);
-    setDefaultFlow(otherElement.getDefaultFlow());
-  }
+    public void setValues(Gateway otherElement) {
+        super.setValues(otherElement);
+        setDefaultFlow(otherElement.getDefaultFlow());
+    }
 }

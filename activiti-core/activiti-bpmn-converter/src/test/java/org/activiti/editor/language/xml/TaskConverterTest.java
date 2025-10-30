@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,12 +52,8 @@ public class TaskConverterTest extends AbstractConverterTest {
     }
 
     private void checkXml(BpmnModel model) throws Exception {
+        String xml = new String(new BpmnXMLConverter().convertToXML(model), "UTF-8");
 
-        String xml = new String(new BpmnXMLConverter().convertToXML(model),
-                                "UTF-8");
-
-        assertThat(xml).contains("incoming>SequenceFlow_12r6kuh<",
-                                 "outgoing>SequenceFlow_1h7t0iw<");
-
+        assertThat(xml).contains("incoming>SequenceFlow_12r6kuh<", "outgoing>SequenceFlow_1h7t0iw<");
     }
 }

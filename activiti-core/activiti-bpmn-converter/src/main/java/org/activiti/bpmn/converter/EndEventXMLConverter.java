@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.activiti.bpmn.converter;
 
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
@@ -28,31 +27,32 @@ import org.activiti.bpmn.model.EndEvent;
  */
 public class EndEventXMLConverter extends BaseBpmnXMLConverter {
 
-  @Override
-  public Class<? extends BaseElement> getBpmnElementType() {
-    return EndEvent.class;
-  }
+    @Override
+    public Class<? extends BaseElement> getBpmnElementType() {
+        return EndEvent.class;
+    }
 
-  @Override
-  protected String getXMLElementName() {
-    return ELEMENT_EVENT_END;
-  }
+    @Override
+    protected String getXMLElementName() {
+        return ELEMENT_EVENT_END;
+    }
 
-  @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
-    EndEvent endEvent = new EndEvent();
-    BpmnXMLUtil.addXMLLocation(endEvent, xtr);
-    parseChildElements(getXMLElementName(), endEvent, model, xtr);
-    return endEvent;
-  }
+    @Override
+    protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
+        EndEvent endEvent = new EndEvent();
+        BpmnXMLUtil.addXMLLocation(endEvent, xtr);
+        parseChildElements(getXMLElementName(), endEvent, model, xtr);
+        return endEvent;
+    }
 
-  @Override
-  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-  }
+    @Override
+    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+        throws Exception {}
 
-  @Override
-  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-    EndEvent endEvent = (EndEvent) element;
-    writeEventDefinitions(endEvent, endEvent.getEventDefinitions(), model, xtw);
-  }
+    @Override
+    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw)
+        throws Exception {
+        EndEvent endEvent = (EndEvent) element;
+        writeEventDefinitions(endEvent, endEvent.getEventDefinitions(), model, xtw);
+    }
 }

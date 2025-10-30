@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import java.lang.reflect.Field;
 import org.activiti.engine.ApplicationStatusHolder;
 import org.activiti.engine.impl.agenda.DefaultActivitiEngineAgenda;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -28,10 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Field;
-
 public class CommandContextTest {
-
 
     @Before
     public void resetStatusToRunning() throws Exception {
@@ -79,15 +77,9 @@ public class CommandContextTest {
     }
 
     private void assertLogLevel(ListAppender<ILoggingEvent> appender, Level level) {
-        Assertions
-            .assertThat(appender.list)
+        Assertions.assertThat(appender.list)
             .extracting(ILoggingEvent::getFormattedMessage, ILoggingEvent::getLevel)
-            .contains(
-                Tuple.tuple(
-                    "Error while closing command context",
-                    level
-                )
-            );
+            .contains(Tuple.tuple("Error while closing command context", level));
     }
 
     private ListAppender<ILoggingEvent> startLogger() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.List;
-
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -31,23 +29,27 @@ import org.activiti.engine.task.IdentityLink;
  */
 public class GetIdentityLinksForProcessDefinitionCmd implements Command<List<IdentityLink>>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String processDefinitionId;
+    private static final long serialVersionUID = 1L;
+    protected String processDefinitionId;
 
-  public GetIdentityLinksForProcessDefinitionCmd(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  public List<IdentityLink> execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = commandContext.getProcessDefinitionEntityManager().findById(processDefinitionId);
-
-    if (processDefinition == null) {
-      throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processDefinitionId, ProcessDefinition.class);
+    public GetIdentityLinksForProcessDefinitionCmd(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
     }
 
-    List<IdentityLink> identityLinks = (List) processDefinition.getIdentityLinks();
-    return identityLinks;
-  }
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public List<IdentityLink> execute(CommandContext commandContext) {
+        ProcessDefinitionEntity processDefinition = commandContext
+            .getProcessDefinitionEntityManager()
+            .findById(processDefinitionId);
 
+        if (processDefinition == null) {
+            throw new ActivitiObjectNotFoundException(
+                "Cannot find process definition with id " + processDefinitionId,
+                ProcessDefinition.class
+            );
+        }
+
+        List<IdentityLink> identityLinks = (List) processDefinition.getIdentityLinks();
+        return identityLinks;
+    }
 }

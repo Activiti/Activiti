@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -29,18 +26,18 @@ import org.activiti.engine.task.Event;
  */
 public class GetTaskEventCmd implements Command<Event>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String eventId;
+    private static final long serialVersionUID = 1L;
+    protected String eventId;
 
-  public GetTaskEventCmd(String eventId) {
-    this.eventId = eventId;
+    public GetTaskEventCmd(String eventId) {
+        this.eventId = eventId;
 
-    if (eventId == null) {
-      throw new ActivitiIllegalArgumentException("eventId is null");
+        if (eventId == null) {
+            throw new ActivitiIllegalArgumentException("eventId is null");
+        }
     }
-  }
 
-  public Event execute(CommandContext commandContext) {
-    return commandContext.getCommentEntityManager().findEvent(eventId);
-  }
+    public Event execute(CommandContext commandContext) {
+        return commandContext.getCommentEntityManager().findEvent(eventId);
+    }
 }

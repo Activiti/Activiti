@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,20 @@
  */
 package org.activiti.spring.boot;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.engine.ApplicationStatusHolder;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class ShutdownListenerTest {
 
     @Test
     void should_MarkAsShutdown_when_CloseApplicationContext() {
-        ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withUserConfiguration(Application.class);
-        contextRunner.run((context) -> {
+        ApplicationContextRunner contextRunner = new ApplicationContextRunner().withUserConfiguration(
+            Application.class
+        );
+        contextRunner.run(context -> {
             assertThat(ApplicationStatusHolder.isRunning()).isTrue();
             assertThat(ApplicationStatusHolder.isShutdownInProgress()).isFalse();
             context.close();
@@ -35,5 +36,4 @@ public class ShutdownListenerTest {
             assertThat(ApplicationStatusHolder.isShutdownInProgress()).isTrue();
         });
     }
-
 }

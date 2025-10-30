@@ -1,5 +1,5 @@
 {
-  "id":"taskVariableMappingSendAllInputsModel",
+  "id": "taskVariableMappingSendAllInputsModel",
   "type": "PROCESS",
   "name": "process",
   "extensions": {

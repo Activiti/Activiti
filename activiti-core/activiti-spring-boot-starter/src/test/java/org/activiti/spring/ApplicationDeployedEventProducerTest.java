@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,21 +60,25 @@ public class ApplicationDeployedEventProducerTest {
     @Mock
     private ProcessRuntimeEventListener<ApplicationDeployedEvent> secondListener;
 
-    private static final String APPLICATION_DEPLOYMENT_NAME= "SpringAutoDeployment";
+    private static final String APPLICATION_DEPLOYMENT_NAME = "SpringAutoDeployment";
 
     @BeforeEach
     public void setUp() {
-        producer = new ApplicationDeployedEventProducer(repositoryService,
-                converter,
-                asList(firstListener, secondListener),
-                eventPublisher);
+        producer = new ApplicationDeployedEventProducer(
+            repositoryService,
+            converter,
+            asList(firstListener, secondListener),
+            eventPublisher
+        );
     }
 
     @Test
     public void shouldPublishEventsWhenApplicationIsDeployed() {
         ArgumentCaptor<ApplicationDeployedEvents> captorPublisher = startEventProducer();
 
-        assertThat(captorPublisher.getValue().getApplicationDeployedEvents().get(0).getEventType()).isEqualTo(APPLICATION_DEPLOYED);
+        assertThat(captorPublisher.getValue().getApplicationDeployedEvents().get(0).getEventType()).isEqualTo(
+            APPLICATION_DEPLOYED
+        );
     }
 
     @Test
@@ -82,15 +86,16 @@ public class ApplicationDeployedEventProducerTest {
         producer.setAfterRollback(true);
         ArgumentCaptor<ApplicationDeployedEvents> captorPublisher = startEventProducer();
 
-        assertThat(captorPublisher.getValue().getApplicationDeployedEvents().get(0).getEventType()).isEqualTo(APPLICATION_ROLLBACK);
+        assertThat(captorPublisher.getValue().getApplicationDeployedEvents().get(0).getEventType()).isEqualTo(
+            APPLICATION_ROLLBACK
+        );
     }
 
     private ArgumentCaptor<ApplicationDeployedEvents> startEventProducer() {
         DeploymentQuery deploymentQuery = mock(DeploymentQuery.class);
         given(repositoryService.createDeploymentQuery()).willReturn(deploymentQuery);
 
-        List<Deployment> internalDeployment = asList(mock(Deployment.class),
-                                                     mock(Deployment.class));
+        List<Deployment> internalDeployment = asList(mock(Deployment.class), mock(Deployment.class));
 
         given(deploymentQuery.deploymentName(APPLICATION_DEPLOYMENT_NAME)).willReturn(deploymentQuery);
         given(deploymentQuery.latestVersion()).willReturn(deploymentQuery);
@@ -121,10 +126,10 @@ public class ApplicationDeployedEventProducerTest {
             .hasSize(2)
             .containsOnly("2");
 
-
-        ArgumentCaptor<ApplicationDeployedEvents> captorPublisher = ArgumentCaptor.forClass(ApplicationDeployedEvents.class);
+        ArgumentCaptor<ApplicationDeployedEvents> captorPublisher = ArgumentCaptor.forClass(
+            ApplicationDeployedEvents.class
+        );
         verify(eventPublisher).publishEvent(captorPublisher.capture());
         return captorPublisher;
     }
-
 }

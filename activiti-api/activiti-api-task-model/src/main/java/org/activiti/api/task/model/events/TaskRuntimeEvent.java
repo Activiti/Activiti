@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,8 @@ package org.activiti.api.task.model.events;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.task.model.Task;
 
-
 public interface TaskRuntimeEvent<T extends Task> extends RuntimeEvent<T, TaskRuntimeEvent.TaskEvents> {
-
     enum TaskEvents {
-
         TASK_ASSIGNED,
 
         TASK_COMPLETED,
@@ -35,8 +32,6 @@ public interface TaskRuntimeEvent<T extends Task> extends RuntimeEvent<T, TaskRu
 
         TASK_SUSPENDED,
 
-        TASK_CANCELLED
-
+        TASK_CANCELLED,
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@ package org.activiti.bpmn.model;
 
 public class InclusiveGateway extends Gateway {
 
-  public InclusiveGateway clone() {
-    InclusiveGateway clone = new InclusiveGateway();
-    clone.setValues(this);
-    return clone;
-  }
+    public InclusiveGateway clone() {
+        InclusiveGateway clone = new InclusiveGateway();
+        clone.setValues(this);
+        return clone;
+    }
 
-  public void setValues(InclusiveGateway otherElement) {
-    super.setValues(otherElement);
-  }
+    public void setValues(InclusiveGateway otherElement) {
+        super.setValues(otherElement);
+    }
 }

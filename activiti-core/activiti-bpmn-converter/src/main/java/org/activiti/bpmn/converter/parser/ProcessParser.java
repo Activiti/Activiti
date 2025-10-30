@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,7 @@
 package org.activiti.bpmn.converter.parser;
 
 import java.util.List;
-
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.export.ProcessExport;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
@@ -31,41 +29,46 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ProcessParser implements BpmnXMLConstants {
 
-  public Process parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
-    Process process = null;
-    if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_ID))) {
-      String processId = xtr.getAttributeValue(null, ATTRIBUTE_ID);
-      process = new Process();
-      process.setId(processId);
-      BpmnXMLUtil.addXMLLocation(process, xtr);
-      process.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
-      if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_PROCESS_EXECUTABLE))) {
-        process.setExecutable(Boolean.parseBoolean(xtr.getAttributeValue(null, ATTRIBUTE_PROCESS_EXECUTABLE)));
-      }
+    public Process parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
+        Process process = null;
+        if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_ID))) {
+            String processId = xtr.getAttributeValue(null, ATTRIBUTE_ID);
+            process = new Process();
+            process.setId(processId);
+            BpmnXMLUtil.addXMLLocation(process, xtr);
+            process.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
+            if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_PROCESS_EXECUTABLE))) {
+                process.setExecutable(Boolean.parseBoolean(xtr.getAttributeValue(null, ATTRIBUTE_PROCESS_EXECUTABLE)));
+            }
 
-      String candidateUsersString = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_PROCESS_CANDIDATE_USERS);
-      if (candidateUsersString != null) {
-          process.setCandidateStarterUsersDefined(true);
-      }
-      if (StringUtils.isNotEmpty(candidateUsersString)) {
-        List<String> candidateUsers = BpmnXMLUtil.parseDelimitedList(candidateUsersString);
-        process.setCandidateStarterUsers(candidateUsers);
-      }
+            String candidateUsersString = xtr.getAttributeValue(
+                ACTIVITI_EXTENSIONS_NAMESPACE,
+                ATTRIBUTE_PROCESS_CANDIDATE_USERS
+            );
+            if (candidateUsersString != null) {
+                process.setCandidateStarterUsersDefined(true);
+            }
+            if (StringUtils.isNotEmpty(candidateUsersString)) {
+                List<String> candidateUsers = BpmnXMLUtil.parseDelimitedList(candidateUsersString);
+                process.setCandidateStarterUsers(candidateUsers);
+            }
 
-      String candidateGroupsString = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_PROCESS_CANDIDATE_GROUPS);
-      if (candidateGroupsString != null) {
-          process.setCandidateStarterGroupsDefined(true);
-      }
-      if (StringUtils.isNotEmpty(candidateGroupsString)) {
-        List<String> candidateGroups = BpmnXMLUtil.parseDelimitedList(candidateGroupsString);
-        process.setCandidateStarterGroups(candidateGroups);
-      }
+            String candidateGroupsString = xtr.getAttributeValue(
+                ACTIVITI_EXTENSIONS_NAMESPACE,
+                ATTRIBUTE_PROCESS_CANDIDATE_GROUPS
+            );
+            if (candidateGroupsString != null) {
+                process.setCandidateStarterGroupsDefined(true);
+            }
+            if (StringUtils.isNotEmpty(candidateGroupsString)) {
+                List<String> candidateGroups = BpmnXMLUtil.parseDelimitedList(candidateGroupsString);
+                process.setCandidateStarterGroups(candidateGroups);
+            }
 
-      BpmnXMLUtil.addCustomAttributes(xtr, process, ProcessExport.defaultProcessAttributes);
+            BpmnXMLUtil.addCustomAttributes(xtr, process, ProcessExport.defaultProcessAttributes);
 
-      model.getProcesses().add(process);
-
+            model.getProcesses().add(process);
+        }
+        return process;
     }
-    return process;
-  }
 }

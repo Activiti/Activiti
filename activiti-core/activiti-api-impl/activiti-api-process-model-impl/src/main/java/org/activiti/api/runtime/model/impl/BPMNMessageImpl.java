@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.activiti.api.runtime.model.impl;
 
 import java.util.Objects;
-
 import org.activiti.api.process.model.BPMNMessage;
 import org.activiti.api.process.model.payloads.MessageEventPayload;
 
@@ -24,8 +23,7 @@ public class BPMNMessageImpl extends BPMNElementImpl implements BPMNMessage {
 
     private MessageEventPayload messagePayload;
 
-    public BPMNMessageImpl() {
-    }
+    public BPMNMessageImpl() {}
 
     public BPMNMessageImpl(String elementId) {
         this.setElementId(elementId);
@@ -49,10 +47,10 @@ public class BPMNMessageImpl extends BPMNElementImpl implements BPMNMessage {
         }
         BPMNMessageImpl that = (BPMNMessageImpl) o;
 
-        return Objects.equals(getElementId(),
-                              that.getElementId()) &&
-               Objects.equals(messagePayload,
-                               that.getMessagePayload());
+        return (
+            Objects.equals(getElementId(), that.getElementId()) &&
+            Objects.equals(messagePayload, that.getMessagePayload())
+        );
     }
 
     @Override
@@ -65,9 +63,15 @@ public class BPMNMessageImpl extends BPMNElementImpl implements BPMNMessage {
 
     @Override
     public String toString() {
-        return "BPMNMessageImpl{" +
-                ", elementId='" + getElementId() + '\'' +
-                ", messagePayload='" + (messagePayload != null ? messagePayload.toString() : null) + '\'' +
-                '}';
+        return (
+            "BPMNMessageImpl{" +
+            ", elementId='" +
+            getElementId() +
+            '\'' +
+            ", messagePayload='" +
+            (messagePayload != null ? messagePayload.toString() : null) +
+            '\'' +
+            '}'
+        );
     }
 }

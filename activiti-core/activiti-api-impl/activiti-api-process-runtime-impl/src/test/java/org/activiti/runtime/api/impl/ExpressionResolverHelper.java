@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,11 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import jakarta.el.ELResolver;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import jakarta.el.ELResolver;
 import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -40,7 +38,10 @@ public class ExpressionResolverHelper {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    private static void initializeExpressionResolver(List<CustomFunctionProvider> customFunctionProviders, List<ELResolver> customELResolvers) {
+    private static void initializeExpressionResolver(
+        List<CustomFunctionProvider> customFunctionProviders,
+        List<ELResolver> customELResolvers
+    ) {
         ProcessEngineConfigurationImpl processEngineConfiguration = mock(ProcessEngineConfigurationImpl.class);
         Context.setProcessEngineConfiguration(processEngineConfiguration);
         ExpressionManager expressionManager = new ExpressionManager();
@@ -49,15 +50,16 @@ public class ExpressionResolverHelper {
         given(processEngineConfiguration.getDelegateInterceptor()).willReturn(new DefaultDelegateInterceptor());
     }
 
-    public static ExpressionResolver initContext(DelegateExecution execution,
-                                                 Extension extensions) {
+    public static ExpressionResolver initContext(DelegateExecution execution, Extension extensions) {
         return initContext(execution, extensions, new ArrayList<>(), new ArrayList<>());
     }
 
-    public static ExpressionResolver initContext(DelegateExecution execution,
-                                                 Extension extensions,
-                                                 List<CustomFunctionProvider> customFunctionProviders,
-                                                 List<ELResolver> customELResolvers) {
+    public static ExpressionResolver initContext(
+        DelegateExecution execution,
+        Extension extensions,
+        List<CustomFunctionProvider> customFunctionProviders,
+        List<ELResolver> customELResolvers
+    ) {
         initializeExpressionResolver(customFunctionProviders, customELResolvers);
 
         Map<String, Object> variables = convertToStringObjectMap(extensions.getProperties());
@@ -65,8 +67,7 @@ public class ExpressionResolverHelper {
         setExecutionVariables(execution, variables);
         ExpressionManager expressionManager = new ExpressionManager();
         expressionManager.setCustomFunctionProviders(customFunctionProviders);
-        return new ExpressionResolver(expressionManager,
-                                      objectMapper, new DefaultDelegateInterceptor());
+        return new ExpressionResolver(expressionManager, objectMapper, new DefaultDelegateInterceptor());
     }
 
     public static void setExecutionVariables(DelegateExecution execution, Map<String, Object> variables) {
@@ -74,29 +75,22 @@ public class ExpressionResolverHelper {
         given(execution.getVariablesLocal()).willReturn(variables);
         for (String key : variables.keySet()) {
             given(execution.hasVariable(key)).willReturn(true);
-            VariableInstance var = getVariableInstance(key,
-                                                       variables.get(key));
+            VariableInstance var = getVariableInstance(key, variables.get(key));
             given(execution.getVariableInstance(key)).willReturn(var);
             given(execution.getVariable(key)).willReturn(variables.get(key));
         }
     }
 
-
-    private static Map<String, Object> convertToStringObjectMap(
-        Map<String, VariableDefinition> sourceMap) {
+    private static Map<String, Object> convertToStringObjectMap(Map<String, VariableDefinition> sourceMap) {
         Map<String, Object> result = new HashMap<>();
-        sourceMap.forEach((key,
-                value) -> result.put(value.getName(),
-                                     value.getValue()));
+        sourceMap.forEach((key, value) -> result.put(value.getName(), value.getValue()));
         return result;
     }
 
-    private static VariableInstance getVariableInstance(String key,
-                                                        Object value) {
+    private static VariableInstance getVariableInstance(String key, Object value) {
         VariableInstance var = new VariableInstance() {
             @Override
-            public void setRevision(int revision) {
-            }
+            public void setRevision(int revision) {}
 
             @Override
             public int getRevisionNext() {
@@ -109,20 +103,16 @@ public class ExpressionResolverHelper {
             }
 
             @Override
-            public void setUpdated(boolean updated) {
-            }
+            public void setUpdated(boolean updated) {}
 
             @Override
-            public void setInserted(boolean inserted) {
-            }
+            public void setInserted(boolean inserted) {}
 
             @Override
-            public void setId(String id) {
-            }
+            public void setId(String id) {}
 
             @Override
-            public void setDeleted(boolean deleted) {
-            }
+            public void setDeleted(boolean deleted) {}
 
             @Override
             public boolean isUpdated() {
@@ -150,28 +140,22 @@ public class ExpressionResolverHelper {
             }
 
             @Override
-            public void setTextValue2(String textValue2) {
-            }
+            public void setTextValue2(String textValue2) {}
 
             @Override
-            public void setTextValue(String textValue) {
-            }
+            public void setTextValue(String textValue) {}
 
             @Override
-            public void setLongValue(Long longValue) {
-            }
+            public void setLongValue(Long longValue) {}
 
             @Override
-            public void setDoubleValue(Double doubleValue) {
-            }
+            public void setDoubleValue(Double doubleValue) {}
 
             @Override
-            public void setCachedValue(Object cachedValue) {
-            }
+            public void setCachedValue(Object cachedValue) {}
 
             @Override
-            public void setBytes(byte[] bytes) {
-            }
+            public void setBytes(byte[] bytes) {}
 
             @Override
             public String getTextValue2() {
@@ -185,7 +169,6 @@ public class ExpressionResolverHelper {
 
             @Override
             public String getName() {
-
                 return null;
             }
 
@@ -210,28 +193,22 @@ public class ExpressionResolverHelper {
             }
 
             @Override
-            public void setValue(Object value) {
-            }
+            public void setValue(Object value) {}
 
             @Override
-            public void setTypeName(String typeName) {
-            }
+            public void setTypeName(String typeName) {}
 
             @Override
-            public void setTaskId(String taskId) {
-            }
+            public void setTaskId(String taskId) {}
 
             @Override
-            public void setProcessInstanceId(String processInstanceId) {
-            }
+            public void setProcessInstanceId(String processInstanceId) {}
 
             @Override
-            public void setName(String name) {
-            }
+            public void setName(String name) {}
 
             @Override
-            public void setExecutionId(String executionId) {
-            }
+            public void setExecutionId(String executionId) {}
 
             @Override
             public Object getValue() {

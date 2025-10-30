@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.task;
 
 /**
@@ -30,18 +29,17 @@ package org.activiti.engine.task;
  */
 public class TaskInfoQueryWrapper {
 
-  protected TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery;
+    protected TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery;
 
-  public TaskInfoQueryWrapper(TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery) {
-    this.taskInfoQuery = taskInfoQuery;
-  }
+    public TaskInfoQueryWrapper(TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery) {
+        this.taskInfoQuery = taskInfoQuery;
+    }
 
-  public TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> getTaskInfoQuery() {
-    return taskInfoQuery;
-  }
+    public TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> getTaskInfoQuery() {
+        return taskInfoQuery;
+    }
 
-  public void setTaskInfoQuery(TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery) {
-    this.taskInfoQuery = taskInfoQuery;
-  }
-
+    public void setTaskInfoQuery(TaskInfoQuery<? extends TaskInfoQuery<?, ?>, ? extends TaskInfo> taskInfoQuery) {
+        this.taskInfoQuery = taskInfoQuery;
+    }
 }

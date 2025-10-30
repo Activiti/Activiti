@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.standalone.parsing;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
@@ -28,27 +26,26 @@ import org.activiti.engine.test.Deployment;
  */
 public class CustomActivityBehaviorFactoryTest extends ResourceActivitiTestCase {
 
-  public CustomActivityBehaviorFactoryTest() {
-    super("org/activiti/standalone/parsing/custom.activitybehaviorfactory.activiti.cfg.xml");
-  }
-
-  // The custom activity factory will change this value
-  public static AtomicInteger COUNTER = new AtomicInteger(0);
-
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-    COUNTER.set(0);
-  }
-
-  @Deployment
-  public void testCustomActivityBehaviorFactory() {
-    int nrOfProcessInstances = 6;
-    for (int i = 0; i < nrOfProcessInstances; i++) {
-      runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    public CustomActivityBehaviorFactoryTest() {
+        super("org/activiti/standalone/parsing/custom.activitybehaviorfactory.activiti.cfg.xml");
     }
 
-    assertThat(COUNTER.get()).isEqualTo(nrOfProcessInstances);
-  }
+    // The custom activity factory will change this value
+    public static AtomicInteger COUNTER = new AtomicInteger(0);
 
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        COUNTER.set(0);
+    }
+
+    @Deployment
+    public void testCustomActivityBehaviorFactory() {
+        int nrOfProcessInstances = 6;
+        for (int i = 0; i < nrOfProcessInstances; i++) {
+            runtimeService.startProcessInstanceByKey("oneTaskProcess");
+        }
+
+        assertThat(COUNTER.get()).isEqualTo(nrOfProcessInstances);
+    }
 }

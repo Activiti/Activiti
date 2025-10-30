@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,8 +30,7 @@ public class NodePrinterTest extends TestCase {
 
     @Test
     public void testDump() throws IOException {
-        Tree tree = new Builder(Builder.Feature.METHOD_INVOCATIONS)
-            .build("${foo.bar[baz] + foobar}");
+        Tree tree = new Builder(Builder.Feature.METHOD_INVOCATIONS).build("${foo.bar[baz] + foobar}");
         StringWriter writer = new StringWriter();
         NodePrinter.dump(new PrintWriter(writer), tree.getRoot());
         String[] expected = {
@@ -51,9 +49,7 @@ public class NodePrinterTest extends TestCase {
             "      +- foobar",
             null,
         };
-        BufferedReader reader = new BufferedReader(
-            new StringReader(writer.toString())
-        );
+        BufferedReader reader = new BufferedReader(new StringReader(writer.toString()));
         for (String line : expected) {
             assertEquals(line, reader.readLine());
         }

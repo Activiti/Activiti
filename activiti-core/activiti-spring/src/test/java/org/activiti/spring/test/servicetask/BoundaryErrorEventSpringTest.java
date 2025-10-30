@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.spring.test.servicetask;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
@@ -35,8 +32,7 @@ public class BoundaryErrorEventSpringTest extends SpringActivitiTestCase {
     private void cleanUp() {
         List<org.activiti.engine.repository.Deployment> deployments = repositoryService.createDeploymentQuery().list();
         for (org.activiti.engine.repository.Deployment deployment : deployments) {
-            repositoryService.deleteDeployment(deployment.getId(),
-                                               true);
+            repositoryService.deleteDeployment(deployment.getId(), true);
         }
     }
 
@@ -47,16 +43,16 @@ public class BoundaryErrorEventSpringTest extends SpringActivitiTestCase {
 
     @Deployment
     public void testCatchErrorThrownByJavaDelegateOnServiceTask() {
-        String procId = runtimeService.startProcessInstanceByKey("catchErrorThrownByExpressionDelegateOnServiceTask").getId();
+        String procId = runtimeService
+            .startProcessInstanceByKey("catchErrorThrownByExpressionDelegateOnServiceTask")
+            .getId();
         assertThatErrorHasBeenCaught(procId);
     }
 
     private void assertThatErrorHasBeenCaught(String procId) {
         // The service task will throw an error event,
         // which is caught on the service task boundary
-        assertThat(taskService.createTaskQuery().count())
-            .as("No tasks found in task list.")
-            .isEqualTo(1);
+        assertThat(taskService.createTaskQuery().count()).as("No tasks found in task list.").isEqualTo(1);
         Task task = taskService.createTaskQuery().singleResult();
         assertThat(task.getName()).isEqualTo("Escalated Task");
 

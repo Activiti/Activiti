@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.activiti.engine.repository;
 
 import java.util.List;
 import java.util.Set;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.query.Query;
@@ -27,7 +26,6 @@ import org.activiti.engine.query.Query;
  */
 @Internal
 public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, ProcessDefinition> {
-
     /**
      * Only select process definition with the given id.
      */
@@ -224,5 +222,4 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
      * Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}).
      */
     ProcessDefinitionQuery orderByTenantId();
-
 }

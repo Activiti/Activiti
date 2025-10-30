@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,24 +17,24 @@ package org.activiti.bpmn.model;
 
 public class ErrorEventDefinition extends EventDefinition {
 
-  protected String errorRef;
+    protected String errorRef;
 
-  public String getErrorRef() {
-    return errorRef;
-  }
+    public String getErrorRef() {
+        return errorRef;
+    }
 
-  public void setErrorRef(String errorRef) {
-    this.errorRef = errorRef;
-  }
+    public void setErrorRef(String errorRef) {
+        this.errorRef = errorRef;
+    }
 
-  public ErrorEventDefinition clone() {
-    ErrorEventDefinition clone = new ErrorEventDefinition();
-    clone.setValues(this);
-    return clone;
-  }
+    public ErrorEventDefinition clone() {
+        ErrorEventDefinition clone = new ErrorEventDefinition();
+        clone.setValues(this);
+        return clone;
+    }
 
-  public void setValues(ErrorEventDefinition otherDefinition) {
-    super.setValues(otherDefinition);
-    setErrorRef(otherDefinition.getErrorRef());
-  }
+    public void setValues(ErrorEventDefinition otherDefinition) {
+        super.setValues(otherDefinition);
+        setErrorRef(otherDefinition.getErrorRef());
+    }
 }

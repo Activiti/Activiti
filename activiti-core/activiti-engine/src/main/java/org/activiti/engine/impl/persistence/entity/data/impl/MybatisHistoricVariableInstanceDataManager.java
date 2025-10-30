@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.HistoricVariableInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
@@ -34,66 +32,100 @@ import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.Histor
 /**
 
  */
-public class MybatisHistoricVariableInstanceDataManager extends AbstractDataManager<HistoricVariableInstanceEntity> implements HistoricVariableInstanceDataManager {
+public class MybatisHistoricVariableInstanceDataManager
+    extends AbstractDataManager<HistoricVariableInstanceEntity>
+    implements HistoricVariableInstanceDataManager {
 
-  protected CachedEntityMatcher<HistoricVariableInstanceEntity> historicVariableInstanceByTaskIdMatcher = new HistoricVariableInstanceByTaskIdMatcher();
+    protected CachedEntityMatcher<HistoricVariableInstanceEntity> historicVariableInstanceByTaskIdMatcher =
+        new HistoricVariableInstanceByTaskIdMatcher();
 
-  protected CachedEntityMatcher<HistoricVariableInstanceEntity> historicVariableInstanceByProcInstMatcher = new HistoricVariableInstanceByProcInstMatcher();
+    protected CachedEntityMatcher<HistoricVariableInstanceEntity> historicVariableInstanceByProcInstMatcher =
+        new HistoricVariableInstanceByProcInstMatcher();
 
-  public MybatisHistoricVariableInstanceDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
-    super(processEngineConfiguration);
-  }
+    public MybatisHistoricVariableInstanceDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
+        super(processEngineConfiguration);
+    }
 
-  @Override
-  public Class<? extends HistoricVariableInstanceEntity> getManagedEntityClass() {
-    return HistoricVariableInstanceEntityImpl.class;
-  }
+    @Override
+    public Class<? extends HistoricVariableInstanceEntity> getManagedEntityClass() {
+        return HistoricVariableInstanceEntityImpl.class;
+    }
 
-  @Override
-  public HistoricVariableInstanceEntity create() {
-    return new HistoricVariableInstanceEntityImpl();
-  }
+    @Override
+    public HistoricVariableInstanceEntity create() {
+        return new HistoricVariableInstanceEntityImpl();
+    }
 
-  @Override
-  public void insert(HistoricVariableInstanceEntity entity) {
-    super.insert(entity);
-  }
+    @Override
+    public void insert(HistoricVariableInstanceEntity entity) {
+        super.insert(entity);
+    }
 
-  @Override
-  public List<HistoricVariableInstanceEntity> findHistoricVariableInstancesByProcessInstanceId(final String processInstanceId) {
-    return getList("selectHistoricVariableInstanceByProcessInstanceId", processInstanceId, historicVariableInstanceByProcInstMatcher, true);
-  }
+    @Override
+    public List<HistoricVariableInstanceEntity> findHistoricVariableInstancesByProcessInstanceId(
+        final String processInstanceId
+    ) {
+        return getList(
+            "selectHistoricVariableInstanceByProcessInstanceId",
+            processInstanceId,
+            historicVariableInstanceByProcInstMatcher,
+            true
+        );
+    }
 
-  @Override
-  public List<HistoricVariableInstanceEntity> findHistoricVariableInstancesByTaskId(final String taskId) {
-    return getList("selectHistoricVariableInstanceByTaskId", taskId, historicVariableInstanceByTaskIdMatcher, true);
-  }
+    @Override
+    public List<HistoricVariableInstanceEntity> findHistoricVariableInstancesByTaskId(final String taskId) {
+        return getList("selectHistoricVariableInstanceByTaskId", taskId, historicVariableInstanceByTaskIdMatcher, true);
+    }
 
-  @Override
-  public long findHistoricVariableInstanceCountByQueryCriteria(HistoricVariableInstanceQueryImpl historicProcessVariableQuery) {
-    return (Long) getDbSqlSession().selectOne("selectHistoricVariableInstanceCountByQueryCriteria", historicProcessVariableQuery);
-  }
+    @Override
+    public long findHistoricVariableInstanceCountByQueryCriteria(
+        HistoricVariableInstanceQueryImpl historicProcessVariableQuery
+    ) {
+        return (Long) getDbSqlSession().selectOne(
+            "selectHistoricVariableInstanceCountByQueryCriteria",
+            historicProcessVariableQuery
+        );
+    }
 
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<HistoricVariableInstance> findHistoricVariableInstancesByQueryCriteria(HistoricVariableInstanceQueryImpl historicProcessVariableQuery, Page page) {
-    return getDbSqlSession().selectList("selectHistoricVariableInstanceByQueryCriteria", historicProcessVariableQuery, page);
-  }
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<HistoricVariableInstance> findHistoricVariableInstancesByQueryCriteria(
+        HistoricVariableInstanceQueryImpl historicProcessVariableQuery,
+        Page page
+    ) {
+        return getDbSqlSession().selectList(
+            "selectHistoricVariableInstanceByQueryCriteria",
+            historicProcessVariableQuery,
+            page
+        );
+    }
 
-  @Override
-  public HistoricVariableInstanceEntity findHistoricVariableInstanceByVariableInstanceId(String variableInstanceId) {
-    return (HistoricVariableInstanceEntity) getDbSqlSession().selectOne("selectHistoricVariableInstanceByVariableInstanceId", variableInstanceId);
-  }
+    @Override
+    public HistoricVariableInstanceEntity findHistoricVariableInstanceByVariableInstanceId(String variableInstanceId) {
+        return (HistoricVariableInstanceEntity) getDbSqlSession().selectOne(
+            "selectHistoricVariableInstanceByVariableInstanceId",
+            variableInstanceId
+        );
+    }
 
-  @Override
-  @SuppressWarnings("unchecked")
-  public List<HistoricVariableInstance> findHistoricVariableInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectHistoricVariableInstanceByNativeQuery", parameterMap, firstResult, maxResults);
-  }
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<HistoricVariableInstance> findHistoricVariableInstancesByNativeQuery(
+        Map<String, Object> parameterMap,
+        int firstResult,
+        int maxResults
+    ) {
+        return getDbSqlSession().selectListWithRawParameter(
+            "selectHistoricVariableInstanceByNativeQuery",
+            parameterMap,
+            firstResult,
+            maxResults
+        );
+    }
 
-  @Override
-  public long findHistoricVariableInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
-    return (Long) getDbSqlSession().selectOne("selectHistoricVariableInstanceCountByNativeQuery", parameterMap);
-  }
-
+    @Override
+    public long findHistoricVariableInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
+        return (Long) getDbSqlSession().selectOne("selectHistoricVariableInstanceCountByNativeQuery", parameterMap);
+    }
 }

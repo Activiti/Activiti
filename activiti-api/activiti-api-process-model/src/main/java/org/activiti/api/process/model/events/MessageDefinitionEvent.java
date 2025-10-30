@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,9 @@ package org.activiti.api.process.model.events;
 
 import org.activiti.api.model.shared.event.RuntimeEvent;
 
-public interface MessageDefinitionEvent<ENTITY_TYPE> extends RuntimeEvent<ENTITY_TYPE, MessageDefinitionEvent.MessageDefinitionEvents> {
-
+public interface MessageDefinitionEvent<ENTITY_TYPE>
+    extends RuntimeEvent<ENTITY_TYPE, MessageDefinitionEvent.MessageDefinitionEvents> {
     enum MessageDefinitionEvents {
-
-        START_MESSAGE_DEPLOYED
-
+        START_MESSAGE_DEPLOYED,
     }
-
 }

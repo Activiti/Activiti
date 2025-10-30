@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree.impl.ast;
 
 import jakarta.el.ELContext;
@@ -28,19 +27,13 @@ public class AstDot extends AstProperty {
         this(base, property, lvalue, false);
     }
 
-    public AstDot(
-        AstNode base,
-        String property,
-        boolean lvalue,
-        boolean ignoreReturnType
-    ) {
+    public AstDot(AstNode base, String property, boolean lvalue, boolean ignoreReturnType) {
         super(base, lvalue, true, ignoreReturnType);
         this.property = property;
     }
 
     @Override
-    protected String getProperty(Bindings bindings, ELContext context)
-        throws ELException {
+    protected String getProperty(Bindings bindings, ELContext context) throws ELException {
         return property;
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,16 +45,16 @@ public class Set1RuntimeTestConfiguration {
     public Connector serviceImplementationModifyData() {
         return integrationContext -> {
             connector2Executed = true;
-            integrationContext.getOutBoundVariables().put("var1", integrationContext.getInBoundVariables().get("var1") + "-modified");
+            integrationContext
+                .getOutBoundVariables()
+                .put("var1", integrationContext.getInBoundVariables().get("var1") + "-modified");
             return integrationContext;
         };
     }
 
-
     public static IntegrationContext getResultIntegrationContext() {
         return resultIntegrationContext;
     }
-
 
     public static void reset() {
         RuntimeTestConfiguration.collectedEvents.clear();
@@ -64,14 +64,11 @@ public class Set1RuntimeTestConfiguration {
         connector2Executed = false;
     }
 
-
     public static boolean isConnector1Executed() {
         return connector1Executed;
     }
 
-
     public static boolean isConnector2Executed() {
         return connector2Executed;
     }
-
 }

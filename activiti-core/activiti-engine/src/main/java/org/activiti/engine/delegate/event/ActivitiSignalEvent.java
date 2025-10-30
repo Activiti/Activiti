@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.delegate.event;
 
 /**
@@ -22,15 +21,13 @@ package org.activiti.engine.delegate.event;
 
  */
 public interface ActivitiSignalEvent extends ActivitiActivityEvent {
+    /**
+     * @return the name of the signal. Returns null, if no specific signal name has been specified when signaling.
+     */
+    public String getSignalName();
 
-  /**
-   * @return the name of the signal. Returns null, if no specific signal name has been specified when signaling.
-   */
-  public String getSignalName();
-
-  /**
-   * @return the payload that was passed when signaling. Returns null, if no payload was passed.
-   */
-  public Object getSignalData();
-
+    /**
+     * @return the payload that was passed when signaling. Returns null, if no payload was passed.
+     */
+    public Object getSignalData();
 }

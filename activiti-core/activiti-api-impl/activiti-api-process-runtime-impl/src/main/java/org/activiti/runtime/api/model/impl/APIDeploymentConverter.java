@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,12 @@ package org.activiti.runtime.api.model.impl;
 import org.activiti.api.process.model.Deployment;
 import org.activiti.api.runtime.model.impl.DeploymentImpl;
 
-public class APIDeploymentConverter extends ListConverter<org.activiti.engine.repository.Deployment, Deployment>
-        implements ModelConverter<org.activiti.engine.repository.Deployment, Deployment>{
+public class APIDeploymentConverter
+    extends ListConverter<org.activiti.engine.repository.Deployment, Deployment>
+    implements ModelConverter<org.activiti.engine.repository.Deployment, Deployment> {
 
     @Override
-    public Deployment from(org.activiti.engine.repository.Deployment internalDeployment){
+    public Deployment from(org.activiti.engine.repository.Deployment internalDeployment) {
         DeploymentImpl deployment = new DeploymentImpl();
 
         deployment.setId(internalDeployment.getId());
@@ -32,6 +33,4 @@ public class APIDeploymentConverter extends ListConverter<org.activiti.engine.re
 
         return deployment;
     }
-
-
 }

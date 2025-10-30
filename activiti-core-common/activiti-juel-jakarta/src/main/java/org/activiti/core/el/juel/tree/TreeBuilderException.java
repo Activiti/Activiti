@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree;
 
 import jakarta.el.ELException;
@@ -33,13 +32,7 @@ public class TreeBuilderException extends ELException {
     private final String encountered;
     private final String expected;
 
-    public TreeBuilderException(
-        String expression,
-        int position,
-        String encountered,
-        String expected,
-        String message
-    ) {
+    public TreeBuilderException(String expression, int position, String encountered, String expected, String message) {
         super(LocalMessages.get("error.build", expression, message));
         this.expression = expression;
         this.position = position;

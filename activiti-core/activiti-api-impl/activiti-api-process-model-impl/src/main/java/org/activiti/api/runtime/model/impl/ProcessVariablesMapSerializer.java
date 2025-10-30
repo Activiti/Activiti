@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +20,13 @@ import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistr
 import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistry.getContainerType;
 import static org.activiti.api.runtime.model.impl.ProcessVariablesMapTypeRegistry.isScalarType;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.core.convert.ConversionService;
-
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import org.springframework.core.convert.ConversionService;
 
 public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariablesMap<String, Object>> {
 
@@ -37,15 +35,15 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
 
     public ProcessVariablesMapSerializer(ConversionService conversionService) {
         super(ProcessVariablesMap.class, true);
-
         this.conversionService = conversionService;
     }
 
     @Override
-    public void serialize(ProcessVariablesMap<String, Object> processVariablesMap,
+    public void serialize(
+        ProcessVariablesMap<String, Object> processVariablesMap,
         JsonGenerator gen,
-        SerializerProvider serializers) throws IOException {
-
+        SerializerProvider serializers
+    ) throws IOException {
         HashMap<String, ProcessVariableValue> map = new HashMap<>();
         for (Map.Entry<String, Object> entry : processVariablesMap.entrySet()) {
             String name = entry.getKey();
@@ -81,8 +79,7 @@ public class ProcessVariablesMapSerializer extends StdSerializer<ProcessVariable
         if (isScalarType(clazz)) {
             entryType = clazz;
         } else {
-            entryType = getContainerType(clazz, value)
-                            .orElse(ObjectValue.class);
+            entryType = getContainerType(clazz, value).orElse(ObjectValue.class);
         }
 
         return forClass(entryType);

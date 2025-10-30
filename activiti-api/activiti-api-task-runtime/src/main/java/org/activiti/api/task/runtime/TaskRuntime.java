@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.activiti.api.task.runtime;
 
 import java.util.List;
-
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
@@ -37,12 +36,10 @@ import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
 
-
 /**
  * User Based Integrations against the Task Runtime
  */
 public interface TaskRuntime {
-
     TaskRuntimeConfiguration configuration();
 
     /**
@@ -65,8 +62,7 @@ public interface TaskRuntime {
      *  - the authenticated user is the actual assignee
      *  - the user belongs to a group that is a candidate for the task
      */
-    Page<Task> tasks(Pageable pageable,
-                     GetTasksPayload getTasksPayload);
+    Page<Task> tasks(Pageable pageable, GetTasksPayload getTasksPayload);
 
     /**
      * Creates a task based on the following rules

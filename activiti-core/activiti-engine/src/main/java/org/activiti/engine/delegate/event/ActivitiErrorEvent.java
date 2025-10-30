@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.delegate.event;
 
 /**
@@ -22,12 +21,10 @@ package org.activiti.engine.delegate.event;
 
  */
 public interface ActivitiErrorEvent extends ActivitiActivityEvent {
+    /**
+     * @return the error-code of the error. Returns null, if no specific error-code has been specified when the error was thrown.
+     */
+    public String getErrorCode();
 
-  /**
-   * @return the error-code of the error. Returns null, if no specific error-code has been specified when the error was thrown.
-   */
-  public String getErrorCode();
-
-  public String getErrorId();
-
+    public String getErrorId();
 }

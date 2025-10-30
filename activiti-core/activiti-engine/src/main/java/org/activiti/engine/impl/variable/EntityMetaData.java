@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.variable;
 
 import java.lang.reflect.Field;
@@ -27,52 +25,52 @@ import java.lang.reflect.Method;
  */
 public class EntityMetaData {
 
-  private boolean isJPAEntity;
-  private Class<?> entityClass;
-  private Method idMethod;
-  private Field idField;
+    private boolean isJPAEntity;
+    private Class<?> entityClass;
+    private Method idMethod;
+    private Field idField;
 
-  public boolean isJPAEntity() {
-    return isJPAEntity;
-  }
-
-  public void setJPAEntity(boolean isJPAEntity) {
-    this.isJPAEntity = isJPAEntity;
-  }
-
-  public Class<?> getEntityClass() {
-    return entityClass;
-  }
-
-  public void setEntityClass(Class<?> entityClass) {
-    this.entityClass = entityClass;
-  }
-
-  public Method getIdMethod() {
-    return idMethod;
-  }
-
-  public void setIdMethod(Method idMethod) {
-    this.idMethod = idMethod;
-    idMethod.setAccessible(true);
-  }
-
-  public Field getIdField() {
-    return idField;
-  }
-
-  public void setIdField(Field idField) {
-    this.idField = idField;
-    idField.setAccessible(true);
-  }
-
-  public Class<?> getIdType() {
-    Class<?> idType = null;
-    if (idField != null) {
-      idType = idField.getType();
-    } else if (idMethod != null) {
-      idType = idMethod.getReturnType();
+    public boolean isJPAEntity() {
+        return isJPAEntity;
     }
-    return idType;
-  }
+
+    public void setJPAEntity(boolean isJPAEntity) {
+        this.isJPAEntity = isJPAEntity;
+    }
+
+    public Class<?> getEntityClass() {
+        return entityClass;
+    }
+
+    public void setEntityClass(Class<?> entityClass) {
+        this.entityClass = entityClass;
+    }
+
+    public Method getIdMethod() {
+        return idMethod;
+    }
+
+    public void setIdMethod(Method idMethod) {
+        this.idMethod = idMethod;
+        idMethod.setAccessible(true);
+    }
+
+    public Field getIdField() {
+        return idField;
+    }
+
+    public void setIdField(Field idField) {
+        this.idField = idField;
+        idField.setAccessible(true);
+    }
+
+    public Class<?> getIdType() {
+        Class<?> idType = null;
+        if (idField != null) {
+            idType = idField.getType();
+        } else if (idMethod != null) {
+            idType = idMethod.getReturnType();
+        }
+        return idType;
+    }
 }

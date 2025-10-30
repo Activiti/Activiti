@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,9 @@ public class BPMNTimerConverter {
     public BPMNTimerImpl convertToBPMNTimer(ActivitiEntityEvent internalEvent) {
         AbstractJobEntity jobEntity = (AbstractJobEntity) internalEvent.getEntity();
 
-        BPMNTimerImpl timer = new BPMNTimerImpl(TimerEventHandler.getActivityIdFromConfiguration(jobEntity.getJobHandlerConfiguration()));
+        BPMNTimerImpl timer = new BPMNTimerImpl(
+            TimerEventHandler.getActivityIdFromConfiguration(jobEntity.getJobHandlerConfiguration())
+        );
         timer.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         timer.setProcessInstanceId(internalEvent.getProcessInstanceId());
         timer.setTimerPayload(convertToTimerPayload(jobEntity));
@@ -49,8 +51,10 @@ public class BPMNTimerConverter {
     }
 
     public boolean isTimerRelatedEvent(ActivitiEvent event) {
-        return event instanceof ActivitiEntityEvent &&
-                AbstractJobEntity.class.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass()) &&
-                ((AbstractJobEntity) ((ActivitiEntityEvent) event).getEntity()).getJobType().equals("timer");
+        return (
+            event instanceof ActivitiEntityEvent &&
+            AbstractJobEntity.class.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass()) &&
+            ((AbstractJobEntity) ((ActivitiEntityEvent) event).getEntity()).getJobType().equals("timer")
+        );
     }
 }

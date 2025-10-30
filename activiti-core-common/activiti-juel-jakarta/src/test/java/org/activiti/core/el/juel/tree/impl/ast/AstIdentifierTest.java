@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree.impl.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -71,11 +70,7 @@ public class AstIdentifierTest extends TestCase {
 
         @Override
         public MethodInfo getMethodInfo(ELContext context) {
-            return new MethodInfo(
-                method.getName(),
-                method.getReturnType(),
-                method.getParameterTypes()
-            );
+            return new MethodInfo(method.getName(), method.getReturnType(), method.getParameterTypes());
         }
 
         @Override
@@ -110,21 +105,11 @@ public class AstIdentifierTest extends TestCase {
         TypeConverter converter = TypeConverter.DEFAULT;
 
         // variables var_long_1, indentifier_string
-        context.setVariable(
-            "var_long_1",
-            new ObjectValueExpression(converter, 1l, long.class)
-        );
-        context.setVariable(
-            "indentifier_string",
-            new ObjectValueExpression(converter, "foo", String.class)
-        );
+        context.setVariable("var_long_1", new ObjectValueExpression(converter, 1l, long.class));
+        context.setVariable("indentifier_string", new ObjectValueExpression(converter, "foo", String.class));
         context.setVariable(
             "var_method_1",
-            new ObjectValueExpression(
-                converter,
-                getClass().getMethod("method_1"),
-                Method.class
-            )
+            new ObjectValueExpression(converter, getClass().getMethod("method_1"), Method.class)
         );
         context.setVariable(
             "var_method_1_expr",
@@ -137,17 +122,8 @@ public class AstIdentifierTest extends TestCase {
 
         // properties property_long_1, indentifier_string
         context.getELResolver().setValue(context, null, "property_long_1", 1l);
-        context
-            .getELResolver()
-            .setValue(context, null, "indentifier_string", "bar"); // shadowed by variable indentifier_string
-        context
-            .getELResolver()
-            .setValue(
-                context,
-                null,
-                "property_method_1",
-                getClass().getMethod("method_1")
-            );
+        context.getELResolver().setValue(context, null, "indentifier_string", "bar"); // shadowed by variable indentifier_string
+        context.getELResolver().setValue(context, null, "property_method_1", getClass().getMethod("method_1"));
         context
             .getELResolver()
             .setValue(
@@ -345,10 +321,7 @@ public class AstIdentifierTest extends TestCase {
         tree = parse("${var_long_1}");
         bindings = tree.bind(null, context.getVariableMapper());
         assertEquals(1l, getNode(tree).getValue(bindings, context, null));
-        assertEquals(
-            "1",
-            getNode(tree).getValue(bindings, context, String.class)
-        );
+        assertEquals("1", getNode(tree).getValue(bindings, context, String.class));
     }
 
     @Test
@@ -373,77 +346,43 @@ public class AstIdentifierTest extends TestCase {
         tree = parse("${bad}");
         bindings = tree.bind(null, context.getVariableMapper());
         try {
-            getNode(tree)
-                .invoke(bindings, context, long.class, new Class[0], null);
+            getNode(tree).invoke(bindings, context, long.class, new Class[0], null);
             fail();
         } catch (ELException e) {}
 
         tree = parse("${var_method_1}");
         bindings = tree.bind(null, context.getVariableMapper());
-        assertEquals(
-            1l,
-            getNode(tree)
-                .invoke(bindings, context, long.class, new Class[0], null)
-        );
+        assertEquals(1l, getNode(tree).invoke(bindings, context, long.class, new Class[0], null));
 
         tree = parse("${property_method_1}");
         bindings = tree.bind(null, context.getVariableMapper());
-        assertEquals(
-            1l,
-            getNode(tree).invoke(bindings, context, null, new Class[0], null)
-        );
+        assertEquals(1l, getNode(tree).invoke(bindings, context, null, new Class[0], null));
 
         // no return type - ok
-        assertEquals(
-            1l,
-            getNode(tree)
-                .invoke(bindings, context, long.class, new Class[0], null)
-        );
+        assertEquals(1l, getNode(tree).invoke(bindings, context, long.class, new Class[0], null));
         // bad return type
         try {
-            getNode(tree)
-                .invoke(bindings, context, int.class, new Class[0], null);
+            getNode(tree).invoke(bindings, context, int.class, new Class[0], null);
             fail();
         } catch (ELException e) {}
         // bad arg types
         try {
-            getNode(tree)
-                .invoke(
-                    bindings,
-                    context,
-                    long.class,
-                    new Class[] { String.class },
-                    null
-                );
+            getNode(tree).invoke(bindings, context, long.class, new Class[] { String.class }, null);
             fail();
         } catch (ELException e) {}
         // bad args
         try {
-            getNode(tree)
-                .invoke(
-                    bindings,
-                    context,
-                    long.class,
-                    new Class[0],
-                    new Object[] { "" }
-                );
+            getNode(tree).invoke(bindings, context, long.class, new Class[0], new Object[] { "" });
             fail();
         } catch (ELException e) {}
 
         tree = parse("${var_method_1_expr}");
         bindings = tree.bind(null, context.getVariableMapper());
-        assertEquals(
-            1l,
-            getNode(tree)
-                .invoke(bindings, context, long.class, new Class[0], null)
-        );
+        assertEquals(1l, getNode(tree).invoke(bindings, context, long.class, new Class[0], null));
 
         tree = parse("${property_method_1_expr}");
         bindings = tree.bind(null, context.getVariableMapper());
-        assertEquals(
-            1l,
-            getNode(tree).invoke(bindings, context, null, new Class[0], null)
-        );
+        assertEquals(1l, getNode(tree).invoke(bindings, context, null, new Class[0], null));
     }
 
     @Test
@@ -455,50 +394,37 @@ public class AstIdentifierTest extends TestCase {
         tree = parse("${bad}");
         bindings = tree.bind(null, context.getVariableMapper());
         try {
-            getNode(tree)
-                .getMethodInfo(bindings, context, long.class, new Class[0]);
+            getNode(tree).getMethodInfo(bindings, context, long.class, new Class[0]);
             fail();
         } catch (ELException e) {}
 
         tree = parse("${var_method_1}");
         bindings = tree.bind(null, context.getVariableMapper());
-        info =
-            getNode(tree)
-                .getMethodInfo(bindings, context, long.class, new Class[0]);
+        info = getNode(tree).getMethodInfo(bindings, context, long.class, new Class[0]);
         assertEquals("method_1", info.getName());
         assertTrue(Arrays.equals(new Class[0], info.getParamTypes()));
         assertEquals(long.class, info.getReturnType());
 
         tree = parse("${property_method_1}");
         bindings = tree.bind(null, context.getVariableMapper());
-        info =
-            getNode(tree)
-                .getMethodInfo(bindings, context, long.class, new Class[0]);
+        info = getNode(tree).getMethodInfo(bindings, context, long.class, new Class[0]);
         assertEquals("method_1", info.getName());
         assertTrue(Arrays.equals(new Class[0], info.getParamTypes()));
         assertEquals(long.class, info.getReturnType());
 
         // no return type - ok
-        info =
-            getNode(tree).getMethodInfo(bindings, context, null, new Class[0]);
+        info = getNode(tree).getMethodInfo(bindings, context, null, new Class[0]);
         assertEquals("method_1", info.getName());
         assertTrue(Arrays.equals(new Class[0], info.getParamTypes()));
         assertEquals(long.class, info.getReturnType());
         // bad return type
         try {
-            getNode(tree)
-                .getMethodInfo(bindings, context, int.class, new Class[0]);
+            getNode(tree).getMethodInfo(bindings, context, int.class, new Class[0]);
             fail();
         } catch (ELException e) {}
         // bad arg types
         try {
-            getNode(tree)
-                .getMethodInfo(
-                    bindings,
-                    context,
-                    long.class,
-                    new Class[] { String.class }
-                );
+            getNode(tree).getMethodInfo(bindings, context, long.class, new Class[] { String.class });
             fail();
         } catch (ELException e) {}
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,36 +55,16 @@ public class TreeValueExpressionTest extends TestCase {
         context.getELResolver().setValue(context, null, "base", this);
 
         // variables var_long_1, var_long_2
-        context.setVariable(
-            "var_long_1",
-            new TreeValueExpression(store, null, null, null, "${1}", long.class)
-        );
-        context.setVariable(
-            "var_long_2",
-            new TreeValueExpression(store, null, null, null, "${1}", long.class)
-        );
+        context.setVariable("var_long_1", new TreeValueExpression(store, null, null, null, "${1}", long.class));
+        context.setVariable("var_long_2", new TreeValueExpression(store, null, null, null, "${1}", long.class));
         // var_var_long_1 --> var_long_1, var_var_long_2 --> var_long_1
         context.setVariable(
             "var_var_long_1",
-            new TreeValueExpression(
-                store,
-                null,
-                context.getVariableMapper(),
-                null,
-                "${var_long_1}",
-                long.class
-            )
+            new TreeValueExpression(store, null, context.getVariableMapper(), null, "${var_long_1}", long.class)
         );
         context.setVariable(
             "var_var_long_2",
-            new TreeValueExpression(
-                store,
-                null,
-                context.getVariableMapper(),
-                null,
-                "${var_long_2}",
-                long.class
-            )
+            new TreeValueExpression(store, null, context.getVariableMapper(), null, "${var_long_2}", long.class)
         );
 
         // functions ns:f0(), ns:f1()
@@ -95,37 +74,16 @@ public class TreeValueExpressionTest extends TestCase {
 
         context.setVariable(
             "var_foo_1",
-            new TreeValueExpression(
-                store,
-                context.getFunctionMapper(),
-                null,
-                null,
-                "${ns:foo_1()}",
-                long.class
-            )
+            new TreeValueExpression(store, context.getFunctionMapper(), null, null, "${ns:foo_1()}", long.class)
         );
         context.setVariable(
             "var_foo_2",
-            new TreeValueExpression(
-                store,
-                context.getFunctionMapper(),
-                null,
-                null,
-                "${ns:foo_2()}",
-                long.class
-            )
+            new TreeValueExpression(store, context.getFunctionMapper(), null, null, "${ns:foo_2()}", long.class)
         );
 
         context.setVariable(
             "var_foobar",
-            new TreeValueExpression(
-                store,
-                null,
-                context.getVariableMapper(),
-                null,
-                "${base.foobar}",
-                int.class
-            )
+            new TreeValueExpression(store, null, context.getVariableMapper(), null, "${base.foobar}", int.class)
         );
 
         context.getELResolver().setValue(context, null, "property_foo", "foo");
@@ -135,205 +93,54 @@ public class TreeValueExpressionTest extends TestCase {
     public void testEqualsAndHashCode() throws NoSuchMethodException {
         TreeValueExpression e1, e2;
 
-        e1 =
-            new TreeValueExpression(
-                store,
-                null,
-                context.getVariableMapper(),
-                null,
-                "${1}",
-                Object.class
-            );
-        e2 =
-            new TreeValueExpression(
-                store,
-                null,
-                context.getVariableMapper(),
-                null,
-                "${1}",
-                Object.class
-            );
+        e1 = new TreeValueExpression(store, null, context.getVariableMapper(), null, "${1}", Object.class);
+        e2 = new TreeValueExpression(store, null, context.getVariableMapper(), null, "${1}", Object.class);
         assertEquals(e1, e2);
         assertEquals(e1.hashCode(), e2.hashCode());
 
-        e1 =
-            new TreeValueExpression(
-                store,
-                null,
-                context.getVariableMapper(),
-                null,
-                "${var_long_1}",
-                Object.class
-            );
-        e2 =
-            new TreeValueExpression(
-                store,
-                null,
-                context.getVariableMapper(),
-                null,
-                "${var_long_2}",
-                Object.class
-            );
+        e1 = new TreeValueExpression(store, null, context.getVariableMapper(), null, "${var_long_1}", Object.class);
+        e2 = new TreeValueExpression(store, null, context.getVariableMapper(), null, "${var_long_2}", Object.class);
         assertEquals(e1, e2);
         assertEquals(e1.hashCode(), e2.hashCode());
 
-        e1 =
-            new TreeValueExpression(
-                store,
-                null,
-                context.getVariableMapper(),
-                null,
-                "${var_var_long_1}",
-                Object.class
-            );
-        e2 =
-            new TreeValueExpression(
-                store,
-                null,
-                context.getVariableMapper(),
-                null,
-                "${var_var_long_2}",
-                Object.class
-            );
+        e1 = new TreeValueExpression(store, null, context.getVariableMapper(), null, "${var_var_long_1}", Object.class);
+        e2 = new TreeValueExpression(store, null, context.getVariableMapper(), null, "${var_var_long_2}", Object.class);
         assertEquals(e1, e2);
         assertEquals(e1.hashCode(), e2.hashCode());
 
-        e1 =
-            new TreeValueExpression(
-                store,
-                null,
-                context.getVariableMapper(),
-                null,
-                "${var_long_1}",
-                Object.class
-            );
+        e1 = new TreeValueExpression(store, null, context.getVariableMapper(), null, "${var_long_1}", Object.class);
         context
             .getVariableMapper()
             .setVariable(
                 "var_long_1",
-                new TreeValueExpression(
-                    store,
-                    null,
-                    context.getVariableMapper(),
-                    null,
-                    "${-1}",
-                    Object.class
-                )
+                new TreeValueExpression(store, null, context.getVariableMapper(), null, "${-1}", Object.class)
             );
-        e2 =
-            new TreeValueExpression(
-                store,
-                null,
-                context.getVariableMapper(),
-                null,
-                "${var_long_1}",
-                Object.class
-            );
+        e2 = new TreeValueExpression(store, null, context.getVariableMapper(), null, "${var_long_1}", Object.class);
         assertFalse(e1.equals(e2));
 
-        e1 =
-            new TreeValueExpression(
-                store,
-                null,
-                context.getVariableMapper(),
-                null,
-                "${var_foo_1}",
-                Object.class
-            );
-        e2 =
-            new TreeValueExpression(
-                store,
-                null,
-                context.getVariableMapper(),
-                null,
-                "${var_foo_2}",
-                Object.class
-            );
+        e1 = new TreeValueExpression(store, null, context.getVariableMapper(), null, "${var_foo_1}", Object.class);
+        e2 = new TreeValueExpression(store, null, context.getVariableMapper(), null, "${var_foo_2}", Object.class);
         assertEquals(e1, e2);
         assertEquals(e1.hashCode(), e2.hashCode());
 
-        e2 =
-            new TreeValueExpression(
-                store,
-                context.getFunctionMapper(),
-                null,
-                null,
-                "${ns:foo_1()}",
-                Object.class
-            );
-        e1 =
-            new TreeValueExpression(
-                store,
-                context.getFunctionMapper(),
-                null,
-                null,
-                "${ns:foo_2()}",
-                Object.class
-            );
+        e2 = new TreeValueExpression(store, context.getFunctionMapper(), null, null, "${ns:foo_1()}", Object.class);
+        e1 = new TreeValueExpression(store, context.getFunctionMapper(), null, null, "${ns:foo_2()}", Object.class);
         assertEquals(e1, e2);
         assertEquals(e1.hashCode(), e2.hashCode());
 
-        e2 =
-            new TreeValueExpression(
-                store,
-                context.getFunctionMapper(),
-                null,
-                null,
-                "${foo()}",
-                Object.class
-            );
-        e1 =
-            new TreeValueExpression(
-                store,
-                context.getFunctionMapper(),
-                null,
-                null,
-                "${ns:foo_1()}",
-                Object.class
-            );
+        e2 = new TreeValueExpression(store, context.getFunctionMapper(), null, null, "${foo()}", Object.class);
+        e1 = new TreeValueExpression(store, context.getFunctionMapper(), null, null, "${ns:foo_1()}", Object.class);
         assertEquals(e1, e2);
         assertEquals(e1.hashCode(), e2.hashCode());
 
-        e2 =
-            new TreeValueExpression(
-                store,
-                context.getFunctionMapper(),
-                null,
-                null,
-                "${foo()}",
-                Object.class
-            );
+        e2 = new TreeValueExpression(store, context.getFunctionMapper(), null, null, "${foo()}", Object.class);
         context.setFunction("", "foo", getClass().getMethod("bar"));
-        e1 =
-            new TreeValueExpression(
-                store,
-                context.getFunctionMapper(),
-                null,
-                null,
-                "${foo()}",
-                Object.class
-            );
+        e1 = new TreeValueExpression(store, context.getFunctionMapper(), null, null, "${foo()}", Object.class);
         assertFalse(e1.equals(e2));
 
-        e2 =
-            new TreeValueExpression(
-                store,
-                context.getFunctionMapper(),
-                null,
-                null,
-                "${ns:foo_1()}",
-                Object.class
-            );
+        e2 = new TreeValueExpression(store, context.getFunctionMapper(), null, null, "${ns:foo_1()}", Object.class);
         context.setFunction("ns", "foo_1", getClass().getMethod("bar"));
-        e1 =
-            new TreeValueExpression(
-                store,
-                context.getFunctionMapper(),
-                null,
-                null,
-                "${ns:foo_1()}",
-                Object.class
-            );
+        e1 = new TreeValueExpression(store, context.getFunctionMapper(), null, null, "${ns:foo_1()}", Object.class);
         assertFalse(e1.equals(e2));
     }
 
@@ -341,173 +148,62 @@ public class TreeValueExpressionTest extends TestCase {
     public void testGetExpressionString() {
         assertEquals(
             "foo",
-            new TreeValueExpression(
-                store,
-                null,
-                null,
-                null,
-                "foo",
-                Object.class
-            )
-                .getExpressionString()
+            new TreeValueExpression(store, null, null, null, "foo", Object.class).getExpressionString()
         );
     }
 
     @Test
     public void testIsLiteralText() {
-        assertTrue(
-            new TreeValueExpression(
-                store,
-                null,
-                null,
-                null,
-                "foo",
-                Object.class
-            )
-                .isLiteralText()
-        );
-        assertFalse(
-            new TreeValueExpression(
-                store,
-                null,
-                null,
-                null,
-                "${foo}",
-                Object.class
-            )
-                .isLiteralText()
-        );
+        assertTrue(new TreeValueExpression(store, null, null, null, "foo", Object.class).isLiteralText());
+        assertFalse(new TreeValueExpression(store, null, null, null, "${foo}", Object.class).isLiteralText());
     }
 
     @Test
     public void testIsDeferred() {
-        assertFalse(
-            new TreeValueExpression(
-                store,
-                null,
-                null,
-                null,
-                "foo",
-                Object.class
-            )
-                .isDeferred()
-        );
-        assertFalse(
-            new TreeValueExpression(
-                store,
-                null,
-                null,
-                null,
-                "${foo}",
-                Object.class
-            )
-                .isDeferred()
-        );
-        assertTrue(
-            new TreeValueExpression(
-                store,
-                null,
-                null,
-                null,
-                "#{foo}",
-                Object.class
-            )
-                .isDeferred()
-        );
+        assertFalse(new TreeValueExpression(store, null, null, null, "foo", Object.class).isDeferred());
+        assertFalse(new TreeValueExpression(store, null, null, null, "${foo}", Object.class).isDeferred());
+        assertTrue(new TreeValueExpression(store, null, null, null, "#{foo}", Object.class).isDeferred());
     }
 
     @Test
     public void testGetExpectedType() {
         assertEquals(
             Object.class,
-            new TreeValueExpression(
-                store,
-                null,
-                null,
-                null,
-                "${foo}",
-                Object.class
-            )
-                .getExpectedType()
+            new TreeValueExpression(store, null, null, null, "${foo}", Object.class).getExpectedType()
         );
         assertEquals(
             String.class,
-            new TreeValueExpression(
-                store,
-                null,
-                null,
-                null,
-                "${foo}",
-                String.class
-            )
-                .getExpectedType()
+            new TreeValueExpression(store, null, null, null, "${foo}", String.class).getExpectedType()
         );
     }
 
     @Test
     public void testGetType() {
         assertFalse(
-            new TreeValueExpression(
-                store,
-                null,
-                null,
-                null,
-                "${property_foo}",
-                Object.class
-            )
-                .isReadOnly(context)
+            new TreeValueExpression(store, null, null, null, "${property_foo}", Object.class).isReadOnly(context)
         );
     }
 
     @Test
     public void testIsReadOnly() {
         assertFalse(
-            new TreeValueExpression(
-                store,
-                null,
-                null,
-                null,
-                "${property_foo}",
-                Object.class
-            )
-                .isReadOnly(context)
+            new TreeValueExpression(store, null, null, null, "${property_foo}", Object.class).isReadOnly(context)
         );
     }
 
     @Test
     public void testSetValue() {
-        new TreeValueExpression(
-            store,
-            null,
-            null,
-            null,
-            "${property_foo}",
-            Object.class
-        )
-            .setValue(context, "bar");
+        new TreeValueExpression(store, null, null, null, "${property_foo}", Object.class).setValue(context, "bar");
         assertEquals(
             "bar",
-            new TreeValueExpression(
-                store,
-                null,
-                null,
-                null,
-                "${property_foo}",
-                Object.class
-            )
-                .getValue(context)
+            new TreeValueExpression(store, null, null, null, "${property_foo}", Object.class).getValue(context)
         );
 
         // Test added for bug #2748538
-        new TreeValueExpression(
-            store,
-            null,
-            context.getVariableMapper(),
-            null,
-            "${var_foobar}",
-            Object.class
-        )
-            .setValue(context, 123);
+        new TreeValueExpression(store, null, context.getVariableMapper(), null, "${var_foobar}", Object.class).setValue(
+            context,
+            123
+        );
         assertEquals(123, foobar);
         try {
             context.getELResolver().getValue(context, null, "var_foobar");
@@ -521,15 +217,7 @@ public class TreeValueExpressionTest extends TestCase {
     public void testGetValue() {
         assertEquals(
             "foo",
-            new TreeValueExpression(
-                store,
-                null,
-                null,
-                null,
-                "${property_foo}",
-                Object.class
-            )
-                .getValue(context)
+            new TreeValueExpression(store, null, null, null, "${property_foo}", Object.class).getValue(context)
         );
     }
 

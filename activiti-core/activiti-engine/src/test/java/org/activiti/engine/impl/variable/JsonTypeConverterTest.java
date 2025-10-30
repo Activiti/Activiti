@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,8 +82,7 @@ public class JsonTypeConverterTest {
         private String firstName;
         private String lastName;
 
-        public Person() {
-        }
+        public Person() {}
 
         public Person(String firstName, String lastName) {
             this.firstName = firstName;
@@ -98,5 +97,4 @@ public class JsonTypeConverterTest {
             return lastName;
         }
     }
-
 }

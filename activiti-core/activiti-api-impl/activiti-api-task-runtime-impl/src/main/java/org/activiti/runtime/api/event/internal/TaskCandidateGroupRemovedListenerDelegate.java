@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package org.activiti.runtime.api.event.internal;
 
+import java.util.List;
 import org.activiti.api.task.runtime.events.TaskCandidateGroupRemovedEvent;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -22,16 +23,16 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToTaskCandidateGroupRemovedConverter;
 
-import java.util.List;
-
 public class TaskCandidateGroupRemovedListenerDelegate implements ActivitiEventListener {
 
     private final List<TaskRuntimeEventListener<TaskCandidateGroupRemovedEvent>> listeners;
 
     private final ToTaskCandidateGroupRemovedConverter converter;
 
-    public TaskCandidateGroupRemovedListenerDelegate(List<TaskRuntimeEventListener<TaskCandidateGroupRemovedEvent>> listeners,
-                                                     ToTaskCandidateGroupRemovedConverter converter) {
+    public TaskCandidateGroupRemovedListenerDelegate(
+        List<TaskRuntimeEventListener<TaskCandidateGroupRemovedEvent>> listeners,
+        ToTaskCandidateGroupRemovedConverter converter
+    ) {
         this.listeners = listeners;
         this.converter = converter;
     }
@@ -39,12 +40,13 @@ public class TaskCandidateGroupRemovedListenerDelegate implements ActivitiEventL
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiEntityEvent) {
-            converter.from((ActivitiEntityEvent) event)
-                    .ifPresent(convertedEvent -> {
-                        for (TaskRuntimeEventListener<TaskCandidateGroupRemovedEvent> listener : listeners) {
-                            listener.onEvent(convertedEvent);
-                        }
-                    });
+            converter
+                .from((ActivitiEntityEvent) event)
+                .ifPresent(convertedEvent -> {
+                    for (TaskRuntimeEventListener<TaskCandidateGroupRemovedEvent> listener : listeners) {
+                        listener.onEvent(convertedEvent);
+                    }
+                });
         }
     }
 

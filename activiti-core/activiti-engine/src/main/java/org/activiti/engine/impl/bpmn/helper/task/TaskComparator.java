@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.activiti.engine.impl.bpmn.helper.task;
 import org.activiti.engine.task.TaskInfo;
 
 public interface TaskComparator {
-
     TaskInfo getOriginalTask();
     TaskInfo getUpdatedTask();
 
@@ -34,16 +33,17 @@ public interface TaskComparator {
     boolean hasTaskDueDateChanged();
 
     default boolean hasTaskChanged() {
-        return hasTaskNameChanged()
-            || hasTaskDescriptionChanged()
-            || hasTaskOwnerChanged()
-            || hasTaskPriorityChanged()
-            || hasTaskCategoryChanged()
-            || hasTaskFormKeyChanged()
-            || hasTaskParentIdChanged()
-            || hasTaskDefinitionKeyChanged()
-            || hasTaskAssigneeChanged()
-            || hasTaskDueDateChanged();
+        return (
+            hasTaskNameChanged() ||
+            hasTaskDescriptionChanged() ||
+            hasTaskOwnerChanged() ||
+            hasTaskPriorityChanged() ||
+            hasTaskCategoryChanged() ||
+            hasTaskFormKeyChanged() ||
+            hasTaskParentIdChanged() ||
+            hasTaskDefinitionKeyChanged() ||
+            hasTaskAssigneeChanged() ||
+            hasTaskDueDateChanged()
+        );
     }
-
 }

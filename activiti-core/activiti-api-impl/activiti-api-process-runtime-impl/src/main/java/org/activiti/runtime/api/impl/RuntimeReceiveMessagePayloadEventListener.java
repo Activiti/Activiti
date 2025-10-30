@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package org.activiti.runtime.api.impl;
 
+import java.util.Map;
+import java.util.Objects;
 import org.activiti.api.process.model.payloads.ReceiveMessagePayload;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ManagementService;
@@ -24,9 +26,6 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.runtime.api.message.ReceiveMessagePayloadEventListener;
-
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * Default implementation of SignalPayloadEventListener that delegates
@@ -39,8 +38,10 @@ public class RuntimeReceiveMessagePayloadEventListener implements ReceiveMessage
 
     private final ManagementService managementService;
 
-    public RuntimeReceiveMessagePayloadEventListener(RuntimeService runtimeService,
-                                                     ManagementService managementService) {
+    public RuntimeReceiveMessagePayloadEventListener(
+        RuntimeService runtimeService,
+        ManagementService managementService
+    ) {
         this.runtimeService = runtimeService;
         this.managementService = managementService;
     }
@@ -50,17 +51,22 @@ public class RuntimeReceiveMessagePayloadEventListener implements ReceiveMessage
         String messageName = messagePayload.getName();
         String correlationKey = messagePayload.getCorrelationKey();
 
-        EventSubscriptionEntity subscription = managementService.executeCommand(new FindMessageEventSubscription(messageName,
-                                                                                                                 correlationKey));
+        EventSubscriptionEntity subscription = managementService.executeCommand(
+            new FindMessageEventSubscription(messageName, correlationKey)
+        );
         if (subscription != null && Objects.equals(correlationKey, subscription.getConfiguration())) {
             Map<String, Object> variables = messagePayload.getVariables();
             String executionId = subscription.getExecutionId();
 
-            runtimeService.messageEventReceived(messageName,
-                                                executionId,
-                                                variables);
+            runtimeService.messageEventReceived(messageName, executionId, variables);
         } else {
-            throw new ActivitiObjectNotFoundException("Message subscription name '" + messageName + "' with correlation key '" + correlationKey + "' not found.");
+            throw new ActivitiObjectNotFoundException(
+                "Message subscription name '" +
+                messageName +
+                "' with correlation key '" +
+                correlationKey +
+                "' not found."
+            );
         }
     }
 
@@ -75,10 +81,11 @@ public class RuntimeReceiveMessagePayloadEventListener implements ReceiveMessage
         }
 
         public EventSubscriptionEntity execute(CommandContext commandContext) {
-            return new EventSubscriptionQueryImpl(commandContext).eventType("message")
-                                                                 .eventName(messageName)
-                                                                 .configuration(correlationKey)
-                                                                 .singleResult();
+            return new EventSubscriptionQueryImpl(commandContext)
+                .eventType("message")
+                .eventName(messageName)
+                .configuration(correlationKey)
+                .singleResult();
         }
     }
 }

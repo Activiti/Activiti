@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.interceptor;
 
 import org.activiti.engine.debug.ExecutionTreeUtil;
@@ -26,21 +25,22 @@ import org.slf4j.LoggerFactory;
  */
 public class DebugCommandInvoker extends CommandInvoker {
 
-  private static final Logger logger = LoggerFactory.getLogger(DebugCommandInvoker.class);
+    private static final Logger logger = LoggerFactory.getLogger(DebugCommandInvoker.class);
 
-  @Override
-  public void executeOperation(Runnable runnable) {
-    if (runnable instanceof AbstractOperation) {
-      AbstractOperation operation = (AbstractOperation) runnable;
+    @Override
+    public void executeOperation(Runnable runnable) {
+        if (runnable instanceof AbstractOperation) {
+            AbstractOperation operation = (AbstractOperation) runnable;
 
-      if (operation.getExecution() != null) {
-        logger.info("Execution tree while executing operation {} :", operation.getClass());
-        logger.info("{}", System.lineSeparator() +  ExecutionTreeUtil.buildExecutionTree(operation.getExecution()));
-      }
+            if (operation.getExecution() != null) {
+                logger.info("Execution tree while executing operation {} :", operation.getClass());
+                logger.info(
+                    "{}",
+                    System.lineSeparator() + ExecutionTreeUtil.buildExecutionTree(operation.getExecution())
+                );
+            }
+        }
 
+        super.executeOperation(runnable);
     }
-
-    super.executeOperation(runnable);
-  }
-
 }

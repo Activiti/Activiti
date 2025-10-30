@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.cfg.jta;
 
 import jakarta.transaction.TransactionManager;
@@ -27,14 +25,13 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public class JtaTransactionContextFactory implements TransactionContextFactory {
 
-  protected final TransactionManager transactionManager;
+    protected final TransactionManager transactionManager;
 
-  public JtaTransactionContextFactory(TransactionManager transactionManager) {
-    this.transactionManager = transactionManager;
-  }
+    public JtaTransactionContextFactory(TransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
+    }
 
-  public TransactionContext openTransactionContext(CommandContext commandContext) {
-    return new JtaTransactionContext(transactionManager);
-  }
-
+    public TransactionContext openTransactionContext(CommandContext commandContext) {
+        return new JtaTransactionContext(transactionManager);
+    }
 }

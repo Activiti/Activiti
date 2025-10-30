@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.runtime.api.connector;
 
 import org.activiti.api.process.model.IntegrationContext;
@@ -31,8 +30,11 @@ public class DefaultServiceTaskBehavior implements DelegateExecutionFunction {
     private final IntegrationContextBuilder integrationContextBuilder;
     private final VariablesPropagator variablesPropagator;
 
-    public DefaultServiceTaskBehavior(ApplicationContext applicationContext,
-        IntegrationContextBuilder integrationContextBuilder, VariablesPropagator variablesPropagator) {
+    public DefaultServiceTaskBehavior(
+        ApplicationContext applicationContext,
+        IntegrationContextBuilder integrationContextBuilder,
+        VariablesPropagator variablesPropagator
+    ) {
         this.applicationContext = applicationContext;
         this.integrationContextBuilder = integrationContextBuilder;
         this.variablesPropagator = variablesPropagator;
@@ -56,8 +58,7 @@ public class DefaultServiceTaskBehavior implements DelegateExecutionFunction {
     }
 
     private Connector getConnector(String implementation) {
-        return applicationContext.getBean(implementation,
-                                          Connector.class);
+        return applicationContext.getBean(implementation, Connector.class);
     }
 
     private String getServiceTaskImplementation(DelegateExecution execution) {
@@ -66,6 +67,9 @@ public class DefaultServiceTaskBehavior implements DelegateExecutionFunction {
 
     public boolean hasConnectorBean(DelegateExecution execution) {
         String implementation = getServiceTaskImplementation(execution);
-        return applicationContext.containsBean(implementation) && applicationContext.getBean(implementation) instanceof Connector;
+        return (
+            applicationContext.containsBean(implementation) &&
+            applicationContext.getBean(implementation) instanceof Connector
+        );
     }
 }

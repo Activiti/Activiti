@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,95 +32,64 @@ public class ObjectValueExpressionTest extends TestCase {
 
     @Test
     public void testHashCode() {
-        assertEquals(
-            "foo".hashCode(),
-            new ObjectValueExpression(converter, "foo", Object.class).hashCode()
-        );
+        assertEquals("foo".hashCode(), new ObjectValueExpression(converter, "foo", Object.class).hashCode());
     }
 
     @Test
     public void testEqualsObject() {
         assertTrue(
-            new ObjectValueExpression(converter, "foo", Object.class)
-                .equals(
-                    new ObjectValueExpression(converter, "foo", Object.class)
-                )
+            new ObjectValueExpression(converter, "foo", Object.class).equals(
+                new ObjectValueExpression(converter, "foo", Object.class)
+            )
         );
         assertTrue(
-            new ObjectValueExpression(
-                converter,
-                new String("foo"),
-                Object.class
+            new ObjectValueExpression(converter, new String("foo"), Object.class).equals(
+                new ObjectValueExpression(converter, "foo", Object.class)
             )
-                .equals(
-                    new ObjectValueExpression(converter, "foo", Object.class)
-                )
         );
         assertFalse(
-            new ObjectValueExpression(converter, "foo", Object.class)
-                .equals(
-                    new ObjectValueExpression(converter, "bar", Object.class)
-                )
+            new ObjectValueExpression(converter, "foo", Object.class).equals(
+                new ObjectValueExpression(converter, "bar", Object.class)
+            )
         );
     }
 
     @Test
     public void testGetValue() {
-        assertEquals(
-            "foo",
-            new ObjectValueExpression(converter, "foo", Object.class)
-                .getValue(null)
-        );
+        assertEquals("foo", new ObjectValueExpression(converter, "foo", Object.class).getValue(null));
     }
 
     @Test
     public void testGetExpressionString() {
-        assertNull(
-            new ObjectValueExpression(converter, "foo", Object.class)
-                .getExpressionString()
-        );
+        assertNull(new ObjectValueExpression(converter, "foo", Object.class).getExpressionString());
     }
 
     @Test
     public void testIsLiteralText() {
-        assertFalse(
-            new ObjectValueExpression(converter, "foo", Object.class)
-                .isLiteralText()
-        );
+        assertFalse(new ObjectValueExpression(converter, "foo", Object.class).isLiteralText());
     }
 
     @Test
     public void testGetType() {
-        assertNull(
-            new ObjectValueExpression(converter, "foo", Object.class)
-                .getType(null)
-        );
+        assertNull(new ObjectValueExpression(converter, "foo", Object.class).getType(null));
     }
 
     @Test
     public void testIsReadOnly() {
-        assertTrue(
-            new ObjectValueExpression(converter, "foo", Object.class)
-                .isReadOnly(null)
-        );
+        assertTrue(new ObjectValueExpression(converter, "foo", Object.class).isReadOnly(null));
     }
 
     @Test
     public void testSetValue() {
         try {
-            new ObjectValueExpression(converter, "foo", Object.class)
-                .setValue(null, "bar");
+            new ObjectValueExpression(converter, "foo", Object.class).setValue(null, "bar");
             fail();
         } catch (ELException e) {}
     }
 
     @Test
     public void testSerialize() throws Exception {
-        ObjectValueExpression expression = new ObjectValueExpression(
-            converter,
-            "foo",
-            Object.class
-        );
+        ObjectValueExpression expression = new ObjectValueExpression(converter, "foo", Object.class);
         assertEquals(expression, deserialize(serialize(expression)));
     }
 }

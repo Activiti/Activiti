@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.activiti.api.task.model.payloads;
 
 import java.util.List;
 import java.util.UUID;
-
 import org.activiti.api.model.shared.Payload;
 
 public class CandidateGroupsPayload implements Payload {
@@ -30,10 +29,9 @@ public class CandidateGroupsPayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public CandidateGroupsPayload(String taskId,
-                                  List<String> candidateGroups) {
+    public CandidateGroupsPayload(String taskId, List<String> candidateGroups) {
         this();
-        this.taskId=taskId;
+        this.taskId = taskId;
         this.candidateGroups = candidateGroups;
     }
 
@@ -42,7 +40,7 @@ public class CandidateGroupsPayload implements Payload {
         return id;
     }
 
-     public List<String> getCandidateGroups() {
+    public List<String> getCandidateGroups() {
         return candidateGroups;
     }
 

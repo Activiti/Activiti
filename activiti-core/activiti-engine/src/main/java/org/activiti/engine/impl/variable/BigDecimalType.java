@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.variable;
 
 import java.math.BigDecimal;
@@ -33,26 +32,18 @@ public class BigDecimalType implements VariableType {
 
     @Override
     public Object getValue(ValueFields valueFields) {
-        return Optional.ofNullable(valueFields)
-                       .map(ValueFields::getTextValue)
-                       .map(BigDecimal::new)
-                       .orElse(null);
+        return Optional.ofNullable(valueFields).map(ValueFields::getTextValue).map(BigDecimal::new).orElse(null);
     }
 
     @Override
     public void setValue(Object value, ValueFields valueFields) {
-        String textValue = Optional.ofNullable(value)
-                                   .map(Object::toString)
-                                   .orElse(null);
+        String textValue = Optional.ofNullable(value).map(Object::toString).orElse(null);
 
         valueFields.setTextValue(textValue);
     }
 
     @Override
     public boolean isAbleToStore(Object value) {
-        return Optional.ofNullable(value)
-                       .map(Object::getClass)
-                       .map(BigDecimal.class::isAssignableFrom)
-                       .orElse(true);
+        return Optional.ofNullable(value).map(Object::getClass).map(BigDecimal.class::isAssignableFrom).orElse(true);
     }
 }

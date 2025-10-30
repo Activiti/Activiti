@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@
 package org.activiti.runtime.api.model.impl;
 
 import java.util.Objects;
-
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.runtime.model.impl.ProcessDefinitionImpl;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.RepositoryService;
 
-public class APIProcessDefinitionConverter extends ListConverter<org.activiti.engine.repository.ProcessDefinition, ProcessDefinition>
-        implements ModelConverter<org.activiti.engine.repository.ProcessDefinition, ProcessDefinition> {
+public class APIProcessDefinitionConverter
+    extends ListConverter<org.activiti.engine.repository.ProcessDefinition, ProcessDefinition>
+    implements ModelConverter<org.activiti.engine.repository.ProcessDefinition, ProcessDefinition> {
 
     private RepositoryService repositoryService;
 

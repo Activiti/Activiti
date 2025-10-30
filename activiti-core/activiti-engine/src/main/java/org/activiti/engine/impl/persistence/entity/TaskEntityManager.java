@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.task.Task;
@@ -26,38 +24,37 @@ import org.activiti.engine.task.TaskInfo;
 
 @Internal
 public interface TaskEntityManager extends EntityManager<TaskEntity> {
+    void insert(TaskEntity taskEntity, ExecutionEntity execution);
 
-  void insert(TaskEntity taskEntity, ExecutionEntity execution);
+    void changeTaskAssignee(TaskEntity taskEntity, String assignee);
 
-  void changeTaskAssignee(TaskEntity taskEntity, String assignee);
+    void changeTaskAssigneeNoEvents(TaskEntity taskEntity, String assignee);
 
-  void changeTaskAssigneeNoEvents(TaskEntity taskEntity, String assignee);
+    void changeTaskOwner(TaskEntity taskEntity, String owner);
 
-  void changeTaskOwner(TaskEntity taskEntity, String owner);
+    List<TaskEntity> findTasksByExecutionId(String executionId);
 
-  List<TaskEntity> findTasksByExecutionId(String executionId);
+    List<TaskEntity> findTasksByProcessInstanceId(String processInstanceId);
 
-  List<TaskEntity> findTasksByProcessInstanceId(String processInstanceId);
+    List<Task> findTasksByQueryCriteria(TaskQueryImpl taskQuery);
 
-  List<Task> findTasksByQueryCriteria(TaskQueryImpl taskQuery);
+    List<Task> findTasksAndVariablesByQueryCriteria(TaskQueryImpl taskQuery);
 
-  List<Task> findTasksAndVariablesByQueryCriteria(TaskQueryImpl taskQuery);
+    long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery);
 
-  long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery);
+    List<Task> findTasksByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
 
-  List<Task> findTasksByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
+    long findTaskCountByNativeQuery(Map<String, Object> parameterMap);
 
-  long findTaskCountByNativeQuery(Map<String, Object> parameterMap);
+    List<Task> findTasksByParentTaskId(String parentTaskId);
 
-  List<Task> findTasksByParentTaskId(String parentTaskId);
+    void updateTaskTenantIdForDeployment(String deploymentId, String newTenantId);
 
-  void updateTaskTenantIdForDeployment(String deploymentId, String newTenantId);
+    void deleteTask(String taskId, String deleteReason, boolean cascade);
 
-  void deleteTask(String taskId, String deleteReason, boolean cascade);
+    void deleteTask(String taskId, String deleteReason, boolean cascade, boolean cancel);
 
-  void deleteTask(String taskId, String deleteReason, boolean cascade, boolean cancel);
+    void deleteTasksByProcessInstanceId(String processInstanceId, String deleteReason, boolean cascade);
 
-  void deleteTasksByProcessInstanceId(String processInstanceId, String deleteReason, boolean cascade);
-
-  void deleteTask(TaskEntity task, String deleteReason, boolean cascade, boolean cancel);
+    void deleteTask(TaskEntity task, String deleteReason, boolean cascade, boolean cancel);
 }

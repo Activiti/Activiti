@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.activiti.api.process.model.payloads;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-
 import org.activiti.api.model.shared.Payload;
 
 public class GetProcessInstancesPayload implements Payload {
@@ -76,8 +75,6 @@ public class GetProcessInstancesPayload implements Payload {
     }
 
     public void setParentProcessInstanceId(String parentProcessInstanceId) {
-        this.parentProcessInstanceId=parentProcessInstanceId;
+        this.parentProcessInstanceId = parentProcessInstanceId;
     }
-
-
 }

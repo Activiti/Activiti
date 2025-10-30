@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.calendar;
 
 import java.util.Date;
-
 import org.activiti.engine.api.internal.Internal;
 
 @Internal
 public interface BusinessCalendar {
+    Date resolveDuedate(String duedateDescription);
 
-  Date resolveDuedate(String duedateDescription);
+    Date resolveDuedate(String duedateDescription, int maxIterations);
 
-  Date resolveDuedate(String duedateDescription, int maxIterations);
+    Boolean validateDuedate(String duedateDescription, int maxIterations, Date endDate, Date newTimer);
 
-  Boolean validateDuedate(String duedateDescription, int maxIterations, Date endDate, Date newTimer);
-
-  Date resolveEndDate(String endDateString);
+    Date resolveEndDate(String endDateString);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.asyncexecutor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.runtime.Job;
@@ -39,79 +37,74 @@ import org.slf4j.LoggerFactory;
  */
 public class ResetExpiredJobsRunnable implements Runnable {
 
-  private static Logger log = LoggerFactory.getLogger(ResetExpiredJobsRunnable.class);
+    private static Logger log = LoggerFactory.getLogger(ResetExpiredJobsRunnable.class);
 
-  protected final AsyncExecutor asyncExecutor;
+    protected final AsyncExecutor asyncExecutor;
 
-  protected volatile boolean isInterrupted;
-  protected final Object MONITOR = new Object();
-  protected final AtomicBoolean isWaiting = new AtomicBoolean(false);
+    protected volatile boolean isInterrupted;
+    protected final Object MONITOR = new Object();
+    protected final AtomicBoolean isWaiting = new AtomicBoolean(false);
 
-  public ResetExpiredJobsRunnable(AsyncExecutor asyncExecutor) {
-    this.asyncExecutor = asyncExecutor;
-  }
+    public ResetExpiredJobsRunnable(AsyncExecutor asyncExecutor) {
+        this.asyncExecutor = asyncExecutor;
+    }
 
-  public synchronized void run() {
-    log.info("{} starting to reset expired jobs");
-    Thread.currentThread().setName("activiti-reset-expired-jobs");
+    public synchronized void run() {
+        log.info("{} starting to reset expired jobs");
+        Thread.currentThread().setName("activiti-reset-expired-jobs");
 
-    while (!isInterrupted) {
+        while (!isInterrupted) {
+            try {
+                List<JobEntity> expiredJobs = asyncExecutor
+                    .getProcessEngineConfiguration()
+                    .getCommandExecutor()
+                    .execute(new FindExpiredJobsCmd(asyncExecutor.getResetExpiredJobsPageSize()));
 
-      try {
+                List<String> expiredJobIds = new ArrayList<String>(expiredJobs.size());
+                for (JobEntity expiredJob : expiredJobs) {
+                    expiredJobIds.add(expiredJob.getId());
+                }
 
-        List<JobEntity> expiredJobs = asyncExecutor.getProcessEngineConfiguration().getCommandExecutor()
-            .execute(new FindExpiredJobsCmd(asyncExecutor.getResetExpiredJobsPageSize()));
+                if (expiredJobIds.size() > 0) {
+                    asyncExecutor
+                        .getProcessEngineConfiguration()
+                        .getCommandExecutor()
+                        .execute(new ResetExpiredJobsCmd(expiredJobIds));
+                }
+            } catch (Throwable e) {
+                if (e instanceof ActivitiOptimisticLockingException) {
+                    log.debug("Optmistic lock exception while resetting locked jobs", e);
+                } else {
+                    log.error("exception during resetting expired jobs", e.getMessage(), e);
+                }
+            }
 
-        List<String> expiredJobIds = new ArrayList<String>(expiredJobs.size());
-        for (JobEntity expiredJob : expiredJobs) {
-          expiredJobIds.add(expiredJob.getId());
+            // Sleep
+            try {
+                synchronized (MONITOR) {
+                    if (!isInterrupted) {
+                        isWaiting.set(true);
+                        MONITOR.wait(asyncExecutor.getResetExpiredJobsInterval());
+                    }
+                }
+            } catch (InterruptedException e) {
+                if (log.isDebugEnabled()) {
+                    log.debug("async reset expired jobs wait interrupted");
+                }
+            } finally {
+                isWaiting.set(false);
+            }
         }
 
-        if (expiredJobIds.size() > 0) {
-          asyncExecutor.getProcessEngineConfiguration().getCommandExecutor()
-            .execute(new ResetExpiredJobsCmd(expiredJobIds));
-        }
+        log.info("{} stopped resetting expired jobs");
+    }
 
-      } catch (Throwable e) {
-        if (e instanceof ActivitiOptimisticLockingException) {
-          log.debug("Optmistic lock exception while resetting locked jobs", e);
-        } else {
-          log.error("exception during resetting expired jobs", e.getMessage(), e);
-        }
-      }
-
-      // Sleep
-      try {
-
+    public void stop() {
         synchronized (MONITOR) {
-          if (!isInterrupted) {
-            isWaiting.set(true);
-            MONITOR.wait(asyncExecutor.getResetExpiredJobsInterval());
-          }
+            isInterrupted = true;
+            if (isWaiting.compareAndSet(true, false)) {
+                MONITOR.notifyAll();
+            }
         }
-
-      } catch (InterruptedException e) {
-        if (log.isDebugEnabled()) {
-          log.debug("async reset expired jobs wait interrupted");
-        }
-      } finally {
-        isWaiting.set(false);
-      }
-
     }
-
-    log.info("{} stopped resetting expired jobs");
-  }
-
-  public void stop() {
-    synchronized (MONITOR) {
-      isInterrupted = true;
-      if (isWaiting.compareAndSet(true, false)) {
-        MONITOR.notifyAll();
-      }
-    }
-  }
-
-
-
 }

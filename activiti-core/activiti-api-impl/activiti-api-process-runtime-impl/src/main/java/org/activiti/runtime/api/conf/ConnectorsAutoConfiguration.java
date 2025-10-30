@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.runtime.api.conf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import org.activiti.core.el.CustomFunctionProvider;
 import org.activiti.engine.impl.bpmn.behavior.VariablesCalculator;
 import org.activiti.engine.impl.bpmn.behavior.VariablesPropagator;
@@ -33,8 +33,6 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-
-import java.util.List;
 
 @AutoConfiguration
 public class ConnectorsAutoConfiguration {
@@ -55,10 +53,11 @@ public class ConnectorsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public IntegrationContextBuilder integrationContextBuilder(ExtensionsVariablesMappingProvider variablesMappingProvider,
-                                                               ExpressionManager expressionManager) {
-        return new IntegrationContextBuilder(variablesMappingProvider,
-                                             expressionManager);
+    public IntegrationContextBuilder integrationContextBuilder(
+        ExtensionsVariablesMappingProvider variablesMappingProvider,
+        ExpressionManager expressionManager
+    ) {
+        return new IntegrationContextBuilder(variablesMappingProvider, expressionManager);
     }
 
     @Bean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
@@ -66,16 +65,23 @@ public class ConnectorsAutoConfiguration {
     public DefaultServiceTaskBehavior defaultServiceTaskBehavior(
         ApplicationContext applicationContext,
         IntegrationContextBuilder integrationContextBuilder,
-        VariablesPropagator variablesPropagator) {
+        VariablesPropagator variablesPropagator
+    ) {
         return new DefaultServiceTaskBehavior(applicationContext, integrationContextBuilder, variablesPropagator);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ExtensionsVariablesMappingProvider variablesMappingProvider(ProcessExtensionService processExtensionService,
-                                                                       ExpressionResolver expressionResolver,
-                                                                       VariableParsingService variableParsingService) {
-        return new ExtensionsVariablesMappingProvider(processExtensionService, expressionResolver, variableParsingService);
+    public ExtensionsVariablesMappingProvider variablesMappingProvider(
+        ProcessExtensionService processExtensionService,
+        ExpressionResolver expressionResolver,
+        VariableParsingService variableParsingService
+    ) {
+        return new ExtensionsVariablesMappingProvider(
+            processExtensionService,
+            expressionResolver,
+            variableParsingService
+        );
     }
 
     @Bean

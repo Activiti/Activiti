@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
@@ -29,19 +28,13 @@ public class DataInputAssociationParser extends BaseChildElementParser {
         return ELEMENT_INPUT_ASSOCIATION;
     }
 
-    public void parseChildElement(XMLStreamReader xtr,
-                                  BaseElement parentElement,
-                                  BpmnModel model) throws Exception {
-
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
         if (!(parentElement instanceof Activity)) {
             return;
         }
         DataAssociation dataAssociation = new DataAssociation();
-        BpmnXMLUtil.addXMLLocation(dataAssociation,
-                                   xtr);
-        DataAssociationParser.parseDataAssociation(dataAssociation,
-                                                   getElementName(),
-                                                   xtr);
+        BpmnXMLUtil.addXMLLocation(dataAssociation, xtr);
+        DataAssociationParser.parseDataAssociation(dataAssociation, getElementName(), xtr);
 
         ((Activity) parentElement).getDataInputAssociations().add(dataAssociation);
     }

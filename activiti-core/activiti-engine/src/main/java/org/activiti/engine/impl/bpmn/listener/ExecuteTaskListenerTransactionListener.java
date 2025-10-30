@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.listener;
 
 import org.activiti.engine.delegate.ExecutionListener;
@@ -32,26 +31,35 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  */
 public class ExecuteTaskListenerTransactionListener implements TransactionListener {
 
-  protected TransactionDependentTaskListener listener;
-  protected TransactionDependentTaskListenerExecutionScope scope;
+    protected TransactionDependentTaskListener listener;
+    protected TransactionDependentTaskListenerExecutionScope scope;
 
-  public ExecuteTaskListenerTransactionListener(TransactionDependentTaskListener listener,
-      TransactionDependentTaskListenerExecutionScope scope) {
-    this.listener = listener;
-    this.scope = scope;
-  }
+    public ExecuteTaskListenerTransactionListener(
+        TransactionDependentTaskListener listener,
+        TransactionDependentTaskListenerExecutionScope scope
+    ) {
+        this.listener = listener;
+        this.scope = scope;
+    }
 
-  @Override
-  public void execute(CommandContext commandContext) {
-    CommandExecutor commandExecutor = commandContext.getProcessEngineConfiguration().getCommandExecutor();
-    CommandConfig commandConfig = new CommandConfig(false, TransactionPropagation.REQUIRES_NEW);
-    commandExecutor.execute(commandConfig, new Command<Void>() {
-      public Void execute(CommandContext commandContext) {
-        listener.notify(scope.getProcessInstanceId(), scope.getExecutionId(), scope.getTask(),
-            scope.getExecutionVariables(), scope.getCustomPropertiesMap());
-        return null;
-      }
-    });
-  }
-
+    @Override
+    public void execute(CommandContext commandContext) {
+        CommandExecutor commandExecutor = commandContext.getProcessEngineConfiguration().getCommandExecutor();
+        CommandConfig commandConfig = new CommandConfig(false, TransactionPropagation.REQUIRES_NEW);
+        commandExecutor.execute(
+            commandConfig,
+            new Command<Void>() {
+                public Void execute(CommandContext commandContext) {
+                    listener.notify(
+                        scope.getProcessInstanceId(),
+                        scope.getExecutionId(),
+                        scope.getTask(),
+                        scope.getExecutionVariables(),
+                        scope.getCustomPropertiesMap()
+                    );
+                    return null;
+                }
+            }
+        );
+    }
 }

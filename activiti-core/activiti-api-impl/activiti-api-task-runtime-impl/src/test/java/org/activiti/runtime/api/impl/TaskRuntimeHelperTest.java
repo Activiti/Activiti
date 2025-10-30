@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,10 +64,9 @@ public class TaskRuntimeHelperTest {
 
     @BeforeEach
     public void setUp() {
-        taskRuntimeHelper = spy(new TaskRuntimeHelper(taskService,
-                taskConverter,
-                securityManager,
-                taskVariablesValidator));
+        taskRuntimeHelper = spy(
+            new TaskRuntimeHelper(taskService, taskConverter, securityManager, taskVariablesValidator)
+        );
         when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
     }
 
@@ -75,22 +74,20 @@ public class TaskRuntimeHelperTest {
     public void updateShouldSetAllFieldsAndSaveChangesWhenAssignee() {
         //given
         Date now = new Date();
-        UpdateTaskPayload updateTaskPayload = TaskPayloadBuilder
-                .update()
-                .withTaskId("taskId")
-                .withDescription("new description")
-                .withName("New name")
-                .withPriority(42)
-                .withDueDate(now)
-                .withFormKey("new form key")
-                .build();
+        UpdateTaskPayload updateTaskPayload = TaskPayloadBuilder.update()
+            .withTaskId("taskId")
+            .withDescription("new description")
+            .withName("New name")
+            .withPriority(42)
+            .withDueDate(now)
+            .withFormKey("new form key")
+            .build();
         Task internalTask = buildInternalTask(AUTHENTICATED_USER);
         doReturn(internalTask).when(taskRuntimeHelper).getInternalTaskWithChecks("taskId");
         doReturn(internalTask).when(taskRuntimeHelper).getInternalTask("taskId");
 
         //when
-        taskRuntimeHelper.applyUpdateTaskPayload(false,
-                updateTaskPayload);
+        taskRuntimeHelper.applyUpdateTaskPayload(false, updateTaskPayload);
 
         //then
         verify(internalTask).setDescription("new description");
@@ -113,19 +110,18 @@ public class TaskRuntimeHelperTest {
         Task internalTask = mock(Task.class);
         doReturn(internalTask).when(taskRuntimeHelper).getInternalTaskWithChecks("taskId");
 
-        UpdateTaskPayload updateTaskPayload = TaskPayloadBuilder
-                .update()
-                .withTaskId("taskId")
-                .withDescription("new description")
-                .build();
+        UpdateTaskPayload updateTaskPayload = TaskPayloadBuilder.update()
+            .withTaskId("taskId")
+            .withDescription("new description")
+            .build();
 
         //when
         Throwable throwable = catchThrowable(() -> taskRuntimeHelper.applyUpdateTaskPayload(false, updateTaskPayload));
 
         //then
         assertThat(throwable)
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("You cannot update a task where you are not the assignee");
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("You cannot update a task where you are not the assignee");
     }
 
     @Test
@@ -141,15 +137,13 @@ public class TaskRuntimeHelperTest {
 
         when(taskConverter.from(any(Task.class))).thenReturn(task);
 
-        UpdateTaskPayload updateTaskPayload = TaskPayloadBuilder
-                .update()
-                .withTaskId("taskId")
-                .withDescription("new description")
-                .build();
+        UpdateTaskPayload updateTaskPayload = TaskPayloadBuilder.update()
+            .withTaskId("taskId")
+            .withDescription("new description")
+            .build();
 
         //when
-        taskRuntimeHelper.applyUpdateTaskPayload(false,
-                updateTaskPayload);
+        taskRuntimeHelper.applyUpdateTaskPayload(false, updateTaskPayload);
 
         //then
         verify(internalTask).getDescription();
@@ -204,8 +198,8 @@ public class TaskRuntimeHelperTest {
 
         //then
         assertThat(thrown)
-                .isInstanceOf(NotFoundException.class)
-                .hasMessageStartingWith("Unable to find task for the given id:");
+            .isInstanceOf(NotFoundException.class)
+            .hasMessageStartingWith("Unable to find task for the given id:");
     }
 
     @Test
@@ -221,5 +215,4 @@ public class TaskRuntimeHelperTest {
             .isInstanceOf(IllegalStateException.class)
             .hasMessage("There is no authenticated user, we need a user authenticated to find tasks");
     }
-
 }

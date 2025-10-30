@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.webservice;
 
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
@@ -26,20 +25,20 @@ import org.activiti.engine.impl.bpmn.data.StructureInstance;
  */
 public class MessageInstance {
 
-  protected MessageDefinition message;
+    protected MessageDefinition message;
 
-  protected ItemInstance item;
+    protected ItemInstance item;
 
-  public MessageInstance(MessageDefinition message, ItemInstance item) {
-    this.message = message;
-    this.item = item;
-  }
+    public MessageInstance(MessageDefinition message, ItemInstance item) {
+        this.message = message;
+        this.item = item;
+    }
 
-  public StructureInstance getStructureInstance() {
-    return this.item.getStructureInstance();
-  }
+    public StructureInstance getStructureInstance() {
+        return this.item.getStructureInstance();
+    }
 
-  public MessageDefinition getMessage() {
-    return this.message;
-  }
+    public MessageDefinition getMessage() {
+        return this.message;
+    }
 }

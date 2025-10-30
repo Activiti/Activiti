@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.activiti.engine.impl.bpmn.behavior;
 import org.activiti.bpmn.model.ThrowEvent;
 
 public class IntermediateThrowLinkEventActivityBehavior extends FlowNodeActivityBehavior {
+
     private static final long serialVersionUID = 1L;
 
     private final ThrowEvent throwEvent;
@@ -25,7 +26,6 @@ public class IntermediateThrowLinkEventActivityBehavior extends FlowNodeActivity
     public IntermediateThrowLinkEventActivityBehavior(ThrowEvent throwEvent) {
         this.throwEvent = throwEvent;
     }
-
 
     public ThrowEvent getThrowEvent() {
         return throwEvent;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree.impl.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -79,41 +78,17 @@ public class AstFunctionTest extends TestCase {
 
         // functions ns:f0(), ns:f1(int), ns:f2(int)
         context.setFunction("ns", "f0", getClass().getMethod("foo"));
-        context.setFunction(
-            "ns",
-            "f1",
-            getClass().getMethod("bar", new Class[] { int.class })
-        );
-        context.setFunction(
-            "ns",
-            "f2",
-            getClass().getMethod("foobar", new Class[] { int.class, int.class })
-        );
+        context.setFunction("ns", "f1", getClass().getMethod("bar", new Class[] { int.class }));
+        context.setFunction("ns", "f2", getClass().getMethod("foobar", new Class[] { int.class, int.class }));
 
         // functions g0(), g1(int), g2(int,int)
         context.setFunction("", "g0", getClass().getMethod("foo"));
-        context.setFunction(
-            "",
-            "g1",
-            getClass().getMethod("bar", new Class[] { int.class })
-        );
-        context.setFunction(
-            "",
-            "g2",
-            getClass().getMethod("foobar", new Class[] { int.class, int.class })
-        );
+        context.setFunction("", "g1", getClass().getMethod("bar", new Class[] { int.class }));
+        context.setFunction("", "g2", getClass().getMethod("foobar", new Class[] { int.class, int.class }));
 
-        context.setFunction(
-            "vararg",
-            "f",
-            getClass().getMethod("foovar", new Class[] { int[].class })
-        );
-        context
-            .getELResolver()
-            .setValue(context, null, "var111", new int[] { 1, 1, 1 });
-        context
-            .getELResolver()
-            .setValue(context, null, "var111s", new String[] { "1", "1", "1" });
+        context.setFunction("vararg", "f", getClass().getMethod("foovar", new Class[] { int[].class }));
+        context.getELResolver().setValue(context, null, "var111", new int[] { 1, 1, 1 });
+        context.getELResolver().setValue(context, null, "var111s", new String[] { "1", "1", "1" });
     }
 
     @Test
@@ -122,46 +97,22 @@ public class AstFunctionTest extends TestCase {
         Tree tree = null;
 
         tree = builder.build("${vararg:f()}");
-        assertEquals(
-            foovar(),
-            getNode(tree)
-                .eval(tree.bind(context.getFunctionMapper(), null), null)
-        );
+        assertEquals(foovar(), getNode(tree).eval(tree.bind(context.getFunctionMapper(), null), null));
 
         tree = builder.build("${vararg:f(1)}");
-        assertEquals(
-            foovar(1),
-            getNode(tree)
-                .eval(tree.bind(context.getFunctionMapper(), null), null)
-        );
+        assertEquals(foovar(1), getNode(tree).eval(tree.bind(context.getFunctionMapper(), null), null));
 
         tree = builder.build("${vararg:f(1,1)}");
-        assertEquals(
-            foovar(1, 1),
-            getNode(tree)
-                .eval(tree.bind(context.getFunctionMapper(), null), null)
-        );
+        assertEquals(foovar(1, 1), getNode(tree).eval(tree.bind(context.getFunctionMapper(), null), null));
 
         tree = builder.build("${vararg:f(null)}");
-        assertEquals(
-            foovar(0),
-            getNode(tree)
-                .eval(tree.bind(context.getFunctionMapper(), null), null)
-        );
+        assertEquals(foovar(0), getNode(tree).eval(tree.bind(context.getFunctionMapper(), null), null));
 
         tree = builder.build("${vararg:f(var111)}");
-        assertEquals(
-            foovar(1, 1, 1),
-            getNode(tree)
-                .eval(tree.bind(context.getFunctionMapper(), null), context)
-        );
+        assertEquals(foovar(1, 1, 1), getNode(tree).eval(tree.bind(context.getFunctionMapper(), null), context));
 
         tree = builder.build("${vararg:f(var111s)}");
-        assertEquals(
-            foovar(1, 1, 1),
-            getNode(tree)
-                .eval(tree.bind(context.getFunctionMapper(), null), context)
-        );
+        assertEquals(foovar(1, 1, 1), getNode(tree).eval(tree.bind(context.getFunctionMapper(), null), context));
     }
 
     @Test
@@ -169,46 +120,22 @@ public class AstFunctionTest extends TestCase {
         Tree tree = null;
 
         tree = parse("${ns:f0()}");
-        assertEquals(
-            foo(),
-            getNode(tree)
-                .eval(tree.bind(context.getFunctionMapper(), null), null)
-        );
+        assertEquals(foo(), getNode(tree).eval(tree.bind(context.getFunctionMapper(), null), null));
 
         tree = parse("${ns:f1(42)}");
-        assertEquals(
-            bar(42),
-            getNode(tree)
-                .eval(tree.bind(context.getFunctionMapper(), null), null)
-        );
+        assertEquals(bar(42), getNode(tree).eval(tree.bind(context.getFunctionMapper(), null), null));
 
         tree = parse("${ns:f2(21,21)}");
-        assertEquals(
-            foobar(21, 21),
-            getNode(tree)
-                .eval(tree.bind(context.getFunctionMapper(), null), null)
-        );
+        assertEquals(foobar(21, 21), getNode(tree).eval(tree.bind(context.getFunctionMapper(), null), null));
 
         tree = parse("${g0()}");
-        assertEquals(
-            foo(),
-            getNode(tree)
-                .eval(tree.bind(context.getFunctionMapper(), null), null)
-        );
+        assertEquals(foo(), getNode(tree).eval(tree.bind(context.getFunctionMapper(), null), null));
 
         tree = parse("${g1(42)}");
-        assertEquals(
-            bar(42),
-            getNode(tree)
-                .eval(tree.bind(context.getFunctionMapper(), null), null)
-        );
+        assertEquals(bar(42), getNode(tree).eval(tree.bind(context.getFunctionMapper(), null), null));
 
         tree = parse("${g2(21,21)}");
-        assertEquals(
-            foobar(21, 21),
-            getNode(tree)
-                .eval(tree.bind(context.getFunctionMapper(), null), null)
-        );
+        assertEquals(foobar(21, 21), getNode(tree).eval(tree.bind(context.getFunctionMapper(), null), null));
     }
 
     @Test
@@ -264,23 +191,10 @@ public class AstFunctionTest extends TestCase {
 
         tree = parse("${ns:f0()}");
 
-        assertEquals(
-            foo(),
-            getNode(tree)
-                .getValue(
-                    tree.bind(context.getFunctionMapper(), null),
-                    null,
-                    null
-                )
-        );
+        assertEquals(foo(), getNode(tree).getValue(tree.bind(context.getFunctionMapper(), null), null, null));
         assertEquals(
             "" + foo(),
-            getNode(tree)
-                .getValue(
-                    tree.bind(context.getFunctionMapper(), null),
-                    null,
-                    String.class
-                )
+            getNode(tree).getValue(tree.bind(context.getFunctionMapper(), null), null, String.class)
         );
     }
 

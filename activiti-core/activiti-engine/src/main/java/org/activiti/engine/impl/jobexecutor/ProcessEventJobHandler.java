@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -29,24 +27,22 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
  */
 public class ProcessEventJobHandler implements JobHandler {
 
-  public final static String TYPE = "event";
+    public static final String TYPE = "event";
 
-  public String getType() {
-    return TYPE;
-  }
-
-  public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
-
-    EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
-
-    // lookup subscription:
-    EventSubscriptionEntity eventSubscriptionEntity = eventSubscriptionEntityManager.findById(configuration);
-
-    // if event subscription is null, ignore
-    if (eventSubscriptionEntity != null) {
-      eventSubscriptionEntityManager.eventReceived(eventSubscriptionEntity, null, false);
+    public String getType() {
+        return TYPE;
     }
 
-  }
+    public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
+        EventSubscriptionEntityManager eventSubscriptionEntityManager =
+            commandContext.getEventSubscriptionEntityManager();
 
+        // lookup subscription:
+        EventSubscriptionEntity eventSubscriptionEntity = eventSubscriptionEntityManager.findById(configuration);
+
+        // if event subscription is null, ignore
+        if (eventSubscriptionEntity != null) {
+            eventSubscriptionEntityManager.eventReceived(eventSubscriptionEntity, null, false);
+        }
+    }
 }

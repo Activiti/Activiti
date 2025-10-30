@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,16 +28,13 @@ public class UpdateTaskVariablePayloadBuilder {
         return this;
     }
 
-    public UpdateTaskVariablePayloadBuilder withVariable(String name,
-                                                         Object value) {
+    public UpdateTaskVariablePayloadBuilder withVariable(String name, Object value) {
         this.name = name;
         this.value = value;
         return this;
     }
 
     public UpdateTaskVariablePayload build() {
-        return new UpdateTaskVariablePayload(taskId,
-                                             name,
-                                             value);
+        return new UpdateTaskVariablePayload(taskId, name, value);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.standalone.jpa;
 
 import static java.util.Arrays.asList;
@@ -22,6 +20,8 @@ import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -30,8 +30,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ProcessEngine;
@@ -75,12 +73,17 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
 
     protected void initializeProcessEngine() {
         if (cachedProcessEngine == null) {
-            ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl) ProcessEngineConfiguration
-                .createProcessEngineConfigurationFromResource("org/activiti/standalone/jpa/activiti.cfg.xml");
+            ProcessEngineConfigurationImpl processEngineConfiguration =
+                (ProcessEngineConfigurationImpl) ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(
+                    "org/activiti/standalone/jpa/activiti.cfg.xml"
+                );
 
             cachedProcessEngine = processEngineConfiguration.buildProcessEngine();
 
-            EntityManagerSessionFactory entityManagerSessionFactory = (EntityManagerSessionFactory) processEngineConfiguration.getSessionFactories().get(EntityManagerSession.class);
+            EntityManagerSessionFactory entityManagerSessionFactory =
+                (EntityManagerSessionFactory) processEngineConfiguration
+                    .getSessionFactories()
+                    .get(EntityManagerSession.class);
 
             entityManagerFactory = entityManagerSessionFactory.getEntityManagerFactory();
         }
@@ -88,9 +91,7 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
     }
 
     public void setupJPAEntities() {
-
         if (!entitiesInitialized) {
-
             EntityManager manager = entityManagerFactory.createEntityManager();
             manager.getTransaction().begin();
 
@@ -269,7 +270,7 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
         assertThat(((FieldAccessJPAEntity) currentValue).getId().longValue()).isEqualTo(1L);
     }
 
-    @Deployment(resources = {"org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml" })
     public void testStoreJPAEntityAsVariableAllAllowedIdTypes() {
         setupJPAEntities();
         // -----------------------------------------------------------------------------
@@ -291,7 +292,10 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
 
         // Start the process with the JPA-entities as variables. They will be
         // stored in the DB.
-        ProcessInstance processInstanceAllTypes = runtimeService.startProcessInstanceByKey("JPAVariableProcess", variables);
+        ProcessInstance processInstanceAllTypes = runtimeService.startProcessInstanceByKey(
+            "JPAVariableProcess",
+            variables
+        );
         Object byteIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "byteIdJPAEntity");
         assertThat(byteIdResult).isInstanceOf(ByteIdJPAEntity.class);
         assertThat(((ByteIdJPAEntity) byteIdResult).getByteId()).isEqualTo(byteIdJPAEntity.getByteId());
@@ -338,26 +342,45 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
 
         assertThat(((SQLDateIdJPAEntity) sqlDateIdResult).getDateId()).isInSameDayAs(sqlDateIdJPAEntity.getDateId());
 
-        Object bigDecimalIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "bigDecimalIdJPAEntity");
+        Object bigDecimalIdResult = runtimeService.getVariable(
+            processInstanceAllTypes.getId(),
+            "bigDecimalIdJPAEntity"
+        );
         assertThat(bigDecimalIdResult).isInstanceOf(BigDecimalIdJPAEntity.class);
-        assertThat(((BigDecimalIdJPAEntity) bigDecimalIdResult).getBigDecimalId()).isEqualTo(bigDecimalIdJPAEntity.getBigDecimalId());
+        assertThat(((BigDecimalIdJPAEntity) bigDecimalIdResult).getBigDecimalId()).isEqualTo(
+            bigDecimalIdJPAEntity.getBigDecimalId()
+        );
 
-        Object bigIntegerIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "bigIntegerIdJPAEntity");
+        Object bigIntegerIdResult = runtimeService.getVariable(
+            processInstanceAllTypes.getId(),
+            "bigIntegerIdJPAEntity"
+        );
         assertThat(bigIntegerIdResult).isInstanceOf(BigIntegerIdJPAEntity.class);
-        assertThat(((BigIntegerIdJPAEntity) bigIntegerIdResult).getBigIntegerId()).isEqualTo(bigIntegerIdJPAEntity.getBigIntegerId());
+        assertThat(((BigIntegerIdJPAEntity) bigIntegerIdResult).getBigIntegerId()).isEqualTo(
+            bigIntegerIdJPAEntity.getBigIntegerId()
+        );
     }
 
-    @Deployment(resources = {"org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml" })
     public void testStoreJPAEntityListAsVariable() {
         setupJPAEntities();
         // -----------------------------------------------------------------------------
         // Simple test, Start process with lists of JPA entities as variables
         // -----------------------------------------------------------------------------
         Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("simpleEntityFieldAccess", asList(simpleEntityFieldAccess, simpleEntityFieldAccess, simpleEntityFieldAccess));
-        variables.put("simpleEntityPropertyAccess", asList(simpleEntityPropertyAccess, simpleEntityPropertyAccess, simpleEntityPropertyAccess));
+        variables.put(
+            "simpleEntityFieldAccess",
+            asList(simpleEntityFieldAccess, simpleEntityFieldAccess, simpleEntityFieldAccess)
+        );
+        variables.put(
+            "simpleEntityPropertyAccess",
+            asList(simpleEntityPropertyAccess, simpleEntityPropertyAccess, simpleEntityPropertyAccess)
+        );
         variables.put("subclassFieldAccess", asList(subclassFieldAccess, subclassFieldAccess, subclassFieldAccess));
-        variables.put("subclassPropertyAccess", asList(subclassPropertyAccess, subclassPropertyAccess, subclassPropertyAccess));
+        variables.put(
+            "subclassPropertyAccess",
+            asList(subclassPropertyAccess, subclassPropertyAccess, subclassPropertyAccess)
+        );
 
         // Start the process with the JPA-entities as variables. They will be
         // stored in the DB.
@@ -393,20 +416,26 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
         list = (List<?>) subclassPropertyResult;
         assertThat(list).hasSize(3);
         assertThat(list.get(0)).isInstanceOf(SubclassPropertyAccessJPAEntity.class);
-        assertThat(simpleEntityPropertyAccess.getId()).isEqualTo(((SubclassPropertyAccessJPAEntity) list.get(0)).getId());
+        assertThat(simpleEntityPropertyAccess.getId()).isEqualTo(
+            ((SubclassPropertyAccessJPAEntity) list.get(0)).getId()
+        );
     }
 
-    @Deployment(resources = {"org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml" })
     public void testStoreJPAEntityListAsVariableEdgeCases() {
         setupJPAEntities();
 
         // Test using mixed JPA-entities which are not serializable, should not
         // be picked up by JPA list type en therefor fail due to serialization error
         Map<String, Object> variablesForException = new HashMap<String, Object>();
-        variablesForException.put("simpleEntityFieldAccess", asList(simpleEntityFieldAccess, simpleEntityPropertyAccess));
+        variablesForException.put(
+            "simpleEntityFieldAccess",
+            asList(simpleEntityFieldAccess, simpleEntityPropertyAccess)
+        );
 
-        assertThatExceptionOfType(ActivitiException.class)
-            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("JPAVariableProcess", variablesForException));
+        assertThatExceptionOfType(ActivitiException.class).isThrownBy(() ->
+            runtimeService.startProcessInstanceByKey("JPAVariableProcess", variablesForException)
+        );
 
         // Test updating value to an empty list and back
         Map<String, Object> variables = new HashMap<String, Object>();
@@ -417,26 +446,46 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
         runtimeService.setVariable(processInstance.getId(), "list", new ArrayList<>());
         assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list"))).hasSize(0);
 
-        runtimeService.setVariable(processInstance.getId(), "list", asList(simpleEntityFieldAccess, simpleEntityFieldAccess));
+        runtimeService.setVariable(
+            processInstance.getId(),
+            "list",
+            asList(simpleEntityFieldAccess, simpleEntityFieldAccess)
+        );
         assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list"))).hasSize(2);
-        assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0)).isInstanceOf(FieldAccessJPAEntity.class);
+        assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0)).isInstanceOf(
+            FieldAccessJPAEntity.class
+        );
 
         // Test updating to list of Strings
         runtimeService.setVariable(processInstance.getId(), "list", asList("TEST", "TESTING"));
         assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list"))).hasSize(2);
-        assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0)).isInstanceOf(String.class);
+        assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0)).isInstanceOf(
+            String.class
+        );
 
-        runtimeService.setVariable(processInstance.getId(), "list", asList(simpleEntityFieldAccess, simpleEntityFieldAccess));
+        runtimeService.setVariable(
+            processInstance.getId(),
+            "list",
+            asList(simpleEntityFieldAccess, simpleEntityFieldAccess)
+        );
         assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list"))).hasSize(2);
-        assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0)).isInstanceOf(FieldAccessJPAEntity.class);
+        assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0)).isInstanceOf(
+            FieldAccessJPAEntity.class
+        );
 
         // Test updating to null
         runtimeService.setVariable(processInstance.getId(), "list", null);
         assertThat(runtimeService.getVariable(processInstance.getId(), "list")).isNull();
 
-        runtimeService.setVariable(processInstance.getId(), "list", asList(simpleEntityFieldAccess, simpleEntityFieldAccess));
+        runtimeService.setVariable(
+            processInstance.getId(),
+            "list",
+            asList(simpleEntityFieldAccess, simpleEntityFieldAccess)
+        );
         assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list"))).hasSize(2);
-        assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0)).isInstanceOf(FieldAccessJPAEntity.class);
+        assertThat(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0)).isInstanceOf(
+            FieldAccessJPAEntity.class
+        );
     }
 
     // https://activiti.atlassian.net/browse/ACT-995
@@ -479,15 +528,23 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
         // Starting process instance with a variable that has a compound primary key, which is not supported.
 
         assertThatExceptionOfType(ActivitiException.class)
-            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("JPAVariableProcessExceptions",
-                singletonMap("compoundIdJPAEntity", compoundIdJPAEntity)))
+            .isThrownBy(() ->
+                runtimeService.startProcessInstanceByKey(
+                    "JPAVariableProcessExceptions",
+                    singletonMap("compoundIdJPAEntity", compoundIdJPAEntity)
+                )
+            )
             .withMessageContaining("Cannot find field or method with annotation @Id on class")
             .withMessageContaining("only single-valued primary keys are supported on JPA-entities");
 
         // Starting process instance with a variable that has null as ID-value
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
-            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("JPAVariableProcessExceptions",
-                singletonMap("nullValueEntity", new FieldAccessJPAEntity())))
+            .isThrownBy(() ->
+                runtimeService.startProcessInstanceByKey(
+                    "JPAVariableProcessExceptions",
+                    singletonMap("nullValueEntity", new FieldAccessJPAEntity())
+                )
+            )
             .withMessageContaining("Value of primary key for JPA-Entity cannot be null");
 
         // Starting process instance with an invalid type of ID
@@ -497,8 +554,12 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
         illegalIdTypeEntity.setId(Calendar.getInstance());
 
         assertThatExceptionOfType(ActivitiException.class)
-            .isThrownBy(() -> runtimeService.startProcessInstanceByKey("JPAVariableProcessExceptions",
-                singletonMap("illegalTypeId", illegalIdTypeEntity)))
+            .isThrownBy(() ->
+                runtimeService.startProcessInstanceByKey(
+                    "JPAVariableProcessExceptions",
+                    singletonMap("illegalTypeId", illegalIdTypeEntity)
+                )
+            )
             .withMessageContaining("Unsupported Primary key type for JPA-Entity");
 
         // Start process instance with JPA-entity which has an ID but isn't
@@ -506,8 +567,10 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
         FieldAccessJPAEntity nonPersistentEntity = new FieldAccessJPAEntity();
         nonPersistentEntity.setId(9999L);
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("JPAVariableProcessExceptions",
-            singletonMap("nonPersistentEntity", nonPersistentEntity));
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "JPAVariableProcessExceptions",
+            singletonMap("nonPersistentEntity", nonPersistentEntity)
+        );
 
         assertThatExceptionOfType(ActivitiException.class)
             .isThrownBy(() -> runtimeService.getVariable(processInstance.getId(), "nonPersistentEntity"))
@@ -518,12 +581,16 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
     public void testQueryJPAVariable() {
         setupQueryJPAEntity();
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("JPAVariableProcess",
-            singletonMap("entityToQuery", entityToQuery));
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "JPAVariableProcess",
+            singletonMap("entityToQuery", entityToQuery)
+        );
 
         // Query the processInstance
-        ProcessInstance result = runtimeService.createProcessInstanceQuery().variableValueEquals("entityToQuery",
-            entityToQuery).singleResult();
+        ProcessInstance result = runtimeService
+            .createProcessInstanceQuery()
+            .variableValueEquals("entityToQuery", entityToQuery)
+            .singleResult();
         assertThat(result).isNotNull();
         assertThat(processInstance.getId()).isEqualTo(result.getId());
 
@@ -531,24 +598,51 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
         FieldAccessJPAEntity unexistingEntity = new FieldAccessJPAEntity();
         unexistingEntity.setId(8888L);
 
-        result = runtimeService.createProcessInstanceQuery().variableValueEquals("entityToQuery",
-            unexistingEntity).singleResult();
+        result = runtimeService
+            .createProcessInstanceQuery()
+            .variableValueEquals("entityToQuery", unexistingEntity)
+            .singleResult();
         assertThat(result).isNull();
 
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
-            .isThrownBy(() -> runtimeService.createProcessInstanceQuery().variableValueNotEquals("entityToQuery", entityToQuery).singleResult())
+            .isThrownBy(() ->
+                runtimeService
+                    .createProcessInstanceQuery()
+                    .variableValueNotEquals("entityToQuery", entityToQuery)
+                    .singleResult()
+            )
             .withMessageContaining("JPA entity variables can only be used in 'variableValueEquals'");
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
-            .isThrownBy(() -> runtimeService.createProcessInstanceQuery().variableValueGreaterThan("entityToQuery", entityToQuery).singleResult())
+            .isThrownBy(() ->
+                runtimeService
+                    .createProcessInstanceQuery()
+                    .variableValueGreaterThan("entityToQuery", entityToQuery)
+                    .singleResult()
+            )
             .withMessageContaining("JPA entity variables can only be used in 'variableValueEquals'");
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
-            .isThrownBy(() -> runtimeService.createProcessInstanceQuery().variableValueGreaterThanOrEqual("entityToQuery", entityToQuery).singleResult())
+            .isThrownBy(() ->
+                runtimeService
+                    .createProcessInstanceQuery()
+                    .variableValueGreaterThanOrEqual("entityToQuery", entityToQuery)
+                    .singleResult()
+            )
             .withMessageContaining("JPA entity variables can only be used in 'variableValueEquals'");
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
-            .isThrownBy(() -> runtimeService.createProcessInstanceQuery().variableValueLessThan("entityToQuery", entityToQuery).singleResult())
+            .isThrownBy(() ->
+                runtimeService
+                    .createProcessInstanceQuery()
+                    .variableValueLessThan("entityToQuery", entityToQuery)
+                    .singleResult()
+            )
             .withMessageContaining("JPA entity variables can only be used in 'variableValueEquals'");
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
-            .isThrownBy(() -> runtimeService.createProcessInstanceQuery().variableValueLessThanOrEqual("entityToQuery", entityToQuery).singleResult())
+            .isThrownBy(() ->
+                runtimeService
+                    .createProcessInstanceQuery()
+                    .variableValueLessThanOrEqual("entityToQuery", entityToQuery)
+                    .singleResult()
+            )
             .withMessageContaining("JPA entity variables can only be used in 'variableValueEquals'");
     }
 
@@ -561,10 +655,8 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("UpdateJPAValuesProcess", variables);
 
         // Servicetask in process 'UpdateJPAValuesProcess' should have set value on entityToUpdate.
-        Object updatedEntity = runtimeService.getVariable(processInstance.getId(),
-            "entityToUpdate");
+        Object updatedEntity = runtimeService.getVariable(processInstance.getId(), "entityToUpdate");
         assertThat(updatedEntity).isInstanceOf(FieldAccessJPAEntity.class);
         assertThat(((FieldAccessJPAEntity) updatedEntity).getValue()).isEqualTo("updatedValue");
     }
-
 }

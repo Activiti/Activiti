@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,13 +76,11 @@ public class ProcessInstanceBuilderImplTest {
     @Test
     public void create_shouldDelegateCreationToRuntimeService() {
         //given
-        ProcessInstance processInstance = mock(
-            ProcessInstance.class);
+        ProcessInstance processInstance = mock(ProcessInstance.class);
         given(runtimeService.createProcessInstance(processInstanceBuilder)).willReturn(processInstance);
         //when
         ProcessInstance createdProcess = processInstanceBuilder.create();
         //then
         assertThat(createdProcess).isEqualTo(processInstance);
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.Collection;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -28,51 +26,50 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public class DeleteTaskCmd implements Command<Void>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String taskId;
-  protected Collection<String> taskIds;
-  protected boolean cascade;
-  protected String deleteReason;
-  protected boolean cancel;
+    private static final long serialVersionUID = 1L;
+    protected String taskId;
+    protected Collection<String> taskIds;
+    protected boolean cascade;
+    protected String deleteReason;
+    protected boolean cancel;
 
-  public DeleteTaskCmd(String taskId, String deleteReason, boolean cascade) {
-    this(taskId, deleteReason, cascade, false);
-
-  }
-
-  public DeleteTaskCmd(String taskId, String deleteReason, boolean cascade, boolean cancel) {
-    this.taskId = taskId;
-    this.cascade = cascade;
-    this.deleteReason = deleteReason;
-    this.cancel = cancel;
-  }
-
-  public DeleteTaskCmd(Collection<String> taskIds, String deleteReason, boolean cascade) {
-      this(taskIds,deleteReason,cascade,false);
-  }
-
-  public DeleteTaskCmd(Collection<String> taskIds, String deleteReason, boolean cascade, boolean cancel) {
-    this.taskIds = taskIds;
-    this.cascade = cascade;
-    this.deleteReason = deleteReason;
-    this.cancel = cancel;
-  }
-
-  public Void execute(CommandContext commandContext) {
-    if (taskId != null) {
-      deleteTask(commandContext, taskId);
-    } else if (taskIds != null) {
-      for (String taskId : taskIds) {
-        deleteTask(commandContext, taskId);
-      }
-    } else {
-      throw new ActivitiIllegalArgumentException("taskId and taskIds are null");
+    public DeleteTaskCmd(String taskId, String deleteReason, boolean cascade) {
+        this(taskId, deleteReason, cascade, false);
     }
 
-    return null;
-  }
+    public DeleteTaskCmd(String taskId, String deleteReason, boolean cascade, boolean cancel) {
+        this.taskId = taskId;
+        this.cascade = cascade;
+        this.deleteReason = deleteReason;
+        this.cancel = cancel;
+    }
 
-  protected void deleteTask(CommandContext commandContext, String taskId) {
-    commandContext.getTaskEntityManager().deleteTask(taskId, deleteReason, cascade, cancel);
-  }
+    public DeleteTaskCmd(Collection<String> taskIds, String deleteReason, boolean cascade) {
+        this(taskIds, deleteReason, cascade, false);
+    }
+
+    public DeleteTaskCmd(Collection<String> taskIds, String deleteReason, boolean cascade, boolean cancel) {
+        this.taskIds = taskIds;
+        this.cascade = cascade;
+        this.deleteReason = deleteReason;
+        this.cancel = cancel;
+    }
+
+    public Void execute(CommandContext commandContext) {
+        if (taskId != null) {
+            deleteTask(commandContext, taskId);
+        } else if (taskIds != null) {
+            for (String taskId : taskIds) {
+                deleteTask(commandContext, taskId);
+            }
+        } else {
+            throw new ActivitiIllegalArgumentException("taskId and taskIds are null");
+        }
+
+        return null;
+    }
+
+    protected void deleteTask(CommandContext commandContext, String taskId) {
+        commandContext.getTaskEntityManager().deleteTask(taskId, deleteReason, cascade, cancel);
+    }
 }

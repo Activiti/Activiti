@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,34 +15,41 @@
  */
 package org.activiti.engine.impl;
 
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.repository.NativeDeploymentQuery;
-import org.activiti.engine.repository.Deployment;
-
 import java.util.List;
 import java.util.Map;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.NativeDeploymentQuery;
 
-public class NativeDeploymentQueryImpl extends AbstractNativeQuery<NativeDeploymentQuery, Deployment> implements NativeDeploymentQuery {
+public class NativeDeploymentQueryImpl
+    extends AbstractNativeQuery<NativeDeploymentQuery, Deployment>
+    implements NativeDeploymentQuery {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public NativeDeploymentQueryImpl(CommandContext commandContext) {
-    super(commandContext);
-  }
+    public NativeDeploymentQueryImpl(CommandContext commandContext) {
+        super(commandContext);
+    }
 
-  public NativeDeploymentQueryImpl(CommandExecutor commandExecutor) {
-    super(commandExecutor);
-  }
+    public NativeDeploymentQueryImpl(CommandExecutor commandExecutor) {
+        super(commandExecutor);
+    }
 
-  // results ////////////////////////////////////////////////////////////////
+    // results ////////////////////////////////////////////////////////////////
 
-  public List<Deployment> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return commandContext.getDeploymentEntityManager().findDeploymentsByNativeQuery(parameterMap, firstResult, maxResults);
-  }
+    public List<Deployment> executeList(
+        CommandContext commandContext,
+        Map<String, Object> parameterMap,
+        int firstResult,
+        int maxResults
+    ) {
+        return commandContext
+            .getDeploymentEntityManager()
+            .findDeploymentsByNativeQuery(parameterMap, firstResult, maxResults);
+    }
 
-  public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
-    return commandContext.getDeploymentEntityManager().findDeploymentCountByNativeQuery(parameterMap);
-  }
-
+    public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
+        return commandContext.getDeploymentEntityManager().findDeploymentCountByNativeQuery(parameterMap);
+    }
 }

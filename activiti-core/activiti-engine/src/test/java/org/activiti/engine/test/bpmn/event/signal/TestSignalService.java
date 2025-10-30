@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.test.bpmn.event.signal;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -21,16 +20,15 @@ import org.activiti.engine.delegate.JavaDelegate;
 
 public class TestSignalService implements JavaDelegate {
 
-  /**
-   * Dummy service that uses a mock to simulate a file system.
-   *
-   * Normally, a database (or file system) is checked, if a file is present or
-   * not.
-   */
-  public void execute(DelegateExecution execution) {
-    // save current state into the process variable
-    boolean exists = FileExistsMock.getInstance().fileExists();
-    execution.setVariable("fileexists", exists);
-  }
-
+    /**
+     * Dummy service that uses a mock to simulate a file system.
+     *
+     * Normally, a database (or file system) is checked, if a file is present or
+     * not.
+     */
+    public void execute(DelegateExecution execution) {
+        // save current state into the process variable
+        boolean exists = FileExistsMock.getInstance().fileExists();
+        execution.setVariable("fileexists", exists);
+    }
 }

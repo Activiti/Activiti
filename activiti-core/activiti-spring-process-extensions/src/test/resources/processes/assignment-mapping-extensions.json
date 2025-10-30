@@ -1,6 +1,6 @@
 {
-  "id":"processDefinitionIdExtension",
-  "name":"processDefinition.bpmn",
+  "id": "processDefinitionIdExtension",
+  "name": "processDefinition.bpmn",
   "extensions": {
     "processDefinitionId": {
       "properties": {},

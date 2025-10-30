@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.activiti.api.runtime.model.impl;
 
 import java.util.Objects;
-
 import org.activiti.api.model.shared.model.ApplicationElement;
 
 public class ApplicationElementImpl implements ApplicationElement {
@@ -41,8 +40,7 @@ public class ApplicationElementImpl implements ApplicationElement {
             return false;
         }
         ApplicationElementImpl that = (ApplicationElementImpl) o;
-        return Objects.equals(appVersion,
-                              that.appVersion);
+        return Objects.equals(appVersion, that.appVersion);
     }
 
     @Override
@@ -52,8 +50,6 @@ public class ApplicationElementImpl implements ApplicationElement {
 
     @Override
     public String toString() {
-        return "ApplicationElementImpl{" +
-                "appVersion='" + appVersion + '\'' +
-                '}';
+        return "ApplicationElementImpl{" + "appVersion='" + appVersion + '\'' + '}';
     }
 }

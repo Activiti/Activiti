@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.util;
 
 import jakarta.el.ELContext;
@@ -37,9 +36,7 @@ import java.util.Map;
  */
 public class RootPropertyResolver extends ELResolver {
 
-    private final Map<String, Object> map = Collections.synchronizedMap(
-        new HashMap<String, Object>()
-    );
+    private final Map<String, Object> map = Collections.synchronizedMap(new HashMap<String, Object>());
     private final boolean readOnly;
 
     /**
@@ -63,9 +60,7 @@ public class RootPropertyResolver extends ELResolver {
     }
 
     private boolean resolve(ELContext context, Object base, Object property) {
-        context.setPropertyResolved(
-            isResolvable(base) && property instanceof String
-        );
+        context.setPropertyResolved(isResolvable(base) && property instanceof String);
         return context.isPropertyResolved();
     }
 
@@ -75,10 +70,7 @@ public class RootPropertyResolver extends ELResolver {
     }
 
     @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(
-        ELContext context,
-        Object base
-    ) {
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
         return null;
     }
 
@@ -91,9 +83,7 @@ public class RootPropertyResolver extends ELResolver {
     public Object getValue(ELContext context, Object base, Object property) {
         if (resolve(context, base, property)) {
             if (!isProperty((String) property)) {
-                throw new PropertyNotFoundException(
-                    "Cannot find property " + property
-                );
+                throw new PropertyNotFoundException("Cannot find property " + property);
             }
             return getProperty((String) property);
         }
@@ -106,34 +96,20 @@ public class RootPropertyResolver extends ELResolver {
     }
 
     @Override
-    public void setValue(
-        ELContext context,
-        Object base,
-        Object property,
-        Object value
-    ) throws PropertyNotWritableException {
+    public void setValue(ELContext context, Object base, Object property, Object value)
+        throws PropertyNotWritableException {
         if (resolve(context, base, property)) {
             if (readOnly) {
-                throw new PropertyNotWritableException(
-                    "Resolver is read only!"
-                );
+                throw new PropertyNotWritableException("Resolver is read only!");
             }
             setProperty((String) property, value);
         }
     }
 
     @Override
-    public Object invoke(
-        ELContext context,
-        Object base,
-        Object method,
-        Class<?>[] paramTypes,
-        Object[] params
-    ) {
+    public Object invoke(ELContext context, Object base, Object method, Class<?>[] paramTypes, Object[] params) {
         if (resolve(context, base, method)) {
-            throw new NullPointerException(
-                "Cannot invoke method " + method + " on null"
-            );
+            throw new NullPointerException("Cannot invoke method " + method + " on null");
         }
         return null;
     }

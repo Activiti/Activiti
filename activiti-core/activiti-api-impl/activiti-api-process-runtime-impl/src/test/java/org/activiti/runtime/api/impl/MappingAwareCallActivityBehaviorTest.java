@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith({MockitoExtension.class})
+@ExtendWith({ MockitoExtension.class })
 public class MappingAwareCallActivityBehaviorTest {
 
     @InjectMocks
@@ -53,12 +53,12 @@ public class MappingAwareCallActivityBehaviorTest {
 
         HashMap<String, Object> initiatorVariables = new HashMap<>(providerVariables);
         initiatorVariables.put("var2", "default");
-        given(processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition, providerVariables))
-                .willReturn(initiatorVariables);
+        given(
+            processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition, providerVariables)
+        ).willReturn(initiatorVariables);
 
         //when
-        Map<String, Object> inboundVariables = behavior.calculateInboundVariables(execution,
-                                                                           processDefinition);
+        Map<String, Object> inboundVariables = behavior.calculateInboundVariables(execution, processDefinition);
         //then
         assertThat(inboundVariables).isEqualTo(initiatorVariables);
     }
@@ -66,5 +66,4 @@ public class MappingAwareCallActivityBehaviorTest {
     private DelegateExecution buildExecution() {
         return mock(DelegateExecution.class);
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.bpmn.model.BoundaryEvent;
@@ -32,29 +31,38 @@ import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
  */
 public class BoundaryTimerEventActivityBehavior extends BoundaryEventActivityBehavior {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected TimerEventDefinition timerEventDefinition;
+    protected TimerEventDefinition timerEventDefinition;
 
-  public BoundaryTimerEventActivityBehavior(TimerEventDefinition timerEventDefinition, boolean interrupting) {
-    super(interrupting);
-    this.timerEventDefinition = timerEventDefinition;
-  }
-
-  @Override
-  public void execute(DelegateExecution execution) {
-
-    ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    if (!(execution.getCurrentFlowElement() instanceof BoundaryEvent)) {
-      throw new ActivitiException("Programmatic error: " + this.getClass() + " should not be used for anything else than a boundary event");
+    public BoundaryTimerEventActivityBehavior(TimerEventDefinition timerEventDefinition, boolean interrupting) {
+        super(interrupting);
+        this.timerEventDefinition = timerEventDefinition;
     }
 
-    JobManager jobManager = Context.getCommandContext().getJobManager();
-    TimerJobEntity timerJob = jobManager.createTimerJob(timerEventDefinition, interrupting, executionEntity, TriggerTimerEventJobHandler.TYPE,
-        TimerEventHandler.createConfiguration(execution.getCurrentActivityId(), timerEventDefinition.getEndDate(), timerEventDefinition.getCalendarName()));
-    if (timerJob != null) {
-      jobManager.scheduleTimerJob(timerJob);
-    }
-  }
+    @Override
+    public void execute(DelegateExecution execution) {
+        ExecutionEntity executionEntity = (ExecutionEntity) execution;
+        if (!(execution.getCurrentFlowElement() instanceof BoundaryEvent)) {
+            throw new ActivitiException(
+                "Programmatic error: " + this.getClass() + " should not be used for anything else than a boundary event"
+            );
+        }
 
+        JobManager jobManager = Context.getCommandContext().getJobManager();
+        TimerJobEntity timerJob = jobManager.createTimerJob(
+            timerEventDefinition,
+            interrupting,
+            executionEntity,
+            TriggerTimerEventJobHandler.TYPE,
+            TimerEventHandler.createConfiguration(
+                execution.getCurrentActivityId(),
+                timerEventDefinition.getEndDate(),
+                timerEventDefinition.getCalendarName()
+            )
+        );
+        if (timerJob != null) {
+            jobManager.scheduleTimerJob(timerJob);
+        }
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,26 +19,25 @@ import java.util.Collection;
 import java.util.Map;
 
 public interface FlowElementsContainer {
+    FlowElement getFlowElement(String id);
 
-  FlowElement getFlowElement(String id);
+    Collection<FlowElement> getFlowElements();
 
-  Collection<FlowElement> getFlowElements();
+    Map<String, FlowElement> getFlowElementMap();
 
-  Map<String, FlowElement> getFlowElementMap();
+    void addFlowElement(FlowElement element);
 
-  void addFlowElement(FlowElement element);
+    void addFlowElementToMap(FlowElement element);
 
-  void addFlowElementToMap(FlowElement element);
+    void removeFlowElement(String elementId);
 
-  void removeFlowElement(String elementId);
+    void removeFlowElementFromMap(String elementId);
 
-  void removeFlowElementFromMap(String elementId);
+    Artifact getArtifact(String id);
 
-  Artifact getArtifact(String id);
+    Collection<Artifact> getArtifacts();
 
-  Collection<Artifact> getArtifacts();
+    void addArtifact(Artifact artifact);
 
-  void addArtifact(Artifact artifact);
-
-  void removeArtifact(String artifactId);
+    void removeArtifact(String artifactId);
 }

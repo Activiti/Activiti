@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.variable;
 
 /**
@@ -21,24 +20,24 @@ package org.activiti.engine.impl.variable;
  */
 public class LongStringType extends SerializableType {
 
-  private final int minLength;
+    private final int minLength;
 
-  public LongStringType(int minLength) {
-    this.minLength = minLength;
-  }
-
-  public String getTypeName() {
-    return "longString";
-  }
-
-  public boolean isAbleToStore(Object value) {
-    if (value == null) {
-      return false;
+    public LongStringType(int minLength) {
+        this.minLength = minLength;
     }
-    if (String.class.isAssignableFrom(value.getClass())) {
-      String stringValue = (String) value;
-      return stringValue.length() >= minLength;
+
+    public String getTypeName() {
+        return "longString";
     }
-    return false;
-  }
+
+    public boolean isAbleToStore(Object value) {
+        if (value == null) {
+            return false;
+        }
+        if (String.class.isAssignableFrom(value.getClass())) {
+            String stringValue = (String) value;
+            return stringValue.length() >= minLength;
+        }
+        return false;
+    }
 }
