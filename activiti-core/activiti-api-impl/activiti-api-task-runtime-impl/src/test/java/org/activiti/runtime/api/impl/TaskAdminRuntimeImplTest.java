@@ -15,6 +15,7 @@
  */
 package org.activiti.runtime.api.impl;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -69,8 +70,9 @@ class TaskAdminRuntimeImplTest {
 
         Page<Task> tasks = taskAdminRuntime.assignMultiple(assignTasksPayload);
 
+        verify(taskService).setAssignee(taskId, newAssignee);
         Assertions.assertThat(tasks.getContent()).hasSize(1);
-        Assertions.assertThat(tasks.getContent()).extracting(Task::getAssignee).containsExactly(newAssignee);
+        Assertions.assertThat(tasks.getContent()).extracting(Task::getId).containsExactly(taskId);
     }
 
     @Test
@@ -93,8 +95,10 @@ class TaskAdminRuntimeImplTest {
 
         Page<Task> tasks = taskAdminRuntime.assignMultiple(assignTasksPayload);
 
+        verify(taskService).setAssignee(taskId1, newAssignee);
+        verify(taskService).setAssignee(taskId2, newAssignee);
         Assertions.assertThat(tasks.getContent()).hasSize(2);
-        Assertions.assertThat(tasks.getContent()).extracting(Task::getAssignee).containsOnly(newAssignee);
+        Assertions.assertThat(tasks.getContent()).extracting(Task::getId).contains(taskId1, taskId2);
     }
 
     @Test
@@ -104,6 +108,6 @@ class TaskAdminRuntimeImplTest {
 
         Page<Task> tasks = taskAdminRuntime.assignMultiple(assignTasksPayload);
 
-        Assertions.assertThat(tasks.getContent()).hasSize(0);
+        Assertions.assertThat(tasks.getContent()).isEmpty();
     }
 }
