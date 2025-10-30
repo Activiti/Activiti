@@ -58,7 +58,7 @@ jobs:
         uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # 5.2.0
         with:
           java-version: 25
-          distribution: 'temurin'
+          distribution: "temurin"
 
       - name: Set preview version
         if: ${{ needs.pre-checks.outputs.preview == 'true' }}
