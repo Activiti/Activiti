@@ -1102,23 +1102,21 @@ public class ExtensionsVariablesMappingProviderTest {
     }
 
     @Test
-    void should_SetTheEphemeralVariablesFlag_when_mappingIsEphemeral() throws IOException {
+    void should_setMappingEphemeral_basedOn_mappingIsEphemeralOrNot() throws IOException {
         //given
         ProcessExtensionModel extensions = OBJECT_MAPPER.readValue(
             new File("src/test/resources/task-variable-mapping-extensions-with-ephemeral.json"),
             ProcessExtensionModel.class
         );
         Extension processExtensions = extensions.getExtensions("Process_taskVarMapping");
-        DelegateExecution execution = buildExecution(processExtensions, "simpleTask");
+        DelegateExecution executionEphemeralTask = buildExecution(processExtensions, "ephemeralTask");
+        DelegateExecution executionNonEphemeralTask= buildExecution(processExtensions, "nonEphemeralTaskOne");
+        DelegateExecution executionAnotherNonEphemeralTask= buildExecution(processExtensions, "nonEphemeralTaskTwo");
 
-        DelegateExecution executionNonEphemeralTask= buildExecution(processExtensions, "myTask");
-
-        //when
-        boolean isEphemeral = variablesMappingProvider.isMappingEphemeral(execution);
-        boolean isNonEphemeral = variablesMappingProvider.isMappingEphemeral(executionNonEphemeralTask);
 
         //then
-        assertThat(isEphemeral).isTrue();
-        assertThat(isNonEphemeral).isFalse();
+        assertThat(variablesMappingProvider.isMappingEphemeral(executionEphemeralTask)).isTrue();
+        assertThat(variablesMappingProvider.isMappingEphemeral(executionNonEphemeralTask)).isFalse();
+        assertThat(variablesMappingProvider.isMappingEphemeral(executionAnotherNonEphemeralTask)).isFalse();
     }
 }
