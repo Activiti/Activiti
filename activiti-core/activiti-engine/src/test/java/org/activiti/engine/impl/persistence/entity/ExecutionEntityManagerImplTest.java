@@ -512,5 +512,45 @@ public class ExecutionEntityManagerImplTest {
         Context.setCommandContext(null);
     }
 
+    @Test
+    public void shouldDispatchProcessCompletedEventWithServiceUserAsActorWhenCancelFlagIsFalse() {
+
+        ArgumentCaptor<ActivitiEvent> activitiEventCaptor = ArgumentCaptor.forClass(ActivitiEvent.class);
+
+        Context.setCommandContext(commandContext);
+        ExecutionEntity processInstanceEntity = new ExecutionEntityImpl();
+        processInstanceEntity.setId("validProcessInstanceId");
+        given(commandContext.getExecutionEntityManager()).willReturn(executionEntityManager);
+        given(commandContext.getEventDispatcher()).willReturn(eventDispatcher);
+        given(eventDispatcher.isEnabled()).willReturn(true);
+
+        var candidateRow = new IdentityLinkEntityImpl();
+        candidateRow.setType("candidate");
+        candidateRow.setUserId("candidateUserId");
+        candidateRow.setDetails("candidateUserId".getBytes());
+
+        given(identityLinkEntityManager.findIdentityLinksByProcessInstanceId(processInstanceEntity.getProcessInstanceId())).willReturn(List.of(
+            candidateRow
+        ));
+
+        given(executionEntityManager.findById("validProcessInstanceId")).willReturn(processInstanceEntity);
+        given(commandContext.getVariableInstanceEntityManager()).willReturn(mock(VariableInstanceEntityManager.class));
+        executionEntityManager.deleteProcessInstanceExecutionEntity(
+            "validProcessInstanceId",
+            "currentFlowElementId",
+            "deleteReason",
+            true,
+            false
+        );
+
+        verify(eventDispatcher, atLeastOnce()).dispatchEvent(activitiEventCaptor.capture());
+
+        ActivitiEventImpl dispatchedEvent = (ActivitiEventImpl) activitiEventCaptor.getValue();
+        assertThat(dispatchedEvent.getType().name()).isEqualTo("PROCESS_COMPLETED");
+        assertThat(dispatchedEvent.getActor()).isEqualTo("service_user");
+        assertThat(processInstanceEntity.isDeleted()).isTrue();
+        Context.setCommandContext(null);
+    }
+
 
 }

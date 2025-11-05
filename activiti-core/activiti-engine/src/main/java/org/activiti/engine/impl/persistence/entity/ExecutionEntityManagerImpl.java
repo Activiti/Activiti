@@ -599,12 +599,15 @@ public class ExecutionEntityManagerImpl
 
         IdentityLinkEntityManager identityLinkEntityManager = getIdentityLinkEntityManager();
 
-        var identityLinks = identityLinkEntityManager.findIdentityLinksByProcessInstanceId(processInstanceEntity.getProcessInstanceId());
+        String actor = "service_user";
+        if (getEventDispatcher().isEnabled() && !cancel) {
+            var identityLinks = identityLinkEntityManager.findIdentityLinksByProcessInstanceId(processInstanceEntity.getProcessInstanceId());
 
-        var actor = identityLinks.stream().filter(identityLink -> "actor".equalsIgnoreCase(identityLink.getType()))
-            .map(IdentityLink::getDetails)
-            .map(String::new)
-            .findFirst().orElse("service_user");
+            actor = identityLinks.stream().filter(identityLink -> "actor".equalsIgnoreCase(identityLink.getType()))
+                .map(IdentityLink::getDetails)
+                .map(String::new)
+                .findFirst().orElse("service_user");
+        }
 
         // Call activities
         for (ExecutionEntity subExecutionEntity : processInstanceEntity.getExecutions()) {
