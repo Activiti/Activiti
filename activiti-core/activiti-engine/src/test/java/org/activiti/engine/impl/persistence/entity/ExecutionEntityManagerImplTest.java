@@ -477,7 +477,6 @@ public class ExecutionEntityManagerImplTest {
         ExecutionEntity processInstanceEntity = new ExecutionEntityImpl();
         processInstanceEntity.setId("validProcessInstanceId");
         given(commandContext.getExecutionEntityManager()).willReturn(executionEntityManager);
-        given(commandContext.getEventDispatcher()).willReturn(eventDispatcher);
         given(eventDispatcher.isEnabled()).willReturn(true);
 
         var actorRow = new IdentityLinkEntityImpl();
@@ -521,7 +520,6 @@ public class ExecutionEntityManagerImplTest {
         ExecutionEntity processInstanceEntity = new ExecutionEntityImpl();
         processInstanceEntity.setId("validProcessInstanceId");
         given(commandContext.getExecutionEntityManager()).willReturn(executionEntityManager);
-        given(commandContext.getEventDispatcher()).willReturn(eventDispatcher);
         given(eventDispatcher.isEnabled()).willReturn(true);
 
         var candidateRow = new IdentityLinkEntityImpl();
