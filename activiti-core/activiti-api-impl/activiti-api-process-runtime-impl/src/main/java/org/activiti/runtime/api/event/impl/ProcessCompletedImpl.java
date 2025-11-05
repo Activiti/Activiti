@@ -24,9 +24,12 @@ public class ProcessCompletedImpl
     extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>
     implements ProcessCompletedEvent {
 
-    public ProcessCompletedImpl(ProcessInstance entity) {
+    private final String actor;
+
+    public ProcessCompletedImpl(ProcessInstance entity, String actor) {
         super(entity);
         setProcessInstanceId(entity.getId());
+        this.actor = actor;
     }
 
     @Override
@@ -37,5 +40,10 @@ public class ProcessCompletedImpl
     @Override
     public String toString() {
         return "ProcessCompletedEventImpl{" + super.toString() + '}';
+    }
+
+    @Override
+    public String getActor() {
+        return actor;
     }
 }

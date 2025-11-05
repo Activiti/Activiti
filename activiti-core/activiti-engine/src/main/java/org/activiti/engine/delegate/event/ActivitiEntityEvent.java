@@ -29,4 +29,8 @@ public interface ActivitiEntityEvent extends ActivitiEvent {
     default String getReason() {
         return null;
     }
+
+    default String getActor() {
+        return "service_user";
+    }
 }
