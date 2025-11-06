@@ -15,7 +15,6 @@
  */
 package org.activiti.runtime.api.event.impl;
 
-import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -67,7 +66,7 @@ class ToProcessCompletedConverterTest {
 
         Optional<ProcessCompletedEvent> result = converter.from(internalEvent);
 
-        assertThat(result.isPresent()).isTrue();
+        assertThat(result).isPresent();
         assertThat(result.get().getProcessInstanceId()).isEqualTo(processInstance.getId());
         assertThat(result.get().getActor()).isEqualTo("testActor");
     }
