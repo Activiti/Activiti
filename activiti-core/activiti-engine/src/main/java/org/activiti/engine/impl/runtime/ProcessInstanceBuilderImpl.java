@@ -38,6 +38,7 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
     protected Map<String, Object> variables;
     protected Map<String, Object> transientVariables;
     protected String linkedProcessInstanceId;
+    private String linkedProcessInstanceType;
 
     public ProcessInstanceBuilderImpl(RuntimeServiceImpl runtimeService) {
         this.runtimeService = runtimeService;
@@ -119,6 +120,12 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
         return  this;
     }
 
+    @Override
+    public ProcessInstanceBuilder linkedProcessInstanceType(String linkedProcessInstanceType) {
+        this.linkedProcessInstanceType = linkedProcessInstanceType;
+        return  this;
+    }
+
     public boolean hasProcessDefinitionIdOrKey() {
         return this.getProcessDefinitionId() != null || this.getProcessDefinitionKey() != null;
     }
@@ -153,6 +160,10 @@ public class ProcessInstanceBuilderImpl implements ProcessInstanceBuilder {
 
     public String getLinkedProcessInstanceId() {
         return linkedProcessInstanceId;
+    }
+
+    public String getLinkedProcessInstanceType() {
+        return linkedProcessInstanceType;
     }
 
     public String getTenantId() {

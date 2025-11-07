@@ -106,4 +106,6 @@ public interface ProcessInstance extends Execution {
     Integer getAppVersion();
 
     String getLinkedProcessInstanceId();
+
+    String getLinkedProcessInstanceType();
 }

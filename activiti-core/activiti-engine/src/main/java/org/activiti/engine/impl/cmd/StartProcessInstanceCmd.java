@@ -45,6 +45,7 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
     protected String processInstanceName;
     protected ProcessInstanceHelper processInstanceHelper;
     protected String linkedProcessInstanceId;
+    protected String linkedProcessInstanceType;
 
     public StartProcessInstanceCmd(
         String processDefinitionKey,
@@ -80,6 +81,7 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
         this.processInstanceName = processInstanceBuilder.getProcessInstanceName();
         this.transientVariables = processInstanceBuilder.getTransientVariables();
         this.linkedProcessInstanceId = processInstanceBuilder.getLinkedProcessInstanceId();
+        this.linkedProcessInstanceType = processInstanceBuilder.getLinkedProcessInstanceType();
   }
 
     public ProcessInstance execute(CommandContext commandContext) {
@@ -98,7 +100,8 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
             processInstanceName,
             variables,
             transientVariables,
-            linkedProcessInstanceId);
+            linkedProcessInstanceId,
+            linkedProcessInstanceType);
     }
 
     protected ProcessInstance createAndStartProcessInstance(
@@ -107,7 +110,8 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
         String processInstanceName,
         Map<String, Object> variables,
         Map<String, Object> transientVariables,
-        String linkedProcessInstanceId
+        String linkedProcessInstanceId,
+        String linkedProcessInstanceType
     ) {
         return processInstanceHelper.createAndStartProcessInstance(
             processDefinition,
@@ -115,7 +119,8 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
             processInstanceName,
             variables,
             transientVariables,
-            linkedProcessInstanceId
+            linkedProcessInstanceId,
+            linkedProcessInstanceType
         );
     }
 

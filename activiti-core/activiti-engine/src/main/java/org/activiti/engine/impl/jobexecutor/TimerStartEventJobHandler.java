@@ -78,6 +78,7 @@ public class TimerStartEventJobHandler extends TimerEventHandler implements JobH
                         new HashMap<>(),
                         null,
                         true,
+                        null,
                         null
                     );
                 } else {
