@@ -83,11 +83,16 @@ public interface ProcessInstanceBuilder {
     ProcessInstanceBuilder transientVariable(String variableName, Object value);
 
     /**
-     * Sets the root process Instance ID
+     * Sets the linked process Instance ID
     */
     ProcessInstanceBuilder linkedProcessInstanceId(String linkedProcessInstanceId);
 
-  /**
+    /**
+     * Sets the root process Instance type
+     */
+    ProcessInstanceBuilder linkedProcessInstanceType(String linkedProcessInstanceType);
+
+    /**
      * Start the process instance
      *
      * @throws ActivitiIllegalArgumentException

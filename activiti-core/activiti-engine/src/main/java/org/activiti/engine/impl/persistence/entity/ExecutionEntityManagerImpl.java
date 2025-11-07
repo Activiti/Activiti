@@ -244,7 +244,8 @@ public class ExecutionEntityManagerImpl
         String businessKey,
         String tenantId,
         String initiatorVariableName,
-        String linkedProcessInstanceId) {
+        String linkedProcessInstanceId,
+        String linkedProcessInstanceType) {
         ExecutionEntity processInstanceExecution = executionDataManager.create();
 
         if (isExecutionRelatedEntityCountEnabledGlobally()) {
@@ -268,6 +269,7 @@ public class ExecutionEntityManagerImpl
 
         processInstanceExecution.setStartUserId(authenticatedUserId);
         processInstanceExecution.setLinkedProcessInstanceId(linkedProcessInstanceId);
+        processInstanceExecution.setLinkedProcessInstanceType(linkedProcessInstanceType);
 
         // Store in database
         insert(processInstanceExecution, false);

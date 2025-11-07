@@ -195,6 +195,8 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
 
     protected String linkedProcessInstanceId;
 
+    protected String linkedProcessInstanceType;
+
     private Integer appVersion;
 
     public ExecutionEntityImpl() {}
@@ -247,7 +249,9 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
         persistentState.put("deadLetterJobCount", deadLetterJobCount);
         persistentState.put("variableCount", variableCount);
         persistentState.put("identityLinkCount", identityLinkCount);
-        persistentState.put("linkedProcessInstanceId", linkedProcessInstanceId);return persistentState;
+        persistentState.put("linkedProcessInstanceId", linkedProcessInstanceId);
+        persistentState.put("linkedProcessInstanceType", linkedProcessInstanceType);
+        return persistentState;
     }
 
     // The current flow element, will be filled during operation execution
@@ -502,17 +506,25 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
         this.rootProcessInstanceId = rootProcessInstanceId;
     }
 
-  @Override
-  public String getLinkedProcessInstanceId() {
-    return linkedProcessInstanceId;
-  }
+    @Override
+    public String getLinkedProcessInstanceId() {
+        return linkedProcessInstanceId;
+    }
 
- @Override
- public void setLinkedProcessInstanceId(String linkedProcessInstanceId) {
-    this.linkedProcessInstanceId = linkedProcessInstanceId;
- }
+     @Override
+     public void setLinkedProcessInstanceId(String linkedProcessInstanceId) {
+        this.linkedProcessInstanceId = linkedProcessInstanceId;
+     }
 
+    @Override
+    public String getLinkedProcessInstanceType() {
+        return linkedProcessInstanceType;
+    }
 
+    @Override
+    public void setLinkedProcessInstanceType(String linkedProcessInstanceType) {
+        this.linkedProcessInstanceType = linkedProcessInstanceType;
+    }
 
     @Override
     public boolean isRootExecution() {

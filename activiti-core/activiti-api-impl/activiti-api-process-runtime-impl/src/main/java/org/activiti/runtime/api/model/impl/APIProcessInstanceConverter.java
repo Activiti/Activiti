@@ -42,6 +42,7 @@ public class APIProcessInstanceConverter
         processInstance.setProcessDefinitionName(internalProcessInstance.getProcessDefinitionName());
         processInstance.setRootProcessInstanceId(internalProcessInstance.getRootProcessInstanceId());
         processInstance.setLinkedProcessInstanceId(internalProcessInstance.getLinkedProcessInstanceId());
+        processInstance.setLinkedProcessInstanceType(internalProcessInstance.getLinkedProcessInstanceType());
         return processInstance;
     }
 

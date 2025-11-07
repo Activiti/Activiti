@@ -27,6 +27,7 @@ public class StartProcessPayloadBuilder {
     private String businessKey;
     private Map<String, Object> variables = new HashMap<>();
     private String linkedProcessInstanceId;
+    private String linkedProcessInstanceType;
 
     public StartProcessPayloadBuilder withVariables(Map<String, Object> variables) {
         this.variables = variables;
@@ -66,9 +67,15 @@ public class StartProcessPayloadBuilder {
         return this;
     }
 
+    public StartProcessPayloadBuilder withLinkedProcessInstanceType(String linkedProcessInstanceType) {
+        this.linkedProcessInstanceType = linkedProcessInstanceType;
+        return this;
+    }
+
     public StartProcessPayload build() {
         StartProcessPayload startProcessPayload = new StartProcessPayload(processDefinitionId, processDefinitionKey, name, businessKey, variables);
         startProcessPayload.setLinkedProcessInstanceId(linkedProcessInstanceId);
+        startProcessPayload.setLinkedProcessInstanceType(linkedProcessInstanceType);
         return startProcessPayload;
     }
 }

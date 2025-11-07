@@ -398,6 +398,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             .businessKey(startProcessPayload.getBusinessKey())
             .variables(startProcessPayload.getVariables())
             .linkedProcessInstanceId(startProcessPayload.getLinkedProcessInstanceId())
+            .linkedProcessInstanceType(startProcessPayload.getLinkedProcessInstanceType())
             .name(startProcessPayload.getName());
     }
 

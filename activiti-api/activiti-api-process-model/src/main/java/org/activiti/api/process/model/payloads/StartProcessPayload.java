@@ -29,6 +29,7 @@ public class StartProcessPayload implements Payload {
     private String businessKey;
     private Map<String, Object> variables = new HashMap<>();
     private String linkedProcessInstanceId;
+    private String linkedProcessInstanceType;
 
     public StartProcessPayload() {
         this.id = UUID.randomUUID().toString();
@@ -84,5 +85,13 @@ public class StartProcessPayload implements Payload {
 
     public void setLinkedProcessInstanceId(String linkedProcessInstanceId) {
         this.linkedProcessInstanceId = linkedProcessInstanceId;
+    }
+
+    public String getLinkedProcessInstanceType() {
+        return linkedProcessInstanceType;
+    }
+
+    public void setLinkedProcessInstanceType(String linkedProcessInstanceType) {
+        this.linkedProcessInstanceType = linkedProcessInstanceType;
     }
 }

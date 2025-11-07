@@ -35,6 +35,7 @@ public class ProcessInstanceImpl extends ApplicationElementImpl implements Proce
     private String processDefinitionName;
     private String rootProcessInstanceId;
     private String linkedProcessInstanceId;
+    private String linkedProcessInstanceType;
 
     public ProcessInstanceImpl() {}
 
@@ -108,6 +109,11 @@ public class ProcessInstanceImpl extends ApplicationElementImpl implements Proce
         return linkedProcessInstanceId;
     }
 
+    @Override
+    public String getLinkedProcessInstanceType() {
+        return linkedProcessInstanceType;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -162,6 +168,10 @@ public class ProcessInstanceImpl extends ApplicationElementImpl implements Proce
 
     public void setLinkedProcessInstanceId(String linkedProcessInstanceId) {
         this.linkedProcessInstanceId = linkedProcessInstanceId;
+    }
+
+    public void setLinkedProcessInstanceType(String linkedProcessInstanceType) {
+        this.linkedProcessInstanceType = linkedProcessInstanceType;
     }
 
     @Override

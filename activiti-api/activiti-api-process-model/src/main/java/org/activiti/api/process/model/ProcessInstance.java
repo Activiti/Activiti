@@ -55,4 +55,6 @@ public interface ProcessInstance extends ApplicationElement {
 
     String getLinkedProcessInstanceId();
 
+    String getLinkedProcessInstanceType();
+
 }

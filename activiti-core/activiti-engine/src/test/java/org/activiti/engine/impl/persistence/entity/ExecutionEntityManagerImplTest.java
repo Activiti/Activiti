@@ -142,7 +142,8 @@ public class ExecutionEntityManagerImplTest {
             businessKey,
             tenantId,
             null,
-            "link-proc-instance-id");
+            "link-proc-instance-id",
+            "link-proc-instance-type");
 
         assertThat(processInstanceResult.getProcessDefinitionId()).isEqualTo("processDefinitionId");
         assertThat(processInstanceResult.getProcessDefinitionKey()).isEqualTo("processDefinitionKey");
@@ -155,6 +156,7 @@ public class ExecutionEntityManagerImplTest {
         assertThat(processInstanceResult.getProcessInstanceId()).isEqualTo("processInstanceId");
         assertThat(processInstanceResult.getRootProcessInstanceId()).isEqualTo("processInstanceId");
         assertThat(processInstanceResult.getLinkedProcessInstanceId()).isEqualTo("link-proc-instance-id");
+        assertThat(processInstanceResult.getLinkedProcessInstanceType()).isEqualTo("link-proc-instance-type");
         verify(executionDataManager).insert(processInstanceResult);
         verify(eventDispatcher).isEnabled();
     }
@@ -334,6 +336,7 @@ public class ExecutionEntityManagerImplTest {
             processDefinition,
             businessKey,
             tenantId,
+            null,
             null,
             null);
         assertThat(processInstanceResult.getStartTime()).isNull();
