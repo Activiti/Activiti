@@ -61,6 +61,8 @@ public class ExecutionEntityManagerImpl
     implements ExecutionEntityManager {
 
     private static final Logger logger = LoggerFactory.getLogger(ExecutionEntityManagerImpl.class);
+    public static final String ACTOR = "actor";
+    public static final String SERVICE_USER = "service_user";
 
     protected ExecutionDataManager executionDataManager;
 
@@ -599,14 +601,14 @@ public class ExecutionEntityManagerImpl
 
         IdentityLinkEntityManager identityLinkEntityManager = getIdentityLinkEntityManager();
 
-        String actor = "service_user";
+        String actor = SERVICE_USER;
         if (getEventDispatcher().isEnabled() && !cancel) {
             var identityLinks = identityLinkEntityManager.findIdentityLinksByProcessInstanceId(processInstanceEntity.getProcessInstanceId());
 
-            actor = identityLinks.stream().filter(identityLink -> "actor".equalsIgnoreCase(identityLink.getType()))
+            actor = identityLinks.stream().filter(identityLink -> ACTOR.equalsIgnoreCase(identityLink.getType()))
                 .map(IdentityLink::getDetails)
                 .map(String::new)
-                .findFirst().orElse("service_user");
+                .findFirst().orElse(SERVICE_USER);
         }
 
         // Call activities

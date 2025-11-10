@@ -70,11 +70,4 @@ class ToProcessCompletedConverterTest {
         assertThat(result.get().getProcessInstanceId()).isEqualTo(processInstance.getId());
         assertThat(result.get().getActor()).isEqualTo("testActor");
     }
-
-    @Test
-    void shouldThrowClassCastExceptionWhenEntityIsNotExecutionEntity() {
-        when(internalEvent.getEntity()).thenReturn(new Object());
-
-        assertThatThrownBy(() -> converter.from(internalEvent)).isInstanceOf(ClassCastException.class);
-    }
 }

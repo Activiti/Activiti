@@ -537,7 +537,7 @@ public class ActivitiEventBuilder {
                 event.setExecutionId(delegateExecution.getId());
                 event.setProcessInstanceId(delegateExecution.getProcessInstanceId());
                 event.setProcessDefinitionId(delegateExecution.getProcessDefinitionId());
-                if (event.getType().equals(ActivitiEventType.PROCESS_COMPLETED) && actor != null) {
+                if (actor != null) {
                     event.setActor(actor);
                 }
             } else if (persistedObject instanceof IdentityLinkEntity idLink) {
@@ -601,8 +601,6 @@ public class ActivitiEventBuilder {
     public static ActivitiEvent createEntityEventWithActor(ActivitiEventType type, ExecutionEntity entity, String actor) {
         ActivitiEntityEventImpl newEvent = new ActivitiEntityEventImpl(entity, type);
 
-        // In case an execution-context is active, populate the event fields
-        // related to the execution
         populateEventWithCurrentContextAndActor(newEvent, actor);
         return newEvent;
     }

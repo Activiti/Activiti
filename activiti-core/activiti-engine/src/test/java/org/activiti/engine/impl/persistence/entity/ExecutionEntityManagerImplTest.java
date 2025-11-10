@@ -479,14 +479,8 @@ public class ExecutionEntityManagerImplTest {
         given(commandContext.getExecutionEntityManager()).willReturn(executionEntityManager);
         given(eventDispatcher.isEnabled()).willReturn(true);
 
-        var actorRow = new IdentityLinkEntityImpl();
-        actorRow.setType("actor");
-        actorRow.setUserId("userId");
-        actorRow.setDetails("userId".getBytes());
-        var candidateRow = new IdentityLinkEntityImpl();
-        candidateRow.setType("candidate");
-        candidateRow.setUserId("candidateUserId");
-        candidateRow.setDetails("candidateUserId".getBytes());
+        var actorRow = buildIdentityLink("actor", "userId");
+        var candidateRow = buildCandidateIdentityLink();
 
         given(identityLinkEntityManager.findIdentityLinksByProcessInstanceId(processInstanceEntity.getProcessInstanceId())).willReturn(List.of(
             actorRow, candidateRow
@@ -511,6 +505,18 @@ public class ExecutionEntityManagerImplTest {
         Context.setCommandContext(null);
     }
 
+    private IdentityLinkEntityImpl buildIdentityLink(String actor, String userId) {
+        var identityLinkRow = new IdentityLinkEntityImpl();
+        identityLinkRow.setType(actor);
+        identityLinkRow.setUserId(userId);
+        identityLinkRow.setDetails(userId.getBytes());
+        return identityLinkRow;
+    }
+
+    private IdentityLinkEntityImpl buildCandidateIdentityLink() {
+        return buildIdentityLink("candidate", "candidateUserId");
+    }
+
     @Test
     public void shouldDispatchProcessCompletedEventWithServiceUserAsActorWhenCancelFlagIsFalse() {
 
@@ -522,10 +528,7 @@ public class ExecutionEntityManagerImplTest {
         given(commandContext.getExecutionEntityManager()).willReturn(executionEntityManager);
         given(eventDispatcher.isEnabled()).willReturn(true);
 
-        var candidateRow = new IdentityLinkEntityImpl();
-        candidateRow.setType("candidate");
-        candidateRow.setUserId("candidateUserId");
-        candidateRow.setDetails("candidateUserId".getBytes());
+        var candidateRow = buildCandidateIdentityLink();
 
         given(identityLinkEntityManager.findIdentityLinksByProcessInstanceId(processInstanceEntity.getProcessInstanceId())).willReturn(List.of(
             candidateRow

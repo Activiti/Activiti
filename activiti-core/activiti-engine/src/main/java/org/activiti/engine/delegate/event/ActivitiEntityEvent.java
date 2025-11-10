@@ -15,12 +15,15 @@
  */
 package org.activiti.engine.delegate.event;
 
+import static org.activiti.engine.impl.persistence.entity.ExecutionEntityManagerImpl.SERVICE_USER;
+
 /**
  * An {@link ActivitiEvent} related to a single entity.
  *
 
  */
 public interface ActivitiEntityEvent extends ActivitiEvent {
+
     /**
      * @return the entity that is targeted by this event.
      */
@@ -31,6 +34,6 @@ public interface ActivitiEntityEvent extends ActivitiEvent {
     }
 
     default String getActor() {
-        return "service_user";
+        return SERVICE_USER;
     }
 }
