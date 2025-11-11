@@ -23,7 +23,7 @@ public class ProcessVariablesMapping {
     private MappingType mappingType;
     private Map<String, Mapping> inputs = new HashMap<>();
     private Map<String, Mapping> outputs = new HashMap<>();
-    private boolean isEphemeral;
+    private boolean ephemeral;
 
     public Map<String, Mapping> getInputs() {
         return inputs;
@@ -60,10 +60,10 @@ public class ProcessVariablesMapping {
     }
 
     public boolean isEphemeral() {
-        return isEphemeral;
+        return this.ephemeral;
     }
 
     public void setEphemeral(boolean ephemeral) {
-        isEphemeral = ephemeral;
+        this.ephemeral = ephemeral;
     }
 }

@@ -68,6 +68,15 @@ public class IntegrationContextBuilderTest {
     @Mock
     private Expression expression;
 
+    @Mock
+    private ExecutionEntity execution;
+
+    @Mock
+    private ExecutionEntity processInstance;
+
+    @Mock
+    private ServiceTask serviceTask;
+
     @BeforeEach
     public void setUp() {
         ProcessEngineConfigurationImpl processEngineConfiguration = mock(ProcessEngineConfigurationImpl.class);
@@ -86,10 +95,6 @@ public class IntegrationContextBuilderTest {
     @Test
     public void shouldBuildIntegrationContextFromExecution() {
         //given
-        ExecutionEntity execution = mock(ExecutionEntity.class);
-        ExecutionEntity processInstance = mock(ExecutionEntity.class);
-        ServiceTask serviceTask = mock(ServiceTask.class);
-
         Map<String, Object> variables = singletonMap("key", "value");
         given(inboundVariablesProvider.calculateInputVariables(execution)).willReturn(variables);
         given(expression.getValue(execution)).willReturn(SERVICE_TASK_NAME);
@@ -130,10 +135,6 @@ public class IntegrationContextBuilderTest {
     @Test
     public void shouldSetIdWhenIntegrationContextEntityIsProvided() {
         //given
-        ExecutionEntity execution = mock(ExecutionEntity.class);
-        ExecutionEntity processInstance = mock(ExecutionEntity.class);
-        ServiceTask serviceTask = mock(ServiceTask.class);
-
         Map<String, Object> variables = singletonMap("key", "value");
         given(inboundVariablesProvider.calculateInputVariables(execution)).willReturn(variables);
         given(expression.getValue(execution)).willReturn(SERVICE_TASK_NAME);
@@ -175,7 +176,7 @@ public class IntegrationContextBuilderTest {
 
     @Test
      void should_setEphemeral_when_mappingIsEphemeral() {
-        ExecutionEntity execution = mock(ExecutionEntity.class);
+        //given
         given(execution.getProcessDefinitionId()).willReturn(PROCESS_DEFINITION_ID);
         given(inboundVariablesProvider.isMappingEphemeral(any())).willReturn(true);
 

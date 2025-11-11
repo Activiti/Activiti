@@ -117,11 +117,14 @@ public class ExtensionsVariablesMappingProvider implements VariablesCalculator {
     }
 
     public boolean isMappingEphemeral(DelegateExecution execution) {
-        Extension extension = processExtensionService.getExtensionsForId(execution.getProcessDefinitionId());
-        return extension!=null &&
-            extension.getMappings() != null
-            && extension.getMappings().get(execution.getCurrentActivityId()) != null
-            && extension.getMappings().get(execution.getCurrentActivityId()).isEphemeral();
+        String processDefinitionId = execution.getProcessDefinitionId();
+        String activityId = execution.getCurrentActivityId();
+
+        return Optional.ofNullable(processExtensionService.getExtensionsForId(processDefinitionId))
+            .map(Extension::getMappings)
+            .map(mappings -> mappings.get(activityId))
+            .map(ProcessVariablesMapping::isEphemeral)
+            .orElse(false);
     }
 
     private Map<String, Object> calculateConstants(DelegateExecution execution, Extension extensions) {
