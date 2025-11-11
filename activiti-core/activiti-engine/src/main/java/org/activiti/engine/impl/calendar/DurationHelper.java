@@ -77,13 +77,13 @@ public class DurationHelper {
         if (expression.size() > 3 || expression.isEmpty()) {
             throw new ActivitiIllegalArgumentException("Cannot parse duration");
         }
-        if (expression.get(0).startsWith("R")) {
+        if (expression.getFirst().startsWith("R")) {
             isRepeat = true;
-            times = expression.get(0).length() == 1
+            times = expression.getFirst().length() == 1
                 ? Integer.MAX_VALUE - 1
-                : Integer.parseInt(expression.get(0).substring(1));
+                : Integer.parseInt(expression.getFirst().substring(1));
 
-            if (expression.get(0).equals("R")) {
+            if (expression.getFirst().equals("R")) {
                 // R without params
                 repeatWithNoBounds = true;
             }
@@ -91,11 +91,11 @@ public class DurationHelper {
             expression = expression.subList(1, expression.size());
         }
 
-        if (isDuration(expression.get(0))) {
-            period = parsePeriod(expression.get(0));
+        if (isDuration(expression.getFirst())) {
+            period = parsePeriod(expression.getFirst());
             end = expression.size() == 1 ? null : parseDate(expression.get(1));
         } else {
-            start = parseDate(expression.get(0));
+            start = parseDate(expression.getFirst());
             if (isDuration(expression.get(1))) {
                 period = parsePeriod(expression.get(1));
             } else {

@@ -103,7 +103,7 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
         BpmnModel bpmnModel = repositoryService.getBpmnModel(
             repositoryService.createProcessDefinitionQuery().singleResult().getId()
         );
-        Process process = bpmnModel.getProcesses().get(0);
+        Process process = bpmnModel.getProcesses().getFirst();
         assertThat(process).isNotNull();
 
         SequenceFlow sequenceFlow = (SequenceFlow) process.getFlowElement("SequenceFlow_3");

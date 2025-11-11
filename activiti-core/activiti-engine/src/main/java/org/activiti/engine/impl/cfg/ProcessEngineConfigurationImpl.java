@@ -1013,7 +1013,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         for (int i = 0; i < chain.size() - 1; i++) {
             chain.get(i).setNext(chain.get(i + 1));
         }
-        return chain.get(0);
+        return chain.getFirst();
     }
 
     public abstract CommandInterceptor createTransactionInterceptor();

@@ -73,14 +73,14 @@ public class ProcessDefinitionQueryByLatestTest extends PluggableActivitiTestCas
                 .createProcessDefinitionQuery()
                 .deploymentId(deploymentId)
                 .list()
-                .get(0)
+                .getFirst()
                 .getId();
             processDefinitionIdList.add(processDefinitionId);
         }
 
         ProcessDefinitionQuery idQuery1 = repositoryService
             .createProcessDefinitionQuery()
-            .processDefinitionId(processDefinitionIdList.get(0))
+            .processDefinitionId(processDefinitionIdList.getFirst())
             .latestVersion();
         List<ProcessDefinition> processDefinitions = idQuery1.list();
         assertThat(processDefinitions).hasSize(0);
@@ -91,7 +91,7 @@ public class ProcessDefinitionQueryByLatestTest extends PluggableActivitiTestCas
             .latestVersion();
         processDefinitions = idQuery2.list();
         assertThat(processDefinitions).hasSize(1);
-        assertThat(processDefinitions.get(0).getKey()).isEqualTo("testProcess1");
+        assertThat(processDefinitions.getFirst().getKey()).isEqualTo("testProcess1");
 
         ProcessDefinitionQuery idQuery3 = repositoryService
             .createProcessDefinitionQuery()
@@ -99,7 +99,7 @@ public class ProcessDefinitionQueryByLatestTest extends PluggableActivitiTestCas
             .latestVersion();
         processDefinitions = idQuery3.list();
         assertThat(processDefinitions).hasSize(1);
-        assertThat(processDefinitions.get(0).getKey()).isEqualTo("testProcess2");
+        assertThat(processDefinitions.getFirst().getKey()).isEqualTo("testProcess2");
 
         // Undeploy
         unDeploy(deploymentIdList);
@@ -121,8 +121,8 @@ public class ProcessDefinitionQueryByLatestTest extends PluggableActivitiTestCas
             .latestVersion();
         List<ProcessDefinition> processDefinitions = nameQuery.list();
         assertThat(processDefinitions).hasSize(1);
-        assertThat(processDefinitions.get(0).getVersion()).isEqualTo(1);
-        assertThat(processDefinitions.get(0).getKey()).isEqualTo("testProcess2");
+        assertThat(processDefinitions.getFirst().getVersion()).isEqualTo(1);
+        assertThat(processDefinitions.getFirst().getKey()).isEqualTo("testProcess2");
 
         // nameLike
         ProcessDefinitionQuery nameLikeQuery = repositoryService
@@ -131,8 +131,8 @@ public class ProcessDefinitionQueryByLatestTest extends PluggableActivitiTestCas
             .latestVersion();
         processDefinitions = nameLikeQuery.list();
         assertThat(processDefinitions).hasSize(1);
-        assertThat(processDefinitions.get(0).getVersion()).isEqualTo(1);
-        assertThat(processDefinitions.get(0).getKey()).isEqualTo("testProcess2");
+        assertThat(processDefinitions.getFirst().getVersion()).isEqualTo(1);
+        assertThat(processDefinitions.getFirst().getKey()).isEqualTo("testProcess2");
 
         // Undeploy
         unDeploy(deploymentIdList);
@@ -154,7 +154,7 @@ public class ProcessDefinitionQueryByLatestTest extends PluggableActivitiTestCas
             .latestVersion();
         List<ProcessDefinition> processDefinitions = nameQuery.list();
         assertThat(processDefinitions).hasSize(1);
-        assertThat(processDefinitions.get(0).getKey()).isEqualTo("testProcess2");
+        assertThat(processDefinitions.getFirst().getKey()).isEqualTo("testProcess2");
 
         // Undeploy
         unDeploy(deploymentIdList);
@@ -172,7 +172,7 @@ public class ProcessDefinitionQueryByLatestTest extends PluggableActivitiTestCas
         // deploymentId
         ProcessDefinitionQuery deploymentQuery1 = repositoryService
             .createProcessDefinitionQuery()
-            .deploymentId(deploymentIdList.get(0))
+            .deploymentId(deploymentIdList.getFirst())
             .latestVersion();
         List<ProcessDefinition> processDefinitions = deploymentQuery1.list();
         assertThat(processDefinitions).hasSize(0);
@@ -183,7 +183,7 @@ public class ProcessDefinitionQueryByLatestTest extends PluggableActivitiTestCas
             .latestVersion();
         processDefinitions = deploymentQuery2.list();
         assertThat(processDefinitions).hasSize(1);
-        assertThat(processDefinitions.get(0).getKey()).isEqualTo("testProcess1");
+        assertThat(processDefinitions.getFirst().getKey()).isEqualTo("testProcess1");
 
         // Undeploy
         unDeploy(deploymentIdList);

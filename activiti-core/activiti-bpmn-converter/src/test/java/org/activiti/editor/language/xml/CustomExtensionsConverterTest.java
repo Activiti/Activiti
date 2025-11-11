@@ -59,7 +59,7 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
         List<ExtensionAttribute> attributes = process.getAttributes().get("version");
         assertThat(attributes).isNotNull();
         assertThat(attributes).hasSize(1);
-        ExtensionAttribute attribute = attributes.get(0);
+        ExtensionAttribute attribute = attributes.getFirst();
         // custom:version = "9"
         assertThat(attribute).isNotNull();
         assertThat(attribute.getNamespace()).isEqualTo("http://custom.org/bpmn");
@@ -82,7 +82,7 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
 
         List<FieldExtension> fields = serviceTask.getFieldExtensions();
         assertThat(fields).hasSize(2);
-        FieldExtension field = (FieldExtension) fields.get(0);
+        FieldExtension field = (FieldExtension) fields.getFirst();
         assertThat(field.getFieldName()).isEqualTo("testField");
         assertThat(field.getStringValue()).isEqualTo("test");
         field = (FieldExtension) fields.get(1);
@@ -96,17 +96,17 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
         validateExtensionElements(extensionElementMap);
 
         assertThat(serviceTask.getBoundaryEvents()).hasSize(1);
-        BoundaryEvent boundaryEvent = serviceTask.getBoundaryEvents().get(0);
+        BoundaryEvent boundaryEvent = serviceTask.getBoundaryEvents().getFirst();
         assertThat(boundaryEvent.getId()).isEqualTo("timerEvent");
         assertThat(boundaryEvent.getEventDefinitions()).hasSize(1);
-        assertThat(boundaryEvent.getEventDefinitions().get(0)).isInstanceOf(TimerEventDefinition.class);
-        extensionElementMap = boundaryEvent.getEventDefinitions().get(0).getExtensionElements();
+        assertThat(boundaryEvent.getEventDefinitions().getFirst()).isInstanceOf(TimerEventDefinition.class);
+        extensionElementMap = boundaryEvent.getEventDefinitions().getFirst().getExtensionElements();
         validateExtensionElements(extensionElementMap);
     }
 
     protected void validateExecutionListeners(List<ActivitiListener> listeners) {
         assertThat(listeners).hasSize(3);
-        ActivitiListener listener = (ActivitiListener) listeners.get(0);
+        ActivitiListener listener = (ActivitiListener) listeners.getFirst();
         assertThat(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())).isTrue();
         assertThat(listener.getImplementation()).isEqualTo("org.test.TestClass");
         assertThat(listener.getEvent()).isEqualTo("start");
@@ -134,7 +134,7 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
         List<ExtensionElement> extensionElements = extensionElementMap.get("test");
         assertThat(extensionElements).hasSize(2);
 
-        ExtensionElement extensionElement = extensionElements.get(0);
+        ExtensionElement extensionElement = extensionElements.getFirst();
         assertThat(extensionElement).isNotNull();
         assertThat(extensionElement.getName()).isEqualTo("test");
         assertThat(extensionElement.getNamespacePrefix()).isEqualTo("custom");
@@ -143,7 +143,7 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
 
         List<ExtensionAttribute> attributes = extensionElement.getAttributes().get("id");
         assertThat(attributes).hasSize(1);
-        ExtensionAttribute attribute = attributes.get(0);
+        ExtensionAttribute attribute = attributes.getFirst();
         assertThat(attribute).isNotNull();
         assertThat(attribute.getName()).isEqualTo("id");
         assertThat(attribute.getValue()).isEqualTo("test");
@@ -152,7 +152,7 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
 
         attributes = extensionElement.getAttributes().get("name");
         assertThat(attributes).hasSize(1);
-        attribute = attributes.get(0);
+        attribute = attributes.getFirst();
         assertThat(attribute).isNotNull();
         assertThat(attribute.getName()).isEqualTo("name");
         assertThat(attribute.getValue()).isEqualTo("test");
@@ -161,7 +161,7 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
         List<ExtensionElement> childExtensions = extensionElement.getChildElements().get("name");
         assertThat(childExtensions).hasSize(2);
 
-        ExtensionElement childExtension = childExtensions.get(0);
+        ExtensionElement childExtension = childExtensions.getFirst();
         assertThat(childExtension).isNotNull();
         assertThat(childExtension.getName()).isEqualTo("name");
         assertThat(childExtension.getNamespacePrefix()).isEqualTo("custom");
@@ -172,7 +172,7 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
         List<ExtensionElement> subChildExtensions = childExtension.getChildElements().get("test");
         assertThat(subChildExtensions).hasSize(1);
 
-        childExtension = subChildExtensions.get(0);
+        childExtension = subChildExtensions.getFirst();
         assertThat(childExtension).isNotNull();
         assertThat(childExtension.getName()).isEqualTo("test");
         assertThat(childExtension.getNamespacePrefix()).isEqualTo("custom");
@@ -183,12 +183,12 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
 
         childExtensions = extensionElement.getChildElements().get("description");
         assertThat(childExtensions).hasSize(1);
-        childExtension = childExtensions.get(0);
+        childExtension = childExtensions.getFirst();
         assertThat(childExtension).isNotNull();
         assertThat(childExtension.getName()).isEqualTo("description");
         assertThat(childExtension.getAttributes()).hasSize(1);
         attributes = childExtension.getAttributes().get("id");
-        attribute = attributes.get(0);
+        attribute = attributes.getFirst();
         assertThat(attribute).isNotNull();
         assertThat(attribute.getName()).isEqualTo("id");
         assertThat(attribute.getValue()).isEqualTo("test");
@@ -204,7 +204,7 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
 
         attributes = extensionElement.getAttributes().get("id");
         assertThat(attributes).hasSize(1);
-        attribute = attributes.get(0);
+        attribute = attributes.getFirst();
         assertThat(attribute).isNotNull();
         assertThat(attribute.getName()).isEqualTo("id");
         assertThat(attribute.getValue()).isEqualTo("test2");
@@ -213,7 +213,7 @@ public class CustomExtensionsConverterTest extends AbstractConverterTest {
 
         attributes = extensionElement.getAttributes().get("name");
         assertThat(attributes).hasSize(1);
-        attribute = attributes.get(0);
+        attribute = attributes.getFirst();
         assertThat(attribute).isNotNull();
         assertThat(attribute.getName()).isEqualTo("name");
         assertThat(attribute.getValue()).isEqualTo("test2");

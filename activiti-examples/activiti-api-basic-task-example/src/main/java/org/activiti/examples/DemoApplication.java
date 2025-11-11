@@ -83,7 +83,7 @@ public class DemoApplication implements CommandLineRunner {
         // 'john' can see and claim the task
         logger.info(">  john can see the task: " + tasks.getTotalItems());
 
-        String availableTaskId = tasks.getContent().get(0).getId();
+        String availableTaskId = tasks.getContent().getFirst().getId();
 
         // Let's claim the task, after the claim, nobody else can see the task and 'john' becomes the assignee
         logger.info("> Claiming the task");

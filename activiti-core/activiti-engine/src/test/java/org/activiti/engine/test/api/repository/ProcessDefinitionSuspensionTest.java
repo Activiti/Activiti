@@ -100,7 +100,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
         assertThat(processDefinitionList).hasSize(2);
         assertThat(repositoryService.createProcessDefinitionQuery().active().count()).isEqualTo(2);
 
-        ProcessDefinition processDefinition = processDefinitionList.get(0);
+        ProcessDefinition processDefinition = processDefinitionList.getFirst();
         repositoryService.suspendProcessDefinitionById(processDefinition.getId());
 
         assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(2);
@@ -119,7 +119,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
 
         assertThat(repositoryService.createProcessDefinitionQuery().active().count()).isEqualTo(2);
 
-        ProcessDefinition processDefinition = processDefinitionList.get(0);
+        ProcessDefinition processDefinition = processDefinitionList.getFirst();
         repositoryService.suspendProcessDefinitionById(processDefinition.getId());
 
         assertThat(repositoryService.createProcessDefinitionQuery().count()).isEqualTo(2);

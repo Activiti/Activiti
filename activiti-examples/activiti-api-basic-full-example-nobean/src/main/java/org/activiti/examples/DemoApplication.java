@@ -121,7 +121,7 @@ public class DemoApplication implements CommandLineRunner {
                 List<VariableInstance> variables = taskRuntime.variables(
                     TaskPayloadBuilder.variables().withTaskId(t.getId()).build()
                 );
-                VariableInstance variableInstance = variables.get(0);
+                VariableInstance variableInstance = variables.getFirst();
                 if (variableInstance.getName().equals("content")) {
                     LinkedHashMap contentToProcess = objectMapper.convertValue(
                         variableInstance.getValue(),

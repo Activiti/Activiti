@@ -54,7 +54,7 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
 
-        Task task = tasks.get(0);
+        Task task = tasks.getFirst();
         assertThat(task.getName()).isEqualTo("Task A");
 
         // Test Boundary Events
@@ -66,7 +66,7 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
 
         // change the job in old mode (the configuration should not be json in
         // "old mode" but a simple string).
-        TimerJobEntity job = (TimerJobEntity) jobs.get(0);
+        TimerJobEntity job = (TimerJobEntity) jobs.getFirst();
         changeConfigurationToPlainText(job);
 
         // boundary events
@@ -97,7 +97,7 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
         }
 
         tasks = taskService.createTaskQuery().list();
-        task = tasks.get(0);
+        task = tasks.getFirst();
         assertThat(task.getName()).isEqualTo("Task B");
         assertThat(tasks).hasSize(1);
         taskService.complete(task.getId());

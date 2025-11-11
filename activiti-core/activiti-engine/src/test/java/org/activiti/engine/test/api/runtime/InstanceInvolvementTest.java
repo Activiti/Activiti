@@ -54,12 +54,12 @@ public class InstanceInvolvementTest extends PluggableActivitiTestCase {
 
         // "user2" should be involved with the new process instance after
         // claiming a task
-        taskService.claim(tasks.get(0).getId(), "user2");
+        taskService.claim(tasks.getFirst().getId(), "user2");
         assertInvolvement("user2", instanceId);
 
         // "user2" should still be involved with the new process instance even
         // after completing his task
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         assertInvolvement("user2", instanceId);
 
         // "user3" should be involved after completing a task even without

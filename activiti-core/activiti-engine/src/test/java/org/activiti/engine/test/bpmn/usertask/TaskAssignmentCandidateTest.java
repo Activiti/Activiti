@@ -34,12 +34,12 @@ public class TaskAssignmentCandidateTest extends PluggableActivitiTestCase {
         runtimeService.startProcessInstanceByKey("taskCandidateExample");
         List<Task> tasks = taskService.createTaskQuery().taskCandidateGroup("management").list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getTaskDefinitionKey()).isEqualTo("theTask");
-        taskService.complete(tasks.get(0).getId());
+        assertThat(tasks.getFirst().getTaskDefinitionKey()).isEqualTo("theTask");
+        taskService.complete(tasks.getFirst().getId());
 
         tasks = taskService.createTaskQuery().taskCandidateGroup("accounting").list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getTaskDefinitionKey()).isEqualTo("theOtherTask");
-        taskService.complete(tasks.get(0).getId());
+        assertThat(tasks.getFirst().getTaskDefinitionKey()).isEqualTo("theOtherTask");
+        taskService.complete(tasks.getFirst().getId());
     }
 }

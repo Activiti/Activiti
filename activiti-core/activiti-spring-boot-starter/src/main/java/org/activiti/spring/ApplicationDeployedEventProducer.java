@@ -63,7 +63,7 @@ public class ApplicationDeployedEventProducer extends AbstractActivitiSmartLifeC
         List<ApplicationDeployedEvent> applicationDeployedEvents = getApplicationDeployedEvents();
 
         if (!applicationDeployedEvents.isEmpty()) {
-            ApplicationDeployedEvent applicationDeployedEvent = applicationDeployedEvents.get(0);
+            ApplicationDeployedEvent applicationDeployedEvent = applicationDeployedEvents.getFirst();
             for (ProcessRuntimeEventListener<ApplicationDeployedEvent> listener : listeners) {
                 listener.onEvent(applicationDeployedEvent);
             }

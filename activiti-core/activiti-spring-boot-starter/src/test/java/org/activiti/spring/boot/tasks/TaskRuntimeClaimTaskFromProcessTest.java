@@ -64,12 +64,12 @@ public class TaskRuntimeClaimTaskFromProcessTest {
 
         securityUtil.logInAs("dean");
 
-        Task task = taskRuntime.tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build()).getContent().get(0);
+        Task task = taskRuntime.tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build()).getContent().getFirst();
 
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
         //should still be in dean's list after claiming
-        task = taskRuntime.tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build()).getContent().get(0);
+        task = taskRuntime.tasks(Pageable.of(0, 10), TaskPayloadBuilder.tasks().build()).getContent().getFirst();
 
         assertThat(task).isNotNull();
 

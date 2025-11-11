@@ -48,19 +48,19 @@ public class SecurityPoliciesServiceIT {
         assertThat(policies).isNotNull();
         assertThat(policies).hasSize(3);
 
-        assertThat(policies.get(0).getName()).isEqualTo("My Policy");
+        assertThat(policies.getFirst().getName()).isEqualTo("My Policy");
 
-        assertThat(policies.get(0).getServiceName()).isEqualTo("runtime-bundle");
+        assertThat(policies.getFirst().getServiceName()).isEqualTo("runtime-bundle");
 
-        assertThat(policies.get(0).getUsers()).hasSize(3);
+        assertThat(policies.getFirst().getUsers()).hasSize(3);
 
-        assertThat(policies.get(0).getGroups()).hasSize(2);
+        assertThat(policies.getFirst().getGroups()).hasSize(2);
 
-        assertThat(policies.get(0).getAccess()).isEqualTo(SecurityPolicyAccess.WRITE);
+        assertThat(policies.getFirst().getAccess()).isEqualTo(SecurityPolicyAccess.WRITE);
 
-        assertThat(policies.get(0).getKeys()).hasSize(2);
+        assertThat(policies.getFirst().getKeys()).hasSize(2);
 
-        assertThat(policies.get(0).getKeys()).contains("SampleProcess1", "SampleProcess2");
+        assertThat(policies.getFirst().getKeys()).contains("SampleProcess1", "SampleProcess2");
 
         assertThat(policies.get(1).getName()).isEqualTo("Other Policy");
 

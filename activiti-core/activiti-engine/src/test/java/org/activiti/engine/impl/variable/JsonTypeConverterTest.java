@@ -49,7 +49,7 @@ public class JsonTypeConverterTest {
 
         //then
         assertThat(numbers).isInstanceOf(List.class);
-        assertThat(((List<?>) numbers).get(0)).isInstanceOf(Integer.class);
+        assertThat(((List<?>) numbers).getFirst()).isInstanceOf(Integer.class);
         assertThat(numbers).isEqualTo(originalValue);
     }
 

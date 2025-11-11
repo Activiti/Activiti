@@ -73,7 +73,7 @@ public class UserTaskConverterTest extends AbstractConverterTest {
 
         List<FormProperty> formProperties = userTask.getFormProperties();
         assertThat(formProperties).hasSize(2);
-        FormProperty formProperty = formProperties.get(0);
+        FormProperty formProperty = formProperties.getFirst();
         assertThat(formProperty.getId()).isEqualTo("formId");
         assertThat(formProperty.getName()).isEqualTo("formName");
         assertThat(formProperty.getType()).isEqualTo("string");
@@ -88,13 +88,13 @@ public class UserTaskConverterTest extends AbstractConverterTest {
 
         List<ActivitiListener> listeners = userTask.getTaskListeners();
         assertThat(listeners).hasSize(3);
-        ActivitiListener listener = (ActivitiListener) listeners.get(0);
+        ActivitiListener listener = (ActivitiListener) listeners.getFirst();
         assertThat(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())).isTrue();
         assertThat(listener.getImplementation()).isEqualTo("org.test.TestClass");
         assertThat(listener.getEvent()).isEqualTo("create");
         assertThat(listener.getFieldExtensions()).hasSize(2);
-        assertThat(listener.getFieldExtensions().get(0).getFieldName()).isEqualTo("testField");
-        assertThat(listener.getFieldExtensions().get(0).getStringValue()).isEqualTo("test");
+        assertThat(listener.getFieldExtensions().getFirst().getFieldName()).isEqualTo("testField");
+        assertThat(listener.getFieldExtensions().getFirst().getStringValue()).isEqualTo("test");
         listener = (ActivitiListener) listeners.get(1);
         assertThat(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getImplementationType())).isTrue();
         assertThat(listener.getImplementation()).isEqualTo("${someExpression}");

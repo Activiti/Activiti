@@ -409,7 +409,7 @@ public class DbSqlSession implements Session {
         if (loadedObjects.isEmpty()) {
             return loadedObjects;
         }
-        if (!(loadedObjects.get(0) instanceof Entity)) {
+        if (!(loadedObjects.getFirst() instanceof Entity)) {
             return loadedObjects;
         }
 
@@ -640,7 +640,7 @@ public class DbSqlSession implements Session {
                     if (parentBeforeChildExecution) {
                         result.add(executionEntities.get(parentId));
                     } else {
-                        result.add(0, executionEntities.get(parentId));
+                        result.addFirst(executionEntities.get(parentId));
                     }
                 }
 
@@ -675,7 +675,7 @@ public class DbSqlSession implements Session {
             if (parentBeforeChildExecution) {
                 result.add(childExecutionEntity);
             } else {
-                result.add(0, childExecutionEntity);
+                result.addFirst(childExecutionEntity);
             }
 
             collectChildExecutionsForInsertion(

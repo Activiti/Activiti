@@ -55,12 +55,12 @@ public class EndEventConverterTest extends AbstractConverterTest {
         assertThat(endEvent.getEventDefinitions()).hasSize(1);
 
         //Check that incoming xml element is coming before error event definition
-        assertThat(endEvent.getIncomingFlows().get(0).getXmlRowNumber()).isLessThan(
-            endEvent.getEventDefinitions().get(0).getXmlRowNumber()
+        assertThat(endEvent.getIncomingFlows().getFirst().getXmlRowNumber()).isLessThan(
+            endEvent.getEventDefinitions().getFirst().getXmlRowNumber()
         );
 
-        assertThat(endEvent.getEventDefinitions().get(0)).isInstanceOf(ErrorEventDefinition.class);
-        ErrorEventDefinition errorEventDefinition = (ErrorEventDefinition) endEvent.getEventDefinitions().get(0);
+        assertThat(endEvent.getEventDefinitions().getFirst()).isInstanceOf(ErrorEventDefinition.class);
+        ErrorEventDefinition errorEventDefinition = (ErrorEventDefinition) endEvent.getEventDefinitions().getFirst();
 
         assertThat(errorEventDefinition.getErrorRef()).isEqualTo("Error_01agmko");
     }

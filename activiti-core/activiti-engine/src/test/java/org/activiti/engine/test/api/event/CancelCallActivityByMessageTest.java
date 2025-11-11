@@ -66,7 +66,7 @@ public class CancelCallActivityByMessageTest extends PluggableActivitiTestCase {
 
         runtimeService.messageEventReceived("cancel", executionWithMessageEvent.getId());
 
-        ActivitiEntityEvent entityEvent = (ActivitiEntityEvent) myEventListener.getEventsReceived().get(0);
+        ActivitiEntityEvent entityEvent = (ActivitiEntityEvent) myEventListener.getEventsReceived().getFirst();
         assertThat(entityEvent.getType()).isEqualTo(ActivitiEventType.ENTITY_CREATED);
         ExecutionEntity executionEntity = (ExecutionEntity) entityEvent.getEntity();
         // this is process so parent null

@@ -42,7 +42,7 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
         taskService.addCandidateUser(taskId, "kermit");
 
         List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
-        IdentityLink identityLink = identityLinks.get(0);
+        IdentityLink identityLink = identityLinks.getFirst();
 
         assertThat(identityLink.getGroupId()).isNull();
         assertThat(identityLink.getUserId()).isEqualTo("kermit");
@@ -65,7 +65,7 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
         taskService.addCandidateGroup(taskId, "muppets");
 
         List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
-        IdentityLink identityLink = identityLinks.get(0);
+        IdentityLink identityLink = identityLinks.getFirst();
 
         assertThat(identityLink.getGroupId()).isEqualTo("muppets");
         assertThat(identityLink.getUserId()).as("kermit").isNull();
@@ -77,10 +77,10 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             List<Event> taskEvents = taskService.getTaskEvents(taskId);
             assertThat(taskEvents).hasSize(1);
-            Event taskEvent = taskEvents.get(0);
+            Event taskEvent = taskEvents.getFirst();
             assertThat(taskEvent.getAction()).isEqualTo(Event.ACTION_ADD_GROUP_LINK);
             List<String> taskEventMessageParts = taskEvent.getMessageParts();
-            assertThat(taskEventMessageParts.get(0)).isEqualTo("muppets");
+            assertThat(taskEventMessageParts.getFirst()).isEqualTo("muppets");
             assertThat(taskEventMessageParts.get(1)).isEqualTo(IdentityLinkType.CANDIDATE);
             assertThat(taskEventMessageParts).hasSize(2);
         }
@@ -92,7 +92,7 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
             Event taskEvent = findTaskEvent(taskEvents, Event.ACTION_DELETE_GROUP_LINK);
             assertThat(taskEvent.getAction()).isEqualTo(Event.ACTION_DELETE_GROUP_LINK);
             List<String> taskEventMessageParts = taskEvent.getMessageParts();
-            assertThat(taskEventMessageParts.get(0)).isEqualTo("muppets");
+            assertThat(taskEventMessageParts.getFirst()).isEqualTo("muppets");
             assertThat(taskEventMessageParts.get(1)).isEqualTo(IdentityLinkType.CANDIDATE);
             assertThat(taskEventMessageParts).hasSize(2);
             assertThat(taskEvents).hasSize(2);
@@ -119,7 +119,7 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
         taskService.addUserIdentityLink(taskId, "kermit", "interestee");
 
         List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
-        IdentityLink identityLink = identityLinks.get(0);
+        IdentityLink identityLink = identityLinks.getFirst();
 
         assertThat(identityLink.getGroupId()).isNull();
         assertThat(identityLink.getUserId()).isEqualTo("kermit");
@@ -143,7 +143,7 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
         taskService.addUserIdentityLink(taskId, "kermit", "actor", details.getBytes());
 
         List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
-        IdentityLink identityLink = identityLinks.get(0);
+        IdentityLink identityLink = identityLinks.getFirst();
 
         assertThat(identityLink.getGroupId()).isNull();
         assertThat(identityLink.getUserId()).isEqualTo("kermit");
@@ -167,7 +167,7 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
         taskService.addGroupIdentityLink(taskId, "muppets", "playing");
 
         List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
-        IdentityLink identityLink = identityLinks.get(0);
+        IdentityLink identityLink = identityLinks.getFirst();
 
         assertThat(identityLink.getGroupId()).isEqualTo("muppets");
         assertThat(identityLink.getUserId()).as("kermit").isNull();
@@ -222,7 +222,7 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
         List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
 
         assertThat(identityLinks).hasSize(1);
-        IdentityLink identityLink = identityLinks.get(0);
+        IdentityLink identityLink = identityLinks.getFirst();
 
         assertThat(identityLink.getUserId()).isEqualTo("user");
     }
@@ -240,7 +240,7 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
         assertThat(identityLinks).isNotNull();
         assertThat(identityLinks).hasSize(1);
 
-        IdentityLink identityLink = identityLinks.get(0);
+        IdentityLink identityLink = identityLinks.getFirst();
         assertThat(identityLink.getGroupId()).isEqualTo("muppets");
         assertThat(identityLink.getUserId()).isEqualTo(null);
         assertThat(identityLink.getType()).isEqualTo(IdentityLinkType.CANDIDATE);
@@ -259,7 +259,7 @@ public class TaskIdentityLinksTest extends PluggableActivitiTestCase {
         List<Task> tasks = taskService.createTaskQuery().taskInvolvedUser("kermit").list();
         assertThat(tasks).hasSize(1);
 
-        List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(tasks.get(0).getId());
+        List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(tasks.getFirst().getId());
         assertThat(identityLinks).hasSize(2);
 
         for (IdentityLink idLink : identityLinks) {

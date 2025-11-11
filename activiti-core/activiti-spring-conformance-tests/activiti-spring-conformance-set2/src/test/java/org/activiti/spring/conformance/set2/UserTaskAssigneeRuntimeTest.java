@@ -110,7 +110,7 @@ public class UserTaskAssigneeRuntimeTest {
 
         assertThat(tasks.getTotalItems()).isEqualTo(1);
 
-        Task task = tasks.getContent().get(0);
+        Task task = tasks.getContent().getFirst();
 
         Task taskById = taskRuntime.task(task.getId());
 

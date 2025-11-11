@@ -49,6 +49,6 @@ public class EventListenersConfigurationTest extends ResourceActivitiTestCase {
         processEngineConfiguration.getEventDispatcher().dispatchEvent(event);
 
         assertThat(listener.getEventsReceived()).hasSize(1);
-        assertThat(listener.getEventsReceived().get(0)).isEqualTo(event);
+        assertThat(listener.getEventsReceived().getFirst()).isEqualTo(event);
     }
 }

@@ -105,7 +105,7 @@ public class UserTaskCandidateGroupAndAssigneeTest {
             .build();
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50), processInstanceTasksPayload);
         assertThat(tasks.getTotalItems()).isEqualTo(1);
-        Task task = tasks.getContent().get(0);
+        Task task = tasks.getContent().getFirst();
 
         //given
         taskOperations

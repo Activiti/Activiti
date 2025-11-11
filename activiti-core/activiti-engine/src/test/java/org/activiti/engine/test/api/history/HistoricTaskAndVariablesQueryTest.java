@@ -153,9 +153,9 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
                 .asc()
                 .list();
             assertThat(tasks).hasSize(3);
-            assertThat(tasks.get(0).getTaskLocalVariables()).hasSize(1);
-            assertThat(tasks.get(0).getTaskLocalVariables().get("test")).isEqualTo("test");
-            assertThat(tasks.get(0).getProcessVariables()).hasSize(0);
+            assertThat(tasks.getFirst().getTaskLocalVariables()).hasSize(1);
+            assertThat(tasks.getFirst().getTaskLocalVariables().get("test")).isEqualTo("test");
+            assertThat(tasks.getFirst().getProcessVariables()).hasSize(0);
 
             tasks = historyService
                 .createHistoricTaskInstanceQuery()
@@ -165,8 +165,8 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
                 .asc()
                 .list();
             assertThat(tasks).hasSize(3);
-            assertThat(tasks.get(0).getProcessVariables()).hasSize(0);
-            assertThat(tasks.get(0).getTaskLocalVariables()).hasSize(0);
+            assertThat(tasks.getFirst().getProcessVariables()).hasSize(0);
+            assertThat(tasks.getFirst().getTaskLocalVariables()).hasSize(0);
 
             task = historyService
                 .createHistoricTaskInstanceQuery()
@@ -358,9 +358,9 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
                 .asc()
                 .list();
             assertThat(tasks).hasSize(3);
-            assertThat(tasks.get(0).getTaskLocalVariables()).hasSize(1);
-            assertThat(tasks.get(0).getTaskLocalVariables().get("test")).isEqualTo("test");
-            assertThat(tasks.get(0).getProcessVariables()).hasSize(0);
+            assertThat(tasks.getFirst().getTaskLocalVariables()).hasSize(1);
+            assertThat(tasks.getFirst().getTaskLocalVariables().get("test")).isEqualTo("test");
+            assertThat(tasks.getFirst().getProcessVariables()).hasSize(0);
 
             tasks = historyService
                 .createHistoricTaskInstanceQuery()
@@ -373,8 +373,8 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
                 .asc()
                 .list();
             assertThat(tasks).hasSize(3);
-            assertThat(tasks.get(0).getProcessVariables()).hasSize(0);
-            assertThat(tasks.get(0).getTaskLocalVariables()).hasSize(0);
+            assertThat(tasks.getFirst().getProcessVariables()).hasSize(0);
+            assertThat(tasks.getFirst().getTaskLocalVariables()).hasSize(0);
 
             task = historyService
                 .createHistoricTaskInstanceQuery()
@@ -638,7 +638,7 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
                 .desc()
                 .listPage(0, 1);
             assertThat(tasks).hasSize(1);
-            HistoricTaskInstance task = tasks.get(0);
+            HistoricTaskInstance task = tasks.getFirst();
             Map<String, Object> variableMap = task.getTaskLocalVariables();
             assertThat(variableMap).hasSize(2);
             assertThat(variableMap.get("testVar")).isEqualTo("someVariable");
@@ -666,7 +666,7 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
                 .asc()
                 .listPage(2, 4);
             assertThat(tasks).hasSize(1);
-            task = tasks.get(0);
+            task = tasks.getFirst();
             variableMap = task.getTaskLocalVariables();
             assertThat(variableMap).hasSize(2);
             assertThat(variableMap.get("testVar")).isEqualTo("someVariable");

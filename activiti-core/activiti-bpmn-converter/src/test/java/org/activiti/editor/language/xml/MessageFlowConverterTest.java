@@ -63,7 +63,7 @@ public class MessageFlowConverterTest extends AbstractConverterTest {
         assertThat(messageFlow.getTargetRef()).isEqualTo("task3");
 
         assertThat(model.getPools()).hasSize(2);
-        Pool pool = model.getPools().get(0);
+        Pool pool = model.getPools().getFirst();
         assertThat(pool.getId()).isEqualTo("participant1");
         assertThat(pool.getName()).isEqualTo("Participant 1");
         assertThat(pool.getProcessRef()).isEqualTo("PROCESS_1");

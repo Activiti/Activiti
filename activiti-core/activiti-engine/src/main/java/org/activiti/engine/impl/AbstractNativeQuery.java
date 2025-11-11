@@ -168,7 +168,7 @@ public abstract class AbstractNativeQuery<T extends NativeQuery<?, ?>, U>
     public U executeSingleResult(CommandContext commandContext) {
         List<U> results = executeList(commandContext, getParameterMap(), 0, Integer.MAX_VALUE);
         if (results.size() == 1) {
-            return results.get(0);
+            return results.getFirst();
         } else if (results.size() > 1) {
             throw new ActivitiException("Query return " + results.size() + " results instead of max 1");
         }

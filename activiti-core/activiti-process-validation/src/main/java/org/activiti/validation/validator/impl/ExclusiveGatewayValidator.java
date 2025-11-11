@@ -47,7 +47,7 @@ public class ExclusiveGatewayValidator extends ProcessLevelValidator {
         if (exclusiveGateway.getOutgoingFlows().isEmpty()) {
             addError(errors, Problems.EXCLUSIVE_GATEWAY_NO_OUTGOING_SEQ_FLOW, process, exclusiveGateway);
         } else if (exclusiveGateway.getOutgoingFlows().size() == 1) {
-            SequenceFlow sequenceFlow = exclusiveGateway.getOutgoingFlows().get(0);
+            SequenceFlow sequenceFlow = exclusiveGateway.getOutgoingFlows().getFirst();
             if (StringUtils.isNotEmpty(sequenceFlow.getConditionExpression())) {
                 addError(
                     errors,

@@ -235,13 +235,13 @@ public class ModelQueryTest extends PluggableActivitiTestCase {
     public void testVerifyModelProperties() {
         List<Model> models = repositoryService.createModelQuery().orderByModelName().asc().list();
 
-        Model modelOne = models.get(0);
+        Model modelOne = models.getFirst();
         assertThat(modelOne.getName()).isEqualTo("my model");
         assertThat(modelOne.getId()).isEqualTo(modelOneId);
 
         models = repositoryService.createModelQuery().modelNameLike("%model%").orderByModelName().asc().list();
 
-        assertThat(models.get(0).getName()).isEqualTo("my model");
+        assertThat(models.getFirst().getName()).isEqualTo("my model");
         assertThat(models).hasSize(1);
 
         assertThat(repositoryService.createModelQuery().orderByModelId().asc().list()).hasSize(1);

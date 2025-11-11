@@ -59,7 +59,7 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
         ProcessInstance pi = runtimeService.startProcessInstanceByKey("timerEventWithStartAndDuration");
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
-        Task task = tasks.get(0);
+        Task task = tasks.getFirst();
         assertThat(task.getName()).isEqualTo("Task A");
 
         TimerJobQuery jobQuery = managementService.createTimerJobQuery().processInstanceId(pi.getId());
@@ -87,7 +87,7 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
 
         tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
-        task = tasks.get(0);
+        task = tasks.getFirst();
         assertThat(task.getName()).isEqualTo("Task B");
         taskService.complete(task.getId());
 

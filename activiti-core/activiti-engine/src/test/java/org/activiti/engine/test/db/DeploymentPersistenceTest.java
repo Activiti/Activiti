@@ -39,7 +39,7 @@ public class DeploymentPersistenceTest extends PluggableActivitiTestCase {
 
         List<Deployment> deployments = repositoryService.createDeploymentQuery().list();
         assertThat(deployments).hasSize(1);
-        deployment = deployments.get(0);
+        deployment = deployments.getFirst();
 
         assertThat(deployment.getName()).isEqualTo("strings");
         assertThat(deployment.getDeploymentTime()).isNotNull();

@@ -54,7 +54,7 @@ public class BoundaryEventXMLConverter extends BaseBpmnXMLConverter {
 
         // Explicitly set cancel activity to false for error boundary events
         if (boundaryEvent.getEventDefinitions().size() == 1) {
-            EventDefinition eventDef = boundaryEvent.getEventDefinitions().get(0);
+            EventDefinition eventDef = boundaryEvent.getEventDefinitions().getFirst();
 
             if (eventDef instanceof ErrorEventDefinition) {
                 boundaryEvent.setCancelActivity(false);
@@ -73,7 +73,7 @@ public class BoundaryEventXMLConverter extends BaseBpmnXMLConverter {
         }
 
         if (boundaryEvent.getEventDefinitions().size() == 1) {
-            EventDefinition eventDef = boundaryEvent.getEventDefinitions().get(0);
+            EventDefinition eventDef = boundaryEvent.getEventDefinitions().getFirst();
 
             if (eventDef instanceof ErrorEventDefinition == false) {
                 writeDefaultAttribute(

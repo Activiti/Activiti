@@ -57,7 +57,7 @@ public class DataStoreConverterTest extends AbstractConverterTest {
         assertThat(refElement).isInstanceOf(DataStoreReference.class);
 
         assertThat(model.getPools()).hasSize(1);
-        Pool pool = model.getPools().get(0);
+        Pool pool = model.getPools().getFirst();
         assertThat(pool.getId()).isEqualTo("pool1");
     }
 }

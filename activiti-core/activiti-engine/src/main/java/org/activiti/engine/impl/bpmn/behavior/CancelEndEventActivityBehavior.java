@@ -76,7 +76,7 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
             for (BoundaryEvent boundaryEvent : subProcess.getBoundaryEvents()) {
                 if (
                     CollectionUtil.isNotEmpty(boundaryEvent.getEventDefinitions()) &&
-                    boundaryEvent.getEventDefinitions().get(0) instanceof CancelEventDefinition
+                    boundaryEvent.getEventDefinitions().getFirst() instanceof CancelEventDefinition
                 ) {
                     cancelBoundaryEvent = boundaryEvent;
                     break;

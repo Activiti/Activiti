@@ -193,7 +193,7 @@ public abstract class AbstractQuery<T extends Query<?, ?>, U>
     public U executeSingleResult(CommandContext commandContext) {
         List<U> results = executeList(commandContext, null);
         if (results.size() == 1) {
-            return results.get(0);
+            return results.getFirst();
         } else if (results.size() > 1) {
             throw new ActivitiException("Query return " + results.size() + " results instead of max 1");
         }

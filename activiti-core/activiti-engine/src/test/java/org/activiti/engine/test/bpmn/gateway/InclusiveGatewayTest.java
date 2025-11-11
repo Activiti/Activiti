@@ -124,7 +124,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
         assertThat(secondTasks).hasSize(2);
 
         // complete one task
-        Task task = secondTasks.get(0);
+        Task task = secondTasks.getFirst();
         taskService.complete(task.getId());
 
         List<Execution> executionsAfter = runtimeService.createExecutionQuery().list();
@@ -378,7 +378,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
         assertThat(taskService.createTaskQuery().count()).isEqualTo(2);
 
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         assertThat(taskService.createTaskQuery().count()).isEqualTo(1);
 
         taskService.complete(tasks.get(1).getId());
@@ -402,7 +402,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
         assertThat(taskService.createTaskQuery().count()).isEqualTo(1);
 
-        task = tasks.get(0);
+        task = tasks.getFirst();
         assertThat(task.getAssignee()).isEqualTo("a");
         taskService.complete(task.getId());
 
@@ -499,7 +499,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
         processInstance = runtimeService.startProcessInstanceByKey("inclusiveGwDirectSequenceFlow", varMap);
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(2);
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         taskService.complete(tasks.get(1).getId());
         assertThat(
             runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count()
@@ -531,7 +531,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
         processInstance = runtimeService.startProcessInstanceByKey("inclusiveGwSkipExpression", varMap);
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(2);
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         taskService.complete(tasks.get(1).getId());
         assertThat(
             runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count()

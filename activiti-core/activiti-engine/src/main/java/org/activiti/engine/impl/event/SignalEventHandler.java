@@ -97,7 +97,7 @@ public class SignalEventHandler extends AbstractEventHandler {
                 flowElement,
                 process
             );
-            DelegateExecution execution = executionEntity.getExecutions().get(0);
+            DelegateExecution execution = executionEntity.getExecutions().getFirst();
             dispatchActivitySignalledEvent(execution, eventSubscription.getEventName(), payload, commandContext);
 
             processInstanceHelper.startProcessInstance(executionEntity, commandContext, variables, flowElement, null, null, null);

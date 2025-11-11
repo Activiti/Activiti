@@ -66,7 +66,7 @@ public class TaskBatchDeleteTest extends PluggableActivitiTestCase {
             .processInstanceId(processInstance.getId())
             .taskDefinitionKey("multiInstance")
             .listPage(4, 1)
-            .get(0);
+            .getFirst();
 
         taskService.addCandidateGroup(lastTask.getId(), "sales");
 
@@ -75,7 +75,7 @@ public class TaskBatchDeleteTest extends PluggableActivitiTestCase {
             .processInstanceId(processInstance.getId())
             .taskDefinitionKey("multiInstance")
             .listPage(0, 1)
-            .get(0);
+            .getFirst();
         assertThat(firstTask).isNotNull();
 
         taskService.complete(firstTask.getId());

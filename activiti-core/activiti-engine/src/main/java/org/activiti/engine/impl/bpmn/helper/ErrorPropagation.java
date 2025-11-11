@@ -82,7 +82,7 @@ public class ErrorPropagation {
         ExecutionEntity parentExecution = null;
 
         if (eventMap.containsKey(currentExecution.getActivityId())) {
-            matchingEvent = eventMap.get(currentExecution.getActivityId()).get(0);
+            matchingEvent = eventMap.get(currentExecution.getActivityId()).getFirst();
 
             // Check for multi instance
             if (currentExecution.getParentId() != null && currentExecution.getParent().isMultiInstanceRoot()) {
@@ -104,16 +104,16 @@ public class ErrorPropagation {
 
                 for (String refId : eventMap.keySet()) {
                     List<Event> events = eventMap.get(refId);
-                    if (matchingEvent == null && CollectionUtil.isNotEmpty(events) && events.get(0) instanceof StartEvent) {
+                    if (matchingEvent == null && CollectionUtil.isNotEmpty(events) && events.getFirst() instanceof StartEvent) {
                         if (currentContainer.getFlowElement(refId) != null) {
-                            matchingEvent = events.get(0);
+                            matchingEvent = events.getFirst();
                         }
                     }
                 }
 
                 if (matchingEvent == null) {
                     if (eventMap.containsKey(parentExecution.getActivityId())) {
-                        matchingEvent = eventMap.get(parentExecution.getActivityId()).get(0);
+                        matchingEvent = eventMap.get(parentExecution.getActivityId()).getFirst();
 
                         // Check for multi instance
                         if (

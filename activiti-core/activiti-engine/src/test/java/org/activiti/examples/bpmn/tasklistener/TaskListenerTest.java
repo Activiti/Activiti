@@ -206,10 +206,10 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
         assertThat(tasks).hasSize(0);
 
         assertThat(TaskDeleteListener.getCurrentMessages()).hasSize(1);
-        assertThat(TaskDeleteListener.getCurrentMessages().get(0)).isEqualTo("Delete Task Listener executed.");
+        assertThat(TaskDeleteListener.getCurrentMessages().getFirst()).isEqualTo("Delete Task Listener executed.");
 
         assertThat(TaskSimpleCompleteListener.getCurrentMessages()).hasSize(1);
-        assertThat(TaskSimpleCompleteListener.getCurrentMessages().get(0)).isEqualTo(
+        assertThat(TaskSimpleCompleteListener.getCurrentMessages().getFirst()).isEqualTo(
             "Complete Task Listener executed."
         );
     }
@@ -239,7 +239,7 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
         assertThat(tasks).hasSize(0);
 
         assertThat(TaskDeleteListener.getCurrentMessages()).hasSize(1);
-        assertThat(TaskDeleteListener.getCurrentMessages().get(0)).isEqualTo("Delete Task Listener executed.");
+        assertThat(TaskDeleteListener.getCurrentMessages().getFirst()).isEqualTo("Delete Task Listener executed.");
 
         assertThat(TaskSimpleCompleteListener.getCurrentMessages()).hasSize(0);
     }

@@ -45,7 +45,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
 
         // Tasks are ordered by name (see query)
         assertThat(tasks).hasSize(2);
-        Task investigateHardwareTask = tasks.get(0);
+        Task investigateHardwareTask = tasks.getFirst();
         Task investigateSoftwareTask = tasks.get(1);
         assertThat(investigateHardwareTask.getName()).isEqualTo("Investigate hardware");
         assertThat(investigateSoftwareTask.getName()).isEqualTo("Investigate software");

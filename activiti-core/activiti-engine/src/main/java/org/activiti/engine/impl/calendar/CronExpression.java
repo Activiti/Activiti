@@ -940,7 +940,7 @@ public class CronExpression implements Serializable, Cloneable {
             // get second.................................................
             st = seconds.tailSet(Integer.valueOf(sec));
             if (st != null && !st.isEmpty()) {
-                sec = ((Integer) st.first()).intValue();
+                sec = ((Integer) st.getFirst()).intValue();
             } else {
                 sec = ((Integer) seconds.first()).intValue();
                 min++;
@@ -956,7 +956,7 @@ public class CronExpression implements Serializable, Cloneable {
             st = minutes.tailSet(Integer.valueOf(min));
             if (st != null && !st.isEmpty()) {
                 t = min;
-                min = ((Integer) st.first()).intValue();
+                min = ((Integer) st.getFirst()).intValue();
             } else {
                 min = ((Integer) minutes.first()).intValue();
                 hr++;
@@ -977,7 +977,7 @@ public class CronExpression implements Serializable, Cloneable {
             st = hours.tailSet(Integer.valueOf(hr));
             if (st != null && !st.isEmpty()) {
                 t = hr;
-                hr = ((Integer) st.first()).intValue();
+                hr = ((Integer) st.getFirst()).intValue();
             } else {
                 hr = ((Integer) hours.first()).intValue();
                 day++;
@@ -1087,7 +1087,7 @@ public class CronExpression implements Serializable, Cloneable {
                     }
                 } else if (st != null && !st.isEmpty()) {
                     t = day;
-                    day = ((Integer) st.first()).intValue();
+                    day = ((Integer) st.getFirst()).intValue();
                     // make sure we don't over-run a short month, such as
                     // february
                     int lastDay = getLastDayOfMonth(mon, cl.get(Calendar.YEAR));
@@ -1205,7 +1205,7 @@ public class CronExpression implements Serializable, Cloneable {
                     // d-o-w
                     st = daysOfWeek.tailSet(Integer.valueOf(cDow));
                     if (st != null && !st.isEmpty()) {
-                        dow = ((Integer) st.first()).intValue();
+                        dow = ((Integer) st.getFirst()).intValue();
                     }
 
                     int daysToAdd = 0;
@@ -1265,7 +1265,7 @@ public class CronExpression implements Serializable, Cloneable {
             st = months.tailSet(Integer.valueOf(mon));
             if (st != null && !st.isEmpty()) {
                 t = mon;
-                mon = ((Integer) st.first()).intValue();
+                mon = ((Integer) st.getFirst()).intValue();
             } else {
                 mon = ((Integer) months.first()).intValue();
                 year++;
@@ -1292,7 +1292,7 @@ public class CronExpression implements Serializable, Cloneable {
             st = years.tailSet(Integer.valueOf(year));
             if (st != null && !st.isEmpty()) {
                 t = year;
-                year = ((Integer) st.first()).intValue();
+                year = ((Integer) st.getFirst()).intValue();
             } else {
                 return null; // ran out of years...
             }

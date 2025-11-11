@@ -70,7 +70,7 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
 
         tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
-        Task task = tasks.get(0);
+        Task task = tasks.getFirst();
         assertThat(task.getName()).isEqualTo("Task A");
 
         // Test Timer Catch Intermediate Events after completing Task B (endDate
@@ -94,7 +94,7 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
 
         tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
-        task = tasks.get(0);
+        task = tasks.getFirst();
         assertThat(task.getName()).isEqualTo("Task C");
 
         // Test Timer Catch Intermediate Events after completing Task C

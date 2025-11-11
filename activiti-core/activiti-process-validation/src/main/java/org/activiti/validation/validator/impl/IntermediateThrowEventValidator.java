@@ -39,7 +39,7 @@ public class IntermediateThrowEventValidator extends ProcessLevelValidator {
         for (ThrowEvent throwEvent : throwEvents) {
             EventDefinition eventDefinition = null;
             if (!throwEvent.getEventDefinitions().isEmpty()) {
-                eventDefinition = throwEvent.getEventDefinitions().get(0);
+                eventDefinition = throwEvent.getEventDefinitions().getFirst();
             }
 
             if (

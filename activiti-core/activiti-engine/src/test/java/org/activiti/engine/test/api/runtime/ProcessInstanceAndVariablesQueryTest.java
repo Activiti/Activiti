@@ -124,7 +124,7 @@ public class ProcessInstanceAndVariablesQueryTest extends PluggableActivitiTestC
             .processDefinitionKey(PROCESS_DEFINITION_KEY)
             .list();
         assertThat(instanceList).hasSize(4);
-        processInstance = instanceList.get(0);
+        processInstance = instanceList.getFirst();
         variableMap = processInstance.getProcessVariables();
         assertThat(variableMap).hasSize(2);
         assertThat(variableMap.get("test")).isEqualTo("test");
@@ -145,7 +145,7 @@ public class ProcessInstanceAndVariablesQueryTest extends PluggableActivitiTestC
             .processDefinitionKey(PROCESS_DEFINITION_KEY)
             .listPage(0, 5);
         assertThat(instanceList).hasSize(4);
-        processInstance = instanceList.get(0);
+        processInstance = instanceList.getFirst();
         variableMap = processInstance.getProcessVariables();
         assertThat(variableMap).hasSize(2);
         assertThat(variableMap.get("test")).isEqualTo("test");
@@ -157,7 +157,7 @@ public class ProcessInstanceAndVariablesQueryTest extends PluggableActivitiTestC
             .processDefinitionKey(PROCESS_DEFINITION_KEY)
             .listPage(0, 1);
         assertThat(instanceList).hasSize(1);
-        processInstance = instanceList.get(0);
+        processInstance = instanceList.getFirst();
         variableMap = processInstance.getProcessVariables();
         assertThat(variableMap).hasSize(2);
         assertThat(variableMap.get("test")).isEqualTo("test");
@@ -171,7 +171,7 @@ public class ProcessInstanceAndVariablesQueryTest extends PluggableActivitiTestC
             .asc()
             .listPage(2, 4);
         assertThat(instanceList).hasSize(2);
-        processInstance = instanceList.get(0);
+        processInstance = instanceList.getFirst();
         variableMap = processInstance.getProcessVariables();
         assertThat(variableMap).hasSize(2);
         assertThat(variableMap.get("test")).isEqualTo("test");

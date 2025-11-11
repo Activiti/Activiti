@@ -97,7 +97,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
             .asc()
             .list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("Task a");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Task a");
         assertThat(tasks.get(1).getName()).isEqualTo("Task b");
 
         for (Task task : tasks) {
@@ -121,7 +121,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
             .asc()
             .list();
         assertThat(tasks).hasSize(4);
-        assertThat(tasks.get(0).getName()).isEqualTo("Task a");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Task a");
         assertThat(tasks.get(1).getName()).isEqualTo("Task b1");
         assertThat(tasks.get(2).getName()).isEqualTo("Task b2");
         assertThat(tasks.get(3).getName()).isEqualTo("Task c");
@@ -281,7 +281,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
 
         List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(3);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("B");
         assertThat(tasks.get(2).getName()).isEqualTo("C");
 
@@ -296,7 +296,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
 
         tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("B");
+        assertThat(tasks.getFirst().getName()).isEqualTo("B");
         assertThat(tasks.get(1).getName()).isEqualTo("C");
 
         for (Task t : tasks) {
@@ -310,7 +310,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
 
         tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("C");
+        assertThat(tasks.getFirst().getName()).isEqualTo("C");
 
         for (Task t : tasks) {
             taskService.complete(t.getId());
@@ -331,7 +331,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
             .asc()
             .list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("B");
 
         // Triggering the timers cancels B, but A is not interrupted
@@ -344,7 +344,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
 
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
         assertThat(tasks).hasSize(5);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("C");
         assertThat(tasks.get(2).getName()).isEqualTo("D");
         assertThat(tasks.get(3).getName()).isEqualTo("E");
@@ -353,12 +353,12 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         // Firing timer shouldn't cancel anything, but create new task
         jobs = managementService.createTimerJobQuery().list();
         assertThat(jobs).hasSize(1);
-        managementService.moveTimerToExecutableJob(jobs.get(0).getId());
-        managementService.executeJob(jobs.get(0).getId());
+        managementService.moveTimerToExecutableJob(jobs.getFirst().getId());
+        managementService.executeJob(jobs.getFirst().getId());
 
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
         assertThat(tasks).hasSize(6);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("C");
         assertThat(tasks.get(2).getName()).isEqualTo("D");
         assertThat(tasks.get(3).getName()).isEqualTo("E");
@@ -389,19 +389,19 @@ public class Activiti6Test extends PluggableActivitiTestCase {
             .asc()
             .list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("B");
         assertThat(managementService.createTimerJobQuery().count()).isEqualTo(2);
 
         // Completing A
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("B");
+        assertThat(tasks.getFirst().getName()).isEqualTo("B");
         assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
 
         // Completing B should end the process
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         assertThat(managementService.createTimerJobQuery().count()).isEqualTo(0);
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
 
@@ -409,7 +409,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         processInstance = runtimeService.startProcessInstanceByKey("nonInterruptingWithInclusiveMerge");
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("B");
         assertThat(managementService.createTimerJobQuery().count()).isEqualTo(2);
 
@@ -417,7 +417,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         taskService.complete(tasks.get(1).getId());
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
 
         // Firing the timer should activate E and F too
@@ -426,7 +426,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         managementService.executeJob(jobId);
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
         assertThat(tasks).hasSize(3);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("C");
         assertThat(tasks.get(2).getName()).isEqualTo("D");
 
@@ -437,7 +437,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         managementService.executeJob(jobId);
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
         assertThat(tasks).hasSize(4);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("C");
         assertThat(tasks.get(2).getName()).isEqualTo("D");
         assertThat(tasks.get(3).getName()).isEqualTo("G");
@@ -446,20 +446,20 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         taskService.complete(taskService.createTaskQuery().taskName("C").singleResult().getId());
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
         assertThat(tasks).hasSize(3);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("D");
         assertThat(tasks.get(2).getName()).isEqualTo("G");
 
         taskService.complete(taskService.createTaskQuery().taskName("D").singleResult().getId());
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("G");
 
         taskService.complete(taskService.createTaskQuery().taskName("A").singleResult().getId());
         tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("G");
+        assertThat(tasks.getFirst().getName()).isEqualTo("G");
 
         taskService.complete(taskService.createTaskQuery().taskName("G").singleResult().getId());
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
@@ -484,18 +484,18 @@ public class Activiti6Test extends PluggableActivitiTestCase {
         taskService.complete(taskC.getId());
         List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(3);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("B");
         assertThat(tasks.get(2).getName()).isEqualTo("E");
 
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         taskService.complete(tasks.get(1).getId());
         tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("D");
+        assertThat(tasks.getFirst().getName()).isEqualTo("D");
         assertThat(tasks.get(1).getName()).isEqualTo("E");
 
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         taskService.complete(tasks.get(1).getId());
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
     }
@@ -518,27 +518,27 @@ public class Activiti6Test extends PluggableActivitiTestCase {
 
         List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(3);
-        assertThat(tasks.get(0).getName()).isEqualTo("A");
+        assertThat(tasks.getFirst().getName()).isEqualTo("A");
         assertThat(tasks.get(1).getName()).isEqualTo("B");
         assertThat(tasks.get(2).getName()).isEqualTo("C");
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         taskService.complete(tasks.get(1).getId());
 
         // C should still be open
         tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("C");
+        assertThat(tasks.getFirst().getName()).isEqualTo("C");
 
         // If C is now completed, the inclusive gateway should also be completed
         // and D and E should be open tasks
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
         assertThat(tasks).hasSize(2);
-        assertThat(tasks.get(0).getName()).isEqualTo("D");
+        assertThat(tasks.getFirst().getName()).isEqualTo("D");
         assertThat(tasks.get(1).getName()).isEqualTo("E");
 
         // Completing them should just end the process instance
-        taskService.complete(tasks.get(0).getId());
+        taskService.complete(tasks.getFirst().getId());
         taskService.complete(tasks.get(1).getId());
         assertThat(runtimeService.createExecutionQuery().count()).isEqualTo(0);
     }

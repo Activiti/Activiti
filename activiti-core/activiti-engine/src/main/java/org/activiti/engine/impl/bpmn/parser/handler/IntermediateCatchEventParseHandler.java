@@ -41,7 +41,7 @@ public class IntermediateCatchEventParseHandler extends AbstractFlowNodeBpmnPars
     protected void executeParse(BpmnParse bpmnParse, IntermediateCatchEvent event) {
         EventDefinition eventDefinition = null;
         if (!event.getEventDefinitions().isEmpty()) {
-            eventDefinition = event.getEventDefinitions().get(0);
+            eventDefinition = event.getEventDefinitions().getFirst();
         }
 
         if (eventDefinition == null) {

@@ -71,7 +71,7 @@ public class ExecutionTreeStringBuilder {
                 internalToString(children.get(i), strb, prefix + (isTail ? "    " : "│   "), false);
             }
             if (children.size() > 0) {
-                internalToString(children.get(children.size() - 1), strb, prefix + (isTail ? "    " : "│   "), true);
+                internalToString(children.getLast(), strb, prefix + (isTail ? "    " : "│   "), true);
             }
         }
     }

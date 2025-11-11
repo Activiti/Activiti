@@ -80,8 +80,8 @@ public class ProcessVariablesTest {
             .containsExactly(
                 tuple(
                     VariableEvent.VariableEvents.VARIABLE_CREATED,
-                    variableInstanceList.get(0).getName(),
-                    variableInstanceList.get(0).getValue()
+                    variableInstanceList.getFirst().getName(),
+                    variableInstanceList.getFirst().getValue()
                 ),
                 tuple(
                     VariableEvent.VariableEvents.VARIABLE_CREATED,
@@ -99,7 +99,7 @@ public class ProcessVariablesTest {
 
         setVariables();
 
-        VariableInstance variableOneRuntime = variableInstanceList.get(0);
+        VariableInstance variableOneRuntime = variableInstanceList.getFirst();
         assertThat(variableOneRuntime.getProcessInstanceId()).isEqualTo(processInstanceId);
         assertThat(variableOneRuntime.getTaskId()).isNull();
 
@@ -108,8 +108,8 @@ public class ProcessVariablesTest {
             .containsExactly(
                 tuple(
                     VariableEvent.VariableEvents.VARIABLE_CREATED,
-                    variableInstanceList.get(0).getName(),
-                    variableInstanceList.get(0).getValue()
+                    variableInstanceList.getFirst().getName(),
+                    variableInstanceList.getFirst().getValue()
                 ),
                 tuple(
                     VariableEvent.VariableEvents.VARIABLE_CREATED,
@@ -127,7 +127,7 @@ public class ProcessVariablesTest {
 
         setVariables();
 
-        VariableInstance variableOneRuntime = variableInstanceList.get(0);
+        VariableInstance variableOneRuntime = variableInstanceList.getFirst();
         assertThat(variableOneRuntime.isTaskVariable()).isFalse();
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
@@ -135,8 +135,8 @@ public class ProcessVariablesTest {
             .containsExactly(
                 tuple(
                     VariableEvent.VariableEvents.VARIABLE_CREATED,
-                    variableInstanceList.get(0).getName(),
-                    variableInstanceList.get(0).getValue()
+                    variableInstanceList.getFirst().getName(),
+                    variableInstanceList.getFirst().getValue()
                 ),
                 tuple(
                     VariableEvent.VariableEvents.VARIABLE_CREATED,
@@ -154,7 +154,7 @@ public class ProcessVariablesTest {
 
         setVariables();
 
-        VariableInstance variableOneRuntime = variableInstanceList.get(0);
+        VariableInstance variableOneRuntime = variableInstanceList.getFirst();
         VariableInstance variableTwoRuntime = variableInstanceList.get(1);
         assertThat(variableOneRuntime.getType()).isEqualTo("string");
         assertThat(variableTwoRuntime.getType()).isEqualTo("integer");
@@ -164,8 +164,8 @@ public class ProcessVariablesTest {
             .containsExactly(
                 tuple(
                     VariableEvent.VariableEvents.VARIABLE_CREATED,
-                    variableInstanceList.get(0).getName(),
-                    variableInstanceList.get(0).getValue()
+                    variableInstanceList.getFirst().getName(),
+                    variableInstanceList.getFirst().getValue()
                 ),
                 tuple(
                     VariableEvent.VariableEvents.VARIABLE_CREATED,

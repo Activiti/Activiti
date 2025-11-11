@@ -320,7 +320,7 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
     // ---------------------------------
 
     protected void assertExecutedCommands(String... commands) {
-        ProfileSession profileSession = ActivitiProfiler.getInstance().getProfileSessions().get(0);
+        ProfileSession profileSession = ActivitiProfiler.getInstance().getProfileSessions().getFirst();
         Map<String, CommandStats> allStats = profileSession.calculateSummaryStatistics();
 
         if (commands.length != allStats.size()) {
@@ -408,7 +408,7 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
     }
 
     protected CommandStats getStats(String commandClass) {
-        ProfileSession profileSession = ActivitiProfiler.getInstance().getProfileSessions().get(0);
+        ProfileSession profileSession = ActivitiProfiler.getInstance().getProfileSessions().getFirst();
         Map<String, CommandStats> allStats = profileSession.calculateSummaryStatistics();
         CommandStats stats = getStatsForCommand(commandClass, allStats);
         return stats;

@@ -50,7 +50,7 @@ public class MyTransactionalOperationTransactionDependentExecutionListener
                 .orderByProcessInstanceStartTime()
                 .asc()
                 .list();
-            historyService.deleteHistoricProcessInstance(historicProcessInstances.get(0).getId());
+            historyService.deleteHistoricProcessInstance(historicProcessInstances.getFirst().getId());
         }
     }
 }

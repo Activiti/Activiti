@@ -74,7 +74,7 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
 
         tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
-        Task task = tasks.get(0);
+        Task task = tasks.getFirst();
         assertThat(task.getName()).isEqualTo("Task A");
 
         // Test Timer Catch Intermediate Events after completing Task A (endDate not reached but it will be executed according to the expression)
@@ -107,7 +107,7 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
 
         tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
-        task = tasks.get(0);
+        task = tasks.getFirst();
         assertThat(task.getName()).isEqualTo("Task C");
 
         // Test Timer Catch Intermediate Events after completing Task C

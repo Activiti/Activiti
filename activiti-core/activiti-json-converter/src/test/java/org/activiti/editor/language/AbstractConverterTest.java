@@ -63,7 +63,7 @@ public abstract class AbstractConverterTest {
         assertThat(flowElement).isInstanceOf(Event.class);
         Event event = (Event) flowElement;
         assertThat(event.getEventDefinitions().isEmpty()).isFalse();
-        return event.getEventDefinitions().get(0);
+        return event.getEventDefinitions().getFirst();
     }
 
     protected abstract String getResource();

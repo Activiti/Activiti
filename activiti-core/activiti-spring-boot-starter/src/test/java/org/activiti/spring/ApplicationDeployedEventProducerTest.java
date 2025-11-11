@@ -76,7 +76,7 @@ public class ApplicationDeployedEventProducerTest {
     public void shouldPublishEventsWhenApplicationIsDeployed() {
         ArgumentCaptor<ApplicationDeployedEvents> captorPublisher = startEventProducer();
 
-        assertThat(captorPublisher.getValue().getApplicationDeployedEvents().get(0).getEventType()).isEqualTo(
+        assertThat(captorPublisher.getValue().getApplicationDeployedEvents().getFirst().getEventType()).isEqualTo(
             APPLICATION_DEPLOYED
         );
     }
@@ -86,7 +86,7 @@ public class ApplicationDeployedEventProducerTest {
         producer.setAfterRollback(true);
         ArgumentCaptor<ApplicationDeployedEvents> captorPublisher = startEventProducer();
 
-        assertThat(captorPublisher.getValue().getApplicationDeployedEvents().get(0).getEventType()).isEqualTo(
+        assertThat(captorPublisher.getValue().getApplicationDeployedEvents().getFirst().getEventType()).isEqualTo(
             APPLICATION_ROLLBACK
         );
     }

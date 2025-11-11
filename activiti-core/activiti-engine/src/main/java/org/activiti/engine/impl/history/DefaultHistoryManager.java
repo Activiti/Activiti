@@ -329,7 +329,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
                 );
 
             if (historicActivityInstances.size() > 0) {
-                return historicActivityInstances.get(0);
+                return historicActivityInstances.getFirst();
             }
         }
 

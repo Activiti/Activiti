@@ -77,7 +77,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     }
 
     public void testBasicTaskPropertiesNotNull() {
-        Task task = taskService.createTaskQuery().taskId(taskIds.get(0)).singleResult();
+        Task task = taskService.createTaskQuery().taskId(taskIds.getFirst()).singleResult();
         assertThat(task.getDescription()).isNotNull();
         assertThat(task.getId()).isNotNull();
         assertThat(task.getName()).isNotNull();
@@ -92,14 +92,14 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     }
 
     public void testQueryByTaskId() {
-        TaskQuery query = taskService.createTaskQuery().taskId(taskIds.get(0));
+        TaskQuery query = taskService.createTaskQuery().taskId(taskIds.getFirst());
         assertThat(query.singleResult()).isNotNull();
         assertThat(query.list()).hasSize(1);
         assertThat(query.count()).isEqualTo(1);
     }
 
     public void testQueryByTaskIdOr() {
-        TaskQuery query = taskService.createTaskQuery().or().taskId(taskIds.get(0)).taskName("INVALID NAME").endOr();
+        TaskQuery query = taskService.createTaskQuery().or().taskId(taskIds.getFirst()).taskName("INVALID NAME").endOr();
         assertThat(query.singleResult()).isNotNull();
         assertThat(query.list()).hasSize(1);
         assertThat(query.count()).isEqualTo(1);
@@ -1272,7 +1272,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
         assertThat(tasks).isNotNull();
         assertThat(tasks).hasSize(1);
 
-        assertThat(tasks.get(0).getTaskDefinitionKey()).isEqualTo("taskKey1");
+        assertThat(tasks.getFirst().getTaskDefinitionKey()).isEqualTo("taskKey1");
 
         // No task should be found with unexisting key
         Long count = taskService.createTaskQuery().taskDefinitionKey("unexistingKey").count();
@@ -1289,7 +1289,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
         assertThat(tasks).isNotNull();
         assertThat(tasks).hasSize(1);
 
-        assertThat(tasks.get(0).getTaskDefinitionKey()).isEqualTo("taskKey1");
+        assertThat(tasks.getFirst().getTaskDefinitionKey()).isEqualTo("taskKey1");
 
         // No task should be found with unexisting key
         Long count = taskService.createTaskQuery().or().taskId("invalid").taskDefinitionKey("unexistingKey").count();
@@ -1311,7 +1311,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
         assertThat(tasks).isNotNull();
         assertThat(tasks).hasSize(2);
 
-        assertThat(tasks.get(0).getTaskDefinitionKey()).isEqualTo("taskKey1");
+        assertThat(tasks.getFirst().getTaskDefinitionKey()).isEqualTo("taskKey1");
         assertThat(tasks.get(1).getTaskDefinitionKey()).isEqualTo("taskKey123");
 
         // Starts with matching, TaskKey123 matches
@@ -1319,14 +1319,14 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
         assertThat(tasks).isNotNull();
         assertThat(tasks).hasSize(1);
 
-        assertThat(tasks.get(0).getTaskDefinitionKey()).isEqualTo("taskKey123");
+        assertThat(tasks.getFirst().getTaskDefinitionKey()).isEqualTo("taskKey123");
 
         // Contains matching, TaskKey123 matches
         tasks = taskService.createTaskQuery().taskDefinitionKeyLike("%Key12%").orderByTaskName().asc().list();
         assertThat(tasks).isNotNull();
         assertThat(tasks).hasSize(1);
 
-        assertThat(tasks.get(0).getTaskDefinitionKey()).isEqualTo("taskKey123");
+        assertThat(tasks.getFirst().getTaskDefinitionKey()).isEqualTo("taskKey123");
 
         // No task should be found with unexisting key
         Long count = taskService.createTaskQuery().taskDefinitionKeyLike("%unexistingKey%").count();
@@ -1350,7 +1350,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
         assertThat(tasks).isNotNull();
         assertThat(tasks).hasSize(2);
 
-        assertThat(tasks.get(0).getTaskDefinitionKey()).isEqualTo("taskKey1");
+        assertThat(tasks.getFirst().getTaskDefinitionKey()).isEqualTo("taskKey1");
         assertThat(tasks.get(1).getTaskDefinitionKey()).isEqualTo("taskKey123");
 
         // Starts with matching, TaskKey123 matches
@@ -1365,7 +1365,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
         assertThat(tasks).isNotNull();
         assertThat(tasks).hasSize(1);
 
-        assertThat(tasks.get(0).getTaskDefinitionKey()).isEqualTo("taskKey123");
+        assertThat(tasks.getFirst().getTaskDefinitionKey()).isEqualTo("taskKey123");
 
         // Contains matching, TaskKey123 matches
         tasks = taskService
@@ -1379,7 +1379,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
         assertThat(tasks).isNotNull();
         assertThat(tasks).hasSize(1);
 
-        assertThat(tasks.get(0).getTaskDefinitionKey()).isEqualTo("taskKey123");
+        assertThat(tasks.getFirst().getTaskDefinitionKey()).isEqualTo("taskKey123");
 
         // No task should be found with unexisting key
         Long count = taskService
@@ -2320,7 +2320,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
             .processDefinitionId(processInstance.getProcessDefinitionId())
             .list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(tasks.getFirst().getProcessInstanceId()).isEqualTo(processInstance.getId());
 
         assertThat(taskService.createTaskQuery().processDefinitionId("unexisting").count()).isEqualTo(0);
     }
@@ -2336,7 +2336,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
             .processDefinitionId(processInstance.getProcessDefinitionId())
             .list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(tasks.getFirst().getProcessInstanceId()).isEqualTo(processInstance.getId());
 
         tasks = taskService
             .createTaskQuery()
@@ -2350,7 +2350,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
             .endOr()
             .list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(tasks.getFirst().getProcessInstanceId()).isEqualTo(processInstance.getId());
 
         assertThat(
             taskService.createTaskQuery().or().taskId("invalid").processDefinitionId("unexisting").count()
@@ -2363,7 +2363,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
 
         List<Task> tasks = taskService.createTaskQuery().processDefinitionKey("oneTaskProcess").list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(tasks.getFirst().getProcessInstanceId()).isEqualTo(processInstance.getId());
 
         assertThat(taskService.createTaskQuery().processDefinitionKey("unexisting").count()).isEqualTo(0);
     }
@@ -2379,14 +2379,14 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
             .processDefinitionKey("oneTaskProcess")
             .list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(tasks.getFirst().getProcessInstanceId()).isEqualTo(processInstance.getId());
 
         assertThat(
             taskService.createTaskQuery().or().taskId("invalid").processDefinitionKey("unexisting").count()
         ).isEqualTo(0);
 
         assertThat(
-            taskService.createTaskQuery().or().taskId(taskIds.get(0)).processDefinitionKey("unexisting").endOr().count()
+            taskService.createTaskQuery().or().taskId(taskIds.getFirst()).processDefinitionKey("unexisting").endOr().count()
         ).isEqualTo(1);
     }
 
@@ -2428,7 +2428,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
 
         List<Task> tasks = taskService.createTaskQuery().processDefinitionName("The One Task Process").list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(tasks.getFirst().getProcessInstanceId()).isEqualTo(processInstance.getId());
 
         assertThat(taskService.createTaskQuery().processDefinitionName("unexisting").count()).isEqualTo(0);
     }
@@ -2444,7 +2444,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
             .processDefinitionName("The One Task Process")
             .list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(tasks.getFirst().getProcessInstanceId()).isEqualTo(processInstance.getId());
 
         assertThat(
             taskService.createTaskQuery().or().taskId("invalid").processDefinitionName("unexisting").count()
@@ -3179,7 +3179,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
             )
             .list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("gonzoTask");
+        assertThat(tasks.getFirst().getName()).isEqualTo("gonzoTask");
 
         // select with distinct
         assertThat(taskService.createNativeTaskQuery().sql("SELECT DISTINCT T1.* FROM ACT_RU_TASK T1").list()).hasSize(
@@ -3708,7 +3708,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
         assertThat(allTasks).hasSize(10);
 
         // Give two tasks a task local variable
-        taskService.setVariableLocal(allTasks.get(0).getId(), "localVar", "someValue");
+        taskService.setVariableLocal(allTasks.getFirst().getId(), "localVar", "someValue");
         taskService.setVariableLocal(allTasks.get(1).getId(), "localVar", "someValue");
 
         // Give three tasks a proc inst var
@@ -3753,8 +3753,8 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
             .processDefinitionId(processInstance.getProcessDefinitionId())
             .list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("my task");
-        assertThat(tasks.get(0).getDescription()).isEqualTo("My Task Description");
+        assertThat(tasks.getFirst().getName()).isEqualTo("my task");
+        assertThat(tasks.getFirst().getDescription()).isEqualTo("My Task Description");
 
         tasks = taskService
             .createTaskQuery()
@@ -3762,8 +3762,8 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
             .locale("es")
             .list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("Mi Tarea");
-        assertThat(tasks.get(0).getDescription()).isEqualTo("Mi Tarea Descripción");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Mi Tarea");
+        assertThat(tasks.getFirst().getDescription()).isEqualTo("Mi Tarea Descripción");
 
         ObjectNode infoNode = dynamicBpmnService.getProcessDefinitionInfo(processInstance.getProcessDefinitionId());
 
@@ -3782,8 +3782,8 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
 
         tasks = taskService.createTaskQuery().processDefinitionId(processInstance.getProcessDefinitionId()).list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("my task");
-        assertThat(tasks.get(0).getDescription()).isEqualTo("My Task Description");
+        assertThat(tasks.getFirst().getName()).isEqualTo("my task");
+        assertThat(tasks.getFirst().getDescription()).isEqualTo("My Task Description");
 
         tasks = taskService
             .createTaskQuery()
@@ -3791,8 +3791,8 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
             .locale("es")
             .list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("Mi Tarea");
-        assertThat(tasks.get(0).getDescription()).isEqualTo("Mi Tarea Descripción");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Mi Tarea");
+        assertThat(tasks.getFirst().getDescription()).isEqualTo("Mi Tarea Descripción");
 
         tasks = taskService
             .createTaskQuery()
@@ -3800,16 +3800,16 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
             .locale("en-GB")
             .list();
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("My 'en-GB' localized name");
-        assertThat(tasks.get(0).getDescription()).isEqualTo("My 'en-GB' localized description");
+        assertThat(tasks.getFirst().getName()).isEqualTo("My 'en-GB' localized name");
+        assertThat(tasks.getFirst().getDescription()).isEqualTo("My 'en-GB' localized description");
 
         tasks = taskService
             .createTaskQuery()
             .processDefinitionId(processInstance.getProcessDefinitionId())
             .listPage(0, 10);
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("my task");
-        assertThat(tasks.get(0).getDescription()).isEqualTo("My Task Description");
+        assertThat(tasks.getFirst().getName()).isEqualTo("my task");
+        assertThat(tasks.getFirst().getDescription()).isEqualTo("My Task Description");
 
         tasks = taskService
             .createTaskQuery()
@@ -3817,8 +3817,8 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
             .locale("es")
             .listPage(0, 10);
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("Mi Tarea");
-        assertThat(tasks.get(0).getDescription()).isEqualTo("Mi Tarea Descripción");
+        assertThat(tasks.getFirst().getName()).isEqualTo("Mi Tarea");
+        assertThat(tasks.getFirst().getDescription()).isEqualTo("Mi Tarea Descripción");
 
         tasks = taskService
             .createTaskQuery()
@@ -3826,8 +3826,8 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
             .locale("en-GB")
             .listPage(0, 10);
         assertThat(tasks).hasSize(1);
-        assertThat(tasks.get(0).getName()).isEqualTo("My 'en-GB' localized name");
-        assertThat(tasks.get(0).getDescription()).isEqualTo("My 'en-GB' localized description");
+        assertThat(tasks.getFirst().getName()).isEqualTo("My 'en-GB' localized name");
+        assertThat(tasks.getFirst().getDescription()).isEqualTo("My 'en-GB' localized description");
 
         Task task = taskService
             .createTaskQuery()

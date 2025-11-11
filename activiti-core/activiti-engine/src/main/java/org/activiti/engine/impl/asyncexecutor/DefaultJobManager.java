@@ -416,10 +416,10 @@ public class DefaultJobManager implements JobManager {
     protected int calculateMaxIterationsValue(String originalExpression) {
         int times = Integer.MAX_VALUE;
         List<String> expression = asList(originalExpression.split("/"));
-        if (expression.size() > 1 && expression.get(0).startsWith("R")) {
+        if (expression.size() > 1 && expression.getFirst().startsWith("R")) {
             times = Integer.MAX_VALUE;
-            if (expression.get(0).length() > 1) {
-                times = Integer.parseInt(expression.get(0).substring(1));
+            if (expression.getFirst().length() > 1) {
+                times = Integer.parseInt(expression.getFirst().substring(1));
             }
         }
         return times;
