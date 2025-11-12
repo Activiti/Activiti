@@ -23,6 +23,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -357,6 +358,8 @@ public class ProcessRuntimeImplTest {
 
         processRuntime.processDefinitions(Pageable.of(0, 2), List.of());
 
+        verify(processDefinitionQuery).startableByUser(any());
+        verify(processDefinitionQuery).startableByGroups(any());
         verify(processDefinitionQuery).listPage(0, 2);
     }
 
@@ -387,6 +390,30 @@ public class ProcessRuntimeImplTest {
 
         processRuntime.processDefinitions(pageable, payload);
 
+        verify(processDefinitionQuery).startableByUser(any());
+        verify(processDefinitionQuery).startableByGroups(any());
         verify(processDefinitionQuery).processDefinitionCategoryNotEquals(processCategory);
+    }
+
+    @Test
+    void should_includeNoUserStartableProcess_whenSearchingProcessDefinitions() {
+        given(securityPoliciesManager.restrictProcessDefQuery(any())).willReturn(
+            ProcessPayloadBuilder.processDefinitions().build()
+        );
+
+        ProcessDefinitionQuery processDefinitionQuery = mock(ProcessDefinitionQuery.class, Answers.RETURNS_SELF);
+        given(processDefinitionQuery.deploymentIds(any())).willReturn(processDefinitionQuery);
+        given(repositoryService.createDeploymentQuery()).willReturn(mock(DeploymentQuery.class, Answers.RETURNS_SELF));
+        given(repositoryService.createProcessDefinitionQuery()).willReturn(processDefinitionQuery);
+        given(processDefinitionQuery.listPage(0, 2)).willReturn(Collections.emptyList());
+
+        processRuntime.processDefinitions(Pageable.of(0, 2), List.of("noUserStartableProcesses"));
+
+        verify(securityManager, never()).getAuthenticatedUserId();
+        verify(repositoryService).createProcessDefinitionQuery();
+        verify(processDefinitionQuery, never()).startableByUser(any());
+        verify(processDefinitionQuery, never()).startableByGroups(any());
+        verify(processDefinitionQuery).listPage(0, 2);
+
     }
 }

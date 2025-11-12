@@ -67,9 +67,9 @@ public abstract class MultiInstanceActivityBehavior
     protected static final Logger LOGGER = LoggerFactory.getLogger(MultiInstanceActivityBehavior.class);
 
     // Variable names for outer instance(as described in spec)
-    protected static final String NUMBER_OF_INSTANCES = "nrOfInstances";
-    protected static final String NUMBER_OF_ACTIVE_INSTANCES = "nrOfActiveInstances";
-    protected static final String NUMBER_OF_COMPLETED_INSTANCES = "nrOfCompletedInstances";
+    public static final String NUMBER_OF_INSTANCES = "nrOfInstances";
+    public static final String NUMBER_OF_ACTIVE_INSTANCES = "nrOfActiveInstances";
+    public static final String NUMBER_OF_COMPLETED_INSTANCES = "nrOfCompletedInstances";
 
     // Instance members
     protected Activity activity;
