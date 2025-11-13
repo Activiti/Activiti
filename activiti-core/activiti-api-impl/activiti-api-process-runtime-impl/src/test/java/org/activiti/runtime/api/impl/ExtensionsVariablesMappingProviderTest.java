@@ -1110,13 +1110,13 @@ public class ExtensionsVariablesMappingProviderTest {
         );
         Extension processExtensions = extensions.getExtensions("Process_taskVarMapping");
         DelegateExecution executionEphemeralTask = buildExecution(processExtensions, "ephemeralTask");
-        DelegateExecution executionNonEphemeralTask= buildExecution(processExtensions, "nonEphemeralTaskOne");
-        DelegateExecution executionAnotherNonEphemeralTask= buildExecution(processExtensions, "nonEphemeralTaskTwo");
+        DelegateExecution implicitNonEphemeralTask= buildExecution(processExtensions, "implicitNonEphemeralTask");
+        DelegateExecution explicitNonEphemeralTask= buildExecution(processExtensions, "explicitNonEphemeralTask");
 
 
         //then
         assertThat(variablesMappingProvider.isMappingEphemeral(executionEphemeralTask)).isTrue();
-        assertThat(variablesMappingProvider.isMappingEphemeral(executionNonEphemeralTask)).isFalse();
-        assertThat(variablesMappingProvider.isMappingEphemeral(executionAnotherNonEphemeralTask)).isFalse();
+        assertThat(variablesMappingProvider.isMappingEphemeral(implicitNonEphemeralTask)).isFalse();
+        assertThat(variablesMappingProvider.isMappingEphemeral(explicitNonEphemeralTask)).isFalse();
     }
 }

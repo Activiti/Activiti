@@ -32,9 +32,9 @@
               ]
             }
           },
-          "ephemeral": "true"
+          "ephemeral": true
         },
-        "nonEphemeralTaskOne": {
+        "implicitNonEphemeralTask": {
           "inputs": {
             "task_input_variable_name_2": {
               "type": "VARIABLE",
@@ -48,7 +48,7 @@
             }
           }
         },
-        "nonEphemeralTaskTwo": {
+        "explicitNonEphemeralTask": {
           "inputs": {
             "task_input_variable_name_2": {
               "type": "VARIABLE",
@@ -61,7 +61,7 @@
               "value": "task_output_variable_name_1"
             }
           },
-          "ephemeral": "false"
+          "ephemeral": false
         }
       },
       "constants": {

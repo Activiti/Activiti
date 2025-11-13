@@ -247,7 +247,7 @@ class IntegrationContextImplTest {
     }
 
     @Test
-    void testEphemeralVariablesSetting() {
+    void should_setEphemeralVariablesProperty() {
         IntegrationContextImpl integrationContext = new IntegrationContextImpl();
 
         assertThat(integrationContext.hasEphemeralVariables()).isFalse();
@@ -263,7 +263,7 @@ class IntegrationContextImplTest {
     }
 
     @Test
-    void testCopyConstructorCopiesAllFields() {
+    void should_copyAllFields_when_copyConstructorIsUsed() {
         IntegrationContextImpl original = new IntegrationContextImpl();
         original.setProcessInstanceId("proc123");
         original.setParentProcessInstanceId("parent456");
