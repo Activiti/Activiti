@@ -304,4 +304,30 @@ class IntegrationContextImplTest {
         assertThat(copy.getInBoundVariables()).isNotSameAs(original.getInBoundVariables());
         assertThat(copy.getOutBoundVariables()).isNotSameAs(original.getOutBoundVariables());
     }
+
+    @Test
+    void should_cleanInboundVariables_when_clearInBoundVariablesIsCalled() {
+        IntegrationContextImpl integrationContext = new IntegrationContextImpl();
+        integrationContext.addInBoundVariable("key1", "value1");
+        integrationContext.addInBoundVariable("key2", "value2");
+
+        assertThat(integrationContext.getInBoundVariables()).hasSize(2);
+
+        integrationContext.clearInBoundVariables();
+
+        assertThat(integrationContext.getInBoundVariables()).isEmpty();
+    }
+
+    @Test
+    void should_cleanOutBoundVariables_when_clearOutBoundVariablesIsCalled() {
+        IntegrationContextImpl integrationContext = new IntegrationContextImpl();
+        integrationContext.addOutBoundVariable("key1", "value1");
+        integrationContext.addOutBoundVariable("key2", "value2");
+
+        assertThat(integrationContext.getOutBoundVariables()).hasSize(2);
+
+        integrationContext.clearOutBoundVariables();
+
+        assertThat(integrationContext.getOutBoundVariables()).isEmpty();
+    }
 }

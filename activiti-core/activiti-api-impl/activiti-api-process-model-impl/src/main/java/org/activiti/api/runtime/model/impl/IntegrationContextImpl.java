@@ -367,4 +367,12 @@ public class IntegrationContextImpl implements IntegrationContext {
     public boolean hasEphemeralVariables() {
         return Boolean.TRUE.equals(this.ephemeralVariables);
     }
+
+    public void clearOutBoundVariables() {
+        this.outBoundVariables.clear();
+    }
+
+    public void clearInBoundVariables() {
+        this.inBoundVariables.clear();
+    }
 }
