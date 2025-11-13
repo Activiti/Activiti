@@ -33,6 +33,7 @@ import java.util.Map;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
@@ -1250,6 +1251,29 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     Long count = taskService.createTaskQuery().or().taskId("invalid").taskDefinitionKeyLike("%unexistingKey%").count();
     assertThat(count.longValue()).isEqualTo(0L);
   }
+
+    @Deployment(resources = {"org/activiti/engine/test/api/task/TaskQueryTest.testTaskVariableValueEquals.bpmn20.xml"})
+    public void testQueryByMaxResults() {
+        // GIVEN: 5 running process instances
+        List<String> processInstancesId = new ArrayList<>();
+        for( int i=0; i<5; i++) {
+            final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+            processInstancesId.add(processInstance.getId());
+        }
+
+        // WHEN: listing, at most, 3 running process instances
+        // THEN: the result must have 3 results
+        // THEN: total number of process instances is 5
+        final List<Task> tasks = taskService.createTaskQuery().processInstanceIdIn(processInstancesId).listPage(0, 3);
+        assertThat(tasks).hasSize(3);
+        assertThat(taskService.createTaskQuery().processInstanceIdIn(processInstancesId).count()).isEqualTo(5);
+
+        // WHEN: listing, at most, 3 running process instances
+        final TaskQuery query = taskService.createTaskQuery().processInstanceIdIn(processInstancesId);
+        ((TaskQueryImpl)query).setMaxResults(3);
+        // THEN: total number of process instances is 5
+        assertThat(query.count()).isEqualTo(5);
+    }
 
   @Deployment
   public void testTaskVariableValueEquals() throws Exception {
