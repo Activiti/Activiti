@@ -50,25 +50,6 @@ import org.activiti.engine.runtime.ProcessInstance;
  */
 public class ProcessInstanceHelper {
 
-    public ProcessInstance createAndStartProcessInstance(
-        ProcessDefinition processDefinition,
-        String businessKey,
-        String processInstanceName,
-        Map<String, Object> variables,
-        Map<String, Object> transientVariables,
-        String linkedProcessInstanceId,
-        String linkedProcessInstanceType) {
-        return createAndStartProcessInstance(
-            processDefinition,
-            businessKey,
-            processInstanceName,
-            variables,
-            transientVariables,
-            true,
-            linkedProcessInstanceId,
-            linkedProcessInstanceType);
-    }
-
     public Process getActiveProcess(ProcessDefinition processDefinition) {
         if (ProcessDefinitionUtil.isProcessDefinitionSuspended(processDefinition.getId())) {
             throw new ActivitiException(
@@ -101,10 +82,43 @@ public class ProcessInstanceHelper {
         return initialFlowElement;
     }
 
+    public ProcessInstance createAndStartProcessInstance(
+        ProcessDefinition processDefinition,
+        String businessKey,
+        String processInstanceName,
+        Map<String, Object> variables,
+        Map<String, Object> transientVariables,
+        String linkedProcessInstanceId,
+        String linkedProcessInstanceType) {
+        return createAndStartProcessInstance(
+            processDefinition,
+            businessKey,
+            processInstanceName,
+            variables,
+            transientVariables,
+            true,
+            linkedProcessInstanceId,
+            linkedProcessInstanceType);
+    }
+
     protected ProcessInstance createAndStartProcessInstance(ProcessDefinition processDefinition,
-                                                            String businessKey, String processInstanceName,
-                                                            Map<String, Object> variables, Map<String, Object> transientVariables,
-                                                            boolean startProcessInstance, String linkedProcessInstanceId,
+                                                            String businessKey,
+                                                            String processInstanceName,
+                                                            Map<String, Object> variables,
+                                                            Map<String, Object> transientVariables,
+                                                            boolean startProcessInstance) {
+
+        return createAndStartProcessInstance(processDefinition, businessKey, processInstanceName,
+            variables, transientVariables, startProcessInstance, null, null);
+    }
+
+    protected ProcessInstance createAndStartProcessInstance(ProcessDefinition processDefinition,
+                                                            String businessKey,
+                                                            String processInstanceName,
+                                                            Map<String, Object> variables,
+                                                            Map<String, Object> transientVariables,
+                                                            boolean startProcessInstance,
+                                                            String linkedProcessInstanceId,
                                                             String linkedProcessInstanceType) {
 
         Process process = this.getActiveProcess(processDefinition);
@@ -122,6 +136,13 @@ public class ProcessInstanceHelper {
             startProcessInstance,
             linkedProcessInstanceId,
             linkedProcessInstanceType);
+    }
+
+    public ProcessInstance createProcessInstance(ProcessDefinition processDefinition, String businessKey,
+                                                 String processInstanceName, Map<String, Object> variables,
+                                                 Map<String, Object> transientVariables) {
+        return this.createProcessInstance(processDefinition, businessKey, processInstanceName, variables,
+            transientVariables, null, null);
     }
 
     public ProcessInstance createProcessInstance(ProcessDefinition processDefinition, String businessKey,
@@ -219,6 +240,20 @@ public class ProcessInstanceHelper {
     private void updateProcessInstanceStartDate(ExecutionEntity processInstance) {
         CommandContext commandContext = Context.getCommandContext();
         commandContext.getExecutionEntityManager().updateProcessInstanceStartDate(processInstance);
+    }
+
+    public ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(
+        ProcessDefinition processDefinition,
+        String businessKey,
+        String processInstanceName,
+        FlowElement initialFlowElement,
+        Process process,
+        Map<String, Object> variables,
+        Map<String, Object> transientVariables,
+        boolean startProcessInstance
+    ) {
+        return this.createAndStartProcessInstanceWithInitialFlowElement(processDefinition, businessKey, processInstanceName,
+            initialFlowElement, process, variables, transientVariables, startProcessInstance);
     }
 
     public ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(
