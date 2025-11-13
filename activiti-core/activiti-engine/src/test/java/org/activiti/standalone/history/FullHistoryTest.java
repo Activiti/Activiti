@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -36,9 +37,11 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableInstanceQuery;
 import org.activiti.engine.history.HistoricVariableUpdate;
+import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.impl.variable.EntityManagerSession;
 import org.activiti.engine.impl.variable.EntityManagerSessionFactory;
@@ -592,6 +595,30 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
 
         assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
             .isThrownBy(() -> historyService.createHistoricDetailQuery().orderByVariableType().list());
+    }
+
+    @Deployment(resources = {"org/activiti/standalone/history/FullHistoryTest.testHistoricTaskInstanceVariableUpdates.bpmn20.xml"})
+    public void testHistoricTaskInstanceWithMaxResults() {
+        // GIVEN: 5 running process
+        List<String> processInstanceIds = new ArrayList<>();
+        for (int i=0;i<5;i++) {
+            final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest");
+            processInstanceIds.add(processInstance.getId());
+        }
+
+        // WHEN: listing, at most, 3 running process instances
+        // THEN: the result must have 3 results
+        // THEN: total number of process instances is 5
+        final List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery().listPage(0, 3);
+        assertThat(tasks).hasSize(3);
+        assertThat(historyService.createHistoricTaskInstanceQuery().count()).isEqualTo(5);
+
+        // WHEN: listing, at most, 3 running process instances
+        final HistoricTaskInstanceQuery query = historyService.createHistoricTaskInstanceQuery();
+        ((HistoricTaskInstanceQueryImpl)query).setMaxResults(3);
+        // THEN: total number of process instances is 5
+        assertThat(query.count()).isEqualTo(5);
+
     }
 
     @Deployment
