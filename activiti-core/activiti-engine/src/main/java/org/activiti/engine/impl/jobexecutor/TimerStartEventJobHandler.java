@@ -77,9 +77,7 @@ public class TimerStartEventJobHandler extends TimerEventHandler implements JobH
                         process,
                         new HashMap<>(),
                         null,
-                        true,
-                        null,
-                        null
+                        true
                     );
                 } else {
                     new StartProcessInstanceCmd(
