@@ -711,10 +711,10 @@
   <sql id="orderBy">
     <choose>
       <when test="${isCount}">
-        ${v3_limitAfter_withoutRank}
+        ${v3_after_withoutLimit}
       </when>
       <otherwise>
-        ${v3_limitAfter}
+        ${v3_after_withLimit}
         ORDER BY rnk
       </otherwise>
     </choose>
