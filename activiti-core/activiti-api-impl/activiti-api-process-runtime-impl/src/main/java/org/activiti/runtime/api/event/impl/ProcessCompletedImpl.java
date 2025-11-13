@@ -20,13 +20,25 @@ import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.api.runtime.event.impl.RuntimeEventImpl;
 
+import static org.activiti.engine.impl.persistence.entity.ExecutionEntityManagerImpl.SERVICE_USER;
+
+
 public class ProcessCompletedImpl
     extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>
     implements ProcessCompletedEvent {
 
+    private final String actor;
+
     public ProcessCompletedImpl(ProcessInstance entity) {
         super(entity);
         setProcessInstanceId(entity.getId());
+        this.actor = SERVICE_USER;
+    }
+
+    public ProcessCompletedImpl(ProcessInstance entity, String actor) {
+        super(entity);
+        setProcessInstanceId(entity.getId());
+        this.actor = actor;
     }
 
     @Override
@@ -37,5 +49,10 @@ public class ProcessCompletedImpl
     @Override
     public String toString() {
         return "ProcessCompletedEventImpl{" + super.toString() + '}';
+    }
+
+    @Override
+    public String getActor() {
+        return actor;
     }
 }
