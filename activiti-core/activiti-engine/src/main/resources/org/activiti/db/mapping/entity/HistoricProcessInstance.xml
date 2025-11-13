@@ -709,12 +709,15 @@
   </sql>
 
   <sql id="orderBy">
-    <if test="'${v3_limitAfter}' != null">
-      ${v3_limitAfter}
-      <if test="${isCount} != true">
+    <choose>
+      <when test="${isCount}">
+        ${v3_limitAfter_withoutRank}
+      </when>
+      <otherwise>
+        ${v3_limitAfter}
         ORDER BY rnk
-      </if>
-    </if>
+      </otherwise>
+    </choose>
   </sql>
 
   <sql id="selectHistoricProcessInstancesByQueryCriteria">
