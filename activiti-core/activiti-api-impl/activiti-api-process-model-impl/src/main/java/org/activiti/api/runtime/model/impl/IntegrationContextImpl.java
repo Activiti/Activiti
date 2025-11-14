@@ -49,26 +49,24 @@ public class IntegrationContextImpl implements IntegrationContext {
         this.id = UUID.randomUUID().toString();
     }
 
-    public IntegrationContextImpl(IntegrationContextImpl other) {
-        this.id = other.id;
-        this.inBoundVariables = new ProcessVariablesMap<>();
-        this.inBoundVariables.putAll(other.inBoundVariables);
-        this.outBoundVariables = new ProcessVariablesMap<>();
-        this.outBoundVariables.putAll(other.outBoundVariables);
-        this.processInstanceId = other.processInstanceId;
-        this.parentProcessInstanceId = other.parentProcessInstanceId;
-        this.rootProcessInstanceId = other.rootProcessInstanceId;
-        this.processDefinitionId = other.processDefinitionId;
-        this.executionId = other.executionId;
-        this.processDefinitionKey = other.processDefinitionKey;
-        this.processDefinitionVersion = other.processDefinitionVersion;
-        this.businessKey = other.businessKey;
-        this.clientId = other.clientId;
-        this.clientName = other.clientName;
-        this.clientType = other.clientType;
-        this.appVersion = other.appVersion;
-        this.connectorType = other.connectorType;
-        this.ephemeralVariables = other.ephemeralVariables;
+    public IntegrationContextImpl(IntegrationContext other) {
+        this.id = other.getId();
+        this.inBoundVariables.putAll(other.getInBoundVariables());
+        this.outBoundVariables.putAll(other.getOutBoundVariables());
+        this.processInstanceId = other.getProcessInstanceId();
+        this.parentProcessInstanceId = other.getParentProcessInstanceId();
+        this.rootProcessInstanceId = other.getRootProcessInstanceId();
+        this.processDefinitionId = other.getProcessDefinitionId();
+        this.executionId = other.getExecutionId();
+        this.processDefinitionKey = other.getProcessDefinitionKey();
+        this.processDefinitionVersion = other.getProcessDefinitionVersion();
+        this.businessKey = other.getBusinessKey();
+        this.clientId = other.getClientId();
+        this.clientName = other.getClientName();
+        this.clientType = other.getClientType();
+        this.appVersion = other.getAppVersion();
+        this.connectorType = other.getConnectorType();
+        this.ephemeralVariables = other.hasEphemeralVariables();
     }
 
     @Override
