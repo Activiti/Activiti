@@ -196,14 +196,14 @@
     <maven.compiler.target>${java.version}</maven.compiler.target>
 
     <!-- versions -->
-    <asm.version>9.7.1</asm.version>
+    <asm.version>9.9</asm.version>
     <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
     <dependency-check-maven.version>12.1.5</dependency-check-maven.version>
-    <exec-maven-plugin.version>3.5.1</exec-maven-plugin.version>
+    <exec-maven-plugin.version>3.6.2</exec-maven-plugin.version>
     <extra-enforcer-rules.version>1.10.0</extra-enforcer-rules.version>
-    <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
     <license-maven-plugin.version>5.0.0</license-maven-plugin.version>
-    <third-party-license-maven-plugin.version>2.6.0</third-party-license-maven-plugin.version>
+    <third-party-license-maven-plugin.version>2.7.0</third-party-license-maven-plugin.version>
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
@@ -215,17 +215,17 @@
     <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
     <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
     <maven-jxr-plugin.version>3.6.0</maven-jxr-plugin.version>
-    <maven-pmd-plugin.version>3.27.0</maven-pmd-plugin.version>
+    <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
     <maven-project-info-reports-plugin.version>3.9.0</maven-project-info-reports-plugin.version>
-    <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
+    <maven-release-plugin.version>3.2.0</maven-release-plugin.version>
     <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
     <maven-site-plugin.version>3.21.0</maven-site-plugin.version>
     <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
     <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
-    <spring-boot.version>3.5.6</spring-boot.version>
+    <spring-boot.version>3.5.7</spring-boot.version>
     <h2.version>2.4.240</h2.version>
     <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
-    <versions-maven-plugin.version>2.18.0</versions-maven-plugin.version>
+    <versions-maven-plugin.version>2.19.1</versions-maven-plugin.version>
 
     <!-- configuration properties for tests -->
     <generated-assertions-folder>
@@ -239,7 +239,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.18.0</version>
+        <version>3.19.0</version>
       </dependency>
       <!-- temporary security fix -->
       <!-- temporary security fix AAE-32649 -->
