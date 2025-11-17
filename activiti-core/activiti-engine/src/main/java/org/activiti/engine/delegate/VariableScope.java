@@ -65,7 +65,7 @@ public interface VariableScope {
      * variables should be fetched when fetching the specific variables.
      *
      * If set to false, only the specific variables will be fetched.
-     * Dependening on the use case, this can be better for performance, as it avoids fetching and processing
+     * Depending on the use case, this can be better for performance, as it avoids fetching and processing
      * the other variables. However, if the other variables are needed further on, getting them in
      * one go is probably better (and the variables are cached during one {@link Command} execution).
      */
