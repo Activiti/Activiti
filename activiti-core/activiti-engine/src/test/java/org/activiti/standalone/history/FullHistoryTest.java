@@ -606,19 +606,12 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
             processInstanceIds.add(processInstance.getId());
         }
 
+        final HistoricTaskInstanceQuery query = historyService.createHistoricTaskInstanceQuery();
         // WHEN: listing, at most, 3 running process instances
         // THEN: the result must have 3 results
-        // THEN: total number of process instances is 5
-        final List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery().listPage(0, 3);
-        assertThat(tasks).hasSize(3);
-        assertThat(historyService.createHistoricTaskInstanceQuery().count()).isEqualTo(5);
-
-        // WHEN: listing, at most, 3 running process instances
-        final HistoricTaskInstanceQuery query = historyService.createHistoricTaskInstanceQuery();
-        ((HistoricTaskInstanceQueryImpl)query).setMaxResults(3);
+        assertThat(query.listPage(0,3)).hasSize(3);
         // THEN: total number of process instances is 5
         assertThat(query.count()).isEqualTo(5);
-
     }
 
     @Deployment

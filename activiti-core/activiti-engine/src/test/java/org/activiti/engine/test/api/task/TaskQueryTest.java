@@ -1261,16 +1261,10 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
             processInstancesId.add(processInstance.getId());
         }
 
+        final TaskQuery query = taskService.createTaskQuery().processInstanceIdIn(processInstancesId);
         // WHEN: listing, at most, 3 running process instances
         // THEN: the result must have 3 results
-        // THEN: total number of process instances is 5
-        final List<Task> tasks = taskService.createTaskQuery().processInstanceIdIn(processInstancesId).listPage(0, 3);
-        assertThat(tasks).hasSize(3);
-        assertThat(taskService.createTaskQuery().processInstanceIdIn(processInstancesId).count()).isEqualTo(5);
-
-        // WHEN: listing, at most, 3 running process instances
-        final TaskQuery query = taskService.createTaskQuery().processInstanceIdIn(processInstancesId);
-        ((TaskQueryImpl)query).setMaxResults(3);
+        assertThat(query.listPage(0, 3)).hasSize(3);
         // THEN: total number of process instances is 5
         assertThat(query.count()).isEqualTo(5);
     }

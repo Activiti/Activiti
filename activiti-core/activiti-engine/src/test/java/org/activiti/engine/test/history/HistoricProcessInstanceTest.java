@@ -49,15 +49,10 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
             runtimeService.startProcessInstanceByKey("oneTaskProcess", "myBusinessKey");
         }
 
+        final HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery();
         // WHEN: listing, at most, 3 running process instances
         // THEN: the result must have 3 results
-        // THEN: total number of process instances is 5
-        assertThat(historyService.createHistoricProcessInstanceQuery().listPage(0, 3)).hasSize(3);
-        assertThat(historyService.createHistoricProcessInstanceQuery().count()).isEqualTo(5);
-
-        // WHEN: listing, at most, 3 running process instances
-        final HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceStartTime().desc();
-        ((HistoricProcessInstanceQueryImpl)query).setMaxResults(3);
+        assertThat(query.listPage(0, 3)).hasSize(3);
         // THEN: total number of process instances is 5
         assertThat(query.count()).isEqualTo(5);
     }
