@@ -27,7 +27,7 @@ jobs:
     steps:
       - name: Trigger validation on approval
         if: github.event_name == 'pull_request_review'
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-trigger-approved-pr@de5e037bf9a2ac174c1993dab82002a2278a6506 # v9.3.2
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-trigger-approved-pr@8222464f96aac2087ae1b5669b9ba74b252c4aca # v9.4.1
         with:
           creator: ${{ env.DEPENDABOT_CREATOR }}
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
@@ -36,7 +36,7 @@ jobs:
 
       - name: Trigger validation on labeling, unless token is readonly (dependabot/fork)
         if: github.event_name == 'pull_request' && github.event.action == 'labeled' && github.secret_source == 'Actions'
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-trigger-labeled-pr@de5e037bf9a2ac174c1993dab82002a2278a6506 # v9.3.2
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-trigger-labeled-pr@8222464f96aac2087ae1b5669b9ba74b252c4aca # v9.4.1
         with:
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           labels: ${{ env.TRIGGER_LABELS }}
