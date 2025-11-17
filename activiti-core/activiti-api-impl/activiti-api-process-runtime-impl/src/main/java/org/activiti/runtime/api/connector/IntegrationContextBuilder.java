@@ -92,6 +92,7 @@ public class IntegrationContextBuilder {
         }
 
         integrationContext.addInBoundVariables(inboundVariablesProvider.calculateInputVariables(execution));
+        integrationContext.setEphemeralVariables(inboundVariablesProvider.isMappingEphemeral(execution));
 
         return integrationContext;
     }
@@ -109,4 +110,5 @@ public class IntegrationContextBuilder {
 
         return clientName;
     }
+
 }
