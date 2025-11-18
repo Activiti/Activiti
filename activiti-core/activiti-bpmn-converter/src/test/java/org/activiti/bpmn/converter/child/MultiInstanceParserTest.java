@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,40 +34,45 @@ public class MultiInstanceParserTest {
 
     @Test
     public void parseChildElement_should_setLoopCharacteristicsProperties() throws Exception {
-        try (InputStream xmlStream = this.getClass().getClassLoader()
-            .getResourceAsStream("multi-instance-loop-characteristics.xml")) {
+        try (
+            InputStream xmlStream = this.getClass()
+                .getClassLoader()
+                .getResourceAsStream("multi-instance-loop-characteristics.xml")
+        ) {
             XMLStreamReader xtr = xif.createXMLStreamReader(xmlStream, "UTF-8");
             xtr.next();
 
             UserTask userTask = new UserTask();
             parser.parseChildElement(xtr, userTask, null);
 
-            MultiInstanceLoopCharacteristics loopCharacteristics = userTask
-                .getLoopCharacteristics();
+            MultiInstanceLoopCharacteristics loopCharacteristics = userTask.getLoopCharacteristics();
 
             assertThat(loopCharacteristics).isNotNull();
             assertThat(loopCharacteristics.isSequential()).isFalse();
             assertThat(loopCharacteristics.getInputDataItem()).isEqualTo("assigneeList");
             assertThat(loopCharacteristics.getElementVariable()).isEqualTo("assignee");
-            assertThat(loopCharacteristics.getCompletionCondition()).isEqualTo("${nrOfCompletedInstances/nrOfInstances >= 0.6 }");
+            assertThat(loopCharacteristics.getCompletionCondition()).isEqualTo(
+                "${nrOfCompletedInstances/nrOfInstances >= 0.6 }"
+            );
             assertThat(loopCharacteristics.getLoopDataOutputRef()).isEqualTo("meals");
             assertThat(loopCharacteristics.getOutputDataItem()).isEqualTo("meal");
         }
-
     }
 
     @Test
     public void parseChildElement_should_setActivitiExtensionsElements() throws Exception {
-        try (InputStream xmlStream = this.getClass().getClassLoader()
-            .getResourceAsStream("multi-instance-loop-characteristics-extensions.xml")) {
+        try (
+            InputStream xmlStream = this.getClass()
+                .getClassLoader()
+                .getResourceAsStream("multi-instance-loop-characteristics-extensions.xml")
+        ) {
             XMLStreamReader xtr = xif.createXMLStreamReader(xmlStream, "UTF-8");
             moveReaderToMultiInstanceLine(xtr);
 
             UserTask userTask = new UserTask();
             parser.parseChildElement(xtr, userTask, null);
 
-            MultiInstanceLoopCharacteristics loopCharacteristics = userTask
-                .getLoopCharacteristics();
+            MultiInstanceLoopCharacteristics loopCharacteristics = userTask.getLoopCharacteristics();
 
             assertThat(loopCharacteristics).isNotNull();
             assertThat(loopCharacteristics.isSequential()).isTrue();
@@ -75,7 +80,6 @@ public class MultiInstanceParserTest {
             assertThat(loopCharacteristics.getElementVariable()).isEqualTo("assignee");
             assertThat(loopCharacteristics.getElementIndexVariable()).isEqualTo("loopValueIndex");
         }
-
     }
 
     private void moveReaderToMultiInstanceLine(XMLStreamReader xtr) throws XMLStreamException {

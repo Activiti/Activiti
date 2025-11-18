@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,21 @@
  */
 package org.activiti.runtime.api.event.impl;
 
-import org.activiti.engine.task.IdentityLink;
-
 import static org.activiti.engine.task.IdentityLinkType.CANDIDATE;
+
+import org.activiti.engine.task.IdentityLink;
 
 public class TaskCandidateEventConverterHelper {
 
     public boolean isTaskCandidateUserLink(IdentityLink identityLink) {
-        return isTaskCandidateLink(identityLink) &&
-                identityLink.getUserId() != null;
+        return isTaskCandidateLink(identityLink) && identityLink.getUserId() != null;
     }
 
     public boolean isTaskCandidateGroupLink(IdentityLink identityLink) {
-        return isTaskCandidateLink(identityLink) &&
-                identityLink.getGroupId() != null;
+        return isTaskCandidateLink(identityLink) && identityLink.getGroupId() != null;
     }
 
     private boolean isTaskCandidateLink(IdentityLink identityLink) {
-        return identityLink.getTaskId() != null &&
-                CANDIDATE.equalsIgnoreCase(identityLink.getType());
+        return identityLink.getTaskId() != null && CANDIDATE.equalsIgnoreCase(identityLink.getType());
     }
 }

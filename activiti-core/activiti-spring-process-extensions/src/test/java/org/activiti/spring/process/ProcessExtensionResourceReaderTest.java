@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 package org.activiti.spring.process;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 public class ProcessExtensionResourceReaderTest {
@@ -30,14 +30,13 @@ public class ProcessExtensionResourceReaderTest {
 
     @Test
     public void shouldSelectFileWithSuffixHyphenExtensionsDotJson() {
-        assertThat(reader.getResourceNameSelector().test("any-path/to/my-extension/my-process-extensions.json"))
-                .isTrue();
+        assertThat(
+            reader.getResourceNameSelector().test("any-path/to/my-extension/my-process-extensions.json")
+        ).isTrue();
     }
 
     @Test
     public void shouldNotSelectSelectJsonFileWithoutSuffixHyphenExtensionsDotJson() {
-        assertThat(reader.getResourceNameSelector().test("any-path/to/my-extension/my-process-other.json"))
-                .isFalse();
+        assertThat(reader.getResourceNameSelector().test("any-path/to/my-extension/my-process-other.json")).isFalse();
     }
-
 }

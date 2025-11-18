@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,15 @@
  */
 package org.activiti.api.process.model.results;
 
-
-import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.model.shared.Payload;
 import org.activiti.api.model.shared.Result;
+import org.activiti.api.process.model.ProcessInstance;
 
 public class ProcessInstanceResult extends Result<ProcessInstance> {
 
-    public ProcessInstanceResult() {
-    }
+    public ProcessInstanceResult() {}
 
-    public ProcessInstanceResult(Payload payload,
-                                 ProcessInstance entity) {
-        super(payload,
-              entity);
+    public ProcessInstanceResult(Payload payload, ProcessInstance entity) {
+        super(payload, entity);
     }
 }

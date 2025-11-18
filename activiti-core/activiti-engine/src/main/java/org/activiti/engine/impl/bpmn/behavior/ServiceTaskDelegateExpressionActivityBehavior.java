@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.behavior;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.List;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.DynamicBpmnConstants;
@@ -36,97 +35,127 @@ import org.activiti.engine.impl.delegate.TriggerableActivityBehavior;
 import org.activiti.engine.impl.delegate.invocation.JavaDelegateInvocation;
 import org.apache.commons.lang3.StringUtils;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 /**
  * {@link ActivityBehavior} used when 'delegateExpression' is used for a serviceTask.
  *
  */
 public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityBehavior {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String serviceTaskId;
-  protected Expression expression;
-  protected Expression skipExpression;
-  private final List<FieldDeclaration> fieldDeclarations;
+    protected String serviceTaskId;
+    protected Expression expression;
+    protected Expression skipExpression;
+    private final List<FieldDeclaration> fieldDeclarations;
 
-  public ServiceTaskDelegateExpressionActivityBehavior(String serviceTaskId, Expression expression, Expression skipExpression, List<FieldDeclaration> fieldDeclarations) {
-    this.serviceTaskId = serviceTaskId;
-    this.expression = expression;
-    this.skipExpression = skipExpression;
-    this.fieldDeclarations = fieldDeclarations;
-  }
-
-  @Override
-  public void trigger(DelegateExecution execution, String signalName, Object signalData) {
-    Object delegate = DelegateExpressionUtil.resolveDelegateExpression(expression, execution, fieldDeclarations);
-    if (delegate instanceof DelegateExecutionFunction) {
-        leave(execution);
-    } else if (delegate instanceof TriggerableActivityBehavior behavior) {
-      behavior.trigger(execution, signalName, signalData);
+    public ServiceTaskDelegateExpressionActivityBehavior(
+        String serviceTaskId,
+        Expression expression,
+        Expression skipExpression,
+        List<FieldDeclaration> fieldDeclarations
+    ) {
+        this.serviceTaskId = serviceTaskId;
+        this.expression = expression;
+        this.skipExpression = skipExpression;
+        this.fieldDeclarations = fieldDeclarations;
     }
-  }
 
-  public void execute(DelegateExecution execution) {
-
-    try {
-      boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
-      if (!isSkipExpressionEnabled || (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
-
-        if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {
-          ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(serviceTaskId, execution.getProcessDefinitionId());
-          if (taskElementProperties != null && taskElementProperties.has(DynamicBpmnConstants.SERVICE_TASK_DELEGATE_EXPRESSION)) {
-            String overrideExpression = taskElementProperties.get(DynamicBpmnConstants.SERVICE_TASK_DELEGATE_EXPRESSION).asText();
-            if (StringUtils.isNotEmpty(overrideExpression) && !overrideExpression.equals(expression.getExpressionText())) {
-              expression = Context.getProcessEngineConfiguration().getExpressionManager().createExpression(overrideExpression);
-            }
-          }
-        }
-
+    @Override
+    public void trigger(DelegateExecution execution, String signalName, Object signalData) {
         Object delegate = DelegateExpressionUtil.resolveDelegateExpression(expression, execution, fieldDeclarations);
-        switch (delegate) {
-            case DelegateExecutionFunction function -> {
-                DelegateExecutionOutcome outcome = function.apply(execution);
-                if (outcome == DelegateExecutionOutcome.LEAVE_EXECUTION) {
-                    leave(execution);
+        if (delegate instanceof DelegateExecutionFunction) {
+            leave(execution);
+        } else if (delegate instanceof TriggerableActivityBehavior behavior) {
+            behavior.trigger(execution, signalName, signalData);
+        }
+    }
+
+    public void execute(DelegateExecution execution) {
+        try {
+            boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
+            if (
+                !isSkipExpressionEnabled ||
+                (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))
+            ) {
+                if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {
+                    ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(
+                        serviceTaskId,
+                        execution.getProcessDefinitionId()
+                    );
+                    if (
+                        taskElementProperties != null &&
+                        taskElementProperties.has(DynamicBpmnConstants.SERVICE_TASK_DELEGATE_EXPRESSION)
+                    ) {
+                        String overrideExpression = taskElementProperties
+                            .get(DynamicBpmnConstants.SERVICE_TASK_DELEGATE_EXPRESSION)
+                            .asText();
+                        if (
+                            StringUtils.isNotEmpty(overrideExpression) &&
+                            !overrideExpression.equals(expression.getExpressionText())
+                        ) {
+                            expression = Context.getProcessEngineConfiguration()
+                                .getExpressionManager()
+                                .createExpression(overrideExpression);
+                        }
+                    }
                 }
-            }
-            case ActivityBehavior activityBehavior -> {
-                if (delegate instanceof AbstractBpmnActivityBehavior behavior) {
-                    behavior.setMultiInstanceActivityBehavior(getMultiInstanceActivityBehavior());
+
+                Object delegate = DelegateExpressionUtil.resolveDelegateExpression(
+                    expression,
+                    execution,
+                    fieldDeclarations
+                );
+                switch (delegate) {
+                    case DelegateExecutionFunction function -> {
+                        DelegateExecutionOutcome outcome = function.apply(execution);
+                        if (outcome == DelegateExecutionOutcome.LEAVE_EXECUTION) {
+                            leave(execution);
+                        }
+                    }
+                    case ActivityBehavior activityBehavior -> {
+                        if (delegate instanceof AbstractBpmnActivityBehavior behavior) {
+                            behavior.setMultiInstanceActivityBehavior(getMultiInstanceActivityBehavior());
+                        }
+                        Context.getProcessEngineConfiguration()
+                            .getDelegateInterceptor()
+                            .handleInvocation(new ActivityBehaviorInvocation(activityBehavior, execution));
+                    }
+                    case JavaDelegate javaDelegate -> {
+                        Context.getProcessEngineConfiguration()
+                            .getDelegateInterceptor()
+                            .handleInvocation(new JavaDelegateInvocation(javaDelegate, execution));
+                        leave(execution);
+                    }
+                    case null, default -> throw new ActivitiIllegalArgumentException(
+                        "The resolved delegate expression " +
+                        expression +
+                        " should be an implementation of one of " +
+                        ActivityBehavior.class +
+                        ", " +
+                        JavaDelegate.class +
+                        " or " +
+                        DelegateExecutionFunction.class
+                    );
                 }
-                Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new ActivityBehaviorInvocation(activityBehavior, execution));
-            }
-            case JavaDelegate javaDelegate -> {
-                Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new JavaDelegateInvocation(javaDelegate, execution));
+            } else {
                 leave(execution);
             }
-            case null, default ->
-                throw new ActivitiIllegalArgumentException("The resolved delegate expression " + expression + " should be an implementation of one of " + ActivityBehavior.class + ", " + JavaDelegate.class + " or " + DelegateExecutionFunction.class);
+        } catch (Exception exc) {
+            Throwable cause = exc;
+            BpmnError error = null;
+            while (cause != null) {
+                if (cause instanceof BpmnError) {
+                    error = (BpmnError) cause;
+                    break;
+                }
+                cause = cause.getCause();
+            }
+
+            if (error != null) {
+                ErrorPropagation.propagateError(error, execution);
+            } else {
+                throw new ActivitiException(exc.getMessage(), exc);
+            }
         }
-      } else {
-        leave(execution);
-      }
-    } catch (Exception exc) {
-
-      Throwable cause = exc;
-      BpmnError error = null;
-      while (cause != null) {
-        if (cause instanceof BpmnError) {
-          error = (BpmnError) cause;
-          break;
-        }
-        cause = cause.getCause();
-      }
-
-      if (error != null) {
-        ErrorPropagation.propagateError(error, execution);
-      } else {
-        throw new ActivitiException(exc.getMessage(), exc);
-      }
-
     }
-  }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,10 @@ public class ExecutionElResolver implements VariableScopeItemELResolver {
 
     @Override
     public boolean canResolve(String property, VariableScope variableScope) {
-        return EXECUTION_KEY.equals(property) &&
-            (variableScope instanceof ExecutionEntity || variableScope instanceof TaskEntity);
+        return (
+            EXECUTION_KEY.equals(property) &&
+            (variableScope instanceof ExecutionEntity || variableScope instanceof TaskEntity)
+        );
     }
 
     @Override

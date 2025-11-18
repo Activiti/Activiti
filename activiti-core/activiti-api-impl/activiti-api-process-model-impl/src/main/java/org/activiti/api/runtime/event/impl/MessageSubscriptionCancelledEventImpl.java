@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,14 @@ import org.activiti.api.process.model.MessageSubscription;
 import org.activiti.api.process.model.events.MessageSubscriptionCancelledEvent;
 import org.activiti.api.process.model.events.MessageSubscriptionEvent;
 
-public class MessageSubscriptionCancelledEventImpl extends RuntimeEventImpl<MessageSubscription, MessageSubscriptionEvent.MessageSubscriptionEvents>
-                                                   implements MessageSubscriptionCancelledEvent {
+public class MessageSubscriptionCancelledEventImpl
+    extends RuntimeEventImpl<MessageSubscription, MessageSubscriptionEvent.MessageSubscriptionEvents>
+    implements MessageSubscriptionCancelledEvent {
 
-    public MessageSubscriptionCancelledEventImpl() {
-    }
+    public MessageSubscriptionCancelledEventImpl() {}
 
     public MessageSubscriptionCancelledEventImpl(MessageSubscription entity) {
         super(entity);
-
         setProcessInstanceId(entity.getProcessInstanceId());
         setProcessDefinitionId(entity.getProcessDefinitionId());
     }

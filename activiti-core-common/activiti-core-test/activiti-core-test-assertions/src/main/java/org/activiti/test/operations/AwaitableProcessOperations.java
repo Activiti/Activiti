@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,17 +27,15 @@ public class AwaitableProcessOperations implements ProcessOperations {
     private ProcessOperations processOperations;
     private boolean awaitEnabled;
 
-    public AwaitableProcessOperations(ProcessOperations processOperations,
-                                      boolean awaitEnabled) {
+    public AwaitableProcessOperations(ProcessOperations processOperations, boolean awaitEnabled) {
         this.processOperations = processOperations;
         this.awaitEnabled = awaitEnabled;
     }
 
     @Override
-    public ProcessInstanceAssertions start(StartProcessPayload startProcessPayload)  {
-
+    public ProcessInstanceAssertions start(StartProcessPayload startProcessPayload) {
         ProcessInstanceAssertions processInstanceAssertions = processOperations.start(startProcessPayload);
-        if (awaitEnabled){
+        if (awaitEnabled) {
             processInstanceAssertions = new AwaitProcessInstanceAssertions(processInstanceAssertions);
         }
         return processInstanceAssertions;
@@ -51,6 +49,4 @@ public class AwaitableProcessOperations implements ProcessOperations {
         }
         return signalAssertions;
     }
-
-
 }

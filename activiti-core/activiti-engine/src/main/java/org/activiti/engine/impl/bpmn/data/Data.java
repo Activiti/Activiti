@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.data;
 
 /**
@@ -23,27 +22,27 @@ package org.activiti.engine.impl.bpmn.data;
  */
 public class Data {
 
-  protected String id;
+    protected String id;
 
-  protected String name;
+    protected String name;
 
-  protected ItemDefinition definition;
+    protected ItemDefinition definition;
 
-  public Data(String id, String name, ItemDefinition definition) {
-    this.id = id;
-    this.name = name;
-    this.definition = definition;
-  }
+    public Data(String id, String name, ItemDefinition definition) {
+        this.id = id;
+        this.name = name;
+        this.definition = definition;
+    }
 
-  public String getId() {
-    return this.id;
-  }
+    public String getId() {
+        return this.id;
+    }
 
-  public String getName() {
-    return this.name;
-  }
+    public String getName() {
+        return this.name;
+    }
 
-  public ItemDefinition getDefinition() {
-    return this.definition;
-  }
+    public ItemDefinition getDefinition() {
+        return this.definition;
+    }
 }

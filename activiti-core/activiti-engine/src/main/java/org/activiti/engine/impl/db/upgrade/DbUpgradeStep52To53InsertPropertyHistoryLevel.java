@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.db.upgrade;
 
 import org.activiti.engine.impl.db.DbSqlSession;
@@ -24,16 +22,14 @@ import org.activiti.engine.impl.db.DbSqlSession;
  */
 public class DbUpgradeStep52To53InsertPropertyHistoryLevel implements DbUpgradeStep {
 
-  public void execute(DbSqlSession dbSqlSession) throws Exception {
-    // As of 5.11, the history-setting is no longer stored in the database,
-    // so inserting it in this upgrade and removing
-    // in a 5.10->5.11 upgrade is useless...
-
-    // int historyLevel =
-    // Context.getProcessEngineConfiguration().getHistoryLevel();
-    // PropertyEntity property = new PropertyEntity("historyLevel",
-    // Integer.toString(historyLevel));
-    // dbSqlSession.insert(property);
-  }
-
+    public void execute(DbSqlSession dbSqlSession) throws Exception {
+        // As of 5.11, the history-setting is no longer stored in the database,
+        // so inserting it in this upgrade and removing
+        // in a 5.10->5.11 upgrade is useless...
+        // int historyLevel =
+        // Context.getProcessEngineConfiguration().getHistoryLevel();
+        // PropertyEntity property = new PropertyEntity("historyLevel",
+        // Integer.toString(historyLevel));
+        // dbSqlSession.insert(property);
+    }
 }

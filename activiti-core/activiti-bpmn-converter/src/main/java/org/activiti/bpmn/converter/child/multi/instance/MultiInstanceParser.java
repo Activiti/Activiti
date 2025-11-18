@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,14 +32,17 @@ public class MultiInstanceParser extends BaseChildElementParser {
     private final List<ElementParser<MultiInstanceLoopCharacteristics>> multiInstanceElementParsers;
 
     public MultiInstanceParser() {
-        this(asList(new LoopCardinalityParser(),
-            new MultiInstanceDataInputParser(),
-            new MultiInstanceInputDataItemParser(),
-            new MultiInstanceCompletionConditionParser(),
-            new LoopDataOutputRefParser(),
-            new MultiInstanceOutputDataItemParser(),
-            new MultiInstanceAttributesParser()
-        ));
+        this(
+            asList(
+                new LoopCardinalityParser(),
+                new MultiInstanceDataInputParser(),
+                new MultiInstanceInputDataItemParser(),
+                new MultiInstanceCompletionConditionParser(),
+                new LoopDataOutputRefParser(),
+                new MultiInstanceOutputDataItemParser(),
+                new MultiInstanceAttributesParser()
+            )
+        );
     }
 
     public MultiInstanceParser(List<ElementParser<MultiInstanceLoopCharacteristics>> multiInstanceElementParsers) {
@@ -50,9 +53,7 @@ public class MultiInstanceParser extends BaseChildElementParser {
         return ELEMENT_MULTIINSTANCE;
     }
 
-    public void parseChildElement(XMLStreamReader xtr,
-                                  BaseElement parentElement,
-                                  BpmnModel model) throws Exception {
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
         if (!(parentElement instanceof Activity)) {
             return;
         }
@@ -64,8 +65,7 @@ public class MultiInstanceParser extends BaseChildElementParser {
         ((Activity) parentElement).setLoopCharacteristics(multiInstanceDef);
     }
 
-    private void parseMultiInstanceProperties(XMLStreamReader xtr,
-        MultiInstanceLoopCharacteristics multiInstanceDef) {
+    private void parseMultiInstanceProperties(XMLStreamReader xtr, MultiInstanceLoopCharacteristics multiInstanceDef) {
         boolean readyWithMultiInstance = false;
         try {
             do {
@@ -85,9 +85,7 @@ public class MultiInstanceParser extends BaseChildElementParser {
                 }
             } while (!readyWithMultiInstance && xtr.hasNext());
         } catch (Exception e) {
-            LOGGER.warn("Error parsing multi instance definition",
-                        e);
+            LOGGER.warn("Error parsing multi instance definition", e);
         }
     }
-
 }

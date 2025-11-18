@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.activiti.engine.impl.persistence.entity.integration;
 
 import java.util.Date;
 import java.util.HashMap;
-
 import org.activiti.engine.impl.persistence.entity.AbstractEntity;
 
 public class IntegrationContextEntityImpl extends AbstractEntity implements IntegrationContextEntity {
@@ -83,10 +82,18 @@ public class IntegrationContextEntityImpl extends AbstractEntity implements Inte
 
     @Override
     public String toString() {
-        return "IntegrationContext[ " +
-            "executionId='" + executionId + '\'' +
-            ", processInstanceId='" + processInstanceId + '\'' +
-            ", flowNodeId='" + flowNodeId + '\'' +
-            " ]";
+        return (
+            "IntegrationContext[ " +
+            "executionId='" +
+            executionId +
+            '\'' +
+            ", processInstanceId='" +
+            processInstanceId +
+            '\'' +
+            ", flowNodeId='" +
+            flowNodeId +
+            '\'' +
+            " ]"
+        );
     }
 }

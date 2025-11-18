@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,19 +22,17 @@ import org.junit.jupiter.api.Test;
 
 public class EmptyModelTest extends AbstractConverterTest {
 
-  @Test
-  public void convertXMLToModel() throws Exception {
-    assertThatExceptionOfType(XMLException.class)
-      .isThrownBy(() -> readXMLFile());
-  }
+    @Test
+    public void convertXMLToModel() throws Exception {
+        assertThatExceptionOfType(XMLException.class).isThrownBy(() -> readXMLFile());
+    }
 
-  @Test
-  public void convertModelToXML() throws Exception {
-    assertThatExceptionOfType(XMLException.class)
-      .isThrownBy(() -> readXMLFile());
-  }
+    @Test
+    public void convertModelToXML() throws Exception {
+        assertThatExceptionOfType(XMLException.class).isThrownBy(() -> readXMLFile());
+    }
 
-  protected String getResource() {
-    return "empty.bpmn";
-  }
+    protected String getResource() {
+        return "empty.bpmn";
+    }
 }

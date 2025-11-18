@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,15 @@
  */
 package org.activiti.runtime.api.query.impl;
 
-import org.activiti.api.runtime.shared.query.Page;
-
 import java.util.List;
+import org.activiti.api.runtime.shared.query.Page;
 
 public class PageImpl<T> implements Page<T> {
 
     private List<T> content;
     private int totalItems;
 
-    public PageImpl(List<T> content,
-                    int totalItems) {
+    public PageImpl(List<T> content, int totalItems) {
         this.content = content;
         this.totalItems = totalItems;
     }

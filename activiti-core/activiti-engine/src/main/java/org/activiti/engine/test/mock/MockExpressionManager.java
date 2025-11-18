@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.test.mock;
 
 import jakarta.el.ArrayELResolver;
@@ -30,16 +28,15 @@ import org.activiti.engine.impl.el.VariableScopeElResolver;
 
 public class MockExpressionManager extends ExpressionManager {
 
-  @Override
-  protected ELResolver createElResolver(VariableScope variableScope) {
-    CompositeELResolver compositeElResolver = new CompositeELResolver();
-    compositeElResolver.add(new VariableScopeElResolver(variableScope));
-    compositeElResolver.add(new MockElResolver());
-    compositeElResolver.add(new ArrayELResolver());
-    compositeElResolver.add(new ListELResolver());
-    compositeElResolver.add(new MapELResolver());
-    compositeElResolver.add(new ELResolverReflectionBlockerDecorator(new BeanELResolver()));
-    return compositeElResolver;
-  }
-
+    @Override
+    protected ELResolver createElResolver(VariableScope variableScope) {
+        CompositeELResolver compositeElResolver = new CompositeELResolver();
+        compositeElResolver.add(new VariableScopeElResolver(variableScope));
+        compositeElResolver.add(new MockElResolver());
+        compositeElResolver.add(new ArrayELResolver());
+        compositeElResolver.add(new ListELResolver());
+        compositeElResolver.add(new MapELResolver());
+        compositeElResolver.add(new ELResolverReflectionBlockerDecorator(new BeanELResolver()));
+        return compositeElResolver;
+    }
 }

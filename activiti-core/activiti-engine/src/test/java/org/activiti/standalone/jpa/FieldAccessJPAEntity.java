@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.standalone.jpa;
 
 import jakarta.persistence.Column;
@@ -29,30 +27,29 @@ import jakarta.persistence.Id;
 @Entity(name = "JPA_ENTITY_FIELD")
 public class FieldAccessJPAEntity {
 
-  @Id
-  @Column(name = "ID_")
-  private Long id;
+    @Id
+    @Column(name = "ID_")
+    private Long id;
 
-  private String value;
+    private String value;
 
-  public FieldAccessJPAEntity() {
-    // Empty constructor needed for JPA
-  }
+    public FieldAccessJPAEntity() {
+        // Empty constructor needed for JPA
+    }
 
-  public Long getId() {
-    return id;
-  }
+    public Long getId() {
+        return id;
+    }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-  public String getValue() {
-    return value;
-  }
+    public String getValue() {
+        return value;
+    }
 
-  public void setValue(String value) {
-    this.value = value;
-  }
-
+    public void setValue(String value) {
+        this.value = value;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,30 +41,27 @@ public class JuelExpressionResolver implements ExpressionResolver {
         this(expressionFactory, new ArrayList<>());
     }
 
-    public JuelExpressionResolver(ExpressionFactory expressionFactory, List<CustomFunctionProvider> customFunctionProviders) {
+    public JuelExpressionResolver(
+        ExpressionFactory expressionFactory,
+        List<CustomFunctionProvider> customFunctionProviders
+    ) {
         this.expressionFactory = expressionFactory;
         this.customFunctionProviders = customFunctionProviders;
     }
 
     @Override
     public <T> T resolveExpression(String expression, Map<String, Object> variables, Class<T> type) {
-        if(expression == null) {
+        if (expression == null) {
             return null;
         }
         final ELContext context = buildContext(variables);
         final ValueExpression valueExpression = expressionFactory.createValueExpression(context, expression, type);
-        return (T)valueExpression.getValue(context);
+        return (T) valueExpression.getValue(context);
     }
 
-    protected ELContext buildContext (Map<String, Object> variables) {
+    protected ELContext buildContext(Map<String, Object> variables) {
         return new ELContextBuilder()
-            .withResolvers(
-                arrayResolver(),
-                listResolver(),
-                mapResolver(),
-                jsonNodeResolver(),
-                beanResolver()
-            )
+            .withResolvers(arrayResolver(), listResolver(), mapResolver(), jsonNodeResolver(), beanResolver())
             .withVariables(variables)
             .buildWithCustomFunctions(customFunctionProviders);
     }

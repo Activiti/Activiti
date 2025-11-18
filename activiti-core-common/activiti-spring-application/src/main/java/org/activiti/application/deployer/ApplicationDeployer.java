@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.activiti.application.deployer;
 
 import java.util.List;
-
 import org.activiti.application.ApplicationContent;
 import org.activiti.application.ApplicationService;
 
@@ -26,8 +25,7 @@ public class ApplicationDeployer {
 
     private List<ApplicationEntryDeployer> deployers;
 
-    public ApplicationDeployer(ApplicationService applicationLoader,
-                               List<ApplicationEntryDeployer> deployers) {
+    public ApplicationDeployer(ApplicationService applicationLoader, List<ApplicationEntryDeployer> deployers) {
         this.applicationLoader = applicationLoader;
         this.deployers = deployers;
     }
@@ -40,5 +38,4 @@ public class ApplicationDeployer {
             }
         }
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,13 +24,13 @@ import org.activiti.bpmn.model.UserTask;
  */
 public class TaskListenerParser extends ActivitiListenerParser {
 
-  public String getElementName() {
-    return ELEMENT_TASK_LISTENER;
-  }
-
-  public void addListenerToParent(ActivitiListener listener, BaseElement parentElement) {
-    if (parentElement instanceof UserTask) {
-      ((UserTask) parentElement).getTaskListeners().add(listener);
+    public String getElementName() {
+        return ELEMENT_TASK_LISTENER;
     }
-  }
+
+    public void addListenerToParent(ActivitiListener listener, BaseElement parentElement) {
+        if (parentElement instanceof UserTask) {
+            ((UserTask) parentElement).getTaskListeners().add(listener);
+        }
+    }
 }

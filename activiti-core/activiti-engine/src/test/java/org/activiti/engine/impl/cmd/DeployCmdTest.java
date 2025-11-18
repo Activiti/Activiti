@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,14 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+
+import java.util.HashMap;
+import java.util.Map;
 import org.activiti.engine.delegate.event.impl.ActivitiEventDispatcherImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -31,15 +39,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DeployCmdTest {
@@ -83,10 +82,9 @@ public class DeployCmdTest {
 
     @Test
     public void should_returnAndPersistAndDeployNewDeployment_when_latestIsNotFound() {
-
         Deployment deployment = deployCmd.executeDeploy(commandContext);
 
-        assertThat(((DeploymentEntity)deployment).isNew()).isTrue();
+        assertThat(((DeploymentEntity) deployment).isNew()).isTrue();
         assertThat((deployment).getVersion()).isEqualTo(1);
 
         verify(deploymentEntityManager).insert((DeploymentEntity) deployment);
@@ -95,7 +93,6 @@ public class DeployCmdTest {
 
     @Test
     public void should_returnLatestDeploymentWithoutPersistingOrDeployingAgain_when_latestDeploymentFound() {
-
         DeploymentEntityImpl existingDeployment = buildExistingDeployment();
 
         given(deploymentEntityManager.findLatestDeploymentByName(any())).willReturn(existingDeployment);
@@ -104,7 +101,7 @@ public class DeployCmdTest {
 
         Deployment deployment = deployCmd.executeDeploy(commandContext);
 
-        assertThat(((DeploymentEntity)deployment).isNew()).isFalse();
+        assertThat(((DeploymentEntity) deployment).isNew()).isFalse();
         assertThat((deployment).getVersion()).isEqualTo(ENFORCED_DEPLOYMENT_VERSION);
 
         verify(deploymentEntityManager, never()).insert((DeploymentEntity) deployment);
@@ -113,7 +110,6 @@ public class DeployCmdTest {
 
     @Test
     public void should_returnLatestDeploymentWithoutPersistingOrDeployingAgain_when_latestDeploymentFoundDuringRollback() {
-
         DeploymentEntityImpl rolledBackDeployment = buildRolledBackDeployment();
 
         given(deploymentEntityManager.findLatestDeploymentByName(any())).willReturn(rolledBackDeployment);
@@ -123,12 +119,14 @@ public class DeployCmdTest {
 
         DeploymentEntityImpl existingDeployment = buildExistingDeployment();
 
-        given(deploymentEntityManager.findDeploymentByVersion(ENFORCED_DEPLOYMENT_VERSION)).willReturn(existingDeployment);
+        given(deploymentEntityManager.findDeploymentByVersion(ENFORCED_DEPLOYMENT_VERSION)).willReturn(
+            existingDeployment
+        );
 
         Deployment deployment = deployCmd.executeDeploy(commandContext);
 
         assertThat(deployment.getName()).isEqualTo(existingDeployment.getName());
-        assertThat(((DeploymentEntity)deployment).isNew()).isFalse();
+        assertThat(((DeploymentEntity) deployment).isNew()).isFalse();
         assertThat((deployment).getVersion()).isEqualTo(ENFORCED_DEPLOYMENT_VERSION);
 
         verify(deploymentEntityManager).findDeploymentByVersion(ENFORCED_DEPLOYMENT_VERSION);
@@ -155,9 +153,25 @@ public class DeployCmdTest {
 
     private Map<String, Object> buildDeploymentSettings() {
         Map<String, Object> deploymentSettings = new HashMap<>();
-        deploymentSettings.put(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED, deploymentBuilder.isBpmn20XsdValidationEnabled());
-        deploymentSettings.put(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED, deploymentBuilder.isProcessValidationEnabled());
+        deploymentSettings.put(
+            DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED,
+            deploymentBuilder.isBpmn20XsdValidationEnabled()
+        );
+        deploymentSettings.put(
+            DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED,
+            deploymentBuilder.isProcessValidationEnabled()
+        );
         return deploymentSettings;
     }
 
+    @Test
+    public void should_updateDeploymentVersion_when_deployingAnOldVersion() {
+        DeploymentEntityImpl existingDeployment = buildExistingDeployment();
+
+        given(deploymentEntityManager.findLatestDeploymentByName(any())).willReturn(existingDeployment);
+        given(deploymentBuilder.hasEnforcedAppVersion()).willReturn(false);
+
+        Deployment deployment = deployCmd.executeDeploy(commandContext);
+        assertThat((deployment).getVersion()).isEqualTo(ENFORCED_DEPLOYMENT_VERSION);
+    }
 }

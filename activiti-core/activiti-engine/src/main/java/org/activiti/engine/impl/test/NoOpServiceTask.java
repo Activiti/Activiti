@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.test;
 
 import static java.util.Collections.synchronizedList;
@@ -21,7 +20,6 @@ import static java.util.Collections.synchronizedList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
@@ -30,28 +28,27 @@ import org.activiti.engine.delegate.JavaDelegate;
  */
 public class NoOpServiceTask implements JavaDelegate {
 
-  public static AtomicInteger CALL_COUNT = new AtomicInteger(0);
-  public static List<String> NAMES = synchronizedList(new ArrayList<String>());
+    public static AtomicInteger CALL_COUNT = new AtomicInteger(0);
+    public static List<String> NAMES = synchronizedList(new ArrayList<String>());
 
-  protected Expression name;
+    protected Expression name;
 
-  @Override
-  public void execute(DelegateExecution execution) {
-    CALL_COUNT.incrementAndGet();
-    NAMES.add((String) name.getValue(execution));
-  }
+    @Override
+    public void execute(DelegateExecution execution) {
+        CALL_COUNT.incrementAndGet();
+        NAMES.add((String) name.getValue(execution));
+    }
 
-  public Expression getName() {
-    return name;
-  }
+    public Expression getName() {
+        return name;
+    }
 
-  public void setName(Expression name) {
-    this.name = name;
-  }
+    public void setName(Expression name) {
+        this.name = name;
+    }
 
-  public static void reset() {
-    CALL_COUNT.set(0);
-    NAMES.clear();
-  }
-
+    public static void reset() {
+        CALL_COUNT.set(0);
+        NAMES.clear();
+    }
 }

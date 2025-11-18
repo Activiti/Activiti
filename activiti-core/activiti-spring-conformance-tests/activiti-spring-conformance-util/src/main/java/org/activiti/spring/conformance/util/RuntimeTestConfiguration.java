@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package org.activiti.spring.conformance.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.model.shared.event.VariableCreatedEvent;
 import org.activiti.api.model.shared.event.VariableDeletedEvent;
@@ -55,9 +57,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @AutoConfiguration
 @TestConfiguration
 public class RuntimeTestConfiguration {
@@ -68,56 +67,44 @@ public class RuntimeTestConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public SecurityUtil securityUtil(UserDetailsService userDetailsService,
-                                     SecurityManager securityManager) {
+    public SecurityUtil securityUtil(UserDetailsService userDetailsService, SecurityManager securityManager) {
         return new SecurityUtil(userDetailsService, securityManager);
     }
 
     @Bean
     @ConditionalOnMissingBean
     public UserDetailsService myUserDetailsService() {
-        ExtendedInMemoryUserDetailsManager extendedInMemoryUserDetailsManager = new ExtendedInMemoryUserDetailsManager();
+        ExtendedInMemoryUserDetailsManager extendedInMemoryUserDetailsManager =
+            new ExtendedInMemoryUserDetailsManager();
 
         List<GrantedAuthority> user1 = new ArrayList<>();
         user1.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
         user1.add(new SimpleGrantedAuthority("GROUP_group1"));
 
-        extendedInMemoryUserDetailsManager.createUser(new User("user1",
-                "password",
-                user1));
+        extendedInMemoryUserDetailsManager.createUser(new User("user1", "password", user1));
 
         List<GrantedAuthority> user2 = new ArrayList<>();
         user2.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
         user2.add(new SimpleGrantedAuthority("GROUP_group2"));
 
-        extendedInMemoryUserDetailsManager.createUser(new User("user2",
-                "password",
-                user2));
+        extendedInMemoryUserDetailsManager.createUser(new User("user2", "password", user2));
 
         List<GrantedAuthority> user3 = new ArrayList<>();
         user3.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
         user3.add(new SimpleGrantedAuthority("GROUP_group1"));
         user3.add(new SimpleGrantedAuthority("GROUP_group2"));
 
-        extendedInMemoryUserDetailsManager.createUser(new User("user3",
-                "password",
-                user3));
+        extendedInMemoryUserDetailsManager.createUser(new User("user3", "password", user3));
 
         List<GrantedAuthority> user4 = new ArrayList<>();
         user4.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
 
-        extendedInMemoryUserDetailsManager.createUser(new User("user4",
-                "password",
-                user4));
-
+        extendedInMemoryUserDetailsManager.createUser(new User("user4", "password", user4));
 
         List<GrantedAuthority> adminAuthorities = new ArrayList<>();
         adminAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_ADMIN"));
 
-        extendedInMemoryUserDetailsManager.createUser(new User("admin",
-                "password",
-                adminAuthorities));
-
+        extendedInMemoryUserDetailsManager.createUser(new User("admin", "password", adminAuthorities));
 
         return extendedInMemoryUserDetailsManager;
     }
@@ -136,7 +123,6 @@ public class RuntimeTestConfiguration {
     public BPMNElementEventListener<BPMNActivityCancelledEvent> bpmnActivityCancelledListener() {
         return bpmnActivityCancelledEvent -> collectedEvents.add(bpmnActivityCancelledEvent);
     }
-
 
     @Bean
     public BPMNElementEventListener<BPMNSequenceFlowTakenEvent> bpmnSequenceFlowTakenListener() {
@@ -219,10 +205,8 @@ public class RuntimeTestConfiguration {
         return taskCancelledEvent -> collectedEvents.add(taskCancelledEvent);
     }
 
-
     @Bean
     public BPMNElementEventListener<BPMNSignalReceivedEvent> bpmnSignalReceivedListener() {
         return bpmnSignalReceivedEvent -> collectedEvents.add(bpmnSignalReceivedEvent);
     }
-
 }

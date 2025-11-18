@@ -1,6 +1,6 @@
 {
-  "id":"testCatchMessageExpression",
-  "name":"ProcessRuntimeBPMNMessageIT.testCatchMessageExpression.bpmn20.xml",
+  "id": "testCatchMessageExpression",
+  "name": "ProcessRuntimeBPMNMessageIT.testCatchMessageExpression.bpmn20.xml",
   "extensions": {
     "testCatchMessageExpression": {
       "properties": {

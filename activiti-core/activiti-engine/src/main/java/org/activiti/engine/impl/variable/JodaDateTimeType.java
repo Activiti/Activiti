@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.variable;
 
 import org.joda.time.DateTime;
@@ -23,34 +22,34 @@ import org.joda.time.DateTime;
  */
 public class JodaDateTimeType implements VariableType {
 
-  public String getTypeName() {
-    return "jodadatetime";
-  }
-
-  public boolean isCachable() {
-    return true;
-  }
-
-  public boolean isAbleToStore(Object value) {
-    if (value == null) {
-      return true;
+    public String getTypeName() {
+        return "jodadatetime";
     }
-    return DateTime.class.isAssignableFrom(value.getClass());
-  }
 
-  public Object getValue(ValueFields valueFields) {
-    Long longValue = valueFields.getLongValue();
-    if (longValue != null) {
-      return new DateTime(longValue);
+    public boolean isCachable() {
+        return true;
     }
-    return null;
-  }
 
-  public void setValue(Object value, ValueFields valueFields) {
-    if (value != null) {
-      valueFields.setLongValue(((DateTime) value).getMillis());
-    } else {
-      valueFields.setLongValue(null);
+    public boolean isAbleToStore(Object value) {
+        if (value == null) {
+            return true;
+        }
+        return DateTime.class.isAssignableFrom(value.getClass());
     }
-  }
+
+    public Object getValue(ValueFields valueFields) {
+        Long longValue = valueFields.getLongValue();
+        if (longValue != null) {
+            return new DateTime(longValue);
+        }
+        return null;
+    }
+
+    public void setValue(Object value, ValueFields valueFields) {
+        if (value != null) {
+            valueFields.setLongValue(((DateTime) value).getMillis());
+        } else {
+            valueFields.setLongValue(null);
+        }
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ public class ApplicationDeployedEventProducer extends AbstractActivitiSmartLifeC
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(ApplicationDeployedEventProducer.class);
 
-    private static final String APPLICATION_DEPLOYMENT_NAME= "SpringAutoDeployment";
+    private static final String APPLICATION_DEPLOYMENT_NAME = "SpringAutoDeployment";
 
     private RepositoryService repositoryService;
     private APIDeploymentConverter deploymentConverter;
@@ -46,10 +46,12 @@ public class ApplicationDeployedEventProducer extends AbstractActivitiSmartLifeC
     @Value("${activiti.deploy.after-rollback:false}")
     private boolean afterRollback;
 
-    public ApplicationDeployedEventProducer(RepositoryService repositoryService,
-            APIDeploymentConverter deploymentConverter,
-            List<ProcessRuntimeEventListener<ApplicationDeployedEvent>> listeners,
-            ApplicationEventPublisher eventPublisher) {
+    public ApplicationDeployedEventProducer(
+        RepositoryService repositoryService,
+        APIDeploymentConverter deploymentConverter,
+        List<ProcessRuntimeEventListener<ApplicationDeployedEvent>> listeners,
+        ApplicationEventPublisher eventPublisher
+    ) {
         this.repositoryService = repositoryService;
         this.deploymentConverter = deploymentConverter;
         this.listeners = listeners;
@@ -72,11 +74,14 @@ public class ApplicationDeployedEventProducer extends AbstractActivitiSmartLifeC
 
     private List<ApplicationDeployedEvent> getApplicationDeployedEvents() {
         ApplicationEvents eventType = getEventType();
-        return deploymentConverter.from(repositoryService
-                        .createDeploymentQuery()
-                        .deploymentName(APPLICATION_DEPLOYMENT_NAME)
-                        .latestVersion()
-                        .list())
+        return deploymentConverter
+            .from(
+                repositoryService
+                    .createDeploymentQuery()
+                    .deploymentName(APPLICATION_DEPLOYMENT_NAME)
+                    .latestVersion()
+                    .list()
+            )
             .stream()
             .map(this::withProjectVersion1Based)
             .map(deployment -> new ApplicationDeployedEventImpl(deployment, eventType))
@@ -85,7 +90,7 @@ public class ApplicationDeployedEventProducer extends AbstractActivitiSmartLifeC
 
     private Deployment withProjectVersion1Based(Deployment deployment) {
         String projectReleaseVersion = deployment.getProjectReleaseVersion();
-        if(StringUtils.isNumeric(projectReleaseVersion)) {
+        if (StringUtils.isNumeric(projectReleaseVersion)) {
             //The project version in the database is 0 based while in the devops section is 1 based
             DeploymentImpl result = new DeploymentImpl();
             result.setVersion(deployment.getVersion());
@@ -101,7 +106,7 @@ public class ApplicationDeployedEventProducer extends AbstractActivitiSmartLifeC
 
     private ApplicationEvents getEventType() {
         ApplicationEvents eventType;
-        if(afterRollback) {
+        if (afterRollback) {
             LOGGER.info("This pod has been marked as created after a rollback.");
             eventType = ApplicationEvents.APPLICATION_ROLLBACK;
         } else {

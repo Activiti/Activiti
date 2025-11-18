@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.DeadLetterJobQueryImpl;
@@ -30,12 +27,16 @@ import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DeadLetterJobEntityManagerImpl extends AbstractEntityManager<DeadLetterJobEntity> implements DeadLetterJobEntityManager {
+public class DeadLetterJobEntityManagerImpl
+    extends AbstractEntityManager<DeadLetterJobEntity>
+    implements DeadLetterJobEntityManager {
 
     protected DeadLetterJobDataManager jobDataManager;
 
-    public DeadLetterJobEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration,
-                                          DeadLetterJobDataManager jobDataManager) {
+    public DeadLetterJobEntityManagerImpl(
+        ProcessEngineConfigurationImpl processEngineConfiguration,
+        DeadLetterJobDataManager jobDataManager
+    ) {
         super(processEngineConfiguration);
         this.jobDataManager = jobDataManager;
     }
@@ -46,10 +47,8 @@ public class DeadLetterJobEntityManagerImpl extends AbstractEntityManager<DeadLe
     }
 
     @Override
-    public List<Job> findJobsByQueryCriteria(DeadLetterJobQueryImpl jobQuery,
-                                             Page page) {
-        return jobDataManager.findJobsByQueryCriteria(jobQuery,
-                                                      page);
+    public List<Job> findJobsByQueryCriteria(DeadLetterJobQueryImpl jobQuery, Page page) {
+        return jobDataManager.findJobsByQueryCriteria(jobQuery, page);
     }
 
     @Override
@@ -58,16 +57,12 @@ public class DeadLetterJobEntityManagerImpl extends AbstractEntityManager<DeadLe
     }
 
     @Override
-    public void updateJobTenantIdForDeployment(String deploymentId,
-                                               String newTenantId) {
-        jobDataManager.updateJobTenantIdForDeployment(deploymentId,
-                                                      newTenantId);
+    public void updateJobTenantIdForDeployment(String deploymentId, String newTenantId) {
+        jobDataManager.updateJobTenantIdForDeployment(deploymentId, newTenantId);
     }
 
     @Override
-    public void insert(DeadLetterJobEntity jobEntity,
-                       boolean fireCreateEvent) {
-
+    public void insert(DeadLetterJobEntity jobEntity, boolean fireCreateEvent) {
         // add link to execution
         if (jobEntity.getExecutionId() != null) {
             ExecutionEntity execution = getExecutionEntityManager().findById(jobEntity.getExecutionId());
@@ -85,14 +80,12 @@ public class DeadLetterJobEntityManagerImpl extends AbstractEntityManager<DeadLe
             }
         }
 
-        super.insert(jobEntity,
-                     fireCreateEvent);
+        super.insert(jobEntity, fireCreateEvent);
     }
 
     @Override
     public void insert(DeadLetterJobEntity jobEntity) {
-        insert(jobEntity,
-               true);
+        insert(jobEntity, true);
     }
 
     @Override
@@ -102,7 +95,9 @@ public class DeadLetterJobEntityManagerImpl extends AbstractEntityManager<DeadLe
         deleteExceptionByteArrayRef(jobEntity);
 
         if (jobEntity.getExecutionId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
-            CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(jobEntity.getExecutionId());
+            CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(
+                jobEntity.getExecutionId()
+            );
             if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
                 executionEntity.setDeadLetterJobCount(executionEntity.getDeadLetterJobCount() - 1);
             }
@@ -110,8 +105,9 @@ public class DeadLetterJobEntityManagerImpl extends AbstractEntityManager<DeadLe
 
         // Send event
         if (getEventDispatcher().isEnabled()) {
-            getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED,
-                                                                                      this));
+            getEventDispatcher().dispatchEvent(
+                ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, this)
+            );
         }
     }
 

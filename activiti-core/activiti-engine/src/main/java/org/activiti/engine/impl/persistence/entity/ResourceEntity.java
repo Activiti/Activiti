@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.persistence.entity;
-
 
 import org.activiti.engine.api.internal.Internal;
 
@@ -25,23 +22,21 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface ResourceEntity extends Entity {
+    String getName();
 
-  String getName();
+    void setName(String name);
 
-  void setName(String name);
+    byte[] getBytes();
 
-  byte[] getBytes();
+    void setBytes(byte[] bytes);
 
-  void setBytes(byte[] bytes);
+    String getDeploymentId();
 
-  String getDeploymentId();
+    void setDeploymentId(String deploymentId);
 
-  void setDeploymentId(String deploymentId);
+    Object getPersistentState();
 
-  Object getPersistentState();
+    void setGenerated(boolean generated);
 
-  void setGenerated(boolean generated);
-
-  boolean isGenerated();
-
+    boolean isGenerated();
 }

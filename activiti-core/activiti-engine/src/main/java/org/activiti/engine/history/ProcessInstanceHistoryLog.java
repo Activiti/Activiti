@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.activiti.engine.history;
 
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.runtime.ProcessInstance;
 
@@ -27,54 +26,52 @@ import org.activiti.engine.runtime.ProcessInstance;
  */
 @Internal
 public interface ProcessInstanceHistoryLog {
+    /**
+     * The process instance id (== as the id for the runtime {@link ProcessInstance process instance}).
+     */
+    String getId();
 
-  /**
-   * The process instance id (== as the id for the runtime {@link ProcessInstance process instance}).
-   */
-  String getId();
+    /** The user provided unique reference to this process instance. */
+    String getBusinessKey();
 
-  /** The user provided unique reference to this process instance. */
-  String getBusinessKey();
+    /** The process definition reference. */
+    String getProcessDefinitionId();
 
-  /** The process definition reference. */
-  String getProcessDefinitionId();
+    /** The time the process was started. */
+    Date getStartTime();
 
-  /** The time the process was started. */
-  Date getStartTime();
+    /** The time the process was ended. */
+    Date getEndTime();
 
-  /** The time the process was ended. */
-  Date getEndTime();
+    /**
+     * The difference between {@link #getEndTime()} and {@link #getStartTime()} .
+     */
+    Long getDurationInMillis();
 
-  /**
-   * The difference between {@link #getEndTime()} and {@link #getStartTime()} .
-   */
-  Long getDurationInMillis();
+    /**
+     * The authenticated user that started this process instance.
+     *
+     */
+    String getStartUserId();
 
-  /**
-   * The authenticated user that started this process instance.
-   *
-   */
-  String getStartUserId();
+    /** The start activity. */
+    String getStartActivityId();
 
-  /** The start activity. */
-  String getStartActivityId();
+    /** Obtains the reason for the process instance's deletion. */
+    String getDeleteReason();
 
-  /** Obtains the reason for the process instance's deletion. */
-  String getDeleteReason();
+    /**
+     * The process instance id of a potential super process instance or null if no super process instance exists
+     */
+    String getSuperProcessInstanceId();
 
-  /**
-   * The process instance id of a potential super process instance or null if no super process instance exists
-   */
-  String getSuperProcessInstanceId();
+    /**
+     * The tenant identifier for the process instance.
+     */
+    String getTenantId();
 
-  /**
-   * The tenant identifier for the process instance.
-   */
-  String getTenantId();
-
-  /**
-   * The trail of data, ordered by date (ascending). Gives a replay of the process instance.
-   */
-  List<HistoricData> getHistoricData();
-
+    /**
+     * The trail of data, ordered by date (ascending). Gives a replay of the process instance.
+     */
+    List<HistoricData> getHistoricData();
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -30,53 +29,57 @@ import org.activiti.engine.repository.Deployment;
  */
 public class SetDeploymentKeyCmd implements Command<Void> {
 
-  protected String deploymentId;
-  protected String key;
+    protected String deploymentId;
+    protected String key;
 
-  public SetDeploymentKeyCmd(String deploymentId, String key) {
-    this.deploymentId = deploymentId;
-    this.key = key;
-  }
-
-  public Void execute(CommandContext commandContext) {
-
-    if (deploymentId == null) {
-      throw new ActivitiIllegalArgumentException("Deployment id is null");
+    public SetDeploymentKeyCmd(String deploymentId, String key) {
+        this.deploymentId = deploymentId;
+        this.key = key;
     }
 
-    DeploymentEntity deployment = commandContext.getDeploymentEntityManager().findById(deploymentId);
+    public Void execute(CommandContext commandContext) {
+        if (deploymentId == null) {
+            throw new ActivitiIllegalArgumentException("Deployment id is null");
+        }
 
-    if (deployment == null) {
-      throw new ActivitiObjectNotFoundException("No deployment found for id = '" + deploymentId + "'", Deployment.class);
+        DeploymentEntity deployment = commandContext.getDeploymentEntityManager().findById(deploymentId);
+
+        if (deployment == null) {
+            throw new ActivitiObjectNotFoundException(
+                "No deployment found for id = '" + deploymentId + "'",
+                Deployment.class
+            );
+        }
+
+        executeInternal(commandContext, deployment);
+        return null;
     }
 
-    executeInternal(commandContext,deployment);
-    return null;
-  }
+    protected void executeInternal(CommandContext commandContext, DeploymentEntity deployment) {
+        // Update category
+        deployment.setKey(key);
 
-  protected void executeInternal(CommandContext commandContext,DeploymentEntity deployment){
-      // Update category
-      deployment.setKey(key);
+        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            commandContext
+                .getProcessEngineConfiguration()
+                .getEventDispatcher()
+                .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, deployment));
+        }
+    }
 
-      if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-          commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, deployment));
-      }
-  }
+    public String getDeploymentId() {
+        return deploymentId;
+    }
 
-  public String getDeploymentId() {
-    return deploymentId;
-  }
+    public void setDeploymentId(String deploymentId) {
+        this.deploymentId = deploymentId;
+    }
 
-  public void setDeploymentId(String deploymentId) {
-    this.deploymentId = deploymentId;
-  }
+    public String getKey() {
+        return key;
+    }
 
-  public String getKey() {
-    return key;
-  }
-
-  public void setKey(String key) {
-    this.key = key;
-  }
-
+    public void setKey(String key) {
+        this.key = key;
+    }
 }

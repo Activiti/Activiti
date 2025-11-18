@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.data;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -27,18 +26,18 @@ import org.activiti.engine.delegate.VariableScope;
  */
 public class Assignment {
 
-  protected Expression fromExpression;
+    protected Expression fromExpression;
 
-  protected Expression toExpression;
+    protected Expression toExpression;
 
-  public Assignment(Expression fromExpression, Expression toExpression) {
-    this.fromExpression = fromExpression;
-    this.toExpression = toExpression;
-  }
+    public Assignment(Expression fromExpression, Expression toExpression) {
+        this.fromExpression = fromExpression;
+        this.toExpression = toExpression;
+    }
 
-  public void evaluate(DelegateExecution execution) {
-    VariableScope variableScope = (VariableScope) execution;
-    Object value = this.fromExpression.getValue(variableScope);
-    this.toExpression.setValue(value, variableScope);
-  }
+    public void evaluate(DelegateExecution execution) {
+        VariableScope variableScope = (VariableScope) execution;
+        Object value = this.fromExpression.getValue(variableScope);
+        this.toExpression.setValue(value, variableScope);
+    }
 }

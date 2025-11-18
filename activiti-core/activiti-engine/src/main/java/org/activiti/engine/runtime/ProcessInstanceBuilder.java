@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.runtime;
 
 import java.util.Map;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.api.internal.Internal;
@@ -33,76 +31,74 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface ProcessInstanceBuilder {
+    /**
+     * Set the id of the process definition
+     **/
+    ProcessInstanceBuilder processDefinitionId(String processDefinitionId);
 
-  /**
-   * Set the id of the process definition
-   **/
-  ProcessInstanceBuilder processDefinitionId(String processDefinitionId);
+    /**
+     * Set the key of the process definition, latest version of the process definition with the given key.
+     * If processDefinitionId was set this will be ignored
+     **/
+    ProcessInstanceBuilder processDefinitionKey(String processDefinitionKey);
 
-  /**
-   * Set the key of the process definition, latest version of the process definition with the given key.
-   * If processDefinitionId was set this will be ignored
-   **/
-  ProcessInstanceBuilder processDefinitionKey(String processDefinitionKey);
+    /**
+     * Set the message name that needs to be used to look up the process definition that needs to be used to start the process instance.
+     */
+    ProcessInstanceBuilder messageName(String messageName);
 
-  /**
-   * Set the message name that needs to be used to look up the process definition that needs to be used to start the process instance.
-   */
-  ProcessInstanceBuilder messageName(String messageName);
+    /**
+     * Set the name of process instance
+     **/
+    ProcessInstanceBuilder name(String processInstanceName);
 
-  /**
-   * Set the name of process instance
-   **/
-  ProcessInstanceBuilder name(String processInstanceName);
+    /**
+     * Set the businessKey of process instance
+     **/
+    ProcessInstanceBuilder businessKey(String businessKey);
 
-  /**
-   * Set the businessKey of process instance
-   **/
-  ProcessInstanceBuilder businessKey(String businessKey);
+    /**
+     * Set the tenantId of process instance
+     **/
+    ProcessInstanceBuilder tenantId(String tenantId);
 
-  /**
-   * Set the tenantId of process instance
-   **/
-  ProcessInstanceBuilder tenantId(String tenantId);
+    /**
+     * Sets the process variables
+     */
+    ProcessInstanceBuilder variables(Map<String, Object> variables);
 
-  /**
-   * Sets the process variables
-   */
-  ProcessInstanceBuilder variables(Map<String, Object> variables);
+    /**
+     * Adds a variable to the process instance
+     **/
+    ProcessInstanceBuilder variable(String variableName, Object value);
 
-  /**
-   * Adds a variable to the process instance
-   **/
-  ProcessInstanceBuilder variable(String variableName, Object value);
+    /**
+     * Sets the transient variables
+     */
+    ProcessInstanceBuilder transientVariables(Map<String, Object> transientVariables);
 
-  /**
-   * Sets the transient variables
-   */
-  ProcessInstanceBuilder transientVariables(Map<String, Object> transientVariables);
+    /**
+     * Adds a transient variable to the process instance
+     */
+    ProcessInstanceBuilder transientVariable(String variableName, Object value);
 
-  /**
-   * Adds a transient variable to the process instance
-   */
-  ProcessInstanceBuilder transientVariable(String variableName, Object value);
+    /**
+     * Start the process instance
+     *
+     * @throws ActivitiIllegalArgumentException
+     *           if processDefinitionKey and processDefinitionId are null
+     * @throws ActivitiObjectNotFoundException
+     *           when no process definition is deployed with the given processDefinitionKey or processDefinitionId
+     * **/
+    ProcessInstance start();
 
-  /**
-   * Start the process instance
-   *
-   * @throws ActivitiIllegalArgumentException
-   *           if processDefinitionKey and processDefinitionId are null
-   * @throws ActivitiObjectNotFoundException
-   *           when no process definition is deployed with the given processDefinitionKey or processDefinitionId
-   * **/
-  ProcessInstance start();
-
-  /**
-   * Create the process instance
-   *
-   * @throws ActivitiIllegalArgumentException
-   *           if processDefinitionKey and processDefinitionId are null
-   * @throws ActivitiObjectNotFoundException
-   *           when no process definition is deployed with the given processDefinitionKey or processDefinitionId
-   * **/
-  ProcessInstance create();
-
+    /**
+     * Create the process instance
+     *
+     * @throws ActivitiIllegalArgumentException
+     *           if processDefinitionKey and processDefinitionId are null
+     * @throws ActivitiObjectNotFoundException
+     *           when no process definition is deployed with the given processDefinitionKey or processDefinitionId
+     * **/
+    ProcessInstance create();
 }

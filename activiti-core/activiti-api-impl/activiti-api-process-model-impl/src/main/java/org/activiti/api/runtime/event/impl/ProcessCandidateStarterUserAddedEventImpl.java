@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,14 @@ import org.activiti.api.process.model.ProcessCandidateStarterUser;
 import org.activiti.api.process.model.events.ProcessCandidateStarterUserEvent;
 import org.activiti.api.process.runtime.events.ProcessCandidateStarterUserAddedEvent;
 
-public class ProcessCandidateStarterUserAddedEventImpl extends RuntimeEventImpl<ProcessCandidateStarterUser, ProcessCandidateStarterUserEvent.ProcessCandidateStarterUserEvents> implements ProcessCandidateStarterUserAddedEvent {
+public class ProcessCandidateStarterUserAddedEventImpl
+    extends RuntimeEventImpl<
+        ProcessCandidateStarterUser,
+        ProcessCandidateStarterUserEvent.ProcessCandidateStarterUserEvents
+    >
+    implements ProcessCandidateStarterUserAddedEvent {
 
-    public ProcessCandidateStarterUserAddedEventImpl() {
-    }
+    public ProcessCandidateStarterUserAddedEventImpl() {}
 
     public ProcessCandidateStarterUserAddedEventImpl(ProcessCandidateStarterUser entity) {
         super(entity);

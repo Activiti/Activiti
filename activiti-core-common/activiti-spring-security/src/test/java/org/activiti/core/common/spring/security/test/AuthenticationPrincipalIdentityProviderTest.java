@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-
 public class AuthenticationPrincipalIdentityProviderTest {
 
     private AuthenticationPrincipalIdentityProvider subject = new AuthenticationPrincipalIdentityProvider();
@@ -32,9 +31,11 @@ public class AuthenticationPrincipalIdentityProviderTest {
     @Test
     public void testGetUserId() {
         // given
-        Authentication authentication = new UsernamePasswordAuthenticationToken("username",
-                                                                                "password",
-                                                                                AuthorityUtils.createAuthorityList("ROLE_user"));
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+            "username",
+            "password",
+            AuthorityUtils.createAuthorityList("ROLE_user")
+        );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -42,8 +43,6 @@ public class AuthenticationPrincipalIdentityProviderTest {
         String result = subject.getUserId(authentication);
 
         // then
-        assertThat(result).isNotEmpty()
-                          .contains("username");
+        assertThat(result).isNotEmpty().contains("username");
     }
-
 }

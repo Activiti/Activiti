@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,13 @@ import org.activiti.bpmn.model.ServiceTask;
 
 public class AlfrescoMailTask extends ServiceTask {
 
-  public AlfrescoMailTask clone() {
-    AlfrescoMailTask clone = new AlfrescoMailTask();
-    clone.setValues(this);
-    return clone;
-  }
+    public AlfrescoMailTask clone() {
+        AlfrescoMailTask clone = new AlfrescoMailTask();
+        clone.setValues(this);
+        return clone;
+    }
 
-  public void setValues(AlfrescoMailTask otherElement) {
-    super.setValues(otherElement);
-  }
+    public void setValues(AlfrescoMailTask otherElement) {
+        super.setValues(otherElement);
+    }
 }

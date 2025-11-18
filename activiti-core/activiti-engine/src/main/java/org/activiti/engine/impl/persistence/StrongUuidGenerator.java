@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,10 @@
  */
 package org.activiti.engine.impl.persistence;
 
-import org.activiti.engine.impl.cfg.IdGenerator;
-
 import com.fasterxml.uuid.EthernetAddress;
 import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.impl.TimeBasedGenerator;
+import org.activiti.engine.impl.cfg.IdGenerator;
 
 /**
  * {@link IdGenerator} implementation based on the current time and the ethernet address of the machine it is running on.
@@ -28,25 +27,24 @@ import com.fasterxml.uuid.impl.TimeBasedGenerator;
  */
 public class StrongUuidGenerator implements IdGenerator {
 
-  // different ProcessEngines on the same classloader share one generator.
-  protected static TimeBasedGenerator timeBasedGenerator;
+    // different ProcessEngines on the same classloader share one generator.
+    protected static TimeBasedGenerator timeBasedGenerator;
 
-  public StrongUuidGenerator() {
-    ensureGeneratorInitialized();
-  }
-
-  protected void ensureGeneratorInitialized() {
-    if (timeBasedGenerator == null) {
-      synchronized (StrongUuidGenerator.class) {
-        if (timeBasedGenerator == null) {
-          timeBasedGenerator = Generators.timeBasedGenerator(EthernetAddress.fromInterface());
-        }
-      }
+    public StrongUuidGenerator() {
+        ensureGeneratorInitialized();
     }
-  }
 
-  public String getNextId() {
-    return timeBasedGenerator.generate().toString();
-  }
+    protected void ensureGeneratorInitialized() {
+        if (timeBasedGenerator == null) {
+            synchronized (StrongUuidGenerator.class) {
+                if (timeBasedGenerator == null) {
+                    timeBasedGenerator = Generators.timeBasedGenerator(EthernetAddress.fromInterface());
+                }
+            }
+        }
+    }
 
+    public String getNextId() {
+        return timeBasedGenerator.generate().toString();
+    }
 }

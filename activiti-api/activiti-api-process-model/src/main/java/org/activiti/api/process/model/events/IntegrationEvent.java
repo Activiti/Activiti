@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,11 @@ import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.IntegrationContext;
 
 public interface IntegrationEvent extends RuntimeEvent<IntegrationContext, IntegrationEvent.IntegrationEvents> {
-
     enum IntegrationEvents {
-
         INTEGRATION_REQUESTED,
 
         INTEGRATION_RESULT_RECEIVED,
 
-        INTEGRATION_ERROR_RECEIVED
+        INTEGRATION_ERROR_RECEIVED,
     }
-
 }

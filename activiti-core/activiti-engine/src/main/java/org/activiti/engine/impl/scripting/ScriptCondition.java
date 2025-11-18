@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.scripting;
 
 import org.activiti.engine.ActivitiException;
@@ -26,25 +25,26 @@ import org.activiti.engine.impl.context.Context;
  */
 public class ScriptCondition implements Condition {
 
-  private final String expression;
-  private final String language;
+    private final String expression;
+    private final String language;
 
-  public ScriptCondition(String expression, String language) {
-    this.expression = expression;
-    this.language = language;
-  }
-
-  public boolean evaluate(String sequenceFlowId, DelegateExecution execution) {
-    ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
-
-    Object result = scriptingEngines.evaluate(expression, language, execution);
-    if (result == null) {
-      throw new ActivitiException("condition script returns null: " + expression);
+    public ScriptCondition(String expression, String language) {
+        this.expression = expression;
+        this.language = language;
     }
-    if (!(result instanceof Boolean)) {
-      throw new ActivitiException("condition script returns non-Boolean: " + result + " (" + result.getClass().getName() + ")");
-    }
-    return (Boolean) result;
-  }
 
+    public boolean evaluate(String sequenceFlowId, DelegateExecution execution) {
+        ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
+
+        Object result = scriptingEngines.evaluate(expression, language, execution);
+        if (result == null) {
+            throw new ActivitiException("condition script returns null: " + expression);
+        }
+        if (!(result instanceof Boolean)) {
+            throw new ActivitiException(
+                "condition script returns non-Boolean: " + result + " (" + result.getClass().getName() + ")"
+            );
+        }
+        return (Boolean) result;
+    }
 }

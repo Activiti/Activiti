@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,21 +25,24 @@ public class CompositeVariableExpressionEvaluator implements ExpressionEvaluator
     private SimpleMapExpressionEvaluator simpleMapExpressionEvaluator;
     private VariableScopeExpressionEvaluator variableScopeExpressionEvaluator;
 
-    public CompositeVariableExpressionEvaluator(SimpleMapExpressionEvaluator simpleMapExpressionEvaluator,
-                                                VariableScopeExpressionEvaluator variableScopeExpressionEvaluator) {
+    public CompositeVariableExpressionEvaluator(
+        SimpleMapExpressionEvaluator simpleMapExpressionEvaluator,
+        VariableScopeExpressionEvaluator variableScopeExpressionEvaluator
+    ) {
         this.simpleMapExpressionEvaluator = simpleMapExpressionEvaluator;
         this.variableScopeExpressionEvaluator = variableScopeExpressionEvaluator;
     }
 
     @Override
-    public Object evaluate(Expression expression,
+    public Object evaluate(
+        Expression expression,
         ExpressionManager expressionManager,
-        DelegateInterceptor delegateInterceptor) {
+        DelegateInterceptor delegateInterceptor
+    ) {
         try {
             return simpleMapExpressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor);
         } catch (ActivitiException activitiException) {
             return variableScopeExpressionEvaluator.evaluate(expression, expressionManager, delegateInterceptor);
         }
     }
-
 }

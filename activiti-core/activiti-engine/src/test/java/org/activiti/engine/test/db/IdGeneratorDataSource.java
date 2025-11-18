@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ import org.apache.ibatis.datasource.pooled.PooledDataSource;
 
 public class IdGeneratorDataSource extends PooledDataSource {
 
-  public IdGeneratorDataSource() {
-    setDriver("org.h2.Driver");
-    setUrl("jdbc:h2:mem:activiti");
-    setUsername("sa");
-    setPassword("");
-    setPoolMaximumActiveConnections(2);
-  }
+    public IdGeneratorDataSource() {
+        setDriver("org.h2.Driver");
+        setUrl("jdbc:h2:mem:activiti");
+        setUsername("sa");
+        setPassword("");
+        setPoolMaximumActiveConnections(2);
+    }
 }

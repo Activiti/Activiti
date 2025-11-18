@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.misc;
 
 import jakarta.el.ELException;
@@ -39,59 +38,23 @@ public class BooleanOperations {
     }
 
     @SuppressWarnings("unchecked")
-    private static final boolean lt0(
-        TypeConverter converter,
-        Object o1,
-        Object o2
-    ) {
+    private static final boolean lt0(TypeConverter converter, Object o1, Object o2) {
         Class<?> t1 = o1.getClass();
         Class<?> t2 = o2.getClass();
-        if (
-            BigDecimal.class.isAssignableFrom(t1) ||
-            BigDecimal.class.isAssignableFrom(t2)
-        ) {
-            return (
-                converter
-                    .convert(o1, BigDecimal.class)
-                    .compareTo(converter.convert(o2, BigDecimal.class)) <
-                0
-            );
+        if (BigDecimal.class.isAssignableFrom(t1) || BigDecimal.class.isAssignableFrom(t2)) {
+            return (converter.convert(o1, BigDecimal.class).compareTo(converter.convert(o2, BigDecimal.class)) < 0);
         }
-        if (
-            SIMPLE_FLOAT_TYPES.contains(t1) || SIMPLE_FLOAT_TYPES.contains(t2)
-        ) {
-            return (
-                converter.convert(o1, Double.class) <
-                converter.convert(o2, Double.class)
-            );
+        if (SIMPLE_FLOAT_TYPES.contains(t1) || SIMPLE_FLOAT_TYPES.contains(t2)) {
+            return (converter.convert(o1, Double.class) < converter.convert(o2, Double.class));
         }
-        if (
-            BigInteger.class.isAssignableFrom(t1) ||
-            BigInteger.class.isAssignableFrom(t2)
-        ) {
-            return (
-                converter
-                    .convert(o1, BigInteger.class)
-                    .compareTo(converter.convert(o2, BigInteger.class)) <
-                0
-            );
+        if (BigInteger.class.isAssignableFrom(t1) || BigInteger.class.isAssignableFrom(t2)) {
+            return (converter.convert(o1, BigInteger.class).compareTo(converter.convert(o2, BigInteger.class)) < 0);
         }
-        if (
-            SIMPLE_INTEGER_TYPES.contains(t1) ||
-            SIMPLE_INTEGER_TYPES.contains(t2)
-        ) {
-            return (
-                converter.convert(o1, Long.class) <
-                converter.convert(o2, Long.class)
-            );
+        if (SIMPLE_INTEGER_TYPES.contains(t1) || SIMPLE_INTEGER_TYPES.contains(t2)) {
+            return (converter.convert(o1, Long.class) < converter.convert(o2, Long.class));
         }
         if (t1 == String.class || t2 == String.class) {
-            return (
-                converter
-                    .convert(o1, String.class)
-                    .compareTo(converter.convert(o2, String.class)) <
-                0
-            );
+            return (converter.convert(o1, String.class).compareTo(converter.convert(o2, String.class)) < 0);
         }
         if (o1 instanceof Comparable) {
             return ((Comparable) o1).compareTo(o2) < 0;
@@ -99,69 +62,27 @@ public class BooleanOperations {
         if (o2 instanceof Comparable) {
             return ((Comparable) o2).compareTo(o1) > 0;
         }
-        throw new ELException(
-            LocalMessages.get(
-                "error.compare.types",
-                o1.getClass(),
-                o2.getClass()
-            )
-        );
+        throw new ELException(LocalMessages.get("error.compare.types", o1.getClass(), o2.getClass()));
     }
 
     @SuppressWarnings("unchecked")
-    private static final boolean gt0(
-        TypeConverter converter,
-        Object o1,
-        Object o2
-    ) {
+    private static final boolean gt0(TypeConverter converter, Object o1, Object o2) {
         Class<?> t1 = o1.getClass();
         Class<?> t2 = o2.getClass();
-        if (
-            BigDecimal.class.isAssignableFrom(t1) ||
-            BigDecimal.class.isAssignableFrom(t2)
-        ) {
-            return (
-                converter
-                    .convert(o1, BigDecimal.class)
-                    .compareTo(converter.convert(o2, BigDecimal.class)) >
-                0
-            );
+        if (BigDecimal.class.isAssignableFrom(t1) || BigDecimal.class.isAssignableFrom(t2)) {
+            return (converter.convert(o1, BigDecimal.class).compareTo(converter.convert(o2, BigDecimal.class)) > 0);
         }
-        if (
-            SIMPLE_FLOAT_TYPES.contains(t1) || SIMPLE_FLOAT_TYPES.contains(t2)
-        ) {
-            return (
-                converter.convert(o1, Double.class) >
-                converter.convert(o2, Double.class)
-            );
+        if (SIMPLE_FLOAT_TYPES.contains(t1) || SIMPLE_FLOAT_TYPES.contains(t2)) {
+            return (converter.convert(o1, Double.class) > converter.convert(o2, Double.class));
         }
-        if (
-            BigInteger.class.isAssignableFrom(t1) ||
-            BigInteger.class.isAssignableFrom(t2)
-        ) {
-            return (
-                converter
-                    .convert(o1, BigInteger.class)
-                    .compareTo(converter.convert(o2, BigInteger.class)) >
-                0
-            );
+        if (BigInteger.class.isAssignableFrom(t1) || BigInteger.class.isAssignableFrom(t2)) {
+            return (converter.convert(o1, BigInteger.class).compareTo(converter.convert(o2, BigInteger.class)) > 0);
         }
-        if (
-            SIMPLE_INTEGER_TYPES.contains(t1) ||
-            SIMPLE_INTEGER_TYPES.contains(t2)
-        ) {
-            return (
-                converter.convert(o1, Long.class) >
-                converter.convert(o2, Long.class)
-            );
+        if (SIMPLE_INTEGER_TYPES.contains(t1) || SIMPLE_INTEGER_TYPES.contains(t2)) {
+            return (converter.convert(o1, Long.class) > converter.convert(o2, Long.class));
         }
         if (t1 == String.class || t2 == String.class) {
-            return (
-                converter
-                    .convert(o1, String.class)
-                    .compareTo(converter.convert(o2, String.class)) >
-                0
-            );
+            return (converter.convert(o1, String.class).compareTo(converter.convert(o2, String.class)) > 0);
         }
         if (o1 instanceof Comparable) {
             return ((Comparable) o1).compareTo(o2) > 0;
@@ -169,20 +90,10 @@ public class BooleanOperations {
         if (o2 instanceof Comparable) {
             return ((Comparable) o2).compareTo(o1) < 0;
         }
-        throw new ELException(
-            LocalMessages.get(
-                "error.compare.types",
-                o1.getClass(),
-                o2.getClass()
-            )
-        );
+        throw new ELException(LocalMessages.get("error.compare.types", o1.getClass(), o2.getClass()));
     }
 
-    public static final boolean lt(
-        TypeConverter converter,
-        Object o1,
-        Object o2
-    ) {
+    public static final boolean lt(TypeConverter converter, Object o1, Object o2) {
         if (o1 == o2) {
             return false;
         }
@@ -192,11 +103,7 @@ public class BooleanOperations {
         return lt0(converter, o1, o2);
     }
 
-    public static final boolean gt(
-        TypeConverter converter,
-        Object o1,
-        Object o2
-    ) {
+    public static final boolean gt(TypeConverter converter, Object o1, Object o2) {
         if (o1 == o2) {
             return false;
         }
@@ -206,11 +113,7 @@ public class BooleanOperations {
         return gt0(converter, o1, o2);
     }
 
-    public static final boolean ge(
-        TypeConverter converter,
-        Object o1,
-        Object o2
-    ) {
+    public static final boolean ge(TypeConverter converter, Object o1, Object o2) {
         if (o1 == o2) {
             return true;
         }
@@ -220,11 +123,7 @@ public class BooleanOperations {
         return !lt0(converter, o1, o2);
     }
 
-    public static final boolean le(
-        TypeConverter converter,
-        Object o1,
-        Object o2
-    ) {
+    public static final boolean le(TypeConverter converter, Object o1, Object o2) {
         if (o1 == o2) {
             return true;
         }
@@ -234,11 +133,7 @@ public class BooleanOperations {
         return !gt0(converter, o1, o2);
     }
 
-    public static final boolean eq(
-        TypeConverter converter,
-        Object o1,
-        Object o2
-    ) {
+    public static final boolean eq(TypeConverter converter, Object o1, Object o2) {
         if (o1 == o2) {
             return true;
         }
@@ -247,47 +142,20 @@ public class BooleanOperations {
         }
         Class<?> t1 = o1.getClass();
         Class<?> t2 = o2.getClass();
-        if (
-            BigDecimal.class.isAssignableFrom(t1) ||
-            BigDecimal.class.isAssignableFrom(t2)
-        ) {
-            return (
-                converter
-                    .convert(o1, BigDecimal.class)
-                    .compareTo(converter.convert(o2, BigDecimal.class)) ==
-                0
-            );
+        if (BigDecimal.class.isAssignableFrom(t1) || BigDecimal.class.isAssignableFrom(t2)) {
+            return (converter.convert(o1, BigDecimal.class).compareTo(converter.convert(o2, BigDecimal.class)) == 0);
         }
-        if (
-            SIMPLE_FLOAT_TYPES.contains(t1) || SIMPLE_FLOAT_TYPES.contains(t2)
-        ) {
-            return converter
-                .convert(o1, Double.class)
-                .equals(converter.convert(o2, Double.class));
+        if (SIMPLE_FLOAT_TYPES.contains(t1) || SIMPLE_FLOAT_TYPES.contains(t2)) {
+            return converter.convert(o1, Double.class).equals(converter.convert(o2, Double.class));
         }
-        if (
-            BigInteger.class.isAssignableFrom(t1) ||
-            BigInteger.class.isAssignableFrom(t2)
-        ) {
-            return (
-                converter
-                    .convert(o1, BigInteger.class)
-                    .compareTo(converter.convert(o2, BigInteger.class)) ==
-                0
-            );
+        if (BigInteger.class.isAssignableFrom(t1) || BigInteger.class.isAssignableFrom(t2)) {
+            return (converter.convert(o1, BigInteger.class).compareTo(converter.convert(o2, BigInteger.class)) == 0);
         }
-        if (
-            SIMPLE_INTEGER_TYPES.contains(t1) ||
-            SIMPLE_INTEGER_TYPES.contains(t2)
-        ) {
-            return converter
-                .convert(o1, Long.class)
-                .equals(converter.convert(o2, Long.class));
+        if (SIMPLE_INTEGER_TYPES.contains(t1) || SIMPLE_INTEGER_TYPES.contains(t2)) {
+            return converter.convert(o1, Long.class).equals(converter.convert(o2, Long.class));
         }
         if (t1 == Boolean.class || t2 == Boolean.class) {
-            return converter
-                .convert(o1, Boolean.class)
-                .equals(converter.convert(o2, Boolean.class));
+            return converter.convert(o1, Boolean.class).equals(converter.convert(o2, Boolean.class));
         }
         if (o1 instanceof Enum<?>) {
             return o1 == converter.convert(o2, o1.getClass());
@@ -296,18 +164,12 @@ public class BooleanOperations {
             return converter.convert(o1, o2.getClass()) == o2;
         }
         if (t1 == String.class || t2 == String.class) {
-            return converter
-                .convert(o1, String.class)
-                .equals(converter.convert(o2, String.class));
+            return converter.convert(o1, String.class).equals(converter.convert(o2, String.class));
         }
         return o1.equals(o2);
     }
 
-    public static final boolean ne(
-        TypeConverter converter,
-        Object o1,
-        Object o2
-    ) {
+    public static final boolean ne(TypeConverter converter, Object o1, Object o2) {
         return !eq(converter, o1, o2);
     }
 

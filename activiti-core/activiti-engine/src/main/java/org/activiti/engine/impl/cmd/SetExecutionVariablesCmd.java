@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.cmd;
 
 import java.util.Map;
-
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
@@ -27,43 +25,42 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  */
 public class SetExecutionVariablesCmd extends NeedsActiveExecutionCmd<Object> {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected Map<String, ? extends Object> variables;
-  protected boolean isLocal;
+    protected Map<String, ? extends Object> variables;
+    protected boolean isLocal;
 
-  public SetExecutionVariablesCmd(String executionId, Map<String, ? extends Object> variables, boolean isLocal) {
-    super(executionId);
-    this.variables = variables;
-    this.isLocal = isLocal;
-  }
-
-  protected Object execute(CommandContext commandContext, ExecutionEntity execution) {
-    if (isLocal) {
-      if (variables != null) {
-        for (String variableName : variables.keySet()) {
-          execution.setVariableLocal(variableName, variables.get(variableName), false);
-        }
-      }
-    } else {
-      if (variables != null) {
-        for (String variableName : variables.keySet()) {
-          execution.setVariable(variableName, variables.get(variableName), false);
-        }
-      }
+    public SetExecutionVariablesCmd(String executionId, Map<String, ? extends Object> variables, boolean isLocal) {
+        super(executionId);
+        this.variables = variables;
+        this.isLocal = isLocal;
     }
 
-    // ACT-1887: Force an update of the execution's revision to prevent
-    // simultaneous inserts of the same
-    // variable. If not, duplicate variables may occur since optimistic
-    // locking doesn't work on inserts
-    execution.forceUpdate();
-    return null;
-  }
+    protected Object execute(CommandContext commandContext, ExecutionEntity execution) {
+        if (isLocal) {
+            if (variables != null) {
+                for (String variableName : variables.keySet()) {
+                    execution.setVariableLocal(variableName, variables.get(variableName), false);
+                }
+            }
+        } else {
+            if (variables != null) {
+                for (String variableName : variables.keySet()) {
+                    execution.setVariable(variableName, variables.get(variableName), false);
+                }
+            }
+        }
 
-  @Override
-  protected String getSuspendedExceptionMessage() {
-    return "Cannot set variables because execution '" + executionId + "' is suspended";
-  }
+        // ACT-1887: Force an update of the execution's revision to prevent
+        // simultaneous inserts of the same
+        // variable. If not, duplicate variables may occur since optimistic
+        // locking doesn't work on inserts
+        execution.forceUpdate();
+        return null;
+    }
 
+    @Override
+    protected String getSuspendedExceptionMessage() {
+        return "Cannot set variables because execution '" + executionId + "' is suspended";
+    }
 }

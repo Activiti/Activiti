@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.validation.validator.impl;
 
 import java.util.Collection;
 import java.util.List;
-
 import org.activiti.bpmn.model.Artifact;
 import org.activiti.bpmn.model.Association;
 import org.activiti.bpmn.model.BpmnModel;
@@ -33,38 +31,35 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class AssociationValidator extends ValidatorImpl {
 
-  @Override
-  public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
-
-    // Global associations
-    Collection<Artifact> artifacts = bpmnModel.getGlobalArtifacts();
-    if (artifacts != null) {
-      for (Artifact artifact : artifacts) {
-        if (artifact instanceof Association) {
-          validate(null, (Association) artifact, errors);
+    @Override
+    public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
+        // Global associations
+        Collection<Artifact> artifacts = bpmnModel.getGlobalArtifacts();
+        if (artifacts != null) {
+            for (Artifact artifact : artifacts) {
+                if (artifact instanceof Association) {
+                    validate(null, (Association) artifact, errors);
+                }
+            }
         }
-      }
-    }
 
-    // Process associations
-    for (Process process : bpmnModel.getProcesses()) {
-      artifacts = process.getArtifacts();
-      for (Artifact artifact : artifacts) {
-        if (artifact instanceof Association) {
-          validate(process, (Association) artifact, errors);
+        // Process associations
+        for (Process process : bpmnModel.getProcesses()) {
+            artifacts = process.getArtifacts();
+            for (Artifact artifact : artifacts) {
+                if (artifact instanceof Association) {
+                    validate(process, (Association) artifact, errors);
+                }
+            }
         }
-      }
     }
 
-  }
-
-  protected void validate(Process process, Association association, List<ValidationError> errors) {
-    if (StringUtils.isEmpty(association.getSourceRef())) {
-      addError(errors, Problems.ASSOCIATION_INVALID_SOURCE_REFERENCE, process, association);
+    protected void validate(Process process, Association association, List<ValidationError> errors) {
+        if (StringUtils.isEmpty(association.getSourceRef())) {
+            addError(errors, Problems.ASSOCIATION_INVALID_SOURCE_REFERENCE, process, association);
+        }
+        if (StringUtils.isEmpty(association.getTargetRef())) {
+            addError(errors, Problems.ASSOCIATION_INVALID_TARGET_REFERENCE, process, association);
+        }
     }
-    if (StringUtils.isEmpty(association.getTargetRef())) {
-      addError(errors, Problems.ASSOCIATION_INVALID_TARGET_REFERENCE, process, association);
-    }
-  }
-
 }

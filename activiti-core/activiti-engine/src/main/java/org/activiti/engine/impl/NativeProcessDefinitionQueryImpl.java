@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,34 +15,41 @@
  */
 package org.activiti.engine.impl;
 
+import java.util.List;
+import java.util.Map;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.repository.NativeProcessDefinitionQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 
-import java.util.List;
-import java.util.Map;
+public class NativeProcessDefinitionQueryImpl
+    extends AbstractNativeQuery<NativeProcessDefinitionQuery, ProcessDefinition>
+    implements NativeProcessDefinitionQuery {
 
-public class NativeProcessDefinitionQueryImpl extends AbstractNativeQuery<NativeProcessDefinitionQuery, ProcessDefinition> implements NativeProcessDefinitionQuery {
+    private static final long serialVersionUID = 1L;
 
-  private static final long serialVersionUID = 1L;
+    public NativeProcessDefinitionQueryImpl(CommandContext commandContext) {
+        super(commandContext);
+    }
 
-  public NativeProcessDefinitionQueryImpl(CommandContext commandContext) {
-    super(commandContext);
-  }
+    public NativeProcessDefinitionQueryImpl(CommandExecutor commandExecutor) {
+        super(commandExecutor);
+    }
 
-  public NativeProcessDefinitionQueryImpl(CommandExecutor commandExecutor) {
-    super(commandExecutor);
-  }
+    // results ////////////////////////////////////////////////////////////////
 
-  // results ////////////////////////////////////////////////////////////////
+    public List<ProcessDefinition> executeList(
+        CommandContext commandContext,
+        Map<String, Object> parameterMap,
+        int firstResult,
+        int maxResults
+    ) {
+        return commandContext
+            .getProcessDefinitionEntityManager()
+            .findProcessDefinitionsByNativeQuery(parameterMap, firstResult, maxResults);
+    }
 
-  public List<ProcessDefinition> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return commandContext.getProcessDefinitionEntityManager().findProcessDefinitionsByNativeQuery(parameterMap, firstResult, maxResults);
-  }
-
-  public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
-    return commandContext.getProcessDefinitionEntityManager().findProcessDefinitionCountByNativeQuery(parameterMap);
-  }
-
+    public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
+        return commandContext.getProcessDefinitionEntityManager().findProcessDefinitionCountByNativeQuery(parameterMap);
+    }
 }

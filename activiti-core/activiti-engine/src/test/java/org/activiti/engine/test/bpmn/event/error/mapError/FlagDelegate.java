@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.test.bpmn.event.error.mapError;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -23,20 +22,19 @@ import org.activiti.engine.delegate.JavaDelegate;
 
  */
 public class FlagDelegate implements JavaDelegate {
-  static boolean visited;
 
-  public static void reset() {
-    visited = false;
-  }
+    static boolean visited;
 
-  public static boolean isVisited() {
-    return visited;
-  }
+    public static void reset() {
+        visited = false;
+    }
 
-  @Override
-  public void execute(DelegateExecution execution) {
-    visited = true;
+    public static boolean isVisited() {
+        return visited;
+    }
 
-  }
-
+    @Override
+    public void execute(DelegateExecution execution) {
+        visited = true;
+    }
 }

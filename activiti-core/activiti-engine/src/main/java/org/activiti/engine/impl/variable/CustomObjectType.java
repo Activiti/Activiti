@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.variable;
 
 /**
@@ -23,34 +22,34 @@ package org.activiti.engine.impl.variable;
  */
 public class CustomObjectType implements VariableType {
 
-  protected String typeName;
-  protected Class<?> theClass;
+    protected String typeName;
+    protected Class<?> theClass;
 
-  public CustomObjectType(String typeName, Class<?> theClass) {
-    this.theClass = theClass;
-    this.typeName = typeName;
-  }
-
-  public String getTypeName() {
-    return this.typeName;
-  }
-
-  public Object getValue(ValueFields valueFields) {
-    return valueFields.getCachedValue();
-  }
-
-  public boolean isAbleToStore(Object value) {
-    if (value == null) {
-      return true;
+    public CustomObjectType(String typeName, Class<?> theClass) {
+        this.theClass = theClass;
+        this.typeName = typeName;
     }
-    return this.theClass.isAssignableFrom(value.getClass());
-  }
 
-  public boolean isCachable() {
-    return true;
-  }
+    public String getTypeName() {
+        return this.typeName;
+    }
 
-  public void setValue(Object value, ValueFields valueFields) {
-    valueFields.setCachedValue(value);
-  }
+    public Object getValue(ValueFields valueFields) {
+        return valueFields.getCachedValue();
+    }
+
+    public boolean isAbleToStore(Object value) {
+        if (value == null) {
+            return true;
+        }
+        return this.theClass.isAssignableFrom(value.getClass());
+    }
+
+    public boolean isCachable() {
+        return true;
+    }
+
+    public void setValue(Object value, ValueFields valueFields) {
+        valueFields.setCachedValue(value);
+    }
 }

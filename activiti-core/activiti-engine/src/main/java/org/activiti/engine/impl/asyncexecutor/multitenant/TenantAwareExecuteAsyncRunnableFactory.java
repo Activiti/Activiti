@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.asyncexecutor.multitenant;
 
 import org.activiti.engine.impl.asyncexecutor.ExecuteAsyncRunnableFactory;
@@ -31,16 +29,15 @@ import org.activiti.engine.runtime.Job;
  */
 public class TenantAwareExecuteAsyncRunnableFactory implements ExecuteAsyncRunnableFactory {
 
-  protected TenantInfoHolder tenantInfoHolder;
-  protected String tenantId;
+    protected TenantInfoHolder tenantInfoHolder;
+    protected String tenantId;
 
-  public TenantAwareExecuteAsyncRunnableFactory(TenantInfoHolder tenantInfoHolder, String tenantId) {
-    this.tenantInfoHolder = tenantInfoHolder;
-    this.tenantId = tenantId;
-  }
+    public TenantAwareExecuteAsyncRunnableFactory(TenantInfoHolder tenantInfoHolder, String tenantId) {
+        this.tenantInfoHolder = tenantInfoHolder;
+        this.tenantId = tenantId;
+    }
 
-  public Runnable createExecuteAsyncRunnable(Job job, ProcessEngineConfigurationImpl processEngineConfiguration) {
-    return new TenantAwareExecuteAsyncRunnable(job, processEngineConfiguration, tenantInfoHolder, tenantId);
-  }
-
+    public Runnable createExecuteAsyncRunnable(Job job, ProcessEngineConfigurationImpl processEngineConfiguration) {
+        return new TenantAwareExecuteAsyncRunnable(job, processEngineConfiguration, tenantInfoHolder, tenantId);
+    }
 }

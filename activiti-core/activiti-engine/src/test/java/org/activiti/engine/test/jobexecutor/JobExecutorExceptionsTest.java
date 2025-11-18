@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.test.jobexecutor;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Date;
 import java.util.concurrent.Callable;
-
 import org.activiti.engine.impl.test.JobTestHelper;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.TimerJobQuery;
 import org.activiti.engine.test.Deployment;
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
 /**
@@ -32,27 +31,35 @@ import org.junit.Test;
  */
 public class JobExecutorExceptionsTest extends PluggableActivitiTestCase {
 
-  @Test
-  @Deployment(resources = { "org/activiti/engine/test/api/mgmt/ManagementServiceTest.testGetJobExceptionStacktrace.bpmn20.xml" })
-  public void testQueryByExceptionWithRealJobExecutor() {
-    TimerJobQuery query = managementService.createTimerJobQuery().withException();
-    assertThat(query.count()).isEqualTo(0);
+    @Test
+    @Deployment(
+        resources = {
+            "org/activiti/engine/test/api/mgmt/ManagementServiceTest.testGetJobExceptionStacktrace.bpmn20.xml",
+        }
+    )
+    public void testQueryByExceptionWithRealJobExecutor() {
+        TimerJobQuery query = managementService.createTimerJobQuery().withException();
+        assertThat(query.count()).isEqualTo(0);
 
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("exceptionInJobExecution");
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("exceptionInJobExecution");
 
-    // Timer is set for 4 hours, so move clock 5 hours
-    processEngineConfiguration.getClock().setCurrentTime(new Date(new Date().getTime() + 5 * 60 * 60 * 1000));
+        // Timer is set for 4 hours, so move clock 5 hours
+        processEngineConfiguration.getClock().setCurrentTime(new Date(new Date().getTime() + 5 * 60 * 60 * 1000));
 
-    // The execution is waiting in the first usertask. This contains a
-    // boundary timer event which we will execute manual for testing purposes.
-    JobTestHelper.waitForJobExecutorOnCondition(processEngineConfiguration, 5000L, 100L, new Callable<Boolean>() {
-      public Boolean call() throws Exception {
-        return managementService.createTimerJobQuery().withException().count() == 1;
-      }
-    });
+        // The execution is waiting in the first usertask. This contains a
+        // boundary timer event which we will execute manual for testing purposes.
+        JobTestHelper.waitForJobExecutorOnCondition(
+            processEngineConfiguration,
+            5000L,
+            100L,
+            new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    return managementService.createTimerJobQuery().withException().count() == 1;
+                }
+            }
+        );
 
-    query = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).withException();
-    assertThat(query.count()).isEqualTo(1);
-  }
-
+        query = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).withException();
+        assertThat(query.count()).isEqualTo(1);
+    }
 }

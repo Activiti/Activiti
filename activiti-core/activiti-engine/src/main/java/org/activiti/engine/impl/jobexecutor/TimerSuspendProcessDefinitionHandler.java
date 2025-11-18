@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.impl.cmd.SuspendProcessDefinitionCmd;
@@ -27,19 +26,24 @@ import org.activiti.engine.impl.util.json.JSONObject;
  */
 public class TimerSuspendProcessDefinitionHandler extends TimerChangeProcessDefinitionSuspensionStateJobHandler {
 
-  public static final String TYPE = "suspend-processdefinition";
+    public static final String TYPE = "suspend-processdefinition";
 
-  public String getType() {
-    return TYPE;
-  }
+    public String getType() {
+        return TYPE;
+    }
 
-  public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
-    JSONObject cfgJson = new JSONObject(configuration);
-    String processDefinitionId = job.getProcessDefinitionId();
-    boolean suspendProcessInstances = getIncludeProcessInstances(cfgJson);
+    public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
+        JSONObject cfgJson = new JSONObject(configuration);
+        String processDefinitionId = job.getProcessDefinitionId();
+        boolean suspendProcessInstances = getIncludeProcessInstances(cfgJson);
 
-    SuspendProcessDefinitionCmd suspendProcessDefinitionCmd = new SuspendProcessDefinitionCmd(processDefinitionId, null, suspendProcessInstances, null, job.getTenantId());
-    suspendProcessDefinitionCmd.execute(commandContext);
-  }
-
+        SuspendProcessDefinitionCmd suspendProcessDefinitionCmd = new SuspendProcessDefinitionCmd(
+            processDefinitionId,
+            null,
+            suspendProcessInstances,
+            null,
+            job.getTenantId()
+        );
+        suspendProcessDefinitionCmd.execute(commandContext);
+    }
 }

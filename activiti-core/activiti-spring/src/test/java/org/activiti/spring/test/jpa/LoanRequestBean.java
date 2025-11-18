@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.spring.test.jpa;
-
-import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service bean that handles loan requests.
@@ -29,20 +26,20 @@ import jakarta.persistence.PersistenceContext;
  */
 public class LoanRequestBean {
 
-  @PersistenceContext
-  private EntityManager entityManager;
+    @PersistenceContext
+    private EntityManager entityManager;
 
-  @Transactional
-  public LoanRequest newLoanRequest(String customerName, Long amount) {
-    LoanRequest lr = new LoanRequest();
-    lr.setCustomerName(customerName);
-    lr.setAmount(amount);
-    lr.setApproved(false);
-    entityManager.persist(lr);
-    return lr;
-  }
+    @Transactional
+    public LoanRequest newLoanRequest(String customerName, Long amount) {
+        LoanRequest lr = new LoanRequest();
+        lr.setCustomerName(customerName);
+        lr.setAmount(amount);
+        lr.setApproved(false);
+        entityManager.persist(lr);
+        return lr;
+    }
 
-  public LoanRequest getLoanRequest(Long id) {
-    return entityManager.find(LoanRequest.class, id);
-  }
+    public LoanRequest getLoanRequest(Long id) {
+        return entityManager.find(LoanRequest.class, id);
+    }
 }

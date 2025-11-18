@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
@@ -40,19 +39,26 @@ public class ImportExportTest extends ResourceActivitiTestCase {
 
         byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel);
 
-        processEngine.getRepositoryService().createDeployment().name("test1").addString("test1.bpmn20.xml",
-                                                                                                                                               new String(xml)).deploy();
+        processEngine
+            .getRepositoryService()
+            .createDeployment()
+            .name("test1")
+            .addString("test1.bpmn20.xml", new String(xml))
+            .deploy();
 
         String processInstanceKey = runtimeService.startProcessInstanceByKey("process").getId();
-        Execution execution = runtimeService.createExecutionQuery().processInstanceId(processInstanceKey).messageEventSubscriptionName("InterruptMessage").singleResult();
+        Execution execution = runtimeService
+            .createExecutionQuery()
+            .processInstanceId(processInstanceKey)
+            .messageEventSubscriptionName("InterruptMessage")
+            .singleResult();
 
         assertThat(execution).isNotNull();
     }
 
     protected void tearDown() throws Exception {
         for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-            repositoryService.deleteDeployment(deployment.getId(),
-                                               true);
+            repositoryService.deleteDeployment(deployment.getId(), true);
         }
         super.tearDown();
     }
@@ -64,21 +70,24 @@ public class ImportExportTest extends ResourceActivitiTestCase {
     protected BpmnModel readXMLFile() throws Exception {
         InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream(getResource());
         StreamSource xmlSource = new InputStreamSource(xmlStream);
-        BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xmlSource,
-                                                                        false,
-                                                                        false,
-                                                                        processEngineConfiguration.getXmlEncoding());
+        BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(
+            xmlSource,
+            false,
+            false,
+            processEngineConfiguration.getXmlEncoding()
+        );
         return bpmnModel;
     }
 
     protected BpmnModel exportAndReadXMLFile(BpmnModel bpmnModel) throws Exception {
-        byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel,
-                                                         processEngineConfiguration.getXmlEncoding());
+        byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel, processEngineConfiguration.getXmlEncoding());
         StreamSource xmlSource = new InputStreamSource(new ByteArrayInputStream(xml));
-        BpmnModel parsedModel = new BpmnXMLConverter().convertToBpmnModel(xmlSource,
-                                                                          false,
-                                                                          false,
-                                                                          processEngineConfiguration.getXmlEncoding());
+        BpmnModel parsedModel = new BpmnXMLConverter().convertToBpmnModel(
+            xmlSource,
+            false,
+            false,
+            processEngineConfiguration.getXmlEncoding()
+        );
         return parsedModel;
     }
 }

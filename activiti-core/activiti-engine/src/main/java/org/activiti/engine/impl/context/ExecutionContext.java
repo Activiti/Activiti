@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.context;
 
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
@@ -27,27 +25,27 @@ import org.activiti.engine.repository.ProcessDefinition;
  */
 public class ExecutionContext {
 
-  protected ExecutionEntity execution;
+    protected ExecutionEntity execution;
 
-  public ExecutionContext(ExecutionEntity execution) {
-    this.execution = execution;
-  }
+    public ExecutionContext(ExecutionEntity execution) {
+        this.execution = execution;
+    }
 
-  public ExecutionEntity getExecution() {
-    return execution;
-  }
+    public ExecutionEntity getExecution() {
+        return execution;
+    }
 
-  public ExecutionEntity getProcessInstance() {
-    return execution.getProcessInstance();
-  }
+    public ExecutionEntity getProcessInstance() {
+        return execution.getProcessInstance();
+    }
 
-  public ProcessDefinition getProcessDefinition() {
-    return ProcessDefinitionUtil.getProcessDefinition(execution.getProcessDefinitionId());
-  }
+    public ProcessDefinition getProcessDefinition() {
+        return ProcessDefinitionUtil.getProcessDefinition(execution.getProcessDefinitionId());
+    }
 
-  public DeploymentEntity getDeployment() {
-    String deploymentId = getProcessDefinition().getDeploymentId();
-    DeploymentEntity deployment = Context.getCommandContext().getDeploymentEntityManager().findById(deploymentId);
-    return deployment;
-  }
+    public DeploymentEntity getDeployment() {
+        String deploymentId = getProcessDefinition().getDeploymentId();
+        DeploymentEntity deployment = Context.getCommandContext().getDeploymentEntityManager().findById(deploymentId);
+        return deployment;
+    }
 }

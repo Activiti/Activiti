@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -29,32 +28,31 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public class AddEventListenerCommand implements Command<Void> {
 
-  protected ActivitiEventListener listener;
-  protected ActivitiEventType[] types;
+    protected ActivitiEventListener listener;
+    protected ActivitiEventType[] types;
 
-  public AddEventListenerCommand(ActivitiEventListener listener, ActivitiEventType[] types) {
-    this.listener = listener;
-    this.types = types;
-  }
-
-  public AddEventListenerCommand(ActivitiEventListener listener) {
-    super();
-    this.listener = listener;
-  }
-
-  @Override
-  public Void execute(CommandContext commandContext) {
-    if (listener == null) {
-      throw new ActivitiIllegalArgumentException("listener is null.");
+    public AddEventListenerCommand(ActivitiEventListener listener, ActivitiEventType[] types) {
+        this.listener = listener;
+        this.types = types;
     }
 
-    if (types != null) {
-      commandContext.getProcessEngineConfiguration().getEventDispatcher().addEventListener(listener, types);
-    } else {
-      commandContext.getProcessEngineConfiguration().getEventDispatcher().addEventListener(listener);
+    public AddEventListenerCommand(ActivitiEventListener listener) {
+        super();
+        this.listener = listener;
     }
 
-    return null;
-  }
+    @Override
+    public Void execute(CommandContext commandContext) {
+        if (listener == null) {
+            throw new ActivitiIllegalArgumentException("listener is null.");
+        }
 
+        if (types != null) {
+            commandContext.getProcessEngineConfiguration().getEventDispatcher().addEventListener(listener, types);
+        } else {
+            commandContext.getProcessEngineConfiguration().getEventDispatcher().addEventListener(listener);
+        }
+
+        return null;
+    }
 }

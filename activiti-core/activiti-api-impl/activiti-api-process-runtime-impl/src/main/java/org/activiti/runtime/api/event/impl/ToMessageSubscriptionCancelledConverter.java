@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
 package org.activiti.runtime.api.event.impl;
 
 import java.util.Optional;
-
 import org.activiti.api.process.model.events.MessageSubscriptionCancelledEvent;
 import org.activiti.api.runtime.event.impl.MessageSubscriptionCancelledEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 
-public class ToMessageSubscriptionCancelledConverter implements EventConverter<MessageSubscriptionCancelledEvent, ActivitiEntityEvent> {
+public class ToMessageSubscriptionCancelledConverter
+    implements EventConverter<MessageSubscriptionCancelledEvent, ActivitiEntityEvent> {
 
     private MessageSubscriptionConverter converter;
 
@@ -32,13 +32,11 @@ public class ToMessageSubscriptionCancelledConverter implements EventConverter<M
 
     @Override
     public Optional<MessageSubscriptionCancelledEvent> from(ActivitiEntityEvent internalEvent) {
-
         return Optional.of(internalEvent)
-                       .map(ActivitiEntityEvent::getEntity)
-                       .filter(MessageEventSubscriptionEntity.class::isInstance)
-                       .map(MessageEventSubscriptionEntity.class::cast)
-                       .map(converter::convertToMessageSubscription)
-                       .map(MessageSubscriptionCancelledEventImpl::new);
-
+            .map(ActivitiEntityEvent::getEntity)
+            .filter(MessageEventSubscriptionEntity.class::isInstance)
+            .map(MessageEventSubscriptionEntity.class::cast)
+            .map(converter::convertToMessageSubscription)
+            .map(MessageSubscriptionCancelledEventImpl::new);
     }
 }

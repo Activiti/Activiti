@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.cmd;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.ValuedDataObject;
@@ -42,8 +39,7 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.DataObject;
 import org.activiti.engine.task.Task;
 
-public class GetTaskDataObjectsCmd implements Command<Map<String, DataObject>>,
-                                              Serializable {
+public class GetTaskDataObjectsCmd implements Command<Map<String, DataObject>>, Serializable {
 
     private static final long serialVersionUID = 1L;
     protected String taskId;
@@ -51,16 +47,17 @@ public class GetTaskDataObjectsCmd implements Command<Map<String, DataObject>>,
     protected String locale;
     protected boolean withLocalizationFallback;
 
-    public GetTaskDataObjectsCmd(String taskId,
-                                 Collection<String> variableNames) {
+    public GetTaskDataObjectsCmd(String taskId, Collection<String> variableNames) {
         this.taskId = taskId;
         this.variableNames = variableNames;
     }
 
-    public GetTaskDataObjectsCmd(String taskId,
-                                 Collection<String> variableNames,
-                                 String locale,
-                                 boolean withLocalizationFallback) {
+    public GetTaskDataObjectsCmd(
+        String taskId,
+        Collection<String> variableNames,
+        String locale,
+        boolean withLocalizationFallback
+    ) {
         this.taskId = taskId;
         this.variableNames = variableNames;
         this.locale = locale;
@@ -75,8 +72,7 @@ public class GetTaskDataObjectsCmd implements Command<Map<String, DataObject>>,
         TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);
 
         if (task == null) {
-            throw new ActivitiObjectNotFoundException("task " + taskId + " doesn't exist",
-                                                      Task.class);
+            throw new ActivitiObjectNotFoundException("task " + taskId + " doesn't exist", Task.class);
         }
 
         Map<String, DataObject> dataObjects = null;
@@ -84,8 +80,7 @@ public class GetTaskDataObjectsCmd implements Command<Map<String, DataObject>>,
         if (variableNames == null) {
             variables = task.getVariableInstances();
         } else {
-            variables = task.getVariableInstances(variableNames,
-                                                  false);
+            variables = task.getVariableInstances(variableNames, false);
         }
 
         if (variables != null) {
@@ -97,7 +92,9 @@ public class GetTaskDataObjectsCmd implements Command<Map<String, DataObject>>,
                 String localizedName = null;
                 String localizedDescription = null;
 
-                ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findById(variableEntity.getExecutionId());
+                ExecutionEntity executionEntity = commandContext
+                    .getExecutionEntityManager()
+                    .findById(variableEntity.getExecutionId());
                 while (!executionEntity.isScope()) {
                     executionEntity = executionEntity.getParent();
                 }
@@ -122,10 +119,12 @@ public class GetTaskDataObjectsCmd implements Command<Map<String, DataObject>>,
                 }
 
                 if (locale != null && foundDataObject != null) {
-                    ObjectNode languageNode = Context.getLocalizationElementProperties(locale,
-                                                                                       foundDataObject.getId(),
-                                                                                       task.getProcessDefinitionId(),
-                                                                                       withLocalizationFallback);
+                    ObjectNode languageNode = Context.getLocalizationElementProperties(
+                        locale,
+                        foundDataObject.getId(),
+                        task.getProcessDefinitionId(),
+                        withLocalizationFallback
+                    );
 
                     if (languageNode != null) {
                         JsonNode nameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
@@ -140,14 +139,18 @@ public class GetTaskDataObjectsCmd implements Command<Map<String, DataObject>>,
                 }
 
                 if (foundDataObject != null) {
-                    dataObjects.put(variableEntity.getName(),
-                                    new DataObjectImpl(variableEntity.getName(),
-                                                       variableEntity.getValue(),
-                                                       foundDataObject.getDocumentation(),
-                                                       foundDataObject.getType(),
-                                                       localizedName,
-                                                       localizedDescription,
-                                                       foundDataObject.getId()));
+                    dataObjects.put(
+                        variableEntity.getName(),
+                        new DataObjectImpl(
+                            variableEntity.getName(),
+                            variableEntity.getValue(),
+                            foundDataObject.getDocumentation(),
+                            foundDataObject.getType(),
+                            localizedName,
+                            localizedDescription,
+                            foundDataObject.getId()
+                        )
+                    );
                 }
             }
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.validation.validator.impl;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.EventDefinition;
@@ -35,23 +33,24 @@ import org.activiti.validation.validator.ProcessLevelValidator;
  */
 public class IntermediateThrowEventValidator extends ProcessLevelValidator {
 
-  @Override
-  protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-    List<ThrowEvent> throwEvents = process.findFlowElementsOfType(ThrowEvent.class);
-    for (ThrowEvent throwEvent : throwEvents) {
-      EventDefinition eventDefinition = null;
-      if (!throwEvent.getEventDefinitions().isEmpty()) {
-        eventDefinition = throwEvent.getEventDefinitions().get(0);
-      }
+    @Override
+    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+        List<ThrowEvent> throwEvents = process.findFlowElementsOfType(ThrowEvent.class);
+        for (ThrowEvent throwEvent : throwEvents) {
+            EventDefinition eventDefinition = null;
+            if (!throwEvent.getEventDefinitions().isEmpty()) {
+                eventDefinition = throwEvent.getEventDefinitions().get(0);
+            }
 
-      if (eventDefinition != null
-          && !(eventDefinition instanceof SignalEventDefinition)
-          && !(eventDefinition instanceof CompensateEventDefinition)
-          && !(eventDefinition instanceof MessageEventDefinition)
-          && !(eventDefinition instanceof LinkEventDefinition)) {
-        addError(errors, Problems.THROW_EVENT_INVALID_EVENTDEFINITION, process, throwEvent);
-      }
+            if (
+                eventDefinition != null &&
+                !(eventDefinition instanceof SignalEventDefinition) &&
+                !(eventDefinition instanceof CompensateEventDefinition) &&
+                !(eventDefinition instanceof MessageEventDefinition) &&
+                !(eventDefinition instanceof LinkEventDefinition)
+            ) {
+                addError(errors, Problems.THROW_EVENT_INVALID_EVENTDEFINITION, process, throwEvent);
+            }
+        }
     }
-  }
-
 }

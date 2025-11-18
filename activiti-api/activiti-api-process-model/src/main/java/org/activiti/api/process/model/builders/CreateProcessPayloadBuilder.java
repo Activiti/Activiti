@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,7 @@ public class CreateProcessPayloadBuilder {
     private String name;
     private String businessKey;
 
-    public CreateProcessPayloadBuilder() {
-    }
+    public CreateProcessPayloadBuilder() {}
 
     public CreateProcessPayloadBuilder withProcessDefinitionId(String processDefinitionId) {
         this.processDefinitionId = processDefinitionId;
@@ -48,9 +47,6 @@ public class CreateProcessPayloadBuilder {
     }
 
     public CreateProcessInstancePayload build() {
-        return new CreateProcessInstancePayload(processDefinitionId,
-            processDefinitionKey,
-            name,
-            businessKey);
+        return new CreateProcessInstancePayload(processDefinitionId, processDefinitionKey, name, businessKey);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
@@ -39,10 +38,12 @@ public class ProcessDeployedEventProducer extends AbstractActivitiSmartLifeCycle
     private List<ProcessRuntimeEventListener<ProcessDeployedEvent>> listeners;
     private ApplicationEventPublisher eventPublisher;
 
-    public ProcessDeployedEventProducer(RepositoryService repositoryService,
-                                        APIProcessDefinitionConverter converter,
-                                        List<ProcessRuntimeEventListener<ProcessDeployedEvent>> listeners,
-                                        ApplicationEventPublisher eventPublisher) {
+    public ProcessDeployedEventProducer(
+        RepositoryService repositoryService,
+        APIProcessDefinitionConverter converter,
+        List<ProcessRuntimeEventListener<ProcessDeployedEvent>> listeners,
+        ApplicationEventPublisher eventPublisher
+    ) {
         this.repositoryService = repositoryService;
         this.converter = converter;
         this.listeners = listeners;
@@ -51,18 +52,26 @@ public class ProcessDeployedEventProducer extends AbstractActivitiSmartLifeCycle
 
     @Override
     public void doStart() {
-        List<ProcessDefinition> processDefinitions = converter.from(repositoryService.createProcessDefinitionQuery().latestVersion().list());
+        List<ProcessDefinition> processDefinitions = converter.from(
+            repositoryService.createProcessDefinitionQuery().latestVersion().list()
+        );
         List<ProcessDeployedEvent> processDeployedEvents = new ArrayList<>();
         for (ProcessDefinition processDefinition : processDefinitions) {
             try (InputStream inputStream = repositoryService.getProcessModel(processDefinition.getId())) {
                 String xmlModel = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
-                ProcessDeployedEventImpl processDeployedEvent = new ProcessDeployedEventImpl(processDefinition, xmlModel);
+                ProcessDeployedEventImpl processDeployedEvent = new ProcessDeployedEventImpl(
+                    processDefinition,
+                    xmlModel
+                );
                 processDeployedEvents.add(processDeployedEvent);
                 for (ProcessRuntimeEventListener<ProcessDeployedEvent> listener : listeners) {
                     listener.onEvent(processDeployedEvent);
                 }
             } catch (IOException e) {
-                throw new ActivitiException("Error occurred while getting process model '" + processDefinition.getId() + "' : ", e);
+                throw new ActivitiException(
+                    "Error occurred while getting process model '" + processDefinition.getId() + "' : ",
+                    e
+                );
             }
         }
         if (!processDeployedEvents.isEmpty()) {
@@ -73,6 +82,5 @@ public class ProcessDeployedEventProducer extends AbstractActivitiSmartLifeCycle
     @Override
     public void doStop() {
         // nothing
-
     }
 }

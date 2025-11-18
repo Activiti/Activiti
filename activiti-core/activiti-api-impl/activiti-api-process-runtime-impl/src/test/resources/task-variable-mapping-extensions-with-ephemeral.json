@@ -1,0 +1,71 @@
+{
+  "id": "taskVarMappings",
+  "extensions": {
+    "Process_taskVarMapping": {
+      "properties": {
+      },
+      "mappings": {
+        "ephemeralTask": {
+          "inputs": {
+            "task_input_variable_name_1": {
+              "type": "VARIABLE",
+              "value": "process_variable_inputmap_1"
+            }
+          },
+          "outputs": {
+            "process_variable_outputmap_1": {
+              "type": "VARIABLE",
+              "value": "task_output_variable_name_1"
+            },
+            "property-with-no-default-value": {
+              "type": "VARIABLE",
+              "value": "not-set-variable"
+            },
+            "process-variable-with-jsonpatch-type": {
+              "type": "JSONPATCH",
+              "value": [
+                {
+                  "op": "add",
+                  "path": "/firstProperty/secondProperty",
+                  "value": "${task_output_variable_name_1}"
+                }
+              ]
+            }
+          },
+          "ephemeral": true
+        },
+        "implicitNonEphemeralTask": {
+          "inputs": {
+            "task_input_variable_name_2": {
+              "type": "VARIABLE",
+              "value": "process_variable_inputmap_1"
+            }
+          },
+          "outputs": {
+            "process_variable_outputmap_2": {
+              "type": "VARIABLE",
+              "value": "task_output_variable_name_1"
+            }
+          }
+        },
+        "explicitNonEphemeralTask": {
+          "inputs": {
+            "task_input_variable_name_2": {
+              "type": "VARIABLE",
+              "value": "process_variable_inputmap_1"
+            }
+          },
+          "outputs": {
+            "process_variable_outputmap_2": {
+              "type": "VARIABLE",
+              "value": "task_output_variable_name_1"
+            }
+          },
+          "ephemeral": false
+        }
+      },
+      "constants": {
+      }
+    }
+  }
+}

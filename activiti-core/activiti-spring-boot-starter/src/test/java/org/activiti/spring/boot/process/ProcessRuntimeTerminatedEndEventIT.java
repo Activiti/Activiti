@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,7 @@ public class ProcessRuntimeTerminatedEndEventIT {
 
     @Autowired
     private ProcessRuntime processRuntime;
+
     @Autowired
     private TaskCleanUpUtil taskCleanUpUtil;
 
@@ -73,11 +74,12 @@ public class ProcessRuntimeTerminatedEndEventIT {
     @Test
     public void should_CancelledProcessesByTerminateEndEventsHaveCancellationReasonSet() {
         //given
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
-            .withProcessDefinitionKey(PROCESS_TERMINATE_EVENT)
-            .withName("to be terminated")
-            .withBusinessKey("My business key")
-            .build()
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey(PROCESS_TERMINATE_EVENT)
+                .withName("to be terminated")
+                .withBusinessKey("My business key")
+                .build()
         );
 
         List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
@@ -91,22 +93,18 @@ public class ProcessRuntimeTerminatedEndEventIT {
         List<Task> tasksAfterCompletion = taskBaseRuntime.getTasks(processInstance);
         assertThat(tasksAfterCompletion).hasSize(0);
 
-        List<ProcessCancelledEvent> processCancelledEvents =
-            localEventSource.getEvents(ProcessCancelledEvent.class);
+        List<ProcessCancelledEvent> processCancelledEvents = localEventSource.getEvents(ProcessCancelledEvent.class);
 
         assertThat(processCancelledEvents).hasSize(1);
         ProcessCancelledEvent processCancelledEvent = processCancelledEvents.get(0);
         assertThat(processCancelledEvent.getCause()).contains("Terminated by end event");
         assertThat(processCancelledEvent.getEntity().getId()).isEqualTo(processInstance.getId());
-        assertThat(processCancelledEvent.getEntity().getProcessDefinitionId())
-            .isEqualTo(processInstance.getProcessDefinitionId());
-        assertThat(processCancelledEvent.getEntity().getName())
-            .isEqualTo(processInstance.getName());
-        assertThat(processCancelledEvent.getEntity().getBusinessKey())
-            .isEqualTo(processInstance.getBusinessKey());
-        assertThat(processCancelledEvent.getEntity().getStartDate())
-            .isEqualTo(processInstance.getStartDate());
+        assertThat(processCancelledEvent.getEntity().getProcessDefinitionId()).isEqualTo(
+            processInstance.getProcessDefinitionId()
+        );
+        assertThat(processCancelledEvent.getEntity().getName()).isEqualTo(processInstance.getName());
+        assertThat(processCancelledEvent.getEntity().getBusinessKey()).isEqualTo(processInstance.getBusinessKey());
+        assertThat(processCancelledEvent.getEntity().getStartDate()).isEqualTo(processInstance.getStartDate());
         assertThat(processCancelledEvent.getEntity().getInitiator()).isEqualTo(LOGGED_USER);
     }
-
 }

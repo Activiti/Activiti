@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.List;
-
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Attachment;
@@ -29,14 +26,14 @@ import org.activiti.engine.task.Attachment;
  */
 public class GetProcessInstanceAttachmentsCmd implements Command<List<? extends Attachment>>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String processInstanceId;
+    private static final long serialVersionUID = 1L;
+    protected String processInstanceId;
 
-  public GetProcessInstanceAttachmentsCmd(String taskId) {
-    this.processInstanceId = taskId;
-  }
+    public GetProcessInstanceAttachmentsCmd(String taskId) {
+        this.processInstanceId = taskId;
+    }
 
-  public List<? extends Attachment> execute(CommandContext commandContext) {
-    return commandContext.getAttachmentEntityManager().findAttachmentsByProcessInstanceId(processInstanceId);
-  }
+    public List<? extends Attachment> execute(CommandContext commandContext) {
+        return commandContext.getAttachmentEntityManager().findAttachmentsByProcessInstanceId(processInstanceId);
+    }
 }

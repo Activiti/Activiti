@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.transformer;
 
 import java.util.List;
@@ -25,17 +24,17 @@ import java.util.List;
  */
 public class ComposedTransformer extends AbstractTransformer {
 
-  protected List<Transformer> transformers;
+    protected List<Transformer> transformers;
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected Object primTransform(Object anObject) throws Exception {
-    Object current = anObject;
-    for (Transformer transformer : this.transformers) {
-      current = transformer.transform(current);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Object primTransform(Object anObject) throws Exception {
+        Object current = anObject;
+        for (Transformer transformer : this.transformers) {
+            current = transformer.transform(current);
+        }
+        return current;
     }
-    return current;
-  }
 }

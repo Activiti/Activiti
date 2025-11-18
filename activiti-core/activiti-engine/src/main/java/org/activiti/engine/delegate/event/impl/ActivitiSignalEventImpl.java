@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.delegate.event.impl;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -26,28 +25,28 @@ import org.activiti.engine.delegate.event.ActivitiSignalEvent;
  */
 public class ActivitiSignalEventImpl extends ActivitiActivityEventImpl implements ActivitiSignalEvent {
 
-  protected String signalName;
-  protected Object signalData;
+    protected String signalName;
+    protected Object signalData;
 
-  public ActivitiSignalEventImpl(ActivitiEventType type) {
-    super(type);
-  }
+    public ActivitiSignalEventImpl(ActivitiEventType type) {
+        super(type);
+    }
 
-  @Override
-  public String getSignalName() {
-    return signalName;
-  }
+    @Override
+    public String getSignalName() {
+        return signalName;
+    }
 
-  public void setSignalName(String signalName) {
-    this.signalName = signalName;
-  }
+    public void setSignalName(String signalName) {
+        this.signalName = signalName;
+    }
 
-  @Override
-  public Object getSignalData() {
-    return signalData;
-  }
+    @Override
+    public Object getSignalData() {
+        return signalData;
+    }
 
-  public void setSignalData(Object signalData) {
-    this.signalData = signalData;
-  }
+    public void setSignalData(Object signalData) {
+        this.signalData = signalData;
+    }
 }

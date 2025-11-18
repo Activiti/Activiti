@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.asyncexecutor.multitenant;
 
 import java.util.Set;
-
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.multitenant.MultiSchemaMultiTenantProcessEngineConfiguration;
 
@@ -28,11 +25,9 @@ import org.activiti.engine.impl.cfg.multitenant.MultiSchemaMultiTenantProcessEng
  * add tenant executors to the engine.
  */
 public interface TenantAwareAsyncExecutor extends AsyncExecutor {
+    Set<String> getTenantIds();
 
-  Set<String> getTenantIds();
+    void addTenantAsyncExecutor(String tenantId, boolean startExecutor);
 
-  void addTenantAsyncExecutor(String tenantId, boolean startExecutor);
-
-  void removeTenantAsyncExecutor(String tenantId);
-
+    void removeTenantAsyncExecutor(String tenantId);
 }

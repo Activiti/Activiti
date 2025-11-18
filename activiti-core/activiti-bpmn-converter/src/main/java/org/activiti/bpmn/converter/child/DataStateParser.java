@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.DataStore;
@@ -27,16 +26,15 @@ import org.activiti.bpmn.model.DataStoreReference;
  */
 public class DataStateParser extends BaseChildElementParser {
 
-  public String getElementName() {
-    return ELEMENT_DATA_STATE;
-  }
-
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (parentElement instanceof DataStore) {
-      ((DataStore) parentElement).setDataState(xtr.getElementText());
-
-    } else if (parentElement instanceof DataStoreReference) {
-      ((DataStoreReference) parentElement).setDataState(xtr.getElementText());
+    public String getElementName() {
+        return ELEMENT_DATA_STATE;
     }
-  }
+
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+        if (parentElement instanceof DataStore) {
+            ((DataStore) parentElement).setDataState(xtr.getElementText());
+        } else if (parentElement instanceof DataStoreReference) {
+            ((DataStoreReference) parentElement).setDataState(xtr.getElementText());
+        }
+    }
 }

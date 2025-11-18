@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.activiti.runtime.api.impl;
 
 import java.util.Map;
 import java.util.Optional;
-
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -32,10 +31,12 @@ public class JsonMessagePayloadMappingProvider implements MessagePayloadMappingP
     private final ExpressionManager expressionManager;
     private final VariablesCalculator variablesCalculator;
 
-    public JsonMessagePayloadMappingProvider(Event bpmnEvent,
-                                             MessageEventDefinition messageEventDefinition,
-                                             ExpressionManager expressionManager,
-                                             VariablesCalculator variablesCalculator) {
+    public JsonMessagePayloadMappingProvider(
+        Event bpmnEvent,
+        MessageEventDefinition messageEventDefinition,
+        ExpressionManager expressionManager,
+        VariablesCalculator variablesCalculator
+    ) {
         this.bpmnEvent = bpmnEvent;
         this.messageEventDefinition = messageEventDefinition;
         this.expressionManager = expressionManager;
@@ -43,8 +44,9 @@ public class JsonMessagePayloadMappingProvider implements MessagePayloadMappingP
     }
 
     public Optional<Map<String, Object>> getMessagePayload(DelegateExecution execution) {
-        return Optional.of(variablesCalculator.calculateInputVariables(execution))
-                       .filter(payload -> !payload.isEmpty());
+        return Optional.of(variablesCalculator.calculateInputVariables(execution)).filter(payload ->
+            !payload.isEmpty()
+        );
     }
 
     public Event getBpmnEvent() {

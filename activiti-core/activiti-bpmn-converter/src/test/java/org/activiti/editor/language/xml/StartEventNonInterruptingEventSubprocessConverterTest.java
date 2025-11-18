@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,19 +42,17 @@ public class StartEventNonInterruptingEventSubprocessConverterTest extends Abstr
     private void validateModel(BpmnModel model) {
         Message message = model.getMessage("Message_1");
 
-        assertThat(message).isNotNull()
-                           .extracting(Message::getId,
-                                       Message::getName)
-                           .contains("Message_1",
-                                     "eventSubprocessMessage");
+        assertThat(message)
+            .isNotNull()
+            .extracting(Message::getId, Message::getName)
+            .contains("Message_1", "eventSubprocessMessage");
 
-        assertThat(model.getProcessById("process")
-                        .getFlowElements()).filteredOn(EventSubProcess.class::isInstance)
-                                           .flatExtracting("flowElements")
-                                           .filteredOn(StartEvent.class::isInstance)
-                                           .extracting("id", "isInterrupting")
-                                           .contains(tuple("eventProcessStart", false));
-
+        assertThat(model.getProcessById("process").getFlowElements())
+            .filteredOn(EventSubProcess.class::isInstance)
+            .flatExtracting("flowElements")
+            .filteredOn(StartEvent.class::isInstance)
+            .extracting("id", "isInterrupting")
+            .contains(tuple("eventProcessStart", false));
     }
 
     protected String getResource() {

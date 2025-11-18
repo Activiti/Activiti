@@ -7,6 +7,13 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      maven-plugins:
+        patterns:
+          - "org.apache.maven.plugins:*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "github-actions"
     directories:

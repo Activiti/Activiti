@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity;
-
 
 import org.activiti.engine.api.internal.Internal;
 
@@ -24,23 +22,21 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface EntityManager<EntityImpl extends Entity> {
+    EntityImpl create();
 
-  EntityImpl create();
+    EntityImpl findById(String entityId);
 
-  EntityImpl findById(String entityId);
+    void insert(EntityImpl entity);
 
-  void insert(EntityImpl entity);
+    void insert(EntityImpl entity, boolean fireCreateEvent);
 
-  void insert(EntityImpl entity, boolean fireCreateEvent);
+    EntityImpl update(EntityImpl entity);
 
-  EntityImpl update(EntityImpl entity);
+    EntityImpl update(EntityImpl entity, boolean fireUpdateEvent);
 
-  EntityImpl update(EntityImpl entity, boolean fireUpdateEvent);
+    void delete(String id);
 
-  void delete(String id);
+    void delete(EntityImpl entity);
 
-  void delete(EntityImpl entity);
-
-  void delete(EntityImpl entity, boolean fireDeleteEvent);
-
+    void delete(EntityImpl entity, boolean fireDeleteEvent);
 }

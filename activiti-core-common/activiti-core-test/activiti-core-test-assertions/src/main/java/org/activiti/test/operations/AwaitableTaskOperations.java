@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,7 @@ public class AwaitableTaskOperations implements TaskOperations {
     private TaskOperations taskOperations;
     private boolean awaitEnabled;
 
-    public AwaitableTaskOperations(TaskOperations taskOperations,
-                                   boolean awaitEnabled) {
+    public AwaitableTaskOperations(TaskOperations taskOperations, boolean awaitEnabled) {
         this.taskOperations = taskOperations;
         this.awaitEnabled = awaitEnabled;
     }

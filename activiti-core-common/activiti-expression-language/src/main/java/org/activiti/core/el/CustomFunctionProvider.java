@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,5 @@
 package org.activiti.core.el;
 
 public interface CustomFunctionProvider {
-
     void addCustomFunctions(ActivitiElContext elContext);
 }

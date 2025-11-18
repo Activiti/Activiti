@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,44 +17,44 @@ package org.activiti.bpmn.model;
 
 public class SignalEventDefinition extends EventDefinition {
 
-  protected String signalRef;
-  protected String signalExpression;
-  protected boolean async;
+    protected String signalRef;
+    protected String signalExpression;
+    protected boolean async;
 
-  public String getSignalRef() {
-    return signalRef;
-  }
+    public String getSignalRef() {
+        return signalRef;
+    }
 
-  public void setSignalRef(String signalRef) {
-    this.signalRef = signalRef;
-  }
+    public void setSignalRef(String signalRef) {
+        this.signalRef = signalRef;
+    }
 
-  public String getSignalExpression() {
-    return signalExpression;
-  }
+    public String getSignalExpression() {
+        return signalExpression;
+    }
 
-  public void setSignalExpression(String signalExpression) {
-    this.signalExpression = signalExpression;
-  }
+    public void setSignalExpression(String signalExpression) {
+        this.signalExpression = signalExpression;
+    }
 
-  public boolean isAsync() {
-    return async;
-  }
+    public boolean isAsync() {
+        return async;
+    }
 
-  public void setAsync(boolean async) {
-    this.async = async;
-  }
+    public void setAsync(boolean async) {
+        this.async = async;
+    }
 
-  public SignalEventDefinition clone() {
-    SignalEventDefinition clone = new SignalEventDefinition();
-    clone.setValues(this);
-    return clone;
-  }
+    public SignalEventDefinition clone() {
+        SignalEventDefinition clone = new SignalEventDefinition();
+        clone.setValues(this);
+        return clone;
+    }
 
-  public void setValues(SignalEventDefinition otherDefinition) {
-    super.setValues(otherDefinition);
-    setSignalRef(otherDefinition.getSignalRef());
-    setSignalExpression(otherDefinition.getSignalExpression());
-    setAsync(otherDefinition.isAsync());
-  }
+    public void setValues(SignalEventDefinition otherDefinition) {
+        super.setValues(otherDefinition);
+        setSignalRef(otherDefinition.getSignalRef());
+        setSignalExpression(otherDefinition.getSignalExpression());
+        setAsync(otherDefinition.isAsync());
+    }
 }

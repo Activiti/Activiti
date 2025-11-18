@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.test.bpmn.event.compensate.helper;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -26,13 +24,12 @@ import org.activiti.engine.delegate.JavaDelegate;
  */
 public class GetVariablesDelegate implements JavaDelegate {
 
-  public void execute(DelegateExecution execution) {
-    Integer nrOfCompletedInstances = (Integer) execution.getVariable("nrOfCompletedInstances");
-    Integer variable = SetVariablesDelegate.variablesMap.get(nrOfCompletedInstances);
-    Object variableLocal = execution.getVariable("variable");
-    if (!variableLocal.equals(variable)) {
-      throw new ActivitiIllegalArgumentException("wrong variable passed in to compensation handler");
+    public void execute(DelegateExecution execution) {
+        Integer nrOfCompletedInstances = (Integer) execution.getVariable("nrOfCompletedInstances");
+        Integer variable = SetVariablesDelegate.variablesMap.get(nrOfCompletedInstances);
+        Object variableLocal = execution.getVariable("variable");
+        if (!variableLocal.equals(variable)) {
+            throw new ActivitiIllegalArgumentException("wrong variable passed in to compensation handler");
+        }
     }
-  }
-
 }

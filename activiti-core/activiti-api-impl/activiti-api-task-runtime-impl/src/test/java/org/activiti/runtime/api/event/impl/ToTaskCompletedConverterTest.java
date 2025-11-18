@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,10 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.runtime.events.TaskCompletedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -25,10 +29,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 public class ToTaskCompletedConverterTest {
@@ -47,9 +47,15 @@ public class ToTaskCompletedConverterTest {
         //given
         Task internalTask = mock(Task.class);
         org.activiti.api.task.model.Task apiTask = mock(org.activiti.api.task.model.Task.class);
-        String loginUser="hruser";
+        String loginUser = "hruser";
         given(securityManager.getAuthenticatedUserId()).willReturn(loginUser);
-        given(taskConverter.fromWithCompletedBy(internalTask, org.activiti.api.task.model.Task.TaskStatus.COMPLETED, loginUser)).willReturn(apiTask);
+        given(
+            taskConverter.fromWithCompletedBy(
+                internalTask,
+                org.activiti.api.task.model.Task.TaskStatus.COMPLETED,
+                loginUser
+            )
+        ).willReturn(apiTask);
 
         ActivitiEntityEvent internalEvent = mock(ActivitiEntityEvent.class);
         given(internalEvent.getEntity()).willReturn(internalTask);
@@ -62,5 +68,4 @@ public class ToTaskCompletedConverterTest {
         assertThat(taskCompletedEvent).isNotNull();
         assertThat(taskCompletedEvent.getEntity()).isEqualTo(apiTask);
     }
-
 }

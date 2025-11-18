@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,8 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import org.activiti.api.process.model.ProcessDefinition;
-
 import java.util.Objects;
+import org.activiti.api.process.model.ProcessDefinition;
 
 public class ProcessDefinitionImpl extends ApplicationElementImpl implements ProcessDefinition {
 
@@ -104,39 +103,43 @@ public class ProcessDefinitionImpl extends ApplicationElementImpl implements Pro
             return false;
         }
         ProcessDefinitionImpl that = (ProcessDefinitionImpl) o;
-        return version == that.version &&
-                Objects.equals(id,
-                               that.id) &&
-                Objects.equals(name,
-                               that.name) &&
-                Objects.equals(description,
-                               that.description) &&
-                Objects.equals(key,
-                               that.key) &&
-                Objects.equals(formKey,
-                               that.formKey);
+        return (
+            version == that.version &&
+            Objects.equals(id, that.id) &&
+            Objects.equals(name, that.name) &&
+            Objects.equals(description, that.description) &&
+            Objects.equals(key, that.key) &&
+            Objects.equals(formKey, that.formKey)
+        );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(),
-                            id,
-                            name,
-                            description,
-                            version,
-                            key,
-                            formKey);
+        return Objects.hash(super.hashCode(), id, name, description, version, key, formKey);
     }
 
     @Override
     public String toString() {
-        return "ProcessDefinition{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", key='" + key + '\'' +
-                ", description='" + description + '\'' +
-                ", formKey='" + formKey + '\'' +
-                ", version=" + version +
-                '}';
+        return (
+            "ProcessDefinition{" +
+            "id='" +
+            id +
+            '\'' +
+            ", name='" +
+            name +
+            '\'' +
+            ", key='" +
+            key +
+            '\'' +
+            ", description='" +
+            description +
+            '\'' +
+            ", formKey='" +
+            formKey +
+            '\'' +
+            ", version=" +
+            version +
+            '}'
+        );
     }
 }

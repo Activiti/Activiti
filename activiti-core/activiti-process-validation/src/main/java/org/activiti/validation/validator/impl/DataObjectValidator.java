@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.validation.validator.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SubProcess;
@@ -33,24 +31,21 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class DataObjectValidator extends ProcessLevelValidator {
 
-  @Override
-  protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+    @Override
+    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+        // Gather data objects
+        List<ValuedDataObject> allDataObjects = new ArrayList<ValuedDataObject>();
+        allDataObjects.addAll(process.getDataObjects());
+        List<SubProcess> subProcesses = process.findFlowElementsOfType(SubProcess.class, true);
+        for (SubProcess subProcess : subProcesses) {
+            allDataObjects.addAll(subProcess.getDataObjects());
+        }
 
-    // Gather data objects
-    List<ValuedDataObject> allDataObjects = new ArrayList<ValuedDataObject>();
-    allDataObjects.addAll(process.getDataObjects());
-    List<SubProcess> subProcesses = process.findFlowElementsOfType(SubProcess.class, true);
-    for (SubProcess subProcess : subProcesses) {
-      allDataObjects.addAll(subProcess.getDataObjects());
+        // Validate
+        for (ValuedDataObject dataObject : allDataObjects) {
+            if (StringUtils.isEmpty(dataObject.getName())) {
+                addError(errors, Problems.DATA_OBJECT_MISSING_NAME, process, dataObject);
+            }
+        }
     }
-
-    // Validate
-    for (ValuedDataObject dataObject : allDataObjects) {
-      if (StringUtils.isEmpty(dataObject.getName())) {
-        addError(errors, Problems.DATA_OBJECT_MISSING_NAME, process, dataObject);
-      }
-    }
-
-  }
-
 }

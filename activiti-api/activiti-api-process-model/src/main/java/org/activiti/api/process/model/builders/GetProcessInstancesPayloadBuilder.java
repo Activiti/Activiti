@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.activiti.api.process.model.builders;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
 
 public class GetProcessInstancesPayloadBuilder {
@@ -27,7 +26,6 @@ public class GetProcessInstancesPayloadBuilder {
     private boolean suspendedOnly = false;
     private boolean activeOnly = false;
     private String parentProcessInstanceId;
-
 
     public GetProcessInstancesPayloadBuilder withBusinessKey(String businessKey) {
         this.businessKey = businessKey;
@@ -61,7 +59,6 @@ public class GetProcessInstancesPayloadBuilder {
         this.parentProcessInstanceId = parentProcessInstanceId;
         return this;
     }
-
 
     public GetProcessInstancesPayload build() {
         GetProcessInstancesPayload getProcessInstancesPayload = new GetProcessInstancesPayload();

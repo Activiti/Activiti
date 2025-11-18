@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,9 @@ public abstract class Result<T> implements Serializable {
     private Payload payload;
     private T entity;
 
-    public Result() {
-    }
+    public Result() {}
 
-    public Result(Payload payload,
-                  T entity) {
+    public Result(Payload payload, T entity) {
         this.payload = payload;
         this.entity = entity;
     }

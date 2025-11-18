@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.cmd;
 
 import java.util.Date;
-
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
@@ -26,20 +24,19 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
  */
 public class SetTaskDueDateCmd extends NeedsActiveTaskCmd<Void> {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected Date dueDate;
+    protected Date dueDate;
 
-  public SetTaskDueDateCmd(String taskId, Date dueDate) {
-    super(taskId);
-    this.dueDate = dueDate;
-  }
+    public SetTaskDueDateCmd(String taskId, Date dueDate) {
+        super(taskId);
+        this.dueDate = dueDate;
+    }
 
-  protected Void execute(CommandContext commandContext, TaskEntity task) {
-    task.setDueDate(dueDate);
-    commandContext.getHistoryManager().recordTaskDueDateChange(task.getId(), task.getDueDate());
-    commandContext.getTaskEntityManager().update(task);
-    return null;
-  }
-
+    protected Void execute(CommandContext commandContext, TaskEntity task) {
+        task.setDueDate(dueDate);
+        commandContext.getHistoryManager().recordTaskDueDateChange(task.getId(), task.getDueDate());
+        commandContext.getTaskEntityManager().update(task);
+        return null;
+    }
 }

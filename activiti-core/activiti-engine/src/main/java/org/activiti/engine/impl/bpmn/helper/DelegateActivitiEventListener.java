@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.helper;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -32,42 +31,44 @@ import org.activiti.engine.impl.util.ReflectUtil;
  */
 public class DelegateActivitiEventListener extends BaseDelegateEventListener {
 
-  protected String className;
-  protected ActivitiEventListener delegateInstance;
-  protected boolean failOnException = false;
+    protected String className;
+    protected ActivitiEventListener delegateInstance;
+    protected boolean failOnException = false;
 
-  public DelegateActivitiEventListener(String className, Class<?> entityClass) {
-    this.className = className;
-    setEntityClass(entityClass);
-  }
-
-  @Override
-  public void onEvent(ActivitiEvent event) {
-    if (isValidEvent(event)) {
-      getDelegateInstance().onEvent(event);
+    public DelegateActivitiEventListener(String className, Class<?> entityClass) {
+        this.className = className;
+        setEntityClass(entityClass);
     }
-  }
 
-  @Override
-  public boolean isFailOnException() {
-    if (delegateInstance != null) {
-      return delegateInstance.isFailOnException();
+    @Override
+    public void onEvent(ActivitiEvent event) {
+        if (isValidEvent(event)) {
+            getDelegateInstance().onEvent(event);
+        }
     }
-    return failOnException;
-  }
 
-  protected ActivitiEventListener getDelegateInstance() {
-    if (delegateInstance == null) {
-      Object instance = ReflectUtil.instantiate(className);
-      if (instance instanceof ActivitiEventListener) {
-        delegateInstance = (ActivitiEventListener) instance;
-      } else {
-        // Force failing of the listener invocation, since the delegate
-        // cannot be created
-        failOnException = true;
-        throw new ActivitiIllegalArgumentException("Class " + className + " does not implement " + ActivitiEventListener.class.getName());
-      }
+    @Override
+    public boolean isFailOnException() {
+        if (delegateInstance != null) {
+            return delegateInstance.isFailOnException();
+        }
+        return failOnException;
     }
-    return delegateInstance;
-  }
+
+    protected ActivitiEventListener getDelegateInstance() {
+        if (delegateInstance == null) {
+            Object instance = ReflectUtil.instantiate(className);
+            if (instance instanceof ActivitiEventListener) {
+                delegateInstance = (ActivitiEventListener) instance;
+            } else {
+                // Force failing of the listener invocation, since the delegate
+                // cannot be created
+                failOnException = true;
+                throw new ActivitiIllegalArgumentException(
+                    "Class " + className + " does not implement " + ActivitiEventListener.class.getName()
+                );
+            }
+        }
+        return delegateInstance;
+    }
 }

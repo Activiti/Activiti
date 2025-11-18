@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.test.api.event;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 
@@ -29,24 +27,23 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
  */
 public class StaticTestActivitiEventListener implements ActivitiEventListener {
 
-  private static List<ActivitiEvent> eventsReceived = new ArrayList<ActivitiEvent>();
+    private static List<ActivitiEvent> eventsReceived = new ArrayList<ActivitiEvent>();
 
-  public static List<ActivitiEvent> getEventsReceived() {
-    return eventsReceived;
-  }
+    public static List<ActivitiEvent> getEventsReceived() {
+        return eventsReceived;
+    }
 
-  public static void clearEventsReceived() {
-    eventsReceived.clear();
-  }
+    public static void clearEventsReceived() {
+        eventsReceived.clear();
+    }
 
-  @Override
-  public void onEvent(ActivitiEvent event) {
-    eventsReceived.add(event);
-  }
+    @Override
+    public void onEvent(ActivitiEvent event) {
+        eventsReceived.add(event);
+    }
 
-  @Override
-  public boolean isFailOnException() {
-    return false;
-  }
-
+    @Override
+    public boolean isFailOnException() {
+        return false;
+    }
 }

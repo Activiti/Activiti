@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package org.activiti.spring.boot.tasks;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
@@ -29,8 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class TaskRuntimeTaskForOtherTest {
@@ -48,18 +48,17 @@ public class TaskRuntimeTaskForOtherTest {
     private TaskCleanUpUtil taskCleanUpUtil;
 
     @AfterEach
-    public void taskCleanUp(){
+    public void taskCleanUp() {
         taskCleanUpUtil.cleanUpWithAdmin();
     }
 
     @Test
     public void createStandaloneTaskWithNoCandidates() {
-
         securityUtil.logInAs("garth");
 
-        Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
-                .withName("task with no candidates besides owner")
-                .build());
+        Task standAloneTask = taskRuntime.create(
+            TaskPayloadBuilder.create().withName("task with no candidates besides owner").build()
+        );
 
         // the owner should be able to see the created task
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
@@ -76,5 +75,4 @@ public class TaskRuntimeTaskForOtherTest {
 
         assertThat(tasks.getContent()).hasSize(0);
     }
-
 }

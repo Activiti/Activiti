@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,16 @@
  */
 package org.activiti.core.common.spring.connector;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
+import java.util.List;
 import org.activiti.core.common.model.connector.ConnectorDefinition;
 import org.activiti.core.common.spring.connector.autoconfigure.ConnectorAutoConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-
-import java.io.IOException;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = ConnectorAutoConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource(locations = "classpath:application-empty-test.properties")
@@ -36,7 +35,6 @@ public class EmptyConnectorDefinitionServiceIT {
 
     @Test
     public void emptyConnectorDefinitions() throws IOException {
-
         List<ConnectorDefinition> connectorDefinitions = connectorDefinitionService.get();
 
         assertThat(connectorDefinitions).isEmpty();

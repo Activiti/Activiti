@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
@@ -28,19 +26,31 @@ import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntit
 
  */
 public interface HistoricActivityInstanceDataManager extends DataManager<HistoricActivityInstanceEntity> {
+    List<HistoricActivityInstanceEntity> findUnfinishedHistoricActivityInstancesByExecutionAndActivityId(
+        String executionId,
+        String activityId
+    );
 
-  List<HistoricActivityInstanceEntity> findUnfinishedHistoricActivityInstancesByExecutionAndActivityId(String executionId, String activityId);
+    List<HistoricActivityInstanceEntity> findUnfinishedHistoricActivityInstancesByProcessInstanceId(
+        String processInstanceId
+    );
 
-  List<HistoricActivityInstanceEntity> findUnfinishedHistoricActivityInstancesByProcessInstanceId(String processInstanceId);
+    void deleteHistoricActivityInstancesByProcessInstanceId(String historicProcessInstanceId);
 
-  void deleteHistoricActivityInstancesByProcessInstanceId(String historicProcessInstanceId);
+    long findHistoricActivityInstanceCountByQueryCriteria(
+        HistoricActivityInstanceQueryImpl historicActivityInstanceQuery
+    );
 
-  long findHistoricActivityInstanceCountByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQuery);
+    List<HistoricActivityInstance> findHistoricActivityInstancesByQueryCriteria(
+        HistoricActivityInstanceQueryImpl historicActivityInstanceQuery,
+        Page page
+    );
 
-  List<HistoricActivityInstance> findHistoricActivityInstancesByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQuery, Page page);
+    List<HistoricActivityInstance> findHistoricActivityInstancesByNativeQuery(
+        Map<String, Object> parameterMap,
+        int firstResult,
+        int maxResults
+    );
 
-  List<HistoricActivityInstance> findHistoricActivityInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
-
-  long findHistoricActivityInstanceCountByNativeQuery(Map<String, Object> parameterMap);
-
+    long findHistoricActivityInstanceCountByNativeQuery(Map<String, Object> parameterMap);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.process.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -61,6 +60,14 @@ public class TemplatesDefinition {
         return Optional.ofNullable(taskTemplateDefinition.getCandidate());
     }
 
+    public boolean isEmailNotificationEnabledForTask(String taskUUID) {
+        TaskTemplateDefinition taskTemplateDefinition = tasks.get(taskUUID);
+        if (taskTemplateDefinition == null) {
+            return true;
+        }
+        return taskTemplateDefinition.isEmailNotificationEnabled();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -70,8 +77,7 @@ public class TemplatesDefinition {
             return false;
         }
         TemplatesDefinition that = (TemplatesDefinition) o;
-        return Objects.equals(tasks, that.tasks) && Objects
-            .equals(defaultTemplate, that.defaultTemplate);
+        return Objects.equals(tasks, that.tasks) && Objects.equals(defaultTemplate, that.defaultTemplate);
     }
 
     @Override

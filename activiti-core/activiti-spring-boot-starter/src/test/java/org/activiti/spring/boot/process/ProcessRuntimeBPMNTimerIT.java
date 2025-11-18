@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,7 +86,9 @@ public class ProcessRuntimeBPMNTimerIT {
     @Test
     public void shouldGetTimerCanceledEventByProcessDelete() {
         // GIVEN
-        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(PROCESS_TIMER_CANCELLED_EVENT);
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
+            PROCESS_TIMER_CANCELLED_EVENT
+        );
 
         // WHEN
         processBaseRuntime.delete(processInstance.getId());
@@ -94,46 +96,52 @@ public class ProcessRuntimeBPMNTimerIT {
         // THEN
         List<BPMNTimerCancelledEvent> eventsCancelled = localEventSource.getTimerCancelledEvents();
         assertThat(eventsCancelled)
-                .extracting(BPMNTimerEvent::getEventType,
-                            BPMNTimerEvent::getProcessDefinitionId,
-                            event -> event.getEntity().getProcessDefinitionId(),
-                            event -> event.getEntity().getProcessInstanceId(),
-                            event -> event.getEntity().getElementId()
+            .extracting(
+                BPMNTimerEvent::getEventType,
+                BPMNTimerEvent::getProcessDefinitionId,
+                event -> event.getEntity().getProcessDefinitionId(),
+                event -> event.getEntity().getProcessInstanceId(),
+                event -> event.getEntity().getElementId()
+            )
+            .contains(
+                Tuple.tuple(
+                    BPMNTimerEvent.TimerEvents.TIMER_CANCELLED,
+                    processInstance.getProcessDefinitionId(),
+                    processInstance.getProcessDefinitionId(),
+                    processInstance.getId(),
+                    "timer"
                 )
-                .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_CANCELLED,
-                                      processInstance.getProcessDefinitionId(),
-                                      processInstance.getProcessDefinitionId(),
-                                      processInstance.getId(),
-                                      "timer"
-                          )
-
-                );
+            );
     }
 
     @Test
-    public void shouldGetTimerFiredScheduledEventsForProcessWithTimer() throws Exception{
+    public void shouldGetTimerFiredScheduledEventsForProcessWithTimer() throws Exception {
         //given
-        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(PROCESS_INTERMEDIATE_TIMER_EVENT);
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
+            PROCESS_INTERMEDIATE_TIMER_EVENT
+        );
 
         //when
         List<BPMNTimerScheduledEvent> eventsScheduled = localEventSource.getTimerScheduledEvents();
 
         //then
         assertThat(eventsScheduled)
-                .extracting(BPMNTimerEvent::getEventType,
-                            BPMNTimerEvent::getProcessDefinitionId,
-                            event -> event.getEntity().getProcessDefinitionId(),
-                            event -> event.getEntity().getProcessInstanceId(),
-                            event -> event.getEntity().getElementId()
+            .extracting(
+                BPMNTimerEvent::getEventType,
+                BPMNTimerEvent::getProcessDefinitionId,
+                event -> event.getEntity().getProcessDefinitionId(),
+                event -> event.getEntity().getProcessInstanceId(),
+                event -> event.getEntity().getElementId()
+            )
+            .contains(
+                Tuple.tuple(
+                    BPMNTimerEvent.TimerEvents.TIMER_SCHEDULED,
+                    processInstance.getProcessDefinitionId(),
+                    processInstance.getProcessDefinitionId(),
+                    processInstance.getId(),
+                    "timer"
                 )
-                .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_SCHEDULED,
-                                      processInstance.getProcessDefinitionId(),
-                                      processInstance.getProcessDefinitionId(),
-                                      processInstance.getId(),
-                                      "timer"
-                          )
-
-                );
+            );
         assertThat(localEventSource.getTimerFiredEvents()).isEmpty();
 
         //when
@@ -146,46 +154,48 @@ public class ProcessRuntimeBPMNTimerIT {
 
         //then
         await().untilAsserted(() -> {
-            assertThat(localEventSource.getTimerFiredEvents())
-                    .extracting(BPMNTimerEvent::getEventType,
-                                BPMNTimerEvent::getProcessDefinitionId,
-                                event -> event.getEntity().getProcessDefinitionId(),
-                                event -> event.getEntity().getProcessInstanceId(),
-                                event -> event.getEntity().getElementId()
+                assertThat(localEventSource.getTimerFiredEvents())
+                    .extracting(
+                        BPMNTimerEvent::getEventType,
+                        BPMNTimerEvent::getProcessDefinitionId,
+                        event -> event.getEntity().getProcessDefinitionId(),
+                        event -> event.getEntity().getProcessInstanceId(),
+                        event -> event.getEntity().getElementId()
                     )
-                    .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_FIRED,
-                                          processInstance.getProcessDefinitionId(),
-                                          processInstance.getProcessDefinitionId(),
-                                          processInstance.getId(),
-                                          "timer"
-                              )
-
+                    .contains(
+                        Tuple.tuple(
+                            BPMNTimerEvent.TimerEvents.TIMER_FIRED,
+                            processInstance.getProcessDefinitionId(),
+                            processInstance.getProcessDefinitionId(),
+                            processInstance.getId(),
+                            "timer"
+                        )
                     );
 
-            assertThat(localEventSource.getEvents(BPMNTimerExecutedEvent.class))
-                    .extracting(BPMNTimerEvent::getEventType,
-                                BPMNTimerEvent::getProcessDefinitionId,
-                                event -> event.getEntity().getProcessDefinitionId(),
-                                event -> event.getEntity().getProcessInstanceId(),
-                                event -> event.getEntity().getElementId()
+                assertThat(localEventSource.getEvents(BPMNTimerExecutedEvent.class))
+                    .extracting(
+                        BPMNTimerEvent::getEventType,
+                        BPMNTimerEvent::getProcessDefinitionId,
+                        event -> event.getEntity().getProcessDefinitionId(),
+                        event -> event.getEntity().getProcessInstanceId(),
+                        event -> event.getEntity().getElementId()
                     )
-                    .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_EXECUTED,
-                                          processInstance.getProcessDefinitionId(),
-                                          processInstance.getProcessDefinitionId(),
-                                          processInstance.getId(),
-                                          "timer"
-                              )
-
+                    .contains(
+                        Tuple.tuple(
+                            BPMNTimerEvent.TimerEvents.TIMER_EXECUTED,
+                            processInstance.getProcessDefinitionId(),
+                            processInstance.getProcessDefinitionId(),
+                            processInstance.getId(),
+                            "timer"
+                        )
                     );
-        });
+            });
 
         //then the execution reaches the task
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                                                         10),
-                                             TaskPayloadBuilder
-                                                     .tasks()
-                                                     .withProcessInstanceId(processInstance.getId())
-                                                     .build());
+        Page<Task> tasks = taskRuntime.tasks(
+            Pageable.of(0, 10),
+            TaskPayloadBuilder.tasks().withProcessInstanceId(processInstance.getId()).build()
+        );
         assertThat(tasks.getContent()).hasSize(1);
         assertThat(tasks.getContent().get(0).getName()).isEqualTo("User Task");
     }
@@ -193,33 +203,35 @@ public class ProcessRuntimeBPMNTimerIT {
     @Test
     public void shouldGetTimerCanceledEventOnBoundaryEvent() {
         //given
-        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(PROCESS_TIMER_CANCELLED_EVENT);
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(
+            PROCESS_TIMER_CANCELLED_EVENT
+        );
 
         List<BPMNTimerScheduledEvent> eventsScheduled = localEventSource.getTimerScheduledEvents();
         assertThat(eventsScheduled)
-                .extracting(BPMNTimerEvent::getEventType,
-                            BPMNTimerEvent::getProcessDefinitionId,
-                            event -> event.getEntity().getProcessDefinitionId(),
-                            event -> event.getEntity().getProcessInstanceId(),
-                            event -> event.getEntity().getElementId()
+            .extracting(
+                BPMNTimerEvent::getEventType,
+                BPMNTimerEvent::getProcessDefinitionId,
+                event -> event.getEntity().getProcessDefinitionId(),
+                event -> event.getEntity().getProcessInstanceId(),
+                event -> event.getEntity().getElementId()
+            )
+            .contains(
+                Tuple.tuple(
+                    BPMNTimerEvent.TimerEvents.TIMER_SCHEDULED,
+                    processInstance.getProcessDefinitionId(),
+                    processInstance.getProcessDefinitionId(),
+                    processInstance.getId(),
+                    "timer"
                 )
-                .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_SCHEDULED,
-                                      processInstance.getProcessDefinitionId(),
-                                      processInstance.getProcessDefinitionId(),
-                                      processInstance.getId(),
-                                      "timer"
-                          )
-
-                );
+            );
 
         localEventSource.clearEvents();
 
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                                                         10),
-                                             TaskPayloadBuilder
-                                                     .tasks()
-                                                     .withProcessInstanceId(processInstance.getId())
-                                                     .build());
+        Page<Task> tasks = taskRuntime.tasks(
+            Pageable.of(0, 10),
+            TaskPayloadBuilder.tasks().withProcessInstanceId(processInstance.getId()).build()
+        );
         assertThat(tasks.getContent()).hasSize(1);
 
         Task task = tasks.getContent().get(0);
@@ -229,20 +241,22 @@ public class ProcessRuntimeBPMNTimerIT {
 
         List<BPMNTimerCancelledEvent> eventsCanceled = localEventSource.getTimerCancelledEvents();
         assertThat(eventsCanceled)
-                .extracting(BPMNTimerEvent::getEventType,
-                            BPMNTimerEvent::getProcessDefinitionId,
-                            event -> event.getEntity().getProcessDefinitionId(),
-                            event -> event.getEntity().getProcessInstanceId(),
-                            event -> event.getEntity().getElementId()
+            .extracting(
+                BPMNTimerEvent::getEventType,
+                BPMNTimerEvent::getProcessDefinitionId,
+                event -> event.getEntity().getProcessDefinitionId(),
+                event -> event.getEntity().getProcessInstanceId(),
+                event -> event.getEntity().getElementId()
+            )
+            .contains(
+                Tuple.tuple(
+                    BPMNTimerEvent.TimerEvents.TIMER_CANCELLED,
+                    processInstance.getProcessDefinitionId(),
+                    processInstance.getProcessDefinitionId(),
+                    processInstance.getId(),
+                    "timer"
                 )
-                .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_CANCELLED,
-                                      processInstance.getProcessDefinitionId(),
-                                      processInstance.getProcessDefinitionId(),
-                                      processInstance.getId(),
-                                      "timer"
-                          )
-
-                );
+            );
     }
 
     @Test
@@ -264,27 +278,24 @@ public class ProcessRuntimeBPMNTimerIT {
 
         //then
         await().untilAsserted(() -> {
+                securityUtil.logInAs("admin");
 
-            securityUtil.logInAs("admin");
+                Page<ProcessInstance> processInstancePage = processBaseRuntime.getProcessInstancesPageAsAdmin();
 
-            Page<ProcessInstance> processInstancePage = processBaseRuntime.getProcessInstancesPageAsAdmin();
+                //then
+                assertThat(processInstancePage).isNotNull();
+                assertThat(processInstancePage.getContent()).isNotEmpty();
 
-            //then
-            assertThat(processInstancePage).isNotNull();
-            assertThat(processInstancePage.getContent()).isNotEmpty();
+                ProcessInstance processInstance = processInstancePage.getContent().get(0);
+                assertThat(processInstance.getProcessDefinitionKey()).isEqualTo(VARIABLE_MAPPING_PROCESS_START_TIME);
 
-            ProcessInstance processInstance = processInstancePage.getContent().get(0);
-            assertThat(processInstance.getProcessDefinitionKey()).isEqualTo(VARIABLE_MAPPING_PROCESS_START_TIME);
+                List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessIdAsAdmin(
+                    processInstance.getId()
+                );
 
-            List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessIdAsAdmin(processInstance.getId());
-
-            assertThat(variables).extracting(VariableInstance::getName,
-                    VariableInstance::getValue)
-                    .containsOnly(
-                            tuple("process_variable_name",
-                                  "value")
-                    );
-        });
+                assertThat(variables)
+                    .extracting(VariableInstance::getName, VariableInstance::getValue)
+                    .containsOnly(tuple("process_variable_name", "value"));
+            });
     }
-
 }

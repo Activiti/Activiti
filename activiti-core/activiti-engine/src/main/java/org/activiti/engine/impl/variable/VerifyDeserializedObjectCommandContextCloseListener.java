@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.variable;
 
 import org.activiti.engine.impl.db.DbSqlSession;
@@ -35,26 +34,19 @@ import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
  */
 public class VerifyDeserializedObjectCommandContextCloseListener implements CommandContextCloseListener {
 
-  protected DeserializedObject deserializedObject;
+    protected DeserializedObject deserializedObject;
 
-  public VerifyDeserializedObjectCommandContextCloseListener(DeserializedObject deserializedObject) {
-    this.deserializedObject = deserializedObject;
-  }
+    public VerifyDeserializedObjectCommandContextCloseListener(DeserializedObject deserializedObject) {
+        this.deserializedObject = deserializedObject;
+    }
 
-  public void closing(CommandContext commandContext) {
-    deserializedObject.verifyIfBytesOfSerializedObjectChanged();
-  }
+    public void closing(CommandContext commandContext) {
+        deserializedObject.verifyIfBytesOfSerializedObjectChanged();
+    }
 
-  public void closed(CommandContext commandContext) {
+    public void closed(CommandContext commandContext) {}
 
-  }
+    public void afterSessionsFlush(CommandContext commandContext) {}
 
-  public void afterSessionsFlush(CommandContext commandContext) {
-
-  }
-
-  public void closeFailure(CommandContext commandContext) {
-
-  }
-
+    public void closeFailure(CommandContext commandContext) {}
 }

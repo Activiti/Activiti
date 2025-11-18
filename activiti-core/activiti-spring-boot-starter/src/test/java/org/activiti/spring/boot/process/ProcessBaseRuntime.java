@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.activiti.spring.boot.process;
 
 import java.util.List;
-
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -32,8 +31,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProcessBaseRuntime {
 
-    public static final Pageable DEFAULT_PAGEABLE = Pageable.of(0,
-                                                                50);
+    public static final Pageable DEFAULT_PAGEABLE = Pageable.of(0, 50);
+
     @Autowired
     private ProcessRuntime processRuntime;
 
@@ -45,19 +44,21 @@ public class ProcessBaseRuntime {
 
     public ProcessInstance startProcessWithProcessDefinitionKey(String processDefinitionKey) {
         securityUtil.logInAs("user");
-        return processRuntime.start(ProcessPayloadBuilder.start()
-        .withProcessDefinitionKey(processDefinitionKey)
-        .build());
+        return processRuntime.start(
+            ProcessPayloadBuilder.start().withProcessDefinitionKey(processDefinitionKey).build()
+        );
     }
 
     public List<ProcessInstance> getProcessInstances() {
         return processRuntime
-                .processInstances(DEFAULT_PAGEABLE, ProcessPayloadBuilder.processInstances().build()).getContent();
+            .processInstances(DEFAULT_PAGEABLE, ProcessPayloadBuilder.processInstances().build())
+            .getContent();
     }
 
     public List<ProcessInstance> getProcessInstancesAsAdmin() {
         return processAdminRuntime
-            .processInstances(DEFAULT_PAGEABLE, ProcessPayloadBuilder.processInstances().build()).getContent();
+            .processInstances(DEFAULT_PAGEABLE, ProcessPayloadBuilder.processInstances().build())
+            .getContent();
     }
 
     public Page<ProcessInstance> getProcessInstancesPage() {
@@ -69,8 +70,7 @@ public class ProcessBaseRuntime {
     }
 
     public Page<ProcessInstance> getChildrenProcessInstances(String parentProcessId) {
-        return processRuntime.processInstances(DEFAULT_PAGEABLE,
-                                               ProcessPayloadBuilder.subprocesses(parentProcessId));
+        return processRuntime.processInstances(DEFAULT_PAGEABLE, ProcessPayloadBuilder.subprocesses(parentProcessId));
     }
 
     public List<VariableInstance> getProcessVariablesByProcessId(String processId) {
@@ -78,7 +78,9 @@ public class ProcessBaseRuntime {
     }
 
     public List<VariableInstance> getProcessVariablesByProcessIdAsAdmin(String processId) {
-        return processAdminRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstanceId(processId).build());
+        return processAdminRuntime.variables(
+            ProcessPayloadBuilder.variables().withProcessInstanceId(processId).build()
+        );
     }
 
     public ProcessInstance delete(String processInstanceId) {
@@ -94,14 +96,10 @@ public class ProcessBaseRuntime {
     }
 
     public List<VariableInstance> getVariables(ProcessInstance processInstance) {
-        return processRuntime.variables(ProcessPayloadBuilder
-            .variables()
-            .withProcessInstance(processInstance)
-            .build());
+        return processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(processInstance).build());
     }
 
     public ProcessRuntime getProcessRuntime() {
         return processRuntime;
     }
-
 }

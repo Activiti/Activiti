@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,51 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
 
  */
-public class ProcessDefinitionInfoEntityImpl extends AbstractEntity implements ProcessDefinitionInfoEntity, Serializable {
+public class ProcessDefinitionInfoEntityImpl
+    extends AbstractEntity
+    implements ProcessDefinitionInfoEntity, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String processDefinitionId;
-  protected String infoJsonId;
+    protected String processDefinitionId;
+    protected String infoJsonId;
 
-  public ProcessDefinitionInfoEntityImpl() {
+    public ProcessDefinitionInfoEntityImpl() {}
 
-  }
+    public Object getPersistentState() {
+        Map<String, Object> persistentState = new HashMap<String, Object>();
+        persistentState.put("processDefinitionId", this.processDefinitionId);
+        persistentState.put("infoJsonId", this.infoJsonId);
+        return persistentState;
+    }
 
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = new HashMap<String, Object>();
-    persistentState.put("processDefinitionId", this.processDefinitionId);
-    persistentState.put("infoJsonId", this.infoJsonId);
-    return persistentState;
-  }
+    // getters and setters //////////////////////////////////////////////////////
 
-  // getters and setters //////////////////////////////////////////////////////
+    public String getProcessDefinitionId() {
+        return processDefinitionId;
+    }
 
-  public String getProcessDefinitionId() {
-    return processDefinitionId;
-  }
+    public void setProcessDefinitionId(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
+    }
 
-  public void setProcessDefinitionId(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
+    public String getInfoJsonId() {
+        return infoJsonId;
+    }
 
-  public String getInfoJsonId() {
-    return infoJsonId;
-  }
-
-  public void setInfoJsonId(String infoJsonId) {
-    this.infoJsonId = infoJsonId;
-  }
+    public void setInfoJsonId(String infoJsonId) {
+        this.infoJsonId = infoJsonId;
+    }
 }

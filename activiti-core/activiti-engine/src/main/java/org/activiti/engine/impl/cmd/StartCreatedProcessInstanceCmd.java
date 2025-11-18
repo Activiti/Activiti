@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,24 +33,31 @@ public class StartCreatedProcessInstanceCmd<T> implements Command<ProcessInstanc
     private ProcessInstance internalProcessInstance;
     private Map<String, Object> variables;
 
-    public StartCreatedProcessInstanceCmd(ProcessInstance internalProcessInstance, Map<String, Object> variables){
+    public StartCreatedProcessInstanceCmd(ProcessInstance internalProcessInstance, Map<String, Object> variables) {
         this.internalProcessInstance = internalProcessInstance;
         this.variables = variables;
     }
 
     @Override
     public ProcessInstance execute(CommandContext commandContext) {
-        if(this.internalProcessInstance.getStartTime() != null){
-            throw new ActivitiIllegalArgumentException("Process instance " + this.internalProcessInstance.getProcessInstanceId() + " has already been started");
+        if (this.internalProcessInstance.getStartTime() != null) {
+            throw new ActivitiIllegalArgumentException(
+                "Process instance " + this.internalProcessInstance.getProcessInstanceId() + " has already been started"
+            );
         }
 
         ExecutionEntity processExecution = (ExecutionEntity) internalProcessInstance;
-        ProcessInstanceHelper processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
+        ProcessInstanceHelper processInstanceHelper = commandContext
+            .getProcessEngineConfiguration()
+            .getProcessInstanceHelper();
         Process process = ProcessDefinitionUtil.getProcess(internalProcessInstance.getProcessDefinitionId());
-        processInstanceHelper.startProcessInstance(processExecution, commandContext, variables,
-            process.getInitialFlowElement(), Collections.emptyMap());
+        processInstanceHelper.startProcessInstance(
+            processExecution,
+            commandContext,
+            variables,
+            process.getInitialFlowElement(),
+            Collections.emptyMap()
+        );
         return processExecution;
     }
-
-
 }

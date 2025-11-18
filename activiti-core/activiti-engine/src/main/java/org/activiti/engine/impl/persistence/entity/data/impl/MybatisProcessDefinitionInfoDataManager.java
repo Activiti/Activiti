@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity.data.impl;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -25,24 +24,29 @@ import org.activiti.engine.impl.persistence.entity.data.ProcessDefinitionInfoDat
 /**
 
  */
-public class MybatisProcessDefinitionInfoDataManager extends AbstractDataManager<ProcessDefinitionInfoEntity> implements ProcessDefinitionInfoDataManager {
+public class MybatisProcessDefinitionInfoDataManager
+    extends AbstractDataManager<ProcessDefinitionInfoEntity>
+    implements ProcessDefinitionInfoDataManager {
 
-  public MybatisProcessDefinitionInfoDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
-    super(processEngineConfiguration);
-  }
+    public MybatisProcessDefinitionInfoDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
+        super(processEngineConfiguration);
+    }
 
-  @Override
-  public Class<? extends ProcessDefinitionInfoEntity> getManagedEntityClass() {
-    return ProcessDefinitionInfoEntityImpl.class;
-  }
+    @Override
+    public Class<? extends ProcessDefinitionInfoEntity> getManagedEntityClass() {
+        return ProcessDefinitionInfoEntityImpl.class;
+    }
 
-  @Override
-  public ProcessDefinitionInfoEntity create() {
-    return new ProcessDefinitionInfoEntityImpl();
-  }
+    @Override
+    public ProcessDefinitionInfoEntity create() {
+        return new ProcessDefinitionInfoEntityImpl();
+    }
 
-  @Override
-  public ProcessDefinitionInfoEntity findProcessDefinitionInfoByProcessDefinitionId(String processDefinitionId) {
-    return (ProcessDefinitionInfoEntity) getDbSqlSession().selectOne("selectProcessDefinitionInfoByProcessDefinitionId", processDefinitionId);
-  }
+    @Override
+    public ProcessDefinitionInfoEntity findProcessDefinitionInfoByProcessDefinitionId(String processDefinitionId) {
+        return (ProcessDefinitionInfoEntity) getDbSqlSession().selectOne(
+            "selectProcessDefinitionInfoByProcessDefinitionId",
+            processDefinitionId
+        );
+    }
 }

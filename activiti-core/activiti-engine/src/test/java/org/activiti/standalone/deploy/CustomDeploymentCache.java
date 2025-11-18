@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.standalone.deploy;
 
 import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
@@ -27,48 +26,47 @@ import org.activiti.engine.repository.ProcessDefinition;
  */
 public class CustomDeploymentCache implements DeploymentCache<ProcessDefinitionCacheEntry> {
 
-  protected String id;
-  protected ProcessDefinitionCacheEntry entry;
+    protected String id;
+    protected ProcessDefinitionCacheEntry entry;
 
-  @Override
-  public ProcessDefinitionCacheEntry get(String id) {
-    if (id.equals(this.id)) {
-      return entry;
+    @Override
+    public ProcessDefinitionCacheEntry get(String id) {
+        if (id.equals(this.id)) {
+            return entry;
+        }
+        return null;
     }
-    return null;
-  }
 
-  @Override
-  public void add(String id, ProcessDefinitionCacheEntry object) {
-    this.id = id;
-    this.entry = object;
-  }
-
-  @Override
-  public void remove(String id) {
-    if (id.equals(this.id)) {
-      this.id = null;
-      this.entry = null;
+    @Override
+    public void add(String id, ProcessDefinitionCacheEntry object) {
+        this.id = id;
+        this.entry = object;
     }
-  }
 
-  @Override
-  public void clear() {
-    this.id = null;
-    this.entry = null;
-  }
-
-  @Override
-  public boolean contains(String id) {
-    return id.equals(this.id);
-  }
-
-  // For testing purposes only
-  public ProcessDefinition getCachedProcessDefinition() {
-    if (entry == null) {
-      return null;
+    @Override
+    public void remove(String id) {
+        if (id.equals(this.id)) {
+            this.id = null;
+            this.entry = null;
+        }
     }
-    return entry.getProcessDefinition();
-  }
 
+    @Override
+    public void clear() {
+        this.id = null;
+        this.entry = null;
+    }
+
+    @Override
+    public boolean contains(String id) {
+        return id.equals(this.id);
+    }
+
+    // For testing purposes only
+    public ProcessDefinition getCachedProcessDefinition() {
+        if (entry == null) {
+            return null;
+        }
+        return entry.getProcessDefinition();
+    }
 }

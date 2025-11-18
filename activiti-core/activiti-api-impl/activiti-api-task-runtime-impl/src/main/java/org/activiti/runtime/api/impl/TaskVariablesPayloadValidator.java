@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import org.activiti.api.task.model.payloads.CreateTaskVariablePayload;
 import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
 import org.activiti.common.util.DateFormatterProvider;
@@ -30,8 +29,10 @@ public class TaskVariablesPayloadValidator {
     private final DateFormatterProvider dateFormatterProvider;
     private final VariableNameValidator variableNameValidator;
 
-    public TaskVariablesPayloadValidator(DateFormatterProvider dateFormatterProvider,
-                                         VariableNameValidator variableNameValidator) {
+    public TaskVariablesPayloadValidator(
+        DateFormatterProvider dateFormatterProvider,
+        VariableNameValidator variableNameValidator
+    ) {
         this.dateFormatterProvider = dateFormatterProvider;
         this.variableNameValidator = variableNameValidator;
     }
@@ -45,30 +46,31 @@ public class TaskVariablesPayloadValidator {
         }
     }
 
-    private void checkNotValidCharactersInVariableName(String name,
-                                                        String errorMsg) {
-
+    private void checkNotValidCharactersInVariableName(String name, String errorMsg) {
         if (!variableNameValidator.validate(name)) {
-            throw new IllegalStateException(errorMsg + (name != null ? name : "null" ));
+            throw new IllegalStateException(errorMsg + (name != null ? name : "null"));
         }
     }
 
-    public CreateTaskVariablePayload handleCreateTaskVariablePayload(CreateTaskVariablePayload createTaskVariablePayload) {
-
-        checkNotValidCharactersInVariableName(createTaskVariablePayload.getName(),
-                                               "Variable has not a valid name: ");
+    public CreateTaskVariablePayload handleCreateTaskVariablePayload(
+        CreateTaskVariablePayload createTaskVariablePayload
+    ) {
+        checkNotValidCharactersInVariableName(createTaskVariablePayload.getName(), "Variable has not a valid name: ");
 
         Object value = createTaskVariablePayload.getValue();
         if (value instanceof String) {
-            handleAsDate((String)value).ifPresent(createTaskVariablePayload::setValue);
+            handleAsDate((String) value).ifPresent(createTaskVariablePayload::setValue);
         }
         return createTaskVariablePayload;
     }
 
-    public UpdateTaskVariablePayload handleUpdateTaskVariablePayload(UpdateTaskVariablePayload updateTaskVariablePayload) {
-
-        checkNotValidCharactersInVariableName(updateTaskVariablePayload.getName(),
-                                               "You cannot update a variable with not a valid name: ");
+    public UpdateTaskVariablePayload handleUpdateTaskVariablePayload(
+        UpdateTaskVariablePayload updateTaskVariablePayload
+    ) {
+        checkNotValidCharactersInVariableName(
+            updateTaskVariablePayload.getName(),
+            "You cannot update a variable with not a valid name: "
+        );
 
         Object value = updateTaskVariablePayload.getValue();
 
@@ -83,9 +85,7 @@ public class TaskVariablesPayloadValidator {
             Set<String> mismatchedVars = variableNameValidator.validateVariables(variables);
 
             if (!mismatchedVars.isEmpty()) {
-                throw new IllegalStateException("Variables have not valid names: " + String.join(", ",
-                                                                                                 mismatchedVars));
-
+                throw new IllegalStateException("Variables have not valid names: " + String.join(", ", mismatchedVars));
             }
             handleStringVariablesAsDates(variables);
         }
@@ -95,12 +95,13 @@ public class TaskVariablesPayloadValidator {
 
     private void handleStringVariablesAsDates(Map<String, Object> variables) {
         if (variables != null) {
-            variables.entrySet()
-            .stream()
-            .filter(stringObjectEntry -> stringObjectEntry.getValue() instanceof String)
-            .forEach(stringObjectEntry ->
-                        handleAsDate((String) stringObjectEntry.getValue()).ifPresent(stringObjectEntry::setValue));
+            variables
+                .entrySet()
+                .stream()
+                .filter(stringObjectEntry -> stringObjectEntry.getValue() instanceof String)
+                .forEach(stringObjectEntry ->
+                    handleAsDate((String) stringObjectEntry.getValue()).ifPresent(stringObjectEntry::setValue)
+                );
         }
     }
-
 }

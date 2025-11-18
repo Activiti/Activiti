@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine;
 
 import org.activiti.engine.api.internal.Internal;
@@ -26,20 +25,18 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface ProcessEngineInfo {
+    /**
+     * Returns the name of the process engine.
+     */
+    String getName();
 
-  /**
-   * Returns the name of the process engine.
-   */
-  String getName();
+    /**
+     * Returns the resources the engine was configured from.
+     */
+    String getResourceUrl();
 
-  /**
-   * Returns the resources the engine was configured from.
-   */
-  String getResourceUrl();
-
-  /**
-   * Returns the exception stacktrace in case an exception occurred while initializing the engine. When no exception occurred, null is returned.
-   */
-  String getException();
-
+    /**
+     * Returns the exception stacktrace in case an exception occurred while initializing the engine. When no exception occurred, null is returned.
+     */
+    String getException();
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,13 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import java.util.Set;
-
-import org.springframework.core.convert.converter.Converter;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Set;
+import org.springframework.core.convert.converter.Converter;
 
 @ProcessVariableTypeConverter
 public class SetToStringConverter implements Converter<Set<Object>, String> {
+
     private final ObjectMapper objectMapper;
 
     public SetToStringConverter(ObjectMapper objectMapper) {
@@ -31,7 +30,6 @@ public class SetToStringConverter implements Converter<Set<Object>, String> {
 
     @Override
     public String convert(Set<Object> source) {
-
         try {
             return objectMapper.writeValueAsString(source);
         } catch (Exception cause) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.standalone.jpa;
 
 import jakarta.persistence.Column;
@@ -27,15 +25,15 @@ import jakarta.persistence.Id;
 @Entity(name = "FLOAT_ID_ENTITY")
 public class FloatIdJPAEntity {
 
-  @Id
-  @Column(name = "ID_")
-  private float floatId;
+    @Id
+    @Column(name = "ID_")
+    private float floatId;
 
-  public float getFloatId() {
-    return floatId;
-  }
+    public float getFloatId() {
+        return floatId;
+    }
 
-  public void setFloatId(float floatId) {
-    this.floatId = floatId;
-  }
+    public void setFloatId(float floatId) {
+        this.floatId = floatId;
+    }
 }

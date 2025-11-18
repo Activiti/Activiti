@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.spring.test.executionListener;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,29 +26,34 @@ import org.springframework.test.context.ContextConfiguration;
 /**
 
  */
-@ContextConfiguration("classpath:org/activiti/spring/test/executionListener/TransactionDependentListenerTest-context.xml")
+@ContextConfiguration(
+    "classpath:org/activiti/spring/test/executionListener/TransactionDependentListenerTest-context.xml"
+)
 public class TransactionDependentExecutionListenerSpringTest extends SpringActivitiTestCase {
 
-  @Autowired
-  MyTransactionDependentExecutionListener listener;
+    @Autowired
+    MyTransactionDependentExecutionListener listener;
 
-  @Deployment
-  public void testCustomPropertiesMapDelegateExpression() {
-    runtimeService.startProcessInstanceByKey("transactionDependentExecutionListenerProcess");
+    @Deployment
+    public void testCustomPropertiesMapDelegateExpression() {
+        runtimeService.startProcessInstanceByKey("transactionDependentExecutionListenerProcess");
 
-    // Completing first task will trigger the first closed listener (expression custom properties resolver)
-    Task task = taskService.createTaskQuery().singleResult();
-    taskService.complete(task.getId());
+        // Completing first task will trigger the first closed listener (expression custom properties resolver)
+        Task task = taskService.createTaskQuery().singleResult();
+        taskService.complete(task.getId());
 
-    assertThat(listener.getCurrentActivities().get(0).getActivityId()).isEqualTo("task3");
-    assertThat(listener.getCurrentActivities().get(0).getCustomPropertiesMap().get("customProp1")).isEqualTo("task3");
+        assertThat(listener.getCurrentActivities().get(0).getActivityId()).isEqualTo("task3");
+        assertThat(listener.getCurrentActivities().get(0).getCustomPropertiesMap().get("customProp1")).isEqualTo(
+            "task3"
+        );
 
-    // Completing second task will trigger the second closed listener (delegate expression custom properties resolver)
-    task = taskService.createTaskQuery().singleResult();
-    taskService.complete(task.getId());
+        // Completing second task will trigger the second closed listener (delegate expression custom properties resolver)
+        task = taskService.createTaskQuery().singleResult();
+        taskService.complete(task.getId());
 
-    assertThat(listener.getCurrentActivities().get(1).getActivityId()).isEqualTo("task4");
-    assertThat(listener.getCurrentActivities().get(1).getCustomPropertiesMap().get("customProp1")).isEqualTo("task4");
-  }
-
+        assertThat(listener.getCurrentActivities().get(1).getActivityId()).isEqualTo("task4");
+        assertThat(listener.getCurrentActivities().get(1).getCustomPropertiesMap().get("customProp1")).isEqualTo(
+            "task4"
+        );
+    }
 }

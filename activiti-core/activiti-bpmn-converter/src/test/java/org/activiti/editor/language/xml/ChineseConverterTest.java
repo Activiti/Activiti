@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,20 +20,20 @@ import org.junit.jupiter.api.Test;
 
 public class ChineseConverterTest extends AbstractConverterTest {
 
-  @Test
-  public void convertXMLToModel() throws Exception {
-    BpmnModel bpmnModel = readXMLFile();
-    deployProcess(bpmnModel);
-  }
+    @Test
+    public void convertXMLToModel() throws Exception {
+        BpmnModel bpmnModel = readXMLFile();
+        deployProcess(bpmnModel);
+    }
 
-  @Test
-  public void convertModelToXML() throws Exception {
-    BpmnModel bpmnModel = readXMLFile();
-    BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
-    deployProcess(parsedModel);
-  }
+    @Test
+    public void convertModelToXML() throws Exception {
+        BpmnModel bpmnModel = readXMLFile();
+        BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
+        deployProcess(parsedModel);
+    }
 
-  protected String getResource() {
-    return "chinese.bpmn";
-  }
+    protected String getResource() {
+        return "chinese.bpmn";
+    }
 }

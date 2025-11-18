@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,10 @@
  */
 package org.activiti.spring.boot;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.ArrayList;
+import java.util.List;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
@@ -29,13 +33,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, properties = {"spring.activiti.disable-existing-start-event-subscriptions=true"})
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.NONE,
+    properties = { "spring.activiti.disable-existing-start-event-subscriptions=true" }
+)
 public class ApplicationUpgradeWithStartEventsIT {
 
     @Autowired
@@ -52,7 +53,6 @@ public class ApplicationUpgradeWithStartEventsIT {
 
     @Autowired
     private ProcessEngineConfigurationImpl processEngineConfigurationImpl;
-
 
     private List<String> deploymentIds;
 
@@ -95,7 +95,10 @@ public class ApplicationUpgradeWithStartEventsIT {
 
         deployProcess(deploymentName, "processes/ProcessWithMessageStartEvent.bpmn20.xml");
 
-        List<EventSubscriptionEntity> messageSubscriptions = eventSubscriptionQuery.eventType("message").activityId("MessageStartEvent").list();
+        List<EventSubscriptionEntity> messageSubscriptions = eventSubscriptionQuery
+            .eventType("message")
+            .activityId("MessageStartEvent")
+            .list();
         assertThat(messageSubscriptions).hasSize(1);
 
         deployProcess(deploymentName, "processes/ProcessWithoutMessageStartEvent.bpmn20.xml");
@@ -110,7 +113,10 @@ public class ApplicationUpgradeWithStartEventsIT {
 
         deployProcess(deploymentName, "processes/ProcessWithSignalStartEvent.bpmn20.xml");
 
-        List<EventSubscriptionEntity> signalSubscriptions = eventSubscriptionQuery.eventType("signal").activityId("SignalStartEvent").list();
+        List<EventSubscriptionEntity> signalSubscriptions = eventSubscriptionQuery
+            .eventType("signal")
+            .activityId("SignalStartEvent")
+            .list();
         assertThat(signalSubscriptions).hasSize(1);
 
         deployProcess(deploymentName, "processes/ProcessWithoutSignalStartEvent.bpmn20.xml");
@@ -120,9 +126,11 @@ public class ApplicationUpgradeWithStartEventsIT {
     }
 
     private String deployProcess(String deploymentName, String processPath) {
-        Deployment deployment = repositoryService.createDeployment()
-            .addClasspathResource(processPath).
-            name(deploymentName).deploy();
+        Deployment deployment = repositoryService
+            .createDeployment()
+            .addClasspathResource(processPath)
+            .name(deploymentName)
+            .deploy();
         deploymentIds.add(deployment.getId());
         return deployment.getId();
     }

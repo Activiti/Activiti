@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,24 @@
  */
 package org.activiti.api.runtime.model.impl;
 
-import java.io.IOException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.convert.ConversionService;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.convert.ConversionService;
 
 public class ProcessVariablesMapDeserializer extends JsonDeserializer<ProcessVariablesMap<String, Object>> {
+
     private static final Logger logger = LoggerFactory.getLogger(ProcessVariablesMapDeserializer.class);
 
     private static final String VALUE = "value";
     private static final String TYPE = "type";
-    private final static ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
     private final ConversionService conversionService;
 
     public ProcessVariablesMapDeserializer(ConversionService conversionService) {
@@ -41,46 +40,44 @@ public class ProcessVariablesMapDeserializer extends JsonDeserializer<ProcessVar
     }
 
     @Override
-    public ProcessVariablesMap<String, Object> deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
-                                                                                                              JsonProcessingException {
+    public ProcessVariablesMap<String, Object> deserialize(JsonParser jp, DeserializationContext ctxt)
+        throws IOException, JsonProcessingException {
         ProcessVariablesMap<String, Object> map = new ProcessVariablesMap<>();
 
         ObjectMapper codec = (ObjectMapper) jp.getCodec();
         JsonNode node = codec.readTree(jp);
-        node.fields().forEachRemaining(entry -> {
-            String name = entry.getKey();
-            JsonNode entryValue = entry.getValue();
+        node
+            .fields()
+            .forEachRemaining(entry -> {
+                String name = entry.getKey();
+                JsonNode entryValue = entry.getValue();
 
-            if(!entryValue.isNull()) {
-                if (entryValue.get(TYPE) != null && entryValue.get(VALUE) != null) {
-                    String type = entryValue.get(TYPE).textValue();
-                    String value = entryValue.get(VALUE).asText();
+                if (!entryValue.isNull()) {
+                    if (entryValue.get(TYPE) != null && entryValue.get(VALUE) != null) {
+                        String type = entryValue.get(TYPE).textValue();
+                        String value = entryValue.get(VALUE).asText();
 
-                    Class<?> clazz = ProcessVariablesMapTypeRegistry.forType(type);
-                    Object result = conversionService.convert(value, clazz);
+                        Class<?> clazz = ProcessVariablesMapTypeRegistry.forType(type);
+                        Object result = conversionService.convert(value, clazz);
 
-                    if(ObjectValue.class.isInstance(result)) {
-                        result = ObjectValue.class.cast(result)
-                                                  .getObject();
+                        if (ObjectValue.class.isInstance(result)) {
+                            result = ObjectValue.class.cast(result).getObject();
+                        }
+
+                        map.put(name, result);
+                    } else {
+                        Object value = null;
+                        try {
+                            value = objectMapper.treeToValue(entryValue, Object.class);
+                        } catch (JsonProcessingException e) {
+                            logger.error("Unexpected Json Processing Exception: ", e);
+                        }
+                        map.put(name, value);
                     }
-
-                    map.put(name, result);
+                } else {
+                    map.put(name, null);
                 }
-                else {
-                    Object value = null;
-                    try {
-                        value = objectMapper.treeToValue(entryValue,
-                                                         Object.class);
-                    } catch (JsonProcessingException e) {
-                        logger.error("Unexpected Json Processing Exception: ", e);
-                    }
-                    map.put(name, value);
-                }
-
-            } else {
-                map.put(name, null);
-            }
-        });
+            });
 
         return map;
     }

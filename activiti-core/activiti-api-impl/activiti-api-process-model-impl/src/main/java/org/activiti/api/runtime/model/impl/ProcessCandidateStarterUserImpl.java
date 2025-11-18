@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,16 @@
  */
 package org.activiti.api.runtime.model.impl;
 
+import java.util.Objects;
 import org.activiti.api.process.model.ProcessCandidateStarterUser;
 
-import java.util.Objects;
-
-public class ProcessCandidateStarterUserImpl extends ProcessCandidateStarterImpl implements ProcessCandidateStarterUser {
+public class ProcessCandidateStarterUserImpl
+    extends ProcessCandidateStarterImpl
+    implements ProcessCandidateStarterUser {
 
     private String userId;
 
-    public ProcessCandidateStarterUserImpl() {
-    }
+    public ProcessCandidateStarterUserImpl() {}
 
     public ProcessCandidateStarterUserImpl(String processDefinitionId, String userId) {
         super(processDefinitionId);
@@ -36,8 +36,10 @@ public class ProcessCandidateStarterUserImpl extends ProcessCandidateStarterImpl
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProcessCandidateStarterUserImpl that = (ProcessCandidateStarterUserImpl) o;
-        return Objects.equals(userId, that.userId) &&
-                Objects.equals(getProcessDefinitionId(), that.getProcessDefinitionId());
+        return (
+            Objects.equals(userId, that.userId) &&
+            Objects.equals(getProcessDefinitionId(), that.getProcessDefinitionId())
+        );
     }
 
     @Override

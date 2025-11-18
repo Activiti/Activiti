@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,11 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import java.util.Optional;
 import org.activiti.api.process.model.events.BPMNTimerFiredEvent;
 import org.activiti.api.runtime.event.impl.BPMNTimerFiredEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
-
-import java.util.Optional;
 
 public class ToTimerFiredConverter implements EventConverter<BPMNTimerFiredEvent, ActivitiEvent> {
 
@@ -34,7 +33,9 @@ public class ToTimerFiredConverter implements EventConverter<BPMNTimerFiredEvent
     public Optional<BPMNTimerFiredEvent> from(ActivitiEvent internalEvent) {
         BPMNTimerFiredEventImpl event = null;
         if (bpmnTimerConverter.isTimerRelatedEvent(internalEvent)) {
-            event = new BPMNTimerFiredEventImpl(bpmnTimerConverter.convertToBPMNTimer((ActivitiEntityEvent) internalEvent));
+            event = new BPMNTimerFiredEventImpl(
+                bpmnTimerConverter.convertToBPMNTimer((ActivitiEntityEvent) internalEvent)
+            );
             event.setProcessInstanceId(internalEvent.getProcessInstanceId());
             event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         }

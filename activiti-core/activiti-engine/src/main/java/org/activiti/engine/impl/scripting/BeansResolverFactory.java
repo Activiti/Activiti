@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.scripting;
 
 import org.activiti.engine.delegate.VariableScope;
@@ -25,18 +23,21 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
  */
 public class BeansResolverFactory implements ResolverFactory, Resolver {
 
-  protected ProcessEngineConfigurationImpl processEngineConfiguration;
+    protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
-  public Resolver createResolver(ProcessEngineConfigurationImpl processEngineConfiguration, VariableScope variableScope) {
-    this.processEngineConfiguration = processEngineConfiguration;
-    return this;
-  }
+    public Resolver createResolver(
+        ProcessEngineConfigurationImpl processEngineConfiguration,
+        VariableScope variableScope
+    ) {
+        this.processEngineConfiguration = processEngineConfiguration;
+        return this;
+    }
 
-  public boolean containsKey(Object key) {
-    return processEngineConfiguration.getBeans().containsKey(key);
-  }
+    public boolean containsKey(Object key) {
+        return processEngineConfiguration.getBeans().containsKey(key);
+    }
 
-  public Object get(Object key) {
-    return processEngineConfiguration.getBeans().get(key);
-  }
+    public Object get(Object key) {
+        return processEngineConfiguration.getBeans().get(key);
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.cmd;
+
+import java.io.Serializable;
+import java.util.*;
 
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -28,10 +30,6 @@ import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Serializable;
-import java.util.*;
-
 
 public class DeployCmd<T> implements Command<Deployment>, Serializable {
 
@@ -48,22 +46,20 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
     }
 
     protected Deployment executeDeploy(CommandContext commandContext) {
-
         DeploymentEntity newDeployment = setUpNewDeploymentFromContext(commandContext);
 
         if (deploymentBuilder.isDuplicateFilterEnabled()) {
-
             List<Deployment> existingDeployments = new ArrayList<>();
 
-            if (newDeployment.getTenantId() == null ||
-                ProcessEngineConfiguration.NO_TENANT_ID.equals(newDeployment.getTenantId())) {
-
+            if (
+                newDeployment.getTenantId() == null ||
+                    ProcessEngineConfiguration.NO_TENANT_ID.equals(newDeployment.getTenantId())
+            ) {
                 DeploymentEntity latestDeployment = getLatestDeployment(commandContext, newDeployment);
 
                 if (latestDeployment != null) {
                     existingDeployments.add(latestDeployment);
                 }
-
             } else {
                 List<Deployment> deploymentList = commandContext
                     .getProcessEngineConfiguration()
@@ -81,14 +77,19 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
             }
 
             if (!existingDeployments.isEmpty()) {
-
                 DeploymentEntity existingDeployment = (DeploymentEntity) existingDeployments.get(0);
+
+                if (existingDeployment.getVersion() > newDeployment.getVersion()) {
+                    newDeployment.setVersion(existingDeployment.getVersion());
+                }
 
                 if (deploymentsDiffer(newDeployment, existingDeployment)) {
                     applyUpgradeLogic(newDeployment, existingDeployment);
                 } else {
-                    LOGGER.info("An existing deployment of version {} matching the current one was found, no need to deploy again.",
-                        existingDeployment.getVersion());
+                    LOGGER.info(
+                        "An existing deployment of version {} matching the current one was found, no need to deploy again.",
+                        existingDeployment.getVersion()
+                    );
                     return existingDeployment;
                 }
             }
@@ -97,8 +98,14 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
         persistDeploymentInDatabase(commandContext, newDeployment);
 
         Map<String, Object> deploymentSettings = new HashMap<>();
-        deploymentSettings.put(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED, deploymentBuilder.isBpmn20XsdValidationEnabled());
-        deploymentSettings.put(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED, deploymentBuilder.isProcessValidationEnabled());
+        deploymentSettings.put(
+            DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED,
+            deploymentBuilder.isBpmn20XsdValidationEnabled()
+        );
+        deploymentSettings.put(
+            DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED,
+            deploymentBuilder.isProcessValidationEnabled()
+        );
 
         LOGGER.info("Launching new deployment with version: " + newDeployment.getVersion());
         commandContext.getProcessEngineConfiguration().getDeploymentManager().deploy(newDeployment, deploymentSettings);
@@ -108,7 +115,12 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
         }
 
         if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-            commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, newDeployment));
+            commandContext
+                .getProcessEngineConfiguration()
+                .getEventDispatcher()
+                .dispatchEvent(
+                    ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, newDeployment)
+                );
         }
 
         return newDeployment;
@@ -118,12 +130,14 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
         commandContext.getDeploymentEntityManager().insert(newDeployment);
 
         if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-            commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, newDeployment));
+            commandContext
+                .getProcessEngineConfiguration()
+                .getEventDispatcher()
+                .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, newDeployment));
         }
     }
 
     private DeploymentEntity getLatestDeployment(CommandContext commandContext, DeploymentEntity newDeployment) {
-
         DeploymentEntity latestDeployment = commandContext
             .getDeploymentEntityManager()
             .findLatestDeploymentByName(newDeployment.getName());
@@ -136,10 +150,10 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
     }
 
     private DeploymentEntity checkForRollback(CommandContext commandContext, DeploymentEntity latestDeployment) {
-
-        if (commandContext.getProcessEngineConfiguration().isRollbackDeployment() &&
-            latestDeployment.getVersion() > deploymentBuilder.getEnforcedAppVersion()) {
-
+        if (
+            commandContext.getProcessEngineConfiguration().isRollbackDeployment() &&
+                latestDeployment.getVersion() > deploymentBuilder.getEnforcedAppVersion()
+        ) {
             LOGGER.info("Rollback detected: Previous rolled back deployment will be deleted");
             DeleteDeploymentCmd deleteDeploymentCmd = new DeleteDeploymentCmd(latestDeployment.getId(), false);
             deleteDeploymentCmd.execute(commandContext);
@@ -148,7 +162,6 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
         } else {
             return latestDeployment;
         }
-
     }
 
     private DeploymentEntity getDeploymentEntityForCurrentEnforcedAppVersion(CommandContext commandContext) {
@@ -172,8 +185,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
         }
     }
 
-    private void applyUpgradeLogic(DeploymentEntity deployment,
-                                   DeploymentEntity existingDeployment) {
+    private void applyUpgradeLogic(DeploymentEntity deployment, DeploymentEntity existingDeployment) {
         if (deploymentBuilder.hasEnforcedAppVersion()) {
             deployment.setVersion(deploymentBuilder.getEnforcedAppVersion());
         } else if (deploymentBuilder.hasProjectManifestSet()) {
@@ -181,8 +193,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
         }
     }
 
-    protected boolean deploymentsDiffer(DeploymentEntity deployment,
-                                        DeploymentEntity saved) {
+    protected boolean deploymentsDiffer(DeploymentEntity deployment, DeploymentEntity saved) {
         if (deploymentBuilder.hasEnforcedAppVersion()) {
             return deploymentsDifferWhenEnforcedAppVersionIsSet(saved);
         } else if (deploymentBuilder.hasProjectManifestSet()) {
@@ -196,8 +207,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
         return !deploymentBuilder.getEnforcedAppVersion().equals(saved.getVersion());
     }
 
-    private boolean deploymentsDifferWhenProjectManifestIsSet(DeploymentEntity deployment,
-                                                              DeploymentEntity saved) {
+    private boolean deploymentsDifferWhenProjectManifestIsSet(DeploymentEntity deployment, DeploymentEntity saved) {
         return !deployment.getProjectReleaseVersion().equals(saved.getProjectReleaseVersion());
     }
 
@@ -229,18 +239,27 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
     }
 
     protected void scheduleProcessDefinitionActivation(CommandContext commandContext, DeploymentEntity deployment) {
-        for (ProcessDefinitionEntity processDefinitionEntity : deployment.getDeployedArtifacts(ProcessDefinitionEntity.class)) {
-
+        for (ProcessDefinitionEntity processDefinitionEntity : deployment.getDeployedArtifacts(
+            ProcessDefinitionEntity.class
+        )) {
             // If activation date is set, we first suspend all the process
             // definition
-            SuspendProcessDefinitionCmd suspendProcessDefinitionCmd = new SuspendProcessDefinitionCmd(processDefinitionEntity, false, null, deployment.getTenantId());
+            SuspendProcessDefinitionCmd suspendProcessDefinitionCmd = new SuspendProcessDefinitionCmd(
+                processDefinitionEntity,
+                false,
+                null,
+                deployment.getTenantId()
+            );
             suspendProcessDefinitionCmd.execute(commandContext);
 
             // And we schedule an activation at the provided date
-            ActivateProcessDefinitionCmd activateProcessDefinitionCmd = new ActivateProcessDefinitionCmd(processDefinitionEntity, false, deploymentBuilder.getProcessDefinitionsActivationDate(),
-                deployment.getTenantId());
+            ActivateProcessDefinitionCmd activateProcessDefinitionCmd = new ActivateProcessDefinitionCmd(
+                processDefinitionEntity,
+                false,
+                deploymentBuilder.getProcessDefinitionsActivationDate(),
+                deployment.getTenantId()
+            );
             activateProcessDefinitionCmd.execute(commandContext);
         }
     }
-
 }

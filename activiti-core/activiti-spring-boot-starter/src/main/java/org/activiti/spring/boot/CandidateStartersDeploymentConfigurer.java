@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,12 @@
  */
 package org.activiti.spring.boot;
 
+import java.util.List;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeploymentHelper;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.spring.SpringProcessEngineConfiguration;
-
-import java.util.List;
 
 public class CandidateStartersDeploymentConfigurer implements ProcessEngineConfigurationConfigurer {
 
@@ -33,13 +32,24 @@ public class CandidateStartersDeploymentConfigurer implements ProcessEngineConfi
     }
 
     public class CandidateStartersDeploymentHelper extends BpmnDeploymentHelper {
+
         @Override
-        public void addAuthorizationsForNewProcessDefinition(Process process, ProcessDefinitionEntity processDefinition) {
+        public void addAuthorizationsForNewProcessDefinition(
+            Process process,
+            ProcessDefinitionEntity processDefinition
+        ) {
             super.addAuthorizationsForNewProcessDefinition(process, processDefinition);
-            if (process != null &&
+            if (
+                process != null &&
                 !process.isCandidateStarterUsersDefined() &&
-                !process.isCandidateStarterGroupsDefined()) {
-                addAuthorizationsFromIterator(Context.getCommandContext(), List.of(EVERYONE_GROUP), processDefinition, ExpressionType.GROUP);
+                !process.isCandidateStarterGroupsDefined()
+            ) {
+                addAuthorizationsFromIterator(
+                    Context.getCommandContext(),
+                    List.of(EVERYONE_GROUP),
+                    processDefinition,
+                    ExpressionType.GROUP
+                );
             }
         }
     }

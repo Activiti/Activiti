@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl;
 
 /**
@@ -23,14 +21,14 @@ package org.activiti.engine.impl;
 
  */
 public enum QueryOperator {
-  EQUALS,
-  NOT_EQUALS,
-  GREATER_THAN,
-  GREATER_THAN_OR_EQUAL,
-  LESS_THAN,
-  LESS_THAN_OR_EQUAL,
-  LIKE,
-  EQUALS_IGNORE_CASE,
-  NOT_EQUALS_IGNORE_CASE,
-  LIKE_IGNORE_CASE,
+    EQUALS,
+    NOT_EQUALS,
+    GREATER_THAN,
+    GREATER_THAN_OR_EQUAL,
+    LESS_THAN,
+    LESS_THAN_OR_EQUAL,
+    LIKE,
+    EQUALS_IGNORE_CASE,
+    NOT_EQUALS_IGNORE_CASE,
+    LIKE_IGNORE_CASE,
 }

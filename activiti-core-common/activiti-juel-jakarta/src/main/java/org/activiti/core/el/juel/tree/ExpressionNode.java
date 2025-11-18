@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree;
 
 import jakarta.el.ELContext;
@@ -56,11 +55,7 @@ public interface ExpressionNode extends Node {
      *            result type
      * @return evaluated node, coerced to the expected type
      */
-    public Object getValue(
-        Bindings bindings,
-        ELContext context,
-        Class<?> expectedType
-    );
+    public Object getValue(Bindings bindings, ELContext context, Class<?> expectedType);
 
     /**
      * Get value reference.
@@ -69,10 +64,7 @@ public interface ExpressionNode extends Node {
      * @param context
      * @return value reference
      */
-    public ValueReference getValueReference(
-        Bindings bindings,
-        ELContext context
-    );
+    public ValueReference getValueReference(Bindings bindings, ELContext context);
 
     /**
      * Get the value type accepted in {@link #setValue(Bindings, ELContext, Object)}.
@@ -122,12 +114,7 @@ public interface ExpressionNode extends Node {
      *            expected method argument types
      * @return method information or <code>null</code>
      */
-    public MethodInfo getMethodInfo(
-        Bindings bindings,
-        ELContext context,
-        Class<?> returnType,
-        Class<?>[] paramTypes
-    );
+    public MethodInfo getMethodInfo(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes);
 
     /**
      * Invoke method.

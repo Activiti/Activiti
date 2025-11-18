@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity;
-
 
 import org.activiti.engine.api.internal.Internal;
 
@@ -24,21 +22,19 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface ProcessDefinitionInfoEntityManager extends EntityManager<ProcessDefinitionInfoEntity> {
+    void insertProcessDefinitionInfo(ProcessDefinitionInfoEntity processDefinitionInfo);
 
-  void insertProcessDefinitionInfo(ProcessDefinitionInfoEntity processDefinitionInfo);
+    void updateProcessDefinitionInfo(ProcessDefinitionInfoEntity updatedProcessDefinitionInfo);
 
-  void updateProcessDefinitionInfo(ProcessDefinitionInfoEntity updatedProcessDefinitionInfo);
+    void deleteProcessDefinitionInfo(String processDefinitionId);
 
-  void deleteProcessDefinitionInfo(String processDefinitionId);
+    void updateInfoJson(String id, byte[] json);
 
-  void updateInfoJson(String id, byte[] json);
+    void deleteInfoJson(ProcessDefinitionInfoEntity processDefinitionInfo);
 
-  void deleteInfoJson(ProcessDefinitionInfoEntity processDefinitionInfo);
+    ProcessDefinitionInfoEntity findById(String id);
 
-  ProcessDefinitionInfoEntity findById(String id);
+    ProcessDefinitionInfoEntity findProcessDefinitionInfoByProcessDefinitionId(String processDefinitionId);
 
-  ProcessDefinitionInfoEntity findProcessDefinitionInfoByProcessDefinitionId(String processDefinitionId);
-
-  byte[] findInfoJsonById(String infoJsonId);
-
+    byte[] findInfoJsonById(String infoJsonId);
 }

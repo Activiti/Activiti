@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class TaskRuntimeIT {
+class TaskRuntimeIT {
 
     private static final String INITIATOR = "user";
 
@@ -52,30 +52,50 @@ public class TaskRuntimeIT {
     private SecurityUtil securityUtil;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         securityUtil.logInAs(INITIATOR);
     }
 
     @AfterEach
-    public void taskCleanUp() {
+    void taskCleanUp() {
         processCleanUpUtil.cleanUpWithAdmin();
     }
 
     @Test
-    public void should_beAbleToAssignTaskToInitiatorEvenWhenInitiatorIsNotSetInStartEvent() {
+    void should_beAbleToAssignTaskToInitiatorEvenWhenInitiatorIsNotSetInStartEvent() {
         //given
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
-            .withProcessDefinitionKey("taskToInitiatorProcess")
-            .build());
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder.start().withProcessDefinitionKey("taskToInitiatorProcess").build()
+        );
 
         //when
-        Page<Task> taskPage = taskRuntime.tasks(Pageable.of(0, 10),
-            TaskPayloadBuilder.tasksForProcess(processInstance).build());
+        Page<Task> taskPage = taskRuntime.tasks(
+            Pageable.of(0, 10),
+            TaskPayloadBuilder.tasksForProcess(processInstance).build()
+        );
 
         //then
         assertThat(taskPage.getContent())
             .extracting(Task::getName, Task::getAssignee)
             .containsExactly(tuple("my-task", INITIATOR));
+    }
 
+    @Test
+    void should_beAbleToStartLongValuesProcess() {
+        //given
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder.start().withProcessDefinitionKey("longValuesProcess").build()
+        );
+
+        //when
+        Page<Task> taskPage = taskRuntime.tasks(
+            Pageable.of(0, 10),
+            TaskPayloadBuilder.tasksForProcess(processInstance).build()
+        );
+
+        //then
+        assertThat(taskPage.getContent())
+            .extracting(Task::getName, Task::getDescription)
+            .containsExactly(tuple("a".repeat(255), "a".repeat(4000)));
     }
 }

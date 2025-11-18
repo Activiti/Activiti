@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.runtime.api.event.internal;
 
 import java.util.List;
@@ -35,7 +34,8 @@ public class VariableUpdatedListenerDelegate implements ActivitiEventListener {
     public VariableUpdatedListenerDelegate(
         List<VariableEventListener<VariableUpdatedEvent>> listeners,
         ToVariableUpdatedConverter converter,
-        VariableEventFilter variableEventFilter) {
+        VariableEventFilter variableEventFilter
+    ) {
         this.listeners = listeners;
         this.converter = converter;
         this.variableEventFilter = variableEventFilter;
@@ -46,7 +46,8 @@ public class VariableUpdatedListenerDelegate implements ActivitiEventListener {
         if (event instanceof ActivitiVariableUpdatedEvent) {
             ActivitiVariableUpdatedEvent internalEvent = (ActivitiVariableUpdatedEvent) event;
             if (variableEventFilter.shouldEmmitEvent(internalEvent)) {
-                converter.from(internalEvent)
+                converter
+                    .from(internalEvent)
                     .ifPresent(convertedEvent -> {
                         if (listeners != null) {
                             for (VariableEventListener<VariableUpdatedEvent> listener : listeners) {

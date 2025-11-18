@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,27 +20,26 @@ package org.activiti.engine;
  */
 public class ActivitiClassLoadingException extends ActivitiException {
 
-  private static final long serialVersionUID = 1L;
-  protected String className;
+    private static final long serialVersionUID = 1L;
+    protected String className;
 
-  public ActivitiClassLoadingException(String className, Throwable cause) {
-    super(getExceptionMessageMessage(className, cause), cause);
-    this.className = className;
-  }
-
-  /**
-   * Returns the name of the class this exception is related to.
-   */
-  public String getClassName() {
-    return className;
-  }
-
-  private static String getExceptionMessageMessage(String className, Throwable cause) {
-    if (cause instanceof ClassNotFoundException) {
-      return "Class not found: " + className;
-    } else {
-      return "Could not load class: " + className;
+    public ActivitiClassLoadingException(String className, Throwable cause) {
+        super(getExceptionMessageMessage(className, cause), cause);
+        this.className = className;
     }
-  }
 
+    /**
+     * Returns the name of the class this exception is related to.
+     */
+    public String getClassName() {
+        return className;
+    }
+
+    private static String getExceptionMessageMessage(String className, Throwable cause) {
+        if (cause instanceof ClassNotFoundException) {
+            return "Class not found: " + className;
+        } else {
+            return "Could not load class: " + className;
+        }
+    }
 }

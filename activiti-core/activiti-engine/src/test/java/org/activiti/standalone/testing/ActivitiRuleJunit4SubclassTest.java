@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,4 @@ package org.activiti.standalone.testing;
  *
  * Specifically, {@link org.activiti.engine.impl.test.TestHelper} needs to call getMethod() rather than getDeclaredMethod() since the method is declared in a parent of the actual test class.
  */
-public class ActivitiRuleJunit4SubclassTest extends ActivitiRuleJunit4Test {
-
-}
+public class ActivitiRuleJunit4SubclassTest extends ActivitiRuleJunit4Test {}

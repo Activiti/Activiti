@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -70,8 +69,7 @@ public class SkipExpressionUserTaskTest extends PluggableActivitiTestCase {
         variables.put("skip2", true);
         variables.put("skip3", false);
 
-        runtimeService.startProcessInstanceByKey("skipExpressionUserTask-testSkipMultipleTasks",
-                                                 variables);
+        runtimeService.startProcessInstanceByKey("skipExpressionUserTask-testSkipMultipleTasks", variables);
         List<Task> tasks = taskService.createTaskQuery().list();
         assertThat(tasks).hasSize(1);
         assertThat(tasks.get(0).getName()).isEqualTo("Task3");

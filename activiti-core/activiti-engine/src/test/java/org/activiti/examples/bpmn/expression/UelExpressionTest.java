@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.examples.bpmn.expression;
 
 import static java.util.Collections.singletonMap;
@@ -29,22 +27,23 @@ import org.activiti.engine.test.Deployment;
  */
 public class UelExpressionTest extends PluggableActivitiTestCase {
 
-  @Deployment
-  public void testValueAndMethodExpression() {
-    // An order of price 150 is a standard order (goes through an UEL value
-    // expression)
-    UelExpressionTestOrder order = new UelExpressionTestOrder(150);
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("uelExpressions", singletonMap("order", order));
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertThat(task.getName()).isEqualTo("Standard service");
+    @Deployment
+    public void testValueAndMethodExpression() {
+        // An order of price 150 is a standard order (goes through an UEL value
+        // expression)
+        UelExpressionTestOrder order = new UelExpressionTestOrder(150);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "uelExpressions",
+            singletonMap("order", order)
+        );
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+        assertThat(task.getName()).isEqualTo("Standard service");
 
-    // While an order of 300, gives us a premium service (goes through an
-    // UEL method expression)
-    order = new UelExpressionTestOrder(300);
-    processInstance = runtimeService.startProcessInstanceByKey("uelExpressions", singletonMap("order", order));
-    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertThat(task.getName()).isEqualTo("Premium service");
-
-  }
-
+        // While an order of 300, gives us a premium service (goes through an
+        // UEL method expression)
+        order = new UelExpressionTestOrder(300);
+        processInstance = runtimeService.startProcessInstanceByKey("uelExpressions", singletonMap("order", order));
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+        assertThat(task.getName()).isEqualTo("Premium service");
+    }
 }

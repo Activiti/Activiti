@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,19 +37,22 @@ public class ApplicationReader {
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                 ZipEntry currentEntry = zipEntry;
                 applicationEntryDiscoveries
-                        .stream()
-                        .filter(applicationEntryDiscovery -> applicationEntryDiscovery.filter(currentEntry).test(currentEntry))
-                        .findFirst()
-                        .ifPresent(
-                                applicationEntryDiscovery ->
-                                        application.add(new ApplicationEntry(applicationEntryDiscovery.getEntryType(),
-                                                                             new FileContent(currentEntry.getName(),
-                                                                                             readBytes(zipInputStream
-                                                                                             )))));
+                    .stream()
+                    .filter(applicationEntryDiscovery ->
+                        applicationEntryDiscovery.filter(currentEntry).test(currentEntry)
+                    )
+                    .findFirst()
+                    .ifPresent(applicationEntryDiscovery ->
+                        application.add(
+                            new ApplicationEntry(
+                                applicationEntryDiscovery.getEntryType(),
+                                new FileContent(currentEntry.getName(), readBytes(zipInputStream))
+                            )
+                        )
+                    );
             }
         } catch (IOException e) {
-            throw new ApplicationLoadException("Unable to read zip file",
-                                              e);
+            throw new ApplicationLoadException("Unable to read zip file", e);
         }
         return application;
     }
@@ -58,8 +61,7 @@ public class ApplicationReader {
         try {
             return StreamUtils.copyToByteArray(zipInputStream);
         } catch (IOException e) {
-            throw new ApplicationLoadException("Unable to read zip file",
-                                              e);
+            throw new ApplicationLoadException("Unable to read zip file", e);
         }
     }
 }

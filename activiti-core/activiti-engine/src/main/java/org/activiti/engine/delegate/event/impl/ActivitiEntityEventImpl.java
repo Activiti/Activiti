@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.delegate.event.impl;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 
 /**
  * Base class for all {@link ActivitiEvent} implementations, related to entities.
@@ -30,8 +29,7 @@ public class ActivitiEntityEventImpl extends ActivitiEventImpl implements Activi
 
     protected Object entity;
 
-    public ActivitiEntityEventImpl(Object entity,
-                                   ActivitiEventType type) {
+    public ActivitiEntityEventImpl(Object entity, ActivitiEventType type) {
         super(type);
         if (entity == null) {
             throw new ActivitiIllegalArgumentException("Entity cannot be null.");

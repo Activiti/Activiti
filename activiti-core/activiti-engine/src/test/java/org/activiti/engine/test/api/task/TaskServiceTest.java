@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.test.api.task;
 
 import static java.util.Arrays.asList;
@@ -59,7 +57,6 @@ import org.activiti.engine.test.Deployment;
 public class TaskServiceTest extends PluggableActivitiTestCase {
 
     public void testSaveTaskUpdate() throws Exception {
-
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
         Task task = taskService.newTask();
         task.setDescription("description");
@@ -98,7 +95,10 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThat(task.getPriority()).isEqualTo(1);
 
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-            HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).singleResult();
+            HistoricTaskInstance historicTaskInstance = historyService
+                .createHistoricTaskInstanceQuery()
+                .taskId(task.getId())
+                .singleResult();
             assertThat(historicTaskInstance.getName()).isEqualTo("updatedtaskname");
             assertThat(historicTaskInstance.getDescription()).isEqualTo("updateddescription");
             assertThat(historicTaskInstance.getAssignee()).isEqualTo("updatedassignee");
@@ -139,19 +139,21 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
             Authentication.setAuthenticatedUserId("johndoe");
             // Fetch the task again and update
-            taskService
-                    .addComment(
-                            taskId,
-                            null,
-                            "look at this \n       isn't this great? slkdjf sldkfjs ldkfjs ldkfjs ldkfj sldkfj sldkfj sldkjg laksfg sdfgsd;flgkj ksajdhf skjdfh ksjdhf skjdhf kalskjgh lskh dfialurhg kajsh dfuieqpgkja rzvkfnjviuqerhogiuvysbegkjz lkhf ais liasduh flaisduh ajiasudh vaisudhv nsfd");
+            taskService.addComment(
+                taskId,
+                null,
+                "look at this \n       isn't this great? slkdjf sldkfjs ldkfjs ldkfjs ldkfj sldkfj sldkfj sldkjg laksfg sdfgsd;flgkj ksajdhf skjdfh ksjdhf skjdhf kalskjgh lskh dfialurhg kajsh dfuieqpgkja rzvkfnjviuqerhogiuvysbegkjz lkhf ais liasduh flaisduh ajiasudh vaisudhv nsfd"
+            );
             Comment comment = taskService.getTaskComments(taskId).get(0);
             assertThat(comment.getUserId()).isEqualTo("johndoe");
             assertThat(comment.getTaskId()).isEqualTo(taskId);
             assertThat(comment.getProcessInstanceId()).isNull();
-            assertThat(((Event) comment).getMessage())
-                .isEqualTo("look at this isn't this great? slkdjf sldkfjs ldkfjs ldkfjs ldkfj sldkfj sldkfj sldkjg laksfg sdfgsd;flgkj ksajdhf skjdfh ksjdhf skjdhf kalskjgh lskh dfialurhg ...");
-            assertThat(comment.getFullMessage())
-                .isEqualTo("look at this \n       isn't this great? slkdjf sldkfjs ldkfjs ldkfjs ldkfj sldkfj sldkfj sldkjg laksfg sdfgsd;flgkj ksajdhf skjdfh ksjdhf skjdhf kalskjgh lskh dfialurhg kajsh dfuieqpgkja rzvkfnjviuqerhogiuvysbegkjz lkhf ais liasduh flaisduh ajiasudh vaisudhv nsfd");
+            assertThat(((Event) comment).getMessage()).isEqualTo(
+                "look at this isn't this great? slkdjf sldkfjs ldkfjs ldkfjs ldkfj sldkfj sldkfj sldkjg laksfg sdfgsd;flgkj ksajdhf skjdfh ksjdhf skjdhf kalskjgh lskh dfialurhg ..."
+            );
+            assertThat(comment.getFullMessage()).isEqualTo(
+                "look at this \n       isn't this great? slkdjf sldkfjs ldkfjs ldkfjs ldkfj sldkfj sldkfj sldkjg laksfg sdfgsd;flgkj ksajdhf skjdfh ksjdhf skjdhf kalskjgh lskh dfialurhg kajsh dfuieqpgkja rzvkfnjviuqerhogiuvysbegkjz lkhf ais liasduh flaisduh ajiasudh vaisudhv nsfd"
+            );
             assertThat(comment.getTime()).isNotNull();
 
             // Finally, delete task
@@ -170,21 +172,20 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
             String customType1 = "Type1";
             String customType2 = "Type2";
 
-            Comment comment = taskService.addComment(taskId,
-                                                     null,
-                                                     "This is a regular comment");
-            Comment customComment1 = taskService.addComment(taskId,
-                                                            null,
-                                                            customType1,
-                                                            "This is a custom comment of type Type1");
-            Comment customComment2 = taskService.addComment(taskId,
-                                                            null,
-                                                            customType1,
-                                                            "This is another Type1 comment");
-            Comment customComment3 = taskService.addComment(taskId,
-                                                            null,
-                                                            customType2,
-                                                            "This is another custom comment. Type2 this time!");
+            Comment comment = taskService.addComment(taskId, null, "This is a regular comment");
+            Comment customComment1 = taskService.addComment(
+                taskId,
+                null,
+                customType1,
+                "This is a custom comment of type Type1"
+            );
+            Comment customComment2 = taskService.addComment(taskId, null, customType1, "This is another Type1 comment");
+            Comment customComment3 = taskService.addComment(
+                taskId,
+                null,
+                customType2,
+                "This is another custom comment. Type2 this time!"
+            );
 
             assertThat(comment.getType()).isEqualTo(CommentEntity.TYPE_COMMENT);
             assertThat(customComment1.getType()).isEqualTo(customType1);
@@ -202,7 +203,9 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
             List<Comment> type2Comments = taskService.getCommentsByType(customType2);
             assertThat(type2Comments).hasSize(1);
-            assertThat(type2Comments.get(0).getFullMessage()).isEqualTo("This is another custom comment. Type2 this time!");
+            assertThat(type2Comments.get(0).getFullMessage()).isEqualTo(
+                "This is another custom comment. Type2 this time!"
+            );
 
             List<Comment> taskTypeComments = taskService.getTaskComments(taskId, customType1);
             assertThat(taskTypeComments).hasSize(2);
@@ -220,12 +223,14 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
             String taskId = task.getId();
             Authentication.setAuthenticatedUserId("johndoe");
             // Fetch the task again and update
-            taskService.createAttachment("web page",
-                                         taskId,
-                                         null,
-                                         "weatherforcast",
-                                         "temperatures and more",
-                                         "http://weather.com");
+            taskService.createAttachment(
+                "web page",
+                taskId,
+                null,
+                "weatherforcast",
+                "temperatures and more",
+                "http://weather.com"
+            );
             Attachment attachment = taskService.getTaskAttachments(taskId).get(0);
             assertThat(attachment.getName()).isEqualTo("weatherforcast");
             assertThat(attachment.getDescription()).isEqualTo("temperatures and more");
@@ -241,8 +246,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
             assertThat(taskService.getTaskComments(taskId)).hasSize(0);
             assertThat(historyService.createHistoricTaskInstanceQuery().taskId(taskId).list()).hasSize(1);
 
-            taskService.deleteTask(taskId,
-                                   true);
+            taskService.deleteTask(taskId, true);
         }
     }
 
@@ -255,12 +259,14 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
             Authentication.setAuthenticatedUserId("johndoe");
 
             // Fetch attachment and update its name
-            taskService.createAttachment("web page",
-                                         taskId,
-                                         null,
-                                         "weatherforcast",
-                                         "temperatures and more",
-                                         "http://weather.com");
+            taskService.createAttachment(
+                "web page",
+                taskId,
+                null,
+                "weatherforcast",
+                "temperatures and more",
+                "http://weather.com"
+            );
             Attachment attachment = taskService.getTaskAttachments(taskId).get(0);
             attachment.setName("UpdatedName");
             taskService.saveAttachment(attachment);
@@ -275,24 +281,24 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
             assertThat(taskService.getTaskComments(taskId)).hasSize(0);
             assertThat(historyService.createHistoricTaskInstanceQuery().taskId(taskId).list()).hasSize(1);
 
-            taskService.deleteTask(taskId,
-                                   true);
+            taskService.deleteTask(taskId, true);
         }
     }
 
-    @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
     public void testTaskAttachmentWithProcessInstanceId() {
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-
             ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
             String processInstanceId = processInstance.getId();
-            taskService.createAttachment("web page",
-                                         null,
-                                         processInstanceId,
-                                         "weatherforcast",
-                                         "temperatures and more",
-                                         "http://weather.com");
+            taskService.createAttachment(
+                "web page",
+                null,
+                processInstanceId,
+                "weatherforcast",
+                "temperatures and more",
+                "http://weather.com"
+            );
             Attachment attachment = taskService.getProcessInstanceAttachments(processInstanceId).get(0);
             assertThat(attachment.getName()).isEqualTo("weatherforcast");
             assertThat(attachment.getDescription()).isEqualTo("temperatures and more");
@@ -306,14 +312,12 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
             taskService.deleteAttachment(attachment.getId());
 
             // TODO: Bad API design. Need to fix attachment/comment properly
-            ((TaskServiceImpl) taskService).deleteComments(null,
-                                                           processInstanceId);
+            ((TaskServiceImpl) taskService).deleteComments(null, processInstanceId);
         }
     }
 
-    @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
     public void testMultipleProcessesStarted() {
-
         // Start a few process instances
         for (int i = 0; i < 20; i++) {
             processEngine.getRuntimeService().startProcessInstanceByKey("oneTaskProcess");
@@ -338,8 +342,9 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
         // try to complete (should fail)
         Task exceptionTask = task;
-        assertThatExceptionOfType(ActivitiException.class)
-            .isThrownBy(() -> taskService.complete(exceptionTask.getId()));
+        assertThatExceptionOfType(ActivitiException.class).isThrownBy(() ->
+            taskService.complete(exceptionTask.getId())
+        );
 
         taskService.resolveTask(taskId);
         task = taskService.createTaskQuery().taskId(taskId).singleResult();
@@ -364,8 +369,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThat(task.getDelegationState()).isEqualTo(DelegationState.RESOLVED);
 
         // Finally, delete task
-        taskService.deleteTask(taskId,
-                               true);
+        taskService.deleteTask(taskId, true);
     }
 
     public void testTaskDelegationThroughServiceCall() {
@@ -377,8 +381,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         // Fetch the task again and update
         task = taskService.createTaskQuery().taskId(taskId).singleResult();
 
-        taskService.delegateTask(task.getId(),
-                                 "joesmoe");
+        taskService.delegateTask(task.getId(), "joesmoe");
 
         task = taskService.createTaskQuery().taskId(taskId).singleResult();
         assertThat(task.getOwner()).isEqualTo("johndoe");
@@ -393,8 +396,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThat(task.getDelegationState()).isEqualTo(DelegationState.RESOLVED);
 
         // Finally, delete task
-        taskService.deleteTask(taskId,
-                               true);
+        taskService.deleteTask(taskId, true);
     }
 
     public void testTaskAssignee() {
@@ -413,8 +415,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThat(task.getAssignee()).isEqualTo("joesmoe");
 
         // Finally, delete task
-        taskService.deleteTask(task.getId(),
-                               true);
+        taskService.deleteTask(task.getId(), true);
     }
 
     public void testSaveTaskNullTask() {
@@ -424,8 +425,9 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     }
 
     public void testDeleteTaskNullTaskId() {
-        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
-            .isThrownBy(() -> taskService.deleteTask(null));
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class).isThrownBy(() ->
+            taskService.deleteTask(null)
+        );
     }
 
     public void testDeleteTaskUnexistingTaskId() {
@@ -434,12 +436,12 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     }
 
     public void testDeleteTasksNullTaskIds() {
-        assertThatExceptionOfType(ActivitiIllegalArgumentException.class)
-            .isThrownBy(() -> taskService.deleteTasks(null));
+        assertThatExceptionOfType(ActivitiIllegalArgumentException.class).isThrownBy(() ->
+            taskService.deleteTasks(null)
+        );
     }
 
     public void testDeleteTasksTaskIdsUnexistingTaskId() {
-
         Task existingTask = taskService.newTask();
         taskService.saveTask(existingTask);
 
@@ -457,18 +459,14 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
             task.setName("test");
             taskService.saveTask(task);
 
-            taskService.addCandidateGroup(task.getId(),
-                                          "sales");
-            taskService.addCandidateUser(task.getId(),
-                                         "kermit");
+            taskService.addCandidateGroup(task.getId(), "sales");
+            taskService.addCandidateUser(task.getId(), "kermit");
 
             assertThat(taskService.createTaskQuery().taskCandidateGroup("sales").singleResult()).isNotNull();
             assertThat(taskService.createTaskQuery().taskCandidateUser("kermit").singleResult()).isNotNull();
 
             // Delete identity link for group
-            taskService.deleteGroupIdentityLink(task.getId(),
-                                                "sales",
-                                                "candidate");
+            taskService.deleteGroupIdentityLink(task.getId(), "sales", "candidate");
 
             // Link should be removed
             assertThat(taskService.createTaskQuery().taskCandidateGroup("sales").singleResult()).isNull();
@@ -593,8 +591,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         taskService.saveTask(task);
 
         String taskId = task.getId();
-        taskService.complete(taskId,
-                             Collections.EMPTY_MAP);
+        taskService.complete(taskId, Collections.EMPTY_MAP);
 
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             historyService.deleteHistoricTaskInstance(taskId);
@@ -605,7 +602,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThat(task).isNull();
     }
 
-    @Deployment(resources = {"org/activiti/engine/test/api/twoTasksProcess.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/engine/test/api/twoTasksProcess.bpmn20.xml" })
     public void testCompleteWithParametersTask() {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("twoTasksProcess");
 
@@ -615,10 +612,8 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
         // Complete first task
         Map<String, Object> taskParams = new HashMap<String, Object>();
-        taskParams.put("myParam",
-                       "myValue");
-        taskService.complete(task.getId(),
-                             taskParams);
+        taskParams.put("myParam", "myValue");
+        taskService.complete(task.getId(), taskParams);
 
         // Fetch second task
         task = taskService.createTaskQuery().singleResult();
@@ -630,7 +625,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThat(variables.get("myParam")).isEqualTo("myValue");
     }
 
-    @Deployment(resources = {"org/activiti/engine/test/api/twoTasksProcess.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/engine/test/api/twoTasksProcess.bpmn20.xml" })
     public void testCompleteWithParametersTask2() {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("twoTasksProcess");
 
@@ -678,7 +673,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         taskService.createTaskQuery().singleResult();
     }
 
-    @Deployment(resources = {"org/activiti/engine/test/api/oneTaskWithFormKeyProcess.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskWithFormKeyProcess.bpmn20.xml" })
     public void testCompleteTaskWithFormKey() {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskWithFormProcess");
 
@@ -696,7 +691,10 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         taskService.complete(task.getId());
 
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-            HistoricTaskInstance historicTask = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).singleResult();
+            HistoricTaskInstance historicTask = historyService
+                .createHistoricTaskInstanceQuery()
+                .taskId(task.getId())
+                .singleResult();
             assertThat(historicTask.getName()).isEqualTo("my task");
             assertThat(historicTask.getFormKey()).isEqualTo("myFormKey");
             assertThat(historicTask.getAssignee()).isEqualTo("myAssignee");
@@ -708,7 +706,6 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     }
 
     public void testSetAssignee() {
-
         Task task = taskService.newTask();
         assertThat(task.getAssignee()).isNull();
         taskService.saveTask(task);
@@ -850,8 +847,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         taskService.saveTask(task);
         String taskId = task.getId();
 
-        taskService.addCandidateGroup(taskId,
-                                      "muppets");
+        taskService.addCandidateGroup(taskId, "muppets");
         List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
         assertThat(identityLinks).hasSize(1);
         assertThat(identityLinks.get(0).getGroupId()).isEqualTo("muppets");
@@ -859,8 +855,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThat(identityLinks.get(0).getType()).isEqualTo(IdentityLinkType.CANDIDATE);
 
         // cleanup
-        taskService.deleteTask(taskId,
-                               true);
+        taskService.deleteTask(taskId, true);
     }
 
     public void testGetIdentityLinksWithAssignee() {
@@ -868,8 +863,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         taskService.saveTask(task);
         String taskId = task.getId();
 
-        taskService.claim(taskId,
-                          "kermit");
+        taskService.claim(taskId, "kermit");
         List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
         assertThat(identityLinks).hasSize(1);
         assertThat(identityLinks.get(0).getUserId()).isEqualTo("kermit");
@@ -877,8 +871,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThat(identityLinks.get(0).getType()).isEqualTo(IdentityLinkType.ASSIGNEE);
 
         // cleanup
-        taskService.deleteTask(taskId,
-                               true);
+        taskService.deleteTask(taskId, true);
     }
 
     public void testGetIdentityLinksWithNonExistingAssignee() {
@@ -886,8 +879,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         taskService.saveTask(task);
         String taskId = task.getId();
 
-        taskService.claim(taskId,
-                          "nonExistingAssignee");
+        taskService.claim(taskId, "nonExistingAssignee");
         List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
         assertThat(identityLinks).hasSize(1);
         assertThat(identityLinks.get(0).getUserId()).isEqualTo("nonExistingAssignee");
@@ -895,8 +887,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThat(identityLinks.get(0).getType()).isEqualTo(IdentityLinkType.ASSIGNEE);
 
         // cleanup
-        taskService.deleteTask(taskId,
-                               true);
+        taskService.deleteTask(taskId, true);
     }
 
     public void testGetIdentityLinksWithOwner() {
@@ -904,10 +895,8 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         taskService.saveTask(task);
         String taskId = task.getId();
 
-        taskService.claim(taskId,
-                          "kermit");
-        taskService.delegateTask(taskId,
-                                 "fozzie");
+        taskService.claim(taskId, "kermit");
+        taskService.delegateTask(taskId, "fozzie");
 
         List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
         assertThat(identityLinks).hasSize(2);
@@ -923,8 +912,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThat(owner.getType()).isEqualTo(IdentityLinkType.OWNER);
 
         // cleanup
-        taskService.deleteTask(taskId,
-                               true);
+        taskService.deleteTask(taskId, true);
     }
 
     public void testGetIdentityLinksWithNonExistingOwner() {
@@ -932,10 +920,8 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         taskService.saveTask(task);
         String taskId = task.getId();
 
-        taskService.claim(taskId,
-                          "nonExistingOwner");
-        taskService.delegateTask(taskId,
-                                 "nonExistingAssignee");
+        taskService.claim(taskId, "nonExistingOwner");
+        taskService.delegateTask(taskId, "nonExistingAssignee");
         List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
         assertThat(identityLinks).hasSize(2);
 
@@ -950,23 +936,20 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThat(owner.getType()).isEqualTo(IdentityLinkType.OWNER);
 
         // cleanup
-        taskService.deleteTask(taskId,
-                               true);
+        taskService.deleteTask(taskId, true);
     }
 
     public void testSetPriority() {
         Task task = taskService.newTask();
         taskService.saveTask(task);
 
-        taskService.setPriority(task.getId(),
-                                12345);
+        taskService.setPriority(task.getId(), 12345);
 
         // Fetch task again to check if the priority is set
         task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
         assertThat(task.getPriority()).isEqualTo(12345);
 
-        taskService.deleteTask(task.getId(),
-                               true);
+        taskService.deleteTask(task.getId(), true);
     }
 
     public void testSetPriorityUnexistingTaskId() {
@@ -988,23 +971,20 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
         // Set the due date to a non-null value
         Date now = new Date();
-        taskService.setDueDate(task.getId(),
-                               now);
+        taskService.setDueDate(task.getId(), now);
 
         // Fetch task to check if the due date was persisted
         task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
         assertThat(task.getDueDate()).isNotNull();
 
         // Set the due date to null
-        taskService.setDueDate(task.getId(),
-                               null);
+        taskService.setDueDate(task.getId(), null);
 
         // Re-fetch the task to make sure the due date was set to null
         task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
         assertThat(task.getDueDate()).isNull();
 
-        taskService.deleteTask(task.getId(),
-                               true);
+        taskService.deleteTask(task.getId(), true);
     }
 
     public void testSetDueDateUnexistingTaskId() {
@@ -1026,8 +1006,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         Task task = taskService.newTask();
         task.setOwner("wuzh");
         taskService.saveTask(task);
-        taskService.delegateTask(task.getId(),
-                                 "other");
+        taskService.delegateTask(task.getId(), "other");
         String taskId = task.getId();
 
         task = taskService.createTaskQuery().taskId(taskId).singleResult();
@@ -1043,19 +1022,21 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThat(task.getAssignee()).isEqualTo("other");
         assertThat(task.getDelegationState()).isEqualTo(DelegationState.RESOLVED);
 
-        taskService.deleteTask(taskId,
-                               true);
+        taskService.deleteTask(taskId, true);
     }
 
-    private void checkHistoricVariableUpdateEntity(String variableName,
-                                                   String processInstanceId) {
+    private void checkHistoricVariableUpdateEntity(String variableName, String processInstanceId) {
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
             boolean deletedVariableUpdateFound = false;
 
-            List<HistoricDetail> resultSet = historyService.createHistoricDetailQuery().processInstanceId(processInstanceId).list();
+            List<HistoricDetail> resultSet = historyService
+                .createHistoricDetailQuery()
+                .processInstanceId(processInstanceId)
+                .list();
             for (HistoricDetail currentHistoricDetail : resultSet) {
                 assertThat(currentHistoricDetail).isInstanceOf(HistoricDetailVariableInstanceUpdateEntity.class);
-                HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = (HistoricDetailVariableInstanceUpdateEntity) currentHistoricDetail;
+                HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate =
+                    (HistoricDetailVariableInstanceUpdateEntity) currentHistoricDetail;
 
                 if (historicVariableUpdate.getName().equals(variableName)) {
                     if (historicVariableUpdate.getValue() == null) {
@@ -1072,7 +1053,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         }
     }
 
-    @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
     public void testRemoveVariable() {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
@@ -1095,38 +1076,40 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
             .withMessageContaining("taskId is null");
     }
 
-    @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
     public void testGetVariableByHistoricActivityInstance() {
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
             ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
             assertThat(processInstance).isNotNull();
             Task task = taskService.createTaskQuery().singleResult();
 
-            taskService.setVariable(task.getId(),
-                                    "variable1",
-                                    "value1");
-            taskService.setVariable(task.getId(),
-                                    "variable1",
-                                    "value2");
+            taskService.setVariable(task.getId(), "variable1", "value1");
+            taskService.setVariable(task.getId(), "variable1", "value2");
 
-            HistoricActivityInstance historicActivitiInstance = historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId())
-                    .activityId("theTask").singleResult();
+            HistoricActivityInstance historicActivitiInstance = historyService
+                .createHistoricActivityInstanceQuery()
+                .processInstanceId(processInstance.getId())
+                .activityId("theTask")
+                .singleResult();
             assertThat(historicActivitiInstance).isNotNull();
 
-            List<HistoricDetail> resultSet = historyService.createHistoricDetailQuery().variableUpdates().activityInstanceId(historicActivitiInstance.getId())
-                    .list();
+            List<HistoricDetail> resultSet = historyService
+                .createHistoricDetailQuery()
+                .variableUpdates()
+                .activityInstanceId(historicActivitiInstance.getId())
+                .list();
 
             assertThat(resultSet).hasSize(2);
             assertThat(resultSet)
-                    .extracting(h -> ((HistoricVariableUpdate) h).getValue())
-                    .containsExactlyInAnyOrder("value1", "value2");
+                .extracting(h -> ((HistoricVariableUpdate) h).getValue())
+                .containsExactlyInAnyOrder("value1", "value2");
             assertThat(resultSet)
-                    .extracting(h -> ((HistoricVariableUpdate) h).getVariableName())
-                    .containsOnly("variable1");
+                .extracting(h -> ((HistoricVariableUpdate) h).getVariableName())
+                .containsOnly("variable1");
         }
     }
 
-    @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
     public void testRemoveVariables() {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
@@ -1165,7 +1148,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
             .withMessageContaining("taskId is null");
     }
 
-    @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
     public void testRemoveVariableLocal() {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
@@ -1189,7 +1172,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
             .withMessageContaining("taskId is null");
     }
 
-    @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
     public void testRemoveVariablesLocal() {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
@@ -1228,7 +1211,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
             .withMessageContaining("taskId is null");
     }
 
-    @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
     public void testUserTaskOptimisticLocking() {
         runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
@@ -1238,8 +1221,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         task1.setDescription("test description one");
         taskService.saveTask(task1);
 
-        assertThatExceptionOfType(ActivitiOptimisticLockingException.class)
-            .isThrownBy(() -> {
+        assertThatExceptionOfType(ActivitiOptimisticLockingException.class).isThrownBy(() -> {
                 task2.setDescription("test description two");
                 taskService.saveTask(task2);
             });
@@ -1249,25 +1231,25 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         // ACT-900: deleteReason can be manually specified - can only be
         // validated when historyLevel > ACTIVITY
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-
             Task task = taskService.newTask();
             task.setName("test task");
             taskService.saveTask(task);
 
             assertThat(task.getId()).isNotNull();
 
-            taskService.deleteTask(task.getId(),
-                                   "deleted for testing purposes");
+            taskService.deleteTask(task.getId(), "deleted for testing purposes");
 
-            HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).singleResult();
+            HistoricTaskInstance historicTaskInstance = historyService
+                .createHistoricTaskInstanceQuery()
+                .taskId(task.getId())
+                .singleResult();
 
             assertThat(historicTaskInstance).isNotNull();
             assertThat(historicTaskInstance.getDeleteReason()).isEqualTo("deleted for testing purposes");
 
             // Delete historic task that is left behind, will not be cleaned up
             // because this is not part of a process
-            taskService.deleteTask(task.getId(),
-                                   true);
+            taskService.deleteTask(task.getId(), true);
         }
     }
 
@@ -1289,8 +1271,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         taskService.saveTask(task);
 
         String taskId = task.getId();
-        taskService.resolveTask(taskId,
-                                null);
+        taskService.resolveTask(taskId, null);
 
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
             historyService.deleteHistoricTaskInstance(taskId);
@@ -1300,8 +1281,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         task = taskService.createTaskQuery().taskId(taskId).singleResult();
         assertThat(task.getDelegationState()).isEqualTo(DelegationState.RESOLVED);
 
-        taskService.deleteTask(taskId,
-                               true);
+        taskService.deleteTask(taskId, true);
     }
 
     public void testResolveTaskWithParametersEmptyParameters() {
@@ -1323,7 +1303,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         taskService.deleteTask(taskId, true);
     }
 
-    @Deployment(resources = {"org/activiti/engine/test/api/twoTasksProcess.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/engine/test/api/twoTasksProcess.bpmn20.xml" })
     public void testResolveWithParametersTask() {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("twoTasksProcess");
 
@@ -1348,7 +1328,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThat(variables.get("myParam")).isEqualTo("myValue");
     }
 
-    @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
     public void testDeleteTaskPartOfProcess() {
         runtimeService.startProcessInstanceByKey("oneTaskProcess");
         Task task = taskService.createTaskQuery().singleResult();
@@ -1381,8 +1361,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
     @Deployment
     public void testFormKeyExpression() {
-        runtimeService.startProcessInstanceByKey("testFormExpression",
-                                                 singletonMap("var", "abc"));
+        runtimeService.startProcessInstanceByKey("testFormExpression", singletonMap("var", "abc"));
 
         Task task = taskService.createTaskQuery().singleResult();
         assertThat(task.getFormKey()).isEqualTo("first-form.json");
@@ -1397,12 +1376,15 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThat(task.getFormKey()).isEqualTo("form-changed.json");
 
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-            HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskId(task.getId()).singleResult();
+            HistoricTaskInstance historicTaskInstance = historyService
+                .createHistoricTaskInstanceQuery()
+                .taskId(task.getId())
+                .singleResult();
             assertThat(historicTaskInstance.getFormKey()).isEqualTo("form-changed.json");
         }
     }
 
-    @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
     public void testGetVariableLocalWithCast() {
         runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
@@ -1415,7 +1397,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThat(variable).isEqualTo("value1");
     }
 
-    @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
     public void testGetVariableLocalNotExistingWithCast() {
         runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
@@ -1426,21 +1408,20 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThat(variable).isNull();
     }
 
-    @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
     public void testGetVariableLocalWithInvalidCast() {
         runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
         Task currentTask = taskService.createTaskQuery().singleResult();
 
-        taskService.setVariableLocal(currentTask.getId(),
-                                     "variable1",
-                                     "value1");
+        taskService.setVariableLocal(currentTask.getId(), "variable1", "value1");
 
-        assertThatExceptionOfType(ClassCastException.class)
-            .isThrownBy(() -> taskService.getVariableLocal(currentTask.getId(), "variable1", Boolean.class));
+        assertThatExceptionOfType(ClassCastException.class).isThrownBy(() ->
+            taskService.getVariableLocal(currentTask.getId(), "variable1", Boolean.class)
+        );
     }
 
-    @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
     public void testGetVariableWithCast() {
         runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
@@ -1453,7 +1434,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThat(variable).isEqualTo("value1");
     }
 
-    @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
     public void testGetVariableNotExistingWithCast() {
         runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
@@ -1464,7 +1445,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
         assertThat(variable).isNull();
     }
 
-    @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
     public void testGetVariableWithInvalidCast() {
         runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
@@ -1472,8 +1453,9 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
         taskService.setVariable(currentTask.getId(), "variable1", "value1");
 
-        assertThatExceptionOfType(ClassCastException.class)
-            .isThrownBy(() -> taskService.getVariable(currentTask.getId(), "variable1", Boolean.class));
+        assertThatExceptionOfType(ClassCastException.class).isThrownBy(() ->
+            taskService.getVariable(currentTask.getId(), "variable1", Boolean.class)
+        );
     }
 
     public void testClaimTime() {

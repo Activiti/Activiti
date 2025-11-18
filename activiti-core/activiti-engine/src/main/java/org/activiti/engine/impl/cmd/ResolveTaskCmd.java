@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.cmd;
 
 import java.util.Map;
-
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.DelegationState;
@@ -29,38 +26,37 @@ import org.activiti.engine.task.DelegationState;
  */
 public class ResolveTaskCmd extends NeedsActiveTaskCmd<Void> {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected Map<String, Object> variables;
-  protected Map<String, Object> transientVariables;
+    protected Map<String, Object> variables;
+    protected Map<String, Object> transientVariables;
 
-  public ResolveTaskCmd(String taskId, Map<String, Object> variables) {
-    super(taskId);
-    this.variables = variables;
-  }
-
-  public ResolveTaskCmd(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables) {
-    this(taskId, variables);
-    this.transientVariables = transientVariables;
-  }
-
-  protected Void execute(CommandContext commandContext, TaskEntity task) {
-    if (variables != null) {
-      task.setVariables(variables);
-    }
-    if (transientVariables != null) {
-      task.setTransientVariables(transientVariables);
+    public ResolveTaskCmd(String taskId, Map<String, Object> variables) {
+        super(taskId);
+        this.variables = variables;
     }
 
-    task.setDelegationState(DelegationState.RESOLVED);
-    commandContext.getTaskEntityManager().changeTaskAssignee(task, task.getOwner());
+    public ResolveTaskCmd(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables) {
+        this(taskId, variables);
+        this.transientVariables = transientVariables;
+    }
 
-    return null;
-  }
+    protected Void execute(CommandContext commandContext, TaskEntity task) {
+        if (variables != null) {
+            task.setVariables(variables);
+        }
+        if (transientVariables != null) {
+            task.setTransientVariables(transientVariables);
+        }
 
-  @Override
-  protected String getSuspendedTaskException() {
-    return "Cannot resolve a suspended task";
-  }
+        task.setDelegationState(DelegationState.RESOLVED);
+        commandContext.getTaskEntityManager().changeTaskAssignee(task, task.getOwner());
 
+        return null;
+    }
+
+    @Override
+    protected String getSuspendedTaskException() {
+        return "Cannot resolve a suspended task";
+    }
 }

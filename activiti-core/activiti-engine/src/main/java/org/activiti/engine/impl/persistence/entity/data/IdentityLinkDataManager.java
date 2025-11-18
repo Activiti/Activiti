@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
-
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 
 /**
 
  */
 public interface IdentityLinkDataManager extends DataManager<IdentityLinkEntity> {
+    List<IdentityLinkEntity> findIdentityLinksByTaskId(String taskId);
 
-  List<IdentityLinkEntity> findIdentityLinksByTaskId(String taskId);
+    List<IdentityLinkEntity> findIdentityLinksByProcessInstanceId(String processInstanceId);
 
-  List<IdentityLinkEntity> findIdentityLinksByProcessInstanceId(String processInstanceId);
+    List<IdentityLinkEntity> findIdentityLinksByProcessDefinitionId(String processDefinitionId);
 
-  List<IdentityLinkEntity> findIdentityLinksByProcessDefinitionId(String processDefinitionId);
+    List<IdentityLinkEntity> findIdentityLinkByTaskUserGroupAndType(
+        String taskId,
+        String userId,
+        String groupId,
+        String type
+    );
 
-  List<IdentityLinkEntity> findIdentityLinkByTaskUserGroupAndType(String taskId, String userId, String groupId, String type);
+    List<IdentityLinkEntity> findIdentityLinkByProcessInstanceUserGroupAndType(
+        String processInstanceId,
+        String userId,
+        String groupId,
+        String type
+    );
 
-  List<IdentityLinkEntity> findIdentityLinkByProcessInstanceUserGroupAndType(String processInstanceId, String userId, String groupId, String type);
+    List<IdentityLinkEntity> findIdentityLinkByProcessDefinitionUserAndGroup(
+        String processDefinitionId,
+        String userId,
+        String groupId
+    );
 
-  List<IdentityLinkEntity> findIdentityLinkByProcessDefinitionUserAndGroup(String processDefinitionId, String userId, String groupId);
-
-  void deleteIdentityLinksByProcDef(String processDefId);
-
+    void deleteIdentityLinksByProcDef(String processDefId);
 }

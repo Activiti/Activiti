@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.runtime.api.impl;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.delegate.Expression;
@@ -39,15 +37,17 @@ public class MappingAwareActivityBehaviorFactory extends DefaultActivityBehavior
     private ProcessVariablesInitiator processVariablesInitiator;
     private final VariablesPropagator variablesPropagator;
 
-    public MappingAwareActivityBehaviorFactory(VariablesCalculator variablesCalculator, ProcessVariablesInitiator processVariablesInitiator,
-        VariablesPropagator variablesPropagator) {
+    public MappingAwareActivityBehaviorFactory(
+        VariablesCalculator variablesCalculator,
+        ProcessVariablesInitiator processVariablesInitiator,
+        VariablesPropagator variablesPropagator
+    ) {
         super();
         this.variablesCalculator = variablesCalculator;
         this.processVariablesInitiator = processVariablesInitiator;
         this.variablesPropagator = variablesPropagator;
 
-        this.setMessagePayloadMappingProviderFactory(new JsonMessagePayloadMappingProviderFactory(
-            variablesCalculator));
+        this.setMessagePayloadMappingProviderFactory(new JsonMessagePayloadMappingProviderFactory(variablesCalculator));
     }
 
     @Override
@@ -56,15 +56,30 @@ public class MappingAwareActivityBehaviorFactory extends DefaultActivityBehavior
     }
 
     @Override
-    protected CallActivityBehavior createCallActivityBehavior(Expression expression, List<MapExceptionEntry> mapExceptions) {
-        return new MappingAwareCallActivityBehavior(expression, mapExceptions, variablesCalculator, processVariablesInitiator,
-            variablesPropagator);
+    protected CallActivityBehavior createCallActivityBehavior(
+        Expression expression,
+        List<MapExceptionEntry> mapExceptions
+    ) {
+        return new MappingAwareCallActivityBehavior(
+            expression,
+            mapExceptions,
+            variablesCalculator,
+            processVariablesInitiator,
+            variablesPropagator
+        );
     }
 
     @Override
-    protected CallActivityBehavior createCallActivityBehavior(String calledElement,
-                                                              List<MapExceptionEntry> mapExceptions) {
-        return new MappingAwareCallActivityBehavior(calledElement, mapExceptions, variablesCalculator, processVariablesInitiator,
-            variablesPropagator);
+    protected CallActivityBehavior createCallActivityBehavior(
+        String calledElement,
+        List<MapExceptionEntry> mapExceptions
+    ) {
+        return new MappingAwareCallActivityBehavior(
+            calledElement,
+            mapExceptions,
+            variablesCalculator,
+            processVariablesInitiator,
+            variablesPropagator
+        );
     }
 }

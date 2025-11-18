@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.db;
 
 import org.activiti.engine.impl.cfg.IdGenerator;
@@ -27,48 +25,48 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  */
 public class DbIdGenerator implements IdGenerator {
 
-  protected int idBlockSize;
-  protected long nextId;
-  protected long lastId = -1;
+    protected int idBlockSize;
+    protected long nextId;
+    protected long lastId = -1;
 
-  protected CommandExecutor commandExecutor;
-  protected CommandConfig commandConfig;
+    protected CommandExecutor commandExecutor;
+    protected CommandConfig commandConfig;
 
-  public synchronized String getNextId() {
-    if (lastId < nextId) {
-      getNewBlock();
+    public synchronized String getNextId() {
+        if (lastId < nextId) {
+            getNewBlock();
+        }
+        long _nextId = nextId++;
+        return Long.toString(_nextId);
     }
-    long _nextId = nextId++;
-    return Long.toString(_nextId);
-  }
 
-  protected synchronized void getNewBlock() {
-    IdBlock idBlock = commandExecutor.execute(commandConfig, new GetNextIdBlockCmd(idBlockSize));
-    this.nextId = idBlock.getNextId();
-    this.lastId = idBlock.getLastId();
-  }
+    protected synchronized void getNewBlock() {
+        IdBlock idBlock = commandExecutor.execute(commandConfig, new GetNextIdBlockCmd(idBlockSize));
+        this.nextId = idBlock.getNextId();
+        this.lastId = idBlock.getLastId();
+    }
 
-  public int getIdBlockSize() {
-    return idBlockSize;
-  }
+    public int getIdBlockSize() {
+        return idBlockSize;
+    }
 
-  public void setIdBlockSize(int idBlockSize) {
-    this.idBlockSize = idBlockSize;
-  }
+    public void setIdBlockSize(int idBlockSize) {
+        this.idBlockSize = idBlockSize;
+    }
 
-  public CommandExecutor getCommandExecutor() {
-    return commandExecutor;
-  }
+    public CommandExecutor getCommandExecutor() {
+        return commandExecutor;
+    }
 
-  public void setCommandExecutor(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
-  }
+    public void setCommandExecutor(CommandExecutor commandExecutor) {
+        this.commandExecutor = commandExecutor;
+    }
 
-  public CommandConfig getCommandConfig() {
-    return commandConfig;
-  }
+    public CommandConfig getCommandConfig() {
+        return commandConfig;
+    }
 
-  public void setCommandConfig(CommandConfig commandConfig) {
-    this.commandConfig = commandConfig;
-  }
+    public void setCommandConfig(CommandConfig commandConfig) {
+        this.commandConfig = commandConfig;
+    }
 }

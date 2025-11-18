@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.validation.validator;
 
 /**
@@ -21,24 +20,23 @@ package org.activiti.validation.validator;
  */
 public class Constraints {
 
-  /**
-   * Max length database field ACT_RE_PROCDEF.CATEGORY
-   */
-  public static final int BPMN_MODEL_TARGET_NAMESPACE_MAX_LENGTH = 255;
+    /**
+     * Max length database field ACT_RE_PROCDEF.CATEGORY
+     */
+    public static final int BPMN_MODEL_TARGET_NAMESPACE_MAX_LENGTH = 255;
 
-  /**
-   * Max length database field ACT_RE_PROCDEF.KEY
-   */
-  public static final int PROCESS_DEFINITION_ID_MAX_LENGTH = 255;
+    /**
+     * Max length database field ACT_RE_PROCDEF.KEY
+     */
+    public static final int PROCESS_DEFINITION_ID_MAX_LENGTH = 255;
 
-  /**
-   * Max length database field ACT_RE_PROCDEF.NAME
-   */
-  public static final int PROCESS_DEFINITION_NAME_MAX_LENGTH = 255;
+    /**
+     * Max length database field ACT_RE_PROCDEF.NAME
+     */
+    public static final int PROCESS_DEFINITION_NAME_MAX_LENGTH = 255;
 
-  /**
-   * Max length of database field ACT_RE_PROCDEF.DESCRIPTION
-   */
-  public static final int PROCESS_DEFINITION_DOCUMENTATION_MAX_LENGTH = 2000;
-
+    /**
+     * Max length of database field ACT_RE_PROCDEF.DESCRIPTION
+     */
+    public static final int PROCESS_DEFINITION_DOCUMENTATION_MAX_LENGTH = 2000;
 }

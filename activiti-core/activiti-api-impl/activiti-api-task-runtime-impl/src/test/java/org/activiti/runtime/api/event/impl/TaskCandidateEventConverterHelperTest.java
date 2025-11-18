@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,17 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityImpl;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class TaskCandidateEventConverterHelperTest {
 
-    private TaskCandidateEventConverterHelper taskCandidateEventConverterHelper = new TaskCandidateEventConverterHelper();
+    private TaskCandidateEventConverterHelper taskCandidateEventConverterHelper =
+        new TaskCandidateEventConverterHelper();
 
     @Test
     public void isTaskCandidateUserLink_when_taskId_userId_and_typeCandidate() {
@@ -58,13 +59,13 @@ public class TaskCandidateEventConverterHelperTest {
 
     @Test
     public void isNotTaskCandidateGroupLink_when_taskId_isNull() {
-        IdentityLink identityLink = createGroupIdentityLink(null,"aGroupId", IdentityLinkType.CANDIDATE);
+        IdentityLink identityLink = createGroupIdentityLink(null, "aGroupId", IdentityLinkType.CANDIDATE);
         assertThat(taskCandidateEventConverterHelper.isTaskCandidateGroupLink(identityLink)).isFalse();
     }
 
     @Test
     public void isNotTaskCandidateGroupLink_when_groupId_isNull() {
-        IdentityLink identityLink = createGroupIdentityLink("aTaskId",null, IdentityLinkType.CANDIDATE);
+        IdentityLink identityLink = createGroupIdentityLink("aTaskId", null, IdentityLinkType.CANDIDATE);
         assertThat(taskCandidateEventConverterHelper.isTaskCandidateGroupLink(identityLink)).isFalse();
     }
 

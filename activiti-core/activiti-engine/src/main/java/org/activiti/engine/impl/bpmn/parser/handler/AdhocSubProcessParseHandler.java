@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.parser.handler;
 
 import org.activiti.bpmn.model.AdhocSubProcess;
@@ -26,16 +25,16 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
  */
 public class AdhocSubProcessParseHandler extends AbstractActivityBpmnParseHandler<SubProcess> {
 
-  protected Class<? extends BaseElement> getHandledType() {
-    return AdhocSubProcess.class;
-  }
+    protected Class<? extends BaseElement> getHandledType() {
+        return AdhocSubProcess.class;
+    }
 
-  protected void executeParse(BpmnParse bpmnParse, SubProcess subProcess) {
+    protected void executeParse(BpmnParse bpmnParse, SubProcess subProcess) {
+        subProcess.setBehavior(
+            bpmnParse.getActivityBehaviorFactory().createAdhocSubprocessActivityBehavior(subProcess)
+        );
 
-    subProcess.setBehavior(bpmnParse.getActivityBehaviorFactory().createAdhocSubprocessActivityBehavior(subProcess));
-
-    bpmnParse.processFlowElements(subProcess.getFlowElements());
-    processArtifacts(bpmnParse, subProcess.getArtifacts());
-  }
-
+        bpmnParse.processFlowElements(subProcess.getFlowElements());
+        processArtifacts(bpmnParse, subProcess.getArtifacts());
+    }
 }

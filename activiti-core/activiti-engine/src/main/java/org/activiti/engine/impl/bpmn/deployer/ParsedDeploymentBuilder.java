@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.deployer;
 
 import static org.activiti.engine.impl.cmd.DeploymentSettings.RESOURCE_NAMES;
@@ -37,96 +36,111 @@ import org.slf4j.LoggerFactory;
 
 public class ParsedDeploymentBuilder {
 
-  private static final Logger log = LoggerFactory.getLogger(ParsedDeploymentBuilder.class);
+    private static final Logger log = LoggerFactory.getLogger(ParsedDeploymentBuilder.class);
 
-  protected DeploymentEntity deployment;
-  protected BpmnParser bpmnParser;
-  protected Map<String, Object> deploymentSettings;
+    protected DeploymentEntity deployment;
+    protected BpmnParser bpmnParser;
+    protected Map<String, Object> deploymentSettings;
 
-  public ParsedDeploymentBuilder(DeploymentEntity deployment,
-      BpmnParser bpmnParser, Map<String, Object> deploymentSettings) {
-    this.deployment = deployment;
-    this.bpmnParser = bpmnParser;
-    this.deploymentSettings = deploymentSettings;
-  }
+    public ParsedDeploymentBuilder(
+        DeploymentEntity deployment,
+        BpmnParser bpmnParser,
+        Map<String, Object> deploymentSettings
+    ) {
+        this.deployment = deployment;
+        this.bpmnParser = bpmnParser;
+        this.deploymentSettings = deploymentSettings;
+    }
 
-  public ParsedDeployment build() {
-    List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
-    Map<ProcessDefinitionEntity, BpmnParse> processDefinitionsToBpmnParseMap
-      = new LinkedHashMap<ProcessDefinitionEntity, BpmnParse>();
-    Map<ProcessDefinitionEntity, ResourceEntity> processDefinitionsToResourceMap
-      = new LinkedHashMap<ProcessDefinitionEntity, ResourceEntity>();
+    public ParsedDeployment build() {
+        List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
+        Map<ProcessDefinitionEntity, BpmnParse> processDefinitionsToBpmnParseMap = new LinkedHashMap<
+            ProcessDefinitionEntity,
+            BpmnParse
+        >();
+        Map<ProcessDefinitionEntity, ResourceEntity> processDefinitionsToResourceMap = new LinkedHashMap<
+            ProcessDefinitionEntity,
+            ResourceEntity
+        >();
 
-    for (ResourceEntity resource : deployment.getResources().values()) {
-      if (isBpmnResource(resource.getName())) {
-        if (deploymentSettings == null || mayBeContainsProcessDefinitionResourceName(resource.getName())) {
-          log.debug("Processing BPMN resource {}", resource.getName());
-          BpmnParse parse = createBpmnParseFromResource(resource);
-          for (ProcessDefinitionEntity processDefinition : parse.getProcessDefinitions()) {
-              processDefinitions.add(processDefinition);
-              processDefinitionsToBpmnParseMap.put(processDefinition, parse);
-              processDefinitionsToResourceMap.put(processDefinition, resource);
+        for (ResourceEntity resource : deployment.getResources().values()) {
+            if (isBpmnResource(resource.getName())) {
+                if (deploymentSettings == null || mayBeContainsProcessDefinitionResourceName(resource.getName())) {
+                    log.debug("Processing BPMN resource {}", resource.getName());
+                    BpmnParse parse = createBpmnParseFromResource(resource);
+                    for (ProcessDefinitionEntity processDefinition : parse.getProcessDefinitions()) {
+                        processDefinitions.add(processDefinition);
+                        processDefinitionsToBpmnParseMap.put(processDefinition, parse);
+                        processDefinitionsToResourceMap.put(processDefinition, resource);
+                    }
+                }
             }
         }
-      }
+
+        return new ParsedDeployment(
+            deployment,
+            processDefinitions,
+            processDefinitionsToBpmnParseMap,
+            processDefinitionsToResourceMap
+        );
     }
 
-    return new ParsedDeployment(deployment, processDefinitions,
-        processDefinitionsToBpmnParseMap, processDefinitionsToResourceMap);
-  }
+    private boolean mayBeContainsProcessDefinitionResourceName(String resourceName) {
+        return (
+            !deploymentSettings.containsKey(RESOURCE_NAMES) ||
+            Optional.of(deploymentSettings.get(RESOURCE_NAMES))
+                .filter(List.class::isInstance)
+                .map(List.class::cast)
+                .filter(it -> it.contains(resourceName))
+                .isPresent()
+        );
+    }
 
-  private boolean mayBeContainsProcessDefinitionResourceName(String resourceName) {
-      return !deploymentSettings.containsKey(RESOURCE_NAMES) ||
-          Optional.of(deploymentSettings.get(RESOURCE_NAMES))
-            .filter(List.class::isInstance)
-            .map(List.class::cast)
-            .filter(it -> it.contains(resourceName))
-            .isPresent();
-  }
+    protected BpmnParse createBpmnParseFromResource(ResourceEntity resource) {
+        String resourceName = resource.getName();
 
-  protected BpmnParse createBpmnParseFromResource(ResourceEntity resource) {
-    String resourceName = resource.getName();
+        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(resource.getBytes())) {
+            BpmnParse bpmnParse = bpmnParser
+                .createParse()
+                .sourceInputStream(inputStream)
+                .setSourceSystemId(resourceName)
+                .deployment(deployment)
+                .name(resourceName);
 
-    try(ByteArrayInputStream inputStream = new ByteArrayInputStream(resource.getBytes())) {
-        BpmnParse bpmnParse = bpmnParser.createParse()
-            .sourceInputStream(inputStream)
-            .setSourceSystemId(resourceName)
-            .deployment(deployment)
-            .name(resourceName);
+            if (deploymentSettings != null) {
+                // Schema validation if needed
+                if (deploymentSettings.containsKey(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED)) {
+                    bpmnParse.setValidateSchema(
+                        (Boolean) deploymentSettings.get(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED)
+                    );
+                }
 
-        if (deploymentSettings != null) {
-
-            // Schema validation if needed
-            if (deploymentSettings.containsKey(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED)) {
-                bpmnParse.setValidateSchema((Boolean) deploymentSettings.get(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED));
+                // Process validation if needed
+                if (deploymentSettings.containsKey(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED)) {
+                    bpmnParse.setValidateProcess(
+                        (Boolean) deploymentSettings.get(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED)
+                    );
+                }
+            } else {
+                // On redeploy, we assume it is validated at the first deploy
+                bpmnParse.setValidateSchema(false);
+                bpmnParse.setValidateProcess(false);
             }
 
-            // Process validation if needed
-            if (deploymentSettings.containsKey(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED)) {
-                bpmnParse.setValidateProcess((Boolean) deploymentSettings.get(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED));
-            }
+            bpmnParse.execute();
+            return bpmnParse;
+        } catch (IOException e) {
+            throw new ActivitiException(e.getMessage(), e);
+        }
+    }
 
-        } else {
-            // On redeploy, we assume it is validated at the first deploy
-            bpmnParse.setValidateSchema(false);
-            bpmnParse.setValidateProcess(false);
+    protected boolean isBpmnResource(String resourceName) {
+        for (String suffix : ResourceNameUtil.BPMN_RESOURCE_SUFFIXES) {
+            if (resourceName.endsWith(suffix)) {
+                return true;
+            }
         }
 
-        bpmnParse.execute();
-        return bpmnParse;
-    } catch (IOException e) {
-        throw new ActivitiException(e.getMessage(), e);
+        return false;
     }
-  }
-
-  protected boolean isBpmnResource(String resourceName) {
-    for (String suffix : ResourceNameUtil.BPMN_RESOURCE_SUFFIXES) {
-      if (resourceName.endsWith(suffix)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
 }

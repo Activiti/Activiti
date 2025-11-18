@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.bpmn.listener;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -28,21 +26,21 @@ import org.activiti.engine.delegate.Expression;
  */
 public class ExpressionExecutionListener implements ExecutionListener {
 
-  protected Expression expression;
+    protected Expression expression;
 
-  public ExpressionExecutionListener(Expression expression) {
-    this.expression = expression;
-  }
+    public ExpressionExecutionListener(Expression expression) {
+        this.expression = expression;
+    }
 
-  public void notify(DelegateExecution execution) {
-    // Return value of expression is ignored
-    expression.getValue(execution);
-  }
+    public void notify(DelegateExecution execution) {
+        // Return value of expression is ignored
+        expression.getValue(execution);
+    }
 
-  /**
-   * returns the expression text for this execution listener. Comes in handy if you want to check which listeners you already have.
-   */
-  public String getExpressionText() {
-    return expression.getExpressionText();
-  }
+    /**
+     * returns the expression text for this execution listener. Comes in handy if you want to check which listeners you already have.
+     */
+    public String getExpressionText() {
+        return expression.getExpressionText();
+    }
 }

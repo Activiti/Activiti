@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@ package org.activiti.runtime.api.connector;
 
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.util.Map;
-
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.delegate.Expression;
@@ -68,6 +68,15 @@ public class IntegrationContextBuilderTest {
     @Mock
     private Expression expression;
 
+    @Mock
+    private ExecutionEntity execution;
+
+    @Mock
+    private ExecutionEntity processInstance;
+
+    @Mock
+    private ServiceTask serviceTask;
+
     @BeforeEach
     public void setUp() {
         ProcessEngineConfigurationImpl processEngineConfiguration = mock(ProcessEngineConfigurationImpl.class);
@@ -86,10 +95,6 @@ public class IntegrationContextBuilderTest {
     @Test
     public void shouldBuildIntegrationContextFromExecution() {
         //given
-        ExecutionEntity execution = mock(ExecutionEntity.class);
-        ExecutionEntity processInstance = mock(ExecutionEntity.class);
-        ServiceTask serviceTask = mock(ServiceTask.class);
-
         Map<String, Object> variables = singletonMap("key", "value");
         given(inboundVariablesProvider.calculateInputVariables(execution)).willReturn(variables);
         given(expression.getValue(execution)).willReturn(SERVICE_TASK_NAME);
@@ -130,10 +135,6 @@ public class IntegrationContextBuilderTest {
     @Test
     public void shouldSetIdWhenIntegrationContextEntityIsProvided() {
         //given
-        ExecutionEntity execution = mock(ExecutionEntity.class);
-        ExecutionEntity processInstance = mock(ExecutionEntity.class);
-        ServiceTask serviceTask = mock(ServiceTask.class);
-
         Map<String, Object> variables = singletonMap("key", "value");
         given(inboundVariablesProvider.calculateInputVariables(execution)).willReturn(variables);
         given(expression.getValue(execution)).willReturn(SERVICE_TASK_NAME);
@@ -171,5 +172,31 @@ public class IntegrationContextBuilderTest {
         assertThat(integrationContext.getProcessDefinitionVersion()).isEqualTo(PROCESS_DEFINITION_VERSION);
         assertThat(integrationContext.getParentProcessInstanceId()).isEqualTo(PARENT_PROCESS_INSTANCE_ID);
         assertThat(integrationContext.getInBoundVariables()).containsAllEntriesOf(variables);
+    }
+
+    @Test
+     void should_setEphemeral_when_mappingIsEphemeral() {
+        //given
+        given(execution.getProcessDefinitionId()).willReturn(PROCESS_DEFINITION_ID);
+        given(inboundVariablesProvider.isMappingEphemeral(any())).willReturn(true);
+
+        //when
+        IntegrationContext integrationContext = builder.from(execution);
+
+        //then
+       assertThat(integrationContext.hasEphemeralVariables()).isTrue();
+    }
+
+    @Test
+    void should_setEphemeralToFalse_when_mappingIsNonEphemeral() {
+        //given
+        given(execution.getProcessDefinitionId()).willReturn(PROCESS_DEFINITION_ID);
+        given(inboundVariablesProvider.isMappingEphemeral(any())).willReturn(false);
+
+        //when
+        IntegrationContext integrationContext = builder.from(execution);
+
+        //then
+        assertThat(integrationContext.hasEphemeralVariables()).isFalse();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,13 +36,17 @@ public abstract class VariableType {
         this.name = name;
     }
 
-    abstract public void validate(Object var, List<ActivitiException> errors);
+    public abstract void validate(Object var, List<ActivitiException> errors);
 
     public Object parseFromValue(Object value) throws ActivitiException {
         return value;
     }
 
     protected boolean isExpression(Object var) {
-        return Objects.nonNull(var) && var.getClass().isAssignableFrom(String.class) && EXPRESSION_PATTERN.matcher((CharSequence) var).matches();
+        return (
+            Objects.nonNull(var) &&
+            var.getClass().isAssignableFrom(String.class) &&
+            EXPRESSION_PATTERN.matcher((CharSequence) var).matches()
+        );
     }
 }
