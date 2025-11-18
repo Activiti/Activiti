@@ -245,4 +245,89 @@ class IntegrationContextImplTest {
         assertThat(toString).contains("inboundVariablesKeys=[]");
         assertThat(toString).contains("outBoundVariableKeys=[]");
     }
+
+    @Test
+    void should_setEphemeralVariablesProperty() {
+        IntegrationContextImpl integrationContext = new IntegrationContextImpl();
+
+        assertThat(integrationContext.hasEphemeralVariables()).isFalse();
+
+        integrationContext.setEphemeralVariables(true);
+        assertThat(integrationContext.hasEphemeralVariables()).isTrue();
+
+        integrationContext.setEphemeralVariables(false);
+        assertThat(integrationContext.hasEphemeralVariables()).isFalse();
+
+        integrationContext.setEphemeralVariables(null);
+        assertThat(integrationContext.hasEphemeralVariables()).isFalse();
+    }
+
+    @Test
+    void should_copyAllFields_when_copyConstructorIsUsed() {
+        IntegrationContextImpl original = new IntegrationContextImpl();
+        original.setProcessInstanceId("proc123");
+        original.setParentProcessInstanceId("parent456");
+        original.setRootProcessInstanceId("root789");
+        original.setProcessDefinitionId("defId");
+        original.setExecutionId("execId");
+        original.setProcessDefinitionKey("defKey");
+        original.setProcessDefinitionVersion(2);
+        original.setBusinessKey("bizKey");
+        original.setClientId("clientId");
+        original.setClientName("clientName");
+        original.setClientType("clientType");
+        original.setAppVersion("1.0.0");
+        original.setConnectorType("connectorType");
+        original.setEphemeralVariables(true);
+        original.addInBoundVariable("inKey", "inValue");
+        original.addOutBoundVariable("outKey", "outValue");
+
+        IntegrationContextImpl copy = new IntegrationContextImpl(original);
+
+        assertThat(copy).isNotSameAs(original);
+        assertThat(copy.getProcessInstanceId()).isEqualTo(original.getProcessInstanceId());
+        assertThat(copy.getParentProcessInstanceId()).isEqualTo(original.getParentProcessInstanceId());
+        assertThat(copy.getRootProcessInstanceId()).isEqualTo(original.getRootProcessInstanceId());
+        assertThat(copy.getProcessDefinitionId()).isEqualTo(original.getProcessDefinitionId());
+        assertThat(copy.getExecutionId()).isEqualTo(original.getExecutionId());
+        assertThat(copy.getProcessDefinitionKey()).isEqualTo(original.getProcessDefinitionKey());
+        assertThat(copy.getProcessDefinitionVersion()).isEqualTo(original.getProcessDefinitionVersion());
+        assertThat(copy.getBusinessKey()).isEqualTo(original.getBusinessKey());
+        assertThat(copy.getClientId()).isEqualTo(original.getClientId());
+        assertThat(copy.getClientName()).isEqualTo(original.getClientName());
+        assertThat(copy.getClientType()).isEqualTo(original.getClientType());
+        assertThat(copy.getAppVersion()).isEqualTo(original.getAppVersion());
+        assertThat(copy.getConnectorType()).isEqualTo(original.getConnectorType());
+        assertThat(copy.hasEphemeralVariables()).isEqualTo(original.hasEphemeralVariables());
+        assertThat(copy.getInBoundVariables()).isEqualTo(original.getInBoundVariables());
+        assertThat(copy.getOutBoundVariables()).isEqualTo(original.getOutBoundVariables());
+        assertThat(copy.getInBoundVariables()).isNotSameAs(original.getInBoundVariables());
+        assertThat(copy.getOutBoundVariables()).isNotSameAs(original.getOutBoundVariables());
+    }
+
+    @Test
+    void should_cleanInboundVariables_when_clearInBoundVariablesIsCalled() {
+        IntegrationContextImpl integrationContext = new IntegrationContextImpl();
+        integrationContext.addInBoundVariable("key1", "value1");
+        integrationContext.addInBoundVariable("key2", "value2");
+
+        assertThat(integrationContext.getInBoundVariables()).hasSize(2);
+
+        integrationContext.clearInBoundVariables();
+
+        assertThat(integrationContext.getInBoundVariables()).isEmpty();
+    }
+
+    @Test
+    void should_cleanOutBoundVariables_when_clearOutBoundVariablesIsCalled() {
+        IntegrationContextImpl integrationContext = new IntegrationContextImpl();
+        integrationContext.addOutBoundVariable("key1", "value1");
+        integrationContext.addOutBoundVariable("key2", "value2");
+
+        assertThat(integrationContext.getOutBoundVariables()).hasSize(2);
+
+        integrationContext.clearOutBoundVariables();
+
+        assertThat(integrationContext.getOutBoundVariables()).isEmpty();
+    }
 }

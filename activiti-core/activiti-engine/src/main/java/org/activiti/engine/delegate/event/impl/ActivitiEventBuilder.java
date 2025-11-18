@@ -526,19 +526,21 @@ public class ActivitiEventBuilder {
         return newEvent;
     }
 
-    protected static void populateEventWithCurrentContext(ActivitiEventImpl event) {
+    protected static void populateEventWithCurrentContextAndActor(ActivitiEventImpl event, String actor) {
         if (event instanceof ActivitiEntityEvent) {
             Object persistedObject = ((ActivitiEntityEvent) event).getEntity();
-            if (persistedObject instanceof Job) {
-                event.setExecutionId(((Job) persistedObject).getExecutionId());
-                event.setProcessInstanceId(((Job) persistedObject).getProcessInstanceId());
-                event.setProcessDefinitionId(((Job) persistedObject).getProcessDefinitionId());
-            } else if (persistedObject instanceof DelegateExecution) {
-                event.setExecutionId(((DelegateExecution) persistedObject).getId());
-                event.setProcessInstanceId(((DelegateExecution) persistedObject).getProcessInstanceId());
-                event.setProcessDefinitionId(((DelegateExecution) persistedObject).getProcessDefinitionId());
-            } else if (persistedObject instanceof IdentityLinkEntity) {
-                IdentityLinkEntity idLink = (IdentityLinkEntity) persistedObject;
+            if (persistedObject instanceof Job job) {
+                event.setExecutionId(job.getExecutionId());
+                event.setProcessInstanceId(job.getProcessInstanceId());
+                event.setProcessDefinitionId(job.getProcessDefinitionId());
+            } else if (persistedObject instanceof DelegateExecution delegateExecution) {
+                event.setExecutionId(delegateExecution.getId());
+                event.setProcessInstanceId(delegateExecution.getProcessInstanceId());
+                event.setProcessDefinitionId(delegateExecution.getProcessDefinitionId());
+                if (actor != null) {
+                    event.setActor(actor);
+                }
+            } else if (persistedObject instanceof IdentityLinkEntity idLink) {
                 if (idLink.getProcessDefinitionId() != null) {
                     event.setProcessDefinitionId(idLink.getProcessDefId());
                 } else if (idLink.getProcessInstance() != null) {
@@ -550,15 +552,19 @@ public class ActivitiEventBuilder {
                     event.setProcessInstanceId(idLink.getTask().getProcessInstanceId());
                     event.setExecutionId(idLink.getTask().getExecutionId());
                 }
-            } else if (persistedObject instanceof Task) {
-                event.setProcessInstanceId(((Task) persistedObject).getProcessInstanceId());
-                event.setExecutionId(((Task) persistedObject).getExecutionId());
-                event.setProcessDefinitionId(((Task) persistedObject).getProcessDefinitionId());
+            } else if (persistedObject instanceof Task task) {
+                event.setProcessInstanceId(task.getProcessInstanceId());
+                event.setExecutionId(task.getExecutionId());
+                event.setProcessDefinitionId(task.getProcessDefinitionId());
                 event.setReason(TerminateEndEventActivityBehavior.createDeleteReason(null));
-            } else if (persistedObject instanceof ProcessDefinition) {
-                event.setProcessDefinitionId(((ProcessDefinition) persistedObject).getId());
+            } else if (persistedObject instanceof ProcessDefinition processDefinition) {
+                event.setProcessDefinitionId(processDefinition.getId());
             }
         }
+    }
+
+    protected static void populateEventWithCurrentContext(ActivitiEventImpl event) {
+        populateEventWithCurrentContextAndActor(event, null);
     }
 
     private static ActivitiSignalEvent createSignalEvent(
@@ -590,5 +596,12 @@ public class ActivitiEventBuilder {
                 newEvent.setActivityName(flowNode.getName());
             }
         }
+    }
+
+    public static ActivitiEvent createEntityEventWithActor(ActivitiEventType type, ExecutionEntity entity, String actor) {
+        ActivitiEntityEventImpl newEvent = new ActivitiEntityEventImpl(entity, type);
+
+        populateEventWithCurrentContextAndActor(newEvent, actor);
+        return newEvent;
     }
 }

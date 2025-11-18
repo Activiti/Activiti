@@ -15,9 +15,6 @@
  */
 package org.activiti.runtime.api.impl;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -62,47 +59,46 @@ class TaskAdminRuntimeImplTest {
     @Test
     void should_assignOneTask() {
         final String taskId = "taskId";
-        final String assignee = "hruser";
-        AssignTasksPayload assignTasksPayload = new AssignTasksPayload(List.of(taskId), assignee);
+        final String oldAssignee = "hruser";
+        final String newAssignee = "newAssignee";
+        AssignTasksPayload assignTasksPayload = new AssignTasksPayload(List.of(taskId), newAssignee);
 
         TaskEntityImpl task = new TaskEntityImpl();
         task.setId(taskId);
-        task.setAssignee(assignee);
+        task.setAssignee(oldAssignee);
         when(taskRuntimeHelper.getInternalTask(taskId)).thenReturn(task);
 
         Page<Task> tasks = taskAdminRuntime.assignMultiple(assignTasksPayload);
 
-        verify(taskService).unclaim(eq(taskId));
-        verify(taskService).claim(eq(taskId), eq(assignee));
+        verify(taskService).setAssignee(taskId, newAssignee);
         Assertions.assertThat(tasks.getContent()).hasSize(1);
-        Assertions.assertThat(tasks.getContent()).extracting(Task::getAssignee).containsExactly(assignee);
+        Assertions.assertThat(tasks.getContent()).extracting(Task::getId).containsExactly(taskId);
     }
 
     @Test
     void should_assignMultipleTasks() {
         final String taskId1 = "taskId1";
         final String taskId2 = "taskId2";
-        final String assignee = "hruser";
-        AssignTasksPayload assignTasksPayload = new AssignTasksPayload(List.of(taskId1, taskId2), assignee);
+        final String oldAssignee = "hruser";
+        final String newAssignee = "newAssignee";
+        AssignTasksPayload assignTasksPayload = new AssignTasksPayload(List.of(taskId1, taskId2), newAssignee);
 
         TaskEntityImpl task1 = new TaskEntityImpl();
         task1.setId(taskId1);
-        task1.setAssignee(assignee);
+        task1.setAssignee(oldAssignee);
         when(taskRuntimeHelper.getInternalTask(taskId1)).thenReturn(task1);
 
         TaskEntityImpl task2 = new TaskEntityImpl();
         task2.setId(taskId2);
-        task2.setAssignee(assignee);
+        task2.setAssignee(oldAssignee);
         when(taskRuntimeHelper.getInternalTask(taskId2)).thenReturn(task2);
 
         Page<Task> tasks = taskAdminRuntime.assignMultiple(assignTasksPayload);
 
-        verify(taskService).unclaim(eq(taskId1));
-        verify(taskService).claim(eq(taskId1), eq(assignee));
-        verify(taskService).unclaim(eq(taskId2));
-        verify(taskService).claim(eq(taskId2), eq(assignee));
+        verify(taskService).setAssignee(taskId1, newAssignee);
+        verify(taskService).setAssignee(taskId2, newAssignee);
         Assertions.assertThat(tasks.getContent()).hasSize(2);
-        Assertions.assertThat(tasks.getContent()).extracting(Task::getAssignee).containsOnly(assignee);
+        Assertions.assertThat(tasks.getContent()).extracting(Task::getId).contains(taskId1, taskId2);
     }
 
     @Test
@@ -112,8 +108,6 @@ class TaskAdminRuntimeImplTest {
 
         Page<Task> tasks = taskAdminRuntime.assignMultiple(assignTasksPayload);
 
-        verify(taskService, never()).unclaim(any());
-        verify(taskService, never()).claim(any(), any());
-        Assertions.assertThat(tasks.getContent()).hasSize(0);
+        Assertions.assertThat(tasks.getContent()).isEmpty();
     }
 }

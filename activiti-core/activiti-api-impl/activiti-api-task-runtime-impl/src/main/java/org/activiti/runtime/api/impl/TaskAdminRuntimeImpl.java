@@ -213,10 +213,7 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
     }
 
     private Task assign(String taskId, String assignee) {
-        //We need to release, claim for assigned task is not working!
-        taskService.unclaim(taskId);
-        //Now assign a new user
-        taskService.claim(taskId, assignee);
+        taskService.setAssignee(taskId, assignee);
         return task(taskId);
     }
 

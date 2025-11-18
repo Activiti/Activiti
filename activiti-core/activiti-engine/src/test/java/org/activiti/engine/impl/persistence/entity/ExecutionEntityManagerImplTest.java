@@ -19,13 +19,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
+import org.activiti.engine.delegate.event.impl.ActivitiEventImpl;
 import org.activiti.engine.impl.cfg.PerformanceSettings;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
@@ -40,6 +44,7 @@ import org.activiti.engine.runtime.Clock;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -354,7 +359,7 @@ public class ExecutionEntityManagerImplTest {
 
     /**
      * Test sub-process instances deletion from execution tree below:
-     *
+     * <p>
      * |- exec1 (execution)
      * |--- exec2 (subExecution)
      * |----- exec31 (miExecution)
@@ -462,4 +467,91 @@ public class ExecutionEntityManagerImplTest {
         given(executionDataManager.create()).willReturn(subProcessInstance);
         return executionEntityManager.createSubprocessInstance(processDefinition, superExecution, businessKey);
     }
+
+    @Test
+    public void shouldDispatchProcessCompletedEventWithActorWhenCancelFlagIsFalse() {
+
+        ArgumentCaptor<ActivitiEvent> activitiEventCaptor = ArgumentCaptor.forClass(ActivitiEvent.class);
+
+        Context.setCommandContext(commandContext);
+        ExecutionEntity processInstanceEntity = new ExecutionEntityImpl();
+        processInstanceEntity.setId("validProcessInstanceId");
+        given(commandContext.getExecutionEntityManager()).willReturn(executionEntityManager);
+        given(eventDispatcher.isEnabled()).willReturn(true);
+
+        var actorRow = buildIdentityLink("actor", "userId");
+        var candidateRow = buildCandidateIdentityLink();
+
+        given(identityLinkEntityManager.findIdentityLinksByProcessInstanceId(processInstanceEntity.getProcessInstanceId())).willReturn(List.of(
+            actorRow, candidateRow
+        ));
+
+        given(executionEntityManager.findById("validProcessInstanceId")).willReturn(processInstanceEntity);
+        given(commandContext.getVariableInstanceEntityManager()).willReturn(mock(VariableInstanceEntityManager.class));
+        executionEntityManager.deleteProcessInstanceExecutionEntity(
+            "validProcessInstanceId",
+            "currentFlowElementId",
+            "deleteReason",
+            true,
+            false
+        );
+
+        verify(eventDispatcher, atLeastOnce()).dispatchEvent(activitiEventCaptor.capture());
+
+        ActivitiEventImpl dispatchedEvent = (ActivitiEventImpl) activitiEventCaptor.getValue();
+        assertThat(dispatchedEvent.getType().name()).isEqualTo("PROCESS_COMPLETED");
+        assertThat(dispatchedEvent.getActor()).isEqualTo("userId");
+        assertThat(processInstanceEntity.isDeleted()).isTrue();
+        Context.setCommandContext(null);
+    }
+
+    private IdentityLinkEntityImpl buildIdentityLink(String actor, String userId) {
+        var identityLinkRow = new IdentityLinkEntityImpl();
+        identityLinkRow.setType(actor);
+        identityLinkRow.setUserId(userId);
+        identityLinkRow.setDetails(userId.getBytes());
+        return identityLinkRow;
+    }
+
+    private IdentityLinkEntityImpl buildCandidateIdentityLink() {
+        return buildIdentityLink("candidate", "candidateUserId");
+    }
+
+    @Test
+    public void shouldDispatchProcessCompletedEventWithServiceUserAsActorWhenCancelFlagIsFalse() {
+
+        ArgumentCaptor<ActivitiEvent> activitiEventCaptor = ArgumentCaptor.forClass(ActivitiEvent.class);
+
+        Context.setCommandContext(commandContext);
+        ExecutionEntity processInstanceEntity = new ExecutionEntityImpl();
+        processInstanceEntity.setId("validProcessInstanceId");
+        given(commandContext.getExecutionEntityManager()).willReturn(executionEntityManager);
+        given(eventDispatcher.isEnabled()).willReturn(true);
+
+        var candidateRow = buildCandidateIdentityLink();
+
+        given(identityLinkEntityManager.findIdentityLinksByProcessInstanceId(processInstanceEntity.getProcessInstanceId())).willReturn(List.of(
+            candidateRow
+        ));
+
+        given(executionEntityManager.findById("validProcessInstanceId")).willReturn(processInstanceEntity);
+        given(commandContext.getVariableInstanceEntityManager()).willReturn(mock(VariableInstanceEntityManager.class));
+        executionEntityManager.deleteProcessInstanceExecutionEntity(
+            "validProcessInstanceId",
+            "currentFlowElementId",
+            "deleteReason",
+            true,
+            false
+        );
+
+        verify(eventDispatcher, atLeastOnce()).dispatchEvent(activitiEventCaptor.capture());
+
+        ActivitiEventImpl dispatchedEvent = (ActivitiEventImpl) activitiEventCaptor.getValue();
+        assertThat(dispatchedEvent.getType().name()).isEqualTo("PROCESS_COMPLETED");
+        assertThat(dispatchedEvent.getActor()).isEqualTo("service_user");
+        assertThat(processInstanceEntity.isDeleted()).isTrue();
+        Context.setCommandContext(null);
+    }
+
+
 }
