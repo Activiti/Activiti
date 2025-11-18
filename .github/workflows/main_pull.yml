@@ -33,7 +33,7 @@ jobs:
       - name: pre-commit
         uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@de5e037bf9a2ac174c1993dab82002a2278a6506 # v9.3.2
       - name: Ensure SHA pinned actions
-        uses: zgosalvez/github-actions-ensure-sha-pinned-actions@9e9574ef04ea69da568d6249bd69539ccc704e74 # v4.0.0
+        uses: hyland/github-actions-ensure-sha-pinned-actions@22ca7a8cf33e873ba1d6fbcd2b71fa0ec5006b17 # v1.1.0
       - name: Check PR preview
         id: check_pr_preview
         shell: bash
