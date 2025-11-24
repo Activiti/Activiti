@@ -44,7 +44,7 @@ public class SubProcessMultiDiagramConverterNoDITest extends AbstractConverterTe
     @Override
     protected BpmnModel exportAndReadXMLFile(BpmnModel bpmnModel) throws Exception {
         byte[] xml = new SubprocessXMLConverter().convertToXML(bpmnModel);
-        System.out.println("xml " + new String(xml, "UTF-8"));
+        IO.println("xml " + new String(xml, "UTF-8"));
         XMLInputFactory xif = XMLInputFactory.newInstance();
         InputStreamReader in = new InputStreamReader(new ByteArrayInputStream(xml), "UTF-8");
         XMLStreamReader xtr = xif.createXMLStreamReader(in);

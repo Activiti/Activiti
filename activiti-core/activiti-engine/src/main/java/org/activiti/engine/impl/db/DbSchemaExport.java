@@ -69,7 +69,7 @@ public class DbSchemaExport {
                 tableNames.add(tableName);
             }
 
-            System.out.println("TABLES");
+            IO.println("TABLES");
             for (String tableName : tableNames) {
                 Map<String, String> columnDescriptions = new HashMap<String, String>();
                 ResultSet columns = meta.getColumns(null, null, tableName, null);
@@ -79,12 +79,12 @@ public class DbSchemaExport {
                     columnDescriptions.put(columnName, columnTypeAndSize);
                 }
 
-                System.out.println(tableName);
+                IO.println(tableName);
                 for (String columnName : new TreeSet<String>(columnDescriptions.keySet())) {
-                    System.out.println("  " + columnName + " " + columnDescriptions.get(columnName));
+                    IO.println("  " + columnName + " " + columnDescriptions.get(columnName));
                 }
 
-                System.out.println("INDEXES");
+                IO.println("INDEXES");
                 SortedSet<String> indexNames = new TreeSet<String>();
                 ResultSet indexes = meta.getIndexInfo(null, null, tableName, false, true);
                 while (indexes.next()) {
@@ -92,9 +92,9 @@ public class DbSchemaExport {
                     indexNames.add(indexName);
                 }
                 for (String indexName : indexNames) {
-                    System.out.println(indexName);
+                    IO.println(indexName);
                 }
-                System.out.println();
+                IO.println();
             }
         } catch (Exception e) {
             e.printStackTrace();

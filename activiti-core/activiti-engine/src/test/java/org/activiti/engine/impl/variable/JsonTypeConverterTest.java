@@ -40,7 +40,7 @@ public class JsonTypeConverterTest {
         List<Integer> originalValue = asList(1, 2);
         String json = objectMapper.writeValueAsString(originalValue);
         JsonNode jsonNode = objectMapper.readTree(json);
-        System.out.println(json);
+        IO.println(json);
 
         ValueFields valueFields = buildValueFields("numbers", originalValue);
 

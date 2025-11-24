@@ -324,9 +324,9 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
         Map<String, CommandStats> allStats = profileSession.calculateSummaryStatistics();
 
         if (commands.length != allStats.size()) {
-            System.out.println("Following commands were found: ");
+            IO.println("Following commands were found: ");
             for (String command : allStats.keySet()) {
-                System.out.println(command);
+                IO.println(command);
             }
         }
         assertThat(allStats).hasSize(commands.length);

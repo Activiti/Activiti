@@ -831,24 +831,16 @@ public class CronExpression implements Serializable, Cloneable {
     }
 
     protected TreeSet<Integer> getSet(int type) {
-        switch (type) {
-            case SECOND:
-                return seconds;
-            case MINUTE:
-                return minutes;
-            case HOUR:
-                return hours;
-            case DAY_OF_MONTH:
-                return daysOfMonth;
-            case MONTH:
-                return months;
-            case DAY_OF_WEEK:
-                return daysOfWeek;
-            case YEAR:
-                return years;
-            default:
-                return null;
-        }
+        return switch (type) {
+            case SECOND -> seconds;
+            case MINUTE -> minutes;
+            case HOUR -> hours;
+            case DAY_OF_MONTH -> daysOfMonth;
+            case MONTH -> months;
+            case DAY_OF_WEEK -> daysOfWeek;
+            case YEAR -> years;
+            default -> null;
+        };
     }
 
     protected ValueSet getValue(int v, String s, int i) {
