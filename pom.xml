@@ -226,6 +226,7 @@
     <spring-boot.version>3.5.7</spring-boot.version>
     <h2.version>2.4.240</h2.version>
     <jakarta.el-api.version>5.0.1</jakarta.el-api.version>
+    <testcontainers.version>2.0.2</testcontainers.version>
     <versions-maven-plugin.version>2.20.0</versions-maven-plugin.version>
 
     <!-- configuration properties for tests -->
@@ -280,6 +281,14 @@
         <groupId>com.h2database</groupId>
         <artifactId>h2</artifactId>
         <version>${h2.version}</version>
+      </dependency>
+      <!-- AAE-40315 Override testcontainers version to fix Docker compatibility issue -->
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-bom</artifactId>
+        <version>${testcontainers.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
