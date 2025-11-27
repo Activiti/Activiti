@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,31 +39,24 @@ public class CommonModelAutoConfiguration {
     //this bean will be automatically injected inside boot's ObjectMapper
     @Bean
     public Module customizeCommonModelObjectMapper() {
-        SimpleModule module = new SimpleModule("mapCommonModelInterfaces",
-                                               Version.unknownVersion());
+        SimpleModule module = new SimpleModule("mapCommonModelInterfaces", Version.unknownVersion());
         SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver() {
             //this is a workaround for https://github.com/FasterXML/jackson-databind/issues/2019
             //once version 2.9.6 is related we can remove this @override method
             @Override
-            public JavaType resolveAbstractType(DeserializationConfig config,
-                                                BeanDescription typeDesc) {
-                return findTypeMapping(config,
-                                       typeDesc.getType());
+            public JavaType resolveAbstractType(DeserializationConfig config, BeanDescription typeDesc) {
+                return findTypeMapping(config, typeDesc.getType());
             }
         };
 
-        resolver.addMapping(VariableInstance.class,
-                            VariableInstanceImpl.class);
+        resolver.addMapping(VariableInstance.class, VariableInstanceImpl.class);
 
         module.setAbstractTypes(resolver);
 
-        module.setMixInAnnotation(Payload.class,
-                                  PayloadMixIn.class);
-        module.setMixInAnnotation(Result.class,
-                                  ResultMixIn.class);
+        module.setMixInAnnotation(Payload.class, PayloadMixIn.class);
+        module.setMixInAnnotation(Result.class, ResultMixIn.class);
 
-        module.registerSubtypes(new NamedType(EmptyResult.class,
-                                              EmptyResult.class.getSimpleName()));
+        module.registerSubtypes(new NamedType(EmptyResult.class, EmptyResult.class.getSimpleName()));
 
         return module;
     }

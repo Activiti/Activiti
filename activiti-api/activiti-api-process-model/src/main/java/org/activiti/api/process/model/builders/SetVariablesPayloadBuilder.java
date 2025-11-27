@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.activiti.api.process.model.builders;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.payloads.SetProcessVariablesPayload;
 
@@ -26,8 +25,7 @@ public class SetVariablesPayloadBuilder {
     private String processInstanceId;
     private Map<String, Object> variables = new HashMap<>();
 
-    public SetVariablesPayloadBuilder() {
-    }
+    public SetVariablesPayloadBuilder() {}
 
     public SetVariablesPayloadBuilder(String processInstanceId) {
         this.processInstanceId = processInstanceId;
@@ -52,18 +50,15 @@ public class SetVariablesPayloadBuilder {
         return this;
     }
 
-    public SetVariablesPayloadBuilder withVariable(String name,
-                                                   Object value) {
+    public SetVariablesPayloadBuilder withVariable(String name, Object value) {
         if (this.variables == null) {
             this.variables = new HashMap<>();
         }
-        this.variables.put(name,
-                           value);
+        this.variables.put(name, value);
         return this;
     }
 
     public SetProcessVariablesPayload build() {
-        return new SetProcessVariablesPayload(processInstanceId,
-                                              variables);
+        return new SetProcessVariablesPayload(processInstanceId, variables);
     }
 }

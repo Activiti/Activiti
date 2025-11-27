@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel;
 
 import jakarta.el.ELContext;
@@ -84,9 +83,7 @@ public final class TreeValueExpression extends ValueExpression {
         this.deferred = tree.isDeferred();
 
         if (type == null) {
-            throw new NullPointerException(
-                LocalMessages.get("error.value.notype")
-            );
+            throw new NullPointerException(LocalMessages.get("error.value.notype"));
         }
     }
 
@@ -206,10 +203,7 @@ public final class TreeValueExpression extends ValueExpression {
             if (type != other.type) {
                 return false;
             }
-            return (
-                getStructuralId().equals(other.getStructuralId()) &&
-                bindings.equals(other.bindings)
-            );
+            return (getStructuralId().equals(other.getStructuralId()) && bindings.equals(other.bindings));
         }
         return false;
     }
@@ -232,8 +226,7 @@ public final class TreeValueExpression extends ValueExpression {
         NodePrinter.dump(writer, node);
     }
 
-    private void readObject(ObjectInputStream in)
-        throws IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         try {
             node = builder.build(expr).getRoot();

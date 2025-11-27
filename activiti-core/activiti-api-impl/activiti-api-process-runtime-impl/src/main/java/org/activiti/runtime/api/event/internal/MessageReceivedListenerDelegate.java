@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.activiti.runtime.api.event.internal;
 
 import java.util.List;
-
 import org.activiti.api.process.model.events.BPMNMessageReceivedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -30,8 +29,10 @@ public class MessageReceivedListenerDelegate implements ActivitiEventListener {
 
     private ToMessageReceivedConverter converter;
 
-    public MessageReceivedListenerDelegate(List<BPMNElementEventListener<BPMNMessageReceivedEvent>> processRuntimeEventListeners,
-                                           ToMessageReceivedConverter converter) {
+    public MessageReceivedListenerDelegate(
+        List<BPMNElementEventListener<BPMNMessageReceivedEvent>> processRuntimeEventListeners,
+        ToMessageReceivedConverter converter
+    ) {
         this.processRuntimeEventListeners = processRuntimeEventListeners;
         this.converter = converter;
     }
@@ -39,12 +40,13 @@ public class MessageReceivedListenerDelegate implements ActivitiEventListener {
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiMessageEvent) {
-            converter.from((ActivitiMessageEvent) event)
-                    .ifPresent(convertedEvent -> {
-                        for (BPMNElementEventListener<BPMNMessageReceivedEvent> listener : processRuntimeEventListeners) {
-                            listener.onEvent(convertedEvent);
-                        }
-                    });
+            converter
+                .from((ActivitiMessageEvent) event)
+                .ifPresent(convertedEvent -> {
+                    for (BPMNElementEventListener<BPMNMessageReceivedEvent> listener : processRuntimeEventListeners) {
+                        listener.onEvent(convertedEvent);
+                    }
+                });
         }
     }
 

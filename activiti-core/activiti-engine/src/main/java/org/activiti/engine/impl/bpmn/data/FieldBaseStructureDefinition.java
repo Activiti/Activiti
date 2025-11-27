@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.data;
 
 import org.activiti.engine.api.internal.Internal;
@@ -24,29 +23,28 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface FieldBaseStructureDefinition extends StructureDefinition {
+    /**
+     * Obtains the number of fields that this structure has
+     *
+     * @return the number of fields that this structure has
+     */
+    int getFieldSize();
 
-  /**
-   * Obtains the number of fields that this structure has
-   *
-   * @return the number of fields that this structure has
-   */
-  int getFieldSize();
+    /**
+     * Obtains the name of the field in the index position
+     *
+     * @param index
+     *          the position of the field
+     * @return the name of the field
+     */
+    String getFieldNameAt(int index);
 
-  /**
-   * Obtains the name of the field in the index position
-   *
-   * @param index
-   *          the position of the field
-   * @return the name of the field
-   */
-  String getFieldNameAt(int index);
-
-  /**
-   * Obtains the type of the field in the index position
-   *
-   * @param index
-   *          the position of the field
-   * @return the type of the field
-   */
-  Class<?> getFieldTypeAt(int index);
+    /**
+     * Obtains the type of the field in the index position
+     *
+     * @param index
+     *          the position of the field
+     * @return the type of the field
+     */
+    Class<?> getFieldTypeAt(int index);
 }

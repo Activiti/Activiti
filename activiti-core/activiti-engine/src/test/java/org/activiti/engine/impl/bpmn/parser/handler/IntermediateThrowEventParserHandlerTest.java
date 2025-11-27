@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,11 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import org.activiti.bpmn.model.LinkEventDefinition;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowLinkEventActivityBehavior;
@@ -27,13 +32,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-
 @RunWith(MockitoJUnitRunner.class)
 public class IntermediateThrowEventParserHandlerTest {
+
     @InjectMocks
     private IntermediateThrowEventParseHandler intermediateThrowEventParseHandler;
 
@@ -53,14 +54,13 @@ public class IntermediateThrowEventParserHandlerTest {
         ThrowEvent throwEvent = new ThrowEvent();
         LinkEventDefinition linkEventDefinition = new LinkEventDefinition();
         throwEvent.getEventDefinitions().add(linkEventDefinition);
-        given(activityBehaviorFactory.createThrowLinkEventActivityBehavior(eq(throwEvent), eq(linkEventDefinition))).willReturn(mock(IntermediateThrowLinkEventActivityBehavior.class));
+        given(
+            activityBehaviorFactory.createThrowLinkEventActivityBehavior(eq(throwEvent), eq(linkEventDefinition))
+        ).willReturn(mock(IntermediateThrowLinkEventActivityBehavior.class));
 
         intermediateThrowEventParseHandler.executeParse(bpmnParse, throwEvent);
 
         assertThat(throwEvent.getBehavior()).isNotNull();
         assertThat(throwEvent.getBehavior()).isInstanceOf(IntermediateThrowLinkEventActivityBehavior.class);
     }
-
-
-
 }

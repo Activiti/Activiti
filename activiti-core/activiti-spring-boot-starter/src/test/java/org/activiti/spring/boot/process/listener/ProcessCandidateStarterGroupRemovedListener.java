@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,16 @@
  */
 package org.activiti.spring.boot.process.listener;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.activiti.api.process.model.ProcessCandidateStarterGroup;
 import org.activiti.api.process.runtime.events.ProcessCandidateStarterGroupRemovedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Component
-public class ProcessCandidateStarterGroupRemovedListener implements ProcessRuntimeEventListener<ProcessCandidateStarterGroupRemovedEvent> {
+public class ProcessCandidateStarterGroupRemovedListener
+    implements ProcessRuntimeEventListener<ProcessCandidateStarterGroupRemovedEvent> {
 
     private List<ProcessCandidateStarterGroup> candidateStarterGroups = new ArrayList<>();
 
@@ -36,5 +36,4 @@ public class ProcessCandidateStarterGroupRemovedListener implements ProcessRunti
     public List<ProcessCandidateStarterGroup> getCandidateStarterGroups() {
         return candidateStarterGroups;
     }
-
 }

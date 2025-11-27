@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -27,20 +25,19 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public class DeleteModelCmd implements Command<Void>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  String modelId;
+    private static final long serialVersionUID = 1L;
+    String modelId;
 
-  public DeleteModelCmd(String modelId) {
-    this.modelId = modelId;
-  }
-
-  public Void execute(CommandContext commandContext) {
-    if (modelId == null) {
-      throw new ActivitiIllegalArgumentException("modelId is null");
+    public DeleteModelCmd(String modelId) {
+        this.modelId = modelId;
     }
-    commandContext.getModelEntityManager().delete(modelId);
 
-    return null;
-  }
+    public Void execute(CommandContext commandContext) {
+        if (modelId == null) {
+            throw new ActivitiIllegalArgumentException("modelId is null");
+        }
+        commandContext.getModelEntityManager().delete(modelId);
 
+        return null;
+    }
 }

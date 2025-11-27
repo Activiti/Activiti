@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,13 @@ public class ListResolverHelper {
         return List.of(objects);
     }
 
-    private ListResolverHelper() {
-    }
+    private ListResolverHelper() {}
 
     public static void addListFunctions(ActivitiElContext elContext) throws NoSuchMethodException {
-        elContext.setFunction("", LIST_FUNCTION_NAME, ListResolverHelper.class.getMethod(LIST_INVOKE_METHOD, Object[].class));
+        elContext.setFunction(
+            "",
+            LIST_FUNCTION_NAME,
+            ListResolverHelper.class.getMethod(LIST_INVOKE_METHOD, Object[].class)
+        );
     }
 }

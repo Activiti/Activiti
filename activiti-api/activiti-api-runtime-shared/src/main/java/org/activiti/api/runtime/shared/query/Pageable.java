@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,22 +21,17 @@ public class Pageable {
     private int maxItems;
     private Order order;
 
-    private Pageable(int startIndex,
-                    int maxItems,
-                    Order order) {
+    private Pageable(int startIndex, int maxItems, Order order) {
         this.startIndex = startIndex;
         this.maxItems = maxItems;
         this.order = order;
     }
 
-    public static Pageable of(int startIndex,
-                              int maxItems){
+    public static Pageable of(int startIndex, int maxItems) {
         return new Pageable(startIndex, maxItems, null);
     }
 
-    public static Pageable of(int startIndex,
-                              int maxItems,
-                              Order order){
+    public static Pageable of(int startIndex, int maxItems, Order order) {
         return new Pageable(startIndex, maxItems, order);
     }
 
@@ -51,5 +46,4 @@ public class Pageable {
     public Order getOrder() {
         return order;
     }
-
 }

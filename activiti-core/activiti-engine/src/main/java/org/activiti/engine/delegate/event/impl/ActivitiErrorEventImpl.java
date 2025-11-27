@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.delegate.event.impl;
 
 import org.activiti.engine.delegate.event.ActivitiErrorEvent;
@@ -26,28 +25,27 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
  */
 public class ActivitiErrorEventImpl extends ActivitiActivityEventImpl implements ActivitiErrorEvent {
 
-  protected String errorId;
-  protected String errorCode;
+    protected String errorId;
+    protected String errorCode;
 
-  public ActivitiErrorEventImpl(ActivitiEventType type) {
-    super(type);
-  }
+    public ActivitiErrorEventImpl(ActivitiEventType type) {
+        super(type);
+    }
 
-  public String getErrorId() {
-    return errorId;
-  }
+    public String getErrorId() {
+        return errorId;
+    }
 
-  public void setErrorId(String errorId) {
-    this.errorId = errorId;
-  }
+    public void setErrorId(String errorId) {
+        this.errorId = errorId;
+    }
 
-  public void setErrorCode(String errorCode) {
-    this.errorCode = errorCode;
-  }
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
 
-  @Override
-  public String getErrorCode() {
-    return errorCode;
-  }
-
+    @Override
+    public String getErrorCode() {
+        return errorCode;
+    }
 }

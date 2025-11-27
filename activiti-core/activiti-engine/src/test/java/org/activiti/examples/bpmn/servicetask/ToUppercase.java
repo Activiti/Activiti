@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.examples.bpmn.servicetask;
 
-import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 
 /**
 
  */
 public class ToUppercase implements JavaDelegate {
 
-  private static final String VARIABLE_NAME = "input";
+    private static final String VARIABLE_NAME = "input";
 
-  public void execute(DelegateExecution execution) {
-    String var = (String) execution.getVariable(VARIABLE_NAME);
-    var = var.toUpperCase();
-    execution.setVariable(VARIABLE_NAME, var);
-  }
-
+    public void execute(DelegateExecution execution) {
+        String var = (String) execution.getVariable(VARIABLE_NAME);
+        var = var.toUpperCase();
+        execution.setVariable(VARIABLE_NAME, var);
+    }
 }

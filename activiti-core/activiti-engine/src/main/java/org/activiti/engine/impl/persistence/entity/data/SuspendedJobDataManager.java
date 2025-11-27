@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity.data;
 
 import java.util.List;
-
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.SuspendedJobQueryImpl;
 import org.activiti.engine.impl.persistence.entity.SuspendedJobEntity;
@@ -27,14 +25,13 @@ import org.activiti.engine.runtime.Job;
 
  */
 public interface SuspendedJobDataManager extends DataManager<SuspendedJobEntity> {
+    List<SuspendedJobEntity> findJobsByExecutionId(String executionId);
 
-  List<SuspendedJobEntity> findJobsByExecutionId(String executionId);
+    List<SuspendedJobEntity> findJobsByProcessInstanceId(String processInstanceId);
 
-  List<SuspendedJobEntity> findJobsByProcessInstanceId(String processInstanceId);
+    List<Job> findJobsByQueryCriteria(SuspendedJobQueryImpl jobQuery, Page page);
 
-  List<Job> findJobsByQueryCriteria(SuspendedJobQueryImpl jobQuery, Page page);
+    long findJobCountByQueryCriteria(SuspendedJobQueryImpl jobQuery);
 
-  long findJobCountByQueryCriteria(SuspendedJobQueryImpl jobQuery);
-
-  void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
+    void updateJobTenantIdForDeployment(String deploymentId, String newTenantId);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,27 +19,26 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
 public class TestService implements JavaDelegate {
-  static String processInstanceId;
-  static String processDefinitionId;
-  static String executionId;
-  static String businessKey;
 
-  @Override
-  public void execute(DelegateExecution execution) {
-    TestService.processDefinitionId = execution.getProcessDefinitionId();
-    TestService.processInstanceId = execution.getProcessInstanceId();
-    TestService.executionId = execution.getId();
-    TestService.businessKey = execution.getProcessInstanceBusinessKey();
+    static String processInstanceId;
+    static String processDefinitionId;
+    static String executionId;
+    static String businessKey;
 
-    throw new RuntimeException("test");
+    @Override
+    public void execute(DelegateExecution execution) {
+        TestService.processDefinitionId = execution.getProcessDefinitionId();
+        TestService.processInstanceId = execution.getProcessInstanceId();
+        TestService.executionId = execution.getId();
+        TestService.businessKey = execution.getProcessInstanceBusinessKey();
 
-  }
+        throw new RuntimeException("test");
+    }
 
-  public void clearProcessVariables() {
-    processDefinitionId = null;
-    processInstanceId = null;
-    executionId = null;
-    businessKey = null;
-  }
-
+    public void clearProcessVariables() {
+        processDefinitionId = null;
+        processInstanceId = null;
+        executionId = null;
+        businessKey = null;
+    }
 }

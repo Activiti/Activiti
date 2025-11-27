@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.history;
 
 import org.activiti.engine.api.internal.Internal;
@@ -23,17 +22,15 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface DeleteReason {
+    String PROCESS_INSTANCE_DELETED = "process instance deleted";
 
-  String PROCESS_INSTANCE_DELETED = "process instance deleted";
+    String TERMINATE_END_EVENT = "Terminated by end event";
 
-  String TERMINATE_END_EVENT = "Terminated by end event";
+    String BOUNDARY_EVENT_INTERRUPTING = "boundary event";
 
-  String BOUNDARY_EVENT_INTERRUPTING = "boundary event";
+    String EVENT_SUBPROCESS_INTERRUPTING = "event subprocess";
 
-  String EVENT_SUBPROCESS_INTERRUPTING = "event subprocess";
+    String EVENT_BASED_GATEWAY_CANCEL = "event based gateway cancel";
 
-  String EVENT_BASED_GATEWAY_CANCEL = "event based gateway cancel";
-
-  String TRANSACTION_CANCELED = "transaction canceled";
-
+    String TRANSACTION_CANCELED = "transaction canceled";
 }

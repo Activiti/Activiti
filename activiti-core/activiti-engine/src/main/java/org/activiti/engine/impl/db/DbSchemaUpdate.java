@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.db;
 
 import org.activiti.engine.ProcessEngines;
@@ -29,16 +27,18 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  */
 public class DbSchemaUpdate {
 
-  public static void main(String[] args) {
-    ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine();
-    CommandExecutor commandExecutor = processEngine.getProcessEngineConfiguration().getCommandExecutor();
-    CommandConfig config = new CommandConfig().transactionNotSupported();
-    commandExecutor.execute(config, new Command<Object>() {
-      public Object execute(CommandContext commandContext) {
-        commandContext.getDbSqlSession().dbSchemaUpdate();
-        return null;
-      }
-    });
-  }
-
+    public static void main(String[] args) {
+        ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine();
+        CommandExecutor commandExecutor = processEngine.getProcessEngineConfiguration().getCommandExecutor();
+        CommandConfig config = new CommandConfig().transactionNotSupported();
+        commandExecutor.execute(
+            config,
+            new Command<Object>() {
+                public Object execute(CommandContext commandContext) {
+                    commandContext.getDbSqlSession().dbSchemaUpdate();
+                    return null;
+                }
+            }
+        );
+    }
 }

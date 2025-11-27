@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,19 +20,18 @@ import org.activiti.api.process.model.StartMessageDeploymentDefinition;
 import org.activiti.api.process.model.events.MessageDefinitionEvent;
 import org.activiti.api.process.model.events.StartMessageDeployedEvent;
 
-public class StartMessageDeployedEventImpl extends RuntimeEventImpl<StartMessageDeploymentDefinition, MessageDefinitionEvent.MessageDefinitionEvents>
-                                           implements StartMessageDeployedEvent {
+public class StartMessageDeployedEventImpl
+    extends RuntimeEventImpl<StartMessageDeploymentDefinition, MessageDefinitionEvent.MessageDefinitionEvents>
+    implements StartMessageDeployedEvent {
 
     private StartMessageDeployedEventImpl(Builder builder) {
         this(builder.entity);
     }
 
-    StartMessageDeployedEventImpl() {
-    }
+    StartMessageDeployedEventImpl() {}
 
     public StartMessageDeployedEventImpl(StartMessageDeploymentDefinition startMessageEventSubscription) {
         super(startMessageEventSubscription);
-
         ProcessDefinition processDefinition = startMessageEventSubscription.getProcessDefinition();
 
         setProcessDefinitionId(processDefinition.getId());
@@ -60,31 +59,28 @@ public class StartMessageDeployedEventImpl extends RuntimeEventImpl<StartMessage
 
         private StartMessageDeploymentDefinition entity;
 
-        public Builder() {
-        }
+        public Builder() {}
 
         private Builder(StartMessageDeployedEventImpl startMessageDeployedEventImpl) {
             this.entity = startMessageDeployedEventImpl.getEntity();
         }
 
         /**
-        * Builder method for entity parameter.
-        * @param entity field to set
-        * @return builder
-        */
+         * Builder method for entity parameter.
+         * @param entity field to set
+         * @return builder
+         */
         public Builder withEntity(StartMessageDeploymentDefinition entity) {
             this.entity = entity;
             return this;
         }
 
         /**
-        * Builder method of the builder.
-        * @return built class
-        */
+         * Builder method of the builder.
+         * @return built class
+         */
         public StartMessageDeployedEventImpl build() {
             return new StartMessageDeployedEventImpl(this);
         }
     }
-
-
 }

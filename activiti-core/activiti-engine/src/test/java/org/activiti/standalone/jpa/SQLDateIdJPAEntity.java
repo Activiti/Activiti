@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.standalone.jpa;
-
-import java.sql.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import java.sql.Date;
 
 /**
 
@@ -29,16 +26,15 @@ import jakarta.persistence.Id;
 @Entity(name = "SQLDATE_ID_ENTITY")
 public class SQLDateIdJPAEntity {
 
-  @Id
-  @Column(name = "ID_")
-  private Date dateId;
+    @Id
+    @Column(name = "ID_")
+    private Date dateId;
 
-  public Date getDateId() {
-    return dateId;
-  }
+    public Date getDateId() {
+        return dateId;
+    }
 
-  public void setDateId(Date dateId) {
-    this.dateId = dateId;
-  }
-
+    public void setDateId(Date dateId) {
+        this.dateId = dateId;
+    }
 }

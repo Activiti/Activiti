@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.spring.test.autodeployment;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.test.AbstractTestCase;
 import org.activiti.engine.impl.util.IoUtil;
@@ -37,11 +34,16 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class SpringAutoDeployTest extends AbstractTestCase {
 
     protected static final String CTX_PATH = "org/activiti/spring/test/autodeployment/SpringAutoDeployTest-context.xml";
-    protected static final String CTX_NO_DROP_PATH = "org/activiti/spring/test/autodeployment/SpringAutoDeployTest-no-drop-context.xml";
-    protected static final String CTX_CREATE_DROP_CLEAN_DB = "org/activiti/spring/test/autodeployment/SpringAutoDeployTest-create-drop-clean-db-context.xml";
-    protected static final String CTX_DEPLOYMENT_MODE_DEFAULT = "org/activiti/spring/test/autodeployment/SpringAutoDeployTest-deploymentmode-default-context.xml";
-    protected static final String CTX_DEPLOYMENT_MODE_SINGLE_RESOURCE = "org/activiti/spring/test/autodeployment/SpringAutoDeployTest-deploymentmode-single-resource-context.xml";
-    protected static final String CTX_DEPLOYMENT_MODE_RESOURCE_PARENT_FOLDER = "org/activiti/spring/test/autodeployment/SpringAutoDeployTest-deploymentmode-resource-parent-folder-context.xml";
+    protected static final String CTX_NO_DROP_PATH =
+        "org/activiti/spring/test/autodeployment/SpringAutoDeployTest-no-drop-context.xml";
+    protected static final String CTX_CREATE_DROP_CLEAN_DB =
+        "org/activiti/spring/test/autodeployment/SpringAutoDeployTest-create-drop-clean-db-context.xml";
+    protected static final String CTX_DEPLOYMENT_MODE_DEFAULT =
+        "org/activiti/spring/test/autodeployment/SpringAutoDeployTest-deploymentmode-default-context.xml";
+    protected static final String CTX_DEPLOYMENT_MODE_SINGLE_RESOURCE =
+        "org/activiti/spring/test/autodeployment/SpringAutoDeployTest-deploymentmode-single-resource-context.xml";
+    protected static final String CTX_DEPLOYMENT_MODE_RESOURCE_PARENT_FOLDER =
+        "org/activiti/spring/test/autodeployment/SpringAutoDeployTest-deploymentmode-resource-parent-folder-context.xml";
 
     protected ApplicationContext applicationContext;
     protected RepositoryService repositoryService;
@@ -98,8 +100,7 @@ public class SpringAutoDeployTest extends AbstractTestCase {
 
         String filePath = "org/activiti/spring/test/autodeployment/autodeploy.a.bpmn20.xml";
         String originalBpmnFileContent = IoUtil.readFileAsString(filePath);
-        String updatedBpmnFileContent = originalBpmnFileContent.replace("flow1",
-                                                                        "fromStartToEndFlow");
+        String updatedBpmnFileContent = originalBpmnFileContent.replace("flow1", "fromStartToEndFlow");
         assertThat(updatedBpmnFileContent.length() > originalBpmnFileContent.length()).isTrue();
         IoUtil.writeStringToFile(updatedBpmnFileContent, filePath);
 
@@ -110,8 +111,7 @@ public class SpringAutoDeployTest extends AbstractTestCase {
         // Constructing the new app context reads the same file which is
         // sometimes
         // not yet fully written to disk
-        waitUntilFileIsWritten(filePath,
-                               updatedBpmnFileContent.length());
+        waitUntilFileIsWritten(filePath, updatedBpmnFileContent.length());
 
         try {
             applicationContext = new ClassPathXmlApplicationContext(CTX_NO_DROP_PATH);
@@ -119,8 +119,7 @@ public class SpringAutoDeployTest extends AbstractTestCase {
         } finally {
             // Reset file content such that future test are not seeing something
             // funny
-            IoUtil.writeStringToFile(originalBpmnFileContent,
-                                     filePath);
+            IoUtil.writeStringToFile(originalBpmnFileContent, filePath);
         }
 
         // Assertions come AFTER the file write! Otherwise the process file is
@@ -162,8 +161,7 @@ public class SpringAutoDeployTest extends AbstractTestCase {
         }
     }
 
-    private boolean waitUntilFileIsWritten(String filePath,
-                                           int expectedBytes) throws Exception {
+    private boolean waitUntilFileIsWritten(String filePath, int expectedBytes) throws Exception {
         while (IoUtil.getFile(filePath).length() != (long) expectedBytes) {
             wait(100L);
         }

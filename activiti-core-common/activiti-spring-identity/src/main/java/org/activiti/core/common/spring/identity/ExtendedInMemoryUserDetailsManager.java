@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.activiti.core.common.spring.identity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
@@ -31,10 +30,12 @@ public class ExtendedInMemoryUserDetailsManager extends InMemoryUserDetailsManag
     public void createUser(UserDetails user) {
         super.createUser(user);
         users.add(user.getUsername());
-        groups = user.getAuthorities().stream()
-                .filter(x -> (x.getAuthority().contains("GROUP")))
-                .map(x -> (x.getAuthority()))
-                .collect(Collectors.toList());
+        groups = user
+            .getAuthorities()
+            .stream()
+            .filter(x -> (x.getAuthority().contains("GROUP")))
+            .map(x -> (x.getAuthority()))
+            .collect(Collectors.toList());
     }
 
     public List<String> getUsers() {

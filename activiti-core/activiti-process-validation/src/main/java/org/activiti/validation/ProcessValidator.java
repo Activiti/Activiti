@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.validation;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.validation.validator.ValidatorSet;
 
@@ -27,15 +25,13 @@ import org.activiti.validation.validator.ValidatorSet;
 
  */
 public interface ProcessValidator {
+    /**
+     * Validates the provided {@link BpmnModel} and returns a list of all {@link ValidationError} occurences found.
+     */
+    List<ValidationError> validate(BpmnModel bpmnModel);
 
-  /**
-   * Validates the provided {@link BpmnModel} and returns a list of all {@link ValidationError} occurences found.
-   */
-  List<ValidationError> validate(BpmnModel bpmnModel);
-
-  /**
-   * Returns the {@link ValidatorSet} instances for this process validator. Useful if some validation rules need to be disabled.
-   */
-  List<ValidatorSet> getValidatorSets();
-
+    /**
+     * Returns the {@link ValidatorSet} instances for this process validator. Useful if some validation rules need to be disabled.
+     */
+    List<ValidatorSet> getValidatorSets();
 }

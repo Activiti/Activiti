@@ -1,0 +1,23 @@
+name: "PR Review check"
+
+on:
+  pull_request_review:
+    types:
+      - submitted
+  pull_request:
+    branches:
+      - develop
+    types:
+      - labeled
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    uses: Alfresco/alfresco-build-tools/.github/workflows/pr-review-check.yml@6893e3d493fc1e1e930123bbbd20c32805116860 # v10.0.0
+    with:
+      trigger-labels: '["CI", "preview", "skip-tests"]'
+      milestone-name: 'Validating'
+    secrets:
+      BOT_GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}

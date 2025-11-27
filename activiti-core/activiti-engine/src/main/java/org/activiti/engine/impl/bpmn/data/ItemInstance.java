@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.data;
 
 /**
@@ -23,32 +22,32 @@ package org.activiti.engine.impl.bpmn.data;
  */
 public class ItemInstance {
 
-  protected ItemDefinition item;
+    protected ItemDefinition item;
 
-  protected StructureInstance structureInstance;
+    protected StructureInstance structureInstance;
 
-  public ItemInstance(ItemDefinition item, StructureInstance structureInstance) {
-    this.item = item;
-    this.structureInstance = structureInstance;
-  }
+    public ItemInstance(ItemDefinition item, StructureInstance structureInstance) {
+        this.item = item;
+        this.structureInstance = structureInstance;
+    }
 
-  public ItemDefinition getItem() {
-    return this.item;
-  }
+    public ItemDefinition getItem() {
+        return this.item;
+    }
 
-  public StructureInstance getStructureInstance() {
-    return this.structureInstance;
-  }
+    public StructureInstance getStructureInstance() {
+        return this.structureInstance;
+    }
 
-  private FieldBaseStructureInstance getFieldBaseStructureInstance() {
-    return (FieldBaseStructureInstance) this.structureInstance;
-  }
+    private FieldBaseStructureInstance getFieldBaseStructureInstance() {
+        return (FieldBaseStructureInstance) this.structureInstance;
+    }
 
-  public Object getFieldValue(String fieldName) {
-    return this.getFieldBaseStructureInstance().getFieldValue(fieldName);
-  }
+    public Object getFieldValue(String fieldName) {
+        return this.getFieldBaseStructureInstance().getFieldValue(fieldName);
+    }
 
-  public void setFieldValue(String fieldName, Object value) {
-    this.getFieldBaseStructureInstance().setFieldValue(fieldName, value);
-  }
+    public void setFieldValue(String fieldName, Object value) {
+        this.getFieldBaseStructureInstance().setFieldValue(fieldName, value);
+    }
 }

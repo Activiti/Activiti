@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.delegate.invocation;
 
 import jakarta.el.ELContext;
@@ -26,19 +25,18 @@ import jakarta.el.ValueExpression;
  */
 public class ExpressionSetInvocation extends ExpressionInvocation {
 
-  protected final Object value;
-  protected ELContext elContext;
+    protected final Object value;
+    protected ELContext elContext;
 
-  public ExpressionSetInvocation(ValueExpression valueExpression, ELContext elContext, Object value) {
-    super(valueExpression);
-    this.value = value;
-    this.elContext = elContext;
-    this.invocationParameters = new Object[] { value };
-  }
+    public ExpressionSetInvocation(ValueExpression valueExpression, ELContext elContext, Object value) {
+        super(valueExpression);
+        this.value = value;
+        this.elContext = elContext;
+        this.invocationParameters = new Object[] { value };
+    }
 
-  @Override
-  protected void invoke() {
-    valueExpression.setValue(elContext, value);
-  }
-
+    @Override
+    protected void invoke() {
+        valueExpression.setValue(elContext, value);
+    }
 }

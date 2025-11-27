@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.misc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -142,7 +141,7 @@ public class NumberOperationsTest extends TestCase {
         Integer i1 = Integer.valueOf(1);
         Long l1 = Long.valueOf(1);
         Float f1 = Float.valueOf(1);
-        Double d1 =  Double.valueOf(1);
+        Double d1 = Double.valueOf(1);
         String e1 = "1e0";
         String s1 = "1";
         BigInteger bi1 = new BigInteger("1");

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree.impl.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -129,14 +128,8 @@ public class AstBinaryTest extends TestCase {
 
     @Test
     public void testGetValue() {
-        assertEquals(
-            Long.valueOf(2l),
-            parseNode("${1+1}").getValue(bindings, null, null)
-        );
-        assertEquals(
-            "2",
-            parseNode("${1+1}").getValue(bindings, null, String.class)
-        );
+        assertEquals(Long.valueOf(2l), parseNode("${1+1}").getValue(bindings, null, null));
+        assertEquals("2", parseNode("${1+1}").getValue(bindings, null, String.class));
     }
 
     @Test
@@ -146,38 +139,14 @@ public class AstBinaryTest extends TestCase {
 
     @Test
     public void testOperators() {
-        assertTrue(
-            (Boolean) parseNode("${true and true}")
-                .getValue(bindings, null, Boolean.class)
-        );
-        assertFalse(
-            (Boolean) parseNode("${true and false}")
-                .getValue(bindings, null, Boolean.class)
-        );
-        assertFalse(
-            (Boolean) parseNode("${false and true}")
-                .getValue(bindings, null, Boolean.class)
-        );
-        assertFalse(
-            (Boolean) parseNode("${false and false}")
-                .getValue(bindings, null, Boolean.class)
-        );
+        assertTrue((Boolean) parseNode("${true and true}").getValue(bindings, null, Boolean.class));
+        assertFalse((Boolean) parseNode("${true and false}").getValue(bindings, null, Boolean.class));
+        assertFalse((Boolean) parseNode("${false and true}").getValue(bindings, null, Boolean.class));
+        assertFalse((Boolean) parseNode("${false and false}").getValue(bindings, null, Boolean.class));
 
-        assertTrue(
-            (Boolean) parseNode("${true or true}")
-                .getValue(bindings, null, Boolean.class)
-        );
-        assertTrue(
-            (Boolean) parseNode("${true or false}")
-                .getValue(bindings, null, Boolean.class)
-        );
-        assertTrue(
-            (Boolean) parseNode("${false or true}")
-                .getValue(bindings, null, Boolean.class)
-        );
-        assertFalse(
-            (Boolean) parseNode("${false or false}")
-                .getValue(bindings, null, Boolean.class)
-        );
+        assertTrue((Boolean) parseNode("${true or true}").getValue(bindings, null, Boolean.class));
+        assertTrue((Boolean) parseNode("${true or false}").getValue(bindings, null, Boolean.class));
+        assertTrue((Boolean) parseNode("${false or true}").getValue(bindings, null, Boolean.class));
+        assertFalse((Boolean) parseNode("${false or false}").getValue(bindings, null, Boolean.class));
     }
 }

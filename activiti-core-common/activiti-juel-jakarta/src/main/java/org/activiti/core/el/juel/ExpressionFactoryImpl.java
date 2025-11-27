@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel;
 
 import jakarta.el.ELContext;
@@ -91,12 +90,7 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
          * JEE6: <code>activiti.juel.methodInvocations</code>, <code>activiti.juel.varArgs</code>. This is the
          * default profile.
          */
-        JEE6(
-            EnumSet.of(
-                Builder.Feature.METHOD_INVOCATIONS,
-                Builder.Feature.VARARGS
-            )
-        );
+        JEE6(EnumSet.of(Builder.Feature.METHOD_INVOCATIONS, Builder.Feature.VARARGS));
 
         private final EnumSet<Builder.Feature> features;
 
@@ -116,8 +110,7 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
     /**
      * <code>activiti.juel.methodInvocations</code>
      */
-    public static final String PROP_METHOD_INVOCATIONS =
-        "activiti.juel.methodInvocations";
+    public static final String PROP_METHOD_INVOCATIONS = "activiti.juel.methodInvocations";
 
     /**
      * <code>activiti.juel.varArgs</code>
@@ -127,14 +120,12 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
     /**
      * <code>activiti.juel.nullProperties</code>
      */
-    public static final String PROP_NULL_PROPERTIES =
-        "activiti.juel.nullProperties";
+    public static final String PROP_NULL_PROPERTIES = "activiti.juel.nullProperties";
 
     /**
      * <code>jakarta.el.ignoreReturnType</code>
      */
-    public static final String PROP_IGNORE_RETURN_TYPE =
-        "jakarta.el.ignoreReturnType";
+    public static final String PROP_IGNORE_RETURN_TYPE = "jakarta.el.ignoreReturnType";
 
     /**
      * <code>jakarta.el.cacheSize</code>
@@ -212,10 +203,7 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
      * @param converter
      *            custom type converter
      */
-    public ExpressionFactoryImpl(
-        Properties properties,
-        TypeConverter converter
-    ) {
+    public ExpressionFactoryImpl(Properties properties, TypeConverter converter) {
         this(Profile.JEE6, properties, converter);
     }
 
@@ -233,11 +221,7 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
      *
      * @since 2.2
      */
-    public ExpressionFactoryImpl(
-        Profile profile,
-        Properties properties,
-        TypeConverter converter
-    ) {
+    public ExpressionFactoryImpl(Profile profile, Properties properties, TypeConverter converter) {
         this.store = createTreeStore(1000, profile, properties);
         this.converter = converter;
     }
@@ -267,8 +251,7 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
 
     private Properties loadDefaultProperties() {
         String home = System.getProperty("java.home");
-        String path =
-            home + File.separator + "lib" + File.separator + "el.properties";
+        String path = home + File.separator + "lib" + File.separator + "el.properties";
         File file = new File(path);
         try {
             if (file.exists()) {
@@ -277,10 +260,7 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
                 try {
                     properties.load(input = new FileInputStream(file));
                 } catch (IOException e) {
-                    throw new ELException(
-                        "Cannot read default EL properties",
-                        e
-                    );
+                    throw new ELException("Cannot read default EL properties", e);
                 } finally {
                     try {
                         input.close();
@@ -288,26 +268,14 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
                         // ignore...
                     }
                 }
-                if (
-                    getClass()
-                        .getName()
-                        .equals(
-                            properties.getProperty(
-                                "jakarta.el.ExpressionFactory"
-                            )
-                        )
-                ) {
+                if (getClass().getName().equals(properties.getProperty("jakarta.el.ExpressionFactory"))) {
                     return properties;
                 }
             }
         } catch (SecurityException e) {
             // ignore...
         }
-        if (
-            getClass()
-                .getName()
-                .equals(System.getProperty("jakarta.el.ExpressionFactory"))
-        ) {
+        if (getClass().getName().equals(System.getProperty("jakarta.el.ExpressionFactory"))) {
             return System.getProperties();
         }
         return null;
@@ -319,11 +287,7 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
         // try to find and load properties
         InputStream input = null;
         try {
-            input =
-                Thread
-                    .currentThread()
-                    .getContextClassLoader()
-                    .getResourceAsStream(path);
+            input = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
         } catch (SecurityException e) {
             input = ClassLoader.getSystemResourceAsStream(path);
         }
@@ -350,12 +314,7 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
         Builder.Feature feature,
         String property
     ) {
-        return Boolean.valueOf(
-            properties.getProperty(
-                property,
-                String.valueOf(profile.contains(feature))
-            )
-        );
+        return Boolean.valueOf(properties.getProperty(property, String.valueOf(profile.contains(feature))));
     }
 
     /**
@@ -364,77 +323,35 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
      * specified properties. The maximum cache size will be as specified unless overridden by
      * property <code>jakarta.el.cacheSize</code>.
      */
-    protected TreeStore createTreeStore(
-        int defaultCacheSize,
-        Profile profile,
-        Properties properties
-    ) {
+    protected TreeStore createTreeStore(int defaultCacheSize, Profile profile, Properties properties) {
         // create builder
         TreeBuilder builder = null;
         if (properties == null) {
             builder = createTreeBuilder(null, profile.features());
         } else {
-            EnumSet<Builder.Feature> features = EnumSet.noneOf(
-                Builder.Feature.class
-            );
-            if (
-                getFeatureProperty(
-                    profile,
-                    properties,
-                    Builder.Feature.METHOD_INVOCATIONS,
-                    PROP_METHOD_INVOCATIONS
-                )
-            ) {
+            EnumSet<Builder.Feature> features = EnumSet.noneOf(Builder.Feature.class);
+            if (getFeatureProperty(profile, properties, Builder.Feature.METHOD_INVOCATIONS, PROP_METHOD_INVOCATIONS)) {
                 features.add(Builder.Feature.METHOD_INVOCATIONS);
             }
-            if (
-                getFeatureProperty(
-                    profile,
-                    properties,
-                    Builder.Feature.VARARGS,
-                    PROP_VAR_ARGS
-                )
-            ) {
+            if (getFeatureProperty(profile, properties, Builder.Feature.VARARGS, PROP_VAR_ARGS)) {
                 features.add(Builder.Feature.VARARGS);
             }
-            if (
-                getFeatureProperty(
-                    profile,
-                    properties,
-                    Builder.Feature.NULL_PROPERTIES,
-                    PROP_NULL_PROPERTIES
-                )
-            ) {
+            if (getFeatureProperty(profile, properties, Builder.Feature.NULL_PROPERTIES, PROP_NULL_PROPERTIES)) {
                 features.add(Builder.Feature.NULL_PROPERTIES);
             }
-            if (
-                getFeatureProperty(
-                    profile,
-                    properties,
-                    Builder.Feature.IGNORE_RETURN_TYPE,
-                    PROP_IGNORE_RETURN_TYPE
-                )
-            ) {
+            if (getFeatureProperty(profile, properties, Builder.Feature.IGNORE_RETURN_TYPE, PROP_IGNORE_RETURN_TYPE)) {
                 features.add(Builder.Feature.IGNORE_RETURN_TYPE);
             }
-            builder =
-                createTreeBuilder(
-                    properties,
-                    features.toArray(new Builder.Feature[0])
-                );
+            builder = createTreeBuilder(properties, features.toArray(new Builder.Feature[0]));
         }
 
         // create cache
         int cacheSize = defaultCacheSize;
         if (properties != null && properties.containsKey(PROP_CACHE_SIZE)) {
             try {
-                cacheSize =
-                    Integer.parseInt(properties.getProperty(PROP_CACHE_SIZE));
+                cacheSize = Integer.parseInt(properties.getProperty(PROP_CACHE_SIZE));
             } catch (NumberFormatException e) {
-                throw new ELException(
-                    "Cannot parse EL property " + PROP_CACHE_SIZE,
-                    e
-                );
+                throw new ELException("Cannot parse EL property " + PROP_CACHE_SIZE, e);
             }
         }
         Cache cache = cacheSize > 0 ? new Cache(cacheSize) : null;
@@ -456,10 +373,7 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
         try {
             return TypeConverter.class.cast(clazz.newInstance());
         } catch (Exception e) {
-            throw new ELException(
-                "TypeConverter " + clazz + " could not be instantiated",
-                e
-            );
+            throw new ELException("TypeConverter " + clazz + " could not be instantiated", e);
         }
     }
 
@@ -472,42 +386,28 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
      * array of <code>Builder.Feature</code>, this constructor will be invoked. Otherwise, the
      * default constructor will be used.
      */
-    protected TreeBuilder createTreeBuilder(
-        Properties properties,
-        Builder.Feature... features
-    ) {
+    protected TreeBuilder createTreeBuilder(Properties properties, Builder.Feature... features) {
         Class<?> clazz = load(TreeBuilder.class, properties);
         if (clazz == null) {
             return new Builder(features);
         }
         try {
             if (Builder.class.isAssignableFrom(clazz)) {
-                Constructor<?> constructor = clazz.getConstructor(
-                    Builder.Feature[].class
-                );
+                Constructor<?> constructor = clazz.getConstructor(Builder.Feature[].class);
                 if (constructor == null) {
                     if (features == null || features.length == 0) {
                         return TreeBuilder.class.cast(clazz.newInstance());
                     } else {
-                        throw new ELException(
-                            "Builder " +
-                            clazz +
-                            " is missing constructor (can't pass features)"
-                        );
+                        throw new ELException("Builder " + clazz + " is missing constructor (can't pass features)");
                     }
                 } else {
-                    return TreeBuilder.class.cast(
-                            constructor.newInstance((Object) features)
-                        );
+                    return TreeBuilder.class.cast(constructor.newInstance((Object) features));
                 }
             } else {
                 return TreeBuilder.class.cast(clazz.newInstance());
             }
         } catch (Exception e) {
-            throw new ELException(
-                "TreeBuilder " + clazz + " could not be instantiated",
-                e
-            );
+            throw new ELException("TreeBuilder " + clazz + " could not be instantiated", e);
         }
     }
 
@@ -519,25 +419,14 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
                 try {
                     loader = Thread.currentThread().getContextClassLoader();
                 } catch (Exception e) {
-                    throw new ELException(
-                        "Could not get context class loader",
-                        e
-                    );
+                    throw new ELException("Could not get context class loader", e);
                 }
                 try {
-                    return loader == null
-                        ? Class.forName(className)
-                        : loader.loadClass(className);
+                    return loader == null ? Class.forName(className) : loader.loadClass(className);
                 } catch (ClassNotFoundException e) {
-                    throw new ELException(
-                        "Class " + className + " not found",
-                        e
-                    );
+                    throw new ELException("Class " + className + " not found", e);
                 } catch (Exception e) {
-                    throw new ELException(
-                        "Class " + className + " could not be instantiated",
-                        e
-                    );
+                    throw new ELException("Class " + className + " could not be instantiated", e);
                 }
             }
         }
@@ -550,10 +439,7 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
     }
 
     @Override
-    public final ObjectValueExpression createValueExpression(
-        Object instance,
-        Class<?> expectedType
-    ) {
+    public final ObjectValueExpression createValueExpression(Object instance, Class<?> expectedType) {
         return new ObjectValueExpression(converter, instance, expectedType);
     }
 

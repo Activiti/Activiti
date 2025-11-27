@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,34 +17,34 @@ package org.activiti.bpmn.model;
 
 public class TextAnnotation extends Artifact {
 
-  protected String text;
-  protected String textFormat;
+    protected String text;
+    protected String textFormat;
 
-  public String getText() {
-    return text;
-  }
+    public String getText() {
+        return text;
+    }
 
-  public void setText(String text) {
-    this.text = text;
-  }
+    public void setText(String text) {
+        this.text = text;
+    }
 
-  public String getTextFormat() {
-    return textFormat;
-  }
+    public String getTextFormat() {
+        return textFormat;
+    }
 
-  public void setTextFormat(String textFormat) {
-    this.textFormat = textFormat;
-  }
+    public void setTextFormat(String textFormat) {
+        this.textFormat = textFormat;
+    }
 
-  public TextAnnotation clone() {
-    TextAnnotation clone = new TextAnnotation();
-    clone.setValues(this);
-    return clone;
-  }
+    public TextAnnotation clone() {
+        TextAnnotation clone = new TextAnnotation();
+        clone.setValues(this);
+        return clone;
+    }
 
-  public void setValues(TextAnnotation otherElement) {
-    super.setValues(otherElement);
-    setText(otherElement.getText());
-    setTextFormat(otherElement.getTextFormat());
-  }
+    public void setValues(TextAnnotation otherElement) {
+        super.setValues(otherElement);
+        setText(otherElement.getText());
+        setTextFormat(otherElement.getTextFormat());
+    }
 }

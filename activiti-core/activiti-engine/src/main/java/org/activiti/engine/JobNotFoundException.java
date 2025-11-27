@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,18 +24,17 @@ import org.activiti.engine.runtime.Job;
  */
 public class JobNotFoundException extends ActivitiObjectNotFoundException {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  /** the id of the job */
-  private String jobId;
+    /** the id of the job */
+    private String jobId;
 
-  public JobNotFoundException(String jobId) {
-    super("No job found with id '" + jobId + "'.", Job.class);
-    this.jobId = jobId;
-  }
+    public JobNotFoundException(String jobId) {
+        super("No job found with id '" + jobId + "'.", Job.class);
+        this.jobId = jobId;
+    }
 
-  public String getJobId() {
-    return this.jobId;
-  }
-
+    public String getJobId() {
+        return this.jobId;
+    }
 }

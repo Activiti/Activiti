@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,11 @@
  */
 package org.activiti.spring.process.variable.types;
 
+import java.math.BigDecimal;
+import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 public class BigDecimalVariableType extends VariableType {
 
@@ -30,8 +29,7 @@ public class BigDecimalVariableType extends VariableType {
 
     @Override
     public Object parseFromValue(Object value) throws ActivitiException {
-
-        if(value instanceof BigDecimal) {
+        if (value instanceof BigDecimal) {
             return value;
         }
         try {
@@ -46,11 +44,10 @@ public class BigDecimalVariableType extends VariableType {
 
     @Override
     public void validate(Object var, List<ActivitiException> errors) {
-        if(!Number.class.isAssignableFrom(var.getClass())){
+        if (!Number.class.isAssignableFrom(var.getClass())) {
             String message = String.format(VALIDATION_ERROR_FORMAT, var.getClass());
             errors.add(new ActivitiException(message));
             logger.error(message);
         }
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.data;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -26,17 +25,17 @@ import org.activiti.engine.delegate.Expression;
  */
 public class TransformationDataOutputAssociation extends AbstractDataAssociation {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected Expression transformation;
+    protected Expression transformation;
 
-  public TransformationDataOutputAssociation(String sourceRef, String targetRef, Expression transformation) {
-    super(sourceRef, targetRef);
-    this.transformation = transformation;
-  }
+    public TransformationDataOutputAssociation(String sourceRef, String targetRef, Expression transformation) {
+        super(sourceRef, targetRef);
+        this.transformation = transformation;
+    }
 
-  public void evaluate(DelegateExecution execution) {
-    Object value = this.transformation.getValue(execution);
-    execution.setVariable(this.getTarget(), value);
-  }
+    public void evaluate(DelegateExecution execution) {
+        Object value = this.transformation.getValue(execution);
+        execution.setVariable(this.getTarget(), value);
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ public class Order {
     public enum Direction {
         ASC,
 
-        DESC
+        DESC,
     }
 
     private String property;
@@ -31,8 +31,7 @@ public class Order {
         this(property, Direction.ASC);
     }
 
-    private Order(String property,
-                 Direction direction) {
+    private Order(String property, Direction direction) {
         this.property = property;
         this.direction = direction;
     }
@@ -45,8 +44,7 @@ public class Order {
         return direction;
     }
 
-    public static Order by(String property,
-                     Direction direction) {
+    public static Order by(String property, Direction direction) {
         return new Order(property, direction);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.examples.bpmn.tasklistener;
 
 import org.activiti.engine.delegate.DelegateTask;
@@ -24,16 +23,15 @@ import org.activiti.engine.delegate.TaskListener;
  */
 public class TaskAllEventsListener implements TaskListener {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public void notify(DelegateTask delegateTask) {
-    String events = (String) delegateTask.getVariable("events");
-    if (events == null) {
-      events = delegateTask.getEventName();
-    } else {
-      events = events + " - " + delegateTask.getEventName();
+    public void notify(DelegateTask delegateTask) {
+        String events = (String) delegateTask.getVariable("events");
+        if (events == null) {
+            events = delegateTask.getEventName();
+        } else {
+            events = events + " - " + delegateTask.getEventName();
+        }
+        delegateTask.setVariable("events", events);
     }
-    delegateTask.setVariable("events", events);
-  }
-
 }

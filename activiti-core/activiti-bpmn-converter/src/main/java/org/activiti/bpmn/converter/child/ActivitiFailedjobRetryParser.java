@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,24 @@
 package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
-
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 
 public class ActivitiFailedjobRetryParser extends BaseChildElementParser {
 
-  @Override
-  public String getElementName() {
-    return FAILED_JOB_RETRY_TIME_CYCLE;
-  }
-
-  @Override
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (!(parentElement instanceof Activity))
-      return;
-    String cycle = xtr.getElementText();
-    if (cycle == null || cycle.isEmpty()) {
-      return;
+    @Override
+    public String getElementName() {
+        return FAILED_JOB_RETRY_TIME_CYCLE;
     }
-    ((Activity) parentElement).setFailedJobRetryTimeCycleValue(cycle);
-  }
 
+    @Override
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+        if (!(parentElement instanceof Activity)) return;
+        String cycle = xtr.getElementText();
+        if (cycle == null || cycle.isEmpty()) {
+            return;
+        }
+        ((Activity) parentElement).setFailedJobRetryTimeCycleValue(cycle);
+    }
 }

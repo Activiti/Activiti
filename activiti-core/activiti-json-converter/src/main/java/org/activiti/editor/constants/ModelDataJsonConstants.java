@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.editor.constants;
 
 /**
 
  */
 public interface ModelDataJsonConstants {
-
-  final String MODEL_ID = "modelId";
-  final String MODEL_NAME = "name";
-  final String MODEL_REVISION = "revision";
-  final String MODEL_DESCRIPTION = "description";
+    final String MODEL_ID = "modelId";
+    final String MODEL_NAME = "name";
+    final String MODEL_REVISION = "revision";
+    final String MODEL_DESCRIPTION = "description";
 }

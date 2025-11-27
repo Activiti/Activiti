@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.runtime.api.event.internal;
 
 import static org.mockito.BDDMockito.given;
@@ -55,18 +54,19 @@ public class VariableCreatedListenerDelegateTest {
     @BeforeEach
     public void setUp() {
         variableCreatedListenerDelegate = new VariableCreatedListenerDelegate(
-            Arrays.asList(firstListener, secondListener), converter, variableEventFilter);
+            Arrays.asList(firstListener, secondListener),
+            converter,
+            variableEventFilter
+        );
     }
 
     @Test
     public void onEvent_should_callListenersWhenItsVariableEventAndItsNotFiltered() {
         //given
-        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(
-            ActivitiEventType.VARIABLE_CREATED);
+        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_CREATED);
         given(variableEventFilter.shouldEmmitEvent(internalEvent)).willReturn(true);
         VariableCreatedEvent apiEvent = mock(VariableCreatedEvent.class);
-        given(converter.from(internalEvent)).willReturn(Optional.of(
-            apiEvent));
+        given(converter.from(internalEvent)).willReturn(Optional.of(apiEvent));
 
         //when
         variableCreatedListenerDelegate.onEvent(internalEvent);
@@ -92,8 +92,7 @@ public class VariableCreatedListenerDelegateTest {
     @Test
     public void onEvent_shouldNot_callListenersWhenItsFiltered() {
         //given
-        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(
-            ActivitiEventType.VARIABLE_CREATED);
+        ActivitiVariableEventImpl internalEvent = new ActivitiVariableEventImpl(ActivitiEventType.VARIABLE_CREATED);
         given(variableEventFilter.shouldEmmitEvent(internalEvent)).willReturn(false);
 
         //when
@@ -103,5 +102,4 @@ public class VariableCreatedListenerDelegateTest {
         verifyNoInteractions(firstListener);
         verifyNoInteractions(secondListener);
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package org.activiti.core.common.spring.connector;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -22,8 +23,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.core.common.model.connector.ConnectorDefinition;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -36,14 +35,17 @@ public class ConnectorDefinitionService {
 
     private ResourcePatternResolver resourceLoader;
 
-    public ConnectorDefinitionService(String connectorRoot, ObjectMapper objectMapper, ResourcePatternResolver resourceLoader) {
+    public ConnectorDefinitionService(
+        String connectorRoot,
+        ObjectMapper objectMapper,
+        ResourcePatternResolver resourceLoader
+    ) {
         this.connectorRoot = connectorRoot;
         this.objectMapper = objectMapper;
         this.resourceLoader = resourceLoader;
     }
 
     private Optional<Resource[]> retrieveResources() throws IOException {
-
         Optional<Resource[]> resources = Optional.empty();
 
         Resource connectorRootPath = resourceLoader.getResource(connectorRoot);
@@ -54,12 +56,10 @@ public class ConnectorDefinitionService {
     }
 
     private ConnectorDefinition read(InputStream inputStream) throws IOException {
-        return objectMapper.readValue(inputStream,
-                ConnectorDefinition.class);
+        return objectMapper.readValue(inputStream, ConnectorDefinition.class);
     }
 
     public List<ConnectorDefinition> get() throws IOException {
-
         List<ConnectorDefinition> connectorDefinitions = new ArrayList<>();
         Optional<Resource[]> resourcesOptional = retrieveResources();
         if (resourcesOptional.isPresent()) {
@@ -84,7 +84,9 @@ public class ConnectorDefinitionService {
                     throw new IllegalStateException("connectorDefinition name cannot have '.' character");
                 }
                 if (!processedNames.add(name)) {
-                    throw new IllegalStateException("More than one connectorDefinition with name '" + name + "' was found. Names must be unique.");
+                    throw new IllegalStateException(
+                        "More than one connectorDefinition with name '" + name + "' was found. Names must be unique."
+                    );
                 }
             }
         }

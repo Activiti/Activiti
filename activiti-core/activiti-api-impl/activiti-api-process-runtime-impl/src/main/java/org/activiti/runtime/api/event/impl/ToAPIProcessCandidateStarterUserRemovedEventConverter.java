@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,19 @@
  */
 package org.activiti.runtime.api.event.impl;
 
+import java.util.Optional;
 import org.activiti.api.process.runtime.events.ProcessCandidateStarterUserRemovedEvent;
 import org.activiti.api.runtime.event.impl.ProcessCandidateStarterUserRemovedEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.runtime.api.model.impl.APIProcessCandidateStarterUserConverter;
 
-import java.util.Optional;
-
-public class ToAPIProcessCandidateStarterUserRemovedEventConverter implements EventConverter<ProcessCandidateStarterUserRemovedEvent, ActivitiEntityEvent> {
+public class ToAPIProcessCandidateStarterUserRemovedEventConverter
+    implements EventConverter<ProcessCandidateStarterUserRemovedEvent, ActivitiEntityEvent> {
 
     private APIProcessCandidateStarterUserConverter converter;
-    private ProcessCandidateStarterEventConverterHelper processCandidateStarterEventConverterHelper = new ProcessCandidateStarterEventConverterHelper();
+    private ProcessCandidateStarterEventConverterHelper processCandidateStarterEventConverterHelper =
+        new ProcessCandidateStarterEventConverterHelper();
 
     public ToAPIProcessCandidateStarterUserRemovedEventConverter(APIProcessCandidateStarterUserConverter converter) {
         this.converter = converter;
@@ -43,5 +44,4 @@ public class ToAPIProcessCandidateStarterUserRemovedEventConverter implements Ev
         }
         return Optional.ofNullable(event);
     }
-
 }

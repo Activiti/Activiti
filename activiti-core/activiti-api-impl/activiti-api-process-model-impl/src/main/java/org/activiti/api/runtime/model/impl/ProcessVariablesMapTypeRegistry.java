@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.api.runtime.model.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,39 +28,36 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 public class ProcessVariablesMapTypeRegistry {
 
     public static final String OBJECT_TYPE_KEY = "object";
     private static Map<String, Class<?>> typeRegistry = new HashMap<>();
     private static Map<Class<?>, String> classRegistry = new HashMap<>();
-    private static List<Class<?>> scalarTypes = Arrays.asList(int.class,
-                                                              byte.class,
-                                                              short.class,
-                                                              boolean.class,
-                                                              long.class,
-                                                              double.class,
-                                                              float.class,
-                                                              char.class,
-                                                              Character.class,
-                                                              Integer.class,
-                                                              Byte.class,
-                                                              Short.class,
-                                                              Boolean.class,
-                                                              Long.class,
-                                                              Double.class,
-                                                              Float.class,
-                                                              BigDecimal.class,
-                                                              Date.class,
-                                                              String.class,
-                                                              LocalDateTime.class,
-                                                              LocalDate.class);
+    private static List<Class<?>> scalarTypes = Arrays.asList(
+        int.class,
+        byte.class,
+        short.class,
+        boolean.class,
+        long.class,
+        double.class,
+        float.class,
+        char.class,
+        Character.class,
+        Integer.class,
+        Byte.class,
+        Short.class,
+        Boolean.class,
+        Long.class,
+        Double.class,
+        Float.class,
+        BigDecimal.class,
+        Date.class,
+        String.class,
+        LocalDateTime.class,
+        LocalDate.class
+    );
 
-    private static Class<?>[] containerTypes = {Map.class,
-                                                JsonNode.class,
-                                                List.class,
-                                                Set.class};
+    private static Class<?>[] containerTypes = { Map.class, JsonNode.class, List.class, Set.class };
 
     static {
         typeRegistry.put("byte", Byte.class);
@@ -118,11 +115,10 @@ public class ProcessVariablesMapTypeRegistry {
         return scalarTypes.contains(clazz);
     }
 
-    public static Optional<Class<?>> getContainerType(Class<?> clazz,
-                                                      Object value) {
+    public static Optional<Class<?>> getContainerType(Class<?> clazz, Object value) {
         return Stream.of(containerTypes)
-                     .filter(type -> type.isInstance(value))
-                     .findFirst();
+            .filter(type -> type.isInstance(value))
+            .findFirst();
     }
 
     public static boolean canConvert(Object value) {
@@ -134,5 +130,4 @@ public class ProcessVariablesMapTypeRegistry {
     public static boolean containsType(String type) {
         return typeRegistry.containsKey(type);
     }
-
 }

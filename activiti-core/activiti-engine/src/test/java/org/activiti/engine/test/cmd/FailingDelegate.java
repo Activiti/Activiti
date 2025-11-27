@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.test.cmd;
 
 import org.activiti.engine.ActivitiException;
@@ -25,15 +24,14 @@ import org.activiti.engine.delegate.JavaDelegate;
  */
 public class FailingDelegate implements JavaDelegate {
 
-  public static final String EXCEPTION_MESSAGE = "Expected exception.";
+    public static final String EXCEPTION_MESSAGE = "Expected exception.";
 
-  @Override
-  public void execute(DelegateExecution execution) {
-    Boolean fail = (Boolean) execution.getVariable("fail");
+    @Override
+    public void execute(DelegateExecution execution) {
+        Boolean fail = (Boolean) execution.getVariable("fail");
 
-    if (fail == null || fail) {
-      throw new ActivitiException(EXCEPTION_MESSAGE);
+        if (fail == null || fail) {
+            throw new ActivitiException(EXCEPTION_MESSAGE);
+        }
     }
-
-  }
 }

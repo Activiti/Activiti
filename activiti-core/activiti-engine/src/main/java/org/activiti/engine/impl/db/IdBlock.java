@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.db;
 
 /**
@@ -21,19 +20,19 @@ package org.activiti.engine.impl.db;
  */
 public class IdBlock {
 
-  long nextId;
-  long lastId;
+    long nextId;
+    long lastId;
 
-  public IdBlock(long nextId, long lastId) {
-    this.nextId = nextId;
-    this.lastId = lastId;
-  }
+    public IdBlock(long nextId, long lastId) {
+        this.nextId = nextId;
+        this.lastId = lastId;
+    }
 
-  public long getNextId() {
-    return nextId;
-  }
+    public long getNextId() {
+        return nextId;
+    }
 
-  public long getLastId() {
-    return lastId;
-  }
+    public long getLastId() {
+        return lastId;
+    }
 }

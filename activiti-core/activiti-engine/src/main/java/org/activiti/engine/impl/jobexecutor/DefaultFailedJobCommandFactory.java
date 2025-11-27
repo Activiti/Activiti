@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.impl.cmd.JobRetryCmd;
-
 import org.activiti.engine.impl.interceptor.Command;
 
 /**
@@ -25,9 +23,8 @@ import org.activiti.engine.impl.interceptor.Command;
  */
 public class DefaultFailedJobCommandFactory implements FailedJobCommandFactory {
 
-  @Override
-  public Command<Object> getCommand(String jobId, Throwable exception) {
-    return new JobRetryCmd(jobId, exception);
-  }
-
+    @Override
+    public Command<Object> getCommand(String jobId, Throwable exception) {
+        return new JobRetryCmd(jobId, exception);
+    }
 }

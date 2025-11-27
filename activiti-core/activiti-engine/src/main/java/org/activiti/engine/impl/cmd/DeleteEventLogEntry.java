@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,16 +23,15 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public class DeleteEventLogEntry implements Command<Void> {
 
-  protected long logNr;
+    protected long logNr;
 
-  public DeleteEventLogEntry(long logNr) {
-    this.logNr = logNr;
-  }
+    public DeleteEventLogEntry(long logNr) {
+        this.logNr = logNr;
+    }
 
-  @Override
-  public Void execute(CommandContext commandContext) {
-    commandContext.getEventLogEntryEntityManager().deleteEventLogEntry(logNr);
-    return null;
-  }
-
+    @Override
+    public Void execute(CommandContext commandContext) {
+        commandContext.getEventLogEntryEntityManager().deleteEventLogEntry(logNr);
+        return null;
+    }
 }

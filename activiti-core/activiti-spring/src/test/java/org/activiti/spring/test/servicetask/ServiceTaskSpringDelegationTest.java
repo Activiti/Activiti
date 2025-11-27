@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.test.servicetask;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -76,11 +75,17 @@ public class ServiceTaskSpringDelegationTest extends SpringActivitiTestCase {
 
     @Deployment
     public void testExecutionAndTaskListenerDelegationExpression() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionAndTaskListenerDelegation");
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
+            "executionAndTaskListenerDelegation"
+        );
         assertThat(runtimeService.getVariable(processInstance.getId(), "executionListenerVar")).isEqualTo("working");
         assertThat(runtimeService.getVariable(processInstance.getId(), "taskListenerVar")).isEqualTo("working");
 
-        assertThat(runtimeService.getVariable(processInstance.getId(), "executionListenerField")).isEqualTo("executionListenerInjection");
-        assertThat(runtimeService.getVariable(processInstance.getId(), "taskListenerField")).isEqualTo("taskListenerInjection");
+        assertThat(runtimeService.getVariable(processInstance.getId(), "executionListenerField")).isEqualTo(
+            "executionListenerInjection"
+        );
+        assertThat(runtimeService.getVariable(processInstance.getId(), "taskListenerField")).isEqualTo(
+            "taskListenerInjection"
+        );
     }
 }

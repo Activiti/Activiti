@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.activiti.engine.impl.event.logger;
 
 import java.util.List;
-
 import org.activiti.engine.impl.event.logger.handler.EventLoggerEventHandler;
 import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
 
@@ -24,11 +23,9 @@ import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
 
  */
 public interface EventFlusher extends CommandContextCloseListener {
+    List<EventLoggerEventHandler> getEventHandlers();
 
-  List<EventLoggerEventHandler> getEventHandlers();
+    void setEventHandlers(List<EventLoggerEventHandler> eventHandlers);
 
-  void setEventHandlers(List<EventLoggerEventHandler> eventHandlers);
-
-  void addEventHandler(EventLoggerEventHandler databaseEventLoggerEventHandler);
-
+    void addEventHandler(EventLoggerEventHandler databaseEventLoggerEventHandler);
 }

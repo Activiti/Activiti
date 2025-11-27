@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,7 @@ public class Error {
     private String name;
     private String errorCode;
 
-    public Error(String id,
-                 String name,
-                 String errorCode) {
+    public Error(String id, String name, String errorCode) {
         this.id = id;
         this.name = name;
         this.errorCode = errorCode;

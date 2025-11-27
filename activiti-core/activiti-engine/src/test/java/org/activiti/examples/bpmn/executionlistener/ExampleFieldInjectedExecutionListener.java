@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.examples.bpmn.executionlistener;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -28,11 +26,14 @@ import org.activiti.engine.delegate.Expression;
  */
 public class ExampleFieldInjectedExecutionListener implements ExecutionListener {
 
-  private Expression fixedValue;
+    private Expression fixedValue;
 
-  private Expression dynamicValue;
+    private Expression dynamicValue;
 
-  public void notify(DelegateExecution execution) {
-    execution.setVariable("var", fixedValue.getValue(execution).toString() + dynamicValue.getValue(execution).toString());
-  }
+    public void notify(DelegateExecution execution) {
+        execution.setVariable(
+            "var",
+            fixedValue.getValue(execution).toString() + dynamicValue.getValue(execution).toString()
+        );
+    }
 }

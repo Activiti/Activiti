@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.webservice;
-
-import org.activiti.engine.api.internal.Internal;
 
 import java.net.URL;
 import java.util.concurrent.ConcurrentMap;
-
 import javax.xml.namespace.QName;
+import org.activiti.engine.api.internal.Internal;
 
 /**
  * Represents an implementation of a {@link Operation}
@@ -29,27 +26,30 @@ import javax.xml.namespace.QName;
  */
 @Internal
 public interface OperationImplementation {
+    /**
+     * @return the id of this implementation
+     */
+    String getId();
 
-  /**
-   * @return the id of this implementation
-   */
-  String getId();
+    /**
+     * @return the name of this implementation
+     */
+    String getName();
 
-  /**
-   * @return the name of this implementation
-   */
-  String getName();
-
-  /**
-   * Sends the message on behalf of operation
-   *
-   * @param message
-   *          the message to be sent
-   * @param operation
-   *          the operation that is interested on sending the message
-   * @param overridenEndpointAddresses
-   *          a not null map of overriden enpoint addresses. The key is the endpoint qualified name.
-   * @return the resulting message
-   */
-  MessageInstance sendFor(MessageInstance message, Operation operation, ConcurrentMap<QName, URL> overridenEndpointAddresses) throws Exception;
+    /**
+     * Sends the message on behalf of operation
+     *
+     * @param message
+     *          the message to be sent
+     * @param operation
+     *          the operation that is interested on sending the message
+     * @param overridenEndpointAddresses
+     *          a not null map of overriden enpoint addresses. The key is the endpoint qualified name.
+     * @return the resulting message
+     */
+    MessageInstance sendFor(
+        MessageInstance message,
+        Operation operation,
+        ConcurrentMap<QName, URL> overridenEndpointAddresses
+    ) throws Exception;
 }

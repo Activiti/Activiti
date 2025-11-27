@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package org.activiti.runtime.api.event.internal;
 
+import java.util.List;
 import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
@@ -22,16 +23,16 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToActivityCancelledConverter;
 
-import java.util.List;
-
 public class ActivityCancelledListenerDelegate implements ActivitiEventListener {
 
     private List<BPMNElementEventListener<BPMNActivityCancelledEvent>> processRuntimeEventListeners;
 
     private ToActivityCancelledConverter converter;
 
-    public ActivityCancelledListenerDelegate(List<BPMNElementEventListener<BPMNActivityCancelledEvent>> processRuntimeEventListeners,
-                                             ToActivityCancelledConverter converter) {
+    public ActivityCancelledListenerDelegate(
+        List<BPMNElementEventListener<BPMNActivityCancelledEvent>> processRuntimeEventListeners,
+        ToActivityCancelledConverter converter
+    ) {
         this.processRuntimeEventListeners = processRuntimeEventListeners;
         this.converter = converter;
     }
@@ -39,12 +40,13 @@ public class ActivityCancelledListenerDelegate implements ActivitiEventListener 
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiActivityEvent) {
-            converter.from((ActivitiActivityEvent) event)
-                    .ifPresent(convertedEvent -> {
-                        for ( BPMNElementEventListener<BPMNActivityCancelledEvent> listener : processRuntimeEventListeners ) {
-                            listener.onEvent(convertedEvent);
-                        }
-                    });
+            converter
+                .from((ActivitiActivityEvent) event)
+                .ifPresent(convertedEvent -> {
+                    for (BPMNElementEventListener<BPMNActivityCancelledEvent> listener : processRuntimeEventListeners) {
+                        listener.onEvent(convertedEvent);
+                    }
+                });
         }
     }
 

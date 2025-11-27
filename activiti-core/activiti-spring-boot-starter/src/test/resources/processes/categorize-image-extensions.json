@@ -1,6 +1,6 @@
 {
-  "id":"categorizeProcessModel",
-  "name":"myProcess234.bpmn",
+  "id": "categorizeProcessModel",
+  "name": "myProcess234.bpmn",
   "extensions": {
     "categorizeProcess": {
       "properties": {},

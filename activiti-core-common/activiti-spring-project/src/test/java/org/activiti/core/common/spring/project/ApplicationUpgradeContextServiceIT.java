@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,9 @@
  */
 package org.activiti.core.common.spring.project;
 
-import java.io.IOException;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
 import org.activiti.core.common.project.model.ProjectManifest;
 import org.activiti.core.common.spring.project.conf.ApplicationUpgradeContextAutoConfiguration;
 import org.junit.jupiter.api.Test;
@@ -24,9 +25,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-@SpringBootTest(classes = ApplicationUpgradeContextAutoConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(
+    classes = ApplicationUpgradeContextAutoConfiguration.class,
+    webEnvironment = SpringBootTest.WebEnvironment.NONE
+)
 @TestPropertySource(locations = "classpath:application.properties")
 public class ApplicationUpgradeContextServiceIT {
 
@@ -35,7 +37,6 @@ public class ApplicationUpgradeContextServiceIT {
 
     @Test
     public void should_retrieveManifest() throws IOException {
-
         assertThat(applicationUpgradeContextService.hasProjectManifest()).isTrue();
 
         ProjectManifest projectModel = applicationUpgradeContextService.loadProjectManifest();
@@ -55,5 +56,4 @@ public class ApplicationUpgradeContextServiceIT {
         assertThat(applicationUpgradeContextService.hasEnforcedAppVersion()).isTrue();
         assertThat(applicationUpgradeContextService.getEnforcedAppVersion()).isEqualTo(1);
     }
-
 }

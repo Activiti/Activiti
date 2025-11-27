@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.impl.util.json.JSONObject;
@@ -23,16 +22,15 @@ import org.activiti.engine.impl.util.json.JSONObject;
  */
 public abstract class TimerChangeProcessDefinitionSuspensionStateJobHandler implements JobHandler {
 
-  private static final String JOB_HANDLER_CFG_INCLUDE_PROCESS_INSTANCES = "includeProcessInstances";
+    private static final String JOB_HANDLER_CFG_INCLUDE_PROCESS_INSTANCES = "includeProcessInstances";
 
-  public static String createJobHandlerConfiguration(boolean includeProcessInstances) {
-    JSONObject json = new JSONObject();
-    json.put(JOB_HANDLER_CFG_INCLUDE_PROCESS_INSTANCES, includeProcessInstances);
-    return json.toString();
-  }
+    public static String createJobHandlerConfiguration(boolean includeProcessInstances) {
+        JSONObject json = new JSONObject();
+        json.put(JOB_HANDLER_CFG_INCLUDE_PROCESS_INSTANCES, includeProcessInstances);
+        return json.toString();
+    }
 
-  public static boolean getIncludeProcessInstances(JSONObject jobHandlerCfgJson) {
-    return jobHandlerCfgJson.getBoolean(JOB_HANDLER_CFG_INCLUDE_PROCESS_INSTANCES);
-  }
-
+    public static boolean getIncludeProcessInstances(JSONObject jobHandlerCfgJson) {
+        return jobHandlerCfgJson.getBoolean(JOB_HANDLER_CFG_INCLUDE_PROCESS_INSTANCES);
+    }
 }

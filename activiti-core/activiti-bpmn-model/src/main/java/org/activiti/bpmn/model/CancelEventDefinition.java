@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@ package org.activiti.bpmn.model;
 
 public class CancelEventDefinition extends EventDefinition {
 
-  public CancelEventDefinition clone() {
-    CancelEventDefinition clone = new CancelEventDefinition();
-    clone.setValues(this);
-    return clone;
-  }
+    public CancelEventDefinition clone() {
+        CancelEventDefinition clone = new CancelEventDefinition();
+        clone.setValues(this);
+        return clone;
+    }
 
-  public void setValues(CancelEventDefinition otherDefinition) {
-    super.setValues(otherDefinition);
-  }
+    public void setValues(CancelEventDefinition otherDefinition) {
+        super.setValues(otherDefinition);
+    }
 }

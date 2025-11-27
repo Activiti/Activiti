@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.delegate;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.delegate.invocation.DelegateInvocation;
-
 
 /**
  *
@@ -26,21 +24,20 @@ import org.activiti.engine.impl.delegate.invocation.DelegateInvocation;
  */
 public class ActivityBehaviorInvocation extends DelegateInvocation {
 
-  protected final ActivityBehavior behaviorInstance;
+    protected final ActivityBehavior behaviorInstance;
 
-  protected final DelegateExecution execution;
+    protected final DelegateExecution execution;
 
-  public ActivityBehaviorInvocation(ActivityBehavior behaviorInstance, DelegateExecution execution) {
-    this.behaviorInstance = behaviorInstance;
-    this.execution = execution;
-  }
+    public ActivityBehaviorInvocation(ActivityBehavior behaviorInstance, DelegateExecution execution) {
+        this.behaviorInstance = behaviorInstance;
+        this.execution = execution;
+    }
 
-  protected void invoke() {
-    behaviorInstance.execute(execution);
-  }
+    protected void invoke() {
+        behaviorInstance.execute(execution);
+    }
 
-  public Object getTarget() {
-    return behaviorInstance;
-  }
-
+    public Object getTarget() {
+        return behaviorInstance;
+    }
 }

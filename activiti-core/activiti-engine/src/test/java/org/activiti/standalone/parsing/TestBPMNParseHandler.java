@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.standalone.parsing;
 
 import org.activiti.bpmn.model.BaseElement;
@@ -28,14 +26,13 @@ import org.activiti.engine.impl.bpmn.parser.handler.AbstractBpmnParseHandler;
  */
 public class TestBPMNParseHandler extends AbstractBpmnParseHandler<Process> {
 
-  protected Class<? extends BaseElement> getHandledType() {
-    return Process.class;
-  }
+    protected Class<? extends BaseElement> getHandledType() {
+        return Process.class;
+    }
 
-  protected void executeParse(BpmnParse bpmnParse, Process process) {
-    // Change the key of all deployed process-definitions
-    process.setId(bpmnParse.getCurrentProcessDefinition().getKey() + "-modified");
-    bpmnParse.getCurrentProcessDefinition().setKey(bpmnParse.getCurrentProcessDefinition().getKey() + "-modified");
-  }
-
+    protected void executeParse(BpmnParse bpmnParse, Process process) {
+        // Change the key of all deployed process-definitions
+        process.setId(bpmnParse.getCurrentProcessDefinition().getKey() + "-modified");
+        bpmnParse.getCurrentProcessDefinition().setKey(bpmnParse.getCurrentProcessDefinition().getKey() + "-modified");
+    }
 }

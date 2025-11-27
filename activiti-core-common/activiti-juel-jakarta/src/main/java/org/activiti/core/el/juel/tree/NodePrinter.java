@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree;
 
 import java.io.PrintWriter;
@@ -33,11 +32,7 @@ public class NodePrinter {
         return true;
     }
 
-    private static void dump(
-        PrintWriter writer,
-        Node node,
-        Stack<Node> predecessors
-    ) {
+    private static void dump(PrintWriter writer, Node node, Stack<Node> predecessors) {
         if (!predecessors.isEmpty()) {
             Node parent = null;
             for (Node predecessor : predecessors) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.test.api.event;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.impl.context.Context;
@@ -30,40 +28,43 @@ import org.activiti.engine.task.Task;
  */
 public class TestActivitiEntityEventTaskListener extends TestActivitiEntityEventListener {
 
-	private List<Task> tasks;
+    private List<Task> tasks;
 
-	public TestActivitiEntityEventTaskListener(Class<?> entityClass) {
-		super(entityClass);
-		tasks = new ArrayList<Task>();
-	}
+    public TestActivitiEntityEventTaskListener(Class<?> entityClass) {
+        super(entityClass);
+        tasks = new ArrayList<Task>();
+    }
 
-	@Override
-	public void clearEventsReceived() {
-		super.clearEventsReceived();
-		tasks.clear();
-	}
+    @Override
+    public void clearEventsReceived() {
+        super.clearEventsReceived();
+        tasks.clear();
+    }
 
-	@Override
-	public void onEvent(ActivitiEvent event) {
-		super.onEvent(event);
-		if (event instanceof ActivitiEntityEvent && Task.class.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass())) {
-			tasks.add(copy((Task) ((ActivitiEntityEvent) event).getEntity()));
-		}
-	}
+    @Override
+    public void onEvent(ActivitiEvent event) {
+        super.onEvent(event);
+        if (
+            event instanceof ActivitiEntityEvent &&
+            Task.class.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass())
+        ) {
+            tasks.add(copy((Task) ((ActivitiEntityEvent) event).getEntity()));
+        }
+    }
 
-	protected Task copy(Task aTask) {
-	  TaskEntity ent = Context.getCommandContext().getTaskEntityManager().create();
-		ent.setId(aTask.getId());
-		ent.setName(aTask.getName());
-		ent.setDescription(aTask.getDescription());
-		ent.setOwner(aTask.getOwner());
-		ent.setDueDate(aTask.getDueDate());
-		ent.setAssignee(aTask.getAssignee());
-		ent.setPriority(aTask.getPriority());
-		return ent;
-	}
+    protected Task copy(Task aTask) {
+        TaskEntity ent = Context.getCommandContext().getTaskEntityManager().create();
+        ent.setId(aTask.getId());
+        ent.setName(aTask.getName());
+        ent.setDescription(aTask.getDescription());
+        ent.setOwner(aTask.getOwner());
+        ent.setDueDate(aTask.getDueDate());
+        ent.setAssignee(aTask.getAssignee());
+        ent.setPriority(aTask.getPriority());
+        return ent;
+    }
 
-	public List<Task> getTasks() {
-		return tasks;
-	}
+    public List<Task> getTasks() {
+        return tasks;
+    }
 }

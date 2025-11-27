@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,29 +22,29 @@ import org.junit.jupiter.api.Test;
 
 public class OtherToolImportConverterTest extends AbstractConverterTest {
 
-  @Test
-  public void convertXMLToModel() throws Exception {
-    BpmnModel bpmnModel = readXMLFile();
-    validateModel(bpmnModel);
-  }
+    @Test
+    public void convertXMLToModel() throws Exception {
+        BpmnModel bpmnModel = readXMLFile();
+        validateModel(bpmnModel);
+    }
 
-  @Test
-  public void convertModelToXML() throws Exception {
-    BpmnModel bpmnModel = readXMLFile();
-    BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
-    validateModel(parsedModel);
-    deployProcess(parsedModel);
-  }
+    @Test
+    public void convertModelToXML() throws Exception {
+        BpmnModel bpmnModel = readXMLFile();
+        BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
+        validateModel(parsedModel);
+        deployProcess(parsedModel);
+    }
 
-  protected String getResource() {
-    return "othertoolimport.bpmn";
-  }
+    protected String getResource() {
+        return "othertoolimport.bpmn";
+    }
 
-  private void validateModel(BpmnModel model) {
-    org.activiti.bpmn.model.Process process = model.getProcess("_GQ4P0PUQEeK4teimjV5_yg");
-    assertThat(process).isNotNull();
-    assertThat(process.getId()).isEqualTo("Carpet_Plus");
-    assertThat(process.getName()).isEqualTo("Carpet-Plus");
-    assertThat(process.isExecutable()).isTrue();
-  }
+    private void validateModel(BpmnModel model) {
+        org.activiti.bpmn.model.Process process = model.getProcess("_GQ4P0PUQEeK4teimjV5_yg");
+        assertThat(process).isNotNull();
+        assertThat(process.getId()).isEqualTo("Carpet_Plus");
+        assertThat(process.getName()).isEqualTo("Carpet-Plus");
+        assertThat(process.isExecutable()).isTrue();
+    }
 }

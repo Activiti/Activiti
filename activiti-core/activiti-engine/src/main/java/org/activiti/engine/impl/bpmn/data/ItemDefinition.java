@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.data;
 
 /**
@@ -23,50 +22,50 @@ package org.activiti.engine.impl.bpmn.data;
  */
 public class ItemDefinition {
 
-  protected String id;
+    protected String id;
 
-  protected StructureDefinition structure;
+    protected StructureDefinition structure;
 
-  protected boolean isCollection;
+    protected boolean isCollection;
 
-  protected ItemKind itemKind;
+    protected ItemKind itemKind;
 
-  private ItemDefinition() {
-    this.isCollection = false;
-    this.itemKind = ItemKind.Information;
-  }
+    private ItemDefinition() {
+        this.isCollection = false;
+        this.itemKind = ItemKind.Information;
+    }
 
-  public ItemDefinition(String id, StructureDefinition structure) {
-    this();
-    this.id = id;
-    this.structure = structure;
-  }
+    public ItemDefinition(String id, StructureDefinition structure) {
+        this();
+        this.id = id;
+        this.structure = structure;
+    }
 
-  public ItemInstance createInstance() {
-    return new ItemInstance(this, this.structure.createInstance());
-  }
+    public ItemInstance createInstance() {
+        return new ItemInstance(this, this.structure.createInstance());
+    }
 
-  public StructureDefinition getStructureDefinition() {
-    return this.structure;
-  }
+    public StructureDefinition getStructureDefinition() {
+        return this.structure;
+    }
 
-  public boolean isCollection() {
-    return isCollection;
-  }
+    public boolean isCollection() {
+        return isCollection;
+    }
 
-  public void setCollection(boolean isCollection) {
-    this.isCollection = isCollection;
-  }
+    public void setCollection(boolean isCollection) {
+        this.isCollection = isCollection;
+    }
 
-  public ItemKind getItemKind() {
-    return itemKind;
-  }
+    public ItemKind getItemKind() {
+        return itemKind;
+    }
 
-  public void setItemKind(ItemKind itemKind) {
-    this.itemKind = itemKind;
-  }
+    public void setItemKind(ItemKind itemKind) {
+        this.itemKind = itemKind;
+    }
 
-  public String getId() {
-    return this.id;
-  }
+    public String getId() {
+        return this.id;
+    }
 }

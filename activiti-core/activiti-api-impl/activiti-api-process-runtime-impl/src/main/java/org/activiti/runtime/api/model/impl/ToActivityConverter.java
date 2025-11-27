@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +22,15 @@ import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 public class ToActivityConverter {
 
     public BPMNActivity from(ActivitiActivityEvent internalEvent) {
-        BPMNActivityImpl activity = new BPMNActivityImpl(internalEvent.getActivityId(),
-                                                             internalEvent.getActivityName(),
-                                                             internalEvent.getActivityType());
+        BPMNActivityImpl activity = new BPMNActivityImpl(
+            internalEvent.getActivityId(),
+            internalEvent.getActivityName(),
+            internalEvent.getActivityType()
+        );
         activity.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         activity.setProcessInstanceId(internalEvent.getProcessInstanceId());
         activity.setExecutionId(internalEvent.getExecutionId());
 
         return activity;
     }
-
 }

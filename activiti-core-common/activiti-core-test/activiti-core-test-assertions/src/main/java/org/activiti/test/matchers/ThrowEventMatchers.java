@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ public class ThrowEventMatchers extends ActivityMatchers {
 
     private ThrowEventMatchers(String definitionKey) {
         super(definitionKey);
-
     }
 
     @Override
@@ -32,5 +31,4 @@ public class ThrowEventMatchers extends ActivityMatchers {
     public static ThrowEventMatchers throwEvent(String definitionKey) {
         return new ThrowEventMatchers(definitionKey);
     }
-
 }

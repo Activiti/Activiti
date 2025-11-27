@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.spring.cache.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,8 +32,9 @@ import org.springframework.cache.support.NoOpCacheManager;
         "debug=false",
         "activiti.spring.cache-manager.provider=noop",
         "activiti.spring.cache-manager.caches.foo.enabled=true",
-        "activiti.spring.cache-manager.caches.bar.enabled=false"
-})
+        "activiti.spring.cache-manager.caches.bar.enabled=false",
+    }
+)
 class ActivitiSpringNoopCacheManagerTests {
 
     @SpringBootApplication
@@ -48,9 +48,7 @@ class ActivitiSpringNoopCacheManagerTests {
 
     @Test
     void testCacheManager() {
-        assertThat(cacheManager)
-            .isNotNull()
-            .isInstanceOf(NoOpCacheManager.class);
+        assertThat(cacheManager).isNotNull().isInstanceOf(NoOpCacheManager.class);
     }
 
     @Test
@@ -69,5 +67,4 @@ class ActivitiSpringNoopCacheManagerTests {
 
         assertThat(cache).isInstanceOf(NoOpCache.class);
     }
-
 }

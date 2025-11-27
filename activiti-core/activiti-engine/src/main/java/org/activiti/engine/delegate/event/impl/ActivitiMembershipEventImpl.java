@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.delegate.event.impl;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -26,26 +25,26 @@ import org.activiti.engine.delegate.event.ActivitiMembershipEvent;
  */
 public class ActivitiMembershipEventImpl extends ActivitiEventImpl implements ActivitiMembershipEvent {
 
-  protected String userId;
-  protected String groupId;
+    protected String userId;
+    protected String groupId;
 
-  public ActivitiMembershipEventImpl(ActivitiEventType type) {
-    super(type);
-  }
+    public ActivitiMembershipEventImpl(ActivitiEventType type) {
+        super(type);
+    }
 
-  public void setUserId(String userId) {
-    this.userId = userId;
-  }
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
-  public String getUserId() {
-    return userId;
-  }
+    public String getUserId() {
+        return userId;
+    }
 
-  public void setGroupId(String groupId) {
-    this.groupId = groupId;
-  }
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
 
-  public String getGroupId() {
-    return groupId;
-  }
+    public String getGroupId() {
+        return groupId;
+    }
 }

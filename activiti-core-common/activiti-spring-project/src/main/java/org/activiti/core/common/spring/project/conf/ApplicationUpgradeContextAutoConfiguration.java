@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,15 +35,19 @@ public class ApplicationUpgradeContextAutoConfiguration {
     }
 
     @Bean
-    public ApplicationUpgradeContextService applicationUpgradeContextService(@Value("${project.manifest.file.path:classpath:/default-app.json}") String absolutePath,
-                                                                             @Value("${application.version:0}") Integer enforcedAppVersion,
-                                                                             @Value("${activiti.deploy.after-rollback:false}") Boolean isRollbackDeployment,
-                                                                             ObjectMapper objectMapper,
-                                                                             ResourcePatternResolver resourceLoader) {
-        return new ApplicationUpgradeContextService(absolutePath,
+    public ApplicationUpgradeContextService applicationUpgradeContextService(
+        @Value("${project.manifest.file.path:classpath:/default-app.json}") String absolutePath,
+        @Value("${application.version:0}") Integer enforcedAppVersion,
+        @Value("${activiti.deploy.after-rollback:false}") Boolean isRollbackDeployment,
+        ObjectMapper objectMapper,
+        ResourcePatternResolver resourceLoader
+    ) {
+        return new ApplicationUpgradeContextService(
+            absolutePath,
             enforcedAppVersion,
             isRollbackDeployment,
             objectMapper,
-            resourceLoader);
+            resourceLoader
+        );
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,19 +21,20 @@ import org.activiti.engine.impl.el.ExpressionManager;
 
 public class DefaultMessageExecutionContextFactory implements MessageExecutionContextFactory {
 
-
     public DefaultMessageExecutionContextFactory() {
         super();
     }
 
     @Override
-    public MessageExecutionContext create(MessageEventDefinition messageEventDefinition,
-                                          MessagePayloadMappingProvider messagePayloadMappingProvider,
-                                          ExpressionManager expressionManager) {
-
-        return new DefaultMessageExecutionContext(messageEventDefinition,
-                                                  expressionManager,
-                                                  messagePayloadMappingProvider);
+    public MessageExecutionContext create(
+        MessageEventDefinition messageEventDefinition,
+        MessagePayloadMappingProvider messagePayloadMappingProvider,
+        ExpressionManager expressionManager
+    ) {
+        return new DefaultMessageExecutionContext(
+            messageEventDefinition,
+            expressionManager,
+            messagePayloadMappingProvider
+        );
     }
-
 }

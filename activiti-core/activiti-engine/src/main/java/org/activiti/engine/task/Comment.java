@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.task;
 
 import java.util.Date;
-
 import org.activiti.engine.TaskService;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.history.HistoricData;
@@ -33,29 +30,28 @@ import org.activiti.engine.history.HistoricData;
 @Internal
 @Deprecated
 public interface Comment extends HistoricData {
+    /** unique identifier for this comment */
+    String getId();
 
-  /** unique identifier for this comment */
-  String getId();
+    /** reference to the user that made the comment */
+    String getUserId();
 
-  /** reference to the user that made the comment */
-  String getUserId();
+    /** time and date when the user made the comment */
+    Date getTime();
 
-  /** time and date when the user made the comment */
-  Date getTime();
+    /** reference to the task on which this comment was made */
+    String getTaskId();
 
-  /** reference to the task on which this comment was made */
-  String getTaskId();
+    /** reference to the process instance on which this comment was made */
+    String getProcessInstanceId();
 
-  /** reference to the process instance on which this comment was made */
-  String getProcessInstanceId();
+    /** reference to the type given to the comment */
+    String getType();
 
-  /** reference to the type given to the comment */
-  String getType();
-
-  /**
-   * the full comment message the user had related to the task and/or process instance
-   *
-   * @see TaskService#getTaskComments(String)
-   */
-  String getFullMessage();
+    /**
+     * the full comment message the user had related to the task and/or process instance
+     *
+     * @see TaskService#getTaskComments(String)
+     */
+    String getFullMessage();
 }

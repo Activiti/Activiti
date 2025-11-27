@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,14 @@
  */
 package org.activiti.api.task.model.events;
 
-
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.task.model.TaskCandidateGroup;
 
-public interface TaskCandidateGroupEvent extends RuntimeEvent<TaskCandidateGroup, TaskCandidateGroupEvent.TaskCandidateGroupEvents> {
-
+public interface TaskCandidateGroupEvent
+    extends RuntimeEvent<TaskCandidateGroup, TaskCandidateGroupEvent.TaskCandidateGroupEvents> {
     enum TaskCandidateGroupEvents {
-
         TASK_CANDIDATE_GROUP_ADDED,
 
-        TASK_CANDIDATE_GROUP_REMOVED
+        TASK_CANDIDATE_GROUP_REMOVED,
     }
-
 }

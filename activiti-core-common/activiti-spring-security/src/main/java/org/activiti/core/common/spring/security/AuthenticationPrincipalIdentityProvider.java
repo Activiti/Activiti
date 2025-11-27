@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,28 +15,26 @@
  */
 package org.activiti.core.common.spring.security;
 
+import java.security.Principal;
+import java.util.Optional;
 import org.activiti.api.runtime.shared.security.PrincipalIdentityProvider;
 import org.springframework.security.core.Authentication;
 
-import java.security.Principal;
-import java.util.Optional;
-
 public class AuthenticationPrincipalIdentityProvider implements PrincipalIdentityProvider {
 
-    private final static String EMPTY_ANONYMOUS_USER_ID = "";
+    private static final String EMPTY_ANONYMOUS_USER_ID = "";
 
     @Override
     public String getUserId(Principal principal) {
         return Optional.of(principal)
-                       .filter(Authentication.class::isInstance)
-                       .map(Authentication.class::cast)
-                       .map(this::getUserId)
-                       .orElseThrow(this::securityException);
+            .filter(Authentication.class::isInstance)
+            .map(Authentication.class::cast)
+            .map(this::getUserId)
+            .orElseThrow(this::securityException);
     }
 
     protected String getUserId(Authentication authentication) {
-        return Optional.ofNullable(authentication.getName())
-                       .orElseGet(this::getAnonymousUserId);
+        return Optional.ofNullable(authentication.getName()).orElseGet(this::getAnonymousUserId);
     }
 
     protected String getAnonymousUserId() {

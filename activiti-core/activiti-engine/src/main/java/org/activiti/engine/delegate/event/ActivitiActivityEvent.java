@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.delegate.event;
 
 /**
@@ -23,25 +22,23 @@ package org.activiti.engine.delegate.event;
 
  */
 public interface ActivitiActivityEvent extends ActivitiEvent {
+    /**
+     * @return the id of the activity this event is related to. This corresponds to an id defined in the process definition.
+     */
+    String getActivityId();
 
-  /**
-   * @return the id of the activity this event is related to. This corresponds to an id defined in the process definition.
-   */
-  String getActivityId();
+    /**
+     * @return the name of the activity this event is related to.
+     */
+    String getActivityName();
 
-  /**
-   * @return the name of the activity this event is related to.
-   */
-  String getActivityName();
+    /**
+     * @return the type of the activity (if set during parsing).
+     */
+    String getActivityType();
 
-  /**
-   * @return the type of the activity (if set during parsing).
-   */
-  String getActivityType();
-
-  /**
-   * @return the behaviourclass of the activity (if it could be determined)
-   */
-  String getBehaviorClass();
-
+    /**
+     * @return the behaviourclass of the activity (if it could be determined)
+     */
+    String getBehaviorClass();
 }

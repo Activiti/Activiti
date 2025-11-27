@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,17 @@
  */
 package org.activiti.api.runtime.conf.impl;
 
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.BeanDescription;
+import com.fasterxml.jackson.databind.DeserializationConfig;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.jsontype.NamedType;
+import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import java.util.Collections;
 import java.util.Set;
-
 import org.activiti.api.process.model.BPMNActivity;
 import org.activiti.api.process.model.BPMNError;
 import org.activiti.api.process.model.BPMNMessage;
@@ -99,18 +107,8 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.support.FormattingConversionService;
 
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.BeanDescription;
-import com.fasterxml.jackson.databind.DeserializationConfig;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsontype.NamedType;
-import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-
 @AutoConfiguration
-@AutoConfigureBefore({JacksonAutoConfiguration.class})
+@AutoConfigureBefore({ JacksonAutoConfiguration.class })
 public class ProcessModelAutoConfiguration {
 
     @Autowired(required = false)
@@ -118,98 +116,77 @@ public class ProcessModelAutoConfiguration {
     @Lazy
     private Set<Converter<?, ?>> converters = Collections.emptySet();
 
-
     //this bean will be automatically injected inside boot's ObjectMapper
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public Module customizeProcessModelObjectMapper(ObjectProvider<ConversionService> conversionServiceProvider) {
-        SimpleModule module = new SimpleModule("mapProcessModelInterfaces",
-                                               Version.unknownVersion());
+        SimpleModule module = new SimpleModule("mapProcessModelInterfaces", Version.unknownVersion());
         SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver() {
             //this is a workaround for https://github.com/FasterXML/jackson-databind/issues/2019
             //once version 2.9.6 is related we can remove this @override method
             @Override
-            public JavaType resolveAbstractType(DeserializationConfig config,
-                                                BeanDescription typeDesc) {
-                return findTypeMapping(config,
-                                       typeDesc.getType());
+            public JavaType resolveAbstractType(DeserializationConfig config, BeanDescription typeDesc) {
+                return findTypeMapping(config, typeDesc.getType());
             }
         };
 
-        resolver.addMapping(BPMNActivity.class,
-                            BPMNActivityImpl.class);
-        resolver.addMapping(ProcessInstance.class,
-                            ProcessInstanceImpl.class);
-        resolver.addMapping(ProcessDefinition.class,
-                            ProcessDefinitionImpl.class);
-        resolver.addMapping(BPMNSequenceFlow.class,
-                            BPMNSequenceFlowImpl.class);
-        resolver.addMapping(IntegrationContext.class,
-                            IntegrationContextImpl.class);
-        resolver.addMapping(BPMNSignal.class,
-        					BPMNSignalImpl.class);
-        resolver.addMapping(BPMNTimer.class,
-                            BPMNTimerImpl.class);
-        resolver.addMapping(BPMNMessage.class,
-                            BPMNMessageImpl.class);
-        resolver.addMapping(BPMNError.class,
-                            BPMNErrorImpl.class);
-        resolver.addMapping(MessageSubscription.class,
-                            MessageSubscriptionImpl.class);
-        resolver.addMapping(StartMessageSubscription.class,
-                            StartMessageSubscriptionImpl.class);
-        resolver.addMapping(StartMessageDeployedEvent.class,
-                            StartMessageDeployedEventImpl.class);
-        resolver.addMapping(StartMessageDeploymentDefinition.class,
-                            StartMessageDeploymentDefinitionImpl.class);
-        resolver.addMapping(ProcessCandidateStarterUser.class,
-                            ProcessCandidateStarterUserImpl.class);
-        resolver.addMapping(ProcessCandidateStarterGroup.class,
-                            ProcessCandidateStarterGroupImpl.class);
+        resolver.addMapping(BPMNActivity.class, BPMNActivityImpl.class);
+        resolver.addMapping(ProcessInstance.class, ProcessInstanceImpl.class);
+        resolver.addMapping(ProcessDefinition.class, ProcessDefinitionImpl.class);
+        resolver.addMapping(BPMNSequenceFlow.class, BPMNSequenceFlowImpl.class);
+        resolver.addMapping(IntegrationContext.class, IntegrationContextImpl.class);
+        resolver.addMapping(BPMNSignal.class, BPMNSignalImpl.class);
+        resolver.addMapping(BPMNTimer.class, BPMNTimerImpl.class);
+        resolver.addMapping(BPMNMessage.class, BPMNMessageImpl.class);
+        resolver.addMapping(BPMNError.class, BPMNErrorImpl.class);
+        resolver.addMapping(MessageSubscription.class, MessageSubscriptionImpl.class);
+        resolver.addMapping(StartMessageSubscription.class, StartMessageSubscriptionImpl.class);
+        resolver.addMapping(StartMessageDeployedEvent.class, StartMessageDeployedEventImpl.class);
+        resolver.addMapping(StartMessageDeploymentDefinition.class, StartMessageDeploymentDefinitionImpl.class);
+        resolver.addMapping(ProcessCandidateStarterUser.class, ProcessCandidateStarterUserImpl.class);
+        resolver.addMapping(ProcessCandidateStarterGroup.class, ProcessCandidateStarterGroupImpl.class);
 
-        module.registerSubtypes(new NamedType(ProcessInstanceResult.class,
-                                              ProcessInstanceResult.class.getSimpleName()));
+        module.registerSubtypes(
+            new NamedType(ProcessInstanceResult.class, ProcessInstanceResult.class.getSimpleName())
+        );
 
-        module.registerSubtypes(new NamedType(DeleteProcessPayload.class,
-                                              DeleteProcessPayload.class.getSimpleName()));
-        module.registerSubtypes(new NamedType(GetProcessDefinitionsPayload.class,
-                                              GetProcessDefinitionsPayload.class.getSimpleName()));
-        module.registerSubtypes(new NamedType(GetProcessInstancesPayload.class,
-                                              GetProcessInstancesPayload.class.getSimpleName()));
-        module.registerSubtypes(new NamedType(GetVariablesPayload.class,
-                                              GetVariablesPayload.class.getSimpleName()));
-        module.registerSubtypes(new NamedType(RemoveProcessVariablesPayload.class,
-                                              RemoveProcessVariablesPayload.class.getSimpleName()));
-        module.registerSubtypes(new NamedType(SetProcessVariablesPayload.class,
-                                              SetProcessVariablesPayload.class.getSimpleName()));
-        module.registerSubtypes(new NamedType(SignalPayload.class,
-                                              SignalPayload.class.getSimpleName()));
-        module.registerSubtypes(new NamedType(TimerPayload.class,
-                                              TimerPayload.class.getSimpleName()));
-        module.registerSubtypes(new NamedType(StartProcessPayload.class,
-                                              StartProcessPayload.class.getSimpleName()));
-        module.registerSubtypes(new NamedType(CreateProcessInstancePayload.class,
-                                              CreateProcessInstancePayload.class.getSimpleName()));
-        module.registerSubtypes(new NamedType(SuspendProcessPayload.class,
-                                              SuspendProcessPayload.class.getSimpleName()));
-        module.registerSubtypes(new NamedType(ResumeProcessPayload.class,
-                                              ResumeProcessPayload.class.getSimpleName()));
-        module.registerSubtypes(new NamedType(UpdateProcessPayload.class,
-                                              UpdateProcessPayload.class.getSimpleName()));
-        module.registerSubtypes(new NamedType(StartMessagePayload.class,
-                                              StartMessagePayload.class.getSimpleName()));
-        module.registerSubtypes(new NamedType(ReceiveMessagePayload.class,
-                                              ReceiveMessagePayload.class.getSimpleName()));
-        module.registerSubtypes(new NamedType(MessageEventPayload.class,
-                                              MessageEventPayload.class.getSimpleName()));
+        module.registerSubtypes(new NamedType(DeleteProcessPayload.class, DeleteProcessPayload.class.getSimpleName()));
+        module.registerSubtypes(
+            new NamedType(GetProcessDefinitionsPayload.class, GetProcessDefinitionsPayload.class.getSimpleName())
+        );
+        module.registerSubtypes(
+            new NamedType(GetProcessInstancesPayload.class, GetProcessInstancesPayload.class.getSimpleName())
+        );
+        module.registerSubtypes(new NamedType(GetVariablesPayload.class, GetVariablesPayload.class.getSimpleName()));
+        module.registerSubtypes(
+            new NamedType(RemoveProcessVariablesPayload.class, RemoveProcessVariablesPayload.class.getSimpleName())
+        );
+        module.registerSubtypes(
+            new NamedType(SetProcessVariablesPayload.class, SetProcessVariablesPayload.class.getSimpleName())
+        );
+        module.registerSubtypes(new NamedType(SignalPayload.class, SignalPayload.class.getSimpleName()));
+        module.registerSubtypes(new NamedType(TimerPayload.class, TimerPayload.class.getSimpleName()));
+        module.registerSubtypes(new NamedType(StartProcessPayload.class, StartProcessPayload.class.getSimpleName()));
+        module.registerSubtypes(
+            new NamedType(CreateProcessInstancePayload.class, CreateProcessInstancePayload.class.getSimpleName())
+        );
+        module.registerSubtypes(
+            new NamedType(SuspendProcessPayload.class, SuspendProcessPayload.class.getSimpleName())
+        );
+        module.registerSubtypes(new NamedType(ResumeProcessPayload.class, ResumeProcessPayload.class.getSimpleName()));
+        module.registerSubtypes(new NamedType(UpdateProcessPayload.class, UpdateProcessPayload.class.getSimpleName()));
+        module.registerSubtypes(new NamedType(StartMessagePayload.class, StartMessagePayload.class.getSimpleName()));
+        module.registerSubtypes(
+            new NamedType(ReceiveMessagePayload.class, ReceiveMessagePayload.class.getSimpleName())
+        );
+        module.registerSubtypes(new NamedType(MessageEventPayload.class, MessageEventPayload.class.getSimpleName()));
         module.setAbstractTypes(resolver);
 
         ConversionService conversionService = conversionServiceProvider.getIfUnique(this::conversionService);
 
         module.addSerializer(new ProcessVariablesMapSerializer(conversionService));
 
-        module.addDeserializer(ProcessVariablesMap.class,
-                               new ProcessVariablesMapDeserializer(conversionService));
+        module.addDeserializer(ProcessVariablesMap.class, new ProcessVariablesMapDeserializer(conversionService));
 
         return module;
     }
@@ -301,5 +278,4 @@ public class ProcessModelAutoConfiguration {
     public ObjectValueToStringConverter objectValueToStringConverter(@Lazy ObjectMapper objectMapper) {
         return new ObjectValueToStringConverter(objectMapper);
     }
-
 }

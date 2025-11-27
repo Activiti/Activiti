@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.webservice;
-
-import org.activiti.engine.api.internal.Internal;
 
 import java.net.URL;
 import java.util.concurrent.ConcurrentMap;
-
 import javax.xml.namespace.QName;
+import org.activiti.engine.api.internal.Internal;
 
 /**
  * A dynamic web service client that allows to perform synchronous calls to a specific web service.
@@ -31,17 +28,17 @@ import javax.xml.namespace.QName;
 @Deprecated
 @Internal
 public interface SyncWebServiceClient {
-
-  /**
-   * Synchronously invoke a web service method with some arguments.
-   *
-   * @param methodName
-   *          a not null method name
-   * @param arguments
-   *          a not null list of arguments
-   * @param overridenEndpointAddresses
-   *          a not null map of overriden enpoint addresses. The key is the endpoint qualified name.
-   * @return the result of invoking the method of the web service
-   */
-  Object[] send(String methodName, Object[] arguments, ConcurrentMap<QName, URL> overridenEndpointAddresses) throws Exception;
+    /**
+     * Synchronously invoke a web service method with some arguments.
+     *
+     * @param methodName
+     *          a not null method name
+     * @param arguments
+     *          a not null list of arguments
+     * @param overridenEndpointAddresses
+     *          a not null map of overriden enpoint addresses. The key is the endpoint qualified name.
+     * @return the result of invoking the method of the web service
+     */
+    Object[] send(String methodName, Object[] arguments, ConcurrentMap<QName, URL> overridenEndpointAddresses)
+        throws Exception;
 }

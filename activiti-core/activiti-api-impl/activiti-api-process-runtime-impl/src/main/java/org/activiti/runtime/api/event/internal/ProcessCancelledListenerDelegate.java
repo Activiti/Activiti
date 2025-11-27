@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,10 @@ public class ProcessCancelledListenerDelegate implements ActivitiEventListener {
 
     private ToProcessCancelledConverter processCancelledConverter;
 
-    public ProcessCancelledListenerDelegate(List<ProcessRuntimeEventListener<ProcessCancelledEvent>> listeners,
-                                            ToProcessCancelledConverter processCancelledConverter) {
+    public ProcessCancelledListenerDelegate(
+        List<ProcessRuntimeEventListener<ProcessCancelledEvent>> listeners,
+        ToProcessCancelledConverter processCancelledConverter
+    ) {
         this.processRuntimeEventListeners = listeners;
         this.processCancelledConverter = processCancelledConverter;
     }
@@ -38,12 +40,13 @@ public class ProcessCancelledListenerDelegate implements ActivitiEventListener {
     @Override
     public void onEvent(ActivitiEvent event) {
         if (event instanceof ActivitiProcessCancelledEvent) {
-            processCancelledConverter.from((ActivitiProcessCancelledEvent) event)
-                    .ifPresent(convertedEvent -> {
-                        for ( ProcessRuntimeEventListener<ProcessCancelledEvent> listener : processRuntimeEventListeners ) {
-                            listener.onEvent(convertedEvent);
-                        }
-                    });
+            processCancelledConverter
+                .from((ActivitiProcessCancelledEvent) event)
+                .ifPresent(convertedEvent -> {
+                    for (ProcessRuntimeEventListener<ProcessCancelledEvent> listener : processRuntimeEventListeners) {
+                        listener.onEvent(convertedEvent);
+                    }
+                });
         }
     }
 

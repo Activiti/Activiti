@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package org.activiti.spring.boot;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.spy;
 
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -41,9 +44,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.TestPropertySource;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.spy;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource("classpath:application-history.properties")
@@ -100,7 +100,7 @@ public class HistoryConfigurationTest {
     private SecurityManager securityManager;
 
     @AfterEach
-    public void cleanUp(){
+    public void cleanUp() {
         processCleanUpUtil.cleanUpWithAdmin();
     }
 
@@ -108,32 +108,39 @@ public class HistoryConfigurationTest {
     public void init() {
         ApplicationEventPublisher eventPublisher = spy(applicationEventPublisher);
 
-        spy(new ProcessRuntimeImpl(repositoryService,
-                     processDefinitionConverter,
-                     runtimeService,
-                     taskService,
-                     securityPoliciesManager,
-                     processInstanceConverter,
-                     variableInstanceConverter,
-                     deploymentConverter,
-                     configuration,
-                     eventPublisher,
-                     processVariablesValidator,
-                     securityManager));
+        spy(
+            new ProcessRuntimeImpl(
+                repositoryService,
+                processDefinitionConverter,
+                runtimeService,
+                taskService,
+                securityPoliciesManager,
+                processInstanceConverter,
+                variableInstanceConverter,
+                deploymentConverter,
+                configuration,
+                eventPublisher,
+                processVariablesValidator,
+                securityManager
+            )
+        );
 
-        spy(new ProcessAdminRuntimeImpl(repositoryService,
-                     processDefinitionConverter,
-                     runtimeService,
-                     processInstanceConverter,
-                     variableInstanceConverter,
-                     eventPublisher,
-                     processVariablesValidator));
+        spy(
+            new ProcessAdminRuntimeImpl(
+                repositoryService,
+                processDefinitionConverter,
+                runtimeService,
+                processInstanceConverter,
+                variableInstanceConverter,
+                eventPublisher,
+                processVariablesValidator
+            )
+        );
 
         //Reset test variables
         RuntimeTestConfiguration.processImageConnectorExecuted = false;
         RuntimeTestConfiguration.tagImageConnectorExecuted = false;
         RuntimeTestConfiguration.discardImageConnectorExecuted = false;
-
     }
 
     @Test
@@ -141,13 +148,16 @@ public class HistoryConfigurationTest {
         securityUtil.logInAs("user");
 
         //when
-        ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
+        ProcessInstance categorizeProcess = processRuntime.start(
+            ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey(CATEGORIZE_PROCESS)
-                .withVariable("expectedKey",
-                        true)
-                .build());
+                .withVariable("expectedKey", true)
+                .build()
+        );
 
         assertThat(RuntimeTestConfiguration.completedProcesses).contains(categorizeProcess.getId());
-        assertThat(historyService.createHistoricProcessInstanceQuery().processInstanceId(categorizeProcess.getId()).count()).isEqualTo(1);
+        assertThat(
+            historyService.createHistoricProcessInstanceQuery().processInstanceId(categorizeProcess.getId()).count()
+        ).isEqualTo(1);
     }
 }

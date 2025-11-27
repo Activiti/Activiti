@@ -15,8 +15,7 @@
       },
       "mappings": {
         "simpleTask": {
-          "inputs": {
-          },
+          "inputs": {},
           "outputs": {
             "process_variable_person": {
               "type": "JSONPATCH",
@@ -26,11 +25,11 @@
                   "value": "${process_variable_lastname}"
                 }
               ]
-            }}
+            }
+          }
         }
       },
-      "constants": {
-      }
+      "constants": {}
     }
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.validation.validator.impl;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.ScriptTask;
@@ -31,14 +29,13 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ScriptTaskValidator extends ProcessLevelValidator {
 
-  @Override
-  protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-    List<ScriptTask> scriptTasks = process.findFlowElementsOfType(ScriptTask.class);
-    for (ScriptTask scriptTask : scriptTasks) {
-      if (StringUtils.isEmpty(scriptTask.getScript())) {
-        addError(errors, Problems.SCRIPT_TASK_MISSING_SCRIPT, process, scriptTask);
-      }
+    @Override
+    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+        List<ScriptTask> scriptTasks = process.findFlowElementsOfType(ScriptTask.class);
+        for (ScriptTask scriptTask : scriptTasks) {
+            if (StringUtils.isEmpty(scriptTask.getScript())) {
+                addError(errors, Problems.SCRIPT_TASK_MISSING_SCRIPT, process, scriptTask);
+            }
+        }
     }
-  }
-
 }

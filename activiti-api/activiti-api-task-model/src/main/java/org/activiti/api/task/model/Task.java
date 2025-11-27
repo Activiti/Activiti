@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,18 @@
  */
 package org.activiti.api.task.model;
 
-import org.activiti.api.model.shared.model.ApplicationElement;
-
 import java.util.Date;
 import java.util.List;
+import org.activiti.api.model.shared.model.ApplicationElement;
 
 public interface Task extends ApplicationElement {
-
     enum TaskStatus {
         CREATED,
         ASSIGNED,
         SUSPENDED,
         COMPLETED,
         CANCELLED,
-        DELETED
+        DELETED,
     }
 
     String getId();
@@ -52,6 +50,8 @@ public interface Task extends ApplicationElement {
     String getProcessDefinitionId();
 
     String getProcessInstanceId();
+
+    String getTaskProcessRootProcessInstanceId();
 
     String getParentTaskId();
 

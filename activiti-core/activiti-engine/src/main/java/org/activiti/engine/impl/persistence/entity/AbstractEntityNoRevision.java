@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.persistence.entity;
-
 
 /**
  * Abstract superclass for the common properties of all {@link Entity} implementations.
@@ -24,43 +22,42 @@ package org.activiti.engine.impl.persistence.entity;
  */
 public abstract class AbstractEntityNoRevision implements Entity {
 
-  protected String id;
-  protected boolean isInserted;
-  protected boolean isUpdated;
-  protected boolean isDeleted;
+    protected String id;
+    protected boolean isInserted;
+    protected boolean isUpdated;
+    protected boolean isDeleted;
 
-  @Override
-  public String getId() {
-    return id;
-  }
+    @Override
+    public String getId() {
+        return id;
+    }
 
-  @Override
-  public void setId(String id) {
-    this.id = id;
-  }
+    @Override
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  public boolean isInserted() {
-    return isInserted;
-  }
+    public boolean isInserted() {
+        return isInserted;
+    }
 
-  public void setInserted(boolean isInserted) {
-    this.isInserted = isInserted;
-  }
+    public void setInserted(boolean isInserted) {
+        this.isInserted = isInserted;
+    }
 
-  public boolean isUpdated() {
-    return isUpdated;
-  }
+    public boolean isUpdated() {
+        return isUpdated;
+    }
 
-  public void setUpdated(boolean isUpdated) {
-    this.isUpdated = isUpdated;
-  }
+    public void setUpdated(boolean isUpdated) {
+        this.isUpdated = isUpdated;
+    }
 
-  public boolean isDeleted() {
-    return isDeleted;
-  }
+    public boolean isDeleted() {
+        return isDeleted;
+    }
 
-  public void setDeleted(boolean isDeleted) {
-    this.isDeleted = isDeleted;
-  }
-
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 }

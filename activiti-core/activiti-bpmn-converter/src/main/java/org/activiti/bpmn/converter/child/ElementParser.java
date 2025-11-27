@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 public interface ElementParser<T> {
-
     boolean canParseCurrentElement(XMLStreamReader reader);
 
     void setInformation(XMLStreamReader reader, T informationContainer) throws XMLStreamException;
-
 }

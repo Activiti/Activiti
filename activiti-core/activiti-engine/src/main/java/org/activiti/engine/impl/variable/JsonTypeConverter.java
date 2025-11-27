@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,14 +42,14 @@ public class JsonTypeConverter {
                 if (classNode != null) {
                     final String type = classNode.asText();
                     convertedValue = convertToType(jsonValue, type);
-                } else if (valueFields.getTextValue2() != null &&
-                    !jsonValue.getClass().getName().equals(valueFields.getTextValue2())) {
+                } else if (
+                    valueFields.getTextValue2() != null &&
+                    !jsonValue.getClass().getName().equals(valueFields.getTextValue2())
+                ) {
                     convertedValue = convertToType(jsonValue, valueFields.getTextValue2());
                 }
             } catch (ClassNotFoundException e) {
-                LOGGER
-                    .warn("Unable to obtain type for json variable object " + valueFields.getName(),
-                        e);
+                LOGGER.warn("Unable to obtain type for json variable object " + valueFields.getName(), e);
             }
         }
 
@@ -63,5 +63,4 @@ public class JsonTypeConverter {
     private Class<?> loadClass(String type) throws ClassNotFoundException {
         return Class.forName(type, false, this.getClass().getClassLoader());
     }
-
 }

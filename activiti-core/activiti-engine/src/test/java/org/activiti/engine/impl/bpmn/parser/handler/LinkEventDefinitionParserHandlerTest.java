@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,11 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.LinkEventDefinition;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchLinkEventActivityBehavior;
@@ -27,13 +32,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-
 @RunWith(MockitoJUnitRunner.class)
 public class LinkEventDefinitionParserHandlerTest {
+
     @InjectMocks
     private LinkEventDefinitionParseHandler linkEventDefinitionParseHandler;
 
@@ -42,7 +43,6 @@ public class LinkEventDefinitionParserHandlerTest {
 
     @Mock
     private ActivityBehaviorFactory activityBehaviorFactory;
-
 
     @Before
     public void setUp() throws Exception {
@@ -55,9 +55,14 @@ public class LinkEventDefinitionParserHandlerTest {
         LinkEventDefinition linkEventDefinition = new LinkEventDefinition();
         catchEvent.getEventDefinitions().add(linkEventDefinition);
         given(bpmnParse.getCurrentFlowElement()).willReturn(catchEvent);
-        given(activityBehaviorFactory.createIntermediateCatchLinkEventActivityBehavior(eq(catchEvent), eq(linkEventDefinition))).willReturn(mock(IntermediateCatchLinkEventActivityBehavior.class));
+        given(
+            activityBehaviorFactory.createIntermediateCatchLinkEventActivityBehavior(
+                eq(catchEvent),
+                eq(linkEventDefinition)
+            )
+        ).willReturn(mock(IntermediateCatchLinkEventActivityBehavior.class));
 
-        linkEventDefinitionParseHandler.executeParse(bpmnParse,linkEventDefinition );
+        linkEventDefinitionParseHandler.executeParse(bpmnParse, linkEventDefinition);
 
         assertThat(catchEvent.getBehavior()).isNotNull();
         assertThat(catchEvent.getBehavior()).isInstanceOf(IntermediateCatchLinkEventActivityBehavior.class);

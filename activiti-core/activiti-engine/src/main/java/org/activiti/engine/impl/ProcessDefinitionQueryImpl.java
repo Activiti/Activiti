@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.activiti.engine.impl;
 
 import java.util.List;
 import java.util.Set;
-
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -30,7 +29,9 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQuery, ProcessDefinition> implements ProcessDefinitionQuery {
+public class ProcessDefinitionQueryImpl
+    extends AbstractQuery<ProcessDefinitionQuery, ProcessDefinition>
+    implements ProcessDefinitionQuery {
 
     private static final long serialVersionUID = 1L;
 
@@ -68,8 +69,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     private String eventSubscriptionName;
     private String eventSubscriptionType;
 
-    public ProcessDefinitionQueryImpl() {
-    }
+    public ProcessDefinitionQueryImpl() {}
 
     public ProcessDefinitionQueryImpl(CommandContext commandContext) {
         super(commandContext);
@@ -270,13 +270,11 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     }
 
     public ProcessDefinitionQuery messageEventSubscription(String messageName) {
-        return eventSubscription("message",
-                                 messageName);
+        return eventSubscription("message", messageName);
     }
 
     public ProcessDefinitionQuery messageEventSubscriptionName(String messageName) {
-        return eventSubscription("message",
-                                 messageName);
+        return eventSubscription("message", messageName);
     }
 
     public ProcessDefinitionQuery processDefinitionStarter(String procDefId) {
@@ -284,8 +282,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
         return this;
     }
 
-    public ProcessDefinitionQuery eventSubscription(String eventType,
-                                                    String eventName) {
+    public ProcessDefinitionQuery eventSubscription(String eventType, String eventName) {
         if (eventName == null) {
             throw new ActivitiIllegalArgumentException("event name is null");
         }
@@ -310,7 +307,9 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
                 authorizationGroups = userGroupManager.getUserGroups(authorizationUserId);
                 return authorizationGroups;
             } else {
-                log.warn("No UserGroupManager set on ProcessEngineConfiguration. Tasks queried only where user is directly related, not through groups.");
+                log.warn(
+                    "No UserGroupManager set on ProcessEngineConfiguration. Tasks queried only where user is directly related, not through groups."
+                );
             }
         }
 
@@ -358,11 +357,9 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
         return commandContext.getProcessDefinitionEntityManager().findProcessDefinitionCountByQueryCriteria(this);
     }
 
-    public List<ProcessDefinition> executeList(CommandContext commandContext,
-                                               Page page) {
+    public List<ProcessDefinition> executeList(CommandContext commandContext, Page page) {
         checkQueryOk();
-        return commandContext.getProcessDefinitionEntityManager().findProcessDefinitionsByQueryCriteria(this,
-                                                                                                        page);
+        return commandContext.getProcessDefinitionEntityManager().findProcessDefinitionsByQueryCriteria(this, page);
     }
 
     public void checkQueryOk() {
@@ -407,7 +404,9 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
         return keyLike;
     }
 
-    public Set<String> getKeys() { return keys; }
+    public Set<String> getKeys() {
+        return keys;
+    }
 
     public Integer getVersion() {
         return version;

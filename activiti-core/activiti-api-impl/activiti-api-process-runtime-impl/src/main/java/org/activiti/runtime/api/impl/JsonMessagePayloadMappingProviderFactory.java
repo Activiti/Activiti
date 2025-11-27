@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,19 +26,21 @@ public class JsonMessagePayloadMappingProviderFactory implements MessagePayloadM
 
     private final VariablesCalculator variablesCalculator;
 
-    public JsonMessagePayloadMappingProviderFactory(
-        VariablesCalculator variablesCalculator) {
+    public JsonMessagePayloadMappingProviderFactory(VariablesCalculator variablesCalculator) {
         this.variablesCalculator = variablesCalculator;
     }
 
     @Override
-    public MessagePayloadMappingProvider create(Event bpmnEvent,
-                                                MessageEventDefinition messageEventDefinition,
-                                                ExpressionManager expressionManager) {
-        return new JsonMessagePayloadMappingProvider(bpmnEvent,
-                                                     messageEventDefinition,
-                                                     expressionManager,
-            variablesCalculator);
+    public MessagePayloadMappingProvider create(
+        Event bpmnEvent,
+        MessageEventDefinition messageEventDefinition,
+        ExpressionManager expressionManager
+    ) {
+        return new JsonMessagePayloadMappingProvider(
+            bpmnEvent,
+            messageEventDefinition,
+            expressionManager,
+            variablesCalculator
+        );
     }
-
 }

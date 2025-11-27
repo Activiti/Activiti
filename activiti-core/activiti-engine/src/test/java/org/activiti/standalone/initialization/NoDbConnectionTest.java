@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.standalone.initialization;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -30,19 +28,21 @@ public class NoDbConnectionTest extends AbstractTestCase {
 
     public void testNoDbConnection() {
         assertThatExceptionOfType(RuntimeException.class)
-            .isThrownBy(() -> ProcessEngineConfiguration
-                .createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/nodbconnection.activiti.cfg.xml")
-                .buildProcessEngine())
+            .isThrownBy(() ->
+                ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(
+                    "org/activiti/standalone/initialization/nodbconnection.activiti.cfg.xml"
+                ).buildProcessEngine()
+            )
             .matches(this::containsSqlException);
     }
 
-  private boolean containsSqlException(Throwable e) {
-    if (e == null) {
-      return false;
+    private boolean containsSqlException(Throwable e) {
+        if (e == null) {
+            return false;
+        }
+        if (e instanceof SQLException) {
+            return true;
+        }
+        return containsSqlException(e.getCause());
     }
-    if (e instanceof SQLException) {
-      return true;
-    }
-    return containsSqlException(e.getCause());
-  }
 }

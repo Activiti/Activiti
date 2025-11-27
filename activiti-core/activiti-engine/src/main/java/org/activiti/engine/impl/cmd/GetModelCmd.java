@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ModelEntity;
@@ -28,14 +25,14 @@ import org.activiti.engine.impl.persistence.entity.ModelEntity;
  */
 public class GetModelCmd implements Command<ModelEntity>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String modelId;
+    private static final long serialVersionUID = 1L;
+    protected String modelId;
 
-  public GetModelCmd(String modelId) {
-    this.modelId = modelId;
-  }
+    public GetModelCmd(String modelId) {
+        this.modelId = modelId;
+    }
 
-  public ModelEntity execute(CommandContext commandContext) {
-    return commandContext.getModelEntityManager().findById(modelId);
-  }
+    public ModelEntity execute(CommandContext commandContext) {
+        return commandContext.getModelEntityManager().findById(modelId);
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,14 @@
  */
 package org.activiti.spring.resources;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.activiti.spring.resources.conf.ResourceFinderAutoConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = ResourceFinderAutoConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ResourceFinderIT {
@@ -34,8 +33,10 @@ public class ResourceFinderIT {
     @Test
     public void shouldReturnEmptyListWhenLocationDoesNotExist() throws Exception {
         //given
-        DummyResourceFinderDescriptor finderDescriptor = new DummyResourceFinderDescriptor("classpath:**/not-exists/",
-                                                                                                   "**.txt");
+        DummyResourceFinderDescriptor finderDescriptor = new DummyResourceFinderDescriptor(
+            "classpath:**/not-exists/",
+            "**.txt"
+        );
 
         //when
         List<Resource> foundResources = resourceFinder.discoverResources(finderDescriptor);
@@ -47,8 +48,10 @@ public class ResourceFinderIT {
     @Test
     public void shouldReturnEmptyListWhenLocationExitsButNoFileMatches() throws Exception {
         //given
-        DummyResourceFinderDescriptor finderDescriptor = new DummyResourceFinderDescriptor("classpath:/no-matching-resources",
-                                                                                                   "**.txt");
+        DummyResourceFinderDescriptor finderDescriptor = new DummyResourceFinderDescriptor(
+            "classpath:/no-matching-resources",
+            "**.txt"
+        );
 
         //when
         List<Resource> foundResources = resourceFinder.discoverResources(finderDescriptor);
@@ -60,17 +63,18 @@ public class ResourceFinderIT {
     @Test
     public void shouldReturnMatchingFiles() throws Exception {
         //given
-        DummyResourceFinderDescriptor finderDescriptor = new DummyResourceFinderDescriptor("classpath:/matching-resources/",
-                                                                                           "**.json",
-                                                                                           "**.txt");
+        DummyResourceFinderDescriptor finderDescriptor = new DummyResourceFinderDescriptor(
+            "classpath:/matching-resources/",
+            "**.json",
+            "**.txt"
+        );
 
         //when
         List<Resource> foundResources = resourceFinder.discoverResources(finderDescriptor);
 
         //then
         assertThat(foundResources)
-                .extracting(resource -> resource.getFilename())
-                .containsOnly("matching.json",
-                              "matching.txt");
+            .extracting(resource -> resource.getFilename())
+            .containsOnly("matching.json", "matching.txt");
     }
 }

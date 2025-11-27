@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,14 +35,18 @@ public class ActivitiSpringSecurityPoliciesAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessSecurityPoliciesManager processSecurityPoliciesManager(SecurityManager securityManager,
-                                                                         SecurityPoliciesProperties securityPoliciesProperties,
-                                                                         SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> processDefinitionRestrictionApplier,
-                                                                         SecurityPoliciesRestrictionApplier<GetProcessInstancesPayload> processInstanceRestrictionApplier) {
-        return new ProcessSecurityPoliciesManagerImpl(securityManager,
-                                                      securityPoliciesProperties,
-                                                      processDefinitionRestrictionApplier,
-                                                      processInstanceRestrictionApplier);
+    public ProcessSecurityPoliciesManager processSecurityPoliciesManager(
+        SecurityManager securityManager,
+        SecurityPoliciesProperties securityPoliciesProperties,
+        SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> processDefinitionRestrictionApplier,
+        SecurityPoliciesRestrictionApplier<GetProcessInstancesPayload> processInstanceRestrictionApplier
+    ) {
+        return new ProcessSecurityPoliciesManagerImpl(
+            securityManager,
+            securityPoliciesProperties,
+            processDefinitionRestrictionApplier,
+            processInstanceRestrictionApplier
+        );
     }
 
     @Bean
@@ -53,8 +57,7 @@ public class ActivitiSpringSecurityPoliciesAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(name = "processDefinitionRestrictionApplier")
-    public SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> processDefinitionRestrictionApplier () {
+    public SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> processDefinitionRestrictionApplier() {
         return new SecurityPoliciesProcessDefinitionRestrictionApplier();
     }
-
 }

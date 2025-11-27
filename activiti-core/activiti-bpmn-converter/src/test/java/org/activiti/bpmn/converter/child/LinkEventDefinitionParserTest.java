@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,30 @@
  */
 package org.activiti.bpmn.converter.child;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.InputStream;
+import java.util.List;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.LinkEventDefinition;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
-import java.io.InputStream;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class LinkEventDefinitionParserTest {
+
     private LinkEventDefinitionParser parser = new LinkEventDefinitionParser();
     private XMLInputFactory xif = XMLInputFactory.newInstance();
 
     @Test
     public void parseChildElement_should_setLinkEventDefinitionProperties_forThrowEvent() throws Exception {
-        try (InputStream xmlStream = this.getClass().getClassLoader()
-            .getResourceAsStream("link-event-definition-with-target.xml")) {
+        try (
+            InputStream xmlStream = this.getClass()
+                .getClassLoader()
+                .getResourceAsStream("link-event-definition-with-target.xml")
+        ) {
             XMLStreamReader xtr = xif.createXMLStreamReader(xmlStream, "UTF-8");
             xtr.next();
 
@@ -54,8 +57,11 @@ public class LinkEventDefinitionParserTest {
 
     @Test
     public void parseChildElement_should_setLinkEventDefinitionProperties_forCatchEvent() throws Exception {
-        try (InputStream xmlStream = this.getClass().getClassLoader()
-            .getResourceAsStream("link-event-definition-with-source.xml")) {
+        try (
+            InputStream xmlStream = this.getClass()
+                .getClassLoader()
+                .getResourceAsStream("link-event-definition-with-source.xml")
+        ) {
             XMLStreamReader xtr = xif.createXMLStreamReader(xmlStream, "UTF-8");
             xtr.next();
 

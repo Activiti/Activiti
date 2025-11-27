@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.delegate.event;
 
 /**
@@ -22,22 +21,21 @@ package org.activiti.engine.delegate.event;
 
  */
 public interface ActivitiSequenceFlowTakenEvent extends ActivitiEvent {
+    String getId();
 
-  String getId();
+    String getSourceActivityId();
 
-  String getSourceActivityId();
+    String getSourceActivityName();
 
-  String getSourceActivityName();
+    String getSourceActivityType();
 
-  String getSourceActivityType();
+    String getSourceActivityBehaviorClass();
 
-  String getSourceActivityBehaviorClass();
+    String getTargetActivityId();
 
-  String getTargetActivityId();
+    String getTargetActivityName();
 
-  String getTargetActivityName();
+    String getTargetActivityType();
 
-  String getTargetActivityType();
-
-  String getTargetActivityBehaviorClass();
+    String getTargetActivityBehaviorClass();
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.data;
 
 /**
@@ -23,39 +22,39 @@ package org.activiti.engine.impl.bpmn.data;
  */
 public class ClassStructureDefinition implements FieldBaseStructureDefinition {
 
-  protected String id;
+    protected String id;
 
-  protected Class<?> classStructure;
+    protected Class<?> classStructure;
 
-  public ClassStructureDefinition(Class<?> classStructure) {
-    this(classStructure.getName(), classStructure);
-  }
+    public ClassStructureDefinition(Class<?> classStructure) {
+        this(classStructure.getName(), classStructure);
+    }
 
-  public ClassStructureDefinition(String id, Class<?> classStructure) {
-    this.id = id;
-    this.classStructure = classStructure;
-  }
+    public ClassStructureDefinition(String id, Class<?> classStructure) {
+        this.id = id;
+        this.classStructure = classStructure;
+    }
 
-  public String getId() {
-    return this.id;
-  }
+    public String getId() {
+        return this.id;
+    }
 
-  public int getFieldSize() {
-    // TODO
-    return 0;
-  }
+    public int getFieldSize() {
+        // TODO
+        return 0;
+    }
 
-  public String getFieldNameAt(int index) {
-    // TODO
-    return null;
-  }
+    public String getFieldNameAt(int index) {
+        // TODO
+        return null;
+    }
 
-  public Class<?> getFieldTypeAt(int index) {
-    // TODO
-    return null;
-  }
+    public Class<?> getFieldTypeAt(int index) {
+        // TODO
+        return null;
+    }
 
-  public StructureInstance createInstance() {
-    return new FieldBaseStructureInstance(this);
-  }
+    public StructureInstance createInstance() {
+        return new FieldBaseStructureInstance(this);
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,44 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.persistence.entity;
 
-import org.activiti.engine.api.internal.Internal;
-
 import java.util.Date;
+import org.activiti.engine.api.internal.Internal;
 
 /**
 
  */
 @Internal
 public interface HistoricScopeInstanceEntity extends Entity {
+    void markEnded(String deleteReason);
 
-  void markEnded(String deleteReason);
+    String getProcessInstanceId();
 
-  String getProcessInstanceId();
+    String getProcessDefinitionId();
 
-  String getProcessDefinitionId();
+    Date getStartTime();
 
-  Date getStartTime();
+    Date getEndTime();
 
-  Date getEndTime();
+    Long getDurationInMillis();
 
-  Long getDurationInMillis();
+    void setProcessInstanceId(String processInstanceId);
 
-  void setProcessInstanceId(String processInstanceId);
+    void setProcessDefinitionId(String processDefinitionId);
 
-  void setProcessDefinitionId(String processDefinitionId);
+    void setStartTime(Date startTime);
 
-  void setStartTime(Date startTime);
+    void setEndTime(Date endTime);
 
-  void setEndTime(Date endTime);
+    void setDurationInMillis(Long durationInMillis);
 
-  void setDurationInMillis(Long durationInMillis);
+    String getDeleteReason();
 
-  String getDeleteReason();
-
-  void setDeleteReason(String deleteReason);
-
+    void setDeleteReason(String deleteReason);
 }

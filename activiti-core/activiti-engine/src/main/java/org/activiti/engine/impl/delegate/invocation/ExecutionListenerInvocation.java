@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.delegate.invocation;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -26,20 +25,19 @@ import org.activiti.engine.delegate.ExecutionListener;
  */
 public class ExecutionListenerInvocation extends DelegateInvocation {
 
-  protected final ExecutionListener executionListenerInstance;
-  protected final DelegateExecution execution;
+    protected final ExecutionListener executionListenerInstance;
+    protected final DelegateExecution execution;
 
-  public ExecutionListenerInvocation(ExecutionListener executionListenerInstance, DelegateExecution execution) {
-    this.executionListenerInstance = executionListenerInstance;
-    this.execution = execution;
-  }
+    public ExecutionListenerInvocation(ExecutionListener executionListenerInstance, DelegateExecution execution) {
+        this.executionListenerInstance = executionListenerInstance;
+        this.execution = execution;
+    }
 
-  protected void invoke() {
-    executionListenerInstance.notify(execution);
-  }
+    protected void invoke() {
+        executionListenerInstance.notify(execution);
+    }
 
-  public Object getTarget() {
-    return executionListenerInstance;
-  }
-
+    public Object getTarget() {
+        return executionListenerInstance;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree.impl.ast;
 
 import jakarta.el.ELContext;
@@ -49,20 +48,10 @@ public class AstMethod extends AstNode {
     }
 
     public void setValue(Bindings bindings, ELContext context, Object value) {
-        throw new ELException(
-            LocalMessages.get(
-                "error.value.set.rvalue",
-                getStructuralId(bindings)
-            )
-        );
+        throw new ELException(LocalMessages.get("error.value.set.rvalue", getStructuralId(bindings)));
     }
 
-    public MethodInfo getMethodInfo(
-        Bindings bindings,
-        ELContext context,
-        Class<?> returnType,
-        Class<?>[] paramTypes
-    ) {
+    public MethodInfo getMethodInfo(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes) {
         return null;
     }
 
@@ -74,10 +63,7 @@ public class AstMethod extends AstNode {
         return true;
     }
 
-    public final ValueReference getValueReference(
-        Bindings bindings,
-        ELContext context
-    ) {
+    public final ValueReference getValueReference(Bindings bindings, ELContext context) {
         return null;
     }
 
@@ -87,46 +73,25 @@ public class AstMethod extends AstNode {
         params.appendStructure(builder, bindings);
     }
 
-    protected Object eval(
-        Bindings bindings,
-        ELContext context,
-        boolean answerNullIfBaseIsNull
-    ) {
+    protected Object eval(Bindings bindings, ELContext context, boolean answerNullIfBaseIsNull) {
         Object base = property.getPrefix().eval(bindings, context);
         if (base == null) {
             if (answerNullIfBaseIsNull) {
                 return null;
             }
-            throw new PropertyNotFoundException(
-                LocalMessages.get(
-                    "error.property.base.null",
-                    property.getPrefix()
-                )
-            );
+            throw new PropertyNotFoundException(LocalMessages.get("error.property.base.null", property.getPrefix()));
         }
         Object method = property.getProperty(bindings, context);
         if (method == null) {
-            throw new PropertyNotFoundException(
-                LocalMessages.get(
-                    "error.property.method.notfound",
-                    "null",
-                    base
-                )
-            );
+            throw new PropertyNotFoundException(LocalMessages.get("error.property.method.notfound", "null", base));
         }
         String name = bindings.convert(method, String.class);
 
         context.setPropertyResolved(false);
-        Object result = context
-            .getELResolver()
-            .invoke(context, base, name, null, params.eval(bindings, context));
+        Object result = context.getELResolver().invoke(context, base, name, null, params.eval(bindings, context));
         if (!context.isPropertyResolved()) {
             throw new MethodNotFoundException(
-                LocalMessages.get(
-                    "error.property.method.notfound",
-                    name,
-                    base.getClass()
-                )
+                LocalMessages.get("error.property.method.notfound", name, base.getClass())
             );
         }
         return result;

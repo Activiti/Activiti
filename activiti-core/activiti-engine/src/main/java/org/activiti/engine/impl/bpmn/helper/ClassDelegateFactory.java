@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.helper;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.delegate.Expression;
@@ -26,8 +24,13 @@ import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 /** Constructs {@link ClassDelegate}s. */
 @Internal
 public interface ClassDelegateFactory {
-  public ClassDelegate create(String id, String className, List<FieldDeclaration> fieldDeclarations,
-      Expression skipExpression, List<MapExceptionEntry> mapExceptions);
+    public ClassDelegate create(
+        String id,
+        String className,
+        List<FieldDeclaration> fieldDeclarations,
+        Expression skipExpression,
+        List<MapExceptionEntry> mapExceptions
+    );
 
-  public ClassDelegate create(String className, List<FieldDeclaration> fieldDeclarations);
+    public ClassDelegate create(String className, List<FieldDeclaration> fieldDeclarations);
 }

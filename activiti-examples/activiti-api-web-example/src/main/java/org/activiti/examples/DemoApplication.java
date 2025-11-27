@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.activiti.examples;
 
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -47,29 +46,26 @@ public class DemoApplication implements CommandLineRunner {
         SpringApplication.run(DemoApplication.class, args);
     }
 
-
     @PostMapping("/documents")
     public String processFile(@RequestBody String content) {
-
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
-                                                                       .start()
-                                                                       .withProcessDefinitionKey("categorizeProcess")
-                                                                       .withVariable("fileContent",
-                                                                                     content)
-                                                                       .build());
+        ProcessInstance processInstance = processRuntime.start(
+            ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey("categorizeProcess")
+                .withVariable("fileContent", content)
+                .build()
+        );
         String message = ">>> Created Process Instance: " + processInstance;
         System.out.println(message);
         return message;
     }
 
     @GetMapping("/process-definitions")
-    public List<ProcessDefinition> getProcessDefinition(){
+    public List<ProcessDefinition> getProcessDefinition() {
         return processRuntime.processDefinitions(Pageable.of(0, 100)).getContent();
     }
 
     @Override
-    public void run(String... args) {
-    }
+    public void run(String... args) {}
 
     @Bean
     public Connector processTextConnector() {
@@ -78,11 +74,9 @@ public class DemoApplication implements CommandLineRunner {
             String contentToProcess = (String) inBoundVariables.get("fileContent");
             // Logic Here to decide if content is approved or not
             if (contentToProcess.contains("activiti")) {
-                integrationContext.addOutBoundVariable("approved",
-                        true);
+                integrationContext.addOutBoundVariable("approved", true);
             } else {
-                integrationContext.addOutBoundVariable("approved",
-                        false);
+                integrationContext.addOutBoundVariable("approved", false);
             }
             return integrationContext;
         };
@@ -93,8 +87,7 @@ public class DemoApplication implements CommandLineRunner {
         return integrationContext -> {
             String contentToTag = (String) integrationContext.getInBoundVariables().get("fileContent");
             contentToTag += " :) ";
-            integrationContext.addOutBoundVariable("fileContent",
-                    contentToTag);
+            integrationContext.addOutBoundVariable("fileContent", contentToTag);
             System.out.println("Final Content: " + contentToTag);
             return integrationContext;
         };
@@ -105,11 +98,9 @@ public class DemoApplication implements CommandLineRunner {
         return integrationContext -> {
             String contentToDiscard = (String) integrationContext.getInBoundVariables().get("fileContent");
             contentToDiscard += " :( ";
-            integrationContext.addOutBoundVariable("fileContent",
-                    contentToDiscard);
+            integrationContext.addOutBoundVariable("fileContent", contentToDiscard);
             System.out.println("Final Content: " + contentToDiscard);
             return integrationContext;
         };
     }
-
 }

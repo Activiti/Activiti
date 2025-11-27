@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,26 @@
  */
 package org.activiti.editor.language;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.bpmn.model.BpmnModel;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class SubProcessTest extends AbstractConverterTest {
 
-  @Test
-  public void doubleConversionValidation() throws Exception {
-    BpmnModel bpmnModel = readXmlFile();
-    validateModel(bpmnModel);
-    bpmnModel = convertToJsonAndBack(bpmnModel);
-    validateModel(bpmnModel);
-  }
+    @Test
+    public void doubleConversionValidation() throws Exception {
+        BpmnModel bpmnModel = readXmlFile();
+        validateModel(bpmnModel);
+        bpmnModel = convertToJsonAndBack(bpmnModel);
+        validateModel(bpmnModel);
+    }
 
-  private void validateModel(BpmnModel model) {
-    assertThat(10).isEqualTo(model.getMainProcess().getFlowElementMap().keySet().size());
-  }
+    private void validateModel(BpmnModel model) {
+        assertThat(10).isEqualTo(model.getMainProcess().getFlowElementMap().keySet().size());
+    }
 
-  protected String getResource() {
-    return "test.subprocess.xml";
-  }
-
+    protected String getResource() {
+        return "test.subprocess.xml";
+    }
 }

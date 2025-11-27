@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,19 @@ import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.runtime.model.impl.VariableInstanceImpl;
 
 public class APIVariableInstanceConverter
-        extends ListConverter<org.activiti.engine.impl.persistence.entity.VariableInstance, VariableInstance>
-        implements ModelConverter<org.activiti.engine.impl.persistence.entity.VariableInstance, VariableInstance> {
+    extends ListConverter<org.activiti.engine.impl.persistence.entity.VariableInstance, VariableInstance>
+    implements ModelConverter<org.activiti.engine.impl.persistence.entity.VariableInstance, VariableInstance> {
 
     @Override
-    public VariableInstance from(org.activiti.engine.impl.persistence.entity.VariableInstance internalVariableInstance) {
-        return new VariableInstanceImpl<>(internalVariableInstance.getName(),
-                internalVariableInstance.getTypeName(),
-                internalVariableInstance.getValue(),
-                internalVariableInstance.getProcessInstanceId(),
-                internalVariableInstance.getTaskId());
+    public VariableInstance from(
+        org.activiti.engine.impl.persistence.entity.VariableInstance internalVariableInstance
+    ) {
+        return new VariableInstanceImpl<>(
+            internalVariableInstance.getName(),
+            internalVariableInstance.getTypeName(),
+            internalVariableInstance.getValue(),
+            internalVariableInstance.getProcessInstanceId(),
+            internalVariableInstance.getTaskId()
+        );
     }
 }

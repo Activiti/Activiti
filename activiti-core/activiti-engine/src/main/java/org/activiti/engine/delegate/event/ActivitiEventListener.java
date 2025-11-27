@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.delegate.event;
 
 /**
@@ -22,17 +21,16 @@ package org.activiti.engine.delegate.event;
 
  */
 public interface ActivitiEventListener {
+    /**
+     * Called when an event has been fired
+     *
+     * @param event
+     *          the event
+     */
+    void onEvent(ActivitiEvent event);
 
-  /**
-   * Called when an event has been fired
-   *
-   * @param event
-   *          the event
-   */
-  void onEvent(ActivitiEvent event);
-
-  /**
-   * @return whether or not the current operation should fail when this listeners execution throws an exception.
-   */
-  boolean isFailOnException();
+    /**
+     * @return whether or not the current operation should fail when this listeners execution throws an exception.
+     */
+    boolean isFailOnException();
 }

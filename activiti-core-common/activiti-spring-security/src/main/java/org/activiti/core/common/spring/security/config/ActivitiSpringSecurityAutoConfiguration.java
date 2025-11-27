@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public class ActivitiSpringSecurityAutoConfiguration {
     @ConditionalOnMissingBean
     public GrantedAuthoritiesGroupsMapper grantedAuthoritiesGroupsMapper() {
         return new SimpleGrantedAuthoritiesGroupsMapper();
-    };
+    }
 
     @Bean
     @ConditionalOnMissingBean
@@ -70,30 +70,35 @@ public class ActivitiSpringSecurityAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public PrincipalGroupsProvider principalGroupsProvider(GrantedAuthoritiesResolver grantedAuthoritiesResolver,
-                                                           GrantedAuthoritiesGroupsMapper grantedAuthoritiesGroupsMapper) {
-        return new AuthenticationPrincipalGroupsProvider(grantedAuthoritiesResolver,
-                                                         grantedAuthoritiesGroupsMapper);
+    public PrincipalGroupsProvider principalGroupsProvider(
+        GrantedAuthoritiesResolver grantedAuthoritiesResolver,
+        GrantedAuthoritiesGroupsMapper grantedAuthoritiesGroupsMapper
+    ) {
+        return new AuthenticationPrincipalGroupsProvider(grantedAuthoritiesResolver, grantedAuthoritiesGroupsMapper);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public PrincipalRolesProvider principalRolessProvider(GrantedAuthoritiesResolver grantedAuthoritiesResolver,
-                                                          GrantedAuthoritiesRolesMapper grantedAuthoritiesRolesMapper) {
-        return new AuthenticationPrincipalRolesProvider(grantedAuthoritiesResolver,
-                                                        grantedAuthoritiesRolesMapper);
+    public PrincipalRolesProvider principalRolessProvider(
+        GrantedAuthoritiesResolver grantedAuthoritiesResolver,
+        GrantedAuthoritiesRolesMapper grantedAuthoritiesRolesMapper
+    ) {
+        return new AuthenticationPrincipalRolesProvider(grantedAuthoritiesResolver, grantedAuthoritiesRolesMapper);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public SecurityManager securityManager(SecurityContextPrincipalProvider securityContextPrincipalProvider,
-                                           PrincipalIdentityProvider principalIdentityProvider,
-                                           PrincipalGroupsProvider principalGroupsProvider,
-                                           PrincipalRolesProvider principalRolessProvider) {
-        return new LocalSpringSecurityManager(securityContextPrincipalProvider,
-                                              principalIdentityProvider,
-                                              principalGroupsProvider,
-                                              principalRolessProvider);
+    public SecurityManager securityManager(
+        SecurityContextPrincipalProvider securityContextPrincipalProvider,
+        PrincipalIdentityProvider principalIdentityProvider,
+        PrincipalGroupsProvider principalGroupsProvider,
+        PrincipalRolesProvider principalRolessProvider
+    ) {
+        return new LocalSpringSecurityManager(
+            securityContextPrincipalProvider,
+            principalIdentityProvider,
+            principalGroupsProvider,
+            principalRolessProvider
+        );
     }
-
 }

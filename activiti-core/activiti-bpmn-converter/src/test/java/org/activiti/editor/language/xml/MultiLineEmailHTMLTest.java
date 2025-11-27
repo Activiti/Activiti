@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,15 @@
  */
 package org.activiti.editor.language.xml;
 
-import org.activiti.bpmn.model.*;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.activiti.bpmn.model.*;
+import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class MultiLineEmailHTMLTest extends AbstractConverterTest{
+public class MultiLineEmailHTMLTest extends AbstractConverterTest {
 
     @Test
     public void convertXMLToModel() throws Exception {
@@ -33,7 +32,6 @@ public class MultiLineEmailHTMLTest extends AbstractConverterTest{
     }
 
     private void validateModel(BpmnModel model) {
-
         Map<String, List<ExtensionElement>> extensionElements = new HashMap<>();
         extensionElements = model.getMainProcess().getFlowElement("userTask").getExtensionElements();
         List<ExtensionElement> emailTemplateEmailList = extensionElements.get("email-template");
@@ -46,8 +44,9 @@ public class MultiLineEmailHTMLTest extends AbstractConverterTest{
         return "htmlEmailSplit.bpmn.xml";
     }
 
-    private String getEmailBody(){
-        return "<html>\n" +
+    private String getEmailBody() {
+        return (
+            "<html>\n" +
             "<body style=\"background-color: #ffffff; padding: 0; margin: 0;\">\n" +
             "<table width=\"100%\" height=\"400\" cellpadding=\"0\" cellspacing=\"0\" style=\"margin:0; padding:0\">\n" +
             "<tr height=\"20\"><td colspan=\"3\"></td></tr>\n" +
@@ -107,6 +106,7 @@ public class MultiLineEmailHTMLTest extends AbstractConverterTest{
             "</tr>\n" +
             "</table>\n" +
             "</body>\n" +
-            "</html>";
+            "</html>"
+        );
     }
 }

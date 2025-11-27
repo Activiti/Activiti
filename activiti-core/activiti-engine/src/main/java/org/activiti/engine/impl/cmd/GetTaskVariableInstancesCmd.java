@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -57,20 +54,17 @@ public class GetTaskVariableInstancesCmd implements Command<Map<String, Variable
 
         Map<String, VariableInstance> variables = null;
         if (variableNames == null) {
-
             if (isLocal) {
                 variables = task.getVariableInstancesLocal();
             } else {
                 variables = task.getVariableInstances();
             }
-
         } else {
             if (isLocal) {
                 variables = task.getVariableInstancesLocal(variableNames, false);
             } else {
                 variables = task.getVariableInstances(variableNames, false);
             }
-
         }
 
         if (variables != null) {

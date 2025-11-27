@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree.impl.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -80,10 +79,7 @@ public class AstBooleanTest extends TestCase {
     @Test
     public void testGetValue() {
         assertEquals(true, parseNode("${true}").getValue(bindings, null, null));
-        assertEquals(
-            "true",
-            parseNode("${true}").getValue(bindings, null, String.class)
-        );
+        assertEquals("true", parseNode("${true}").getValue(bindings, null, String.class));
     }
 
     @Test

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree.impl;
 
 import jakarta.el.ELContext;
@@ -104,21 +103,9 @@ public class Builder implements TreeBuilder {
         try {
             return createParser(expression).tree();
         } catch (Scanner.ScanException e) {
-            throw new TreeBuilderException(
-                expression,
-                e.position,
-                e.encountered,
-                e.expected,
-                e.getMessage()
-            );
+            throw new TreeBuilderException(expression, e.position, e.encountered, e.expected, e.getMessage());
         } catch (ParseException e) {
-            throw new TreeBuilderException(
-                expression,
-                e.position,
-                e.encountered,
-                e.expected,
-                e.getMessage()
-            );
+            throw new TreeBuilderException(expression, e.position, e.encountered, e.expected, e.getMessage());
         }
     }
 
@@ -146,11 +133,7 @@ public class Builder implements TreeBuilder {
      */
     public static void main(String[] args) {
         if (args.length != 1) {
-            System.err.println(
-                "usage: java " +
-                Builder.class.getName() +
-                " <expression string>"
-            );
+            System.err.println("usage: java " + Builder.class.getName() + " <expression string>");
             System.exit(1);
         }
         PrintWriter out = new PrintWriter(System.out);
@@ -162,10 +145,7 @@ public class Builder implements TreeBuilder {
             System.exit(0);
         }
         NodePrinter.dump(out, tree.getRoot());
-        if (
-            !tree.getFunctionNodes().iterator().hasNext() &&
-            !tree.getIdentifierNodes().iterator().hasNext()
-        ) {
+        if (!tree.getFunctionNodes().iterator().hasNext() && !tree.getIdentifierNodes().iterator().hasNext()) {
             ELContext context = new ELContext() {
                 @Override
                 public VariableMapper getVariableMapper() {
@@ -184,11 +164,7 @@ public class Builder implements TreeBuilder {
             };
             out.print(">> ");
             try {
-                out.println(
-                    tree
-                        .getRoot()
-                        .getValue(new Bindings(null, null), context, null)
-                );
+                out.println(tree.getRoot().getValue(new Bindings(null, null), context, null));
             } catch (ELException e) {
                 out.println(e.getMessage());
             }

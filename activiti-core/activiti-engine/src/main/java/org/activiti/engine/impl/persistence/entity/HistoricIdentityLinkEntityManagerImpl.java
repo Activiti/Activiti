@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
-
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.HistoricIdentityLinkDataManager;
@@ -27,57 +24,58 @@ import org.activiti.engine.impl.persistence.entity.data.HistoricIdentityLinkData
 
 
  */
-public class HistoricIdentityLinkEntityManagerImpl extends AbstractEntityManager<HistoricIdentityLinkEntity> implements HistoricIdentityLinkEntityManager {
+public class HistoricIdentityLinkEntityManagerImpl
+    extends AbstractEntityManager<HistoricIdentityLinkEntity>
+    implements HistoricIdentityLinkEntityManager {
 
-  protected HistoricIdentityLinkDataManager historicIdentityLinkDataManager;
+    protected HistoricIdentityLinkDataManager historicIdentityLinkDataManager;
 
-
-  public HistoricIdentityLinkEntityManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration, HistoricIdentityLinkDataManager historicIdentityLinkDataManager) {
-    super(processEngineConfiguration);
-    this.historicIdentityLinkDataManager = historicIdentityLinkDataManager;
-  }
-
-  @Override
-  protected DataManager<HistoricIdentityLinkEntity> getDataManager() {
-    return historicIdentityLinkDataManager;
-  }
-
-  @Override
-  public List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByTaskId(String taskId) {
-    return historicIdentityLinkDataManager.findHistoricIdentityLinksByTaskId(taskId);
-  }
-
-  @Override
-  public List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByProcessInstanceId(String processInstanceId) {
-    return historicIdentityLinkDataManager.findHistoricIdentityLinksByProcessInstanceId(processInstanceId);
-  }
-
-  @Override
-  public void deleteHistoricIdentityLinksByTaskId(String taskId) {
-    List<HistoricIdentityLinkEntity> identityLinks = findHistoricIdentityLinksByTaskId(taskId);
-    for (HistoricIdentityLinkEntity identityLink : identityLinks) {
-      delete(identityLink);
-    }
-  }
-
-  @Override
-  public void deleteHistoricIdentityLinksByProcInstance(final String processInstanceId) {
-
-    List<HistoricIdentityLinkEntity> identityLinks = historicIdentityLinkDataManager
-        .findHistoricIdentityLinksByProcessInstanceId(processInstanceId);
-
-    for (HistoricIdentityLinkEntity identityLink : identityLinks) {
-      delete(identityLink);
+    public HistoricIdentityLinkEntityManagerImpl(
+        ProcessEngineConfigurationImpl processEngineConfiguration,
+        HistoricIdentityLinkDataManager historicIdentityLinkDataManager
+    ) {
+        super(processEngineConfiguration);
+        this.historicIdentityLinkDataManager = historicIdentityLinkDataManager;
     }
 
-  }
+    @Override
+    protected DataManager<HistoricIdentityLinkEntity> getDataManager() {
+        return historicIdentityLinkDataManager;
+    }
 
-  public HistoricIdentityLinkDataManager getHistoricIdentityLinkDataManager() {
-    return historicIdentityLinkDataManager;
-  }
+    @Override
+    public List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByTaskId(String taskId) {
+        return historicIdentityLinkDataManager.findHistoricIdentityLinksByTaskId(taskId);
+    }
 
-  public void setHistoricIdentityLinkDataManager(HistoricIdentityLinkDataManager historicIdentityLinkDataManager) {
-    this.historicIdentityLinkDataManager = historicIdentityLinkDataManager;
-  }
+    @Override
+    public List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByProcessInstanceId(String processInstanceId) {
+        return historicIdentityLinkDataManager.findHistoricIdentityLinksByProcessInstanceId(processInstanceId);
+    }
 
+    @Override
+    public void deleteHistoricIdentityLinksByTaskId(String taskId) {
+        List<HistoricIdentityLinkEntity> identityLinks = findHistoricIdentityLinksByTaskId(taskId);
+        for (HistoricIdentityLinkEntity identityLink : identityLinks) {
+            delete(identityLink);
+        }
+    }
+
+    @Override
+    public void deleteHistoricIdentityLinksByProcInstance(final String processInstanceId) {
+        List<HistoricIdentityLinkEntity> identityLinks =
+            historicIdentityLinkDataManager.findHistoricIdentityLinksByProcessInstanceId(processInstanceId);
+
+        for (HistoricIdentityLinkEntity identityLink : identityLinks) {
+            delete(identityLink);
+        }
+    }
+
+    public HistoricIdentityLinkDataManager getHistoricIdentityLinkDataManager() {
+        return historicIdentityLinkDataManager;
+    }
+
+    public void setHistoricIdentityLinkDataManager(HistoricIdentityLinkDataManager historicIdentityLinkDataManager) {
+        this.historicIdentityLinkDataManager = historicIdentityLinkDataManager;
+    }
 }

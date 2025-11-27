@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.delegate;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.MessageEventDefinition;
@@ -31,31 +29,43 @@ import org.apache.commons.lang3.StringUtils;
 public class BpmnMessagePayloadMappingProviderFactory implements MessagePayloadMappingProviderFactory {
 
     @Override
-    public MessagePayloadMappingProvider create(Event bpmnEvent,
-                                                MessageEventDefinition messageEventDefinition,
-                                                ExpressionManager expressionManager) {
-
-        List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(messageEventDefinition.getFieldExtensions(),
-                                                                           expressionManager);
+    public MessagePayloadMappingProvider create(
+        Event bpmnEvent,
+        MessageEventDefinition messageEventDefinition,
+        ExpressionManager expressionManager
+    ) {
+        List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(
+            messageEventDefinition.getFieldExtensions(),
+            expressionManager
+        );
 
         return new BpmnMessagePayloadMappingProvider(fieldDeclarations);
     }
 
-    public List<FieldDeclaration> createFieldDeclarations(List<FieldExtension> fieldList,
-                                                          ExpressionManager expressionManager) {
+    public List<FieldDeclaration> createFieldDeclarations(
+        List<FieldExtension> fieldList,
+        ExpressionManager expressionManager
+    ) {
         List<FieldDeclaration> fieldDeclarations = new ArrayList<FieldDeclaration>();
 
         for (FieldExtension fieldExtension : fieldList) {
-          FieldDeclaration fieldDeclaration = null;
-          if (StringUtils.isNotEmpty(fieldExtension.getExpression())) {
-            fieldDeclaration = new FieldDeclaration(fieldExtension.getFieldName(), Expression.class.getName(), expressionManager.createExpression(fieldExtension.getExpression()));
-          } else {
-            fieldDeclaration = new FieldDeclaration(fieldExtension.getFieldName(), Expression.class.getName(), new FixedValue(fieldExtension.getStringValue()));
-          }
+            FieldDeclaration fieldDeclaration = null;
+            if (StringUtils.isNotEmpty(fieldExtension.getExpression())) {
+                fieldDeclaration = new FieldDeclaration(
+                    fieldExtension.getFieldName(),
+                    Expression.class.getName(),
+                    expressionManager.createExpression(fieldExtension.getExpression())
+                );
+            } else {
+                fieldDeclaration = new FieldDeclaration(
+                    fieldExtension.getFieldName(),
+                    Expression.class.getName(),
+                    new FixedValue(fieldExtension.getStringValue())
+                );
+            }
 
-          fieldDeclarations.add(fieldDeclaration);
+            fieldDeclarations.add(fieldDeclaration);
         }
         return fieldDeclarations;
-      }
-
+    }
 }

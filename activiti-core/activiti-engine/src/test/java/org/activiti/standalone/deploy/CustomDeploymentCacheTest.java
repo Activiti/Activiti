@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.standalone.deploy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.text.MessageFormat;
-
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.repository.Deployment;
 
@@ -28,24 +26,29 @@ import org.activiti.engine.repository.Deployment;
  */
 public class CustomDeploymentCacheTest extends ResourceActivitiTestCase {
 
-  public CustomDeploymentCacheTest() {
-    super("org/activiti/standalone/deploy/custom.deployment.cache.test.activiti.cfg.xml");
-  }
-
-  public void testCustomDeploymentCacheUsed() {
-    CustomDeploymentCache customCache = (CustomDeploymentCache) processEngineConfiguration.getProcessDefinitionCache();
-    assertThat(customCache.getCachedProcessDefinition()).isNull();
-
-    String processDefinitionTemplate = DeploymentCacheTestUtil.readTemplateFile("/org/activiti/standalone/deploy/deploymentCacheTest.bpmn20.xml");
-    for (int i = 1; i <= 5; i++) {
-      repositoryService.createDeployment().addString("Process " + i + ".bpmn20.xml", MessageFormat.format(processDefinitionTemplate, i)).deploy();
-      assertThat(customCache.getCachedProcessDefinition()).isNotNull();
+    public CustomDeploymentCacheTest() {
+        super("org/activiti/standalone/deploy/custom.deployment.cache.test.activiti.cfg.xml");
     }
 
-    // Cleanup
-    for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-      repositoryService.deleteDeployment(deployment.getId(), true);
-    }
-  }
+    public void testCustomDeploymentCacheUsed() {
+        CustomDeploymentCache customCache =
+            (CustomDeploymentCache) processEngineConfiguration.getProcessDefinitionCache();
+        assertThat(customCache.getCachedProcessDefinition()).isNull();
 
+        String processDefinitionTemplate = DeploymentCacheTestUtil.readTemplateFile(
+            "/org/activiti/standalone/deploy/deploymentCacheTest.bpmn20.xml"
+        );
+        for (int i = 1; i <= 5; i++) {
+            repositoryService
+                .createDeployment()
+                .addString("Process " + i + ".bpmn20.xml", MessageFormat.format(processDefinitionTemplate, i))
+                .deploy();
+            assertThat(customCache.getCachedProcessDefinition()).isNotNull();
+        }
+
+        // Cleanup
+        for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+            repositoryService.deleteDeployment(deployment.getId(), true);
+        }
+    }
 }

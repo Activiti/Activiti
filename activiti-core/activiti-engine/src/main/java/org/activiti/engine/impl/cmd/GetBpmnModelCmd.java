@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -29,19 +27,19 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
  */
 public class GetBpmnModelCmd implements Command<BpmnModel>, Serializable {
 
-  private static final long serialVersionUID = 8167762371289445046L;
+    private static final long serialVersionUID = 8167762371289445046L;
 
-  protected String processDefinitionId;
+    protected String processDefinitionId;
 
-  public GetBpmnModelCmd(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
-
-  public BpmnModel execute(CommandContext commandContext) {
-    if (processDefinitionId == null) {
-      throw new ActivitiIllegalArgumentException("processDefinitionId is null");
+    public GetBpmnModelCmd(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
     }
 
-    return ProcessDefinitionUtil.getBpmnModel(processDefinitionId);
-  }
+    public BpmnModel execute(CommandContext commandContext) {
+        if (processDefinitionId == null) {
+            throw new ActivitiIllegalArgumentException("processDefinitionId is null");
+        }
+
+        return ProcessDefinitionUtil.getBpmnModel(processDefinitionId);
+    }
 }

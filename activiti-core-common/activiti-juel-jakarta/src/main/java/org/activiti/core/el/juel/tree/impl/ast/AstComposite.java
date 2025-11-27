@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel.tree.impl.ast;
 
 import jakarta.el.ELContext;
@@ -32,12 +31,7 @@ public class AstComposite extends AstRightValue {
     public Object eval(Bindings bindings, ELContext context) {
         StringBuilder b = new StringBuilder(16);
         for (int i = 0; i < getCardinality(); i++) {
-            b.append(
-                bindings.convert(
-                    nodes.get(i).eval(bindings, context),
-                    String.class
-                )
-            );
+            b.append(bindings.convert(nodes.get(i).eval(bindings, context), String.class));
         }
         return b.toString();
     }

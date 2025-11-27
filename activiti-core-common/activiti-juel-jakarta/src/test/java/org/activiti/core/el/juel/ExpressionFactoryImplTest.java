@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.core.el.juel;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,21 +38,13 @@ public class ExpressionFactoryImplTest extends TestCase {
     @Test
     public void testCreateTreeValueExpression() {
         SimpleContext context = new SimpleContext(new SimpleResolver());
-        assertEquals(
-            1l,
-            factory
-                .createValueExpression(context, "${1}", Object.class)
-                .getValue(context)
-        );
+        assertEquals(1l, factory.createValueExpression(context, "${1}", Object.class).getValue(context));
     }
 
     @Test
     public void testCreateObjectValueExpression() {
         SimpleContext context = new SimpleContext(new SimpleResolver());
-        assertEquals(
-            "1",
-            factory.createValueExpression("1", Object.class).getValue(context)
-        );
+        assertEquals("1", factory.createValueExpression("1", Object.class).getValue(context));
     }
 
     @Test
@@ -62,14 +53,7 @@ public class ExpressionFactoryImplTest extends TestCase {
         context.getELResolver().setValue(context, null, "foo", this);
         assertEquals(
             bar(),
-            factory
-                .createMethodExpression(
-                    context,
-                    "${foo.bar}",
-                    null,
-                    new Class[0]
-                )
-                .invoke(context, null)
+            factory.createMethodExpression(context, "${foo.bar}", null, new Class[0]).invoke(context, null)
         );
     }
 }

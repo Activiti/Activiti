@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,10 @@ import static java.util.Collections.emptyList;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.activiti.application.ApplicationDiscovery;
 import org.activiti.application.ApplicationEntryDiscovery;
-import org.activiti.application.ApplicationService;
 import org.activiti.application.ApplicationReader;
+import org.activiti.application.ApplicationService;
 import org.activiti.application.deployer.ApplicationDeployer;
 import org.activiti.application.deployer.ApplicationEntryDeployer;
 import org.springframework.beans.factory.InitializingBean;
@@ -37,16 +36,19 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 public class ApplicationAutoConfiguration {
 
     @Bean
-    public InitializingBean deployApplications(ResourcePatternResolver resourceLoader,
-                                               @Autowired(required = false) List<ApplicationEntryDiscovery> applicationEntryDiscoveries,
-                                               @Autowired(required = false) List<ApplicationEntryDeployer> applicationEntryDeployers,
-                                               @Value("${spring.activiti.applicationsLocation:classpath:/applications/}") String applicationsLocation) {
-        return () -> new ApplicationDeployer(new ApplicationService(new ApplicationDiscovery(resourceLoader,
-                                                                                             applicationsLocation),
-                                                                    new ApplicationReader(
-                                                                           Optional.ofNullable(applicationEntryDiscoveries)
-                                                                                   .orElse(emptyList()))),
-                                             Optional.ofNullable(applicationEntryDeployers)
-                                                     .orElse(emptyList())).deploy();
+    public InitializingBean deployApplications(
+        ResourcePatternResolver resourceLoader,
+        @Autowired(required = false) List<ApplicationEntryDiscovery> applicationEntryDiscoveries,
+        @Autowired(required = false) List<ApplicationEntryDeployer> applicationEntryDeployers,
+        @Value("${spring.activiti.applicationsLocation:classpath:/applications/}") String applicationsLocation
+    ) {
+        return () ->
+            new ApplicationDeployer(
+                new ApplicationService(
+                    new ApplicationDiscovery(resourceLoader, applicationsLocation),
+                    new ApplicationReader(Optional.ofNullable(applicationEntryDiscoveries).orElse(emptyList()))
+                ),
+                Optional.ofNullable(applicationEntryDeployers).orElse(emptyList())
+            ).deploy();
     }
 }

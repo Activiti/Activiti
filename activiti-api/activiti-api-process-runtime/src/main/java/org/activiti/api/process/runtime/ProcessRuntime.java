@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.activiti.api.process.runtime;
 
 import java.util.List;
-
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.Deployment;
 import org.activiti.api.process.model.ProcessDefinition;
@@ -41,9 +40,7 @@ import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 
-
 public interface ProcessRuntime {
-
     /**
      * Returns the current configuration of the ProcessRuntime, this includes
      *  - process runtime events listeners
@@ -69,16 +66,19 @@ public interface ProcessRuntime {
     /**
      * Get all process definitions by pages using payload filters
      */
-    Page<ProcessDefinition> processDefinitions(Pageable pageable,
-                                               GetProcessDefinitionsPayload getProcessDefinitionsPayload);
+    Page<ProcessDefinition> processDefinitions(
+        Pageable pageable,
+        GetProcessDefinitionsPayload getProcessDefinitionsPayload
+    );
 
     /**
      * Get all process definitions by pages using payload filters and include parameter
      */
-    Page<ProcessDefinition> processDefinitions(Pageable pageable,
-                                               GetProcessDefinitionsPayload getProcessDefinitionsPayload,
-                                               List<String> include);
-
+    Page<ProcessDefinition> processDefinitions(
+        Pageable pageable,
+        GetProcessDefinitionsPayload getProcessDefinitionsPayload,
+        List<String> include
+    );
 
     /**
      * Start a new Process Instance based on the payload parameters
@@ -107,8 +107,7 @@ public interface ProcessRuntime {
      * - Notice that only in-flight or suspended processes will be returned here
      * - For already completed process instance check at the query service
      */
-    Page<ProcessInstance> processInstances(Pageable pageable,
-                                           GetProcessInstancesPayload getProcessInstancesPayload);
+    Page<ProcessInstance> processInstances(Pageable pageable, GetProcessInstancesPayload getProcessInstancesPayload);
 
     /**
      * Get Process Instance by id
@@ -120,12 +119,10 @@ public interface ProcessRuntime {
      */
     ProcessInstance suspend(SuspendProcessPayload suspendProcessPayload);
 
-
     /**
      * Resume a suspended process instance
      */
     ProcessInstance resume(ResumeProcessPayload resumeProcessPayload);
-
 
     /**
      * Delete a Process Instance

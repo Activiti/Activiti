@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,20 @@
  */
 package org.activiti.core.common.spring.security;
 
+import java.security.Principal;
+import java.util.Optional;
 import org.activiti.api.runtime.shared.security.SecurityContextPrincipalProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.security.Principal;
-import java.util.Optional;
 
 public class LocalSpringSecurityContextPrincipalProvider implements SecurityContextPrincipalProvider {
 
     @Override
     public Optional<Principal> getCurrentPrincipal() {
         return Optional.ofNullable(SecurityContextHolder.getContext())
-                       .map(SecurityContext::getAuthentication)
-                       .filter(Authentication::isAuthenticated)
-                       .map(Authentication.class::cast);
+            .map(SecurityContext::getAuthentication)
+            .filter(Authentication::isAuthenticated)
+            .map(Authentication.class::cast);
     }
 }

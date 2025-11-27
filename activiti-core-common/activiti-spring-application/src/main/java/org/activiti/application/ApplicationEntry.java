@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,7 @@ public class ApplicationEntry {
 
     private FileContent fileContent;
 
-    public ApplicationEntry(String type,
-                            FileContent fileContent) {
+    public ApplicationEntry(String type, FileContent fileContent) {
         this.type = type;
         this.fileContent = fileContent;
     }
@@ -34,5 +33,4 @@ public class ApplicationEntry {
     public FileContent getFileContent() {
         return fileContent;
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -27,25 +25,28 @@ import org.activiti.engine.impl.delegate.invocation.JavaDelegateInvocation;
 /**
 
  */
-public class ServiceTaskJavaDelegateActivityBehavior extends TaskActivityBehavior implements ActivityBehavior, ExecutionListener {
+public class ServiceTaskJavaDelegateActivityBehavior
+    extends TaskActivityBehavior
+    implements ActivityBehavior, ExecutionListener {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected JavaDelegate javaDelegate;
+    protected JavaDelegate javaDelegate;
 
-  protected ServiceTaskJavaDelegateActivityBehavior() {
-  }
+    protected ServiceTaskJavaDelegateActivityBehavior() {}
 
-  public ServiceTaskJavaDelegateActivityBehavior(JavaDelegate javaDelegate) {
-    this.javaDelegate = javaDelegate;
-  }
+    public ServiceTaskJavaDelegateActivityBehavior(JavaDelegate javaDelegate) {
+        this.javaDelegate = javaDelegate;
+    }
 
-  public void execute(DelegateExecution execution) {
-    Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new JavaDelegateInvocation(javaDelegate, execution));
-    leave(execution);
-  }
+    public void execute(DelegateExecution execution) {
+        Context.getProcessEngineConfiguration()
+            .getDelegateInterceptor()
+            .handleInvocation(new JavaDelegateInvocation(javaDelegate, execution));
+        leave(execution);
+    }
 
-  public void notify(DelegateExecution execution) {
-    execute(execution);
-  }
+    public void notify(DelegateExecution execution) {
+        execute(execution);
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.runtime.api.conf;
 
 import static java.util.Collections.emptyList;
@@ -59,13 +58,21 @@ public class CommonRuntimeAutoConfiguration {
     }
 
     @Bean
-    public InitializingBean registerVariableCreatedListenerDelegate(RuntimeService runtimeService,
+    public InitializingBean registerVariableCreatedListenerDelegate(
+        RuntimeService runtimeService,
         @Autowired(required = false) List<VariableEventListener<VariableCreatedEvent>> listeners,
-        VariableEventFilter variableEventFilter, EphemeralVariableResolver ephemeralVariableResolver) {
-        return () -> runtimeService.addEventListener(
-            new VariableCreatedListenerDelegate(getInitializedListeners(listeners),
-                new ToVariableCreatedConverter(ephemeralVariableResolver),
-                variableEventFilter), ActivitiEventType.VARIABLE_CREATED);
+        VariableEventFilter variableEventFilter,
+        EphemeralVariableResolver ephemeralVariableResolver
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new VariableCreatedListenerDelegate(
+                    getInitializedListeners(listeners),
+                    new ToVariableCreatedConverter(ephemeralVariableResolver),
+                    variableEventFilter
+                ),
+                ActivitiEventType.VARIABLE_CREATED
+            );
     }
 
     private <T> List<T> getInitializedListeners(List<T> eventListeners) {
@@ -73,18 +80,25 @@ public class CommonRuntimeAutoConfiguration {
     }
 
     @Bean
-    public InitializingBean registerVariableUpdatedListenerDelegate(RuntimeService runtimeService,
+    public InitializingBean registerVariableUpdatedListenerDelegate(
+        RuntimeService runtimeService,
         @Autowired(required = false) List<VariableEventListener<VariableUpdatedEvent>> listeners,
-        VariableEventFilter variableEventFilter, EphemeralVariableResolver ephemeralVariableResolver) {
-        return () -> runtimeService.addEventListener(
-            new VariableUpdatedListenerDelegate(getInitializedListeners(listeners),
-                new ToVariableUpdatedConverter(ephemeralVariableResolver),
-                variableEventFilter), ActivitiEventType.VARIABLE_UPDATED);
+        VariableEventFilter variableEventFilter,
+        EphemeralVariableResolver ephemeralVariableResolver
+    ) {
+        return () ->
+            runtimeService.addEventListener(
+                new VariableUpdatedListenerDelegate(
+                    getInitializedListeners(listeners),
+                    new ToVariableUpdatedConverter(ephemeralVariableResolver),
+                    variableEventFilter
+                ),
+                ActivitiEventType.VARIABLE_UPDATED
+            );
     }
 
     @Bean
     public VariableNameValidator variableNameValidator() {
         return new VariableNameValidator();
     }
-
 }

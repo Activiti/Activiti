@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine;
-
 
 import org.activiti.engine.api.internal.Internal;
 
@@ -41,29 +39,27 @@ import org.activiti.engine.api.internal.Internal;
  */
 @Internal
 public interface ProcessEngine {
+    /** the version of the activiti library */
+    public static String VERSION = "8.1.0"; // Note the extra -x at the end. To cater for snapshot releases with different database changes
 
-  /** the version of the activiti library */
-  public static String VERSION = "8.1.0"; // Note the extra -x at the end. To cater for snapshot releases with different database changes
+    /**
+     * The name as specified in 'process-engine-name' in the activiti.cfg.xml configuration file. The default name for a process engine is 'default
+     */
+    String getName();
 
-  /**
-   * The name as specified in 'process-engine-name' in the activiti.cfg.xml configuration file. The default name for a process engine is 'default
-   */
-  String getName();
+    void close();
 
-  void close();
+    RepositoryService getRepositoryService();
 
-  RepositoryService getRepositoryService();
+    RuntimeService getRuntimeService();
 
-  RuntimeService getRuntimeService();
+    TaskService getTaskService();
 
-  TaskService getTaskService();
+    HistoryService getHistoryService();
 
-  HistoryService getHistoryService();
+    ManagementService getManagementService();
 
-  ManagementService getManagementService();
+    DynamicBpmnService getDynamicBpmnService();
 
-  DynamicBpmnService getDynamicBpmnService();
-
-  ProcessEngineConfiguration getProcessEngineConfiguration();
-
+    ProcessEngineConfiguration getProcessEngineConfiguration();
 }

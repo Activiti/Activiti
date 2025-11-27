@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.engine.impl.el;
 
 import jakarta.el.ArrayELResolver;
@@ -62,17 +60,14 @@ public class ExpressionManager {
     }
 
     public ExpressionManager(boolean initFactory) {
-        this(null,
-             initFactory);
+        this(null, initFactory);
     }
 
     public ExpressionManager(Map<Object, Object> beans) {
-        this(beans,
-             true);
+        this(beans, true);
     }
 
-    public ExpressionManager(Map<Object, Object> beans,
-                             boolean initFactory) {
+    public ExpressionManager(Map<Object, Object> beans, boolean initFactory) {
         // Use the ExpressionFactoryImpl in activiti build in version of juel,
         // with parametrised method expressions enabled
         if (initFactory) {
@@ -82,11 +77,12 @@ public class ExpressionManager {
     }
 
     public Expression createExpression(String expression) {
-        ValueExpression valueExpression = expressionFactory.createValueExpression(getElContext(Collections.emptyMap()),
+        ValueExpression valueExpression = expressionFactory.createValueExpression(
+            getElContext(Collections.emptyMap()),
             expression.trim(),
-            Object.class);
-        return new JuelExpression(valueExpression,
-            expression);
+            Object.class
+        );
+        return new JuelExpression(valueExpression, expression);
     }
 
     public void setExpressionFactory(ExpressionFactory expressionFactory) {
@@ -127,7 +123,9 @@ public class ExpressionManager {
     }
 
     protected ActivitiElContext createElContext(VariableScope variableScope) {
-        return (ActivitiElContext) new ELContextBuilder().withResolvers(createElResolver(variableScope)).buildWithCustomFunctions(customFunctionProviders);
+        return (ActivitiElContext) new ELContextBuilder()
+            .withResolvers(createElResolver(variableScope))
+            .buildWithCustomFunctions(customFunctionProviders);
     }
 
     protected ELResolver createElResolver(VariableScope variableScope) {
@@ -155,9 +153,7 @@ public class ExpressionManager {
         elResolver.add(new ListELResolver());
         elResolver.add(new MapELResolver());
         elResolver.add(new CustomMapperJsonNodeELResolver());
-        elResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class,
-                                                         "getFieldValue",
-                                                         "setFieldValue")); // TODO: needs verification
+        elResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class, "getFieldValue", "setFieldValue")); // TODO: needs verification
         elResolver.add(new ELResolverReflectionBlockerDecorator(new BeanELResolver()));
     }
 
@@ -172,6 +168,9 @@ public class ExpressionManager {
     public ELContext getElContext(Map<String, Object> availableVariables) {
         CompositeELResolver elResolver = new CompositeELResolver();
         addBaseResolvers(elResolver);
-        return new ELContextBuilder().withResolvers(elResolver).withVariables(availableVariables).buildWithCustomFunctions(customFunctionProviders);
+        return new ELContextBuilder()
+            .withResolvers(elResolver)
+            .withVariables(availableVariables)
+            .buildWithCustomFunctions(customFunctionProviders);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 package org.activiti.runtime.api.model.impl;
 
-import org.activiti.api.task.model.TaskCandidateGroup;
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+
+import org.activiti.api.task.model.TaskCandidateGroup;
+import org.junit.jupiter.api.Test;
 
 public class APITaskCandidateGroupConverterTest {
 
@@ -39,5 +39,4 @@ public class APITaskCandidateGroupConverterTest {
         assertThat(taskCandidateGroup.getGroupId()).isNotEqualToIgnoringCase("groupId");
         assertThat(taskCandidateGroup.getTaskId()).isNotEqualToIgnoringCase("taskId");
     }
-
 }

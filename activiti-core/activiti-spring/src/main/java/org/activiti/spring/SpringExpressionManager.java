@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.activiti.spring;
 
-import java.util.Map;
 import jakarta.el.CompositeELResolver;
-import org.activiti.engine.impl.el.ExpressionManager;
+import java.util.Map;
 import org.activiti.core.el.ReadOnlyMapELResolver;
+import org.activiti.engine.impl.el.ExpressionManager;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -30,18 +28,18 @@ import org.springframework.context.ApplicationContext;
  */
 public class SpringExpressionManager extends ExpressionManager {
 
-  protected ApplicationContext applicationContext;
+    protected ApplicationContext applicationContext;
 
-  /**
-   * @param applicationContext
-   *          the applicationContext to use. Ignored when 'beans' parameter is not null.
-   * @param beans
-   *          a map of custom beans to expose. If null, all beans in the application-context will be exposed.
-   */
-  public SpringExpressionManager(ApplicationContext applicationContext, Map<Object, Object> beans) {
-    super(beans);
-    this.applicationContext = applicationContext;
-  }
+    /**
+     * @param applicationContext
+     *          the applicationContext to use. Ignored when 'beans' parameter is not null.
+     * @param beans
+     *          a map of custom beans to expose. If null, all beans in the application-context will be exposed.
+     */
+    public SpringExpressionManager(ApplicationContext applicationContext, Map<Object, Object> beans) {
+        super(beans);
+        this.applicationContext = applicationContext;
+    }
 
     @Override
     protected void addBeansResolver(CompositeELResolver elResolver) {
@@ -52,7 +50,5 @@ public class SpringExpressionManager extends ExpressionManager {
             // Expose full application-context in expressions
             elResolver.add(new ApplicationContextElResolver(applicationContext));
         }
-
     }
-
 }

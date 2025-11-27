@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Alfresco Software, Ltd.
+ * Copyright 2010-2025 Hyland Software, Inc. and its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,9 @@ import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.api.process.runtime.events.ProcessStartedEvent;
 import org.activiti.api.runtime.event.impl.RuntimeEventImpl;
 
-public class ProcessStartedEventImpl extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>
-        implements ProcessStartedEvent {
+public class ProcessStartedEventImpl
+    extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>
+    implements ProcessStartedEvent {
 
     private String nestedProcessDefinitionId;
     private String nestedProcessInstanceId;
@@ -55,10 +56,16 @@ public class ProcessStartedEventImpl extends RuntimeEventImpl<ProcessInstance, P
 
     @Override
     public String toString() {
-        return "ProcessStartedEventImpl{" +
-                super.toString() +
-                "nestedProcessDefinitionId='" + nestedProcessDefinitionId + '\'' +
-                ", nestedProcessInstanceId='" + nestedProcessInstanceId + '\'' +
-                '}';
+        return (
+            "ProcessStartedEventImpl{" +
+            super.toString() +
+            "nestedProcessDefinitionId='" +
+            nestedProcessDefinitionId +
+            '\'' +
+            ", nestedProcessInstanceId='" +
+            nestedProcessInstanceId +
+            '\'' +
+            '}'
+        );
     }
 }
